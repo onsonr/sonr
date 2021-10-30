@@ -15,10 +15,10 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// MotorServiceClient is the client API for MotorService service.
+// MotorStubClient is the client API for MotorStub service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MotorServiceClient interface {
+type MotorStubClient interface {
 	// Node Methods
 	// Signing Method Request for Data
 	Supply(ctx context.Context, in *api.SupplyRequest, opts ...grpc.CallOption) (*api.SupplyResponse, error)
@@ -34,89 +34,89 @@ type MotorServiceClient interface {
 	Search(ctx context.Context, in *api.SearchRequest, opts ...grpc.CallOption) (*api.SearchResponse, error)
 	// Events Streams
 	// Returns a stream of Lobby Refresh Events
-	OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnLobbyRefreshClient, error)
+	OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnLobbyRefreshClient, error)
 	// Returns a stream of Mailbox Message Events
-	OnMailboxMessage(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnMailboxMessageClient, error)
+	OnMailboxMessage(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnMailboxMessageClient, error)
 	// Returns a stream of DecisionEvent's for Accepted Invites
-	OnTransmitAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitAcceptedClient, error)
+	OnTransmitAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitAcceptedClient, error)
 	// Returns a stream of DecisionEvent's for Rejected Invites
-	OnTransmitDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitDeclinedClient, error)
+	OnTransmitDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitDeclinedClient, error)
 	// Returns a stream of DecisionEvent's for Invites
-	OnTransmitInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitInviteClient, error)
+	OnTransmitInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitInviteClient, error)
 	// Returns a stream of ProgressEvent's for Sessions
-	OnTransmitProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitProgressClient, error)
+	OnTransmitProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitProgressClient, error)
 	// Returns a stream of Completed Transfers
-	OnTransmitComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitCompleteClient, error)
+	OnTransmitComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitCompleteClient, error)
 }
 
-type motorServiceClient struct {
+type motorStubClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMotorServiceClient(cc grpc.ClientConnInterface) MotorServiceClient {
-	return &motorServiceClient{cc}
+func NewMotorStubClient(cc grpc.ClientConnInterface) MotorStubClient {
+	return &motorStubClient{cc}
 }
 
-func (c *motorServiceClient) Supply(ctx context.Context, in *api.SupplyRequest, opts ...grpc.CallOption) (*api.SupplyResponse, error) {
+func (c *motorStubClient) Supply(ctx context.Context, in *api.SupplyRequest, opts ...grpc.CallOption) (*api.SupplyResponse, error) {
 	out := new(api.SupplyResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorService/Supply", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Supply", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *motorServiceClient) Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error) {
+func (c *motorStubClient) Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error) {
 	out := new(api.EditResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorService/Edit", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Edit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *motorServiceClient) Fetch(ctx context.Context, in *api.FetchRequest, opts ...grpc.CallOption) (*api.FetchResponse, error) {
+func (c *motorStubClient) Fetch(ctx context.Context, in *api.FetchRequest, opts ...grpc.CallOption) (*api.FetchResponse, error) {
 	out := new(api.FetchResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorService/Fetch", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Fetch", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *motorServiceClient) Share(ctx context.Context, in *api.ShareRequest, opts ...grpc.CallOption) (*api.ShareResponse, error) {
+func (c *motorStubClient) Share(ctx context.Context, in *api.ShareRequest, opts ...grpc.CallOption) (*api.ShareResponse, error) {
 	out := new(api.ShareResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorService/Share", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Share", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *motorServiceClient) Respond(ctx context.Context, in *api.RespondRequest, opts ...grpc.CallOption) (*api.RespondResponse, error) {
+func (c *motorStubClient) Respond(ctx context.Context, in *api.RespondRequest, opts ...grpc.CallOption) (*api.RespondResponse, error) {
 	out := new(api.RespondResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorService/Respond", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Respond", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *motorServiceClient) Search(ctx context.Context, in *api.SearchRequest, opts ...grpc.CallOption) (*api.SearchResponse, error) {
+func (c *motorStubClient) Search(ctx context.Context, in *api.SearchRequest, opts ...grpc.CallOption) (*api.SearchResponse, error) {
 	out := new(api.SearchResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorService/Search", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Search", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *motorServiceClient) OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnLobbyRefreshClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MotorService_ServiceDesc.Streams[0], "/sonr.node.MotorService/OnLobbyRefresh", opts...)
+func (c *motorStubClient) OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnLobbyRefreshClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MotorStub_ServiceDesc.Streams[0], "/sonr.node.MotorStub/OnLobbyRefresh", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &motorServiceOnLobbyRefreshClient{stream}
+	x := &motorStubOnLobbyRefreshClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -126,16 +126,16 @@ func (c *motorServiceClient) OnLobbyRefresh(ctx context.Context, in *Empty, opts
 	return x, nil
 }
 
-type MotorService_OnLobbyRefreshClient interface {
+type MotorStub_OnLobbyRefreshClient interface {
 	Recv() (*api.RefreshEvent, error)
 	grpc.ClientStream
 }
 
-type motorServiceOnLobbyRefreshClient struct {
+type motorStubOnLobbyRefreshClient struct {
 	grpc.ClientStream
 }
 
-func (x *motorServiceOnLobbyRefreshClient) Recv() (*api.RefreshEvent, error) {
+func (x *motorStubOnLobbyRefreshClient) Recv() (*api.RefreshEvent, error) {
 	m := new(api.RefreshEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -143,12 +143,12 @@ func (x *motorServiceOnLobbyRefreshClient) Recv() (*api.RefreshEvent, error) {
 	return m, nil
 }
 
-func (c *motorServiceClient) OnMailboxMessage(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnMailboxMessageClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MotorService_ServiceDesc.Streams[1], "/sonr.node.MotorService/OnMailboxMessage", opts...)
+func (c *motorStubClient) OnMailboxMessage(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnMailboxMessageClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MotorStub_ServiceDesc.Streams[1], "/sonr.node.MotorStub/OnMailboxMessage", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &motorServiceOnMailboxMessageClient{stream}
+	x := &motorStubOnMailboxMessageClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -158,16 +158,16 @@ func (c *motorServiceClient) OnMailboxMessage(ctx context.Context, in *Empty, op
 	return x, nil
 }
 
-type MotorService_OnMailboxMessageClient interface {
+type MotorStub_OnMailboxMessageClient interface {
 	Recv() (*api.MailboxEvent, error)
 	grpc.ClientStream
 }
 
-type motorServiceOnMailboxMessageClient struct {
+type motorStubOnMailboxMessageClient struct {
 	grpc.ClientStream
 }
 
-func (x *motorServiceOnMailboxMessageClient) Recv() (*api.MailboxEvent, error) {
+func (x *motorStubOnMailboxMessageClient) Recv() (*api.MailboxEvent, error) {
 	m := new(api.MailboxEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -175,12 +175,12 @@ func (x *motorServiceOnMailboxMessageClient) Recv() (*api.MailboxEvent, error) {
 	return m, nil
 }
 
-func (c *motorServiceClient) OnTransmitAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitAcceptedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MotorService_ServiceDesc.Streams[2], "/sonr.node.MotorService/OnTransmitAccepted", opts...)
+func (c *motorStubClient) OnTransmitAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitAcceptedClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MotorStub_ServiceDesc.Streams[2], "/sonr.node.MotorStub/OnTransmitAccepted", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &motorServiceOnTransmitAcceptedClient{stream}
+	x := &motorStubOnTransmitAcceptedClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -190,16 +190,16 @@ func (c *motorServiceClient) OnTransmitAccepted(ctx context.Context, in *Empty, 
 	return x, nil
 }
 
-type MotorService_OnTransmitAcceptedClient interface {
+type MotorStub_OnTransmitAcceptedClient interface {
 	Recv() (*api.DecisionEvent, error)
 	grpc.ClientStream
 }
 
-type motorServiceOnTransmitAcceptedClient struct {
+type motorStubOnTransmitAcceptedClient struct {
 	grpc.ClientStream
 }
 
-func (x *motorServiceOnTransmitAcceptedClient) Recv() (*api.DecisionEvent, error) {
+func (x *motorStubOnTransmitAcceptedClient) Recv() (*api.DecisionEvent, error) {
 	m := new(api.DecisionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -207,12 +207,12 @@ func (x *motorServiceOnTransmitAcceptedClient) Recv() (*api.DecisionEvent, error
 	return m, nil
 }
 
-func (c *motorServiceClient) OnTransmitDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitDeclinedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MotorService_ServiceDesc.Streams[3], "/sonr.node.MotorService/OnTransmitDeclined", opts...)
+func (c *motorStubClient) OnTransmitDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitDeclinedClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MotorStub_ServiceDesc.Streams[3], "/sonr.node.MotorStub/OnTransmitDeclined", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &motorServiceOnTransmitDeclinedClient{stream}
+	x := &motorStubOnTransmitDeclinedClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -222,16 +222,16 @@ func (c *motorServiceClient) OnTransmitDeclined(ctx context.Context, in *Empty, 
 	return x, nil
 }
 
-type MotorService_OnTransmitDeclinedClient interface {
+type MotorStub_OnTransmitDeclinedClient interface {
 	Recv() (*api.DecisionEvent, error)
 	grpc.ClientStream
 }
 
-type motorServiceOnTransmitDeclinedClient struct {
+type motorStubOnTransmitDeclinedClient struct {
 	grpc.ClientStream
 }
 
-func (x *motorServiceOnTransmitDeclinedClient) Recv() (*api.DecisionEvent, error) {
+func (x *motorStubOnTransmitDeclinedClient) Recv() (*api.DecisionEvent, error) {
 	m := new(api.DecisionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -239,12 +239,12 @@ func (x *motorServiceOnTransmitDeclinedClient) Recv() (*api.DecisionEvent, error
 	return m, nil
 }
 
-func (c *motorServiceClient) OnTransmitInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MotorService_ServiceDesc.Streams[4], "/sonr.node.MotorService/OnTransmitInvite", opts...)
+func (c *motorStubClient) OnTransmitInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitInviteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MotorStub_ServiceDesc.Streams[4], "/sonr.node.MotorStub/OnTransmitInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &motorServiceOnTransmitInviteClient{stream}
+	x := &motorStubOnTransmitInviteClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -254,16 +254,16 @@ func (c *motorServiceClient) OnTransmitInvite(ctx context.Context, in *Empty, op
 	return x, nil
 }
 
-type MotorService_OnTransmitInviteClient interface {
+type MotorStub_OnTransmitInviteClient interface {
 	Recv() (*api.InviteEvent, error)
 	grpc.ClientStream
 }
 
-type motorServiceOnTransmitInviteClient struct {
+type motorStubOnTransmitInviteClient struct {
 	grpc.ClientStream
 }
 
-func (x *motorServiceOnTransmitInviteClient) Recv() (*api.InviteEvent, error) {
+func (x *motorStubOnTransmitInviteClient) Recv() (*api.InviteEvent, error) {
 	m := new(api.InviteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -271,12 +271,12 @@ func (x *motorServiceOnTransmitInviteClient) Recv() (*api.InviteEvent, error) {
 	return m, nil
 }
 
-func (c *motorServiceClient) OnTransmitProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MotorService_ServiceDesc.Streams[5], "/sonr.node.MotorService/OnTransmitProgress", opts...)
+func (c *motorStubClient) OnTransmitProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitProgressClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MotorStub_ServiceDesc.Streams[5], "/sonr.node.MotorStub/OnTransmitProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &motorServiceOnTransmitProgressClient{stream}
+	x := &motorStubOnTransmitProgressClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -286,16 +286,16 @@ func (c *motorServiceClient) OnTransmitProgress(ctx context.Context, in *Empty, 
 	return x, nil
 }
 
-type MotorService_OnTransmitProgressClient interface {
+type MotorStub_OnTransmitProgressClient interface {
 	Recv() (*api.ProgressEvent, error)
 	grpc.ClientStream
 }
 
-type motorServiceOnTransmitProgressClient struct {
+type motorStubOnTransmitProgressClient struct {
 	grpc.ClientStream
 }
 
-func (x *motorServiceOnTransmitProgressClient) Recv() (*api.ProgressEvent, error) {
+func (x *motorStubOnTransmitProgressClient) Recv() (*api.ProgressEvent, error) {
 	m := new(api.ProgressEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -303,12 +303,12 @@ func (x *motorServiceOnTransmitProgressClient) Recv() (*api.ProgressEvent, error
 	return m, nil
 }
 
-func (c *motorServiceClient) OnTransmitComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorService_OnTransmitCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MotorService_ServiceDesc.Streams[6], "/sonr.node.MotorService/OnTransmitComplete", opts...)
+func (c *motorStubClient) OnTransmitComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (MotorStub_OnTransmitCompleteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MotorStub_ServiceDesc.Streams[6], "/sonr.node.MotorStub/OnTransmitComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &motorServiceOnTransmitCompleteClient{stream}
+	x := &motorStubOnTransmitCompleteClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -318,16 +318,16 @@ func (c *motorServiceClient) OnTransmitComplete(ctx context.Context, in *Empty, 
 	return x, nil
 }
 
-type MotorService_OnTransmitCompleteClient interface {
+type MotorStub_OnTransmitCompleteClient interface {
 	Recv() (*api.CompleteEvent, error)
 	grpc.ClientStream
 }
 
-type motorServiceOnTransmitCompleteClient struct {
+type motorStubOnTransmitCompleteClient struct {
 	grpc.ClientStream
 }
 
-func (x *motorServiceOnTransmitCompleteClient) Recv() (*api.CompleteEvent, error) {
+func (x *motorStubOnTransmitCompleteClient) Recv() (*api.CompleteEvent, error) {
 	m := new(api.CompleteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -335,10 +335,10 @@ func (x *motorServiceOnTransmitCompleteClient) Recv() (*api.CompleteEvent, error
 	return m, nil
 }
 
-// MotorServiceServer is the server API for MotorService service.
-// All implementations must embed UnimplementedMotorServiceServer
+// MotorStubServer is the server API for MotorStub service.
+// All implementations must embed UnimplementedMotorStubServer
 // for forward compatibility
-type MotorServiceServer interface {
+type MotorStubServer interface {
 	// Node Methods
 	// Signing Method Request for Data
 	Supply(context.Context, *api.SupplyRequest) (*api.SupplyResponse, error)
@@ -354,399 +354,399 @@ type MotorServiceServer interface {
 	Search(context.Context, *api.SearchRequest) (*api.SearchResponse, error)
 	// Events Streams
 	// Returns a stream of Lobby Refresh Events
-	OnLobbyRefresh(*Empty, MotorService_OnLobbyRefreshServer) error
+	OnLobbyRefresh(*Empty, MotorStub_OnLobbyRefreshServer) error
 	// Returns a stream of Mailbox Message Events
-	OnMailboxMessage(*Empty, MotorService_OnMailboxMessageServer) error
+	OnMailboxMessage(*Empty, MotorStub_OnMailboxMessageServer) error
 	// Returns a stream of DecisionEvent's for Accepted Invites
-	OnTransmitAccepted(*Empty, MotorService_OnTransmitAcceptedServer) error
+	OnTransmitAccepted(*Empty, MotorStub_OnTransmitAcceptedServer) error
 	// Returns a stream of DecisionEvent's for Rejected Invites
-	OnTransmitDeclined(*Empty, MotorService_OnTransmitDeclinedServer) error
+	OnTransmitDeclined(*Empty, MotorStub_OnTransmitDeclinedServer) error
 	// Returns a stream of DecisionEvent's for Invites
-	OnTransmitInvite(*Empty, MotorService_OnTransmitInviteServer) error
+	OnTransmitInvite(*Empty, MotorStub_OnTransmitInviteServer) error
 	// Returns a stream of ProgressEvent's for Sessions
-	OnTransmitProgress(*Empty, MotorService_OnTransmitProgressServer) error
+	OnTransmitProgress(*Empty, MotorStub_OnTransmitProgressServer) error
 	// Returns a stream of Completed Transfers
-	OnTransmitComplete(*Empty, MotorService_OnTransmitCompleteServer) error
-	mustEmbedUnimplementedMotorServiceServer()
+	OnTransmitComplete(*Empty, MotorStub_OnTransmitCompleteServer) error
+	mustEmbedUnimplementedMotorStubServer()
 }
 
-// UnimplementedMotorServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedMotorServiceServer struct {
+// UnimplementedMotorStubServer must be embedded to have forward compatible implementations.
+type UnimplementedMotorStubServer struct {
 }
 
-func (UnimplementedMotorServiceServer) Supply(context.Context, *api.SupplyRequest) (*api.SupplyResponse, error) {
+func (UnimplementedMotorStubServer) Supply(context.Context, *api.SupplyRequest) (*api.SupplyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Supply not implemented")
 }
-func (UnimplementedMotorServiceServer) Edit(context.Context, *api.EditRequest) (*api.EditResponse, error) {
+func (UnimplementedMotorStubServer) Edit(context.Context, *api.EditRequest) (*api.EditResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Edit not implemented")
 }
-func (UnimplementedMotorServiceServer) Fetch(context.Context, *api.FetchRequest) (*api.FetchResponse, error) {
+func (UnimplementedMotorStubServer) Fetch(context.Context, *api.FetchRequest) (*api.FetchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Fetch not implemented")
 }
-func (UnimplementedMotorServiceServer) Share(context.Context, *api.ShareRequest) (*api.ShareResponse, error) {
+func (UnimplementedMotorStubServer) Share(context.Context, *api.ShareRequest) (*api.ShareResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Share not implemented")
 }
-func (UnimplementedMotorServiceServer) Respond(context.Context, *api.RespondRequest) (*api.RespondResponse, error) {
+func (UnimplementedMotorStubServer) Respond(context.Context, *api.RespondRequest) (*api.RespondResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
 }
-func (UnimplementedMotorServiceServer) Search(context.Context, *api.SearchRequest) (*api.SearchResponse, error) {
+func (UnimplementedMotorStubServer) Search(context.Context, *api.SearchRequest) (*api.SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
-func (UnimplementedMotorServiceServer) OnLobbyRefresh(*Empty, MotorService_OnLobbyRefreshServer) error {
+func (UnimplementedMotorStubServer) OnLobbyRefresh(*Empty, MotorStub_OnLobbyRefreshServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnLobbyRefresh not implemented")
 }
-func (UnimplementedMotorServiceServer) OnMailboxMessage(*Empty, MotorService_OnMailboxMessageServer) error {
+func (UnimplementedMotorStubServer) OnMailboxMessage(*Empty, MotorStub_OnMailboxMessageServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnMailboxMessage not implemented")
 }
-func (UnimplementedMotorServiceServer) OnTransmitAccepted(*Empty, MotorService_OnTransmitAcceptedServer) error {
+func (UnimplementedMotorStubServer) OnTransmitAccepted(*Empty, MotorStub_OnTransmitAcceptedServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTransmitAccepted not implemented")
 }
-func (UnimplementedMotorServiceServer) OnTransmitDeclined(*Empty, MotorService_OnTransmitDeclinedServer) error {
+func (UnimplementedMotorStubServer) OnTransmitDeclined(*Empty, MotorStub_OnTransmitDeclinedServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTransmitDeclined not implemented")
 }
-func (UnimplementedMotorServiceServer) OnTransmitInvite(*Empty, MotorService_OnTransmitInviteServer) error {
+func (UnimplementedMotorStubServer) OnTransmitInvite(*Empty, MotorStub_OnTransmitInviteServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTransmitInvite not implemented")
 }
-func (UnimplementedMotorServiceServer) OnTransmitProgress(*Empty, MotorService_OnTransmitProgressServer) error {
+func (UnimplementedMotorStubServer) OnTransmitProgress(*Empty, MotorStub_OnTransmitProgressServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTransmitProgress not implemented")
 }
-func (UnimplementedMotorServiceServer) OnTransmitComplete(*Empty, MotorService_OnTransmitCompleteServer) error {
+func (UnimplementedMotorStubServer) OnTransmitComplete(*Empty, MotorStub_OnTransmitCompleteServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTransmitComplete not implemented")
 }
-func (UnimplementedMotorServiceServer) mustEmbedUnimplementedMotorServiceServer() {}
+func (UnimplementedMotorStubServer) mustEmbedUnimplementedMotorStubServer() {}
 
-// UnsafeMotorServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MotorServiceServer will
+// UnsafeMotorStubServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MotorStubServer will
 // result in compilation errors.
-type UnsafeMotorServiceServer interface {
-	mustEmbedUnimplementedMotorServiceServer()
+type UnsafeMotorStubServer interface {
+	mustEmbedUnimplementedMotorStubServer()
 }
 
-func RegisterMotorServiceServer(s grpc.ServiceRegistrar, srv MotorServiceServer) {
-	s.RegisterService(&MotorService_ServiceDesc, srv)
+func RegisterMotorStubServer(s grpc.ServiceRegistrar, srv MotorStubServer) {
+	s.RegisterService(&MotorStub_ServiceDesc, srv)
 }
 
-func _MotorService_Supply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MotorStub_Supply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.SupplyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MotorServiceServer).Supply(ctx, in)
+		return srv.(MotorStubServer).Supply(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.MotorService/Supply",
+		FullMethod: "/sonr.node.MotorStub/Supply",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorServiceServer).Supply(ctx, req.(*api.SupplyRequest))
+		return srv.(MotorStubServer).Supply(ctx, req.(*api.SupplyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MotorService_Edit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MotorStub_Edit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.EditRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MotorServiceServer).Edit(ctx, in)
+		return srv.(MotorStubServer).Edit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.MotorService/Edit",
+		FullMethod: "/sonr.node.MotorStub/Edit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorServiceServer).Edit(ctx, req.(*api.EditRequest))
+		return srv.(MotorStubServer).Edit(ctx, req.(*api.EditRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MotorService_Fetch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MotorStub_Fetch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MotorServiceServer).Fetch(ctx, in)
+		return srv.(MotorStubServer).Fetch(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.MotorService/Fetch",
+		FullMethod: "/sonr.node.MotorStub/Fetch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorServiceServer).Fetch(ctx, req.(*api.FetchRequest))
+		return srv.(MotorStubServer).Fetch(ctx, req.(*api.FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MotorService_Share_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MotorStub_Share_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.ShareRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MotorServiceServer).Share(ctx, in)
+		return srv.(MotorStubServer).Share(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.MotorService/Share",
+		FullMethod: "/sonr.node.MotorStub/Share",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorServiceServer).Share(ctx, req.(*api.ShareRequest))
+		return srv.(MotorStubServer).Share(ctx, req.(*api.ShareRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MotorService_Respond_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MotorStub_Respond_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.RespondRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MotorServiceServer).Respond(ctx, in)
+		return srv.(MotorStubServer).Respond(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.MotorService/Respond",
+		FullMethod: "/sonr.node.MotorStub/Respond",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorServiceServer).Respond(ctx, req.(*api.RespondRequest))
+		return srv.(MotorStubServer).Respond(ctx, req.(*api.RespondRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MotorService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MotorStub_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.SearchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MotorServiceServer).Search(ctx, in)
+		return srv.(MotorStubServer).Search(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.MotorService/Search",
+		FullMethod: "/sonr.node.MotorStub/Search",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorServiceServer).Search(ctx, req.(*api.SearchRequest))
+		return srv.(MotorStubServer).Search(ctx, req.(*api.SearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MotorService_OnLobbyRefresh_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _MotorStub_OnLobbyRefresh_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MotorServiceServer).OnLobbyRefresh(m, &motorServiceOnLobbyRefreshServer{stream})
+	return srv.(MotorStubServer).OnLobbyRefresh(m, &motorStubOnLobbyRefreshServer{stream})
 }
 
-type MotorService_OnLobbyRefreshServer interface {
+type MotorStub_OnLobbyRefreshServer interface {
 	Send(*api.RefreshEvent) error
 	grpc.ServerStream
 }
 
-type motorServiceOnLobbyRefreshServer struct {
+type motorStubOnLobbyRefreshServer struct {
 	grpc.ServerStream
 }
 
-func (x *motorServiceOnLobbyRefreshServer) Send(m *api.RefreshEvent) error {
+func (x *motorStubOnLobbyRefreshServer) Send(m *api.RefreshEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _MotorService_OnMailboxMessage_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _MotorStub_OnMailboxMessage_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MotorServiceServer).OnMailboxMessage(m, &motorServiceOnMailboxMessageServer{stream})
+	return srv.(MotorStubServer).OnMailboxMessage(m, &motorStubOnMailboxMessageServer{stream})
 }
 
-type MotorService_OnMailboxMessageServer interface {
+type MotorStub_OnMailboxMessageServer interface {
 	Send(*api.MailboxEvent) error
 	grpc.ServerStream
 }
 
-type motorServiceOnMailboxMessageServer struct {
+type motorStubOnMailboxMessageServer struct {
 	grpc.ServerStream
 }
 
-func (x *motorServiceOnMailboxMessageServer) Send(m *api.MailboxEvent) error {
+func (x *motorStubOnMailboxMessageServer) Send(m *api.MailboxEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _MotorService_OnTransmitAccepted_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _MotorStub_OnTransmitAccepted_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MotorServiceServer).OnTransmitAccepted(m, &motorServiceOnTransmitAcceptedServer{stream})
+	return srv.(MotorStubServer).OnTransmitAccepted(m, &motorStubOnTransmitAcceptedServer{stream})
 }
 
-type MotorService_OnTransmitAcceptedServer interface {
+type MotorStub_OnTransmitAcceptedServer interface {
 	Send(*api.DecisionEvent) error
 	grpc.ServerStream
 }
 
-type motorServiceOnTransmitAcceptedServer struct {
+type motorStubOnTransmitAcceptedServer struct {
 	grpc.ServerStream
 }
 
-func (x *motorServiceOnTransmitAcceptedServer) Send(m *api.DecisionEvent) error {
+func (x *motorStubOnTransmitAcceptedServer) Send(m *api.DecisionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _MotorService_OnTransmitDeclined_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _MotorStub_OnTransmitDeclined_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MotorServiceServer).OnTransmitDeclined(m, &motorServiceOnTransmitDeclinedServer{stream})
+	return srv.(MotorStubServer).OnTransmitDeclined(m, &motorStubOnTransmitDeclinedServer{stream})
 }
 
-type MotorService_OnTransmitDeclinedServer interface {
+type MotorStub_OnTransmitDeclinedServer interface {
 	Send(*api.DecisionEvent) error
 	grpc.ServerStream
 }
 
-type motorServiceOnTransmitDeclinedServer struct {
+type motorStubOnTransmitDeclinedServer struct {
 	grpc.ServerStream
 }
 
-func (x *motorServiceOnTransmitDeclinedServer) Send(m *api.DecisionEvent) error {
+func (x *motorStubOnTransmitDeclinedServer) Send(m *api.DecisionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _MotorService_OnTransmitInvite_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _MotorStub_OnTransmitInvite_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MotorServiceServer).OnTransmitInvite(m, &motorServiceOnTransmitInviteServer{stream})
+	return srv.(MotorStubServer).OnTransmitInvite(m, &motorStubOnTransmitInviteServer{stream})
 }
 
-type MotorService_OnTransmitInviteServer interface {
+type MotorStub_OnTransmitInviteServer interface {
 	Send(*api.InviteEvent) error
 	grpc.ServerStream
 }
 
-type motorServiceOnTransmitInviteServer struct {
+type motorStubOnTransmitInviteServer struct {
 	grpc.ServerStream
 }
 
-func (x *motorServiceOnTransmitInviteServer) Send(m *api.InviteEvent) error {
+func (x *motorStubOnTransmitInviteServer) Send(m *api.InviteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _MotorService_OnTransmitProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _MotorStub_OnTransmitProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MotorServiceServer).OnTransmitProgress(m, &motorServiceOnTransmitProgressServer{stream})
+	return srv.(MotorStubServer).OnTransmitProgress(m, &motorStubOnTransmitProgressServer{stream})
 }
 
-type MotorService_OnTransmitProgressServer interface {
+type MotorStub_OnTransmitProgressServer interface {
 	Send(*api.ProgressEvent) error
 	grpc.ServerStream
 }
 
-type motorServiceOnTransmitProgressServer struct {
+type motorStubOnTransmitProgressServer struct {
 	grpc.ServerStream
 }
 
-func (x *motorServiceOnTransmitProgressServer) Send(m *api.ProgressEvent) error {
+func (x *motorStubOnTransmitProgressServer) Send(m *api.ProgressEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _MotorService_OnTransmitComplete_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _MotorStub_OnTransmitComplete_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MotorServiceServer).OnTransmitComplete(m, &motorServiceOnTransmitCompleteServer{stream})
+	return srv.(MotorStubServer).OnTransmitComplete(m, &motorStubOnTransmitCompleteServer{stream})
 }
 
-type MotorService_OnTransmitCompleteServer interface {
+type MotorStub_OnTransmitCompleteServer interface {
 	Send(*api.CompleteEvent) error
 	grpc.ServerStream
 }
 
-type motorServiceOnTransmitCompleteServer struct {
+type motorStubOnTransmitCompleteServer struct {
 	grpc.ServerStream
 }
 
-func (x *motorServiceOnTransmitCompleteServer) Send(m *api.CompleteEvent) error {
+func (x *motorStubOnTransmitCompleteServer) Send(m *api.CompleteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-// MotorService_ServiceDesc is the grpc.ServiceDesc for MotorService service.
+// MotorStub_ServiceDesc is the grpc.ServiceDesc for MotorStub service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MotorService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonr.node.MotorService",
-	HandlerType: (*MotorServiceServer)(nil),
+var MotorStub_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sonr.node.MotorStub",
+	HandlerType: (*MotorStubServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Supply",
-			Handler:    _MotorService_Supply_Handler,
+			Handler:    _MotorStub_Supply_Handler,
 		},
 		{
 			MethodName: "Edit",
-			Handler:    _MotorService_Edit_Handler,
+			Handler:    _MotorStub_Edit_Handler,
 		},
 		{
 			MethodName: "Fetch",
-			Handler:    _MotorService_Fetch_Handler,
+			Handler:    _MotorStub_Fetch_Handler,
 		},
 		{
 			MethodName: "Share",
-			Handler:    _MotorService_Share_Handler,
+			Handler:    _MotorStub_Share_Handler,
 		},
 		{
 			MethodName: "Respond",
-			Handler:    _MotorService_Respond_Handler,
+			Handler:    _MotorStub_Respond_Handler,
 		},
 		{
 			MethodName: "Search",
-			Handler:    _MotorService_Search_Handler,
+			Handler:    _MotorStub_Search_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "OnLobbyRefresh",
-			Handler:       _MotorService_OnLobbyRefresh_Handler,
+			Handler:       _MotorStub_OnLobbyRefresh_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "OnMailboxMessage",
-			Handler:       _MotorService_OnMailboxMessage_Handler,
+			Handler:       _MotorStub_OnMailboxMessage_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "OnTransmitAccepted",
-			Handler:       _MotorService_OnTransmitAccepted_Handler,
+			Handler:       _MotorStub_OnTransmitAccepted_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "OnTransmitDeclined",
-			Handler:       _MotorService_OnTransmitDeclined_Handler,
+			Handler:       _MotorStub_OnTransmitDeclined_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "OnTransmitInvite",
-			Handler:       _MotorService_OnTransmitInvite_Handler,
+			Handler:       _MotorStub_OnTransmitInvite_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "OnTransmitProgress",
-			Handler:       _MotorService_OnTransmitProgress_Handler,
+			Handler:       _MotorStub_OnTransmitProgress_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "OnTransmitComplete",
-			Handler:       _MotorService_OnTransmitComplete_Handler,
+			Handler:       _MotorStub_OnTransmitComplete_Handler,
 			ServerStreams: true,
 		},
 	},

@@ -64,7 +64,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 	if opts.mode.HasMotor() {
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
-		stub, err := node.startMotorService(ctx, opts)
+		stub, err := node.startMotorStub(ctx, opts)
 		if err != nil {
 			logger.Errorf("%s - Failed to start Client Service", err)
 			return err
@@ -76,7 +76,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 	} else {
 		logger.Debug("Starting Highway stub...")
 		// Highway Node Type
-		stub, err := node.startHighwayService(ctx, opts)
+		stub, err := node.startHighwayStub(ctx, opts)
 		if err != nil {
 			logger.Errorf("%s - Failed to start Highway Service", err)
 			return err

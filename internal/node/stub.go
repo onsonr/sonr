@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/discover"
+	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/transmit"
 
 	"google.golang.org/grpc"
@@ -77,10 +77,10 @@ func (m StubMode) Prefix() string {
 	return fmt.Sprintf("[SONR.%s] ", name)
 }
 
-// MotorNodeStub is the RPC Service for the Default Node.
-type MotorNodeStub struct {
+// NodeMotorStub is the RPC Service for the Default Node.
+type NodeMotorStub struct {
 	// Interfaces
-	MotorServiceServer
+	MotorStubServer
 
 	// Properties
 	ctx        context.Context
@@ -93,8 +93,8 @@ type MotorNodeStub struct {
 	*exchange.ExchangeProtocol
 }
 
-// startMotorService creates a new Client service stub for the node.
-func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNodeStub, error) {
+// startMotorStub creates a new Client service stub for the node.
+func (n *Node) startMotorStub(ctx context.Context, opts *options) (*NodeMotorStub, error) {
 
 	// Set Discovery Protocol
 	discProtocol, err := discover.New(ctx, n.host, n, discover.WithLocation(opts.location))
@@ -112,27 +112,27 @@ func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNode
 
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
-	stub := &MotorNodeStub{
-		ctx:               ctx,
-		TransmitProtocol:  transmitProtocol,
+	stub := &NodeMotorStub{
+		ctx:              ctx,
+		TransmitProtocol: transmitProtocol,
 		DiscoverProtocol: discProtocol,
-		node:              n,
-		grpcServer:        grpcServer,
+		node:             n,
+		grpcServer:       grpcServer,
 	}
 
 	// Start Routines
-	RegisterMotorServiceServer(grpcServer, stub)
+	RegisterMotorStubServer(grpcServer, stub)
 	go stub.Serve(ctx, n.listener)
 	return stub, nil
 }
 
 // HasProtocols returns true if the node has the protocols.
-func (s *MotorNodeStub) HasProtocols() bool {
+func (s *NodeMotorStub) HasProtocols() bool {
 	return s.TransmitProtocol != nil && s.DiscoverProtocol != nil
 }
 
 // Serve serves the RPC Service on the given port.
-func (s *MotorNodeStub) Serve(ctx context.Context, listener net.Listener) {
+func (s *NodeMotorStub) Serve(ctx context.Context, listener net.Listener) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
@@ -149,7 +149,7 @@ func (s *MotorNodeStub) Serve(ctx context.Context, listener net.Listener) {
 }
 
 // Update method updates the node's properties in the Key/Value Store and Lobby
-func (s *MotorNodeStub) Update() error {
+func (s *NodeMotorStub) Update() error {
 	// Call Internal Edit
 	peer, err := s.node.Peer()
 	if err != nil {
@@ -180,10 +180,10 @@ func (s *MotorNodeStub) Update() error {
 	}
 }
 
-// HighwayNodeStub is the RPC Service for the Custodian Node.
-type HighwayNodeStub struct {
-	HighwayServiceServer
-	MotorServiceServer
+// NodeHighwayStub is the RPC Service for the Custodian Node.
+type NodeHighwayStub struct {
+	HighwayStubServer
+	MotorStubServer
 	*Node
 
 	// Properties
@@ -191,23 +191,23 @@ type HighwayNodeStub struct {
 	grpcServer *grpc.Server
 }
 
-// startHighwayService creates a new Highway service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context, opts *options) (*HighwayNodeStub, error) {
+// startHighwayStub creates a new Highway service stub for the node.
+func (n *Node) startHighwayStub(ctx context.Context, opts *options) (*NodeHighwayStub, error) {
 	// Create the RPC Service
 	grpcServer := grpc.NewServer()
-	stub := &HighwayNodeStub{
+	stub := &NodeHighwayStub{
 		Node:       n,
 		ctx:        ctx,
 		grpcServer: grpcServer,
 	}
 	// Register the RPC Service
-	RegisterHighwayServiceServer(grpcServer, stub)
+	RegisterHighwayStubServer(grpcServer, stub)
 	go stub.Serve(ctx, n.listener)
 	return stub, nil
 }
 
 // Serve serves the RPC Service on the given port.
-func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener) {
+func (s *NodeHighwayStub) Serve(ctx context.Context, listener net.Listener) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)

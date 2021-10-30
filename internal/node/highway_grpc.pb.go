@@ -15,10 +15,10 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// HighwayServiceClient is the client API for HighwayService service.
+// HighwayStubClient is the client API for HighwayStub service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type HighwayServiceClient interface {
+type HighwayStubClient interface {
 	// Authorize Signing Method Request for Data
 	Authenticate(ctx context.Context, in *api.AuthenticateRequest, opts ...grpc.CallOption) (*api.AuthenticateResponse, error)
 	// Link Links an Additional Device to User
@@ -27,152 +27,152 @@ type HighwayServiceClient interface {
 	Register(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
 }
 
-type highwayServiceClient struct {
+type highwayStubClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewHighwayServiceClient(cc grpc.ClientConnInterface) HighwayServiceClient {
-	return &highwayServiceClient{cc}
+func NewHighwayStubClient(cc grpc.ClientConnInterface) HighwayStubClient {
+	return &highwayStubClient{cc}
 }
 
-func (c *highwayServiceClient) Authenticate(ctx context.Context, in *api.AuthenticateRequest, opts ...grpc.CallOption) (*api.AuthenticateResponse, error) {
+func (c *highwayStubClient) Authenticate(ctx context.Context, in *api.AuthenticateRequest, opts ...grpc.CallOption) (*api.AuthenticateResponse, error) {
 	out := new(api.AuthenticateResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Authenticate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/Authenticate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *highwayServiceClient) Link(ctx context.Context, in *api.LinkRequest, opts ...grpc.CallOption) (*api.LinkResponse, error) {
+func (c *highwayStubClient) Link(ctx context.Context, in *api.LinkRequest, opts ...grpc.CallOption) (*api.LinkResponse, error) {
 	out := new(api.LinkResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Link", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/Link", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *highwayServiceClient) Register(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
+func (c *highwayStubClient) Register(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
 	out := new(api.RegisterResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Register", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// HighwayServiceServer is the server API for HighwayService service.
-// All implementations must embed UnimplementedHighwayServiceServer
+// HighwayStubServer is the server API for HighwayStub service.
+// All implementations must embed UnimplementedHighwayStubServer
 // for forward compatibility
-type HighwayServiceServer interface {
+type HighwayStubServer interface {
 	// Authorize Signing Method Request for Data
 	Authenticate(context.Context, *api.AuthenticateRequest) (*api.AuthenticateResponse, error)
 	// Link Links an Additional Device to User
 	Link(context.Context, *api.LinkRequest) (*api.LinkResponse, error)
 	// Register creates new user in DNS Table
 	Register(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
-	mustEmbedUnimplementedHighwayServiceServer()
+	mustEmbedUnimplementedHighwayStubServer()
 }
 
-// UnimplementedHighwayServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedHighwayServiceServer struct {
+// UnimplementedHighwayStubServer must be embedded to have forward compatible implementations.
+type UnimplementedHighwayStubServer struct {
 }
 
-func (UnimplementedHighwayServiceServer) Authenticate(context.Context, *api.AuthenticateRequest) (*api.AuthenticateResponse, error) {
+func (UnimplementedHighwayStubServer) Authenticate(context.Context, *api.AuthenticateRequest) (*api.AuthenticateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
 }
-func (UnimplementedHighwayServiceServer) Link(context.Context, *api.LinkRequest) (*api.LinkResponse, error) {
+func (UnimplementedHighwayStubServer) Link(context.Context, *api.LinkRequest) (*api.LinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Link not implemented")
 }
-func (UnimplementedHighwayServiceServer) Register(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
+func (UnimplementedHighwayStubServer) Register(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedHighwayServiceServer) mustEmbedUnimplementedHighwayServiceServer() {}
+func (UnimplementedHighwayStubServer) mustEmbedUnimplementedHighwayStubServer() {}
 
-// UnsafeHighwayServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to HighwayServiceServer will
+// UnsafeHighwayStubServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to HighwayStubServer will
 // result in compilation errors.
-type UnsafeHighwayServiceServer interface {
-	mustEmbedUnimplementedHighwayServiceServer()
+type UnsafeHighwayStubServer interface {
+	mustEmbedUnimplementedHighwayStubServer()
 }
 
-func RegisterHighwayServiceServer(s grpc.ServiceRegistrar, srv HighwayServiceServer) {
-	s.RegisterService(&HighwayService_ServiceDesc, srv)
+func RegisterHighwayStubServer(s grpc.ServiceRegistrar, srv HighwayStubServer) {
+	s.RegisterService(&HighwayStub_ServiceDesc, srv)
 }
 
-func _HighwayService_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _HighwayStub_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.AuthenticateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HighwayServiceServer).Authenticate(ctx, in)
+		return srv.(HighwayStubServer).Authenticate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.HighwayService/Authenticate",
+		FullMethod: "/sonr.node.HighwayStub/Authenticate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).Authenticate(ctx, req.(*api.AuthenticateRequest))
+		return srv.(HighwayStubServer).Authenticate(ctx, req.(*api.AuthenticateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HighwayService_Link_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _HighwayStub_Link_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.LinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HighwayServiceServer).Link(ctx, in)
+		return srv.(HighwayStubServer).Link(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.HighwayService/Link",
+		FullMethod: "/sonr.node.HighwayStub/Link",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).Link(ctx, req.(*api.LinkRequest))
+		return srv.(HighwayStubServer).Link(ctx, req.(*api.LinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HighwayService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _HighwayStub_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(api.RegisterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HighwayServiceServer).Register(ctx, in)
+		return srv.(HighwayStubServer).Register(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.HighwayService/Register",
+		FullMethod: "/sonr.node.HighwayStub/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).Register(ctx, req.(*api.RegisterRequest))
+		return srv.(HighwayStubServer).Register(ctx, req.(*api.RegisterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// HighwayService_ServiceDesc is the grpc.ServiceDesc for HighwayService service.
+// HighwayStub_ServiceDesc is the grpc.ServiceDesc for HighwayStub service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var HighwayService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonr.node.HighwayService",
-	HandlerType: (*HighwayServiceServer)(nil),
+var HighwayStub_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "sonr.node.HighwayStub",
+	HandlerType: (*HighwayStubServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Authenticate",
-			Handler:    _HighwayService_Authenticate_Handler,
+			Handler:    _HighwayStub_Authenticate_Handler,
 		},
 		{
 			MethodName: "Link",
-			Handler:    _HighwayService_Link_Handler,
+			Handler:    _HighwayStub_Link_Handler,
 		},
 		{
 			MethodName: "Register",
-			Handler:    _HighwayService_Register_Handler,
+			Handler:    _HighwayStub_Register_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

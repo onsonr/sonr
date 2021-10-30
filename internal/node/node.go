@@ -18,8 +18,8 @@ import (
 type Node struct {
 	// Standard Node Implementation
 	api.NodeImpl
-	clientStub  *MotorNodeStub
-	highwayStub *HighwayNodeStub
+	clientStub  *NodeMotorStub
+	highwayStub *NodeHighwayStub
 	mode        StubMode
 
 	// Host and context

@@ -8,7 +8,7 @@ import (
 )
 
 // Supply supplies the node with the given amount of resources.
-func (s *MotorNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
+func (s *NodeMotorStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
 	// Call Lobby Update
 	if err := s.Update(); err != nil {
 		logger.Warnf("%s - Failed to Update Lobby", err)
@@ -30,7 +30,7 @@ func (s *MotorNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*ap
 }
 
 // Edit method edits the node's properties in the Key/Value Store
-func (s *MotorNodeStub) Edit(ctx context.Context, req *api.EditRequest) (*api.EditResponse, error) {
+func (s *NodeMotorStub) Edit(ctx context.Context, req *api.EditRequest) (*api.EditResponse, error) {
 	// Call Internal Update
 	if err := s.Update(); err != nil {
 		return &api.EditResponse{
@@ -46,7 +46,7 @@ func (s *MotorNodeStub) Edit(ctx context.Context, req *api.EditRequest) (*api.Ed
 }
 
 // Fetch method retreives Node properties from Key/Value Store
-func (s *MotorNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.FetchResponse, error) {
+func (s *NodeMotorStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.FetchResponse, error) {
 	// Call Lobby Update
 	if err := s.Update(); err != nil {
 		logger.Warnf("%s - Failed to Update Lobby", err)
@@ -78,7 +78,7 @@ func (s *MotorNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.
 }
 
 // Share method sends supplied files/urls with a peer
-func (s *MotorNodeStub) Share(ctx context.Context, req *api.ShareRequest) (*api.ShareResponse, error) {
+func (s *NodeMotorStub) Share(ctx context.Context, req *api.ShareRequest) (*api.ShareResponse, error) {
 	// Call Lobby Update
 	if err := s.Update(); err != nil {
 		logger.Warnf("%s - Failed to Update Lobby", err)
@@ -107,7 +107,7 @@ func (s *MotorNodeStub) Share(ctx context.Context, req *api.ShareRequest) (*api.
 }
 
 // Search Method to find a Peer by SName
-func (s *MotorNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*api.SearchResponse, error) {
+func (s *NodeMotorStub) Search(ctx context.Context, req *api.SearchRequest) (*api.SearchResponse, error) {
 	// Call Lobby Update
 	if err := s.Update(); err != nil {
 		logger.Warnf("%s - Failed to Update Lobby", err)
@@ -139,7 +139,7 @@ func (s *MotorNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*ap
 }
 
 // Respond method responds to a received InviteRequest.
-func (s *MotorNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (*api.RespondResponse, error) {
+func (s *NodeMotorStub) Respond(ctx context.Context, req *api.RespondRequest) (*api.RespondResponse, error) {
 	// Call Lobby Update
 	if err := s.Update(); err != nil {
 		logger.Warnf("%s - Failed to Update Lobby", err)
@@ -170,19 +170,19 @@ func (s *MotorNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (*
 }
 
 // Authorize Signing Method Request for Data
-func (s *HighwayNodeStub) Authorize(ctx context.Context, req *api.AuthenticateRequest) (*api.AuthenticateResponse, error) {
-	logger.Debug("HighwayService.Authorize() is Unimplemented")
+func (s *NodeHighwayStub) Authorize(ctx context.Context, req *api.AuthenticateRequest) (*api.AuthenticateResponse, error) {
+	logger.Debug("HighwayStub.Authorize() is Unimplemented")
 	return nil, nil
 }
 
 // Link a new Device to the Node
-func (s *HighwayNodeStub) Link(ctx context.Context, req *api.LinkRequest) (*api.LinkResponse, error) {
-	logger.Debug("HighwayService.Link() is Unimplemented")
+func (s *NodeHighwayStub) Link(ctx context.Context, req *api.LinkRequest) (*api.LinkResponse, error) {
+	logger.Debug("HighwayStub.Link() is Unimplemented")
 	return nil, nil
 }
 
 // Register a new domain with the Node on the highway
-func (s *HighwayNodeStub) Register(ctx context.Context, req *api.RegisterRequest) (*api.RegisterResponse, error) {
+func (s *NodeHighwayStub) Register(ctx context.Context, req *api.RegisterRequest) (*api.RegisterResponse, error) {
 	// Get Values
 	pfix := req.GetPrefix()
 	name := req.GetSName()
