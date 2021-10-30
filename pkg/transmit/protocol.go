@@ -236,7 +236,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 
 		// Create Reader
 		logger.Debugf("Start: Reading Item - %v", i)
-		s.StartItemRead(i, p.node, stream, compChan)
+		s.ReadItem(i, p.node, stream, compChan)
 		logger.Debugf("Done: Reading Item - %v", i)
 		p.node.GetState().NeedsWait()
 	}
@@ -268,7 +268,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(s *Session, remotePeer peer.ID) {
 
 		// Create New Writer
 		logger.Debugf("Start: Writing Item - %v", i)
-		s.StartItemWrite(i, p.node, stream, compChan)
+		s.WriteItem(i, p.node, stream, compChan)
 		logger.Debugf("Done: Writing Item - %v", i)
 		p.node.GetState().NeedsWait()
 	}

@@ -3,6 +3,7 @@ package transmit
 import (
 	"bytes"
 	"io"
+	"os"
 
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
@@ -19,13 +20,14 @@ type itemReader struct {
 	count        int
 	size         int64
 	node         api.NodeImpl
+	path         string
 	written      int
 	progressChan chan int
 	doneChan     chan bool
 }
 
-// startRead reads from the given Reader and writes to the given Buffer.
-func startRead(ir *itemReader, reader msgio.ReadCloser) {
+// handleRead reads from the given Reader and writes to the given Buffer.
+func handleRead(ir *itemReader, reader msgio.ReadCloser) {
 	// Route Data from Stream
 	for i := 0; i < int(ir.size); {
 		// Read Next Message
@@ -41,23 +43,24 @@ func startRead(ir *itemReader, reader msgio.ReadCloser) {
 			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
 			ir.doneChan <- false
 			return
-		} else {
-			// Write Chunk to File
-			if err := ir.WriteChunk(buf); err != nil {
-				logger.Errorf("%s - Failed to Write Chunk to Buffer Read Stream", err)
-				ir.doneChan <- false
-				return
-			}
-			i += len(buf)
 		}
+
+		// Write Chunk to Buffer
+		if err := ir.WriteChunk(buf); err != nil {
+			logger.Errorf("%s - Failed to Write Chunk to Buffer Read Stream", err)
+			ir.doneChan <- false
+			return
+		}
+		i += len(buf)
 	}
 
 	// Flush Buffer to File
-	bytes := ir.buffer.Bytes()
-	err := ir.item.WriteFile(bytes)
+	data := ir.buffer.Bytes()
+	err := os.WriteFile(ir.path, data, 0644)
 	if err != nil {
 		logger.Errorf("%s - Failed to Flush Buffer to File on Read Stream", err)
 		ir.doneChan <- false
+		return
 	}
 
 	// Complete Writing to File
@@ -114,8 +117,8 @@ type itemWriter struct {
 	doneChan     chan bool
 }
 
-// startWrite writes the chunks of the given file to the stream
-func startWrite(iw *itemWriter, writer msgio.WriteCloser) {
+// handleWrite writes the chunks of the given file to the stream
+func handleWrite(iw *itemWriter, writer msgio.WriteCloser) {
 	// Loop through File
 	for {
 		c, err := iw.chunker.Next()

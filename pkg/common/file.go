@@ -65,19 +65,19 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 }
 
 // ResetPath sets the path of the FileItem
-func (f *FileItem) ResetPath(folder fs.Folder) error {
+func (f *FileItem) ResetPath(folder fs.Folder) (string, error) {
 	// Set Path
 	oldPath := f.GetPath()
 
 	// generate path
 	path, err := folder.GenPath(oldPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// Define Check Path Function
 	f.Path = path
-	return nil
+	return f.Path, nil
 }
 
 // ToTransferItem Returns Transfer for FileItem

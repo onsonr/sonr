@@ -49,14 +49,14 @@ func (s *Session) IndexAt(i int) *common.FileItem {
 	return s.payload.GetItems()[i].GetFile()
 }
 
-// StartItemRead Returns a new Reader for the given FileItem
-func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
+// ReadItem Returns a new Reader for the given FileItem
+func (s *Session) ReadItem(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
 	// Initialize Properties
 	reader := msgio.NewReader(str)
 	fi := s.IndexAt(i)
 
 	// Reset Item Path by OS FileSystem
-	err := fi.ResetPath(fs.Downloads)
+	path, err := fi.ResetPath(fs.Downloads)
 	if err != nil {
 		logger.Errorf("Failed to Apply Reader: %s", err)
 		return
@@ -74,11 +74,12 @@ func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan
 		doneChan:     make(chan bool),
 		interval:     calculateInterval(fi.GetSize()),
 		buffer:       bytes.Buffer{},
+		path:         path,
 	}
 
 	// Start Channels and Reader
 	defer ir.Close()
-	go startRead(ir, reader)
+	go handleRead(ir, reader)
 
 	// Route Data from Stream
 	for {
@@ -96,8 +97,8 @@ func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan
 	}
 }
 
-// StartItemWrite handles the writing of a FileItem to a Stream
-func (s *Session) StartItemWrite(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
+// WriteItem handles the writing of a FileItem to a Stream
+func (s *Session) WriteItem(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
 	// Initialize Properties
 	writer := msgio.NewWriter(str)
 	fi := s.IndexAt(i)
@@ -125,7 +126,7 @@ func (s *Session) StartItemWrite(i int, n api.NodeImpl, str network.Stream, ccha
 
 	// Start Channels and Writer
 	defer iw.Close()
-	go startWrite(iw, writer)
+	go handleWrite(iw, writer)
 
 	// Await Progress and Result
 	for {
