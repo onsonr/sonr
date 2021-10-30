@@ -9,6 +9,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
@@ -207,14 +208,8 @@ func (p *TransmitProtocol) onInviteResponse(s network.Stream) {
 
 	// Check for Decision and Start Outgoing Transfer
 	if resp.GetDecision() {
-		// Create a new stream
-		stream, err := p.host.NewStream(p.ctx, remotePeer, IncomingPID)
-		if err != nil {
-			logger.Errorf("%s - Failed to create new stream.", err)
-		}
-
 		// Call Outgoing Transfer
-		p.onOutgoingTransfer(entry, stream)
+		p.onOutgoingTransfer(entry, remotePeer)
 	}
 	p.node.OnDecision(resp.ToEvent())
 }
@@ -233,7 +228,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	var wg sync.WaitGroup
 
 	// Create Reader
-	for i := range s.Items() {
+	for i := 0; i < s.Count(); {
 		// Initialize Sync Management
 		compChan := make(chan itemResult)
 		wg.Add(1)
@@ -253,13 +248,19 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
-func (p *TransmitProtocol) onOutgoingTransfer(s *Session, stream network.Stream) {
+func (p *TransmitProtocol) onOutgoingTransfer(s *Session, remotePeer peer.ID) {
+	// Create a new stream
+	stream, err := p.host.NewStream(p.ctx, remotePeer, IncomingPID)
+	if err != nil {
+		logger.Errorf("%s - Failed to create new stream.", err)
+	}
+
 	logger.Debug("Beginning OUTGOING Transmit Stream")
 	// Initialize Params
 	var wg sync.WaitGroup
 
 	// Create New Writer
-	for i := range s.Items() {
+	for i := 0; i < s.Count(); {
 		// Initialize Sync Management
 		compChan := make(chan itemResult)
 		wg.Add(1)

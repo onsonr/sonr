@@ -26,14 +26,9 @@ type Session struct {
 	results     map[int32]bool
 }
 
-// MapItems performs PayloadItemFunc on each item in the Payload.
-func (s *Session) Items() []*common.Payload_Item {
-	return s.payload.GetItems()
-}
-
 // Count returns the number of items in the payload.
 func (s *Session) Count() int {
-	return len(s.Items())
+	return len(s.payload.GetItems())
 }
 
 // Event returns the CompleteEvent for the given session.
@@ -49,23 +44,18 @@ func (s *Session) Event() *api.CompleteEvent {
 	}
 }
 
-// IsIncoming returns true if the session is incoming.
-func (s *Session) IsIncoming() bool {
-	return s.direction == common.Direction_INCOMING
-}
-
-// IsOutgoing returns true if the session is outgoing.
-func (s *Session) IsOutgoing() bool {
-	return s.direction == common.Direction_OUTGOING
+// IndexAt returns the FileItem at the given index
+func (s *Session) IndexAt(i int) *common.FileItem {
+	return s.payload.GetItems()[i].GetFile()
 }
 
 // StartItemRead Returns a new Reader for the given FileItem
 func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
-	logger.Debug("Handling Item Read...")
+	// Initialize Properties
 	reader := msgio.NewReader(str)
+	fi := s.IndexAt(i)
 
-	// Get File Item
-	fi := s.Items()[i].GetFile()
+	// Reset Item Path by OS FileSystem
 	err := fi.ResetPath(fs.Downloads)
 	if err != nil {
 		logger.Errorf("Failed to Apply Reader: %s", err)
@@ -77,19 +67,18 @@ func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan
 		item:         fi,
 		index:        i,
 		count:        s.Count(),
-		size:         s.Items()[i].GetSize(),
+		size:         fi.GetSize(),
 		node:         n,
 		written:      0,
 		progressChan: make(chan int),
 		doneChan:     make(chan bool),
-		interval:     calculateInterval(s.Items()[i].GetSize()),
+		interval:     calculateInterval(fi.GetSize()),
+		buffer:       bytes.Buffer{},
 	}
 
-	// Initialize Properties
-	buffer := bytes.Buffer{}
-	defer close(ir.progressChan)
-	defer close(ir.doneChan)
-	go ir.startRead(buffer, reader)
+	// Start Channels and Reader
+	defer ir.Close()
+	go startRead(ir, reader)
 
 	// Route Data from Stream
 	for {
@@ -100,20 +89,8 @@ func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan
 				ir.node.OnProgress(ev)
 			}
 		case r := <-ir.doneChan:
-			// Check for Success
-			if r {
-				logger.Debug("Item Read has Completed, successfully")
-				// Write Buffer to File
-				if err := ir.item.WriteFile(buffer.Bytes()); err != nil {
-					logger.Errorf("%s - Failed to Sync File on Read Stream", err)
-					cchan <- ir.toResult(false)
-				} else {
-					cchan <- ir.toResult(true)
-				}
-			} else {
-				logger.Error("Item Read has Completed, unsuccessfully")
-				cchan <- ir.toResult(false)
-			}
+			logger.Debug("Item Read is Complete")
+			cchan <- ir.toResult(r)
 			return
 		}
 	}
@@ -121,34 +98,34 @@ func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan
 
 // StartItemWrite handles the writing of a FileItem to a Stream
 func (s *Session) StartItemWrite(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
-	logger.Debugf("Start: Writing Item - %v", i)
-	// Create New Writer
+	// Initialize Properties
 	writer := msgio.NewWriter(str)
-	iw := &itemWriter{
-		item:         s.Items()[i].GetFile(),
-		index:        i,
-		count:        s.Count(),
-		node:         n,
-		size:         s.Items()[i].GetFile().GetSize(),
-		written:      0,
-		progressChan: make(chan int),
-		doneChan:     make(chan bool),
-		interval:     calculateInterval(s.Items()[i].GetFile().GetSize()),
-	}
-	defer close(iw.progressChan)
-	defer close(iw.doneChan)
+	fi := s.IndexAt(i)
 
-	// Define Chunker Opts
-	chunker, err := fs.NewFileChunker(s.Items()[i].GetFile().GetPath())
+	// Create New File Chunker
+	chunker, err := fs.NewFileChunker(fi.GetPath())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
-		iw.doneChan <- false
-		cchan <- iw.toResult(false)
 		return
 	}
 
-	// Write Chunks to Stream
-	go iw.startWrite(chunker, writer)
+	// Create New Writer
+	iw := &itemWriter{
+		item:         fi,
+		index:        i,
+		count:        s.Count(),
+		node:         n,
+		size:         fi.GetSize(),
+		written:      0,
+		progressChan: make(chan int),
+		doneChan:     make(chan bool),
+		interval:     calculateInterval(fi.GetSize()),
+		chunker:      chunker,
+	}
+
+	// Start Channels and Writer
+	defer iw.Close()
+	go startWrite(iw, writer)
 
 	// Await Progress and Result
 	for {
