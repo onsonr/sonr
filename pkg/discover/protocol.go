@@ -1,4 +1,4 @@
-package discovery
+package discover
 
 import (
 	"context"
@@ -20,8 +20,8 @@ var (
 	ErrTopicNotCreated = errors.New("Lobby Topic has not been Created")
 )
 
-// DiscoveryProtocol handles Global and Local Sonr Peer Exchange Protocol
-type DiscoveryProtocol struct {
+// DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
+type DiscoverProtocol struct {
 	node   api.NodeImpl
 	ctx    context.Context
 	global beam.Beam
@@ -30,7 +30,7 @@ type DiscoveryProtocol struct {
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*DiscoveryProtocol, error) {
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*DiscoverProtocol, error) {
 	// Set options
 	opts := defaultOptions()
 	for _, opt := range options {
@@ -44,7 +44,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 	}
 
 	// Create Exchange Protocol
-	exchProtocol := &DiscoveryProtocol{
+	exchProtocol := &DiscoverProtocol{
 		ctx:    ctx,
 		global: b,
 		host:   host,
@@ -76,7 +76,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *DiscoveryProtocol) Get(sname string) (*common.Peer, error) {
+func (p *DiscoverProtocol) Get(sname string) (*common.Peer, error) {
 	peer := &common.Peer{}
 	// Get Peer from KadDHT store
 	if buf, err := p.global.Get(sname); err == nil {
@@ -94,7 +94,7 @@ func (p *DiscoveryProtocol) Get(sname string) (*common.Peer, error) {
 }
 
 // Put method updates peer instance in the store
-func (p *DiscoveryProtocol) Put(peer *common.Peer) error {
+func (p *DiscoverProtocol) Put(peer *common.Peer) error {
 	logger.Debug("Updating Peer in BeamStore")
 	// Marshal Peer
 	buf, err := peer.Buffer()
@@ -113,7 +113,7 @@ func (p *DiscoveryProtocol) Put(peer *common.Peer) error {
 }
 
 // Resolve method resolves SName from DNS Table
-func (p *DiscoveryProtocol) Resolve(sname string) (*common.Peer, error) {
+func (p *DiscoverProtocol) Resolve(sname string) (*common.Peer, error) {
 	logger.Debug("Attempting to resolve from DNS Table")
 	// Get Peer from DNS Resolver
 	recs, err := api.LookupTXT(p.ctx, sname)
@@ -133,7 +133,7 @@ func (p *DiscoveryProtocol) Resolve(sname string) (*common.Peer, error) {
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *DiscoveryProtocol) Verify(sname string) (bool, api.Record, error) {
+func (p *DiscoverProtocol) Verify(sname string) (bool, api.Record, error) {
 	// Check if NamebaseClient is Nil
 	empty := api.Record{}
 	// Verify Peer is registered
@@ -166,7 +166,7 @@ func (p *DiscoveryProtocol) Verify(sname string) (bool, api.Record, error) {
 }
 
 // RegisterDomain registers a domain with Namebase.
-func (p *DiscoveryProtocol) Register(sName string, records ...api.Record) (api.DomainMap, error) {
+func (p *DiscoverProtocol) Register(sName string, records ...api.Record) (api.DomainMap, error) {
 	// Put records into Namebase
 	ok, err := api.PutRecords(p.ctx, records...)
 	if err != nil {
@@ -195,7 +195,7 @@ func (p *DiscoveryProtocol) Register(sName string, records ...api.Record) (api.D
 }
 
 // Update method publishes peer data to the topic
-func (p *DiscoveryProtocol) Update() error {
+func (p *DiscoverProtocol) Update() error {
 	// Verify Peer is not nil
 	peer, err := p.node.Peer()
 	if err != nil {
@@ -208,7 +208,7 @@ func (p *DiscoveryProtocol) Update() error {
 }
 
 // Close method closes the ExchangeProtocol
-func (p *DiscoveryProtocol) Close() error {
+func (p *DiscoverProtocol) Close() error {
 	p.lobby.eventHandler.Cancel()
 	p.lobby.subscription.Cancel()
 	err := p.lobby.topic.Close()

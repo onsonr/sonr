@@ -6,7 +6,7 @@ import (
 	"net"
 
 	"github.com/sonr-io/core/pkg/exchange"
-	"github.com/sonr-io/core/pkg/discovery"
+	"github.com/sonr-io/core/pkg/discover"
 	"github.com/sonr-io/core/pkg/transmit"
 
 	"google.golang.org/grpc"
@@ -89,7 +89,7 @@ type MotorNodeStub struct {
 
 	// Protocols
 	*transmit.TransmitProtocol
-	*discovery.DiscoveryProtocol
+	*discover.DiscoverProtocol
 	*exchange.ExchangeProtocol
 }
 
@@ -97,7 +97,7 @@ type MotorNodeStub struct {
 func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNodeStub, error) {
 
 	// Set Discovery Protocol
-	discProtocol, err := discovery.New(ctx, n.host, n, discovery.WithLocation(opts.location))
+	discProtocol, err := discover.New(ctx, n.host, n, discover.WithLocation(opts.location))
 	if err != nil {
 		logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
 		return nil, err

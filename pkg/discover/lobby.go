@@ -1,4 +1,4 @@
-package discovery
+package discover
 
 import (
 	"context"
@@ -29,7 +29,7 @@ type Lobby struct {
 }
 
 // newLobby creates a new lobby instance.
-func (e *DiscoveryProtocol) initLobby(topic *ps.Topic, opts *options) error {
+func (e *DiscoverProtocol) initLobby(topic *ps.Topic, opts *options) error {
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {

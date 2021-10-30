@@ -1,4 +1,4 @@
-package discovery
+package discover
 
 import (
 	"fmt"
