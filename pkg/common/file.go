@@ -10,7 +10,6 @@ import (
 	"log"
 	"math"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -92,26 +91,6 @@ func (f *FileItem) ToTransferItem() *Payload_Item {
 			File: f,
 		},
 	}
-}
-
-// WriteFile writes the FileItem to the items path if directory exists
-func (f *FileItem) WriteFile(data []byte) error {
-	// Check data length
-	if len(data) == 0 {
-		return ErrEmptyData
-	}
-
-	// Check if parent directory exists
-	if ok := fs.Exists(filepath.Dir(f.Path)); !ok {
-		return ErrParentDirNotExists
-	}
-
-	// Write Data to File
-	err := os.WriteFile(f.Path, data, 0644)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // ** ───────────────────────────────────────────────────────
