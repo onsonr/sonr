@@ -9,14 +9,14 @@ import (
 )
 
 // newStore creates a new store
-func newStore(cap int, ttl time.Duration) *Store {
-	s := &Store{
+func newStore(opts *options) *Store {
+	// Create a new store
+	return &Store{
 		Data:     make(map[string]*StoreEntry),
-		Capacity: int32(cap),
+		Capacity: int32(opts.capacity),
 		Modified: time.Now().Unix(),
-		Ttl:      ttl.Milliseconds(),
+		Ttl:      opts.ttl.Milliseconds(),
 	}
-	return s
 }
 
 // Delete deletes an entry from the store and publishes an event
@@ -43,6 +43,7 @@ func (s *Store) Delete(key string, b *beam) error {
 
 // Get returns the value of the entry
 func (s *Store) Get(key string) ([]byte, error) {
+
 	entry := s.Data[key]
 	if entry == nil {
 		return nil, ErrNotFound

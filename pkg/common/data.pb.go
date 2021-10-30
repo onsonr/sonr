@@ -668,7 +668,7 @@ type SupplyItem struct {
 	unknownFields protoimpl.UnknownFields
 
 	Path      string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`                 // Supply Path
-	Thumbnail []byte `protobuf:"bytes,2,opt,name=thumbnail,proto3,oneof" json:"thumbnail,omitempty"` // Supply Thumbnail
+	Thumbnail []byte `protobuf:"bytes,2,opt,name=thumbnail,proto3,oneof" json:"thumbnail,omitempty"` // Supply Path of the Thumbnail
 }
 
 func (x *SupplyItem) Reset() {

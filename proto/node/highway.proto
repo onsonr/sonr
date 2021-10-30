@@ -6,9 +6,9 @@ import "proto/api/call.proto";
 option go_package = "github.com/sonr-io/core/internal/node";
 
 // RPC Service with Equivalent Methods of a binded Node
-service HighwayService {
+service HighwayStub {
   // Authorize Signing Method Request for Data
-  rpc Authorize(sonr.api.AuthorizeRequest) returns (sonr.api.AuthorizeResponse) {}
+  rpc Authenticate(sonr.api.AuthenticateRequest) returns (sonr.api.AuthenticateResponse) {}
 
   // Link Links an Additional Device to User
   rpc Link(sonr.api.LinkRequest) returns (sonr.api.LinkResponse) {}

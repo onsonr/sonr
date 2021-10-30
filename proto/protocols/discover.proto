@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package sonr.protocols.discover;
+import "proto/common/core.proto";
+option go_package = "github.com/sonr-io/core/pkg/discover";
+
+// AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
+message AuthorizeRequest {
+  string sName = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string deviceId = 3; // Device ID
+}
+
+// AuthorizeResponse is Message for Verifying Response (Hmac Sha256)
+message AuthorizeResponse {
+  bool success = 1; // If Values were Verified
+  string error = 2; // Error Message
+  map<string,string> records = 3; // Updated Domain TXT Records
+}
+
+// LookupRequest is Message for Verifying Request (Hmac Sha256)
+message LookupRequest {
+  string sName = 1; // SName combined with Device ID and Hashed
+}
+
+// LookupResponse is Message for Verifying Response (Hmac Sha256)
+message LookupResponse {
+  bool success = 1;     // If Values were Verified
+  string publicKey = 2; // Base64 Encoded Public Key
+}
+
+// VisibilityRequest is Message for updating Peer Visibility in Exchange
+message VisibilityRequest {
+  string sName = 1;        // SName combined with Device ID and Hashed
+  bytes publicKey = 2;     // Buffer of Public Key
+  Visibility visibility = 3; // Visibility
+
+  enum Visibility {
+    VISIBLE = 0; // Everyone can see this peer
+    GHOST = 1; // Only Linked Devices can see this peer
+    FRIENDS = 2; // Only Friends can see this peer
+  }
+}
+
+// VisibilityResponse is response for VisibilityRequest
+message VisibilityResponse {
+  bool success = 1; // If Request was Successful
+  string error = 2; // Error Message if Request was not successful
+  Visibility visibility = 3; // Visibility
+
+  enum Visibility {
+    VISIBLE = 0; // Everyone can see this peer
+    GHOST = 1; // Only Linked Devices can see this peer
+    FRIENDS = 2; // Only Friends can see this peer
+  }
+}
+
+
+// LobbyMessage is message passed from Peer in Lobby
+message LobbyMessage {
+  sonr.core.Peer peer = 1;     // Users Peer Data
+  optional string message = 2; // Message to be published
+  sonr.core.Metadata metadata = 3; // Metadata
+}

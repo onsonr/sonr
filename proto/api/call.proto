@@ -6,15 +6,15 @@ import "proto/common/core.proto";
 import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/internal/api";
 
-// (Highway) AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
-message AuthorizeRequest {
+// (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
+message AuthenticateRequest {
   string sName = 1;    // SName combined with Device ID and Hashed
   string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
   string deviceId = 3; // Device ID
 }
 
-// (Highway) AuthorizeResponse is Message for Verifying Response (Hmac Sha256)
-message AuthorizeResponse {
+// (Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)
+message AuthenticateResponse {
   bool success = 1; // If Values were Verified
   string error = 2; // Error Message
   map<string,string> records = 3; // Updated Domain TXT Records

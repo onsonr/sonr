@@ -20,13 +20,8 @@ type TransmitProtocol struct {
 	supplyQueue  *list.List      // supply queue
 }
 
-// NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
-	// Check parameters
-	if err := checkParams(host); err != nil {
-		logger.Errorf("%s - Failed to create TransmitProtocol", err)
-		return nil, err
-	}
+// New creates a new TransferProtocol
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
 
 	// create a new transfer protocol
 	invProtocol := &TransmitProtocol{
@@ -44,7 +39,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*T
 	// Setup Stream Handlers
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
-	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
+	host.SetStreamHandler(IncomingPID, invProtocol.onIncomingTransfer)
 	logger.Debug("✅  TransmitProtocol is Activated \n")
 	return invProtocol, nil
 }

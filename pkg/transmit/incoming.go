@@ -108,8 +108,8 @@ func (p *itemReader) Progress(i int) {
 		// Create Progress Event
 		event := &api.ProgressEvent{
 			Progress: (float64(i) / float64(p.size)),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
+			Index:  int32(p.index),
+			Count:    int32(p.count),
 		}
 
 		// Push ProgressEvent to Emitter

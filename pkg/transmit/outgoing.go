@@ -47,7 +47,7 @@ func (p *TransmitProtocol) onInviteResponse(s network.Stream) {
 	// Check for Decision and Start Outgoing Transfer
 	if resp.GetDecision() {
 		// Create a new stream
-		stream, err := p.host.NewStream(p.ctx, remotePeer, SessionPID)
+		stream, err := p.host.NewStream(p.ctx, remotePeer, IncomingPID)
 		if err != nil {
 			logger.Errorf("%s - Failed to create new stream.", err)
 			return
@@ -131,8 +131,8 @@ func (p *itemWriter) Progress(i int) {
 	if (i % ITEM_INTERVAL) == 0 {
 		event := &api.ProgressEvent{
 			Progress: (float64(i) / float64(p.size)),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
+			Index:    int32(p.index),
+			Count:    int32(p.count),
 		}
 
 		// Push ProgressEvent to Emitter

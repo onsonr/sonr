@@ -179,15 +179,15 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.api.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                  <a href="#sonr.api.AuthenticateRequest"><span class="badge">M</span>AuthenticateRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.api.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                  <a href="#sonr.api.AuthenticateResponse"><span class="badge">M</span>AuthenticateResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.api.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                  <a href="#sonr.api.AuthenticateResponse.RecordsEntry"><span class="badge">M</span>AuthenticateResponse.RecordsEntry</a>
                 </li>
               
                 <li>
@@ -335,6 +335,10 @@
               
                 <li>
                   <a href="#sonr.api.CompleteEvent"><span class="badge">M</span>CompleteEvent</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.api.CompleteEvent.ResultsEntry"><span class="badge">M</span>CompleteEvent.ResultsEntry</a>
                 </li>
               
                 <li>
@@ -554,7 +558,22 @@
         
           
           <li>
-            <a href="#proto%2fnode%2fclient.proto">proto/node/client.proto</a>
+            <a href="#proto%2fnode%2fhighway.proto">proto/node/highway.proto</a>
+            <ul>
+              
+              
+              
+              
+                <li>
+                  <a href="#sonr.node.HighwayStub"><span class="badge">S</span>HighwayStub</a>
+                </li>
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fnode%2fmotor.proto">proto/node/motor.proto</a>
             <ul>
               
                 <li>
@@ -565,7 +584,7 @@
               
               
                 <li>
-                  <a href="#sonr.node.ClientService"><span class="badge">S</span>ClientService</a>
+                  <a href="#sonr.node.MotorStub"><span class="badge">S</span>MotorStub</a>
                 </li>
               
             </ul>
@@ -573,15 +592,51 @@
         
           
           <li>
-            <a href="#proto%2fnode%2fhighway.proto">proto/node/highway.proto</a>
+            <a href="#proto%2fprotocols%2fdiscover.proto">proto/protocols/discover.proto</a>
             <ul>
               
+                <li>
+                  <a href="#sonr.protocols.discover.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                </li>
               
+                <li>
+                  <a href="#sonr.protocols.discover.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discover.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discover.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discover.LookupRequest"><span class="badge">M</span>LookupRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discover.LookupResponse"><span class="badge">M</span>LookupResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discover.VisibilityRequest"><span class="badge">M</span>VisibilityRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discover.VisibilityResponse"><span class="badge">M</span>VisibilityResponse</a>
+                </li>
               
               
                 <li>
-                  <a href="#sonr.node.HighwayService"><span class="badge">S</span>HighwayService</a>
+                  <a href="#sonr.protocols.discover.VisibilityRequest.Visibility"><span class="badge">E</span>VisibilityRequest.Visibility</a>
                 </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discover.VisibilityResponse.Visibility"><span class="badge">E</span>VisibilityResponse.Visibility</a>
+                </li>
+              
+              
               
             </ul>
           </li>
@@ -592,66 +647,15 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                  <a href="#sonr.protocols.exchange.InviteRequest"><span class="badge">M</span>InviteRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                  <a href="#sonr.protocols.exchange.InviteResponse"><span class="badge">M</span>InviteResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.LookupRequest"><span class="badge">M</span>LookupRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.LookupResponse"><span class="badge">M</span>LookupResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityRequest"><span class="badge">M</span>VisibilityRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityResponse"><span class="badge">M</span>VisibilityResponse</a>
-                </li>
-              
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityRequest.Visibility"><span class="badge">E</span>VisibilityRequest.Visibility</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityResponse.Visibility"><span class="badge">E</span>VisibilityResponse.Visibility</a>
-                </li>
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#proto%2fprotocols%2fmailbox.proto">proto/protocols/mailbox.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#sonr.protocols.mailbox.InviteRequest"><span class="badge">M</span>InviteRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.mailbox.InviteResponse"><span class="badge">M</span>InviteResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.mailbox.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
+                  <a href="#sonr.protocols.exchange.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
                 </li>
               
               
@@ -772,8 +776,8 @@
       <p>This file has messages for describing a API Request/Responses with RPC.</p>
 
       
-        <h3 id="sonr.api.AuthorizeRequest">AuthorizeRequest</h3>
-        <p>(Highway) AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
+        <h3 id="sonr.api.AuthenticateRequest">AuthenticateRequest</h3>
+        <p>(Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -810,8 +814,8 @@
 
         
       
-        <h3 id="sonr.api.AuthorizeResponse">AuthorizeResponse</h3>
-        <p>(Highway) AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
+        <h3 id="sonr.api.AuthenticateResponse">AuthenticateResponse</h3>
+        <p>(Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -836,7 +840,7 @@
               
                 <tr>
                   <td>records</td>
-                  <td><a href="#sonr.api.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td><a href="#sonr.api.AuthenticateResponse.RecordsEntry">AuthenticateResponse.RecordsEntry</a></td>
                   <td>repeated</td>
                   <td><p>Updated Domain TXT Records </p></td>
                 </tr>
@@ -848,7 +852,7 @@
 
         
       
-        <h3 id="sonr.api.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <h3 id="sonr.api.AuthenticateResponse.RecordsEntry">AuthenticateResponse.RecordsEntry</h3>
         <p></p>
 
         
@@ -2187,6 +2191,44 @@ File Transfer History </p></td>
                   <td><p>Transfer Received Timestamp </p></td>
                 </tr>
               
+                <tr>
+                  <td>results</td>
+                  <td><a href="#sonr.api.CompleteEvent.ResultsEntry">CompleteEvent.ResultsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Transfer Success </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.api.CompleteEvent.ResultsEntry">CompleteEvent.ResultsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -2333,17 +2375,17 @@ File Transfer History </p></td>
             <tbody>
               
                 <tr>
-                  <td>current</td>
+                  <td>index</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>Current Transfer Item </p></td>
+                  <td><p>Index of Current Item in Payload </p></td>
                 </tr>
               
                 <tr>
-                  <td>total</td>
+                  <td>count</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>Total Transfer Progress </p></td>
+                  <td><p>Count of Total Items in Payload </p></td>
                 </tr>
               
                 <tr>
@@ -4203,7 +4245,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td>thumbnail</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td>optional</td>
-                  <td><p>Supply Thumbnail </p></td>
+                  <td><p>Supply Path of the Thumbnail </p></td>
                 </tr>
               
             </tbody>
@@ -4389,7 +4431,54 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/node/client.proto">proto/node/client.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/node/highway.proto">proto/node/highway.proto</h2><a href="#title">Top</a>
+      </div>
+      <p>This file contains service for the Node RPC Server</p>
+
+      
+
+      
+
+      
+
+      
+        <h3 id="sonr.node.HighwayStub">HighwayStub</h3>
+        <p>RPC Service with Equivalent Methods of a binded Node</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>Authenticate</td>
+                <td><a href="#sonr.api.AuthenticateRequest">.sonr.api.AuthenticateRequest</a></td>
+                <td><a href="#sonr.api.AuthenticateResponse">.sonr.api.AuthenticateResponse</a></td>
+                <td><p>Authorize Signing Method Request for Data</p></td>
+              </tr>
+            
+              <tr>
+                <td>Link</td>
+                <td><a href="#sonr.api.LinkRequest">.sonr.api.LinkRequest</a></td>
+                <td><a href="#sonr.api.LinkResponse">.sonr.api.LinkResponse</a></td>
+                <td><p>Link Links an Additional Device to User</p></td>
+              </tr>
+            
+              <tr>
+                <td>Register</td>
+                <td><a href="#sonr.api.RegisterRequest">.sonr.api.RegisterRequest</a></td>
+                <td><a href="#sonr.api.RegisterResponse">.sonr.api.RegisterResponse</a></td>
+                <td><p>Register creates new user in DNS Table</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+
+        
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/node/motor.proto">proto/node/motor.proto</h2><a href="#title">Top</a>
       </div>
       <p>This file contains service for the Node RPC Server</p>
 
@@ -4407,7 +4496,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       
 
       
-        <h3 id="sonr.node.ClientService">ClientService</h3>
+        <h3 id="sonr.node.MotorStub">MotorStub</h3>
         <p>RPC Service with Equivalent Methods of a binded Node</p>
         <table class="enum-table">
           <thead>
@@ -4515,59 +4604,12 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/node/highway.proto">proto/node/highway.proto</h2><a href="#title">Top</a>
-      </div>
-      <p>This file contains service for the Node RPC Server</p>
-
-      
-
-      
-
-      
-
-      
-        <h3 id="sonr.node.HighwayService">HighwayService</h3>
-        <p>RPC Service with Equivalent Methods of a binded Node</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>Authorize</td>
-                <td><a href="#sonr.api.AuthorizeRequest">.sonr.api.AuthorizeRequest</a></td>
-                <td><a href="#sonr.api.AuthorizeResponse">.sonr.api.AuthorizeResponse</a></td>
-                <td><p>Authorize Signing Method Request for Data</p></td>
-              </tr>
-            
-              <tr>
-                <td>Link</td>
-                <td><a href="#sonr.api.LinkRequest">.sonr.api.LinkRequest</a></td>
-                <td><a href="#sonr.api.LinkResponse">.sonr.api.LinkResponse</a></td>
-                <td><p>Link Links an Additional Device to User</p></td>
-              </tr>
-            
-              <tr>
-                <td>Register</td>
-                <td><a href="#sonr.api.RegisterRequest">.sonr.api.RegisterRequest</a></td>
-                <td><a href="#sonr.api.RegisterResponse">.sonr.api.RegisterResponse</a></td>
-                <td><p>Register creates new user in DNS Table</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-
-        
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/protocols/exchange.proto">proto/protocols/exchange.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/protocols/discover.proto">proto/protocols/discover.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="sonr.protocols.exchange.AuthorizeRequest">AuthorizeRequest</h3>
+        <h3 id="sonr.protocols.discover.AuthorizeRequest">AuthorizeRequest</h3>
         <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
@@ -4605,7 +4647,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.AuthorizeResponse">AuthorizeResponse</h3>
+        <h3 id="sonr.protocols.discover.AuthorizeResponse">AuthorizeResponse</h3>
         <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
@@ -4631,7 +4673,7 @@ Returns a stream of Lobby Refresh Events</p></td>
               
                 <tr>
                   <td>records</td>
-                  <td><a href="#sonr.protocols.exchange.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td><a href="#sonr.protocols.discover.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
                   <td>repeated</td>
                   <td><p>Updated Domain TXT Records </p></td>
                 </tr>
@@ -4643,7 +4685,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <h3 id="sonr.protocols.discover.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
         <p></p>
 
         
@@ -4674,7 +4716,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.LobbyMessage">LobbyMessage</h3>
+        <h3 id="sonr.protocols.discover.LobbyMessage">LobbyMessage</h3>
         <p>LobbyMessage is message passed from Peer in Lobby</p>
 
         
@@ -4712,7 +4754,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.LookupRequest">LookupRequest</h3>
+        <h3 id="sonr.protocols.discover.LookupRequest">LookupRequest</h3>
         <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
@@ -4736,7 +4778,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.LookupResponse">LookupResponse</h3>
+        <h3 id="sonr.protocols.discover.LookupResponse">LookupResponse</h3>
         <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
@@ -4767,7 +4809,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.VisibilityRequest">VisibilityRequest</h3>
+        <h3 id="sonr.protocols.discover.VisibilityRequest">VisibilityRequest</h3>
         <p>VisibilityRequest is Message for updating Peer Visibility in Exchange</p>
 
         
@@ -4793,7 +4835,7 @@ Returns a stream of Lobby Refresh Events</p></td>
               
                 <tr>
                   <td>visibility</td>
-                  <td><a href="#sonr.protocols.exchange.VisibilityRequest.Visibility">VisibilityRequest.Visibility</a></td>
+                  <td><a href="#sonr.protocols.discover.VisibilityRequest.Visibility">VisibilityRequest.Visibility</a></td>
                   <td></td>
                   <td><p>Visibility </p></td>
                 </tr>
@@ -4805,7 +4847,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.VisibilityResponse">VisibilityResponse</h3>
+        <h3 id="sonr.protocols.discover.VisibilityResponse">VisibilityResponse</h3>
         <p>VisibilityResponse is response for VisibilityRequest</p>
 
         
@@ -4831,7 +4873,7 @@ Returns a stream of Lobby Refresh Events</p></td>
               
                 <tr>
                   <td>visibility</td>
-                  <td><a href="#sonr.protocols.exchange.VisibilityResponse.Visibility">VisibilityResponse.Visibility</a></td>
+                  <td><a href="#sonr.protocols.discover.VisibilityResponse.Visibility">VisibilityResponse.Visibility</a></td>
                   <td></td>
                   <td><p>Visibility </p></td>
                 </tr>
@@ -4845,7 +4887,7 @@ Returns a stream of Lobby Refresh Events</p></td>
       
 
       
-        <h3 id="sonr.protocols.exchange.VisibilityRequest.Visibility">VisibilityRequest.Visibility</h3>
+        <h3 id="sonr.protocols.discover.VisibilityRequest.Visibility">VisibilityRequest.Visibility</h3>
         <p></p>
         <table class="enum-table">
           <thead>
@@ -4874,7 +4916,7 @@ Returns a stream of Lobby Refresh Events</p></td>
           </tbody>
         </table>
       
-        <h3 id="sonr.protocols.exchange.VisibilityResponse.Visibility">VisibilityResponse.Visibility</h3>
+        <h3 id="sonr.protocols.discover.VisibilityResponse.Visibility">VisibilityResponse.Visibility</h3>
         <p></p>
         <table class="enum-table">
           <thead>
@@ -4910,12 +4952,12 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/protocols/mailbox.proto">proto/protocols/mailbox.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/protocols/exchange.proto">proto/protocols/exchange.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="sonr.protocols.mailbox.InviteRequest">InviteRequest</h3>
+        <h3 id="sonr.protocols.exchange.InviteRequest">InviteRequest</h3>
         <p>Invitation Message sent on RPC</p>
 
         
@@ -4960,7 +5002,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.mailbox.InviteResponse">InviteResponse</h3>
+        <h3 id="sonr.protocols.exchange.InviteResponse">InviteResponse</h3>
         <p>Reply Message sent on RPC</p>
 
         
@@ -5005,7 +5047,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.mailbox.MailboxMessage">MailboxMessage</h3>
+        <h3 id="sonr.protocols.exchange.MailboxMessage">MailboxMessage</h3>
         <p></p>
 
         

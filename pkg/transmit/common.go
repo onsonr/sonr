@@ -8,28 +8,22 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 )
 
-// Transfer Emission Events
-const (
-	ITEM_INTERVAL = 25
-)
-
 // Transfer Protocol ID's
 const (
-	RequestPID  protocol.ID = "/transmit/request/0.0.1"
-	ResponsePID protocol.ID = "/transmit/response/0.0.1"
-	SessionPID  protocol.ID = "/transmit/session/0.0.1"
+	RequestPID    protocol.ID = "/transmit/request/0.0.1"
+	ResponsePID   protocol.ID = "/transmit/response/0.0.1"
+	IncomingPID   protocol.ID = "/transmit/incoming/0.0.1"
+	OutgoingPID   protocol.ID = "/transmit/outgoing/0.0.1"
+	ITEM_INTERVAL             = 25
 )
 
 // Error Definitions
 var (
 	logger             = golog.Default.Child("protocols/transmit")
-	ErrTimeout         = errors.New("Session has Timed out")
-	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
 	ErrInvalidResponse = errors.New("Invalid InviteResponse provided to TransmitProtocol")
 	ErrInvalidRequest  = errors.New("Invalid InviteRequest provided to TransmitProtocol")
 	ErrFailedEntry     = errors.New("Failed to get Topmost entry from Queue")
@@ -38,13 +32,15 @@ var (
 	ErrRequestNotFound = errors.New("Request not found in list")
 )
 
-// checkParams Checks if Non-nil Parameters were passed
-func checkParams(host *host.SNRHost) error {
-	if host == nil {
-		logger.Errorf("%s - Host provided is nil", ErrParameters)
-		return ErrParameters
+// calculateInterval calculates the interval for the progress callback
+func calculateInterval(size int64) int {
+	// Calculate Interval
+	interval := size / 100
+	if interval < 1 {
+		interval = 1
 	}
-	return host.HasRouting()
+	logger.Debugf("Calculated Item progress interval: %v", interval)
+	return int(interval)
 }
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
@@ -109,6 +105,7 @@ func (p *TransmitProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 
 // createResponse creates a new InviteResponse
 func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image/png"
 	"math/rand"
-	"strings"
 	"time"
 
 	faker "github.com/brianvoe/gofakeit/v6"
@@ -125,16 +124,19 @@ type profileOpts struct {
 
 // defaultProfileOpts returns the default profile options
 func defaultProfileOpts() profileOpts {
-	f := faker.FirstName()
-	l := faker.LastName()
 	return profileOpts{
-		sname:     strings.ToLower(f[0:1] + l),
+		sname:     randomSName(),
 		firstName: "Anonymous",
 		lastName:  Platform(),
 		picture:   make([]byte, 0),
 		bio:       faker.Dessert(),
 		socials:   make([]*Social, 0),
 	}
+}
+
+// randomSName returns a random SName
+func randomSName() string {
+	return faker.FirstName()[0:1] + faker.LastName()
 }
 
 // NewDefaultProfile creates a new default Profile

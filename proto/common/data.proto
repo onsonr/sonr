@@ -180,5 +180,5 @@ message PayloadList {
 // SupplyItem is an item supplied to be a payload
 message SupplyItem {
     string path = 1; // Supply Path
-    optional bytes thumbnail = 2; // Supply Thumbnail
+    optional bytes thumbnail = 2; // Supply Path of the Thumbnail
 }

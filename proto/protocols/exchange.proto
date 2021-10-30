@@ -2,63 +2,30 @@ syntax = "proto3";
 
 package sonr.protocols.exchange;
 import "proto/common/core.proto";
+import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/pkg/exchange";
 
-// AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
-message AuthorizeRequest {
-  string sName = 1;    // SName combined with Device ID and Hashed
-  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
-  string deviceId = 3; // Device ID
+message MailboxMessage {
+  string id = 1; // ID is the Message ID
+  bytes buffer = 2; // Buffer is the message data
+  sonr.core.Profile from = 3;         // Users Peer Data
+  sonr.core.Profile to = 4;           // Receivers Peer Data
+  sonr.core.Metadata metadata = 5; // Metadata
+  int64 createdAt = 6; // Timestamp
 }
 
-// AuthorizeResponse is Message for Verifying Response (Hmac Sha256)
-message AuthorizeResponse {
-  bool success = 1; // If Values were Verified
-  string error = 2; // Error Message
-  map<string,string> records = 3; // Updated Domain TXT Records
+// Invitation Message sent on RPC
+message InviteRequest {
+  sonr.core.Payload payload = 1;   // Attached Data
+  sonr.core.Peer from = 3;         // Users Peer Data
+  sonr.core.Peer to = 4;           // Receivers Peer Data
+  sonr.core.Metadata metadata = 5; // Metadata
 }
 
-// LookupRequest is Message for Verifying Request (Hmac Sha256)
-message LookupRequest {
-  string sName = 1; // SName combined with Device ID and Hashed
-}
-
-// LookupResponse is Message for Verifying Response (Hmac Sha256)
-message LookupResponse {
-  bool success = 1;     // If Values were Verified
-  string publicKey = 2; // Base64 Encoded Public Key
-}
-
-// VisibilityRequest is Message for updating Peer Visibility in Exchange
-message VisibilityRequest {
-  string sName = 1;        // SName combined with Device ID and Hashed
-  bytes publicKey = 2;     // Buffer of Public Key
-  Visibility visibility = 3; // Visibility
-
-  enum Visibility {
-    VISIBLE = 0; // Everyone can see this peer
-    GHOST = 1; // Only Linked Devices can see this peer
-    FRIENDS = 2; // Only Friends can see this peer
-  }
-}
-
-// VisibilityResponse is response for VisibilityRequest
-message VisibilityResponse {
-  bool success = 1; // If Request was Successful
-  string error = 2; // Error Message if Request was not successful
-  Visibility visibility = 3; // Visibility
-
-  enum Visibility {
-    VISIBLE = 0; // Everyone can see this peer
-    GHOST = 1; // Only Linked Devices can see this peer
-    FRIENDS = 2; // Only Friends can see this peer
-  }
-}
-
-
-// LobbyMessage is message passed from Peer in Lobby
-message LobbyMessage {
-  sonr.core.Peer peer = 1;     // Users Peer Data
-  optional string message = 2; // Message to be published
-  sonr.core.Metadata metadata = 3; // Metadata
+// Reply Message sent on RPC
+message InviteResponse {
+  bool decision = 1;               // Success
+  sonr.core.Peer from = 3;         // Users Peer Data
+  sonr.core.Peer to = 4;           // Receivers Peer Data
+  sonr.core.Metadata metadata = 5; // Metadata
 }

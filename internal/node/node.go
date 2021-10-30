@@ -18,8 +18,8 @@ import (
 type Node struct {
 	// Standard Node Implementation
 	api.NodeImpl
-	clientStub  *ClientNodeStub
-	highwayStub *HighwayNodeStub
+	clientStub  *NodeMotorStub
+	highwayStub *NodeHighwayStub
 	mode        StubMode
 
 	// Host and context
@@ -154,7 +154,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 // Close closes the node
 func (n *Node) Close() {
 	// Close Client Stub
-	if n.mode.HasClient() {
+	if n.mode.HasMotor() {
 		if err := n.clientStub.Close(); err != nil {
 			logger.Errorf("%s - Failed to close Client Stub, ", err)
 		}

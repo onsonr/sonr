@@ -39,8 +39,7 @@ type beam struct {
 	handler *pubsub.TopicEventHandler
 	sub     *pubsub.Subscription
 	topic   *pubsub.Topic
-
-	store *Store
+	store   *Store
 }
 
 // New creates a new beam with the given name and options.
@@ -73,8 +72,10 @@ func New(ctx context.Context, h *host.SNRHost, id ID, options ...Option) (Beam, 
 		topic:   topic,
 		sub:     sub,
 		handler: handler,
-		store:   newStore(opts.capacity, opts.ttl),
+		store:   newStore(opts),
 	}
+
+	// Start the event handler.
 	go b.handleEvents()
 	go b.handleMessages()
 	go b.serve()
