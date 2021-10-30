@@ -14,8 +14,8 @@ import (
 // ErrFunc is a function that returns an error
 type ErrFunc func() error
 
-// Lobby is the protocol for managing local peers.
-type Lobby struct {
+// Local is the protocol for managing local peers.
+type Local struct {
 	node         api.NodeImpl
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
@@ -28,8 +28,8 @@ type Lobby struct {
 	updateFunc   ErrFunc
 }
 
-// newLobby creates a new lobby instance.
-func (e *DiscoverProtocol) initLobby(topic *ps.Topic, opts *options) error {
+// newLobby creates a new local instance.
+func (e *DiscoverProtocol) initLocal(topic *ps.Topic, opts *options) error {
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
@@ -44,8 +44,8 @@ func (e *DiscoverProtocol) initLobby(topic *ps.Topic, opts *options) error {
 		return err
 	}
 
-	// Create Exchange Protocol
-	e.lobby = &Lobby{
+	// Create Local Struct
+	e.local = &Local{
 		ctx:          e.ctx,
 		selfID:       e.host.ID(),
 		node:         e.node,
@@ -59,16 +59,16 @@ func (e *DiscoverProtocol) initLobby(topic *ps.Topic, opts *options) error {
 	}
 
 	// Handle Events
-	go e.lobby.handleSub()
-	go e.lobby.handleTopic()
-	go e.lobby.handleEvents()
-	go e.lobby.autoPushUpdates()
+	go e.local.handleSub()
+	go e.local.handleTopic()
+	go e.local.handleEvents()
+	go e.local.autoPushUpdates()
 	logger.Debugf("Created new lobby: %s", createOlc(opts.location))
 	return nil
 }
 
-// Publish publishes a LobbyMessage to the Topic
-func (p *Lobby) Publish(data *common.Peer) error {
+// Publish publishes a LobbyMessage to the Local Topic
+func (p *Local) Publish(data *common.Peer) error {
 	// Create Message Buffer
 	buf := createLobbyMsgBuf(data)
 	err := p.topic.Publish(p.ctx, buf)
@@ -79,8 +79,8 @@ func (p *Lobby) Publish(data *common.Peer) error {
 	return nil
 }
 
-// autoPushUpdates method pushes updates to the topic
-func (p *Lobby) autoPushUpdates() {
+// autoPushUpdates method pushes updates to the Local Topic
+func (p *Local) autoPushUpdates() {
 	// Loop Messages
 	for {
 		err := p.callUpdate()
@@ -93,8 +93,8 @@ func (p *Lobby) autoPushUpdates() {
 	}
 }
 
-// handleSub method listens to Pubsub Events for room
-func (p *Lobby) handleSub() {
+// handleSub method listens to Pubsub Events for Local Topic
+func (p *Local) handleSub() {
 	// Loop Events
 	for {
 		// Get next event
@@ -114,8 +114,8 @@ func (p *Lobby) handleSub() {
 	}
 }
 
-// handleTopic method listens to Pubsub Messages for room
-func (p *Lobby) handleTopic() {
+// handleTopic method listens to Pubsub Messages for Local Topic
+func (p *Local) handleTopic() {
 	// Loop Messages
 	for {
 		// Get next message
@@ -138,8 +138,8 @@ func (p *Lobby) handleTopic() {
 	}
 }
 
-// handleEvents method listens to Lobby Events passed
-func (p *Lobby) handleEvents() {
+// handleEvents method listens to Lobby Events passed from the Local Topic
+func (p *Local) handleEvents() {
 	// Loop Messages
 	for {
 		// Get next message
@@ -155,7 +155,7 @@ func (p *Lobby) handleEvents() {
 }
 
 // callRefresh calls back RefreshEvent to Node
-func (lp *Lobby) callRefresh() {
+func (lp *Local) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
 	lp.node.OnRefresh(&api.RefreshEvent{
@@ -165,8 +165,8 @@ func (lp *Lobby) callRefresh() {
 	})
 }
 
-// callUpdate publishes a LobbyMessage to the Topic
-func (lp *Lobby) callUpdate() error {
+// callUpdate publishes a LobbyMessage to the Local Topic
+func (lp *Local) callUpdate() error {
 	// Create Event
 	logger.Debug("Sending Update to Lobby")
 	err := lp.updateFunc()
@@ -177,7 +177,7 @@ func (lp *Lobby) callUpdate() error {
 	return nil
 }
 
-// createLobbyMsgBuf Creates a new Message Buffer for Lobby Topic
+// createLobbyMsgBuf Creates a new Message Buffer for Local Topic
 func createLobbyMsgBuf(p *common.Peer) []byte {
 	// Marshal Event
 	event := &LobbyMessage{Peer: p}
@@ -190,7 +190,7 @@ func createLobbyMsgBuf(p *common.Peer) []byte {
 }
 
 // hasPeer Checks if Peer is in Peer List
-func (lp *Lobby) hasPeer(data *common.Peer) bool {
+func (lp *Local) hasPeer(data *common.Peer) bool {
 	hasInList := false
 	hasInTopic := false
 	// Check if Peer is in Data List
@@ -212,8 +212,8 @@ func (lp *Lobby) hasPeer(data *common.Peer) bool {
 	return hasInList && hasInTopic
 }
 
-// hasPeerData Checks if Peer Data is in Lobby Peer-Data List
-func (lp *Lobby) hasPeerData(data *common.Peer) bool {
+// hasPeerData Checks if Peer Data is in Local Peer-Data List
+func (lp *Local) hasPeerData(data *common.Peer) bool {
 	for _, p := range lp.peers {
 		if p.GetSName() == data.GetSName() {
 			return true
@@ -222,8 +222,8 @@ func (lp *Lobby) hasPeerData(data *common.Peer) bool {
 	return false
 }
 
-// hasPeerID Checks if Peer ID is in Lobby Topic
-func (lp *Lobby) hasPeerID(id peer.ID) bool {
+// hasPeerID Checks if Peer ID is in Local Topic
+func (lp *Local) hasPeerID(id peer.ID) bool {
 	for _, p := range lp.topic.ListPeers() {
 		if p == id {
 			return true
@@ -232,8 +232,8 @@ func (lp *Lobby) hasPeerID(id peer.ID) bool {
 	return false
 }
 
-// indexOfPeer Returns Peer Index in Peer-Data List
-func (lp *Lobby) indexOfPeer(peer *common.Peer) int {
+// indexOfPeer Returns Peer Index in Local Peer-Data List
+func (lp *Local) indexOfPeer(peer *common.Peer) int {
 	for i, p := range lp.peers {
 		if p.GetSName() == peer.GetSName() {
 			return i
@@ -242,8 +242,8 @@ func (lp *Lobby) indexOfPeer(peer *common.Peer) int {
 	return -1
 }
 
-// removePeer Removes Peer from Peer-Data List
-func (lp *Lobby) removePeer(peerID peer.ID) bool {
+// removePeer Removes Peer from Local Peer-Data List
+func (lp *Local) removePeer(peerID peer.ID) bool {
 	for i, p := range lp.peers {
 		if p.GetPeerID() == peerID.String() {
 			lp.peers = append(lp.peers[:i], lp.peers[i+1:]...)
@@ -254,15 +254,15 @@ func (lp *Lobby) removePeer(peerID peer.ID) bool {
 	return false
 }
 
-// updatePeer Adds Peer to Peer List
-func (lp *Lobby) updatePeer(peerID peer.ID, data *common.Peer) bool {
+// updatePeer Adds Peer to Local Peer List
+func (lp *Local) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	// Check if Peer is in Peer List and Topic already
 	if ok := lp.hasPeerID(peerID); !ok {
 		lp.removePeer(peerID)
 		return false
 	}
 
-	// Add Peer to List and Check if Peer is List
+	// Add Peer to List and Check if Peer is in Local List
 	idx := lp.indexOfPeer(data)
 	if idx == -1 {
 		lp.peers = append(lp.peers, data)

@@ -26,7 +26,7 @@ type DiscoverProtocol struct {
 	ctx    context.Context
 	global beam.Beam
 	host   *host.SNRHost
-	lobby  *Lobby
+	local  *Local
 }
 
 // New creates new DiscoveryProtocol
@@ -68,7 +68,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 	}
 
 	// Create Lobby
-	if err := exchProtocol.initLobby(topic, opts); err != nil {
+	if err := exchProtocol.initLocal(topic, opts); err != nil {
 		logger.Errorf("%s - Failed to initialize Lobby", err)
 		return nil, err
 	}
@@ -203,15 +203,15 @@ func (p *DiscoverProtocol) Update() error {
 	}
 
 	// Publish Event
-	p.lobby.Publish(peer)
+	p.local.Publish(peer)
 	return nil
 }
 
 // Close method closes the ExchangeProtocol
 func (p *DiscoverProtocol) Close() error {
-	p.lobby.eventHandler.Cancel()
-	p.lobby.subscription.Cancel()
-	err := p.lobby.topic.Close()
+	p.local.eventHandler.Cancel()
+	p.local.subscription.Cancel()
+	err := p.local.topic.Close()
 	if err != nil {
 		logger.Errorf("%s - Failed to Close Local Lobby Topic for Exchange", err)
 	}

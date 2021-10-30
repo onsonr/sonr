@@ -34,7 +34,7 @@ func DisableAutoPush() Option {
 	}
 }
 
-// WithLocation sets the location of the Lobby for OLC
+// WithLocation sets the location of the Topic for Local OLC
 func WithLocation(l *common.Location) Option {
 	return func(o *options) {
 		if o.location != nil {
@@ -47,7 +47,7 @@ func WithLocation(l *common.Location) Option {
 	}
 }
 
-// WithInterval sets the interval of the Lobby for OLC
+// WithInterval sets the interval of the Topic for Local OLC
 func WithInterval(i time.Duration) Option {
 	return func(o *options) {
 		o.interval = i
