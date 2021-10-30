@@ -29,8 +29,8 @@ type DiscoveryProtocol struct {
 	lobby  *Lobby
 }
 
-// NewProtocol creates new ExchangeProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*DiscoveryProtocol, error) {
+// New creates new DiscoveryProtocol
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*DiscoveryProtocol, error) {
 	// Set options
 	opts := defaultOptions()
 	for _, opt := range options {

@@ -592,29 +592,6 @@
         
           
           <li>
-            <a href="#proto%2fprotocols%2fauthorize.proto">proto/protocols/authorize.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#sonr.protocols.authorize.InviteRequest"><span class="badge">M</span>InviteRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.authorize.InviteResponse"><span class="badge">M</span>InviteResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.authorize.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
-                </li>
-              
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
             <a href="#proto%2fprotocols%2fdiscovery.proto">proto/protocols/discovery.proto</a>
             <ul>
               
@@ -658,6 +635,29 @@
                 <li>
                   <a href="#sonr.protocols.discovery.VisibilityResponse.Visibility"><span class="badge">E</span>VisibilityResponse.Visibility</a>
                 </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fprotocols%2fexchange.proto">proto/protocols/exchange.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.InviteRequest"><span class="badge">M</span>InviteRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.InviteResponse"><span class="badge">M</span>InviteResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
+                </li>
+              
               
               
               
@@ -4604,169 +4604,6 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/protocols/authorize.proto">proto/protocols/authorize.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.protocols.authorize.InviteRequest">InviteRequest</h3>
-        <p>Invitation Message sent on RPC</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>payload</td>
-                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
-                  <td></td>
-                  <td><p>Attached Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.authorize.InviteResponse">InviteResponse</h3>
-        <p>Reply Message sent on RPC</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>decision</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Success </p></td>
-                </tr>
-              
-                <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.authorize.MailboxMessage">MailboxMessage</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>ID is the Message ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>buffer</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Buffer is the message data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
-                  <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
-                  <td></td>
-                  <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
-                </tr>
-              
-                <tr>
-                  <td>createdAt</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Timestamp </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
         <h2 id="proto/protocols/discovery.proto">proto/protocols/discovery.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
@@ -5107,6 +4944,169 @@ Returns a stream of Lobby Refresh Events</p></td>
             
           </tbody>
         </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/protocols/exchange.proto">proto/protocols/exchange.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.protocols.exchange.InviteRequest">InviteRequest</h3>
+        <p>Invitation Message sent on RPC</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
+                  <td></td>
+                  <td><p>Attached Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Receivers Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.InviteResponse">InviteResponse</h3>
+        <p>Reply Message sent on RPC</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>decision</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Success </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Receivers Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.MailboxMessage">MailboxMessage</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>ID is the Message ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>buffer</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Buffer is the message data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
+                  <td></td>
+                  <td><p>Receivers Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+                <tr>
+                  <td>createdAt</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Timestamp </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
       
 
       

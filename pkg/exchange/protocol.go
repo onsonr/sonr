@@ -1,4 +1,4 @@
-package authorize
+package exchange
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/core/pkg/common"
 )
 
-type AuthorizeProtocol struct {
+type ExchangeProtocol struct {
 	ctx  context.Context
 	host *host.SNRHost
 	node api.NodeImpl
@@ -19,12 +19,12 @@ type AuthorizeProtocol struct {
 	invites map[peer.ID]*InviteRequest
 }
 
-// NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*AuthorizeProtocol, error) {
+// New creates a new ExchangeProtocol
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
 	//mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
 
 	// Create Mailbox Protocol
-	mailProtocol := &AuthorizeProtocol{
+	mailProtocol := &ExchangeProtocol{
 		ctx:  ctx,
 		host: host,
 		//	mail: mail,
@@ -191,7 +191,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*A
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
 // Method also returns the InviteRequest that points to the Response.
-func (sq *AuthorizeProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common.Payload, error) {
+func (sq *ExchangeProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common.Payload, error) {
 	// Authenticate Message
 	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
@@ -212,7 +212,7 @@ func (sq *AuthorizeProtocol) Validate(peer peer.ID, resp *InviteResponse) (*comm
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
-func (p *AuthorizeProtocol) Request(to *common.Peer) error {
+func (p *ExchangeProtocol) Request(to *common.Peer) error {
 	// Create Request
 	id, req, err := p.createRequest(to)
 	if err != nil {
@@ -245,7 +245,7 @@ func (p *AuthorizeProtocol) Request(to *common.Peer) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *AuthorizeProtocol) Respond(decs bool, to *common.Peer) error {
+func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) error {
 	// Create Response
 	id, resp, err := p.createResponse(decs, to)
 	if err != nil {

@@ -25,8 +25,8 @@ type TransmitProtocol struct {
 	supplyQueue  *list.List      // supply queue
 }
 
-// NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
+// New creates a new TransferProtocol
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
 	// create a new transfer protocol
 	invProtocol := &TransmitProtocol{
 		ctx:  ctx,
@@ -243,6 +243,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 		logger.Debugf("Start: Reading Item - %v", i)
 		s.StartItemRead(i, p.node, stream, compChan)
 		logger.Debugf("Done: Reading Item - %v", i)
+		p.node.GetState().NeedsWait()
 	}
 
 	// Wait for all items to be written
@@ -265,8 +266,10 @@ func (p *TransmitProtocol) onOutgoingTransfer(s *Session, stream network.Stream)
 		go handleComplete(s, p.node, &wg, compChan)
 
 		// Create New Writer
+		logger.Debugf("Start: Writing Item - %v", i)
 		s.StartItemWrite(i, p.node, stream, compChan)
 		logger.Debugf("Done: Writing Item - %v", i)
+		p.node.GetState().NeedsWait()
 	}
 
 	// Wait for all items to be written

@@ -26,24 +26,6 @@ func (e Environment) IsProd() bool {
 	return e == Environment_PRODUCTION
 }
 
-// WrapErrors wraps errors list into a single error
-func WrapErrors(msg string, errs []error) error {
-	// Check if errors are empty
-	if len(errs) == 0 {
-		return nil
-	}
-
-	// Iterate over errors
-	err := errors.New(msg)
-	for _, e := range errs {
-		if e != nil {
-			err = errors.Wrap(e, e.Error())
-			continue
-		}
-	}
-	return err
-}
-
 // OLC returns Open Location code
 func (l *Location) OLC() string {
 	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 4)

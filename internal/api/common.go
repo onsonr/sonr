@@ -66,7 +66,7 @@ type State struct {
 	Chn  chan bool
 }
 
-// NeedsWait Checks rather to wait or does not need
+// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
 func (c *State) NeedsWait() {
 	<-c.Chn
 }

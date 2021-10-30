@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/sonr-io/core/pkg/authorize"
+	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/discovery"
 	"github.com/sonr-io/core/pkg/transmit"
 
@@ -90,21 +90,21 @@ type MotorNodeStub struct {
 	// Protocols
 	*transmit.TransmitProtocol
 	*discovery.DiscoveryProtocol
-	*authorize.AuthorizeProtocol
+	*exchange.ExchangeProtocol
 }
 
 // startMotorService creates a new Client service stub for the node.
 func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNodeStub, error) {
 
 	// Set Discovery Protocol
-	discProtocol, err := discovery.NewProtocol(ctx, n.host, n, discovery.WithLocation(opts.location))
+	discProtocol, err := discovery.New(ctx, n.host, n, discovery.WithLocation(opts.location))
 	if err != nil {
 		logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
 		return nil, err
 	}
 
 	// Set Transmit Protocol
-	transmitProtocol, err := transmit.NewProtocol(ctx, n.host, n)
+	transmitProtocol, err := transmit.New(ctx, n.host, n)
 	if err != nil {
 		logger.Errorf("%s - Failed to start TransmitProtocol", err)
 		return nil, err
