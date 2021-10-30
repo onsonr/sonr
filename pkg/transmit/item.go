@@ -27,7 +27,7 @@ type itemReader struct {
 }
 
 // handleRead reads from the given Reader and writes to the given Buffer.
-func handleRead(ir *itemReader, reader msgio.ReadCloser) {
+func (ir *itemReader) handleRead(reader msgio.ReadCloser) {
 	// Route Data from Stream
 	for i := 0; i < int(ir.size); {
 		// Read Next Message
@@ -46,12 +46,14 @@ func handleRead(ir *itemReader, reader msgio.ReadCloser) {
 		}
 
 		// Write Chunk to Buffer
-		if err := ir.WriteChunk(buf); err != nil {
+		n, err := ir.buffer.Write(buf)
+		if err != nil {
 			logger.Errorf("%s - Failed to Write Chunk to Buffer Read Stream", err)
 			ir.doneChan <- false
 			return
 		}
-		i += len(buf)
+		i += n
+		ir.progressChan <- n
 	}
 
 	// Flush Buffer to File
@@ -65,22 +67,6 @@ func handleRead(ir *itemReader, reader msgio.ReadCloser) {
 
 	// Complete Writing to File
 	ir.doneChan <- true
-}
-
-// WriteChunk writes a chunk to the buffer
-func (ir *itemReader) WriteChunk(b []byte) error {
-	n, err := ir.buffer.Write(b)
-	if err != nil {
-		return err
-	}
-	ir.progressChan <- n
-	return nil
-}
-
-// Close closes the ItemReader channels
-func (ir *itemReader) Close() {
-	close(ir.progressChan)
-	close(ir.doneChan)
 }
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
@@ -118,7 +104,7 @@ type itemWriter struct {
 }
 
 // handleWrite writes the chunks of the given file to the stream
-func handleWrite(iw *itemWriter, writer msgio.WriteCloser) {
+func (iw *itemWriter) handleWrite(writer msgio.WriteCloser) {
 	// Loop through File
 	for {
 		c, err := iw.chunker.Next()
@@ -136,29 +122,15 @@ func handleWrite(iw *itemWriter, writer msgio.WriteCloser) {
 		}
 
 		// Write Chunk to Stream
-		if err := iw.WriteChunk(c.Data, writer); err != nil {
+		err = writer.WriteMsg(c.Data)
+		if err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
 			iw.doneChan <- false
 			return
 		}
+		iw.progressChan <- c.Length
 	}
 	iw.doneChan <- true
-}
-
-// WriteChunk writes a chunk to the Stream
-func (iw *itemWriter) WriteChunk(b []byte, writer msgio.WriteCloser) error {
-	err := writer.WriteMsg(b)
-	if err != nil {
-		return err
-	}
-	iw.progressChan <- len(b)
-	return nil
-}
-
-// Close closes the ItemWriter channels
-func (iw *itemWriter) Close() {
-	close(iw.progressChan)
-	close(iw.doneChan)
 }
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader

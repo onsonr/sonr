@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"container/list"
 	"context"
-	"sync"
 	"time"
 
 	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
@@ -50,10 +50,8 @@ func (s *Session) IndexAt(i int) *common.FileItem {
 	return s.payload.GetItems()[i].GetFile()
 }
 
-// handleComplete handles the completion of a session item.
-func handleComplete(s *Session, n api.NodeImpl, wg *sync.WaitGroup, compChan chan itemResult) {
-	defer wg.Done()
-	defer close(compChan)
+// Complete handles the completion of a session item.
+func (s *Session) Complete(n api.NodeImpl, stream network.Stream, compChan chan itemResult) {
 	r := <-compChan
 
 	// Update Success
@@ -65,6 +63,17 @@ func handleComplete(s *Session, n api.NodeImpl, wg *sync.WaitGroup, compChan cha
 		s.payload.Items[r.index] = r.item
 		s.lastUpdated = int64(time.Now().Unix())
 	}
+	if r.index == s.Count()-1 {
+		// Send Complete Event
+		logger.Debug("Sending Complete Event")
+		n.OnComplete(s.Event())
+
+		// Close Stream if Incoming
+		if r.IsIncoming() {
+			logger.Debug("Closing Stream")
+			stream.Close()
+		}
+	}
 	return
 }
 
@@ -73,7 +82,6 @@ func (s *Session) ReadItem(i int, n api.NodeImpl, reader msgio.ReadCloser, cchan
 	// Initialize Properties
 	logger.Debugf("Start: Reading Item - %v", i)
 	fi := s.IndexAt(i)
-	ticker := time.NewTicker(TickerInterval)
 
 	// Reset Item Path by OS FileSystem
 	path, err := fi.ResetPath(fs.Downloads)
@@ -98,25 +106,18 @@ func (s *Session) ReadItem(i int, n api.NodeImpl, reader msgio.ReadCloser, cchan
 	}
 
 	// Start Channels and Reader
-	defer ir.Close()
-	go handleRead(ir, reader)
+	go ir.handleRead(reader)
 
 	// Await Progress and Results
 	for {
 		select {
-		case r := <-ir.doneChan:
-			logger.Debugf("Done: Reading Item - %v", i)
-			ticker.Stop()
-			cchan <- ir.toResult(r)
-			return
-
 		case n := <-ir.progressChan:
 			ir.written += n
 
-		case <-ticker.C:
-			if ev := ir.getProgressEvent(); ev != nil {
-				ir.node.OnProgress(ev)
-			}
+		case r := <-ir.doneChan:
+			logger.Debugf("Done: Reading Item - %v", i)
+			cchan <- ir.toResult(r)
+			return
 		}
 	}
 }
@@ -126,7 +127,6 @@ func (s *Session) WriteItem(i int, n api.NodeImpl, writer msgio.WriteCloser, cch
 	// Initialize Properties
 	logger.Debugf("Start: Writing Item - %v", i)
 	fi := s.IndexAt(i)
-	ticker := time.NewTicker(TickerInterval)
 
 	// Create New File Chunker
 	chunker, err := fs.NewFileChunker(fi.GetPath())
@@ -150,25 +150,18 @@ func (s *Session) WriteItem(i int, n api.NodeImpl, writer msgio.WriteCloser, cch
 	}
 
 	// Start Channels and Writer
-	defer iw.Close()
-	go handleWrite(iw, writer)
+	go iw.handleWrite(writer)
 
 	// Await Progress and Results
 	for {
 		select {
 		case r := <-iw.doneChan:
 			logger.Debugf("Done: Reading Item - %v", i)
-			ticker.Stop()
 			cchan <- iw.toResult(r)
 			return
 
 		case n := <-iw.progressChan:
 			iw.written += n
-
-		case <-ticker.C:
-			if ev := iw.getProgressEvent(); ev != nil {
-				iw.node.OnProgress(ev)
-			}
 		}
 	}
 }

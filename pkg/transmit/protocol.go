@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"context"
 	"fmt"
-	"sync"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -217,7 +216,6 @@ func (p *TransmitProtocol) onInviteResponse(s network.Stream) {
 func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	// Initialize Properties
 	logger.Debug("Beginning INCOMING Transmit Stream")
-	var wg sync.WaitGroup
 	reader := msgio.NewReader(stream)
 
 	// Find Entry in Queue
@@ -231,25 +229,18 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	for i := 0; i < s.Count(); {
 		// Initialize Sync Management
 		compChan := make(chan itemResult)
-		wg.Add(1)
-		go handleComplete(s, p.node, &wg, compChan)
+		go s.Complete(p.node, stream, compChan)
 
 		// Create Reader
 		s.ReadItem(i, p.node, reader, compChan)
 		p.node.GetState().NeedsWait()
 	}
-
-	// Wait for all items to be written
-	wg.Wait()
-	stream.Close()
-	p.node.OnComplete(s.Event())
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
 func (p *TransmitProtocol) onOutgoingTransfer(s *Session, remotePeer peer.ID) {
 	// Initialize Properties
 	logger.Debug("Beginning OUTGOING Transmit Stream")
-	var wg sync.WaitGroup
 
 	// Create a new stream
 	stream, err := p.host.NewStream(p.ctx, remotePeer, IncomingPID)
@@ -263,15 +254,10 @@ func (p *TransmitProtocol) onOutgoingTransfer(s *Session, remotePeer peer.ID) {
 	for i := 0; i < s.Count(); {
 		// Initialize Sync Management
 		compChan := make(chan itemResult)
-		wg.Add(1)
-		go handleComplete(s, p.node, &wg, compChan)
+		go s.Complete(p.node, stream, compChan)
 
 		// Create New Writer
 		s.WriteItem(i, p.node, writer, compChan)
 		p.node.GetState().NeedsWait()
 	}
-
-	// Wait for all items to be written
-	wg.Wait()
-	p.node.OnComplete(s.Event())
 }
