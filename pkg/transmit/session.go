@@ -1,39 +1,72 @@
 package transmit
 
 import (
-	"bytes"
 	"container/list"
 	"context"
+	"sync"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
 )
 
 // Session is a single entry in the Transmit queue.
 type Session struct {
-	ctx         context.Context
 	direction   common.Direction
 	from        *common.Peer
 	to          *common.Peer
 	payload     *common.Payload
 	lastUpdated int64
-	results     map[int32]bool
 }
 
-// Count returns the number of items in the payload.
-func (s *Session) Count() int {
-	return len(s.payload.GetItems())
+// IsIncoming returns true if the session is incoming.
+func (s Session) IsIncoming() bool {
+	return s.direction == common.Direction_INCOMING
 }
 
-// Event returns the CompleteEvent for the given session.
-func (s *Session) Event() *api.CompleteEvent {
+// IsOutgoing returns true if the session is outgoing.
+func (s Session) IsOutgoing() bool {
+	return s.direction == common.Direction_OUTGOING
+}
+
+// ReadFrom reads the next Session from the given stream.
+func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
+	// Initialize Params
+	logger.Debug("Beginning INCOMING Transmit Stream")
+
+	// Handle incoming stream
+	rs := msgio.NewReader(stream)
+	var wg sync.WaitGroup
+
+	// Write All Files
+	for i, v := range s.Items() {
+		// Create Reader
+		r, err := NewItemReader(i, s.Count(), v, n)
+		if err != nil {
+			logger.Errorf("%s - Failed to create new reader.", err)
+			rs.Close()
+			return nil, err
+		}
+
+		// Write to File
+		wg.Add(1)
+		go func(idx, total int) {
+			defer wg.Done()
+			if r == nil {
+				logger.Errorf("%s - Failed to create new reader.")
+				return
+			}
+			r.ReadFrom(rs)
+		}(i, s.Count())
+	}
+	wg.Wait()
+	stream.Close()
+
+	// Return Complete Event
 	return &api.CompleteEvent{
 		From:       s.from,
 		To:         s.to,
@@ -41,129 +74,60 @@ func (s *Session) Event() *api.CompleteEvent {
 		Payload:    s.payload,
 		CreatedAt:  s.payload.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
-		Results:    s.results,
-	}
+	}, nil
 }
 
-// IndexAt returns the FileItem at the given index
-func (s *Session) IndexAt(i int) *common.FileItem {
-	return s.payload.GetItems()[i].GetFile()
-}
-
-// Complete handles the completion of a session item.
-func (s *Session) Complete(n api.NodeImpl, stream network.Stream, compChan chan itemResult) {
-	r := <-compChan
-
-	// Update Success
-	logger.Debug("Received Item Result", golog.Fields{"success": r.success})
-	s.results[int32(r.index)] = r.success
-
-	// Replace Incoming Item
-	if r.IsIncoming() {
-		s.payload.Items[r.index] = r.item
-		s.lastUpdated = int64(time.Now().Unix())
-	}
-	if r.index == s.Count()-1 {
-		// Send Complete Event
-		logger.Debug("Sending Complete Event")
-		n.OnComplete(s.Event())
-
-		// Close Stream if Incoming
-		if r.IsIncoming() {
-			logger.Debug("Closing Stream")
-			stream.Close()
-		}
-	}
-	return
-}
-
-// ReadItem Returns a new Reader for the given FileItem
-func (s *Session) ReadItem(i int, n api.NodeImpl, reader msgio.ReadCloser, cchan chan itemResult) {
-	// Initialize Properties
-	logger.Debugf("Start: Reading Item - %v", i)
-	fi := s.IndexAt(i)
-
-	// Reset Item Path by OS FileSystem
-	path, err := fi.ResetPath(fs.Downloads)
-	if err != nil {
-		logger.Errorf("Failed to Apply Reader: %s", err)
-		return
-	}
-
-	// Create New Reader
-	ir := &itemReader{
-		item:         fi,
-		index:        i,
-		count:        s.Count(),
-		size:         fi.GetSize(),
-		node:         n,
-		written:      0,
-		progressChan: make(chan int),
-		doneChan:     make(chan bool),
-		interval:     calculateInterval(fi.GetSize()),
-		buffer:       bytes.Buffer{},
-		path:         path,
-	}
-
-	// Start Channels and Reader
-	go ir.handleRead(reader)
-
-	// Await Progress and Results
-	for {
-		select {
-		case n := <-ir.progressChan:
-			ir.written += n
-
-		case r := <-ir.doneChan:
-			logger.Debugf("Done: Reading Item - %v", i)
-			cchan <- ir.toResult(r)
-			return
-		}
-	}
-}
-
-// WriteItem handles the writing of a FileItem to a Stream
-func (s *Session) WriteItem(i int, n api.NodeImpl, writer msgio.WriteCloser, cchan chan itemResult) {
-	// Initialize Properties
-	logger.Debugf("Start: Writing Item - %v", i)
-	fi := s.IndexAt(i)
-
-	// Create New File Chunker
-	chunker, err := fs.NewFileChunker(fi.GetPath())
-	if err != nil {
-		logger.Errorf("%s - Failed to create new chunker.", err)
-		return
-	}
+// WriteTo writes the Session to the given stream.
+func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
+	// Initialize Params
+	logger.Debug("Beginning OUTGOING Transmit Stream")
+	wc := msgio.NewWriter(stream)
+	var wg sync.WaitGroup
 
 	// Create New Writer
-	iw := &itemWriter{
-		item:         fi,
-		index:        i,
-		count:        s.Count(),
-		node:         n,
-		size:         fi.GetSize(),
-		written:      0,
-		progressChan: make(chan int),
-		doneChan:     make(chan bool),
-		interval:     calculateInterval(fi.GetSize()),
-		chunker:      chunker,
-	}
-
-	// Start Channels and Writer
-	go iw.handleWrite(writer)
-
-	// Await Progress and Results
-	for {
-		select {
-		case r := <-iw.doneChan:
-			logger.Debugf("Done: Reading Item - %v", i)
-			cchan <- iw.toResult(r)
-			return
-
-		case n := <-iw.progressChan:
-			iw.written += n
+	for i, v := range s.Items() {
+		// Create New Writer
+		w, err := NewItemWriter(i, s.Count(), v, n)
+		if err != nil {
+			logger.Errorf("%s - Failed to create new writer.", err)
+			wc.Close()
+			return nil, err
 		}
+
+		// Write File to Stream
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if w == nil {
+				logger.Errorf("%s - Failed to create new writer.")
+				return
+			}
+			w.WriteTo(wc)
+		}()
 	}
+
+	// Wait for all writes to finish
+	wg.Wait()
+
+	// Return Complete Event
+	return &api.CompleteEvent{
+		From:       s.from,
+		To:         s.to,
+		Direction:  s.direction,
+		Payload:    s.payload,
+		CreatedAt:  s.payload.GetCreatedAt(),
+		ReceivedAt: int64(time.Now().Unix()),
+	}, nil
+}
+
+// Count returns the number of items in Payload
+func (s Session) Count() int {
+	return len(s.payload.GetItems())
+}
+
+// MapItems performs PayloadItemFunc on each item in the Payload.
+func (s Session) Items() []*common.Payload_Item {
+	return s.payload.GetItems()
 }
 
 // SessionQueue is a queue for incoming and outgoing requests.
@@ -188,12 +152,10 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 		from:        req.GetFrom(),
 		to:          req.GetTo(),
 		lastUpdated: int64(time.Now().Unix()),
-		results:     make(map[int32]bool),
-		ctx:         sq.ctx,
 	}
 
 	// Add to Requests
-	sq.queue.PushBack(&entry)
+	sq.queue.PushBack(entry)
 	return nil
 }
 
@@ -206,47 +168,45 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 		from:        req.GetFrom(),
 		to:          req.GetTo(),
 		lastUpdated: int64(time.Now().Unix()),
-		results:     make(map[int32]bool),
-		ctx:         sq.ctx,
 	}
 
 	// Add to Requests
-	sq.queue.PushBack(&entry)
+	sq.queue.PushBack(entry)
 	return nil
 }
 
 // Next returns topmost entry in the queue.
-func (sq *SessionQueue) Next() (*Session, error) {
+func (sq *SessionQueue) Next() (Session, error) {
 	// Find Entry for Peer
-	entry := sq.queue.Remove(sq.queue.Front()).(*Session)
+	entry := sq.queue.Remove(sq.queue.Front()).(Session)
 	entry.lastUpdated = int64(time.Now().Unix())
 	return entry, nil
 }
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
 // Method also returns the InviteRequest that points to the Response.
-func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
+func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
 	// Authenticate Message
 	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
-		return nil, ErrFailedAuth
+		return Session{}, ErrFailedAuth
 	}
 
 	// Check Decision
 	if !resp.GetDecision() {
-		return nil, nil
+		return Session{}, nil
 	}
 
 	// Check if the request is valid
 	if sq.queue.Len() == 0 {
-		return nil, ErrEmptyRequests
+		return Session{}, ErrEmptyRequests
 	}
 
 	// Get Next Entry
 	entry, err := sq.Next()
 	if err != nil {
 		logger.Errorf("%s - Failed to get Transmit entry", err)
-		return nil, err
+		return Session{}, err
 	}
 
 	entry.lastUpdated = int64(time.Now().Unix())
