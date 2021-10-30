@@ -14,10 +14,11 @@ import (
 
 // Transfer Protocol ID's
 const (
-	RequestPID  protocol.ID = "/transmit/request/0.0.1"
-	ResponsePID protocol.ID = "/transmit/response/0.0.1"
-	IncomingPID protocol.ID = "/transmit/incoming/0.0.1"
-	OutgoingPID protocol.ID = "/transmit/outgoing/0.0.1"
+	RequestPID     protocol.ID   = "/transmit/request/0.0.1"
+	ResponsePID    protocol.ID   = "/transmit/response/0.0.1"
+	IncomingPID    protocol.ID   = "/transmit/incoming/0.0.1"
+	OutgoingPID    protocol.ID   = "/transmit/outgoing/0.0.1"
+	TickerInterval time.Duration = time.Millisecond * 800
 )
 
 // Error Definitions

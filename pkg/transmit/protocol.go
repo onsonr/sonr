@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -216,16 +215,17 @@ func (p *TransmitProtocol) onInviteResponse(s network.Stream) {
 
 // onIncomingTransfer incoming transfer handler
 func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
+	// Initialize Properties
 	logger.Debug("Beginning INCOMING Transmit Stream")
+	var wg sync.WaitGroup
+	reader := msgio.NewReader(stream)
+
 	// Find Entry in Queue
 	s, err := p.sessionQueue.Next()
 	if err != nil {
 		logger.Errorf("%s - Failed to find transfer request", err)
 		stream.Close()
 	}
-
-	// Create New Reader
-	var wg sync.WaitGroup
 
 	// Create Reader
 	for i := 0; i < s.Count(); {
@@ -235,9 +235,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 		go handleComplete(s, p.node, &wg, compChan)
 
 		// Create Reader
-		logger.Debugf("Start: Reading Item - %v", i)
-		s.ReadItem(i, p.node, stream, compChan)
-		logger.Debugf("Done: Reading Item - %v", i)
+		s.ReadItem(i, p.node, reader, compChan)
 		p.node.GetState().NeedsWait()
 	}
 
@@ -249,17 +247,19 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
 func (p *TransmitProtocol) onOutgoingTransfer(s *Session, remotePeer peer.ID) {
+	// Initialize Properties
+	logger.Debug("Beginning OUTGOING Transmit Stream")
+	var wg sync.WaitGroup
+
 	// Create a new stream
 	stream, err := p.host.NewStream(p.ctx, remotePeer, IncomingPID)
 	if err != nil {
 		logger.Errorf("%s - Failed to create new stream.", err)
+		return
 	}
 
-	logger.Debug("Beginning OUTGOING Transmit Stream")
-	// Initialize Params
-	var wg sync.WaitGroup
-
 	// Create New Writer
+	writer := msgio.NewWriter(stream)
 	for i := 0; i < s.Count(); {
 		// Initialize Sync Management
 		compChan := make(chan itemResult)
@@ -267,34 +267,11 @@ func (p *TransmitProtocol) onOutgoingTransfer(s *Session, remotePeer peer.ID) {
 		go handleComplete(s, p.node, &wg, compChan)
 
 		// Create New Writer
-		logger.Debugf("Start: Writing Item - %v", i)
-		s.WriteItem(i, p.node, stream, compChan)
-		logger.Debugf("Done: Writing Item - %v", i)
+		s.WriteItem(i, p.node, writer, compChan)
 		p.node.GetState().NeedsWait()
 	}
 
 	// Wait for all items to be written
 	wg.Wait()
 	p.node.OnComplete(s.Event())
-}
-
-// handleComplete handles the completion of a session item.
-func handleComplete(s *Session, n api.NodeImpl, wg *sync.WaitGroup, compChan chan itemResult) {
-	defer wg.Done()
-	r := <-compChan
-	if !r.success {
-		logger.Errorf("Failed to Complete File: %s", r.item.GetFile().GetName())
-		return
-	}
-	// Update Success
-	logger.Debug("Received Item Result", golog.Fields{"success": r.success})
-	s.results[int32(r.index)] = r.success
-
-	// Replace Incoming Item
-	if r.IsIncoming() {
-		s.payload.Items[r.index] = r.item
-		s.lastUpdated = int64(time.Now().Unix())
-	}
-	close(compChan)
-	return
 }

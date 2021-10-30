@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"container/list"
 	"context"
+	"sync"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
@@ -49,11 +50,30 @@ func (s *Session) IndexAt(i int) *common.FileItem {
 	return s.payload.GetItems()[i].GetFile()
 }
 
+// handleComplete handles the completion of a session item.
+func handleComplete(s *Session, n api.NodeImpl, wg *sync.WaitGroup, compChan chan itemResult) {
+	defer wg.Done()
+	defer close(compChan)
+	r := <-compChan
+
+	// Update Success
+	logger.Debug("Received Item Result", golog.Fields{"success": r.success})
+	s.results[int32(r.index)] = r.success
+
+	// Replace Incoming Item
+	if r.IsIncoming() {
+		s.payload.Items[r.index] = r.item
+		s.lastUpdated = int64(time.Now().Unix())
+	}
+	return
+}
+
 // ReadItem Returns a new Reader for the given FileItem
-func (s *Session) ReadItem(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
+func (s *Session) ReadItem(i int, n api.NodeImpl, reader msgio.ReadCloser, cchan chan itemResult) {
 	// Initialize Properties
-	reader := msgio.NewReader(str)
+	logger.Debugf("Start: Reading Item - %v", i)
 	fi := s.IndexAt(i)
+	ticker := time.NewTicker(TickerInterval)
 
 	// Reset Item Path by OS FileSystem
 	path, err := fi.ResetPath(fs.Downloads)
@@ -81,27 +101,32 @@ func (s *Session) ReadItem(i int, n api.NodeImpl, str network.Stream, cchan chan
 	defer ir.Close()
 	go handleRead(ir, reader)
 
-	// Route Data from Stream
+	// Await Progress and Results
 	for {
 		select {
+		case r := <-ir.doneChan:
+			logger.Debugf("Done: Reading Item - %v", i)
+			ticker.Stop()
+			cchan <- ir.toResult(r)
+			return
+
 		case n := <-ir.progressChan:
 			ir.written += n
+
+		case <-ticker.C:
 			if ev := ir.getProgressEvent(); ev != nil {
 				ir.node.OnProgress(ev)
 			}
-		case r := <-ir.doneChan:
-			logger.Debug("Item Read is Complete")
-			cchan <- ir.toResult(r)
-			return
 		}
 	}
 }
 
 // WriteItem handles the writing of a FileItem to a Stream
-func (s *Session) WriteItem(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
+func (s *Session) WriteItem(i int, n api.NodeImpl, writer msgio.WriteCloser, cchan chan itemResult) {
 	// Initialize Properties
-	writer := msgio.NewWriter(str)
+	logger.Debugf("Start: Writing Item - %v", i)
 	fi := s.IndexAt(i)
+	ticker := time.NewTicker(TickerInterval)
 
 	// Create New File Chunker
 	chunker, err := fs.NewFileChunker(fi.GetPath())
@@ -128,18 +153,22 @@ func (s *Session) WriteItem(i int, n api.NodeImpl, str network.Stream, cchan cha
 	defer iw.Close()
 	go handleWrite(iw, writer)
 
-	// Await Progress and Result
+	// Await Progress and Results
 	for {
 		select {
+		case r := <-iw.doneChan:
+			logger.Debugf("Done: Reading Item - %v", i)
+			ticker.Stop()
+			cchan <- iw.toResult(r)
+			return
+
 		case n := <-iw.progressChan:
 			iw.written += n
+
+		case <-ticker.C:
 			if ev := iw.getProgressEvent(); ev != nil {
 				iw.node.OnProgress(ev)
 			}
-		case r := <-iw.doneChan:
-			logger.Debug("Item Write is Complete")
-			cchan <- iw.toResult(r)
-			return
 		}
 	}
 }
