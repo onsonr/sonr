@@ -43,6 +43,21 @@ func calculateInterval(size int64) int {
 	return int(interval)
 }
 
+// pushProgress pushes a progress event to the node
+func pushProgress(n api.NodeImpl, written int, size int64, index, count int) {
+	// Create Progress Event
+	if (written % ITEM_INTERVAL) == 0 {
+		event := &api.ProgressEvent{
+			Progress: (float64(written) / float64(size)),
+			Index:    int32(index),
+			Count:    int32(count),
+		}
+
+		// Push ProgressEvent to Emitter
+		n.OnProgress(event)
+	}
+}
+
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
 func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
 	return &api.DecisionEvent{

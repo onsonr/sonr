@@ -33,6 +33,11 @@ func (s Session) IsOutgoing() bool {
 	return s.direction == common.Direction_OUTGOING
 }
 
+func (s Session) readItem(wg *sync.WaitGroup, n api.NodeImpl, index int, reader msgio.ReadCloser) {
+	// Create New Reader
+
+}
+
 // ReadFrom reads the next Session from the given stream.
 func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
@@ -44,24 +49,9 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 
 	// Write All Files
 	for i, v := range s.Items() {
-		// Create Reader
-		r, err := NewItemReader(i, s.Count(), v, n)
-		if err != nil {
-			logger.Errorf("%s - Failed to create new reader.", err)
-			rs.Close()
-			return nil, err
-		}
-
 		// Write to File
 		wg.Add(1)
-		go func(idx, total int) {
-			defer wg.Done()
-			if r == nil {
-				logger.Errorf("%s - Failed to create new reader.")
-				return
-			}
-			r.ReadFrom(rs)
-		}(i, s.Count())
+		go ReadItem(i, s.Count(), v, &wg, n, rs)
 	}
 	wg.Wait()
 	stream.Close()
@@ -86,24 +76,9 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEv
 
 	// Create New Writer
 	for i, v := range s.Items() {
-		// Create New Writer
-		w, err := NewItemWriter(i, s.Count(), v, n)
-		if err != nil {
-			logger.Errorf("%s - Failed to create new writer.", err)
-			wc.Close()
-			return nil, err
-		}
-
 		// Write File to Stream
 		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if w == nil {
-				logger.Errorf("%s - Failed to create new writer.")
-				return
-			}
-			w.WriteTo(wc)
-		}()
+		go WriteItem(i, s.Count(), v, &wg, n, wc)
 	}
 
 	// Wait for all writes to finish

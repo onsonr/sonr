@@ -2,7 +2,7 @@ package transmit
 
 import (
 	"io"
-	"os"
+	"sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
@@ -72,83 +72,23 @@ func (p *TransmitProtocol) onOutgoingTransfer(entry Session, stream network.Stre
 	p.node.OnComplete(event)
 }
 
-// itemWriter is a Writer for FileItems
-type itemWriter struct {
-	chunker *fs.Chunker
-	file    *os.File
-	item    *common.FileItem
-	index   int
-	count   int
-	size    int64
-	node    api.NodeImpl
-}
-
 // NewItemWriter Returns a new Reader for the given FileItem
-func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeImpl) (*itemWriter, error) {
+func WriteItem(index int, count int, pi *common.Payload_Item, wg *sync.WaitGroup, node api.NodeImpl, writer msgio.WriteCloser) {
 	// Properties
+	defer wg.Done()
 	size := pi.GetSize()
 	item := pi.GetFile()
 
-	// Define Chunker Opts
-	var avgSize int
-	if size < ITEM_INTERVAL {
-		avgSize = int(size)
-	} else {
-		avgSize = int(size / ITEM_INTERVAL)
-	}
-
-	// Open Os File
-	f, err := os.Open(item.Path)
-	if err != nil {
-		logger.Errorf("%s - Error opening item for Write stream", err)
-		return nil, err
-	}
-
 	// Create New Chunker
-	chunker, err := fs.NewChunker(f, fs.ChunkerOptions{
-		AverageSize: avgSize, // Only Average Required
-	})
+	chunker, err := fs.NewFileChunker(item.Path)
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
-		return nil, err
+		return
 	}
-
-	// Create New Writer
-	return &itemWriter{
-		node:    node,
-		item:    item,
-		size:    size,
-		file:    f,
-		index:   index,
-		count:   count,
-		chunker: chunker,
-	}, nil
-}
-
-// Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress(i int) {
-	// Create Progress Event
-	if (i % ITEM_INTERVAL) == 0 {
-		event := &api.ProgressEvent{
-			Progress: (float64(i) / float64(p.size)),
-			Index:    int32(p.index),
-			Count:    int32(p.count),
-		}
-
-		// Push ProgressEvent to Emitter
-		p.node.OnProgress(event)
-	}
-}
-
-// Write Item to Stream
-func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
-	// Defer Closing of File and Writer and WaitGroup
-	defer iw.file.Close()
-	defer writer.Close()
 
 	// Loop through File
-	for i := 0; i < int(iw.size); {
-		c, err := iw.chunker.Next()
+	for i := 0; i < int(size); {
+		c, err := chunker.Next()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -171,13 +111,9 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 		}
 		// Update Progress
 		i += c.Length
-		iw.Progress(i)
-	}
 
-	// Close File
-	if err := iw.file.Close(); err != nil {
-		logger.Errorf("%s - Failed to Close item on Write Stream", err)
-		return
+		// Update Progress
+		go pushProgress(node, i, size, index, count)
 	}
 	return
 }

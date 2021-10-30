@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
@@ -69,61 +70,21 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	p.node.OnComplete(event)
 }
 
-// itemReader is a Reader for a FileItem
-type itemReader struct {
-	item   *common.FileItem
-	buffer bytes.Buffer
-	path   string
-	index  int
-	count  int
-	size   int64
-	node   api.NodeImpl
-}
-
 // NewItemReader Returns a new Reader for the given FileItem
-func NewItemReader(index int, count int, item *common.Payload_Item, node api.NodeImpl) (*itemReader, error) {
+func ReadItem(index int, count int, pi *common.Payload_Item, wg *sync.WaitGroup, node api.NodeImpl, reader msgio.ReadCloser) {
+	defer wg.Done()
 	// generate path
-	path, err := fs.Downloads.GenPath(item.GetFile().GetPath())
+	item := pi.GetFile()
+	size := item.GetSize()
+	path, err := item.ResetPath(fs.Downloads)
 	if err != nil {
-		return nil, err
+		logger.Errorf("%s - Failed to generate path for file: %s", err, item.Name)
+		return
 	}
-	f := item.GetFile()
-	f.Path = path
 
-	// Create New Item Reader
-	return &itemReader{
-		item:   f,
-		size:   f.GetSize(),
-		index:  index,
-		count:  count,
-		path:   path,
-		buffer: bytes.Buffer{},
-		node:   node,
-	}, nil
-}
-
-// Returns Progress of File, Given the written number of bytes
-func (p *itemReader) Progress(i int) {
-	if (i % ITEM_INTERVAL) == 0 {
-		// Create Progress Event
-		event := &api.ProgressEvent{
-			Progress: (float64(i) / float64(p.size)),
-			Index:  int32(p.index),
-			Count:    int32(p.count),
-		}
-
-		// Push ProgressEvent to Emitter
-		p.node.OnProgress(event)
-	}
-}
-
-// ReadFrom Reads from the given Reader and writes to the given File
-func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
-	// Defer Closing of Reader and WaitGroup
-	defer reader.Close()
-
+	buffer := bytes.Buffer{}
 	// Route Data from Stream
-	for i := 0; i < int(ir.size); {
+	for i := 0; i < int(size); {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
 		if err == io.EOF {
@@ -133,22 +94,24 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 			return
 		} else {
 			// Write Chunk to File
-			n, err := ir.buffer.Write(buf)
+			n, err := buffer.Write(buf)
 			if err != nil {
 				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
 				return
 			}
 			i += n
-			ir.Progress(i)
+
+			// Update Progress
+			go pushProgress(node, i, size, index, count)
 		}
 	}
 
 	// Write File Buffer to File
-	err := ioutil.WriteFile(ir.path, ir.buffer.Bytes(), 0644)
+	err = ioutil.WriteFile(path, buffer.Bytes(), 0644)
 	if err != nil {
 		logger.Errorf("%s - Failed to Close item on Read Stream", err)
 		return
 	}
-	logger.Debug("Completed writing to file: " + ir.path)
+	logger.Debug("Completed writing to file: " + path)
 	return
 }
