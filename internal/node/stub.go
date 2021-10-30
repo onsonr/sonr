@@ -115,7 +115,7 @@ func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNode
 	stub := &MotorNodeStub{
 		ctx:               ctx,
 		TransmitProtocol:  transmitProtocol,
-		DiscoveryProtocol: discProtocol,
+		DiscoverProtocol: discProtocol,
 		node:              n,
 		grpcServer:        grpcServer,
 	}
@@ -128,7 +128,7 @@ func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNode
 
 // HasProtocols returns true if the node has the protocols.
 func (s *MotorNodeStub) HasProtocols() bool {
-	return s.TransmitProtocol != nil && s.DiscoveryProtocol != nil
+	return s.TransmitProtocol != nil && s.DiscoverProtocol != nil
 }
 
 // Serve serves the RPC Service on the given port.
@@ -142,7 +142,7 @@ func (s *MotorNodeStub) Serve(ctx context.Context, listener net.Listener) {
 		select {
 		case <-ctx.Done():
 			s.grpcServer.Stop()
-			s.DiscoveryProtocol.Close()
+			s.DiscoverProtocol.Close()
 			return
 		}
 	}
@@ -160,7 +160,7 @@ func (s *MotorNodeStub) Update() error {
 	// Check for Valid Protocols
 	if s.HasProtocols() {
 		// Update LobbyProtocol
-		err = s.DiscoveryProtocol.Update()
+		err = s.DiscoverProtocol.Update()
 		if err != nil {
 			logger.Errorf("%s - Failed to Update Lobby", err)
 		} else {
@@ -168,7 +168,7 @@ func (s *MotorNodeStub) Update() error {
 		}
 
 		// Update ExchangeProtocol
-		err := s.DiscoveryProtocol.Put(peer)
+		err := s.DiscoverProtocol.Put(peer)
 		if err != nil {
 			logger.Errorf("%s - Failed to Update Exchange", err)
 		} else {

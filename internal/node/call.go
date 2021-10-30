@@ -6,6 +6,7 @@ import (
 
 	api "github.com/sonr-io/core/internal/api"
 )
+
 // Supply supplies the node with the given amount of resources.
 func (s *MotorNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
 	// Call Lobby Update
@@ -113,7 +114,7 @@ func (s *MotorNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*ap
 	}
 
 	// Call Internal Ping
-	if s.DiscoveryProtocol != nil {
+	if s.DiscoverProtocol != nil {
 		// Call Internal Search
 		entry, err := s.Get(strings.ToLower(req.GetSName()))
 		if err != nil {
