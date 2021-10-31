@@ -1,39 +1,12 @@
 package exchange
 
 import (
-	"errors"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/wallet"
 	common "github.com/sonr-io/core/pkg/common"
-)
-
-// Textile API definitions
-const (
-	// Textile Client API URL
-	TextileClientURL = "https://api.textile.io"
-
-	// Textile Miner Index Target
-	TextileMinerIdx = "api.minerindex.hub.textile.io:443"
-
-	// Textile Mailbox Directory
-	TextileMailboxDirName = "mailbox"
-
-	RequestPID protocol.ID = "/exchange/request/0.0.1"
-
-	ResponsePID protocol.ID = "/exchange/response/0.0.1"
-)
-
-var (
-	logger              = golog.Default.Child("protocols/mailbox")
-	ErrMailboxDisabled  = errors.New("Mailbox not enabled, cannot perform request.")
-	ErrMissingAPIKey    = errors.New("Missing Textile API Key in env")
-	ErrMissingAPISecret = errors.New("Missing Textile API Secret in env")
-	ErrRequestNotFound  = errors.New("Request not found in protocol cache")
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.

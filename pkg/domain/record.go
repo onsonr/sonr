@@ -1,4 +1,4 @@
-package api
+package domain
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/pkg/common"
+	"google.golang.org/api/dns/v1"
 
 	"github.com/pkg/errors"
 )
@@ -35,8 +36,8 @@ var (
 	ErrNBKeys              = errors.New("Namebase API Keys were not provided.")
 )
 
-// DomainMap returns map with host as key and recordValue as value.
-type DomainMap map[string]string
+// RecordMap returns map with host as key and recordValue as value.
+type RecordMap map[string]string
 
 type RecordCategory int
 
@@ -85,7 +86,7 @@ type Record struct {
 	Value string `json:"value"`
 
 	// TTL is the time to live of the record
-	TTL int `json:"ttl"`
+	TTL int64 `json:"ttl"`
 
 	// Category is the determined Sonr Category of Record
 	Category RecordCategory
@@ -162,6 +163,16 @@ func (r Record) ComparePeerID(id peer.ID) bool {
 		return false
 	}
 	return pid == id
+}
+
+// ToDNSRecord converts a Record to a dns.ResourceRecord
+func (r Record) ToDNSRecord() *dns.ResourceRecordSet {
+	return &dns.ResourceRecordSet{
+		Name:    r.Host,
+		Type:    r.Type,
+		Ttl:     int64(r.TTL),
+		Rrdatas: []string{r.Value},
+	}
 }
 
 // Fingerprint is the fingerprint for the Auth Record
@@ -290,14 +301,6 @@ func (r Record) PubKeyBuffer() ([]byte, error) {
 	return buf, nil
 }
 
-// ToDeleteRecord converts a Record to a DeleteRecord
-func (r Record) ToDeleteRecord() DeleteRecord {
-	return DeleteRecord{
-		Type: r.Type,
-		Host: r.Host,
-	}
-}
-
 // Print prints the Record to stdout
 func (r Record) Print() {
 	println("[NB.Record]")
@@ -387,40 +390,6 @@ func verifyStringPubKey(str string) error {
 	return errors.WithMessage(err, "Failed to unmarshal PubKey from Bytes")
 }
 
-// Records is a slice of Record
-type Records []Record
-
-// Len returns the length of the Record Slice
-func (rs Records) Len() int {
-	return len(rs)
-}
-
-// GetAuthRecord returns the Auth Record from the Record Slice
-func (rs Records) GetAuthRecord() (Record, error) {
-	// Check for Auth Record
-	for _, r := range rs {
-		if r.Category == Category_AUTH {
-			return r, nil
-		}
-	}
-
-	// No Auth Record Found
-	return Record{}, errors.New("no auth record found")
-}
-
-// GetNameRecord returns the Name Record from the Record Slice
-func (rs Records) GetNameRecord() (Record, error) {
-	// Check for Name Record
-	for _, r := range rs {
-		if r.Category == Category_NAME {
-			return r, nil
-		}
-	}
-
-	// No Name Record Found
-	return Record{}, errors.New("no name record found")
-}
-
 // checkSnrRecord checks if the record is a SNR Record
 func checkSnrRecord(r Record) error {
 	// Check for TXT Record
@@ -438,4 +407,94 @@ func checkSnrRecord(r Record) error {
 		return err
 	}
 	return nil
+}
+
+// RecordSet is a set of Records
+type RecordSet []Record
+
+func NewRegisterRecordSet(prefix, name, fingerprint, publicKey string) RecordSet {
+	records := RecordSet{}
+	rrauth := NewNBAuthRecord(prefix, name, fingerprint)
+	rrname := NewNBNameRecord(publicKey, name)
+	records = append(records, rrauth, rrname)
+	return records
+}
+
+// RecordSetFromDNS returns a RecordSet from a DNS Response
+func RecordSetFromDNS(rrs *[]*dns.ResourceRecordSet) RecordSet {
+	rs := make(RecordSet, len(*rrs))
+	for _, rr := range *rrs {
+		rs = append(rs, Record{
+			Host:  rr.Name,
+			Type:  rr.Type,
+			Value: rr.Rrdatas[0],
+			TTL:   rr.Ttl,
+		})
+	}
+	return rs
+}
+
+// Len returns the length of the Record Slice
+func (rs RecordSet) Len() int {
+	return len(rs)
+}
+
+// GetAuthRecord returns the Auth Record from the Record Slice
+func (rs RecordSet) GetAuthRecord() (Record, error) {
+	// Check for Auth Record
+	for _, r := range rs {
+		if r.Category == Category_AUTH {
+			return r, nil
+		}
+	}
+
+	// No Auth Record Found
+	return Record{}, errors.New("no auth record found")
+}
+
+// GetNameRecord returns the Name Record from the Record Slice
+func (rs RecordSet) GetNameRecord() (Record, error) {
+	// Check for Name Record
+	for _, r := range rs {
+		if r.Category == Category_NAME {
+			return r, nil
+		}
+	}
+
+	// No Name Record Found
+	return Record{}, errors.New("no name record found")
+}
+
+// ToDnsRecords converts a RecordSet to a DNS Record Slice
+func (rs RecordSet) ToDnsRecords() []*dns.ResourceRecordSet {
+	var rrs []*dns.ResourceRecordSet
+	for _, r := range rs {
+		rrs = append(rrs, r.ToDNSRecord())
+	}
+	return rrs
+}
+
+// ToDnsMap converts a RecordSet to a Domain Map
+func (rs RecordSet) ToDnsMap() RecordMap {
+	dm := make(RecordMap)
+	for _, r := range rs {
+		dm[r.Host] = r.Value
+	}
+	return dm
+}
+
+// ToDNSRecords converts a RecordSet to a DNS Record Slice
+func (rs RecordSet) ToDNSAddChange() *dns.Change {
+	rrs := rs.ToDnsRecords()
+	return &dns.Change{
+		Additions: rrs,
+	}
+}
+
+// ToDNSRecords converts a RecordSet to a DNS Record Slice
+func (rs RecordSet) ToDNSDeleteChange() *dns.Change {
+	rrs := rs.ToDnsRecords()
+	return &dns.Change{
+		Deletions: rrs,
+	}
 }

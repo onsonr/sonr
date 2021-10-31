@@ -171,6 +171,7 @@ message RegisterRequest {
   string sName = 1;       // SName combined with Device ID and Hashed
   string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
   string fingerprint = 3;  // Fingerprint of Public Key
+  string publicKey = 4;   // Public Key
 }
 
 // (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)

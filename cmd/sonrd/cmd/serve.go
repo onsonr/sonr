@@ -8,7 +8,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/app"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/pkg/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -75,7 +74,7 @@ var serveCmd = &cobra.Command{
 		}
 
 		// Initialize App
-		app.Start(req, app.WithMode(node.StubMode_BIN),
+		app.Start(req, app.WithMode(api.StubMode_BIN),
 			app.WithHost(hostPtr),
 			app.WithPort(portPtr),
 			app.WithLogLevel(logLevel),

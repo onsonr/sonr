@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/proto"
@@ -21,41 +20,40 @@ type ExchangeProtocol struct {
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
 	invites *cache.Cache
+	mode    api.StubMode
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
-	//mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
-	// Create Mailbox Protocol
-	mailProtocol := &ExchangeProtocol{
-		ctx:  ctx,
-		host: host,
-		//	mail: mail,
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*ExchangeProtocol, error) {
+	// Create Exchange Protocol
+	protocol := &ExchangeProtocol{
+		ctx:     ctx,
+		host:    host,
 		node:    node,
 		invites: cache.New(5*time.Minute, 10*time.Minute),
 	}
 
-	// Create new mailbox
-	if fs.ThirdParty.Exists(TextileMailboxDirName) {
-		// Return Existing Mailbox
-		if err := mailProtocol.loadMailbox(); err != nil {
-			return nil, err
-		}
-	} else {
-		// Create New Mailbox
-		if err := mailProtocol.newMailbox(); err != nil {
-			return nil, err
-		}
+	// Set Default Options
+	opts := defaultOptions()
+	for _, option := range options {
+		option(opts)
+	}
+
+	// Apply Options
+	if err := opts.Apply(protocol); err != nil {
+		return nil, err
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
-	host.SetStreamHandler(RequestPID, mailProtocol.onInviteRequest)
-	host.SetStreamHandler(ResponsePID, mailProtocol.onInviteResponse)
-	// go mailProtocol.handleMailboxEvents()
-	return mailProtocol, nil
+	host.SetStreamHandler(RequestPID, protocol.onInviteRequest)
+	host.SetStreamHandler(ResponsePID, protocol.onInviteResponse)
+	return protocol, nil
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
 func (p *ExchangeProtocol) Request(shareReq *api.ShareRequest) error {
+	if p.mode.Highway() {
+		return ErrNotSupported
+	}
 	to := shareReq.GetPeer()
 	profile, err := p.node.Profile()
 	if err != nil {
@@ -96,6 +94,9 @@ func (p *ExchangeProtocol) Request(shareReq *api.ShareRequest) error {
 
 // Respond Method authenticates or declines a Transfer Request
 func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload, error) {
+	if p.mode.Highway() {
+		return nil, ErrNotSupported
+	}
 	// Create Response
 	id, resp, err := p.createResponse(decs, to)
 	if err != nil {

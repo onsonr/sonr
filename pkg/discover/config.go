@@ -16,6 +16,7 @@ type options struct {
 	location        *common.Location
 	interval        time.Duration
 	autoPushEnabled bool
+	mode            api.StubMode
 }
 
 // defaultOptions for ExchangeProtocol config
@@ -24,6 +25,7 @@ func defaultOptions() *options {
 		location:        api.DefaultLocation(),
 		interval:        time.Second * 5,
 		autoPushEnabled: true,
+		mode:            api.StubMode_LIB,
 	}
 }
 
@@ -31,6 +33,13 @@ func defaultOptions() *options {
 func DisableAutoPush() Option {
 	return func(o *options) {
 		o.autoPushEnabled = false
+	}
+}
+
+// SetHighway sets the protocol to run as highway mode
+func SetHighway() Option {
+	return func(o *options) {
+		o.mode = api.StubMode_FULL
 	}
 }
 
@@ -54,13 +63,44 @@ func WithInterval(i time.Duration) Option {
 	}
 }
 
-// createOlc Creates a new Olc from Location
-func createOlc(l *common.Location) string {
-	code := l.OLC()
-	if code == "" {
-		logger.Error("Failed to Determine OLC Code, set to Global")
-		code = "global"
+// Apply applies the options to the ExchangeProtocol
+func (o *options) Apply(p *DiscoverProtocol) error {
+	// Apply options
+	p.mode = o.mode
+
+	// Create Local for Motor Stub
+	if p.mode.Motor() {
+		// Set Peer in Exchange
+		peer, err := p.node.Peer()
+		if err != nil {
+			logger.Errorf("%s - Failed to get Profile", err)
+			return err
+		}
+		p.Put(peer)
+
+		// Get OLC Code from location
+		code := o.location.OLC()
+		if code == "" {
+			logger.Error("Failed to Determine OLC Code, set to Global")
+			code = "global"
+		}
+
+		// Create Topic Name
+		logger.Debug("Calculated OLC for Location: " + code)
+		topicName := fmt.Sprintf("sonr/topic/%s", code)
+
+		// Join Topic
+		topic, err := p.host.Join(topicName)
+		if err != nil {
+			logger.Errorf("%s - Failed to create Lobby Topic", err)
+			return err
+		}
+
+		// Create Lobby
+		if err := p.initLocal(topic, topicName); err != nil {
+			logger.Errorf("%s - Failed to initialize Lobby", err)
+			return err
+		}
 	}
-	logger.Debug("Calculated OLC for Location: " + code)
-	return fmt.Sprintf("sonr/topic/%s", code)
+	return nil
 }

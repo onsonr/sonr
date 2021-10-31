@@ -31,7 +31,7 @@ func WithRequest(req *api.InitializeRequest) Option {
 }
 
 // WithMode starts the Client RPC server as a highway node.
-func WithMode(m StubMode) Option {
+func WithMode(m api.StubMode) Option {
 	return func(o *options) {
 		o.mode = m
 	}
@@ -41,14 +41,14 @@ func WithMode(m StubMode) Option {
 type options struct {
 	connection common.Connection
 	location   *common.Location
-	mode       StubMode
+	mode       api.StubMode
 	profile    *common.Profile
 }
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *options {
 	return &options{
-		mode:       StubMode_LIB,
+		mode:       api.StubMode_LIB,
 		location:   api.DefaultLocation(),
 		connection: common.Connection_WIFI,
 		profile:    common.NewDefaultProfile(),
@@ -61,7 +61,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 	node.mode = opts.mode
 
 	// Handle by Node Mode
-	if opts.mode.HasMotor() {
+	if opts.mode.Motor() {
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startMotorStub(ctx, opts)

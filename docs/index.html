@@ -588,27 +588,7 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.discover.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.protocols.discover.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.LookupRequest"><span class="badge">M</span>LookupRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.LookupResponse"><span class="badge">M</span>LookupResponse</a>
                 </li>
               
                 <li>
@@ -627,6 +607,37 @@
                 <li>
                   <a href="#sonr.protocols.discover.VisibilityResponse.Visibility"><span class="badge">E</span>VisibilityResponse.Visibility</a>
                 </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fprotocols%2fdomain.proto">proto/protocols/domain.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#sonr.protocols.domain.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.domain.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.domain.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.domain.LookupRequest"><span class="badge">M</span>LookupRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.domain.LookupResponse"><span class="badge">M</span>LookupResponse</a>
+                </li>
+              
               
               
               
@@ -1609,6 +1620,13 @@ File Transfer History </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Fingerprint of Public Key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Public Key </p></td>
                 </tr>
               
             </tbody>
@@ -4517,113 +4535,6 @@ Returns a stream of Lobby Refresh Events</p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.discover.AuthorizeRequest">AuthorizeRequest</h3>
-        <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
-                </tr>
-              
-                <tr>
-                  <td>deviceId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Device ID </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.AuthorizeResponse">AuthorizeResponse</h3>
-        <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Verified </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>records</td>
-                  <td><a href="#sonr.protocols.discover.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>Updated Domain TXT Records </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.protocols.discover.LobbyMessage">LobbyMessage</h3>
         <p>LobbyMessage is message passed from Peer in Lobby</p>
 
@@ -4653,61 +4564,6 @@ Returns a stream of Lobby Refresh Events</p></td>
                   <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
                   <td></td>
                   <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.LookupRequest">LookupRequest</h3>
-        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.LookupResponse">LookupResponse</h3>
-        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Verified </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
                 </tr>
               
             </tbody>
@@ -4852,6 +4708,182 @@ Returns a stream of Lobby Refresh Events</p></td>
             
           </tbody>
         </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/protocols/domain.proto">proto/protocols/domain.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.protocols.domain.AuthorizeRequest">AuthorizeRequest</h3>
+        <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deviceId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.domain.AuthorizeResponse">AuthorizeResponse</h3>
+        <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>records</td>
+                  <td><a href="#sonr.protocols.domain.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Updated Domain TXT Records </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.domain.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.domain.LookupRequest">LookupRequest</h3>
+        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.domain.LookupResponse">LookupResponse</h3>
+        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Base64 Encoded Public Key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
       
 
       

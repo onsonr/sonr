@@ -20,7 +20,7 @@ type Node struct {
 	api.NodeImpl
 	motor   *NodeMotorStub
 	highway *NodeHighwayStub
-	mode    StubMode
+	mode    api.StubMode
 
 	// Host and context
 	host     *host.SNRHost
@@ -154,14 +154,14 @@ func (n *Node) Peer() (*common.Peer, error) {
 // Close closes the node
 func (n *Node) Close() {
 	// Close Client Stub
-	if n.mode.HasMotor() {
+	if n.mode.Motor() {
 		if err := n.motor.Close(); err != nil {
 			logger.Errorf("%s - Failed to close Client Stub, ", err)
 		}
 	}
 
 	// Close Highway Stub
-	if n.mode.IsHighway() {
+	if n.mode.IsFull() {
 
 	}
 

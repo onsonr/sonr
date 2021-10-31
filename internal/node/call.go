@@ -186,18 +186,18 @@ func (s *NodeHighwayStub) Register(ctx context.Context, req *api.RegisterRequest
 		}, nil
 	}
 
-	// // Create Record
-	// resp, err := hrc.DomainProtocol.Register(name, exchange.NewNBAuthRecord(pfix, name, fprint))
-	// if err != nil {
-	// 	return &api.RegisterResponse{
-	// 		Success: false,
-	// 		Error:   err.Error(),
-	// 	}, nil
-	// }
+	// Create Record
+	resp, err := s.DomainProtocol.Register(req)
+	if err != nil {
+		return &api.RegisterResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
 
 	// Return Response
 	return &api.RegisterResponse{
 		Success: true,
-		// Records: resp,
+		Records: resp,
 	}, nil
 }

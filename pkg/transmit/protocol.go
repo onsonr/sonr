@@ -16,22 +16,28 @@ type TransmitProtocol struct {
 	ctx     context.Context // Context
 	host    *host.SNRHost   // local host
 	current *Session        // current session
+	mode    api.StubMode
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
-
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
-	invProtocol := &TransmitProtocol{
+	protocol := &TransmitProtocol{
 		ctx:  ctx,
 		host: host,
 		node: node,
 	}
+	// Set options
+	opts := defaultOptions()
+	for _, opt := range options {
+		opt(opts)
+	}
+	opts.Apply(protocol)
 
 	// Setup Stream Handlers
-	host.SetStreamHandler(IncomingPID, invProtocol.onIncomingTransfer)
+	host.SetStreamHandler(IncomingPID, protocol.onIncomingTransfer)
 	logger.Debug("✅  TransmitProtocol is Activated \n")
-	return invProtocol, nil
+	return protocol, nil
 }
 
 // Incoming is called by the node to accept an incoming transfer
@@ -51,7 +57,6 @@ func (p *TransmitProtocol) Incoming(payload *common.Payload, from *common.Peer) 
 		To:          to,
 		LastUpdated: int64(time.Now().Unix()),
 	}
-
 	return nil
 }
 
