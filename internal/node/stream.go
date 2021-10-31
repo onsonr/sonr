@@ -3,12 +3,13 @@ package node
 import api "github.com/sonr-io/core/internal/api"
 
 // OnDecision is callback for NodeImpl for decisionEvents
-func (n *Node) OnDecision(event *api.DecisionEvent) {
+func (n *Node) OnDecision(event *api.DecisionEvent, invite *api.InviteEvent) {
 	if event == nil {
 		logger.Warn("Received nil event: OnDecision")
 		return
 	}
 	n.decisionEvents <- event
+	n.motor.TransmitProtocol.Outgoing(invite.GetPayload(), event.GetFrom())
 }
 
 // OnInvite is callback for NodeImpl for inviteEvents

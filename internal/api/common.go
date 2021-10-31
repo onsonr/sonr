@@ -42,7 +42,7 @@ type NodeImpl interface {
 	OnInvite(event *InviteEvent)
 
 	// OnDecision is called when the TransferProtocol receives a DecisionEvent
-	OnDecision(event *DecisionEvent)
+	OnDecision(event *DecisionEvent, invite *InviteEvent)
 
 	// OnProgress is called when the TransferProtocol sends or receives a ProgressEvent
 	OnProgress(event *ProgressEvent)

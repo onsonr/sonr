@@ -2,12 +2,16 @@ package exchange
 
 import (
 	"context"
+	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-msgio"
+	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
+	"google.golang.org/protobuf/proto"
 )
 
 type ExchangeProtocol struct {
@@ -16,20 +20,19 @@ type ExchangeProtocol struct {
 	node api.NodeImpl
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
-	invites map[peer.ID]*InviteRequest
+	invites *cache.Cache
 }
 
 // New creates a new ExchangeProtocol
 func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
 	//mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
-
 	// Create Mailbox Protocol
 	mailProtocol := &ExchangeProtocol{
 		ctx:  ctx,
 		host: host,
 		//	mail: mail,
 		node:    node,
-		invites: make(map[peer.ID]*InviteRequest),
+		invites: cache.New(5*time.Minute, 10*time.Minute),
 	}
 
 	// Create new mailbox
@@ -44,185 +47,31 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeP
 			return nil, err
 		}
 	}
-	logger.Debug("✅  MailboxProtocol is Activated \n")
+	logger.Debug("✅  ExchangeProtocol is Activated \n")
+	host.SetStreamHandler(RequestPID, mailProtocol.onInviteRequest)
+	host.SetStreamHandler(ResponsePID, mailProtocol.onInviteResponse)
 	// go mailProtocol.handleMailboxEvents()
 	return mailProtocol, nil
 }
 
-// // // Handle Mailbox Events
-// func (ts *MailboxProtocol) handleMailboxEvents() {
-// 	// Initialize State
-// 	connState := cmd.Online
-
-// 	// Handle mailbox events as they arrive
-// 	events := make(chan local.MailboxEvent)
-// 	defer close(events)
-// 	go func() {
-// 		for e := range events {
-// 			switch e.Type {
-// 			case local.NewMessage:
-// 				ts.onNewMessage(e, connState)
-// 				continue
-// 			}
-// 		}
-// 	}()
-
-// 	// Start watching (the third param indicates we want to keep watching when offline)
-// 	state, err := ts.mailbox.WatchInbox(ts.ctx, events, true)
-// 	if err != nil {
-// 		logger.Errorf("%s - Error watching Mailbox", err)
-// 		return
-// 	}
-
-// 	// Handle Mailbox State
-// 	for s := range state {
-// 		// Update Connection State
-// 		connState = s.State
-
-// 		// handle connectivity state
-// 		switch s.State {
-// 		case cmd.Online:
-// 			logger.Debug(fmt.Sprintf("Mailbox is Online: %s", s.Err))
-// 		case cmd.Offline:
-// 			logger.Debug(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
-// 		}
-// 	}
-// }
-
-// // Handle New Mailbox Message
-// func (ts *MailboxProtocol) onNewMessage(e local.MailboxEvent, state cmd.ConnectionState) {
-// 	// List Total Inbox
-// 	inbox, err := ts.mailbox.ListInboxMessages(ts.ctx)
-// 	if err != nil {
-// 		logger.Errorf("%s - Failed to List Inbox Messages", err)
-// 		return
-// 	}
-
-// 	// Logging and Open Body
-// 	logger.Debug(fmt.Sprintf("Received new message: %s", inbox[0].From))
-// 	body, err := inbox[0].Open(ts.ctx, ts.mailbox.Identity())
-// 	if err != nil {
-// 		logger.Errorf("%s - Failed to Open Inbox Messages", err)
-// 		return
-// 	}
-
-// 	// Log Valid Lobby Length
-// 	logger.Debug(fmt.Sprintf("Valid Body Length: %d", len(body)))
-
-// 	// Unmarshal InviteRequest from JSON
-// 	msg := MailboxMessage{}
-// 	err = protojson.Unmarshal(body, &msg)
-// 	if err != nil {
-// 		logger.Errorf("%s - Failed to Unmarshal Mailbox Message", err)
-// 	}
-
-// 	// Send Foreground Event
-// 	if state == cmd.Online {
-// 		// Create Mail Event
-// 		mail := &api.MailboxEvent{
-// 			To:     msg.GetTo(),
-// 			From:   msg.GetFrom(),
-// 			Buffer: msg.GetBuffer(),
-// 			Id:     msg.GetId(),
-// 		}
-
-// 		// Send Mail Event
-// 		ts.node.OnMailbox(mail)
-// 	}
-// }
-
-// // Method Sends Mail Entry to Peer
-// func (ts *MailboxProtocol) DeleteMail(id string) error {
-// 	// Check if Mailbox exists
-// 	if ts.mail == nil || ts.mailbox == nil {
-// 		return ErrMailboxDisabled
-// 	}
-
-// 	// Mark Item as Read
-// 	err := ts.mailbox.DeleteInboxMessage(ts.ctx, id)
-// 	if err != nil {
-// 		logger.Errorf("%s - Failed to Delete Mailbox Message", err)
-// 		return err
-// 	}
-// 	return nil
-// }
-
-// // Method Sends Mail Entry to Peer
-// func (ts *MailboxProtocol) ReadMail(id string) error {
-// 	// Check if Mailbox exists
-// 	if ts.mail == nil || ts.mailbox == nil {
-// 		return ErrMailboxDisabled
-// 	}
-
-// 	// Mark Item as Read
-// 	err := ts.mailbox.ReadInboxMessage(ts.ctx, id)
-// 	if err != nil {
-// 		logger.Errorf("%s - Failed to set Mailbox Message as Read", err)
-// 		return err
-// 	}
-// 	return nil
-// }
-
-// // Method Sends Mail Entry to Peer
-// func (ts *MailboxProtocol) SendMail(to thread.PubKey, message *MailboxMessage) error {
-// 	// Check if Mailbox exists
-// 	if ts.mail == nil || ts.mailbox == nil {
-// 		return ErrMailboxDisabled
-// 	}
-
-// 	// Marshal Data
-// 	buf, err := protojson.Marshal(message)
-// 	if err != nil {
-// 		logger.Errorf("%s - Failed to Marshal Outbound Mailbox Message with JSON", err)
-// 		return err
-// 	}
-
-// 	// 	// Send Message to Mailbox
-// 	msg, err := ts.mailbox.SendMessage(ts.ctx, to, buf)
-// 	if err != nil {
-// 		logger.Error(fmt.Sprintf("Failed to Send Message to Peer with ThreadIdentity: %s", to.String()), err)
-// 		return err
-// 	}
-
-// 	// Log Result
-// 	logger.Debug("Succesfully sent mail!", golog.Fields{"ID": msg.ID, "SentAt": msg.CreatedAt, "To": msg.To.String()})
-// 	return nil
-// }
-
-// Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
-// Method also returns the InviteRequest that points to the Response.
-func (sq *ExchangeProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common.Payload, error) {
-	// Authenticate Message
-	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
-	if !valid {
-		return nil, ErrFailedAuth
-	}
-
-	// Check Decision
-	if !resp.GetDecision() {
-		return nil, nil
-	}
-
-	// Get Next Entry
-	entry, ok := sq.invites[peer]
-	if !ok {
-		return nil, ErrFailedEntry
-	}
-	return entry.GetPayload(), nil
-}
-
 // Request Method sends a request to Transfer Data to a remote peer
-func (p *ExchangeProtocol) Request(to *common.Peer) error {
-	// Create Request
-	id, req, err := p.createRequest(to)
+func (p *ExchangeProtocol) Request(shareReq *api.ShareRequest) error {
+	to := shareReq.GetPeer()
+	profile, err := p.node.Profile()
 	if err != nil {
-		logger.Errorf("%s - Failed to Create Request", err)
 		return err
 	}
 
-	// Check if the response is valid
-	if req == nil {
-		return ErrInvalidRequest
+	payload, err := shareReq.ToPayload(profile)
+	if err != nil {
+		return err
+	}
+
+	// Create Request
+	id, req, err := p.createRequest(to, payload)
+	if err != nil {
+		logger.Errorf("%s - Failed to Create Request", err)
+		return err
 	}
 
 	// sign the data
@@ -240,29 +89,25 @@ func (p *ExchangeProtocol) Request(to *common.Peer) error {
 		return err
 	}
 
-	p.invites[id] = req
+	// Store Request
+	p.invites.Set(id.String(), req, cache.DefaultExpiration)
 	return nil
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) error {
+func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload, error) {
 	// Create Response
 	id, resp, err := p.createResponse(decs, to)
 	if err != nil {
 		logger.Errorf("%s - Failed to Create Request", err)
-		return err
-	}
-
-	// Check if the response is valid
-	if resp == nil {
-		return ErrInvalidResponse
+		return nil, err
 	}
 
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Sign Response Message", err)
-		return err
+		return nil, err
 	}
 
 	// add the signature to the message
@@ -272,7 +117,89 @@ func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) error {
 	err = p.host.SendMessage(id, ResponsePID, resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Send Message to Peer", err)
-		return err
+		return nil, err
 	}
-	return nil
+
+	// Find Request and get Payload
+	if x, found := p.invites.Get(id.String()); found {
+		req := x.(*InviteRequest)
+		return req.GetPayload(), nil
+	}
+	return nil, ErrRequestNotFound
+}
+
+// onInviteRequest peer requests handler
+func (p *ExchangeProtocol) onInviteRequest(s network.Stream) {
+	logger.Debug("Received Invite Request")
+	// Initialize Stream Data
+	remotePeer := s.Conn().RemotePeer()
+	r := msgio.NewReader(s)
+
+	// Read the request
+	buf, err := r.ReadMsg()
+	if err != nil {
+		s.Reset()
+		logger.Errorf("%s - Failed to Read Invite Request buffer.", err)
+		return
+	}
+	s.Close()
+
+	// unmarshal it
+	req := &InviteRequest{}
+	err = proto.Unmarshal(buf, req)
+	if err != nil {
+		logger.Errorf("%s - Failed to Unmarshal Invite REQUEST buffer.", err)
+		return
+	}
+
+	// generate response message
+	p.invites.Set(remotePeer.String(), req, cache.DefaultExpiration)
+
+	// store request data into Context
+	p.node.OnInvite(req.ToEvent())
+}
+
+// onInviteResponse response handler
+func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
+	logger.Debug("Received Invite Response")
+	// Initialize Stream Data
+	remotePeer := s.Conn().RemotePeer()
+	r := msgio.NewReader(s)
+
+	// Read the request
+	buf, err := r.ReadMsg()
+	if err != nil {
+		s.Reset()
+		logger.Errorf("%s - Failed to Read Invite RESPONSE buffer.", err)
+		return
+	}
+	s.Close()
+
+	// Unmarshal response
+	resp := &InviteResponse{}
+	err = proto.Unmarshal(buf, resp)
+	if err != nil {
+		logger.Errorf("%s - Failed to Unmarshal Invite RESPONSE buffer.", err)
+		return
+	}
+
+	// Check Decision
+	if !resp.GetDecision() {
+		return
+	}
+
+	// Authenticate Message
+	valid := p.host.AuthenticateMessage(resp, resp.Metadata)
+	if !valid {
+		logger.Error("Invalid Invite Response")
+		return
+	}
+
+	// Get Next Entry
+	if x, found := p.invites.Get(remotePeer.String()); found {
+		req := x.(*InviteRequest)
+		p.node.OnDecision(resp.ToEvent(), req.ToEvent())
+	} else {
+		logger.Errorf("Failed to find Invite Request for Peer: %s", remotePeer.String())
+	}
 }

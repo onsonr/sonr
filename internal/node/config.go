@@ -71,7 +71,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 		}
 
 		// Set Stub to node
-		node.clientStub = stub
+		node.motor = stub
 
 	} else {
 		logger.Debug("Starting Highway stub...")
@@ -83,7 +83,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 		}
 
 		// Set Stub to node
-		node.highwayStub = stub
+		node.highway = stub
 	}
 	return nil
 }

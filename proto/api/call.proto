@@ -85,19 +85,6 @@ message InitializeResponse {
   }
 }
 
-// (Client) SupplyRequest supplies path to files or urls and optionally a Peer
-message SupplyRequest {
-  repeated sonr.core.SupplyItem items = 1;        // Supply Paths
-  optional sonr.core.Peer peer = 2; // Supply Peer
-  bool isPeerSupply = 3;                 // Supply Peer
-}
-
-// (Client) SupplyResponse is response to SupplyRequest
-message SupplyResponse {
-  bool success = 1; // True if Supply is Active
-  string error = 2; // Error Message if Supply is not Active
-}
-
 // (Client) EditRequest is request to edit user profile
 message EditRequest {
   Type type = 1; // Type of Edit
@@ -192,7 +179,6 @@ message RegisterResponse {
   string error = 2;            // Error Message
   map<string,string> records = 3; // Signed Domain TXT Records
 }
-
 
 // (Client) RespondRequest is request to respond to a share request
 message RespondRequest {

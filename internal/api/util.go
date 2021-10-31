@@ -164,12 +164,12 @@ func (er *EditRequest) IsDelete() bool {
 }
 
 // Count returns the number of items in the payload
-func (sr *SupplyRequest) Count() int {
+func (sr *ShareRequest) Count() int {
 	return len(sr.GetItems())
 }
 
 // ToPayload converts the response to a payload
-func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, error) {
+func (sr *ShareRequest) ToPayload(owner *common.Profile) (*common.Payload, error) {
 	// Initialize
 	fileCount := 0
 	urlCount := 0

@@ -7,28 +7,6 @@ import (
 	api "github.com/sonr-io/core/internal/api"
 )
 
-// Supply supplies the node with the given amount of resources.
-func (s *NodeMotorStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
-	// Call Lobby Update
-	if err := s.Update(); err != nil {
-		logger.Warnf("%s - Failed to Update Lobby", err)
-	}
-
-	// Call Internal Supply
-	err := s.TransmitProtocol.Supply(req)
-	if err != nil {
-		return &api.SupplyResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
-	// Send Response
-	return &api.SupplyResponse{
-		Success: true,
-	}, nil
-}
-
 // Edit method edits the node's properties in the Key/Value Store
 func (s *NodeMotorStub) Edit(ctx context.Context, req *api.EditRequest) (*api.EditResponse, error) {
 	// Call Internal Update
@@ -86,7 +64,7 @@ func (s *NodeMotorStub) Share(ctx context.Context, req *api.ShareRequest) (*api.
 
 	// Request Peer to Transmit File
 	if s.TransmitProtocol != nil {
-		err := s.TransmitProtocol.Request(req.GetPeer())
+		err := s.ExchangeProtocol.Request(req)
 		if err != nil {
 			return &api.ShareResponse{
 				Success: false,
@@ -145,27 +123,39 @@ func (s *NodeMotorStub) Respond(ctx context.Context, req *api.RespondRequest) (*
 		logger.Warnf("%s - Failed to Update Lobby", err)
 	}
 
-	// Call Internal Respond
-	if s.TransmitProtocol != nil {
-		// Respond on TransmitProtocol
-		err := s.TransmitProtocol.Respond(req.GetDecision(), req.GetPeer())
-		if err != nil {
+	// buildRespFunc is a function that builds a response to a received InviteRequest.
+	buildRespFunc := func(err error) *api.RespondResponse {
+		if err == nil {
 			return &api.RespondResponse{
-				Success: false,
-				Error:   err.Error(),
-			}, nil
+				Success: true,
+			}
 		}
-
-		// Send Response
-		return &api.RespondResponse{
-			Success: true,
-		}, nil
-	} else {
 		return &api.RespondResponse{
 			Success: false,
-			Error:   ErrProtocolsNotSet.Error(),
-		}, nil
+			Error:   err.Error(),
+		}
 	}
+
+	// Get Request Parameters
+	decs := req.GetDecision()
+	peer := req.GetPeer()
+
+	// Respond on ExchangeProtocol
+	payload, err := s.ExchangeProtocol.Respond(decs, peer)
+	if err != nil {
+		return buildRespFunc(err), nil
+	}
+
+	// Check decision
+	if decs {
+		// Prepare on TransmitProtocol
+		if err := s.TransmitProtocol.Incoming(payload, peer); err != nil {
+			return buildRespFunc(err), nil
+		}
+	}
+
+	// Send Response
+	return buildRespFunc(nil), nil
 
 }
 

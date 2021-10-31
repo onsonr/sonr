@@ -11,9 +11,6 @@ message Empty {}
 // RPC Service with Equivalent Methods of a binded Node
 service MotorStub {
   // Node Methods
-  // Signing Method Request for Data
-  rpc Supply(sonr.api.SupplyRequest) returns (sonr.api.SupplyResponse) {}
-
   // Verification Method Request for Signed Data
   rpc Edit(sonr.api.EditRequest) returns (sonr.api.EditResponse) {}
 

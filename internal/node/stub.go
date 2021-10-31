@@ -110,12 +110,20 @@ func (n *Node) startMotorStub(ctx context.Context, opts *options) (*NodeMotorStu
 		return nil, err
 	}
 
+	// Set Exchange Protocol
+	exchangeProtocol, err := exchange.New(ctx, n.host, n)
+	if err != nil {
+		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
+		return nil, err
+	}
+
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	stub := &NodeMotorStub{
 		ctx:              ctx,
 		TransmitProtocol: transmitProtocol,
 		DiscoverProtocol: discProtocol,
+		ExchangeProtocol: exchangeProtocol,
 		node:             n,
 		grpcServer:       grpcServer,
 	}

@@ -294,14 +294,6 @@
                   <a href="#sonr.api.ShareResponse"><span class="badge">M</span>ShareResponse</a>
                 </li>
               
-                <li>
-                  <a href="#sonr.api.SupplyRequest"><span class="badge">M</span>SupplyRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.api.SupplyResponse"><span class="badge">M</span>SupplyResponse</a>
-                </li>
-              
               
                 <li>
                   <a href="#sonr.api.EditRequest.Type"><span class="badge">E</span>EditRequest.Type</a>
@@ -670,15 +662,7 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.transmit.Chunk"><span class="badge">M</span>Chunk</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.transmit.InviteRequest"><span class="badge">M</span>InviteRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.transmit.InviteResponse"><span class="badge">M</span>InviteResponse</a>
+                  <a href="#sonr.protocols.transmit.Session"><span class="badge">M</span>Session</a>
                 </li>
               
               
@@ -1888,75 +1872,6 @@ File Transfer History </p></td>
       
         <h3 id="sonr.api.ShareResponse">ShareResponse</h3>
         <p>(Client) ShareResponse is response to ShareRequest</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>True if Supply is Active </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message if Supply is not Active </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.SupplyRequest">SupplyRequest</h3>
-        <p>(Client) SupplyRequest supplies path to files or urls and optionally a Peer</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>items</td>
-                  <td><a href="#sonr.core.SupplyItem">sonr.core.SupplyItem</a></td>
-                  <td>repeated</td>
-                  <td><p>Supply Paths </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td>optional</td>
-                  <td><p>Supply Peer </p></td>
-                </tr>
-              
-                <tr>
-                  <td>isPeerSupply</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Supply Peer </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.SupplyResponse">SupplyResponse</h3>
-        <p>(Client) SupplyResponse is response to SupplyRequest</p>
 
         
           <table class="field-table">
@@ -4505,18 +4420,11 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           <tbody>
             
               <tr>
-                <td>Supply</td>
-                <td><a href="#sonr.api.SupplyRequest">.sonr.api.SupplyRequest</a></td>
-                <td><a href="#sonr.api.SupplyResponse">.sonr.api.SupplyResponse</a></td>
-                <td><p>Node Methods
-Signing Method Request for Data</p></td>
-              </tr>
-            
-              <tr>
                 <td>Edit</td>
                 <td><a href="#sonr.api.EditRequest">.sonr.api.EditRequest</a></td>
                 <td><a href="#sonr.api.EditResponse">.sonr.api.EditResponse</a></td>
-                <td><p>Verification Method Request for Signed Data</p></td>
+                <td><p>Node Methods
+Verification Method Request for Signed Data</p></td>
               </tr>
             
               <tr>
@@ -5120,8 +5028,8 @@ Returns a stream of Lobby Refresh Events</p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.transmit.Chunk">Chunk</h3>
-        <p>For Transfer Chunk Transmission</p>
+        <h3 id="sonr.protocols.transmit.Session">Session</h3>
+        <p></p>
 
         
           <table class="field-table">
@@ -5131,121 +5039,38 @@ Returns a stream of Lobby Refresh Events</p></td>
             <tbody>
               
                 <tr>
-                  <td>offset</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td>direction</td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
                   <td></td>
-                  <td><p>Bytes from the beginning of the reader to chunk </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>length</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
                   <td></td>
-                  <td><p>Length is number of bytes in the chunk </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>data</td>
-                  <td><a href="#bytes">bytes</a></td>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
                   <td></td>
-                  <td><p>Data is the actual chunk </p></td>
+                  <td><p> </p></td>
                 </tr>
-              
-                <tr>
-                  <td>fingerprint</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Fingerprint is the hash of the chunk </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.transmit.InviteRequest">InviteRequest</h3>
-        <p>Invitation Message sent on RPC</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
               
                 <tr>
                   <td>payload</td>
                   <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
                   <td></td>
-                  <td><p>Attached Data </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td>lastUpdated</td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.transmit.InviteResponse">InviteResponse</h3>
-        <p>Reply Message sent on RPC</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>decision</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Success </p></td>
-                </tr>
-              
-                <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>

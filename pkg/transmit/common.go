@@ -1,21 +1,22 @@
 package transmit
 
 import (
+	"bytes"
 	"errors"
-	"time"
+	"io"
+	"io/ioutil"
+	"sync"
 
 	"github.com/kataras/golog"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/wallet"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/pkg/common"
 )
 
 // Transfer Protocol ID's
 const (
-	RequestPID    protocol.ID = "/transmit/request/0.0.1"
-	ResponsePID   protocol.ID = "/transmit/response/0.0.1"
 	IncomingPID   protocol.ID = "/transmit/incoming/0.0.1"
 	OutgoingPID   protocol.ID = "/transmit/outgoing/0.0.1"
 	ITEM_INTERVAL             = 25
@@ -23,13 +24,9 @@ const (
 
 // Error Definitions
 var (
-	logger             = golog.Default.Child("protocols/transmit")
-	ErrInvalidResponse = errors.New("Invalid InviteResponse provided to TransmitProtocol")
-	ErrInvalidRequest  = errors.New("Invalid InviteRequest provided to TransmitProtocol")
-	ErrFailedEntry     = errors.New("Failed to get Topmost entry from Queue")
-	ErrFailedAuth      = errors.New("Failed to Authenticate message")
-	ErrEmptyRequests   = errors.New("Empty Request list provided")
-	ErrRequestNotFound = errors.New("Request not found in list")
+	logger        = golog.Default.Child("protocols/transmit")
+	ErrNoSession  = errors.New("Failed to get current session, set to nil")
+	ErrFailedAuth = errors.New("Failed to Authenticate message")
 )
 
 // calculateInterval calculates the interval for the progress callback
@@ -59,96 +56,103 @@ func pushProgress(n api.NodeImpl, dir common.Direction, written int, size int64,
 	}
 }
 
-// ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
-	return &api.DecisionEvent{
-		From:     ir.GetFrom(),
-		Received: int64(time.Now().Unix()),
-		Decision: ir.GetDecision(),
+// CurrentSession returns the current session
+func (p *TransmitProtocol) CurrentSession() (*Session, error) {
+	if p.current != nil {
+		return p.current, nil
 	}
+	return nil, ErrNoSession
 }
 
-// ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
-func (ir *InviteRequest) ToEvent() *api.InviteEvent {
-	return &api.InviteEvent{
-		Received: int64(time.Now().Unix()),
-		From:     ir.GetFrom(),
-		Payload:  ir.GetPayload(),
-	}
-}
-
-// createRequest creates a new InviteRequest
-func (p *TransmitProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
-	// Call Peer from Node
-	from, err := p.node.Peer()
+// NewItemReader Returns a new Reader for the given FileItem
+func ReadItem(index int, count int, pi *common.Payload_Item, wg *sync.WaitGroup, node api.NodeImpl, reader msgio.ReadCloser) {
+	defer wg.Done()
+	// generate path
+	item := pi.GetFile()
+	size := item.GetSize()
+	path, err := item.ResetPath(fs.Downloads)
 	if err != nil {
-		logger.Errorf("%s - Failed to Get Peer from Node", err)
-		return "", nil, err
+		logger.Errorf("%s - Failed to generate path for file: %s", err, item.Name)
+		return
 	}
 
-	// Fetch Element from Queue
-	elem := p.supplyQueue.Front()
-	if elem != nil {
-		// Get Payload
-		payload := p.supplyQueue.Remove(elem).(*common.Payload)
+	buffer := bytes.Buffer{}
 
-		// Create new Metadata
-		meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
+	// Route Data from Stream
+	for i := 0; i < int(size); {
+		// Read Next Message
+		buf, err := reader.ReadMsg()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
+			return
+		} else {
+			// Write Chunk to File
+			n, err := buffer.Write(buf)
+			if err != nil {
+				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
+				return
+			}
+			i += n
+
+			// Update Progress
+			pushProgress(node, common.Direction_INCOMING, i, size, index, count)
+		}
+	}
+
+	// Write File Buffer to File
+	err = ioutil.WriteFile(path, buffer.Bytes(), 0644)
+	if err != nil {
+		logger.Errorf("%s - Failed to Close item on Read Stream", err)
+		return
+	}
+	logger.Debug("Completed writing to file: " + path)
+	return
+}
+
+// NewItemWriter Returns a new Reader for the given FileItem
+func WriteItem(index int, count int, pi *common.Payload_Item, wg *sync.WaitGroup, node api.NodeImpl, writer msgio.WriteCloser) {
+	// Properties
+	defer wg.Done()
+	size := pi.GetSize()
+	item := pi.GetFile()
+
+	// Create New Chunker
+	chunker, err := fs.NewFileChunker(item.Path)
+	if err != nil {
+		logger.Errorf("%s - Failed to create new chunker.", err)
+		return
+	}
+
+	// Loop through File
+	for i := 0; i < int(size); {
+		c, err := chunker.Next()
 		if err != nil {
-			logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
-			return "", nil, err
+			if err == io.EOF {
+				break
+			}
+			logger.Errorf("%s - Error reading chunk.", err)
+			return
 		}
 
-		// Create Invite Request
-		req := &InviteRequest{
-			Payload:  payload,
-			Metadata: api.SignedMetadataToProto(meta),
-			To:       to,
-			From:     from,
-		}
-
-		// Fetch Peer ID from Public Key
-		toId, err := to.Libp2pID()
+		// Write Message Bytes to Stream
+		err = writer.WriteMsg(c.Data)
 		if err != nil {
-			logger.Errorf("%s - Failed to fetch peer id from public key", err)
-			return "", nil, err
+			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
+			return
 		}
-		return toId, req, nil
-	}
-	logger.Errorf("%s - Failed to get item from Supply Queue.")
-	return "", nil, errors.New("No items in Supply Queue.")
-}
 
-// createResponse creates a new InviteResponse
-func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+		// Unexpected Error
+		if err != nil && err != io.EOF {
+			logger.Errorf("%s - Unexpected Error occurred on Write Stream", err)
+			return
+		}
+		// Update Progress
+		i += c.Length
 
-	// Call Peer from Node
-	from, err := p.node.Peer()
-	if err != nil {
-		logger.Errorf("%s - Failed to Get Peer from Node", err)
-		return "", nil, err
+		// Update Progress
+		pushProgress(node, common.Direction_OUTGOING, i, size, index, count)
 	}
-
-	// Create new Metadata
-	meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
-	if err != nil {
-		logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
-		return "", nil, err
-	}
-
-	// Create Invite Response
-	resp := &InviteResponse{
-		Decision: decs,
-		Metadata: api.SignedMetadataToProto(meta),
-		From:     from,
-		To:       to,
-	}
-
-	// Fetch Peer ID from Public Key
-	toId, err := to.Libp2pID()
-	if err != nil {
-		logger.Errorf("%s - Failed to fetch peer id from public key", err)
-		return "", nil, err
-	}
-	return toId, resp, nil
+	return
 }
