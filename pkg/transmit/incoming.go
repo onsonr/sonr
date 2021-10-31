@@ -103,7 +103,7 @@ func ReadItem(index int, count int, pi *common.Payload_Item, wg *sync.WaitGroup,
 			i += n
 
 			// Update Progress
-			pushProgress(node, i, size, index, count)
+			pushProgress(node, common.Direction_INCOMING, i, size, index, count)
 		}
 	}
 

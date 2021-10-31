@@ -44,13 +44,14 @@ func calculateInterval(size int64) int {
 }
 
 // pushProgress pushes a progress event to the node
-func pushProgress(n api.NodeImpl, written int, size int64, index, count int) {
+func pushProgress(n api.NodeImpl, dir common.Direction, written int, size int64, index, count int) {
 	// Create Progress Event
 	if (written % ITEM_INTERVAL) == 0 {
 		event := &api.ProgressEvent{
-			Progress: (float64(written) / float64(size)),
-			Index:    int32(index),
-			Count:    int32(count),
+			Direction: dir,
+			Progress:  (float64(written) / float64(size)),
+			Index:     int32(index),
+			Count:     int32(count),
 		}
 
 		// Push ProgressEvent to Emitter
