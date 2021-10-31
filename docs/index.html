@@ -676,6 +676,10 @@
                   <a href="#sonr.protocols.transmit.Session"><span class="badge">M</span>Session</a>
                 </li>
               
+                <li>
+                  <a href="#sonr.protocols.transmit.SessionItem"><span class="badge">M</span>SessionItem</a>
+                </li>
+              
               
               
               
@@ -2308,20 +2312,6 @@ File Transfer History </p></td>
             <tbody>
               
                 <tr>
-                  <td>index</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Index of Current Item in Payload </p></td>
-                </tr>
-              
-                <tr>
-                  <td>count</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Count of Total Items in Payload </p></td>
-                </tr>
-              
-                <tr>
                   <td>progress</td>
                   <td><a href="#double">double</a></td>
                   <td></td>
@@ -2333,6 +2323,20 @@ File Transfer History </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>Timestamp </p></td>
+                </tr>
+              
+                <tr>
+                  <td>current</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Current position of item in list </p></td>
+                </tr>
+              
+                <tr>
+                  <td>total</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Total number of items in list </p></td>
                 </tr>
               
                 <tr>
@@ -5101,6 +5105,79 @@ Returns a stream of Lobby Refresh Events</p></td>
                 <tr>
                   <td>lastUpdated</td>
                   <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>items</td>
+                  <td><a href="#sonr.protocols.transmit.SessionItem">SessionItem</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.transmit.SessionItem">SessionItem</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>index</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>count</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>item</td>
+                  <td><a href="#sonr.core.FileItem">sonr.core.FileItem</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>written</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>totalSize</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>direction</td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>

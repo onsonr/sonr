@@ -2,7 +2,6 @@ package transmit
 
 import (
 	"context"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/sonr-io/core/internal/api"
@@ -40,6 +39,14 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 	return protocol, nil
 }
 
+// CurrentSession returns the current session
+func (p *TransmitProtocol) CurrentSession() (*Session, error) {
+	if p.current != nil {
+		return p.current, nil
+	}
+	return nil, ErrNoSession
+}
+
 // Incoming is called by the node to accept an incoming transfer
 func (p *TransmitProtocol) Incoming(payload *common.Payload, from *common.Peer) error {
 	// Get User Peer
@@ -50,13 +57,7 @@ func (p *TransmitProtocol) Incoming(payload *common.Payload, from *common.Peer) 
 	}
 
 	// Create New TransferEntry
-	p.current = &Session{
-		Direction:   common.Direction_INCOMING,
-		Payload:     payload,
-		From:        from,
-		To:          to,
-		LastUpdated: int64(time.Now().Unix()),
-	}
+	p.current = NewInSession(payload, from, to)
 	return nil
 }
 
@@ -77,13 +78,7 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 	}
 
 	// Create New TransferEntry
-	p.current = &Session{
-		Direction:   common.Direction_OUTGOING,
-		Payload:     payload,
-		From:        to,
-		To:          from,
-		LastUpdated: int64(time.Now().Unix()),
-	}
+	p.current = NewOutSession(payload, from, to)
 
 	// Create New Stream
 	stream, err := p.host.NewStream(p.ctx, toId, IncomingPID)

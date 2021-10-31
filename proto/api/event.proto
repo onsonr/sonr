@@ -37,10 +37,10 @@ message MailboxEvent {
 
 // Transfer Progress Event
 message ProgressEvent {
-  int32 index = 1;     // Index of Current Item in Payload
-  int32 count = 2;     // Count of Total Items in Payload
-  double progress = 3; // Current Transfer Progress
-  int64 received = 4;  // Timestamp
+  double progress = 1; // Current Transfer Progress
+  int64 received = 2;  // Timestamp
+  int32 current = 3; // Current position of item in list
+  int32 total = 4; // Total number of items in list
   sonr.core.Direction direction = 5; // Direction of Transfer
 }
 

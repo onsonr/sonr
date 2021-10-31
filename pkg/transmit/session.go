@@ -10,6 +10,32 @@ import (
 	"github.com/sonr-io/core/pkg/common"
 )
 
+func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) *Session {
+	// Create Session Items
+	sessionPayload := createPayload(payload)
+	return &Session{
+		Direction:   common.Direction_OUTGOING,
+		Payload:     payload,
+		To:          to,
+		From:        from,
+		LastUpdated: int64(time.Now().Unix()),
+		Items:       sessionPayload.CreateItems(common.Direction_OUTGOING),
+	}
+}
+
+func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *Session {
+	// Create Session Items
+	sessionPayload := createPayload(payload)
+	return &Session{
+		Direction:   common.Direction_INCOMING,
+		Payload:     payload,
+		From:        from,
+		To:          to,
+		LastUpdated: int64(time.Now().Unix()),
+		Items:       sessionPayload.CreateItems(common.Direction_INCOMING),
+	}
+}
+
 // IsIncoming returns true if the session is incoming.
 func (s *Session) IsIncoming() bool {
 	return s.Direction == common.Direction_INCOMING
@@ -29,11 +55,11 @@ func (s *Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.Complete
 	rs := msgio.NewReader(stream)
 	var wg sync.WaitGroup
 
-	// Write All Files
-	for i, v := range s.Items() {
+	// Read All Files
+	for _, v := range s.GetItems() {
 		// Write to File
 		wg.Add(1)
-		go ReadItem(i, s.Count(), v, &wg, n, rs)
+		go v.Read(&wg, n, rs)
 	}
 	wg.Wait()
 	stream.Close()
@@ -57,10 +83,10 @@ func (s *Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 	var wg sync.WaitGroup
 
 	// Create New Writer
-	for i, v := range s.Items() {
+	for _, v := range s.GetItems() {
 		// Write File to Stream
 		wg.Add(1)
-		go WriteItem(i, s.Count(), v, &wg, n, wc)
+		go v.Write(&wg, n, wc)
 	}
 
 	// Wait for all writes to finish
@@ -80,9 +106,4 @@ func (s *Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 // Count returns the number of items in Payload
 func (s *Session) Count() int {
 	return len(s.GetPayload().GetItems())
-}
-
-// MapItems performs PayloadItemFunc on each item in the Payload.
-func (s *Session) Items() []*common.Payload_Item {
-	return s.GetPayload().GetItems()
 }

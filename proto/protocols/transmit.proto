@@ -11,4 +11,15 @@ message Session {
   sonr.core.Peer to = 3;
   sonr.core.Payload payload = 4;
   int64 lastUpdated = 5;
+  repeated SessionItem items = 6;
+}
+
+message SessionItem {
+  int32 index = 1;
+  int32 count = 2;
+  sonr.core.FileItem item = 3;
+  int64 written = 4;
+  int64 size = 5;
+  int64 totalSize = 6;
+  sonr.core.Direction direction = 7;
 }
