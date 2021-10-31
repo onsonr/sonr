@@ -6,6 +6,7 @@ require (
 	git.mills.io/prologic/bitcask v1.0.0
 	github.com/PuerkitoBio/goquery v1.7.1
 	github.com/brianvoe/gofakeit/v6 v6.9.0
+	github.com/cosmos/go-bip39 v1.0.0
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
