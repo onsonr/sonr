@@ -120,6 +120,7 @@ type SessionItem struct {
 	Size      int64            `protobuf:"varint,5,opt,name=size,proto3" json:"size,omitempty"`
 	TotalSize int64            `protobuf:"varint,6,opt,name=totalSize,proto3" json:"totalSize,omitempty"`
 	Direction common.Direction `protobuf:"varint,7,opt,name=direction,proto3,enum=sonr.core.Direction" json:"direction,omitempty"`
+	Path      string           `protobuf:"bytes,8,opt,name=path,proto3" json:"path,omitempty"`
 }
 
 func (x *SessionItem) Reset() {
@@ -203,6 +204,68 @@ func (x *SessionItem) GetDirection() common.Direction {
 	return common.Direction(0)
 }
 
+func (x *SessionItem) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+type SessionPayload struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Payload   *common.Payload  `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
+	Direction common.Direction `protobuf:"varint,2,opt,name=direction,proto3,enum=sonr.core.Direction" json:"direction,omitempty"`
+}
+
+func (x *SessionPayload) Reset() {
+	*x = SessionPayload{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_protocols_transmit_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SessionPayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SessionPayload) ProtoMessage() {}
+
+func (x *SessionPayload) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_protocols_transmit_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SessionPayload.ProtoReflect.Descriptor instead.
+func (*SessionPayload) Descriptor() ([]byte, []int) {
+	return file_proto_protocols_transmit_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SessionPayload) GetPayload() *common.Payload {
+	if x != nil {
+		return x.Payload
+	}
+	return nil
+}
+
+func (x *SessionPayload) GetDirection() common.Direction {
+	if x != nil {
+		return x.Direction
+	}
+	return common.Direction(0)
+}
+
 var File_proto_protocols_transmit_proto protoreflect.FileDescriptor
 
 var file_proto_protocols_transmit_proto_rawDesc = []byte{
@@ -229,7 +292,7 @@ var file_proto_protocols_transmit_proto_rawDesc = []byte{
 	0x64, 0x12, 0x3a, 0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b,
 	0x32, 0x24, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c,
 	0x73, 0x2e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x6d, 0x69, 0x74, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69,
-	0x6f, 0x6e, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x22, 0xe2, 0x01,
+	0x6f, 0x6e, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x22, 0xf6, 0x01,
 	0x0a, 0x0b, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x74, 0x65, 0x6d, 0x12, 0x14, 0x0a,
 	0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x69, 0x6e,
 	0x64, 0x65, 0x78, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01,
@@ -244,10 +307,18 @@ var file_proto_protocols_transmit_proto_rawDesc = []byte{
 	0x0a, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28,
 	0x0e, 0x32, 0x14, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x44, 0x69,
 	0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x70, 0x6b,
-	0x67, 0x2f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x6d, 0x69, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x72, 0x0a, 0x0e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f,
+	0x6e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x2c, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c,
+	0x6f, 0x61, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x07, 0x70,
+	0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x32, 0x0a, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f,
+	0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x6d,
+	0x69, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -262,28 +333,31 @@ func file_proto_protocols_transmit_proto_rawDescGZIP() []byte {
 	return file_proto_protocols_transmit_proto_rawDescData
 }
 
-var file_proto_protocols_transmit_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_protocols_transmit_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_proto_protocols_transmit_proto_goTypes = []interface{}{
 	(*Session)(nil),         // 0: sonr.protocols.transmit.Session
 	(*SessionItem)(nil),     // 1: sonr.protocols.transmit.SessionItem
-	(common.Direction)(0),   // 2: sonr.core.Direction
-	(*common.Peer)(nil),     // 3: sonr.core.Peer
-	(*common.Payload)(nil),  // 4: sonr.core.Payload
-	(*common.FileItem)(nil), // 5: sonr.core.FileItem
+	(*SessionPayload)(nil),  // 2: sonr.protocols.transmit.SessionPayload
+	(common.Direction)(0),   // 3: sonr.core.Direction
+	(*common.Peer)(nil),     // 4: sonr.core.Peer
+	(*common.Payload)(nil),  // 5: sonr.core.Payload
+	(*common.FileItem)(nil), // 6: sonr.core.FileItem
 }
 var file_proto_protocols_transmit_proto_depIdxs = []int32{
-	2, // 0: sonr.protocols.transmit.Session.direction:type_name -> sonr.core.Direction
-	3, // 1: sonr.protocols.transmit.Session.from:type_name -> sonr.core.Peer
-	3, // 2: sonr.protocols.transmit.Session.to:type_name -> sonr.core.Peer
-	4, // 3: sonr.protocols.transmit.Session.payload:type_name -> sonr.core.Payload
+	3, // 0: sonr.protocols.transmit.Session.direction:type_name -> sonr.core.Direction
+	4, // 1: sonr.protocols.transmit.Session.from:type_name -> sonr.core.Peer
+	4, // 2: sonr.protocols.transmit.Session.to:type_name -> sonr.core.Peer
+	5, // 3: sonr.protocols.transmit.Session.payload:type_name -> sonr.core.Payload
 	1, // 4: sonr.protocols.transmit.Session.items:type_name -> sonr.protocols.transmit.SessionItem
-	5, // 5: sonr.protocols.transmit.SessionItem.item:type_name -> sonr.core.FileItem
-	2, // 6: sonr.protocols.transmit.SessionItem.direction:type_name -> sonr.core.Direction
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	6, // 5: sonr.protocols.transmit.SessionItem.item:type_name -> sonr.core.FileItem
+	3, // 6: sonr.protocols.transmit.SessionItem.direction:type_name -> sonr.core.Direction
+	5, // 7: sonr.protocols.transmit.SessionPayload.payload:type_name -> sonr.core.Payload
+	3, // 8: sonr.protocols.transmit.SessionPayload.direction:type_name -> sonr.core.Direction
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_proto_protocols_transmit_proto_init() }
@@ -316,6 +390,18 @@ func file_proto_protocols_transmit_proto_init() {
 				return nil
 			}
 		}
+		file_proto_protocols_transmit_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SessionPayload); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -323,7 +409,7 @@ func file_proto_protocols_transmit_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_protocols_transmit_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

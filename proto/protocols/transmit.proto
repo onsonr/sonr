@@ -22,4 +22,10 @@ message SessionItem {
   int64 size = 5;
   int64 totalSize = 6;
   sonr.core.Direction direction = 7;
+  string path = 8;
+}
+
+message SessionPayload {
+  sonr.core.Payload payload = 1;
+  sonr.core.Direction direction = 2;
 }

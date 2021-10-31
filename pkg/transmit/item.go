@@ -17,12 +17,6 @@ func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.
 	// generate path
 	item := si.GetItem()
 	size := item.GetSize()
-	path, err := item.ResetPath(fs.Downloads)
-	if err != nil {
-		logger.Errorf("%s - Failed to generate path for file: %s", err, item.Name)
-		return
-	}
-
 	buffer := bytes.Buffer{}
 
 	// Route Data from Stream
@@ -51,12 +45,12 @@ func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.
 	}
 
 	// Write File Buffer to File
-	err = ioutil.WriteFile(path, buffer.Bytes(), 0644)
+	err := ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
 	if err != nil {
 		logger.Errorf("%s - Failed to Close item on Read Stream", err)
 		return
 	}
-	logger.Debug("Completed writing to file: " + path)
+	logger.Debug("Completed writing to file: " + si.GetPath())
 	return
 }
 
@@ -64,10 +58,9 @@ func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.
 func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio.WriteCloser) {
 	// Properties
 	defer wg.Done()
-	item := si.GetItem()
 
 	// Create New Chunker
-	chunker, err := fs.NewFileChunker(item.Path)
+	chunker, err := fs.NewFileChunker(si.GetPath())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
 		return

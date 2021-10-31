@@ -4,6 +4,12 @@ package sonr.protocols.discover;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/pkg/discover";
 
+// LobbyMessage is message passed from Peer in Lobby
+message LobbyMessage {
+  sonr.core.Peer peer = 1;     // Users Peer Data
+  optional string message = 2; // Message to be published
+  sonr.core.Metadata metadata = 3; // Metadata
+}
 
 // VisibilityRequest is Message for updating Peer Visibility in Exchange
 message VisibilityRequest {
@@ -29,12 +35,4 @@ message VisibilityResponse {
     GHOST = 1; // Only Linked Devices can see this peer
     FRIENDS = 2; // Only Friends can see this peer
   }
-}
-
-
-// LobbyMessage is message passed from Peer in Lobby
-message LobbyMessage {
-  sonr.core.Peer peer = 1;     // Users Peer Data
-  optional string message = 2; // Message to be published
-  sonr.core.Metadata metadata = 3; // Metadata
 }

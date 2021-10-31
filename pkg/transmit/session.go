@@ -12,7 +12,7 @@ import (
 
 func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) *Session {
 	// Create Session Items
-	sessionPayload := createPayload(payload)
+	sessionPayload := NewSessionPayload(payload)
 	return &Session{
 		Direction:   common.Direction_OUTGOING,
 		Payload:     payload,
@@ -25,7 +25,7 @@ func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) 
 
 func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *Session {
 	// Create Session Items
-	sessionPayload := createPayload(payload)
+	sessionPayload := NewSessionPayload(payload)
 	return &Session{
 		Direction:   common.Direction_INCOMING,
 		Payload:     payload,

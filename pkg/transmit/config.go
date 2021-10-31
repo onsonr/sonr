@@ -6,6 +6,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/pkg/common"
 )
 
@@ -46,17 +47,6 @@ func SetHighway() Option {
 	}
 }
 
-// calculateInterval calculates the interval for the progress callback
-func calculateInterval(size int64) int {
-	// Calculate Interval
-	interval := size / 100
-	if interval < 1 {
-		interval = 1
-	}
-	logger.Debugf("Calculated Item progress interval: %v", interval)
-	return int(interval)
-}
-
 // Apply applies the options to the ExchangeProtocol
 func (o *options) Apply(p *TransmitProtocol) error {
 	// Apply options
@@ -64,12 +54,8 @@ func (o *options) Apply(p *TransmitProtocol) error {
 	return nil
 }
 
-type SessionPayload struct {
-	*common.Payload
-}
-
-// createPayload creates session payload
-func createPayload(p *common.Payload) *SessionPayload {
+// NewSessionPayload creates session payload
+func NewSessionPayload(p *common.Payload) *SessionPayload {
 	return &SessionPayload{
 		Payload: p,
 	}
@@ -77,17 +63,36 @@ func createPayload(p *common.Payload) *SessionPayload {
 
 // CreateItems creates list of sessionItems
 func (sp *SessionPayload) CreateItems(dir common.Direction) []*SessionItem {
-	count := len(sp.GetItems())
+	// Initialize Properties
+	count := len(sp.GetPayload().GetItems())
 	items := make([]*SessionItem, 0)
-	for i, v := range sp.GetItems() {
+
+	// Iterate over items
+	for i, v := range sp.GetPayload().GetItems() {
+		// Get default payload item properties
+		fi := v.GetFile()
+		path := fi.GetPath()
+
+		// Set Path for Incoming
+		if dir == common.Direction_INCOMING {
+			inpath, err := fi.ResetPath(fs.Downloads)
+			if err == nil {
+				path = inpath
+			} else {
+				logger.Errorf("%s - Failed to generate path for file: %s", err, fi.Name)
+			}
+		}
+
+		// Create Session Item
 		item := &SessionItem{
-			Item:      v.GetFile(),
+			Item:      fi,
 			Index:     int32(i),
-			TotalSize: sp.GetSize(),
-			Size:      v.GetSize(),
+			TotalSize: sp.GetPayload().GetSize(),
+			Size:      fi.GetSize(),
 			Count:     int32(count),
 			Direction: dir,
 			Written:   0,
+			Path:      path,
 		}
 		items = append(items, item)
 	}
