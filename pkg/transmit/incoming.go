@@ -83,6 +83,7 @@ func ReadItem(index int, count int, pi *common.Payload_Item, wg *sync.WaitGroup,
 	}
 
 	buffer := bytes.Buffer{}
+
 	// Route Data from Stream
 	for i := 0; i < int(size); {
 		// Read Next Message
@@ -102,7 +103,7 @@ func ReadItem(index int, count int, pi *common.Payload_Item, wg *sync.WaitGroup,
 			i += n
 
 			// Update Progress
-			go pushProgress(node, i, size, index, count)
+			pushProgress(node, i, size, index, count)
 		}
 	}
 
