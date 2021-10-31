@@ -29,21 +29,24 @@ func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.
 	for int(si.Written) < int(size) {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
-		if err == io.EOF {
-			break
-		} else if err != nil {
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
 			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
 			return
-		} else {
-			// Write Chunk to File
-			n, err := buffer.Write(buf)
-			if err != nil {
-				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-				return
-			}
+		}
 
-			// Update Progress
-			si.Progress(n, node)
+		// Write Chunk to File
+		n, err := buffer.Write(buf)
+		if err != nil {
+			logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
+			return
+		}
+
+		// Update Progress
+		if done := si.Progress(n, node); done {
+			break
 		}
 	}
 
@@ -93,15 +96,20 @@ func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio
 			logger.Errorf("%s - Unexpected Error occurred on Write Stream", err)
 			return
 		}
+
 		// Update Progress
-		si.Progress(c.Length, node)
+		if done := si.Progress(c.Length, node); done {
+			break
+		}
 	}
 	return
 }
 
-// Progress pushes a progress event to the node
-func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
+// Progress pushes a progress event to the node. Returns true if the item is done.
+func (si *SessionItem) Progress(wrt int, n api.NodeImpl) bool {
+	// Update Progress
 	si.Written += int64(wrt)
+
 	// Create Progress Event
 	if (si.GetWritten() % ITEM_INTERVAL) == 0 {
 		event := &api.ProgressEvent{
@@ -114,4 +122,5 @@ func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
 		// Push ProgressEvent to Emitter
 		n.OnProgress(event)
 	}
+	return si.Written >= si.TotalSize
 }

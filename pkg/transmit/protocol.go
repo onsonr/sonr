@@ -114,7 +114,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	event, err := entry.ReadFrom(stream, p.node)
 	if err != nil {
 		logger.Errorf("%s - Failed to Read From Stream", err)
-		stream.Reset()
+		stream.Close()
 		return
 	}
 	p.Reset(event)
@@ -136,7 +136,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 	event, err := entry.WriteTo(stream, p.node)
 	if err != nil {
 		logger.Errorf("%s - Failed to Write To Stream", err)
-		stream.Reset()
+		stream.Close()
 		return
 	}
 	p.Reset(event)
