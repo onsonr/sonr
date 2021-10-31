@@ -12,16 +12,17 @@ import (
 
 // Transfer Protocol ID's
 const (
-	IncomingPID   protocol.ID = "/transmit/incoming/0.0.1"
-	OutgoingPID   protocol.ID = "/transmit/outgoing/0.0.1"
+	FilePID       protocol.ID = "/transmit/file/0.0.1"
+	DonePID       protocol.ID = "/transmit/done/0.0.1"
 	ITEM_INTERVAL             = 25
 )
 
 // Error Definitions
 var (
-	logger        = golog.Default.Child("protocols/transmit")
-	ErrNoSession  = errors.New("Failed to get current session, set to nil")
-	ErrFailedAuth = errors.New("Failed to Authenticate message")
+	logger              = golog.Default.Child("protocols/transmit")
+	ErrNoSession        = errors.New("Failed to get current session, set to nil")
+	ErrFailedAuth       = errors.New("Failed to Authenticate message")
+	ErrInvalidDirection = errors.New("Direction was not set")
 )
 
 // Option is a function that can be applied to ExchangeProtocol config

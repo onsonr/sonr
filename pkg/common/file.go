@@ -139,6 +139,11 @@ func (m *MIME) Ext() string {
 	return m.Subtype
 }
 
+// IsFile Checks if Path is a File
+func (m *MIME) IsFile() bool {
+	return m.Type != MIME_URL
+}
+
 // IsAudio Checks if Mime is Audio
 func (m *MIME) IsAudio() bool {
 	return m.Type == MIME_AUDIO

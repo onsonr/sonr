@@ -34,7 +34,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 	opts.Apply(protocol)
 
 	// Setup Stream Handlers
-	host.SetStreamHandler(IncomingPID, protocol.onIncomingTransfer)
+	host.SetStreamHandler(FilePID, protocol.onIncomingTransfer)
 	logger.Debug("✅  TransmitProtocol is Activated \n")
 	return protocol, nil
 }
@@ -80,15 +80,19 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 	// Create New TransferEntry
 	p.current = NewOutSession(payload, from, to)
 
-	// Create New Stream
-	stream, err := p.host.NewStream(p.ctx, toId, IncomingPID)
-	if err != nil {
-		logger.Errorf("%s - Failed to Create New Stream", err)
-		return err
+	// Send Files
+	if p.current.Payload.IsFile() {
+		// Create New Stream
+		stream, err := p.host.NewStream(p.ctx, toId, FilePID)
+		if err != nil {
+			logger.Errorf("%s - Failed to Create New Stream", err)
+			return err
+		}
+
+		// Start Transfer
+		p.onOutgoingTransfer(stream)
 	}
 
-	// Start Transfer
-	p.onOutgoingTransfer(stream)
 	return nil
 }
 
@@ -111,7 +115,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	}
 
 	// Create New Reader
-	event, err := entry.ReadFrom(stream, p.node)
+	event, err := entry.Handle(stream, p.node)
 	if err != nil {
 		logger.Errorf("%s - Failed to Read From Stream", err)
 		stream.Close()
@@ -133,7 +137,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 	}
 
 	// Create New Writer
-	event, err := entry.WriteTo(stream, p.node)
+	event, err := entry.Handle(stream, p.node)
 	if err != nil {
 		logger.Errorf("%s - Failed to Write To Stream", err)
 		stream.Close()

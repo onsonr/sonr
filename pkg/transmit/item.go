@@ -14,21 +14,15 @@ import (
 // Read reads the item from the stream
 func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.ReadCloser) {
 	defer wg.Done()
-	// generate path
-	item := si.GetItem()
-	size := item.GetSize()
 	buffer := bytes.Buffer{}
 
 	// Route Data from Stream
-	for int(si.Written) < int(size) {
+	for {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
 		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
-			return
+			logger.Warnf("%s - Failed to Read Next Message on Read Stream", err)
+			break
 		}
 
 		// Write Chunk to File
@@ -50,7 +44,7 @@ func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.
 		logger.Errorf("%s - Failed to Close item on Read Stream", err)
 		return
 	}
-	logger.Debug("Completed writing to file: " + si.GetPath())
+	logger.Debug("Completed reading from stream: " + si.GetPath())
 	return
 }
 
@@ -70,11 +64,8 @@ func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio
 	for {
 		c, err := chunker.Next()
 		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			logger.Errorf("%s - Error reading chunk.", err)
-			return
+			logger.Warnf("%s - Error reading chunk.", err)
+			break
 		}
 
 		// Write Message Bytes to Stream
@@ -95,6 +86,7 @@ func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio
 			break
 		}
 	}
+	logger.Debug("Completed writing to stream: " + si.GetPath())
 	return
 }
 

@@ -37,6 +37,15 @@ func (l *Location) OLC() string {
 // PayloadItemFunc is the Map function for PayloadItem
 type PayloadItemFunc func(item *Payload_Item, index int, total int) error
 
+// IsFile returns true if the Item is a File
+func (p *Payload) IsFile() bool {
+	isFile := false
+	for _, item := range p.GetItems() {
+		isFile = item.GetMime().IsFile()
+	}
+	return isFile
+}
+
 // IsSingle returns true if the transfer is a single transfer. Error returned
 // if No Items present in Payload
 func (p *Payload) IsSingle() (bool, error) {
