@@ -669,11 +669,26 @@
         
           
           <li>
+            <a href="#proto%2fprotocols%2fidentity.proto">proto/protocols/identity.proto</a>
+            <ul>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
             <a href="#proto%2fprotocols%2ftransmit.proto">proto/protocols/transmit.proto</a>
             <ul>
               
                 <li>
                   <a href="#sonr.protocols.transmit.Session"><span class="badge">M</span>Session</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.transmit.Session.ResultsEntry"><span class="badge">M</span>Session.ResultsEntry</a>
                 </li>
               
                 <li>
@@ -5063,6 +5078,20 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
+        <h2 id="proto/protocols/identity.proto">proto/protocols/identity.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
         <h2 id="proto/protocols/transmit.proto">proto/protocols/transmit.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
@@ -5117,6 +5146,51 @@ Returns a stream of Lobby Refresh Events</p></td>
                   <td>items</td>
                   <td><a href="#sonr.protocols.transmit.SessionItem">SessionItem</a></td>
                   <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>currentIndex</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>results</td>
+                  <td><a href="#sonr.protocols.transmit.Session.ResultsEntry">Session.ResultsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.transmit.Session.ResultsEntry">Session.ResultsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
                   <td><p> </p></td>
                 </tr>
               

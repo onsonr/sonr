@@ -1,7 +1,6 @@
 package transmit
 
 import (
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -15,12 +14,14 @@ func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &Session{
-		Direction:   common.Direction_INCOMING,
-		Payload:     payload,
-		From:        from,
-		To:          to,
-		LastUpdated: int64(time.Now().Unix()),
-		Items:       sessionPayload.CreateItems(common.Direction_INCOMING),
+		Direction:    common.Direction_INCOMING,
+		Payload:      payload,
+		From:         from,
+		To:           to,
+		LastUpdated:  int64(time.Now().Unix()),
+		Items:        sessionPayload.CreateItems(common.Direction_INCOMING),
+		CurrentIndex: 0,
+		Results:      make(map[int32]bool),
 	}
 }
 
@@ -29,72 +30,102 @@ func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) 
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &Session{
-		Direction:   common.Direction_OUTGOING,
-		Payload:     payload,
-		To:          to,
-		From:        from,
-		LastUpdated: int64(time.Now().Unix()),
-		Items:       sessionPayload.CreateItems(common.Direction_OUTGOING),
+		Direction:    common.Direction_OUTGOING,
+		Payload:      payload,
+		To:           to,
+		From:         from,
+		LastUpdated:  int64(time.Now().Unix()),
+		Items:        sessionPayload.CreateItems(common.Direction_OUTGOING),
+		CurrentIndex: 0,
+		Results:      make(map[int32]bool),
 	}
 }
 
-// WriteTo writes the Session to the given stream.
-func (s *Session) Handle(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
+// HasRead returns true if all files have been read.
+func (s *Session) HasRead() bool {
+	return s.IsIn() && s.IsDone()
+}
+
+// HasWrote returns true if all files have been written.
+func (s *Session) HasWrote() bool {
+	return s.IsOut() && s.IsDone()
+}
+
+// IsDone returns true if all files have been read or written.
+func (s *Session) IsDone() bool {
+	return int(s.CurrentIndex) >= len(s.GetItems())
+}
+
+// IsOut returns true if the session is outgoing.
+func (s *Session) IsOut() bool {
+	return s.Direction == common.Direction_OUTGOING
+}
+
+// IsIn returns true if the session is incoming.
+func (s *Session) IsIn() bool {
+	return s.Direction == common.Direction_INCOMING
+}
+
+// Event returns the complete event for the session.
+func (s *Session) Event() *api.CompleteEvent {
+	return &api.CompleteEvent{
+		From:       s.GetFrom(),
+		To:         s.GetTo(),
+		Direction:  s.GetDirection(),
+		Payload:    s.GetPayload(),
+		CreatedAt:  s.GetPayload().GetCreatedAt(),
+		ReceivedAt: int64(time.Now().Unix()),
+		Results:    s.GetResults(),
+	}
+}
+
+// RouteStream is used to route the given stream to the given peer.
+func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
-	var wg sync.WaitGroup
+	doneChan := make(chan bool)
 
 	// Check for Incoming
-	if s.Direction == common.Direction_INCOMING {
+	if s.IsIn() {
 		// Handle incoming stream
 		rs := msgio.NewReader(stream)
-
-		// Read All Files
 		for _, v := range s.GetItems() {
-			// Write to File
-			wg.Add(1)
-			go v.Read(&wg, n, rs)
+			// Read Stream to File
+			go v.Read(doneChan, n, rs)
 		}
-		wg.Wait()
-		stream.Close()
-
-		// Return Complete Event
-		return &api.CompleteEvent{
-			From:       s.GetFrom(),
-			To:         s.GetTo(),
-			Direction:  s.GetDirection(),
-			Payload:    s.GetPayload(),
-			CreatedAt:  s.GetPayload().GetCreatedAt(),
-			ReceivedAt: int64(time.Now().Unix()),
-		}, nil
 	}
 
 	// Check for Outgoing
-	if s.Direction == common.Direction_OUTGOING {
-		// Initialize Params
+	if s.IsOut() {
+		// Handle outgoing stream
 		wc := msgio.NewWriter(stream)
-
-		// Create New Writer
 		for _, v := range s.GetItems() {
 			// Write File to Stream
-			wg.Add(1)
-			go v.Write(&wg, n, wc)
+			go v.Write(doneChan, n, wc)
 		}
-
-		// Wait for all writes to finish
-		wg.Wait()
-
-		// Return Complete Event
-		return &api.CompleteEvent{
-			From:       s.GetFrom(),
-			To:         s.GetTo(),
-			Direction:  s.GetDirection(),
-			Payload:    s.GetPayload(),
-			CreatedAt:  s.GetPayload().GetCreatedAt(),
-			ReceivedAt: int64(time.Now().Unix()),
-		}, nil
 	}
 
-	// Return Error
-	return nil, ErrInvalidDirection
+	// Wait for all files to be written
+	for {
+		select {
+		case r := <-doneChan:
+			// Set Result
+			s.UpdateCurrent(r)
+
+			// Close Stream on Done Reading
+			if s.HasRead() {
+				stream.Close()
+			}
+
+			// Return Event
+			return s.Event(), nil
+		}
+	}
+}
+
+// UpdateCurrent updates the current index of the session.
+func (s *Session) UpdateCurrent(result bool) {
+	logger.Debugf("Item (%v) transmit result: %v", s.CurrentIndex, result)
+	s.Results[s.CurrentIndex] = result
+	s.CurrentIndex = s.CurrentIndex + 1
 }

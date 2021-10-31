@@ -2,9 +2,7 @@ package transmit
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
-	"sync"
 
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
@@ -12,8 +10,7 @@ import (
 )
 
 // Read reads the item from the stream
-func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.ReadCloser) {
-	defer wg.Done()
+func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, reader msgio.ReadCloser) {
 	buffer := bytes.Buffer{}
 
 	// Route Data from Stream
@@ -29,6 +26,7 @@ func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.
 		n, err := buffer.Write(buf)
 		if err != nil {
 			logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
+			doneChan <- false
 			return
 		}
 
@@ -42,21 +40,21 @@ func (si *SessionItem) Read(wg *sync.WaitGroup, node api.NodeImpl, reader msgio.
 	err := ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
 	if err != nil {
 		logger.Errorf("%s - Failed to Close item on Read Stream", err)
+		doneChan <- false
 		return
 	}
 	logger.Debug("Completed reading from stream: " + si.GetPath())
+	doneChan <- true
 	return
 }
 
 // Write writes the item to the stream
-func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio.WriteCloser) {
-	// Properties
-	defer wg.Done()
-
+func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, writer msgio.WriteCloser) {
 	// Create New Chunker
 	chunker, err := fs.NewFileChunker(si.GetPath())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
+		doneChan <- false
 		return
 	}
 
@@ -64,7 +62,7 @@ func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio
 	for {
 		c, err := chunker.Next()
 		if err != nil {
-			logger.Warnf("%s - Error reading chunk.", err)
+			logger.Warnf("%s - Failed to get next chunk.", err)
 			break
 		}
 
@@ -72,12 +70,7 @@ func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio
 		err = writer.WriteMsg(c.Data)
 		if err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
-			return
-		}
-
-		// Unexpected Error
-		if err != nil && err != io.EOF {
-			logger.Errorf("%s - Unexpected Error occurred on Write Stream", err)
+			doneChan <- false
 			return
 		}
 
@@ -87,6 +80,7 @@ func (si *SessionItem) Write(wg *sync.WaitGroup, node api.NodeImpl, writer msgio
 		}
 	}
 	logger.Debug("Completed writing to stream: " + si.GetPath())
+	doneChan <- true
 	return
 }
 

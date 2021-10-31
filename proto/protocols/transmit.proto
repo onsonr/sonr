@@ -12,6 +12,8 @@ message Session {
   sonr.core.Payload payload = 4;
   int64 lastUpdated = 5;
   repeated SessionItem items = 6;
+  int32 currentIndex = 7;
+  map<int32, bool> results = 8;
 }
 
 message SessionItem {
