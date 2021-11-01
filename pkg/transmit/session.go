@@ -85,40 +85,49 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)
-
 	// Check for Incoming
 	if s.IsIn() {
 		// Handle incoming stream
-		mrd := multipart.NewReader(stream, "multipart/mixed")
+		mrd := multipart.NewReader(stream, MIME_BOUNDARY)
 		for {
-			var part *multipart.Part
-			var err error
-
 			// Read Stream to File
-			if part, err = mrd.NextPart(); err != nil {
+			part, err := mrd.NextPart()
+			if err != nil {
 				if err != io.EOF {
+					logger.Errorf("Error reading stream: %v", err)
 					return nil, err
 				} else {
-					logger.Debugf("Stream EOF")
+					logger.Debugf("Stream read complete")
 					break
 				}
 			}
-
-			// Write File to Disk
-			if part != nil {
-				go s.GetItems()[s.GetCurrentIndex()].Read(doneChan, n, part)
-			}
+			go s.GetItems()[s.GetCurrentIndex()].Read(doneChan, n, part)
 		}
 	}
 
 	// Check for Outgoing
 	if s.IsOut() {
 		// Handle outgoing stream
-		mrw := multipart.NewWriter(stream)
-		for _, v := range s.GetItems() {
-			// Write File to Stream
-			go v.Write(doneChan, n, mrw)
+		mwr := multipart.NewWriter(stream)
+		err := mwr.SetBoundary(MIME_BOUNDARY)
+		if err != nil {
+			logger.Errorf("Error setting boundary: %v", err)
+			return nil, err
 		}
+
+		// Write Files to Stream
+		go func(multipartWriter *multipart.Writer, items []*SessionItem) {
+			for _, v := range items {
+				// Create Part
+				writer, err := multipartWriter.CreatePart(v.GetItem().Header())
+				if err != nil {
+					logger.Errorf("%s - Failed to Create Form File on Write Stream", err)
+				}
+
+				// Write File to Stream
+				v.Write(doneChan, n, writer)
+			}
+		}(mwr, s.GetItems())
 	}
 
 	// Wait for all files to be written
@@ -136,6 +145,7 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 
 			// Close Stream on Done Reading
 			if s.HasRead() {
+				logger.Debugf("Closing stream read")
 				stream.CloseRead()
 			}
 

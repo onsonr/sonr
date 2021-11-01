@@ -1,4 +1,4 @@
-package domain
+package registry
 
 import (
 	"fmt"

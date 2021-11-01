@@ -15,6 +15,7 @@ const (
 	FilePID       protocol.ID = "/transmit/file/0.0.1"
 	DonePID       protocol.ID = "/transmit/done/0.0.1"
 	ITEM_INTERVAL             = 25
+	MIME_BOUNDARY             = "multipart/mixed"
 )
 
 // Error Definitions

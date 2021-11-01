@@ -142,7 +142,7 @@ func (s *NodeMotorStub) OnTransmitComplete(e *Empty, stream MotorStub_OnTransmit
 				// Check Direction
 				stream.Send(m)
 				// Add Receiver to Recents
-				err := s.node.AddRecent(m.Recent())
+				err := s.node.identity.AddRecent(m.Recent())
 				if err != nil {
 					logger.Errorf("%s - Failed to add receiver's profile to store.", err)
 					continue

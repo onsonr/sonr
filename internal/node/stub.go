@@ -5,8 +5,8 @@ import (
 	"net"
 
 	"github.com/sonr-io/core/pkg/discover"
-	"github.com/sonr-io/core/pkg/domain"
 	"github.com/sonr-io/core/pkg/exchange"
+	"github.com/sonr-io/core/pkg/registry"
 	"github.com/sonr-io/core/pkg/transmit"
 
 	"google.golang.org/grpc"
@@ -30,7 +30,6 @@ type NodeMotorStub struct {
 
 // startMotorStub creates a new Client service stub for the node.
 func (n *Node) startMotorStub(ctx context.Context, opts *options) (*NodeMotorStub, error) {
-
 	// Set Discovery Protocol
 	discProtocol, err := discover.New(ctx, n.host, n, discover.WithLocation(opts.location))
 	if err != nil {
@@ -133,7 +132,7 @@ type NodeHighwayStub struct {
 	ctx        context.Context
 	grpcServer *grpc.Server
 	*discover.DiscoverProtocol
-	*domain.DomainProtocol
+	*registry.RegistryProtocol
 	*exchange.ExchangeProtocol
 }
 
@@ -154,7 +153,7 @@ func (n *Node) startHighwayStub(ctx context.Context, opts *options) (*NodeHighwa
 	}
 
 	// Set Exchange Protocol
-	domainProtocol, err := domain.New(ctx, n.host, n)
+	registeryProtocol, err := registry.New(ctx, n.host, n)
 	if err != nil {
 		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
 		return nil, err
@@ -168,7 +167,7 @@ func (n *Node) startHighwayStub(ctx context.Context, opts *options) (*NodeHighwa
 		grpcServer:       grpcServer,
 		DiscoverProtocol: discProtocol,
 		ExchangeProtocol: exchangeProtocol,
-		DomainProtocol:   domainProtocol,
+		RegistryProtocol: registeryProtocol,
 	}
 	// Register the RPC Service
 	RegisterHighwayStubServer(grpcServer, stub)

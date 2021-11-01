@@ -12,6 +12,7 @@ import (
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
+	"github.com/sonr-io/core/pkg/identity"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -27,10 +28,11 @@ type Node struct {
 	listener net.Listener
 
 	// Properties
-	ctx   context.Context
-	store *bitcask.Bitcask
-	state *api.State
-	once  sync.Once
+	ctx      context.Context
+	identity *identity.IdentityProtocol
+	store    *bitcask.Bitcask
+	state    *api.State
+	once     sync.Once
 
 	// Channels
 	// TransferProtocol - decisionEvents
@@ -80,15 +82,8 @@ func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeIm
 		completeEvents: make(chan *api.CompleteEvent),
 	}
 
-	// Open Store with profileBuf
-	err = node.openStore(ctx, opts)
-	if err != nil {
-		logger.Errorf("%s - Failed to open database", err)
-		return node, api.NewInitialzeResponse(nil, false), err
-	}
-
 	// Initialize Stub
-	err = opts.Apply(ctx, node)
+	err = opts.Apply(ctx, host, node)
 	if err != nil {
 		logger.Errorf("%s - Failed to initialize stub", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
@@ -107,10 +102,15 @@ func (n *Node) GetState() *api.State {
 	return n.state
 }
 
+// Profile returns the profile for the user from diskDB
+func (n *Node) Profile() (*common.Profile, error) {
+	return n.identity.Profile()
+}
+
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
-	profile, err := n.Profile()
+	profile, err := n.identity.Profile()
 	if err != nil {
 		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
 	}

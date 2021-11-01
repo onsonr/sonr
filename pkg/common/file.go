@@ -9,8 +9,10 @@ import (
 	"image/jpeg"
 	"log"
 	"math"
+	"mime"
 	"net/textproto"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -64,6 +66,30 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	}, nil
 }
 
+// AvgChunkSize returns the average chunk size of the item
+func (f *FileItem) AvgChunkSize() int {
+	if f.GetSize() < 4096 {
+		return int(f.GetSize())
+	}
+
+	div := f.GetSize() / 4096.0
+	return int(math.Round(float64(div)))
+}
+
+// Header returns the header of the FileItem
+func (f *FileItem) Header() textproto.MIMEHeader {
+	cd := mime.FormatMediaType("item-data", map[string]string{
+		"type":         f.GetMime().GetType().String(),
+		"filename":     f.GetName(),
+		"lastModified": time.Unix(f.GetLastModified(), 0).Format(time.RFC1123),
+	})
+	return textproto.MIMEHeader{
+		"Content-Disposition": {cd},
+		"Content-Length":      {strconv.FormatInt(f.GetSize(), 10)},
+		"Content-Type":        {f.GetMime().GetValue()},
+	}
+}
+
 // ResetPath sets the path of the FileItem
 func (f *FileItem) ResetPath(folder fs.Folder) (string, error) {
 	// Set Path
@@ -92,16 +118,6 @@ func (f *FileItem) ToTransferItem() *Payload_Item {
 			File: f,
 		},
 	}
-}
-
-// AvgChunkSize returns the average chunk size of the item
-func (f *FileItem) AvgChunkSize() int {
-	if f.GetSize() < 4096 {
-		return int(f.GetSize())
-	}
-
-	div := f.GetSize() / 4096.0
-	return int(math.Round(float64(div)))
 }
 
 // ** ───────────────────────────────────────────────────────
@@ -148,12 +164,6 @@ func (m *MIME) Ext() string {
 		return "jpeg"
 	}
 	return m.Subtype
-}
-
-func (m *MIME) Header() textproto.MIMEHeader {
-	return textproto.MIMEHeader{
-		"Content-Type": {m.String()},
-	}
 }
 
 // IsFile Checks if Path is a File

@@ -7,7 +7,7 @@ option go_package = "github.com/sonr-io/core/pkg/exchange";
 
 message MailboxMessage {
   string id = 1; // ID is the Message ID
-  bytes buffer = 2; // Buffer is the message data
+  sonr.core.Payload payload = 2;    // Payload is the message data
   sonr.core.Profile from = 3;         // Users Peer Data
   sonr.core.Profile to = 4;           // Receivers Peer Data
   sonr.core.Metadata metadata = 5; // Metadata

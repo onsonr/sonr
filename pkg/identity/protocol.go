@@ -1,69 +1,65 @@
-package node
+package identity
 
 import (
 	"context"
-	"fmt"
-	"time"
-
-	"github.com/sonr-io/core/internal/fs"
-	"github.com/sonr-io/core/pkg/common"
 
 	"git.mills.io/prologic/bitcask"
+	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/proto"
 )
 
-// RecentsHistory is a list of recent Peers.
-type RecentsHistory map[string]*common.ProfileList
-
-// Bucket Constant Keys
-var (
-	PROFILE_KEY = []byte("profile")
-)
-
-func recentsKey() []byte {
-	// Create Key from Time in RFC3339 format
-	t := time.Now().Round(time.Hour)
-	keyStr := t.Format(time.RFC3339)
-	key := []byte(keyStr)
-	return []byte(fmt.Sprintf("%s_recents", key))
+type IdentityProtocol struct {
+	ctx   context.Context
+	host  *host.SNRHost
+	node  api.NodeImpl
+	mode  api.StubMode
+	store *bitcask.Bitcask
 }
 
-// openStore creates a new Store instance for Node
-func (n *Node) openStore(ctx context.Context, opts *options) error {
+// New creates a new IdentityProtocol
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*IdentityProtocol, error) {
 	// Open the my.db data file in your current directory.
-	path, _ := fs.Database.GenPath("sonr_bitcask")
+	path, err := fs.Database.GenPath("sonr_bitcask")
+	if err != nil {
+		logger.Errorf("Failed to generate path for bitcask: %s", err)
+		return nil, err
+	}
 
 	// It will be created if it doesn't exist.
 	db, err := bitcask.Open(path, bitcask.WithAutoRecovery(true))
 	if err != nil {
 		logger.Errorf("%s - Failed to open Database", err)
-		return err
+		return nil, err
 	}
-	n.store = db
 
-	// Create Profile Bucket
-	err = n.SetProfile(opts.profile)
-	if err != nil {
-		logger.Errorf("%s - Failed to Set Profile", err)
-		return err
+	// Create Exchange Protocol
+	protocol := &IdentityProtocol{
+		ctx:   ctx,
+		host:  host,
+		node:  node,
+		store: db,
 	}
-	return nil
+
+	// Set Default Options
+	opts := defaultOptions()
+	for _, option := range options {
+		option(opts)
+	}
+
+	// Apply Options
+	if err := opts.Apply(protocol); err != nil {
+		logger.Errorf("%s - Failed to apply options", err)
+		return nil, err
+	}
+	logger.Debug("✅  IdentityProtocol is Activated \n")
+	return protocol, nil
 }
 
 // AddRecent stores the profile for recents in desk and returns list of recent profiles
-func (n *Node) AddRecent(profile *common.Profile) error {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Errorf("%s - Failed to Add Recent Profile", ErrProtocolsNotSet)
-		return ErrProtocolsNotSet
-	}
-
-	// Check if profile is nil
-	if profile == nil {
-		logger.Errorf("%s - Failed to Add Recent Profile", ErrMissingParam)
-		return ErrMissingParam
-	}
-
+func (n *IdentityProtocol) AddRecent(profile *common.Profile) error {
 	// Put in Bucket
 	if n.store.Has(recentsKey()) {
 		// Get profile list buffer
@@ -82,7 +78,6 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		}
 
 		// Add profile to list
-
 		profileList.Add(profile)
 
 		// Marshal profile
@@ -114,12 +109,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 }
 
 // GetRecents returns the list of recent profiles
-func (n *Node) GetRecents() (*common.ProfileList, error) {
-	if n.store == nil {
-		logger.Errorf("%s - Failed to Get Profile", ErrProtocolsNotSet)
-		return nil, ErrProtocolsNotSet
-	}
-
+func (n *IdentityProtocol) GetRecents() (*common.ProfileList, error) {
 	// Check for Key
 	if n.store.Has(recentsKey()) {
 		rbuf, err := n.store.Get(recentsKey())
@@ -141,12 +131,7 @@ func (n *Node) GetRecents() (*common.ProfileList, error) {
 }
 
 // Profile returns the profile for the user from diskDB
-func (n *Node) Profile() (*common.Profile, error) {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Errorf("%s - Failed to Get Profile", ErrProtocolsNotSet)
-		return common.NewDefaultProfile(), ErrProtocolsNotSet
-	}
+func (n *IdentityProtocol) Profile() (*common.Profile, error) {
 	if n.store.Has(PROFILE_KEY) {
 		pbuf, err := n.store.Get(PROFILE_KEY)
 		if err != nil {
@@ -164,13 +149,7 @@ func (n *Node) Profile() (*common.Profile, error) {
 }
 
 // SetProfile stores the profile for the user in diskDB
-func (n *Node) SetProfile(profile *common.Profile) error {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Errorf("%s - Failed to Set Profile", ErrProtocolsNotSet)
-		return ErrProtocolsNotSet
-	}
-
+func (n *IdentityProtocol) SetProfile(profile *common.Profile) error {
 	// Check if profile is nil
 	if profile == nil {
 		return ErrMissingParam

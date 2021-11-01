@@ -1,4 +1,4 @@
-package domain
+package registry
 
 import (
 	"context"
@@ -10,8 +10,8 @@ import (
 	"google.golang.org/api/option"
 )
 
-// DomainProtocol handles Global and Local Sonr Peer Exchange Protocol
-type DomainProtocol struct {
+// RegistryProtocol handles Global and Local Sonr Peer Exchange Protocol
+type RegistryProtocol struct {
 	node       api.NodeImpl
 	ctx        context.Context
 	host       *host.SNRHost
@@ -19,8 +19,8 @@ type DomainProtocol struct {
 	mode       api.StubMode
 }
 
-// New creates new DiscoveryProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*DomainProtocol, error) {
+// New creates new RegisteryProtocol
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*RegistryProtocol, error) {
 	dnsService, err := dns.NewService(ctx, option.WithAPIKey("AIza..."))
 	if err != nil {
 		logger.Error("Failed to create DNS Service", err)
@@ -28,7 +28,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 	}
 
 	// Create Exchange Protocol
-	protocol := &DomainProtocol{
+	protocol := &RegistryProtocol{
 		ctx:        ctx,
 		host:       host,
 		node:       node,
@@ -47,7 +47,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *DomainProtocol) Verify(sname string) (bool, error) {
+func (p *RegistryProtocol) Verify(sname string) (bool, error) {
 	if p.mode.Motor() {
 		return false, ErrNotSupported
 	}
@@ -87,7 +87,7 @@ func (p *DomainProtocol) Verify(sname string) (bool, error) {
 }
 
 // Register registers a domain with Namebase.
-func (p *DomainProtocol) Register(req *api.RegisterRequest) (RecordMap, error) {
+func (p *RegistryProtocol) Register(req *api.RegisterRequest) (RecordMap, error) {
 	if p.mode.Motor() {
 		return nil, ErrNotSupported
 	}

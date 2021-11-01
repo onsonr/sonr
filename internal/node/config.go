@@ -6,7 +6,9 @@ import (
 
 	"github.com/kataras/golog"
 	api "github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
+	"github.com/sonr-io/core/pkg/identity"
 )
 
 // Error Definitions
@@ -56,12 +58,23 @@ func defaultNodeOptions() *options {
 }
 
 // Apply applies Options to node
-func (opts *options) Apply(ctx context.Context, node *Node) error {
+func (opts *options) Apply(ctx context.Context, host *host.SNRHost, node *Node) error {
 	// Set Mode
 	node.mode = opts.mode
 
 	// Handle by Node Mode
 	if opts.mode.Motor() {
+		// Open Store with profileBuf
+		logger.Debugf("Opening Store with profile: %s", opts.profile)
+		id, err := identity.New(ctx, host, node, identity.WithProfile(opts.profile))
+		if err != nil {
+			logger.Errorf("%s - Failed to initialize identity", err)
+			return err
+		}
+
+		// Set Identity
+		node.identity = id
+
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startMotorStub(ctx, opts)

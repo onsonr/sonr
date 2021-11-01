@@ -1,4 +1,4 @@
-package domain
+package registry
 
 import (
 	"errors"
@@ -40,7 +40,7 @@ func SetHighway() Option {
 }
 
 // Apply applies the options to the ExchangeProtocol
-func (o *options) Apply(p *DomainProtocol) error {
+func (o *options) Apply(p *RegistryProtocol) error {
 	// Apply options
 	p.mode = o.mode
 	return nil

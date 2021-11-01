@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package sonr.protocols.domain;
-option go_package = "github.com/sonr-io/core/pkg/domain";
+package sonr.protocols.registry;
+option go_package = "github.com/sonr-io/core/pkg/registry";
 
 
 // AuthorizeRequest is Message for Verifying Request (Hmac Sha256)

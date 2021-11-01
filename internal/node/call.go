@@ -39,7 +39,7 @@ func (s *NodeMotorStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.
 		}, nil
 	}
 
-	recents, err := s.node.GetRecents()
+	recents, err := s.node.identity.GetRecents()
 	if err != nil {
 		return &api.FetchResponse{
 			Success: false,
@@ -187,7 +187,7 @@ func (s *NodeHighwayStub) Register(ctx context.Context, req *api.RegisterRequest
 	}
 
 	// Create Record
-	resp, err := s.DomainProtocol.Register(req)
+	resp, err := s.RegistryProtocol.Register(req)
 	if err != nil {
 		return &api.RegisterResponse{
 			Success: false,
