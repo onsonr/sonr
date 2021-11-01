@@ -7,9 +7,9 @@ import (
 	"io/ioutil"
 	"math"
 	"mime/multipart"
-	"os"
 
 	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/fs"
 )
 
 // progressReader wraps an existing io.Reader.
@@ -46,17 +46,30 @@ func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, part *multipa
 	buffer := bytes.Buffer{}
 	dst := bufio.NewWriter(&buffer)
 	src := si.initProgressReader(part, node)
+	chunk := make([]byte, 4096)
+	for {
+		// Read Chunk
+		n, err := src.Read(chunk)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			logger.Errorf("%s - Failed to read chunk in Item reader")
+			doneChan <- false
+			return
+		}
 
-	// Copy from src to dst
-	n, err := io.Copy(dst, src)
-	if err != nil {
-		doneChan <- false
-		return
+		// Write Chunk
+		_, err = dst.Write(chunk[:n])
+		if err != nil {
+			logger.Errorf("%s - Failed to write chunk in Item reader")
+			doneChan <- false
+			return
+		}
 	}
-	logger.Debug("Item Completed Read \n\tPath: %s \n\tSize: %v"+si.GetPath(), n)
 
 	// Write to File
-	err = ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
+	err := ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
 	if err != nil {
 		doneChan <- false
 		return
@@ -99,27 +112,35 @@ func (pr *progressWriter) Write(p []byte) (int, error) {
 
 // Write writes the item to the stream
 func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, wr io.Writer) {
-	// Create New Chunker
-	data, err := os.ReadFile(si.GetPath())
-	if err != nil {
-		logger.Errorf("%s - Failed to read file data in Item writer")
-		doneChan <- false
-		return
-	}
-
 	// Create Source and Destination
-	buffer := bytes.NewBuffer(data)
-	src := bufio.NewReader(buffer)
 	dst := si.initProgressWriter(wr, node)
-
-	// Copy from src to dst
-	n, err := io.Copy(dst, src)
+	src, err := fs.NewFileChunker(si.GetPath())
 	if err != nil {
-		logger.Errorf("%s - Failed to copy from src to dst in Item writer")
+		logger.Errorf("%s - Failed to create file chunker in Item writer")
 		doneChan <- false
 		return
 	}
-	logger.Debug("Item Completed Write \n\tPath: %s \n\tSize: %v"+si.GetPath(), n)
+
+	for {
+		// Read Chunk
+		chunk, err := src.Next()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			logger.Errorf("%s - Failed to read chunk in Item writer")
+			doneChan <- false
+			return
+		}
+
+		// Write Chunk
+		_, err = dst.Write(chunk.Data)
+		if err != nil {
+			logger.Errorf("%s - Failed to write chunk in Item writer")
+			doneChan <- false
+			return
+		}
+	}
 
 	// Update Progress
 	doneChan <- true
