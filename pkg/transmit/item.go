@@ -3,7 +3,6 @@ package transmit
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -64,7 +63,7 @@ func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, part *multipa
 
 // Write writes the item to the stream
 func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, mwr *multipart.Writer) {
-	writer, err := mwr.CreateFormFile(fmt.Sprint(si.GetIndex()), si.GetItem().GetName())
+	writer, err := mwr.CreatePart(si.Item.GetMime().Header())
 	if err != nil {
 		logger.Errorf("%s - Failed to Create Form File on Write Stream", err)
 		doneChan <- false

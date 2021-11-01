@@ -89,8 +89,8 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 	// Check for Incoming
 	if s.IsIn() {
 		// Handle incoming stream
-		mrd := multipart.NewReader(stream, "*/**")
-		for _, v := range s.GetItems() {
+		mrd := multipart.NewReader(stream, "")
+		for {
 			var part *multipart.Part
 			var err error
 
@@ -106,7 +106,7 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 
 			// Write File to Disk
 			if part != nil {
-				go v.Read(doneChan, n, part)
+				go s.GetItems()[s.GetCurrentIndex()].Read(doneChan, n, part)
 			}
 		}
 	}
