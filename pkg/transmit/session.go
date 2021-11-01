@@ -89,7 +89,7 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 	// Check for Incoming
 	if s.IsIn() {
 		// Handle incoming stream
-		mrd := multipart.NewReader(stream, "")
+		mrd := multipart.NewReader(stream, "multipart/mixed")
 		for {
 			var part *multipart.Part
 			var err error
