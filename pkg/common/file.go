@@ -9,6 +9,7 @@ import (
 	"image/jpeg"
 	"log"
 	"math"
+	"net/textproto"
 	"os"
 	"strings"
 	"time"
@@ -93,6 +94,16 @@ func (f *FileItem) ToTransferItem() *Payload_Item {
 	}
 }
 
+// AvgChunkSize returns the average chunk size of the item
+func (f *FileItem) AvgChunkSize() int {
+	if f.GetSize() < 4096 {
+		return int(f.GetSize())
+	}
+
+	div := f.GetSize() / 4096.0
+	return int(math.Round(float64(div)))
+}
+
 // ** ───────────────────────────────────────────────────────
 // ** ─── MIME Management ───────────────────────────────────
 // ** ───────────────────────────────────────────────────────
@@ -137,6 +148,12 @@ func (m *MIME) Ext() string {
 		return "jpeg"
 	}
 	return m.Subtype
+}
+
+func (m *MIME) Header() textproto.MIMEHeader {
+	return textproto.MIMEHeader{
+		"Content-Type": {m.String()},
+	}
 }
 
 // IsFile Checks if Path is a File

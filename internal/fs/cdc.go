@@ -134,6 +134,14 @@ func NewChunker(rd io.Reader, opts ChunkerOptions) (*Chunker, error) {
 	return chunker, nil
 }
 
+// NewChunker returns a Chunker with the given Options.
+func NewChunkerWithAvgSize(rd io.Reader, avg int) (*Chunker, error) {
+	opts := ChunkerOptions{
+		AverageSize: avg,
+	}
+	return NewChunker(rd, opts)
+}
+
 // NewFileChunker returns a Chunker that reads from the given file.
 func NewFileChunker(path string) (*Chunker, error) {
 	// Open the file and wrap it in a buffered reader

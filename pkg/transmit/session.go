@@ -1,10 +1,11 @@
 package transmit
 
 import (
+	"io"
+	"mime/multipart"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -88,20 +89,35 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 	// Check for Incoming
 	if s.IsIn() {
 		// Handle incoming stream
-		rs := msgio.NewReader(stream)
+		mrd := multipart.NewReader(stream, "*/**")
 		for _, v := range s.GetItems() {
+			var part *multipart.Part
+			var err error
+
 			// Read Stream to File
-			go v.Read(doneChan, n, rs)
+			if part, err = mrd.NextPart(); err != nil {
+				if err != io.EOF {
+					return nil, err
+				} else {
+					logger.Debugf("Stream EOF")
+					break
+				}
+			}
+
+			// Write File to Disk
+			if part != nil {
+				go v.Read(doneChan, n, part)
+			}
 		}
 	}
 
 	// Check for Outgoing
 	if s.IsOut() {
 		// Handle outgoing stream
-		wc := msgio.NewWriter(stream)
+		mrw := multipart.NewWriter(stream)
 		for _, v := range s.GetItems() {
 			// Write File to Stream
-			go v.Write(doneChan, n, wc)
+			go v.Write(doneChan, n, mrw)
 		}
 	}
 
@@ -112,9 +128,15 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 			// Set Result
 			s.UpdateCurrent(r)
 
+			// Close Stream Write on Done Writing
+			if s.HasWrote() {
+				logger.Debugf("Closing stream write")
+				stream.CloseWrite()
+			}
+
 			// Close Stream on Done Reading
 			if s.HasRead() {
-				stream.Close()
+				stream.CloseRead()
 			}
 
 			// Return Event

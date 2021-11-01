@@ -1,31 +1,45 @@
 package transmit
 
 import (
+	"bufio"
 	"bytes"
+	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
+	"mime/multipart"
 
-	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
 )
 
 // Read reads the item from the stream
-func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, reader msgio.ReadCloser) {
+func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, part *multipart.Part) {
 	buffer := bytes.Buffer{}
+	writer := bufio.NewWriter(&buffer)
+	chunker, err := fs.NewChunkerWithAvgSize(part, si.Item.AvgChunkSize())
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		return
+	}
 
-	// Route Data from Stream
 	for {
-		// Read Next Message
-		buf, err := reader.ReadMsg()
+		// Read from stream
+		chunk, err := chunker.Next()
 		if err != nil {
-			logger.Warnf("%s - Failed to Read Next Message on Read Stream", err)
-			break
+			if err == io.EOF {
+				logger.Debug("Completed reading from stream: " + si.GetPath())
+				break
+			}
+			log.Println("Error reading from stream:", err)
+			doneChan <- false
+			return
 		}
 
-		// Write Chunk to File
-		n, err := buffer.Write(buf)
+		// Write to buffer
+		n, err := writer.Write(chunk.Data)
 		if err != nil {
-			logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
+			log.Println("Error writing to buffer:", err)
 			doneChan <- false
 			return
 		}
@@ -37,7 +51,7 @@ func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, reader msgio.
 	}
 
 	// Write File Buffer to File
-	err := ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
+	err = ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
 	if err != nil {
 		logger.Errorf("%s - Failed to Close item on Read Stream", err)
 		doneChan <- false
@@ -49,7 +63,14 @@ func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, reader msgio.
 }
 
 // Write writes the item to the stream
-func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, writer msgio.WriteCloser) {
+func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, mwr *multipart.Writer) {
+	writer, err := mwr.CreateFormFile(fmt.Sprint(si.GetIndex()), si.GetItem().GetName())
+	if err != nil {
+		logger.Errorf("%s - Failed to Create Form File on Write Stream", err)
+		doneChan <- false
+		return
+	}
+
 	// Create New Chunker
 	chunker, err := fs.NewFileChunker(si.GetPath())
 	if err != nil {
@@ -67,7 +88,7 @@ func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, writer msgio
 		}
 
 		// Write Message Bytes to Stream
-		err = writer.WriteMsg(c.Data)
+		n, err := writer.Write(c.Data)
 		if err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
 			doneChan <- false
@@ -75,7 +96,7 @@ func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, writer msgio
 		}
 
 		// Update Progress
-		if done := si.Progress(c.Length, node); done {
+		if done := si.Progress(n, node); done {
 			break
 		}
 	}
