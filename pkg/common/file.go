@@ -66,16 +66,6 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	}, nil
 }
 
-// AvgChunkSize returns the average chunk size of the item
-func (f *FileItem) AvgChunkSize() int {
-	if f.GetSize() < 4096 {
-		return int(f.GetSize())
-	}
-
-	div := f.GetSize() / 4096.0
-	return int(math.Round(float64(div)))
-}
-
 // Header returns the header of the FileItem
 func (f *FileItem) Header() textproto.MIMEHeader {
 	cd := mime.FormatMediaType("item-data", map[string]string{

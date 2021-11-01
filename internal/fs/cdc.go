@@ -152,15 +152,8 @@ func NewFileChunker(path string) (*Chunker, error) {
 
 	// Return a Chunker that reads from the buffer
 	return NewChunker(bytes.NewReader(buf), ChunkerOptions{
-		AverageSize: calculateAvgSize(buf),
+		AverageSize: 1024,
 	})
-}
-
-func calculateAvgSize(buf []byte) int {
-	if len(buf) < interval {
-		return len(buf)
-	}
-	return int(len(buf) / interval)
 }
 
 func (c *Chunker) fillBuffer() error {
