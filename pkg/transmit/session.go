@@ -121,7 +121,7 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 				// Create Part
 				writer, err := multipartWriter.CreatePart(v.GetItem().Header())
 				if err != nil {
-					logger.Errorf("%s - Failed to Create Form File on Write Stream", err)
+					logger.Errorf("%s - Failed to Create Part for Multipart Writer", err)
 				}
 
 				// Write File to Stream
