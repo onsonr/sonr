@@ -49,6 +49,7 @@ func (si *SessionItem) WriteToStream(node api.NodeImpl, writer msgio.WriteCloser
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
 	// Create New Reader
 	r := bufio.NewReader(f)
