@@ -38,7 +38,9 @@ func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser
 		}
 
 		// Update Progress
-		si.Progress(n, node)
+		if done := si.Progress(n, node); done {
+			return nil
+		}
 	}
 }
 
@@ -88,7 +90,7 @@ func (si *SessionItem) WriteToStream(node api.NodeImpl, writer msgio.WriteCloser
 }
 
 // Progress pushes a progress event to the node. Returns true if the item is done.
-func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
+func (si *SessionItem) Progress(wrt int, n api.NodeImpl) bool {
 	// Update Progress
 	si.Written += int64(wrt)
 
@@ -104,4 +106,7 @@ func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
 		// Push ProgressEvent to Emitter
 		go n.OnProgress(event)
 	}
+
+	// Return if Done
+	return si.GetWritten() >= si.GetSize()
 }
