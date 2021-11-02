@@ -1,11 +1,10 @@
 package transmit
 
 import (
-	"io"
-	"mime/multipart"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -85,49 +84,39 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)
+
 	// Check for Incoming
 	if s.IsIn() {
 		// Handle incoming stream
-		mrd := multipart.NewReader(stream, MIME_BOUNDARY)
-		for {
-			// Read Stream to File
-			part, err := mrd.NextPart()
-			if err != nil {
-				if err != io.EOF {
+		rs := msgio.NewReader(stream)
+		go func(writer msgio.ReadCloser, dchan chan bool) {
+			for _, v := range s.GetItems() {
+				// Read Stream to File
+				if err := v.Read(n, rs); err != nil {
 					logger.Errorf("Error reading stream: %v", err)
-					return nil, err
+					dchan <- false
 				} else {
-					logger.Debugf("Stream read complete")
-					break
+					dchan <- true
 				}
 			}
-			go s.GetItems()[s.GetCurrentIndex()].Read(doneChan, n, part)
-		}
+		}(rs, doneChan)
 	}
 
 	// Check for Outgoing
 	if s.IsOut() {
 		// Handle outgoing stream
-		mwr := multipart.NewWriter(stream)
-		err := mwr.SetBoundary(MIME_BOUNDARY)
-		if err != nil {
-			logger.Errorf("Error setting boundary: %v", err)
-			return nil, err
-		}
-
-		// Write Files to Stream
-		go func(multipartWriter *multipart.Writer, items []*SessionItem) {
-			for _, v := range items {
-				// Create Part
-				writer, err := multipartWriter.CreatePart(v.GetItem().Header())
-				if err != nil {
-					logger.Errorf("%s - Failed to Create Part for Multipart Writer", err)
-				}
-
+		wc := msgio.NewWriter(stream)
+		go func(writer msgio.WriteCloser, dchan chan bool) {
+			for _, v := range s.GetItems() {
 				// Write File to Stream
-				v.Write(doneChan, n, writer)
+				if err := v.Write(n, wc); err != nil {
+					logger.Errorf("Error writing file: %v", err)
+					dchan <- false
+				} else {
+					dchan <- true
+				}
 			}
-		}(mwr, s.GetItems())
+		}(wc, doneChan)
 	}
 
 	// Wait for all files to be written
@@ -137,16 +126,9 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 			// Set Result
 			s.UpdateCurrent(r)
 
-			// Close Stream Write on Done Writing
-			if s.HasWrote() {
-				logger.Debugf("Closing stream write")
-				stream.CloseWrite()
-			}
-
 			// Close Stream on Done Reading
 			if s.HasRead() {
-				logger.Debugf("Closing stream read")
-				stream.CloseRead()
+				stream.Close()
 			}
 
 			// Return Event

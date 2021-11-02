@@ -1,160 +1,91 @@
 package transmit
 
 import (
-	"bufio"
 	"bytes"
-	"io"
 	"io/ioutil"
-	"math"
-	"mime/multipart"
 
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
 )
 
-// progressReader wraps an existing io.Reader.
-//
-// It simply forwards the Read() call, while displaying
-// the results from individual calls to it.
-type progressReader struct {
-	io.Reader
-	node  api.NodeImpl
-	total int64 // Total # of bytes transferred
-	item  *SessionItem
-}
-
-// initProgressReader creates a new ProgressReader
-func (si *SessionItem) initProgressReader(r io.Reader, node api.NodeImpl) *progressReader {
-	return &progressReader{r, node, 0, si}
-}
-
-// Read 'overrides' the underlying io.Reader's Read method.
-// This is the one that will be called by io.Copy(). We simply
-// use it to keep track of byte counts and then forward the call.
-func (pr *progressReader) Read(p []byte) (int, error) {
-	n, err := pr.Reader.Read(p)
-	pr.total += int64(n)
-
-	if err == nil {
-		pr.item.Progress(n, pr.node)
-	}
-	return n, err
-}
-
 // Read reads the item from the stream
-func (si *SessionItem) Read(doneChan chan bool, node api.NodeImpl, part *multipart.Part) {
+func (si *SessionItem) Read(node api.NodeImpl, reader msgio.ReadCloser) error {
 	buffer := bytes.Buffer{}
-	dst := bufio.NewWriter(&buffer)
-	src := si.initProgressReader(part, node)
-	chunk := make([]byte, 4096)
+
+	// Route Data from Stream
 	for {
-		// Read Chunk
-		n, err := src.Read(chunk)
+		// Read Next Message
+		buf, err := reader.ReadMsg()
 		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			logger.Errorf("%s - Failed to read chunk in Item reader")
-			doneChan <- false
-			return
+			logger.Warnf("%s - Failed to Read Next Message on Read Stream", err)
+			break
 		}
 
-		// Write Chunk
-		_, err = dst.Write(chunk[:n])
+		// Write Chunk to File
+		n, err := buffer.Write(buf)
 		if err != nil {
-			logger.Errorf("%s - Failed to write chunk in Item reader")
-			doneChan <- false
-			return
+			logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
+
+			return err
+		}
+
+		// Update Progress
+		if done := si.Progress(n, node); done {
+			break
 		}
 	}
 
-	// Write to File
+	// Write File Buffer to File
 	err := ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
 	if err != nil {
-		doneChan <- false
-		return
+		logger.Errorf("%s - Failed to Close item on Read Stream", err)
+		return err
 	}
-
-	// Update Progress
-	doneChan <- true
-	return
-}
-
-// ProgressReader wraps an existing io.Reader.
-//
-// It simply forwards the Read() call, while displaying
-// the results from individual calls to it.
-type progressWriter struct {
-	io.Writer
-	node  api.NodeImpl
-	total int64 // Total # of bytes transferred
-	item  *SessionItem
-}
-
-// initProgressWriter creates a new ProgressWriter
-func (si *SessionItem) initProgressWriter(wr io.Writer, node api.NodeImpl) *progressWriter {
-	return &progressWriter{wr, node, 0, si}
-}
-
-// Read 'overrides' the underlying io.Reader's Read method.
-// This is the one that will be called by io.Copy(). We simply
-// use it to keep track of byte counts and then forward the call.
-func (pr *progressWriter) Write(p []byte) (int, error) {
-	n, err := pr.Writer.Write(p)
-	pr.total += int64(n)
-
-	if err == nil {
-		pr.item.Progress(n, pr.node)
-	}
-
-	return n, err
+	logger.Debug("Completed reading from stream: " + si.GetPath())
+	return nil
 }
 
 // Write writes the item to the stream
-func (si *SessionItem) Write(doneChan chan bool, node api.NodeImpl, wr io.Writer) {
-	// Create Source and Destination
-	dst := si.initProgressWriter(wr, node)
-	src, err := fs.NewFileChunker(si.GetPath())
+func (si *SessionItem) Write(node api.NodeImpl, writer msgio.WriteCloser) error {
+	// Create New Chunker
+	chunker, err := fs.NewFileChunker(si.GetPath())
 	if err != nil {
-		logger.Errorf("%s - Failed to create file chunker in Item writer")
-		doneChan <- false
-		return
+		logger.Errorf("%s - Failed to create new chunker.", err)
+		return err
 	}
 
+	// Loop through File
 	for {
-		// Read Chunk
-		chunk, err := src.Next()
+		c, err := chunker.Next()
 		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			logger.Errorf("%s - Failed to read chunk in Item writer")
-			doneChan <- false
-			return
+			logger.Warnf("%s - Failed to get next chunk.", err)
+			break
 		}
 
-		// Write Chunk
-		_, err = dst.Write(chunk.Data)
+		// Write Message Bytes to Stream
+		err = writer.WriteMsg(c.Data)
 		if err != nil {
-			logger.Errorf("%s - Failed to write chunk in Item writer")
-			doneChan <- false
-			return
+			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
+			return err
+		}
+
+		// Update Progress
+		if done := si.Progress(c.Length, node); done {
+			break
 		}
 	}
-
-	// Update Progress
-	doneChan <- true
-	return
+	logger.Debug("Completed writing to stream: " + si.GetPath())
+	return nil
 }
 
 // Progress pushes a progress event to the node. Returns true if the item is done.
-func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
+func (si *SessionItem) Progress(wrt int, n api.NodeImpl) bool {
 	// Update Progress
 	si.Written += int64(wrt)
 
 	// Create Progress Event
-	val := si.GetWritten() % ITEM_INTERVAL
-	if math.Floor(float64(val)) == 0 {
+	if (si.GetWritten() % ITEM_INTERVAL) == 0 {
 		event := &api.ProgressEvent{
 			Direction: si.GetDirection(),
 			Progress:  (float64(si.GetWritten()) / float64(si.GetTotalSize())),
@@ -165,4 +96,5 @@ func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
 		// Push ProgressEvent to Emitter
 		n.OnProgress(event)
 	}
+	return si.Written >= si.TotalSize
 }
