@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 )
 
 // Textile API definitions
@@ -75,7 +75,7 @@ func (o *options) Apply(p *ExchangeProtocol) error {
 		//mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
 
 		// Create new mailbox
-		if fs.ThirdParty.Exists(TextileMailboxDirName) {
+		if device.ThirdParty.Exists(TextileMailboxDirName) {
 			// Return Existing Mailbox
 			if err := p.loadMailbox(); err != nil {
 				return err

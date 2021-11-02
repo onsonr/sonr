@@ -1,4 +1,5 @@
-package fs
+package device
+
 
 import (
 	"path/filepath"

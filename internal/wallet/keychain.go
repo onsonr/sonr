@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 )
 
 var (
@@ -86,7 +86,7 @@ type KeyChain interface {
 
 // Open creates a new keychain with Wallet Folder.
 func Open() error {
-	config := fs.Wallet
+	config := device.Wallet
 
 	// Check if Keychain exists
 	if keychainExists(config) {
@@ -114,7 +114,7 @@ func Open() error {
 // keychain is a keychain implementation that stores keys in a directory.
 type keychain struct {
 	KeyChain
-	config fs.Folder
+	config device.Folder
 
 	// Key Pair References
 	accountKeyPair keyPair
@@ -123,7 +123,7 @@ type keychain struct {
 }
 
 // loadKeychain loads a keychain from a file.
-func loadKeychain(kcconfig fs.Folder) (KeyChain, error) {
+func loadKeychain(kcconfig device.Folder) (KeyChain, error) {
 	// Create Keychain
 	kc := &keychain{
 		config: kcconfig,
@@ -162,7 +162,7 @@ func loadKeychain(kcconfig fs.Folder) (KeyChain, error) {
 }
 
 // newKeychain creates a new keychain.
-func newKeychain(folder fs.Folder) (KeyChain, error) {
+func newKeychain(folder device.Folder) (KeyChain, error) {
 	// Create Keychain
 	kc := &keychain{
 		config: folder,

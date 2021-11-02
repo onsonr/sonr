@@ -112,7 +112,7 @@ func (priv *SnrPrivKey) PeerID() (peer.ID, error) {
 	return peer.IDFromPublicKey(priv.GetPublic())
 }
 
-// String returns PublicKey as Base64 string
+// String encodes the public key into a base32 string.
 func (priv *SnrPrivKey) String() (string, error) {
 	buf, err := priv.Buffer()
 	if err != nil {

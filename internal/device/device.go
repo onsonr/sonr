@@ -1,50 +1,17 @@
-package common
+package device
 
 import (
 	"errors"
-	"fmt"
-	"os"
 	"runtime"
-
-	"github.com/denisbrodbeck/machineid"
-	"github.com/sonr-io/core/internal/wallet"
 )
 
-var (
-	// General errors
-	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
-	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
-
-	// Directory errors
-	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
-	ErrDirectoryUnset   = errors.New("Directory path has not been set")
-	ErrDirectoryJoin    = errors.New("Failed to join directory path")
-)
-
-var (
-	// deviceID is the device ID. Either provided or found
-	deviceID string
-	hostName string
-)
-
-func init() {
-	// Get the device ID
-	if IsDesktop() {
-		id, err := machineid.ID()
-		if err != nil {
-			logger.Errorf("%s - Failed to get Device ID", err)
-			return
-		}
-		deviceID = id
+// Init initializes the device package.
+func Init(options ...Option) error {
+	opts := defaultOptions()
+	for _, opt := range options {
+		opt(opts)
 	}
-
-	// Get the hostname
-	hn, err := os.Hostname()
-	if err != nil {
-		logger.Errorf("%s - Failed to get HostName", err)
-		return
-	}
-	hostName = hn
+	return opts.Apply()
 }
 
 // Arch returns the current architecture.
@@ -104,31 +71,6 @@ func IsMacOS() bool {
 	return runtime.GOOS == "darwin"
 }
 
-// NewRecordPrefix returns a new device ID prefix for users HDNS records
-func NewRecordPrefix(sName string) (string, error) {
-	// Check if the device ID is empty
-	if deviceID == "" {
-		return "", ErrEmptyDeviceID
-	}
-
-	// Check if the SName is empty
-	if sName == "" {
-		return "", errors.New("SName cannot by Empty or Less than 4 characters.")
-	}
-	val := fmt.Sprintf("%s:%s", deviceID, sName)
-	return wallet.Sonr.SignHmacWith(wallet.Account, val)
-}
-
-// SetDeviceID sets the device ID.
-func SetDeviceID(id string) error {
-	if id != "" {
-		deviceID = id
-		return nil
-	}
-	logger.Errorf("%s - Failed to Set Device ID", ErrEmptyDeviceID)
-	return ErrEmptyDeviceID
-}
-
 // Platform returns formatted GOOS for Text format.
 // Returns: ["MacOS", "Windows", "Linux", "Android", "iOS"]
 func Platform() string {
@@ -171,22 +113,4 @@ func Stat() (map[string]string, error) {
 		"os":       runtime.GOOS,
 		"arch":     runtime.GOARCH,
 	}, nil
-}
-
-// VerifyRecordPrefix returns true if the prefix is valid for the device ID.
-func VerifyRecordPrefix(prefix string, sName string) bool {
-	// Check if the prefix is empty
-	if prefix == "" {
-		logger.Warn("Empty Prefix Provided as Parameter")
-		return false
-	}
-
-	// Check if the prefix is valid
-	val := fmt.Sprintf("%s:%s", deviceID, sName)
-	ok, err := wallet.Sonr.VerifyHmacWith(wallet.Account, prefix, val)
-	if err != nil {
-		logger.Errorf("%s - Failed to verify prefix", err)
-		return false
-	}
-	return ok
 }

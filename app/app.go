@@ -11,8 +11,8 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/pkg/common"
 	"github.com/spf13/viper"
 )
 
@@ -91,7 +91,7 @@ func Start(req *api.InitializeRequest, options ...Option) {
 func Persist(l net.Listener) {
 	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", l.Addr().String())
 	// Check if CLI Mode
-	if common.IsMobile() {
+	if device.IsMobile() {
 		golog.Default.Child("(app)").Info("Skipping Serve, Node is mobile...")
 		return
 	}
@@ -145,7 +145,7 @@ func Exit(code int) {
 	defer Ctx.Done()
 
 	// Check for Full Desktop Node
-	if common.IsDesktop() {
+	if device.IsDesktop() {
 		golog.Default.Child("(app)").Debug("Removing Bitcask DB...")
 		ex, err := os.Executable()
 		if err != nil {

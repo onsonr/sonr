@@ -1,10 +1,10 @@
-package fs
+package device
 
 import (
 	"errors"
 	"os"
-	"runtime"
 
+	"github.com/denisbrodbeck/machineid"
 	"github.com/kataras/golog"
 )
 
@@ -19,31 +19,48 @@ var (
 	Downloads  Folder // Temporary Directory on Mobile for Export, Downloads on Desktop
 	Wallet     Folder // Encrypted Storage Directory
 	ThirdParty Folder // Sub-Directory of Support, used for Textile
+
+	// deviceID is the device ID. Either provided or found
+	deviceID string
+
+	// hostName is the host name. Either provided or found
+	hostName string
 )
 
 var (
-	logger = golog.Default.Child("internal/fs")
+	logger = golog.Default.Child("internal/device")
+
 	// Path Manipulation Errors
 	ErrDuplicateFilePathOption    = errors.New("Duplicate file path option")
 	ErrPrefixSuffixSetWithReplace = errors.New("Prefix or Suffix set with Replace.")
 	ErrSeparatorLength            = errors.New("Separator length must be 1.")
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
+
+	// Device ID Errors
+	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
+	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
+
+	// Directory errors
+	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
+	ErrDirectoryUnset   = errors.New("Directory path has not been set")
+	ErrDirectoryJoin    = errors.New("Failed to join directory path")
 )
 
-// Start creates new FileSystem
-func Start(options ...Option) error {
-	opts := defaultFsOptions()
-	for _, opt := range options {
-		opt(opts)
-	}
-	return opts.Apply()
-}
+type Option func(o *options)
 
-type Option func(o *fsOptions)
+// SetDeviceID sets the device ID
+func SetDeviceID(id string) Option {
+	return func(o *options) {
+		// Set Home Directory
+		if id != "" {
+			o.deviceID = id
+		}
+	}
+}
 
 // WithHomePath sets the Home Directory
 func WithHomePath(p string) Option {
-	return func(o *fsOptions) {
+	return func(o *options) {
 		// Set Home Directory
 		if p != "" {
 			o.HomeDir = p
@@ -53,7 +70,7 @@ func WithHomePath(p string) Option {
 
 // WithTempPath sets the Temporary Directory
 func WithTempPath(p string) Option {
-	return func(o *fsOptions) {
+	return func(o *options) {
 		// Set Home Directory
 		if p != "" {
 			o.TempDir = p
@@ -63,7 +80,7 @@ func WithTempPath(p string) Option {
 
 // WithSupportPath sets the Support Directory
 func WithSupportPath(p string) Option {
-	return func(o *fsOptions) {
+	return func(o *options) {
 		// Set Home Directory
 		if p != "" {
 			o.SupportDir = p
@@ -71,8 +88,8 @@ func WithSupportPath(p string) Option {
 	}
 }
 
-// fsOptions holds directory list
-type fsOptions struct {
+// options holds directory list
+type options struct {
 	HomeDir    string
 	TempDir    string
 	SupportDir string
@@ -81,12 +98,13 @@ type fsOptions struct {
 	databaseDir  string
 	downloadsDir string
 	textileDir   string
+	deviceID     string
 }
 
-// defaultFsOptions returns fsOptions
-func defaultFsOptions() *fsOptions {
-	opts := &fsOptions{}
-	if checkIsDesktop() {
+// defaultOptions returns fsOptions
+func defaultOptions() *options {
+	opts := &options{}
+	if IsDesktop() {
 		hp, err := os.UserHomeDir()
 		if err != nil {
 			logger.Errorf("%s - Failed to get HomeDir, ", err)
@@ -107,14 +125,35 @@ func defaultFsOptions() *fsOptions {
 		} else {
 			opts.SupportDir = sp
 		}
+
+		id, err := machineid.ID()
+		if err != nil {
+			logger.Errorf("%s - Failed to get Device ID", err)
+		} else {
+			opts.deviceID = id
+		}
 	}
 	return opts
 }
 
 // Apply sets device directories for Path
-func (fo *fsOptions) Apply() error {
+func (fo *options) Apply() error {
+	// Get the hostname
+	hn, err := os.Hostname()
+	if err != nil {
+		logger.Errorf("%s - Failed to get HostName", err)
+		return err
+	}
+	hostName = hn
+
+	// Check if deviceID is set
+	if fo.deviceID == "" {
+		logger.Errorf("%s - Device ID is empty", ErrEmptyDeviceID)
+		return ErrEmptyDeviceID
+	}
+	deviceID = fo.deviceID
+
 	// Check for Valid
-	var err error
 	if fo.HomeDir == "" {
 		return errors.New("Home Directory was not set.")
 	}
@@ -131,7 +170,7 @@ func (fo *fsOptions) Apply() error {
 	Temporary = Folder(fo.TempDir)
 
 	// Create Downloads Folder
-	if checkIsDesktop() {
+	if IsDesktop() {
 		Downloads, err = Home.CreateFolder("Downloads")
 		if err != nil {
 			return err
@@ -161,29 +200,4 @@ func (fo *fsOptions) Apply() error {
 		return err
 	}
 	return nil
-}
-
-// IsFile returns true if the given path is a file
-func IsFile(fileName string) bool {
-	_, err := os.Stat(fileName)
-	return !os.IsNotExist(err)
-}
-
-// checkIsDesktop returns true if the current platform is desktop
-func checkIsDesktop() bool {
-	if runtime.GOOS == "android" || runtime.GOOS == "ios" {
-		return false
-	}
-	return true
-}
-
-// checkIsMobile returns true if the current platform is mobile
-func checkIsMobile() bool {
-	return !checkIsDesktop()
-}
-
-// Exists checks if a file exists.
-func Exists(fileName string) bool {
-	_, err := os.Stat(fileName)
-	return !os.IsNotExist(err)
 }

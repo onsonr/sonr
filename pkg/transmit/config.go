@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/pkg/common"
 )
 
@@ -77,7 +77,7 @@ func (sp *SessionPayload) CreateItems(dir common.Direction) []*SessionItem {
 
 		// Set Path for Incoming
 		if dir == common.Direction_INCOMING {
-			inpath, err := fi.ResetPath(fs.Downloads)
+			inpath, err := fi.ResetPath(device.Downloads)
 			if err == nil {
 				path = inpath
 			} else {

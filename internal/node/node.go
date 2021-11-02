@@ -3,14 +3,11 @@ package node
 import (
 	"context"
 	"net"
-	"strings"
 	sync "sync"
-	"time"
 
 	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 	"github.com/sonr-io/core/pkg/identity"
 )
@@ -109,46 +106,7 @@ func (n *Node) Profile() (*common.Profile, error) {
 
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
-	// Get Profile
-	profile, err := n.identity.Profile()
-	if err != nil {
-		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
-	}
-
-	// Get Public Key
-	pubKey, err := wallet.Sonr.GetSnrPubKey(wallet.Account)
-	if err != nil {
-		logger.Errorf("%s - Failed to get Public Key", err)
-		return nil, err
-	}
-
-	// Marshal Public Key
-	pubBuf, err := pubKey.Buffer()
-	if err != nil {
-		logger.Errorf("%s - Failed to marshal public key", err)
-		return nil, err
-	}
-
-	stat, err := common.Stat()
-	if err != nil {
-		logger.Errorf("%s - Failed to get device stat", err)
-		return nil, err
-	}
-	// Return Peer
-	return &common.Peer{
-		SName:        strings.ToLower(profile.GetSName()),
-		Status:       common.Peer_ONLINE,
-		Profile:      profile,
-		PublicKey:    pubBuf,
-		PeerID:       n.host.ID().String(),
-		LastModified: time.Now().Unix(),
-		Device: &common.Peer_Device{
-			HostName: stat["hostName"],
-			Os:       stat["os"],
-			Id:       stat["id"],
-			Arch:     stat["arch"],
-		},
-	}, nil
+	return n.identity.Peer()
 }
 
 // Close closes the node

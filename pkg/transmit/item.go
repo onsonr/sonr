@@ -6,7 +6,7 @@ import (
 
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/session"
 )
 
 // Read reads the item from the stream
@@ -49,7 +49,7 @@ func (si *SessionItem) Read(node api.NodeImpl, reader msgio.ReadCloser) error {
 // Write writes the item to the stream
 func (si *SessionItem) Write(node api.NodeImpl, writer msgio.WriteCloser) error {
 	// Create New Chunker
-	chunker, err := fs.NewFileChunker(si.GetPath())
+	chunker, err := session.NewFileChunker(si.GetPath())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
 		return err

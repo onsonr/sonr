@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 )
 
 var (
@@ -81,7 +81,7 @@ func (f *FileItem) Header() textproto.MIMEHeader {
 }
 
 // ResetPath sets the path of the FileItem
-func (f *FileItem) ResetPath(folder fs.Folder) (string, error) {
+func (f *FileItem) ResetPath(folder device.Folder) (string, error) {
 	// Set Path
 	oldPath := f.GetPath()
 

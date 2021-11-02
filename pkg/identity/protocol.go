@@ -2,11 +2,14 @@ package identity
 
 import (
 	"context"
+	"strings"
+	"time"
 
 	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/proto"
 )
@@ -22,7 +25,7 @@ type IdentityProtocol struct {
 // New creates a new IdentityProtocol
 func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*IdentityProtocol, error) {
 	// Open the my.db data file in your current directory.
-	path, err := fs.Database.GenPath("sonr_bitcask")
+	path, err := device.Database.GenPath("sonr_bitcask")
 	if err != nil {
 		logger.Errorf("Failed to generate path for bitcask: %s", err)
 		return nil, err
@@ -59,35 +62,23 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 }
 
 // AddRecent stores the profile for recents in desk and returns list of recent profiles
-func (n *IdentityProtocol) AddRecent(profile *common.Profile) error {
+func (p *IdentityProtocol) AddRecent(profile *common.Profile) error {
 	// Put in Bucket
-	if n.store.Has(recentsKey()) {
+	if p.store.Has(recentsKey()) {
 		// Get profile list buffer
-		oldBuf, err := n.store.Get(recentsKey())
+		plist, err := p.addToProfileList(profile)
 		if err != nil {
-			logger.Errorf("%s - Failed to Get old Recents from store")
 			return err
 		}
-
-		// Unmarshal profile list
-		profileList := common.ProfileList{}
-		err = proto.Unmarshal(oldBuf, &profileList)
-		if err != nil {
-			logger.Errorf("%s - Failed to Unmarshal ProfileList")
-			return err
-		}
-
-		// Add profile to list
-		profileList.Add(profile)
 
 		// Marshal profile
-		val, err := proto.Marshal(&profileList)
+		val, err := proto.Marshal(plist)
 		if err != nil {
 			logger.Errorf("%s - Failed to Marshal ProfileList")
 			return err
 		}
 
-		err = n.store.Put(recentsKey(), val)
+		err = p.store.Put(recentsKey(), val)
 		if err != nil {
 			return err
 		}
@@ -101,7 +92,7 @@ func (n *IdentityProtocol) AddRecent(profile *common.Profile) error {
 	if err != nil {
 		return err
 	}
-	err = n.store.Put(recentsKey(), val)
+	err = p.store.Put(recentsKey(), val)
 	if err != nil {
 		return err
 	}
@@ -128,6 +119,50 @@ func (n *IdentityProtocol) GetRecents() (*common.ProfileList, error) {
 		return &profileList, nil
 	}
 	return &common.ProfileList{}, nil
+}
+
+// Peer method returns the peer of the node
+func (p *IdentityProtocol) Peer() (*common.Peer, error) {
+	// Get Profile
+	profile, err := p.Profile()
+	if err != nil {
+		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
+	}
+
+	// Get Public Key
+	pubKey, err := wallet.Sonr.GetSnrPubKey(wallet.Account)
+	if err != nil {
+		logger.Errorf("%s - Failed to get Public Key", err)
+		return nil, err
+	}
+
+	// Marshal Public Key
+	pubBuf, err := pubKey.Buffer()
+	if err != nil {
+		logger.Errorf("%s - Failed to marshal public key", err)
+		return nil, err
+	}
+
+	stat, err := device.Stat()
+	if err != nil {
+		logger.Errorf("%s - Failed to get device stat", err)
+		return nil, err
+	}
+	// Return Peer
+	return &common.Peer{
+		SName:        strings.ToLower(profile.GetSName()),
+		Status:       common.Peer_ONLINE,
+		Profile:      profile,
+		PublicKey:    pubBuf,
+		PeerID:       p.host.ID().String(),
+		LastModified: time.Now().Unix(),
+		Device: &common.Peer_Device{
+			HostName: stat["hostName"],
+			Os:       stat["os"],
+			Id:       stat["id"],
+			Arch:     stat["arch"],
+		},
+	}, nil
 }
 
 // Profile returns the profile for the user from diskDB

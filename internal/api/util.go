@@ -8,7 +8,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -94,11 +94,12 @@ func DefaultLocation() *common.Location {
 }
 
 // FSOpts returns a list of FS Options
-func (ir *InitializeRequest) FSOpts() []fs.Option {
-	return []fs.Option{
-		fs.WithHomePath(ir.homeDir()),
-		fs.WithSupportPath(ir.supportDir()),
-		fs.WithTempPath(ir.tempDir()),
+func (ir *InitializeRequest) FSOpts() []device.Option {
+	return []device.Option{
+		device.WithHomePath(ir.homeDir()),
+		device.WithSupportPath(ir.supportDir()),
+		device.WithTempPath(ir.tempDir()),
+		device.SetDeviceID(ir.GetDeviceOptions().GetId()),
 	}
 }
 
@@ -139,15 +140,8 @@ func (ir *InitializeRequest) Parse() error {
 		})
 	}
 
-	// Set Device ID
-	did := ir.GetDeviceOptions().GetId()
-	if did != "" {
-		logger.Debug("Device ID Passed: " + did)
-		common.SetDeviceID(did)
-	}
-
 	// Start File System
-	if err := fs.Start(ir.FSOpts()...); err != nil {
+	if err := device.Init(ir.FSOpts()...); err != nil {
 		return errors.Wrap(err, "Failed to Start File System")
 	}
 
@@ -193,7 +187,7 @@ func (sr *ShareRequest) ToPayload(owner *common.Profile) (*common.Payload, error
 
 			// Add URL to Payload
 			items = append(items, urlItem)
-		} else if fs.IsFile(item.GetPath()) {
+		} else if device.IsFile(item.GetPath()) {
 			// Increase File Count
 			fileCount++
 

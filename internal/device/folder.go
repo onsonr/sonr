@@ -1,4 +1,4 @@
-package fs
+package device
 
 import (
 	"fmt"
@@ -6,6 +6,18 @@ import (
 	"path/filepath"
 	"strings"
 )
+
+// IsFile returns true if the given path is a file
+func IsFile(fileName string) bool {
+	_, err := os.Stat(fileName)
+	return !os.IsNotExist(err)
+}
+
+// Exists checks if a file exists.
+func Exists(fileName string) bool {
+	_, err := os.Stat(fileName)
+	return !os.IsNotExist(err)
+}
 
 type Folder string
 
