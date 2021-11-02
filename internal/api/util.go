@@ -2,14 +2,11 @@ package api
 
 import (
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 )
 
@@ -93,8 +90,8 @@ func DefaultLocation() *common.Location {
 	}
 }
 
-// FSOpts returns a list of FS Options
-func (ir *InitializeRequest) FSOpts() []device.Option {
+// Options returns a list of FS Options
+func (ir *InitializeRequest) Options() []device.Option {
 	return []device.Option{
 		device.WithHomePath(ir.homeDir()),
 		device.WithSupportPath(ir.supportDir()),
@@ -121,35 +118,6 @@ func (ir *InitializeRequest) tempDir() string {
 // IsDev returns true if the node is running in development mode.
 func (ir *InitializeRequest) IsDev() bool {
 	return ir.GetEnvironment().IsDev()
-}
-
-// SetEnvVars sets the environment variables
-func (ir *InitializeRequest) Parse() error {
-	// Set Environment Variables
-	vars := ir.GetVariables()
-	count := len(vars)
-
-	// Iterate over Variables
-	if count > 0 {
-		for k, v := range vars {
-			os.Setenv(k, v)
-		}
-
-		golog.Debug("Added Enviornment Variable(s)", golog.Fields{
-			"Total": count,
-		})
-	}
-
-	// Start File System
-	if err := device.Init(ir.FSOpts()...); err != nil {
-		return errors.Wrap(err, "Failed to Start File System")
-	}
-
-	// Open Keychain
-	if err := wallet.Open(); err != nil {
-		return errors.Wrap(err, "Failed to Open Keychain")
-	}
-	return nil
 }
 
 // IsDelete returns true if the request is a delete request

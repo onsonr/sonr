@@ -13,6 +13,7 @@ import (
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
+	"github.com/sonr-io/core/internal/wallet"
 	"github.com/spf13/viper"
 )
 
@@ -62,9 +63,30 @@ func Start(req *api.InitializeRequest, options ...Option) {
 
 	// Create Node
 	Ctx = context.Background()
-	err := req.Parse()
-	if err != nil {
-		golog.Default.Child("(app)").Fatalf("%s - Failed to parse Initialize Request", err)
+	// Set Environment Variables
+	vars := req.GetVariables()
+	count := len(vars)
+
+	// Iterate over Variables
+	if count > 0 {
+		for k, v := range vars {
+			os.Setenv(k, v)
+		}
+
+		golog.Debug("Added Enviornment Variable(s)", golog.Fields{
+			"Total": count,
+		})
+	}
+
+	// Start File System
+	if err := device.Init(req.Options()...); err != nil {
+		golog.Default.Child("(app)").Fatalf("%s - Failed to Init Device", err)
+		Exit(1)
+	}
+
+	// Open Keychain
+	if err := wallet.Open(); err != nil {
+		golog.Default.Child("(app)").Fatalf("%s - Failed to open wallet", err)
 		Exit(1)
 	}
 
