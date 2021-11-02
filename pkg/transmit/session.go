@@ -58,7 +58,7 @@ func (s *Session) HasWrote() bool {
 
 // IsDone returns true if all files have been read or written.
 func (s *Session) IsDone() bool {
-	return int(s.GetCurrentIndex()) == s.FinalIndex()
+	return int(s.GetCurrentIndex()) >= s.FinalIndex()
 }
 
 // IsOut returns true if the session is outgoing.
@@ -129,24 +129,23 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 		select {
 		case r := <-doneChan:
 			// Set Result
-			s.UpdateCurrent(r)
+			if complete := s.UpdateCurrent(r); !complete {
+				continue
+			}
 
 			// Close Stream on Done Reading
 			if s.HasRead() {
 				stream.Close()
 			}
-
-			// Return Event
-			if s.IsDone() {
-				return s.Event(), nil
-			}
+			return s.Event(), nil
 		}
 	}
 }
 
 // UpdateCurrent updates the current index of the session.
-func (s *Session) UpdateCurrent(result bool) {
-	logger.Debugf("Item (%v) transmit result: %v", s.CurrentIndex, result)
-	s.Results[s.CurrentIndex] = result
-	s.CurrentIndex = s.CurrentIndex + 1
+func (s *Session) UpdateCurrent(result bool) bool {
+	logger.Debugf("Item (%v) transmit result: %v", s.GetCurrentIndex(), result)
+	s.Results[s.GetCurrentIndex()] = result
+	s.CurrentIndex = s.GetCurrentIndex() + 1
+	return int(s.GetCurrentIndex()) >= s.FinalIndex()
 }
