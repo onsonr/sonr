@@ -92,7 +92,7 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 		go func(writer msgio.ReadCloser, dchan chan bool) {
 			for _, v := range s.GetItems() {
 				// Read Stream to File
-				if err := v.Read(n, rs); err != nil {
+				if err := v.ReadFromStream(n, rs); err != nil {
 					logger.Errorf("Error reading stream: %v", err)
 					dchan <- false
 				} else {
@@ -109,7 +109,7 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 		go func(writer msgio.WriteCloser, dchan chan bool) {
 			for _, v := range s.GetItems() {
 				// Write File to Stream
-				if err := v.Write(n, wc); err != nil {
+				if err := v.WriteToStream(n, wc); err != nil {
 					logger.Errorf("Error writing file: %v", err)
 					dchan <- false
 				} else {

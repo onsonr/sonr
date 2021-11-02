@@ -1,86 +1,97 @@
 package transmit
 
 import (
-	"bytes"
-	"io/ioutil"
+	"bufio"
+	"io"
+	"os"
 
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/pkg/common"
 )
 
-// Read reads the item from the stream
-func (si *SessionItem) Read(node api.NodeImpl, reader msgio.ReadCloser) error {
-	buffer := bytes.Buffer{}
+// ReadFromStream reads the item from the stream
+func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser) error {
+	// Create New File
+	dst, err := os.Create(si.GetPath())
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
 
 	// Route Data from Stream
-	for {
+	for si.Written < si.TotalSize {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
 		if err != nil {
-			logger.Warnf("%s - Failed to Read Next Message on Read Stream", err)
-			break
+			if err == nil {
+				continue
+			}
+			if err == io.EOF {
+				logger.Debug("Completed reading from stream: " + si.GetPath())
+				return nil
+			}
+			return err
 		}
 
 		// Write Chunk to File
-		n, err := buffer.Write(buf)
+		n, err := dst.Write(buf)
 		if err != nil {
 			logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-
 			return err
 		}
 
 		// Update Progress
-		if done := si.Progress(n, node); done {
-			break
-		}
+		si.Progress(n, node)
 	}
-
-	// Write File Buffer to File
-	err := ioutil.WriteFile(si.GetPath(), buffer.Bytes(), 0644)
-	if err != nil {
-		logger.Errorf("%s - Failed to Close item on Read Stream", err)
-		return err
-	}
-	logger.Debug("Completed reading from stream: " + si.GetPath())
 	return nil
 }
 
-// Write writes the item to the stream
-func (si *SessionItem) Write(node api.NodeImpl, writer msgio.WriteCloser) error {
+// WriteToStream writes the item to the stream
+func (si *SessionItem) WriteToStream(node api.NodeImpl, writer msgio.WriteCloser) error {
 	// Create New Chunker
-	chunker, err := common.NewFileChunker(si.GetPath())
+	f, err := os.Open(si.GetPath())
 	if err != nil {
-		logger.Errorf("%s - Failed to create new chunker.", err)
 		return err
 	}
 
+	// Create New Reader
+	r := bufio.NewReader(f)
+	buf := make([]byte, 0, 4*1024)
+
 	// Loop through File
 	for {
-		c, err := chunker.Next()
-		if err != nil {
-			logger.Warnf("%s - Failed to get next chunk.", err)
-			break
+		n, err := r.Read(buf[:cap(buf)])
+		buf = buf[:n]
+		if n == 0 {
+			if err == nil {
+				continue
+			}
+			if err == io.EOF {
+				logger.Debug("Completed writing from stream: " + si.GetPath())
+				return nil
+			}
+			return err
+		}
+
+		// process buf
+		if err != nil && err != io.EOF {
+			return err
 		}
 
 		// Write Message Bytes to Stream
-		err = writer.WriteMsg(c.Data)
+		err = writer.WriteMsg(buf)
 		if err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
 			return err
 		}
 
 		// Update Progress
-		if done := si.Progress(c.Length, node); done {
-			break
-		}
+		si.Progress(len(buf), node)
 	}
-	logger.Debug("Completed writing to stream: " + si.GetPath())
-	return nil
 }
 
 // Progress pushes a progress event to the node. Returns true if the item is done.
-func (si *SessionItem) Progress(wrt int, n api.NodeImpl) bool {
+func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
 	// Update Progress
 	si.Written += int64(wrt)
 
@@ -96,5 +107,4 @@ func (si *SessionItem) Progress(wrt int, n api.NodeImpl) bool {
 		// Push ProgressEvent to Emitter
 		n.OnProgress(event)
 	}
-	return si.Written >= si.TotalSize
 }
