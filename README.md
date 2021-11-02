@@ -152,6 +152,14 @@ make upgrade
 make clean
 ```
 
+To run the HNS daemon, use the following command:
+
+```bash
+
+# Fetch latest version of HNS
+VERSION=$(cat package.json | grep version | sed 's/.*"\([0-9]*\.[0-9]*\.[0-9]*\)".*/\1/')
+COMMIT=$(git rev-parse --short HEAD)
+docker build -t hsd:$VERSION-$COMMIT .
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- ROADMAP -->

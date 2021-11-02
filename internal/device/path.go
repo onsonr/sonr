@@ -1,6 +1,5 @@
 package device
 
-
 import (
 	"path/filepath"
 	"strings"
@@ -99,10 +98,18 @@ type filePathOptions struct {
 
 // Merge merges the file path options.
 func (fpo *filePathOptions) Merge(name string, optsList ...*filePathOptions) error {
-	// Initialize options
+	// Split name into base name and extension
 	if strings.Contains(".", name) {
-		fpo.baseName = strings.Split(name, ".")[0]
-		fpo.extension = strings.Split(name, ".")[1]
+		// Set extension
+		ptr := strings.Split(name, ".")
+		fpo.extension = ptr[len(ptr)-1]
+
+		// Set base name
+		if len(ptr) > 2 {
+			fpo.baseName = strings.Join(ptr[:len(ptr)-2], "_")
+		} else {
+			fpo.baseName = ptr[0]
+		}
 	} else {
 		fpo.baseName = name
 		fpo.extension = ""

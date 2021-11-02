@@ -19,13 +19,10 @@ func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser
 	defer dst.Close()
 
 	// Route Data from Stream
-	for si.Written < si.TotalSize {
+	for {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
 		if err != nil {
-			if err == nil {
-				continue
-			}
 			if err == io.EOF {
 				logger.Debug("Completed reading from stream: " + si.GetPath())
 				return nil
@@ -43,7 +40,6 @@ func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser
 		// Update Progress
 		si.Progress(n, node)
 	}
-	return nil
 }
 
 // WriteToStream writes the item to the stream
@@ -105,6 +101,6 @@ func (si *SessionItem) Progress(wrt int, n api.NodeImpl) {
 		}
 
 		// Push ProgressEvent to Emitter
-		n.OnProgress(event)
+		go n.OnProgress(event)
 	}
 }

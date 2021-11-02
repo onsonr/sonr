@@ -41,6 +41,11 @@ func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) 
 	}
 }
 
+// FinalIndex returns the final index of the session.
+func (s *Session) FinalIndex() int {
+	return len(s.Items) - 1
+}
+
 // HasRead returns true if all files have been read.
 func (s *Session) HasRead() bool {
 	return s.IsIn() && s.IsDone()
@@ -53,7 +58,7 @@ func (s *Session) HasWrote() bool {
 
 // IsDone returns true if all files have been read or written.
 func (s *Session) IsDone() bool {
-	return int(s.CurrentIndex) >= len(s.GetItems())
+	return int(s.GetCurrentIndex()) == s.FinalIndex()
 }
 
 // IsOut returns true if the session is outgoing.
@@ -132,7 +137,9 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 			}
 
 			// Return Event
-			return s.Event(), nil
+			if s.IsDone() {
+				return s.Event(), nil
+			}
 		}
 	}
 }
