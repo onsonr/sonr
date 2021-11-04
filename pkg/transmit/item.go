@@ -13,10 +13,10 @@ import (
 func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser) error {
 	// Create New File
 	dst, err := os.Create(si.GetPath())
+	defer dst.Close()
 	if err != nil {
 		return err
 	}
-	defer dst.Close()
 
 	// Route Data from Stream
 	for {
@@ -48,10 +48,10 @@ func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser
 func (si *SessionItem) WriteToStream(node api.NodeImpl, writer msgio.WriteCloser) error {
 	// Create New Chunker
 	f, err := os.Open(si.GetPath())
+	defer f.Close()
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 
 	// Create New Reader
 	r := bufio.NewReader(f)
