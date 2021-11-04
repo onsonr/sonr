@@ -9,12 +9,15 @@ import (
 	"image/jpeg"
 	"log"
 	"math"
+	"mime"
+	"net/textproto"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 )
 
 var (
@@ -63,8 +66,22 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	}, nil
 }
 
+// Header returns the header of the FileItem
+func (f *FileItem) Header() textproto.MIMEHeader {
+	cd := mime.FormatMediaType("item-data", map[string]string{
+		"type":         f.GetMime().GetType().String(),
+		"filename":     f.GetName(),
+		"lastModified": time.Unix(f.GetLastModified(), 0).Format(time.RFC1123),
+	})
+	return textproto.MIMEHeader{
+		"Content-Disposition": {cd},
+		"Content-Length":      {strconv.FormatInt(f.GetSize(), 10)},
+		"Content-Type":        {f.GetMime().GetValue()},
+	}
+}
+
 // ResetPath sets the path of the FileItem
-func (f *FileItem) ResetPath(folder fs.Folder) (string, error) {
+func (f *FileItem) ResetPath(folder device.Folder) (string, error) {
 	// Set Path
 	oldPath := f.GetPath()
 
@@ -137,6 +154,11 @@ func (m *MIME) Ext() string {
 		return "jpeg"
 	}
 	return m.Subtype
+}
+
+// IsFile Checks if Path is a File
+func (m *MIME) IsFile() bool {
+	return m.Type != MIME_URL
 }
 
 // IsAudio Checks if Mime is Audio

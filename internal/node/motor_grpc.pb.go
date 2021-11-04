@@ -20,8 +20,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MotorStubClient interface {
 	// Node Methods
-	// Signing Method Request for Data
-	Supply(ctx context.Context, in *api.SupplyRequest, opts ...grpc.CallOption) (*api.SupplyResponse, error)
 	// Verification Method Request for Signed Data
 	Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error)
 	// Fetch method finds data from Key/Value store
@@ -55,15 +53,6 @@ type motorStubClient struct {
 
 func NewMotorStubClient(cc grpc.ClientConnInterface) MotorStubClient {
 	return &motorStubClient{cc}
-}
-
-func (c *motorStubClient) Supply(ctx context.Context, in *api.SupplyRequest, opts ...grpc.CallOption) (*api.SupplyResponse, error) {
-	out := new(api.SupplyResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Supply", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *motorStubClient) Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error) {
@@ -340,8 +329,6 @@ func (x *motorStubOnTransmitCompleteClient) Recv() (*api.CompleteEvent, error) {
 // for forward compatibility
 type MotorStubServer interface {
 	// Node Methods
-	// Signing Method Request for Data
-	Supply(context.Context, *api.SupplyRequest) (*api.SupplyResponse, error)
 	// Verification Method Request for Signed Data
 	Edit(context.Context, *api.EditRequest) (*api.EditResponse, error)
 	// Fetch method finds data from Key/Value store
@@ -374,9 +361,6 @@ type MotorStubServer interface {
 type UnimplementedMotorStubServer struct {
 }
 
-func (UnimplementedMotorStubServer) Supply(context.Context, *api.SupplyRequest) (*api.SupplyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Supply not implemented")
-}
 func (UnimplementedMotorStubServer) Edit(context.Context, *api.EditRequest) (*api.EditResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Edit not implemented")
 }
@@ -424,24 +408,6 @@ type UnsafeMotorStubServer interface {
 
 func RegisterMotorStubServer(s grpc.ServiceRegistrar, srv MotorStubServer) {
 	s.RegisterService(&MotorStub_ServiceDesc, srv)
-}
-
-func _MotorStub_Supply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.SupplyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MotorStubServer).Supply(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sonr.node.MotorStub/Supply",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorStubServer).Supply(ctx, req.(*api.SupplyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _MotorStub_Edit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -688,10 +654,6 @@ var MotorStub_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "sonr.node.MotorStub",
 	HandlerType: (*MotorStubServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Supply",
-			Handler:    _MotorStub_Supply_Handler,
-		},
 		{
 			MethodName: "Edit",
 			Handler:    _MotorStub_Edit_Handler,

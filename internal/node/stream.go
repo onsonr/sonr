@@ -3,12 +3,13 @@ package node
 import api "github.com/sonr-io/core/internal/api"
 
 // OnDecision is callback for NodeImpl for decisionEvents
-func (n *Node) OnDecision(event *api.DecisionEvent) {
+func (n *Node) OnDecision(event *api.DecisionEvent, invite *api.InviteEvent) {
 	if event == nil {
 		logger.Warn("Received nil event: OnDecision")
 		return
 	}
 	n.decisionEvents <- event
+	n.motor.TransmitProtocol.Outgoing(invite.GetPayload(), event.GetFrom())
 }
 
 // OnInvite is callback for NodeImpl for inviteEvents
@@ -141,7 +142,7 @@ func (s *NodeMotorStub) OnTransmitComplete(e *Empty, stream MotorStub_OnTransmit
 				// Check Direction
 				stream.Send(m)
 				// Add Receiver to Recents
-				err := s.node.AddRecent(m.Recent())
+				err := s.node.identity.AddRecent(m.Recent())
 				if err != nil {
 					logger.Errorf("%s - Failed to add receiver's profile to store.", err)
 					continue

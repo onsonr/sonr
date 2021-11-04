@@ -29,7 +29,7 @@ type Local struct {
 }
 
 // newLobby creates a new local instance.
-func (e *DiscoverProtocol) initLocal(topic *ps.Topic, opts *options) error {
+func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
@@ -53,7 +53,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, opts *options) error {
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
-		olc:          createOlc(opts.location),
+		olc:          topicName,
 		messages:     make(chan *LobbyEvent),
 		peers:        make([]*common.Peer, 0),
 	}
@@ -63,7 +63,6 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, opts *options) error {
 	go e.local.handleTopic()
 	go e.local.handleEvents()
 	go e.local.autoPushUpdates()
-	logger.Debugf("Created new lobby: %s", createOlc(opts.location))
 	return nil
 }
 

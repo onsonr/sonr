@@ -1,189 +1,151 @@
 package transmit
 
 import (
-	"container/list"
-	"context"
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
 )
 
-// Session is a single entry in the Transmit queue.
-type Session struct {
-	direction   common.Direction
-	from        *common.Peer
-	to          *common.Peer
-	payload     *common.Payload
-	lastUpdated int64
-}
-
-// IsIncoming returns true if the session is incoming.
-func (s Session) IsIncoming() bool {
-	return s.direction == common.Direction_INCOMING
-}
-
-// IsOutgoing returns true if the session is outgoing.
-func (s Session) IsOutgoing() bool {
-	return s.direction == common.Direction_OUTGOING
-}
-
-func (s Session) readItem(wg *sync.WaitGroup, n api.NodeImpl, index int, reader msgio.ReadCloser) {
-	// Create New Reader
-
-}
-
-// ReadFrom reads the next Session from the given stream.
-func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
-	// Initialize Params
-	logger.Debug("Beginning INCOMING Transmit Stream")
-
-	// Handle incoming stream
-	rs := msgio.NewReader(stream)
-	var wg sync.WaitGroup
-
-	// Write All Files
-	for i, v := range s.Items() {
-		// Write to File
-		wg.Add(1)
-		go ReadItem(i, s.Count(), v, &wg, n, rs)
+// NewInSession creates a new Session from the given payload with Incoming direction.
+func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *Session {
+	// Create Session Items
+	sessionPayload := NewSessionPayload(payload)
+	return &Session{
+		Direction:    common.Direction_INCOMING,
+		Payload:      payload,
+		From:         from,
+		To:           to,
+		LastUpdated:  int64(time.Now().Unix()),
+		Items:        sessionPayload.CreateItems(common.Direction_INCOMING),
+		CurrentIndex: 0,
+		Results:      make(map[int32]bool),
 	}
-	wg.Wait()
-	stream.Close()
+}
 
-	// Return Complete Event
+// NewOutSession creates a new Session from the given payload with Outgoing direction.
+func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) *Session {
+	// Create Session Items
+	sessionPayload := NewSessionPayload(payload)
+	return &Session{
+		Direction:    common.Direction_OUTGOING,
+		Payload:      payload,
+		To:           to,
+		From:         from,
+		LastUpdated:  int64(time.Now().Unix()),
+		Items:        sessionPayload.CreateItems(common.Direction_OUTGOING),
+		CurrentIndex: 0,
+		Results:      make(map[int32]bool),
+	}
+}
+
+// FinalIndex returns the final index of the session.
+func (s *Session) FinalIndex() int {
+	return len(s.Items) - 1
+}
+
+// HasRead returns true if all files have been read.
+func (s *Session) HasRead() bool {
+	return s.IsIn() && s.IsDone()
+}
+
+// HasWrote returns true if all files have been written.
+func (s *Session) HasWrote() bool {
+	return s.IsOut() && s.IsDone()
+}
+
+// IsDone returns true if all files have been read or written.
+func (s *Session) IsDone() bool {
+	return int(s.GetCurrentIndex()) >= s.FinalIndex()
+}
+
+// IsOut returns true if the session is outgoing.
+func (s *Session) IsOut() bool {
+	return s.Direction == common.Direction_OUTGOING
+}
+
+// IsIn returns true if the session is incoming.
+func (s *Session) IsIn() bool {
+	return s.Direction == common.Direction_INCOMING
+}
+
+// Event returns the complete event for the session.
+func (s *Session) Event() *api.CompleteEvent {
 	return &api.CompleteEvent{
-		From:       s.from,
-		To:         s.to,
-		Direction:  s.direction,
-		Payload:    s.payload,
-		CreatedAt:  s.payload.GetCreatedAt(),
+		From:       s.GetFrom(),
+		To:         s.GetTo(),
+		Direction:  s.GetDirection(),
+		Payload:    s.GetPayload(),
+		CreatedAt:  s.GetPayload().GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
-	}, nil
+		Results:    s.GetResults(),
+	}
 }
 
-// WriteTo writes the Session to the given stream.
-func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
+// RouteStream is used to route the given stream to the given peer.
+func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
-	logger.Debug("Beginning OUTGOING Transmit Stream")
-	wc := msgio.NewWriter(stream)
-	var wg sync.WaitGroup
+	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
+	doneChan := make(chan bool)
 
-	// Create New Writer
-	for i, v := range s.Items() {
-		// Write File to Stream
-		wg.Add(1)
-		go WriteItem(i, s.Count(), v, &wg, n, wc)
+	// Check for Incoming
+	if s.IsIn() {
+		// Handle incoming stream
+		rs := msgio.NewReader(stream)
+		go func(writer msgio.ReadCloser, dchan chan bool) {
+			for _, v := range s.GetItems() {
+				// Read Stream to File
+				if err := v.ReadFromStream(n, rs); err != nil {
+					logger.Errorf("Error reading stream: %v", err)
+					dchan <- false
+				} else {
+					dchan <- true
+				}
+			}
+		}(rs, doneChan)
 	}
 
-	// Wait for all writes to finish
-	wg.Wait()
+	// Check for Outgoing
+	if s.IsOut() {
+		// Handle outgoing stream
+		wc := msgio.NewWriter(stream)
+		go func(writer msgio.WriteCloser, dchan chan bool) {
+			for _, v := range s.GetItems() {
+				// Write File to Stream
+				if err := v.WriteToStream(n, wc); err != nil {
+					logger.Errorf("Error writing file: %v", err)
+					dchan <- false
+				} else {
+					dchan <- true
+				}
+			}
+		}(wc, doneChan)
+	}
 
-	// Return Complete Event
-	return &api.CompleteEvent{
-		From:       s.from,
-		To:         s.to,
-		Direction:  s.direction,
-		Payload:    s.payload,
-		CreatedAt:  s.payload.GetCreatedAt(),
-		ReceivedAt: int64(time.Now().Unix()),
-	}, nil
+	// Wait for all files to be written
+	for {
+		select {
+		case r := <-doneChan:
+			// Set Result
+			if complete := s.UpdateCurrent(r); !complete {
+				continue
+			}
+
+			// Close Stream on Done Reading
+			if s.HasRead() {
+				stream.Close()
+			}
+			return s.Event(), nil
+		}
+	}
 }
 
-// Count returns the number of items in Payload
-func (s Session) Count() int {
-	return len(s.payload.GetItems())
-}
-
-// MapItems performs PayloadItemFunc on each item in the Payload.
-func (s Session) Items() []*common.Payload_Item {
-	return s.payload.GetItems()
-}
-
-// SessionQueue is a queue for incoming and outgoing requests.
-type SessionQueue struct {
-	ctx   context.Context
-	host  *host.SNRHost
-	queue *list.List
-}
-
-// AddIncoming adds Incoming Request to Transfer Queue
-func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
-	// Authenticate Message
-	valid := sq.host.AuthenticateMessage(req, req.Metadata)
-	if !valid {
-		return ErrFailedAuth
-	}
-
-	// Create New TransferEntry
-	entry := Session{
-		direction:   common.Direction_INCOMING,
-		payload:     req.GetPayload(),
-		from:        req.GetFrom(),
-		to:          req.GetTo(),
-		lastUpdated: int64(time.Now().Unix()),
-	}
-
-	// Add to Requests
-	sq.queue.PushBack(entry)
-	return nil
-}
-
-// AddOutgoing adds Outgoing Request to Transfer Queue
-func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
-	// Create New TransferEntry
-	entry := Session{
-		direction:   common.Direction_OUTGOING,
-		payload:     req.GetPayload(),
-		from:        req.GetFrom(),
-		to:          req.GetTo(),
-		lastUpdated: int64(time.Now().Unix()),
-	}
-
-	// Add to Requests
-	sq.queue.PushBack(entry)
-	return nil
-}
-
-// Next returns topmost entry in the queue.
-func (sq *SessionQueue) Next() (Session, error) {
-	// Find Entry for Peer
-	entry := sq.queue.Remove(sq.queue.Front()).(Session)
-	entry.lastUpdated = int64(time.Now().Unix())
-	return entry, nil
-}
-
-// Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
-// Method also returns the InviteRequest that points to the Response.
-func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
-	// Authenticate Message
-	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
-	if !valid {
-		return Session{}, ErrFailedAuth
-	}
-
-	// Check Decision
-	if !resp.GetDecision() {
-		return Session{}, nil
-	}
-
-	// Check if the request is valid
-	if sq.queue.Len() == 0 {
-		return Session{}, ErrEmptyRequests
-	}
-
-	// Get Next Entry
-	entry, err := sq.Next()
-	if err != nil {
-		logger.Errorf("%s - Failed to get Transmit entry", err)
-		return Session{}, err
-	}
-
-	entry.lastUpdated = int64(time.Now().Unix())
-	return entry, nil
+// UpdateCurrent updates the current index of the session.
+func (s *Session) UpdateCurrent(result bool) bool {
+	logger.Debugf("Item (%v) transmit result: %v", s.GetCurrentIndex(), result)
+	s.Results[s.GetCurrentIndex()] = result
+	s.CurrentIndex = s.GetCurrentIndex() + 1
+	return int(s.GetCurrentIndex()) >= s.FinalIndex()
 }

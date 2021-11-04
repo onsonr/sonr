@@ -1,11 +1,9 @@
 package transmit
 
 import (
-	"container/list"
 	"context"
-	"fmt"
 
-	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
@@ -13,130 +11,137 @@ import (
 
 // TransmitProtocol type
 type TransmitProtocol struct {
-	node         api.NodeImpl
-	ctx          context.Context // Context
-	host         *host.SNRHost   // local host
-	sessionQueue *SessionQueue   // transfer session queue
-	supplyQueue  *list.List      // supply queue
+	node    api.NodeImpl
+	ctx     context.Context // Context
+	host    *host.SNRHost   // local host
+	current *Session        // current session
+	mode    api.StubMode
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
-
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
-	invProtocol := &TransmitProtocol{
+	protocol := &TransmitProtocol{
 		ctx:  ctx,
 		host: host,
-		sessionQueue: &SessionQueue{
-			ctx:   ctx,
-			host:  host,
-			queue: list.New(),
-		},
-		supplyQueue: list.New(),
-		node:        node,
+		node: node,
 	}
+	// Set options
+	opts := defaultOptions()
+	for _, opt := range options {
+		opt(opts)
+	}
+	opts.Apply(protocol)
 
 	// Setup Stream Handlers
-	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
-	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
-	host.SetStreamHandler(IncomingPID, invProtocol.onIncomingTransfer)
+	host.SetStreamHandler(FilePID, protocol.onIncomingTransfer)
 	logger.Debug("✅  TransmitProtocol is Activated \n")
-	return invProtocol, nil
+	return protocol, nil
 }
 
-// Request Method sends a request to Transfer Data to a remote peer
-func (p *TransmitProtocol) Request(to *common.Peer) error {
-	// Create Request
-	id, req, err := p.createRequest(to)
-	if err != nil {
-		logger.Errorf("%s - Failed to Create Request", err)
-		return err
+// CurrentSession returns the current session
+func (p *TransmitProtocol) CurrentSession() (*Session, error) {
+	if p.current != nil {
+		return p.current, nil
 	}
-
-	// Check if the response is valid
-	if req == nil {
-		return ErrInvalidRequest
-	}
-
-	// sign the data
-	signature, err := p.host.SignMessage(req)
-	if err != nil {
-		logger.Errorf("%s - Failed to Sign Response Message", err)
-		return err
-	}
-
-	// add the signature to the message
-	req.Metadata.Signature = signature
-	err = p.host.SendMessage(id, RequestPID, req)
-	if err != nil {
-		logger.Errorf("%s - Failed to Send Message to Peer", err)
-		return err
-	}
-
-	// store the request in the map
-	return p.sessionQueue.AddOutgoing(id, req)
+	return nil, ErrNoSession
 }
 
-// Respond Method authenticates or declines a Transfer Request
-func (p *TransmitProtocol) Respond(decs bool, to *common.Peer) error {
-	// Create Response
-	id, resp, err := p.createResponse(decs, to)
+// Incoming is called by the node to accept an incoming transfer
+func (p *TransmitProtocol) Incoming(payload *common.Payload, from *common.Peer) error {
+	// Get User Peer
+	to, err := p.node.Peer()
 	if err != nil {
-		logger.Errorf("%s - Failed to Create Request", err)
+		logger.Errorf("%s - Failed to Get User Peer", err)
 		return err
 	}
 
-	// Check if the response is valid
-	if resp == nil {
-		return ErrInvalidResponse
-	}
-
-	// sign the data
-	signature, err := p.host.SignMessage(resp)
-	if err != nil {
-		logger.Errorf("%s - Failed to Sign Response Message", err)
-		return err
-	}
-
-	// add the signature to the message
-	resp.Metadata.Signature = signature
-
-	// Send Response
-	err = p.host.SendMessage(id, ResponsePID, resp)
-	if err != nil {
-		logger.Errorf("%s - Failed to Send Message to Peer", err)
-		return err
-	}
+	// Create New TransferEntry
+	p.current = NewInSession(payload, from, to)
 	return nil
 }
 
-// Supply a transfer item to the queue
-func (p *TransmitProtocol) Supply(req *api.SupplyRequest) error {
-	// Profile from NodeImpl
-	profile, err := p.node.Profile()
+// Outgoing is called by the node to initiate a transfer
+func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) error {
+	// Get User Peer
+	from, err := p.node.Peer()
 	if err != nil {
-		logger.Errorf("%s - Failed to Get Profile from Node")
+		logger.Errorf("%s - Failed to Get Peer", err)
 		return err
 	}
 
-	// Create Transfer
-	payload, err := req.ToPayload(profile)
+	// Get Id
+	toId, err := to.Libp2pID()
 	if err != nil {
-		logger.Errorf("%s - Failed to Supply Paths", err)
+		logger.Errorf("%s - Failed to Get Peer ID", err)
 		return err
 	}
 
-	// Add items to transfer
-	p.supplyQueue.PushBack(payload)
-	logger.Debug(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
-	// Check if Peer is provided
-	if req.GetIsPeerSupply() {
-		logger.Debug("Peer Supply Request. Sending Invite after supply")
-		err = p.Request(req.GetPeer())
+	// Create New TransferEntry
+	p.current = NewOutSession(payload, from, to)
+
+	// Send Files
+	if p.current.Payload.IsFile() {
+		// Create New Stream
+		stream, err := p.host.NewStream(p.ctx, toId, FilePID)
 		if err != nil {
-			logger.Errorf("%s - Failed to Send Request to Peer", err)
+			logger.Errorf("%s - Failed to Create New Stream", err)
 			return err
 		}
+
+		// Start Transfer
+		p.onOutgoingTransfer(stream)
 	}
+
 	return nil
+}
+
+// Reset resets the current session
+func (p *TransmitProtocol) Reset(event *api.CompleteEvent) {
+	logger.Debug("Resetting TransmitProtocol")
+	p.node.OnComplete(event)
+	p.current = nil
+}
+
+// onIncomingTransfer incoming transfer handler
+func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
+	logger.Debug("Received Incoming Transfer")
+	// Find Entry in Queue
+	entry, err := p.CurrentSession()
+	if err != nil {
+		logger.Errorf("%s - Failed to find transfer request", err)
+		stream.Close()
+		return
+	}
+
+	// Create New Reader
+	event, err := entry.RouteStream(stream, p.node)
+	if err != nil {
+		logger.Errorf("%s - Failed to Read From Stream", err)
+		stream.Close()
+		return
+	}
+	p.Reset(event)
+}
+
+// onOutgoingTransfer is called by onInviteResponse if Validated
+func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
+	logger.Debug("Received Accept Decision, Starting Outgoing Transfer")
+
+	// Find Entry in Queues
+	entry, err := p.CurrentSession()
+	if err != nil {
+		logger.Errorf("%s - Failed to find transfer request", err)
+		stream.Close()
+		return
+	}
+
+	// Create New Writer
+	event, err := entry.RouteStream(stream, p.node)
+	if err != nil {
+		logger.Errorf("%s - Failed to Write To Stream", err)
+		stream.Close()
+		return
+	}
+	p.Reset(event)
 }

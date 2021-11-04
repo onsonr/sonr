@@ -2,14 +2,11 @@ package api
 
 import (
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/fs"
-	"github.com/sonr-io/core/internal/wallet"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/pkg/common"
 )
 
@@ -93,12 +90,13 @@ func DefaultLocation() *common.Location {
 	}
 }
 
-// FSOpts returns a list of FS Options
-func (ir *InitializeRequest) FSOpts() []fs.Option {
-	return []fs.Option{
-		fs.WithHomePath(ir.homeDir()),
-		fs.WithSupportPath(ir.supportDir()),
-		fs.WithTempPath(ir.tempDir()),
+// Options returns a list of FS Options
+func (ir *InitializeRequest) Options() []device.Option {
+	return []device.Option{
+		device.WithHomePath(ir.homeDir()),
+		device.WithSupportPath(ir.supportDir()),
+		device.WithTempPath(ir.tempDir()),
+		device.SetDeviceID(ir.GetDeviceOptions().GetId()),
 	}
 }
 
@@ -122,54 +120,18 @@ func (ir *InitializeRequest) IsDev() bool {
 	return ir.GetEnvironment().IsDev()
 }
 
-// SetEnvVars sets the environment variables
-func (ir *InitializeRequest) Parse() error {
-	// Set Environment Variables
-	vars := ir.GetVariables()
-	count := len(vars)
-
-	// Iterate over Variables
-	if count > 0 {
-		for k, v := range vars {
-			os.Setenv(k, v)
-		}
-
-		golog.Debug("Added Enviornment Variable(s)", golog.Fields{
-			"Total": count,
-		})
-	}
-
-	// Set Device ID
-	did := ir.GetDeviceOptions().GetId()
-	if did != "" {
-		logger.Debug("Device ID Passed: " + did)
-		common.SetDeviceID(did)
-	}
-
-	// Start File System
-	if err := fs.Start(ir.FSOpts()...); err != nil {
-		return errors.Wrap(err, "Failed to Start File System")
-	}
-
-	// Open Keychain
-	if err := wallet.Open(); err != nil {
-		return errors.Wrap(err, "Failed to Open Keychain")
-	}
-	return nil
-}
-
 // IsDelete returns true if the request is a delete request
 func (er *EditRequest) IsDelete() bool {
 	return er.GetType() == EditRequest_DELETE
 }
 
 // Count returns the number of items in the payload
-func (sr *SupplyRequest) Count() int {
+func (sr *ShareRequest) Count() int {
 	return len(sr.GetItems())
 }
 
 // ToPayload converts the response to a payload
-func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, error) {
+func (sr *ShareRequest) ToPayload(owner *common.Profile) (*common.Payload, error) {
 	// Initialize
 	fileCount := 0
 	urlCount := 0
@@ -193,7 +155,7 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 
 			// Add URL to Payload
 			items = append(items, urlItem)
-		} else if fs.IsFile(item.GetPath()) {
+		} else if device.IsFile(item.GetPath()) {
 			// Increase File Count
 			fileCount++
 

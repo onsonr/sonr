@@ -2,80 +2,15 @@ package node
 
 import (
 	context "context"
-	"fmt"
 	"net"
 
 	"github.com/sonr-io/core/pkg/discover"
 	"github.com/sonr-io/core/pkg/exchange"
+	"github.com/sonr-io/core/pkg/registry"
 	"github.com/sonr-io/core/pkg/transmit"
 
 	"google.golang.org/grpc"
 )
-
-// StubMode is the type of the node (Client, Highway)
-type StubMode int
-
-const (
-	// StubMode_LIB is the Node utilized by Mobile and Web Clients
-	StubMode_LIB StubMode = iota
-
-	// StubMode_CLI is the Node utilized by CLI Clients
-	StubMode_CLI
-
-	// StubMode_BIN is the Node utilized for Desktop background process
-	StubMode_BIN
-
-	// StubMode_HIGHWAY is the Custodian Node that manages Network
-	StubMode_HIGHWAY
-)
-
-// IsLib returns true if the node is a client node.
-func (m StubMode) IsLib() bool {
-	return m == StubMode_LIB
-}
-
-// IsBin returns true if the node is a bin node.
-func (m StubMode) IsBin() bool {
-	return m == StubMode_BIN
-}
-
-// IsCLI returns true if the node is a CLI node.
-func (m StubMode) IsCLI() bool {
-	return m == StubMode_CLI
-}
-
-// IsHighway returns true if the node is a highway node.
-func (m StubMode) IsHighway() bool {
-	return m == StubMode_HIGHWAY
-}
-
-// HasMotor returns true if the node has a client.
-func (m StubMode) HasMotor() bool {
-	return m.IsLib() || m.IsBin() || m.IsCLI()
-}
-
-// HasHighway returns true if the node has a highway stub.
-func (m StubMode) HasHighway() bool {
-	return m.IsHighway()
-}
-
-// Prefix returns golog prefix for the node.
-func (m StubMode) Prefix() string {
-	var name string
-	switch m {
-	case StubMode_LIB:
-		name = "lib"
-	case StubMode_CLI:
-		name = "cli"
-	case StubMode_BIN:
-		name = "bin"
-	case StubMode_HIGHWAY:
-		name = "highway"
-	default:
-		name = "unknown"
-	}
-	return fmt.Sprintf("[SONR.%s] ", name)
-}
 
 // NodeMotorStub is the RPC Service for the Default Node.
 type NodeMotorStub struct {
@@ -95,7 +30,6 @@ type NodeMotorStub struct {
 
 // startMotorStub creates a new Client service stub for the node.
 func (n *Node) startMotorStub(ctx context.Context, opts *options) (*NodeMotorStub, error) {
-
 	// Set Discovery Protocol
 	discProtocol, err := discover.New(ctx, n.host, n, discover.WithLocation(opts.location))
 	if err != nil {
@@ -110,12 +44,20 @@ func (n *Node) startMotorStub(ctx context.Context, opts *options) (*NodeMotorStu
 		return nil, err
 	}
 
+	// Set Exchange Protocol
+	exchangeProtocol, err := exchange.New(ctx, n.host, n)
+	if err != nil {
+		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
+		return nil, err
+	}
+
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	stub := &NodeMotorStub{
 		ctx:              ctx,
 		TransmitProtocol: transmitProtocol,
 		DiscoverProtocol: discProtocol,
+		ExchangeProtocol: exchangeProtocol,
 		node:             n,
 		grpcServer:       grpcServer,
 	}
@@ -189,16 +131,43 @@ type NodeHighwayStub struct {
 	// Properties
 	ctx        context.Context
 	grpcServer *grpc.Server
+	*discover.DiscoverProtocol
+	*registry.RegistryProtocol
+	*exchange.ExchangeProtocol
 }
 
 // startHighwayStub creates a new Highway service stub for the node.
 func (n *Node) startHighwayStub(ctx context.Context, opts *options) (*NodeHighwayStub, error) {
+	// Set Discovery Protocol
+	discProtocol, err := discover.New(ctx, n.host, n, discover.WithLocation(opts.location))
+	if err != nil {
+		logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
+		return nil, err
+	}
+
+	// Set Transmit Protocol
+	exchangeProtocol, err := exchange.New(ctx, n.host, n)
+	if err != nil {
+		logger.Errorf("%s - Failed to start TransmitProtocol", err)
+		return nil, err
+	}
+
+	// Set Exchange Protocol
+	registeryProtocol, err := registry.New(ctx, n.host, n)
+	if err != nil {
+		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
+		return nil, err
+	}
+
 	// Create the RPC Service
 	grpcServer := grpc.NewServer()
 	stub := &NodeHighwayStub{
-		Node:       n,
-		ctx:        ctx,
-		grpcServer: grpcServer,
+		Node:             n,
+		ctx:              ctx,
+		grpcServer:       grpcServer,
+		DiscoverProtocol: discProtocol,
+		ExchangeProtocol: exchangeProtocol,
+		RegistryProtocol: registeryProtocol,
 	}
 	// Register the RPC Service
 	RegisterHighwayStubServer(grpcServer, stub)

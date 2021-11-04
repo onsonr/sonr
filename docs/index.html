@@ -294,14 +294,6 @@
                   <a href="#sonr.api.ShareResponse"><span class="badge">M</span>ShareResponse</a>
                 </li>
               
-                <li>
-                  <a href="#sonr.api.SupplyRequest"><span class="badge">M</span>SupplyRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.api.SupplyResponse"><span class="badge">M</span>SupplyResponse</a>
-                </li>
-              
               
                 <li>
                   <a href="#sonr.api.EditRequest.Type"><span class="badge">E</span>EditRequest.Type</a>
@@ -596,27 +588,7 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.discover.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.protocols.discover.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.LookupRequest"><span class="badge">M</span>LookupRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.discover.LookupResponse"><span class="badge">M</span>LookupResponse</a>
                 </li>
               
                 <li>
@@ -666,19 +638,65 @@
         
           
           <li>
+            <a href="#proto%2fprotocols%2fidentity.proto">proto/protocols/identity.proto</a>
+            <ul>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fprotocols%2fregistry.proto">proto/protocols/registry.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#sonr.protocols.registry.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.registry.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.registry.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.registry.LookupRequest"><span class="badge">M</span>LookupRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.registry.LookupResponse"><span class="badge">M</span>LookupResponse</a>
+                </li>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
             <a href="#proto%2fprotocols%2ftransmit.proto">proto/protocols/transmit.proto</a>
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.transmit.Chunk"><span class="badge">M</span>Chunk</a>
+                  <a href="#sonr.protocols.transmit.Session"><span class="badge">M</span>Session</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.transmit.InviteRequest"><span class="badge">M</span>InviteRequest</a>
+                  <a href="#sonr.protocols.transmit.Session.ResultsEntry"><span class="badge">M</span>Session.ResultsEntry</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.transmit.InviteResponse"><span class="badge">M</span>InviteResponse</a>
+                  <a href="#sonr.protocols.transmit.SessionItem"><span class="badge">M</span>SessionItem</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.transmit.SessionPayload"><span class="badge">M</span>SessionPayload</a>
                 </li>
               
               
@@ -692,26 +710,6 @@
             <a href="#proto%2fwallet%2fcrypto.proto">proto/wallet/crypto.proto</a>
             <ul>
               
-                <li>
-                  <a href="#sonr.wallet.PrivateKey"><span class="badge">M</span>PrivateKey</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.PublicKey"><span class="badge">M</span>PublicKey</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.SNID"><span class="badge">M</span>SNID</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.UUID"><span class="badge">M</span>UUID</a>
-                </li>
-              
-              
-                <li>
-                  <a href="#sonr.wallet.KeyType"><span class="badge">E</span>KeyType</a>
-                </li>
               
               
               
@@ -738,6 +736,37 @@
               
                 <li>
                   <a href="#sonr.wallet.KeychainType"><span class="badge">E</span>KeychainType</a>
+                </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fwallet%2fkeys.proto">proto/wallet/keys.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#sonr.wallet.PrivateKey"><span class="badge">M</span>PrivateKey</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.wallet.PublicKey"><span class="badge">M</span>PublicKey</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.wallet.SNID"><span class="badge">M</span>SNID</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.wallet.UUID"><span class="badge">M</span>UUID</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#sonr.wallet.KeyType"><span class="badge">E</span>KeyType</a>
                 </li>
               
               
@@ -1627,6 +1656,13 @@ File Transfer History </p></td>
                   <td><p>Fingerprint of Public Key </p></td>
                 </tr>
               
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Public Key </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1888,75 +1924,6 @@ File Transfer History </p></td>
       
         <h3 id="sonr.api.ShareResponse">ShareResponse</h3>
         <p>(Client) ShareResponse is response to ShareRequest</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>True if Supply is Active </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message if Supply is not Active </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.SupplyRequest">SupplyRequest</h3>
-        <p>(Client) SupplyRequest supplies path to files or urls and optionally a Peer</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>items</td>
-                  <td><a href="#sonr.core.SupplyItem">sonr.core.SupplyItem</a></td>
-                  <td>repeated</td>
-                  <td><p>Supply Paths </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td>optional</td>
-                  <td><p>Supply Peer </p></td>
-                </tr>
-              
-                <tr>
-                  <td>isPeerSupply</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Supply Peer </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.SupplyResponse">SupplyResponse</h3>
-        <p>(Client) SupplyResponse is response to SupplyRequest</p>
 
         
           <table class="field-table">
@@ -2375,20 +2342,6 @@ File Transfer History </p></td>
             <tbody>
               
                 <tr>
-                  <td>index</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Index of Current Item in Payload </p></td>
-                </tr>
-              
-                <tr>
-                  <td>count</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Count of Total Items in Payload </p></td>
-                </tr>
-              
-                <tr>
                   <td>progress</td>
                   <td><a href="#double">double</a></td>
                   <td></td>
@@ -2400,6 +2353,20 @@ File Transfer History </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>Timestamp </p></td>
+                </tr>
+              
+                <tr>
+                  <td>current</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Current position of item in list </p></td>
+                </tr>
+              
+                <tr>
+                  <td>total</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Total number of items in list </p></td>
                 </tr>
               
                 <tr>
@@ -4505,18 +4472,11 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           <tbody>
             
               <tr>
-                <td>Supply</td>
-                <td><a href="#sonr.api.SupplyRequest">.sonr.api.SupplyRequest</a></td>
-                <td><a href="#sonr.api.SupplyResponse">.sonr.api.SupplyResponse</a></td>
-                <td><p>Node Methods
-Signing Method Request for Data</p></td>
-              </tr>
-            
-              <tr>
                 <td>Edit</td>
                 <td><a href="#sonr.api.EditRequest">.sonr.api.EditRequest</a></td>
                 <td><a href="#sonr.api.EditResponse">.sonr.api.EditResponse</a></td>
-                <td><p>Verification Method Request for Signed Data</p></td>
+                <td><p>Node Methods
+Verification Method Request for Signed Data</p></td>
               </tr>
             
               <tr>
@@ -4609,113 +4569,6 @@ Returns a stream of Lobby Refresh Events</p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.discover.AuthorizeRequest">AuthorizeRequest</h3>
-        <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
-                </tr>
-              
-                <tr>
-                  <td>deviceId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Device ID </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.AuthorizeResponse">AuthorizeResponse</h3>
-        <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Verified </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>records</td>
-                  <td><a href="#sonr.protocols.discover.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>Updated Domain TXT Records </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.protocols.discover.LobbyMessage">LobbyMessage</h3>
         <p>LobbyMessage is message passed from Peer in Lobby</p>
 
@@ -4745,61 +4598,6 @@ Returns a stream of Lobby Refresh Events</p></td>
                   <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
                   <td></td>
                   <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.LookupRequest">LookupRequest</h3>
-        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.discover.LookupResponse">LookupResponse</h3>
-        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Verified </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
                 </tr>
               
             </tbody>
@@ -5115,13 +4913,27 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/protocols/transmit.proto">proto/protocols/transmit.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/protocols/identity.proto">proto/protocols/identity.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="sonr.protocols.transmit.Chunk">Chunk</h3>
-        <p>For Transfer Chunk Transmission</p>
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/protocols/registry.proto">proto/protocols/registry.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.protocols.registry.AuthorizeRequest">AuthorizeRequest</h3>
+        <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -5131,31 +4943,24 @@ Returns a stream of Lobby Refresh Events</p></td>
             <tbody>
               
                 <tr>
-                  <td>offset</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Bytes from the beginning of the reader to chunk </p></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
                 </tr>
               
                 <tr>
-                  <td>length</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Length is number of bytes in the chunk </p></td>
+                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
                 </tr>
               
                 <tr>
-                  <td>data</td>
-                  <td><a href="#bytes">bytes</a></td>
+                  <td>deviceId</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Data is the actual chunk </p></td>
-                </tr>
-              
-                <tr>
-                  <td>fingerprint</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Fingerprint is the hash of the chunk </p></td>
+                  <td><p>Device ID </p></td>
                 </tr>
               
             </tbody>
@@ -5165,8 +4970,323 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.transmit.InviteRequest">InviteRequest</h3>
-        <p>Invitation Message sent on RPC</p>
+        <h3 id="sonr.protocols.registry.AuthorizeResponse">AuthorizeResponse</h3>
+        <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>records</td>
+                  <td><a href="#sonr.protocols.registry.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Updated Domain TXT Records </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.registry.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.registry.LookupRequest">LookupRequest</h3>
+        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.registry.LookupResponse">LookupResponse</h3>
+        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Base64 Encoded Public Key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/protocols/transmit.proto">proto/protocols/transmit.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.protocols.transmit.Session">Session</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>direction</td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>lastUpdated</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>items</td>
+                  <td><a href="#sonr.protocols.transmit.SessionItem">SessionItem</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>currentIndex</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>results</td>
+                  <td><a href="#sonr.protocols.transmit.Session.ResultsEntry">Session.ResultsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.transmit.Session.ResultsEntry">Session.ResultsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.transmit.SessionItem">SessionItem</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>index</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>count</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>item</td>
+                  <td><a href="#sonr.core.FileItem">sonr.core.FileItem</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>written</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>totalSize</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>direction</td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.transmit.SessionPayload">SessionPayload</h3>
+        <p></p>
 
         
           <table class="field-table">
@@ -5179,73 +5299,14 @@ Returns a stream of Lobby Refresh Events</p></td>
                   <td>payload</td>
                   <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
                   <td></td>
-                  <td><p>Attached Data </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td>direction</td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
                   <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.transmit.InviteResponse">InviteResponse</h3>
-        <p>Reply Message sent on RPC</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>decision</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Success </p></td>
-                </tr>
-              
-                <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -5265,6 +5326,183 @@ Returns a stream of Lobby Refresh Events</p></td>
       
       <div class="file-heading">
         <h2 id="proto/wallet/crypto.proto">proto/wallet/crypto.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/wallet/keychain.proto">proto/wallet/keychain.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.wallet.KeyPair">KeyPair</h3>
+        <p>KeyPair represents a public/private key pair.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>label</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>privateKey</td>
+                  <td><a href="#sonr.wallet.PrivateKey">PrivateKey</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#sonr.wallet.PublicKey">PublicKey</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.wallet.Keychain">Keychain</h3>
+        <p>Keychain is a collection of KeyPair objects.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#sonr.wallet.KeychainType">KeychainType</a></td>
+                  <td></td>
+                  <td><p>Type of keychain </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>path to keychain </p></td>
+                </tr>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>address is: Libp2p Address, Ethereum Address, Bitcoin Address, or Solana Address </p></td>
+                </tr>
+              
+                <tr>
+                  <td>keys</td>
+                  <td><a href="#sonr.wallet.Keychain.KeysEntry">Keychain.KeysEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>keys is: map&lt;string, KeyPair&gt; </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.wallet.Keychain.KeysEntry">Keychain.KeysEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#sonr.wallet.KeyPair">KeyPair</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+        <h3 id="sonr.wallet.KeychainType">KeychainType</h3>
+        <p>KeychainType is the type of keychain.</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>SONR</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>ETH</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>BTC</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>SOL</td>
+                <td>3</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/wallet/keys.proto">proto/wallet/keys.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
@@ -5444,169 +5682,6 @@ Returns a stream of Lobby Refresh Events</p></td>
             
               <tr>
                 <td>ECDSA</td>
-                <td>3</td>
-                <td><p></p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/wallet/keychain.proto">proto/wallet/keychain.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.wallet.KeyPair">KeyPair</h3>
-        <p>KeyPair represents a public/private key pair.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>label</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>privateKey</td>
-                  <td><a href="#sonr.wallet.PrivateKey">PrivateKey</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#sonr.wallet.PublicKey">PublicKey</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.wallet.Keychain">Keychain</h3>
-        <p>Keychain is a collection of KeyPair objects.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>type</td>
-                  <td><a href="#sonr.wallet.KeychainType">KeychainType</a></td>
-                  <td></td>
-                  <td><p>Type of keychain </p></td>
-                </tr>
-              
-                <tr>
-                  <td>path</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>path to keychain </p></td>
-                </tr>
-              
-                <tr>
-                  <td>address</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>address is: Libp2p Address, Ethereum Address, Bitcoin Address, or Solana Address </p></td>
-                </tr>
-              
-                <tr>
-                  <td>keys</td>
-                  <td><a href="#sonr.wallet.Keychain.KeysEntry">Keychain.KeysEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>keys is: map&lt;string, KeyPair&gt; </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.wallet.Keychain.KeysEntry">Keychain.KeysEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#sonr.wallet.KeyPair">KeyPair</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-
-      
-        <h3 id="sonr.wallet.KeychainType">KeychainType</h3>
-        <p>KeychainType is the type of keychain.</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>SONR</td>
-                <td>0</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>ETH</td>
-                <td>1</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>BTC</td>
-                <td>2</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>SOL</td>
                 <td>3</td>
                 <td><p></p></td>
               </tr>

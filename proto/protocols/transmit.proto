@@ -5,26 +5,29 @@ import "proto/common/core.proto";
 import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/pkg/transmit";
 
-// For Transfer Chunk Transmission
-message Chunk {
-  int32 offset = 1;      // Bytes from the beginning of the reader to chunk
-  int32 length = 2;      // Length is number of bytes in the chunk
-  bytes data = 3;        // Data is the actual chunk
-  int64 fingerprint = 4; // Fingerprint is the hash of the chunk
+message Session {
+  sonr.core.Direction direction = 1;
+  sonr.core.Peer from = 2;
+  sonr.core.Peer to = 3;
+  sonr.core.Payload payload = 4;
+  int64 lastUpdated = 5;
+  repeated SessionItem items = 6;
+  int32 currentIndex = 7;
+  map<int32, bool> results = 8;
 }
 
-// Invitation Message sent on RPC
-message InviteRequest {
-  sonr.core.Payload payload = 1;   // Attached Data
-  sonr.core.Peer from = 3;         // Users Peer Data
-  sonr.core.Peer to = 4;           // Receivers Peer Data
-  sonr.core.Metadata metadata = 5; // Metadata
+message SessionItem {
+  int32 index = 1;
+  int32 count = 2;
+  sonr.core.FileItem item = 3;
+  int64 written = 4;
+  int64 size = 5;
+  int64 totalSize = 6;
+  sonr.core.Direction direction = 7;
+  string path = 8;
 }
 
-// Reply Message sent on RPC
-message InviteResponse {
-  bool decision = 1;               // Success
-  sonr.core.Peer from = 3;         // Users Peer Data
-  sonr.core.Peer to = 4;           // Receivers Peer Data
-  sonr.core.Metadata metadata = 5; // Metadata
+message SessionPayload {
+  sonr.core.Payload payload = 1;
+  sonr.core.Direction direction = 2;
 }

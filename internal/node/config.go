@@ -6,7 +6,9 @@ import (
 
 	"github.com/kataras/golog"
 	api "github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
+	"github.com/sonr-io/core/pkg/identity"
 )
 
 // Error Definitions
@@ -31,7 +33,7 @@ func WithRequest(req *api.InitializeRequest) Option {
 }
 
 // WithMode starts the Client RPC server as a highway node.
-func WithMode(m StubMode) Option {
+func WithMode(m api.StubMode) Option {
 	return func(o *options) {
 		o.mode = m
 	}
@@ -41,14 +43,14 @@ func WithMode(m StubMode) Option {
 type options struct {
 	connection common.Connection
 	location   *common.Location
-	mode       StubMode
+	mode       api.StubMode
 	profile    *common.Profile
 }
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *options {
 	return &options{
-		mode:       StubMode_LIB,
+		mode:       api.StubMode_LIB,
 		location:   api.DefaultLocation(),
 		connection: common.Connection_WIFI,
 		profile:    common.NewDefaultProfile(),
@@ -56,12 +58,23 @@ func defaultNodeOptions() *options {
 }
 
 // Apply applies Options to node
-func (opts *options) Apply(ctx context.Context, node *Node) error {
+func (opts *options) Apply(ctx context.Context, host *host.SNRHost, node *Node) error {
 	// Set Mode
 	node.mode = opts.mode
 
 	// Handle by Node Mode
-	if opts.mode.HasMotor() {
+	if opts.mode.Motor() {
+		// Open Store with profileBuf
+		logger.Debugf("Opening Store with profile: %s", opts.profile)
+		id, err := identity.New(ctx, host, node, identity.WithProfile(opts.profile))
+		if err != nil {
+			logger.Errorf("%s - Failed to initialize identity", err)
+			return err
+		}
+
+		// Set Identity
+		node.identity = id
+
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startMotorStub(ctx, opts)
@@ -71,7 +84,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 		}
 
 		// Set Stub to node
-		node.clientStub = stub
+		node.motor = stub
 
 	} else {
 		logger.Debug("Starting Highway stub...")
@@ -83,7 +96,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 		}
 
 		// Set Stub to node
-		node.highwayStub = stub
+		node.highway = stub
 	}
 	return nil
 }

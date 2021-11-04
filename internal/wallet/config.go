@@ -5,7 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 )
 
 // Error Definitions
@@ -34,7 +34,7 @@ func defaultNodeOptions() *walletOptions {
 }
 
 // keychainExists checks if EVERY key pair exists in the keychain.
-func keychainExists(folder fs.Folder) bool {
+func keychainExists(folder device.Folder) bool {
 	accExists := folder.Exists(Account.Path())
 	linkExists := folder.Exists(Link.Path())
 	groupExists := folder.Exists(Group.Path())
@@ -42,7 +42,7 @@ func keychainExists(folder fs.Folder) bool {
 }
 
 // readKey reads a key from a file and returns privKey and pubKey.
-func readKey(folder fs.Folder, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
+func readKey(folder device.Folder, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
 	// Get Buffer
 	dat, err := folder.ReadFile(kp.Path())
 	if err != nil {
@@ -61,7 +61,7 @@ func readKey(folder fs.Folder, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, e
 }
 
 // writeKey writes a key to the keychain.
-func writeKey(folder fs.Folder, privKey crypto.PrivKey, kp KeyPairType) error {
+func writeKey(folder device.Folder, privKey crypto.PrivKey, kp KeyPairType) error {
 	// Marshal Private Key
 	buf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {

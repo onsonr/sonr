@@ -5,12 +5,14 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"time"
 
+	"github.com/cosmos/go-bip39"
 	"github.com/google/uuid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/device"
 )
 
 var (
@@ -36,6 +38,9 @@ type SignedUUID struct {
 type KeyChain interface {
 	// CreateUUID makes new UUID value signed by the local node's private key
 	CreateUUID() (*SignedUUID, error)
+
+	// CreateFingerprint makes a new fingerprint value signed by the local node's private key
+	CreateFingerprint(sName string, deviceID string) (*SignedFingerprint, error)
 
 	// CreateMetadata makes message data shared between all node's p2p protocols
 	CreateMetadata(peerID peer.ID) (*SignedMetadata, error)
@@ -68,6 +73,9 @@ type KeyChain interface {
 	// returning: signature, error
 	SignHmacWith(kp KeyPairType, msg string) (string, error)
 
+	// ValidateFingerprint validates a fingerprint value
+	ValidateFingerprint(fp *SignedFingerprint) (bool, error)
+
 	// VerifyWith verifies a signature with specified pair
 	VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error)
 
@@ -78,7 +86,7 @@ type KeyChain interface {
 
 // Open creates a new keychain with Wallet Folder.
 func Open() error {
-	config := fs.Wallet
+	config := device.Wallet
 
 	// Check if Keychain exists
 	if keychainExists(config) {
@@ -106,7 +114,7 @@ func Open() error {
 // keychain is a keychain implementation that stores keys in a directory.
 type keychain struct {
 	KeyChain
-	config fs.Folder
+	config device.Folder
 
 	// Key Pair References
 	accountKeyPair keyPair
@@ -115,7 +123,7 @@ type keychain struct {
 }
 
 // loadKeychain loads a keychain from a file.
-func loadKeychain(kcconfig fs.Folder) (KeyChain, error) {
+func loadKeychain(kcconfig device.Folder) (KeyChain, error) {
 	// Create Keychain
 	kc := &keychain{
 		config: kcconfig,
@@ -154,7 +162,7 @@ func loadKeychain(kcconfig fs.Folder) (KeyChain, error) {
 }
 
 // newKeychain creates a new keychain.
-func newKeychain(folder fs.Folder) (KeyChain, error) {
+func newKeychain(folder device.Folder) (KeyChain, error) {
 	// Create Keychain
 	kc := &keychain{
 		config: folder,
@@ -228,6 +236,69 @@ func (kc *keychain) CreateUUID() (*SignedUUID, error) {
 		Signature: sig,
 		Timestamp: time.Now().Unix(),
 	}, nil
+}
+
+// CreateUUID makes a new UUID value signed by the local node's private key
+func (kc *keychain) CreateFingerprint(sname string, deviceID string) (*SignedFingerprint, error) {
+	// Initialize entropy
+	entropy, err := bip39.NewEntropy(256)
+	if err != nil {
+		logger.Errorf("%s - Failed to generate entropy", err)
+		return nil, err
+	}
+
+	// Generate mnemonic
+	mnemonic, err := bip39.NewMnemonic(entropy)
+	if err != nil {
+		logger.Errorf("%s - Failed to generate mnemonic", err)
+		return nil, err
+	}
+
+	// Convert mnemonic to Buffer
+	bufMnemonic, err := bip39.MnemonicToByteArray(mnemonic)
+	if err != nil {
+		logger.Errorf("%s - Failed to convert mnemonic to byte array", err)
+		return nil, err
+	}
+
+	// sign UUID using local node's private key
+	fingerprint, err := kc.SignWith(Account, bufMnemonic)
+	if err != nil {
+		logger.Errorf("%s - Failed to sign UUID", err)
+		return nil, err
+	}
+
+	// Get Full Prefix without Substring
+	prefixRaw, err := kc.SignHmacWith(Account, fmt.Sprintf("%s:%s", deviceID, sname))
+	if err != nil {
+		logger.Errorf("%s - Failed to sign UUID", err)
+		return nil, err
+	}
+
+	// Find SNR PubKey Instance
+	pubKey, err := kc.GetSnrPubKey(Account)
+	if err != nil {
+		logger.Errorf("%s - Failed to get public key", err)
+		return nil, err
+	}
+
+	// Get Public KEy as string
+	pubStr, err := pubKey.String()
+	if err != nil {
+		logger.Errorf("%s - Failed to convert public key to string", err)
+		return nil, err
+	}
+
+	// Create Signed Fingerprint
+	signed := &SignedFingerprint{
+		Mnemonic:    mnemonic,
+		SName:       sname,
+		Prefix:      prefixRaw[:16],
+		Fingerprint: fingerprint,
+		DeviceID:    deviceID,
+		PublicKey:   pubStr,
+	}
+	return signed, nil
 }
 
 // CreateMetadata makes message data shared between all node's p2p protocols

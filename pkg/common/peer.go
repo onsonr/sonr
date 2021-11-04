@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/png"
 	"math/rand"
+	"runtime"
 	"time"
 
 	faker "github.com/brianvoe/gofakeit/v6"
@@ -127,7 +128,7 @@ func defaultProfileOpts() profileOpts {
 	return profileOpts{
 		sname:     randomSName(),
 		firstName: "Anonymous",
-		lastName:  Platform(),
+		lastName:  runtime.GOOS,
 		picture:   make([]byte, 0),
 		bio:       faker.Dessert(),
 		socials:   make([]*Social, 0),
