@@ -3,6 +3,14 @@
     {
       "path": "..",
       "name": "🚀  Core"
+    },
+    {
+      "path": "../third-party/ipfs",
+      "name": "📦  IPFS"
+    },
+    {
+      "path": "../third-party/hns",
+      "name": "🤝 HNS"
     }
   ],
   "settings": {
@@ -80,7 +88,11 @@
         "italic": false
       }
     ],
-    "go.languageServerFlags": ["-rpc.trace", "serve", "--debug=localhost:6060"],
+    "go.languageServerFlags": [
+      "-rpc.trace",
+      "serve",
+      "--debug=localhost:6060"
+    ],
     "go.useLanguageServer": true,
     "material-icon-theme.opacity": 0.75,
     "material-icon-theme.saturation": 0.75,
@@ -107,27 +119,30 @@
       "**/design": true,
       "**/sonr.wiki": true,
       ".gitignore": false,
+      "third-party/ipfs": true,
+      "third-party/hns": true,
+      "third-party": true,
     },
     "material-icon-theme.folders.associations": {
-        "bind": "dist",
-        "cli": "interface",
-        "rpc": "dist",
-        "internal": "core",
-        "CD": "pipe",
-        "pkg": "src",
-        "cmd": "hook",
-        "proto": "json",
-        "common": "",
-        "service": "",
-        "config": "",
-        "workflows": "serverless",
-        "electron": "examples",
-        "flutter": "examples",
-        "highway": "project",
-        "util": "",
-        "sonrd": "dist",
-        "bin": "lib",
-        "api": "",
+      "bind": "dist",
+      "cli": "interface",
+      "rpc": "dist",
+      "internal": "core",
+      "CD": "pipe",
+      "pkg": "src",
+      "cmd": "hook",
+      "proto": "json",
+      "common": "",
+      "service": "",
+      "config": "",
+      "workflows": "serverless",
+      "electron": "examples",
+      "flutter": "examples",
+      "highway": "project",
+      "util": "",
+      "sonrd": "dist",
+      "bin": "lib",
+      "api": "",
     },
     "github.codespaces.defaultExtensions": [
       "GitHub.codespaces",
