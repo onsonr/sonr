@@ -12,14 +12,13 @@ import (
 )
 
 type SonrIPFS struct {
-	// IPFS node
 	*core.IpfsNode
-
 	host  host.Host
 	ctx   context.Context
 	orbit iface.OrbitDB
 }
 
+// New creates a new IPFS node
 func New(ctx context.Context, h host.Host) (*SonrIPFS, error) {
 	// Basic ipfsnode setup
 	r, err := fsrepo.Open("~/.ipfs")
