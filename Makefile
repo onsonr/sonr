@@ -30,7 +30,7 @@ BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.xcframework
 BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
-PROTO_LIST_ALL=${ROOT_DIR}/proto/sonr/**/*.proto
+PROTO_LIST_ALL=${ROOT_DIR}/proto/core/**/*.proto
 MODULE_NAME=github.com/sonr-io/core
 GO_OPT_FLAG=--go_opt=module=${MODULE_NAME}
 GRPC_OPT_FLAG=--go-grpc_opt=module=${MODULE_NAME}

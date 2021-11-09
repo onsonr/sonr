@@ -2,12 +2,12 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: proto/sonr/api/event.proto
+// source: proto/core/api/event.proto
 
 package api
 
 import (
-	common "github.com/sonr-io/core/x/common"
+	common "github.com/sonr-io/core/x/core/common"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -35,7 +35,7 @@ type DecisionEvent struct {
 func (x *DecisionEvent) Reset() {
 	*x = DecisionEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_event_proto_msgTypes[0]
+		mi := &file_proto_core_api_event_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -48,7 +48,7 @@ func (x *DecisionEvent) String() string {
 func (*DecisionEvent) ProtoMessage() {}
 
 func (x *DecisionEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_event_proto_msgTypes[0]
+	mi := &file_proto_core_api_event_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,7 +61,7 @@ func (x *DecisionEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DecisionEvent.ProtoReflect.Descriptor instead.
 func (*DecisionEvent) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_event_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_api_event_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *DecisionEvent) GetDecision() bool {
@@ -99,7 +99,7 @@ type RefreshEvent struct {
 func (x *RefreshEvent) Reset() {
 	*x = RefreshEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_event_proto_msgTypes[1]
+		mi := &file_proto_core_api_event_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -112,7 +112,7 @@ func (x *RefreshEvent) String() string {
 func (*RefreshEvent) ProtoMessage() {}
 
 func (x *RefreshEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_event_proto_msgTypes[1]
+	mi := &file_proto_core_api_event_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -125,7 +125,7 @@ func (x *RefreshEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshEvent.ProtoReflect.Descriptor instead.
 func (*RefreshEvent) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_event_proto_rawDescGZIP(), []int{1}
+	return file_proto_core_api_event_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *RefreshEvent) GetOlc() string {
@@ -163,7 +163,7 @@ type InviteEvent struct {
 func (x *InviteEvent) Reset() {
 	*x = InviteEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_event_proto_msgTypes[2]
+		mi := &file_proto_core_api_event_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -176,7 +176,7 @@ func (x *InviteEvent) String() string {
 func (*InviteEvent) ProtoMessage() {}
 
 func (x *InviteEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_event_proto_msgTypes[2]
+	mi := &file_proto_core_api_event_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -189,7 +189,7 @@ func (x *InviteEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteEvent.ProtoReflect.Descriptor instead.
 func (*InviteEvent) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_event_proto_rawDescGZIP(), []int{2}
+	return file_proto_core_api_event_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *InviteEvent) GetReceived() int64 {
@@ -229,7 +229,7 @@ type MailboxEvent struct {
 func (x *MailboxEvent) Reset() {
 	*x = MailboxEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_event_proto_msgTypes[3]
+		mi := &file_proto_core_api_event_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -242,7 +242,7 @@ func (x *MailboxEvent) String() string {
 func (*MailboxEvent) ProtoMessage() {}
 
 func (x *MailboxEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_event_proto_msgTypes[3]
+	mi := &file_proto_core_api_event_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -255,7 +255,7 @@ func (x *MailboxEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MailboxEvent.ProtoReflect.Descriptor instead.
 func (*MailboxEvent) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_event_proto_rawDescGZIP(), []int{3}
+	return file_proto_core_api_event_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *MailboxEvent) GetId() string {
@@ -309,7 +309,7 @@ type ProgressEvent struct {
 func (x *ProgressEvent) Reset() {
 	*x = ProgressEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_event_proto_msgTypes[4]
+		mi := &file_proto_core_api_event_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -322,7 +322,7 @@ func (x *ProgressEvent) String() string {
 func (*ProgressEvent) ProtoMessage() {}
 
 func (x *ProgressEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_event_proto_msgTypes[4]
+	mi := &file_proto_core_api_event_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -335,7 +335,7 @@ func (x *ProgressEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProgressEvent.ProtoReflect.Descriptor instead.
 func (*ProgressEvent) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_event_proto_rawDescGZIP(), []int{4}
+	return file_proto_core_api_event_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ProgressEvent) GetProgress() float64 {
@@ -391,7 +391,7 @@ type CompleteEvent struct {
 func (x *CompleteEvent) Reset() {
 	*x = CompleteEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_event_proto_msgTypes[5]
+		mi := &file_proto_core_api_event_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -404,7 +404,7 @@ func (x *CompleteEvent) String() string {
 func (*CompleteEvent) ProtoMessage() {}
 
 func (x *CompleteEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_event_proto_msgTypes[5]
+	mi := &file_proto_core_api_event_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -417,7 +417,7 @@ func (x *CompleteEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompleteEvent.ProtoReflect.Descriptor instead.
 func (*CompleteEvent) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_event_proto_rawDescGZIP(), []int{5}
+	return file_proto_core_api_event_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CompleteEvent) GetDirection() common.Direction {
@@ -469,14 +469,14 @@ func (x *CompleteEvent) GetResults() map[int32]bool {
 	return nil
 }
 
-var File_proto_sonr_api_event_proto protoreflect.FileDescriptor
+var File_proto_core_api_event_proto protoreflect.FileDescriptor
 
-var file_proto_sonr_api_event_proto_rawDesc = []byte{
-	0x0a, 0x1a, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69,
+var file_proto_core_api_event_proto_rawDesc = []byte{
+	0x0a, 0x1a, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70, 0x69,
 	0x2f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x73, 0x6f,
-	0x6e, 0x72, 0x2e, 0x61, 0x70, 0x69, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f,
-	0x6e, 0x72, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72,
+	0x6e, 0x72, 0x2e, 0x61, 0x70, 0x69, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f,
+	0x72, 0x65, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65,
 	0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x64, 0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x22, 0x6c, 0x0a, 0x0d, 0x44, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x45, 0x76,
 	0x65, 0x6e, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18,
@@ -551,19 +551,19 @@ var file_proto_sonr_api_event_proto_rawDesc = []byte{
 }
 
 var (
-	file_proto_sonr_api_event_proto_rawDescOnce sync.Once
-	file_proto_sonr_api_event_proto_rawDescData = file_proto_sonr_api_event_proto_rawDesc
+	file_proto_core_api_event_proto_rawDescOnce sync.Once
+	file_proto_core_api_event_proto_rawDescData = file_proto_core_api_event_proto_rawDesc
 )
 
-func file_proto_sonr_api_event_proto_rawDescGZIP() []byte {
-	file_proto_sonr_api_event_proto_rawDescOnce.Do(func() {
-		file_proto_sonr_api_event_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_sonr_api_event_proto_rawDescData)
+func file_proto_core_api_event_proto_rawDescGZIP() []byte {
+	file_proto_core_api_event_proto_rawDescOnce.Do(func() {
+		file_proto_core_api_event_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_core_api_event_proto_rawDescData)
 	})
-	return file_proto_sonr_api_event_proto_rawDescData
+	return file_proto_core_api_event_proto_rawDescData
 }
 
-var file_proto_sonr_api_event_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_proto_sonr_api_event_proto_goTypes = []interface{}{
+var file_proto_core_api_event_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_proto_core_api_event_proto_goTypes = []interface{}{
 	(*DecisionEvent)(nil),   // 0: sonr.api.DecisionEvent
 	(*RefreshEvent)(nil),    // 1: sonr.api.RefreshEvent
 	(*InviteEvent)(nil),     // 2: sonr.api.InviteEvent
@@ -577,7 +577,7 @@ var file_proto_sonr_api_event_proto_goTypes = []interface{}{
 	(*common.Metadata)(nil), // 10: sonr.core.Metadata
 	(common.Direction)(0),   // 11: sonr.core.Direction
 }
-var file_proto_sonr_api_event_proto_depIdxs = []int32{
+var file_proto_core_api_event_proto_depIdxs = []int32{
 	7,  // 0: sonr.api.DecisionEvent.from:type_name -> sonr.core.Peer
 	7,  // 1: sonr.api.RefreshEvent.peers:type_name -> sonr.core.Peer
 	7,  // 2: sonr.api.InviteEvent.from:type_name -> sonr.core.Peer
@@ -598,13 +598,13 @@ var file_proto_sonr_api_event_proto_depIdxs = []int32{
 	0,  // [0:13] is the sub-list for field type_name
 }
 
-func init() { file_proto_sonr_api_event_proto_init() }
-func file_proto_sonr_api_event_proto_init() {
-	if File_proto_sonr_api_event_proto != nil {
+func init() { file_proto_core_api_event_proto_init() }
+func file_proto_core_api_event_proto_init() {
+	if File_proto_core_api_event_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_proto_sonr_api_event_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_event_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DecisionEvent); i {
 			case 0:
 				return &v.state
@@ -616,7 +616,7 @@ func file_proto_sonr_api_event_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_event_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_event_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RefreshEvent); i {
 			case 0:
 				return &v.state
@@ -628,7 +628,7 @@ func file_proto_sonr_api_event_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_event_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_event_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteEvent); i {
 			case 0:
 				return &v.state
@@ -640,7 +640,7 @@ func file_proto_sonr_api_event_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_event_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_event_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MailboxEvent); i {
 			case 0:
 				return &v.state
@@ -652,7 +652,7 @@ func file_proto_sonr_api_event_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_event_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_event_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ProgressEvent); i {
 			case 0:
 				return &v.state
@@ -664,7 +664,7 @@ func file_proto_sonr_api_event_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_event_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_event_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CompleteEvent); i {
 			case 0:
 				return &v.state
@@ -681,18 +681,18 @@ func file_proto_sonr_api_event_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proto_sonr_api_event_proto_rawDesc,
+			RawDescriptor: file_proto_core_api_event_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_sonr_api_event_proto_goTypes,
-		DependencyIndexes: file_proto_sonr_api_event_proto_depIdxs,
-		MessageInfos:      file_proto_sonr_api_event_proto_msgTypes,
+		GoTypes:           file_proto_core_api_event_proto_goTypes,
+		DependencyIndexes: file_proto_core_api_event_proto_depIdxs,
+		MessageInfos:      file_proto_core_api_event_proto_msgTypes,
 	}.Build()
-	File_proto_sonr_api_event_proto = out.File
-	file_proto_sonr_api_event_proto_rawDesc = nil
-	file_proto_sonr_api_event_proto_goTypes = nil
-	file_proto_sonr_api_event_proto_depIdxs = nil
+	File_proto_core_api_event_proto = out.File
+	file_proto_core_api_event_proto_rawDesc = nil
+	file_proto_core_api_event_proto_goTypes = nil
+	file_proto_core_api_event_proto_depIdxs = nil
 }

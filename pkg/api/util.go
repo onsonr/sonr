@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/pkg/device"
-	"github.com/sonr-io/core/x/common"
+	"github.com/sonr-io/core/x/core/common"
 )
 
 // IsIncoming returns true if the event is incoming

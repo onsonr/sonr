@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: proto/sonr/wallet/wallet.proto
+// source: proto/core/wallet/wallet.proto
 
 package wallet
 
@@ -35,7 +35,7 @@ type Wallet struct {
 func (x *Wallet) Reset() {
 	*x = Wallet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_wallet_wallet_proto_msgTypes[0]
+		mi := &file_proto_core_wallet_wallet_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -48,7 +48,7 @@ func (x *Wallet) String() string {
 func (*Wallet) ProtoMessage() {}
 
 func (x *Wallet) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_wallet_wallet_proto_msgTypes[0]
+	mi := &file_proto_core_wallet_wallet_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,7 +61,7 @@ func (x *Wallet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Wallet.ProtoReflect.Descriptor instead.
 func (*Wallet) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_wallet_wallet_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_wallet_wallet_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Wallet) GetMnemonic() []string {
@@ -99,15 +99,15 @@ func (x *Wallet) GetLastUpdated() int64 {
 	return 0
 }
 
-var File_proto_sonr_wallet_wallet_proto protoreflect.FileDescriptor
+var File_proto_core_wallet_wallet_proto protoreflect.FileDescriptor
 
-var file_proto_sonr_wallet_wallet_proto_rawDesc = []byte{
-	0x0a, 0x1e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x77, 0x61, 0x6c,
+var file_proto_core_wallet_wallet_proto_rawDesc = []byte{
+	0x0a, 0x1e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x77, 0x61, 0x6c,
 	0x6c, 0x65, 0x74, 0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x0b, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x1a, 0x1c, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74,
+	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74,
 	0x2f, 0x6b, 0x65, 0x79, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2f, 0x6b,
+	0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2f, 0x6b,
 	0x65, 0x79, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x94, 0x02,
 	0x0a, 0x06, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x6e, 0x65, 0x6d,
 	0x6f, 0x6e, 0x69, 0x63, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x6e, 0x65, 0x6d,
@@ -133,25 +133,25 @@ var file_proto_sonr_wallet_wallet_proto_rawDesc = []byte{
 }
 
 var (
-	file_proto_sonr_wallet_wallet_proto_rawDescOnce sync.Once
-	file_proto_sonr_wallet_wallet_proto_rawDescData = file_proto_sonr_wallet_wallet_proto_rawDesc
+	file_proto_core_wallet_wallet_proto_rawDescOnce sync.Once
+	file_proto_core_wallet_wallet_proto_rawDescData = file_proto_core_wallet_wallet_proto_rawDesc
 )
 
-func file_proto_sonr_wallet_wallet_proto_rawDescGZIP() []byte {
-	file_proto_sonr_wallet_wallet_proto_rawDescOnce.Do(func() {
-		file_proto_sonr_wallet_wallet_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_sonr_wallet_wallet_proto_rawDescData)
+func file_proto_core_wallet_wallet_proto_rawDescGZIP() []byte {
+	file_proto_core_wallet_wallet_proto_rawDescOnce.Do(func() {
+		file_proto_core_wallet_wallet_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_core_wallet_wallet_proto_rawDescData)
 	})
-	return file_proto_sonr_wallet_wallet_proto_rawDescData
+	return file_proto_core_wallet_wallet_proto_rawDescData
 }
 
-var file_proto_sonr_wallet_wallet_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_sonr_wallet_wallet_proto_goTypes = []interface{}{
+var file_proto_core_wallet_wallet_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_core_wallet_wallet_proto_goTypes = []interface{}{
 	(*Wallet)(nil),   // 0: sonr.wallet.Wallet
 	nil,              // 1: sonr.wallet.Wallet.KeychainsEntry
 	(*SNID)(nil),     // 2: sonr.wallet.SNID
 	(*Keychain)(nil), // 3: sonr.wallet.Keychain
 }
-var file_proto_sonr_wallet_wallet_proto_depIdxs = []int32{
+var file_proto_core_wallet_wallet_proto_depIdxs = []int32{
 	2, // 0: sonr.wallet.Wallet.id:type_name -> sonr.wallet.SNID
 	1, // 1: sonr.wallet.Wallet.keychains:type_name -> sonr.wallet.Wallet.KeychainsEntry
 	3, // 2: sonr.wallet.Wallet.KeychainsEntry.value:type_name -> sonr.wallet.Keychain
@@ -162,15 +162,15 @@ var file_proto_sonr_wallet_wallet_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_proto_sonr_wallet_wallet_proto_init() }
-func file_proto_sonr_wallet_wallet_proto_init() {
-	if File_proto_sonr_wallet_wallet_proto != nil {
+func init() { file_proto_core_wallet_wallet_proto_init() }
+func file_proto_core_wallet_wallet_proto_init() {
+	if File_proto_core_wallet_wallet_proto != nil {
 		return
 	}
-	file_proto_sonr_wallet_keys_proto_init()
-	file_proto_sonr_wallet_keychain_proto_init()
+	file_proto_core_wallet_keys_proto_init()
+	file_proto_core_wallet_keychain_proto_init()
 	if !protoimpl.UnsafeEnabled {
-		file_proto_sonr_wallet_wallet_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_wallet_wallet_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Wallet); i {
 			case 0:
 				return &v.state
@@ -187,18 +187,18 @@ func file_proto_sonr_wallet_wallet_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proto_sonr_wallet_wallet_proto_rawDesc,
+			RawDescriptor: file_proto_core_wallet_wallet_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_sonr_wallet_wallet_proto_goTypes,
-		DependencyIndexes: file_proto_sonr_wallet_wallet_proto_depIdxs,
-		MessageInfos:      file_proto_sonr_wallet_wallet_proto_msgTypes,
+		GoTypes:           file_proto_core_wallet_wallet_proto_goTypes,
+		DependencyIndexes: file_proto_core_wallet_wallet_proto_depIdxs,
+		MessageInfos:      file_proto_core_wallet_wallet_proto_msgTypes,
 	}.Build()
-	File_proto_sonr_wallet_wallet_proto = out.File
-	file_proto_sonr_wallet_wallet_proto_rawDesc = nil
-	file_proto_sonr_wallet_wallet_proto_goTypes = nil
-	file_proto_sonr_wallet_wallet_proto_depIdxs = nil
+	File_proto_core_wallet_wallet_proto = out.File
+	file_proto_core_wallet_wallet_proto_rawDesc = nil
+	file_proto_core_wallet_wallet_proto_goTypes = nil
+	file_proto_core_wallet_wallet_proto_depIdxs = nil
 }

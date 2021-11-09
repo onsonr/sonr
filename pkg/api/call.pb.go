@@ -4,12 +4,12 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: proto/sonr/api/call.proto
+// source: proto/core/api/call.proto
 
 package api
 
 import (
-	common "github.com/sonr-io/core/x/common"
+	common "github.com/sonr-io/core/x/core/common"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -53,11 +53,11 @@ func (x InitializeRequest_IPAddress_Family) String() string {
 }
 
 func (InitializeRequest_IPAddress_Family) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_sonr_api_call_proto_enumTypes[0].Descriptor()
+	return file_proto_core_api_call_proto_enumTypes[0].Descriptor()
 }
 
 func (InitializeRequest_IPAddress_Family) Type() protoreflect.EnumType {
-	return &file_proto_sonr_api_call_proto_enumTypes[0]
+	return &file_proto_core_api_call_proto_enumTypes[0]
 }
 
 func (x InitializeRequest_IPAddress_Family) Number() protoreflect.EnumNumber {
@@ -66,7 +66,7 @@ func (x InitializeRequest_IPAddress_Family) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use InitializeRequest_IPAddress_Family.Descriptor instead.
 func (InitializeRequest_IPAddress_Family) EnumDescriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{2, 4, 0}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{2, 4, 0}
 }
 
 // User Status
@@ -100,11 +100,11 @@ func (x InitializeResponse_UserStatus) String() string {
 }
 
 func (InitializeResponse_UserStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_sonr_api_call_proto_enumTypes[1].Descriptor()
+	return file_proto_core_api_call_proto_enumTypes[1].Descriptor()
 }
 
 func (InitializeResponse_UserStatus) Type() protoreflect.EnumType {
-	return &file_proto_sonr_api_call_proto_enumTypes[1]
+	return &file_proto_core_api_call_proto_enumTypes[1]
 }
 
 func (x InitializeResponse_UserStatus) Number() protoreflect.EnumNumber {
@@ -113,7 +113,7 @@ func (x InitializeResponse_UserStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use InitializeResponse_UserStatus.Descriptor instead.
 func (InitializeResponse_UserStatus) EnumDescriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{3, 0}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{3, 0}
 }
 
 type EditRequest_Type int32
@@ -149,11 +149,11 @@ func (x EditRequest_Type) String() string {
 }
 
 func (EditRequest_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_sonr_api_call_proto_enumTypes[2].Descriptor()
+	return file_proto_core_api_call_proto_enumTypes[2].Descriptor()
 }
 
 func (EditRequest_Type) Type() protoreflect.EnumType {
-	return &file_proto_sonr_api_call_proto_enumTypes[2]
+	return &file_proto_core_api_call_proto_enumTypes[2]
 }
 
 func (x EditRequest_Type) Number() protoreflect.EnumNumber {
@@ -162,7 +162,7 @@ func (x EditRequest_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EditRequest_Type.Descriptor instead.
 func (EditRequest_Type) EnumDescriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{4, 0}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{4, 0}
 }
 
 type FetchRequest_Key int32
@@ -204,11 +204,11 @@ func (x FetchRequest_Key) String() string {
 }
 
 func (FetchRequest_Key) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_sonr_api_call_proto_enumTypes[3].Descriptor()
+	return file_proto_core_api_call_proto_enumTypes[3].Descriptor()
 }
 
 func (FetchRequest_Key) Type() protoreflect.EnumType {
-	return &file_proto_sonr_api_call_proto_enumTypes[3]
+	return &file_proto_core_api_call_proto_enumTypes[3]
 }
 
 func (x FetchRequest_Key) Number() protoreflect.EnumNumber {
@@ -217,7 +217,7 @@ func (x FetchRequest_Key) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use FetchRequest_Key.Descriptor instead.
 func (FetchRequest_Key) EnumDescriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{6, 0}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{6, 0}
 }
 
 // Method for Linking
@@ -251,11 +251,11 @@ func (x LinkRequest_Method) String() string {
 }
 
 func (LinkRequest_Method) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_sonr_api_call_proto_enumTypes[4].Descriptor()
+	return file_proto_core_api_call_proto_enumTypes[4].Descriptor()
 }
 
 func (LinkRequest_Method) Type() protoreflect.EnumType {
-	return &file_proto_sonr_api_call_proto_enumTypes[4]
+	return &file_proto_core_api_call_proto_enumTypes[4]
 }
 
 func (x LinkRequest_Method) Number() protoreflect.EnumNumber {
@@ -264,7 +264,7 @@ func (x LinkRequest_Method) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use LinkRequest_Method.Descriptor instead.
 func (LinkRequest_Method) EnumDescriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{8, 0}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{8, 0}
 }
 
 // (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
@@ -281,7 +281,7 @@ type AuthenticateRequest struct {
 func (x *AuthenticateRequest) Reset() {
 	*x = AuthenticateRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[0]
+		mi := &file_proto_core_api_call_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -294,7 +294,7 @@ func (x *AuthenticateRequest) String() string {
 func (*AuthenticateRequest) ProtoMessage() {}
 
 func (x *AuthenticateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[0]
+	mi := &file_proto_core_api_call_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -307,7 +307,7 @@ func (x *AuthenticateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthenticateRequest.ProtoReflect.Descriptor instead.
 func (*AuthenticateRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *AuthenticateRequest) GetSName() string {
@@ -345,7 +345,7 @@ type AuthenticateResponse struct {
 func (x *AuthenticateResponse) Reset() {
 	*x = AuthenticateResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[1]
+		mi := &file_proto_core_api_call_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -358,7 +358,7 @@ func (x *AuthenticateResponse) String() string {
 func (*AuthenticateResponse) ProtoMessage() {}
 
 func (x *AuthenticateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[1]
+	mi := &file_proto_core_api_call_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -371,7 +371,7 @@ func (x *AuthenticateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthenticateResponse.ProtoReflect.Descriptor instead.
 func (*AuthenticateResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{1}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *AuthenticateResponse) GetSuccess() bool {
@@ -414,7 +414,7 @@ type InitializeRequest struct {
 func (x *InitializeRequest) Reset() {
 	*x = InitializeRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[2]
+		mi := &file_proto_core_api_call_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -427,7 +427,7 @@ func (x *InitializeRequest) String() string {
 func (*InitializeRequest) ProtoMessage() {}
 
 func (x *InitializeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[2]
+	mi := &file_proto_core_api_call_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -440,7 +440,7 @@ func (x *InitializeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeRequest.ProtoReflect.Descriptor instead.
 func (*InitializeRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{2}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *InitializeRequest) GetLocation() *common.Location {
@@ -516,7 +516,7 @@ type InitializeResponse struct {
 func (x *InitializeResponse) Reset() {
 	*x = InitializeResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[3]
+		mi := &file_proto_core_api_call_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -529,7 +529,7 @@ func (x *InitializeResponse) String() string {
 func (*InitializeResponse) ProtoMessage() {}
 
 func (x *InitializeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[3]
+	mi := &file_proto_core_api_call_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -542,7 +542,7 @@ func (x *InitializeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeResponse.ProtoReflect.Descriptor instead.
 func (*InitializeResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{3}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *InitializeResponse) GetSuccess() bool {
@@ -604,7 +604,7 @@ type EditRequest struct {
 func (x *EditRequest) Reset() {
 	*x = EditRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[4]
+		mi := &file_proto_core_api_call_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -617,7 +617,7 @@ func (x *EditRequest) String() string {
 func (*EditRequest) ProtoMessage() {}
 
 func (x *EditRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[4]
+	mi := &file_proto_core_api_call_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -630,7 +630,7 @@ func (x *EditRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EditRequest.ProtoReflect.Descriptor instead.
 func (*EditRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{4}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *EditRequest) GetType() EditRequest_Type {
@@ -697,7 +697,7 @@ type EditResponse struct {
 func (x *EditResponse) Reset() {
 	*x = EditResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[5]
+		mi := &file_proto_core_api_call_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -710,7 +710,7 @@ func (x *EditResponse) String() string {
 func (*EditResponse) ProtoMessage() {}
 
 func (x *EditResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[5]
+	mi := &file_proto_core_api_call_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -723,7 +723,7 @@ func (x *EditResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EditResponse.ProtoReflect.Descriptor instead.
 func (*EditResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{5}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *EditResponse) GetSuccess() bool {
@@ -752,7 +752,7 @@ type FetchRequest struct {
 func (x *FetchRequest) Reset() {
 	*x = FetchRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[6]
+		mi := &file_proto_core_api_call_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -765,7 +765,7 @@ func (x *FetchRequest) String() string {
 func (*FetchRequest) ProtoMessage() {}
 
 func (x *FetchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[6]
+	mi := &file_proto_core_api_call_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -778,7 +778,7 @@ func (x *FetchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchRequest.ProtoReflect.Descriptor instead.
 func (*FetchRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{6}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *FetchRequest) GetKey() FetchRequest_Key {
@@ -807,7 +807,7 @@ type FetchResponse struct {
 func (x *FetchResponse) Reset() {
 	*x = FetchResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[7]
+		mi := &file_proto_core_api_call_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -820,7 +820,7 @@ func (x *FetchResponse) String() string {
 func (*FetchResponse) ProtoMessage() {}
 
 func (x *FetchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[7]
+	mi := &file_proto_core_api_call_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -833,7 +833,7 @@ func (x *FetchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchResponse.ProtoReflect.Descriptor instead.
 func (*FetchResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{7}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *FetchResponse) GetSuccess() bool {
@@ -893,7 +893,7 @@ type LinkRequest struct {
 func (x *LinkRequest) Reset() {
 	*x = LinkRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[8]
+		mi := &file_proto_core_api_call_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -906,7 +906,7 @@ func (x *LinkRequest) String() string {
 func (*LinkRequest) ProtoMessage() {}
 
 func (x *LinkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[8]
+	mi := &file_proto_core_api_call_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -919,7 +919,7 @@ func (x *LinkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkRequest.ProtoReflect.Descriptor instead.
 func (*LinkRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{8}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *LinkRequest) GetSName() string {
@@ -964,7 +964,7 @@ type LinkResponse struct {
 func (x *LinkResponse) Reset() {
 	*x = LinkResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[9]
+		mi := &file_proto_core_api_call_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -977,7 +977,7 @@ func (x *LinkResponse) String() string {
 func (*LinkResponse) ProtoMessage() {}
 
 func (x *LinkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[9]
+	mi := &file_proto_core_api_call_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -990,7 +990,7 @@ func (x *LinkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkResponse.ProtoReflect.Descriptor instead.
 func (*LinkResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{9}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *LinkResponse) GetSuccess() bool {
@@ -1028,7 +1028,7 @@ type ShareRequest struct {
 func (x *ShareRequest) Reset() {
 	*x = ShareRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[10]
+		mi := &file_proto_core_api_call_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1041,7 +1041,7 @@ func (x *ShareRequest) String() string {
 func (*ShareRequest) ProtoMessage() {}
 
 func (x *ShareRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[10]
+	mi := &file_proto_core_api_call_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1054,7 +1054,7 @@ func (x *ShareRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShareRequest.ProtoReflect.Descriptor instead.
 func (*ShareRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{10}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ShareRequest) GetPeer() *common.Peer {
@@ -1091,7 +1091,7 @@ type ShareResponse struct {
 func (x *ShareResponse) Reset() {
 	*x = ShareResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[11]
+		mi := &file_proto_core_api_call_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1104,7 +1104,7 @@ func (x *ShareResponse) String() string {
 func (*ShareResponse) ProtoMessage() {}
 
 func (x *ShareResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[11]
+	mi := &file_proto_core_api_call_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1117,7 +1117,7 @@ func (x *ShareResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShareResponse.ProtoReflect.Descriptor instead.
 func (*ShareResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{11}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ShareResponse) GetSuccess() bool {
@@ -1149,7 +1149,7 @@ type RegisterRequest struct {
 func (x *RegisterRequest) Reset() {
 	*x = RegisterRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[12]
+		mi := &file_proto_core_api_call_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1162,7 +1162,7 @@ func (x *RegisterRequest) String() string {
 func (*RegisterRequest) ProtoMessage() {}
 
 func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[12]
+	mi := &file_proto_core_api_call_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1175,7 +1175,7 @@ func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterRequest.ProtoReflect.Descriptor instead.
 func (*RegisterRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{12}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *RegisterRequest) GetSName() string {
@@ -1220,7 +1220,7 @@ type RegisterResponse struct {
 func (x *RegisterResponse) Reset() {
 	*x = RegisterResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[13]
+		mi := &file_proto_core_api_call_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1233,7 +1233,7 @@ func (x *RegisterResponse) String() string {
 func (*RegisterResponse) ProtoMessage() {}
 
 func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[13]
+	mi := &file_proto_core_api_call_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1246,7 +1246,7 @@ func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
 func (*RegisterResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{13}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *RegisterResponse) GetSuccess() bool {
@@ -1283,7 +1283,7 @@ type RespondRequest struct {
 func (x *RespondRequest) Reset() {
 	*x = RespondRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[14]
+		mi := &file_proto_core_api_call_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1296,7 +1296,7 @@ func (x *RespondRequest) String() string {
 func (*RespondRequest) ProtoMessage() {}
 
 func (x *RespondRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[14]
+	mi := &file_proto_core_api_call_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1309,7 +1309,7 @@ func (x *RespondRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespondRequest.ProtoReflect.Descriptor instead.
 func (*RespondRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{14}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *RespondRequest) GetDecision() bool {
@@ -1339,7 +1339,7 @@ type RespondResponse struct {
 func (x *RespondResponse) Reset() {
 	*x = RespondResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[15]
+		mi := &file_proto_core_api_call_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1352,7 +1352,7 @@ func (x *RespondResponse) String() string {
 func (*RespondResponse) ProtoMessage() {}
 
 func (x *RespondResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[15]
+	mi := &file_proto_core_api_call_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1365,7 +1365,7 @@ func (x *RespondResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespondResponse.ProtoReflect.Descriptor instead.
 func (*RespondResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{15}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *RespondResponse) GetSuccess() bool {
@@ -1397,7 +1397,7 @@ type SearchRequest struct {
 func (x *SearchRequest) Reset() {
 	*x = SearchRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[16]
+		mi := &file_proto_core_api_call_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1410,7 +1410,7 @@ func (x *SearchRequest) String() string {
 func (*SearchRequest) ProtoMessage() {}
 
 func (x *SearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[16]
+	mi := &file_proto_core_api_call_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1423,7 +1423,7 @@ func (x *SearchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
 func (*SearchRequest) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{16}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{16}
 }
 
 func (m *SearchRequest) GetQuery() isSearchRequest_Query {
@@ -1479,7 +1479,7 @@ type SearchResponse struct {
 func (x *SearchResponse) Reset() {
 	*x = SearchResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[17]
+		mi := &file_proto_core_api_call_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1492,7 +1492,7 @@ func (x *SearchResponse) String() string {
 func (*SearchResponse) ProtoMessage() {}
 
 func (x *SearchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[17]
+	mi := &file_proto_core_api_call_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1505,7 +1505,7 @@ func (x *SearchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
 func (*SearchResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{17}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *SearchResponse) GetSuccess() bool {
@@ -1558,7 +1558,7 @@ type InitializeRequest_DeviceOptions struct {
 func (x *InitializeRequest_DeviceOptions) Reset() {
 	*x = InitializeRequest_DeviceOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[20]
+		mi := &file_proto_core_api_call_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1571,7 +1571,7 @@ func (x *InitializeRequest_DeviceOptions) String() string {
 func (*InitializeRequest_DeviceOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_DeviceOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[20]
+	mi := &file_proto_core_api_call_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1584,7 +1584,7 @@ func (x *InitializeRequest_DeviceOptions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeRequest_DeviceOptions.ProtoReflect.Descriptor instead.
 func (*InitializeRequest_DeviceOptions) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{2, 1}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{2, 1}
 }
 
 func (x *InitializeRequest_DeviceOptions) GetId() string {
@@ -1630,7 +1630,7 @@ type InitializeRequest_HostOptions struct {
 func (x *InitializeRequest_HostOptions) Reset() {
 	*x = InitializeRequest_HostOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[21]
+		mi := &file_proto_core_api_call_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1643,7 +1643,7 @@ func (x *InitializeRequest_HostOptions) String() string {
 func (*InitializeRequest_HostOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_HostOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[21]
+	mi := &file_proto_core_api_call_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1656,7 +1656,7 @@ func (x *InitializeRequest_HostOptions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeRequest_HostOptions.ProtoReflect.Descriptor instead.
 func (*InitializeRequest_HostOptions) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{2, 2}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{2, 2}
 }
 
 func (x *InitializeRequest_HostOptions) GetQuicTransport() bool {
@@ -1702,7 +1702,7 @@ type InitializeRequest_ServiceOptions struct {
 func (x *InitializeRequest_ServiceOptions) Reset() {
 	*x = InitializeRequest_ServiceOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[22]
+		mi := &file_proto_core_api_call_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1715,7 +1715,7 @@ func (x *InitializeRequest_ServiceOptions) String() string {
 func (*InitializeRequest_ServiceOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_ServiceOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[22]
+	mi := &file_proto_core_api_call_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1728,7 +1728,7 @@ func (x *InitializeRequest_ServiceOptions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeRequest_ServiceOptions.ProtoReflect.Descriptor instead.
 func (*InitializeRequest_ServiceOptions) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{2, 3}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{2, 3}
 }
 
 func (x *InitializeRequest_ServiceOptions) GetTextile() bool {
@@ -1774,7 +1774,7 @@ type InitializeRequest_IPAddress struct {
 func (x *InitializeRequest_IPAddress) Reset() {
 	*x = InitializeRequest_IPAddress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_api_call_proto_msgTypes[23]
+		mi := &file_proto_core_api_call_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1787,7 +1787,7 @@ func (x *InitializeRequest_IPAddress) String() string {
 func (*InitializeRequest_IPAddress) ProtoMessage() {}
 
 func (x *InitializeRequest_IPAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_api_call_proto_msgTypes[23]
+	mi := &file_proto_core_api_call_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1800,7 +1800,7 @@ func (x *InitializeRequest_IPAddress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializeRequest_IPAddress.ProtoReflect.Descriptor instead.
 func (*InitializeRequest_IPAddress) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_api_call_proto_rawDescGZIP(), []int{2, 4}
+	return file_proto_core_api_call_proto_rawDescGZIP(), []int{2, 4}
 }
 
 func (x *InitializeRequest_IPAddress) GetName() string {
@@ -1831,14 +1831,14 @@ func (x *InitializeRequest_IPAddress) GetFamily() InitializeRequest_IPAddress_Fa
 	return InitializeRequest_IPAddress_IPV4
 }
 
-var File_proto_sonr_api_call_proto protoreflect.FileDescriptor
+var File_proto_core_api_call_proto protoreflect.FileDescriptor
 
-var file_proto_sonr_api_call_proto_rawDesc = []byte{
-	0x0a, 0x19, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69,
+var file_proto_core_api_call_proto_rawDesc = []byte{
+	0x0a, 0x19, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70, 0x69,
 	0x2f, 0x63, 0x61, 0x6c, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x73, 0x6f, 0x6e,
-	0x72, 0x2e, 0x61, 0x70, 0x69, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e,
-	0x72, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f,
+	0x72, 0x2e, 0x61, 0x70, 0x69, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72,
+	0x65, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f,
 	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x64, 0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x22, 0x63, 0x0a, 0x13, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74,
 	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d,
@@ -2106,20 +2106,20 @@ var file_proto_sonr_api_call_proto_rawDesc = []byte{
 }
 
 var (
-	file_proto_sonr_api_call_proto_rawDescOnce sync.Once
-	file_proto_sonr_api_call_proto_rawDescData = file_proto_sonr_api_call_proto_rawDesc
+	file_proto_core_api_call_proto_rawDescOnce sync.Once
+	file_proto_core_api_call_proto_rawDescData = file_proto_core_api_call_proto_rawDesc
 )
 
-func file_proto_sonr_api_call_proto_rawDescGZIP() []byte {
-	file_proto_sonr_api_call_proto_rawDescOnce.Do(func() {
-		file_proto_sonr_api_call_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_sonr_api_call_proto_rawDescData)
+func file_proto_core_api_call_proto_rawDescGZIP() []byte {
+	file_proto_core_api_call_proto_rawDescOnce.Do(func() {
+		file_proto_core_api_call_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_core_api_call_proto_rawDescData)
 	})
-	return file_proto_sonr_api_call_proto_rawDescData
+	return file_proto_core_api_call_proto_rawDescData
 }
 
-var file_proto_sonr_api_call_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_proto_sonr_api_call_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
-var file_proto_sonr_api_call_proto_goTypes = []interface{}{
+var file_proto_core_api_call_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
+var file_proto_core_api_call_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_proto_core_api_call_proto_goTypes = []interface{}{
 	(InitializeRequest_IPAddress_Family)(0),  // 0: sonr.api.InitializeRequest.IPAddress.Family
 	(InitializeResponse_UserStatus)(0),       // 1: sonr.api.InitializeResponse.UserStatus
 	(EditRequest_Type)(0),                    // 2: sonr.api.EditRequest.Type
@@ -2165,7 +2165,7 @@ var file_proto_sonr_api_call_proto_goTypes = []interface{}{
 	(*common.MessageItem)(nil),               // 42: sonr.core.MessageItem
 	(*common.SupplyItem)(nil),                // 43: sonr.core.SupplyItem
 }
-var file_proto_sonr_api_call_proto_depIdxs = []int32{
+var file_proto_core_api_call_proto_depIdxs = []int32{
 	23, // 0: sonr.api.AuthenticateResponse.records:type_name -> sonr.api.AuthenticateResponse.RecordsEntry
 	34, // 1: sonr.api.InitializeRequest.location:type_name -> sonr.core.Location
 	35, // 2: sonr.api.InitializeRequest.profile:type_name -> sonr.core.Profile
@@ -2208,13 +2208,13 @@ var file_proto_sonr_api_call_proto_depIdxs = []int32{
 	0,  // [0:35] is the sub-list for field type_name
 }
 
-func init() { file_proto_sonr_api_call_proto_init() }
-func file_proto_sonr_api_call_proto_init() {
-	if File_proto_sonr_api_call_proto != nil {
+func init() { file_proto_core_api_call_proto_init() }
+func file_proto_core_api_call_proto_init() {
+	if File_proto_core_api_call_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_proto_sonr_api_call_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AuthenticateRequest); i {
 			case 0:
 				return &v.state
@@ -2226,7 +2226,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AuthenticateResponse); i {
 			case 0:
 				return &v.state
@@ -2238,7 +2238,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest); i {
 			case 0:
 				return &v.state
@@ -2250,7 +2250,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeResponse); i {
 			case 0:
 				return &v.state
@@ -2262,7 +2262,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EditRequest); i {
 			case 0:
 				return &v.state
@@ -2274,7 +2274,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EditResponse); i {
 			case 0:
 				return &v.state
@@ -2286,7 +2286,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*FetchRequest); i {
 			case 0:
 				return &v.state
@@ -2298,7 +2298,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*FetchResponse); i {
 			case 0:
 				return &v.state
@@ -2310,7 +2310,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LinkRequest); i {
 			case 0:
 				return &v.state
@@ -2322,7 +2322,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LinkResponse); i {
 			case 0:
 				return &v.state
@@ -2334,7 +2334,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ShareRequest); i {
 			case 0:
 				return &v.state
@@ -2346,7 +2346,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ShareResponse); i {
 			case 0:
 				return &v.state
@@ -2358,7 +2358,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RegisterRequest); i {
 			case 0:
 				return &v.state
@@ -2370,7 +2370,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RegisterResponse); i {
 			case 0:
 				return &v.state
@@ -2382,7 +2382,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RespondRequest); i {
 			case 0:
 				return &v.state
@@ -2394,7 +2394,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RespondResponse); i {
 			case 0:
 				return &v.state
@@ -2406,7 +2406,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SearchRequest); i {
 			case 0:
 				return &v.state
@@ -2418,7 +2418,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SearchResponse); i {
 			case 0:
 				return &v.state
@@ -2430,7 +2430,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_DeviceOptions); i {
 			case 0:
 				return &v.state
@@ -2442,7 +2442,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_HostOptions); i {
 			case 0:
 				return &v.state
@@ -2454,7 +2454,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_ServiceOptions); i {
 			case 0:
 				return &v.state
@@ -2466,7 +2466,7 @@ func file_proto_sonr_api_call_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_api_call_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_api_call_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_IPAddress); i {
 			case 0:
 				return &v.state
@@ -2479,11 +2479,11 @@ func file_proto_sonr_api_call_proto_init() {
 			}
 		}
 	}
-	file_proto_sonr_api_call_proto_msgTypes[4].OneofWrappers = []interface{}{
+	file_proto_core_api_call_proto_msgTypes[4].OneofWrappers = []interface{}{
 		(*EditRequest_History)(nil),
 		(*EditRequest_Recent)(nil),
 	}
-	file_proto_sonr_api_call_proto_msgTypes[16].OneofWrappers = []interface{}{
+	file_proto_core_api_call_proto_msgTypes[16].OneofWrappers = []interface{}{
 		(*SearchRequest_SName)(nil),
 		(*SearchRequest_PeerId)(nil),
 	}
@@ -2491,19 +2491,19 @@ func file_proto_sonr_api_call_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proto_sonr_api_call_proto_rawDesc,
+			RawDescriptor: file_proto_core_api_call_proto_rawDesc,
 			NumEnums:      5,
 			NumMessages:   29,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_sonr_api_call_proto_goTypes,
-		DependencyIndexes: file_proto_sonr_api_call_proto_depIdxs,
-		EnumInfos:         file_proto_sonr_api_call_proto_enumTypes,
-		MessageInfos:      file_proto_sonr_api_call_proto_msgTypes,
+		GoTypes:           file_proto_core_api_call_proto_goTypes,
+		DependencyIndexes: file_proto_core_api_call_proto_depIdxs,
+		EnumInfos:         file_proto_core_api_call_proto_enumTypes,
+		MessageInfos:      file_proto_core_api_call_proto_msgTypes,
 	}.Build()
-	File_proto_sonr_api_call_proto = out.File
-	file_proto_sonr_api_call_proto_rawDesc = nil
-	file_proto_sonr_api_call_proto_goTypes = nil
-	file_proto_sonr_api_call_proto_depIdxs = nil
+	File_proto_core_api_call_proto = out.File
+	file_proto_core_api_call_proto_rawDesc = nil
+	file_proto_core_api_call_proto_goTypes = nil
+	file_proto_core_api_call_proto_depIdxs = nil
 }

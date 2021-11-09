@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: proto/sonr/wallet/keychain.proto
+// source: proto/core/wallet/keychain.proto
 
 package wallet
 
@@ -57,11 +57,11 @@ func (x KeychainType) String() string {
 }
 
 func (KeychainType) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_sonr_wallet_keychain_proto_enumTypes[0].Descriptor()
+	return file_proto_core_wallet_keychain_proto_enumTypes[0].Descriptor()
 }
 
 func (KeychainType) Type() protoreflect.EnumType {
-	return &file_proto_sonr_wallet_keychain_proto_enumTypes[0]
+	return &file_proto_core_wallet_keychain_proto_enumTypes[0]
 }
 
 func (x KeychainType) Number() protoreflect.EnumNumber {
@@ -70,7 +70,7 @@ func (x KeychainType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use KeychainType.Descriptor instead.
 func (KeychainType) EnumDescriptor() ([]byte, []int) {
-	return file_proto_sonr_wallet_keychain_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_wallet_keychain_proto_rawDescGZIP(), []int{0}
 }
 
 // KeyPair represents a public/private key pair.
@@ -87,7 +87,7 @@ type KeyPair struct {
 func (x *KeyPair) Reset() {
 	*x = KeyPair{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_wallet_keychain_proto_msgTypes[0]
+		mi := &file_proto_core_wallet_keychain_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -100,7 +100,7 @@ func (x *KeyPair) String() string {
 func (*KeyPair) ProtoMessage() {}
 
 func (x *KeyPair) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_wallet_keychain_proto_msgTypes[0]
+	mi := &file_proto_core_wallet_keychain_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -113,7 +113,7 @@ func (x *KeyPair) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KeyPair.ProtoReflect.Descriptor instead.
 func (*KeyPair) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_wallet_keychain_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_wallet_keychain_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *KeyPair) GetLabel() string {
@@ -152,7 +152,7 @@ type Keychain struct {
 func (x *Keychain) Reset() {
 	*x = Keychain{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_wallet_keychain_proto_msgTypes[1]
+		mi := &file_proto_core_wallet_keychain_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -165,7 +165,7 @@ func (x *Keychain) String() string {
 func (*Keychain) ProtoMessage() {}
 
 func (x *Keychain) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_wallet_keychain_proto_msgTypes[1]
+	mi := &file_proto_core_wallet_keychain_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -178,7 +178,7 @@ func (x *Keychain) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Keychain.ProtoReflect.Descriptor instead.
 func (*Keychain) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_wallet_keychain_proto_rawDescGZIP(), []int{1}
+	return file_proto_core_wallet_keychain_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Keychain) GetType() KeychainType {
@@ -209,13 +209,13 @@ func (x *Keychain) GetKeys() map[string]*KeyPair {
 	return nil
 }
 
-var File_proto_sonr_wallet_keychain_proto protoreflect.FileDescriptor
+var File_proto_core_wallet_keychain_proto protoreflect.FileDescriptor
 
-var file_proto_sonr_wallet_keychain_proto_rawDesc = []byte{
-	0x0a, 0x20, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x77, 0x61, 0x6c,
+var file_proto_core_wallet_keychain_proto_rawDesc = []byte{
+	0x0a, 0x20, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x77, 0x61, 0x6c,
 	0x6c, 0x65, 0x74, 0x2f, 0x6b, 0x65, 0x79, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x12, 0x0b, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x1a,
-	0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x77, 0x61, 0x6c, 0x6c,
+	0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x77, 0x61, 0x6c, 0x6c,
 	0x65, 0x74, 0x2f, 0x6b, 0x65, 0x79, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x8e, 0x01,
 	0x0a, 0x07, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62,
 	0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x12,
@@ -250,20 +250,20 @@ var file_proto_sonr_wallet_keychain_proto_rawDesc = []byte{
 }
 
 var (
-	file_proto_sonr_wallet_keychain_proto_rawDescOnce sync.Once
-	file_proto_sonr_wallet_keychain_proto_rawDescData = file_proto_sonr_wallet_keychain_proto_rawDesc
+	file_proto_core_wallet_keychain_proto_rawDescOnce sync.Once
+	file_proto_core_wallet_keychain_proto_rawDescData = file_proto_core_wallet_keychain_proto_rawDesc
 )
 
-func file_proto_sonr_wallet_keychain_proto_rawDescGZIP() []byte {
-	file_proto_sonr_wallet_keychain_proto_rawDescOnce.Do(func() {
-		file_proto_sonr_wallet_keychain_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_sonr_wallet_keychain_proto_rawDescData)
+func file_proto_core_wallet_keychain_proto_rawDescGZIP() []byte {
+	file_proto_core_wallet_keychain_proto_rawDescOnce.Do(func() {
+		file_proto_core_wallet_keychain_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_core_wallet_keychain_proto_rawDescData)
 	})
-	return file_proto_sonr_wallet_keychain_proto_rawDescData
+	return file_proto_core_wallet_keychain_proto_rawDescData
 }
 
-var file_proto_sonr_wallet_keychain_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_sonr_wallet_keychain_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_proto_sonr_wallet_keychain_proto_goTypes = []interface{}{
+var file_proto_core_wallet_keychain_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_proto_core_wallet_keychain_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_core_wallet_keychain_proto_goTypes = []interface{}{
 	(KeychainType)(0),  // 0: sonr.wallet.KeychainType
 	(*KeyPair)(nil),    // 1: sonr.wallet.KeyPair
 	(*Keychain)(nil),   // 2: sonr.wallet.Keychain
@@ -271,7 +271,7 @@ var file_proto_sonr_wallet_keychain_proto_goTypes = []interface{}{
 	(*PrivateKey)(nil), // 4: sonr.wallet.PrivateKey
 	(*PublicKey)(nil),  // 5: sonr.wallet.PublicKey
 }
-var file_proto_sonr_wallet_keychain_proto_depIdxs = []int32{
+var file_proto_core_wallet_keychain_proto_depIdxs = []int32{
 	4, // 0: sonr.wallet.KeyPair.privateKey:type_name -> sonr.wallet.PrivateKey
 	5, // 1: sonr.wallet.KeyPair.publicKey:type_name -> sonr.wallet.PublicKey
 	0, // 2: sonr.wallet.Keychain.type:type_name -> sonr.wallet.KeychainType
@@ -284,14 +284,14 @@ var file_proto_sonr_wallet_keychain_proto_depIdxs = []int32{
 	0, // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_proto_sonr_wallet_keychain_proto_init() }
-func file_proto_sonr_wallet_keychain_proto_init() {
-	if File_proto_sonr_wallet_keychain_proto != nil {
+func init() { file_proto_core_wallet_keychain_proto_init() }
+func file_proto_core_wallet_keychain_proto_init() {
+	if File_proto_core_wallet_keychain_proto != nil {
 		return
 	}
-	file_proto_sonr_wallet_keys_proto_init()
+	file_proto_core_wallet_keys_proto_init()
 	if !protoimpl.UnsafeEnabled {
-		file_proto_sonr_wallet_keychain_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_wallet_keychain_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*KeyPair); i {
 			case 0:
 				return &v.state
@@ -303,7 +303,7 @@ func file_proto_sonr_wallet_keychain_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_wallet_keychain_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_wallet_keychain_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Keychain); i {
 			case 0:
 				return &v.state
@@ -320,19 +320,19 @@ func file_proto_sonr_wallet_keychain_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proto_sonr_wallet_keychain_proto_rawDesc,
+			RawDescriptor: file_proto_core_wallet_keychain_proto_rawDesc,
 			NumEnums:      1,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_sonr_wallet_keychain_proto_goTypes,
-		DependencyIndexes: file_proto_sonr_wallet_keychain_proto_depIdxs,
-		EnumInfos:         file_proto_sonr_wallet_keychain_proto_enumTypes,
-		MessageInfos:      file_proto_sonr_wallet_keychain_proto_msgTypes,
+		GoTypes:           file_proto_core_wallet_keychain_proto_goTypes,
+		DependencyIndexes: file_proto_core_wallet_keychain_proto_depIdxs,
+		EnumInfos:         file_proto_core_wallet_keychain_proto_enumTypes,
+		MessageInfos:      file_proto_core_wallet_keychain_proto_msgTypes,
 	}.Build()
-	File_proto_sonr_wallet_keychain_proto = out.File
-	file_proto_sonr_wallet_keychain_proto_rawDesc = nil
-	file_proto_sonr_wallet_keychain_proto_goTypes = nil
-	file_proto_sonr_wallet_keychain_proto_depIdxs = nil
+	File_proto_core_wallet_keychain_proto = out.File
+	file_proto_core_wallet_keychain_proto_rawDesc = nil
+	file_proto_core_wallet_keychain_proto_goTypes = nil
+	file_proto_core_wallet_keychain_proto_depIdxs = nil
 }

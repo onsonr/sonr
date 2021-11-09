@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: proto/sonr/private/beam.proto
+// source: proto/core/private/beam.proto
 
 package beam
 
@@ -62,11 +62,11 @@ func (x EventType) String() string {
 }
 
 func (EventType) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_sonr_private_beam_proto_enumTypes[0].Descriptor()
+	return file_proto_core_private_beam_proto_enumTypes[0].Descriptor()
 }
 
 func (EventType) Type() protoreflect.EnumType {
-	return &file_proto_sonr_private_beam_proto_enumTypes[0]
+	return &file_proto_core_private_beam_proto_enumTypes[0]
 }
 
 func (x EventType) Number() protoreflect.EnumNumber {
@@ -75,7 +75,7 @@ func (x EventType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EventType.Descriptor instead.
 func (EventType) EnumDescriptor() ([]byte, []int) {
-	return file_proto_sonr_private_beam_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_private_beam_proto_rawDescGZIP(), []int{0}
 }
 
 type Event struct {
@@ -92,7 +92,7 @@ type Event struct {
 func (x *Event) Reset() {
 	*x = Event{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_private_beam_proto_msgTypes[0]
+		mi := &file_proto_core_private_beam_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -105,7 +105,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_private_beam_proto_msgTypes[0]
+	mi := &file_proto_core_private_beam_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -118,7 +118,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_private_beam_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_private_beam_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Event) GetPeer() string {
@@ -163,7 +163,7 @@ type Store struct {
 func (x *Store) Reset() {
 	*x = Store{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_private_beam_proto_msgTypes[1]
+		mi := &file_proto_core_private_beam_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -176,7 +176,7 @@ func (x *Store) String() string {
 func (*Store) ProtoMessage() {}
 
 func (x *Store) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_private_beam_proto_msgTypes[1]
+	mi := &file_proto_core_private_beam_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -189,7 +189,7 @@ func (x *Store) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Store.ProtoReflect.Descriptor instead.
 func (*Store) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_private_beam_proto_rawDescGZIP(), []int{1}
+	return file_proto_core_private_beam_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Store) GetData() map[string]*StoreEntry {
@@ -236,7 +236,7 @@ type StoreEntry struct {
 func (x *StoreEntry) Reset() {
 	*x = StoreEntry{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_sonr_private_beam_proto_msgTypes[2]
+		mi := &file_proto_core_private_beam_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -249,7 +249,7 @@ func (x *StoreEntry) String() string {
 func (*StoreEntry) ProtoMessage() {}
 
 func (x *StoreEntry) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sonr_private_beam_proto_msgTypes[2]
+	mi := &file_proto_core_private_beam_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -262,7 +262,7 @@ func (x *StoreEntry) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StoreEntry.ProtoReflect.Descriptor instead.
 func (*StoreEntry) Descriptor() ([]byte, []int) {
-	return file_proto_sonr_private_beam_proto_rawDescGZIP(), []int{2}
+	return file_proto_core_private_beam_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *StoreEntry) GetPeer() string {
@@ -307,10 +307,10 @@ func (x *StoreEntry) GetModified() int64 {
 	return 0
 }
 
-var File_proto_sonr_private_beam_proto protoreflect.FileDescriptor
+var File_proto_core_private_beam_proto protoreflect.FileDescriptor
 
-var file_proto_sonr_private_beam_proto_rawDesc = []byte{
-	0x0a, 0x1d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x70, 0x72, 0x69,
+var file_proto_core_private_beam_proto_rawDesc = []byte{
+	0x0a, 0x1d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x70, 0x72, 0x69,
 	0x76, 0x61, 0x74, 0x65, 0x2f, 0x62, 0x65, 0x61, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x09, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x62, 0x65, 0x61, 0x6d, 0x22, 0x9a, 0x01, 0x0a, 0x05, 0x45,
 	0x76, 0x65, 0x6e, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01,
@@ -357,27 +357,27 @@ var file_proto_sonr_private_beam_proto_rawDesc = []byte{
 }
 
 var (
-	file_proto_sonr_private_beam_proto_rawDescOnce sync.Once
-	file_proto_sonr_private_beam_proto_rawDescData = file_proto_sonr_private_beam_proto_rawDesc
+	file_proto_core_private_beam_proto_rawDescOnce sync.Once
+	file_proto_core_private_beam_proto_rawDescData = file_proto_core_private_beam_proto_rawDesc
 )
 
-func file_proto_sonr_private_beam_proto_rawDescGZIP() []byte {
-	file_proto_sonr_private_beam_proto_rawDescOnce.Do(func() {
-		file_proto_sonr_private_beam_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_sonr_private_beam_proto_rawDescData)
+func file_proto_core_private_beam_proto_rawDescGZIP() []byte {
+	file_proto_core_private_beam_proto_rawDescOnce.Do(func() {
+		file_proto_core_private_beam_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_core_private_beam_proto_rawDescData)
 	})
-	return file_proto_sonr_private_beam_proto_rawDescData
+	return file_proto_core_private_beam_proto_rawDescData
 }
 
-var file_proto_sonr_private_beam_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_sonr_private_beam_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_proto_sonr_private_beam_proto_goTypes = []interface{}{
+var file_proto_core_private_beam_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_proto_core_private_beam_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_core_private_beam_proto_goTypes = []interface{}{
 	(EventType)(0),     // 0: sonr.beam.EventType
 	(*Event)(nil),      // 1: sonr.beam.Event
 	(*Store)(nil),      // 2: sonr.beam.Store
 	(*StoreEntry)(nil), // 3: sonr.beam.StoreEntry
 	nil,                // 4: sonr.beam.Store.DataEntry
 }
-var file_proto_sonr_private_beam_proto_depIdxs = []int32{
+var file_proto_core_private_beam_proto_depIdxs = []int32{
 	0, // 0: sonr.beam.Event.type:type_name -> sonr.beam.EventType
 	3, // 1: sonr.beam.Event.entry:type_name -> sonr.beam.StoreEntry
 	2, // 2: sonr.beam.Event.store:type_name -> sonr.beam.Store
@@ -390,13 +390,13 @@ var file_proto_sonr_private_beam_proto_depIdxs = []int32{
 	0, // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_proto_sonr_private_beam_proto_init() }
-func file_proto_sonr_private_beam_proto_init() {
-	if File_proto_sonr_private_beam_proto != nil {
+func init() { file_proto_core_private_beam_proto_init() }
+func file_proto_core_private_beam_proto_init() {
+	if File_proto_core_private_beam_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_proto_sonr_private_beam_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_private_beam_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Event); i {
 			case 0:
 				return &v.state
@@ -408,7 +408,7 @@ func file_proto_sonr_private_beam_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_private_beam_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_private_beam_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Store); i {
 			case 0:
 				return &v.state
@@ -420,7 +420,7 @@ func file_proto_sonr_private_beam_proto_init() {
 				return nil
 			}
 		}
-		file_proto_sonr_private_beam_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_core_private_beam_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*StoreEntry); i {
 			case 0:
 				return &v.state
@@ -437,19 +437,19 @@ func file_proto_sonr_private_beam_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proto_sonr_private_beam_proto_rawDesc,
+			RawDescriptor: file_proto_core_private_beam_proto_rawDesc,
 			NumEnums:      1,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_sonr_private_beam_proto_goTypes,
-		DependencyIndexes: file_proto_sonr_private_beam_proto_depIdxs,
-		EnumInfos:         file_proto_sonr_private_beam_proto_enumTypes,
-		MessageInfos:      file_proto_sonr_private_beam_proto_msgTypes,
+		GoTypes:           file_proto_core_private_beam_proto_goTypes,
+		DependencyIndexes: file_proto_core_private_beam_proto_depIdxs,
+		EnumInfos:         file_proto_core_private_beam_proto_enumTypes,
+		MessageInfos:      file_proto_core_private_beam_proto_msgTypes,
 	}.Build()
-	File_proto_sonr_private_beam_proto = out.File
-	file_proto_sonr_private_beam_proto_rawDesc = nil
-	file_proto_sonr_private_beam_proto_goTypes = nil
-	file_proto_sonr_private_beam_proto_depIdxs = nil
+	File_proto_core_private_beam_proto = out.File
+	file_proto_core_private_beam_proto_rawDesc = nil
+	file_proto_core_private_beam_proto_goTypes = nil
+	file_proto_core_private_beam_proto_depIdxs = nil
 }

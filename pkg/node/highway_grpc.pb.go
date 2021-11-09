@@ -176,5 +176,5 @@ var HighwayStub_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/sonr/node/highway.proto",
+	Metadata: "proto/core/node/highway.proto",
 }
