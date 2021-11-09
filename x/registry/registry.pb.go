@@ -20,6 +20,88 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type RecordCategory int32
+
+const (
+	RecordCategory_NONE        RecordCategory = 0
+	RecordCategory_AUTH        RecordCategory = 1
+	RecordCategory_ADDRESS     RecordCategory = 2
+	RecordCategory_EMAIL       RecordCategory = 3
+	RecordCategory_URL         RecordCategory = 4
+	RecordCategory_AVATAR      RecordCategory = 5
+	RecordCategory_DESCRIPTION RecordCategory = 6
+	RecordCategory_NOTICE      RecordCategory = 7
+	RecordCategory_KEYWORDS    RecordCategory = 8
+	RecordCategory_DISCORD     RecordCategory = 9
+	RecordCategory_GITHUB      RecordCategory = 10
+	RecordCategory_REDDIT      RecordCategory = 11
+	RecordCategory_TWITTER     RecordCategory = 12
+	RecordCategory_TELEGRAM    RecordCategory = 13
+)
+
+// Enum value maps for RecordCategory.
+var (
+	RecordCategory_name = map[int32]string{
+		0:  "NONE",
+		1:  "AUTH",
+		2:  "ADDRESS",
+		3:  "EMAIL",
+		4:  "URL",
+		5:  "AVATAR",
+		6:  "DESCRIPTION",
+		7:  "NOTICE",
+		8:  "KEYWORDS",
+		9:  "DISCORD",
+		10: "GITHUB",
+		11: "REDDIT",
+		12: "TWITTER",
+		13: "TELEGRAM",
+	}
+	RecordCategory_value = map[string]int32{
+		"NONE":        0,
+		"AUTH":        1,
+		"ADDRESS":     2,
+		"EMAIL":       3,
+		"URL":         4,
+		"AVATAR":      5,
+		"DESCRIPTION": 6,
+		"NOTICE":      7,
+		"KEYWORDS":    8,
+		"DISCORD":     9,
+		"GITHUB":      10,
+		"REDDIT":      11,
+		"TWITTER":     12,
+		"TELEGRAM":    13,
+	}
+)
+
+func (x RecordCategory) Enum() *RecordCategory {
+	p := new(RecordCategory)
+	*p = x
+	return p
+}
+
+func (x RecordCategory) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RecordCategory) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_sonr_protocols_registry_proto_enumTypes[0].Descriptor()
+}
+
+func (RecordCategory) Type() protoreflect.EnumType {
+	return &file_proto_sonr_protocols_registry_proto_enumTypes[0]
+}
+
+func (x RecordCategory) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RecordCategory.Descriptor instead.
+func (RecordCategory) EnumDescriptor() ([]byte, []int) {
+	return file_proto_sonr_protocols_registry_proto_rawDescGZIP(), []int{0}
+}
+
 // AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
 type AuthorizeRequest struct {
 	state         protoimpl.MessageState
@@ -285,10 +367,22 @@ var file_proto_sonr_protocols_registry_proto_rawDesc = []byte{
 	0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
 	0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c,
 	0x69, 0x63, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62,
-	0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x42, 0x24, 0x5a, 0x22, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72,
-	0x65, 0x2f, 0x78, 0x2f, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x79, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x2a, 0xbc, 0x01, 0x0a, 0x0e, 0x52, 0x65, 0x63, 0x6f, 0x72,
+	0x64, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x4f, 0x4e,
+	0x45, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x41, 0x55, 0x54, 0x48, 0x10, 0x01, 0x12, 0x0b, 0x0a,
+	0x07, 0x41, 0x44, 0x44, 0x52, 0x45, 0x53, 0x53, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x45, 0x4d,
+	0x41, 0x49, 0x4c, 0x10, 0x03, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x52, 0x4c, 0x10, 0x04, 0x12, 0x0a,
+	0x0a, 0x06, 0x41, 0x56, 0x41, 0x54, 0x41, 0x52, 0x10, 0x05, 0x12, 0x0f, 0x0a, 0x0b, 0x44, 0x45,
+	0x53, 0x43, 0x52, 0x49, 0x50, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x06, 0x12, 0x0a, 0x0a, 0x06, 0x4e,
+	0x4f, 0x54, 0x49, 0x43, 0x45, 0x10, 0x07, 0x12, 0x0c, 0x0a, 0x08, 0x4b, 0x45, 0x59, 0x57, 0x4f,
+	0x52, 0x44, 0x53, 0x10, 0x08, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x49, 0x53, 0x43, 0x4f, 0x52, 0x44,
+	0x10, 0x09, 0x12, 0x0a, 0x0a, 0x06, 0x47, 0x49, 0x54, 0x48, 0x55, 0x42, 0x10, 0x0a, 0x12, 0x0a,
+	0x0a, 0x06, 0x52, 0x45, 0x44, 0x44, 0x49, 0x54, 0x10, 0x0b, 0x12, 0x0b, 0x0a, 0x07, 0x54, 0x57,
+	0x49, 0x54, 0x54, 0x45, 0x52, 0x10, 0x0c, 0x12, 0x0c, 0x0a, 0x08, 0x54, 0x45, 0x4c, 0x45, 0x47,
+	0x52, 0x41, 0x4d, 0x10, 0x0d, 0x42, 0x24, 0x5a, 0x22, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65,
+	0x2f, 0x78, 0x2f, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -303,16 +397,18 @@ func file_proto_sonr_protocols_registry_proto_rawDescGZIP() []byte {
 	return file_proto_sonr_protocols_registry_proto_rawDescData
 }
 
+var file_proto_sonr_protocols_registry_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_proto_sonr_protocols_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_sonr_protocols_registry_proto_goTypes = []interface{}{
-	(*AuthorizeRequest)(nil),  // 0: sonr.protocols.registry.AuthorizeRequest
-	(*AuthorizeResponse)(nil), // 1: sonr.protocols.registry.AuthorizeResponse
-	(*LookupRequest)(nil),     // 2: sonr.protocols.registry.LookupRequest
-	(*LookupResponse)(nil),    // 3: sonr.protocols.registry.LookupResponse
-	nil,                       // 4: sonr.protocols.registry.AuthorizeResponse.RecordsEntry
+	(RecordCategory)(0),       // 0: sonr.protocols.registry.RecordCategory
+	(*AuthorizeRequest)(nil),  // 1: sonr.protocols.registry.AuthorizeRequest
+	(*AuthorizeResponse)(nil), // 2: sonr.protocols.registry.AuthorizeResponse
+	(*LookupRequest)(nil),     // 3: sonr.protocols.registry.LookupRequest
+	(*LookupResponse)(nil),    // 4: sonr.protocols.registry.LookupResponse
+	nil,                       // 5: sonr.protocols.registry.AuthorizeResponse.RecordsEntry
 }
 var file_proto_sonr_protocols_registry_proto_depIdxs = []int32{
-	4, // 0: sonr.protocols.registry.AuthorizeResponse.records:type_name -> sonr.protocols.registry.AuthorizeResponse.RecordsEntry
+	5, // 0: sonr.protocols.registry.AuthorizeResponse.records:type_name -> sonr.protocols.registry.AuthorizeResponse.RecordsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -380,13 +476,14 @@ func file_proto_sonr_protocols_registry_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_sonr_protocols_registry_proto_rawDesc,
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_proto_sonr_protocols_registry_proto_goTypes,
 		DependencyIndexes: file_proto_sonr_protocols_registry_proto_depIdxs,
+		EnumInfos:         file_proto_sonr_protocols_registry_proto_enumTypes,
 		MessageInfos:      file_proto_sonr_protocols_registry_proto_msgTypes,
 	}.Build()
 	File_proto_sonr_protocols_registry_proto = out.File

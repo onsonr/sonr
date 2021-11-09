@@ -39,39 +39,19 @@ var (
 // RecordMap returns map with host as key and recordValue as value.
 type RecordMap map[string]string
 
-type RecordCategory int
-
-const (
-	Category_NONE RecordCategory = iota
-	Category_AUTH
-	Category_NAME
-)
-
 // IsAuth returns true if the Record is an Auth Record
 func (c RecordCategory) IsAuth() bool {
-	return c == Category_AUTH
+	return c == RecordCategory_AUTH
 }
 
 // IsName returns true if the Record is a Name Record
 func (c RecordCategory) IsName() bool {
-	return c == Category_NAME
+	return c == RecordCategory_ADDRESS
 }
 
 // IsNone returns true if the Record is a None Record
 func (c RecordCategory) IsNone() bool {
-	return c == Category_NONE
-}
-
-// String returns the string representation of the Record
-func (c RecordCategory) String() string {
-	switch c {
-	case Category_AUTH:
-		return "AUTH"
-	case Category_NAME:
-		return "NAME"
-	default:
-		return "NONE"
-	}
+	return c == RecordCategory_NONE
 }
 
 // Record is a DNS Record
@@ -96,16 +76,16 @@ type Record struct {
 func FindRecordCategory(host, value string) RecordCategory {
 	// Check for Auth Record
 	if checkRecordForAuth(host, value) {
-		return Category_AUTH
+		return RecordCategory_AUTH
 	}
 
 	// Check for Name Record
 	if checkRecordForSNID(host, value) {
-		return Category_NAME
+		return RecordCategory_ADDRESS
 	}
 
 	// Return None
-	return Category_NONE
+	return RecordCategory_NONE
 }
 
 // NewNBAuthRecord creates a new Record with Auth Signing
@@ -128,7 +108,7 @@ func NewNBAuthRecord(prefix string, name string, fingerprint string) Record {
 		Type:     "TXT",
 		Host:     fmt.Sprintf("%s%s%s", prefix, AUTH_DIVIDER, name),
 		Value:    fmt.Sprintf("%s%s", FINGERPRINT_DIVIDER, fingerprint),
-		Category: Category_AUTH,
+		Category: RecordCategory_AUTH,
 	}
 }
 
@@ -140,7 +120,7 @@ func NewNBNameRecord(publicKey string, name string) Record {
 		Type:     "TXT",
 		Host:     name,
 		Value:    publicKey,
-		Category: Category_NAME,
+		Category: RecordCategory_ADDRESS,
 	}
 }
 
@@ -314,12 +294,12 @@ func (r Record) Print() {
 	if r.Type == "TXT" {
 		// Print by Category
 		switch r.Category {
-		case Category_AUTH:
+		case RecordCategory_AUTH:
 			println("--- [AUTH] Properties ---")
 			println(fmt.Sprintf("\t Name: %s", r.Name()))
 			println(fmt.Sprintf("\t Prefix: %s", r.Prefix()))
 			println(fmt.Sprintf("\t Fingerprint: %s", r.Fingerprint()))
-		case Category_NAME:
+		case RecordCategory_ADDRESS:
 			println("--- [NAME] Properties ---")
 			peerid, _ := r.PeerID()
 			println(fmt.Sprintf("\t Name: %s", r.Name()))
@@ -401,7 +381,7 @@ func checkSnrRecord(r Record) error {
 
 	// Check Category
 	c := FindRecordCategory(r.Host, r.Value)
-	if c != Category_NAME && c != Category_AUTH {
+	if c != RecordCategory_ADDRESS && c != RecordCategory_AUTH {
 		err := errors.New("Record does not have category")
 		logger.Errorf("%s - Failed to get Value from Record", err)
 		return err
@@ -443,7 +423,7 @@ func (rs RecordSet) Len() int {
 func (rs RecordSet) GetAuthRecord() (Record, error) {
 	// Check for Auth Record
 	for _, r := range rs {
-		if r.Category == Category_AUTH {
+		if r.Category == RecordCategory_AUTH {
 			return r, nil
 		}
 	}
@@ -456,7 +436,7 @@ func (rs RecordSet) GetAuthRecord() (Record, error) {
 func (rs RecordSet) GetNameRecord() (Record, error) {
 	// Check for Name Record
 	for _, r := range rs {
-		if r.Category == Category_NAME {
+		if r.Category == RecordCategory_ADDRESS {
 			return r, nil
 		}
 	}
