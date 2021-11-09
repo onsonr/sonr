@@ -22,6 +22,11 @@ func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser
 	for {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
+		if buf == nil {
+			logger.Debug("Completed reading from stream: " + si.GetPath())
+			return nil
+		}
+
 		if err != nil {
 			if err == io.EOF {
 				logger.Debug("Completed reading from stream: " + si.GetPath())

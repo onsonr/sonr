@@ -93,8 +93,11 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 	// Check for Incoming
 	if s.IsIn() {
 		// Handle incoming stream
-		rs := msgio.NewReader(stream)
-		go func(writer msgio.ReadCloser, dchan chan bool) {
+		go func(stream network.Stream, dchan chan bool) {
+			// Create reader
+			rs := msgio.NewReader(stream)
+
+			// Read all items
 			for _, v := range s.GetItems() {
 				// Read Stream to File
 				if err := v.ReadFromStream(n, rs); err != nil {
@@ -104,14 +107,20 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 					dchan <- true
 				}
 			}
-		}(rs, doneChan)
+
+			// Close Stream on Done Reading
+			stream.Close()
+		}(stream, doneChan)
 	}
 
 	// Check for Outgoing
 	if s.IsOut() {
 		// Handle outgoing stream
-		wc := msgio.NewWriter(stream)
-		go func(writer msgio.WriteCloser, dchan chan bool) {
+		go func(stream network.Stream, dchan chan bool) {
+			// Create writer
+			wc := msgio.NewWriter(stream)
+
+			// Write all items
 			for _, v := range s.GetItems() {
 				// Write File to Stream
 				if err := v.WriteToStream(n, wc); err != nil {
@@ -121,7 +130,7 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 					dchan <- true
 				}
 			}
-		}(wc, doneChan)
+		}(stream, doneChan)
 	}
 
 	// Wait for all files to be written
@@ -131,13 +140,9 @@ func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.Compl
 			// Set Result
 			if complete := s.UpdateCurrent(r); !complete {
 				continue
+			} else {
+				return s.Event(), nil
 			}
-
-			// Close Stream on Done Reading
-			if s.HasRead() {
-				stream.Close()
-			}
-			return s.Event(), nil
 		}
 	}
 }
