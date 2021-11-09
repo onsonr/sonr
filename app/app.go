@@ -10,10 +10,10 @@ import (
 	"syscall"
 
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/internal/wallet"
+	"github.com/sonr-io/core/pkg/api"
+	"github.com/sonr-io/core/pkg/device"
+	"github.com/sonr-io/core/pkg/node"
+	"github.com/sonr-io/core/pkg/wallet"
 	"github.com/spf13/viper"
 )
 

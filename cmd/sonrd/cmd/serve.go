@@ -7,8 +7,8 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/app"
-	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/pkg/common"
+	"github.com/sonr-io/core/pkg/api"
+	"github.com/sonr-io/core/x/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"google.golang.org/protobuf/encoding/protojson"

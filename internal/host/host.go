@@ -14,9 +14,9 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/pkg/common"
+	"github.com/sonr-io/core/x/common"
 
-	"github.com/sonr-io/core/internal/wallet"
+	"github.com/sonr-io/core/pkg/wallet"
 	"google.golang.org/protobuf/proto"
 )
 

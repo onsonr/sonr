@@ -3,7 +3,7 @@ package sonr
 import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/app"
-	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/pkg/api"
 	"google.golang.org/protobuf/proto"
 )
 
