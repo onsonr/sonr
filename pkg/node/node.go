@@ -6,10 +6,10 @@ import (
 	sync "sync"
 
 	"git.mills.io/prologic/bitcask"
-	"github.com/sonr-io/core/pkg/api"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/x/common"
-	"github.com/sonr-io/core/x/identity"
+	"github.com/sonr-io/core/pkg/api"
+	"github.com/sonr-io/core/x/core/common"
+	"github.com/sonr-io/core/x/core/identity"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols

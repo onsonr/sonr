@@ -7,7 +7,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/pkg/wallet"
-	common "github.com/sonr-io/core/x/common"
+	common "github.com/sonr-io/core/x/core/common"
 )
 
 var (

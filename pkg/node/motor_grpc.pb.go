@@ -712,5 +712,5 @@ var MotorStub_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "proto/sonr/node/motor.proto",
+	Metadata: "proto/core/node/motor.proto",
 }

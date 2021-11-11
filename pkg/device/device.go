@@ -3,6 +3,8 @@ package device
 import (
 	"errors"
 	"runtime"
+
+	"github.com/denisbrodbeck/machineid"
 )
 
 // Init initializes the device package.
@@ -31,6 +33,16 @@ func HostName() (string, error) {
 func ID() (string, error) {
 	// Check if the device ID is empty
 	if deviceID != "" {
+		return deviceID, nil
+	}
+
+	if IsDesktop() {
+		retdeviceID, err := machineid.ID()
+		if err != nil {
+			logger.Errorf("%s - Failed to get Device ID", err)
+			return "", err
+		}
+		deviceID = retdeviceID
 		return deviceID, nil
 	}
 	return "", errors.New("Device ID not set.")

@@ -4,7 +4,7 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: proto/sonr/node/highway.proto
+// source: proto/core/node/highway.proto
 
 package node
 
@@ -22,13 +22,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-var File_proto_sonr_node_highway_proto protoreflect.FileDescriptor
+var File_proto_core_node_highway_proto protoreflect.FileDescriptor
 
-var file_proto_sonr_node_highway_proto_rawDesc = []byte{
-	0x0a, 0x1d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x6e, 0x6f, 0x64,
+var file_proto_core_node_highway_proto_rawDesc = []byte{
+	0x0a, 0x1d, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x6e, 0x6f, 0x64,
 	0x65, 0x2f, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x09, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x1a, 0x19, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x63, 0x61, 0x6c, 0x6c, 0x2e,
+	0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x63, 0x61, 0x6c, 0x6c, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0xdc, 0x01, 0x0a, 0x0b, 0x48, 0x69, 0x67, 0x68, 0x77, 0x61,
 	0x79, 0x53, 0x74, 0x75, 0x62, 0x12, 0x4f, 0x0a, 0x0c, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74,
 	0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x1d, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x61, 0x70, 0x69,
@@ -48,7 +48,7 @@ var file_proto_sonr_node_highway_proto_rawDesc = []byte{
 	0x70, 0x6b, 0x67, 0x2f, 0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var file_proto_sonr_node_highway_proto_goTypes = []interface{}{
+var file_proto_core_node_highway_proto_goTypes = []interface{}{
 	(*api.AuthenticateRequest)(nil),  // 0: sonr.api.AuthenticateRequest
 	(*api.LinkRequest)(nil),          // 1: sonr.api.LinkRequest
 	(*api.RegisterRequest)(nil),      // 2: sonr.api.RegisterRequest
@@ -56,7 +56,7 @@ var file_proto_sonr_node_highway_proto_goTypes = []interface{}{
 	(*api.LinkResponse)(nil),         // 4: sonr.api.LinkResponse
 	(*api.RegisterResponse)(nil),     // 5: sonr.api.RegisterResponse
 }
-var file_proto_sonr_node_highway_proto_depIdxs = []int32{
+var file_proto_core_node_highway_proto_depIdxs = []int32{
 	0, // 0: sonr.node.HighwayStub.Authenticate:input_type -> sonr.api.AuthenticateRequest
 	1, // 1: sonr.node.HighwayStub.Link:input_type -> sonr.api.LinkRequest
 	2, // 2: sonr.node.HighwayStub.Register:input_type -> sonr.api.RegisterRequest
@@ -70,26 +70,26 @@ var file_proto_sonr_node_highway_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_sonr_node_highway_proto_init() }
-func file_proto_sonr_node_highway_proto_init() {
-	if File_proto_sonr_node_highway_proto != nil {
+func init() { file_proto_core_node_highway_proto_init() }
+func file_proto_core_node_highway_proto_init() {
+	if File_proto_core_node_highway_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proto_sonr_node_highway_proto_rawDesc,
+			RawDescriptor: file_proto_core_node_highway_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_sonr_node_highway_proto_goTypes,
-		DependencyIndexes: file_proto_sonr_node_highway_proto_depIdxs,
+		GoTypes:           file_proto_core_node_highway_proto_goTypes,
+		DependencyIndexes: file_proto_core_node_highway_proto_depIdxs,
 	}.Build()
-	File_proto_sonr_node_highway_proto = out.File
-	file_proto_sonr_node_highway_proto_rawDesc = nil
-	file_proto_sonr_node_highway_proto_goTypes = nil
-	file_proto_sonr_node_highway_proto_depIdxs = nil
+	File_proto_core_node_highway_proto = out.File
+	file_proto_core_node_highway_proto_rawDesc = nil
+	file_proto_core_node_highway_proto_goTypes = nil
+	file_proto_core_node_highway_proto_depIdxs = nil
 }

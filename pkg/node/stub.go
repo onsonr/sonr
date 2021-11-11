@@ -4,10 +4,10 @@ import (
 	context "context"
 	"net"
 
-	"github.com/sonr-io/core/x/discover"
-	"github.com/sonr-io/core/x/exchange"
-	"github.com/sonr-io/core/x/registry"
-	"github.com/sonr-io/core/x/transmit"
+	"github.com/sonr-io/core/x/core/discover"
+	"github.com/sonr-io/core/x/core/exchange"
+	"github.com/sonr-io/core/x/core/registry"
+	"github.com/sonr-io/core/x/core/transmit"
 
 	"google.golang.org/grpc"
 )
