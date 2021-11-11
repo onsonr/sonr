@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/sonr-io/core/pkg/did"
+	"github.com/sonr-io/core/internal/did"
 )
 
 func TestParseURI(t *testing.T) {
