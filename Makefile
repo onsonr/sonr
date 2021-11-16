@@ -7,7 +7,7 @@ CORE_DIR=$(SONR_ROOT_DIR)/core
 DESKTOP_DIR=$(SONR_ROOT_DIR)/desktop
 MOBILE_DIR=$(SONR_ROOT_DIR)/mobile
 CORE_FULL_DIR=$(SONR_ROOT_DIR)/core/cmd/sonrd
-CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
+CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 LD_LIBRARY_PATH=/opt/homebrew/bin/ffmpeg/4.4_2/lib
@@ -30,7 +30,7 @@ BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.xcframework
 BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
-PROTO_LIST_ALL=${ROOT_DIR}/proto/core/**/*.proto
+PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
 MODULE_NAME=github.com/sonr-io/core
 GO_OPT_FLAG=--go_opt=module=${MODULE_NAME}
 GRPC_OPT_FLAG=--go-grpc_opt=module=${MODULE_NAME}

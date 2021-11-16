@@ -7,12 +7,12 @@ import (
 	"strings"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/internal/host"
-	api "github.com/sonr-io/core/pkg/api"
-	"github.com/sonr-io/core/x/core/common"
-	"github.com/sonr-io/core/x/core/discover"
-	"github.com/sonr-io/core/x/core/exchange"
-	"github.com/sonr-io/core/x/core/transmit"
+	api "github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/pkg/discover"
+	"github.com/sonr-io/core/pkg/exchange"
+	"github.com/sonr-io/core/pkg/transmit"
 	"google.golang.org/grpc"
 )
 
@@ -64,42 +64,40 @@ type MotorStub struct {
 
 // startMotorStub creates a new Client service stub for the node.
 func NewMotorStub(ctx context.Context, h *host.SNRHost, n api.NodeImpl, loc *common.Location, lst net.Listener) (*MotorStub, error) {
+	// Create a new gRPC server
+	var err error
+	grpcServer := grpc.NewServer()
+	stub := &MotorStub{
+		ctx:            ctx,
+		node:           n,
+		grpcServer:     grpcServer,
+		decisionEvents: make(chan *api.DecisionEvent),
+		refreshEvents:  make(chan *api.RefreshEvent),
+		inviteEvents:   make(chan *api.InviteEvent),
+		mailEvents:     make(chan *api.MailboxEvent),
+		progressEvents: make(chan *api.ProgressEvent),
+		completeEvents: make(chan *api.CompleteEvent),
+	}
+
 	// Set Discovery Protocol
-	discProtocol, err := discover.New(ctx, h, n, discover.WithLocation(loc))
+	stub.DiscoverProtocol, err = discover.New(ctx, h, n, stub, discover.WithLocation(loc))
 	if err != nil {
 		logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
 		return nil, err
 	}
 
 	// Set Transmit Protocol
-	transmitProtocol, err := transmit.New(ctx, h, n)
+	stub.TransmitProtocol, err = transmit.New(ctx, h, n, stub)
 	if err != nil {
 		logger.Errorf("%s - Failed to start TransmitProtocol", err)
 		return nil, err
 	}
 
 	// Set Exchange Protocol
-	exchangeProtocol, err := exchange.New(ctx, h, n)
+	stub.ExchangeProtocol, err = exchange.New(ctx, h, n, stub)
 	if err != nil {
 		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
 		return nil, err
-	}
-
-	// Create a new gRPC server
-	grpcServer := grpc.NewServer()
-	stub := &MotorStub{
-		ctx:              ctx,
-		TransmitProtocol: transmitProtocol,
-		DiscoverProtocol: discProtocol,
-		ExchangeProtocol: exchangeProtocol,
-		node:             n,
-		grpcServer:       grpcServer,
-		decisionEvents:   make(chan *api.DecisionEvent),
-		refreshEvents:    make(chan *api.RefreshEvent),
-		inviteEvents:     make(chan *api.InviteEvent),
-		mailEvents:       make(chan *api.MailboxEvent),
-		progressEvents:   make(chan *api.ProgressEvent),
-		completeEvents:   make(chan *api.CompleteEvent),
 	}
 
 	// Start Routines

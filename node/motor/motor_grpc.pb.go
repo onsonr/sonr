@@ -4,7 +4,7 @@ package motor
 
 import (
 	context "context"
-	api "github.com/sonr-io/core/pkg/api"
+	api "github.com/sonr-io/core/node/api"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -712,5 +712,5 @@ var MotorStub_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "proto/core/node/motor.proto",
+	Metadata: "proto/node/motor.proto",
 }

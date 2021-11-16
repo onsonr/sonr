@@ -7,7 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	didtypes "github.com/nuts-foundation/go-did"
 	"github.com/nuts-foundation/go-did/did"
-	"github.com/sonr-io/core/pkg/device"
+	"github.com/sonr-io/core/device"
 )
 
 type identityWallet struct {

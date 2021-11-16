@@ -6,12 +6,12 @@ import (
 	"net"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/internal/host"
-	api "github.com/sonr-io/core/pkg/api"
-	"github.com/sonr-io/core/x/core/common"
-	"github.com/sonr-io/core/x/core/discover"
-	"github.com/sonr-io/core/x/core/exchange"
-	"github.com/sonr-io/core/x/core/registry"
+	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/pkg/discover"
+	"github.com/sonr-io/core/pkg/exchange"
+	"github.com/sonr-io/core/pkg/registry"
 	"google.golang.org/grpc"
 )
 
@@ -59,42 +59,40 @@ type HighwayStub struct {
 
 // startHighwayStub creates a new Highway service stub for the node.
 func NewHighwayStub(ctx context.Context, h *host.SNRHost, n api.NodeImpl, loc *common.Location, lst net.Listener) (*HighwayStub, error) {
+	// Create the RPC Service
+	var err error
+	grpcServer := grpc.NewServer()
+	stub := &HighwayStub{
+		node:           n,
+		ctx:            ctx,
+		grpcServer:     grpcServer,
+		decisionEvents: make(chan *api.DecisionEvent),
+		refreshEvents:  make(chan *api.RefreshEvent),
+		inviteEvents:   make(chan *api.InviteEvent),
+		mailEvents:     make(chan *api.MailboxEvent),
+		progressEvents: make(chan *api.ProgressEvent),
+		completeEvents: make(chan *api.CompleteEvent),
+	}
+
 	// Set Discovery Protocol
-	discProtocol, err := discover.New(ctx, h, n, discover.WithLocation(loc))
+	stub.DiscoverProtocol, err = discover.New(ctx, h, n, stub, discover.WithLocation(loc))
 	if err != nil {
 		logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
 		return nil, err
 	}
 
 	// Set Transmit Protocol
-	exchangeProtocol, err := exchange.New(ctx, h, n)
+	stub.ExchangeProtocol, err = exchange.New(ctx, h, n, stub)
 	if err != nil {
 		logger.Errorf("%s - Failed to start TransmitProtocol", err)
 		return nil, err
 	}
 
 	// Set Exchange Protocol
-	registeryProtocol, err := registry.New(ctx, h, n)
+	stub.RegistryProtocol, err = registry.New(ctx, h, n, stub)
 	if err != nil {
 		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
 		return nil, err
-	}
-
-	// Create the RPC Service
-	grpcServer := grpc.NewServer()
-	stub := &HighwayStub{
-		node:             n,
-		ctx:              ctx,
-		grpcServer:       grpcServer,
-		DiscoverProtocol: discProtocol,
-		ExchangeProtocol: exchangeProtocol,
-		RegistryProtocol: registeryProtocol,
-		decisionEvents:   make(chan *api.DecisionEvent),
-		refreshEvents:    make(chan *api.RefreshEvent),
-		inviteEvents:     make(chan *api.InviteEvent),
-		mailEvents:       make(chan *api.MailboxEvent),
-		progressEvents:   make(chan *api.ProgressEvent),
-		completeEvents:   make(chan *api.CompleteEvent),
 	}
 	// Register the RPC Service
 	RegisterHighwayStubServer(grpcServer, stub)

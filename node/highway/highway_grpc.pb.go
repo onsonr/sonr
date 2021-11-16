@@ -4,7 +4,7 @@ package highway
 
 import (
 	context "context"
-	api "github.com/sonr-io/core/pkg/api"
+	api "github.com/sonr-io/core/node/api"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -394,5 +394,5 @@ var HighwayStub_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "proto/core/node/highway.proto",
+	Metadata: "proto/node/highway.proto",
 }

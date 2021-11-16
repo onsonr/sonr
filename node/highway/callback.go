@@ -1,6 +1,6 @@
 package highway
 
-import api "github.com/sonr-io/core/pkg/api"
+import "github.com/sonr-io/core/node/api"
 
 // OnDecision is callback for NodeImpl for decisionEvents
 func (n *HighwayStub) OnDecision(event *api.DecisionEvent, invite *api.InviteEvent) {

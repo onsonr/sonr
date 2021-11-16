@@ -11,9 +11,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/pkg/api"
-	"github.com/sonr-io/core/pkg/device"
+	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/node/api"
 	"github.com/sonr-io/core/pkg/wallet"
 	"github.com/spf13/viper"
 )

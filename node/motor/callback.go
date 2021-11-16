@@ -1,7 +1,6 @@
 package motor
 
-
-import api "github.com/sonr-io/core/pkg/api"
+import api "github.com/sonr-io/core/node/api"
 
 // OnDecision is callback for NodeImpl for decisionEvents
 func (n *MotorStub) OnDecision(event *api.DecisionEvent, invite *api.InviteEvent) {
