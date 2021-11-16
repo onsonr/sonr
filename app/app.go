@@ -9,11 +9,12 @@ import (
 	"path/filepath"
 	"syscall"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/pkg/api"
-	"github.com/sonr-io/core/pkg/device"
-	"github.com/sonr-io/core/pkg/node"
-	"github.com/sonr-io/core/pkg/wallet"
+	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/wallet"
 	"github.com/spf13/viper"
 )
 
@@ -35,6 +36,7 @@ const (
 
 var (
 	Ctx     context.Context
+	App     *fiber.App
 	Node    api.NodeImpl
 	Mode    api.StubMode
 	Sockets *SockManager
@@ -42,6 +44,7 @@ var (
 
 // Start starts the Sonr Node
 func Start(req *api.InitializeRequest, options ...Option) {
+
 	// Check if Node is already running
 	if Node != nil {
 		golog.Error("Sonr Instance already active")

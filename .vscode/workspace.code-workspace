@@ -3,14 +3,6 @@
     {
       "path": "..",
       "name": "🚀  Core"
-    },
-    {
-      "path": "../third-party/ipfs",
-      "name": "📦  IPFS"
-    },
-    {
-      "path": "../third-party/hns",
-      "name": "🤝 HNS"
     }
   ],
   "settings": {
@@ -119,9 +111,6 @@
       "**/design": true,
       "**/sonr.wiki": true,
       ".gitignore": false,
-      "third-party/ipfs": true,
-      "third-party/hns": true,
-      "third-party": true,
     },
     "material-icon-theme.folders.associations": {
       "bind": "dist",
@@ -139,6 +128,7 @@
       "electron": "examples",
       "flutter": "examples",
       "highway": "project",
+      "motor": "project",
       "util": "",
       "sonrd": "dist",
       "bin": "lib",

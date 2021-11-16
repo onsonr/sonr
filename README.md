@@ -52,7 +52,6 @@ _By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.
   </ol>
 </details>
 
-
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
@@ -76,10 +75,13 @@ To get a local copy up and running follow these simple steps.
 This is an example of how to list things you need to use the software and how to install them.
 
 - **npm**
+
   ```sh
   npm install npm@latest -g
   ```
+
 - **golang**
+
   ```sh
   go get github.com/golang/dep/cmd/dep
   ```
@@ -87,13 +89,52 @@ This is an example of how to list things you need to use the software and how to
 ### Installation
 
 1. Clone the repo
+
    ```sh
    git clone https://github.com/sonr-io/sonr.git
    ```
+
 2. Install NPM packages
+
+  ```bash
+  # Binds Android and iOS for Plugin Path
+  make bind
+
+  # Binds iOS Framework ONLY
+  make bind.ios
+
+  # Binds AAR for Android ONLY
+  make bind.android
+
+  # Compiles Protobuf models for Core Library and Plugin
+  make proto
+
+  # Binds Binary, Creates Protobufs, and Updates App
+  make upgrade
+
+  # Reinitializes Gomobile and Removes Framworks from Plugin
+  make clean
+  ```
+
+Docker Instructions
+
+1. Build the Docker image
+
    ```sh
-   npm install
+   docker build -t ghcr.io/sonr-io/snrd .
    ```
+
+2. Run the Docker image
+
+  ```sh
+  docker run -it -p 443:26225 ghcr.io/sonr-io/snrd
+  ```
+
+3. Pushing the image to ghcr.io (optional)
+
+  ```sh
+  docker push ghcr.io/sonr-io/snrd:latest
+  ```
 
 ### Structure
 
@@ -125,42 +166,6 @@ This project is a pseudo-monorepo, meaning it has a single root directory and al
   └─ internet   ->        +   Namebase, REST, and DNS Resolver
   └─ state      ->        +   State Machine Management
 ```
-
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-This project contains a `makefile` with the following commands:
-
-```bash
-# Binds Android and iOS for Plugin Path
-make bind
-
-# Binds iOS Framework ONLY
-make bind.ios
-
-# Binds AAR for Android ONLY
-make bind.android
-
-# Compiles Protobuf models for Core Library and Plugin
-make proto
-
-# Binds Binary, Creates Protobufs, and Updates App
-make upgrade
-
-# Reinitializes Gomobile and Removes Framworks from Plugin
-make clean
-```
-
-To run the HNS daemon, use the following command:
-
-```bash
-
-# Fetch latest version of HNS
-VERSION=$(cat package.json | grep version | sed 's/.*"\([0-9]*\.[0-9]*\.[0-9]*\)".*/\1/')
-COMMIT=$(git rev-parse --short HEAD)
-docker build -t hsd:$VERSION-$COMMIT .
-_For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- ROADMAP -->
 

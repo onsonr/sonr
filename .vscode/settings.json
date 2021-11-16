@@ -21,7 +21,6 @@
     "go.autocompleteUnimportedPackages": true,
     "go.useCodeSnippetsOnFunctionSuggestWithoutType": true,
     "go.toolsManagement.autoUpdate": true,
-
     "[yaml]": {
         "editor.insertSpaces": true,
         "editor.tabSize": 2,
@@ -36,4 +35,26 @@
         }
     },
     "protoc": {},
+    "material-icon-theme.folders.associations": {
+        "bind": "dist",
+        "cli": "interface",
+        "rpc": "dist",
+        "internal": "core",
+        "CD": "pipe",
+        "pkg": "src",
+        "cmd": "hook",
+        "proto": "json",
+        "common": "",
+        "service": "",
+        "config": "",
+        "workflows": "serverless",
+        "electron": "examples",
+        "flutter": "examples",
+        "highway": "project",
+        "motor": "project",
+        "util": "",
+        "sonrd": "dist",
+        "bin": "lib",
+        "api": "",
+    },
 }

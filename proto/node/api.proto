@@ -1,0 +1,245 @@
+/// This file has messages for describing a API Request/Responses with RPC.
+syntax = "proto3";
+
+package sonr.api;
+import "proto/common/core.proto";
+import "proto/common/data.proto";
+option go_package = "github.com/sonr-io/core/node/api";
+
+// -----------------------------------------------------------------------------
+// Motor Node API
+// -----------------------------------------------------------------------------
+// (Client) InitializeRequest Message to Establish Sonr Host/API/Room
+message InitializeRequest {
+  sonr.core.Location location = 1;     // Current Runtime Location
+  sonr.core.Profile profile = 2;       // Users Contact Card
+  sonr.core.Connection connection = 3; // Internet Connection Type
+  HostOptions hostOptions = 4;         // Libp2p Host config
+  ServiceOptions serviceOptions = 5;   // Service Config
+  DeviceOptions deviceOptions = 6;     // File System Config
+  sonr.core.Environment environment = 7; // Environment Config
+  map<string,string> variables = 8;     // Domain TXT Records
+
+  // Optional Message to Initialize FileSystem
+  message DeviceOptions {
+    string id = 1;           // Device ID
+    string homeDir = 2;
+    string supportDir = 3;
+    string tempDir = 4;
+  }
+
+  // Libp2p Host Options
+  message HostOptions {
+    bool quicTransport = 1;             // Enable QUIC Transport
+    bool httpTransport = 2;             // Enable HTTP Transport
+    bool ipv4Only = 3;                  // Enable IPv4 Only
+    repeated IPAddress listenAddrs = 4; // List of Listen Addresses (optional)
+  }
+
+  // Service Configuration
+  message ServiceOptions {
+    bool textile = 1;    // Enable Textile Client and Threads
+    bool mailbox = 2;    // Enable Mailbox
+    bool buckets = 3;    // Enable Buckets
+    int32 interval = 4; // Auto Update Interval (seconds) - Default 5s
+  }
+
+  // IP Address Interface
+  message IPAddress {
+    string name = 1;   // Name of Interface
+    string address = 2;  // IP Address of Interface
+    bool internal = 3; // Wether it is a Loopback Interface
+    Family family = 4; // Address Family
+
+    enum Family {
+      IPV4 = 0; // IPv4 Address
+      IPV6 = 1; // IPv6 Address
+    }
+  }
+}
+
+// (Client) InitializeResponse is Response from Initialize Request
+message InitializeResponse {
+  bool success = 1; // True if Host is Active
+  string error = 2; // Error Message if Host is not Active
+  sonr.core.Profile profile = 3; // Users Profile from store
+  map<string,sonr.core.ProfileList> recents = 4; // Recent Peers from store
+  map<string, sonr.core.PayloadList> history = 5; // File transfer history from store
+  UserStatus userStatus = 6; // User Status from store'
+
+  // User Status
+  enum UserStatus {
+    RETURNING = 0; // User is Returning
+    NEW = 1;       // User is New
+  }
+}
+
+// (Client) ShareRequest is request to share supplied files/urls with a peer
+message ShareRequest {
+  sonr.core.Peer peer = 1; // Peer to Share with
+  sonr.core.MessageItem message = 2; // Message to Share
+  repeated sonr.core.SupplyItem items = 3; // Supply Items to share
+}
+
+// (Client) ShareResponse is response to ShareRequest
+message ShareResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+// (Client) RespondRequest is request to respond to a share request
+message RespondRequest {
+  bool decision = 1;       // True if Supply is Active
+  sonr.core.Peer peer = 2; // Peer to Share with
+}
+
+// (Client) RespondResponse is response to RespondRequest
+message RespondResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+// (Client) SearchRequest is Message for Searching for Peer
+message SearchRequest {
+  oneof query {
+    string sName = 1;  // SName combined with Device ID and Hashed
+    string peerId = 2; // Peer ID
+  }
+}
+
+// (Client) SearchResponse is Message for Searching for Peer
+message SearchResponse {
+  bool success = 1;        // Success
+  string error = 2;        // Error Message
+  sonr.core.Peer peer = 3; // Peer Data
+  string peerId = 4;       // Peer ID
+  string sName = 5;        // SName
+}
+
+// -----------------------------------------------------------------------------
+// Highway Node API
+// -----------------------------------------------------------------------------
+// (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
+message ListPeersRequest {
+  string sName = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string deviceId = 3; // Device ID
+}
+
+// (Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)
+message ListPeersResponse {
+  string olc = 1;                    // OLC Code of Topic
+  repeated sonr.core.Peer peers = 2; // User Information
+  int64 received = 3;                // Invite received Timestamp
+}
+
+// (Highway) LinkRequest handles Linked Devices on DNS Table
+message DecideRequest {
+  string sName = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string deviceId = 3; // Device ID
+  Method method = 4; // Method for Linking
+
+  // Method for Linking
+  enum Method {
+    ADD = 0; // Add Device ID to SName on DNS Table
+    REMOVE = 1; // Remove Device ID from SName on DNS Table
+  }
+}
+
+// (Highway) LinkResponse is Message for Linking Response (Hmac Sha256)
+message DecideResponse {
+    bool success = 1; // If Values were Signed
+    string error = 2; // Error Message
+    map<string,string> records = 3; // Updated Domain TXT Records
+}
+
+// (Client) ShareRequest is request to share supplied files/urls with a peer
+message SendRequest {
+  sonr.core.Peer peer = 1; // Peer to Share with
+  sonr.core.MessageItem message = 2; // Message to Share
+  repeated sonr.core.SupplyItem items = 3; // Supply Items to share
+}
+
+// (Client) ShareResponse is response to ShareRequest
+message SendResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message CacheRecordRequest {
+  string sName = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string publicKey = 4;   // Public Key
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message CacheRecordResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message GetRecordRequest {
+  string sName = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string publicKey = 4;   // Public Key
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message GetRecordResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message StoreRecordRequest {
+  string sName = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string publicKey = 4;   // Public Key
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message StoreRecordResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message RegisterNameRequest {
+  string sName = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string publicKey = 4;   // Public Key
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message RegisterNameResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message VerifyNameRequest {
+  string sName = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string publicKey = 4;   // Public Key
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message VerifyNameResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}

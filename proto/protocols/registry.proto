@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package sonr.protocols.registry;
+option go_package = "github.com/sonr-io/core/pkg/registry";
+
+
+
+// AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
+message AuthorizeRequest {
+  string sName = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string deviceId = 3; // Device ID
+}
+
+// AuthorizeResponse is Message for Verifying Response (Hmac Sha256)
+message AuthorizeResponse {
+  bool success = 1; // If Values were Verified
+  string error = 2; // Error Message
+  map<string,string> records = 3; // Updated Domain TXT Records
+}
+
+// LookupRequest is Message for Verifying Request (Hmac Sha256)
+message LookupRequest {
+  string sName = 1; // SName combined with Device ID and Hashed
+}
+
+// LookupResponse is Message for Verifying Response (Hmac Sha256)
+message LookupResponse {
+  bool success = 1;     // If Values were Verified
+  string publicKey = 2; // Base64 Encoded Public Key
+}
+
+// RecordCategory is the Category of the Record
+enum RecordCategory {
+  NONE = 0; // No Category
+  AUTH = 1; // Authorization Record
+  ADDRESS = 2; // Address Record to Route to peer
+  EMAIL = 3; // Email Record for Email Address
+  URL = 4; // URL Record for URL
+  AVATAR = 5; // Avatar Record for Avatar
+  DESCRIPTION = 6; // Description Record for Description
+  NOTICE = 7; // Notice Record for Notice
+  KEYWORDS = 8; // Keywords Record for Keywords
+  DISCORD = 9; // Discord Record for Discord
+  GITHUB = 10; // Github Record for Github
+  REDDIT = 11; // Reddit Record for Reddit
+  TWITTER = 12; // Twitter Record for Twitter
+  TELEGRAM = 13; // Telegram Record for Telegram
+}

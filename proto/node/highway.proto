@@ -1,0 +1,33 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package sonr.node;
+import "proto/node/api.proto";
+option go_package = "github.com/sonr-io/core/node/highway";
+
+// RPC Service with Equivalent Methods of a binded Node
+service HighwayStub {
+  // Register creates new user in DNS Table
+  rpc ListPeers(sonr.api.ListPeersRequest) returns (stream sonr.api.ListPeersResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc DecideExchange(sonr.api.DecideRequest) returns (sonr.api.DecideResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc SendExchange(sonr.api.SendRequest) returns (sonr.api.SendResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc CacheRecord(sonr.api.CacheRecordRequest) returns (sonr.api.CacheRecordResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc GetRecord(sonr.api.GetRecordRequest) returns (sonr.api.GetRecordResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc StoreRecord(sonr.api.StoreRecordRequest) returns (sonr.api.StoreRecordResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc RegisterName(sonr.api.RegisterNameRequest) returns (sonr.api.RegisterNameResponse) {}
+
+  // Authorize Signing Method Request for Data
+  rpc VerifyName(sonr.api.VerifyNameRequest) returns (sonr.api.VerifyNameResponse) {}
+}
