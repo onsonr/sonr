@@ -1,36 +1,17 @@
 # ---- Base Node ----
-FROM node:lts-alpine AS base
-# install node
-RUN apk add --update git build-base python3 python2
-## Create a group and user
-#RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-## Tell docker that all future commands should run as the appuser user
-#USER appuser
-# set working directory
-WORKDIR /usr/src/app
-# copy project file
-COPY package.json package-lock.json ./
+FROM golang:latest
 
-# ---- First stage: build things ----
-FROM base AS build
-#RUN npm install --only=production
-# copy production node_modules aside
-#RUN cp -R node_modules prod_node_modules
-# install ALL node_modules, including 'devDependencies'
-RUN npm install
+# Install grpc
+RUN go get -u google.golang.org/grpc && \
+    go get -u github.com/golang/protobuf/protoc-gen-go
 
-COPY . .
-# Run compilers, code coverage, linters, code analysis and testing tools
-RUN npm run build
+# Install protoc and zip system library
+RUN apt-get update && apt-get install -y zip && \
+    mkdir /opt/protoc && cd /opt/protoc && wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0/protoc-3.7.0-linux-x86_64.zip && \
+    unzip protoc-3.7.0-linux-x86_64.zip
 
-# ---- Second stage: release ----
-FROM base as release
+ENV PATH=$PATH:$GOPATH/bin:/opt/protoc/bin
+COPY . /go/src/github.com/sonr-io/core
+ENTRYPOINT cd /go/src/github.com/sonr-io/core/cmd/snrd && go run main.go
 
-COPY --from=build /usr/src/app/dist ./dist
-COPY --from=build /usr/src/app/config ./config
-COPY --from=build /usr/src/app/node_modules ./node_modules
-
-# Run the built application when the container starts.
-EXPOSE 3000 8000
-CMD ["npm", "run", "serve"]
-#
+EXPOSE 8080 26225 443
