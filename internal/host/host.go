@@ -16,7 +16,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/common"
 
-	"github.com/sonr-io/core/pkg/wallet"
+	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
 

@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/node/api"
-	"github.com/sonr-io/core/pkg/wallet"
+	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
 

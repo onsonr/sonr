@@ -16,7 +16,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/pkg/wallet"
+	"github.com/sonr-io/core/wallet"
 )
 
 // Error Definitions

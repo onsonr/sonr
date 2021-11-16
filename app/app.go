@@ -14,7 +14,7 @@ import (
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/node/api"
-	"github.com/sonr-io/core/pkg/wallet"
+	"github.com/sonr-io/core/wallet"
 	"github.com/spf13/viper"
 )
 

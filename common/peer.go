@@ -13,7 +13,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/pkg/wallet"
+	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
 
