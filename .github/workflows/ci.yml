@@ -10,14 +10,11 @@ jobs:
   build-image:
     name: Docker Container 🐳
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    continue-on-error: true
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        continue-on-error: true
 
       - name: Docker meta
         id: meta
