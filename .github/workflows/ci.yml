@@ -11,12 +11,11 @@ jobs:
     name: Docker Container 🐳
     runs-on: ubuntu-latest
     continue-on-error: true
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Docker meta
+      - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v3
         with:
@@ -33,7 +32,13 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
 
-      - name: Log in to the Container registry
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to GHCR
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -47,6 +52,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.PAT_GITHUB_TOKEN }}
 
   build-android:
     # Configuration
@@ -60,19 +67,14 @@ jobs:
 
     # Steps
     steps:
-      # 1. Checkout the branch
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      # 2. Setup Go environment
       - name: Setup Go Env
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-
-      # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: |
           mkdir -p ${{ github.workspace }}/build
@@ -80,8 +82,6 @@ jobs:
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${{ github.workspace }}/build/io.sonr.core.aar
-
-      # 5. Upload AAR
       - name: Upload AAR to GitHub
         uses: actions/upload-artifact@v2
         with:
@@ -101,19 +101,14 @@ jobs:
 
     # Steps
     steps:
-      # 1. Checkout the branch
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      # 2. Setup Go environment
       - name: Setup Go Env
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-
-      # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: |
           mkdir -p ${{ github.workspace }}/build
@@ -121,8 +116,6 @@ jobs:
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -target=ios/arm64 -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.xcframework
-
-      # 5. Upload Framework
       - name: Upload Framework to GitHub
         uses: actions/upload-artifact@v2
         with:
@@ -140,19 +133,14 @@ jobs:
 
     # Steps
     steps:
-      # 1. Checkout the branch
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      # 2. Setup Go Enviornment
       - name: Setup Go Env
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-
-      # 3. Cache Go Modules
       - name: Cache Dependencies
         uses: actions/cache@v2
         with:
@@ -162,8 +150,6 @@ jobs:
           key: ${{ runner.os }}-go-1_17-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-1_17-
-
-      # 4. Build Daemon
       - name: Release Daemons 🎉
         uses: goreleaser/goreleaser-action@v2
         with:
