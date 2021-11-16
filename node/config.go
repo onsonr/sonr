@@ -6,6 +6,8 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/node/highway"
+	"github.com/sonr-io/core/node/motor"
 	api "github.com/sonr-io/core/pkg/api"
 	"github.com/sonr-io/core/x/core/common"
 	"github.com/sonr-io/core/x/core/identity"
@@ -77,7 +79,7 @@ func (opts *options) Apply(ctx context.Context, host *host.SNRHost, node *Node) 
 
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
-		stub, err := node.startMotorStub(ctx, opts)
+		stub, err := motor.NewMotorStub(ctx, host, node, opts.location, node.listener)
 		if err != nil {
 			logger.Errorf("%s - Failed to start Client Service", err)
 			return err
@@ -89,7 +91,7 @@ func (opts *options) Apply(ctx context.Context, host *host.SNRHost, node *Node) 
 	} else {
 		logger.Debug("Starting Highway stub...")
 		// Highway Node Type
-		stub, err := node.startHighwayStub(ctx, opts)
+		stub, err := highway.NewHighwayStub(ctx, host, node, opts.location, node.listener)
 		if err != nil {
 			logger.Errorf("%s - Failed to start Highway Service", err)
 			return err

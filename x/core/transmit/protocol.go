@@ -11,20 +11,22 @@ import (
 
 // TransmitProtocol type
 type TransmitProtocol struct {
-	node    api.NodeImpl
-	ctx     context.Context // Context
-	host    *host.SNRHost   // local host
-	current *Session        // current session
-	mode    api.StubMode
+	callback api.CallbackImpl
+	node     api.NodeImpl
+	ctx      context.Context // Context
+	host     *host.SNRHost   // local host
+	current  *Session        // current session
+	mode     api.StubMode
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*TransmitProtocol, error) {
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, cb api.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
 	protocol := &TransmitProtocol{
-		ctx:  ctx,
-		host: host,
-		node: node,
+		ctx:      ctx,
+		host:     host,
+		node:     node,
+		callback: cb,
 	}
 	// Set options
 	opts := defaultOptions()
@@ -99,7 +101,7 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 // Reset resets the current session
 func (p *TransmitProtocol) Reset(event *api.CompleteEvent) {
 	logger.Debug("Resetting TransmitProtocol")
-	p.node.OnComplete(event)
+	p.callback.OnComplete(event)
 	p.current = nil
 }
 
@@ -115,7 +117,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	}
 
 	// Create New Reader
-	event, err := entry.RouteStream(stream, p.node)
+	event, err := entry.RouteStream(stream, p.callback)
 	if err != nil {
 		logger.Errorf("%s - Failed to Read From Stream", err)
 		stream.Close()
@@ -137,7 +139,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 	}
 
 	// Create New Writer
-	event, err := entry.RouteStream(stream, p.node)
+	event, err := entry.RouteStream(stream, p.callback)
 	if err != nil {
 		logger.Errorf("%s - Failed to Write To Stream", err)
 		stream.Close()

@@ -3,7 +3,7 @@ syntax = "proto3";
 package sonr.api;
 import "proto/core/common/core.proto";
 import "proto/core/common/data.proto";
-option go_package = "github.com/sonr-io/core/pkg/api";
+option go_package = "github.com/sonr-io/core/node/api";
 
 // DecisionEvent is emitted when a decision is made by Peer.
 message DecisionEvent {

@@ -85,7 +85,7 @@ func (s *Session) Event() *api.CompleteEvent {
 }
 
 // RouteStream is used to route the given stream to the given peer.
-func (s *Session) RouteStream(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
+func (s *Session) RouteStream(stream network.Stream, n api.CallbackImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)

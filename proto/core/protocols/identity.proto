@@ -1,4 +1,4 @@
 syntax = "proto3";
 
 package sonr.protocols.identity;
-option go_package = "github.com/sonr-io/core/x/core/identity";
+option go_package = "github.com/sonr-io/core/pkg/identity";

@@ -7,6 +7,8 @@ import (
 
 	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/node/highway"
+	"github.com/sonr-io/core/node/motor"
 	"github.com/sonr-io/core/pkg/api"
 	"github.com/sonr-io/core/x/core/common"
 	"github.com/sonr-io/core/x/core/identity"
@@ -16,8 +18,8 @@ import (
 type Node struct {
 	// Standard Node Implementation
 	api.NodeImpl
-	motor   *NodeMotorStub
-	highway *NodeHighwayStub
+	motor   *motor.MotorStub
+	highway *highway.HighwayStub
 	mode    api.StubMode
 
 	// Host and context
@@ -30,25 +32,6 @@ type Node struct {
 	store    *bitcask.Bitcask
 	state    *api.State
 	once     sync.Once
-
-	// Channels
-	// TransferProtocol - decisionEvents
-	decisionEvents chan *api.DecisionEvent
-
-	// LobbyProtocol - refreshEvents
-	refreshEvents chan *api.RefreshEvent
-
-	// MailboxProtocol - mailEvents
-	mailEvents chan *api.MailboxEvent
-
-	// TransferProtocol - inviteEvents
-	inviteEvents chan *api.InviteEvent
-
-	// TransferProtocol - progressEvents
-	progressEvents chan *api.ProgressEvent
-
-	// TransferProtocol - completeEvents
-	completeEvents chan *api.CompleteEvent
 }
 
 // NewNode Creates a node with its implemented protocols
@@ -68,15 +51,9 @@ func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeIm
 
 	// Create Node
 	node := &Node{
-		ctx:            ctx,
-		listener:       l,
-		host:           host,
-		decisionEvents: make(chan *api.DecisionEvent),
-		refreshEvents:  make(chan *api.RefreshEvent),
-		inviteEvents:   make(chan *api.InviteEvent),
-		mailEvents:     make(chan *api.MailboxEvent),
-		progressEvents: make(chan *api.ProgressEvent),
-		completeEvents: make(chan *api.CompleteEvent),
+		ctx:      ctx,
+		listener: l,
+		host:     host,
 	}
 
 	// Initialize Stub

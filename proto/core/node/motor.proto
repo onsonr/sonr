@@ -4,7 +4,7 @@ syntax = "proto3";
 package sonr.node;
 import "proto/core/api/call.proto";
 import "proto/core/api/event.proto";
-option go_package = "github.com/sonr-io/core/pkg/node";
+option go_package = "github.com/sonr-io/core/node/motor";
 
 message Empty {}
 

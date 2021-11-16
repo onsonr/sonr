@@ -4,7 +4,7 @@ syntax = "proto3";
 package sonr.api;
 import "proto/core/common/core.proto";
 import "proto/core/common/data.proto";
-option go_package = "github.com/sonr-io/core/pkg/api";
+option go_package = "github.com/sonr-io/core/node/api";
 
 // (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
 message AuthenticateRequest {

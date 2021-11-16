@@ -84,20 +84,8 @@ func (m StubMode) Prefix() string {
 	return fmt.Sprintf("[SONR.%s] ", name)
 }
 
-// NodeImpl returns the NodeImpl for the Main Node
-type NodeImpl interface {
-	// GetState returns the current state of the node
-	GetState() *State
-
-	// Profile returns the profile of the node from Local Store
-	Profile() (*common.Profile, error)
-
-	// Peer returns the peer of the node
-	Peer() (*common.Peer, error)
-
-	// Close closes the node
-	Close()
-
+// CallbackImpl is the implementation of Callback interface
+type CallbackImpl interface {
 	// OnRefresh is called when the LobbyProtocol is refreshed and pushes a RefreshEvent
 	OnRefresh(event *RefreshEvent)
 
@@ -115,6 +103,21 @@ type NodeImpl interface {
 
 	// OnTransfer is called when the TransferProtocol completes a transfer and pushes a CompleteEvent
 	OnComplete(event *CompleteEvent)
+}
+
+// NodeImpl returns the NodeImpl for the Main Node
+type NodeImpl interface {
+	// GetState returns the current state of the node
+	GetState() *State
+
+	// Profile returns the profile of the node from Local Store
+	Profile() (*common.Profile, error)
+
+	// Peer returns the peer of the node
+	Peer() (*common.Peer, error)
+
+	// Close closes the node
+	Close()
 }
 
 // SignedMetadataToProto converts a SignedMetadata to a protobuf.

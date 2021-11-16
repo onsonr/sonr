@@ -14,9 +14,10 @@ import (
 )
 
 type ExchangeProtocol struct {
-	ctx  context.Context
-	host *host.SNRHost
-	node api.NodeImpl
+	ctx      context.Context
+	host     *host.SNRHost
+	node     api.NodeImpl
+	callback api.CallbackImpl
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
 	invites *cache.Cache
@@ -24,13 +25,14 @@ type ExchangeProtocol struct {
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*ExchangeProtocol, error) {
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, cb api.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &ExchangeProtocol{
 		ctx:     ctx,
 		host:    host,
 		node:    node,
 		invites: cache.New(5*time.Minute, 10*time.Minute),
+		callback: cb,
 	}
 
 	// Set Default Options
@@ -157,7 +159,7 @@ func (p *ExchangeProtocol) onInviteRequest(s network.Stream) {
 	p.invites.Set(remotePeer.String(), req, cache.DefaultExpiration)
 
 	// store request data into Context
-	p.node.OnInvite(req.ToEvent())
+	p.callback.OnInvite(req.ToEvent())
 }
 
 // onInviteResponse response handler
@@ -199,7 +201,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	// Get Next Entry
 	if x, found := p.invites.Get(remotePeer.String()); found {
 		req := x.(*InviteRequest)
-		p.node.OnDecision(resp.ToEvent(), req.ToEvent())
+		p.callback.OnDecision(resp.ToEvent(), req.ToEvent())
 	} else {
 		logger.Errorf("Failed to find Invite Request for Peer: %s", remotePeer.String())
 	}

@@ -3,16 +3,32 @@ syntax = "proto3";
 
 package sonr.node;
 import "proto/core/api/call.proto";
-option go_package = "github.com/sonr-io/core/pkg/node";
+import "proto/core/api/event.proto";
+option go_package = "github.com/sonr-io/core/node/highway";
 
 // RPC Service with Equivalent Methods of a binded Node
 service HighwayStub {
-  // Authorize Signing Method Request for Data
-  rpc Authenticate(sonr.api.AuthenticateRequest) returns (sonr.api.AuthenticateResponse) {}
-
-  // Link Links an Additional Device to User
-  rpc Link(sonr.api.LinkRequest) returns (sonr.api.LinkResponse) {}
+  // Register creates new user in DNS Table
+  rpc ListPeers(sonr.api.RegisterRequest) returns (stream sonr.api.RefreshEvent) {}
 
   // Register creates new user in DNS Table
-  rpc Register(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+  rpc DecideExchange(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc SendExchange(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc CacheRecord(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc GetRecord(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc PutRecord(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc RegisterName(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+
+  // Authorize Signing Method Request for Data
+  rpc VerifyName(sonr.api.AuthenticateRequest) returns (sonr.api.AuthenticateResponse) {}
 }

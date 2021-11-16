@@ -12,6 +12,7 @@ import (
 
 // RegistryProtocol handles Global and Local Sonr Peer Exchange Protocol
 type RegistryProtocol struct {
+	callback api.CallbackImpl
 	node       api.NodeImpl
 	ctx        context.Context
 	host       *host.SNRHost
@@ -20,7 +21,7 @@ type RegistryProtocol struct {
 }
 
 // New creates new RegisteryProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*RegistryProtocol, error) {
+func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, cb api.CallbackImpl, options ...Option) (*RegistryProtocol, error) {
 	dnsService, err := dns.NewService(ctx, option.WithAPIKey("AIza..."))
 	if err != nil {
 		logger.Error("Failed to create DNS Service", err)
@@ -33,6 +34,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 		host:       host,
 		node:       node,
 		dnsService: dnsService,
+		callback: cb,
 	}
 
 	// Set options

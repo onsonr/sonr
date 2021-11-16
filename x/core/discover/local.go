@@ -16,6 +16,7 @@ type ErrFunc func() error
 
 // Local is the protocol for managing local peers.
 type Local struct {
+	callback     api.CallbackImpl
 	node         api.NodeImpl
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
@@ -46,6 +47,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 
 	// Create Local Struct
 	e.local = &Local{
+		callback:     e.callback,
 		ctx:          e.ctx,
 		selfID:       e.host.ID(),
 		node:         e.node,
@@ -155,7 +157,7 @@ func (p *Local) handleEvents() {
 func (lp *Local) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
-	lp.node.OnRefresh(&api.RefreshEvent{
+	lp.callback.OnRefresh(&api.RefreshEvent{
 		Olc:      lp.olc,
 		Peers:    lp.peers,
 		Received: int64(time.Now().Unix()),

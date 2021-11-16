@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package sonr.protocols.registry;
-option go_package = "github.com/sonr-io/core/x/core/registry";
+option go_package = "github.com/sonr-io/core/pkg/registry";
 
 
 

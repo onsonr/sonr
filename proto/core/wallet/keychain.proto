@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sonr.wallet;
 import "proto/core/wallet/keys.proto";
-option go_package = "github.com/sonr-io/core/pkg/wallet";
+option go_package = "github.com/sonr-io/core/wallet";
 
 // KeychainType is the type of keychain.
 enum KeychainType {

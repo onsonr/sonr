@@ -3,7 +3,7 @@ syntax = "proto3";
 package sonr.wallet;
 import "proto/core/wallet/keys.proto";
 import "proto/core/wallet/keychain.proto";
-option go_package = "github.com/sonr-io/core/pkg/wallet";
+option go_package = "github.com/sonr-io/core/wallet";
 
 message Wallet {
   repeated string mnemonic = 1;

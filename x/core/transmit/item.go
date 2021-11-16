@@ -10,7 +10,7 @@ import (
 )
 
 // ReadFromStream reads the item from the stream
-func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser) error {
+func (si *SessionItem) ReadFromStream(node api.CallbackImpl, reader msgio.ReadCloser) error {
 	// Create New File
 	dst, err := os.Create(si.GetPath())
 	defer dst.Close()
@@ -50,7 +50,7 @@ func (si *SessionItem) ReadFromStream(node api.NodeImpl, reader msgio.ReadCloser
 }
 
 // WriteToStream writes the item to the stream
-func (si *SessionItem) WriteToStream(node api.NodeImpl, writer msgio.WriteCloser) error {
+func (si *SessionItem) WriteToStream(node api.CallbackImpl, writer msgio.WriteCloser) error {
 	// Create New Chunker
 	f, err := os.Open(si.GetPath())
 	defer f.Close()
@@ -95,7 +95,7 @@ func (si *SessionItem) WriteToStream(node api.NodeImpl, writer msgio.WriteCloser
 }
 
 // Progress pushes a progress event to the node. Returns true if the item is done.
-func (si *SessionItem) Progress(wrt int, n api.NodeImpl) bool {
+func (si *SessionItem) Progress(wrt int, n api.CallbackImpl) bool {
 	// Update Progress
 	si.Written += int64(wrt)
 
