@@ -33,7 +33,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
-          gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${{ github.workspace }}/build/io.sonr.core.aar
+          gomobile bind -ldflags='-s -w' -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
       - name: Upload AAR to GitHub
         uses: actions/upload-artifact@v2
         with:
@@ -67,7 +67,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
-          gomobile bind -ldflags='-s -w' -target=ios/arm64 -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.xcframework
+          gomobile bind -ldflags='-s -w' -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.xcframework
       - name: Upload Framework to GitHub
         uses: actions/upload-artifact@v2
         with:
