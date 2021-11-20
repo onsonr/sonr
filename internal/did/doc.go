@@ -3,6 +3,8 @@ package did
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	didtypes "github.com/nuts-foundation/go-did"
@@ -10,11 +12,45 @@ import (
 	"github.com/sonr-io/core/device"
 )
 
-type identityWallet struct {
-	didDoc *did.Document
+// DID is parsed according to the generic syntax: https://w3c.github.io/did-core/#generic-did-syntax
+type DID struct {
+	Scheme           string // Scheme is always "did"
+	Method           string // Method is the specific DID methods
+	MethodSpecificID string // MethodSpecificID is the unique ID computed or assigned by the DID method
 }
 
-func NewIdWallet(pub crypto.PubKey, sname string) (*did.Document, error) {
+// String returns a string representation of this DID.
+func (d *DID) String() string {
+	return fmt.Sprintf("%s:%s:%s", d.Scheme, d.Method, d.MethodSpecificID)
+}
+
+// Parse parses the string according to the generic DID syntax.
+// See https://w3c.github.io/did-core/#generic-did-syntax.
+func Parse(did string) (*DID, error) {
+	// I could not find a good ABNF parser :(
+	const idchar = `a-zA-Z0-9-_\.`
+	regex := fmt.Sprintf(`^did:[a-z0-9]+:(:+|[:%s]+)*[%%:%s]+[^:]$`, idchar, idchar)
+
+	r, err := regexp.Compile(regex)
+	if err != nil {
+		return nil, fmt.Errorf("failed to compile regex=%s (this should not have happened!). %w", regex, err)
+	}
+
+	if !r.MatchString(did) {
+		return nil, fmt.Errorf(
+			"invalid did: %s. Make sure it conforms to the DID syntax: https://w3c.github.io/did-core/#did-syntax", did)
+	}
+
+	parts := strings.SplitN(did, ":", 3)
+
+	return &DID{
+		Scheme:           "did",
+		Method:           parts[1],
+		MethodSpecificID: parts[2],
+	}, nil
+}
+
+func NewDoc(pub crypto.PubKey, sname string) (*did.Document, error) {
 	// Create DID Document
 	didID, err := did.ParseDID(fmt.Sprintf("did:sonr:%s", sname))
 	if err != nil {

@@ -120,11 +120,6 @@ func (ir *InitializeRequest) IsDev() bool {
 	return ir.GetEnvironment().IsDev()
 }
 
-// IsDelete returns true if the request is a delete request
-func (er *EditRequest) IsDelete() bool {
-	return er.GetType() == EditRequest_DELETE
-}
-
 // Count returns the number of items in the payload
 func (sr *ShareRequest) Count() int {
 	return len(sr.GetItems())

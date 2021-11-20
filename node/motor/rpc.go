@@ -160,45 +160,6 @@ func (s *MotorStub) Update() error {
 	}
 }
 
-// Edit method edits the node's properties in the Key/Value Store
-func (s *MotorStub) Edit(ctx context.Context, req *api.EditRequest) (*api.EditResponse, error) {
-	// Call Internal Update
-	if err := s.Update(); err != nil {
-		return &api.EditResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
-	// Send Response
-	return &api.EditResponse{
-		Success: true,
-	}, nil
-}
-
-// Fetch method retreives Node properties from Key/Value Store
-func (s *MotorStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.FetchResponse, error) {
-	// Call Lobby Update
-	if err := s.Update(); err != nil {
-		logger.Warnf("%s - Failed to Update Lobby", err)
-	}
-
-	// Call Internal Fetch4
-	profile, err := s.node.Profile()
-	if err != nil {
-		return &api.FetchResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
-	// Send Response
-	return &api.FetchResponse{
-		Success: true,
-		Profile: profile,
-	}, nil
-}
-
 // Share method sends supplied files/urls with a peer
 func (s *MotorStub) Share(ctx context.Context, req *api.ShareRequest) (*api.ShareResponse, error) {
 	// Call Lobby Update

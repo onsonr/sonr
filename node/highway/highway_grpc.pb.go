@@ -20,21 +20,21 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HighwayStubClient interface {
 	// Register creates new user in DNS Table
-	ListPeers(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (HighwayStub_ListPeersClient, error)
+	ListPeers(ctx context.Context, in *api.ListPeersRequest, opts ...grpc.CallOption) (HighwayStub_ListPeersClient, error)
 	// Register creates new user in DNS Table
-	DecideExchange(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
+	DecideExchange(ctx context.Context, in *api.DecideRequest, opts ...grpc.CallOption) (*api.DecideResponse, error)
 	// Register creates new user in DNS Table
-	SendExchange(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
+	SendExchange(ctx context.Context, in *api.SendRequest, opts ...grpc.CallOption) (*api.SendResponse, error)
 	// Register creates new user in DNS Table
-	CacheRecord(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
+	CacheRecord(ctx context.Context, in *api.CacheRecordRequest, opts ...grpc.CallOption) (*api.CacheRecordResponse, error)
 	// Register creates new user in DNS Table
-	GetRecord(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
+	GetRecord(ctx context.Context, in *api.GetRecordRequest, opts ...grpc.CallOption) (*api.GetRecordResponse, error)
 	// Register creates new user in DNS Table
-	PutRecord(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
+	StoreRecord(ctx context.Context, in *api.StoreRecordRequest, opts ...grpc.CallOption) (*api.StoreRecordResponse, error)
 	// Register creates new user in DNS Table
-	RegisterName(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
+	RegisterName(ctx context.Context, in *api.RegisterNameRequest, opts ...grpc.CallOption) (*api.RegisterNameResponse, error)
 	// Authorize Signing Method Request for Data
-	VerifyName(ctx context.Context, in *api.AuthenticateRequest, opts ...grpc.CallOption) (*api.AuthenticateResponse, error)
+	VerifyName(ctx context.Context, in *api.VerifyNameRequest, opts ...grpc.CallOption) (*api.VerifyNameResponse, error)
 }
 
 type highwayStubClient struct {
@@ -45,7 +45,7 @@ func NewHighwayStubClient(cc grpc.ClientConnInterface) HighwayStubClient {
 	return &highwayStubClient{cc}
 }
 
-func (c *highwayStubClient) ListPeers(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (HighwayStub_ListPeersClient, error) {
+func (c *highwayStubClient) ListPeers(ctx context.Context, in *api.ListPeersRequest, opts ...grpc.CallOption) (HighwayStub_ListPeersClient, error) {
 	stream, err := c.cc.NewStream(ctx, &HighwayStub_ServiceDesc.Streams[0], "/sonr.node.HighwayStub/ListPeers", opts...)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (c *highwayStubClient) ListPeers(ctx context.Context, in *api.RegisterReque
 }
 
 type HighwayStub_ListPeersClient interface {
-	Recv() (*api.RefreshEvent, error)
+	Recv() (*api.ListPeersResponse, error)
 	grpc.ClientStream
 }
 
@@ -69,16 +69,16 @@ type highwayStubListPeersClient struct {
 	grpc.ClientStream
 }
 
-func (x *highwayStubListPeersClient) Recv() (*api.RefreshEvent, error) {
-	m := new(api.RefreshEvent)
+func (x *highwayStubListPeersClient) Recv() (*api.ListPeersResponse, error) {
+	m := new(api.ListPeersResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *highwayStubClient) DecideExchange(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
-	out := new(api.RegisterResponse)
+func (c *highwayStubClient) DecideExchange(ctx context.Context, in *api.DecideRequest, opts ...grpc.CallOption) (*api.DecideResponse, error) {
+	out := new(api.DecideResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/DecideExchange", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -86,8 +86,8 @@ func (c *highwayStubClient) DecideExchange(ctx context.Context, in *api.Register
 	return out, nil
 }
 
-func (c *highwayStubClient) SendExchange(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
-	out := new(api.RegisterResponse)
+func (c *highwayStubClient) SendExchange(ctx context.Context, in *api.SendRequest, opts ...grpc.CallOption) (*api.SendResponse, error) {
+	out := new(api.SendResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/SendExchange", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -95,8 +95,8 @@ func (c *highwayStubClient) SendExchange(ctx context.Context, in *api.RegisterRe
 	return out, nil
 }
 
-func (c *highwayStubClient) CacheRecord(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
-	out := new(api.RegisterResponse)
+func (c *highwayStubClient) CacheRecord(ctx context.Context, in *api.CacheRecordRequest, opts ...grpc.CallOption) (*api.CacheRecordResponse, error) {
+	out := new(api.CacheRecordResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/CacheRecord", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -104,8 +104,8 @@ func (c *highwayStubClient) CacheRecord(ctx context.Context, in *api.RegisterReq
 	return out, nil
 }
 
-func (c *highwayStubClient) GetRecord(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
-	out := new(api.RegisterResponse)
+func (c *highwayStubClient) GetRecord(ctx context.Context, in *api.GetRecordRequest, opts ...grpc.CallOption) (*api.GetRecordResponse, error) {
+	out := new(api.GetRecordResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/GetRecord", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -113,17 +113,17 @@ func (c *highwayStubClient) GetRecord(ctx context.Context, in *api.RegisterReque
 	return out, nil
 }
 
-func (c *highwayStubClient) PutRecord(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
-	out := new(api.RegisterResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/PutRecord", in, out, opts...)
+func (c *highwayStubClient) StoreRecord(ctx context.Context, in *api.StoreRecordRequest, opts ...grpc.CallOption) (*api.StoreRecordResponse, error) {
+	out := new(api.StoreRecordResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/StoreRecord", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *highwayStubClient) RegisterName(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
-	out := new(api.RegisterResponse)
+func (c *highwayStubClient) RegisterName(ctx context.Context, in *api.RegisterNameRequest, opts ...grpc.CallOption) (*api.RegisterNameResponse, error) {
+	out := new(api.RegisterNameResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/RegisterName", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -131,8 +131,8 @@ func (c *highwayStubClient) RegisterName(ctx context.Context, in *api.RegisterRe
 	return out, nil
 }
 
-func (c *highwayStubClient) VerifyName(ctx context.Context, in *api.AuthenticateRequest, opts ...grpc.CallOption) (*api.AuthenticateResponse, error) {
-	out := new(api.AuthenticateResponse)
+func (c *highwayStubClient) VerifyName(ctx context.Context, in *api.VerifyNameRequest, opts ...grpc.CallOption) (*api.VerifyNameResponse, error) {
+	out := new(api.VerifyNameResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayStub/VerifyName", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -145,21 +145,21 @@ func (c *highwayStubClient) VerifyName(ctx context.Context, in *api.Authenticate
 // for forward compatibility
 type HighwayStubServer interface {
 	// Register creates new user in DNS Table
-	ListPeers(*api.RegisterRequest, HighwayStub_ListPeersServer) error
+	ListPeers(*api.ListPeersRequest, HighwayStub_ListPeersServer) error
 	// Register creates new user in DNS Table
-	DecideExchange(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
+	DecideExchange(context.Context, *api.DecideRequest) (*api.DecideResponse, error)
 	// Register creates new user in DNS Table
-	SendExchange(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
+	SendExchange(context.Context, *api.SendRequest) (*api.SendResponse, error)
 	// Register creates new user in DNS Table
-	CacheRecord(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
+	CacheRecord(context.Context, *api.CacheRecordRequest) (*api.CacheRecordResponse, error)
 	// Register creates new user in DNS Table
-	GetRecord(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
+	GetRecord(context.Context, *api.GetRecordRequest) (*api.GetRecordResponse, error)
 	// Register creates new user in DNS Table
-	PutRecord(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
+	StoreRecord(context.Context, *api.StoreRecordRequest) (*api.StoreRecordResponse, error)
 	// Register creates new user in DNS Table
-	RegisterName(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
+	RegisterName(context.Context, *api.RegisterNameRequest) (*api.RegisterNameResponse, error)
 	// Authorize Signing Method Request for Data
-	VerifyName(context.Context, *api.AuthenticateRequest) (*api.AuthenticateResponse, error)
+	VerifyName(context.Context, *api.VerifyNameRequest) (*api.VerifyNameResponse, error)
 	mustEmbedUnimplementedHighwayStubServer()
 }
 
@@ -167,28 +167,28 @@ type HighwayStubServer interface {
 type UnimplementedHighwayStubServer struct {
 }
 
-func (UnimplementedHighwayStubServer) ListPeers(*api.RegisterRequest, HighwayStub_ListPeersServer) error {
+func (UnimplementedHighwayStubServer) ListPeers(*api.ListPeersRequest, HighwayStub_ListPeersServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListPeers not implemented")
 }
-func (UnimplementedHighwayStubServer) DecideExchange(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
+func (UnimplementedHighwayStubServer) DecideExchange(context.Context, *api.DecideRequest) (*api.DecideResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecideExchange not implemented")
 }
-func (UnimplementedHighwayStubServer) SendExchange(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
+func (UnimplementedHighwayStubServer) SendExchange(context.Context, *api.SendRequest) (*api.SendResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendExchange not implemented")
 }
-func (UnimplementedHighwayStubServer) CacheRecord(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
+func (UnimplementedHighwayStubServer) CacheRecord(context.Context, *api.CacheRecordRequest) (*api.CacheRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CacheRecord not implemented")
 }
-func (UnimplementedHighwayStubServer) GetRecord(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
+func (UnimplementedHighwayStubServer) GetRecord(context.Context, *api.GetRecordRequest) (*api.GetRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRecord not implemented")
 }
-func (UnimplementedHighwayStubServer) PutRecord(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutRecord not implemented")
+func (UnimplementedHighwayStubServer) StoreRecord(context.Context, *api.StoreRecordRequest) (*api.StoreRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StoreRecord not implemented")
 }
-func (UnimplementedHighwayStubServer) RegisterName(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
+func (UnimplementedHighwayStubServer) RegisterName(context.Context, *api.RegisterNameRequest) (*api.RegisterNameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterName not implemented")
 }
-func (UnimplementedHighwayStubServer) VerifyName(context.Context, *api.AuthenticateRequest) (*api.AuthenticateResponse, error) {
+func (UnimplementedHighwayStubServer) VerifyName(context.Context, *api.VerifyNameRequest) (*api.VerifyNameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyName not implemented")
 }
 func (UnimplementedHighwayStubServer) mustEmbedUnimplementedHighwayStubServer() {}
@@ -205,7 +205,7 @@ func RegisterHighwayStubServer(s grpc.ServiceRegistrar, srv HighwayStubServer) {
 }
 
 func _HighwayStub_ListPeers_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(api.RegisterRequest)
+	m := new(api.ListPeersRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
@@ -213,7 +213,7 @@ func _HighwayStub_ListPeers_Handler(srv interface{}, stream grpc.ServerStream) e
 }
 
 type HighwayStub_ListPeersServer interface {
-	Send(*api.RefreshEvent) error
+	Send(*api.ListPeersResponse) error
 	grpc.ServerStream
 }
 
@@ -221,12 +221,12 @@ type highwayStubListPeersServer struct {
 	grpc.ServerStream
 }
 
-func (x *highwayStubListPeersServer) Send(m *api.RefreshEvent) error {
+func (x *highwayStubListPeersServer) Send(m *api.ListPeersResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
 func _HighwayStub_DecideExchange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.RegisterRequest)
+	in := new(api.DecideRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -238,13 +238,13 @@ func _HighwayStub_DecideExchange_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/sonr.node.HighwayStub/DecideExchange",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayStubServer).DecideExchange(ctx, req.(*api.RegisterRequest))
+		return srv.(HighwayStubServer).DecideExchange(ctx, req.(*api.DecideRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _HighwayStub_SendExchange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.RegisterRequest)
+	in := new(api.SendRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -256,13 +256,13 @@ func _HighwayStub_SendExchange_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/sonr.node.HighwayStub/SendExchange",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayStubServer).SendExchange(ctx, req.(*api.RegisterRequest))
+		return srv.(HighwayStubServer).SendExchange(ctx, req.(*api.SendRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _HighwayStub_CacheRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.RegisterRequest)
+	in := new(api.CacheRecordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -274,13 +274,13 @@ func _HighwayStub_CacheRecord_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/sonr.node.HighwayStub/CacheRecord",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayStubServer).CacheRecord(ctx, req.(*api.RegisterRequest))
+		return srv.(HighwayStubServer).CacheRecord(ctx, req.(*api.CacheRecordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _HighwayStub_GetRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.RegisterRequest)
+	in := new(api.GetRecordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -292,31 +292,31 @@ func _HighwayStub_GetRecord_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/sonr.node.HighwayStub/GetRecord",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayStubServer).GetRecord(ctx, req.(*api.RegisterRequest))
+		return srv.(HighwayStubServer).GetRecord(ctx, req.(*api.GetRecordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HighwayStub_PutRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.RegisterRequest)
+func _HighwayStub_StoreRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(api.StoreRecordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HighwayStubServer).PutRecord(ctx, in)
+		return srv.(HighwayStubServer).StoreRecord(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.HighwayStub/PutRecord",
+		FullMethod: "/sonr.node.HighwayStub/StoreRecord",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayStubServer).PutRecord(ctx, req.(*api.RegisterRequest))
+		return srv.(HighwayStubServer).StoreRecord(ctx, req.(*api.StoreRecordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _HighwayStub_RegisterName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.RegisterRequest)
+	in := new(api.RegisterNameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -328,13 +328,13 @@ func _HighwayStub_RegisterName_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/sonr.node.HighwayStub/RegisterName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayStubServer).RegisterName(ctx, req.(*api.RegisterRequest))
+		return srv.(HighwayStubServer).RegisterName(ctx, req.(*api.RegisterNameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _HighwayStub_VerifyName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.AuthenticateRequest)
+	in := new(api.VerifyNameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -346,7 +346,7 @@ func _HighwayStub_VerifyName_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/sonr.node.HighwayStub/VerifyName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayStubServer).VerifyName(ctx, req.(*api.AuthenticateRequest))
+		return srv.(HighwayStubServer).VerifyName(ctx, req.(*api.VerifyNameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -375,8 +375,8 @@ var HighwayStub_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HighwayStub_GetRecord_Handler,
 		},
 		{
-			MethodName: "PutRecord",
-			Handler:    _HighwayStub_PutRecord_Handler,
+			MethodName: "StoreRecord",
+			Handler:    _HighwayStub_StoreRecord_Handler,
 		},
 		{
 			MethodName: "RegisterName",

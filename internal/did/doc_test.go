@@ -19,7 +19,7 @@ func TestParseURI(t *testing.T) {
 			t.Fail()
 		}
 
-		_, err = did.NewIdWallet(pub, "test")
+		_, err = did.NewDoc(pub, "test")
 		if err != nil {
 			log.Printf("%s - Failed to create new wallet", err)
 			t.Fail()

@@ -87,24 +87,3 @@ func (p *RegistryProtocol) Verify(sname string) (bool, error) {
 	}
 	return rec.ComparePeerID(compId), nil
 }
-
-// Register registers a domain with Namebase.
-func (p *RegistryProtocol) Register(req *api.RegisterRequest) (RecordMap, error) {
-	if p.mode.Motor() {
-		return nil, ErrNotSupported
-	}
-
-	// Create DNS Create Request
-	rrset := NewRegisterRecordSet(req.Prefix, req.SName, req.Fingerprint, req.PublicKey)
-	call := p.dnsService.Changes.Create(GCP_PROJECT, GCP_ZONE, rrset.ToDNSAddChange())
-
-	// Call Request on dnsService
-	resp, err := call.Do()
-	if err != nil {
-		return nil, err
-	}
-
-	// Return RecordMap
-	newRrrset := RecordSetFromDNS(&resp.Additions)
-	return newRrrset.ToDnsMap(), nil
-}

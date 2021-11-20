@@ -20,10 +20,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MotorStubClient interface {
 	// Node Methods
-	// Verification Method Request for Signed Data
-	Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error)
-	// Fetch method finds data from Key/Value store
-	Fetch(ctx context.Context, in *api.FetchRequest, opts ...grpc.CallOption) (*api.FetchResponse, error)
 	// Respond Method to an Invite with Decision
 	Share(ctx context.Context, in *api.ShareRequest, opts ...grpc.CallOption) (*api.ShareResponse, error)
 	// Respond Method to an Invite with Decision
@@ -53,24 +49,6 @@ type motorStubClient struct {
 
 func NewMotorStubClient(cc grpc.ClientConnInterface) MotorStubClient {
 	return &motorStubClient{cc}
-}
-
-func (c *motorStubClient) Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error) {
-	out := new(api.EditResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Edit", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *motorStubClient) Fetch(ctx context.Context, in *api.FetchRequest, opts ...grpc.CallOption) (*api.FetchResponse, error) {
-	out := new(api.FetchResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.MotorStub/Fetch", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *motorStubClient) Share(ctx context.Context, in *api.ShareRequest, opts ...grpc.CallOption) (*api.ShareResponse, error) {
@@ -329,10 +307,6 @@ func (x *motorStubOnTransmitCompleteClient) Recv() (*api.CompleteEvent, error) {
 // for forward compatibility
 type MotorStubServer interface {
 	// Node Methods
-	// Verification Method Request for Signed Data
-	Edit(context.Context, *api.EditRequest) (*api.EditResponse, error)
-	// Fetch method finds data from Key/Value store
-	Fetch(context.Context, *api.FetchRequest) (*api.FetchResponse, error)
 	// Respond Method to an Invite with Decision
 	Share(context.Context, *api.ShareRequest) (*api.ShareResponse, error)
 	// Respond Method to an Invite with Decision
@@ -361,12 +335,6 @@ type MotorStubServer interface {
 type UnimplementedMotorStubServer struct {
 }
 
-func (UnimplementedMotorStubServer) Edit(context.Context, *api.EditRequest) (*api.EditResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Edit not implemented")
-}
-func (UnimplementedMotorStubServer) Fetch(context.Context, *api.FetchRequest) (*api.FetchResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Fetch not implemented")
-}
 func (UnimplementedMotorStubServer) Share(context.Context, *api.ShareRequest) (*api.ShareResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Share not implemented")
 }
@@ -408,42 +376,6 @@ type UnsafeMotorStubServer interface {
 
 func RegisterMotorStubServer(s grpc.ServiceRegistrar, srv MotorStubServer) {
 	s.RegisterService(&MotorStub_ServiceDesc, srv)
-}
-
-func _MotorStub_Edit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.EditRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MotorStubServer).Edit(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sonr.node.MotorStub/Edit",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorStubServer).Edit(ctx, req.(*api.EditRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MotorStub_Fetch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.FetchRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MotorStubServer).Fetch(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sonr.node.MotorStub/Fetch",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MotorStubServer).Fetch(ctx, req.(*api.FetchRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _MotorStub_Share_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -654,14 +586,6 @@ var MotorStub_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "sonr.node.MotorStub",
 	HandlerType: (*MotorStubServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Edit",
-			Handler:    _MotorStub_Edit_Handler,
-		},
-		{
-			MethodName: "Fetch",
-			Handler:    _MotorStub_Fetch_Handler,
-		},
 		{
 			MethodName: "Share",
 			Handler:    _MotorStub_Share_Handler,

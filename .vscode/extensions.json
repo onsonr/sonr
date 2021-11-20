@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "npxms.hide-gitignored"
+        "npxms.hide-gitignored",
+        "stepsize.stepsize"
     ]
 }
