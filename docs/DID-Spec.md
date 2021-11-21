@@ -2,8 +2,7 @@
 
 ## Abstract
 
-Sonr is a privacy focused blockchain built by Sonr Inc. to reinvent how we handle identity and data transimission.
-Sonr also supports DID operations. DIDs are created and stored in the Sonr Node, and they are used with verifiable credentials.
+Sonr is a privacy focused blockchain built to reinvent how we handle identity and data transimission. Sonr also supports DID operations. DIDs are created and stored in the Sonr Node, and they are used with verifiable credentials.
 
 This specification describes how DIDs are managed on the Sonr.
 
@@ -43,10 +42,7 @@ base58 = "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9" / "A" / "B" /
          "x" / "y" / "z"
 ```
 
-The `idstring` is a base58-encoded SHA-256 hash of a Secp256k1 public key.
-It means that DIDs are case-sensitive, even though the prefix is always lower-case.
-
-The sonr SDK provides a tool for generateing the Secp256k1 key-pair either randomly or from a mnemonic provided by the user.
+The `idstring` is a base58-encoded SHA-256 hash of a Secp256k1 public key. It means that DIDs are case-sensitive, even though the prefix is always lower-case. The sonr SDK provides a tool for generating the Secp256k1 key-pair either randomly or from a mnemonic provided by the user.
 
 Example:
 
@@ -56,14 +52,10 @@ did:sonr:7Prd74ry1Uct87nZqL3ny7aR7Cg46JamVbJgk8azVgUm
 
 ### Relationship between DIDs and sonr accounts
 
-DIDs are independent of any sonr accounts.
-sonr accounts are necessary only for sending transactions to sonr
-to create/update/deactivate the DIDs.
+DIDs are independent of any sonr accounts. sonr accounts are necessary only for sending transactions to sonr to create/update/deactivate the DIDs.
 
-It means that sonr accounts are not used to verify the DID ownership.
-To prove the DID ownership, users must include a signature to the transaction.
-The signature must be generated with the private key which corresponds to one of the public keys registered in the DID document.
-The signature is different from the sonr transaction signature generated with the private key of the sonr account.
+It means that sonr accounts are not used to verify the DID ownership. To prove the DID ownership, users must include a signature to the transaction. The signature must be generated with the private key which corresponds to one of the public keys registered in the DID document. The signature is different from the sonr transaction signature generated with the private key of the sonr account.
+
 The details are described below.
 
 ## DID Document Format (JSON-LD)
@@ -86,11 +78,9 @@ The details are described below.
 }
 ```
 
-Currently, the `controller` in the `verificationMethod` must be equal to the [DID subject](https://www.w3.org/TR/2020/WD-did-core-20200907/#dfn-did-subjects).
-It would be extended later.
+Currently, the `controller` in the `verificationMethod` must be equal to the [DID subject](https://www.w3.org/TR/2020/WD-did-core-20200907/#dfn-did-subjects). It would be extended later.
 
-The Key IDs in the `authentication` are references to one of public keys specified in the `verificationMethod`.
-The spec of the `authentication` would be extended in the future.
+The Key IDs in the `authentication` are references to one of public keys specified in the `verificationMethod`. The spec of the `authentication` would be extended in the future.
 
 The sonr DID Document doesn't contain the `service` field currently. It would be extended soon.
 
@@ -127,7 +117,7 @@ To create a DID Document in sonr, the following transaction should be submitted.
 }
 ```
 
-The transaction must have a `did` and a `document` which will be stored in the sonr.
+The transaction must have a `did` and a `document` which will be stored in the sonr blockchain.
 
 It also must have a `signature` and a `verification_method_id` for proving the ownership of the DID.
 The `signature` must be generated from the `document` and the sequence `"0"`.
@@ -290,6 +280,17 @@ The source of the `signature` should look like (encoded with Amino):
 
 The transaction fails if the DID doesn't exist or if it has been already deactivated.
 
+## Sequence Diagrams
+
+```mermaid
+erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ LINE-ITEM : contains
+    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
+```
+
+
+
 ## Security Considerations
 
 _This section is non-normative._
@@ -320,8 +321,8 @@ If DID Controllers want to mitigate the risk of correlation, they should use uni
 
 ## Reference Implementations
 
-* Core: <https://github.com/medibloc/sonr-core>
-* SDK: <https://github.com/medibloc/sonr-js>
+* Core: https://github.com/sonr-io/core
+* SDK: https://github.com/sonr-io/sdk
 
 ## References
 
