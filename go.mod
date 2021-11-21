@@ -25,6 +25,7 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2
+	golang.org/x/tools v0.1.8-0.20211022200916-316ba0b74098 // indirect
 	google.golang.org/api v0.56.0
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1

@@ -22,35 +22,9 @@
 </p>
 <br />
 
-_By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)_
+_By [Sonr](https://www.sonr.io), creators of [Sonr Protocol](https://www.twitter.com/SonrProtocol)_
 
 ---
-
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
-  </ol>
-</details>
 
 <!-- ABOUT THE PROJECT -->
 
@@ -73,13 +47,6 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-
-- **npm**
-
-  ```sh
-  npm install npm@latest -g
-  ```
-
 - **golang**
 
   ```sh
@@ -94,7 +61,7 @@ This is an example of how to list things you need to use the software and how to
    git clone https://github.com/sonr-io/sonr.git
    ```
 
-2. Install NPM packages
+2. Use Makefile Commands
 
   ```bash
   # Binds Android and iOS for Plugin Path
@@ -146,26 +113,22 @@ This project is a pseudo-monorepo, meaning it has a single root directory and al
   └─ bind       ->        +   Desktop Binary
   └─ daemon     ->        +   Binded Mobile Framework (aar, xcframework)
   └─ highway    ->        +   Sonr Custodian Node (desktop, server)
-/docs           ->        Documentation.
-/extensions     ->        Sonr Extension's for platform integrations (Figma, Chrome, Native, etc.)
+/common         ->        Shared Types
+/docs           ->        Documentation and Specifications
+/device         ->        Current Node Device management
 /internal       ->        Internal Code. (Networking, Emitter, FileSystem, etc.)
-  └─ api        ->        +   Shared Protobuf Models, Generic Types, and Enums.
-  └─ common     ->        +   Core data types and functions.
-  └─ device     ->        +   Current Node Device management
+  └─ beam       ->        +   Shared Protobuf Models, Generic Types, and Enums.
+  └─ did        ->        +   Core data types and functions.
   └─ host       ->        +   Libp2p Configuration
-  └─ keychain   ->        +   Keychain for Private/Public Keys
-  └─ node       ->        +   Central Node for Sonr Network
+/node           ->        Central Node for Sonr Network
 /pkg            ->        Protocol Services for Sonr Core
-  └─ domain     ->        +   Shared Protobuf Models, Generic Types, and Enums.
+  └─ discover   ->        +   Shared Protobuf Models, Generic Types, and Enums.
   └─ exchange   ->        +   Data Transfer related Models.
-  └─ lobby      ->        +   Node Peer related Models.
-  └─ mailbox    ->        +   Creates and Registers Libp2p RPC Service Handlers.
-  └─ transfer   ->        +   Creates an Interface which manages libp2p pubsub topics.
+  └─ identity   ->        +   Node Peer related Models.
+  └─ registry   ->        +   Creates and Registers Libp2p RPC Service Handlers.
+  └─ transmit   ->        +   Creates an Interface which manages libp2p pubsub topics.
 /proto          ->        Protobuf Definition Files.
-/tools          ->        API Services utilized in the project.
-  └─ config     ->        +   File System structure management
-  └─ internet   ->        +   Namebase, REST, and DNS Resolver
-  └─ state      ->        +   State Machine Management
+/wallet         ->        Universal Wallet Interface for Sonr Core.
 ```
 
 <!-- ROADMAP -->
@@ -205,10 +168,8 @@ Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr
 ## Acknowledgements
 
 - [Libp2p](https://libp2p.io/)
-- [Textile](https://www.textile.io/)
 - [Handshake](https://handshake.org/)
 - [Flutter](https://flutter.dev/)
-- [Gitmoji-CLI](https://github.com/carloscuesta/gitmoji-cli)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

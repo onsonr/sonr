@@ -49,8 +49,8 @@ type options struct {
 // defaultOptions returns the default wallet options.
 func defaultOptions() *options {
 	return &options{
-		passphrase: "",
-		sname:      "",
+		passphrase: "wagmi",
+		sname:      "test",
 		reset:      false,
 	}
 }
