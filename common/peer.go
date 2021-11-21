@@ -13,7 +13,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -44,14 +43,13 @@ func (p *Peer) Libp2pID() (peer.ID, error) {
 		return "", errors.New("Peer Public Key is not set.")
 	}
 
-	// Fetch public key from peer data
-	pubKey, err := p.SnrPubKey()
+	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
 		return "", err
 	}
 
 	// Return Peer ID
-	id, err := pubKey.PeerID()
+	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
 		return "", err
 	}
@@ -77,19 +75,6 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 // OS returns Peer Device GOOS
 func (p *Peer) OS() string {
 	return p.GetDevice().GetOs()
-}
-
-// SnrPubKey returns the Public Key from the Peer as SnrPubKey
-func (p *Peer) SnrPubKey() (*wallet.SnrPubKey, error) {
-	// Get Public Key
-	pub, err := p.PubKey()
-	if err != nil {
-		logger.Errorf("%s - Failed to get Public Key", err)
-		return nil, err
-	}
-
-	// Return SnrPubKey
-	return wallet.NewSnrPubKey(pub), nil
 }
 
 // Add adds a new Profile to the List and

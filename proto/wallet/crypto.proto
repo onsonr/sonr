@@ -1,4 +1,0 @@
-syntax = "proto3";
-
-package sonr.wallet;
-option go_package = "github.com/sonr-io/core/wallet";
