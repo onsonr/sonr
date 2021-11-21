@@ -12,6 +12,6 @@ RUN apt-get update && apt-get install -y zip && \
 
 ENV PATH=$PATH:$GOPATH/bin:/opt/protoc/bin
 COPY . /go/src/github.com/sonr-io/core
-ENTRYPOINT cd /go/src/github.com/sonr-io/core/cmd/snrd && go run main.go
+ENTRYPOINT cd /go/src/github.com/sonr-io/core/cmd/highway && go run main.go
 
 EXPOSE 8080 26225 443

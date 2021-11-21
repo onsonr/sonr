@@ -2,7 +2,7 @@ project_name: sonr-core
 builds:
   - id: sonr
     binary: sonrd
-    dir: cmd/sonrd
+    dir: cmd/daemon
     goos:
       - linux
       - darwin

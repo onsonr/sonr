@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"syscall"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/node"
@@ -36,7 +35,6 @@ const (
 
 var (
 	Ctx     context.Context
-	App     *fiber.App
 	Node    api.NodeImpl
 	Mode    api.StubMode
 	Sockets *SockManager

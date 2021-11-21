@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sonr-io/core/cmd/sonrd/cmd"
+	"github.com/sonr-io/core/cmd/daemon/cmd"
 )
 
 func main() {

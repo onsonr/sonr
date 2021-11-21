@@ -130,7 +130,7 @@ Docker Instructions
   docker run -it -p 443:26225 ghcr.io/sonr-io/snrd
   ```
 
-3. Pushing the image to ghcr.io (optional)
+3. Pushing the image to ghcr.io *optional*
 
   ```sh
   docker push ghcr.io/sonr-io/snrd:latest
@@ -140,11 +140,12 @@ Docker Instructions
 
 This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
 
-```
+```text
+/app            ->        Exposed common application code from modules
 /cmd            ->        Packaged Binaries.
-  └─ bin        ->        +   Daemon RPC for Desktop Builds.
+  └─ bind       ->        +   Desktop Binary
+  └─ daemon     ->        +   Binded Mobile Framework (aar, xcframework)
   └─ highway    ->        +   Sonr Custodian Node (desktop, server)
-  └─ lib        ->        +   Binded Mobile Framework (aar, framework)
 /docs           ->        Documentation.
 /extensions     ->        Sonr Extension's for platform integrations (Figma, Chrome, Native, etc.)
 /internal       ->        Internal Code. (Networking, Emitter, FileSystem, etc.)
