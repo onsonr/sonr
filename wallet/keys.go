@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hyperledger/aries-framework-go/pkg/doc/did"
 	"github.com/hyperledger/aries-framework-go/pkg/kms"
 	"github.com/hyperledger/aries-framework-go/pkg/wallet"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/internal/did"
 	"google.golang.org/protobuf/proto"
 
 	cpb "github.com/libp2p/go-libp2p-core/crypto/pb"
@@ -57,11 +57,14 @@ func createDefaultKeys(sname string) error {
 		return err
 	}
 
-	didDoc, err := did.NewDoc(pubkey, sname)
+	devid, err := device.ID()
 	if err != nil {
 		return err
 	}
 
+	deviceVerify := did.NewVerificationMethodFromBytes("sonr", pubkey.Type().String(), devid, pubbuf)
+	verificationMethod := []did.VerificationMethod{*deviceVerify}
+	didDoc := did.BuildDoc(did.WithVerificationMethod(verificationMethod))
 	didJson, err := didDoc.MarshalJSON()
 	if err != nil {
 		return err
@@ -131,6 +134,29 @@ func (i *KeypairInfo) LoadPubKey() (crypto.PubKey, error) {
 		return nil, err
 	}
 	return crypto.UnmarshalEd25519PublicKey(pubBuf)
+}
+
+// DeviceDID returns the device DID
+func DeviceDID() (*did.Doc, error) {
+	pubKey, err := DevicePubKey()
+	if err != nil {
+		return nil, err
+	}
+
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return nil, err
+	}
+
+	devid, err := device.ID()
+	if err != nil {
+		return nil, err
+	}
+
+	deviceVerify := did.NewVerificationMethodFromBytes("sonr", pubKey.Type().String(), devid, pubBuf)
+	verificationMethod := []did.VerificationMethod{*deviceVerify}
+	didDoc := did.BuildDoc(did.WithVerificationMethod(verificationMethod))
+	return didDoc, nil
 }
 
 // DevicePubKey returns the device public key

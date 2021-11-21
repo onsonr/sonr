@@ -4,11 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"image/png"
-	"math/rand"
 	"runtime"
 	"time"
 
-	faker "github.com/brianvoe/gofakeit/v6"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/o1egl/govatar"
@@ -111,18 +109,12 @@ type profileOpts struct {
 // defaultProfileOpts returns the default profile options
 func defaultProfileOpts() profileOpts {
 	return profileOpts{
-		sname:     randomSName(),
+		sname:     fmt.Sprintf("a%s", runtime.GOOS),
 		firstName: "Anonymous",
 		lastName:  runtime.GOOS,
 		picture:   make([]byte, 0),
-		bio:       faker.Dessert(),
 		socials:   make([]*Social, 0),
 	}
-}
-
-// randomSName returns a random SName
-func randomSName() string {
-	return faker.FirstName()[0:1] + faker.LastName()
 }
 
 // NewDefaultProfile creates a new default Profile
@@ -170,17 +162,6 @@ func WithPicture() DefaultProfileOption {
 	}
 }
 
-// WithSocials adds random Social Media profiles
-func WithSocials() DefaultProfileOption {
-	return func(opts profileOpts) {
-		socials := make([]*Social, 0)
-		for i := 0; i < 5; i++ {
-			socials = append(socials, genSocial())
-		}
-		opts.socials = socials
-	}
-}
-
 // checkProfile checks if the Profile is valid
 func checkProfile(p *Profile) bool {
 	if p == nil {
@@ -207,18 +188,4 @@ func genAvatar() []byte {
 		fmt.Println("failed to create buffer", err)
 	}
 	return buff.Bytes()
-}
-
-// genSocial generates a random social
-func genSocial() *Social {
-	mediaIdx := rand.Intn(len(Social_Media_value)-1) + 1
-	media := Social_Media(mediaIdx)
-	username := faker.Username()
-	return &Social{
-		Valid:    true,
-		Media:    Social_Media(mediaIdx),
-		Username: username,
-		Url:      fmt.Sprintf("https://%s.com/%s", media.String(), username),
-		Picture:  genAvatar(),
-	}
 }

@@ -2,10 +2,10 @@
 
 ## Abstract
 
-sonr is a public blockchain built by MediBloc to reinvent the healthcare experience.
-sonr also supports DID operations. DIDs are created and stored in the sonr, and they are used with verifiable credentials.
+Sonr is a privacy focused blockchain built by Sonr Inc. to reinvent how we handle identity and data transimission.
+Sonr also supports DID operations. DIDs are created and stored in the Sonr Node, and they are used with verifiable credentials.
 
-This specification describes how DIDs are managed on the sonr.
+This specification describes how DIDs are managed on the Sonr.
 
 ## Table of Contents
 
