@@ -7,26 +7,39 @@ import (
 	"github.com/sonr-io/core/wallet"
 )
 
-func TestParseURI(t *testing.T) {
-
+func TestCreateWallet(t *testing.T) {
 	t.Run("for VC types", func(t *testing.T) {
-		err := wallet.Open(wallet.WithPassphrase("super-test-passphrase"), wallet.WithSName("test"), wallet.Reset())
+		pp := "super-test-passphrase"
+		sname := "testSname"
+		err := wallet.Create(pp, sname)
 		if err != nil {
-			t.Fatal(err)
+			log.Fatal(err)
 		}
-
-		t.Logf("Wallet created: %s", wallet.Info.String())
 		key, err := wallet.DevicePubKey()
 		if err != nil {
 			t.Fatal(err)
 		}
-		log.Printf("Device KeyInfo: %v", key)
+		log.Printf("Device PubKey: %v", key)
 
-		pkh, err := wallet.DevicePrivKH()
+		privKey, err := wallet.DevicePrivKey()
 		if err != nil {
 			t.Fatal(err)
 		}
-		log.Printf("Device PrivKey: %v", pkh)
+		log.Printf("Device PrivKey: %v", privKey)
+	})
+}
+
+func TestOpenWallet(t *testing.T) {
+	t.Run("for VC types", func(t *testing.T) {
+		err := wallet.Open(wallet.WithPassphrase("super-test-passphrase"), wallet.WithSName("testSname"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		key, err := wallet.DevicePubKey()
+		if err != nil {
+			t.Fatal(err)
+		}
+		log.Printf("Device PubKey: %v", key)
 
 		privKey, err := wallet.DevicePrivKey()
 		if err != nil {

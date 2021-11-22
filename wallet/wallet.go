@@ -3,12 +3,11 @@ package wallet
 import (
 	"crypto/rand"
 	"crypto/sha256"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/hyperledger/aries-framework-go/pkg/client/vcwallet"
 	"github.com/hyperledger/aries-framework-go/pkg/framework/aries"
-	"github.com/hyperledger/aries-framework-go/pkg/framework/context"
 	"github.com/hyperledger/aries-framework-go/pkg/secretlock"
 	"github.com/hyperledger/aries-framework-go/pkg/secretlock/local"
 	"github.com/hyperledger/aries-framework-go/pkg/secretlock/local/masterlock/hkdf"
@@ -24,69 +23,26 @@ const (
 )
 
 var (
-	Provider  *context.Provider
 	Framework *aries.Aries
-	Instance  *vcwallet.Client
-	Info      *WalletInfo
-
-	hasExistingWallet bool
+	Instance  *wallet.Wallet
+	token     string
 )
 
-func Open(options ...Option) error {
-	opts := defaultOptions()
-	for _, opt := range options {
-		opt(opts)
-	}
-	if opts.reset {
-		err := device.Wallet.Delete(MASTER_KEY_FILE_NAME)
-		if err != nil {
-			logger.Errorf("Failed to delete master key file: %s", err.Error())
-			return err
-		}
-
-		err = device.Wallet.Delete(WALLET_INFO_FILE_NAME)
-		if err != nil {
-			logger.Errorf("Failed to delete wallet info file: %s", err.Error())
-			return err
-		}
+func Create(pp, sname string) error {
+	if err := device.Wallet.Delete(MASTER_KEY_FILE_NAME); err != nil {
+		logger.Warnf("Couldnt delete master key file: %s", err.Error())
 	}
 
-	if device.Wallet.Exists(MASTER_KEY_FILE_NAME) {
-		hasExistingWallet = true
-		err := loadWallet(opts.passphrase, opts.sname)
-		if err != nil {
-			logger.Errorf("Failed to load wallet: %s", err.Error())
-			return err
-		}
-	} else {
-		hasExistingWallet = false
-		err := createWallet(opts.passphrase, opts.sname)
-		if err != nil {
-			logger.Errorf("Failed to create wallet: %s", err.Error())
-			return err
-		}
+	if err := device.Wallet.Delete(WALLET_INFO_FILE_NAME); err != nil {
+		logger.Warnf("Couldnt delete wallet info file: %s", err.Error())
 	}
-	return nil
-}
 
-func loadWallet(passphrase string, sname string) error {
-	// create a master lock to protect the master key
-	// (salt is optional, if using one, ensure it is stored and passed in for future uses)
-	masterLock, err := hkdf.NewMasterLock(passphrase, sha256.New, nil)
-	if err != nil {
-		logger.Errorf("Failed to create master lock: %s", err.Error())
-		return err
-	}
-	return setupWallet(sname, passphrase, masterLock)
-}
-
-func createWallet(passphrase string, sname string) error {
 	// keySize to be used to create master key
 	keySize := sha256.Size
 
 	// create a master lock to protect the master key
 	// (salt is optional, if using one, ensure it is stored and passed in for future uses)
-	masterLock, err := hkdf.NewMasterLock(passphrase, sha256.New, nil)
+	masterLock, err := hkdf.NewMasterLock(pp, sha256.New, nil)
 	if err != nil {
 		logger.Errorf("Failed to create master lock: %s", err.Error())
 		return err
@@ -113,9 +69,30 @@ func createWallet(passphrase string, sname string) error {
 		logger.Errorf("Failed to write master key file: %s", err.Error())
 		return err
 	}
-	return setupWallet(sname, passphrase, masterLock)
+	return setupWallet(sname, pp, masterLock)
 }
 
+// Open opens the Sonr Wallet to interact with the blockchain
+func Open(options ...Option) error {
+	opts := defaultOptions()
+	for _, opt := range options {
+		opt(opts)
+	}
+	if device.Wallet.Exists(MASTER_KEY_FILE_NAME) {
+		// create a master lock to protect the master key
+		// (salt is optional, if using one, ensure it is stored and passed in for future uses)
+		masterLock, err := hkdf.NewMasterLock(opts.passphrase, sha256.New, nil)
+		if err != nil {
+			logger.Errorf("Failed to create master lock: %s", err.Error())
+			return err
+		}
+		return setupWallet(opts.sname, opts.passphrase, masterLock)
+	} else {
+		return errors.New("Wallet Master Key File does not exist")
+	}
+}
+
+// setupWallet sets up the wallet
 func setupWallet(sname, passphrase string, masterLock secretlock.Service) error {
 	// create a master key reader from this file
 	// Note: Now that the protected master key file is created, future calls to aries.New()
@@ -140,23 +117,37 @@ func setupWallet(sname, passphrase string, masterLock secretlock.Service) error 
 		return err
 	}
 
-	Provider, err = Framework.Context()
-	if err != nil {
-		logger.Errorf("Failed to create context: %s", err.Error())
-		return err
-	}
+	if Instance == nil {
+		provider, err := Framework.Context()
+		if err != nil {
+			logger.Errorf("Failed to create context: %s", err.Error())
+			return err
+		}
 
-	// Check if wallet exists
-	err = vcwallet.CreateProfile(sname, Provider, wallet.WithPassphrase(passphrase))
-	if err != nil {
-		logger.Errorf("Failed to create profile: %s", err.Error())
-		return err
-	}
+		if err := wallet.ProfileExists(sname, provider); err != nil {
+			logger.Warnf("Profile does not exist, creating new...")
+			// Check if wallet exists
+			err = wallet.CreateProfile(sname, provider, wallet.WithPassphrase(passphrase))
+			if err != nil {
+				logger.Errorf("Failed to create profile: %s", err.Error())
+				return err
+			}
+		} else {
+			logger.Infof("Profile exists, updating...")
+			err = wallet.UpdateProfile(sname, provider, wallet.WithPassphrase(passphrase))
+			if err != nil {
+				return err
+			}
+		}
 
-	Instance, err = vcwallet.New(sname, Provider, wallet.WithUnlockByPassphrase(passphrase))
-	if err != nil {
-		logger.Errorf("Failed to create vc wallet: %s", err.Error())
-		return err
+		Instance, err = wallet.New(sname, provider)
+		if err != nil {
+			return err
+		}
+		token, err = Instance.Open(wallet.WithUnlockByPassphrase(passphrase))
+		if err != nil {
+			return err
+		}
 	}
 	return createDefaultKeys(sname)
 }
@@ -221,25 +212,24 @@ func CreateMetadata(peerID peer.ID) (*SignedMetadata, error) {
 
 // SignWith signs a message with the specified keypair
 func Sign(msg []byte) ([]byte, error) {
-	privKey, err := DevicePrivKH()
+	privKey, err := DevicePrivKey()
 	if err != nil {
 		logger.Errorf("%s - Failed to get local host's private key", err)
 		return nil, err
 	}
-	result, err := Provider.Crypto().Sign(msg, privKey)
-	if err != nil {
-		logger.Errorf("%s - Failed to Sign Data", err)
-		return nil, err
-	}
-	return result, nil
+	return privKey.Sign(msg)
 }
 
 // VerifyWith verifies a signature with specified pair
 func Verify(msg []byte, sig []byte) error {
-	privKey, err := DevicePrivKH()
+	privKey, err := DevicePrivKey()
 	if err != nil {
 		logger.Errorf("%s - Failed to get local host's private key", err)
 		return err
 	}
-	return Provider.Crypto().Verify(msg, sig, privKey)
+	ok, err := privKey.GetPublic().Verify(msg, sig)
+	if ok {
+		return nil
+	}
+	return err
 }

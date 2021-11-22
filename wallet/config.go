@@ -32,18 +32,10 @@ func WithSName(sname string) Option {
 	}
 }
 
-// Reset is an option that resets the wallet.
-func Reset() Option {
-	return func(o *options) {
-		o.reset = true
-	}
-}
-
 // options is a collection of options for the wallet.
 type options struct {
 	passphrase string
 	sname      string
-	reset      bool
 }
 
 // defaultOptions returns the default wallet options.
@@ -51,6 +43,5 @@ func defaultOptions() *options {
 	return &options{
 		passphrase: "wagmi",
 		sname:      "test",
-		reset:      false,
 	}
 }
