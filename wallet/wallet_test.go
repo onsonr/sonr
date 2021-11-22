@@ -11,7 +11,7 @@ func TestCreateWallet(t *testing.T) {
 	t.Run("for VC types", func(t *testing.T) {
 		pp := "super-test-passphrase"
 		sname := "testSname"
-		err := wallet.Create(pp, sname)
+		err := wallet.New(pp, sname)
 		if err != nil {
 			log.Fatal(err)
 		}

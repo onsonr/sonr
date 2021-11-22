@@ -28,7 +28,7 @@ var (
 	token     string
 )
 
-func Create(pp, sname string) error {
+func New(pp, sname string) error {
 	if err := device.Wallet.Delete(MASTER_KEY_FILE_NAME); err != nil {
 		logger.Warnf("Couldnt delete master key file: %s", err.Error())
 	}
