@@ -1,15 +1,12 @@
 package common
 
 import (
-	"bytes"
 	"fmt"
-	"image/png"
 	"runtime"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
 )
@@ -155,13 +152,6 @@ func WithCheckerProfile(profile *Profile) DefaultProfileOption {
 	}
 }
 
-// WithPicture adds a random Profile Picture
-func WithPicture() DefaultProfileOption {
-	return func(opts profileOpts) {
-		opts.picture = genAvatar()
-	}
-}
-
 // checkProfile checks if the Profile is valid
 func checkProfile(p *Profile) bool {
 	if p == nil {
@@ -171,21 +161,4 @@ func checkProfile(p *Profile) bool {
 		return false
 	}
 	return true
-}
-
-// genAvatar generates a random avatar returns empty byte list if error
-func genAvatar() []byte {
-	// Generate a random avatar
-	img, err := govatar.Generate(govatar.MALE)
-	if err != nil {
-		return make([]byte, 0)
-	}
-
-	// Write Img to byte list
-	buff := new(bytes.Buffer)
-	err = png.Encode(buff, img)
-	if err != nil {
-		fmt.Println("failed to create buffer", err)
-	}
-	return buff.Bytes()
 }

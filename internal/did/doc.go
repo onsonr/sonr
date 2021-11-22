@@ -44,6 +44,8 @@ func Parse(did string) (*DID, error) {
 	}, nil
 }
 
+
+
 // func NewDoc(pub crypto.PubKey, sname string) (*did.Document, error) {
 // 	// Create DID Document
 // 	didID, err := did.ParseDID(fmt.Sprintf("did:sonr:%s", sname))

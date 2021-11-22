@@ -86,7 +86,7 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 
 	// Open Keychain
-	if err := wallet.Open(wallet.WithPassphrase("super-test-passphrase"), wallet.WithSName("test"), wallet.Reset()); err != nil {
+	if err := wallet.Open(wallet.WithPassphrase("super-test-passphrase"), wallet.WithSName("test")); err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to open wallet", err)
 		Exit(1)
 	}

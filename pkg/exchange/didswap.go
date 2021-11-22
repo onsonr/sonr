@@ -7,7 +7,11 @@ import (
 )
 
 func NewDIDSwap() error {
-	bob, err := didexchange.New(wallet.Provider)
+	provider, err := wallet.Framework.Context()
+	if err != nil {
+		return err
+	}
+	bob, err := didexchange.New(provider)
 	if err != nil {
 		return err
 	}
