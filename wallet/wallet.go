@@ -18,8 +18,7 @@ import (
 )
 
 const (
-	MASTER_KEY_FILE_NAME  = "sonr_master_key_file"
-	WALLET_INFO_FILE_NAME = "sonr_wallet_info_file"
+	MASTER_KEY_FILE_NAME = "sonr_master_key_file"
 )
 
 var (
@@ -28,13 +27,15 @@ var (
 	token     string
 )
 
+// Exists checks if the wallet exists
+func Exists() bool {
+	return device.Wallet.Exists(MASTER_KEY_FILE_NAME)
+}
+
+// New creates a new wallet
 func New(pp, sname string) error {
 	if err := device.Wallet.Delete(MASTER_KEY_FILE_NAME); err != nil {
 		logger.Warnf("Couldnt delete master key file: %s", err.Error())
-	}
-
-	if err := device.Wallet.Delete(WALLET_INFO_FILE_NAME); err != nil {
-		logger.Warnf("Couldnt delete wallet info file: %s", err.Error())
 	}
 
 	// keySize to be used to create master key

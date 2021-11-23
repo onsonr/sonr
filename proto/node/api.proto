@@ -19,6 +19,7 @@ message InitializeRequest {
   DeviceOptions deviceOptions = 6;     // File System Config
   sonr.core.Environment environment = 7; // Environment Config
   map<string,string> variables = 8;     // Domain TXT Records
+  string walletPassphrase = 9;          // Wallet Passphrase
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
@@ -56,6 +57,8 @@ message InitializeRequest {
       IPV6 = 1; // IPv6 Address
     }
   }
+
+  //
 }
 
 // (Client) InitializeResponse is Response from Initialize Request

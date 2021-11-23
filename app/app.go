@@ -86,11 +86,19 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 
 	// Open Keychain
-	if err := wallet.Open(wallet.WithPassphrase("super-test-passphrase"), wallet.WithSName("test")); err != nil {
-		golog.Default.Child("(app)").Fatalf("%s - Failed to open wallet", err)
-		Exit(1)
+	if wallet.Exists() {
+		err := wallet.Open(wallet.WithPassphrase(req.GetWalletPassphrase()), wallet.WithSName(req.GetProfile().GetSName()))
+		if err != nil {
+			golog.Default.Child("(app)").Fatalf("%s - Failed to Open Keychain", err)
+			Exit(1)
+		}
+	} else {
+		err := wallet.New(req.GetWalletPassphrase(), req.GetProfile().GetSName())
+		if err != nil {
+			golog.Default.Child("(app)").Fatalf("%s - Failed to Create Keychain", err)
+			Exit(1)
+		}
 	}
-
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.Address())
 	if err != nil {

@@ -3,18 +3,6 @@ syntax = "proto3";
 package sonr.wallet;
 option go_package = "github.com/sonr-io/core/wallet";
 
-message WalletInfo {
-  string sName = 1;
-  map<string, KeypairInfo> keys = 2;
-}
-
-message KeypairInfo {
- string id = 1;
- TokenType tokenType = 2;
- string keyType = 3;
- string label = 4;
-}
-
 // TokenType is the type of keychain.
 enum TokenType {
     SNR = 0;
