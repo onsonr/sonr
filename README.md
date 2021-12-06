@@ -1,90 +1,21 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)
 [![CI Workflow 🐿](https://github.com/sonr-io/core/actions/workflows/ci.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/ci.yml)
 
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://github.com/sonr-io/core">
-    <img src="https://uploads-ssl.webflow.com/60e4b57e5960f8d0456720e7/60fbc0e3fcdf204c7ed9946b_Github%20-%20Core.png" alt="Logo" height="275">
-  </a>
-
-  <p align="center">
-  Core Framework that manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, and Pub-Sub for Lobby.
-    <a href="https://github.com/sonr-io/core"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/sonr-io/core">View Demo</a>
-    ·
-    <a href="https://github.com/sonr-io/core/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/sonr-io/core/issues">Request Feature</a>
-  </p>
-</p>
-<br />
-
-_By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)_
-
----
-
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
-  </ol>
-</details>
-
-<!-- ABOUT THE PROJECT -->
-
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+Sonr is building the most simple and intuitive Decentralized Web experience for users and developers alike with our revolutionary blockchain and universal digital wallet.
+
 
 ### Built With
 
 - [Golang]()
-- [Node.js]()
-- [Flutter]()
+- [Libp2p]()
 
 <!-- GETTING STARTED -->
 
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-
-- **npm**
-
-  ```sh
-  npm install npm@latest -g
-  ```
-
-- **golang**
-
-  ```sh
-  go get github.com/golang/dep/cmd/dep
-  ```
 
 ### Installation
 
@@ -206,8 +137,6 @@ Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr
 - [Libp2p](https://libp2p.io/)
 - [Textile](https://www.textile.io/)
 - [Handshake](https://handshake.org/)
-- [Flutter](https://flutter.dev/)
-- [Gitmoji-CLI](https://github.com/carloscuesta/gitmoji-cli)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -216,11 +145,3 @@ Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr
 [contributors-url]: https://github.com/sonr-io/core/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/sonr-io/core.svg?style=for-the-badge
 [forks-url]: https://github.com/sonr-io/core/network/members
-[stars-shield]: https://img.shields.io/github/stars/sonr-io/core.svg?style=for-the-badge
-[stars-url]: https://github.com/sonr-io/core/stargazers
-[issues-shield]: https://img.shields.io/github/issues/sonr-io/core.svg?style=for-the-badge
-[issues-url]: https://github.com/sonr-io/core/issues
-[license-shield]: https://img.shields.io/github/license/sonr-io/core.svg?style=for-the-badge
-[license-url]: https://github.com/sonr-io/core/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/sonr-io
