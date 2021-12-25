@@ -1,57 +1,21 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)
 [![CI Workflow 🐿](https://github.com/sonr-io/core/actions/workflows/ci.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/ci.yml)
 
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://github.com/sonr-io/core">
-    <img src="https://uploads-ssl.webflow.com/60e4b57e5960f8d0456720e7/60fbc0e3fcdf204c7ed9946b_Github%20-%20Core.png" alt="Logo" height="275">
-  </a>
-
-  <p align="center">
-  Core Framework that manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, and Pub-Sub for Lobby.
-    <a href="https://github.com/sonr-io/core"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/sonr-io/core">View Demo</a>
-    ·
-    <a href="https://github.com/sonr-io/core/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/sonr-io/core/issues">Request Feature</a>
-  </p>
-</p>
-<br />
-
-_By [Sonr](https://www.sonr.io), creators of [Sonr Protocol](https://www.twitter.com/SonrProtocol)_
-
----
-
-<!-- ABOUT THE PROJECT -->
-
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+Sonr is building the most simple and intuitive Decentralized Web experience for users and developers alike with our revolutionary blockchain and universal digital wallet.
+
 
 ### Built With
 
 - [Golang]()
-- [Node.js]()
-- [Flutter]()
+- [Libp2p]()
 
 <!-- GETTING STARTED -->
 
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-- **golang**
-
-  ```sh
-  go get github.com/golang/dep/cmd/dep
-  ```
 
 ### Installation
 
@@ -61,7 +25,7 @@ This is an example of how to list things you need to use the software and how to
    git clone https://github.com/sonr-io/sonr.git
    ```
 
-2. Use Makefile Commands
+2. Install NPM packages
 
   ```bash
   # Binds Android and iOS for Plugin Path
@@ -97,7 +61,7 @@ Docker Instructions
   docker run -it -p 443:26225 ghcr.io/sonr-io/snrd
   ```
 
-3. Pushing the image to ghcr.io *optional*
+3. Pushing the image to ghcr.io (optional)
 
   ```sh
   docker push ghcr.io/sonr-io/snrd:latest
@@ -107,28 +71,31 @@ Docker Instructions
 
 This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
 
-```text
-/app            ->        Exposed common application code from modules
+```
 /cmd            ->        Packaged Binaries.
-  └─ bind       ->        +   Desktop Binary
-  └─ daemon     ->        +   Binded Mobile Framework (aar, xcframework)
+  └─ bin        ->        +   Daemon RPC for Desktop Builds.
   └─ highway    ->        +   Sonr Custodian Node (desktop, server)
-/common         ->        Shared Types
-/docs           ->        Documentation and Specifications
-/device         ->        Current Node Device management
+  └─ lib        ->        +   Binded Mobile Framework (aar, framework)
+/docs           ->        Documentation.
+/extensions     ->        Sonr Extension's for platform integrations (Figma, Chrome, Native, etc.)
 /internal       ->        Internal Code. (Networking, Emitter, FileSystem, etc.)
-  └─ beam       ->        +   Shared Protobuf Models, Generic Types, and Enums.
-  └─ did        ->        +   Core data types and functions.
+  └─ api        ->        +   Shared Protobuf Models, Generic Types, and Enums.
+  └─ common     ->        +   Core data types and functions.
+  └─ device     ->        +   Current Node Device management
   └─ host       ->        +   Libp2p Configuration
-/node           ->        Central Node for Sonr Network
+  └─ keychain   ->        +   Keychain for Private/Public Keys
+  └─ node       ->        +   Central Node for Sonr Network
 /pkg            ->        Protocol Services for Sonr Core
-  └─ discover   ->        +   Shared Protobuf Models, Generic Types, and Enums.
+  └─ domain     ->        +   Shared Protobuf Models, Generic Types, and Enums.
   └─ exchange   ->        +   Data Transfer related Models.
-  └─ identity   ->        +   Node Peer related Models.
-  └─ registry   ->        +   Creates and Registers Libp2p RPC Service Handlers.
-  └─ transmit   ->        +   Creates an Interface which manages libp2p pubsub topics.
+  └─ lobby      ->        +   Node Peer related Models.
+  └─ mailbox    ->        +   Creates and Registers Libp2p RPC Service Handlers.
+  └─ transfer   ->        +   Creates an Interface which manages libp2p pubsub topics.
 /proto          ->        Protobuf Definition Files.
-/wallet         ->        Universal Wallet Interface for Sonr Core.
+/tools          ->        API Services utilized in the project.
+  └─ config     ->        +   File System structure management
+  └─ internet   ->        +   Namebase, REST, and DNS Resolver
+  └─ state      ->        +   State Machine Management
 ```
 
 <!-- ROADMAP -->
@@ -168,8 +135,8 @@ Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr
 ## Acknowledgements
 
 - [Libp2p](https://libp2p.io/)
+- [Textile](https://www.textile.io/)
 - [Handshake](https://handshake.org/)
-- [Flutter](https://flutter.dev/)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -178,11 +145,3 @@ Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr
 [contributors-url]: https://github.com/sonr-io/core/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/sonr-io/core.svg?style=for-the-badge
 [forks-url]: https://github.com/sonr-io/core/network/members
-[stars-shield]: https://img.shields.io/github/stars/sonr-io/core.svg?style=for-the-badge
-[stars-url]: https://github.com/sonr-io/core/stargazers
-[issues-shield]: https://img.shields.io/github/issues/sonr-io/core.svg?style=for-the-badge
-[issues-url]: https://github.com/sonr-io/core/issues
-[license-shield]: https://img.shields.io/github/license/sonr-io/core.svg?style=for-the-badge
-[license-url]: https://github.com/sonr-io/core/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/sonr-io
