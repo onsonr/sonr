@@ -9,7 +9,6 @@ require (
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
 	github.com/google/uuid v1.3.0
-	github.com/hyperledger/aries-framework-go v0.1.7
 	github.com/kataras/golog v0.1.7
 	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-connmgr v0.2.4

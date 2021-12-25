@@ -80,8 +80,8 @@ func (f *FileItem) Header() textproto.MIMEHeader {
 	}
 }
 
-// ResetPath sets the path of the FileItem
-func (f *FileItem) ResetPath(folder device.Folder) (string, error) {
+// SetPathFromFolder sets the path of the FileItem
+func (f *FileItem) SetPathFromFolder(folder device.Folder) (string, error) {
 	// Set Path
 	oldPath := f.GetPath()
 
