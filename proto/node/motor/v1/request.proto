@@ -1,0 +1,94 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package node.motor.v1;
+import "common/v1/core.proto";
+import "common/v1/data.proto";
+option go_package = "github.com/sonr-io/core/node/motor";
+
+// -----------------------------------------------------------------------------
+// Motor Node API
+// -----------------------------------------------------------------------------
+// (Client) InitializeRequest Message to Establish Sonr Host/API/Room
+message InitializeRequest {
+  common.v1.Location location = 1;     // Current Runtime Location
+  common.v1.Profile profile = 2;       // Users Contact Card
+  common.v1.Connection connection = 3; // Internet Connection Type
+  HostOptions host_options = 4;         // Libp2p Host config
+  ServiceOptions service_options = 5;   // Service Config
+  DeviceOptions device_options = 6;     // File System Config
+  common.v1.Environment environment = 7; // Environment Config
+  map<string,string> variables = 8;     // Domain TXT Records
+  string wallet_passphrase = 9;          // Wallet Passphrase
+
+  // Optional Message to Initialize FileSystem
+  message DeviceOptions {
+    string id = 1;           // Device ID
+    string home_dir = 2;
+    string support_dir = 3;
+    string temp_dir = 4;
+  }
+
+  // Libp2p Host Options
+  message HostOptions {
+    bool quic_transport = 1;             // Enable QUIC Transport
+    bool http_transport = 2;             // Enable HTTP Transport
+    bool ipv4_only = 3;                  // Enable IPv4 Only
+    repeated IPAddress listen_addrs = 4; // List of Listen Addresses (optional)
+  }
+
+  // Service Configuration
+  message ServiceOptions {
+    bool textile = 1;    // Enable Textile Client and Threads
+    bool mailbox = 2;    // Enable Mailbox
+    bool buckets = 3;    // Enable Buckets
+    int32 interval = 4; // Auto Update Interval (seconds) - Default 5s
+  }
+
+  // IP Address Interface
+  message IPAddress {
+    string name = 1;   // Name of Interface
+    string address = 2;  // IP Address of Interface
+    bool internal = 3; // Wether it is a Loopback Interface
+    Family family = 4; // Address Family
+
+    enum Family {
+      FAMILY_UNSPECIFIED = 0;
+      FAMILY_IPV4 = 1; // IPv4 Address
+      FAMILY_IPV6 = 2; // IPv6 Address
+    }
+  }
+}
+
+// (Client) ShareRequest is request to share supplied files/urls with a peer
+message ShareRequest {
+  common.v1.Peer peer = 1; // Peer to Share with
+  common.v1.MessageItem message = 2; // Message to Share
+  repeated common.v1.SupplyItem items = 3; // Supply Items to share
+}
+
+// (Client) DecideRequest is request to respond to a share request
+message DecideRequest {
+  bool decision = 1;       // True if Supply is Active
+  common.v1.Peer peer = 2; // Peer to Share with
+}
+
+// (Client) SearchRequest is Message for Searching for Peer
+message SearchRequest {
+  oneof query {
+    string s_name = 1;  // SName combined with Device ID and Hashed
+    string peer_id = 2; // Peer ID
+  }
+}
+
+message OnLobbyRefreshRequest {}
+
+message OnMailboxMessageRequest {}
+
+message OnTransmitDecisionRequest {}
+
+message OnTransmitInviteRequest {}
+
+message OnTransmitProgressRequest {}
+
+message OnTransmitCompleteRequest {}

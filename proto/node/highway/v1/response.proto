@@ -1,0 +1,66 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package node.highway.v1;
+import "common/v1/core.proto";
+option go_package = "github.com/sonr-io/core/node/highway";
+
+// (Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)
+message ListPeersResponse {
+  string olc = 1;                    // OLC Code of Topic
+  repeated common.v1.Peer peers = 2; // User Information
+  int64 received = 3;                // Invite received Timestamp
+}
+
+
+// (Highway) LinkResponse is Message for Linking Response (Hmac Sha256)
+message DecideExchangeResponse {
+    bool success = 1; // If Values were Signed
+    string error = 2; // Error Message
+    map<string,string> records = 3; // Updated Domain TXT Records
+}
+
+
+// (Client) ShareResponse is response to ShareRequest
+message SendExchangeResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message CacheRecordResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message GetRecordResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message StoreRecordResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message RegisterNameResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message VerifyNameResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}

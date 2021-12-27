@@ -1,0 +1,88 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package node.highway.v1;
+import "common/v1/core.proto";
+import "common/v1/data.proto";
+option go_package = "github.com/sonr-io/core/node/highway";
+
+
+
+// -----------------------------------------------------------------------------
+// Highway Node API
+// -----------------------------------------------------------------------------
+// (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
+message ListPeersRequest {
+  string s_name = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string device_id = 3; // Device ID
+}
+
+
+// (Highway) LinkRequest handles Linked Devices on DNS Table
+message DecideExchangeRequest {
+  string s_name = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string device_id = 3; // Device ID
+  Method method = 4; // Method for Linking
+
+  // Method for Linking
+  enum Method {
+    METHOD_UNSPECIFIED = 0;
+    METHOD_ADD = 1; // Add Device ID to SName on DNS Table
+    METHOD_REMOVE = 2; // Remove Device ID from SName on DNS Table
+  }
+}
+
+
+// (Client) ShareRequest is request to share supplied files/urls with a peer
+message SendExchangeRequest {
+  common.v1.Peer peer = 1; // Peer to Share with
+  common.v1.MessageItem message = 2; // Message to Share
+  repeated common.v1.SupplyItem items = 3; // Supply Items to share
+}
+
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message CacheRecordRequest {
+  string s_name = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string public_key = 4;   // Public Key
+}
+
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message GetRecordRequest {
+  string s_name = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string public_key = 4;   // Public Key
+}
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message StoreRecordRequest {
+  string s_name = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string public_key = 4;   // Public Key
+}
+
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message RegisterNameRequest {
+  string s_name = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string public_key = 4;   // Public Key
+}
+
+
+
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message VerifyNameRequest {
+  string s_name = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+  string public_key = 4;   // Public Key
+}
+

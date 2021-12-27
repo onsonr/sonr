@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package protocols.discover.v1;
+import "common/v1/core.proto";
+option go_package = "github.com/sonr-io/core/discover";
+
+// LobbyMessage is message passed from Peer in Lobby
+message LobbyMessage {
+  common.v1.Peer peer = 1;     // Users Peer Data
+  optional string message = 2; // Message to be published
+  common.v1.Metadata metadata = 3; // Metadata
+}
+
+// VisibilityRequest is Message for updating Peer Visibility in Exchange
+message VisibilityRequest {
+  string s_name = 1;        // SName combined with Device ID and Hashed
+  bytes public_key = 2;     // Buffer of Public Key
+  Visibility visibility = 3; // Visibility
+
+  enum Visibility {
+    VISIBILITY_UNSPECIFIED = 0;
+    VISIBILITY_AVAILABLE = 1; // Everyone can see this peer
+    VISIBILITY_HIDDEN = 2; // Only Linked Devices can see this peer
+    VISIBILITY_FRIENDS = 3; // Only Friends can see this peer
+  }
+}
+
+// VisibilityResponse is response for VisibilityRequest
+message VisibilityResponse {
+  bool success = 1; // If Request was Successful
+  string error = 2; // Error Message if Request was not successful
+  Visibility visibility = 3; // Visibility
+
+  enum Visibility {
+    VISIBILITY_UNSPECIFIED = 0;
+    VISIBILITY_AVAILABLE = 1; // Everyone can see this peer
+    VISIBILITY_HIDDEN = 2; // Only Linked Devices can see this peer
+    VISIBILITY_FRIENDS = 3; // Only Friends can see this peer
+  }
+}

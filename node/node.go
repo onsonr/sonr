@@ -8,19 +8,14 @@ import (
 	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/node/api"
-	"github.com/sonr-io/core/node/highway"
-	"github.com/sonr-io/core/node/motor"
 	"github.com/sonr-io/core/identity"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
 	// Standard Node Implementation
-	api.NodeImpl
-	motor   *motor.MotorStub
-	highway *highway.HighwayStub
-	mode    api.StubMode
+	NodeImpl
+	mode StubMode
 
 	// Host and context
 	host     *host.SNRHost
@@ -30,12 +25,12 @@ type Node struct {
 	ctx      context.Context
 	identity *identity.IdentityProtocol
 	store    *bitcask.Bitcask
-	state    *api.State
+	state    *State
 	once     sync.Once
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeImpl, *api.InitializeResponse, error) {
+func NewNode(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -46,7 +41,7 @@ func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeIm
 	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
 	if err != nil {
 		logger.Errorf("%s - Failed to initialize host", err)
-		return nil, api.NewInitialzeResponse(nil, false), err
+		return nil, err
 	}
 
 	// Open Store with profileBuf
@@ -61,25 +56,25 @@ func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeIm
 	node.identity, err = identity.New(ctx, host, node, identity.WithProfile(opts.profile))
 	if err != nil {
 		logger.Errorf("%s - Failed to initialize identity", err)
-		return nil, api.NewInitialzeResponse(nil, false), err
+		return nil, err
 	}
 
 	// Initialize Stub
-	err = opts.Apply(ctx, host, node)
-	if err != nil {
-		logger.Errorf("%s - Failed to initialize stub", err)
-		return nil, api.NewInitialzeResponse(nil, false), err
-	}
+	// err = opts.Apply(ctx, host, node)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to initialize stub", err)
+	// 	return nil, err
+	// }
 	// Begin Background Tasks
-	return node, api.NewInitialzeResponse(node.Profile, false), nil
+	return node, nil
 }
 
 // GetState returns the current state of the API
-func (n *Node) GetState() *api.State {
+func (n *Node) GetState() *State {
 	n.once.Do(func() {
 		chn := make(chan bool)
 		close(chn)
-		n.state = &api.State{Chn: chn}
+		n.state = &State{Chn: chn}
 	})
 	return n.state
 }
@@ -98,9 +93,9 @@ func (n *Node) Peer() (*common.Peer, error) {
 func (n *Node) Close() {
 	// Close Client Stub
 	if n.mode.Motor() {
-		if err := n.motor.Close(); err != nil {
-			logger.Errorf("%s - Failed to close Client Stub, ", err)
-		}
+		// if err := n.motor.Close(); err != nil {
+		// 	logger.Errorf("%s - Failed to close Client Stub, ", err)
+		// }
 	}
 
 	// Close Highway Stub
