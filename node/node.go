@@ -8,9 +8,9 @@ import (
 	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/node/api"
 	"github.com/sonr-io/core/node/highway"
 	"github.com/sonr-io/core/node/motor"
-	"github.com/sonr-io/core/node/api"
 	"github.com/sonr-io/core/pkg/identity"
 )
 
@@ -49,11 +49,19 @@ func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeIm
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 
+	// Open Store with profileBuf
 	// Create Node
 	node := &Node{
 		ctx:      ctx,
 		listener: l,
 		host:     host,
+	}
+
+	logger.Debugf("Opening Store with profile: %s", opts.profile)
+	node.identity, err = identity.New(ctx, host, node, identity.WithProfile(opts.profile))
+	if err != nil {
+		logger.Errorf("%s - Failed to initialize identity", err)
+		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 
 	// Initialize Stub

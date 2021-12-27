@@ -12,6 +12,7 @@ import (
 	api "github.com/sonr-io/core/node/api"
 	"github.com/sonr-io/core/pkg/discover"
 	"github.com/sonr-io/core/pkg/exchange"
+	"github.com/sonr-io/core/pkg/identity"
 	"github.com/sonr-io/core/pkg/transmit"
 	"google.golang.org/grpc"
 )
@@ -38,6 +39,7 @@ type MotorStub struct {
 	grpcServer *grpc.Server
 
 	// Protocols
+	*identity.IdentityProtocol
 	*transmit.TransmitProtocol
 	*discover.DiscoverProtocol
 	*exchange.ExchangeProtocol
@@ -63,7 +65,7 @@ type MotorStub struct {
 }
 
 // startMotorStub creates a new Client service stub for the node.
-func NewMotorStub(ctx context.Context, h *host.SNRHost, n api.NodeImpl, loc *common.Location, lst net.Listener) (*MotorStub, error) {
+func NewMotorStub(ctx context.Context, h *host.SNRHost, n api.NodeImpl, lst net.Listener, loc *common.Location, p *common.Profile) (*MotorStub, error) {
 	// Create a new gRPC server
 	var err error
 	grpcServer := grpc.NewServer()
@@ -97,6 +99,13 @@ func NewMotorStub(ctx context.Context, h *host.SNRHost, n api.NodeImpl, loc *com
 	stub.ExchangeProtocol, err = exchange.New(ctx, h, n, stub)
 	if err != nil {
 		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
+		return nil, err
+	}
+
+	// Set Identity Protocol
+	stub.IdentityProtocol, err = identity.New(ctx, h, n, identity.WithProfile(p))
+	if err != nil {
+		logger.Errorf("%s - Failed to initialize identity", err)
 		return nil, err
 	}
 

@@ -1,19 +1,13 @@
 package common
 
 import (
-	"bytes"
 	"fmt"
-	"image/png"
-	"math/rand"
 	"runtime"
 	"time"
 
-	faker "github.com/brianvoe/gofakeit/v6"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -44,14 +38,13 @@ func (p *Peer) Libp2pID() (peer.ID, error) {
 		return "", errors.New("Peer Public Key is not set.")
 	}
 
-	// Fetch public key from peer data
-	pubKey, err := p.SnrPubKey()
+	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
 		return "", err
 	}
 
 	// Return Peer ID
-	id, err := pubKey.PeerID()
+	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
 		return "", err
 	}
@@ -77,19 +70,6 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 // OS returns Peer Device GOOS
 func (p *Peer) OS() string {
 	return p.GetDevice().GetOs()
-}
-
-// SnrPubKey returns the Public Key from the Peer as SnrPubKey
-func (p *Peer) SnrPubKey() (*wallet.SnrPubKey, error) {
-	// Get Public Key
-	pub, err := p.PubKey()
-	if err != nil {
-		logger.Errorf("%s - Failed to get Public Key", err)
-		return nil, err
-	}
-
-	// Return SnrPubKey
-	return wallet.NewSnrPubKey(pub), nil
 }
 
 // Add adds a new Profile to the List and
@@ -126,18 +106,12 @@ type profileOpts struct {
 // defaultProfileOpts returns the default profile options
 func defaultProfileOpts() profileOpts {
 	return profileOpts{
-		sname:     randomSName(),
+		sname:     fmt.Sprintf("a%s", runtime.GOOS),
 		firstName: "Anonymous",
 		lastName:  runtime.GOOS,
 		picture:   make([]byte, 0),
-		bio:       faker.Dessert(),
 		socials:   make([]*Social, 0),
 	}
-}
-
-// randomSName returns a random SName
-func randomSName() string {
-	return faker.FirstName()[0:1] + faker.LastName()
 }
 
 // NewDefaultProfile creates a new default Profile
@@ -178,24 +152,6 @@ func WithCheckerProfile(profile *Profile) DefaultProfileOption {
 	}
 }
 
-// WithPicture adds a random Profile Picture
-func WithPicture() DefaultProfileOption {
-	return func(opts profileOpts) {
-		opts.picture = genAvatar()
-	}
-}
-
-// WithSocials adds random Social Media profiles
-func WithSocials() DefaultProfileOption {
-	return func(opts profileOpts) {
-		socials := make([]*Social, 0)
-		for i := 0; i < 5; i++ {
-			socials = append(socials, genSocial())
-		}
-		opts.socials = socials
-	}
-}
-
 // checkProfile checks if the Profile is valid
 func checkProfile(p *Profile) bool {
 	if p == nil {
@@ -205,35 +161,4 @@ func checkProfile(p *Profile) bool {
 		return false
 	}
 	return true
-}
-
-// genAvatar generates a random avatar returns empty byte list if error
-func genAvatar() []byte {
-	// Generate a random avatar
-	img, err := govatar.Generate(govatar.MALE)
-	if err != nil {
-		return make([]byte, 0)
-	}
-
-	// Write Img to byte list
-	buff := new(bytes.Buffer)
-	err = png.Encode(buff, img)
-	if err != nil {
-		fmt.Println("failed to create buffer", err)
-	}
-	return buff.Bytes()
-}
-
-// genSocial generates a random social
-func genSocial() *Social {
-	mediaIdx := rand.Intn(len(Social_Media_value)-1) + 1
-	media := Social_Media(mediaIdx)
-	username := faker.Username()
-	return &Social{
-		Valid:    true,
-		Media:    Social_Media(mediaIdx),
-		Username: username,
-		Url:      fmt.Sprintf("https://%s.com/%s", media.String(), username),
-		Picture:  genAvatar(),
-	}
 }

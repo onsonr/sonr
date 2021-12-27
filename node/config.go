@@ -7,10 +7,9 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/internal/host"
+	api "github.com/sonr-io/core/node/api"
 	"github.com/sonr-io/core/node/highway"
 	"github.com/sonr-io/core/node/motor"
-	api "github.com/sonr-io/core/node/api"
-	"github.com/sonr-io/core/pkg/identity"
 )
 
 // Error Definitions
@@ -66,20 +65,9 @@ func (opts *options) Apply(ctx context.Context, host *host.SNRHost, node *Node) 
 
 	// Handle by Node Mode
 	if opts.mode.Motor() {
-		// Open Store with profileBuf
-		logger.Debugf("Opening Store with profile: %s", opts.profile)
-		id, err := identity.New(ctx, host, node, identity.WithProfile(opts.profile))
-		if err != nil {
-			logger.Errorf("%s - Failed to initialize identity", err)
-			return err
-		}
-
-		// Set Identity
-		node.identity = id
-
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
-		stub, err := motor.NewMotorStub(ctx, host, node, opts.location, node.listener)
+		stub, err := motor.NewMotorStub(ctx, host, node, node.listener, opts.location, opts.profile)
 		if err != nil {
 			logger.Errorf("%s - Failed to start Client Service", err)
 			return err

@@ -141,7 +141,7 @@ func (opts hostOptions) Apply(ctx context.Context, options ...HostOption) (*SNRH
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
-		privKey, err := wallet.Sonr.GetPrivKey(wallet.Account)
+		privKey, err := wallet.DevicePrivKey()
 		if err == nil {
 			return privKey, nil
 		}

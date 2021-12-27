@@ -15,7 +15,6 @@ const (
 	FilePID       protocol.ID = "/transmit/file/0.0.1"
 	DonePID       protocol.ID = "/transmit/done/0.0.1"
 	ITEM_INTERVAL             = 25
-	MIME_BOUNDARY             = "multipart/mixed"
 )
 
 // Error Definitions
@@ -77,7 +76,7 @@ func (sp *SessionPayload) CreateItems(dir common.Direction) []*SessionItem {
 
 		// Set Path for Incoming
 		if dir == common.Direction_INCOMING {
-			inpath, err := fi.ResetPath(device.Downloads)
+			inpath, err := fi.SetPathFromFolder(device.Downloads)
 			if err == nil {
 				path = inpath
 			} else {

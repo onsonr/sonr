@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"git.mills.io/prologic/bitcask"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/internal/host"
@@ -130,14 +131,14 @@ func (p *IdentityProtocol) Peer() (*common.Peer, error) {
 	}
 
 	// Get Public Key
-	pubKey, err := wallet.Sonr.GetSnrPubKey(wallet.Account)
+	pubKey, err := wallet.DevicePubKey()
 	if err != nil {
 		logger.Errorf("%s - Failed to get Public Key", err)
 		return nil, err
 	}
 
 	// Marshal Public Key
-	pubBuf, err := pubKey.Buffer()
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
 		logger.Errorf("%s - Failed to marshal public key", err)
 		return nil, err

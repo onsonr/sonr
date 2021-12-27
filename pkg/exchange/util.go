@@ -44,7 +44,7 @@ func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payloa
 	}
 
 	// Create new Metadata
-	meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
+	meta, err := wallet.CreateMetadata(p.host.ID())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
 		return "", nil, err
@@ -71,7 +71,7 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	}
 
 	// Create new Metadata
-	meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
+	meta, err := wallet.CreateMetadata(p.host.ID())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
 		return "", nil, err

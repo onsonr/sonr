@@ -6,11 +6,9 @@ ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CORE_DIR=$(SONR_ROOT_DIR)/core
 DESKTOP_DIR=$(SONR_ROOT_DIR)/desktop
 MOBILE_DIR=$(SONR_ROOT_DIR)/mobile
-CORE_FULL_DIR=$(SONR_ROOT_DIR)/core/cmd/sonrd
+CORE_FULL_DIR=$(SONR_ROOT_DIR)/core/cmd/daemon
 CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
-PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-LD_LIBRARY_PATH=/opt/homebrew/bin/ffmpeg/4.4_2/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Developer/core/proto
@@ -20,8 +18,8 @@ APP_ROOT_DIR =/Users/prad/Developer/mobile/
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
-GOBIND_ANDROID=$(GOBIND) -target=android/arm64 -androidapi=24
-GOBIND_IOS=$(GOBIND) -target=ios/arm64 -bundleid=io.sonr.core
+GOBIND_ANDROID=$(GOBIND) -target=android
+GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 
 # @ Bind Directories
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/mobile/android/libs
@@ -99,20 +97,6 @@ protobuf:
 	@echo "Generating Protobuf Go code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
-
-##
-## [release]   :   Upload RPC Binary Artifact to S3
-release: protobuf
-	@echo "Building Artifacts..."
-	@cd $(CORE_FULL_DIR) && goreleaser release --rm-dist
-	@echo "Cleaning up build cache..."
-	@cd $(CORE_DIR) && go mod tidy
-	@rm -rf $(ELECTRON_BIN_DIR)
-	@mkdir -p $(ELECTRON_BIN_DIR)
-	@mv $(DIST_DIR_DARWIN_ARM) $(ELECTRON_BIN_DIR)
-	@rm -rf $(DIST_DIR)
-	@echo "✅ Finished Releasing RPC Binary ➡ `date`"
-	@cd /System/Library/Sounds && afplay Glass.aiff
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:

@@ -7,6 +7,12 @@ import (
 	"github.com/denisbrodbeck/machineid"
 )
 
+func init() {
+	if IsDesktop() {
+		Init()
+	}
+}
+
 // Init initializes the device package.
 func Init(options ...Option) error {
 	opts := defaultOptions()

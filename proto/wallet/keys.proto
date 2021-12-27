@@ -4,23 +4,6 @@ package sonr.wallet;
 option go_package = "github.com/sonr-io/core/wallet";
 
 
-enum KeyType {
-	RSA = 0;
-	Ed25519 = 1;
-	Secp256k1 = 2;
-	ECDSA = 3;
-}
-
-message PublicKey {
-	KeyType Type = 1;
-	bytes Data = 2;
-}
-
-message PrivateKey {
-	KeyType Type = 1;
-	bytes Data = 2;
-}
-
 // SNID is the unique identifier of a user with Sonr Protocol
 message SNID {
     string domain = 1; // Domain Name of the node, e.g. prad.snr

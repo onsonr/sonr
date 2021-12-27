@@ -89,6 +89,11 @@ func (f Folder) GenPath(path string, opts ...FilePathOption) (string, error) {
 	return fpo.Apply(f.Path())
 }
 
+// JoinPath joins a folder and a file name.
+func (f Folder) JoinPath(ps ...string) string {
+	return filepath.Join(f.Path(), filepath.Join(ps...))
+}
+
 // ReadFile reads a file.
 func (f Folder) ReadFile(fileName string) ([]byte, error) {
 	return os.ReadFile(filepath.Join(f.Path(), fileName))
