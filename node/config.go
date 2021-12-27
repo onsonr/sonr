@@ -6,7 +6,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/host"
 	api "github.com/sonr-io/core/node/api"
 	"github.com/sonr-io/core/node/highway"
 	"github.com/sonr-io/core/node/motor"

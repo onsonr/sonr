@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sonr.protocols.discover;
 import "proto/common/core.proto";
-option go_package = "github.com/sonr-io/core/pkg/discover";
+option go_package = "github.com/sonr-io/core/discover";
 
 // LobbyMessage is message passed from Peer in Lobby
 message LobbyMessage {

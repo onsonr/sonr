@@ -11,7 +11,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/node/api"
 	"github.com/sonr-io/core/wallet"

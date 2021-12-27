@@ -7,11 +7,10 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/discover"
+	"github.com/sonr-io/core/exchange"
+	"github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/node/api"
-	"github.com/sonr-io/core/pkg/discover"
-	"github.com/sonr-io/core/pkg/exchange"
-	"github.com/sonr-io/core/pkg/registry"
 	"google.golang.org/grpc"
 )
 
@@ -34,7 +33,6 @@ type HighwayStub struct {
 	ctx        context.Context
 	grpcServer *grpc.Server
 	*discover.DiscoverProtocol
-	*registry.RegistryProtocol
 	*exchange.ExchangeProtocol
 
 	// Channels
@@ -88,12 +86,6 @@ func NewHighwayStub(ctx context.Context, h *host.SNRHost, n api.NodeImpl, loc *c
 		return nil, err
 	}
 
-	// Set Exchange Protocol
-	stub.RegistryProtocol, err = registry.New(ctx, h, n, stub)
-	if err != nil {
-		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
-		return nil, err
-	}
 	// Register the RPC Service
 	RegisterHighwayStubServer(grpcServer, stub)
 	go stub.Serve(ctx, lst)

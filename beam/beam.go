@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/golog"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/host"
 )
 
 var (

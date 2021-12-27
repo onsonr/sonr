@@ -8,12 +8,12 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/host"
 	api "github.com/sonr-io/core/node/api"
-	"github.com/sonr-io/core/pkg/discover"
-	"github.com/sonr-io/core/pkg/exchange"
-	"github.com/sonr-io/core/pkg/identity"
-	"github.com/sonr-io/core/pkg/transmit"
+	"github.com/sonr-io/core/discover"
+	"github.com/sonr-io/core/exchange"
+	"github.com/sonr-io/core/identity"
+	"github.com/sonr-io/core/transmit"
 	"google.golang.org/grpc"
 )
 

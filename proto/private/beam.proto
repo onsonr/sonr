@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package sonr.beam;
-option go_package = "github.com/sonr-io/core/internal/beam";
+option go_package = "github.com/sonr-io/core/beam";
 
 enum EventType {
     NONE = 0;
