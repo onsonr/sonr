@@ -1,3 +1,5 @@
+# Sonr Core
+
 [![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)
 [![CI Workflow 🐿](https://github.com/sonr-io/core/actions/workflows/ci.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/ci.yml)
 
@@ -5,11 +7,10 @@
 
 Sonr is building the most simple and intuitive Decentralized Web experience for users and developers alike with our revolutionary blockchain and universal digital wallet.
 
-
 ### Built With
 
-- [Golang]()
-- [Libp2p]()
+- [Golang](https://go.dev)
+- [Libp2p](https://libp2p.io)
 
 <!-- GETTING STARTED -->
 
@@ -61,17 +62,11 @@ Docker Instructions
   docker run -it -p 443:26225 ghcr.io/sonr-io/snrd
   ```
 
-3. Pushing the image to ghcr.io (optional)
-
-  ```sh
-  docker push ghcr.io/sonr-io/snrd:latest
-  ```
-
 ### Structure
 
 This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
 
-```
+``` text
 /cmd            ->        Packaged Binaries.
   └─ bin        ->        +   Daemon RPC for Desktop Builds.
   └─ highway    ->        +   Sonr Custodian Node (desktop, server)

@@ -1,4 +1,4 @@
-package app
+package host
 
 import (
 	"fmt"
