@@ -88,13 +88,6 @@ bind.ios:
 	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
-dependencies:
-	@echo '----------------------------------------'
-	@echo '   Installing dependencies              '
-	@echo '----------------------------------------'
-	@GO111MODULE=off go get -u golang.org/x/mobile/cmd/...
-	$(GOMOBILE_CMD) init -v
-
 ##
 ## [protobuf]     :   Compiles Protobuf models for Core Library and Plugin
 protobuf:
