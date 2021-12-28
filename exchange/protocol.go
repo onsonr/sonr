@@ -20,7 +20,7 @@ type ExchangeProtocol struct {
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
 	invites *cache.Cache
-	mode    node.StubMode
+	mode    node.Role
 }
 
 // New creates a new ExchangeProtocol
@@ -51,7 +51,7 @@ func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options 
 
 // Request Method sends a request to Transfer Data to a remote peer
 func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
-	if p.mode.Highway() {
+	if p.mode.IsHighway() {
 		return ErrNotSupported
 	}
 	to := shareReq.GetPeer()
@@ -99,7 +99,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 
 // Respond Method authenticates or declines a Transfer Request
 func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload, error) {
-	if p.mode.Highway() {
+	if p.mode.IsHighway() {
 		return nil, ErrNotSupported
 	}
 	// Create Response

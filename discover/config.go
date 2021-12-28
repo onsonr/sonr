@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node"
 )
 
 // Option is a function that can be applied to ExchangeProtocol config
@@ -16,7 +15,6 @@ type options struct {
 	location        *common.Location
 	interval        time.Duration
 	autoPushEnabled bool
-	mode            node.StubMode
 }
 
 // defaultOptions for ExchangeProtocol config
@@ -25,7 +23,6 @@ func defaultOptions() *options {
 		//location:        api.DefaultLocation(),
 		interval:        time.Second * 5,
 		autoPushEnabled: true,
-		mode:            node.StubMode_LIB,
 	}
 }
 
@@ -33,13 +30,6 @@ func defaultOptions() *options {
 func DisableAutoPush() Option {
 	return func(o *options) {
 		o.autoPushEnabled = false
-	}
-}
-
-// SetHighway sets the protocol to run as highway mode
-func SetHighway() Option {
-	return func(o *options) {
-		o.mode = node.StubMode_FULL
 	}
 }
 
@@ -66,10 +56,10 @@ func WithInterval(i time.Duration) Option {
 // Apply applies the options to the ExchangeProtocol
 func (o *options) Apply(p *DiscoverProtocol) error {
 	// Apply options
-	p.mode = o.mode
+	p.mode = p.node.Role()
 
 	// Create Local for Motor Stub
-	if p.mode.Motor() {
+	if p.mode.IsMotor() {
 		// Set Peer in Exchange
 		peer, err := p.node.Peer()
 		if err != nil {

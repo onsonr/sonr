@@ -6,7 +6,7 @@ import common "github.com/sonr-io/core/common"
 type Option func(*options)
 
 // WithMode starts the Client RPC server as a highway node.
-func WithMode(m StubMode) Option {
+func WithMode(m Role) Option {
 	return func(o *options) {
 		o.mode = m
 	}
@@ -16,7 +16,7 @@ func WithMode(m StubMode) Option {
 type options struct {
 	connection    common.Connection
 	location      *common.Location
-	mode          StubMode
+	mode          Role
 	profile       *common.Profile
 	configuration *Configuration
 }
@@ -24,7 +24,7 @@ type options struct {
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *options {
 	return &options{
-		mode:       StubMode_LIB,
+		mode:       Role_UNSPECIFIED,
 		connection: common.Connection_WIFI,
 		profile:    common.NewDefaultProfile(),
 	}

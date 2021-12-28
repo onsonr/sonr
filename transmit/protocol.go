@@ -15,7 +15,7 @@ type TransmitProtocol struct {
 	node     node.NodeImpl
 	ctx      context.Context // Context
 	current  *Session        // current session
-	mode     node.StubMode
+	mode     node.Role
 }
 
 // New creates a new TransferProtocol

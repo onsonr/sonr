@@ -7,7 +7,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/node"
 )
 
 // Transfer Protocol ID's
@@ -30,28 +29,18 @@ type Option func(*options)
 
 // options for ExchangeProtocol config
 type options struct {
-	mode     node.StubMode
 	interval int
 }
 
 // defaultOptions for ExchangeProtocol config
 func defaultOptions() *options {
-	return &options{
-		mode: node.StubMode_LIB,
-	}
-}
-
-// SetHighway sets the protocol to run as highway mode
-func SetHighway() Option {
-	return func(o *options) {
-		o.mode = node.StubMode_FULL
-	}
+	return &options{}
 }
 
 // Apply applies the options to the ExchangeProtocol
 func (o *options) Apply(p *TransmitProtocol) error {
 	// Apply options
-	p.mode = o.mode
+	p.mode = p.node.Role()
 	return nil
 }
 

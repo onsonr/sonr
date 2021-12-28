@@ -25,7 +25,7 @@ type DiscoverProtocol struct {
 	ctx      context.Context
 	global   beam.Beam
 	local    *Local
-	mode     node.StubMode
+	mode     node.Role
 }
 
 // New creates new DiscoveryProtocol
@@ -94,7 +94,7 @@ func (p *DiscoverProtocol) Put(peer *common.Peer) error {
 
 // Update method publishes peer data to the topic
 func (p *DiscoverProtocol) Update() error {
-	if p.mode.Motor() {
+	if p.mode.IsMotor() {
 		// Verify Peer is not nil
 		peer, err := p.node.Peer()
 		if err != nil {

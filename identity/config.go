@@ -5,7 +5,6 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node"
 )
 
 var (
@@ -19,22 +18,13 @@ type Option func(*options)
 
 // options for IdentityProtocol config
 type options struct {
-	mode    node.StubMode
 	profile *common.Profile
 }
 
 // defaultOptions for IdentityProtocol config
 func defaultOptions() *options {
 	return &options{
-		mode:    node.StubMode_LIB,
 		profile: common.NewDefaultProfile(),
-	}
-}
-
-// SetHighway sets the protocol to run as highway mode
-func SetHighway() Option {
-	return func(o *options) {
-		o.mode = node.StubMode_FULL
 	}
 }
 
@@ -48,7 +38,7 @@ func WithProfile(profile *common.Profile) Option {
 // Apply applies the options to the ExchangeProtocol
 func (o *options) Apply(p *IdentityProtocol) error {
 	// Apply options
-	p.mode = o.mode
+	p.mode = p.node.Role()
 
 	// Apply profile
 	if err := p.SetProfile(o.profile); err != nil {

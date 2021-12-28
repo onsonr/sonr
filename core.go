@@ -37,7 +37,7 @@ const (
 var (
 	Ctx     context.Context
 	Node    node.NodeImpl
-	Mode    node.StubMode
+	Mode    node.Role
 	Sockets *host.SockManager
 )
 
@@ -223,7 +223,7 @@ func WithPort(port int) Option {
 }
 
 // WithMode sets the mode for the Node
-func WithMode(mode node.StubMode) Option {
+func WithMode(mode node.Role) Option {
 	return func(o *options) {
 		o.mode = mode
 	}
@@ -241,7 +241,7 @@ type options struct {
 	host       string
 	network    string
 	port       int
-	mode       node.StubMode
+	mode       node.Role
 	logLevel   string
 	socketsDir string
 }
@@ -256,7 +256,7 @@ func defaultOptions() *options {
 	return &options{
 		host:     ":",
 		port:     26225,
-		mode:     node.StubMode_LIB,
+		mode:     node.Role_MOTOR,
 		network:  "tcp",
 		logLevel: string(InfoLevel),
 	}

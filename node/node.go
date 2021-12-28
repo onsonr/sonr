@@ -29,16 +29,19 @@ type NodeImpl interface {
 	// Pause tells all of goroutines to pause execution
 	Pause()
 
+	// Role returns the role of the node
+	Role() Role
+
 	// Close closes the node
 	Close()
 }
 
-// Node type - a p2p host implementing one or more p2p protocols
-type Node struct {
+// node type - a p2p host implementing one or more p2p protocols
+type node struct {
 	// Standard Node Implementation
 	*host.SNRHost
 	NodeImpl
-	mode StubMode
+	mode Role
 
 	// Host and context
 	listener net.Listener
@@ -68,11 +71,11 @@ func NewMotor(ctx context.Context, l net.Listener, options ...Option) (NodeImpl,
 
 	// Open Store with profileBuf
 	// Create Node
-	node := &Node{
+	node := &node{
 		ctx:      ctx,
 		listener: l,
 		SNRHost:  host,
-		mode:     StubMode_LIB,
+		mode:     Role_MOTOR,
 	}
 	return node, nil
 }
@@ -94,22 +97,26 @@ func NewHighway(ctx context.Context, l net.Listener, options ...Option) (NodeImp
 
 	// Open Store with profileBuf
 	// Create Node
-	node := &Node{
+	node := &node{
 		ctx:      ctx,
 		listener: l,
 		SNRHost:  host,
-		mode:     StubMode_FULL,
+		mode:     Role_HIGHWAY,
 	}
 	return node, nil
 }
 
+func (n *node) Role() Role {
+	return n.mode
+}
+
 // Host returns the underlying host
-func (n *Node) Host() *host.SNRHost {
+func (n *node) Host() *host.SNRHost {
 	return n.SNRHost
 }
 
 // Close closes the node
-func (n *Node) Close() {
+func (n *node) Close() {
 	// Close Store
 	if err := n.store.Close(); err != nil {
 		logger.Errorf("%s - Failed to close store, ", err)
@@ -122,12 +129,12 @@ func (n *Node) Close() {
 }
 
 // NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-func (c *Node) NeedsWait() {
+func (c *node) NeedsWait() {
 	<-c.Chn
 }
 
 // Resume tells all of goroutines to resume execution
-func (c *Node) Resume() {
+func (c *node) Resume() {
 	if atomic.LoadUint64(&c.flag) == 1 {
 		close(c.Chn)
 		atomic.StoreUint64(&c.flag, 0)
@@ -135,7 +142,7 @@ func (c *Node) Resume() {
 }
 
 // Pause tells all of goroutines to pause execution
-func (c *Node) Pause() {
+func (c *node) Pause() {
 	if atomic.LoadUint64(&c.flag) == 0 {
 		atomic.StoreUint64(&c.flag, 1)
 		c.Chn = make(chan bool)

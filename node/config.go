@@ -25,7 +25,7 @@ type Configuration struct {
 	tempDirectory    string
 }
 
-func (c *Configuration) Apply(n *Node) {
+func (c *Configuration) Apply(n *node) {
 	// Initialize device
 	device.Init(
 		device.WithHomePath(c.homeDirectory),

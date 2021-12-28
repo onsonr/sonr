@@ -17,7 +17,7 @@ import (
 type IdentityProtocol struct {
 	ctx   context.Context
 	node  node.NodeImpl
-	mode  node.StubMode
+	mode  node.Role
 	store *bitcask.Bitcask
 }
 

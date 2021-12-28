@@ -6,7 +6,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/node"
 )
 
 // Textile API definitions
@@ -39,22 +38,13 @@ type Option func(*options)
 
 // options for ExchangeProtocol config
 type options struct {
-	mode          node.StubMode
 	enableMailbox bool
 }
 
 // defaultOptions for ExchangeProtocol config
 func defaultOptions() *options {
 	return &options{
-		mode:          node.StubMode_LIB,
 		enableMailbox: false,
-	}
-}
-
-// SetHighway sets the protocol to run as highway mode
-func SetHighway() Option {
-	return func(o *options) {
-		o.mode = node.StubMode_FULL
 	}
 }
 
@@ -68,7 +58,7 @@ func EnableMailbox() Option {
 // Apply applies the options to the ExchangeProtocol
 func (o *options) Apply(p *ExchangeProtocol) error {
 	// Apply options
-	p.mode = o.mode
+	p.mode = p.node.Role()
 
 	// Set enableMailbox
 	if o.enableMailbox {
