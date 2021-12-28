@@ -1,8 +1,5 @@
 # Sonr Core
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)
-[![CI Workflow 🐿](https://github.com/sonr-io/core/actions/workflows/ci.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/ci.yml)
-
 ## About The Project
 
 Sonr is building the most simple and intuitive Decentralized Web experience for users and developers alike with our revolutionary blockchain and universal digital wallet.
