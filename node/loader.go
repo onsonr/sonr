@@ -91,6 +91,11 @@ func Start(req *motor.InitializeRequest, options ...Option) {
 
 // Persist contains the main loop for the Node
 func Persist(l net.Listener) {
+	if instance == nil {
+		golog.Error("Node instance is nil")
+		return
+	}
+
 	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", l.Addr().String())
 	// Check if CLI Mode
 	if device.IsMobile() {
@@ -114,6 +119,20 @@ func Persist(l net.Listener) {
 			l.Close()
 			return
 		}
+	}
+}
+
+// Pause calls the Pause function on the Node
+func Pause() {
+	if instance != nil {
+		instance.Pause()
+	}
+}
+
+// Resume calls the Resume function on the Node
+func Resume() {
+	if instance != nil {
+		instance.Resume()
 	}
 }
 
