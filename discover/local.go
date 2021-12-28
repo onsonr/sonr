@@ -7,7 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/types/go/node/motor/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -16,8 +17,8 @@ type ErrFunc func() error
 
 // Local is the protocol for managing local peers.
 type Local struct {
-	callback     api.CallbackImpl
-	node         api.NodeImpl
+	callback     node.CallbackImpl
+	node         node.NodeImpl
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
 	messages     chan *LobbyEvent
@@ -49,7 +50,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 	e.local = &Local{
 		callback:     e.callback,
 		ctx:          e.ctx,
-		selfID:       e.host.ID(),
+		selfID:       e.node.Host().ID(),
 		node:         e.node,
 		updateFunc:   e.Update,
 		topic:        topic,
@@ -157,7 +158,7 @@ func (p *Local) handleEvents() {
 func (lp *Local) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
-	lp.callback.OnRefresh(&api.RefreshEvent{
+	lp.callback.OnRefresh(&motor.OnLobbyRefreshResponse{
 		Olc:      lp.olc,
 		Peers:    lp.peers,
 		Received: int64(time.Now().Unix()),

@@ -5,26 +5,24 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/types/go/node/motor/v1"
 )
 
 // TransmitProtocol type
 type TransmitProtocol struct {
-	callback api.CallbackImpl
-	node     api.NodeImpl
+	callback node.CallbackImpl
+	node     node.NodeImpl
 	ctx      context.Context // Context
-	host     *host.SNRHost   // local host
 	current  *Session        // current session
-	mode     api.StubMode
+	mode     node.StubMode
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, cb api.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
+func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
 	protocol := &TransmitProtocol{
 		ctx:      ctx,
-		host:     host,
 		node:     node,
 		callback: cb,
 	}
@@ -36,7 +34,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, cb api.Call
 	opts.Apply(protocol)
 
 	// Setup Stream Handlers
-	host.SetStreamHandler(FilePID, protocol.onIncomingTransfer)
+	node.Host().SetStreamHandler(FilePID, protocol.onIncomingTransfer)
 	logger.Debug("✅  TransmitProtocol is Activated \n")
 	return protocol, nil
 }
@@ -85,7 +83,7 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 	// Send Files
 	if p.current.Payload.IsFile() {
 		// Create New Stream
-		stream, err := p.host.NewStream(p.ctx, toId, FilePID)
+		stream, err := p.node.Host().NewStream(p.ctx, toId, FilePID)
 		if err != nil {
 			logger.Errorf("%s - Failed to Create New Stream", err)
 			return err
@@ -99,7 +97,7 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 }
 
 // Reset resets the current session
-func (p *TransmitProtocol) Reset(event *api.CompleteEvent) {
+func (p *TransmitProtocol) Reset(event *motor.OnTransmitCompleteResponse) {
 	logger.Debug("Resetting TransmitProtocol")
 	p.callback.OnComplete(event)
 	p.current = nil

@@ -9,22 +9,20 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
 
 type IdentityProtocol struct {
 	ctx   context.Context
-	host  *host.SNRHost
-	node  api.NodeImpl
-	mode  api.StubMode
+	node  node.NodeImpl
+	mode  node.StubMode
 	store *bitcask.Bitcask
 }
 
 // New creates a new IdentityProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*IdentityProtocol, error) {
+func New(ctx context.Context, node node.NodeImpl, options ...Option) (*IdentityProtocol, error) {
 	// Open the my.db data file in your current directory.
 	path, err := device.Database.GenPath("sonr_bitcask")
 	if err != nil {
@@ -42,7 +40,6 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...
 	// Create Exchange Protocol
 	protocol := &IdentityProtocol{
 		ctx:   ctx,
-		host:  host,
 		node:  node,
 		store: db,
 	}
@@ -155,7 +152,7 @@ func (p *IdentityProtocol) Peer() (*common.Peer, error) {
 		Status:       common.Peer_ONLINE,
 		Profile:      profile,
 		PublicKey:    pubBuf,
-		PeerID:       p.host.ID().String(),
+		PeerID:       p.node.Host().ID().String(),
 		LastModified: time.Now().Unix(),
 		Device: &common.Peer_Device{
 			HostName: stat["hostName"],

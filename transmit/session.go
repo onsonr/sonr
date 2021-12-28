@@ -6,7 +6,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/types/go/node/motor/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
@@ -72,8 +73,8 @@ func (s *Session) IsIn() bool {
 }
 
 // Event returns the complete event for the session.
-func (s *Session) Event() *api.CompleteEvent {
-	return &api.CompleteEvent{
+func (s *Session) Event() *motor.OnTransmitCompleteResponse {
+	return &motor.OnTransmitCompleteResponse{
 		From:       s.GetFrom(),
 		To:         s.GetTo(),
 		Direction:  s.GetDirection(),
@@ -85,7 +86,7 @@ func (s *Session) Event() *api.CompleteEvent {
 }
 
 // RouteStream is used to route the given stream to the given peer.
-func (s *Session) RouteStream(stream network.Stream, n api.CallbackImpl) (*api.CompleteEvent, error) {
+func (s *Session) RouteStream(stream network.Stream, n node.CallbackImpl) (*motor.OnTransmitCompleteResponse, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)

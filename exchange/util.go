@@ -5,13 +5,12 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	common "github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node/api"
-	"github.com/sonr-io/core/wallet"
+	"github.com/sonr-io/core/types/go/node/motor/v1"
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
-	return &api.DecisionEvent{
+func (ir *InviteResponse) ToEvent() *motor.OnTransmitDecisionResponse {
+	return &motor.OnTransmitDecisionResponse{
 		From:     ir.GetFrom(),
 		Received: int64(time.Now().Unix()),
 		Decision: ir.GetDecision(),
@@ -19,8 +18,8 @@ func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
 }
 
 // ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
-func (ir *InviteRequest) ToEvent() *api.InviteEvent {
-	return &api.InviteEvent{
+func (ir *InviteRequest) ToEvent() *motor.OnTransmitInviteResponse {
+	return &motor.OnTransmitInviteResponse{
 		Received: int64(time.Now().Unix()),
 		From:     ir.GetFrom(),
 		Payload:  ir.GetPayload(),
@@ -44,18 +43,19 @@ func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payloa
 	}
 
 	// Create new Metadata
-	meta, err := wallet.CreateMetadata(p.host.ID())
-	if err != nil {
-		logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
-		return "", nil, err
-	}
+	// meta, err := wallet.CreateMetadata(p.host.ID())
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
+	// 	return "", nil, err
+	// }
 
 	// Create Invite Request
 	req := &InviteRequest{
-		Payload:  payload,
-		Metadata: api.SignedMetadataToProto(meta),
-		To:       to,
-		From:     from,
+		Payload: payload,
+		// TODO: Implement Signed Meta to Proto Method
+		// Metadata: api.SignedMetadataToProto(meta),
+		To:   to,
+		From: from,
 	}
 	return toId, req, nil
 }
@@ -71,18 +71,19 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	}
 
 	// Create new Metadata
-	meta, err := wallet.CreateMetadata(p.host.ID())
-	if err != nil {
-		logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
-		return "", nil, err
-	}
+	// meta, err := wallet.CreateMetadata(p.host.ID())
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
+	// 	return "", nil, err
+	// }
 
 	// Create Invite Response
 	resp := &InviteResponse{
 		Decision: decs,
-		Metadata: api.SignedMetadataToProto(meta),
-		From:     from,
-		To:       to,
+		// TODO: Implement Signed Meta to Proto Method
+		//Metadata: api.SignedMetadataToProto(meta),
+		From: from,
+		To:   to,
 	}
 
 	// Fetch Peer ID from Public Key

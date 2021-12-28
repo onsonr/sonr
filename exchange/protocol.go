@@ -9,23 +9,24 @@ import (
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/types/go/node/motor/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 type ExchangeProtocol struct {
 	ctx      context.Context
 	host     *host.SNRHost
-	node     api.NodeImpl
-	callback api.CallbackImpl
+	node     node.NodeImpl
+	callback node.CallbackImpl
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
 	invites *cache.Cache
-	mode    api.StubMode
+	mode    node.StubMode
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, cb api.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
+func New(ctx context.Context, host *host.SNRHost, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &ExchangeProtocol{
 		ctx:      ctx,
@@ -52,7 +53,7 @@ func New(ctx context.Context, host *host.SNRHost, node api.NodeImpl, cb api.Call
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
-func (p *ExchangeProtocol) Request(shareReq *api.ShareRequest) error {
+func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	if p.mode.Highway() {
 		return ErrNotSupported
 	}
@@ -62,9 +63,14 @@ func (p *ExchangeProtocol) Request(shareReq *api.ShareRequest) error {
 		return err
 	}
 
-	payload, err := shareReq.ToPayload(profile)
-	if err != nil {
-		return err
+	// // TODO: Implement Share Request to Payload Method
+	// payload, err := shareReq.ToPayload(profile)
+	// if err != nil {
+	// 	return err
+	// }
+
+	payload := &common.Payload{
+		Owner: profile,
 	}
 
 	// Create Request
@@ -201,7 +207,9 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	// Get Next Entry
 	if x, found := p.invites.Get(remotePeer.String()); found {
 		req := x.(*InviteRequest)
-		p.callback.OnDecision(resp.ToEvent(), req.ToEvent())
+		logger.Debug(req)
+		// TODO: Implement Decision Response to Event Method
+		//p.callback.OnDecision(resp.ToEvent(), req.ToEvent())
 	} else {
 		logger.Errorf("Failed to find Invite Request for Peer: %s", remotePeer.String())
 	}

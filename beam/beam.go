@@ -7,6 +7,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/host"
+	"github.com/sonr-io/core/node"
 )
 
 var (
@@ -43,14 +44,14 @@ type beam struct {
 }
 
 // New creates a new beam with the given name and options.
-func New(ctx context.Context, h *host.SNRHost, id ID, options ...Option) (Beam, error) {
+func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Beam, error) {
 	logger = golog.Default.Child(id.Prefix())
 	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)
 	}
 
-	topic, err := h.Join(id.String())
+	topic, err := n.Host().Join(id.String())
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +68,7 @@ func New(ctx context.Context, h *host.SNRHost, id ID, options ...Option) (Beam, 
 
 	b := &beam{
 		ctx:     ctx,
-		h:       h,
+		h:       n.Host(),
 		id:      id,
 		topic:   topic,
 		sub:     sub,

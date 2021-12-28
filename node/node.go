@@ -3,34 +3,56 @@ package node
 import (
 	"context"
 	"net"
-	sync "sync"
+	"sync/atomic"
 
 	"git.mills.io/prologic/bitcask"
-	"github.com/sonr-io/core/common"
+	common "github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/identity"
 )
+
+// NodeImpl returns the NodeImpl for the Main Node
+type NodeImpl interface {
+	Host() *host.SNRHost
+
+	// Profile returns the profile of the node from Local Store
+	Profile() (*common.Profile, error)
+
+	// Peer returns the peer of the node
+	Peer() (*common.Peer, error)
+
+	// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
+	NeedsWait()
+
+	// Resume tells all of goroutines to resume execution
+	Resume()
+
+	// Pause tells all of goroutines to pause execution
+	Pause()
+
+	// Close closes the node
+	Close()
+}
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
 	// Standard Node Implementation
+	*host.SNRHost
 	NodeImpl
 	mode StubMode
 
 	// Host and context
-	host     *host.SNRHost
 	listener net.Listener
 
 	// Properties
-	ctx      context.Context
-	identity *identity.IdentityProtocol
-	store    *bitcask.Bitcask
-	state    *State
-	once     sync.Once
+	ctx   context.Context
+	store *bitcask.Bitcask
+
+	flag uint64
+	Chn  chan bool
 }
 
-// NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
+// NewMotor Creates a node with its implemented protocols
+func NewMotor(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -49,67 +71,73 @@ func NewNode(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, 
 	node := &Node{
 		ctx:      ctx,
 		listener: l,
-		host:     host,
+		SNRHost:  host,
+		mode:     StubMode_LIB,
 	}
-
-	logger.Debugf("Opening Store with profile: %s", opts.profile)
-	node.identity, err = identity.New(ctx, host, node, identity.WithProfile(opts.profile))
-	if err != nil {
-		logger.Errorf("%s - Failed to initialize identity", err)
-		return nil, err
-	}
-
-	// Initialize Stub
-	// err = opts.Apply(ctx, host, node)
-	// if err != nil {
-	// 	logger.Errorf("%s - Failed to initialize stub", err)
-	// 	return nil, err
-	// }
-	// Begin Background Tasks
 	return node, nil
 }
 
-// GetState returns the current state of the API
-func (n *Node) GetState() *State {
-	n.once.Do(func() {
-		chn := make(chan bool)
-		close(chn)
-		n.state = &State{Chn: chn}
-	})
-	return n.state
+// NewHighway Creates a node with its implemented protocols
+func NewHighway(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
+	// Set Node Options
+	opts := defaultNodeOptions()
+	for _, opt := range options {
+		opt(opts)
+	}
+
+	// Initialize Host
+	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
+	if err != nil {
+		logger.Errorf("%s - Failed to initialize host", err)
+		return nil, err
+	}
+
+	// Open Store with profileBuf
+	// Create Node
+	node := &Node{
+		ctx:      ctx,
+		listener: l,
+		SNRHost:  host,
+		mode:     StubMode_FULL,
+	}
+	return node, nil
 }
 
-// Profile returns the profile for the user from diskDB
-func (n *Node) Profile() (*common.Profile, error) {
-	return n.identity.Profile()
-}
-
-// Peer method returns the peer of the node
-func (n *Node) Peer() (*common.Peer, error) {
-	return n.identity.Peer()
+// Host returns the underlying host
+func (n *Node) Host() *host.SNRHost {
+	return n.SNRHost
 }
 
 // Close closes the node
 func (n *Node) Close() {
-	// Close Client Stub
-	if n.mode.Motor() {
-		// if err := n.motor.Close(); err != nil {
-		// 	logger.Errorf("%s - Failed to close Client Stub, ", err)
-		// }
-	}
-
-	// Close Highway Stub
-	if n.mode.IsFull() {
-
-	}
-
 	// Close Store
 	if err := n.store.Close(); err != nil {
 		logger.Errorf("%s - Failed to close store, ", err)
 	}
 
 	// Close Host
-	if err := n.host.Close(); err != nil {
+	if err := n.SNRHost.Close(); err != nil {
 		logger.Errorf("%s - Failed to close host, ", err)
+	}
+}
+
+// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
+func (c *Node) NeedsWait() {
+	<-c.Chn
+}
+
+// Resume tells all of goroutines to resume execution
+func (c *Node) Resume() {
+	if atomic.LoadUint64(&c.flag) == 1 {
+		close(c.Chn)
+		atomic.StoreUint64(&c.flag, 0)
+	}
+}
+
+// Pause tells all of goroutines to pause execution
+func (c *Node) Pause() {
+	if atomic.LoadUint64(&c.flag) == 0 {
+		atomic.StoreUint64(&c.flag, 1)
+		c.Chn = make(chan bool)
 	}
 }

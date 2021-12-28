@@ -3,7 +3,6 @@ package node
 import (
 	"fmt"
 	"os"
-	"sync/atomic"
 
 	"github.com/kataras/golog"
 	common "github.com/sonr-io/core/common"
@@ -106,53 +105,11 @@ type CallbackImpl interface {
 	OnComplete(event *motor.OnTransmitCompleteResponse)
 }
 
-// NodeImpl returns the NodeImpl for the Main Node
-type NodeImpl interface {
-	// GetState returns the current state of the node
-	GetState() *State
-
-	// Profile returns the profile of the node from Local Store
-	Profile() (*common.Profile, error)
-
-	// Peer returns the peer of the node
-	Peer() (*common.Peer, error)
-
-	// Close closes the node
-	Close()
-}
-
 // SignedMetadataToProto converts a SignedMetadata to a protobuf.
 func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
 	return &common.Metadata{
 		Timestamp: m.Timestamp,
 		NodeId:    m.NodeId,
 		PublicKey: m.PublicKey,
-	}
-}
-
-// State is the internal State of the API
-type State struct {
-	flag uint64
-	Chn  chan bool
-}
-
-// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-func (c *State) NeedsWait() {
-	<-c.Chn
-}
-
-// Resume tells all of goroutines to resume execution
-func (c *State) Resume() {
-	if atomic.LoadUint64(&c.flag) == 1 {
-		close(c.Chn)
-		atomic.StoreUint64(&c.flag, 0)
-	}
-}
-
-// Pause tells all of goroutines to pause execution
-func (c *State) Pause() {
-	if atomic.LoadUint64(&c.flag) == 0 {
-		atomic.StoreUint64(&c.flag, 1)
-		c.Chn = make(chan bool)
 	}
 }

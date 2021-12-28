@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/node"
 )
 
 // Option is a function that can be applied to ExchangeProtocol config
@@ -16,16 +16,16 @@ type options struct {
 	location        *common.Location
 	interval        time.Duration
 	autoPushEnabled bool
-	mode            api.StubMode
+	mode            node.StubMode
 }
 
 // defaultOptions for ExchangeProtocol config
 func defaultOptions() *options {
 	return &options{
-		location:        api.DefaultLocation(),
+		//location:        api.DefaultLocation(),
 		interval:        time.Second * 5,
 		autoPushEnabled: true,
-		mode:            api.StubMode_LIB,
+		mode:            node.StubMode_LIB,
 	}
 }
 
@@ -39,7 +39,7 @@ func DisableAutoPush() Option {
 // SetHighway sets the protocol to run as highway mode
 func SetHighway() Option {
 	return func(o *options) {
-		o.mode = api.StubMode_FULL
+		o.mode = node.StubMode_FULL
 	}
 }
 
@@ -90,7 +90,7 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		topicName := fmt.Sprintf("sonr/topic/%s", code)
 
 		// Join Topic
-		topic, err := p.host.Join(topicName)
+		topic, err := p.node.Host().Join(topicName)
 		if err != nil {
 			logger.Errorf("%s - Failed to create Lobby Topic", err)
 			return err
