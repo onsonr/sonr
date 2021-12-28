@@ -96,7 +96,7 @@ type CallbackImpl interface {
 	OnInvite(event *motor.OnTransmitInviteResponse)
 
 	// OnDecision is called when the TransferProtocol receives a DecisionEvent
-	OnDecision(event *motor.OnTransmitInviteResponse, invite *motor.OnTransmitInviteResponse)
+	OnDecision(event *motor.OnTransmitDecisionResponse, invite *motor.OnTransmitInviteResponse)
 
 	// OnProgress is called when the TransferProtocol sends or receives a ProgressEvent
 	OnProgress(event *motor.OnTransmitProgressResponse)

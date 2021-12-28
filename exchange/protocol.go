@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
 	"google.golang.org/protobuf/proto"
@@ -16,7 +15,6 @@ import (
 
 type ExchangeProtocol struct {
 	ctx      context.Context
-	host     *host.SNRHost
 	node     node.NodeImpl
 	callback node.CallbackImpl
 	// mail    *local.Mail
@@ -26,11 +24,10 @@ type ExchangeProtocol struct {
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, host *host.SNRHost, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
+func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &ExchangeProtocol{
 		ctx:      ctx,
-		host:     host,
 		node:     node,
 		invites:  cache.New(5*time.Minute, 10*time.Minute),
 		callback: cb,
@@ -47,8 +44,8 @@ func New(ctx context.Context, host *host.SNRHost, node node.NodeImpl, cb node.Ca
 		return nil, err
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
-	host.SetStreamHandler(RequestPID, protocol.onInviteRequest)
-	host.SetStreamHandler(ResponsePID, protocol.onInviteResponse)
+	node.Host().SetStreamHandler(RequestPID, protocol.onInviteRequest)
+	node.Host().SetStreamHandler(ResponsePID, protocol.onInviteResponse)
 	return protocol, nil
 }
 
@@ -81,7 +78,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	}
 
 	// sign the data
-	signature, err := p.host.SignMessage(req)
+	signature, err := p.node.Host().SignMessage(req)
 	if err != nil {
 		logger.Errorf("%s - Failed to Sign Response Message", err)
 		return err
@@ -89,7 +86,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 
 	// add the signature to the message
 	req.Metadata.Signature = signature
-	err = p.host.SendMessage(id, RequestPID, req)
+	err = p.node.Host().SendMessage(id, RequestPID, req)
 	if err != nil {
 		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return err
@@ -113,7 +110,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload,
 	}
 
 	// sign the data
-	signature, err := p.host.SignMessage(resp)
+	signature, err := p.node.Host().SignMessage(resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Sign Response Message", err)
 		return nil, err
@@ -123,7 +120,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload,
 	resp.Metadata.Signature = signature
 
 	// Send Response
-	err = p.host.SendMessage(id, ResponsePID, resp)
+	err = p.node.Host().SendMessage(id, ResponsePID, resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return nil, err
@@ -198,7 +195,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	}
 
 	// Authenticate Message
-	valid := p.host.AuthenticateMessage(resp, resp.Metadata)
+	valid := p.node.Host().AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
 		logger.Error("Invalid Invite Response")
 		return

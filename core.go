@@ -43,7 +43,6 @@ var (
 
 // Start starts the Sonr Node
 func Start(req *motor.InitializeRequest, options ...Option) {
-
 	// Check if Node is already running
 	if Node != nil {
 		golog.Error("Sonr Instance already active")
@@ -81,11 +80,11 @@ func Start(req *motor.InitializeRequest, options ...Option) {
 	}
 
 	// Start File System
-	// TODO: Implement Exctracting Device Options from Request
-	// if err := device.Init(req.Options()...); err != nil {
-	// 	golog.Default.Child("(app)").Fatalf("%s - Failed to Init Device", err)
-	// 	Exit(1)
-	// }
+	device.Init(
+		device.WithHomePath(req.GetDeviceOptions().GetHomeDir()),
+		device.WithSupportPath(req.GetDeviceOptions().GetSupportDir()),
+		device.SetDeviceID(req.GetDeviceOptions().GetId()),
+	)
 
 	// Open Keychain
 	if wallet.Exists() {
