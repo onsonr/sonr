@@ -1,0 +1,34 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package node.highway.v1;
+import "node/highway/v1/request.proto";
+import "node/highway/v1/response.proto";
+option go_package = "github.com/sonr-io/core/node/highway";
+
+// RPC Service with Equivalent Methods of a binded Node
+service HighwayService {
+  // Register creates new user in DNS Table
+  rpc ListPeers(node.highway.v1.ListPeersRequest) returns (stream node.highway.v1.ListPeersResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc DecideExchange(node.highway.v1.DecideExchangeRequest) returns (node.highway.v1.DecideExchangeResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc SendExchange(node.highway.v1.SendExchangeRequest) returns (node.highway.v1.SendExchangeResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc CacheRecord(node.highway.v1.CacheRecordRequest) returns (node.highway.v1.CacheRecordResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc GetRecord(node.highway.v1.GetRecordRequest) returns (node.highway.v1.GetRecordResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc StoreRecord(node.highway.v1.StoreRecordRequest) returns (node.highway.v1.StoreRecordResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc RegisterName(node.highway.v1.RegisterNameRequest) returns (node.highway.v1.RegisterNameResponse) {}
+
+  // Authorize Signing Method Request for Data
+  rpc VerifyName(node.highway.v1.VerifyNameRequest) returns (node.highway.v1.VerifyNameResponse) {}
+}

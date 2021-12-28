@@ -19,7 +19,7 @@
     },
     "files.exclude": {
       "**/package-lock.json": true,
-      "**/**.pb.go": true,
+      "**/**.pb.go": false,
       "**/.classpath": true,
       "**/.factorypath": true,
       "**/.flutter-plugins": true,

@@ -11,9 +11,9 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/node"
-	"github.com/sonr-io/core/node/api"
+	"github.com/sonr-io/core/types/go/node/motor/v1"
 	"github.com/sonr-io/core/wallet"
 	"github.com/spf13/viper"
 )
@@ -36,13 +36,13 @@ const (
 
 var (
 	Ctx     context.Context
-	Node    api.NodeImpl
-	Mode    api.StubMode
+	Node    node.NodeImpl
+	Mode    node.StubMode
 	Sockets *host.SockManager
 )
 
 // Start starts the Sonr Node
-func Start(req *api.InitializeRequest, options ...Option) {
+func Start(req *motor.InitializeRequest, options ...Option) {
 
 	// Check if Node is already running
 	if Node != nil {
@@ -81,10 +81,11 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 
 	// Start File System
-	if err := device.Init(req.Options()...); err != nil {
-		golog.Default.Child("(app)").Fatalf("%s - Failed to Init Device", err)
-		Exit(1)
-	}
+	// TODO: Implement Exctracting Device Options from Request
+	// if err := device.Init(req.Options()...); err != nil {
+	// 	golog.Default.Child("(app)").Fatalf("%s - Failed to Init Device", err)
+	// 	Exit(1)
+	// }
 
 	// Open Keychain
 	if wallet.Exists() {
@@ -108,9 +109,8 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 
 	// Set Node Stub
-	Node, _, err = node.NewNode(Ctx, listener,
-		node.WithMode(Mode),
-		node.WithRequest(req))
+	Node, err = node.NewMotor(Ctx, listener,
+		node.WithMode(Mode))
 	if err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to Start new Node", err)
 	}
@@ -153,7 +153,7 @@ func Pause() {
 		golog.Default.Child("(app)").Error("Node is not running")
 		return
 	}
-	Node.GetState().Pause()
+	Node.Pause()
 }
 
 // Resume resumes the App's Node
@@ -162,7 +162,7 @@ func Resume() {
 		golog.Default.Child("(app)").Error("Node is not running")
 		return
 	}
-	Node.GetState().Resume()
+	Node.Resume()
 }
 
 // Exit handles cleanup on Sonr Node
@@ -224,7 +224,7 @@ func WithPort(port int) Option {
 }
 
 // WithMode sets the mode for the Node
-func WithMode(mode api.StubMode) Option {
+func WithMode(mode node.StubMode) Option {
 	return func(o *options) {
 		o.mode = mode
 	}
@@ -242,7 +242,7 @@ type options struct {
 	host       string
 	network    string
 	port       int
-	mode       api.StubMode
+	mode       node.StubMode
 	logLevel   string
 	socketsDir string
 }
@@ -257,7 +257,7 @@ func defaultOptions() *options {
 	return &options{
 		host:     ":",
 		port:     26225,
-		mode:     api.StubMode_LIB,
+		mode:     node.StubMode_LIB,
 		network:  "tcp",
 		logLevel: string(InfoLevel),
 	}

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package protocols.transmit.v1;
+import "common/v1/core.proto";
+import "common/v1/data.proto";
+option go_package = "github.com/sonr-io/core/transmit";
+
+message Session {
+  common.v1.Direction direction = 1;
+  common.v1.Peer from = 2;
+  common.v1.Peer to = 3;
+  common.v1.Payload payload = 4;
+  int64 last_updated = 5;
+  repeated SessionItem items = 6;
+  int32 current_index = 7;
+  map<int32, bool> results = 8;
+}
+
+message SessionItem {
+  int32 index = 1;
+  int32 count = 2;
+  common.v1.FileItem item = 3;
+  int64 written = 4;
+  int64 size = 5;
+  int64 total_size = 6;
+  common.v1.Direction direction = 7;
+  string path = 8;
+}
+
+message SessionPayload {
+  common.v1.Payload payload = 1;
+  common.v1.Direction direction = 2;
+}

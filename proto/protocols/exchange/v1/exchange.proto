@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package protocols.exchange.v1;
+import "common/v1/core.proto";
+import "common/v1/data.proto";
+option go_package = "github.com/sonr-io/core/exchange";
+
+message MailboxMessage {
+  string id = 1; // ID is the Message ID
+  common.v1.Payload payload = 2;    // Payload is the message data
+  common.v1.Profile from = 3;         // Users Peer Data
+  common.v1.Profile to = 4;           // Receivers Peer Data
+  common.v1.Metadata metadata = 5; // Metadata
+  int64 created_at = 6; // Timestamp
+}
+
+// Invitation Message sent on RPC
+message InviteRequest {
+  common.v1.Payload payload = 1;   // Attached Data
+  common.v1.Peer from = 3;         // Users Peer Data
+  common.v1.Peer to = 4;           // Receivers Peer Data
+  common.v1.Metadata metadata = 5; // Metadata
+}
+
+// Reply Message sent on RPC
+message InviteResponse {
+  bool decision = 1;               // Success
+  common.v1.Peer from = 3;         // Users Peer Data
+  common.v1.Peer to = 4;           // Receivers Peer Data
+  common.v1.Metadata metadata = 5; // Metadata
+}

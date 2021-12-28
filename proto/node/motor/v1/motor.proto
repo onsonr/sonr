@@ -1,0 +1,42 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package node.motor.v1;
+
+import "node/motor/v1/request.proto";
+import "node/motor/v1/response.proto";
+option go_package = "github.com/sonr-io/core/node/motor";
+
+
+
+// RPC Service with Equivalent Methods of a binded Node
+service MotorService {
+  // Node Methods
+  // Respond Method to an Invite with Decision
+  rpc Share(node.motor.v1.ShareRequest) returns (node.motor.v1.ShareResponse) {}
+
+  // Respond Method to an Invite with Decision
+  rpc Decide(node.motor.v1.DecideRequest) returns (node.motor.v1.DecideResponse) {}
+
+  // Search Method to find a Peer by SName or PeerID
+  rpc Search(node.motor.v1.SearchRequest) returns (node.motor.v1.SearchResponse) {}
+
+  // Events Streams
+  // Returns a stream of Lobby Refresh Events
+  rpc OnLobbyRefresh(node.motor.v1.OnLobbyRefreshRequest) returns (stream node.motor.v1.OnLobbyRefreshResponse) {}
+
+  // Returns a stream of Mailbox Message Events
+  rpc OnMailboxMessage(node.motor.v1.OnMailboxMessageRequest) returns (stream node.motor.v1.OnMailboxMessageResponse) {}
+
+  // Returns a stream of DecisionEvent's for Accepted Invites
+  rpc OnTransmitDecision(node.motor.v1.OnTransmitDecisionRequest) returns (stream node.motor.v1.OnTransmitDecisionResponse) {}
+
+  // Returns a stream of DecisionEvent's for Invites
+  rpc OnTransmitInvite(node.motor.v1.OnTransmitInviteRequest) returns (stream node.motor.v1.OnTransmitInviteResponse) {}
+
+  // Returns a stream of ProgressEvent's for Sessions
+  rpc OnTransmitProgress(node.motor.v1.OnTransmitProgressRequest) returns (stream node.motor.v1.OnTransmitProgressResponse) {}
+
+  // Returns a stream of Completed Transfers
+  rpc OnTransmitComplete(node.motor.v1.OnTransmitCompleteRequest) returns (stream node.motor.v1.OnTransmitCompleteResponse) {}
+}
