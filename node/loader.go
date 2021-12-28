@@ -1,8 +1,7 @@
-package core
+package node
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"os"
 	"os/signal"
@@ -11,40 +10,15 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
 	"github.com/sonr-io/core/wallet"
 	"github.com/spf13/viper"
 )
 
-// LogLevel is the type for the log level
-type LogLevel string
-
-const (
-	// DebugLevel is the debug log level
-	DebugLevel LogLevel = "debug"
-	// InfoLevel is the info log level
-	InfoLevel LogLevel = "info"
-	// WarnLevel is the warn log level
-	WarnLevel LogLevel = "warn"
-	// ErrorLevel is the error log level
-	ErrorLevel LogLevel = "error"
-	// FatalLevel is the fatal log level
-	FatalLevel LogLevel = "fatal"
-)
-
-var (
-	Ctx     context.Context
-	Node    node.NodeImpl
-	Mode    node.Role
-	Sockets *host.SockManager
-)
-
 // Start starts the Sonr Node
 func Start(req *motor.InitializeRequest, options ...Option) {
 	// Check if Node is already running
-	if Node != nil {
+	if instance != nil {
 		golog.Error("Sonr Instance already active")
 		return
 	}
@@ -55,15 +29,12 @@ func Start(req *motor.InitializeRequest, options ...Option) {
 		o(opts)
 	}
 
-	// Apply Options
-	Mode = opts.mode
-
 	// Set Logging Settings
 	golog.SetLevel(opts.logLevel)
-	golog.SetPrefix(Mode.Prefix())
+	golog.SetPrefix(opts.mode.Prefix())
 
 	// Create Node
-	Ctx = context.Background()
+	ctx = context.Background()
 	// Set Environment Variables
 	vars := req.GetVariables()
 	count := len(vars)
@@ -108,8 +79,8 @@ func Start(req *motor.InitializeRequest, options ...Option) {
 	}
 
 	// Set Node Stub
-	Node, err = node.NewMotor(Ctx, listener,
-		node.WithMode(Mode))
+	instance, err = NewMotor(ctx, listener,
+		WithMode(opts.mode))
 	if err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to Start new Node", err)
 	}
@@ -138,7 +109,7 @@ func Persist(l net.Listener) {
 	// Hold until Exit Signal
 	for {
 		select {
-		case <-Ctx.Done():
+		case <-ctx.Done():
 			golog.Default.Child("(app)").Info("Context Done")
 			l.Close()
 			return
@@ -146,34 +117,16 @@ func Persist(l net.Listener) {
 	}
 }
 
-// Pause pauses the App's Node
-func Pause() {
-	if Node == nil {
-		golog.Default.Child("(app)").Error("Node is not running")
-		return
-	}
-	Node.Pause()
-}
-
-// Resume resumes the App's Node
-func Resume() {
-	if Node == nil {
-		golog.Default.Child("(app)").Error("Node is not running")
-		return
-	}
-	Node.Resume()
-}
-
 // Exit handles cleanup on Sonr Node
 func Exit(code int) {
-	if Node == nil {
+	if instance == nil {
 		golog.Default.Child("(app)").Debug("Skipping Exit, instance is nil...")
 		return
 	}
 	golog.Default.Child("(app)").Debug("Cleaning up Node on Exit...")
-	Node.Close()
+	instance.Close()
 
-	defer Ctx.Done()
+	defer ctx.Done()
 
 	// Check for Full Desktop Node
 	if device.IsDesktop() {
@@ -195,69 +148,5 @@ func Exit(code int) {
 			golog.Default.Child("(app)").Debug("Wrote new config file to Disk")
 		}
 		os.Exit(code)
-	}
-}
-
-// Option is a function that can be passed to Start
-type Option func(*options)
-
-// WithLogLevel sets the log level for Logger
-func WithLogLevel(level LogLevel) Option {
-	return func(o *options) {
-		o.logLevel = string(level)
-	}
-}
-
-// WithHost sets the host for the Node Stub Client Host
-func WithHost(host string) Option {
-	return func(o *options) {
-		o.host = host
-	}
-}
-
-// WithPort sets the port for the Node Stub Client
-func WithPort(port int) Option {
-	return func(o *options) {
-		o.port = port
-	}
-}
-
-// WithMode sets the mode for the Node
-func WithMode(mode node.Role) Option {
-	return func(o *options) {
-		o.mode = mode
-	}
-}
-
-// WithSocketsDir sets the directory for the Node Sockets
-func WithSocketsDir(dir string) Option {
-	return func(o *options) {
-		o.socketsDir = dir
-	}
-}
-
-// options is the struct for the options
-type options struct {
-	host       string
-	network    string
-	port       int
-	mode       node.Role
-	logLevel   string
-	socketsDir string
-}
-
-// Address returns the address of the node.
-func (opts *options) Address() string {
-	return fmt.Sprintf("%s%d", opts.host, opts.port)
-}
-
-// defaultOptions returns the default options
-func defaultOptions() *options {
-	return &options{
-		host:     ":",
-		port:     26225,
-		mode:     node.Role_MOTOR,
-		network:  "tcp",
-		logLevel: string(InfoLevel),
 	}
 }

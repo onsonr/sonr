@@ -6,8 +6,17 @@ import (
 	"sync/atomic"
 
 	"git.mills.io/prologic/bitcask"
+	"github.com/kataras/golog"
 	common "github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/host"
+	"github.com/sonr-io/core/wallet"
+)
+
+var (
+	logger   = golog.Default.Child("core/node")
+	ctx      context.Context
+	instance NodeImpl
+	sockets  *host.SockManager
 )
 
 // NodeImpl returns the NodeImpl for the Main Node
@@ -57,7 +66,7 @@ type node struct {
 // NewMotor Creates a node with its implemented protocols
 func NewMotor(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
 	// Set Node Options
-	opts := defaultNodeOptions()
+	opts := defaultOptions()
 	for _, opt := range options {
 		opt(opts)
 	}
@@ -83,7 +92,7 @@ func NewMotor(ctx context.Context, l net.Listener, options ...Option) (NodeImpl,
 // NewHighway Creates a node with its implemented protocols
 func NewHighway(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
 	// Set Node Options
-	opts := defaultNodeOptions()
+	opts := defaultOptions()
 	for _, opt := range options {
 		opt(opts)
 	}
@@ -146,5 +155,14 @@ func (c *node) Pause() {
 	if atomic.LoadUint64(&c.flag) == 0 {
 		atomic.StoreUint64(&c.flag, 1)
 		c.Chn = make(chan bool)
+	}
+}
+
+// SignedMetadataToProto converts a SignedMetadata to a protobuf.
+func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
+	return &common.Metadata{
+		Timestamp: m.Timestamp,
+		NodeId:    m.NodeId,
+		PublicKey: m.PublicKey,
 	}
 }
