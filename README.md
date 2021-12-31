@@ -5,7 +5,7 @@
 
 - `sonr-io/highway`
 - `sonr-io/motor`
-- `sonr-io/sonr`.
+- `sonr-io/sonr`
 
 ## Description
 
