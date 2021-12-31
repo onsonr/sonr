@@ -1,13 +1,13 @@
 
 # Sonr Core
-#Core
+
 **Sonr Core** is a module for common interfaces used by the following repositories: `sonr-io/highway`, `sonr-io/motor`, and `sonr-io/sonr`.
 
 ## Description
 
 Sonr is building the most immersive DWeb experience for both Users and Developers alike. We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols.
 
-For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and our Layer 1 Blockchain with [Starport](“https://starport.com”). Our network comprises of two separate nodes: [Highway](“https://github.com/sonr-io/highway”) and [Motor](“https://github.com/sonr-io/motor”), which each have a specific use case on the network. 
+For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and our Layer 1 Blockchain with [Starport](“https://starport.com”). Our network comprises of two separate nodes: [Highway](“https://github.com/sonr-io/highway”) and [Motor](“https://github.com/sonr-io/motor”), which each have a specific use case on the network.
 
 ## Getting Started
 
@@ -21,9 +21,8 @@ For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and 
 To install the latest version of the Sonr blockchain node's binary, execute the following command on your machine:
 
 ``` shell
-go get -u https://github.com/sonr-io/core 
+go get -u https://github.com/sonr-io/core
 ```
-
 
 ### Configuration
 
@@ -47,8 +46,8 @@ This project is a pseudo-monorepo, meaning it has a single root directory and al
 /wallet          ->        Interfaces for managing Universal Wallet
 ```
 
-
 ## Contributing
+
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
@@ -63,14 +62,6 @@ Contributors names and contact info
 
 - [Prad Nukala](“https://github.com/prnk28”)
 
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
 ## License
 
 This project facilitated under **Sonr Inc.** is distributed under the **GPLv3 License**. See `LICENSE.md` for more information.
@@ -78,6 +69,7 @@ This project facilitated under **Sonr Inc.** is distributed under the **GPLv3 Li
 ## Acknowledgments
 
 Inspiration, code snippets, etc.
+
 - [Libp2p](https://libp2p.io/)
 - [Textile](https://www.textile.io/)
 - [Handshake](https://handshake.org/)
