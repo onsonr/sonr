@@ -1,7 +1,11 @@
 
 # Sonr Core
 
-**Sonr Core** is a module for common interfaces used by the following repositories: `sonr-io/highway`, `sonr-io/motor`, and `sonr-io/sonr`.
+**Sonr Core** is a module for common interfaces used by the following repositories:
+
+- `sonr-io/highway`
+- `sonr-io/motor`
+- `sonr-io/sonr`.
 
 ## Description
 
