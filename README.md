@@ -1,105 +1,54 @@
+
 # Sonr Core
+#Core
+**Sonr Core** is a module for common interfaces used by the following repositories: `sonr-io/highway`, `sonr-io/motor`, and `sonr-io/sonr`.
 
-## About The Project
+## Description
 
-Sonr is building the most simple and intuitive Decentralized Web experience for users and developers alike with our revolutionary blockchain and universal digital wallet.
+Sonr is building the most immersive DWeb experience for both Users and Developers alike. We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols.
 
-### Built With
+For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and our Layer 1 Blockchain with [Starport](“https://starport.com”). Our network comprises of two separate nodes: [Highway](“https://github.com/sonr-io/highway”) and [Motor](“https://github.com/sonr-io/motor”), which each have a specific use case on the network. 
+
+## Getting Started
+
+### Dependencies
 
 - [Golang](https://go.dev)
 - [Libp2p](https://libp2p.io)
 
-<!-- GETTING STARTED -->
+### Installing
 
-## Getting Started
+To install the latest version of the Sonr blockchain node's binary, execute the following command on your machine:
 
-To get a local copy up and running follow these simple steps.
+``` shell
+go get -u https://github.com/sonr-io/core 
+```
 
-### Installation
 
-1. Clone the repo
-
-   ```sh
-   git clone https://github.com/sonr-io/sonr.git
-   ```
-
-2. Install NPM packages
-
-  ```bash
-  # Binds Android and iOS for Plugin Path
-  make bind
-
-  # Binds iOS Framework ONLY
-  make bind.ios
-
-  # Binds AAR for Android ONLY
-  make bind.android
-
-  # Compiles Protobuf models for Core Library and Plugin
-  make proto
-
-  # Binds Binary, Creates Protobufs, and Updates App
-  make upgrade
-
-  # Reinitializes Gomobile and Removes Framworks from Plugin
-  make clean
-  ```
-
-Docker Instructions
-
-1. Build the Docker image
-
-   ```sh
-   docker build -t ghcr.io/sonr-io/snrd .
-   ```
-
-2. Run the Docker image
-
-  ```sh
-  docker run -it -p 443:26225 ghcr.io/sonr-io/snrd
-  ```
-
-### Structure
+### Configuration
 
 This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
 
 ``` text
-/cmd            ->        Packaged Binaries.
-  └─ bin        ->        +   Daemon RPC for Desktop Builds.
-  └─ highway    ->        +   Sonr Custodian Node (desktop, server)
-  └─ lib        ->        +   Binded Mobile Framework (aar, framework)
-/docs           ->        Documentation.
-/extensions     ->        Sonr Extension's for platform integrations (Figma, Chrome, Native, etc.)
-/internal       ->        Internal Code. (Networking, Emitter, FileSystem, etc.)
-  └─ api        ->        +   Shared Protobuf Models, Generic Types, and Enums.
-  └─ common     ->        +   Core data types and functions.
-  └─ device     ->        +   Current Node Device management
-  └─ host       ->        +   Libp2p Configuration
-  └─ keychain   ->        +   Keychain for Private/Public Keys
-  └─ node       ->        +   Central Node for Sonr Network
-/pkg            ->        Protocol Services for Sonr Core
-  └─ domain     ->        +   Shared Protobuf Models, Generic Types, and Enums.
-  └─ exchange   ->        +   Data Transfer related Models.
-  └─ lobby      ->        +   Node Peer related Models.
-  └─ mailbox    ->        +   Creates and Registers Libp2p RPC Service Handlers.
-  └─ transfer   ->        +   Creates an Interface which manages libp2p pubsub topics.
-/proto          ->        Protobuf Definition Files.
-/tools          ->        API Services utilized in the project.
-  └─ config     ->        +   File System structure management
-  └─ internet   ->        +   Namebase, REST, and DNS Resolver
-  └─ state      ->        +   State Machine Management
+/beam            ->        Real-time Key/Value Store
+/common          ->        Core data types and functions.
+/device          ->        Node Device management
+/docs            ->        Documentation.
+/exchange        ->        Data Transfer related Models.
+/host            ->        Libp2p Host Configuration
+/identity        ->        Identity management models and interfaces
+/node            ->        Highway and Motor node builder configuration
+/proto           ->        Protobuf Definition Files.
+/transmit        ->        Protocol for byte transmission between nodes
+/types           ->        Protobuf Compiled Types
+  └─ cpp         ->        +   C++ Definition Files
+  └─ go          ->        +   Golang Definition Files
+  └─ java        ->        +   Java Definition Files
+/wallet          ->        Interfaces for managing Universal Wallet
 ```
 
-<!-- ROADMAP -->
-
-## Roadmap
-
-See the [open issues](https://github.com/sonr-io/core/issues) for a list of proposed features (and known issues).
-
-<!-- CONTRIBUTING -->
 
 ## Contributing
-
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
@@ -108,32 +57,27 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<!-- LICENSE -->
+## Authors
+
+Contributors names and contact info
+
+- [Prad Nukala](“https://github.com/prnk28”)
+
+## Version History
+
+* 0.2
+    * Various bug fixes and optimizations
+    * See [commit change]() or See [release history]()
+* 0.1
+    * Initial Release
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project facilitated under **Sonr Inc.** is distributed under the **GPLv3 License**. See `LICENSE.md` for more information.
 
-<!-- CONTACT -->
+## Acknowledgments
 
-## Contact
-
-Prad Nukala - [TheSonrApp](https://twitter.com/TheSonrApp) - pradn@sonr.io
-
-Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr.io) - [Website](https://sonr.io)
-
-<!-- ACKNOWLEDGEMENTS -->
-
-## Acknowledgements
-
+Inspiration, code snippets, etc.
 - [Libp2p](https://libp2p.io/)
 - [Textile](https://www.textile.io/)
 - [Handshake](https://handshake.org/)
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[contributors-shield]: https://img.shields.io/github/contributors/sonr-io/core.svg?style=for-the-badge
-[contributors-url]: https://github.com/sonr-io/core/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/sonr-io/core.svg?style=for-the-badge
-[forks-url]: https://github.com/sonr-io/core/network/members
