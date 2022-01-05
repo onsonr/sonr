@@ -5,7 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/beam"
+	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
 	"google.golang.org/protobuf/proto"
@@ -23,7 +23,7 @@ type DiscoverProtocol struct {
 	node     node.NodeImpl
 	callback node.CallbackImpl
 	ctx      context.Context
-	global   beam.Beam
+	global   channel.Channel
 	local    *Local
 	mode     node.Role
 }
@@ -32,7 +32,7 @@ type DiscoverProtocol struct {
 func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
 
 	// Create BeamStore
-	b, err := beam.New(ctx, node, beam.ID("global"))
+	b, err := channel.New(ctx, node, channel.ID("global"))
 	if err != nil {
 		return nil, err
 	}

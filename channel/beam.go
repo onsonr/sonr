@@ -1,4 +1,4 @@
-package beam
+package channel
 
 import (
 	"context"
@@ -17,8 +17,8 @@ var (
 	ErrInvalidMessage = errors.New("Invalid message received in Pubsub Topic - (Beam)")
 )
 
-// Beam is a pubsub based Key-Value store for Libp2p nodes.
-type Beam interface {
+// Channel is a pubsub based Key-Value store for Libp2p nodes.
+type Channel interface {
 	// Get returns the value for the given key.
 	Get(key string) ([]byte, error)
 
@@ -31,7 +31,7 @@ type Beam interface {
 
 // beam is the implementation of the Beam interface.
 type beam struct {
-	Beam
+	Channel
 	ctx context.Context
 	h   *host.SNRHost
 	id  ID
@@ -44,7 +44,7 @@ type beam struct {
 }
 
 // New creates a new beam with the given name and options.
-func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Beam, error) {
+func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channel, error) {
 	logger = golog.Default.Child(id.Prefix())
 	opts := defaultOptions()
 	for _, option := range options {

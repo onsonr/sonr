@@ -33,7 +33,7 @@ go get -u https://github.com/sonr-io/core
 This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
 
 ``` text
-/beam            ->        Real-time Key/Value Store
+/channel         ->        Real-time Key/Value Store
 /common          ->        Core data types and functions.
 /device          ->        Node Device management
 /docs            ->        Documentation.

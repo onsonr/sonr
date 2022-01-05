@@ -4,7 +4,7 @@
 // 	protoc        v3.19.1
 // source: proto/private/beam.proto
 
-package beam
+package channel
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
