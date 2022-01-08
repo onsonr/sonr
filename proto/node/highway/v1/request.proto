@@ -6,11 +6,39 @@ import "common/v1/core.proto";
 import "common/v1/data.proto";
 option go_package = "github.com/sonr-io/core/node/highway";
 
+// CreateChannelRequest is the request to create a new channel
+message CreateChannelRequest {
+  // Name is the name of the channel
+  string name = 1;
 
+  // Description is the description of the channel
+  string description = 2;
 
-// -----------------------------------------------------------------------------
-// Highway Node API
-// -----------------------------------------------------------------------------
+  // Owners is the list of provisioned nodes for the channel
+  repeated string owners = 3;
+}
+
+// SubscribeChannelRequest is the request to subscribe to a channel
+message SubscribeChannelRequest {
+  // Name is the name of the channel
+  string did = 1;
+}
+
+// UnsubscribeChannelRequest is the request to unsubscribe from a channel
+message UnsubscribeChannelRequest {
+  // Name is the name of the channel
+  string did = 1;
+}
+
+// UpdateChannelRequest is the request to update a channel
+message UpdateChannelRequest {
+  // Did is the DID of the channel
+  string did = 1;
+
+  // Metadata is the metadata of the channel thats being updated
+  map<string, string> metadata = 2;
+}
+
 // (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
 message ListPeersRequest {
   string s_name = 1;    // SName combined with Device ID and Hashed

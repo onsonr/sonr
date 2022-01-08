@@ -8,7 +8,7 @@ import (
 )
 
 // handleEvents method listens to Pubsub Events for room
-func (b *beam) handleEvents() {
+func (b *channel) handleEvents() {
 	// Loop Events
 	for {
 		// Get next event
@@ -20,7 +20,7 @@ func (b *beam) handleEvents() {
 		// Check Event and Validate not User
 		switch event.Type {
 		case pubsub.PeerJoin:
-			event := b.newSyncEvent()
+			event := b.NewSyncEvent()
 			err = event.Publish(b.ctx, b.topic)
 			if err != nil {
 				logger.Error(err)
@@ -33,7 +33,7 @@ func (b *beam) handleEvents() {
 }
 
 // handleMessages method listens to Pubsub Messages for room
-func (b *beam) handleMessages() {
+func (b *channel) handleMessages() {
 	// Loop Messages
 	for {
 		// Get next message
@@ -43,7 +43,7 @@ func (b *beam) handleMessages() {
 		}
 
 		// Check Message and Validate not User
-		e, err := eventFromMsg(msg, b.h.ID())
+		e, err := eventFromMsg(msg, b.n.HostID())
 		if err != nil {
 			continue
 		}
@@ -58,7 +58,7 @@ func (b *beam) handleMessages() {
 }
 
 // serve handles the serving of the beam
-func (b *beam) serve() {
+func (b *channel) serve() {
 	for {
 		select {
 		case <-b.ctx.Done():

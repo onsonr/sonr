@@ -50,7 +50,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 	e.local = &Local{
 		callback:     e.callback,
 		ctx:          e.ctx,
-		selfID:       e.node.Host().ID(),
+		selfID:       e.node.HostID(),
 		node:         e.node,
 		updateFunc:   e.Update,
 		topic:        topic,

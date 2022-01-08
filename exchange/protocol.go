@@ -44,8 +44,8 @@ func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options 
 		return nil, err
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
-	node.Host().SetStreamHandler(RequestPID, protocol.onInviteRequest)
-	node.Host().SetStreamHandler(ResponsePID, protocol.onInviteResponse)
+	node.SetStreamHandler(RequestPID, protocol.onInviteRequest)
+	node.SetStreamHandler(ResponsePID, protocol.onInviteResponse)
 	return protocol, nil
 }
 
@@ -78,7 +78,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	}
 
 	// sign the data
-	signature, err := p.node.Host().SignMessage(req)
+	signature, err := p.node.SignMessage(req)
 	if err != nil {
 		logger.Errorf("%s - Failed to Sign Response Message", err)
 		return err
@@ -86,7 +86,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 
 	// add the signature to the message
 	req.Metadata.Signature = signature
-	err = p.node.Host().SendMessage(id, RequestPID, req)
+	err = p.node.SendMessage(id, RequestPID, req)
 	if err != nil {
 		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return err
@@ -110,7 +110,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload,
 	}
 
 	// sign the data
-	signature, err := p.node.Host().SignMessage(resp)
+	signature, err := p.node.SignMessage(resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Sign Response Message", err)
 		return nil, err
@@ -120,7 +120,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload,
 	resp.Metadata.Signature = signature
 
 	// Send Response
-	err = p.node.Host().SendMessage(id, ResponsePID, resp)
+	err = p.node.SendMessage(id, ResponsePID, resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return nil, err
@@ -195,7 +195,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	}
 
 	// Authenticate Message
-	valid := p.node.Host().AuthenticateMessage(resp, resp.Metadata)
+	valid := p.node.AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
 		logger.Error("Invalid Invite Response")
 		return

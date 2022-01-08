@@ -9,11 +9,21 @@ import (
 	"syscall"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
 	"github.com/sonr-io/core/wallet"
 	"github.com/spf13/viper"
 )
+
+// SignedMetadataToProto converts a SignedMetadata to a protobuf.
+func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
+	return &common.Metadata{
+		Timestamp: m.Timestamp,
+		NodeId:    m.NodeId,
+		PublicKey: m.PublicKey,
+	}
+}
 
 // Start starts the Sonr Node
 func Start(req *motor.InitializeRequest, options ...Option) {
@@ -31,7 +41,7 @@ func Start(req *motor.InitializeRequest, options ...Option) {
 
 	// Set Logging Settings
 	golog.SetLevel(opts.logLevel)
-	golog.SetPrefix(opts.mode.Prefix())
+	golog.SetPrefix(opts.role.Prefix())
 
 	// Create Node
 	ctx = context.Background()
@@ -80,7 +90,7 @@ func Start(req *motor.InitializeRequest, options ...Option) {
 
 	// Set Node Stub
 	instance, err = NewMotor(ctx, listener,
-		WithMode(opts.mode))
+		WithMode(opts.role))
 	if err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to Start new Node", err)
 	}

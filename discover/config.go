@@ -80,7 +80,7 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		topicName := fmt.Sprintf("sonr/topic/%s", code)
 
 		// Join Topic
-		topic, err := p.node.Host().Join(topicName)
+		topic, err := p.node.Join(topicName)
 		if err != nil {
 			logger.Errorf("%s - Failed to create Lobby Topic", err)
 			return err

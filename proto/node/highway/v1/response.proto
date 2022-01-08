@@ -3,7 +3,24 @@ syntax = "proto3";
 
 package node.highway.v1;
 import "common/v1/core.proto";
+import "node/codes/v1/response.proto";
 option go_package = "github.com/sonr-io/core/node/highway";
+
+message CreateChannelResponse {
+  node.codes.v1.ResponseInfo info = 1;
+}
+
+message SubscribeChannelResponse {
+  node.codes.v1.ResponseInfo info = 1;
+}
+
+message UnsubscribeChannelResponse {
+  node.codes.v1.ResponseInfo info = 1;
+}
+
+message UpdateChannelResponse {
+  node.codes.v1.ResponseInfo info = 1;
+}
 
 // (Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)
 message ListPeersResponse {
