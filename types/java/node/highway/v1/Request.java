@@ -14,6 +14,3315 @@ public final class Request {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface CreateChannelRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:node.highway.v1.CreateChannelRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string name = 1 [json_name = "name"];</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string name = 1 [json_name = "name"];</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <pre>
+     * Description is the description of the channel
+     * </pre>
+     *
+     * <code>string description = 2 [json_name = "description"];</code>
+     * @return The description.
+     */
+    java.lang.String getDescription();
+    /**
+     * <pre>
+     * Description is the description of the channel
+     * </pre>
+     *
+     * <code>string description = 2 [json_name = "description"];</code>
+     * @return The bytes for description.
+     */
+    com.google.protobuf.ByteString
+        getDescriptionBytes();
+
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @return A list containing the owners.
+     */
+    java.util.List<java.lang.String>
+        getOwnersList();
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @return The count of owners.
+     */
+    int getOwnersCount();
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @param index The index of the element to return.
+     * @return The owners at the given index.
+     */
+    java.lang.String getOwners(int index);
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the owners at the given index.
+     */
+    com.google.protobuf.ByteString
+        getOwnersBytes(int index);
+  }
+  /**
+   * <pre>
+   * CreateChannelRequest is the request to create a new channel
+   * </pre>
+   *
+   * Protobuf type {@code node.highway.v1.CreateChannelRequest}
+   */
+  public static final class CreateChannelRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:node.highway.v1.CreateChannelRequest)
+      CreateChannelRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CreateChannelRequest.newBuilder() to construct.
+    private CreateChannelRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CreateChannelRequest() {
+      name_ = "";
+      description_ = "";
+      owners_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new CreateChannelRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CreateChannelRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              description_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                owners_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              owners_.add(s);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          owners_ = owners_.getUnmodifiableView();
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_CreateChannelRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_CreateChannelRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              node.highway.v1.Request.CreateChannelRequest.class, node.highway.v1.Request.CreateChannelRequest.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object name_;
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string name = 1 [json_name = "name"];</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string name = 1 [json_name = "name"];</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DESCRIPTION_FIELD_NUMBER = 2;
+    private volatile java.lang.Object description_;
+    /**
+     * <pre>
+     * Description is the description of the channel
+     * </pre>
+     *
+     * <code>string description = 2 [json_name = "description"];</code>
+     * @return The description.
+     */
+    @java.lang.Override
+    public java.lang.String getDescription() {
+      java.lang.Object ref = description_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        description_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Description is the description of the channel
+     * </pre>
+     *
+     * <code>string description = 2 [json_name = "description"];</code>
+     * @return The bytes for description.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDescriptionBytes() {
+      java.lang.Object ref = description_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        description_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OWNERS_FIELD_NUMBER = 3;
+    private com.google.protobuf.LazyStringList owners_;
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @return A list containing the owners.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getOwnersList() {
+      return owners_;
+    }
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @return The count of owners.
+     */
+    public int getOwnersCount() {
+      return owners_.size();
+    }
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @param index The index of the element to return.
+     * @return The owners at the given index.
+     */
+    public java.lang.String getOwners(int index) {
+      return owners_.get(index);
+    }
+    /**
+     * <pre>
+     * Owners is the list of provisioned nodes for the channel
+     * </pre>
+     *
+     * <code>repeated string owners = 3 [json_name = "owners"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the owners at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getOwnersBytes(int index) {
+      return owners_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(description_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, description_);
+      }
+      for (int i = 0; i < owners_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, owners_.getRaw(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(description_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, description_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < owners_.size(); i++) {
+          dataSize += computeStringSizeNoTag(owners_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getOwnersList().size();
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof node.highway.v1.Request.CreateChannelRequest)) {
+        return super.equals(obj);
+      }
+      node.highway.v1.Request.CreateChannelRequest other = (node.highway.v1.Request.CreateChannelRequest) obj;
+
+      if (!getName()
+          .equals(other.getName())) return false;
+      if (!getDescription()
+          .equals(other.getDescription())) return false;
+      if (!getOwnersList()
+          .equals(other.getOwnersList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getDescription().hashCode();
+      if (getOwnersCount() > 0) {
+        hash = (37 * hash) + OWNERS_FIELD_NUMBER;
+        hash = (53 * hash) + getOwnersList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.CreateChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(node.highway.v1.Request.CreateChannelRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * CreateChannelRequest is the request to create a new channel
+     * </pre>
+     *
+     * Protobuf type {@code node.highway.v1.CreateChannelRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:node.highway.v1.CreateChannelRequest)
+        node.highway.v1.Request.CreateChannelRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_CreateChannelRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_CreateChannelRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                node.highway.v1.Request.CreateChannelRequest.class, node.highway.v1.Request.CreateChannelRequest.Builder.class);
+      }
+
+      // Construct using node.highway.v1.Request.CreateChannelRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+
+        description_ = "";
+
+        owners_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_CreateChannelRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.CreateChannelRequest getDefaultInstanceForType() {
+        return node.highway.v1.Request.CreateChannelRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.CreateChannelRequest build() {
+        node.highway.v1.Request.CreateChannelRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.CreateChannelRequest buildPartial() {
+        node.highway.v1.Request.CreateChannelRequest result = new node.highway.v1.Request.CreateChannelRequest(this);
+        int from_bitField0_ = bitField0_;
+        result.name_ = name_;
+        result.description_ = description_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          owners_ = owners_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.owners_ = owners_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof node.highway.v1.Request.CreateChannelRequest) {
+          return mergeFrom((node.highway.v1.Request.CreateChannelRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(node.highway.v1.Request.CreateChannelRequest other) {
+        if (other == node.highway.v1.Request.CreateChannelRequest.getDefaultInstance()) return this;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
+        }
+        if (!other.getDescription().isEmpty()) {
+          description_ = other.description_;
+          onChanged();
+        }
+        if (!other.owners_.isEmpty()) {
+          if (owners_.isEmpty()) {
+            owners_ = other.owners_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureOwnersIsMutable();
+            owners_.addAll(other.owners_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        node.highway.v1.Request.CreateChannelRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (node.highway.v1.Request.CreateChannelRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object name_ = "";
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string name = 1 [json_name = "name"];</code>
+       * @return The name.
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string name = 1 [json_name = "name"];</code>
+       * @return The bytes for name.
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string name = 1 [json_name = "name"];</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string name = 1 [json_name = "name"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string name = 1 [json_name = "name"];</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object description_ = "";
+      /**
+       * <pre>
+       * Description is the description of the channel
+       * </pre>
+       *
+       * <code>string description = 2 [json_name = "description"];</code>
+       * @return The description.
+       */
+      public java.lang.String getDescription() {
+        java.lang.Object ref = description_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          description_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Description is the description of the channel
+       * </pre>
+       *
+       * <code>string description = 2 [json_name = "description"];</code>
+       * @return The bytes for description.
+       */
+      public com.google.protobuf.ByteString
+          getDescriptionBytes() {
+        java.lang.Object ref = description_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          description_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Description is the description of the channel
+       * </pre>
+       *
+       * <code>string description = 2 [json_name = "description"];</code>
+       * @param value The description to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDescription(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        description_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Description is the description of the channel
+       * </pre>
+       *
+       * <code>string description = 2 [json_name = "description"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDescription() {
+        
+        description_ = getDefaultInstance().getDescription();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Description is the description of the channel
+       * </pre>
+       *
+       * <code>string description = 2 [json_name = "description"];</code>
+       * @param value The bytes for description to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDescriptionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        description_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList owners_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureOwnersIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          owners_ = new com.google.protobuf.LazyStringArrayList(owners_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @return A list containing the owners.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getOwnersList() {
+        return owners_.getUnmodifiableView();
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @return The count of owners.
+       */
+      public int getOwnersCount() {
+        return owners_.size();
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @param index The index of the element to return.
+       * @return The owners at the given index.
+       */
+      public java.lang.String getOwners(int index) {
+        return owners_.get(index);
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the owners at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getOwnersBytes(int index) {
+        return owners_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @param index The index to set the value at.
+       * @param value The owners to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOwners(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureOwnersIsMutable();
+        owners_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @param value The owners to add.
+       * @return This builder for chaining.
+       */
+      public Builder addOwners(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureOwnersIsMutable();
+        owners_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @param values The owners to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllOwners(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureOwnersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, owners_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOwners() {
+        owners_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Owners is the list of provisioned nodes for the channel
+       * </pre>
+       *
+       * <code>repeated string owners = 3 [json_name = "owners"];</code>
+       * @param value The bytes of the owners to add.
+       * @return This builder for chaining.
+       */
+      public Builder addOwnersBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureOwnersIsMutable();
+        owners_.add(value);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:node.highway.v1.CreateChannelRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:node.highway.v1.CreateChannelRequest)
+    private static final node.highway.v1.Request.CreateChannelRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new node.highway.v1.Request.CreateChannelRequest();
+    }
+
+    public static node.highway.v1.Request.CreateChannelRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CreateChannelRequest>
+        PARSER = new com.google.protobuf.AbstractParser<CreateChannelRequest>() {
+      @java.lang.Override
+      public CreateChannelRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CreateChannelRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CreateChannelRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CreateChannelRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public node.highway.v1.Request.CreateChannelRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SubscribeChannelRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:node.highway.v1.SubscribeChannelRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The did.
+     */
+    java.lang.String getDid();
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The bytes for did.
+     */
+    com.google.protobuf.ByteString
+        getDidBytes();
+  }
+  /**
+   * <pre>
+   * SubscribeChannelRequest is the request to subscribe to a channel
+   * </pre>
+   *
+   * Protobuf type {@code node.highway.v1.SubscribeChannelRequest}
+   */
+  public static final class SubscribeChannelRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:node.highway.v1.SubscribeChannelRequest)
+      SubscribeChannelRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SubscribeChannelRequest.newBuilder() to construct.
+    private SubscribeChannelRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SubscribeChannelRequest() {
+      did_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SubscribeChannelRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SubscribeChannelRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              did_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_SubscribeChannelRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_SubscribeChannelRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              node.highway.v1.Request.SubscribeChannelRequest.class, node.highway.v1.Request.SubscribeChannelRequest.Builder.class);
+    }
+
+    public static final int DID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object did_;
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The did.
+     */
+    @java.lang.Override
+    public java.lang.String getDid() {
+      java.lang.Object ref = did_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        did_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The bytes for did.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDidBytes() {
+      java.lang.Object ref = did_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        did_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(did_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, did_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(did_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, did_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof node.highway.v1.Request.SubscribeChannelRequest)) {
+        return super.equals(obj);
+      }
+      node.highway.v1.Request.SubscribeChannelRequest other = (node.highway.v1.Request.SubscribeChannelRequest) obj;
+
+      if (!getDid()
+          .equals(other.getDid())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DID_FIELD_NUMBER;
+      hash = (53 * hash) + getDid().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.SubscribeChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(node.highway.v1.Request.SubscribeChannelRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * SubscribeChannelRequest is the request to subscribe to a channel
+     * </pre>
+     *
+     * Protobuf type {@code node.highway.v1.SubscribeChannelRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:node.highway.v1.SubscribeChannelRequest)
+        node.highway.v1.Request.SubscribeChannelRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_SubscribeChannelRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_SubscribeChannelRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                node.highway.v1.Request.SubscribeChannelRequest.class, node.highway.v1.Request.SubscribeChannelRequest.Builder.class);
+      }
+
+      // Construct using node.highway.v1.Request.SubscribeChannelRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        did_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_SubscribeChannelRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.SubscribeChannelRequest getDefaultInstanceForType() {
+        return node.highway.v1.Request.SubscribeChannelRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.SubscribeChannelRequest build() {
+        node.highway.v1.Request.SubscribeChannelRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.SubscribeChannelRequest buildPartial() {
+        node.highway.v1.Request.SubscribeChannelRequest result = new node.highway.v1.Request.SubscribeChannelRequest(this);
+        result.did_ = did_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof node.highway.v1.Request.SubscribeChannelRequest) {
+          return mergeFrom((node.highway.v1.Request.SubscribeChannelRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(node.highway.v1.Request.SubscribeChannelRequest other) {
+        if (other == node.highway.v1.Request.SubscribeChannelRequest.getDefaultInstance()) return this;
+        if (!other.getDid().isEmpty()) {
+          did_ = other.did_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        node.highway.v1.Request.SubscribeChannelRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (node.highway.v1.Request.SubscribeChannelRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object did_ = "";
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return The did.
+       */
+      public java.lang.String getDid() {
+        java.lang.Object ref = did_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          did_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return The bytes for did.
+       */
+      public com.google.protobuf.ByteString
+          getDidBytes() {
+        java.lang.Object ref = did_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          did_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @param value The did to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        did_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDid() {
+        
+        did_ = getDefaultInstance().getDid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @param value The bytes for did to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        did_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:node.highway.v1.SubscribeChannelRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:node.highway.v1.SubscribeChannelRequest)
+    private static final node.highway.v1.Request.SubscribeChannelRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new node.highway.v1.Request.SubscribeChannelRequest();
+    }
+
+    public static node.highway.v1.Request.SubscribeChannelRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SubscribeChannelRequest>
+        PARSER = new com.google.protobuf.AbstractParser<SubscribeChannelRequest>() {
+      @java.lang.Override
+      public SubscribeChannelRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SubscribeChannelRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SubscribeChannelRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SubscribeChannelRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public node.highway.v1.Request.SubscribeChannelRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UnsubscribeChannelRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:node.highway.v1.UnsubscribeChannelRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The did.
+     */
+    java.lang.String getDid();
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The bytes for did.
+     */
+    com.google.protobuf.ByteString
+        getDidBytes();
+  }
+  /**
+   * <pre>
+   * UnsubscribeChannelRequest is the request to unsubscribe from a channel
+   * </pre>
+   *
+   * Protobuf type {@code node.highway.v1.UnsubscribeChannelRequest}
+   */
+  public static final class UnsubscribeChannelRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:node.highway.v1.UnsubscribeChannelRequest)
+      UnsubscribeChannelRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UnsubscribeChannelRequest.newBuilder() to construct.
+    private UnsubscribeChannelRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UnsubscribeChannelRequest() {
+      did_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UnsubscribeChannelRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private UnsubscribeChannelRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              did_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_UnsubscribeChannelRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_UnsubscribeChannelRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              node.highway.v1.Request.UnsubscribeChannelRequest.class, node.highway.v1.Request.UnsubscribeChannelRequest.Builder.class);
+    }
+
+    public static final int DID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object did_;
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The did.
+     */
+    @java.lang.Override
+    public java.lang.String getDid() {
+      java.lang.Object ref = did_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        did_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Name is the name of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The bytes for did.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDidBytes() {
+      java.lang.Object ref = did_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        did_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(did_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, did_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(did_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, did_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof node.highway.v1.Request.UnsubscribeChannelRequest)) {
+        return super.equals(obj);
+      }
+      node.highway.v1.Request.UnsubscribeChannelRequest other = (node.highway.v1.Request.UnsubscribeChannelRequest) obj;
+
+      if (!getDid()
+          .equals(other.getDid())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DID_FIELD_NUMBER;
+      hash = (53 * hash) + getDid().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.UnsubscribeChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(node.highway.v1.Request.UnsubscribeChannelRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * UnsubscribeChannelRequest is the request to unsubscribe from a channel
+     * </pre>
+     *
+     * Protobuf type {@code node.highway.v1.UnsubscribeChannelRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:node.highway.v1.UnsubscribeChannelRequest)
+        node.highway.v1.Request.UnsubscribeChannelRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_UnsubscribeChannelRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_UnsubscribeChannelRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                node.highway.v1.Request.UnsubscribeChannelRequest.class, node.highway.v1.Request.UnsubscribeChannelRequest.Builder.class);
+      }
+
+      // Construct using node.highway.v1.Request.UnsubscribeChannelRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        did_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_UnsubscribeChannelRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.UnsubscribeChannelRequest getDefaultInstanceForType() {
+        return node.highway.v1.Request.UnsubscribeChannelRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.UnsubscribeChannelRequest build() {
+        node.highway.v1.Request.UnsubscribeChannelRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.UnsubscribeChannelRequest buildPartial() {
+        node.highway.v1.Request.UnsubscribeChannelRequest result = new node.highway.v1.Request.UnsubscribeChannelRequest(this);
+        result.did_ = did_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof node.highway.v1.Request.UnsubscribeChannelRequest) {
+          return mergeFrom((node.highway.v1.Request.UnsubscribeChannelRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(node.highway.v1.Request.UnsubscribeChannelRequest other) {
+        if (other == node.highway.v1.Request.UnsubscribeChannelRequest.getDefaultInstance()) return this;
+        if (!other.getDid().isEmpty()) {
+          did_ = other.did_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        node.highway.v1.Request.UnsubscribeChannelRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (node.highway.v1.Request.UnsubscribeChannelRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object did_ = "";
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return The did.
+       */
+      public java.lang.String getDid() {
+        java.lang.Object ref = did_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          did_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return The bytes for did.
+       */
+      public com.google.protobuf.ByteString
+          getDidBytes() {
+        java.lang.Object ref = did_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          did_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @param value The did to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        did_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDid() {
+        
+        did_ = getDefaultInstance().getDid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Name is the name of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @param value The bytes for did to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        did_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:node.highway.v1.UnsubscribeChannelRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:node.highway.v1.UnsubscribeChannelRequest)
+    private static final node.highway.v1.Request.UnsubscribeChannelRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new node.highway.v1.Request.UnsubscribeChannelRequest();
+    }
+
+    public static node.highway.v1.Request.UnsubscribeChannelRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UnsubscribeChannelRequest>
+        PARSER = new com.google.protobuf.AbstractParser<UnsubscribeChannelRequest>() {
+      @java.lang.Override
+      public UnsubscribeChannelRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new UnsubscribeChannelRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<UnsubscribeChannelRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UnsubscribeChannelRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public node.highway.v1.Request.UnsubscribeChannelRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UpdateChannelRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:node.highway.v1.UpdateChannelRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Did is the DID of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The did.
+     */
+    java.lang.String getDid();
+    /**
+     * <pre>
+     * Did is the DID of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The bytes for did.
+     */
+    com.google.protobuf.ByteString
+        getDidBytes();
+
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+    int getMetadataCount();
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+    boolean containsMetadata(
+        java.lang.String key);
+    /**
+     * Use {@link #getMetadataMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getMetadata();
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getMetadataMap();
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+
+    java.lang.String getMetadataOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+
+    java.lang.String getMetadataOrThrow(
+        java.lang.String key);
+  }
+  /**
+   * <pre>
+   * UpdateChannelRequest is the request to update a channel
+   * </pre>
+   *
+   * Protobuf type {@code node.highway.v1.UpdateChannelRequest}
+   */
+  public static final class UpdateChannelRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:node.highway.v1.UpdateChannelRequest)
+      UpdateChannelRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UpdateChannelRequest.newBuilder() to construct.
+    private UpdateChannelRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UpdateChannelRequest() {
+      did_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UpdateChannelRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private UpdateChannelRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              did_ = s;
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                metadata_ = com.google.protobuf.MapField.newMapField(
+                    MetadataDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              metadata__ = input.readMessage(
+                  MetadataDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              metadata_.getMutableMap().put(
+                  metadata__.getKey(), metadata__.getValue());
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_UpdateChannelRequest_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMetadata();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return node.highway.v1.Request.internal_static_node_highway_v1_UpdateChannelRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              node.highway.v1.Request.UpdateChannelRequest.class, node.highway.v1.Request.UpdateChannelRequest.Builder.class);
+    }
+
+    public static final int DID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object did_;
+    /**
+     * <pre>
+     * Did is the DID of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The did.
+     */
+    @java.lang.Override
+    public java.lang.String getDid() {
+      java.lang.Object ref = did_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        did_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Did is the DID of the channel
+     * </pre>
+     *
+     * <code>string did = 1 [json_name = "did"];</code>
+     * @return The bytes for did.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDidBytes() {
+      java.lang.Object ref = did_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        did_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int METADATA_FIELD_NUMBER = 2;
+    private static final class MetadataDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  node.highway.v1.Request.internal_static_node_highway_v1_UpdateChannelRequest_MetadataEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> metadata_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetMetadata() {
+      if (metadata_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            MetadataDefaultEntryHolder.defaultEntry);
+      }
+      return metadata_;
+    }
+
+    public int getMetadataCount() {
+      return internalGetMetadata().getMap().size();
+    }
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+
+    @java.lang.Override
+    public boolean containsMetadata(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetMetadata().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getMetadataMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
+      return getMetadataMap();
+    }
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
+      return internalGetMetadata().getMap();
+    }
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getMetadataOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMetadata().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     * Metadata is the metadata of the channel thats being updated
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getMetadataOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMetadata().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(did_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, did_);
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetMetadata(),
+          MetadataDefaultEntryHolder.defaultEntry,
+          2);
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(did_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, did_);
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetMetadata().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        metadata__ = MetadataDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, metadata__);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof node.highway.v1.Request.UpdateChannelRequest)) {
+        return super.equals(obj);
+      }
+      node.highway.v1.Request.UpdateChannelRequest other = (node.highway.v1.Request.UpdateChannelRequest) obj;
+
+      if (!getDid()
+          .equals(other.getDid())) return false;
+      if (!internalGetMetadata().equals(
+          other.internalGetMetadata())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DID_FIELD_NUMBER;
+      hash = (53 * hash) + getDid().hashCode();
+      if (!internalGetMetadata().getMap().isEmpty()) {
+        hash = (37 * hash) + METADATA_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetMetadata().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static node.highway.v1.Request.UpdateChannelRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(node.highway.v1.Request.UpdateChannelRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * UpdateChannelRequest is the request to update a channel
+     * </pre>
+     *
+     * Protobuf type {@code node.highway.v1.UpdateChannelRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:node.highway.v1.UpdateChannelRequest)
+        node.highway.v1.Request.UpdateChannelRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_UpdateChannelRequest_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMetadata();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableMetadata();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_UpdateChannelRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                node.highway.v1.Request.UpdateChannelRequest.class, node.highway.v1.Request.UpdateChannelRequest.Builder.class);
+      }
+
+      // Construct using node.highway.v1.Request.UpdateChannelRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        did_ = "";
+
+        internalGetMutableMetadata().clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return node.highway.v1.Request.internal_static_node_highway_v1_UpdateChannelRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.UpdateChannelRequest getDefaultInstanceForType() {
+        return node.highway.v1.Request.UpdateChannelRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.UpdateChannelRequest build() {
+        node.highway.v1.Request.UpdateChannelRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public node.highway.v1.Request.UpdateChannelRequest buildPartial() {
+        node.highway.v1.Request.UpdateChannelRequest result = new node.highway.v1.Request.UpdateChannelRequest(this);
+        int from_bitField0_ = bitField0_;
+        result.did_ = did_;
+        result.metadata_ = internalGetMetadata();
+        result.metadata_.makeImmutable();
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof node.highway.v1.Request.UpdateChannelRequest) {
+          return mergeFrom((node.highway.v1.Request.UpdateChannelRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(node.highway.v1.Request.UpdateChannelRequest other) {
+        if (other == node.highway.v1.Request.UpdateChannelRequest.getDefaultInstance()) return this;
+        if (!other.getDid().isEmpty()) {
+          did_ = other.did_;
+          onChanged();
+        }
+        internalGetMutableMetadata().mergeFrom(
+            other.internalGetMetadata());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        node.highway.v1.Request.UpdateChannelRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (node.highway.v1.Request.UpdateChannelRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object did_ = "";
+      /**
+       * <pre>
+       * Did is the DID of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return The did.
+       */
+      public java.lang.String getDid() {
+        java.lang.Object ref = did_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          did_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Did is the DID of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return The bytes for did.
+       */
+      public com.google.protobuf.ByteString
+          getDidBytes() {
+        java.lang.Object ref = did_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          did_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Did is the DID of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @param value The did to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        did_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Did is the DID of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDid() {
+        
+        did_ = getDefaultInstance().getDid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Did is the DID of the channel
+       * </pre>
+       *
+       * <code>string did = 1 [json_name = "did"];</code>
+       * @param value The bytes for did to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        did_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> metadata_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMetadata() {
+        if (metadata_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              MetadataDefaultEntryHolder.defaultEntry);
+        }
+        return metadata_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableMetadata() {
+        onChanged();;
+        if (metadata_ == null) {
+          metadata_ = com.google.protobuf.MapField.newMapField(
+              MetadataDefaultEntryHolder.defaultEntry);
+        }
+        if (!metadata_.isMutable()) {
+          metadata_ = metadata_.copy();
+        }
+        return metadata_;
+      }
+
+      public int getMetadataCount() {
+        return internalGetMetadata().getMap().size();
+      }
+      /**
+       * <pre>
+       * Metadata is the metadata of the channel thats being updated
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+       */
+
+      @java.lang.Override
+      public boolean containsMetadata(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetMetadata().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getMetadataMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
+        return getMetadataMap();
+      }
+      /**
+       * <pre>
+       * Metadata is the metadata of the channel thats being updated
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
+        return internalGetMetadata().getMap();
+      }
+      /**
+       * <pre>
+       * Metadata is the metadata of the channel thats being updated
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getMetadataOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMetadata().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * Metadata is the metadata of the channel thats being updated
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getMetadataOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMetadata().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearMetadata() {
+        internalGetMutableMetadata().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       * Metadata is the metadata of the channel thats being updated
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+       */
+
+      public Builder removeMetadata(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableMetadata().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableMetadata() {
+        return internalGetMutableMetadata().getMutableMap();
+      }
+      /**
+       * <pre>
+       * Metadata is the metadata of the channel thats being updated
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+       */
+      public Builder putMetadata(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+        internalGetMutableMetadata().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       * Metadata is the metadata of the channel thats being updated
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; metadata = 2 [json_name = "metadata"];</code>
+       */
+
+      public Builder putAllMetadata(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableMetadata().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:node.highway.v1.UpdateChannelRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:node.highway.v1.UpdateChannelRequest)
+    private static final node.highway.v1.Request.UpdateChannelRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new node.highway.v1.Request.UpdateChannelRequest();
+    }
+
+    public static node.highway.v1.Request.UpdateChannelRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UpdateChannelRequest>
+        PARSER = new com.google.protobuf.AbstractParser<UpdateChannelRequest>() {
+      @java.lang.Override
+      public UpdateChannelRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new UpdateChannelRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<UpdateChannelRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UpdateChannelRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public node.highway.v1.Request.UpdateChannelRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ListPeersRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:node.highway.v1.ListPeersRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -80,9 +3389,6 @@ public final class Request {
   }
   /**
    * <pre>
-   * -----------------------------------------------------------------------------
-   * Highway Node API
-   * -----------------------------------------------------------------------------
    * (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
    * </pre>
    *
@@ -497,9 +3803,6 @@ public final class Request {
     }
     /**
      * <pre>
-     * -----------------------------------------------------------------------------
-     * Highway Node API
-     * -----------------------------------------------------------------------------
      * (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
      * </pre>
      *
@@ -9558,6 +12861,31 @@ public final class Request {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_highway_v1_CreateChannelRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_highway_v1_CreateChannelRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_highway_v1_SubscribeChannelRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_highway_v1_SubscribeChannelRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_highway_v1_UnsubscribeChannelRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_highway_v1_UnsubscribeChannelRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_highway_v1_UpdateChannelRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_highway_v1_UpdateChannelRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_highway_v1_UpdateChannelRequest_MetadataEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_highway_v1_UpdateChannelRequest_MetadataEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_node_highway_v1_ListPeersRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -9608,37 +12936,47 @@ public final class Request {
     java.lang.String[] descriptorData = {
       "\n\035node/highway/v1/request.proto\022\017node.hi" +
       "ghway.v1\032\024common/v1/core.proto\032\024common/v" +
-      "1/data.proto\"b\n\020ListPeersRequest\022\025\n\006s_na" +
-      "me\030\001 \001(\tR\005sName\022\032\n\010mnemonic\030\002 \001(\tR\010mnemo" +
-      "nic\022\033\n\tdevice_id\030\003 \001(\tR\010deviceId\"\363\001\n\025Dec" +
-      "ideExchangeRequest\022\025\n\006s_name\030\001 \001(\tR\005sNam" +
-      "e\022\032\n\010mnemonic\030\002 \001(\tR\010mnemonic\022\033\n\tdevice_" +
-      "id\030\003 \001(\tR\010deviceId\022E\n\006method\030\004 \001(\0162-.nod" +
-      "e.highway.v1.DecideExchangeRequest.Metho" +
-      "dR\006method\"C\n\006Method\022\026\n\022METHOD_UNSPECIFIE" +
-      "D\020\000\022\016\n\nMETHOD_ADD\020\001\022\021\n\rMETHOD_REMOVE\020\002\"\231" +
-      "\001\n\023SendExchangeRequest\022#\n\004peer\030\001 \001(\0132\017.c" +
-      "ommon.v1.PeerR\004peer\0220\n\007message\030\002 \001(\0132\026.c" +
-      "ommon.v1.MessageItemR\007message\022+\n\005items\030\003" +
-      " \003(\0132\025.common.v1.SupplyItemR\005items\"\204\001\n\022C" +
-      "acheRecordRequest\022\025\n\006s_name\030\001 \001(\tR\005sName" +
-      "\022\026\n\006prefix\030\002 \001(\tR\006prefix\022 \n\013fingerprint\030" +
-      "\003 \001(\tR\013fingerprint\022\035\n\npublic_key\030\004 \001(\tR\t" +
-      "publicKey\"\202\001\n\020GetRecordRequest\022\025\n\006s_name" +
-      "\030\001 \001(\tR\005sName\022\026\n\006prefix\030\002 \001(\tR\006prefix\022 \n" +
-      "\013fingerprint\030\003 \001(\tR\013fingerprint\022\035\n\npubli" +
-      "c_key\030\004 \001(\tR\tpublicKey\"\204\001\n\022StoreRecordRe" +
-      "quest\022\025\n\006s_name\030\001 \001(\tR\005sName\022\026\n\006prefix\030\002" +
-      " \001(\tR\006prefix\022 \n\013fingerprint\030\003 \001(\tR\013finge" +
-      "rprint\022\035\n\npublic_key\030\004 \001(\tR\tpublicKey\"\205\001" +
-      "\n\023RegisterNameRequest\022\025\n\006s_name\030\001 \001(\tR\005s" +
-      "Name\022\026\n\006prefix\030\002 \001(\tR\006prefix\022 \n\013fingerpr" +
-      "int\030\003 \001(\tR\013fingerprint\022\035\n\npublic_key\030\004 \001" +
-      "(\tR\tpublicKey\"\203\001\n\021VerifyNameRequest\022\025\n\006s" +
-      "_name\030\001 \001(\tR\005sName\022\026\n\006prefix\030\002 \001(\tR\006pref" +
-      "ix\022 \n\013fingerprint\030\003 \001(\tR\013fingerprint\022\035\n\n" +
-      "public_key\030\004 \001(\tR\tpublicKeyB&Z$github.co" +
-      "m/sonr-io/core/node/highwayb\006proto3"
+      "1/data.proto\"d\n\024CreateChannelRequest\022\022\n\004" +
+      "name\030\001 \001(\tR\004name\022 \n\013description\030\002 \001(\tR\013d" +
+      "escription\022\026\n\006owners\030\003 \003(\tR\006owners\"+\n\027Su" +
+      "bscribeChannelRequest\022\020\n\003did\030\001 \001(\tR\003did\"" +
+      "-\n\031UnsubscribeChannelRequest\022\020\n\003did\030\001 \001(" +
+      "\tR\003did\"\266\001\n\024UpdateChannelRequest\022\020\n\003did\030\001" +
+      " \001(\tR\003did\022O\n\010metadata\030\002 \003(\01323.node.highw" +
+      "ay.v1.UpdateChannelRequest.MetadataEntry" +
+      "R\010metadata\032;\n\rMetadataEntry\022\020\n\003key\030\001 \001(\t" +
+      "R\003key\022\024\n\005value\030\002 \001(\tR\005value:\0028\001\"b\n\020ListP" +
+      "eersRequest\022\025\n\006s_name\030\001 \001(\tR\005sName\022\032\n\010mn" +
+      "emonic\030\002 \001(\tR\010mnemonic\022\033\n\tdevice_id\030\003 \001(" +
+      "\tR\010deviceId\"\363\001\n\025DecideExchangeRequest\022\025\n" +
+      "\006s_name\030\001 \001(\tR\005sName\022\032\n\010mnemonic\030\002 \001(\tR\010" +
+      "mnemonic\022\033\n\tdevice_id\030\003 \001(\tR\010deviceId\022E\n" +
+      "\006method\030\004 \001(\0162-.node.highway.v1.DecideEx" +
+      "changeRequest.MethodR\006method\"C\n\006Method\022\026" +
+      "\n\022METHOD_UNSPECIFIED\020\000\022\016\n\nMETHOD_ADD\020\001\022\021" +
+      "\n\rMETHOD_REMOVE\020\002\"\231\001\n\023SendExchangeReques" +
+      "t\022#\n\004peer\030\001 \001(\0132\017.common.v1.PeerR\004peer\0220" +
+      "\n\007message\030\002 \001(\0132\026.common.v1.MessageItemR" +
+      "\007message\022+\n\005items\030\003 \003(\0132\025.common.v1.Supp" +
+      "lyItemR\005items\"\204\001\n\022CacheRecordRequest\022\025\n\006" +
+      "s_name\030\001 \001(\tR\005sName\022\026\n\006prefix\030\002 \001(\tR\006pre" +
+      "fix\022 \n\013fingerprint\030\003 \001(\tR\013fingerprint\022\035\n" +
+      "\npublic_key\030\004 \001(\tR\tpublicKey\"\202\001\n\020GetReco" +
+      "rdRequest\022\025\n\006s_name\030\001 \001(\tR\005sName\022\026\n\006pref" +
+      "ix\030\002 \001(\tR\006prefix\022 \n\013fingerprint\030\003 \001(\tR\013f" +
+      "ingerprint\022\035\n\npublic_key\030\004 \001(\tR\tpublicKe" +
+      "y\"\204\001\n\022StoreRecordRequest\022\025\n\006s_name\030\001 \001(\t" +
+      "R\005sName\022\026\n\006prefix\030\002 \001(\tR\006prefix\022 \n\013finge" +
+      "rprint\030\003 \001(\tR\013fingerprint\022\035\n\npublic_key\030" +
+      "\004 \001(\tR\tpublicKey\"\205\001\n\023RegisterNameRequest" +
+      "\022\025\n\006s_name\030\001 \001(\tR\005sName\022\026\n\006prefix\030\002 \001(\tR" +
+      "\006prefix\022 \n\013fingerprint\030\003 \001(\tR\013fingerprin" +
+      "t\022\035\n\npublic_key\030\004 \001(\tR\tpublicKey\"\203\001\n\021Ver" +
+      "ifyNameRequest\022\025\n\006s_name\030\001 \001(\tR\005sName\022\026\n" +
+      "\006prefix\030\002 \001(\tR\006prefix\022 \n\013fingerprint\030\003 \001" +
+      "(\tR\013fingerprint\022\035\n\npublic_key\030\004 \001(\tR\tpub" +
+      "licKeyB&Z$github.com/sonr-io/core/node/h" +
+      "ighwayb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9646,50 +12984,80 @@ public final class Request {
           common.v1.Core.getDescriptor(),
           common.v1.Data.getDescriptor(),
         });
-    internal_static_node_highway_v1_ListPeersRequest_descriptor =
+    internal_static_node_highway_v1_CreateChannelRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_node_highway_v1_CreateChannelRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_highway_v1_CreateChannelRequest_descriptor,
+        new java.lang.String[] { "Name", "Description", "Owners", });
+    internal_static_node_highway_v1_SubscribeChannelRequest_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_node_highway_v1_SubscribeChannelRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_highway_v1_SubscribeChannelRequest_descriptor,
+        new java.lang.String[] { "Did", });
+    internal_static_node_highway_v1_UnsubscribeChannelRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_node_highway_v1_UnsubscribeChannelRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_highway_v1_UnsubscribeChannelRequest_descriptor,
+        new java.lang.String[] { "Did", });
+    internal_static_node_highway_v1_UpdateChannelRequest_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_node_highway_v1_UpdateChannelRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_highway_v1_UpdateChannelRequest_descriptor,
+        new java.lang.String[] { "Did", "Metadata", });
+    internal_static_node_highway_v1_UpdateChannelRequest_MetadataEntry_descriptor =
+      internal_static_node_highway_v1_UpdateChannelRequest_descriptor.getNestedTypes().get(0);
+    internal_static_node_highway_v1_UpdateChannelRequest_MetadataEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_highway_v1_UpdateChannelRequest_MetadataEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_node_highway_v1_ListPeersRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_node_highway_v1_ListPeersRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_ListPeersRequest_descriptor,
         new java.lang.String[] { "SName", "Mnemonic", "DeviceId", });
     internal_static_node_highway_v1_DecideExchangeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_node_highway_v1_DecideExchangeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_DecideExchangeRequest_descriptor,
         new java.lang.String[] { "SName", "Mnemonic", "DeviceId", "Method", });
     internal_static_node_highway_v1_SendExchangeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_node_highway_v1_SendExchangeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_SendExchangeRequest_descriptor,
         new java.lang.String[] { "Peer", "Message", "Items", });
     internal_static_node_highway_v1_CacheRecordRequest_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_node_highway_v1_CacheRecordRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_CacheRecordRequest_descriptor,
         new java.lang.String[] { "SName", "Prefix", "Fingerprint", "PublicKey", });
     internal_static_node_highway_v1_GetRecordRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_node_highway_v1_GetRecordRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_GetRecordRequest_descriptor,
         new java.lang.String[] { "SName", "Prefix", "Fingerprint", "PublicKey", });
     internal_static_node_highway_v1_StoreRecordRequest_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_node_highway_v1_StoreRecordRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_StoreRecordRequest_descriptor,
         new java.lang.String[] { "SName", "Prefix", "Fingerprint", "PublicKey", });
     internal_static_node_highway_v1_RegisterNameRequest_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_node_highway_v1_RegisterNameRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_RegisterNameRequest_descriptor,
         new java.lang.String[] { "SName", "Prefix", "Fingerprint", "PublicKey", });
     internal_static_node_highway_v1_VerifyNameRequest_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_node_highway_v1_VerifyNameRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_highway_v1_VerifyNameRequest_descriptor,

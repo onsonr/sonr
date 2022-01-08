@@ -11,6 +11,25 @@ var (
 	logger = golog.Default.Child("internal/common")
 )
 
+// NewDefaultLocation returns the Sonr HQ as default location
+func NewDefaultLocation() *Location {
+	return &Location{
+		Latitude:  float64(40.673010),
+		Longitude: float64(-73.994450),
+		Placemark: &Location_Placemark{
+			Name:                  "Sonr HQ",
+			Street:                "94 9th St.",
+			IsoCountryCode:        "US",
+			Country:               "United States",
+			AdministrativeArea:    "New York",
+			SubAdministrativeArea: "Brooklyn",
+			Locality:              "Brooklyn",
+			SubLocality:           "Gowanus",
+			PostalCode:            "11215",
+		},
+	}
+}
+
 // IsMdnsCompatible returns true if the Connection is MDNS compatible
 func (c Connection) IsMdnsCompatible() bool {
 	return c == Connection_WIFI || c == Connection_ETHERNET

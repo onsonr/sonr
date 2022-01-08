@@ -34,7 +34,7 @@ func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options 
 	opts.Apply(protocol)
 
 	// Setup Stream Handlers
-	node.Host().SetStreamHandler(FilePID, protocol.onIncomingTransfer)
+	node.SetStreamHandler(FilePID, protocol.onIncomingTransfer)
 	logger.Debug("✅  TransmitProtocol is Activated \n")
 	return protocol, nil
 }
@@ -83,7 +83,7 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 	// Send Files
 	if p.current.Payload.IsFile() {
 		// Create New Stream
-		stream, err := p.node.Host().NewStream(p.ctx, toId, FilePID)
+		stream, err := p.node.NewStream(p.ctx, toId, FilePID)
 		if err != nil {
 			logger.Errorf("%s - Failed to Create New Stream", err)
 			return err

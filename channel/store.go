@@ -8,8 +8,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// newStore creates a new store
-func newStore(opts *options) *Store {
+// NewStore creates a new store
+func NewStore(opts *options) *Store {
 	// Create a new store
 	return &Store{
 		Data:     make(map[string]*StoreEntry),
@@ -20,7 +20,7 @@ func newStore(opts *options) *Store {
 }
 
 // Delete deletes an entry from the store and publishes an event
-func (s *Store) Delete(key string, b *beam) error {
+func (s *Store) Delete(key string, b *channel) error {
 	// Fetch the entry
 	entry := s.Data[key]
 	if entry == nil {
@@ -28,7 +28,7 @@ func (s *Store) Delete(key string, b *beam) error {
 	}
 
 	// Check if the entry is owned by this node
-	if entry.Peer != b.h.ID().String() {
+	if entry.Peer != b.n.HostID().String() {
 		return ErrNotOwner
 	}
 
@@ -37,7 +37,7 @@ func (s *Store) Delete(key string, b *beam) error {
 	s.Modified = time.Now().Unix()
 
 	// Create Delete Event
-	event := b.newDeleteEvent(key)
+	event := b.NewDeleteEvent(key)
 	return event.Publish(b.ctx, b.topic)
 }
 
@@ -52,9 +52,9 @@ func (s *Store) Get(key string) ([]byte, error) {
 }
 
 // Handle checks the event type and handles it with the store
-func (s *Store) Handle(e *Event, b *beam) error {
+func (s *Store) Handle(e *Event, b *channel) error {
 	// Check if the event is valid
-	if b.h.ID().String() == e.Peer {
+	if b.n.HostID().String() == e.Peer {
 		return nil
 	}
 
@@ -90,19 +90,19 @@ func (s *Store) Handle(e *Event, b *beam) error {
 }
 
 // Put puts an entry into the store and publishes an event
-func (s *Store) Put(key string, value []byte, b *beam) error {
+func (s *Store) Put(key string, value []byte, b *channel) error {
 	// Fetch the entry
 	entry := s.Data[key]
 	if entry == nil {
 		// Create new entry with Event
-		event, entry := b.newPutEvent(key, value)
+		event, entry := b.NewPutEvent(key, value)
 		s.Data[key] = entry
 		s.Modified = time.Now().Unix()
 		return event.Publish(b.ctx, b.topic)
 	}
 
 	// Get existing entry and update it
-	event, err := entry.Set(value, b.h.ID().String())
+	event, err := entry.Set(value, b.n.HostID().String())
 	if err != nil {
 		return err
 	}
@@ -124,42 +124,42 @@ func (se *StoreEntry) Set(value []byte, selfID string) (*Event, error) {
 	}, nil
 }
 
-// newPutEvent creates a new put event
-func (b *beam) newPutEvent(key string, value []byte) (*Event, *StoreEntry) {
+// NewPutEvent creates a new put event
+func (b *channel) NewPutEvent(key string, value []byte) (*Event, *StoreEntry) {
 	entry := &StoreEntry{
 		Key:      key,
 		Value:    value,
-		Peer:     b.h.ID().String(),
+		Peer:     b.n.HostID().String(),
 		Created:  time.Now().Unix(),
 		Modified: time.Now().Unix(),
 	}
 	event := &Event{
 		Type:  EventType_PUT,
-		Peer:  b.h.ID().String(),
+		Peer:  b.n.HostID().String(),
 		Entry: entry,
 	}
 	return event, entry
 }
 
-// newSyncEvent creates a new sync event
-func (b *beam) newSyncEvent() *Event {
+// NewSyncEvent creates a new sync event
+func (b *channel) NewSyncEvent() *Event {
 	return &Event{
 		Type:  EventType_SYNC,
-		Peer:  b.h.ID().String(),
+		Peer:  b.n.HostID().String(),
 		Store: b.store,
 	}
 }
 
-// newDeleteEvent creates a new delete event
-func (b *beam) newDeleteEvent(key string) *Event {
+// NewDeleteEvent creates a new delete event
+func (b *channel) NewDeleteEvent(key string) *Event {
 	entry := &StoreEntry{
 		Key:      key,
-		Peer:     b.h.ID().String(),
+		Peer:     b.n.HostID().String(),
 		Modified: time.Now().Unix(),
 	}
 	event := &Event{
 		Type:  EventType_DELETE,
-		Peer:  b.h.ID().String(),
+		Peer:  b.n.HostID().String(),
 		Entry: entry,
 	}
 	return event

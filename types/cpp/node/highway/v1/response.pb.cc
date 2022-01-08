@@ -19,6 +19,54 @@ PROTOBUF_PRAGMA_INIT_SEG
 namespace node {
 namespace highway {
 namespace v1 {
+constexpr CreateChannelResponse::CreateChannelResponse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : info_(nullptr){}
+struct CreateChannelResponseDefaultTypeInternal {
+  constexpr CreateChannelResponseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~CreateChannelResponseDefaultTypeInternal() {}
+  union {
+    CreateChannelResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT CreateChannelResponseDefaultTypeInternal _CreateChannelResponse_default_instance_;
+constexpr SubscribeChannelResponse::SubscribeChannelResponse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : info_(nullptr){}
+struct SubscribeChannelResponseDefaultTypeInternal {
+  constexpr SubscribeChannelResponseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SubscribeChannelResponseDefaultTypeInternal() {}
+  union {
+    SubscribeChannelResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SubscribeChannelResponseDefaultTypeInternal _SubscribeChannelResponse_default_instance_;
+constexpr UnsubscribeChannelResponse::UnsubscribeChannelResponse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : info_(nullptr){}
+struct UnsubscribeChannelResponseDefaultTypeInternal {
+  constexpr UnsubscribeChannelResponseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~UnsubscribeChannelResponseDefaultTypeInternal() {}
+  union {
+    UnsubscribeChannelResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT UnsubscribeChannelResponseDefaultTypeInternal _UnsubscribeChannelResponse_default_instance_;
+constexpr UpdateChannelResponse::UpdateChannelResponse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : info_(nullptr){}
+struct UpdateChannelResponseDefaultTypeInternal {
+  constexpr UpdateChannelResponseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~UpdateChannelResponseDefaultTypeInternal() {}
+  union {
+    UpdateChannelResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT UpdateChannelResponseDefaultTypeInternal _UpdateChannelResponse_default_instance_;
 constexpr ListPeersResponse::ListPeersResponse(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : peers_()
@@ -199,11 +247,39 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VerifyNameResponseDefaultTypeIn
 }  // namespace v1
 }  // namespace highway
 }  // namespace node
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[14];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[18];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_node_2fhighway_2fv1_2fresponse_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_node_2fhighway_2fv1_2fresponse_2eproto = nullptr;
 
 const uint32_t TableStruct_node_2fhighway_2fv1_2fresponse_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::CreateChannelResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::CreateChannelResponse, info_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::SubscribeChannelResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::SubscribeChannelResponse, info_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::UnsubscribeChannelResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::UnsubscribeChannelResponse, info_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::UpdateChannelResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::node::highway::v1::UpdateChannelResponse, info_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::node::highway::v1::ListPeersResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -337,23 +413,31 @@ const uint32_t TableStruct_node_2fhighway_2fv1_2fresponse_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::node::highway::v1::VerifyNameResponse, records_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, -1, sizeof(::node::highway::v1::ListPeersResponse)},
-  { 9, 17, -1, sizeof(::node::highway::v1::DecideExchangeResponse_RecordsEntry_DoNotUse)},
-  { 19, -1, -1, sizeof(::node::highway::v1::DecideExchangeResponse)},
-  { 28, -1, -1, sizeof(::node::highway::v1::SendExchangeResponse)},
-  { 36, 44, -1, sizeof(::node::highway::v1::CacheRecordResponse_RecordsEntry_DoNotUse)},
-  { 46, -1, -1, sizeof(::node::highway::v1::CacheRecordResponse)},
-  { 55, 63, -1, sizeof(::node::highway::v1::GetRecordResponse_RecordsEntry_DoNotUse)},
-  { 65, -1, -1, sizeof(::node::highway::v1::GetRecordResponse)},
-  { 74, 82, -1, sizeof(::node::highway::v1::StoreRecordResponse_RecordsEntry_DoNotUse)},
-  { 84, -1, -1, sizeof(::node::highway::v1::StoreRecordResponse)},
-  { 93, 101, -1, sizeof(::node::highway::v1::RegisterNameResponse_RecordsEntry_DoNotUse)},
-  { 103, -1, -1, sizeof(::node::highway::v1::RegisterNameResponse)},
-  { 112, 120, -1, sizeof(::node::highway::v1::VerifyNameResponse_RecordsEntry_DoNotUse)},
-  { 122, -1, -1, sizeof(::node::highway::v1::VerifyNameResponse)},
+  { 0, -1, -1, sizeof(::node::highway::v1::CreateChannelResponse)},
+  { 7, -1, -1, sizeof(::node::highway::v1::SubscribeChannelResponse)},
+  { 14, -1, -1, sizeof(::node::highway::v1::UnsubscribeChannelResponse)},
+  { 21, -1, -1, sizeof(::node::highway::v1::UpdateChannelResponse)},
+  { 28, -1, -1, sizeof(::node::highway::v1::ListPeersResponse)},
+  { 37, 45, -1, sizeof(::node::highway::v1::DecideExchangeResponse_RecordsEntry_DoNotUse)},
+  { 47, -1, -1, sizeof(::node::highway::v1::DecideExchangeResponse)},
+  { 56, -1, -1, sizeof(::node::highway::v1::SendExchangeResponse)},
+  { 64, 72, -1, sizeof(::node::highway::v1::CacheRecordResponse_RecordsEntry_DoNotUse)},
+  { 74, -1, -1, sizeof(::node::highway::v1::CacheRecordResponse)},
+  { 83, 91, -1, sizeof(::node::highway::v1::GetRecordResponse_RecordsEntry_DoNotUse)},
+  { 93, -1, -1, sizeof(::node::highway::v1::GetRecordResponse)},
+  { 102, 110, -1, sizeof(::node::highway::v1::StoreRecordResponse_RecordsEntry_DoNotUse)},
+  { 112, -1, -1, sizeof(::node::highway::v1::StoreRecordResponse)},
+  { 121, 129, -1, sizeof(::node::highway::v1::RegisterNameResponse_RecordsEntry_DoNotUse)},
+  { 131, -1, -1, sizeof(::node::highway::v1::RegisterNameResponse)},
+  { 140, 148, -1, sizeof(::node::highway::v1::VerifyNameResponse_RecordsEntry_DoNotUse)},
+  { 150, -1, -1, sizeof(::node::highway::v1::VerifyNameResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::node::highway::v1::_CreateChannelResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::node::highway::v1::_SubscribeChannelResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::node::highway::v1::_UnsubscribeChannelResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::node::highway::v1::_UpdateChannelResponse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::node::highway::v1::_ListPeersResponse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::node::highway::v1::_DecideExchangeResponse_RecordsEntry_DoNotUse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::node::highway::v1::_DecideExchangeResponse_default_instance_),
@@ -372,52 +456,62 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_node_2fhighway_2fv1_2fresponse_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\036node/highway/v1/response.proto\022\017node.h"
-  "ighway.v1\032\024common/v1/core.proto\"h\n\021ListP"
-  "eersResponse\022\020\n\003olc\030\001 \001(\tR\003olc\022%\n\005peers\030"
-  "\002 \003(\0132\017.common.v1.PeerR\005peers\022\032\n\010receive"
-  "d\030\003 \001(\003R\010received\"\324\001\n\026DecideExchangeResp"
-  "onse\022\030\n\007success\030\001 \001(\010R\007success\022\024\n\005error\030"
-  "\002 \001(\tR\005error\022N\n\007records\030\003 \003(\01324.node.hig"
-  "hway.v1.DecideExchangeResponse.RecordsEn"
-  "tryR\007records\032:\n\014RecordsEntry\022\020\n\003key\030\001 \001("
-  "\tR\003key\022\024\n\005value\030\002 \001(\tR\005value:\0028\001\"F\n\024Send"
-  "ExchangeResponse\022\030\n\007success\030\001 \001(\010R\007succe"
-  "ss\022\024\n\005error\030\002 \001(\tR\005error\"\316\001\n\023CacheRecord"
-  "Response\022\030\n\007success\030\001 \001(\010R\007success\022\024\n\005er"
-  "ror\030\002 \001(\tR\005error\022K\n\007records\030\003 \003(\01321.node"
-  ".highway.v1.CacheRecordResponse.RecordsE"
-  "ntryR\007records\032:\n\014RecordsEntry\022\020\n\003key\030\001 \001"
-  "(\tR\003key\022\024\n\005value\030\002 \001(\tR\005value:\0028\001\"\312\001\n\021Ge"
-  "tRecordResponse\022\030\n\007success\030\001 \001(\010R\007succes"
-  "s\022\024\n\005error\030\002 \001(\tR\005error\022I\n\007records\030\003 \003(\013"
-  "2/.node.highway.v1.GetRecordResponse.Rec"
-  "ordsEntryR\007records\032:\n\014RecordsEntry\022\020\n\003ke"
-  "y\030\001 \001(\tR\003key\022\024\n\005value\030\002 \001(\tR\005value:\0028\001\"\316"
-  "\001\n\023StoreRecordResponse\022\030\n\007success\030\001 \001(\010R"
+  "ighway.v1\032\024common/v1/core.proto\032\034node/co"
+  "des/v1/response.proto\"H\n\025CreateChannelRe"
+  "sponse\022/\n\004info\030\001 \001(\0132\033.node.codes.v1.Res"
+  "ponseInfoR\004info\"K\n\030SubscribeChannelRespo"
+  "nse\022/\n\004info\030\001 \001(\0132\033.node.codes.v1.Respon"
+  "seInfoR\004info\"M\n\032UnsubscribeChannelRespon"
+  "se\022/\n\004info\030\001 \001(\0132\033.node.codes.v1.Respons"
+  "eInfoR\004info\"H\n\025UpdateChannelResponse\022/\n\004"
+  "info\030\001 \001(\0132\033.node.codes.v1.ResponseInfoR"
+  "\004info\"h\n\021ListPeersResponse\022\020\n\003olc\030\001 \001(\tR"
+  "\003olc\022%\n\005peers\030\002 \003(\0132\017.common.v1.PeerR\005pe"
+  "ers\022\032\n\010received\030\003 \001(\003R\010received\"\324\001\n\026Deci"
+  "deExchangeResponse\022\030\n\007success\030\001 \001(\010R\007suc"
+  "cess\022\024\n\005error\030\002 \001(\tR\005error\022N\n\007records\030\003 "
+  "\003(\01324.node.highway.v1.DecideExchangeResp"
+  "onse.RecordsEntryR\007records\032:\n\014RecordsEnt"
+  "ry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005value\030\002 \001(\tR\005val"
+  "ue:\0028\001\"F\n\024SendExchangeResponse\022\030\n\007succes"
+  "s\030\001 \001(\010R\007success\022\024\n\005error\030\002 \001(\tR\005error\"\316"
+  "\001\n\023CacheRecordResponse\022\030\n\007success\030\001 \001(\010R"
   "\007success\022\024\n\005error\030\002 \001(\tR\005error\022K\n\007record"
-  "s\030\003 \003(\01321.node.highway.v1.StoreRecordRes"
+  "s\030\003 \003(\01321.node.highway.v1.CacheRecordRes"
   "ponse.RecordsEntryR\007records\032:\n\014RecordsEn"
   "try\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005value\030\002 \001(\tR\005va"
-  "lue:\0028\001\"\320\001\n\024RegisterNameResponse\022\030\n\007succ"
-  "ess\030\001 \001(\010R\007success\022\024\n\005error\030\002 \001(\tR\005error"
-  "\022L\n\007records\030\003 \003(\01322.node.highway.v1.Regi"
-  "sterNameResponse.RecordsEntryR\007records\032:"
-  "\n\014RecordsEntry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005valu"
-  "e\030\002 \001(\tR\005value:\0028\001\"\314\001\n\022VerifyNameRespons"
-  "e\022\030\n\007success\030\001 \001(\010R\007success\022\024\n\005error\030\002 \001"
-  "(\tR\005error\022J\n\007records\030\003 \003(\01320.node.highwa"
-  "y.v1.VerifyNameResponse.RecordsEntryR\007re"
-  "cords\032:\n\014RecordsEntry\022\020\n\003key\030\001 \001(\tR\003key\022"
-  "\024\n\005value\030\002 \001(\tR\005value:\0028\001B&Z$github.com/"
-  "sonr-io/core/node/highwayb\006proto3"
+  "lue:\0028\001\"\312\001\n\021GetRecordResponse\022\030\n\007success"
+  "\030\001 \001(\010R\007success\022\024\n\005error\030\002 \001(\tR\005error\022I\n"
+  "\007records\030\003 \003(\0132/.node.highway.v1.GetReco"
+  "rdResponse.RecordsEntryR\007records\032:\n\014Reco"
+  "rdsEntry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005value\030\002 \001("
+  "\tR\005value:\0028\001\"\316\001\n\023StoreRecordResponse\022\030\n\007"
+  "success\030\001 \001(\010R\007success\022\024\n\005error\030\002 \001(\tR\005e"
+  "rror\022K\n\007records\030\003 \003(\01321.node.highway.v1."
+  "StoreRecordResponse.RecordsEntryR\007record"
+  "s\032:\n\014RecordsEntry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005v"
+  "alue\030\002 \001(\tR\005value:\0028\001\"\320\001\n\024RegisterNameRe"
+  "sponse\022\030\n\007success\030\001 \001(\010R\007success\022\024\n\005erro"
+  "r\030\002 \001(\tR\005error\022L\n\007records\030\003 \003(\01322.node.h"
+  "ighway.v1.RegisterNameResponse.RecordsEn"
+  "tryR\007records\032:\n\014RecordsEntry\022\020\n\003key\030\001 \001("
+  "\tR\003key\022\024\n\005value\030\002 \001(\tR\005value:\0028\001\"\314\001\n\022Ver"
+  "ifyNameResponse\022\030\n\007success\030\001 \001(\010R\007succes"
+  "s\022\024\n\005error\030\002 \001(\tR\005error\022J\n\007records\030\003 \003(\013"
+  "20.node.highway.v1.VerifyNameResponse.Re"
+  "cordsEntryR\007records\032:\n\014RecordsEntry\022\020\n\003k"
+  "ey\030\001 \001(\tR\003key\022\024\n\005value\030\002 \001(\tR\005value:\0028\001B"
+  "&Z$github.com/sonr-io/core/node/highwayb"
+  "\006proto3"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_deps[1] = {
+static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_deps[2] = {
   &::descriptor_table_common_2fv1_2fcore_2eproto,
+  &::descriptor_table_node_2fcodes_2fv1_2fresponse_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto = {
-  false, false, 1553, descriptor_table_protodef_node_2fhighway_2fv1_2fresponse_2eproto, "node/highway/v1/response.proto", 
-  &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once, descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_deps, 1, 14,
+  false, false, 1887, descriptor_table_protodef_node_2fhighway_2fv1_2fresponse_2eproto, "node/highway/v1/response.proto", 
+  &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once, descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_deps, 2, 18,
   schemas, file_default_instances, TableStruct_node_2fhighway_2fv1_2fresponse_2eproto::offsets,
   file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto, file_level_enum_descriptors_node_2fhighway_2fv1_2fresponse_2eproto, file_level_service_descriptors_node_2fhighway_2fv1_2fresponse_2eproto,
 };
@@ -430,6 +524,810 @@ PROTOBUF_ATTRIBUTE_INIT_PRIORITY static ::PROTOBUF_NAMESPACE_ID::internal::AddDe
 namespace node {
 namespace highway {
 namespace v1 {
+
+// ===================================================================
+
+class CreateChannelResponse::_Internal {
+ public:
+  static const ::node::codes::v1::ResponseInfo& info(const CreateChannelResponse* msg);
+};
+
+const ::node::codes::v1::ResponseInfo&
+CreateChannelResponse::_Internal::info(const CreateChannelResponse* msg) {
+  return *msg->info_;
+}
+void CreateChannelResponse::clear_info() {
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+}
+CreateChannelResponse::CreateChannelResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:node.highway.v1.CreateChannelResponse)
+}
+CreateChannelResponse::CreateChannelResponse(const CreateChannelResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_info()) {
+    info_ = new ::node::codes::v1::ResponseInfo(*from.info_);
+  } else {
+    info_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:node.highway.v1.CreateChannelResponse)
+}
+
+inline void CreateChannelResponse::SharedCtor() {
+info_ = nullptr;
+}
+
+CreateChannelResponse::~CreateChannelResponse() {
+  // @@protoc_insertion_point(destructor:node.highway.v1.CreateChannelResponse)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void CreateChannelResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete info_;
+}
+
+void CreateChannelResponse::ArenaDtor(void* object) {
+  CreateChannelResponse* _this = reinterpret_cast< CreateChannelResponse* >(object);
+  (void)_this;
+}
+void CreateChannelResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void CreateChannelResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void CreateChannelResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:node.highway.v1.CreateChannelResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CreateChannelResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_info(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CreateChannelResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:node.highway.v1.CreateChannelResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::info(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:node.highway.v1.CreateChannelResponse)
+  return target;
+}
+
+size_t CreateChannelResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:node.highway.v1.CreateChannelResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *info_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CreateChannelResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    CreateChannelResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CreateChannelResponse::GetClassData() const { return &_class_data_; }
+
+void CreateChannelResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<CreateChannelResponse *>(to)->MergeFrom(
+      static_cast<const CreateChannelResponse &>(from));
+}
+
+
+void CreateChannelResponse::MergeFrom(const CreateChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:node.highway.v1.CreateChannelResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_info()) {
+    _internal_mutable_info()->::node::codes::v1::ResponseInfo::MergeFrom(from._internal_info());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CreateChannelResponse::CopyFrom(const CreateChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:node.highway.v1.CreateChannelResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CreateChannelResponse::IsInitialized() const {
+  return true;
+}
+
+void CreateChannelResponse::InternalSwap(CreateChannelResponse* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(info_, other->info_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CreateChannelResponse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[0]);
+}
+
+// ===================================================================
+
+class SubscribeChannelResponse::_Internal {
+ public:
+  static const ::node::codes::v1::ResponseInfo& info(const SubscribeChannelResponse* msg);
+};
+
+const ::node::codes::v1::ResponseInfo&
+SubscribeChannelResponse::_Internal::info(const SubscribeChannelResponse* msg) {
+  return *msg->info_;
+}
+void SubscribeChannelResponse::clear_info() {
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+}
+SubscribeChannelResponse::SubscribeChannelResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:node.highway.v1.SubscribeChannelResponse)
+}
+SubscribeChannelResponse::SubscribeChannelResponse(const SubscribeChannelResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_info()) {
+    info_ = new ::node::codes::v1::ResponseInfo(*from.info_);
+  } else {
+    info_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:node.highway.v1.SubscribeChannelResponse)
+}
+
+inline void SubscribeChannelResponse::SharedCtor() {
+info_ = nullptr;
+}
+
+SubscribeChannelResponse::~SubscribeChannelResponse() {
+  // @@protoc_insertion_point(destructor:node.highway.v1.SubscribeChannelResponse)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SubscribeChannelResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete info_;
+}
+
+void SubscribeChannelResponse::ArenaDtor(void* object) {
+  SubscribeChannelResponse* _this = reinterpret_cast< SubscribeChannelResponse* >(object);
+  (void)_this;
+}
+void SubscribeChannelResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SubscribeChannelResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SubscribeChannelResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:node.highway.v1.SubscribeChannelResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SubscribeChannelResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_info(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* SubscribeChannelResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:node.highway.v1.SubscribeChannelResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::info(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:node.highway.v1.SubscribeChannelResponse)
+  return target;
+}
+
+size_t SubscribeChannelResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:node.highway.v1.SubscribeChannelResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *info_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SubscribeChannelResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SubscribeChannelResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SubscribeChannelResponse::GetClassData() const { return &_class_data_; }
+
+void SubscribeChannelResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SubscribeChannelResponse *>(to)->MergeFrom(
+      static_cast<const SubscribeChannelResponse &>(from));
+}
+
+
+void SubscribeChannelResponse::MergeFrom(const SubscribeChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:node.highway.v1.SubscribeChannelResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_info()) {
+    _internal_mutable_info()->::node::codes::v1::ResponseInfo::MergeFrom(from._internal_info());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SubscribeChannelResponse::CopyFrom(const SubscribeChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:node.highway.v1.SubscribeChannelResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SubscribeChannelResponse::IsInitialized() const {
+  return true;
+}
+
+void SubscribeChannelResponse::InternalSwap(SubscribeChannelResponse* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(info_, other->info_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SubscribeChannelResponse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[1]);
+}
+
+// ===================================================================
+
+class UnsubscribeChannelResponse::_Internal {
+ public:
+  static const ::node::codes::v1::ResponseInfo& info(const UnsubscribeChannelResponse* msg);
+};
+
+const ::node::codes::v1::ResponseInfo&
+UnsubscribeChannelResponse::_Internal::info(const UnsubscribeChannelResponse* msg) {
+  return *msg->info_;
+}
+void UnsubscribeChannelResponse::clear_info() {
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+}
+UnsubscribeChannelResponse::UnsubscribeChannelResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:node.highway.v1.UnsubscribeChannelResponse)
+}
+UnsubscribeChannelResponse::UnsubscribeChannelResponse(const UnsubscribeChannelResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_info()) {
+    info_ = new ::node::codes::v1::ResponseInfo(*from.info_);
+  } else {
+    info_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:node.highway.v1.UnsubscribeChannelResponse)
+}
+
+inline void UnsubscribeChannelResponse::SharedCtor() {
+info_ = nullptr;
+}
+
+UnsubscribeChannelResponse::~UnsubscribeChannelResponse() {
+  // @@protoc_insertion_point(destructor:node.highway.v1.UnsubscribeChannelResponse)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void UnsubscribeChannelResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete info_;
+}
+
+void UnsubscribeChannelResponse::ArenaDtor(void* object) {
+  UnsubscribeChannelResponse* _this = reinterpret_cast< UnsubscribeChannelResponse* >(object);
+  (void)_this;
+}
+void UnsubscribeChannelResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void UnsubscribeChannelResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void UnsubscribeChannelResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:node.highway.v1.UnsubscribeChannelResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* UnsubscribeChannelResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_info(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* UnsubscribeChannelResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:node.highway.v1.UnsubscribeChannelResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::info(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:node.highway.v1.UnsubscribeChannelResponse)
+  return target;
+}
+
+size_t UnsubscribeChannelResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:node.highway.v1.UnsubscribeChannelResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *info_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData UnsubscribeChannelResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    UnsubscribeChannelResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UnsubscribeChannelResponse::GetClassData() const { return &_class_data_; }
+
+void UnsubscribeChannelResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<UnsubscribeChannelResponse *>(to)->MergeFrom(
+      static_cast<const UnsubscribeChannelResponse &>(from));
+}
+
+
+void UnsubscribeChannelResponse::MergeFrom(const UnsubscribeChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:node.highway.v1.UnsubscribeChannelResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_info()) {
+    _internal_mutable_info()->::node::codes::v1::ResponseInfo::MergeFrom(from._internal_info());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void UnsubscribeChannelResponse::CopyFrom(const UnsubscribeChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:node.highway.v1.UnsubscribeChannelResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool UnsubscribeChannelResponse::IsInitialized() const {
+  return true;
+}
+
+void UnsubscribeChannelResponse::InternalSwap(UnsubscribeChannelResponse* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(info_, other->info_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata UnsubscribeChannelResponse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[2]);
+}
+
+// ===================================================================
+
+class UpdateChannelResponse::_Internal {
+ public:
+  static const ::node::codes::v1::ResponseInfo& info(const UpdateChannelResponse* msg);
+};
+
+const ::node::codes::v1::ResponseInfo&
+UpdateChannelResponse::_Internal::info(const UpdateChannelResponse* msg) {
+  return *msg->info_;
+}
+void UpdateChannelResponse::clear_info() {
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+}
+UpdateChannelResponse::UpdateChannelResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:node.highway.v1.UpdateChannelResponse)
+}
+UpdateChannelResponse::UpdateChannelResponse(const UpdateChannelResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_info()) {
+    info_ = new ::node::codes::v1::ResponseInfo(*from.info_);
+  } else {
+    info_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:node.highway.v1.UpdateChannelResponse)
+}
+
+inline void UpdateChannelResponse::SharedCtor() {
+info_ = nullptr;
+}
+
+UpdateChannelResponse::~UpdateChannelResponse() {
+  // @@protoc_insertion_point(destructor:node.highway.v1.UpdateChannelResponse)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void UpdateChannelResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete info_;
+}
+
+void UpdateChannelResponse::ArenaDtor(void* object) {
+  UpdateChannelResponse* _this = reinterpret_cast< UpdateChannelResponse* >(object);
+  (void)_this;
+}
+void UpdateChannelResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void UpdateChannelResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void UpdateChannelResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:node.highway.v1.UpdateChannelResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && info_ != nullptr) {
+    delete info_;
+  }
+  info_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* UpdateChannelResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_info(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* UpdateChannelResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:node.highway.v1.UpdateChannelResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::info(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:node.highway.v1.UpdateChannelResponse)
+  return target;
+}
+
+size_t UpdateChannelResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:node.highway.v1.UpdateChannelResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .node.codes.v1.ResponseInfo info = 1 [json_name = "info"];
+  if (this->_internal_has_info()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *info_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData UpdateChannelResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    UpdateChannelResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UpdateChannelResponse::GetClassData() const { return &_class_data_; }
+
+void UpdateChannelResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<UpdateChannelResponse *>(to)->MergeFrom(
+      static_cast<const UpdateChannelResponse &>(from));
+}
+
+
+void UpdateChannelResponse::MergeFrom(const UpdateChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:node.highway.v1.UpdateChannelResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_info()) {
+    _internal_mutable_info()->::node::codes::v1::ResponseInfo::MergeFrom(from._internal_info());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void UpdateChannelResponse::CopyFrom(const UpdateChannelResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:node.highway.v1.UpdateChannelResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool UpdateChannelResponse::IsInitialized() const {
+  return true;
+}
+
+void UpdateChannelResponse::InternalSwap(UpdateChannelResponse* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(info_, other->info_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata UpdateChannelResponse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[3]);
+}
 
 // ===================================================================
 
@@ -693,7 +1591,7 @@ void ListPeersResponse::InternalSwap(ListPeersResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata ListPeersResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[0]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[4]);
 }
 
 // ===================================================================
@@ -707,7 +1605,7 @@ void DecideExchangeResponse_RecordsEntry_DoNotUse::MergeFrom(const DecideExchang
 ::PROTOBUF_NAMESPACE_ID::Metadata DecideExchangeResponse_RecordsEntry_DoNotUse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[1]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[5]);
 }
 
 // ===================================================================
@@ -1013,7 +1911,7 @@ void DecideExchangeResponse::InternalSwap(DecideExchangeResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata DecideExchangeResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[2]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[6]);
 }
 
 // ===================================================================
@@ -1242,7 +2140,7 @@ void SendExchangeResponse::InternalSwap(SendExchangeResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata SendExchangeResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[3]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[7]);
 }
 
 // ===================================================================
@@ -1256,7 +2154,7 @@ void CacheRecordResponse_RecordsEntry_DoNotUse::MergeFrom(const CacheRecordRespo
 ::PROTOBUF_NAMESPACE_ID::Metadata CacheRecordResponse_RecordsEntry_DoNotUse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[4]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[8]);
 }
 
 // ===================================================================
@@ -1562,7 +2460,7 @@ void CacheRecordResponse::InternalSwap(CacheRecordResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CacheRecordResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[5]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[9]);
 }
 
 // ===================================================================
@@ -1576,7 +2474,7 @@ void GetRecordResponse_RecordsEntry_DoNotUse::MergeFrom(const GetRecordResponse_
 ::PROTOBUF_NAMESPACE_ID::Metadata GetRecordResponse_RecordsEntry_DoNotUse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[6]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[10]);
 }
 
 // ===================================================================
@@ -1882,7 +2780,7 @@ void GetRecordResponse::InternalSwap(GetRecordResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata GetRecordResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[7]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[11]);
 }
 
 // ===================================================================
@@ -1896,7 +2794,7 @@ void StoreRecordResponse_RecordsEntry_DoNotUse::MergeFrom(const StoreRecordRespo
 ::PROTOBUF_NAMESPACE_ID::Metadata StoreRecordResponse_RecordsEntry_DoNotUse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[8]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[12]);
 }
 
 // ===================================================================
@@ -2202,7 +3100,7 @@ void StoreRecordResponse::InternalSwap(StoreRecordResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata StoreRecordResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[9]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[13]);
 }
 
 // ===================================================================
@@ -2216,7 +3114,7 @@ void RegisterNameResponse_RecordsEntry_DoNotUse::MergeFrom(const RegisterNameRes
 ::PROTOBUF_NAMESPACE_ID::Metadata RegisterNameResponse_RecordsEntry_DoNotUse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[10]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[14]);
 }
 
 // ===================================================================
@@ -2522,7 +3420,7 @@ void RegisterNameResponse::InternalSwap(RegisterNameResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata RegisterNameResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[11]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[15]);
 }
 
 // ===================================================================
@@ -2536,7 +3434,7 @@ void VerifyNameResponse_RecordsEntry_DoNotUse::MergeFrom(const VerifyNameRespons
 ::PROTOBUF_NAMESPACE_ID::Metadata VerifyNameResponse_RecordsEntry_DoNotUse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[12]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[16]);
 }
 
 // ===================================================================
@@ -2842,7 +3740,7 @@ void VerifyNameResponse::InternalSwap(VerifyNameResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata VerifyNameResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_getter, &descriptor_table_node_2fhighway_2fv1_2fresponse_2eproto_once,
-      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[13]);
+      file_level_metadata_node_2fhighway_2fv1_2fresponse_2eproto[17]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -2850,6 +3748,18 @@ void VerifyNameResponse::InternalSwap(VerifyNameResponse* other) {
 }  // namespace highway
 }  // namespace node
 PROTOBUF_NAMESPACE_OPEN
+template<> PROTOBUF_NOINLINE ::node::highway::v1::CreateChannelResponse* Arena::CreateMaybeMessage< ::node::highway::v1::CreateChannelResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::node::highway::v1::CreateChannelResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::node::highway::v1::SubscribeChannelResponse* Arena::CreateMaybeMessage< ::node::highway::v1::SubscribeChannelResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::node::highway::v1::SubscribeChannelResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::node::highway::v1::UnsubscribeChannelResponse* Arena::CreateMaybeMessage< ::node::highway::v1::UnsubscribeChannelResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::node::highway::v1::UnsubscribeChannelResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::node::highway::v1::UpdateChannelResponse* Arena::CreateMaybeMessage< ::node::highway::v1::UpdateChannelResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::node::highway::v1::UpdateChannelResponse >(arena);
+}
 template<> PROTOBUF_NOINLINE ::node::highway::v1::ListPeersResponse* Arena::CreateMaybeMessage< ::node::highway::v1::ListPeersResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::node::highway::v1::ListPeersResponse >(arena);
 }

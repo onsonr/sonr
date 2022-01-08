@@ -152,7 +152,7 @@ func (p *IdentityProtocol) Peer() (*common.Peer, error) {
 		Status:       common.Peer_ONLINE,
 		Profile:      profile,
 		PublicKey:    pubBuf,
-		PeerID:       p.node.Host().ID().String(),
+		PeerID:       p.node.HostID().String(),
 		LastModified: time.Now().Unix(),
 		Device: &common.Peer_Device{
 			HostName: stat["hostName"],

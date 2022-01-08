@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/golog"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/host"
+
 	"github.com/sonr-io/core/node"
 )
 
@@ -29,11 +29,11 @@ type Channel interface {
 	Delete(key string) error
 }
 
-// beam is the implementation of the Beam interface.
-type beam struct {
+// channel is the implementation of the Beam interface.
+type channel struct {
 	Channel
 	ctx context.Context
-	h   *host.SNRHost
+	n  node.NodeImpl
 	id  ID
 
 	events  chan *Event
@@ -51,7 +51,7 @@ func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channe
 		option(opts)
 	}
 
-	topic, err := n.Host().Join(id.String())
+	topic, err := n.Join(id.String())
 	if err != nil {
 		return nil, err
 	}
@@ -66,14 +66,14 @@ func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channe
 		return nil, err
 	}
 
-	b := &beam{
+	b := &channel{
 		ctx:     ctx,
-		h:       n.Host(),
+		n:       n,
 		id:      id,
 		topic:   topic,
 		sub:     sub,
 		handler: handler,
-		store:   newStore(opts),
+		store:   NewStore(opts),
 	}
 
 	// Start the event handler.
@@ -84,16 +84,16 @@ func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channe
 }
 
 // Delete removes the key in the beam store.
-func (b *beam) Delete(key string) error {
+func (b *channel) Delete(key string) error {
 	return b.store.Delete(b.id.Key(key), b)
 }
 
 // Get returns the value for the given key in the beam store.
-func (b *beam) Get(key string) ([]byte, error) {
+func (b *channel) Get(key string) ([]byte, error) {
 	return b.store.Get(b.id.Key(key))
 }
 
 // Put stores the value for the given key in the beam store.
-func (b *beam) Put(key string, value []byte) error {
+func (b *channel) Put(key string, value []byte) error {
 	return b.store.Put(b.id.Key(key), value, b)
 }

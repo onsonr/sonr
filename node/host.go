@@ -1,13 +1,12 @@
-package host
+package node
 
 import (
 	"context"
 	"errors"
 
-	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -20,89 +19,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// Transfer Emission Events
-const (
-	Event_STATUS = "host-status"
-)
-
-// SNRHost is the host wrapper for the Sonr Network
-type SNRHost struct {
-	host.Host
-	mdnsPeerChan chan peer.AddrInfo
-	dhtPeerChan  <-chan peer.AddrInfo
-
-	// Properties
-	ctx        context.Context
-	privKey    crypto.PrivKey
-	connection common.Connection
-
-	// State
-	status SNRHostStatus
-
-	// Discovery
-	*dht.IpfsDHT
-	*ps.PubSub
-}
-
-// NewHost creates a new host
-func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
-	// Initialize DHT
-	opts := defaultHostOptions()
-	hn, err := opts.Apply(ctx, options...)
-	if err != nil {
-		return nil, err
-	}
-
-	// Start Host
-	hn.Host, err = libp2p.New(ctx,
-		libp2p.Identity(hn.privKey),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			opts.LowWater,    // Lowwater
-			opts.HighWater,   // HighWater,
-			opts.GracePeriod, // GracePeriod
-		)),
-		libp2p.DefaultListenAddrs,
-		libp2p.Routing(hn.Router),
-		libp2p.EnableAutoRelay(),
-	)
-	if err != nil {
-		logger.Errorf("%s - NewHost: Failed to create libp2p host", err)
-		return nil, err
-	}
-	hn.SetStatus(Status_CONNECTING)
-
-	// Bootstrap DHT
-	if err := hn.Bootstrap(context.Background()); err != nil {
-		logger.Errorf("%s - Failed to Bootstrap KDHT to Host", err)
-		hn.SetStatus(Status_FAIL)
-		return nil, err
-	}
-
-	// Connect to Bootstrap Nodes
-	for _, pi := range opts.BootstrapPeers {
-		if err := hn.Connect(pi); err != nil {
-			continue
-		} else {
-			break
-		}
-	}
-
-	// Initialize Discovery for DHT
-	if err := hn.createDHTDiscovery(opts); err != nil {
-		logger.Fatal("Could not start DHT Discovery", err)
-		hn.SetStatus(Status_FAIL)
-		return nil, err
-	}
-
-	// Initialize Discovery for MDNS
-	hn.createMdnsDiscovery(opts)
-	hn.SetStatus(Status_READY)
-	go hn.Serve()
-	return hn, nil
-}
-
 // AuthenticateId verifies UUID value and signature
-func (h *SNRHost) AuthenticateId(id *wallet.UUID) (bool, error) {
+func (h *node) AuthenticateId(id *wallet.UUID) (bool, error) {
 	// Get local node's public key
 	pubKey, err := wallet.DevicePubKey()
 	if err != nil {
@@ -120,7 +38,7 @@ func (h *SNRHost) AuthenticateId(id *wallet.UUID) (bool, error) {
 }
 
 // AuthenticateMessage Authenticates incoming p2p message
-func (n *SNRHost) AuthenticateMessage(msg proto.Message, metadata *common.Metadata) bool {
+func (n *node) AuthenticateMessage(msg proto.Message, metadata *common.Metadata) bool {
 	// store a temp ref to signature and remove it from message data
 	// sign is a string to allow easy reset to zero-value (empty string)
 	sign := metadata.Signature
@@ -148,15 +66,8 @@ func (n *SNRHost) AuthenticateMessage(msg proto.Message, metadata *common.Metada
 	return n.VerifyData(buf, []byte(sign), peerId, metadata.PublicKey)
 }
 
-// Close closes the underlying host
-func (hn *SNRHost) Close() error {
-	hn.SetStatus(Status_CLOSED)
-	hn.IpfsDHT.Close()
-	return hn.Host.Close()
-}
-
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
-func (hn *SNRHost) Connect(pi peer.AddrInfo) error {
+func (hn *node) Connect(pi peer.AddrInfo) error {
 	// Check if host is ready
 	if err := hn.HasRouting(); err != nil {
 		logger.Warn("Connect: Underlying host is not ready, failed to call Connect()")
@@ -168,12 +79,12 @@ func (hn *SNRHost) Connect(pi peer.AddrInfo) error {
 }
 
 // HandlePeerFound is to be called when new  peer is found
-func (hn *SNRHost) HandlePeerFound(pi peer.AddrInfo) {
+func (hn *node) HandlePeerFound(pi peer.AddrInfo) {
 	hn.mdnsPeerChan <- pi
 }
 
 // HasRouting returns no-error if the host is ready for connect
-func (h *SNRHost) HasRouting() error {
+func (h *node) HasRouting() error {
 	if h.IpfsDHT == nil || h.Host == nil {
 		return ErrRoutingNotSet
 	}
@@ -181,7 +92,7 @@ func (h *SNRHost) HasRouting() error {
 }
 
 // Join wraps around PubSub.Join and returns topic. Checks wether the host is ready before joining.
-func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
+func (hn *node) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 	// Check if PubSub is Set
 	if hn.PubSub == nil {
 		return nil, errors.New("Join: Pubsub has not been set on SNRHost")
@@ -196,8 +107,13 @@ func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 	return hn.PubSub.Join(topic, opts...)
 }
 
+// NewStream opens a new stream to the peer with given peer id
+func (n *node) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error) {
+	return n.Host.NewStream(ctx, pid, pids...)
+}
+
 // Router returns the host node Peer Routing Function
-func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
+func (hn *node) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
@@ -213,8 +129,13 @@ func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 	return hn.IpfsDHT, nil
 }
 
+// SetStreamHandler sets the handler for a given protocol
+func (n *node) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
+	n.Host.SetStreamHandler(protocol, handler)
+}
+
 // SendMessage writes a protobuf go data object to a network stream
-func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+func (h *node) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
 	err := h.HasRouting()
 	if err != nil {
 		return err
@@ -244,7 +165,7 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 }
 
 // SignData signs an outgoing p2p message payload
-func (n *SNRHost) SignData(data []byte) ([]byte, error) {
+func (n *node) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
 	res, err := wallet.Sign(data)
 	if err != nil {
@@ -255,7 +176,7 @@ func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 }
 
 // SignMessage signs an outgoing p2p message payload
-func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
+func (n *node) SignMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
 	if err != nil {
 		logger.Errorf("%s - SignMessage: Failed to Sign Message", err)
@@ -265,7 +186,7 @@ func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 }
 
 // Stat returns the host stat info
-func (hn *SNRHost) Stat() (map[string]string, error) {
+func (hn *node) Stat() (map[string]string, error) {
 	// Return Host Stat
 	return map[string]string{
 		"ID":        hn.ID().String(),
@@ -275,7 +196,7 @@ func (hn *SNRHost) Stat() (map[string]string, error) {
 }
 
 // Serve handles incoming peer Addr Info
-func (hn *SNRHost) Serve() {
+func (hn *node) Serve() {
 	for {
 		select {
 		case mdnsPI := <-hn.mdnsPeerChan:
@@ -296,7 +217,7 @@ func (hn *SNRHost) Serve() {
 }
 
 // VerifyData verifies incoming p2p message data integrity
-func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
+func (n *node) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
 		logger.Errorf("%s - Failed to extract key from message key data", err)
