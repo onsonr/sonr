@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	discoverV1 "github.com/sonr-io/core/types/go/protocols/discover/v1"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
@@ -127,7 +128,7 @@ func (p *Local) handleTopic() {
 		// Check Message and Validate not User
 		if msg.ReceivedFrom != p.selfID {
 			// Unmarshal Message
-			data := &LobbyMessage{}
+			data := &discoverV1.LobbyMessage{}
 			err = proto.Unmarshal(msg.Data, data)
 			if err != nil {
 				logger.Errorf("%s - Failed to Unmarshal Message", err)
@@ -180,7 +181,7 @@ func (lp *Local) callUpdate() error {
 // createLobbyMsgBuf Creates a new Message Buffer for Local Topic
 func createLobbyMsgBuf(p *common.Peer) []byte {
 	// Marshal Event
-	event := &LobbyMessage{Peer: p}
+	event := &discoverV1.LobbyMessage{Peer: p}
 	eventBuf, err := proto.Marshal(event)
 	if err != nil {
 		logger.Errorf("%s - Failed to Marshal Event", err)

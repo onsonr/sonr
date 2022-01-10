@@ -10,6 +10,7 @@ import (
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
+	exchangeV1 "github.com/sonr-io/core/types/go/protocols/exchange/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -128,7 +129,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload,
 
 	// Find Request and get Payload
 	if x, found := p.invites.Get(id.String()); found {
-		req := x.(*InviteRequest)
+		req := x.(*exchangeV1.InviteRequest)
 		return req.GetPayload(), nil
 	}
 	return nil, ErrRequestNotFound
@@ -151,7 +152,7 @@ func (p *ExchangeProtocol) onInviteRequest(s network.Stream) {
 	s.Close()
 
 	// unmarshal it
-	req := &InviteRequest{}
+	req := &exchangeV1.InviteRequest{}
 	err = proto.Unmarshal(buf, req)
 	if err != nil {
 		logger.Errorf("%s - Failed to Unmarshal Invite REQUEST buffer.", err)
@@ -162,7 +163,7 @@ func (p *ExchangeProtocol) onInviteRequest(s network.Stream) {
 	p.invites.Set(remotePeer.String(), req, cache.DefaultExpiration)
 
 	// store request data into Context
-	p.callback.OnInvite(req.ToEvent())
+	p.callback.OnInvite(RequestToEvent(req))
 }
 
 // onInviteResponse response handler
@@ -182,7 +183,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	s.Close()
 
 	// Unmarshal response
-	resp := &InviteResponse{}
+	resp := &exchangeV1.InviteResponse{}
 	err = proto.Unmarshal(buf, resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Unmarshal Invite RESPONSE buffer.", err)
@@ -203,7 +204,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 
 	// Get Next Entry
 	if x, found := p.invites.Get(remotePeer.String()); found {
-		req := x.(*InviteRequest)
+		req := x.(*exchangeV1.InviteRequest)
 		logger.Debug(req)
 		// TODO: Implement Decision Response to Event Method
 		//p.callback.OnDecision(resp.ToEvent(), req.ToEvent())

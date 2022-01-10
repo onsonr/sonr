@@ -7,6 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/device"
+		transmitV1 "github.com/sonr-io/core/types/go/protocols/transmit/v1"
 )
 
 // Transfer Protocol ID's
@@ -45,17 +46,17 @@ func (o *options) Apply(p *TransmitProtocol) error {
 }
 
 // NewSessionPayload creates session payload
-func NewSessionPayload(p *common.Payload) *SessionPayload {
-	return &SessionPayload{
+func NewSessionPayload(p *common.Payload) *transmitV1.SessionPayload {
+	return &transmitV1.SessionPayload{
 		Payload: p,
 	}
 }
 
 // CreateItems creates list of sessionItems
-func (sp *SessionPayload) CreateItems(dir common.Direction) []*SessionItem {
+func  CreatePayloadItems(sp *transmitV1.SessionPayload, dir common.Direction) []*transmitV1.SessionItem {
 	// Initialize Properties
 	count := len(sp.GetPayload().GetItems())
-	items := make([]*SessionItem, 0)
+	items := make([]*transmitV1.SessionItem, 0)
 
 	// Iterate over items
 	for i, v := range sp.GetPayload().GetItems() {
@@ -74,7 +75,7 @@ func (sp *SessionPayload) CreateItems(dir common.Direction) []*SessionItem {
 		}
 
 		// Create Session Item
-		item := &SessionItem{
+		item := &transmitV1.SessionItem{
 			Item:      fi,
 			Index:     int32(i),
 			TotalSize: sp.GetPayload().GetSize(),

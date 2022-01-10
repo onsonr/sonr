@@ -6,10 +6,11 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	common "github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
+	exchangeV1 "github.com/sonr-io/core/types/go/protocols/exchange/v1"
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func (ir *InviteResponse) ToEvent() *motor.OnTransmitDecisionResponse {
+func ResponseToEvent(ir *exchangeV1.InviteResponse) *motor.OnTransmitDecisionResponse {
 	return &motor.OnTransmitDecisionResponse{
 		From:     ir.GetFrom(),
 		Received: int64(time.Now().Unix()),
@@ -18,7 +19,7 @@ func (ir *InviteResponse) ToEvent() *motor.OnTransmitDecisionResponse {
 }
 
 // ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
-func (ir *InviteRequest) ToEvent() *motor.OnTransmitInviteResponse {
+func RequestToEvent(ir *exchangeV1.InviteRequest) *motor.OnTransmitInviteResponse {
 	return &motor.OnTransmitInviteResponse{
 		Received: int64(time.Now().Unix()),
 		From:     ir.GetFrom(),
@@ -27,7 +28,7 @@ func (ir *InviteRequest) ToEvent() *motor.OnTransmitInviteResponse {
 }
 
 // createRequest creates a new InviteRequest
-func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payload) (peer.ID, *InviteRequest, error) {
+func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payload) (peer.ID, *exchangeV1.InviteRequest, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
@@ -50,7 +51,7 @@ func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payloa
 	// }
 
 	// Create Invite Request
-	req := &InviteRequest{
+	req := &exchangeV1.InviteRequest{
 		Payload: payload,
 		// TODO: Implement Signed Meta to Proto Method
 		// Metadata: api.SignedMetadataToProto(meta),
@@ -61,7 +62,7 @@ func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payloa
 }
 
 // createResponse creates a new InviteResponse
-func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *exchangeV1.InviteResponse, error) {
 
 	// Call Peer from Node
 	from, err := p.node.Peer()
@@ -78,7 +79,7 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	// }
 
 	// Create Invite Response
-	resp := &InviteResponse{
+	resp := &exchangeV1.InviteResponse{
 		Decision: decs,
 		// TODO: Implement Signed Meta to Proto Method
 		//Metadata: api.SignedMetadataToProto(meta),

@@ -14,13 +14,13 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/common"
-
+	walletV1 "github.com/sonr-io/core/types/go/wallet/v1"
 	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
 
 // AuthenticateId verifies UUID value and signature
-func (h *node) AuthenticateId(id *wallet.UUID) (bool, error) {
+func (h *node) AuthenticateId(id *walletV1.UUID) (bool, error) {
 	// Get local node's public key
 	pubKey, err := wallet.DevicePubKey()
 	if err != nil {

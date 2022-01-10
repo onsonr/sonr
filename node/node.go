@@ -15,9 +15,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	common "github.com/sonr-io/core/common"
+	walletV1 "github.com/sonr-io/core/types/go/wallet/v1"
 
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
@@ -32,7 +32,7 @@ var (
 // NodeImpl returns the NodeImpl for the Main Node
 type NodeImpl interface {
 	// AuthenticateId returns the Authenticated ID
-	AuthenticateId(id *wallet.UUID) (bool, error)
+	AuthenticateId(id *walletV1.UUID) (bool, error)
 
 	// AuthenticateMessage authenticates a message
 	AuthenticateMessage(msg proto.Message, metadata *common.Metadata) bool
@@ -72,7 +72,7 @@ type NodeImpl interface {
 
 	// Role returns the role of the node
 	Role() Role
-	
+
 	// Router returns the routing.Router
 	Router(h host.Host) (routing.PeerRouting, error)
 

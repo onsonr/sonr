@@ -7,14 +7,16 @@ import (
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
+
+	transmitV1 "github.com/sonr-io/core/types/go/protocols/transmit/v1"
 )
 
 // TransmitProtocol type
 type TransmitProtocol struct {
 	callback node.CallbackImpl
 	node     node.NodeImpl
-	ctx      context.Context // Context
-	current  *Session        // current session
+	ctx      context.Context     // Context
+	current  *transmitV1.Session // current session
 	mode     node.Role
 }
 
@@ -40,7 +42,7 @@ func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options 
 }
 
 // CurrentSession returns the current session
-func (p *TransmitProtocol) CurrentSession() (*Session, error) {
+func (p *TransmitProtocol) CurrentSession() (*transmitV1.Session, error) {
 	if p.current != nil {
 		return p.current, nil
 	}
@@ -115,7 +117,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	}
 
 	// Create New Reader
-	event, err := entry.RouteStream(stream, p.callback)
+	event, err := RouteSessionStream(entry, stream, p.callback)
 	if err != nil {
 		logger.Errorf("%s - Failed to Read From Stream", err)
 		stream.Close()
@@ -137,7 +139,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 	}
 
 	// Create New Writer
-	event, err := entry.RouteStream(stream, p.callback)
+	event, err := RouteSessionStream(entry, stream, p.callback)
 	if err != nil {
 		logger.Errorf("%s - Failed to Write To Stream", err)
 		stream.Close()

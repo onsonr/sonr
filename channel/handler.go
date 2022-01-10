@@ -4,6 +4,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
+	channelV1 "github.com/sonr-io/core/types/go/channel/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -21,7 +22,7 @@ func (b *channel) handleEvents() {
 		switch event.Type {
 		case pubsub.PeerJoin:
 			event := b.NewSyncEvent()
-			err = event.Publish(b.ctx, b.topic)
+			err = PublishEvent(b.ctx, b.topic, event)
 			if err != nil {
 				logger.Error(err)
 				continue
@@ -49,7 +50,7 @@ func (b *channel) handleMessages() {
 		}
 
 		// Handle Event
-		err = b.store.Handle(e, b)
+		err = HandleStore(b.store, e, b)
 		if err != nil {
 			logger.Error(err)
 			continue
@@ -84,7 +85,7 @@ func isEventExit(ev pubsub.PeerEvent) bool {
 }
 
 // eventFromMsg converts a message to an event
-func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*Event, error) {
+func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*channelV1.Event, error) {
 	// Check Message
 	if msg.ReceivedFrom == selfID {
 		return nil, errors.Wrap(ErrInvalidMessage, "Same Peer as Node")
@@ -96,7 +97,7 @@ func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*Event, error) {
 	}
 
 	// Unmarshal Message Data
-	e := &Event{}
+	e := &channelV1.Event{}
 	err := proto.Unmarshal(msg.Data, e)
 	if err != nil {
 		logger.Errorf("failed to Unmarshal Event from pubsub.Message")

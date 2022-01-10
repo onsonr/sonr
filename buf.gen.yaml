@@ -1,9 +1,5 @@
 version: v1
 plugins:
-  - name: cpp
-    out: types/cpp
-  - name: java
-    out: types/java
   - name: go
     out: types/go
     opt: paths=source_relative

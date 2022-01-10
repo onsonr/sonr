@@ -8,72 +8,74 @@ import (
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
+
+	transmitV1 "github.com/sonr-io/core/types/go/protocols/transmit/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
-func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *Session {
+func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *transmitV1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
-	return &Session{
+	return &transmitV1.Session{
 		Direction:    common.Direction_INCOMING,
 		Payload:      payload,
 		From:         from,
 		To:           to,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        sessionPayload.CreateItems(common.Direction_INCOMING),
+		Items:        CreatePayloadItems(sessionPayload, common.Direction_INCOMING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // NewOutSession creates a new Session from the given payload with Outgoing direction.
-func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) *Session {
+func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) *transmitV1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
-	return &Session{
+	return &transmitV1.Session{
 		Direction:    common.Direction_OUTGOING,
 		Payload:      payload,
 		To:           to,
 		From:         from,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        sessionPayload.CreateItems(common.Direction_OUTGOING),
+		Items:        CreatePayloadItems(sessionPayload, common.Direction_OUTGOING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // FinalIndex returns the final index of the session.
-func (s *Session) FinalIndex() int {
+func SessionFinalIndex(s *transmitV1.Session) int {
 	return len(s.Items) - 1
 }
 
 // HasRead returns true if all files have been read.
-func (s *Session) HasRead() bool {
-	return s.IsIn() && s.IsDone()
+func SessionHasRead(s *transmitV1.Session) bool {
+	return SessionIsIn(s) && SessionIsDone(s)
 }
 
 // HasWrote returns true if all files have been written.
-func (s *Session) HasWrote() bool {
-	return s.IsOut() && s.IsDone()
+func SessionHasWrote(s *transmitV1.Session) bool {
+	return SessionIsOut(s) && SessionIsDone(s)
 }
 
 // IsDone returns true if all files have been read or written.
-func (s *Session) IsDone() bool {
-	return int(s.GetCurrentIndex()) >= s.FinalIndex()
+func SessionIsDone(s *transmitV1.Session) bool {
+	return int(s.GetCurrentIndex()) >= SessionFinalIndex(s)
 }
 
 // IsOut returns true if the session is outgoing.
-func (s *Session) IsOut() bool {
+func SessionIsOut(s *transmitV1.Session) bool {
 	return s.Direction == common.Direction_OUTGOING
 }
 
 // IsIn returns true if the session is incoming.
-func (s *Session) IsIn() bool {
+func SessionIsIn(s *transmitV1.Session) bool {
 	return s.Direction == common.Direction_INCOMING
 }
 
 // Event returns the complete event for the session.
-func (s *Session) Event() *motor.OnTransmitCompleteResponse {
+func SessionEvent(s *transmitV1.Session) *motor.OnTransmitCompleteResponse {
 	return &motor.OnTransmitCompleteResponse{
 		From:       s.GetFrom(),
 		To:         s.GetTo(),
@@ -86,13 +88,13 @@ func (s *Session) Event() *motor.OnTransmitCompleteResponse {
 }
 
 // RouteStream is used to route the given stream to the given peer.
-func (s *Session) RouteStream(stream network.Stream, n node.CallbackImpl) (*motor.OnTransmitCompleteResponse, error) {
+func RouteSessionStream(s *transmitV1.Session, stream network.Stream, n node.CallbackImpl) (*motor.OnTransmitCompleteResponse, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)
 
 	// Check for Incoming
-	if s.IsIn() {
+	if SessionIsIn(s) {
 		// Handle incoming stream
 		go func(stream network.Stream, dchan chan bool) {
 			// Create reader
@@ -101,7 +103,7 @@ func (s *Session) RouteStream(stream network.Stream, n node.CallbackImpl) (*moto
 			// Read all items
 			for _, v := range s.GetItems() {
 				// Read Stream to File
-				if err := v.ReadFromStream(n, rs); err != nil {
+				if err := ReadItemFromStream(v, n, rs); err != nil {
 					logger.Errorf("Error reading stream: %v", err)
 					dchan <- false
 				} else {
@@ -115,7 +117,7 @@ func (s *Session) RouteStream(stream network.Stream, n node.CallbackImpl) (*moto
 	}
 
 	// Check for Outgoing
-	if s.IsOut() {
+	if SessionIsOut(s) {
 		// Handle outgoing stream
 		go func(stream network.Stream, dchan chan bool) {
 			// Create writer
@@ -124,7 +126,7 @@ func (s *Session) RouteStream(stream network.Stream, n node.CallbackImpl) (*moto
 			// Write all items
 			for _, v := range s.GetItems() {
 				// Write File to Stream
-				if err := v.WriteToStream(n, wc); err != nil {
+				if err := WriteItemToStream(v, n, wc); err != nil {
 					logger.Errorf("Error writing file: %v", err)
 					dchan <- false
 				} else {
@@ -139,19 +141,19 @@ func (s *Session) RouteStream(stream network.Stream, n node.CallbackImpl) (*moto
 		select {
 		case r := <-doneChan:
 			// Set Result
-			if complete := s.UpdateCurrent(r); !complete {
+			if complete := UpdateCurrent(s, r); !complete {
 				continue
 			} else {
-				return s.Event(), nil
+				return SessionEvent(s), nil
 			}
 		}
 	}
 }
 
 // UpdateCurrent updates the current index of the session.
-func (s *Session) UpdateCurrent(result bool) bool {
+func UpdateCurrent(s *transmitV1.Session, result bool) bool {
 	logger.Debugf("Item (%v) transmit result: %v", s.GetCurrentIndex(), result)
 	s.Results[s.GetCurrentIndex()] = result
 	s.CurrentIndex = s.GetCurrentIndex() + 1
-	return int(s.GetCurrentIndex()) >= s.FinalIndex()
+	return int(s.GetCurrentIndex()) >= SessionFinalIndex(s)
 }

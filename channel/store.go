@@ -5,14 +5,15 @@ import (
 	"time"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	channelV1 "github.com/sonr-io/core/types/go/channel/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 // NewStore creates a new store
-func NewStore(opts *options) *Store {
+func NewStore(opts *options) *channelV1.Store {
 	// Create a new store
-	return &Store{
-		Data:     make(map[string]*StoreEntry),
+	return &channelV1.Store{
+		Data:     make(map[string]*channelV1.StoreEntry),
 		Capacity: int32(opts.capacity),
 		Modified: time.Now().Unix(),
 		Ttl:      opts.ttl.Milliseconds(),
@@ -20,7 +21,7 @@ func NewStore(opts *options) *Store {
 }
 
 // Delete deletes an entry from the store and publishes an event
-func (s *Store) Delete(key string, b *channel) error {
+func DeleteStoreKey(s *channelV1.Store, key string, b *channel) error {
 	// Fetch the entry
 	entry := s.Data[key]
 	if entry == nil {
@@ -38,12 +39,11 @@ func (s *Store) Delete(key string, b *channel) error {
 
 	// Create Delete Event
 	event := b.NewDeleteEvent(key)
-	return event.Publish(b.ctx, b.topic)
+	return PublishEvent(b.ctx, b.topic, event)
 }
 
 // Get returns the value of the entry
-func (s *Store) Get(key string) ([]byte, error) {
-
+func GetKey(s *channelV1.Store, key string) ([]byte, error) {
 	entry := s.Data[key]
 	if entry == nil {
 		return nil, ErrNotFound
@@ -52,17 +52,17 @@ func (s *Store) Get(key string) ([]byte, error) {
 }
 
 // Handle checks the event type and handles it with the store
-func (s *Store) Handle(e *Event, b *channel) error {
+func HandleStore(s *channelV1.Store, e *channelV1.Event, b *channel) error {
 	// Check if the event is valid
 	if b.n.HostID().String() == e.Peer {
 		return nil
 	}
 
 	switch e.Type {
-	case EventType_DELETE:
+	case channelV1.EventType_EVENT_TYPE_DELETE:
 		delete(s.Data, e.Entry.Key)
 		return nil
-	case EventType_SYNC:
+	case channelV1.EventType_EVENT_TYPE_SYNC:
 		if e.Store != nil {
 			if s.Modified > e.Store.Modified && len(s.Data) < int(e.Store.Capacity) {
 				s.Data = e.Store.Data
@@ -71,14 +71,14 @@ func (s *Store) Handle(e *Event, b *channel) error {
 			}
 		}
 		return nil
-	case EventType_PUT:
+	case channelV1.EventType_EVENT_TYPE_PUT:
 		if e.Entry != nil {
 			s.Data[e.Entry.Key] = e.Entry
 			s.Modified = time.Now().Unix()
 			logger.Debug("Store - Added new Store Entry")
 		}
 		return nil
-	case EventType_SET:
+	case channelV1.EventType_EVENT_TYPE_SET:
 		if e.Entry != nil {
 			s.Data[e.Entry.Key] = e.Entry
 			s.Modified = time.Now().Unix()
@@ -90,7 +90,7 @@ func (s *Store) Handle(e *Event, b *channel) error {
 }
 
 // Put puts an entry into the store and publishes an event
-func (s *Store) Put(key string, value []byte, b *channel) error {
+func PutStoreKey(s *channelV1.Store, key string, value []byte, b *channel) error {
 	// Fetch the entry
 	entry := s.Data[key]
 	if entry == nil {
@@ -98,43 +98,43 @@ func (s *Store) Put(key string, value []byte, b *channel) error {
 		event, entry := b.NewPutEvent(key, value)
 		s.Data[key] = entry
 		s.Modified = time.Now().Unix()
-		return event.Publish(b.ctx, b.topic)
+		return PublishEvent(b.ctx, b.topic, event)
 	}
 
 	// Get existing entry and update it
-	event, err := entry.Set(value, b.n.HostID().String())
+	event, err := SetStoreEntry(entry, value, b.n.HostID().String())
 	if err != nil {
 		return err
 	}
 	s.Modified = time.Now().Unix()
-	return event.Publish(b.ctx, b.topic)
+	return PublishEvent(b.ctx, b.topic, event)
 }
 
 // Set updates the entry in the store and publishes an event
-func (se *StoreEntry) Set(value []byte, selfID string) (*Event, error) {
+func SetStoreEntry(se *channelV1.StoreEntry, value []byte, selfID string) (*channelV1.Event, error) {
 	if se.Peer != selfID {
 		return nil, ErrNotOwner
 	}
 	se.Value = value
 	se.Modified = time.Now().Unix()
-	return &Event{
-		Type:  EventType_SET,
+	return &channelV1.Event{
+		Type:  channelV1.EventType_EVENT_TYPE_SET,
 		Entry: se,
 		Peer:  se.GetPeer(),
 	}, nil
 }
 
 // NewPutEvent creates a new put event
-func (b *channel) NewPutEvent(key string, value []byte) (*Event, *StoreEntry) {
-	entry := &StoreEntry{
+func (b *channel) NewPutEvent(key string, value []byte) (*channelV1.Event, *channelV1.StoreEntry) {
+	entry := &channelV1.StoreEntry{
 		Key:      key,
 		Value:    value,
 		Peer:     b.n.HostID().String(),
 		Created:  time.Now().Unix(),
 		Modified: time.Now().Unix(),
 	}
-	event := &Event{
-		Type:  EventType_PUT,
+	event := &channelV1.Event{
+		Type:  channelV1.EventType_EVENT_TYPE_PUT,
 		Peer:  b.n.HostID().String(),
 		Entry: entry,
 	}
@@ -142,37 +142,32 @@ func (b *channel) NewPutEvent(key string, value []byte) (*Event, *StoreEntry) {
 }
 
 // NewSyncEvent creates a new sync event
-func (b *channel) NewSyncEvent() *Event {
-	return &Event{
-		Type:  EventType_SYNC,
+func (b *channel) NewSyncEvent() *channelV1.Event {
+	return &channelV1.Event{
+		Type:  channelV1.EventType_EVENT_TYPE_SYNC,
 		Peer:  b.n.HostID().String(),
 		Store: b.store,
 	}
 }
 
 // NewDeleteEvent creates a new delete event
-func (b *channel) NewDeleteEvent(key string) *Event {
-	entry := &StoreEntry{
+func (b *channel) NewDeleteEvent(key string) *channelV1.Event {
+	entry := &channelV1.StoreEntry{
 		Key:      key,
 		Peer:     b.n.HostID().String(),
 		Modified: time.Now().Unix(),
 	}
-	event := &Event{
-		Type:  EventType_DELETE,
+	event := &channelV1.Event{
+		Type:  channelV1.EventType_EVENT_TYPE_DELETE,
 		Peer:  b.n.HostID().String(),
 		Entry: entry,
 	}
 	return event
 }
 
-// Marshal converts the event to a protobuf message and returns buffer
-func (e *Event) Marshal() ([]byte, error) {
-	return proto.Marshal(e)
-}
-
 // Publish publishes the event to the topic
-func (e *Event) Publish(ctx context.Context, t *pubsub.Topic) error {
-	buf, err := e.Marshal()
+func PublishEvent(ctx context.Context, t *pubsub.Topic, e *channelV1.Event) error {
+	buf, err := proto.Marshal(e)
 	if err != nil {
 		return err
 	}

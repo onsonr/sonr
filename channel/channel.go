@@ -6,8 +6,8 @@ import (
 	"github.com/kataras/golog"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-
 	"github.com/sonr-io/core/node"
+	channelV1 "github.com/sonr-io/core/types/go/channel/v1"
 )
 
 var (
@@ -33,14 +33,14 @@ type Channel interface {
 type channel struct {
 	Channel
 	ctx context.Context
-	n  node.NodeImpl
+	n   node.NodeImpl
 	id  ID
 
-	events  chan *Event
+	events  chan *channelV1.Event
 	handler *pubsub.TopicEventHandler
 	sub     *pubsub.Subscription
 	topic   *pubsub.Topic
-	store   *Store
+	store   *channelV1.Store
 }
 
 // New creates a new beam with the given name and options.
@@ -85,15 +85,15 @@ func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channe
 
 // Delete removes the key in the beam store.
 func (b *channel) Delete(key string) error {
-	return b.store.Delete(b.id.Key(key), b)
+	return DeleteStoreKey(b.store, b.id.Key(key), b)
 }
 
 // Get returns the value for the given key in the beam store.
 func (b *channel) Get(key string) ([]byte, error) {
-	return b.store.Get(b.id.Key(key))
+	return GetKey(b.store, b.id.Key(key))
 }
 
 // Put stores the value for the given key in the beam store.
 func (b *channel) Put(key string, value []byte) error {
-	return b.store.Put(b.id.Key(key), value, b)
+	return PutStoreKey(b.store, b.id.Key(key), value, b)
 }
