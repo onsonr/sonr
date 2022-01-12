@@ -93,6 +93,44 @@ service HighwayService {
     };
   }
 
+  // CreateBucket creates a new bucket for the calling nodes service.
+  rpc CreateBucket(CreateBucketRequest) returns (CreateBucketResponse) {
+    option (google.api.http) = {
+      post: "/v1/bucket/create"
+    };
+  }
+
+  // ReadBucket lists all the blobs in the given bucket. The calling node must have access to the
+  // bucket.
+  rpc ReadBucket(ReadBucketRequest) returns (ReadBucketResponse) {
+    option (google.api.http) = {
+      post: "/v1/bucket/read"
+    };
+  }
+
+  // UpdateBucket updates the configuration of the given bucket. The calling node must have access
+  // to the bucket.
+  rpc UpdateBucket(UpdateBucketRequest) returns (UpdateBucketResponse) {
+    option (google.api.http) = {
+      post: "/v1/bucket/update"
+    };
+  }
+
+  // DeleteBucket deletes the given bucket if the calling node is the owner of the bucket.
+  rpc DeleteBucket(DeleteBucketRequest) returns (DeleteBucketResponse) {
+    option (google.api.http) = {
+      post: "/v1/bucket/delete"
+    };
+  }
+
+  // ListenBucket subscribes the calling node to the given bucket and returns all publish events
+  // as a stream.
+  rpc ListenBucket(ListenBucketRequest) returns (stream ListenBucketResponse) {
+    option (google.api.http) = {
+      post: "/v1/bucket/listen"
+    };
+  }
+
   // CreateObject defines a new object to be utilized by the calling node's service. The object will
   // be placed in the Highway Service Graph and can be used in channels and other modules.
   rpc CreateObject(CreateObjectRequest) returns (CreateObjectResponse) {

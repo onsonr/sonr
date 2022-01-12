@@ -2,8 +2,6 @@
 syntax = "proto3";
 
 package node.highway.v1;
-import "common/v1/core.proto";
-import "common/v1/data.proto";
 import "common/v1/object.proto";
 option go_package = "github.com/sonr-io/core/node/highway";
 
@@ -127,6 +125,66 @@ message ListenChannelRequest {
   map<string, string> metadata = 2; // optional
 }
 
+// CreateBucketRequest is the request to create a new bucket
+message CreateBucketRequest {
+  // Label is the human-readable name of the bucket
+  string label = 1;
+
+  // Description is the description of the bucket
+  string description = 2;
+
+  // Owners is the list of provisioned nodes for the bucket
+  common.v1.BucketType bucket_type = 3;
+
+  // Metadata is the metadata of the bucket thats being created
+  map<string, string> metadata = 4;
+}
+
+// ReadBucketRequest is the request to read a bucket
+message ReadBucketRequest {
+  // DID is the identifier of the bucket
+  string did = 1;
+
+  // Metadata is the metadata of the bucket thats being read
+  map<string, string> metadata = 2; // optional
+}
+
+// UpdateBucketRequest is the request to update a bucket
+message UpdateBucketRequest {
+  // DID is the DID of the bucket
+  string did = 1;
+
+  // Label is the human-readable name of the bucket
+  string label = 2;
+
+  // Description is the description of the bucket
+  string description = 3;
+
+  // Metadata is the metadata of the bucket thats being updated
+  map<string, string> metadata = 4;
+}
+
+// DeleteBucketRequest is the request to delete a bucket
+message DeleteBucketRequest {
+  // DID is the DID of the bucket
+  string did = 1;
+
+  // Metadata is the metadata of the bucket thats being deleted
+  map<string, string> metadata = 2;
+
+  // Public key of the node that is deleting the bucket
+  string public_key = 3;
+}
+
+// ListenBucketRequest is the request to subscribe to a bucket
+message ListenBucketRequest {
+  // DID is the DID of the bucket
+  string did = 1;
+
+  // Metadata is the metadata of the bucket thats being listened to
+  map<string, string> metadata = 2; // optional
+}
+
 // CreateObjectRequest is the request to create a new object
 message CreateObjectRequest {
   // Label is the label of the object
@@ -174,8 +232,8 @@ message UploadBlobRequest {
   // Path is the path of the blob
   string path = 2;
 
-  // Checksum is the checksum of the blob
-  string checksum = 3;
+  // Bucket is the bucket of the blob
+  string bucket_did = 3;
 
   // Size is the size of the blob
   int64 size = 4;

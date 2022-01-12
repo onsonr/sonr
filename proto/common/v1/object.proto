@@ -3,6 +3,30 @@ syntax = "proto3";
 package common.v1;
 option go_package = "github.com/sonr-io/core/common";
 
+message Bucket {
+    // Label is human-readable name of the bucket.
+    string label = 1;
+
+    // Description is a human-readable description of the bucket.
+    string description = 2;
+
+    // Type is the kind of bucket for either App specific or User specific data.
+    BucketType type = 3;
+
+    // Did is the identifier of the bucket.
+    string did = 4;
+
+    // Objects are stored in a tree structure.
+    repeated Object objects = 5;
+}
+
+// BucketType is the type of a bucket.
+enum BucketType {
+    BUCKET_TYPE_UNSPECIFIED = 0;
+    BUCKET_TYPE_APP = 1;
+    BUCKET_TYPE_USER = 2;
+}
+
 message Object {
     string did = 1;
     string service = 2;
@@ -37,12 +61,12 @@ message ObjectField {
 
  // ObjectFieldType is the type of the field
 enum ObjectFieldType {
-    UNSPECIFIED = 0;
-    STRING = 1;
-    INT = 2;
-    FLOAT = 3;
-    BOOL = 4;
-    DATETIME = 5;
-    BLOB = 6;
-    REFERENCE = 7;
+    OBJECT_FIELD_TYPE_UNSPECIFIED = 0;
+    OBJECT_FIELD_TYPE_STRING = 1;
+    OBJECT_FIELD_TYPE_INT = 2;
+    OBJECT_FIELD_TYPE_FLOAT = 3;
+    OBJECT_FIELD_TYPE_BOOL = 4;
+    OBJECT_FIELD_TYPE_DATETIME = 5;
+    OBJECT_FIELD_TYPE_BLOB = 6;
+    OBJECT_FIELD_TYPE_REFERENCE = 7;
 }
