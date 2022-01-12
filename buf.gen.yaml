@@ -8,3 +8,7 @@ plugins:
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
+  - name: ts
+    out: types/ts
+    strategy: all
+    path: types/js/node_modules/ts-proto/protoc-gen-ts_proto

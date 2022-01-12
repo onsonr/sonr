@@ -47,6 +47,19 @@ type HighwayServiceClient interface {
 	// ListenChannel subscribes the calling node to the given channel and returns all publish events
 	// as a stream.
 	ListenChannel(ctx context.Context, in *ListenChannelRequest, opts ...grpc.CallOption) (HighwayService_ListenChannelClient, error)
+	// CreateBucket creates a new bucket for the calling nodes service.
+	CreateBucket(ctx context.Context, in *CreateBucketRequest, opts ...grpc.CallOption) (*CreateBucketResponse, error)
+	// ReadBucket lists all the blobs in the given bucket. The calling node must have access to the
+	// bucket.
+	ReadBucket(ctx context.Context, in *ReadBucketRequest, opts ...grpc.CallOption) (*ReadBucketResponse, error)
+	// UpdateBucket updates the configuration of the given bucket. The calling node must have access
+	// to the bucket.
+	UpdateBucket(ctx context.Context, in *UpdateBucketRequest, opts ...grpc.CallOption) (*UpdateBucketResponse, error)
+	// DeleteBucket deletes the given bucket if the calling node is the owner of the bucket.
+	DeleteBucket(ctx context.Context, in *DeleteBucketRequest, opts ...grpc.CallOption) (*DeleteBucketResponse, error)
+	// ListenBucket subscribes the calling node to the given bucket and returns all publish events
+	// as a stream.
+	ListenBucket(ctx context.Context, in *ListenBucketRequest, opts ...grpc.CallOption) (HighwayService_ListenBucketClient, error)
 	// CreateObject defines a new object to be utilized by the calling node's service. The object will
 	// be placed in the Highway Service Graph and can be used in channels and other modules.
 	CreateObject(ctx context.Context, in *CreateObjectRequest, opts ...grpc.CallOption) (*CreateObjectResponse, error)
@@ -203,6 +216,74 @@ func (x *highwayServiceListenChannelClient) Recv() (*ListenChannelResponse, erro
 	return m, nil
 }
 
+func (c *highwayServiceClient) CreateBucket(ctx context.Context, in *CreateBucketRequest, opts ...grpc.CallOption) (*CreateBucketResponse, error) {
+	out := new(CreateBucketResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/CreateBucket", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) ReadBucket(ctx context.Context, in *ReadBucketRequest, opts ...grpc.CallOption) (*ReadBucketResponse, error) {
+	out := new(ReadBucketResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/ReadBucket", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) UpdateBucket(ctx context.Context, in *UpdateBucketRequest, opts ...grpc.CallOption) (*UpdateBucketResponse, error) {
+	out := new(UpdateBucketResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/UpdateBucket", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) DeleteBucket(ctx context.Context, in *DeleteBucketRequest, opts ...grpc.CallOption) (*DeleteBucketResponse, error) {
+	out := new(DeleteBucketResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/DeleteBucket", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) ListenBucket(ctx context.Context, in *ListenBucketRequest, opts ...grpc.CallOption) (HighwayService_ListenBucketClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[1], "/node.highway.v1.HighwayService/ListenBucket", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &highwayServiceListenBucketClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type HighwayService_ListenBucketClient interface {
+	Recv() (*ListenBucketResponse, error)
+	grpc.ClientStream
+}
+
+type highwayServiceListenBucketClient struct {
+	grpc.ClientStream
+}
+
+func (x *highwayServiceListenBucketClient) Recv() (*ListenBucketResponse, error) {
+	m := new(ListenBucketResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *highwayServiceClient) CreateObject(ctx context.Context, in *CreateObjectRequest, opts ...grpc.CallOption) (*CreateObjectResponse, error) {
 	out := new(CreateObjectResponse)
 	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/CreateObject", in, out, opts...)
@@ -240,7 +321,7 @@ func (c *highwayServiceClient) DeleteObject(ctx context.Context, in *DeleteObjec
 }
 
 func (c *highwayServiceClient) UploadBlob(ctx context.Context, in *UploadBlobRequest, opts ...grpc.CallOption) (HighwayService_UploadBlobClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[1], "/node.highway.v1.HighwayService/UploadBlob", opts...)
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[2], "/node.highway.v1.HighwayService/UploadBlob", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -272,7 +353,7 @@ func (x *highwayServiceUploadBlobClient) Recv() (*UploadBlobResponse, error) {
 }
 
 func (c *highwayServiceClient) DownloadBlob(ctx context.Context, in *DownloadBlobRequest, opts ...grpc.CallOption) (HighwayService_DownloadBlobClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[2], "/node.highway.v1.HighwayService/DownloadBlob", opts...)
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[3], "/node.highway.v1.HighwayService/DownloadBlob", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -304,7 +385,7 @@ func (x *highwayServiceDownloadBlobClient) Recv() (*DownloadBlobResponse, error)
 }
 
 func (c *highwayServiceClient) SyncBlob(ctx context.Context, in *SyncBlobRequest, opts ...grpc.CallOption) (HighwayService_SyncBlobClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[3], "/node.highway.v1.HighwayService/SyncBlob", opts...)
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[4], "/node.highway.v1.HighwayService/SyncBlob", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -404,6 +485,19 @@ type HighwayServiceServer interface {
 	// ListenChannel subscribes the calling node to the given channel and returns all publish events
 	// as a stream.
 	ListenChannel(*ListenChannelRequest, HighwayService_ListenChannelServer) error
+	// CreateBucket creates a new bucket for the calling nodes service.
+	CreateBucket(context.Context, *CreateBucketRequest) (*CreateBucketResponse, error)
+	// ReadBucket lists all the blobs in the given bucket. The calling node must have access to the
+	// bucket.
+	ReadBucket(context.Context, *ReadBucketRequest) (*ReadBucketResponse, error)
+	// UpdateBucket updates the configuration of the given bucket. The calling node must have access
+	// to the bucket.
+	UpdateBucket(context.Context, *UpdateBucketRequest) (*UpdateBucketResponse, error)
+	// DeleteBucket deletes the given bucket if the calling node is the owner of the bucket.
+	DeleteBucket(context.Context, *DeleteBucketRequest) (*DeleteBucketResponse, error)
+	// ListenBucket subscribes the calling node to the given bucket and returns all publish events
+	// as a stream.
+	ListenBucket(*ListenBucketRequest, HighwayService_ListenBucketServer) error
 	// CreateObject defines a new object to be utilized by the calling node's service. The object will
 	// be placed in the Highway Service Graph and can be used in channels and other modules.
 	CreateObject(context.Context, *CreateObjectRequest) (*CreateObjectResponse, error)
@@ -466,6 +560,21 @@ func (UnimplementedHighwayServiceServer) DeleteChannel(context.Context, *DeleteC
 }
 func (UnimplementedHighwayServiceServer) ListenChannel(*ListenChannelRequest, HighwayService_ListenChannelServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListenChannel not implemented")
+}
+func (UnimplementedHighwayServiceServer) CreateBucket(context.Context, *CreateBucketRequest) (*CreateBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBucket not implemented")
+}
+func (UnimplementedHighwayServiceServer) ReadBucket(context.Context, *ReadBucketRequest) (*ReadBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadBucket not implemented")
+}
+func (UnimplementedHighwayServiceServer) UpdateBucket(context.Context, *UpdateBucketRequest) (*UpdateBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBucket not implemented")
+}
+func (UnimplementedHighwayServiceServer) DeleteBucket(context.Context, *DeleteBucketRequest) (*DeleteBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBucket not implemented")
+}
+func (UnimplementedHighwayServiceServer) ListenBucket(*ListenBucketRequest, HighwayService_ListenBucketServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListenBucket not implemented")
 }
 func (UnimplementedHighwayServiceServer) CreateObject(context.Context, *CreateObjectRequest) (*CreateObjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateObject not implemented")
@@ -710,6 +819,99 @@ type highwayServiceListenChannelServer struct {
 }
 
 func (x *highwayServiceListenChannelServer) Send(m *ListenChannelResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _HighwayService_CreateBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).CreateBucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/CreateBucket",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).CreateBucket(ctx, req.(*CreateBucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_ReadBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadBucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).ReadBucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/ReadBucket",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).ReadBucket(ctx, req.(*ReadBucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_UpdateBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).UpdateBucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/UpdateBucket",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).UpdateBucket(ctx, req.(*UpdateBucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_DeleteBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).DeleteBucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/DeleteBucket",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).DeleteBucket(ctx, req.(*DeleteBucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_ListenBucket_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ListenBucketRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HighwayServiceServer).ListenBucket(m, &highwayServiceListenBucketServer{stream})
+}
+
+type HighwayService_ListenBucketServer interface {
+	Send(*ListenBucketResponse) error
+	grpc.ServerStream
+}
+
+type highwayServiceListenBucketServer struct {
+	grpc.ServerStream
+}
+
+func (x *highwayServiceListenBucketServer) Send(m *ListenBucketResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -968,6 +1170,22 @@ var HighwayService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HighwayService_DeleteChannel_Handler,
 		},
 		{
+			MethodName: "CreateBucket",
+			Handler:    _HighwayService_CreateBucket_Handler,
+		},
+		{
+			MethodName: "ReadBucket",
+			Handler:    _HighwayService_ReadBucket_Handler,
+		},
+		{
+			MethodName: "UpdateBucket",
+			Handler:    _HighwayService_UpdateBucket_Handler,
+		},
+		{
+			MethodName: "DeleteBucket",
+			Handler:    _HighwayService_DeleteBucket_Handler,
+		},
+		{
 			MethodName: "CreateObject",
 			Handler:    _HighwayService_CreateObject_Handler,
 		},
@@ -1004,6 +1222,11 @@ var HighwayService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "ListenChannel",
 			Handler:       _HighwayService_ListenChannel_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "ListenBucket",
+			Handler:       _HighwayService_ListenBucket_Handler,
 			ServerStreams: true,
 		},
 		{
