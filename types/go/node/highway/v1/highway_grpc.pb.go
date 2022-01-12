@@ -18,22 +18,59 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HighwayServiceClient interface {
-	// Register creates new user in DNS Table
-	ListPeers(ctx context.Context, in *ListPeersRequest, opts ...grpc.CallOption) (HighwayService_ListPeersClient, error)
-	// Register creates new user in DNS Table
-	DecideExchange(ctx context.Context, in *DecideExchangeRequest, opts ...grpc.CallOption) (*DecideExchangeResponse, error)
-	// Register creates new user in DNS Table
-	SendExchange(ctx context.Context, in *SendExchangeRequest, opts ...grpc.CallOption) (*SendExchangeResponse, error)
-	// Register creates new user in DNS Table
-	CacheRecord(ctx context.Context, in *CacheRecordRequest, opts ...grpc.CallOption) (*CacheRecordResponse, error)
-	// Register creates new user in DNS Table
-	GetRecord(ctx context.Context, in *GetRecordRequest, opts ...grpc.CallOption) (*GetRecordResponse, error)
-	// Register creates new user in DNS Table
-	StoreRecord(ctx context.Context, in *StoreRecordRequest, opts ...grpc.CallOption) (*StoreRecordResponse, error)
-	// Register creates new user in DNS Table
+	// AccessName returns details and publicly available information about the Peer given calling node
+	// has permission to access. i.e "prad.snr" -> "firstname online profilePic city"
+	AccessName(ctx context.Context, in *AccessNameRequest, opts ...grpc.CallOption) (*AccessNameResponse, error)
+	// RegisterName registers a new ".snr" name for the calling node. It is only allowed to be called
+	// once per node.
 	RegisterName(ctx context.Context, in *RegisterNameRequest, opts ...grpc.CallOption) (*RegisterNameResponse, error)
-	// Authorize Signing Method Request for Data
-	VerifyName(ctx context.Context, in *VerifyNameRequest, opts ...grpc.CallOption) (*VerifyNameResponse, error)
+	// UpdateName updates the public information of the calling node.
+	UpdateName(ctx context.Context, in *UpdateNameRequest, opts ...grpc.CallOption) (*UpdateNameResponse, error)
+	// AccessService creates a new signing key for the calling node in order to be authorized to
+	// access the service. It is only allowed to be called once per node.
+	AccessService(ctx context.Context, in *AccessServiceRequest, opts ...grpc.CallOption) (*AccessServiceResponse, error)
+	// RegisterService registers a new service for the calling node. The calling node must have
+	// already been enabled for development.
+	RegisterService(ctx context.Context, in *RegisterServiceRequest, opts ...grpc.CallOption) (*RegisterServiceResponse, error)
+	// UpdateService updates the details and public configuration of the calling node's service.
+	UpdateService(ctx context.Context, in *UpdateServiceRequest, opts ...grpc.CallOption) (*UpdateServiceResponse, error)
+	// CreateChannel creates a new Publish/Subscribe topic channel for the given service.
+	// The calling node must have already registered a service for the channel.
+	CreateChannel(ctx context.Context, in *CreateChannelRequest, opts ...grpc.CallOption) (*CreateChannelResponse, error)
+	// ReadChannel lists all peers subscribed to the given channel, and additional details about
+	// the channels configuration.
+	ReadChannel(ctx context.Context, in *ReadChannelRequest, opts ...grpc.CallOption) (*ReadChannelResponse, error)
+	// UpdateChannel updates the configuration of the given channel.
+	UpdateChannel(ctx context.Context, in *UpdateChannelRequest, opts ...grpc.CallOption) (*UpdateChannelResponse, error)
+	// DeleteChannel deletes the given channel if the calling node is the owner of the channel.
+	DeleteChannel(ctx context.Context, in *DeleteChannelRequest, opts ...grpc.CallOption) (*DeleteChannelResponse, error)
+	// ListenChannel subscribes the calling node to the given channel and returns all publish events
+	// as a stream.
+	ListenChannel(ctx context.Context, in *ListenChannelRequest, opts ...grpc.CallOption) (HighwayService_ListenChannelClient, error)
+	// CreateObject defines a new object to be utilized by the calling node's service. The object will
+	// be placed in the Highway Service Graph and can be used in channels and other modules.
+	CreateObject(ctx context.Context, in *CreateObjectRequest, opts ...grpc.CallOption) (*CreateObjectResponse, error)
+	// ReadObject returns the details of the given object provided its DID or Label.
+	ReadObject(ctx context.Context, in *ReadObjectRequest, opts ...grpc.CallOption) (*ReadObjectResponse, error)
+	// UpdateObject modifies the property fields of the given object.
+	UpdateObject(ctx context.Context, in *UpdateObjectRequest, opts ...grpc.CallOption) (*UpdateObjectResponse, error)
+	// DeleteObject deletes the given object if the calling node is the owner of the object.
+	DeleteObject(ctx context.Context, in *DeleteObjectRequest, opts ...grpc.CallOption) (*DeleteObjectResponse, error)
+	// UploadBlob uploads a file or buffer to the calling node's service IPFS storage.
+	UploadBlob(ctx context.Context, in *UploadBlobRequest, opts ...grpc.CallOption) (HighwayService_UploadBlobClient, error)
+	// DownloadBlob downloads a file or buffer from the calling node's service IPFS storage.
+	DownloadBlob(ctx context.Context, in *DownloadBlobRequest, opts ...grpc.CallOption) (HighwayService_DownloadBlobClient, error)
+	// SyncBlob synchronizes a local file from the calling node to the given service's IPFS storage.
+	SyncBlob(ctx context.Context, in *SyncBlobRequest, opts ...grpc.CallOption) (HighwayService_SyncBlobClient, error)
+	// DeleteBlob deletes the given file from the calling node's service IPFS storage.
+	DeleteBlob(ctx context.Context, in *DeleteBlobRequest, opts ...grpc.CallOption) (*DeleteBlobResponse, error)
+	// ParseDid parses a potential DID string into a DID object.
+	ParseDid(ctx context.Context, in *ParseDidRequest, opts ...grpc.CallOption) (*ParseDidResponse, error)
+	// ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has
+	// access to the DID.
+	ResolveDid(ctx context.Context, in *ResolveDidRequest, opts ...grpc.CallOption) (*ResolveDidResponse, error)
+	// VerifyDid verifies the given DID document against the DID schema.
+	VerifyDid(ctx context.Context, in *VerifyDidRequest, opts ...grpc.CallOption) (*VerifyDidResponse, error)
 }
 
 type highwayServiceClient struct {
@@ -44,77 +81,9 @@ func NewHighwayServiceClient(cc grpc.ClientConnInterface) HighwayServiceClient {
 	return &highwayServiceClient{cc}
 }
 
-func (c *highwayServiceClient) ListPeers(ctx context.Context, in *ListPeersRequest, opts ...grpc.CallOption) (HighwayService_ListPeersClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[0], "/node.highway.v1.HighwayService/ListPeers", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &highwayServiceListPeersClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type HighwayService_ListPeersClient interface {
-	Recv() (*ListPeersResponse, error)
-	grpc.ClientStream
-}
-
-type highwayServiceListPeersClient struct {
-	grpc.ClientStream
-}
-
-func (x *highwayServiceListPeersClient) Recv() (*ListPeersResponse, error) {
-	m := new(ListPeersResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *highwayServiceClient) DecideExchange(ctx context.Context, in *DecideExchangeRequest, opts ...grpc.CallOption) (*DecideExchangeResponse, error) {
-	out := new(DecideExchangeResponse)
-	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/DecideExchange", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *highwayServiceClient) SendExchange(ctx context.Context, in *SendExchangeRequest, opts ...grpc.CallOption) (*SendExchangeResponse, error) {
-	out := new(SendExchangeResponse)
-	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/SendExchange", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *highwayServiceClient) CacheRecord(ctx context.Context, in *CacheRecordRequest, opts ...grpc.CallOption) (*CacheRecordResponse, error) {
-	out := new(CacheRecordResponse)
-	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/CacheRecord", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *highwayServiceClient) GetRecord(ctx context.Context, in *GetRecordRequest, opts ...grpc.CallOption) (*GetRecordResponse, error) {
-	out := new(GetRecordResponse)
-	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/GetRecord", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *highwayServiceClient) StoreRecord(ctx context.Context, in *StoreRecordRequest, opts ...grpc.CallOption) (*StoreRecordResponse, error) {
-	out := new(StoreRecordResponse)
-	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/StoreRecord", in, out, opts...)
+func (c *highwayServiceClient) AccessName(ctx context.Context, in *AccessNameRequest, opts ...grpc.CallOption) (*AccessNameResponse, error) {
+	out := new(AccessNameResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/AccessName", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,9 +99,272 @@ func (c *highwayServiceClient) RegisterName(ctx context.Context, in *RegisterNam
 	return out, nil
 }
 
-func (c *highwayServiceClient) VerifyName(ctx context.Context, in *VerifyNameRequest, opts ...grpc.CallOption) (*VerifyNameResponse, error) {
-	out := new(VerifyNameResponse)
-	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/VerifyName", in, out, opts...)
+func (c *highwayServiceClient) UpdateName(ctx context.Context, in *UpdateNameRequest, opts ...grpc.CallOption) (*UpdateNameResponse, error) {
+	out := new(UpdateNameResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/UpdateName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) AccessService(ctx context.Context, in *AccessServiceRequest, opts ...grpc.CallOption) (*AccessServiceResponse, error) {
+	out := new(AccessServiceResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/AccessService", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) RegisterService(ctx context.Context, in *RegisterServiceRequest, opts ...grpc.CallOption) (*RegisterServiceResponse, error) {
+	out := new(RegisterServiceResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/RegisterService", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) UpdateService(ctx context.Context, in *UpdateServiceRequest, opts ...grpc.CallOption) (*UpdateServiceResponse, error) {
+	out := new(UpdateServiceResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/UpdateService", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) CreateChannel(ctx context.Context, in *CreateChannelRequest, opts ...grpc.CallOption) (*CreateChannelResponse, error) {
+	out := new(CreateChannelResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/CreateChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) ReadChannel(ctx context.Context, in *ReadChannelRequest, opts ...grpc.CallOption) (*ReadChannelResponse, error) {
+	out := new(ReadChannelResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/ReadChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) UpdateChannel(ctx context.Context, in *UpdateChannelRequest, opts ...grpc.CallOption) (*UpdateChannelResponse, error) {
+	out := new(UpdateChannelResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/UpdateChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) DeleteChannel(ctx context.Context, in *DeleteChannelRequest, opts ...grpc.CallOption) (*DeleteChannelResponse, error) {
+	out := new(DeleteChannelResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/DeleteChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) ListenChannel(ctx context.Context, in *ListenChannelRequest, opts ...grpc.CallOption) (HighwayService_ListenChannelClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[0], "/node.highway.v1.HighwayService/ListenChannel", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &highwayServiceListenChannelClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type HighwayService_ListenChannelClient interface {
+	Recv() (*ListenChannelResponse, error)
+	grpc.ClientStream
+}
+
+type highwayServiceListenChannelClient struct {
+	grpc.ClientStream
+}
+
+func (x *highwayServiceListenChannelClient) Recv() (*ListenChannelResponse, error) {
+	m := new(ListenChannelResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *highwayServiceClient) CreateObject(ctx context.Context, in *CreateObjectRequest, opts ...grpc.CallOption) (*CreateObjectResponse, error) {
+	out := new(CreateObjectResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/CreateObject", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) ReadObject(ctx context.Context, in *ReadObjectRequest, opts ...grpc.CallOption) (*ReadObjectResponse, error) {
+	out := new(ReadObjectResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/ReadObject", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) UpdateObject(ctx context.Context, in *UpdateObjectRequest, opts ...grpc.CallOption) (*UpdateObjectResponse, error) {
+	out := new(UpdateObjectResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/UpdateObject", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) DeleteObject(ctx context.Context, in *DeleteObjectRequest, opts ...grpc.CallOption) (*DeleteObjectResponse, error) {
+	out := new(DeleteObjectResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/DeleteObject", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) UploadBlob(ctx context.Context, in *UploadBlobRequest, opts ...grpc.CallOption) (HighwayService_UploadBlobClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[1], "/node.highway.v1.HighwayService/UploadBlob", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &highwayServiceUploadBlobClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type HighwayService_UploadBlobClient interface {
+	Recv() (*UploadBlobResponse, error)
+	grpc.ClientStream
+}
+
+type highwayServiceUploadBlobClient struct {
+	grpc.ClientStream
+}
+
+func (x *highwayServiceUploadBlobClient) Recv() (*UploadBlobResponse, error) {
+	m := new(UploadBlobResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *highwayServiceClient) DownloadBlob(ctx context.Context, in *DownloadBlobRequest, opts ...grpc.CallOption) (HighwayService_DownloadBlobClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[2], "/node.highway.v1.HighwayService/DownloadBlob", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &highwayServiceDownloadBlobClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type HighwayService_DownloadBlobClient interface {
+	Recv() (*DownloadBlobResponse, error)
+	grpc.ClientStream
+}
+
+type highwayServiceDownloadBlobClient struct {
+	grpc.ClientStream
+}
+
+func (x *highwayServiceDownloadBlobClient) Recv() (*DownloadBlobResponse, error) {
+	m := new(DownloadBlobResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *highwayServiceClient) SyncBlob(ctx context.Context, in *SyncBlobRequest, opts ...grpc.CallOption) (HighwayService_SyncBlobClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HighwayService_ServiceDesc.Streams[3], "/node.highway.v1.HighwayService/SyncBlob", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &highwayServiceSyncBlobClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type HighwayService_SyncBlobClient interface {
+	Recv() (*SyncBlobResponse, error)
+	grpc.ClientStream
+}
+
+type highwayServiceSyncBlobClient struct {
+	grpc.ClientStream
+}
+
+func (x *highwayServiceSyncBlobClient) Recv() (*SyncBlobResponse, error) {
+	m := new(SyncBlobResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *highwayServiceClient) DeleteBlob(ctx context.Context, in *DeleteBlobRequest, opts ...grpc.CallOption) (*DeleteBlobResponse, error) {
+	out := new(DeleteBlobResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/DeleteBlob", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) ParseDid(ctx context.Context, in *ParseDidRequest, opts ...grpc.CallOption) (*ParseDidResponse, error) {
+	out := new(ParseDidResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/ParseDid", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) ResolveDid(ctx context.Context, in *ResolveDidRequest, opts ...grpc.CallOption) (*ResolveDidResponse, error) {
+	out := new(ResolveDidResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/ResolveDid", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *highwayServiceClient) VerifyDid(ctx context.Context, in *VerifyDidRequest, opts ...grpc.CallOption) (*VerifyDidResponse, error) {
+	out := new(VerifyDidResponse)
+	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/VerifyDid", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,51 +375,130 @@ func (c *highwayServiceClient) VerifyName(ctx context.Context, in *VerifyNameReq
 // All implementations should embed UnimplementedHighwayServiceServer
 // for forward compatibility
 type HighwayServiceServer interface {
-	// Register creates new user in DNS Table
-	ListPeers(*ListPeersRequest, HighwayService_ListPeersServer) error
-	// Register creates new user in DNS Table
-	DecideExchange(context.Context, *DecideExchangeRequest) (*DecideExchangeResponse, error)
-	// Register creates new user in DNS Table
-	SendExchange(context.Context, *SendExchangeRequest) (*SendExchangeResponse, error)
-	// Register creates new user in DNS Table
-	CacheRecord(context.Context, *CacheRecordRequest) (*CacheRecordResponse, error)
-	// Register creates new user in DNS Table
-	GetRecord(context.Context, *GetRecordRequest) (*GetRecordResponse, error)
-	// Register creates new user in DNS Table
-	StoreRecord(context.Context, *StoreRecordRequest) (*StoreRecordResponse, error)
-	// Register creates new user in DNS Table
+	// AccessName returns details and publicly available information about the Peer given calling node
+	// has permission to access. i.e "prad.snr" -> "firstname online profilePic city"
+	AccessName(context.Context, *AccessNameRequest) (*AccessNameResponse, error)
+	// RegisterName registers a new ".snr" name for the calling node. It is only allowed to be called
+	// once per node.
 	RegisterName(context.Context, *RegisterNameRequest) (*RegisterNameResponse, error)
-	// Authorize Signing Method Request for Data
-	VerifyName(context.Context, *VerifyNameRequest) (*VerifyNameResponse, error)
+	// UpdateName updates the public information of the calling node.
+	UpdateName(context.Context, *UpdateNameRequest) (*UpdateNameResponse, error)
+	// AccessService creates a new signing key for the calling node in order to be authorized to
+	// access the service. It is only allowed to be called once per node.
+	AccessService(context.Context, *AccessServiceRequest) (*AccessServiceResponse, error)
+	// RegisterService registers a new service for the calling node. The calling node must have
+	// already been enabled for development.
+	RegisterService(context.Context, *RegisterServiceRequest) (*RegisterServiceResponse, error)
+	// UpdateService updates the details and public configuration of the calling node's service.
+	UpdateService(context.Context, *UpdateServiceRequest) (*UpdateServiceResponse, error)
+	// CreateChannel creates a new Publish/Subscribe topic channel for the given service.
+	// The calling node must have already registered a service for the channel.
+	CreateChannel(context.Context, *CreateChannelRequest) (*CreateChannelResponse, error)
+	// ReadChannel lists all peers subscribed to the given channel, and additional details about
+	// the channels configuration.
+	ReadChannel(context.Context, *ReadChannelRequest) (*ReadChannelResponse, error)
+	// UpdateChannel updates the configuration of the given channel.
+	UpdateChannel(context.Context, *UpdateChannelRequest) (*UpdateChannelResponse, error)
+	// DeleteChannel deletes the given channel if the calling node is the owner of the channel.
+	DeleteChannel(context.Context, *DeleteChannelRequest) (*DeleteChannelResponse, error)
+	// ListenChannel subscribes the calling node to the given channel and returns all publish events
+	// as a stream.
+	ListenChannel(*ListenChannelRequest, HighwayService_ListenChannelServer) error
+	// CreateObject defines a new object to be utilized by the calling node's service. The object will
+	// be placed in the Highway Service Graph and can be used in channels and other modules.
+	CreateObject(context.Context, *CreateObjectRequest) (*CreateObjectResponse, error)
+	// ReadObject returns the details of the given object provided its DID or Label.
+	ReadObject(context.Context, *ReadObjectRequest) (*ReadObjectResponse, error)
+	// UpdateObject modifies the property fields of the given object.
+	UpdateObject(context.Context, *UpdateObjectRequest) (*UpdateObjectResponse, error)
+	// DeleteObject deletes the given object if the calling node is the owner of the object.
+	DeleteObject(context.Context, *DeleteObjectRequest) (*DeleteObjectResponse, error)
+	// UploadBlob uploads a file or buffer to the calling node's service IPFS storage.
+	UploadBlob(*UploadBlobRequest, HighwayService_UploadBlobServer) error
+	// DownloadBlob downloads a file or buffer from the calling node's service IPFS storage.
+	DownloadBlob(*DownloadBlobRequest, HighwayService_DownloadBlobServer) error
+	// SyncBlob synchronizes a local file from the calling node to the given service's IPFS storage.
+	SyncBlob(*SyncBlobRequest, HighwayService_SyncBlobServer) error
+	// DeleteBlob deletes the given file from the calling node's service IPFS storage.
+	DeleteBlob(context.Context, *DeleteBlobRequest) (*DeleteBlobResponse, error)
+	// ParseDid parses a potential DID string into a DID object.
+	ParseDid(context.Context, *ParseDidRequest) (*ParseDidResponse, error)
+	// ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has
+	// access to the DID.
+	ResolveDid(context.Context, *ResolveDidRequest) (*ResolveDidResponse, error)
+	// VerifyDid verifies the given DID document against the DID schema.
+	VerifyDid(context.Context, *VerifyDidRequest) (*VerifyDidResponse, error)
 }
 
 // UnimplementedHighwayServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedHighwayServiceServer struct {
 }
 
-func (UnimplementedHighwayServiceServer) ListPeers(*ListPeersRequest, HighwayService_ListPeersServer) error {
-	return status.Errorf(codes.Unimplemented, "method ListPeers not implemented")
-}
-func (UnimplementedHighwayServiceServer) DecideExchange(context.Context, *DecideExchangeRequest) (*DecideExchangeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DecideExchange not implemented")
-}
-func (UnimplementedHighwayServiceServer) SendExchange(context.Context, *SendExchangeRequest) (*SendExchangeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendExchange not implemented")
-}
-func (UnimplementedHighwayServiceServer) CacheRecord(context.Context, *CacheRecordRequest) (*CacheRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CacheRecord not implemented")
-}
-func (UnimplementedHighwayServiceServer) GetRecord(context.Context, *GetRecordRequest) (*GetRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRecord not implemented")
-}
-func (UnimplementedHighwayServiceServer) StoreRecord(context.Context, *StoreRecordRequest) (*StoreRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StoreRecord not implemented")
+func (UnimplementedHighwayServiceServer) AccessName(context.Context, *AccessNameRequest) (*AccessNameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccessName not implemented")
 }
 func (UnimplementedHighwayServiceServer) RegisterName(context.Context, *RegisterNameRequest) (*RegisterNameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterName not implemented")
 }
-func (UnimplementedHighwayServiceServer) VerifyName(context.Context, *VerifyNameRequest) (*VerifyNameResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyName not implemented")
+func (UnimplementedHighwayServiceServer) UpdateName(context.Context, *UpdateNameRequest) (*UpdateNameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateName not implemented")
+}
+func (UnimplementedHighwayServiceServer) AccessService(context.Context, *AccessServiceRequest) (*AccessServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccessService not implemented")
+}
+func (UnimplementedHighwayServiceServer) RegisterService(context.Context, *RegisterServiceRequest) (*RegisterServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterService not implemented")
+}
+func (UnimplementedHighwayServiceServer) UpdateService(context.Context, *UpdateServiceRequest) (*UpdateServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateService not implemented")
+}
+func (UnimplementedHighwayServiceServer) CreateChannel(context.Context, *CreateChannelRequest) (*CreateChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateChannel not implemented")
+}
+func (UnimplementedHighwayServiceServer) ReadChannel(context.Context, *ReadChannelRequest) (*ReadChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadChannel not implemented")
+}
+func (UnimplementedHighwayServiceServer) UpdateChannel(context.Context, *UpdateChannelRequest) (*UpdateChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChannel not implemented")
+}
+func (UnimplementedHighwayServiceServer) DeleteChannel(context.Context, *DeleteChannelRequest) (*DeleteChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteChannel not implemented")
+}
+func (UnimplementedHighwayServiceServer) ListenChannel(*ListenChannelRequest, HighwayService_ListenChannelServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListenChannel not implemented")
+}
+func (UnimplementedHighwayServiceServer) CreateObject(context.Context, *CreateObjectRequest) (*CreateObjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateObject not implemented")
+}
+func (UnimplementedHighwayServiceServer) ReadObject(context.Context, *ReadObjectRequest) (*ReadObjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadObject not implemented")
+}
+func (UnimplementedHighwayServiceServer) UpdateObject(context.Context, *UpdateObjectRequest) (*UpdateObjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateObject not implemented")
+}
+func (UnimplementedHighwayServiceServer) DeleteObject(context.Context, *DeleteObjectRequest) (*DeleteObjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteObject not implemented")
+}
+func (UnimplementedHighwayServiceServer) UploadBlob(*UploadBlobRequest, HighwayService_UploadBlobServer) error {
+	return status.Errorf(codes.Unimplemented, "method UploadBlob not implemented")
+}
+func (UnimplementedHighwayServiceServer) DownloadBlob(*DownloadBlobRequest, HighwayService_DownloadBlobServer) error {
+	return status.Errorf(codes.Unimplemented, "method DownloadBlob not implemented")
+}
+func (UnimplementedHighwayServiceServer) SyncBlob(*SyncBlobRequest, HighwayService_SyncBlobServer) error {
+	return status.Errorf(codes.Unimplemented, "method SyncBlob not implemented")
+}
+func (UnimplementedHighwayServiceServer) DeleteBlob(context.Context, *DeleteBlobRequest) (*DeleteBlobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBlob not implemented")
+}
+func (UnimplementedHighwayServiceServer) ParseDid(context.Context, *ParseDidRequest) (*ParseDidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ParseDid not implemented")
+}
+func (UnimplementedHighwayServiceServer) ResolveDid(context.Context, *ResolveDidRequest) (*ResolveDidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResolveDid not implemented")
+}
+func (UnimplementedHighwayServiceServer) VerifyDid(context.Context, *VerifyDidRequest) (*VerifyDidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyDid not implemented")
 }
 
 // UnsafeHighwayServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -201,113 +512,20 @@ func RegisterHighwayServiceServer(s grpc.ServiceRegistrar, srv HighwayServiceSer
 	s.RegisterService(&HighwayService_ServiceDesc, srv)
 }
 
-func _HighwayService_ListPeers_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ListPeersRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(HighwayServiceServer).ListPeers(m, &highwayServiceListPeersServer{stream})
-}
-
-type HighwayService_ListPeersServer interface {
-	Send(*ListPeersResponse) error
-	grpc.ServerStream
-}
-
-type highwayServiceListPeersServer struct {
-	grpc.ServerStream
-}
-
-func (x *highwayServiceListPeersServer) Send(m *ListPeersResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _HighwayService_DecideExchange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DecideExchangeRequest)
+func _HighwayService_AccessName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccessNameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HighwayServiceServer).DecideExchange(ctx, in)
+		return srv.(HighwayServiceServer).AccessName(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/node.highway.v1.HighwayService/DecideExchange",
+		FullMethod: "/node.highway.v1.HighwayService/AccessName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).DecideExchange(ctx, req.(*DecideExchangeRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HighwayService_SendExchange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendExchangeRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HighwayServiceServer).SendExchange(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/node.highway.v1.HighwayService/SendExchange",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).SendExchange(ctx, req.(*SendExchangeRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HighwayService_CacheRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CacheRecordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HighwayServiceServer).CacheRecord(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/node.highway.v1.HighwayService/CacheRecord",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).CacheRecord(ctx, req.(*CacheRecordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HighwayService_GetRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRecordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HighwayServiceServer).GetRecord(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/node.highway.v1.HighwayService/GetRecord",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).GetRecord(ctx, req.(*GetRecordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HighwayService_StoreRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StoreRecordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HighwayServiceServer).StoreRecord(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/node.highway.v1.HighwayService/StoreRecord",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).StoreRecord(ctx, req.(*StoreRecordRequest))
+		return srv.(HighwayServiceServer).AccessName(ctx, req.(*AccessNameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -330,20 +548,374 @@ func _HighwayService_RegisterName_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HighwayService_VerifyName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyNameRequest)
+func _HighwayService_UpdateName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateNameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HighwayServiceServer).VerifyName(ctx, in)
+		return srv.(HighwayServiceServer).UpdateName(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/node.highway.v1.HighwayService/VerifyName",
+		FullMethod: "/node.highway.v1.HighwayService/UpdateName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).VerifyName(ctx, req.(*VerifyNameRequest))
+		return srv.(HighwayServiceServer).UpdateName(ctx, req.(*UpdateNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_AccessService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccessServiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).AccessService(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/AccessService",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).AccessService(ctx, req.(*AccessServiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_RegisterService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterServiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).RegisterService(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/RegisterService",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).RegisterService(ctx, req.(*RegisterServiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_UpdateService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateServiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).UpdateService(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/UpdateService",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).UpdateService(ctx, req.(*UpdateServiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_CreateChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).CreateChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/CreateChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).CreateChannel(ctx, req.(*CreateChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_ReadChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).ReadChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/ReadChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).ReadChannel(ctx, req.(*ReadChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_UpdateChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).UpdateChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/UpdateChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).UpdateChannel(ctx, req.(*UpdateChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_DeleteChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).DeleteChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/DeleteChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).DeleteChannel(ctx, req.(*DeleteChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_ListenChannel_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ListenChannelRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HighwayServiceServer).ListenChannel(m, &highwayServiceListenChannelServer{stream})
+}
+
+type HighwayService_ListenChannelServer interface {
+	Send(*ListenChannelResponse) error
+	grpc.ServerStream
+}
+
+type highwayServiceListenChannelServer struct {
+	grpc.ServerStream
+}
+
+func (x *highwayServiceListenChannelServer) Send(m *ListenChannelResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _HighwayService_CreateObject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateObjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).CreateObject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/CreateObject",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).CreateObject(ctx, req.(*CreateObjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_ReadObject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadObjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).ReadObject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/ReadObject",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).ReadObject(ctx, req.(*ReadObjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_UpdateObject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateObjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).UpdateObject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/UpdateObject",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).UpdateObject(ctx, req.(*UpdateObjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_DeleteObject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteObjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).DeleteObject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/DeleteObject",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).DeleteObject(ctx, req.(*DeleteObjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_UploadBlob_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(UploadBlobRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HighwayServiceServer).UploadBlob(m, &highwayServiceUploadBlobServer{stream})
+}
+
+type HighwayService_UploadBlobServer interface {
+	Send(*UploadBlobResponse) error
+	grpc.ServerStream
+}
+
+type highwayServiceUploadBlobServer struct {
+	grpc.ServerStream
+}
+
+func (x *highwayServiceUploadBlobServer) Send(m *UploadBlobResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _HighwayService_DownloadBlob_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(DownloadBlobRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HighwayServiceServer).DownloadBlob(m, &highwayServiceDownloadBlobServer{stream})
+}
+
+type HighwayService_DownloadBlobServer interface {
+	Send(*DownloadBlobResponse) error
+	grpc.ServerStream
+}
+
+type highwayServiceDownloadBlobServer struct {
+	grpc.ServerStream
+}
+
+func (x *highwayServiceDownloadBlobServer) Send(m *DownloadBlobResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _HighwayService_SyncBlob_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SyncBlobRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HighwayServiceServer).SyncBlob(m, &highwayServiceSyncBlobServer{stream})
+}
+
+type HighwayService_SyncBlobServer interface {
+	Send(*SyncBlobResponse) error
+	grpc.ServerStream
+}
+
+type highwayServiceSyncBlobServer struct {
+	grpc.ServerStream
+}
+
+func (x *highwayServiceSyncBlobServer) Send(m *SyncBlobResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _HighwayService_DeleteBlob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBlobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).DeleteBlob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/DeleteBlob",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).DeleteBlob(ctx, req.(*DeleteBlobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_ParseDid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ParseDidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).ParseDid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/ParseDid",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).ParseDid(ctx, req.(*ParseDidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_ResolveDid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResolveDidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).ResolveDid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/ResolveDid",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).ResolveDid(ctx, req.(*ResolveDidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HighwayService_VerifyDid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyDidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HighwayServiceServer).VerifyDid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/node.highway.v1.HighwayService/VerifyDid",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HighwayServiceServer).VerifyDid(ctx, req.(*VerifyDidRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -356,38 +928,97 @@ var HighwayService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*HighwayServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DecideExchange",
-			Handler:    _HighwayService_DecideExchange_Handler,
-		},
-		{
-			MethodName: "SendExchange",
-			Handler:    _HighwayService_SendExchange_Handler,
-		},
-		{
-			MethodName: "CacheRecord",
-			Handler:    _HighwayService_CacheRecord_Handler,
-		},
-		{
-			MethodName: "GetRecord",
-			Handler:    _HighwayService_GetRecord_Handler,
-		},
-		{
-			MethodName: "StoreRecord",
-			Handler:    _HighwayService_StoreRecord_Handler,
+			MethodName: "AccessName",
+			Handler:    _HighwayService_AccessName_Handler,
 		},
 		{
 			MethodName: "RegisterName",
 			Handler:    _HighwayService_RegisterName_Handler,
 		},
 		{
-			MethodName: "VerifyName",
-			Handler:    _HighwayService_VerifyName_Handler,
+			MethodName: "UpdateName",
+			Handler:    _HighwayService_UpdateName_Handler,
+		},
+		{
+			MethodName: "AccessService",
+			Handler:    _HighwayService_AccessService_Handler,
+		},
+		{
+			MethodName: "RegisterService",
+			Handler:    _HighwayService_RegisterService_Handler,
+		},
+		{
+			MethodName: "UpdateService",
+			Handler:    _HighwayService_UpdateService_Handler,
+		},
+		{
+			MethodName: "CreateChannel",
+			Handler:    _HighwayService_CreateChannel_Handler,
+		},
+		{
+			MethodName: "ReadChannel",
+			Handler:    _HighwayService_ReadChannel_Handler,
+		},
+		{
+			MethodName: "UpdateChannel",
+			Handler:    _HighwayService_UpdateChannel_Handler,
+		},
+		{
+			MethodName: "DeleteChannel",
+			Handler:    _HighwayService_DeleteChannel_Handler,
+		},
+		{
+			MethodName: "CreateObject",
+			Handler:    _HighwayService_CreateObject_Handler,
+		},
+		{
+			MethodName: "ReadObject",
+			Handler:    _HighwayService_ReadObject_Handler,
+		},
+		{
+			MethodName: "UpdateObject",
+			Handler:    _HighwayService_UpdateObject_Handler,
+		},
+		{
+			MethodName: "DeleteObject",
+			Handler:    _HighwayService_DeleteObject_Handler,
+		},
+		{
+			MethodName: "DeleteBlob",
+			Handler:    _HighwayService_DeleteBlob_Handler,
+		},
+		{
+			MethodName: "ParseDid",
+			Handler:    _HighwayService_ParseDid_Handler,
+		},
+		{
+			MethodName: "ResolveDid",
+			Handler:    _HighwayService_ResolveDid_Handler,
+		},
+		{
+			MethodName: "VerifyDid",
+			Handler:    _HighwayService_VerifyDid_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "ListPeers",
-			Handler:       _HighwayService_ListPeers_Handler,
+			StreamName:    "ListenChannel",
+			Handler:       _HighwayService_ListenChannel_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "UploadBlob",
+			Handler:       _HighwayService_UploadBlob_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "DownloadBlob",
+			Handler:       _HighwayService_DownloadBlob_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "SyncBlob",
+			Handler:       _HighwayService_SyncBlob_Handler,
 			ServerStreams: true,
 		},
 	},

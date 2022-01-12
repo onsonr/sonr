@@ -111,7 +111,7 @@ type Configuration struct {
 func defaultConfiguration() *Configuration {
 	// Default configuration
 	c := &Configuration{
-		connection: common.Connection_WIFI,
+		connection: common.Connection_CONNECTION_WIFI,
 		location:   common.NewDefaultLocation(),
 		profile:    common.NewDefaultProfile(),
 	}

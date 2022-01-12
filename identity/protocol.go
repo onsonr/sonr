@@ -149,10 +149,10 @@ func (p *IdentityProtocol) Peer() (*common.Peer, error) {
 	// Return Peer
 	return &common.Peer{
 		SName:        strings.ToLower(profile.GetSName()),
-		Status:       common.Peer_ONLINE,
+		Status:       common.Peer_STATUS_ONLINE,
 		Profile:      profile,
 		PublicKey:    pubBuf,
-		PeerID:       p.node.HostID().String(),
+		PeerId:       p.node.HostID().String(),
 		LastModified: time.Now().Unix(),
 		Device: &common.Peer_Device{
 			HostName: stat["hostName"],

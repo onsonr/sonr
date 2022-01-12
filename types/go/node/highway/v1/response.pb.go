@@ -10,7 +10,7 @@ package highway
 
 import (
 	common "github.com/sonr-io/core/common"
-	codes "github.com/sonr-io/core/types/go/node/codes/v1"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -24,16 +24,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CreateChannelResponse struct {
+// AccessNameResponse is a response to a request for a name
+type AccessNameResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Info *codes.ResponseInfo `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// Data of the response
+	Data *common.Peer `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 }
 
-func (x *CreateChannelResponse) Reset() {
-	*x = CreateChannelResponse{}
+func (x *AccessNameResponse) Reset() {
+	*x = AccessNameResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_node_highway_v1_response_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -41,13 +47,13 @@ func (x *CreateChannelResponse) Reset() {
 	}
 }
 
-func (x *CreateChannelResponse) String() string {
+func (x *AccessNameResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateChannelResponse) ProtoMessage() {}
+func (*AccessNameResponse) ProtoMessage() {}
 
-func (x *CreateChannelResponse) ProtoReflect() protoreflect.Message {
+func (x *AccessNameResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_node_highway_v1_response_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,550 +65,50 @@ func (x *CreateChannelResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateChannelResponse.ProtoReflect.Descriptor instead.
-func (*CreateChannelResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use AccessNameResponse.ProtoReflect.Descriptor instead.
+func (*AccessNameResponse) Descriptor() ([]byte, []int) {
 	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CreateChannelResponse) GetInfo() *codes.ResponseInfo {
+func (x *AccessNameResponse) GetCode() int32 {
 	if x != nil {
-		return x.Info
-	}
-	return nil
-}
-
-type SubscribeChannelResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Info *codes.ResponseInfo `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
-}
-
-func (x *SubscribeChannelResponse) Reset() {
-	*x = SubscribeChannelResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SubscribeChannelResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SubscribeChannelResponse) ProtoMessage() {}
-
-func (x *SubscribeChannelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SubscribeChannelResponse.ProtoReflect.Descriptor instead.
-func (*SubscribeChannelResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *SubscribeChannelResponse) GetInfo() *codes.ResponseInfo {
-	if x != nil {
-		return x.Info
-	}
-	return nil
-}
-
-type UnsubscribeChannelResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Info *codes.ResponseInfo `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
-}
-
-func (x *UnsubscribeChannelResponse) Reset() {
-	*x = UnsubscribeChannelResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UnsubscribeChannelResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UnsubscribeChannelResponse) ProtoMessage() {}
-
-func (x *UnsubscribeChannelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UnsubscribeChannelResponse.ProtoReflect.Descriptor instead.
-func (*UnsubscribeChannelResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *UnsubscribeChannelResponse) GetInfo() *codes.ResponseInfo {
-	if x != nil {
-		return x.Info
-	}
-	return nil
-}
-
-type UpdateChannelResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Info *codes.ResponseInfo `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
-}
-
-func (x *UpdateChannelResponse) Reset() {
-	*x = UpdateChannelResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UpdateChannelResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateChannelResponse) ProtoMessage() {}
-
-func (x *UpdateChannelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpdateChannelResponse.ProtoReflect.Descriptor instead.
-func (*UpdateChannelResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *UpdateChannelResponse) GetInfo() *codes.ResponseInfo {
-	if x != nil {
-		return x.Info
-	}
-	return nil
-}
-
-// (Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)
-type ListPeersResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Olc      string         `protobuf:"bytes,1,opt,name=olc,proto3" json:"olc,omitempty"`            // OLC Code of Topic
-	Peers    []*common.Peer `protobuf:"bytes,2,rep,name=peers,proto3" json:"peers,omitempty"`        // User Information
-	Received int64          `protobuf:"varint,3,opt,name=received,proto3" json:"received,omitempty"` // Invite received Timestamp
-}
-
-func (x *ListPeersResponse) Reset() {
-	*x = ListPeersResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ListPeersResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListPeersResponse) ProtoMessage() {}
-
-func (x *ListPeersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListPeersResponse.ProtoReflect.Descriptor instead.
-func (*ListPeersResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *ListPeersResponse) GetOlc() string {
-	if x != nil {
-		return x.Olc
-	}
-	return ""
-}
-
-func (x *ListPeersResponse) GetPeers() []*common.Peer {
-	if x != nil {
-		return x.Peers
-	}
-	return nil
-}
-
-func (x *ListPeersResponse) GetReceived() int64 {
-	if x != nil {
-		return x.Received
+		return x.Code
 	}
 	return 0
 }
 
-// (Highway) LinkResponse is Message for Linking Response (Hmac Sha256)
-type DecideExchangeResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Success bool              `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                                                                                        // If Values were Signed
-	Error   string            `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`                                                                                             // Error Message
-	Records map[string]string `protobuf:"bytes,3,rep,name=records,proto3" json:"records,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Updated Domain TXT Records
-}
-
-func (x *DecideExchangeResponse) Reset() {
-	*x = DecideExchangeResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DecideExchangeResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DecideExchangeResponse) ProtoMessage() {}
-
-func (x *DecideExchangeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DecideExchangeResponse.ProtoReflect.Descriptor instead.
-func (*DecideExchangeResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *DecideExchangeResponse) GetSuccess() bool {
+func (x *AccessNameResponse) GetMessage() string {
 	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *DecideExchangeResponse) GetError() string {
-	if x != nil {
-		return x.Error
+		return x.Message
 	}
 	return ""
 }
 
-func (x *DecideExchangeResponse) GetRecords() map[string]string {
+func (x *AccessNameResponse) GetData() *common.Peer {
 	if x != nil {
-		return x.Records
+		return x.Data
 	}
 	return nil
 }
 
-// (Client) ShareResponse is response to ShareRequest
-type SendExchangeResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // True if Supply is Active
-	Error   string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`      // Error Message if Supply is not Active
-}
-
-func (x *SendExchangeResponse) Reset() {
-	*x = SendExchangeResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SendExchangeResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SendExchangeResponse) ProtoMessage() {}
-
-func (x *SendExchangeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SendExchangeResponse.ProtoReflect.Descriptor instead.
-func (*SendExchangeResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *SendExchangeResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *SendExchangeResponse) GetError() string {
-	if x != nil {
-		return x.Error
-	}
-	return ""
-}
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-type CacheRecordResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Success bool              `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                                                                                        // If Values were Signed
-	Error   string            `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`                                                                                             // Error Message
-	Records map[string]string `protobuf:"bytes,3,rep,name=records,proto3" json:"records,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Signed Domain TXT Records
-}
-
-func (x *CacheRecordResponse) Reset() {
-	*x = CacheRecordResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CacheRecordResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CacheRecordResponse) ProtoMessage() {}
-
-func (x *CacheRecordResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CacheRecordResponse.ProtoReflect.Descriptor instead.
-func (*CacheRecordResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *CacheRecordResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *CacheRecordResponse) GetError() string {
-	if x != nil {
-		return x.Error
-	}
-	return ""
-}
-
-func (x *CacheRecordResponse) GetRecords() map[string]string {
-	if x != nil {
-		return x.Records
-	}
-	return nil
-}
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-type GetRecordResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Success bool              `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                                                                                        // If Values were Signed
-	Error   string            `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`                                                                                             // Error Message
-	Records map[string]string `protobuf:"bytes,3,rep,name=records,proto3" json:"records,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Signed Domain TXT Records
-}
-
-func (x *GetRecordResponse) Reset() {
-	*x = GetRecordResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetRecordResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetRecordResponse) ProtoMessage() {}
-
-func (x *GetRecordResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetRecordResponse.ProtoReflect.Descriptor instead.
-func (*GetRecordResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *GetRecordResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *GetRecordResponse) GetError() string {
-	if x != nil {
-		return x.Error
-	}
-	return ""
-}
-
-func (x *GetRecordResponse) GetRecords() map[string]string {
-	if x != nil {
-		return x.Records
-	}
-	return nil
-}
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-type StoreRecordResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Success bool              `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                                                                                        // If Values were Signed
-	Error   string            `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`                                                                                             // Error Message
-	Records map[string]string `protobuf:"bytes,3,rep,name=records,proto3" json:"records,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Signed Domain TXT Records
-}
-
-func (x *StoreRecordResponse) Reset() {
-	*x = StoreRecordResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *StoreRecordResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StoreRecordResponse) ProtoMessage() {}
-
-func (x *StoreRecordResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StoreRecordResponse.ProtoReflect.Descriptor instead.
-func (*StoreRecordResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *StoreRecordResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *StoreRecordResponse) GetError() string {
-	if x != nil {
-		return x.Error
-	}
-	return ""
-}
-
-func (x *StoreRecordResponse) GetRecords() map[string]string {
-	if x != nil {
-		return x.Records
-	}
-	return nil
-}
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+// RegisterNameResponse is a request to register a name
 type RegisterNameResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Success bool              `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                                                                                        // If Values were Signed
-	Error   string            `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`                                                                                             // Error Message
-	Records map[string]string `protobuf:"bytes,3,rep,name=records,proto3" json:"records,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Signed Domain TXT Records
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
 }
 
 func (x *RegisterNameResponse) Reset() {
 	*x = RegisterNameResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_response_proto_msgTypes[10]
+		mi := &file_node_highway_v1_response_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -615,7 +121,7 @@ func (x *RegisterNameResponse) String() string {
 func (*RegisterNameResponse) ProtoMessage() {}
 
 func (x *RegisterNameResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_response_proto_msgTypes[10]
+	mi := &file_node_highway_v1_response_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -628,43 +134,712 @@ func (x *RegisterNameResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterNameResponse.ProtoReflect.Descriptor instead.
 func (*RegisterNameResponse) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{10}
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RegisterNameResponse) GetSuccess() bool {
+func (x *RegisterNameResponse) GetCode() int32 {
 	if x != nil {
-		return x.Success
+		return x.Code
 	}
-	return false
+	return 0
 }
 
-func (x *RegisterNameResponse) GetError() string {
+func (x *RegisterNameResponse) GetMessage() string {
 	if x != nil {
-		return x.Error
+		return x.Message
 	}
 	return ""
 }
 
-func (x *RegisterNameResponse) GetRecords() map[string]string {
+func (x *RegisterNameResponse) GetDid() string {
 	if x != nil {
-		return x.Records
+		return x.Did
 	}
-	return nil
+	return ""
 }
 
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-type VerifyNameResponse struct {
+// UpdateNameResponse is a response to a request to update a name
+type UpdateNameResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Success bool              `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                                                                                        // If Values were Signed
-	Error   string            `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`                                                                                             // Error Message
-	Records map[string]string `protobuf:"bytes,3,rep,name=records,proto3" json:"records,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Signed Domain TXT Records
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Data of the updated name record
+	Data map[string]string `protobuf:"bytes,4,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
-func (x *VerifyNameResponse) Reset() {
-	*x = VerifyNameResponse{}
+func (x *UpdateNameResponse) Reset() {
+	*x = UpdateNameResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateNameResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateNameResponse) ProtoMessage() {}
+
+func (x *UpdateNameResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateNameResponse.ProtoReflect.Descriptor instead.
+func (*UpdateNameResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UpdateNameResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *UpdateNameResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *UpdateNameResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *UpdateNameResponse) GetData() map[string]string {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// AccessServiceResponse is a response to a request for a service
+type AccessServiceResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// Data of the response
+	Data map[string]string `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *AccessServiceResponse) Reset() {
+	*x = AccessServiceResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessServiceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessServiceResponse) ProtoMessage() {}
+
+func (x *AccessServiceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessServiceResponse.ProtoReflect.Descriptor instead.
+func (*AccessServiceResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *AccessServiceResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *AccessServiceResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *AccessServiceResponse) GetData() map[string]string {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// RegisterServiceResponse is a request to register a name
+type RegisterServiceResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (x *RegisterServiceResponse) Reset() {
+	*x = RegisterServiceResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RegisterServiceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterServiceResponse) ProtoMessage() {}
+
+func (x *RegisterServiceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterServiceResponse.ProtoReflect.Descriptor instead.
+func (*RegisterServiceResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RegisterServiceResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *RegisterServiceResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *RegisterServiceResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// UpdateServiceResponse is a response to a request to update a name
+type UpdateServiceResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Data of the updated name record
+	Data map[string]string `protobuf:"bytes,4,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *UpdateServiceResponse) Reset() {
+	*x = UpdateServiceResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateServiceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateServiceResponse) ProtoMessage() {}
+
+func (x *UpdateServiceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateServiceResponse.ProtoReflect.Descriptor instead.
+func (*UpdateServiceResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UpdateServiceResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *UpdateServiceResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *UpdateServiceResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *UpdateServiceResponse) GetData() map[string]string {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// CreateChannelResponse is a response to a request to create a channel
+type CreateChannelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (x *CreateChannelResponse) Reset() {
+	*x = CreateChannelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateChannelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateChannelResponse) ProtoMessage() {}
+
+func (x *CreateChannelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateChannelResponse.ProtoReflect.Descriptor instead.
+func (*CreateChannelResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CreateChannelResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *CreateChannelResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *CreateChannelResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// ReadChannelResponse is a response to a request to read a channel
+type ReadChannelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Subscribers of the channel
+	Subscribers []*common.Peer `protobuf:"bytes,4,rep,name=subscribers,proto3" json:"subscribers,omitempty"`
+	// Owners of the channel
+	Owners []*common.Peer `protobuf:"bytes,5,rep,name=owners,proto3" json:"owners,omitempty"`
+}
+
+func (x *ReadChannelResponse) Reset() {
+	*x = ReadChannelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReadChannelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadChannelResponse) ProtoMessage() {}
+
+func (x *ReadChannelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadChannelResponse.ProtoReflect.Descriptor instead.
+func (*ReadChannelResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ReadChannelResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *ReadChannelResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ReadChannelResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *ReadChannelResponse) GetSubscribers() []*common.Peer {
+	if x != nil {
+		return x.Subscribers
+	}
+	return nil
+}
+
+func (x *ReadChannelResponse) GetOwners() []*common.Peer {
+	if x != nil {
+		return x.Owners
+	}
+	return nil
+}
+
+// UpdateChannelResponse is a response to a request to update a channel
+type UpdateChannelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Subscribers of the channel
+	Subscribers []*common.Peer `protobuf:"bytes,4,rep,name=subscribers,proto3" json:"subscribers,omitempty"`
+	// Owners of the channel
+	Owners []*common.Peer `protobuf:"bytes,5,rep,name=owners,proto3" json:"owners,omitempty"`
+}
+
+func (x *UpdateChannelResponse) Reset() {
+	*x = UpdateChannelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateChannelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateChannelResponse) ProtoMessage() {}
+
+func (x *UpdateChannelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateChannelResponse.ProtoReflect.Descriptor instead.
+func (*UpdateChannelResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateChannelResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *UpdateChannelResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *UpdateChannelResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *UpdateChannelResponse) GetSubscribers() []*common.Peer {
+	if x != nil {
+		return x.Subscribers
+	}
+	return nil
+}
+
+func (x *UpdateChannelResponse) GetOwners() []*common.Peer {
+	if x != nil {
+		return x.Owners
+	}
+	return nil
+}
+
+// DeleteChannelResponse is a response to a request to delete a channel
+type DeleteChannelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (x *DeleteChannelResponse) Reset() {
+	*x = DeleteChannelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteChannelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteChannelResponse) ProtoMessage() {}
+
+func (x *DeleteChannelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteChannelResponse.ProtoReflect.Descriptor instead.
+func (*DeleteChannelResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeleteChannelResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *DeleteChannelResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DeleteChannelResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// ListenChannelResponse is a response of the published data to the channel
+type ListenChannelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+	// Additional information about the response
+	Metadata map[string]string `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // optional
+	// Data of the response
+	Message []byte `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"` // optional
+}
+
+func (x *ListenChannelResponse) Reset() {
+	*x = ListenChannelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListenChannelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListenChannelResponse) ProtoMessage() {}
+
+func (x *ListenChannelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListenChannelResponse.ProtoReflect.Descriptor instead.
+func (*ListenChannelResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ListenChannelResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *ListenChannelResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *ListenChannelResponse) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+func (x *ListenChannelResponse) GetMessage() []byte {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
+// CreateObjectResponse is a response to a request to create an object
+type CreateObjectResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (x *CreateObjectResponse) Reset() {
+	*x = CreateObjectResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_node_highway_v1_response_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -672,13 +847,13 @@ func (x *VerifyNameResponse) Reset() {
 	}
 }
 
-func (x *VerifyNameResponse) String() string {
+func (x *CreateObjectResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VerifyNameResponse) ProtoMessage() {}
+func (*CreateObjectResponse) ProtoMessage() {}
 
-func (x *VerifyNameResponse) ProtoReflect() protoreflect.Message {
+func (x *CreateObjectResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_node_highway_v1_response_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -690,30 +865,745 @@ func (x *VerifyNameResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use VerifyNameResponse.ProtoReflect.Descriptor instead.
-func (*VerifyNameResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateObjectResponse.ProtoReflect.Descriptor instead.
+func (*CreateObjectResponse) Descriptor() ([]byte, []int) {
 	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *VerifyNameResponse) GetSuccess() bool {
+func (x *CreateObjectResponse) GetCode() int32 {
 	if x != nil {
-		return x.Success
+		return x.Code
 	}
-	return false
+	return 0
 }
 
-func (x *VerifyNameResponse) GetError() string {
+func (x *CreateObjectResponse) GetMessage() string {
 	if x != nil {
-		return x.Error
+		return x.Message
 	}
 	return ""
 }
 
-func (x *VerifyNameResponse) GetRecords() map[string]string {
+func (x *CreateObjectResponse) GetDid() string {
 	if x != nil {
-		return x.Records
+		return x.Did
+	}
+	return ""
+}
+
+// ReadObjectResponse is a response to a request to read an object
+type ReadObjectResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Data of the response
+	Object *common.Object `protobuf:"bytes,4,opt,name=object,proto3" json:"object,omitempty"`
+}
+
+func (x *ReadObjectResponse) Reset() {
+	*x = ReadObjectResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReadObjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadObjectResponse) ProtoMessage() {}
+
+func (x *ReadObjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadObjectResponse.ProtoReflect.Descriptor instead.
+func (*ReadObjectResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ReadObjectResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *ReadObjectResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ReadObjectResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *ReadObjectResponse) GetObject() *common.Object {
+	if x != nil {
+		return x.Object
 	}
 	return nil
+}
+
+// UpdateObjectResponse is a response to a request to update an object
+type UpdateObjectResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Data of the response
+	Object *common.Object `protobuf:"bytes,4,opt,name=object,proto3" json:"object,omitempty"`
+	// Metadata is additional metadata of the response
+	Metadata map[string]string `protobuf:"bytes,5,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // optional
+}
+
+func (x *UpdateObjectResponse) Reset() {
+	*x = UpdateObjectResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateObjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateObjectResponse) ProtoMessage() {}
+
+func (x *UpdateObjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateObjectResponse.ProtoReflect.Descriptor instead.
+func (*UpdateObjectResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *UpdateObjectResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *UpdateObjectResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *UpdateObjectResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *UpdateObjectResponse) GetObject() *common.Object {
+	if x != nil {
+		return x.Object
+	}
+	return nil
+}
+
+func (x *UpdateObjectResponse) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+// DeleteObjectResponse is a response to a request to delete an object
+type DeleteObjectResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (x *DeleteObjectResponse) Reset() {
+	*x = DeleteObjectResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteObjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteObjectResponse) ProtoMessage() {}
+
+func (x *DeleteObjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteObjectResponse.ProtoReflect.Descriptor instead.
+func (*DeleteObjectResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *DeleteObjectResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *DeleteObjectResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DeleteObjectResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// UploadBlobResponse is a response to a request to upload a blob
+type UploadBlobResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Pinned is true if the blob is pinned to IPFS
+	Pinned bool `protobuf:"varint,4,opt,name=pinned,proto3" json:"pinned,omitempty"`
+}
+
+func (x *UploadBlobResponse) Reset() {
+	*x = UploadBlobResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UploadBlobResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UploadBlobResponse) ProtoMessage() {}
+
+func (x *UploadBlobResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UploadBlobResponse.ProtoReflect.Descriptor instead.
+func (*UploadBlobResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *UploadBlobResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *UploadBlobResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *UploadBlobResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *UploadBlobResponse) GetPinned() bool {
+	if x != nil {
+		return x.Pinned
+	}
+	return false
+}
+
+// DownloadBlobResponse is a response to a request to download a blob
+type DownloadBlobResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+	// Path of downloaded blob
+	Path string `protobuf:"bytes,4,opt,name=path,proto3" json:"path,omitempty"`
+}
+
+func (x *DownloadBlobResponse) Reset() {
+	*x = DownloadBlobResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DownloadBlobResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DownloadBlobResponse) ProtoMessage() {}
+
+func (x *DownloadBlobResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DownloadBlobResponse.ProtoReflect.Descriptor instead.
+func (*DownloadBlobResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *DownloadBlobResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *DownloadBlobResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DownloadBlobResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *DownloadBlobResponse) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+// SyncBlobResponse is a response to a request to sync a blob
+type SyncBlobResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (x *SyncBlobResponse) Reset() {
+	*x = SyncBlobResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SyncBlobResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncBlobResponse) ProtoMessage() {}
+
+func (x *SyncBlobResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncBlobResponse.ProtoReflect.Descriptor instead.
+func (*SyncBlobResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *SyncBlobResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *SyncBlobResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *SyncBlobResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// DeleteBlobResponse is a response to a request to delete a blob
+type DeleteBlobResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"` // TODO: Create DID protobuf type
+}
+
+func (x *DeleteBlobResponse) Reset() {
+	*x = DeleteBlobResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteBlobResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteBlobResponse) ProtoMessage() {}
+
+func (x *DeleteBlobResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteBlobResponse.ProtoReflect.Descriptor instead.
+func (*DeleteBlobResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *DeleteBlobResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *DeleteBlobResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DeleteBlobResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// ParseDidResponse is a response to a request to parse a DID
+type ParseDidResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"` // TODO: Create DID protobuf type
+}
+
+func (x *ParseDidResponse) Reset() {
+	*x = ParseDidResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ParseDidResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ParseDidResponse) ProtoMessage() {}
+
+func (x *ParseDidResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ParseDidResponse.ProtoReflect.Descriptor instead.
+func (*ParseDidResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *ParseDidResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *ParseDidResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ParseDidResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// ResolveDidResponse is a response to a request to resolve a DID
+type ResolveDidResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"` // TODO: Create DID protobuf type
+}
+
+func (x *ResolveDidResponse) Reset() {
+	*x = ResolveDidResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResolveDidResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolveDidResponse) ProtoMessage() {}
+
+func (x *ResolveDidResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolveDidResponse.ProtoReflect.Descriptor instead.
+func (*ResolveDidResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *ResolveDidResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *ResolveDidResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ResolveDidResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// VerifyDidResponse is a response to a request to verify a DID
+type VerifyDidResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Code of the response
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Message of the response
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// DID of the response
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"` // TODO: Create DID protobuf type
+}
+
+func (x *VerifyDidResponse) Reset() {
+	*x = VerifyDidResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_response_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VerifyDidResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyDidResponse) ProtoMessage() {}
+
+func (x *VerifyDidResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_response_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyDidResponse.ProtoReflect.Descriptor instead.
+func (*VerifyDidResponse) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_response_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *VerifyDidResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *VerifyDidResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *VerifyDidResponse) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
 }
 
 var File_node_highway_v1_response_proto protoreflect.FileDescriptor
@@ -723,120 +1613,195 @@ var file_node_highway_v1_response_proto_rawDesc = []byte{
 	0x31, 0x2f, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x0f, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76,
 	0x31, 0x1a, 0x14, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x72,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x6e, 0x6f, 0x64, 0x65, 0x2f, 0x63, 0x6f,
-	0x64, 0x65, 0x73, 0x2f, 0x76, 0x31, 0x2f, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x48, 0x0a, 0x15, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43,
-	0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f,
-	0x0a, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6e,
-	0x6f, 0x64, 0x65, 0x2e, 0x63, 0x6f, 0x64, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22,
-	0x4b, 0x0a, 0x18, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x43, 0x68, 0x61, 0x6e,
-	0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f, 0x0a, 0x04, 0x69,
-	0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6e, 0x6f, 0x64, 0x65,
-	0x2e, 0x63, 0x6f, 0x64, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22, 0x4d, 0x0a, 0x1a,
-	0x55, 0x6e, 0x73, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e,
-	0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f, 0x0a, 0x04, 0x69, 0x6e,
-	0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e,
-	0x63, 0x6f, 0x64, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22, 0x48, 0x0a, 0x15, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f, 0x0a, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x63, 0x6f, 0x64, 0x65, 0x73, 0x2e,
-	0x76, 0x31, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52,
-	0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22, 0x68, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x65, 0x65,
-	0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6f, 0x6c,
-	0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6f, 0x6c, 0x63, 0x12, 0x25, 0x0a, 0x05,
-	0x70, 0x65, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x05, 0x70, 0x65,
-	0x65, 0x72, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x22,
-	0xd4, 0x01, 0x0a, 0x16, 0x44, 0x65, 0x63, 0x69, 0x64, 0x65, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e,
-	0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75,
-	0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63,
-	0x63, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x4e, 0x0a, 0x07, 0x72, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x34, 0x2e, 0x6e, 0x6f,
-	0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65,
-	0x63, 0x69, 0x64, 0x65, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x1a, 0x3a, 0x0a, 0x0c, 0x52, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
-	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05,
-	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x46, 0x0a, 0x14, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x78,
-	0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18,
-	0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
-	0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f,
-	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0xce,
-	0x01, 0x0a, 0x13, 0x43, 0x61, 0x63, 0x68, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
-	0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x4b, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
-	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x31, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68,
-	0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x63, 0x68, 0x65, 0x52,
-	0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f,
-	0x72, 0x64, 0x73, 0x1a, 0x3a, 0x0a, 0x0c, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e,
-	0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22,
-	0xca, 0x01, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12,
-	0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x49, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73,
-	0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69,
-	0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x6f,
-	0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x63, 0x6f, 0x72,
-	0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73,
-	0x1a, 0x3a, 0x0a, 0x0c, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x16, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f,
+	0x76, 0x31, 0x2f, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
+	0x1c, 0x6e, 0x6f, 0x64, 0x65, 0x2f, 0x63, 0x6f, 0x64, 0x65, 0x73, 0x2f, 0x76, 0x31, 0x2f, 0x72,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x67, 0x0a,
+	0x12, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x12, 0x23, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x65, 0x72,
+	0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x56, 0x0a, 0x14, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12,
+	0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f,
+	0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03,
+	0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0xd0,
+	0x01, 0x0a, 0x12, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73,
+	0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x41, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x04, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77,
+	0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x61, 0x6d, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x37, 0x0a, 0x09, 0x44, 0x61, 0x74, 0x61,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38,
+	0x01, 0x22, 0xc4, 0x01, 0x0a, 0x15, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63,
+	0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12,
+	0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x44, 0x0a, 0x04, 0x64, 0x61, 0x74,
+	0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68,
+	0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73,
+	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e,
+	0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x1a,
+	0x37, 0x0a, 0x09, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03,
+	0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14,
+	0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x59, 0x0a, 0x17, 0x52, 0x65, 0x67, 0x69,
+	0x73, 0x74, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x64, 0x69, 0x64, 0x22, 0xd6, 0x01, 0x0a, 0x15, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a,
+	0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64,
+	0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64,
+	0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x44, 0x0a,
+	0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x6e, 0x6f,
+	0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x2e, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x04, 0x64,
+	0x61, 0x74, 0x61, 0x1a, 0x37, 0x0a, 0x09, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79,
 	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
 	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xce, 0x01, 0x0a,
-	0x13, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x14,
-	0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65,
-	0x72, 0x72, 0x6f, 0x72, 0x12, 0x4b, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x18,
-	0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x31, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67,
-	0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x63,
-	0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x63, 0x6f,
-	0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
-	0x73, 0x1a, 0x3a, 0x0a, 0x0c, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
-	0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xd0, 0x01,
-	0x0a, 0x14, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
-	0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x4c, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
-	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68,
-	0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
-	0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52,
-	0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x07, 0x72, 0x65, 0x63,
-	0x6f, 0x72, 0x64, 0x73, 0x1a, 0x3a, 0x0a, 0x0c, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x45,
-	0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01,
-	0x22, 0xcc, 0x01, 0x0a, 0x12, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65,
-	0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x4a, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72,
-	0x64, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e,
-	0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66,
-	0x79, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f,
-	0x72, 0x64, 0x73, 0x1a, 0x3a, 0x0a, 0x0c, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x45, 0x6e,
-	0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42,
-	0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f,
-	0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x6e, 0x6f, 0x64, 0x65, 0x2f,
-	0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x57, 0x0a, 0x15,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73,
+	0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0xb1, 0x01, 0x0a, 0x13, 0x52, 0x65, 0x61, 0x64, 0x43, 0x68,
+	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a,
+	0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64,
+	0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64,
+	0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x31, 0x0a,
+	0x0b, 0x73, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x72, 0x73, 0x18, 0x04, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50,
+	0x65, 0x65, 0x72, 0x52, 0x0b, 0x73, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x72, 0x73,
+	0x12, 0x27, 0x0a, 0x06, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x0f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x65,
+	0x72, 0x52, 0x06, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x73, 0x22, 0xb3, 0x01, 0x0a, 0x15, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x64, 0x69, 0x64, 0x12, 0x31, 0x0a, 0x0b, 0x73, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65,
+	0x72, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x0b, 0x73, 0x75, 0x62, 0x73, 0x63,
+	0x72, 0x69, 0x62, 0x65, 0x72, 0x73, 0x12, 0x27, 0x0a, 0x06, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x73,
+	0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x76, 0x31, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x06, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x73, 0x22,
+	0x57, 0x0a, 0x15, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0xe6, 0x01, 0x0a, 0x15, 0x4c, 0x69, 0x73,
+	0x74, 0x65, 0x6e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x50, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x34, 0x2e, 0x6e, 0x6f, 0x64,
+	0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73,
+	0x74, 0x65, 0x6e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38,
+	0x01, 0x22, 0x56, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0x7f, 0x0a, 0x12, 0x52, 0x65, 0x61,
+	0x64, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63,
+	0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a,
+	0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12,
+	0x29, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x62, 0x6a, 0x65,
+	0x63, 0x74, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x8f, 0x02, 0x0a, 0x14, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x64, 0x69, 0x64, 0x12, 0x29, 0x0a, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e,
+	0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x06, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x4f,
+	0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x33, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e,
+	0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a,
+	0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
+	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x56, 0x0a, 0x14,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73,
+	0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x64, 0x69, 0x64, 0x22, 0x6c, 0x0a, 0x12, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x42, 0x6c,
+	0x6f, 0x62, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f,
+	0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x69,
+	0x6e, 0x6e, 0x65, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x70, 0x69, 0x6e, 0x6e,
+	0x65, 0x64, 0x22, 0x6a, 0x0a, 0x14, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x42, 0x6c,
+	0x6f, 0x62, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f,
+	0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61,
+	0x74, 0x68, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x52,
+	0x0a, 0x10, 0x53, 0x79, 0x6e, 0x63, 0x42, 0x6c, 0x6f, 0x62, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64,
+	0x69, 0x64, 0x22, 0x54, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x62,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0x52, 0x0a, 0x10, 0x50, 0x61, 0x72, 0x73,
+	0x65, 0x44, 0x69, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69,
+	0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0x54, 0x0a, 0x12,
+	0x52, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x44, 0x69, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64,
+	0x69, 0x64, 0x22, 0x53, 0x0a, 0x11, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x44, 0x69, 0x64, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f,
+	0x72, 0x65, 0x2f, 0x6e, 0x6f, 0x64, 0x65, 0x2f, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -851,46 +1816,56 @@ func file_node_highway_v1_response_proto_rawDescGZIP() []byte {
 	return file_node_highway_v1_response_proto_rawDescData
 }
 
-var file_node_highway_v1_response_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_node_highway_v1_response_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_node_highway_v1_response_proto_goTypes = []interface{}{
-	(*CreateChannelResponse)(nil),      // 0: node.highway.v1.CreateChannelResponse
-	(*SubscribeChannelResponse)(nil),   // 1: node.highway.v1.SubscribeChannelResponse
-	(*UnsubscribeChannelResponse)(nil), // 2: node.highway.v1.UnsubscribeChannelResponse
-	(*UpdateChannelResponse)(nil),      // 3: node.highway.v1.UpdateChannelResponse
-	(*ListPeersResponse)(nil),          // 4: node.highway.v1.ListPeersResponse
-	(*DecideExchangeResponse)(nil),     // 5: node.highway.v1.DecideExchangeResponse
-	(*SendExchangeResponse)(nil),       // 6: node.highway.v1.SendExchangeResponse
-	(*CacheRecordResponse)(nil),        // 7: node.highway.v1.CacheRecordResponse
-	(*GetRecordResponse)(nil),          // 8: node.highway.v1.GetRecordResponse
-	(*StoreRecordResponse)(nil),        // 9: node.highway.v1.StoreRecordResponse
-	(*RegisterNameResponse)(nil),       // 10: node.highway.v1.RegisterNameResponse
-	(*VerifyNameResponse)(nil),         // 11: node.highway.v1.VerifyNameResponse
-	nil,                                // 12: node.highway.v1.DecideExchangeResponse.RecordsEntry
-	nil,                                // 13: node.highway.v1.CacheRecordResponse.RecordsEntry
-	nil,                                // 14: node.highway.v1.GetRecordResponse.RecordsEntry
-	nil,                                // 15: node.highway.v1.StoreRecordResponse.RecordsEntry
-	nil,                                // 16: node.highway.v1.RegisterNameResponse.RecordsEntry
-	nil,                                // 17: node.highway.v1.VerifyNameResponse.RecordsEntry
-	(*codes.ResponseInfo)(nil),         // 18: node.codes.v1.ResponseInfo
-	(*common.Peer)(nil),                // 19: common.v1.Peer
+	(*AccessNameResponse)(nil),      // 0: node.highway.v1.AccessNameResponse
+	(*RegisterNameResponse)(nil),    // 1: node.highway.v1.RegisterNameResponse
+	(*UpdateNameResponse)(nil),      // 2: node.highway.v1.UpdateNameResponse
+	(*AccessServiceResponse)(nil),   // 3: node.highway.v1.AccessServiceResponse
+	(*RegisterServiceResponse)(nil), // 4: node.highway.v1.RegisterServiceResponse
+	(*UpdateServiceResponse)(nil),   // 5: node.highway.v1.UpdateServiceResponse
+	(*CreateChannelResponse)(nil),   // 6: node.highway.v1.CreateChannelResponse
+	(*ReadChannelResponse)(nil),     // 7: node.highway.v1.ReadChannelResponse
+	(*UpdateChannelResponse)(nil),   // 8: node.highway.v1.UpdateChannelResponse
+	(*DeleteChannelResponse)(nil),   // 9: node.highway.v1.DeleteChannelResponse
+	(*ListenChannelResponse)(nil),   // 10: node.highway.v1.ListenChannelResponse
+	(*CreateObjectResponse)(nil),    // 11: node.highway.v1.CreateObjectResponse
+	(*ReadObjectResponse)(nil),      // 12: node.highway.v1.ReadObjectResponse
+	(*UpdateObjectResponse)(nil),    // 13: node.highway.v1.UpdateObjectResponse
+	(*DeleteObjectResponse)(nil),    // 14: node.highway.v1.DeleteObjectResponse
+	(*UploadBlobResponse)(nil),      // 15: node.highway.v1.UploadBlobResponse
+	(*DownloadBlobResponse)(nil),    // 16: node.highway.v1.DownloadBlobResponse
+	(*SyncBlobResponse)(nil),        // 17: node.highway.v1.SyncBlobResponse
+	(*DeleteBlobResponse)(nil),      // 18: node.highway.v1.DeleteBlobResponse
+	(*ParseDidResponse)(nil),        // 19: node.highway.v1.ParseDidResponse
+	(*ResolveDidResponse)(nil),      // 20: node.highway.v1.ResolveDidResponse
+	(*VerifyDidResponse)(nil),       // 21: node.highway.v1.VerifyDidResponse
+	nil,                             // 22: node.highway.v1.UpdateNameResponse.DataEntry
+	nil,                             // 23: node.highway.v1.AccessServiceResponse.DataEntry
+	nil,                             // 24: node.highway.v1.UpdateServiceResponse.DataEntry
+	nil,                             // 25: node.highway.v1.ListenChannelResponse.MetadataEntry
+	nil,                             // 26: node.highway.v1.UpdateObjectResponse.MetadataEntry
+	(*common.Peer)(nil),             // 27: common.v1.Peer
+	(*common.Object)(nil),           // 28: common.v1.Object
 }
 var file_node_highway_v1_response_proto_depIdxs = []int32{
-	18, // 0: node.highway.v1.CreateChannelResponse.info:type_name -> node.codes.v1.ResponseInfo
-	18, // 1: node.highway.v1.SubscribeChannelResponse.info:type_name -> node.codes.v1.ResponseInfo
-	18, // 2: node.highway.v1.UnsubscribeChannelResponse.info:type_name -> node.codes.v1.ResponseInfo
-	18, // 3: node.highway.v1.UpdateChannelResponse.info:type_name -> node.codes.v1.ResponseInfo
-	19, // 4: node.highway.v1.ListPeersResponse.peers:type_name -> common.v1.Peer
-	12, // 5: node.highway.v1.DecideExchangeResponse.records:type_name -> node.highway.v1.DecideExchangeResponse.RecordsEntry
-	13, // 6: node.highway.v1.CacheRecordResponse.records:type_name -> node.highway.v1.CacheRecordResponse.RecordsEntry
-	14, // 7: node.highway.v1.GetRecordResponse.records:type_name -> node.highway.v1.GetRecordResponse.RecordsEntry
-	15, // 8: node.highway.v1.StoreRecordResponse.records:type_name -> node.highway.v1.StoreRecordResponse.RecordsEntry
-	16, // 9: node.highway.v1.RegisterNameResponse.records:type_name -> node.highway.v1.RegisterNameResponse.RecordsEntry
-	17, // 10: node.highway.v1.VerifyNameResponse.records:type_name -> node.highway.v1.VerifyNameResponse.RecordsEntry
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	27, // 0: node.highway.v1.AccessNameResponse.data:type_name -> common.v1.Peer
+	22, // 1: node.highway.v1.UpdateNameResponse.data:type_name -> node.highway.v1.UpdateNameResponse.DataEntry
+	23, // 2: node.highway.v1.AccessServiceResponse.data:type_name -> node.highway.v1.AccessServiceResponse.DataEntry
+	24, // 3: node.highway.v1.UpdateServiceResponse.data:type_name -> node.highway.v1.UpdateServiceResponse.DataEntry
+	27, // 4: node.highway.v1.ReadChannelResponse.subscribers:type_name -> common.v1.Peer
+	27, // 5: node.highway.v1.ReadChannelResponse.owners:type_name -> common.v1.Peer
+	27, // 6: node.highway.v1.UpdateChannelResponse.subscribers:type_name -> common.v1.Peer
+	27, // 7: node.highway.v1.UpdateChannelResponse.owners:type_name -> common.v1.Peer
+	25, // 8: node.highway.v1.ListenChannelResponse.metadata:type_name -> node.highway.v1.ListenChannelResponse.MetadataEntry
+	28, // 9: node.highway.v1.ReadObjectResponse.object:type_name -> common.v1.Object
+	28, // 10: node.highway.v1.UpdateObjectResponse.object:type_name -> common.v1.Object
+	26, // 11: node.highway.v1.UpdateObjectResponse.metadata:type_name -> node.highway.v1.UpdateObjectResponse.MetadataEntry
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_node_highway_v1_response_proto_init() }
@@ -900,7 +1875,7 @@ func file_node_highway_v1_response_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_node_highway_v1_response_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateChannelResponse); i {
+			switch v := v.(*AccessNameResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -912,114 +1887,6 @@ func file_node_highway_v1_response_proto_init() {
 			}
 		}
 		file_node_highway_v1_response_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SubscribeChannelResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UnsubscribeChannelResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateChannelResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListPeersResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DecideExchangeResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SendExchangeResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CacheRecordResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRecordResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StoreRecordResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_response_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RegisterNameResponse); i {
 			case 0:
 				return &v.state
@@ -1031,8 +1898,236 @@ func file_node_highway_v1_response_proto_init() {
 				return nil
 			}
 		}
+		file_node_highway_v1_response_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateNameResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessServiceResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RegisterServiceResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateServiceResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateChannelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReadChannelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateChannelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteChannelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListenChannelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 		file_node_highway_v1_response_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifyNameResponse); i {
+			switch v := v.(*CreateObjectResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReadObjectResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateObjectResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteObjectResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UploadBlobResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DownloadBlobResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SyncBlobResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteBlobResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ParseDidResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResolveDidResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_response_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*VerifyDidResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1050,7 +2145,7 @@ func file_node_highway_v1_response_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_node_highway_v1_response_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   27,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

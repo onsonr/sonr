@@ -23,54 +23,406 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Method for Linking
-type DecideExchangeRequest_Method int32
+// AccessNameRequest is a request to get details from the ".snr" name of a peer
+type AccessNameRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
 
-const (
-	DecideExchangeRequest_METHOD_UNSPECIFIED DecideExchangeRequest_Method = 0
-	DecideExchangeRequest_METHOD_ADD         DecideExchangeRequest_Method = 1 // Add Device ID to SName on DNS Table
-	DecideExchangeRequest_METHOD_REMOVE      DecideExchangeRequest_Method = 2 // Remove Device ID from SName on DNS Table
-)
+	// The name of the peer to get the details from
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The public key of the peer to get the details from
+	PublicKey string `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"` // optional
+}
 
-// Enum value maps for DecideExchangeRequest_Method.
-var (
-	DecideExchangeRequest_Method_name = map[int32]string{
-		0: "METHOD_UNSPECIFIED",
-		1: "METHOD_ADD",
-		2: "METHOD_REMOVE",
+func (x *AccessNameRequest) Reset() {
+	*x = AccessNameRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
 	}
-	DecideExchangeRequest_Method_value = map[string]int32{
-		"METHOD_UNSPECIFIED": 0,
-		"METHOD_ADD":         1,
-		"METHOD_REMOVE":      2,
+}
+
+func (x *AccessNameRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessNameRequest) ProtoMessage() {}
+
+func (x *AccessNameRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-)
-
-func (x DecideExchangeRequest_Method) Enum() *DecideExchangeRequest_Method {
-	p := new(DecideExchangeRequest_Method)
-	*p = x
-	return p
+	return mi.MessageOf(x)
 }
 
-func (x DecideExchangeRequest_Method) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+// Deprecated: Use AccessNameRequest.ProtoReflect.Descriptor instead.
+func (*AccessNameRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{0}
 }
 
-func (DecideExchangeRequest_Method) Descriptor() protoreflect.EnumDescriptor {
-	return file_node_highway_v1_request_proto_enumTypes[0].Descriptor()
+func (x *AccessNameRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
 }
 
-func (DecideExchangeRequest_Method) Type() protoreflect.EnumType {
-	return &file_node_highway_v1_request_proto_enumTypes[0]
+func (x *AccessNameRequest) GetPublicKey() string {
+	if x != nil {
+		return x.PublicKey
+	}
+	return ""
 }
 
-func (x DecideExchangeRequest_Method) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
+// RegisterNameRequest is a request to register a name with the ".snr" name of a peer
+type RegisterNameRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The name of the peer to register the name with
+	DeviceId string `protobuf:"bytes,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	// The Operating System of the peer to register the name with
+	Os string `protobuf:"bytes,2,opt,name=os,proto3" json:"os,omitempty"`
+	// The model of the peer to register the name with
+	Model string `protobuf:"bytes,3,opt,name=model,proto3" json:"model,omitempty"`
+	// The architecture of the peer to register the name with
+	Arch string `protobuf:"bytes,4,opt,name=arch,proto3" json:"arch,omitempty"`
+	// The public key of the peer to register the name with
+	PublicKey string `protobuf:"bytes,5,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// The name to register
+	NameToRegister string `protobuf:"bytes,6,opt,name=name_to_register,json=nameToRegister,proto3" json:"name_to_register,omitempty"`
 }
 
-// Deprecated: Use DecideExchangeRequest_Method.Descriptor instead.
-func (DecideExchangeRequest_Method) EnumDescriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{5, 0}
+func (x *RegisterNameRequest) Reset() {
+	*x = RegisterNameRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RegisterNameRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterNameRequest) ProtoMessage() {}
+
+func (x *RegisterNameRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterNameRequest.ProtoReflect.Descriptor instead.
+func (*RegisterNameRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *RegisterNameRequest) GetDeviceId() string {
+	if x != nil {
+		return x.DeviceId
+	}
+	return ""
+}
+
+func (x *RegisterNameRequest) GetOs() string {
+	if x != nil {
+		return x.Os
+	}
+	return ""
+}
+
+func (x *RegisterNameRequest) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
+}
+
+func (x *RegisterNameRequest) GetArch() string {
+	if x != nil {
+		return x.Arch
+	}
+	return ""
+}
+
+func (x *RegisterNameRequest) GetPublicKey() string {
+	if x != nil {
+		return x.PublicKey
+	}
+	return ""
+}
+
+func (x *RegisterNameRequest) GetNameToRegister() string {
+	if x != nil {
+		return x.NameToRegister
+	}
+	return ""
+}
+
+// UpdateNameRequest is a request to update the ".snr" name of a peer
+type UpdateNameRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The name of the peer to update the name of
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The Updated Metadata
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // optional
+}
+
+func (x *UpdateNameRequest) Reset() {
+	*x = UpdateNameRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateNameRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateNameRequest) ProtoMessage() {}
+
+func (x *UpdateNameRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateNameRequest.ProtoReflect.Descriptor instead.
+func (*UpdateNameRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UpdateNameRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateNameRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+// AccessServiceRequest is a request to get the service details of a peer
+type AccessServiceRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The name of the peer to get the service details of
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// The metadata for any service information required
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // optional
+}
+
+func (x *AccessServiceRequest) Reset() {
+	*x = AccessServiceRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessServiceRequest) ProtoMessage() {}
+
+func (x *AccessServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessServiceRequest.ProtoReflect.Descriptor instead.
+func (*AccessServiceRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *AccessServiceRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *AccessServiceRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+// RegisterServiceRequest is a request to register a service with a peer
+type RegisterServiceRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The name of the peer to register the service with
+	ServiceName string `protobuf:"bytes,1,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
+	// The configuration for the service
+	Configuration map[string]string `protobuf:"bytes,2,rep,name=configuration,proto3" json:"configuration,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The public key of the peer to register the service with
+	PublicKey string `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+}
+
+func (x *RegisterServiceRequest) Reset() {
+	*x = RegisterServiceRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RegisterServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterServiceRequest) ProtoMessage() {}
+
+func (x *RegisterServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterServiceRequest.ProtoReflect.Descriptor instead.
+func (*RegisterServiceRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RegisterServiceRequest) GetServiceName() string {
+	if x != nil {
+		return x.ServiceName
+	}
+	return ""
+}
+
+func (x *RegisterServiceRequest) GetConfiguration() map[string]string {
+	if x != nil {
+		return x.Configuration
+	}
+	return nil
+}
+
+func (x *RegisterServiceRequest) GetPublicKey() string {
+	if x != nil {
+		return x.PublicKey
+	}
+	return ""
+}
+
+// UpdateServiceRequest is a request to update the service details of a peer
+type UpdateServiceRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The name of the peer to update the service details of
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// The updated configuration for the service
+	Configuration map[string]string `protobuf:"bytes,2,rep,name=configuration,proto3" json:"configuration,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The metadata for any service information required
+	Metadata map[string]string `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // optional
+}
+
+func (x *UpdateServiceRequest) Reset() {
+	*x = UpdateServiceRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateServiceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateServiceRequest) ProtoMessage() {}
+
+func (x *UpdateServiceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateServiceRequest.ProtoReflect.Descriptor instead.
+func (*UpdateServiceRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UpdateServiceRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *UpdateServiceRequest) GetConfiguration() map[string]string {
+	if x != nil {
+		return x.Configuration
+	}
+	return nil
+}
+
+func (x *UpdateServiceRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
 }
 
 // CreateChannelRequest is the request to create a new channel
@@ -90,7 +442,7 @@ type CreateChannelRequest struct {
 func (x *CreateChannelRequest) Reset() {
 	*x = CreateChannelRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[0]
+		mi := &file_node_highway_v1_request_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -103,7 +455,7 @@ func (x *CreateChannelRequest) String() string {
 func (*CreateChannelRequest) ProtoMessage() {}
 
 func (x *CreateChannelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[0]
+	mi := &file_node_highway_v1_request_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -116,7 +468,7 @@ func (x *CreateChannelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateChannelRequest.ProtoReflect.Descriptor instead.
 func (*CreateChannelRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{0}
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateChannelRequest) GetName() string {
@@ -140,33 +492,33 @@ func (x *CreateChannelRequest) GetOwners() []string {
 	return nil
 }
 
-// SubscribeChannelRequest is the request to subscribe to a channel
-type SubscribeChannelRequest struct {
+// ReadChannelRequest is the request to read a channel
+type ReadChannelRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Name is the name of the channel
+	// DID is the identifier of the channel
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
 }
 
-func (x *SubscribeChannelRequest) Reset() {
-	*x = SubscribeChannelRequest{}
+func (x *ReadChannelRequest) Reset() {
+	*x = ReadChannelRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[1]
+		mi := &file_node_highway_v1_request_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *SubscribeChannelRequest) String() string {
+func (x *ReadChannelRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SubscribeChannelRequest) ProtoMessage() {}
+func (*ReadChannelRequest) ProtoMessage() {}
 
-func (x *SubscribeChannelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[1]
+func (x *ReadChannelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,61 +529,12 @@ func (x *SubscribeChannelRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SubscribeChannelRequest.ProtoReflect.Descriptor instead.
-func (*SubscribeChannelRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use ReadChannelRequest.ProtoReflect.Descriptor instead.
+func (*ReadChannelRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *SubscribeChannelRequest) GetDid() string {
-	if x != nil {
-		return x.Did
-	}
-	return ""
-}
-
-// UnsubscribeChannelRequest is the request to unsubscribe from a channel
-type UnsubscribeChannelRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// Name is the name of the channel
-	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-}
-
-func (x *UnsubscribeChannelRequest) Reset() {
-	*x = UnsubscribeChannelRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UnsubscribeChannelRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UnsubscribeChannelRequest) ProtoMessage() {}
-
-func (x *UnsubscribeChannelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UnsubscribeChannelRequest.ProtoReflect.Descriptor instead.
-func (*UnsubscribeChannelRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *UnsubscribeChannelRequest) GetDid() string {
+func (x *ReadChannelRequest) GetDid() string {
 	if x != nil {
 		return x.Did
 	}
@@ -253,7 +556,7 @@ type UpdateChannelRequest struct {
 func (x *UpdateChannelRequest) Reset() {
 	*x = UpdateChannelRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[3]
+		mi := &file_node_highway_v1_request_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -266,7 +569,7 @@ func (x *UpdateChannelRequest) String() string {
 func (*UpdateChannelRequest) ProtoMessage() {}
 
 func (x *UpdateChannelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[3]
+	mi := &file_node_highway_v1_request_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -279,7 +582,7 @@ func (x *UpdateChannelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChannelRequest.ProtoReflect.Descriptor instead.
 func (*UpdateChannelRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{3}
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UpdateChannelRequest) GetDid() string {
@@ -296,364 +599,22 @@ func (x *UpdateChannelRequest) GetMetadata() map[string]string {
 	return nil
 }
 
-// (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
-type ListPeersRequest struct {
+// DeleteChannelRequest is the request to delete a channel
+type DeleteChannelRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SName    string `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3" json:"s_name,omitempty"`          // SName combined with Device ID and Hashed
-	Mnemonic string `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"`                 // Mnemonic Hashed with public key for fingerprint
-	DeviceId string `protobuf:"bytes,3,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"` // Device ID
+	// Did is the DID of the channel
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Metadata is the metadata of the channel thats being deleted
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Public key of the node that is deleting the channel
+	PublicKey string `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 }
 
-func (x *ListPeersRequest) Reset() {
-	*x = ListPeersRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ListPeersRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListPeersRequest) ProtoMessage() {}
-
-func (x *ListPeersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListPeersRequest.ProtoReflect.Descriptor instead.
-func (*ListPeersRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *ListPeersRequest) GetSName() string {
-	if x != nil {
-		return x.SName
-	}
-	return ""
-}
-
-func (x *ListPeersRequest) GetMnemonic() string {
-	if x != nil {
-		return x.Mnemonic
-	}
-	return ""
-}
-
-func (x *ListPeersRequest) GetDeviceId() string {
-	if x != nil {
-		return x.DeviceId
-	}
-	return ""
-}
-
-// (Highway) LinkRequest handles Linked Devices on DNS Table
-type DecideExchangeRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	SName    string                       `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3" json:"s_name,omitempty"`                                         // SName combined with Device ID and Hashed
-	Mnemonic string                       `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"`                                                // Mnemonic Hashed with public key for fingerprint
-	DeviceId string                       `protobuf:"bytes,3,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`                                // Device ID
-	Method   DecideExchangeRequest_Method `protobuf:"varint,4,opt,name=method,proto3,enum=node.highway.v1.DecideExchangeRequest_Method" json:"method,omitempty"` // Method for Linking
-}
-
-func (x *DecideExchangeRequest) Reset() {
-	*x = DecideExchangeRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DecideExchangeRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DecideExchangeRequest) ProtoMessage() {}
-
-func (x *DecideExchangeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DecideExchangeRequest.ProtoReflect.Descriptor instead.
-func (*DecideExchangeRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *DecideExchangeRequest) GetSName() string {
-	if x != nil {
-		return x.SName
-	}
-	return ""
-}
-
-func (x *DecideExchangeRequest) GetMnemonic() string {
-	if x != nil {
-		return x.Mnemonic
-	}
-	return ""
-}
-
-func (x *DecideExchangeRequest) GetDeviceId() string {
-	if x != nil {
-		return x.DeviceId
-	}
-	return ""
-}
-
-func (x *DecideExchangeRequest) GetMethod() DecideExchangeRequest_Method {
-	if x != nil {
-		return x.Method
-	}
-	return DecideExchangeRequest_METHOD_UNSPECIFIED
-}
-
-// (Client) ShareRequest is request to share supplied files/urls with a peer
-type SendExchangeRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Peer    *common.Peer         `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`       // Peer to Share with
-	Message *common.MessageItem  `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"` // Message to Share
-	Items   []*common.SupplyItem `protobuf:"bytes,3,rep,name=items,proto3" json:"items,omitempty"`     // Supply Items to share
-}
-
-func (x *SendExchangeRequest) Reset() {
-	*x = SendExchangeRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SendExchangeRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SendExchangeRequest) ProtoMessage() {}
-
-func (x *SendExchangeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SendExchangeRequest.ProtoReflect.Descriptor instead.
-func (*SendExchangeRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *SendExchangeRequest) GetPeer() *common.Peer {
-	if x != nil {
-		return x.Peer
-	}
-	return nil
-}
-
-func (x *SendExchangeRequest) GetMessage() *common.MessageItem {
-	if x != nil {
-		return x.Message
-	}
-	return nil
-}
-
-func (x *SendExchangeRequest) GetItems() []*common.SupplyItem {
-	if x != nil {
-		return x.Items
-	}
-	return nil
-}
-
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-type CacheRecordRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	SName       string `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3" json:"s_name,omitempty"`             // SName combined with Device ID and Hashed
-	Prefix      string `protobuf:"bytes,2,opt,name=prefix,proto3" json:"prefix,omitempty"`                        // Mnemonic Hashed with private key for fingerprint
-	Fingerprint string `protobuf:"bytes,3,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`              // Fingerprint of Public Key
-	PublicKey   string `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"` // Public Key
-}
-
-func (x *CacheRecordRequest) Reset() {
-	*x = CacheRecordRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CacheRecordRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CacheRecordRequest) ProtoMessage() {}
-
-func (x *CacheRecordRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CacheRecordRequest.ProtoReflect.Descriptor instead.
-func (*CacheRecordRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *CacheRecordRequest) GetSName() string {
-	if x != nil {
-		return x.SName
-	}
-	return ""
-}
-
-func (x *CacheRecordRequest) GetPrefix() string {
-	if x != nil {
-		return x.Prefix
-	}
-	return ""
-}
-
-func (x *CacheRecordRequest) GetFingerprint() string {
-	if x != nil {
-		return x.Fingerprint
-	}
-	return ""
-}
-
-func (x *CacheRecordRequest) GetPublicKey() string {
-	if x != nil {
-		return x.PublicKey
-	}
-	return ""
-}
-
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-type GetRecordRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	SName       string `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3" json:"s_name,omitempty"`             // SName combined with Device ID and Hashed
-	Prefix      string `protobuf:"bytes,2,opt,name=prefix,proto3" json:"prefix,omitempty"`                        // Mnemonic Hashed with private key for fingerprint
-	Fingerprint string `protobuf:"bytes,3,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`              // Fingerprint of Public Key
-	PublicKey   string `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"` // Public Key
-}
-
-func (x *GetRecordRequest) Reset() {
-	*x = GetRecordRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_node_highway_v1_request_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetRecordRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetRecordRequest) ProtoMessage() {}
-
-func (x *GetRecordRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_node_highway_v1_request_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetRecordRequest.ProtoReflect.Descriptor instead.
-func (*GetRecordRequest) Descriptor() ([]byte, []int) {
-	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *GetRecordRequest) GetSName() string {
-	if x != nil {
-		return x.SName
-	}
-	return ""
-}
-
-func (x *GetRecordRequest) GetPrefix() string {
-	if x != nil {
-		return x.Prefix
-	}
-	return ""
-}
-
-func (x *GetRecordRequest) GetFingerprint() string {
-	if x != nil {
-		return x.Fingerprint
-	}
-	return ""
-}
-
-func (x *GetRecordRequest) GetPublicKey() string {
-	if x != nil {
-		return x.PublicKey
-	}
-	return ""
-}
-
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-type StoreRecordRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	SName       string `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3" json:"s_name,omitempty"`             // SName combined with Device ID and Hashed
-	Prefix      string `protobuf:"bytes,2,opt,name=prefix,proto3" json:"prefix,omitempty"`                        // Mnemonic Hashed with private key for fingerprint
-	Fingerprint string `protobuf:"bytes,3,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`              // Fingerprint of Public Key
-	PublicKey   string `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"` // Public Key
-}
-
-func (x *StoreRecordRequest) Reset() {
-	*x = StoreRecordRequest{}
+func (x *DeleteChannelRequest) Reset() {
+	*x = DeleteChannelRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_node_highway_v1_request_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -661,13 +622,13 @@ func (x *StoreRecordRequest) Reset() {
 	}
 }
 
-func (x *StoreRecordRequest) String() string {
+func (x *DeleteChannelRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StoreRecordRequest) ProtoMessage() {}
+func (*DeleteChannelRequest) ProtoMessage() {}
 
-func (x *StoreRecordRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteChannelRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_node_highway_v1_request_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -679,53 +640,46 @@ func (x *StoreRecordRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StoreRecordRequest.ProtoReflect.Descriptor instead.
-func (*StoreRecordRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteChannelRequest.ProtoReflect.Descriptor instead.
+func (*DeleteChannelRequest) Descriptor() ([]byte, []int) {
 	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *StoreRecordRequest) GetSName() string {
+func (x *DeleteChannelRequest) GetDid() string {
 	if x != nil {
-		return x.SName
+		return x.Did
 	}
 	return ""
 }
 
-func (x *StoreRecordRequest) GetPrefix() string {
+func (x *DeleteChannelRequest) GetMetadata() map[string]string {
 	if x != nil {
-		return x.Prefix
+		return x.Metadata
 	}
-	return ""
+	return nil
 }
 
-func (x *StoreRecordRequest) GetFingerprint() string {
-	if x != nil {
-		return x.Fingerprint
-	}
-	return ""
-}
-
-func (x *StoreRecordRequest) GetPublicKey() string {
+func (x *DeleteChannelRequest) GetPublicKey() string {
 	if x != nil {
 		return x.PublicKey
 	}
 	return ""
 }
 
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-type RegisterNameRequest struct {
+// ListenChannelRequest is the request to subscribe to a channel
+type ListenChannelRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SName       string `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3" json:"s_name,omitempty"`             // SName combined with Device ID and Hashed
-	Prefix      string `protobuf:"bytes,2,opt,name=prefix,proto3" json:"prefix,omitempty"`                        // Mnemonic Hashed with private key for fingerprint
-	Fingerprint string `protobuf:"bytes,3,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`              // Fingerprint of Public Key
-	PublicKey   string `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"` // Public Key
+	// Name is the name of the channel
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Metadata is additional metadata for the channel
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // optional
 }
 
-func (x *RegisterNameRequest) Reset() {
-	*x = RegisterNameRequest{}
+func (x *ListenChannelRequest) Reset() {
+	*x = ListenChannelRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_node_highway_v1_request_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -733,13 +687,13 @@ func (x *RegisterNameRequest) Reset() {
 	}
 }
 
-func (x *RegisterNameRequest) String() string {
+func (x *ListenChannelRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RegisterNameRequest) ProtoMessage() {}
+func (*ListenChannelRequest) ProtoMessage() {}
 
-func (x *RegisterNameRequest) ProtoReflect() protoreflect.Message {
+func (x *ListenChannelRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_node_highway_v1_request_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -751,53 +705,41 @@ func (x *RegisterNameRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegisterNameRequest.ProtoReflect.Descriptor instead.
-func (*RegisterNameRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListenChannelRequest.ProtoReflect.Descriptor instead.
+func (*ListenChannelRequest) Descriptor() ([]byte, []int) {
 	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *RegisterNameRequest) GetSName() string {
+func (x *ListenChannelRequest) GetDid() string {
 	if x != nil {
-		return x.SName
+		return x.Did
 	}
 	return ""
 }
 
-func (x *RegisterNameRequest) GetPrefix() string {
+func (x *ListenChannelRequest) GetMetadata() map[string]string {
 	if x != nil {
-		return x.Prefix
+		return x.Metadata
 	}
-	return ""
+	return nil
 }
 
-func (x *RegisterNameRequest) GetFingerprint() string {
-	if x != nil {
-		return x.Fingerprint
-	}
-	return ""
-}
-
-func (x *RegisterNameRequest) GetPublicKey() string {
-	if x != nil {
-		return x.PublicKey
-	}
-	return ""
-}
-
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-type VerifyNameRequest struct {
+// CreateObjectRequest is the request to create a new object
+type CreateObjectRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SName       string `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3" json:"s_name,omitempty"`             // SName combined with Device ID and Hashed
-	Prefix      string `protobuf:"bytes,2,opt,name=prefix,proto3" json:"prefix,omitempty"`                        // Mnemonic Hashed with private key for fingerprint
-	Fingerprint string `protobuf:"bytes,3,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`              // Fingerprint of Public Key
-	PublicKey   string `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"` // Public Key
+	// Label is the label of the object
+	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	// Name is the name of the object
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Fields is the fields of the object
+	Fields []*common.ObjectField `protobuf:"bytes,3,rep,name=fields,proto3" json:"fields,omitempty"`
 }
 
-func (x *VerifyNameRequest) Reset() {
-	*x = VerifyNameRequest{}
+func (x *CreateObjectRequest) Reset() {
+	*x = CreateObjectRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_node_highway_v1_request_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -805,13 +747,13 @@ func (x *VerifyNameRequest) Reset() {
 	}
 }
 
-func (x *VerifyNameRequest) String() string {
+func (x *CreateObjectRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VerifyNameRequest) ProtoMessage() {}
+func (*CreateObjectRequest) ProtoMessage() {}
 
-func (x *VerifyNameRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateObjectRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_node_highway_v1_request_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -823,37 +765,637 @@ func (x *VerifyNameRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use VerifyNameRequest.ProtoReflect.Descriptor instead.
-func (*VerifyNameRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateObjectRequest.ProtoReflect.Descriptor instead.
+func (*CreateObjectRequest) Descriptor() ([]byte, []int) {
 	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *VerifyNameRequest) GetSName() string {
+func (x *CreateObjectRequest) GetLabel() string {
 	if x != nil {
-		return x.SName
+		return x.Label
 	}
 	return ""
 }
 
-func (x *VerifyNameRequest) GetPrefix() string {
+func (x *CreateObjectRequest) GetName() string {
 	if x != nil {
-		return x.Prefix
+		return x.Name
 	}
 	return ""
 }
 
-func (x *VerifyNameRequest) GetFingerprint() string {
+func (x *CreateObjectRequest) GetFields() []*common.ObjectField {
 	if x != nil {
-		return x.Fingerprint
+		return x.Fields
+	}
+	return nil
+}
+
+// ReadObjectRequest is the request to read an object
+type ReadObjectRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the identifier of the object
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"` // optional
+}
+
+func (x *ReadObjectRequest) Reset() {
+	*x = ReadObjectRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReadObjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadObjectRequest) ProtoMessage() {}
+
+func (x *ReadObjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadObjectRequest.ProtoReflect.Descriptor instead.
+func (*ReadObjectRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ReadObjectRequest) GetDid() string {
+	if x != nil {
+		return x.Did
 	}
 	return ""
 }
 
-func (x *VerifyNameRequest) GetPublicKey() string {
+// UpdateObjectRequest is the request to update an object
+type UpdateObjectRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the identifier of the object
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Fields is the fields of the object
+	Fields []*common.ObjectField `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty"`
+}
+
+func (x *UpdateObjectRequest) Reset() {
+	*x = UpdateObjectRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateObjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateObjectRequest) ProtoMessage() {}
+
+func (x *UpdateObjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateObjectRequest.ProtoReflect.Descriptor instead.
+func (*UpdateObjectRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *UpdateObjectRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *UpdateObjectRequest) GetFields() []*common.ObjectField {
+	if x != nil {
+		return x.Fields
+	}
+	return nil
+}
+
+// DeleteObjectRequest is the request to delete an object
+type DeleteObjectRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the identifier of the object
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Metadata is the metadata of the object thats being deleted
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Public key of the node that is deleting the object
+	PublicKey string `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+}
+
+func (x *DeleteObjectRequest) Reset() {
+	*x = DeleteObjectRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteObjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteObjectRequest) ProtoMessage() {}
+
+func (x *DeleteObjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteObjectRequest.ProtoReflect.Descriptor instead.
+func (*DeleteObjectRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *DeleteObjectRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *DeleteObjectRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+func (x *DeleteObjectRequest) GetPublicKey() string {
 	if x != nil {
 		return x.PublicKey
 	}
 	return ""
+}
+
+// UploadBlobRequest is the request to upload a blob
+type UploadBlobRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Label is the label of the blob
+	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	// Path is the path of the blob
+	Path string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
+	// Checksum is the checksum of the blob
+	Checksum string `protobuf:"bytes,3,opt,name=checksum,proto3" json:"checksum,omitempty"`
+	// Size is the size of the blob
+	Size int64 `protobuf:"varint,4,opt,name=size,proto3" json:"size,omitempty"`
+	// LastModified is the last modified time of the blob
+	LastModified int64 `protobuf:"varint,5,opt,name=last_modified,json=lastModified,proto3" json:"last_modified,omitempty"`
+}
+
+func (x *UploadBlobRequest) Reset() {
+	*x = UploadBlobRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UploadBlobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UploadBlobRequest) ProtoMessage() {}
+
+func (x *UploadBlobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UploadBlobRequest.ProtoReflect.Descriptor instead.
+func (*UploadBlobRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *UploadBlobRequest) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *UploadBlobRequest) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *UploadBlobRequest) GetChecksum() string {
+	if x != nil {
+		return x.Checksum
+	}
+	return ""
+}
+
+func (x *UploadBlobRequest) GetSize() int64 {
+	if x != nil {
+		return x.Size
+	}
+	return 0
+}
+
+func (x *UploadBlobRequest) GetLastModified() int64 {
+	if x != nil {
+		return x.LastModified
+	}
+	return 0
+}
+
+// DownloadBlobRequest is the request to download a blob
+type DownloadBlobRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the identifier of the blob
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (x *DownloadBlobRequest) Reset() {
+	*x = DownloadBlobRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DownloadBlobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DownloadBlobRequest) ProtoMessage() {}
+
+func (x *DownloadBlobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DownloadBlobRequest.ProtoReflect.Descriptor instead.
+func (*DownloadBlobRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *DownloadBlobRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+// SyncBlobRequest is the request to sync a blob
+type SyncBlobRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the identifier of the blob
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Destination DID is the identifier of the destination service storage
+	DestinationDid string `protobuf:"bytes,2,opt,name=destination_did,json=destinationDid,proto3" json:"destination_did,omitempty"`
+}
+
+func (x *SyncBlobRequest) Reset() {
+	*x = SyncBlobRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SyncBlobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncBlobRequest) ProtoMessage() {}
+
+func (x *SyncBlobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncBlobRequest.ProtoReflect.Descriptor instead.
+func (*SyncBlobRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *SyncBlobRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *SyncBlobRequest) GetDestinationDid() string {
+	if x != nil {
+		return x.DestinationDid
+	}
+	return ""
+}
+
+// DeleteBlobRequest is the request to delete a blob
+type DeleteBlobRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the identifier of the blob
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Metadata is the metadata of the blob thats being deleted
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Public key of the node that is deleting the blob
+	PublicKey string `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+}
+
+func (x *DeleteBlobRequest) Reset() {
+	*x = DeleteBlobRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteBlobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteBlobRequest) ProtoMessage() {}
+
+func (x *DeleteBlobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteBlobRequest.ProtoReflect.Descriptor instead.
+func (*DeleteBlobRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *DeleteBlobRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *DeleteBlobRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+func (x *DeleteBlobRequest) GetPublicKey() string {
+	if x != nil {
+		return x.PublicKey
+	}
+	return ""
+}
+
+// ParseDidRequest is the request to convert a string to a DID object
+type ParseDidRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the DID of the DID
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Metadata is the metadata of the blob thats being deleted
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *ParseDidRequest) Reset() {
+	*x = ParseDidRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ParseDidRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ParseDidRequest) ProtoMessage() {}
+
+func (x *ParseDidRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ParseDidRequest.ProtoReflect.Descriptor instead.
+func (*ParseDidRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *ParseDidRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *ParseDidRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+// ResolveDidRequest is the request to resolve a DID
+type ResolveDidRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the DID of the DID
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Metadata is the metadata of the blob thats being deleted
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *ResolveDidRequest) Reset() {
+	*x = ResolveDidRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResolveDidRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolveDidRequest) ProtoMessage() {}
+
+func (x *ResolveDidRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolveDidRequest.ProtoReflect.Descriptor instead.
+func (*ResolveDidRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *ResolveDidRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *ResolveDidRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+// VerifyDidRequest is the request to verify a DID
+type VerifyDidRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// DID is the DID of the DID
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Additional metadata for the DID verification
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *VerifyDidRequest) Reset() {
+	*x = VerifyDidRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_highway_v1_request_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VerifyDidRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyDidRequest) ProtoMessage() {}
+
+func (x *VerifyDidRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_node_highway_v1_request_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyDidRequest.ProtoReflect.Descriptor instead.
+func (*VerifyDidRequest) Descriptor() ([]byte, []int) {
+	return file_node_highway_v1_request_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *VerifyDidRequest) GetDid() string {
+	if x != nil {
+		return x.Did
+	}
+	return ""
+}
+
+func (x *VerifyDidRequest) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
 }
 
 var File_node_highway_v1_request_proto protoreflect.FileDescriptor
@@ -864,104 +1406,222 @@ var file_node_highway_v1_request_proto_rawDesc = []byte{
 	0x0f, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31,
 	0x1a, 0x14, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x72, 0x65,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x76,
-	0x31, 0x2f, 0x64, 0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x64, 0x0a, 0x14,
-	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63,
-	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64,
-	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x77,
-	0x6e, 0x65, 0x72, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x77, 0x6e, 0x65,
-	0x72, 0x73, 0x22, 0x2b, 0x0a, 0x17, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x43,
-	0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a,
-	0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22,
-	0x2d, 0x0a, 0x19, 0x55, 0x6e, 0x73, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x43, 0x68,
-	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03,
-	0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0xb6,
-	0x01, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x4f, 0x0a, 0x08, 0x6d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x6e, 0x6f,
-	0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79,
-	0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b,
-	0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a,
-	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x62, 0x0a, 0x10, 0x4c, 0x69, 0x73, 0x74, 0x50,
-	0x65, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x0a, 0x06, 0x73,
-	0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61,
-	0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x12, 0x1b,
-	0x0a, 0x09, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x64, 0x22, 0xf3, 0x01, 0x0a, 0x15,
-	0x44, 0x65, 0x63, 0x69, 0x64, 0x65, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x0a, 0x06, 0x73, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08,
-	0x6d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
-	0x6d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x76, 0x69,
-	0x63, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x76,
-	0x69, 0x63, 0x65, 0x49, 0x64, 0x12, 0x45, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x2d, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67,
-	0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x63, 0x69, 0x64, 0x65, 0x45, 0x78,
-	0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65,
-	0x74, 0x68, 0x6f, 0x64, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x22, 0x43, 0x0a, 0x06,
-	0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x16, 0x0a, 0x12, 0x4d, 0x45, 0x54, 0x48, 0x4f, 0x44,
-	0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0e,
-	0x0a, 0x0a, 0x4d, 0x45, 0x54, 0x48, 0x4f, 0x44, 0x5f, 0x41, 0x44, 0x44, 0x10, 0x01, 0x12, 0x11,
-	0x0a, 0x0d, 0x4d, 0x45, 0x54, 0x48, 0x4f, 0x44, 0x5f, 0x52, 0x45, 0x4d, 0x4f, 0x56, 0x45, 0x10,
-	0x02, 0x22, 0x99, 0x01, 0x0a, 0x13, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e,
-	0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x23, 0x0a, 0x04, 0x70, 0x65, 0x65,
-	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x30,
-	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x16, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x65, 0x73, 0x73,
-	0x61, 0x67, 0x65, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
-	0x12, 0x2b, 0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x15, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x75, 0x70, 0x70,
-	0x6c, 0x79, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x22, 0x84, 0x01,
-	0x0a, 0x12, 0x43, 0x61, 0x63, 0x68, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x0a, 0x06, 0x73, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70,
-	0x72, 0x65, 0x66, 0x69, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x72, 0x65,
-	0x66, 0x69, 0x78, 0x12, 0x20, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69,
-	0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72,
-	0x70, 0x72, 0x69, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f,
-	0x6b, 0x65, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x4b, 0x65, 0x79, 0x22, 0x82, 0x01, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x6f,
-	0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x0a, 0x06, 0x73, 0x5f, 0x6e,
-	0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65,
-	0x12, 0x16, 0x0a, 0x06, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x12, 0x20, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x67,
-	0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x66,
-	0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75,
-	0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
-	0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x22, 0x84, 0x01, 0x0a, 0x12, 0x53, 0x74,
-	0x6f, 0x72, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x15, 0x0a, 0x06, 0x73, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x72, 0x65, 0x66, 0x69,
-	0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x12,
-	0x20, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e,
-	0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
-	0x22, 0x85, 0x01, 0x0a, 0x13, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x61, 0x6d,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x0a, 0x06, 0x73, 0x5f, 0x6e, 0x61,
-	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12,
-	0x16, 0x0a, 0x06, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x12, 0x20, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65,
-	0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x66, 0x69,
-	0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62,
-	0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70,
-	0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x22, 0x83, 0x01, 0x0a, 0x11, 0x56, 0x65, 0x72,
-	0x69, 0x66, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15,
-	0x0a, 0x06, 0x73, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x12, 0x20, 0x0a,
-	0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x12,
-	0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x42, 0x26,
+	0x31, 0x2f, 0x64, 0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x16, 0x63, 0x6f,
+	0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x46, 0x0a, 0x11, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x4e, 0x61,
+	0x6d, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1d, 0x0a,
+	0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x22, 0xb5, 0x01, 0x0a,
+	0x13, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49,
+	0x64, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x6f,
+	0x73, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x72, 0x63, 0x68, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x72, 0x63, 0x68, 0x12, 0x1d, 0x0a, 0x0a, 0x70,
+	0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x28, 0x0a, 0x10, 0x6e, 0x61,
+	0x6d, 0x65, 0x5f, 0x74, 0x6f, 0x5f, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x18, 0x06,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6e, 0x61, 0x6d, 0x65, 0x54, 0x6f, 0x52, 0x65, 0x67, 0x69,
+	0x73, 0x74, 0x65, 0x72, 0x22, 0xb2, 0x01, 0x0a, 0x11, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e,
+	0x61, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x4c,
+	0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x30, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e,
+	0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x3b, 0x0a, 0x0d,
+	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a,
+	0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12,
+	0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xb6, 0x01, 0x0a, 0x14, 0x41, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x64, 0x69, 0x64, 0x12, 0x4f, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69,
+	0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x53,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65,
+	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74,
+	0x61, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02,
+	0x38, 0x01, 0x22, 0xfe, 0x01, 0x0a, 0x16, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x53,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a,
+	0x0c, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65,
+	0x12, 0x60, 0x0a, 0x0d, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x3a, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68,
+	0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x6e,
+	0x74, 0x72, 0x79, 0x52, 0x0d, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
+	0x79, 0x1a, 0x40, 0x0a, 0x12, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a,
+	0x02, 0x38, 0x01, 0x22, 0xd8, 0x02, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03,
+	0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x5e,
+	0x0a, 0x0d, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x38, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67,
+	0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x43, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52,
+	0x0d, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4f,
+	0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x33, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e,
+	0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a,
+	0x40, 0x0a, 0x12, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38,
+	0x01, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x64,
+	0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65,
+	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06,
+	0x6f, 0x77, 0x6e, 0x65, 0x72, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x77,
+	0x6e, 0x65, 0x72, 0x73, 0x22, 0x26, 0x0a, 0x12, 0x52, 0x65, 0x61, 0x64, 0x43, 0x68, 0x61, 0x6e,
+	0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0xb6, 0x01, 0x0a,
+	0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x4f, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64,
+	0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x6e, 0x6f, 0x64, 0x65,
+	0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08,
+	0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xd5, 0x01, 0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10,
+	0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64,
+	0x12, 0x4f, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x33, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61,
+	0x79, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x6e,
+	0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
+	0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72,
+	0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xb6, 0x01,
+	0x0a, 0x14, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x6e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x4f, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x6e, 0x6f, 0x64,
+	0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73,
+	0x74, 0x65, 0x6e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52,
+	0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74,
+	0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
+	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x6f, 0x0a, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a,
+	0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61,
+	0x62, 0x65, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x2e, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64,
+	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x52,
+	0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x22, 0x25, 0x0a, 0x11, 0x52, 0x65, 0x61, 0x64, 0x4f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03,
+	0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0x57,
+	0x0a, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x2e, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64,
+	0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x52,
+	0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x22, 0xd3, 0x01, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69,
+	0x64, 0x12, 0x4e, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77,
+	0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65,
+	0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
+	0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72,
+	0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x92, 0x01,
+	0x0a, 0x11, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x42, 0x6c, 0x6f, 0x62, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74,
+	0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x12, 0x1a, 0x0a,
+	0x08, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a,
+	0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x12, 0x23, 0x0a,
+	0x0d, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x6d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x6c, 0x61, 0x73, 0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69,
+	0x65, 0x64, 0x22, 0x27, 0x0a, 0x13, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x42, 0x6c,
+	0x6f, 0x62, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x22, 0x4c, 0x0a, 0x0f, 0x53,
+	0x79, 0x6e, 0x63, 0x42, 0x6c, 0x6f, 0x62, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10,
+	0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64,
+	0x12, 0x27, 0x0a, 0x0f, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x64, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x64, 0x65, 0x73, 0x74, 0x69,
+	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x69, 0x64, 0x22, 0xcf, 0x01, 0x0a, 0x11, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x62, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69,
+	0x64, 0x12, 0x4c, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77,
+	0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x62,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12,
+	0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x1a, 0x3b,
+	0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xac, 0x01, 0x0a, 0x0f,
+	0x50, 0x61, 0x72, 0x73, 0x65, 0x44, 0x69, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69,
+	0x64, 0x12, 0x4a, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x2e, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68, 0x77,
+	0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x73, 0x65, 0x44, 0x69, 0x64, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e,
+	0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x3b, 0x0a,
+	0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10,
+	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79,
+	0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xb0, 0x01, 0x0a, 0x11, 0x52,
+	0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x44, 0x69, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64,
+	0x69, 0x64, 0x12, 0x4c, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69, 0x67, 0x68,
+	0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x44, 0x69,
+	0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72,
+	0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xae, 0x01,
+	0x0a, 0x10, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x44, 0x69, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x64, 0x69, 0x64, 0x12, 0x4b, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x6e, 0x6f, 0x64, 0x65, 0x2e, 0x68, 0x69,
+	0x67, 0x68, 0x77, 0x61, 0x79, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x44,
+	0x69, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42, 0x26,
 	0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e,
 	0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x6e, 0x6f, 0x64, 0x65, 0x2f, 0x68,
 	0x69, 0x67, 0x68, 0x77, 0x61, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
@@ -979,38 +1639,66 @@ func file_node_highway_v1_request_proto_rawDescGZIP() []byte {
 	return file_node_highway_v1_request_proto_rawDescData
 }
 
-var file_node_highway_v1_request_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_node_highway_v1_request_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_node_highway_v1_request_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
 var file_node_highway_v1_request_proto_goTypes = []interface{}{
-	(DecideExchangeRequest_Method)(0), // 0: node.highway.v1.DecideExchangeRequest.Method
-	(*CreateChannelRequest)(nil),      // 1: node.highway.v1.CreateChannelRequest
-	(*SubscribeChannelRequest)(nil),   // 2: node.highway.v1.SubscribeChannelRequest
-	(*UnsubscribeChannelRequest)(nil), // 3: node.highway.v1.UnsubscribeChannelRequest
-	(*UpdateChannelRequest)(nil),      // 4: node.highway.v1.UpdateChannelRequest
-	(*ListPeersRequest)(nil),          // 5: node.highway.v1.ListPeersRequest
-	(*DecideExchangeRequest)(nil),     // 6: node.highway.v1.DecideExchangeRequest
-	(*SendExchangeRequest)(nil),       // 7: node.highway.v1.SendExchangeRequest
-	(*CacheRecordRequest)(nil),        // 8: node.highway.v1.CacheRecordRequest
-	(*GetRecordRequest)(nil),          // 9: node.highway.v1.GetRecordRequest
-	(*StoreRecordRequest)(nil),        // 10: node.highway.v1.StoreRecordRequest
-	(*RegisterNameRequest)(nil),       // 11: node.highway.v1.RegisterNameRequest
-	(*VerifyNameRequest)(nil),         // 12: node.highway.v1.VerifyNameRequest
-	nil,                               // 13: node.highway.v1.UpdateChannelRequest.MetadataEntry
-	(*common.Peer)(nil),               // 14: common.v1.Peer
-	(*common.MessageItem)(nil),        // 15: common.v1.MessageItem
-	(*common.SupplyItem)(nil),         // 16: common.v1.SupplyItem
+	(*AccessNameRequest)(nil),      // 0: node.highway.v1.AccessNameRequest
+	(*RegisterNameRequest)(nil),    // 1: node.highway.v1.RegisterNameRequest
+	(*UpdateNameRequest)(nil),      // 2: node.highway.v1.UpdateNameRequest
+	(*AccessServiceRequest)(nil),   // 3: node.highway.v1.AccessServiceRequest
+	(*RegisterServiceRequest)(nil), // 4: node.highway.v1.RegisterServiceRequest
+	(*UpdateServiceRequest)(nil),   // 5: node.highway.v1.UpdateServiceRequest
+	(*CreateChannelRequest)(nil),   // 6: node.highway.v1.CreateChannelRequest
+	(*ReadChannelRequest)(nil),     // 7: node.highway.v1.ReadChannelRequest
+	(*UpdateChannelRequest)(nil),   // 8: node.highway.v1.UpdateChannelRequest
+	(*DeleteChannelRequest)(nil),   // 9: node.highway.v1.DeleteChannelRequest
+	(*ListenChannelRequest)(nil),   // 10: node.highway.v1.ListenChannelRequest
+	(*CreateObjectRequest)(nil),    // 11: node.highway.v1.CreateObjectRequest
+	(*ReadObjectRequest)(nil),      // 12: node.highway.v1.ReadObjectRequest
+	(*UpdateObjectRequest)(nil),    // 13: node.highway.v1.UpdateObjectRequest
+	(*DeleteObjectRequest)(nil),    // 14: node.highway.v1.DeleteObjectRequest
+	(*UploadBlobRequest)(nil),      // 15: node.highway.v1.UploadBlobRequest
+	(*DownloadBlobRequest)(nil),    // 16: node.highway.v1.DownloadBlobRequest
+	(*SyncBlobRequest)(nil),        // 17: node.highway.v1.SyncBlobRequest
+	(*DeleteBlobRequest)(nil),      // 18: node.highway.v1.DeleteBlobRequest
+	(*ParseDidRequest)(nil),        // 19: node.highway.v1.ParseDidRequest
+	(*ResolveDidRequest)(nil),      // 20: node.highway.v1.ResolveDidRequest
+	(*VerifyDidRequest)(nil),       // 21: node.highway.v1.VerifyDidRequest
+	nil,                            // 22: node.highway.v1.UpdateNameRequest.MetadataEntry
+	nil,                            // 23: node.highway.v1.AccessServiceRequest.MetadataEntry
+	nil,                            // 24: node.highway.v1.RegisterServiceRequest.ConfigurationEntry
+	nil,                            // 25: node.highway.v1.UpdateServiceRequest.ConfigurationEntry
+	nil,                            // 26: node.highway.v1.UpdateServiceRequest.MetadataEntry
+	nil,                            // 27: node.highway.v1.UpdateChannelRequest.MetadataEntry
+	nil,                            // 28: node.highway.v1.DeleteChannelRequest.MetadataEntry
+	nil,                            // 29: node.highway.v1.ListenChannelRequest.MetadataEntry
+	nil,                            // 30: node.highway.v1.DeleteObjectRequest.MetadataEntry
+	nil,                            // 31: node.highway.v1.DeleteBlobRequest.MetadataEntry
+	nil,                            // 32: node.highway.v1.ParseDidRequest.MetadataEntry
+	nil,                            // 33: node.highway.v1.ResolveDidRequest.MetadataEntry
+	nil,                            // 34: node.highway.v1.VerifyDidRequest.MetadataEntry
+	(*common.ObjectField)(nil),     // 35: common.v1.ObjectField
 }
 var file_node_highway_v1_request_proto_depIdxs = []int32{
-	13, // 0: node.highway.v1.UpdateChannelRequest.metadata:type_name -> node.highway.v1.UpdateChannelRequest.MetadataEntry
-	0,  // 1: node.highway.v1.DecideExchangeRequest.method:type_name -> node.highway.v1.DecideExchangeRequest.Method
-	14, // 2: node.highway.v1.SendExchangeRequest.peer:type_name -> common.v1.Peer
-	15, // 3: node.highway.v1.SendExchangeRequest.message:type_name -> common.v1.MessageItem
-	16, // 4: node.highway.v1.SendExchangeRequest.items:type_name -> common.v1.SupplyItem
-	5,  // [5:5] is the sub-list for method output_type
-	5,  // [5:5] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	22, // 0: node.highway.v1.UpdateNameRequest.metadata:type_name -> node.highway.v1.UpdateNameRequest.MetadataEntry
+	23, // 1: node.highway.v1.AccessServiceRequest.metadata:type_name -> node.highway.v1.AccessServiceRequest.MetadataEntry
+	24, // 2: node.highway.v1.RegisterServiceRequest.configuration:type_name -> node.highway.v1.RegisterServiceRequest.ConfigurationEntry
+	25, // 3: node.highway.v1.UpdateServiceRequest.configuration:type_name -> node.highway.v1.UpdateServiceRequest.ConfigurationEntry
+	26, // 4: node.highway.v1.UpdateServiceRequest.metadata:type_name -> node.highway.v1.UpdateServiceRequest.MetadataEntry
+	27, // 5: node.highway.v1.UpdateChannelRequest.metadata:type_name -> node.highway.v1.UpdateChannelRequest.MetadataEntry
+	28, // 6: node.highway.v1.DeleteChannelRequest.metadata:type_name -> node.highway.v1.DeleteChannelRequest.MetadataEntry
+	29, // 7: node.highway.v1.ListenChannelRequest.metadata:type_name -> node.highway.v1.ListenChannelRequest.MetadataEntry
+	35, // 8: node.highway.v1.CreateObjectRequest.fields:type_name -> common.v1.ObjectField
+	35, // 9: node.highway.v1.UpdateObjectRequest.fields:type_name -> common.v1.ObjectField
+	30, // 10: node.highway.v1.DeleteObjectRequest.metadata:type_name -> node.highway.v1.DeleteObjectRequest.MetadataEntry
+	31, // 11: node.highway.v1.DeleteBlobRequest.metadata:type_name -> node.highway.v1.DeleteBlobRequest.MetadataEntry
+	32, // 12: node.highway.v1.ParseDidRequest.metadata:type_name -> node.highway.v1.ParseDidRequest.MetadataEntry
+	33, // 13: node.highway.v1.ResolveDidRequest.metadata:type_name -> node.highway.v1.ResolveDidRequest.MetadataEntry
+	34, // 14: node.highway.v1.VerifyDidRequest.metadata:type_name -> node.highway.v1.VerifyDidRequest.MetadataEntry
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_node_highway_v1_request_proto_init() }
@@ -1020,7 +1708,7 @@ func file_node_highway_v1_request_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_node_highway_v1_request_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateChannelRequest); i {
+			switch v := v.(*AccessNameRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1032,114 +1720,6 @@ func file_node_highway_v1_request_proto_init() {
 			}
 		}
 		file_node_highway_v1_request_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SubscribeChannelRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UnsubscribeChannelRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateChannelRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListPeersRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DecideExchangeRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SendExchangeRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CacheRecordRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRecordRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StoreRecordRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_node_highway_v1_request_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RegisterNameRequest); i {
 			case 0:
 				return &v.state
@@ -1151,8 +1731,236 @@ func file_node_highway_v1_request_proto_init() {
 				return nil
 			}
 		}
+		file_node_highway_v1_request_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateNameRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessServiceRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RegisterServiceRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateServiceRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateChannelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReadChannelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateChannelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteChannelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListenChannelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 		file_node_highway_v1_request_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifyNameRequest); i {
+			switch v := v.(*CreateObjectRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReadObjectRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateObjectRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteObjectRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UploadBlobRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DownloadBlobRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SyncBlobRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteBlobRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ParseDidRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResolveDidRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_highway_v1_request_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*VerifyDidRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1169,14 +1977,13 @@ func file_node_highway_v1_request_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_node_highway_v1_request_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   13,
+			NumEnums:      0,
+			NumMessages:   35,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_node_highway_v1_request_proto_goTypes,
 		DependencyIndexes: file_node_highway_v1_request_proto_depIdxs,
-		EnumInfos:         file_node_highway_v1_request_proto_enumTypes,
 		MessageInfos:      file_node_highway_v1_request_proto_msgTypes,
 	}.Build()
 	File_node_highway_v1_request_proto = out.File

@@ -102,7 +102,7 @@ func (u *UrlItem) AddOpenGraph(info *PageInfo) (*OpenGraph_Primary, error) {
 	ogAudios := make([]*OpenGraph_Audio, 0)
 	twitter := &OpenGraph_Twitter{}
 	ogPrimary := &OpenGraph_Primary{
-		Type: OpenGraph_NONE,
+		Type: OpenGraph_TYPE_NONE,
 	}
 
 	// Get Audios
@@ -118,7 +118,7 @@ func (u *UrlItem) AddOpenGraph(info *PageInfo) (*OpenGraph_Primary, error) {
 
 		// Set OpenGraph Type
 		ogPrimary = &OpenGraph_Primary{
-			Type: OpenGraph_AUDIO,
+			Type: OpenGraph_TYPE_AUDIO,
 			Data: &OpenGraph_Primary_Audio{
 				Audio: ogAudios[0],
 			},
@@ -164,7 +164,7 @@ func (u *UrlItem) AddOpenGraph(info *PageInfo) (*OpenGraph_Primary, error) {
 
 		// Set OpenGraph Type
 		ogPrimary = &OpenGraph_Primary{
-			Type: OpenGraph_TWITTER,
+			Type: OpenGraph_TYPE_TWITTER,
 			Data: &OpenGraph_Primary_Twitter{
 				Twitter: twitter,
 			},
@@ -186,7 +186,7 @@ func (u *UrlItem) AddOpenGraph(info *PageInfo) (*OpenGraph_Primary, error) {
 
 		// Set OpenGraph Type
 		ogPrimary = &OpenGraph_Primary{
-			Type: OpenGraph_VIDEO,
+			Type: OpenGraph_TYPE_VIDEO,
 			Data: &OpenGraph_Primary_Video{
 				Video: ogVideos[0],
 			},
@@ -208,7 +208,7 @@ func (u *UrlItem) AddOpenGraph(info *PageInfo) (*OpenGraph_Primary, error) {
 
 		// Set OpenGraph Type
 		ogPrimary = &OpenGraph_Primary{
-			Type: OpenGraph_IMAGE,
+			Type: OpenGraph_TYPE_IMAGE,
 			Data: &OpenGraph_Primary_Image{
 				Image: ogImages[0],
 			},
@@ -225,7 +225,7 @@ func (u *UrlItem) AddOpenGraph(info *PageInfo) (*OpenGraph_Primary, error) {
 	}
 
 	// Check Primary
-	if u.OpenGraph.Primary.Type == OpenGraph_NONE {
+	if u.OpenGraph.Primary.Type == OpenGraph_TYPE_NONE {
 		return nil, errors.New("No OpenGraph Primary Type")
 	} else {
 		return u.OpenGraph.Primary, nil

@@ -65,7 +65,7 @@ func  CreatePayloadItems(sp *transmitV1.SessionPayload, dir common.Direction) []
 		path := fi.GetPath()
 
 		// Set Path for Incoming
-		if dir == common.Direction_INCOMING {
+		if dir == common.Direction_DIRECTION_INCOMING {
 			inpath, err := fi.SetPathFromFolder(device.Downloads)
 			if err == nil {
 				path = inpath

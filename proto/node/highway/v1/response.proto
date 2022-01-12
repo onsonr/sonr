@@ -3,81 +3,306 @@ syntax = "proto3";
 
 package node.highway.v1;
 import "common/v1/core.proto";
+import "common/v1/object.proto";
 import "node/codes/v1/response.proto";
 option go_package = "github.com/sonr-io/core/node/highway";
 
-message CreateChannelResponse {
-  node.codes.v1.ResponseInfo info = 1;
+// AccessNameResponse is a response to a request for a name
+message AccessNameResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // Data of the response
+    common.v1.Peer data = 3;
 }
 
-message SubscribeChannelResponse {
-  node.codes.v1.ResponseInfo info = 1;
-}
-
-message UnsubscribeChannelResponse {
-  node.codes.v1.ResponseInfo info = 1;
-}
-
-message UpdateChannelResponse {
-  node.codes.v1.ResponseInfo info = 1;
-}
-
-// (Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)
-message ListPeersResponse {
-  string olc = 1;                    // OLC Code of Topic
-  repeated common.v1.Peer peers = 2; // User Information
-  int64 received = 3;                // Invite received Timestamp
-}
-
-
-// (Highway) LinkResponse is Message for Linking Response (Hmac Sha256)
-message DecideExchangeResponse {
-    bool success = 1; // If Values were Signed
-    string error = 2; // Error Message
-    map<string,string> records = 3; // Updated Domain TXT Records
-}
-
-
-// (Client) ShareResponse is response to ShareRequest
-message SendExchangeResponse {
-  bool success = 1; // True if Supply is Active
-  string error = 2; // Error Message if Supply is not Active
-}
-
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-message CacheRecordResponse {
-  bool success = 1;            // If Values were Signed
-  string error = 2;            // Error Message
-  map<string,string> records = 3; // Signed Domain TXT Records
-}
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-message GetRecordResponse {
-  bool success = 1;            // If Values were Signed
-  string error = 2;            // Error Message
-  map<string,string> records = 3; // Signed Domain TXT Records
-}
-
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-message StoreRecordResponse {
-  bool success = 1;            // If Values were Signed
-  string error = 2;            // Error Message
-  map<string,string> records = 3; // Signed Domain TXT Records
-}
-
-
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+// RegisterNameResponse is a request to register a name
 message RegisterNameResponse {
-  bool success = 1;            // If Values were Signed
-  string error = 2;            // Error Message
-  map<string,string> records = 3; // Signed Domain TXT Records
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
 }
 
-// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
-message VerifyNameResponse {
-  bool success = 1;            // If Values were Signed
-  string error = 2;            // Error Message
-  map<string,string> records = 3; // Signed Domain TXT Records
+// UpdateNameResponse is a response to a request to update a name
+message UpdateNameResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Data of the updated name record
+    map<string, string> data = 4;
+}
+
+// AccessServiceResponse is a response to a request for a service
+message AccessServiceResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // Data of the response
+    map<string, string> data = 3;
+}
+
+// RegisterServiceResponse is a request to register a name
+message RegisterServiceResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// UpdateServiceResponse is a response to a request to update a name
+message UpdateServiceResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Data of the updated name record
+    map<string, string> data = 4;
+}
+
+// CreateChannelResponse is a response to a request to create a channel
+message CreateChannelResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// ReadChannelResponse is a response to a request to read a channel
+message ReadChannelResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Subscribers of the channel
+    repeated common.v1.Peer subscribers = 4;
+
+    // Owners of the channel
+    repeated common.v1.Peer owners = 5;
+}
+
+// UpdateChannelResponse is a response to a request to update a channel
+message UpdateChannelResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Subscribers of the channel
+    repeated common.v1.Peer subscribers = 4;
+
+    // Owners of the channel
+    repeated common.v1.Peer owners = 5;
+}
+
+// DeleteChannelResponse is a response to a request to delete a channel
+message DeleteChannelResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// ListenChannelResponse is a response of the published data to the channel
+message ListenChannelResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // DID of the response
+    string did = 2;
+
+    // Additional information about the response
+    map<string, string> metadata = 3; // optional
+
+    // Data of the response
+    bytes message = 4; // optional
+}
+
+// CreateObjectResponse is a response to a request to create an object
+message CreateObjectResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// ReadObjectResponse is a response to a request to read an object
+message ReadObjectResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Data of the response
+    common.v1.Object object = 4;
+}
+
+// UpdateObjectResponse is a response to a request to update an object
+message UpdateObjectResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Data of the response
+    common.v1.Object object = 4;
+
+    // Metadata is additional metadata of the response
+    map<string, string> metadata = 5; // optional
+}
+
+// DeleteObjectResponse is a response to a request to delete an object
+message DeleteObjectResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// UploadBlobResponse is a response to a request to upload a blob
+message UploadBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Pinned is true if the blob is pinned to IPFS
+    bool pinned = 4;
+}
+
+// DownloadBlobResponse is a response to a request to download a blob
+message DownloadBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Path of downloaded blob
+    string path = 4;
+}
+
+// SyncBlobResponse is a response to a request to sync a blob
+message SyncBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// DeleteBlobResponse is a response to a request to delete a blob
+message DeleteBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3; // TODO: Create DID protobuf type
+}
+
+// ParseDidResponse is a response to a request to parse a DID
+message ParseDidResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3; // TODO: Create DID protobuf type
+}
+
+// ResolveDidResponse is a response to a request to resolve a DID
+message ResolveDidResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3; // TODO: Create DID protobuf type
+}
+
+// VerifyDidResponse is a response to a request to verify a DID
+message VerifyDidResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3; // TODO: Create DID protobuf type
 }

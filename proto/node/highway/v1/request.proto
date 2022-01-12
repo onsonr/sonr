@@ -4,7 +4,80 @@ syntax = "proto3";
 package node.highway.v1;
 import "common/v1/core.proto";
 import "common/v1/data.proto";
+import "common/v1/object.proto";
 option go_package = "github.com/sonr-io/core/node/highway";
+
+// AccessNameRequest is a request to get details from the ".snr" name of a peer
+message AccessNameRequest {
+  // The name of the peer to get the details from
+  string name = 1;
+
+  // The public key of the peer to get the details from
+  string public_key = 2; // optional
+}
+
+// RegisterNameRequest is a request to register a name with the ".snr" name of a peer
+message RegisterNameRequest {
+  // The name of the peer to register the name with
+  string device_id = 1;
+
+  // The Operating System of the peer to register the name with
+  string os = 2;
+
+  // The model of the peer to register the name with
+  string model = 3;
+
+  // The architecture of the peer to register the name with
+  string arch = 4;
+
+  // The public key of the peer to register the name with
+  string public_key = 5;
+
+  // The name to register
+  string name_to_register = 6;
+}
+
+// UpdateNameRequest is a request to update the ".snr" name of a peer
+message UpdateNameRequest {
+  // The name of the peer to update the name of
+  string name = 1;
+
+  // The Updated Metadata
+  map<string, string> metadata = 2; // optional
+}
+
+// AccessServiceRequest is a request to get the service details of a peer
+message AccessServiceRequest {
+  // The name of the peer to get the service details of
+  string did = 1;
+
+  // The metadata for any service information required
+  map<string, string> metadata = 2; // optional
+}
+
+// RegisterServiceRequest is a request to register a service with a peer
+message RegisterServiceRequest {
+  // The name of the peer to register the service with
+  string service_name = 1;
+
+  // The configuration for the service
+  map<string, string> configuration = 2;
+
+  // The public key of the peer to register the service with
+  string public_key = 3;
+}
+
+// UpdateServiceRequest is a request to update the service details of a peer
+message UpdateServiceRequest {
+  // The name of the peer to update the service details of
+  string did = 1;
+
+  // The updated configuration for the service
+  map<string, string> configuration = 2;
+
+  // The metadata for any service information required
+  map<string, string> metadata = 3; // optional
+}
 
 // CreateChannelRequest is the request to create a new channel
 message CreateChannelRequest {
@@ -18,15 +91,9 @@ message CreateChannelRequest {
   repeated string owners = 3;
 }
 
-// SubscribeChannelRequest is the request to subscribe to a channel
-message SubscribeChannelRequest {
-  // Name is the name of the channel
-  string did = 1;
-}
-
-// UnsubscribeChannelRequest is the request to unsubscribe from a channel
-message UnsubscribeChannelRequest {
-  // Name is the name of the channel
+// ReadChannelRequest is the request to read a channel
+message ReadChannelRequest {
+  // DID is the identifier of the channel
   string did = 1;
 }
 
@@ -39,78 +106,134 @@ message UpdateChannelRequest {
   map<string, string> metadata = 2;
 }
 
-// (Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)
-message ListPeersRequest {
-  string s_name = 1;    // SName combined with Device ID and Hashed
-  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
-  string device_id = 3; // Device ID
+// DeleteChannelRequest is the request to delete a channel
+message DeleteChannelRequest {
+  // Did is the DID of the channel
+  string did = 1;
+
+  // Metadata is the metadata of the channel thats being deleted
+  map<string, string> metadata = 2;
+
+  // Public key of the node that is deleting the channel
+  string public_key = 3;
 }
 
+// ListenChannelRequest is the request to subscribe to a channel
+message ListenChannelRequest {
+  // Name is the name of the channel
+  string did = 1;
 
-// (Highway) LinkRequest handles Linked Devices on DNS Table
-message DecideExchangeRequest {
-  string s_name = 1;    // SName combined with Device ID and Hashed
-  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
-  string device_id = 3; // Device ID
-  Method method = 4; // Method for Linking
-
-  // Method for Linking
-  enum Method {
-    METHOD_UNSPECIFIED = 0;
-    METHOD_ADD = 1; // Add Device ID to SName on DNS Table
-    METHOD_REMOVE = 2; // Remove Device ID from SName on DNS Table
-  }
+  // Metadata is additional metadata for the channel
+  map<string, string> metadata = 2; // optional
 }
 
+// CreateObjectRequest is the request to create a new object
+message CreateObjectRequest {
+  // Label is the label of the object
+  string label = 1;
 
-// (Client) ShareRequest is request to share supplied files/urls with a peer
-message SendExchangeRequest {
-  common.v1.Peer peer = 1; // Peer to Share with
-  common.v1.MessageItem message = 2; // Message to Share
-  repeated common.v1.SupplyItem items = 3; // Supply Items to share
+  // Name is the name of the object
+  string name = 2;
+
+  // Fields is the fields of the object
+  repeated common.v1.ObjectField fields = 3;
 }
 
-
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-message CacheRecordRequest {
-  string s_name = 1;       // SName combined with Device ID and Hashed
-  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
-  string fingerprint = 3;  // Fingerprint of Public Key
-  string public_key = 4;   // Public Key
+// ReadObjectRequest is the request to read an object
+message ReadObjectRequest {
+  // DID is the identifier of the object
+  string did = 1; // optional
 }
 
+// UpdateObjectRequest is the request to update an object
+message UpdateObjectRequest {
+  // DID is the identifier of the object
+  string did = 1;
 
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-message GetRecordRequest {
-  string s_name = 1;       // SName combined with Device ID and Hashed
-  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
-  string fingerprint = 3;  // Fingerprint of Public Key
-  string public_key = 4;   // Public Key
-}
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-message StoreRecordRequest {
-  string s_name = 1;       // SName combined with Device ID and Hashed
-  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
-  string fingerprint = 3;  // Fingerprint of Public Key
-  string public_key = 4;   // Public Key
+  // Fields is the fields of the object
+  repeated common.v1.ObjectField fields = 2;
 }
 
+// DeleteObjectRequest is the request to delete an object
+message DeleteObjectRequest {
+  // DID is the identifier of the object
+  string did = 1;
 
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-message RegisterNameRequest {
-  string s_name = 1;       // SName combined with Device ID and Hashed
-  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
-  string fingerprint = 3;  // Fingerprint of Public Key
-  string public_key = 4;   // Public Key
+  // Metadata is the metadata of the object thats being deleted
+  map<string, string> metadata = 2;
+
+  // Public key of the node that is deleting the object
+  string public_key = 3;
 }
 
+// UploadBlobRequest is the request to upload a blob
+message UploadBlobRequest {
+  // Label is the label of the blob
+  string label = 1;
 
+  // Path is the path of the blob
+  string path = 2;
 
-// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
-message VerifyNameRequest {
-  string s_name = 1;       // SName combined with Device ID and Hashed
-  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
-  string fingerprint = 3;  // Fingerprint of Public Key
-  string public_key = 4;   // Public Key
+  // Checksum is the checksum of the blob
+  string checksum = 3;
+
+  // Size is the size of the blob
+  int64 size = 4;
+
+  // LastModified is the last modified time of the blob
+  int64 last_modified = 5;
 }
 
+// DownloadBlobRequest is the request to download a blob
+message DownloadBlobRequest {
+  // DID is the identifier of the blob
+  string did = 1;
+}
+
+// SyncBlobRequest is the request to sync a blob
+message SyncBlobRequest {
+  // DID is the identifier of the blob
+  string did = 1;
+
+  // Destination DID is the identifier of the destination service storage
+  string destination_did = 2;
+}
+
+// DeleteBlobRequest is the request to delete a blob
+message DeleteBlobRequest {
+  // DID is the identifier of the blob
+  string did = 1;
+
+  // Metadata is the metadata of the blob thats being deleted
+  map<string, string> metadata = 2;
+
+  // Public key of the node that is deleting the blob
+  string public_key = 3;
+}
+
+// ParseDidRequest is the request to convert a string to a DID object
+message ParseDidRequest {
+  // DID is the DID of the DID
+  string did = 1;
+
+  // Metadata is the metadata of the blob thats being deleted
+  map<string, string> metadata = 2;
+}
+
+// ResolveDidRequest is the request to resolve a DID
+message ResolveDidRequest {
+  // DID is the DID of the DID
+  string did = 1;
+
+  // Metadata is the metadata of the blob thats being deleted
+  map<string, string> metadata = 2;
+}
+
+// VerifyDidRequest is the request to verify a DID
+message VerifyDidRequest {
+  // DID is the DID of the DID
+  string did = 1;
+
+  // Additional metadata for the DID verification
+  map<string, string> metadata = 2;
+}

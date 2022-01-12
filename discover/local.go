@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	discoverV1 "github.com/sonr-io/core/types/go/protocols/discover/v1"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/types/go/node/motor/v1"
+	discoverV1 "github.com/sonr-io/core/types/go/protocols/discover/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -196,14 +196,14 @@ func (lp *Local) hasPeer(data *common.Peer) bool {
 	hasInTopic := false
 	// Check if Peer is in Data List
 	for _, p := range lp.peers {
-		if p.GetPeerID() == data.GetPeerID() {
+		if p.GetPeerId() == data.GetPeerId() {
 			hasInList = true
 		}
 	}
 
 	// Check if Peer is in Topic
 	for _, p := range lp.topic.ListPeers() {
-		if p.String() == data.GetPeerID() {
+		if p.String() == data.GetPeerId() {
 			hasInTopic = true
 		}
 	}
@@ -246,7 +246,7 @@ func (lp *Local) indexOfPeer(peer *common.Peer) int {
 // removePeer Removes Peer from Local Peer-Data List
 func (lp *Local) removePeer(peerID peer.ID) bool {
 	for i, p := range lp.peers {
-		if p.GetPeerID() == peerID.String() {
+		if p.GetPeerId() == peerID.String() {
 			lp.peers = append(lp.peers[:i], lp.peers[i+1:]...)
 			lp.callRefresh()
 			return true

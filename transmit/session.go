@@ -17,12 +17,12 @@ func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &transmitV1.Session{
-		Direction:    common.Direction_INCOMING,
+		Direction:    common.Direction_DIRECTION_INCOMING,
 		Payload:      payload,
 		From:         from,
 		To:           to,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, common.Direction_INCOMING),
+		Items:        CreatePayloadItems(sessionPayload, common.Direction_DIRECTION_INCOMING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
@@ -33,12 +33,12 @@ func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) 
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &transmitV1.Session{
-		Direction:    common.Direction_OUTGOING,
+		Direction:    common.Direction_DIRECTION_OUTGOING,
 		Payload:      payload,
 		To:           to,
 		From:         from,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, common.Direction_OUTGOING),
+		Items:        CreatePayloadItems(sessionPayload, common.Direction_DIRECTION_OUTGOING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
@@ -66,12 +66,12 @@ func SessionIsDone(s *transmitV1.Session) bool {
 
 // IsOut returns true if the session is outgoing.
 func SessionIsOut(s *transmitV1.Session) bool {
-	return s.Direction == common.Direction_OUTGOING
+	return s.Direction == common.Direction_DIRECTION_OUTGOING
 }
 
 // IsIn returns true if the session is incoming.
 func SessionIsIn(s *transmitV1.Session) bool {
-	return s.Direction == common.Direction_INCOMING
+	return s.Direction == common.Direction_DIRECTION_INCOMING
 }
 
 // Event returns the complete event for the session.

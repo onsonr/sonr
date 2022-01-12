@@ -116,7 +116,7 @@ func (f *FileItem) ToTransferItem() *Payload_Item {
 // DefaultUrlMIME is the standard MIME type for URLs
 func DefaultUrlMIME() *MIME {
 	return &MIME{
-		Type:    MIME_URL,
+		Type:    MIME_TYPE_URL,
 		Subtype: ".html",
 		Value:   "url/html",
 	}
@@ -158,17 +158,17 @@ func (m *MIME) Ext() string {
 
 // IsFile Checks if Path is a File
 func (m *MIME) IsFile() bool {
-	return m.Type != MIME_URL
+	return m.Type != MIME_TYPE_URL
 }
 
 // IsAudio Checks if Mime is Audio
 func (m *MIME) IsAudio() bool {
-	return m.Type == MIME_AUDIO
+	return m.Type == MIME_TYPE_AUDIO
 }
 
 // IsImage Checks if Mime is Image
 func (m *MIME) IsImage() bool {
-	return m.Type == MIME_IMAGE
+	return m.Type == MIME_TYPE_IMAGE
 }
 
 // IsMedia Checks if Mime is any media
@@ -183,12 +183,12 @@ func (m *MIME) IsPDF() bool {
 
 // IsVideo Checks if Mime is Video
 func (m *MIME) IsVideo() bool {
-	return m.Type == MIME_VIDEO
+	return m.Type == MIME_TYPE_VIDEO
 }
 
 // IsUrl Checks if Path is a URL
 func (m *MIME) IsUrl() bool {
-	return m.Type == MIME_URL
+	return m.Type == MIME_TYPE_URL
 }
 
 // PermitsThumbnail Checks if Mime Type Allows Thumbnail Generation.

@@ -32,17 +32,17 @@ func NewDefaultLocation() *Location {
 
 // IsMdnsCompatible returns true if the Connection is MDNS compatible
 func (c Connection) IsMdnsCompatible() bool {
-	return c == Connection_WIFI || c == Connection_ETHERNET
+	return c == Connection_CONNECTION_WIFI || c == Connection_CONNECTION_ETHERNET
 }
 
 // IsDev Checks if Enviornment is Development
 func (e Environment) IsDev() bool {
-	return e == Environment_DEVELOPMENT
+	return e == Environment_ENVIRONMENT_DEVELOPMENT
 }
 
 // IsProd Checks if Enviornment is Development
 func (e Environment) IsProd() bool {
-	return e == Environment_PRODUCTION
+	return e == Environment_ENVIRONMENT_PRODUCTION
 }
 
 // OLC returns Open Location code
@@ -97,7 +97,7 @@ func (p *Payload) FileCount() int {
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type != MIME_URL {
+		if item.GetMime().Type != MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}
@@ -163,7 +163,7 @@ func (p *Payload) URLCount() int {
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type == MIME_URL {
+		if item.GetMime().Type == MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}

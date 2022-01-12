@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package common.v1;
+option go_package = "github.com/sonr-io/core/common";
+
+message Object {
+    string did = 1;
+    string service = 2;
+    repeated string tags = 3;
+    map<string, ObjectField> fields = 4;
+}
+
+message ObjectField {
+    // Name is the name of the field
+    string name = 1;
+
+    // Type is the type of the field
+    ObjectFieldType type = 2;
+
+    oneof value {
+      // String is the value of the field
+      string string_value = 3;
+
+      // Int is the value of the field
+      int32 int_value = 4;
+
+      // Bool is the value of the field
+      bool bool_value = 5;
+
+      // Blob is the value of the field
+      bytes blob_value = 6;
+
+      // Reference is the value of the field
+      string reference_value = 7;
+    }
+}
+
+ // ObjectFieldType is the type of the field
+enum ObjectFieldType {
+    UNSPECIFIED = 0;
+    STRING = 1;
+    INT = 2;
+    FLOAT = 3;
+    BOOL = 4;
+    DATETIME = 5;
+    BLOB = 6;
+    REFERENCE = 7;
+}

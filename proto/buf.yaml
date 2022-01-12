@@ -6,3 +6,5 @@ lint:
   use:
     - DEFAULT
 name: buf.build/sonr/types
+deps:
+  - buf.build/googleapis/googleapis
