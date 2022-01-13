@@ -2,8 +2,8 @@
 syntax = "proto3";
 
 package node.motor.v1;
-import "common/v1/core.proto";
-import "common/v1/data.proto";
+import "common/core.proto";
+import "common/data.proto";
 option go_package = "github.com/sonr-io/core/node/motor";
 
 // -----------------------------------------------------------------------------
@@ -11,13 +11,13 @@ option go_package = "github.com/sonr-io/core/node/motor";
 // -----------------------------------------------------------------------------
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
-  common.v1.Location location = 1;     // Current Runtime Location
-  common.v1.Profile profile = 2;       // Users Contact Card
-  common.v1.Connection connection = 3; // Internet Connection Type
+  common.Location location = 1;     // Current Runtime Location
+  common.Profile profile = 2;       // Users Contact Card
+  common.Connection connection = 3; // Internet Connection Type
   HostOptions host_options = 4;         // Libp2p Host config
   ServiceOptions service_options = 5;   // Service Config
   DeviceOptions device_options = 6;     // File System Config
-  common.v1.Environment environment = 7; // Environment Config
+  common.Environment environment = 7; // Environment Config
   map<string,string> variables = 8;     // Domain TXT Records
   string wallet_passphrase = 9;          // Wallet Passphrase
 
@@ -62,14 +62,14 @@ message InitializeRequest {
 
 // (Client) ShareRequest is request to share supplied files/urls with a peer
 message ShareRequest {
-  common.v1.Peer peer = 1; // Peer to Share with
-  repeated common.v1.SupplyItem items = 2; // Supply Items to share
+  common.Peer peer = 1; // Peer to Share with
+  repeated common.SupplyItem items = 2; // Supply Items to share
 }
 
 // (Client) DecideRequest is request to respond to a share request
 message DecideRequest {
   bool decision = 1;       // True if Supply is Active
-  common.v1.Peer peer = 2; // Peer to Share with
+  common.Peer peer = 2; // Peer to Share with
 }
 
 // (Client) SearchRequest is Message for Searching for Peer

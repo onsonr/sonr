@@ -100,7 +100,6 @@ type profileOpts struct {
 	lastName   string
 	picture    []byte
 	bio        string
-	socials    []*Social
 }
 
 // defaultProfileOpts returns the default profile options
@@ -110,7 +109,6 @@ func defaultProfileOpts() profileOpts {
 		firstName: "Anonymous",
 		lastName:  runtime.GOOS,
 		picture:   make([]byte, 0),
-		socials:   make([]*Social, 0),
 	}
 }
 
@@ -130,7 +128,6 @@ func NewDefaultProfile(options ...DefaultProfileOption) *Profile {
 			LastName:     opts.lastName,
 			Picture:      opts.picture,
 			Bio:          opts.bio,
-			Socials:      opts.socials,
 			LastModified: time.Now().Unix(),
 		}
 	}

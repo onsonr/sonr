@@ -2,7 +2,7 @@
 syntax = "proto3";
 
 package node.highway.v1;
-import "common/v1/object.proto";
+import "common/object.proto";
 option go_package = "github.com/sonr-io/core/node/highway";
 
 // AccessNameRequest is a request to get details from the ".snr" name of a peer
@@ -134,7 +134,7 @@ message CreateBucketRequest {
   string description = 2;
 
   // Owners is the list of provisioned nodes for the bucket
-  common.v1.BucketType bucket_type = 3;
+  common.BucketType bucket_type = 3;
 
   // Metadata is the metadata of the bucket thats being created
   map<string, string> metadata = 4;
@@ -194,7 +194,7 @@ message CreateObjectRequest {
   string name = 2;
 
   // Fields is the fields of the object
-  repeated common.v1.ObjectField fields = 3;
+  repeated common.ObjectField fields = 3;
 }
 
 // ReadObjectRequest is the request to read an object
@@ -209,7 +209,7 @@ message UpdateObjectRequest {
   string did = 1;
 
   // Fields is the fields of the object
-  repeated common.v1.ObjectField fields = 2;
+  repeated common.ObjectField fields = 2;
 }
 
 // DeleteObjectRequest is the request to delete an object

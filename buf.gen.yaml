@@ -1,17 +1,17 @@
 version: v1
 plugins:
   - name: go
-    out: types/go
+    out: .
     opt: paths=source_relative
 
   - name: go-grpc
-    out: types/go
+    out: .
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
 
-  - name: ts
-    out: types/ts
-    strategy: all
-    path: node_modules/ts-proto/protoc-gen-ts_proto
-    opt: esModuleInterop=true
+  # - name: ts
+  #   out: types/ts
+  #   strategy: all
+  #   path: node_modules/ts-proto/protoc-gen-ts_proto
+  #   opt: esModuleInterop=true
