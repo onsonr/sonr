@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { Observable } from "rxjs";
 import {
   ShareResponse,
@@ -91,7 +91,7 @@ export class MotorServiceClientImpl implements MotorService {
       "Share",
       data
     );
-    return promise.then((data) => ShareResponse.decode(new Reader(data)));
+    return promise.then((data) => ShareResponse.decode(new _m0.Reader(data)));
   }
 
   Decide(request: DecideRequest): Promise<DecideResponse> {
@@ -101,7 +101,7 @@ export class MotorServiceClientImpl implements MotorService {
       "Decide",
       data
     );
-    return promise.then((data) => DecideResponse.decode(new Reader(data)));
+    return promise.then((data) => DecideResponse.decode(new _m0.Reader(data)));
   }
 
   Search(request: SearchRequest): Promise<SearchResponse> {
@@ -111,7 +111,7 @@ export class MotorServiceClientImpl implements MotorService {
       "Search",
       data
     );
-    return promise.then((data) => SearchResponse.decode(new Reader(data)));
+    return promise.then((data) => SearchResponse.decode(new _m0.Reader(data)));
   }
 
   OnLobbyRefresh(
@@ -124,7 +124,7 @@ export class MotorServiceClientImpl implements MotorService {
       data
     );
     return result.pipe(
-      map((data) => OnLobbyRefreshResponse.decode(new Reader(data)))
+      map((data) => OnLobbyRefreshResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -138,7 +138,7 @@ export class MotorServiceClientImpl implements MotorService {
       data
     );
     return result.pipe(
-      map((data) => OnMailboxMessageResponse.decode(new Reader(data)))
+      map((data) => OnMailboxMessageResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -152,7 +152,7 @@ export class MotorServiceClientImpl implements MotorService {
       data
     );
     return result.pipe(
-      map((data) => OnTransmitDecisionResponse.decode(new Reader(data)))
+      map((data) => OnTransmitDecisionResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -166,7 +166,7 @@ export class MotorServiceClientImpl implements MotorService {
       data
     );
     return result.pipe(
-      map((data) => OnTransmitInviteResponse.decode(new Reader(data)))
+      map((data) => OnTransmitInviteResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -180,7 +180,7 @@ export class MotorServiceClientImpl implements MotorService {
       data
     );
     return result.pipe(
-      map((data) => OnTransmitProgressResponse.decode(new Reader(data)))
+      map((data) => OnTransmitProgressResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -194,7 +194,7 @@ export class MotorServiceClientImpl implements MotorService {
       data
     );
     return result.pipe(
-      map((data) => OnTransmitCompleteResponse.decode(new Reader(data)))
+      map((data) => OnTransmitCompleteResponse.decode(new _m0.Reader(data)))
     );
   }
 }
@@ -222,9 +222,7 @@ interface Rpc {
   ): Observable<Uint8Array>;
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }

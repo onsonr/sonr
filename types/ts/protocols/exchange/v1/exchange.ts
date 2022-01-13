@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { Payload } from "../../../common/v1/data";
 import { Profile, Metadata, Peer } from "../../../common/v1/core";
 
@@ -57,7 +57,10 @@ function createBaseMailboxMessage(): MailboxMessage {
 }
 
 export const MailboxMessage = {
-  encode(message: MailboxMessage, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: MailboxMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -79,8 +82,8 @@ export const MailboxMessage = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): MailboxMessage {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MailboxMessage {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMailboxMessage();
     while (reader.pos < end) {
@@ -183,7 +186,10 @@ function createBaseInviteRequest(): InviteRequest {
 }
 
 export const InviteRequest = {
-  encode(message: InviteRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: InviteRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.payload !== undefined) {
       Payload.encode(message.payload, writer.uint32(10).fork()).ldelim();
     }
@@ -199,8 +205,8 @@ export const InviteRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): InviteRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): InviteRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInviteRequest();
     while (reader.pos < end) {
@@ -290,7 +296,10 @@ function createBaseInviteResponse(): InviteResponse {
 }
 
 export const InviteResponse = {
-  encode(message: InviteResponse, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: InviteResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.decision === true) {
       writer.uint32(8).bool(message.decision);
     }
@@ -306,8 +315,8 @@ export const InviteResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): InviteResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): InviteResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInviteResponse();
     while (reader.pos < end) {
@@ -424,11 +433,9 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {

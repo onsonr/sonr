@@ -2,7 +2,12 @@ package node
 
 import (
 	"context"
+	"errors"
 	"net"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"syscall"
 
 	"git.mills.io/prologic/bitcask"
 	"github.com/kataras/golog"
@@ -15,7 +20,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	common "github.com/sonr-io/core/common"
+	"github.com/sonr-io/core/device"
 	walletV1 "github.com/sonr-io/core/types/go/wallet/v1"
+	"github.com/spf13/viper"
 
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"google.golang.org/protobuf/proto"
@@ -121,7 +128,7 @@ type node struct {
 // NewMotor Creates a node with its implemented protocols
 func NewMotor(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
 	// Initialize DHT
-	opts := defaultOptions()
+	opts := defaultOptions(Role_MOTOR)
 	node, err := opts.Apply(ctx, options...)
 	if err != nil {
 		return nil, err
@@ -178,12 +185,25 @@ func NewMotor(ctx context.Context, l net.Listener, options ...Option) (NodeImpl,
 }
 
 // NewHighway Creates a node with its implemented protocols
-func NewHighway(ctx context.Context, l net.Listener, options ...Option) (NodeImpl, error) {
+func NewHighway(ctx context.Context, options ...Option) error {
+	// Check if Node is already running
+	if instance != nil {
+		golog.Error("Sonr Instance already active")
+		return errors.New("Sonr Instance already active")
+	}
+
 	// Initialize DHT
-	opts := defaultOptions()
+	opts := defaultOptions(Role_HIGHWAY)
 	node, err := opts.Apply(ctx, options...)
 	if err != nil {
-		return nil, err
+		return err
+	}
+
+	// Open Listener on Port
+	l, err := net.Listen(opts.network, opts.Address())
+	if err != nil {
+		golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
+		return err
 	}
 
 	// Start Host
@@ -200,7 +220,7 @@ func NewHighway(ctx context.Context, l net.Listener, options ...Option) (NodeImp
 	)
 	if err != nil {
 		logger.Errorf("%s - NewHost: Failed to create libp2p host", err)
-		return nil, err
+		return err
 	}
 	node.SetStatus(Status_CONNECTING)
 
@@ -208,7 +228,7 @@ func NewHighway(ctx context.Context, l net.Listener, options ...Option) (NodeImp
 	if err := node.Bootstrap(context.Background()); err != nil {
 		logger.Errorf("%s - Failed to Bootstrap KDHT to Host", err)
 		node.SetStatus(Status_FAIL)
-		return nil, err
+		return err
 	}
 
 	// Connect to Bootstrap Nodes
@@ -224,15 +244,15 @@ func NewHighway(ctx context.Context, l net.Listener, options ...Option) (NodeImp
 	if err := node.createDHTDiscovery(opts); err != nil {
 		logger.Fatal("Could not start DHT Discovery", err)
 		node.SetStatus(Status_FAIL)
-		return nil, err
+		return err
 	}
 
 	// Initialize Discovery for MDNS
 	node.createMdnsDiscovery(opts)
 	node.SetStatus(Status_READY)
 	go node.Serve()
-
-	return node, nil
+	Persist(l)
+	return nil
 }
 
 // HostID returns the ID of the Host
@@ -243,4 +263,85 @@ func (n *node) HostID() peer.ID {
 // Role returns the role of the node
 func (n *node) Role() Role {
 	return n.mode
+}
+
+// Persist contains the main loop for the Node
+func Persist(l net.Listener) {
+	if instance == nil {
+		golog.Error("Node instance is nil")
+		return
+	}
+
+	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", l.Addr().String())
+	// Check if CLI Mode
+	if device.IsMobile() {
+		golog.Default.Child("(app)").Info("Skipping Serve, Node is mobile...")
+		return
+	}
+
+	// Wait for Exit Signal
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		Exit(0)
+	}()
+
+	// Hold until Exit Signal
+	for {
+		select {
+		case <-ctx.Done():
+			golog.Default.Child("(app)").Info("Context Done")
+			l.Close()
+			return
+		}
+	}
+}
+
+// Pause calls the Pause function on the Node
+func Pause() {
+	if instance != nil {
+		instance.Pause()
+	}
+}
+
+// Resume calls the Resume function on the Node
+func Resume() {
+	if instance != nil {
+		instance.Resume()
+	}
+}
+
+// Exit handles cleanup on Sonr Node
+func Exit(code int) {
+	if instance == nil {
+		golog.Default.Child("(app)").Debug("Skipping Exit, instance is nil...")
+		return
+	}
+	golog.Default.Child("(app)").Debug("Cleaning up Node on Exit...")
+	instance.Close()
+
+	defer ctx.Done()
+
+	// Check for Full Desktop Node
+	if device.IsDesktop() {
+		golog.Default.Child("(app)").Debug("Removing Bitcask DB...")
+		ex, err := os.Executable()
+		if err != nil {
+			golog.Default.Child("(app)").Errorf("%s - Failed to find Executable", err)
+			return
+		}
+
+		// Delete Executable Path
+		exPath := filepath.Dir(ex)
+		err = os.RemoveAll(filepath.Join(exPath, "sonr_bitcask"))
+		if err != nil {
+			golog.Default.Child("(app)").Warn("Failed to remove Bitcask, ", err)
+		}
+		err = viper.SafeWriteConfig()
+		if err == nil {
+			golog.Default.Child("(app)").Debug("Wrote new config file to Disk")
+		}
+		os.Exit(code)
+	}
 }

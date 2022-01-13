@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "common.v1";
 
@@ -453,7 +453,10 @@ function createBaseLocation(): Location {
 }
 
 export const Location = {
-  encode(message: Location, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Location,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.latitude !== 0) {
       writer.uint32(9).double(message.latitude);
     }
@@ -472,8 +475,8 @@ export const Location = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Location {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Location {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLocation();
     while (reader.pos < end) {
@@ -560,8 +563,8 @@ function createBaseLocation_Placemark(): Location_Placemark {
 export const Location_Placemark = {
   encode(
     message: Location_Placemark,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -598,8 +601,8 @@ export const Location_Placemark = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Location_Placemark {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Location_Placemark {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLocation_Placemark();
     while (reader.pos < end) {
@@ -723,7 +726,10 @@ function createBaseMetadata(): Metadata {
 }
 
 export const Metadata = {
-  encode(message: Metadata, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Metadata,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.timestamp !== 0) {
       writer.uint32(8).int64(message.timestamp);
     }
@@ -739,8 +745,8 @@ export const Metadata = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Metadata {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Metadata {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMetadata();
     while (reader.pos < end) {
@@ -810,7 +816,7 @@ function createBaseMIME(): MIME {
 }
 
 export const MIME = {
-  encode(message: MIME, writer: Writer = Writer.create()): Writer {
+  encode(message: MIME, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.type !== 0) {
       writer.uint32(8).int32(message.type);
     }
@@ -823,8 +829,8 @@ export const MIME = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): MIME {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MIME {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMIME();
     while (reader.pos < end) {
@@ -885,7 +891,7 @@ function createBasePeer(): Peer {
 }
 
 export const Peer = {
-  encode(message: Peer, writer: Writer = Writer.create()): Writer {
+  encode(message: Peer, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sName !== "") {
       writer.uint32(10).string(message.sName);
     }
@@ -910,8 +916,8 @@ export const Peer = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Peer {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Peer {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeer();
     while (reader.pos < end) {
@@ -1013,7 +1019,10 @@ function createBasePeer_Device(): Peer_Device {
 }
 
 export const Peer_Device = {
-  encode(message: Peer_Device, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Peer_Device,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -1032,8 +1041,8 @@ export const Peer_Device = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Peer_Device {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Peer_Device {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeer_Device();
     while (reader.pos < end) {
@@ -1108,7 +1117,10 @@ function createBaseProfile(): Profile {
 }
 
 export const Profile = {
-  encode(message: Profile, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Profile,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.sName !== "") {
       writer.uint32(10).string(message.sName);
     }
@@ -1133,8 +1145,8 @@ export const Profile = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Profile {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Profile {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProfile();
     while (reader.pos < end) {
@@ -1227,7 +1239,10 @@ function createBaseProfileList(): ProfileList {
 }
 
 export const ProfileList = {
-  encode(message: ProfileList, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ProfileList,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.profiles) {
       Profile.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1243,8 +1258,8 @@ export const ProfileList = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ProfileList {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProfileList {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProfileList();
     while (reader.pos < end) {
@@ -1324,7 +1339,10 @@ function createBaseSocial(): Social {
 }
 
 export const Social = {
-  encode(message: Social, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Social,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.valid === true) {
       writer.uint32(8).bool(message.valid);
     }
@@ -1343,8 +1361,8 @@ export const Social = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Social {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Social {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSocial();
     while (reader.pos < end) {
@@ -1478,11 +1496,9 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {

@@ -185,6 +185,15 @@ func (n *node) SignMessage(message proto.Message) ([]byte, error) {
 	return n.SignData(data)
 }
 
+// SignedMetadataToProto converts a SignedMetadata to a protobuf.
+func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
+	return &common.Metadata{
+		Timestamp: m.Timestamp,
+		NodeId:    m.NodeId,
+		PublicKey: m.PublicKey,
+	}
+}
+
 // Stat returns the host stat info
 func (hn *node) Stat() (map[string]string, error) {
 	// Return Host Stat

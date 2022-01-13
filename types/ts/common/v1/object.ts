@@ -1,13 +1,19 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "common.v1";
 
 /** BucketType is the type of a bucket. */
 export enum BucketType {
+  /** BUCKET_TYPE_UNSPECIFIED - BucketTypeUnspecified is the default value. */
   BUCKET_TYPE_UNSPECIFIED = 0,
+  /** BUCKET_TYPE_APP - BucketTypeApp is an App specific bucket. For Assets regarding the service. */
   BUCKET_TYPE_APP = 1,
+  /**
+   * BUCKET_TYPE_USER - BucketTypeUser is a User specific bucket. For any remote user data that is required
+   * to be stored in the Network.
+   */
   BUCKET_TYPE_USER = 2,
   UNRECOGNIZED = -1,
 }
@@ -45,13 +51,21 @@ export function bucketTypeToJSON(object: BucketType): string {
 
 /** ObjectFieldType is the type of the field */
 export enum ObjectFieldType {
+  /** OBJECT_FIELD_TYPE_UNSPECIFIED - ObjectFieldTypeUnspecified is the default value */
   OBJECT_FIELD_TYPE_UNSPECIFIED = 0,
+  /** OBJECT_FIELD_TYPE_STRING - ObjectFieldTypeString is a string or text field */
   OBJECT_FIELD_TYPE_STRING = 1,
+  /** OBJECT_FIELD_TYPE_INT - ObjectFieldTypeInt is an integer */
   OBJECT_FIELD_TYPE_INT = 2,
+  /** OBJECT_FIELD_TYPE_FLOAT - ObjectFieldTypeFloat is a floating point number */
   OBJECT_FIELD_TYPE_FLOAT = 3,
+  /** OBJECT_FIELD_TYPE_BOOL - ObjectFieldTypeBool is a boolean */
   OBJECT_FIELD_TYPE_BOOL = 4,
+  /** OBJECT_FIELD_TYPE_DATETIME - ObjectFieldTypeDateTime is a datetime */
   OBJECT_FIELD_TYPE_DATETIME = 5,
+  /** OBJECT_FIELD_TYPE_BLOB - ObjectFieldTypeBlob is a blob which is a byte array */
   OBJECT_FIELD_TYPE_BLOB = 6,
+  /** OBJECT_FIELD_TYPE_REFERENCE - ObjectFieldTypeReference is a reference to another object */
   OBJECT_FIELD_TYPE_REFERENCE = 7,
   UNRECOGNIZED = -1,
 }
@@ -112,6 +126,7 @@ export function objectFieldTypeToJSON(object: ObjectFieldType): string {
   }
 }
 
+/** Bucket is a collection of objects. */
 export interface Bucket {
   /** Label is human-readable name of the bucket. */
   label: string;
@@ -122,21 +137,27 @@ export interface Bucket {
   /** Did is the identifier of the bucket. */
   did: string;
   /** Objects are stored in a tree structure. */
-  objects: Object[];
+  objects: ObjectDoc[];
 }
 
-export interface Object {
+/** ObjectDoc is a document for an Object stored in the graph. */
+export interface ObjectDoc {
+  /** Did is the identifier of the object. */
   did: string;
+  /** Service is the service that created the object. */
   service: string;
+  /** Tags are the tags associated with the object. */
   tags: string[];
+  /** Fields are the fields associated with the object. */
   fields: { [key: string]: ObjectField };
 }
 
-export interface Object_FieldsEntry {
+export interface ObjectDoc_FieldsEntry {
   key: string;
   value: ObjectField | undefined;
 }
 
+/** ObjectField is a field of an Object. */
 export interface ObjectField {
   /** Name is the name of the field */
   name: string;
@@ -146,12 +167,23 @@ export interface ObjectField {
   stringValue: string | undefined;
   /** Int is the value of the field */
   intValue: number | undefined;
+  /** Float is the value of the field */
+  floatValue: number | undefined;
   /** Bool is the value of the field */
   boolValue: boolean | undefined;
+  /** Date is defined by milliseconds since epoch. */
+  dateValue: number | undefined;
   /** Blob is the value of the field */
   blobValue: Uint8Array | undefined;
   /** Reference is the value of the field */
   referenceValue: string | undefined;
+  /** Metadata is additional info about the field */
+  metadata: { [key: string]: string };
+}
+
+export interface ObjectField_MetadataEntry {
+  key: string;
+  value: string;
 }
 
 function createBaseBucket(): Bucket {
@@ -159,7 +191,10 @@ function createBaseBucket(): Bucket {
 }
 
 export const Bucket = {
-  encode(message: Bucket, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Bucket,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.label !== "") {
       writer.uint32(10).string(message.label);
     }
@@ -173,13 +208,13 @@ export const Bucket = {
       writer.uint32(34).string(message.did);
     }
     for (const v of message.objects) {
-      Object.encode(v!, writer.uint32(42).fork()).ldelim();
+      ObjectDoc.encode(v!, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Bucket {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Bucket {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBucket();
     while (reader.pos < end) {
@@ -198,7 +233,7 @@ export const Bucket = {
           message.did = reader.string();
           break;
         case 5:
-          message.objects.push(Object.decode(reader, reader.uint32()));
+          message.objects.push(ObjectDoc.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -215,7 +250,7 @@ export const Bucket = {
       type: isSet(object.type) ? bucketTypeFromJSON(object.type) : 0,
       did: isSet(object.did) ? String(object.did) : "",
       objects: Array.isArray(object?.objects)
-        ? object.objects.map((e: any) => Object.fromJSON(e))
+        ? object.objects.map((e: any) => ObjectDoc.fromJSON(e))
         : [],
     };
   },
@@ -229,7 +264,7 @@ export const Bucket = {
     message.did !== undefined && (obj.did = message.did);
     if (message.objects) {
       obj.objects = message.objects.map((e) =>
-        e ? Object.toJSON(e) : undefined
+        e ? ObjectDoc.toJSON(e) : undefined
       );
     } else {
       obj.objects = [];
@@ -243,17 +278,21 @@ export const Bucket = {
     message.description = object.description ?? "";
     message.type = object.type ?? 0;
     message.did = object.did ?? "";
-    message.objects = object.objects?.map((e) => Object.fromPartial(e)) || [];
+    message.objects =
+      object.objects?.map((e) => ObjectDoc.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseObject(): Object {
+function createBaseObjectDoc(): ObjectDoc {
   return { did: "", service: "", tags: [], fields: {} };
 }
 
-export const Object = {
-  encode(message: Object, writer: Writer = Writer.create()): Writer {
+export const ObjectDoc = {
+  encode(
+    message: ObjectDoc,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -264,7 +303,7 @@ export const Object = {
       writer.uint32(26).string(v!);
     }
     Object.entries(message.fields).forEach(([key, value]) => {
-      Object_FieldsEntry.encode(
+      ObjectDoc_FieldsEntry.encode(
         { key: key as any, value },
         writer.uint32(34).fork()
       ).ldelim();
@@ -272,10 +311,10 @@ export const Object = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Object {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ObjectDoc {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseObject();
+    const message = createBaseObjectDoc();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -289,7 +328,7 @@ export const Object = {
           message.tags.push(reader.string());
           break;
         case 4:
-          const entry4 = Object_FieldsEntry.decode(reader, reader.uint32());
+          const entry4 = ObjectDoc_FieldsEntry.decode(reader, reader.uint32());
           if (entry4.value !== undefined) {
             message.fields[entry4.key] = entry4.value;
           }
@@ -302,7 +341,7 @@ export const Object = {
     return message;
   },
 
-  fromJSON(object: any): Object {
+  fromJSON(object: any): ObjectDoc {
     return {
       did: isSet(object.did) ? String(object.did) : "",
       service: isSet(object.service) ? String(object.service) : "",
@@ -321,7 +360,7 @@ export const Object = {
     };
   },
 
-  toJSON(message: Object): unknown {
+  toJSON(message: ObjectDoc): unknown {
     const obj: any = {};
     message.did !== undefined && (obj.did = message.did);
     message.service !== undefined && (obj.service = message.service);
@@ -339,8 +378,10 @@ export const Object = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Object>, I>>(object: I): Object {
-    const message = createBaseObject();
+  fromPartial<I extends Exact<DeepPartial<ObjectDoc>, I>>(
+    object: I
+  ): ObjectDoc {
+    const message = createBaseObjectDoc();
     message.did = object.did ?? "";
     message.service = object.service ?? "";
     message.tags = object.tags?.map((e) => e) || [];
@@ -356,15 +397,15 @@ export const Object = {
   },
 };
 
-function createBaseObject_FieldsEntry(): Object_FieldsEntry {
+function createBaseObjectDoc_FieldsEntry(): ObjectDoc_FieldsEntry {
   return { key: "", value: undefined };
 }
 
-export const Object_FieldsEntry = {
+export const ObjectDoc_FieldsEntry = {
   encode(
-    message: Object_FieldsEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    message: ObjectDoc_FieldsEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -374,10 +415,13 @@ export const Object_FieldsEntry = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Object_FieldsEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ObjectDoc_FieldsEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseObject_FieldsEntry();
+    const message = createBaseObjectDoc_FieldsEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -395,7 +439,7 @@ export const Object_FieldsEntry = {
     return message;
   },
 
-  fromJSON(object: any): Object_FieldsEntry {
+  fromJSON(object: any): ObjectDoc_FieldsEntry {
     return {
       key: isSet(object.key) ? String(object.key) : "",
       value: isSet(object.value)
@@ -404,7 +448,7 @@ export const Object_FieldsEntry = {
     };
   },
 
-  toJSON(message: Object_FieldsEntry): unknown {
+  toJSON(message: ObjectDoc_FieldsEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
@@ -414,10 +458,10 @@ export const Object_FieldsEntry = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Object_FieldsEntry>, I>>(
+  fromPartial<I extends Exact<DeepPartial<ObjectDoc_FieldsEntry>, I>>(
     object: I
-  ): Object_FieldsEntry {
-    const message = createBaseObject_FieldsEntry();
+  ): ObjectDoc_FieldsEntry {
+    const message = createBaseObjectDoc_FieldsEntry();
     message.key = object.key ?? "";
     message.value =
       object.value !== undefined && object.value !== null
@@ -433,14 +477,20 @@ function createBaseObjectField(): ObjectField {
     type: 0,
     stringValue: undefined,
     intValue: undefined,
+    floatValue: undefined,
     boolValue: undefined,
+    dateValue: undefined,
     blobValue: undefined,
     referenceValue: undefined,
+    metadata: {},
   };
 }
 
 export const ObjectField = {
-  encode(message: ObjectField, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ObjectField,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -453,20 +503,32 @@ export const ObjectField = {
     if (message.intValue !== undefined) {
       writer.uint32(32).int32(message.intValue);
     }
+    if (message.floatValue !== undefined) {
+      writer.uint32(41).double(message.floatValue);
+    }
     if (message.boolValue !== undefined) {
-      writer.uint32(40).bool(message.boolValue);
+      writer.uint32(48).bool(message.boolValue);
+    }
+    if (message.dateValue !== undefined) {
+      writer.uint32(56).int64(message.dateValue);
     }
     if (message.blobValue !== undefined) {
-      writer.uint32(50).bytes(message.blobValue);
+      writer.uint32(66).bytes(message.blobValue);
     }
     if (message.referenceValue !== undefined) {
-      writer.uint32(58).string(message.referenceValue);
+      writer.uint32(74).string(message.referenceValue);
     }
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      ObjectField_MetadataEntry.encode(
+        { key: key as any, value },
+        writer.uint32(82).fork()
+      ).ldelim();
+    });
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ObjectField {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ObjectField {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseObjectField();
     while (reader.pos < end) {
@@ -485,13 +547,28 @@ export const ObjectField = {
           message.intValue = reader.int32();
           break;
         case 5:
-          message.boolValue = reader.bool();
+          message.floatValue = reader.double();
           break;
         case 6:
-          message.blobValue = reader.bytes();
+          message.boolValue = reader.bool();
           break;
         case 7:
+          message.dateValue = longToNumber(reader.int64() as Long);
+          break;
+        case 8:
+          message.blobValue = reader.bytes();
+          break;
+        case 9:
           message.referenceValue = reader.string();
+          break;
+        case 10:
+          const entry10 = ObjectField_MetadataEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry10.value !== undefined) {
+            message.metadata[entry10.key] = entry10.value;
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -509,15 +586,28 @@ export const ObjectField = {
         ? String(object.stringValue)
         : undefined,
       intValue: isSet(object.intValue) ? Number(object.intValue) : undefined,
+      floatValue: isSet(object.floatValue)
+        ? Number(object.floatValue)
+        : undefined,
       boolValue: isSet(object.boolValue)
         ? Boolean(object.boolValue)
         : undefined,
+      dateValue: isSet(object.dateValue) ? Number(object.dateValue) : undefined,
       blobValue: isSet(object.blobValue)
         ? bytesFromBase64(object.blobValue)
         : undefined,
       referenceValue: isSet(object.referenceValue)
         ? String(object.referenceValue)
         : undefined,
+      metadata: isObject(object.metadata)
+        ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
+            (acc, [key, value]) => {
+              acc[key] = String(value);
+              return acc;
+            },
+            {}
+          )
+        : {},
     };
   },
 
@@ -530,7 +620,10 @@ export const ObjectField = {
       (obj.stringValue = message.stringValue);
     message.intValue !== undefined &&
       (obj.intValue = Math.round(message.intValue));
+    message.floatValue !== undefined && (obj.floatValue = message.floatValue);
     message.boolValue !== undefined && (obj.boolValue = message.boolValue);
+    message.dateValue !== undefined &&
+      (obj.dateValue = Math.round(message.dateValue));
     message.blobValue !== undefined &&
       (obj.blobValue =
         message.blobValue !== undefined
@@ -538,6 +631,12 @@ export const ObjectField = {
           : undefined);
     message.referenceValue !== undefined &&
       (obj.referenceValue = message.referenceValue);
+    obj.metadata = {};
+    if (message.metadata) {
+      Object.entries(message.metadata).forEach(([k, v]) => {
+        obj.metadata[k] = v;
+      });
+    }
     return obj;
   },
 
@@ -549,9 +648,85 @@ export const ObjectField = {
     message.type = object.type ?? 0;
     message.stringValue = object.stringValue ?? undefined;
     message.intValue = object.intValue ?? undefined;
+    message.floatValue = object.floatValue ?? undefined;
     message.boolValue = object.boolValue ?? undefined;
+    message.dateValue = object.dateValue ?? undefined;
     message.blobValue = object.blobValue ?? undefined;
     message.referenceValue = object.referenceValue ?? undefined;
+    message.metadata = Object.entries(object.metadata ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+function createBaseObjectField_MetadataEntry(): ObjectField_MetadataEntry {
+  return { key: "", value: "" };
+}
+
+export const ObjectField_MetadataEntry = {
+  encode(
+    message: ObjectField_MetadataEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ObjectField_MetadataEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseObjectField_MetadataEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ObjectField_MetadataEntry {
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: ObjectField_MetadataEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ObjectField_MetadataEntry>, I>>(
+    object: I
+  ): ObjectField_MetadataEntry {
+    const message = createBaseObjectField_MetadataEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
     return message;
   },
 };
@@ -617,11 +792,16 @@ export type Exact<P, I extends P> = P extends Builtin
         never
       >;
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {

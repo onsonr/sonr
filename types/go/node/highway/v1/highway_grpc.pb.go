@@ -80,10 +80,8 @@ type HighwayServiceClient interface {
 	// ParseDid parses a potential DID string into a DID object.
 	ParseDid(ctx context.Context, in *ParseDidRequest, opts ...grpc.CallOption) (*ParseDidResponse, error)
 	// ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has
-	// access to the DID.
+	// access to the DID Document.
 	ResolveDid(ctx context.Context, in *ResolveDidRequest, opts ...grpc.CallOption) (*ResolveDidResponse, error)
-	// VerifyDid verifies the given DID document against the DID schema.
-	VerifyDid(ctx context.Context, in *VerifyDidRequest, opts ...grpc.CallOption) (*VerifyDidResponse, error)
 }
 
 type highwayServiceClient struct {
@@ -443,15 +441,6 @@ func (c *highwayServiceClient) ResolveDid(ctx context.Context, in *ResolveDidReq
 	return out, nil
 }
 
-func (c *highwayServiceClient) VerifyDid(ctx context.Context, in *VerifyDidRequest, opts ...grpc.CallOption) (*VerifyDidResponse, error) {
-	out := new(VerifyDidResponse)
-	err := c.cc.Invoke(ctx, "/node.highway.v1.HighwayService/VerifyDid", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // HighwayServiceServer is the server API for HighwayService service.
 // All implementations should embed UnimplementedHighwayServiceServer
 // for forward compatibility
@@ -518,10 +507,8 @@ type HighwayServiceServer interface {
 	// ParseDid parses a potential DID string into a DID object.
 	ParseDid(context.Context, *ParseDidRequest) (*ParseDidResponse, error)
 	// ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has
-	// access to the DID.
+	// access to the DID Document.
 	ResolveDid(context.Context, *ResolveDidRequest) (*ResolveDidResponse, error)
-	// VerifyDid verifies the given DID document against the DID schema.
-	VerifyDid(context.Context, *VerifyDidRequest) (*VerifyDidResponse, error)
 }
 
 // UnimplementedHighwayServiceServer should be embedded to have forward compatible implementations.
@@ -605,9 +592,6 @@ func (UnimplementedHighwayServiceServer) ParseDid(context.Context, *ParseDidRequ
 }
 func (UnimplementedHighwayServiceServer) ResolveDid(context.Context, *ResolveDidRequest) (*ResolveDidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResolveDid not implemented")
-}
-func (UnimplementedHighwayServiceServer) VerifyDid(context.Context, *VerifyDidRequest) (*VerifyDidResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyDid not implemented")
 }
 
 // UnsafeHighwayServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -1104,24 +1088,6 @@ func _HighwayService_ResolveDid_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HighwayService_VerifyDid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyDidRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HighwayServiceServer).VerifyDid(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/node.highway.v1.HighwayService/VerifyDid",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).VerifyDid(ctx, req.(*VerifyDidRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // HighwayService_ServiceDesc is the grpc.ServiceDesc for HighwayService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1212,10 +1178,6 @@ var HighwayService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ResolveDid",
 			Handler:    _HighwayService_ResolveDid_Handler,
-		},
-		{
-			MethodName: "VerifyDid",
-			Handler:    _HighwayService_VerifyDid_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

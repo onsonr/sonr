@@ -1,8 +1,9 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { Peer } from "../../../common/v1/core";
-import { Object } from "../../../common/v1/object";
+import { DidDocument, Did } from "../../../did/v1/did";
+import { ObjectDoc } from "../../../common/v1/object";
 
 export const protobufPackage = "node.highway.v1";
 
@@ -15,7 +16,7 @@ export interface AccessNameResponse {
   /** Message of the response */
   message: string;
   /** Data of the response */
-  data: Peer | undefined;
+  peer: Peer | undefined;
 }
 
 /** RegisterNameResponse is a request to register a name */
@@ -25,7 +26,7 @@ export interface RegisterNameResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  didDocument: DidDocument | undefined;
 }
 
 /** UpdateNameResponse is a response to a request to update a name */
@@ -35,12 +36,12 @@ export interface UpdateNameResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Data of the updated name record */
-  data: { [key: string]: string };
+  metadata: { [key: string]: string };
 }
 
-export interface UpdateNameResponse_DataEntry {
+export interface UpdateNameResponse_MetadataEntry {
   key: string;
   value: string;
 }
@@ -52,10 +53,10 @@ export interface AccessServiceResponse {
   /** Message of the response */
   message: string;
   /** Data of the response */
-  data: { [key: string]: string };
+  metadata: { [key: string]: string };
 }
 
-export interface AccessServiceResponse_DataEntry {
+export interface AccessServiceResponse_MetadataEntry {
   key: string;
   value: string;
 }
@@ -67,7 +68,7 @@ export interface RegisterServiceResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  didDocument: DidDocument | undefined;
 }
 
 /** UpdateServiceResponse is a response to a request to update a name */
@@ -77,12 +78,12 @@ export interface UpdateServiceResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Data of the updated name record */
-  data: { [key: string]: string };
+  metadata: { [key: string]: string };
 }
 
-export interface UpdateServiceResponse_DataEntry {
+export interface UpdateServiceResponse_MetadataEntry {
   key: string;
   value: string;
 }
@@ -94,7 +95,7 @@ export interface CreateChannelResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** ReadChannelResponse is a response to a request to read a channel */
@@ -104,7 +105,7 @@ export interface ReadChannelResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Subscribers of the channel */
   subscribers: Peer[];
   /** Owners of the channel */
@@ -118,7 +119,7 @@ export interface UpdateChannelResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Subscribers of the channel */
   subscribers: Peer[];
   /** Owners of the channel */
@@ -132,7 +133,7 @@ export interface DeleteChannelResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** ListenChannelResponse is a response of the published data to the channel */
@@ -140,7 +141,7 @@ export interface ListenChannelResponse {
   /** Code of the response */
   code: number;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Additional information about the response */
   metadata: { [key: string]: string };
   /** Data of the response */
@@ -159,7 +160,7 @@ export interface CreateBucketResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** ReadBucketResponse is a response to a request to read a bucket */
@@ -169,9 +170,9 @@ export interface ReadBucketResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Subscribers of the bucket */
-  objects: Object[];
+  objects: ObjectDoc[];
   /** Owners of the bucket */
   owners: Peer[];
 }
@@ -183,9 +184,9 @@ export interface UpdateBucketResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Subscribers of the bucket */
-  objects: Object[];
+  objects: ObjectDoc[];
   /** Owners of the bucket */
   owners: Peer[];
 }
@@ -197,7 +198,7 @@ export interface DeleteBucketResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** ListenBucketResponse is a response of the published data to the bucket */
@@ -205,11 +206,11 @@ export interface ListenBucketResponse {
   /** Code of the response */
   code: number;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Additional information about the response */
   metadata: { [key: string]: string };
   /** Stream of objects in the bucket */
-  objects: Object[];
+  objects: ObjectDoc[];
 }
 
 export interface ListenBucketResponse_MetadataEntry {
@@ -224,7 +225,7 @@ export interface CreateObjectResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** ReadObjectResponse is a response to a request to read an object */
@@ -234,9 +235,9 @@ export interface ReadObjectResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Data of the response */
-  object: Object | undefined;
+  object: ObjectDoc | undefined;
 }
 
 /** UpdateObjectResponse is a response to a request to update an object */
@@ -246,9 +247,9 @@ export interface UpdateObjectResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Data of the response */
-  object: Object | undefined;
+  object: ObjectDoc | undefined;
   /** Metadata is additional metadata of the response */
   metadata: { [key: string]: string };
 }
@@ -265,7 +266,7 @@ export interface DeleteObjectResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** UploadBlobResponse is a response to a request to upload a blob */
@@ -275,7 +276,7 @@ export interface UploadBlobResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Pinned is true if the blob is pinned to IPFS */
   pinned: boolean;
 }
@@ -287,7 +288,7 @@ export interface DownloadBlobResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
   /** Path of downloaded blob */
   path: string;
 }
@@ -299,7 +300,7 @@ export interface SyncBlobResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** DeleteBlobResponse is a response to a request to delete a blob */
@@ -309,7 +310,7 @@ export interface DeleteBlobResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** ParseDidResponse is a response to a request to parse a DID */
@@ -319,7 +320,7 @@ export interface ParseDidResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
+  did: Did | undefined;
 }
 
 /** ResolveDidResponse is a response to a request to resolve a DID */
@@ -329,42 +330,32 @@ export interface ResolveDidResponse {
   /** Message of the response */
   message: string;
   /** DID of the response */
-  did: string;
-}
-
-/** VerifyDidResponse is a response to a request to verify a DID */
-export interface VerifyDidResponse {
-  /** Code of the response */
-  code: number;
-  /** Message of the response */
-  message: string;
-  /** DID of the response */
-  did: string;
+  didDocument: DidDocument | undefined;
 }
 
 function createBaseAccessNameResponse(): AccessNameResponse {
-  return { code: 0, message: "", data: undefined };
+  return { code: 0, message: "", peer: undefined };
 }
 
 export const AccessNameResponse = {
   encode(
     message: AccessNameResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.data !== undefined) {
-      Peer.encode(message.data, writer.uint32(26).fork()).ldelim();
+    if (message.peer !== undefined) {
+      Peer.encode(message.peer, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): AccessNameResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccessNameResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccessNameResponse();
     while (reader.pos < end) {
@@ -377,7 +368,7 @@ export const AccessNameResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.data = Peer.decode(reader, reader.uint32());
+          message.peer = Peer.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -391,7 +382,7 @@ export const AccessNameResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      data: isSet(object.data) ? Peer.fromJSON(object.data) : undefined,
+      peer: isSet(object.peer) ? Peer.fromJSON(object.peer) : undefined,
     };
   },
 
@@ -399,8 +390,8 @@ export const AccessNameResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.data !== undefined &&
-      (obj.data = message.data ? Peer.toJSON(message.data) : undefined);
+    message.peer !== undefined &&
+      (obj.peer = message.peer ? Peer.toJSON(message.peer) : undefined);
     return obj;
   },
 
@@ -410,37 +401,43 @@ export const AccessNameResponse = {
     const message = createBaseAccessNameResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? Peer.fromPartial(object.data)
+    message.peer =
+      object.peer !== undefined && object.peer !== null
+        ? Peer.fromPartial(object.peer)
         : undefined;
     return message;
   },
 };
 
 function createBaseRegisterNameResponse(): RegisterNameResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", didDocument: undefined };
 }
 
 export const RegisterNameResponse = {
   encode(
     message: RegisterNameResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.didDocument !== undefined) {
+      DidDocument.encode(
+        message.didDocument,
+        writer.uint32(26).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): RegisterNameResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RegisterNameResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterNameResponse();
     while (reader.pos < end) {
@@ -453,7 +450,7 @@ export const RegisterNameResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.didDocument = DidDocument.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -467,7 +464,9 @@ export const RegisterNameResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      didDocument: isSet(object.didDocument)
+        ? DidDocument.fromJSON(object.didDocument)
+        : undefined,
     };
   },
 
@@ -475,7 +474,10 @@ export const RegisterNameResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.didDocument !== undefined &&
+      (obj.didDocument = message.didDocument
+        ? DidDocument.toJSON(message.didDocument)
+        : undefined);
     return obj;
   },
 
@@ -485,31 +487,34 @@ export const RegisterNameResponse = {
     const message = createBaseRegisterNameResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.didDocument =
+      object.didDocument !== undefined && object.didDocument !== null
+        ? DidDocument.fromPartial(object.didDocument)
+        : undefined;
     return message;
   },
 };
 
 function createBaseUpdateNameResponse(): UpdateNameResponse {
-  return { code: 0, message: "", did: "", data: {} };
+  return { code: 0, message: "", did: undefined, metadata: {} };
 }
 
 export const UpdateNameResponse = {
   encode(
     message: UpdateNameResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
-    Object.entries(message.data).forEach(([key, value]) => {
-      UpdateNameResponse_DataEntry.encode(
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      UpdateNameResponse_MetadataEntry.encode(
         { key: key as any, value },
         writer.uint32(34).fork()
       ).ldelim();
@@ -517,8 +522,8 @@ export const UpdateNameResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateNameResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateNameResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateNameResponse();
     while (reader.pos < end) {
@@ -531,15 +536,15 @@ export const UpdateNameResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
-          const entry4 = UpdateNameResponse_DataEntry.decode(
+          const entry4 = UpdateNameResponse_MetadataEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry4.value !== undefined) {
-            message.data[entry4.key] = entry4.value;
+            message.metadata[entry4.key] = entry4.value;
           }
           break;
         default:
@@ -554,9 +559,9 @@ export const UpdateNameResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
-      data: isObject(object.data)
-        ? Object.entries(object.data).reduce<{ [key: string]: string }>(
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
+      metadata: isObject(object.metadata)
+        ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
             (acc, [key, value]) => {
               acc[key] = String(value);
               return acc;
@@ -571,11 +576,12 @@ export const UpdateNameResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
-    obj.data = {};
-    if (message.data) {
-      Object.entries(message.data).forEach(([k, v]) => {
-        obj.data[k] = v;
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
+    obj.metadata = {};
+    if (message.metadata) {
+      Object.entries(message.metadata).forEach(([k, v]) => {
+        obj.metadata[k] = v;
       });
     }
     return obj;
@@ -587,8 +593,11 @@ export const UpdateNameResponse = {
     const message = createBaseUpdateNameResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
-    message.data = Object.entries(object.data ?? {}).reduce<{
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
+    message.metadata = Object.entries(object.metadata ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
       if (value !== undefined) {
@@ -600,15 +609,15 @@ export const UpdateNameResponse = {
   },
 };
 
-function createBaseUpdateNameResponse_DataEntry(): UpdateNameResponse_DataEntry {
+function createBaseUpdateNameResponse_MetadataEntry(): UpdateNameResponse_MetadataEntry {
   return { key: "", value: "" };
 }
 
-export const UpdateNameResponse_DataEntry = {
+export const UpdateNameResponse_MetadataEntry = {
   encode(
-    message: UpdateNameResponse_DataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    message: UpdateNameResponse_MetadataEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -619,12 +628,12 @@ export const UpdateNameResponse_DataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
-  ): UpdateNameResponse_DataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  ): UpdateNameResponse_MetadataEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateNameResponse_DataEntry();
+    const message = createBaseUpdateNameResponse_MetadataEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -642,24 +651,24 @@ export const UpdateNameResponse_DataEntry = {
     return message;
   },
 
-  fromJSON(object: any): UpdateNameResponse_DataEntry {
+  fromJSON(object: any): UpdateNameResponse_MetadataEntry {
     return {
       key: isSet(object.key) ? String(object.key) : "",
       value: isSet(object.value) ? String(object.value) : "",
     };
   },
 
-  toJSON(message: UpdateNameResponse_DataEntry): unknown {
+  toJSON(message: UpdateNameResponse_MetadataEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UpdateNameResponse_DataEntry>, I>>(
-    object: I
-  ): UpdateNameResponse_DataEntry {
-    const message = createBaseUpdateNameResponse_DataEntry();
+  fromPartial<
+    I extends Exact<DeepPartial<UpdateNameResponse_MetadataEntry>, I>
+  >(object: I): UpdateNameResponse_MetadataEntry {
+    const message = createBaseUpdateNameResponse_MetadataEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
@@ -667,22 +676,22 @@ export const UpdateNameResponse_DataEntry = {
 };
 
 function createBaseAccessServiceResponse(): AccessServiceResponse {
-  return { code: 0, message: "", data: {} };
+  return { code: 0, message: "", metadata: {} };
 }
 
 export const AccessServiceResponse = {
   encode(
     message: AccessServiceResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    Object.entries(message.data).forEach(([key, value]) => {
-      AccessServiceResponse_DataEntry.encode(
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      AccessServiceResponse_MetadataEntry.encode(
         { key: key as any, value },
         writer.uint32(26).fork()
       ).ldelim();
@@ -690,8 +699,11 @@ export const AccessServiceResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): AccessServiceResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): AccessServiceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccessServiceResponse();
     while (reader.pos < end) {
@@ -704,12 +716,12 @@ export const AccessServiceResponse = {
           message.message = reader.string();
           break;
         case 3:
-          const entry3 = AccessServiceResponse_DataEntry.decode(
+          const entry3 = AccessServiceResponse_MetadataEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry3.value !== undefined) {
-            message.data[entry3.key] = entry3.value;
+            message.metadata[entry3.key] = entry3.value;
           }
           break;
         default:
@@ -724,8 +736,8 @@ export const AccessServiceResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      data: isObject(object.data)
-        ? Object.entries(object.data).reduce<{ [key: string]: string }>(
+      metadata: isObject(object.metadata)
+        ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
             (acc, [key, value]) => {
               acc[key] = String(value);
               return acc;
@@ -740,10 +752,10 @@ export const AccessServiceResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    obj.data = {};
-    if (message.data) {
-      Object.entries(message.data).forEach(([k, v]) => {
-        obj.data[k] = v;
+    obj.metadata = {};
+    if (message.metadata) {
+      Object.entries(message.metadata).forEach(([k, v]) => {
+        obj.metadata[k] = v;
       });
     }
     return obj;
@@ -755,7 +767,7 @@ export const AccessServiceResponse = {
     const message = createBaseAccessServiceResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.data = Object.entries(object.data ?? {}).reduce<{
+    message.metadata = Object.entries(object.metadata ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
       if (value !== undefined) {
@@ -767,15 +779,15 @@ export const AccessServiceResponse = {
   },
 };
 
-function createBaseAccessServiceResponse_DataEntry(): AccessServiceResponse_DataEntry {
+function createBaseAccessServiceResponse_MetadataEntry(): AccessServiceResponse_MetadataEntry {
   return { key: "", value: "" };
 }
 
-export const AccessServiceResponse_DataEntry = {
+export const AccessServiceResponse_MetadataEntry = {
   encode(
-    message: AccessServiceResponse_DataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    message: AccessServiceResponse_MetadataEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -786,12 +798,12 @@ export const AccessServiceResponse_DataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
-  ): AccessServiceResponse_DataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  ): AccessServiceResponse_MetadataEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccessServiceResponse_DataEntry();
+    const message = createBaseAccessServiceResponse_MetadataEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -809,24 +821,24 @@ export const AccessServiceResponse_DataEntry = {
     return message;
   },
 
-  fromJSON(object: any): AccessServiceResponse_DataEntry {
+  fromJSON(object: any): AccessServiceResponse_MetadataEntry {
     return {
       key: isSet(object.key) ? String(object.key) : "",
       value: isSet(object.value) ? String(object.value) : "",
     };
   },
 
-  toJSON(message: AccessServiceResponse_DataEntry): unknown {
+  toJSON(message: AccessServiceResponse_MetadataEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccessServiceResponse_DataEntry>, I>>(
-    object: I
-  ): AccessServiceResponse_DataEntry {
-    const message = createBaseAccessServiceResponse_DataEntry();
+  fromPartial<
+    I extends Exact<DeepPartial<AccessServiceResponse_MetadataEntry>, I>
+  >(object: I): AccessServiceResponse_MetadataEntry {
+    const message = createBaseAccessServiceResponse_MetadataEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
@@ -834,28 +846,34 @@ export const AccessServiceResponse_DataEntry = {
 };
 
 function createBaseRegisterServiceResponse(): RegisterServiceResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", didDocument: undefined };
 }
 
 export const RegisterServiceResponse = {
   encode(
     message: RegisterServiceResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.didDocument !== undefined) {
+      DidDocument.encode(
+        message.didDocument,
+        writer.uint32(26).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): RegisterServiceResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RegisterServiceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterServiceResponse();
     while (reader.pos < end) {
@@ -868,7 +886,7 @@ export const RegisterServiceResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.didDocument = DidDocument.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -882,7 +900,9 @@ export const RegisterServiceResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      didDocument: isSet(object.didDocument)
+        ? DidDocument.fromJSON(object.didDocument)
+        : undefined,
     };
   },
 
@@ -890,7 +910,10 @@ export const RegisterServiceResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.didDocument !== undefined &&
+      (obj.didDocument = message.didDocument
+        ? DidDocument.toJSON(message.didDocument)
+        : undefined);
     return obj;
   },
 
@@ -900,31 +923,34 @@ export const RegisterServiceResponse = {
     const message = createBaseRegisterServiceResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.didDocument =
+      object.didDocument !== undefined && object.didDocument !== null
+        ? DidDocument.fromPartial(object.didDocument)
+        : undefined;
     return message;
   },
 };
 
 function createBaseUpdateServiceResponse(): UpdateServiceResponse {
-  return { code: 0, message: "", did: "", data: {} };
+  return { code: 0, message: "", did: undefined, metadata: {} };
 }
 
 export const UpdateServiceResponse = {
   encode(
     message: UpdateServiceResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
-    Object.entries(message.data).forEach(([key, value]) => {
-      UpdateServiceResponse_DataEntry.encode(
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      UpdateServiceResponse_MetadataEntry.encode(
         { key: key as any, value },
         writer.uint32(34).fork()
       ).ldelim();
@@ -932,8 +958,11 @@ export const UpdateServiceResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateServiceResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateServiceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateServiceResponse();
     while (reader.pos < end) {
@@ -946,15 +975,15 @@ export const UpdateServiceResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
-          const entry4 = UpdateServiceResponse_DataEntry.decode(
+          const entry4 = UpdateServiceResponse_MetadataEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry4.value !== undefined) {
-            message.data[entry4.key] = entry4.value;
+            message.metadata[entry4.key] = entry4.value;
           }
           break;
         default:
@@ -969,9 +998,9 @@ export const UpdateServiceResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
-      data: isObject(object.data)
-        ? Object.entries(object.data).reduce<{ [key: string]: string }>(
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
+      metadata: isObject(object.metadata)
+        ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
             (acc, [key, value]) => {
               acc[key] = String(value);
               return acc;
@@ -986,11 +1015,12 @@ export const UpdateServiceResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
-    obj.data = {};
-    if (message.data) {
-      Object.entries(message.data).forEach(([k, v]) => {
-        obj.data[k] = v;
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
+    obj.metadata = {};
+    if (message.metadata) {
+      Object.entries(message.metadata).forEach(([k, v]) => {
+        obj.metadata[k] = v;
       });
     }
     return obj;
@@ -1002,8 +1032,11 @@ export const UpdateServiceResponse = {
     const message = createBaseUpdateServiceResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
-    message.data = Object.entries(object.data ?? {}).reduce<{
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
+    message.metadata = Object.entries(object.metadata ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
       if (value !== undefined) {
@@ -1015,15 +1048,15 @@ export const UpdateServiceResponse = {
   },
 };
 
-function createBaseUpdateServiceResponse_DataEntry(): UpdateServiceResponse_DataEntry {
+function createBaseUpdateServiceResponse_MetadataEntry(): UpdateServiceResponse_MetadataEntry {
   return { key: "", value: "" };
 }
 
-export const UpdateServiceResponse_DataEntry = {
+export const UpdateServiceResponse_MetadataEntry = {
   encode(
-    message: UpdateServiceResponse_DataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    message: UpdateServiceResponse_MetadataEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1034,12 +1067,12 @@ export const UpdateServiceResponse_DataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
-  ): UpdateServiceResponse_DataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  ): UpdateServiceResponse_MetadataEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateServiceResponse_DataEntry();
+    const message = createBaseUpdateServiceResponse_MetadataEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1057,24 +1090,24 @@ export const UpdateServiceResponse_DataEntry = {
     return message;
   },
 
-  fromJSON(object: any): UpdateServiceResponse_DataEntry {
+  fromJSON(object: any): UpdateServiceResponse_MetadataEntry {
     return {
       key: isSet(object.key) ? String(object.key) : "",
       value: isSet(object.value) ? String(object.value) : "",
     };
   },
 
-  toJSON(message: UpdateServiceResponse_DataEntry): unknown {
+  toJSON(message: UpdateServiceResponse_MetadataEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UpdateServiceResponse_DataEntry>, I>>(
-    object: I
-  ): UpdateServiceResponse_DataEntry {
-    const message = createBaseUpdateServiceResponse_DataEntry();
+  fromPartial<
+    I extends Exact<DeepPartial<UpdateServiceResponse_MetadataEntry>, I>
+  >(object: I): UpdateServiceResponse_MetadataEntry {
+    const message = createBaseUpdateServiceResponse_MetadataEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
@@ -1082,28 +1115,31 @@ export const UpdateServiceResponse_DataEntry = {
 };
 
 function createBaseCreateChannelResponse(): CreateChannelResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const CreateChannelResponse = {
   encode(
     message: CreateChannelResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): CreateChannelResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateChannelResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateChannelResponse();
     while (reader.pos < end) {
@@ -1116,7 +1152,7 @@ export const CreateChannelResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1130,7 +1166,7 @@ export const CreateChannelResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -1138,7 +1174,8 @@ export const CreateChannelResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -1148,28 +1185,31 @@ export const CreateChannelResponse = {
     const message = createBaseCreateChannelResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseReadChannelResponse(): ReadChannelResponse {
-  return { code: 0, message: "", did: "", subscribers: [], owners: [] };
+  return { code: 0, message: "", did: undefined, subscribers: [], owners: [] };
 }
 
 export const ReadChannelResponse = {
   encode(
     message: ReadChannelResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.subscribers) {
       Peer.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -1180,8 +1220,8 @@ export const ReadChannelResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ReadChannelResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReadChannelResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReadChannelResponse();
     while (reader.pos < end) {
@@ -1194,7 +1234,7 @@ export const ReadChannelResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
           message.subscribers.push(Peer.decode(reader, reader.uint32()));
@@ -1214,7 +1254,7 @@ export const ReadChannelResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       subscribers: Array.isArray(object?.subscribers)
         ? object.subscribers.map((e: any) => Peer.fromJSON(e))
         : [],
@@ -1228,7 +1268,8 @@ export const ReadChannelResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     if (message.subscribers) {
       obj.subscribers = message.subscribers.map((e) =>
         e ? Peer.toJSON(e) : undefined
@@ -1250,7 +1291,10 @@ export const ReadChannelResponse = {
     const message = createBaseReadChannelResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.subscribers =
       object.subscribers?.map((e) => Peer.fromPartial(e)) || [];
     message.owners = object.owners?.map((e) => Peer.fromPartial(e)) || [];
@@ -1259,22 +1303,22 @@ export const ReadChannelResponse = {
 };
 
 function createBaseUpdateChannelResponse(): UpdateChannelResponse {
-  return { code: 0, message: "", did: "", subscribers: [], owners: [] };
+  return { code: 0, message: "", did: undefined, subscribers: [], owners: [] };
 }
 
 export const UpdateChannelResponse = {
   encode(
     message: UpdateChannelResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.subscribers) {
       Peer.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -1285,8 +1329,11 @@ export const UpdateChannelResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateChannelResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateChannelResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateChannelResponse();
     while (reader.pos < end) {
@@ -1299,7 +1346,7 @@ export const UpdateChannelResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
           message.subscribers.push(Peer.decode(reader, reader.uint32()));
@@ -1319,7 +1366,7 @@ export const UpdateChannelResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       subscribers: Array.isArray(object?.subscribers)
         ? object.subscribers.map((e: any) => Peer.fromJSON(e))
         : [],
@@ -1333,7 +1380,8 @@ export const UpdateChannelResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     if (message.subscribers) {
       obj.subscribers = message.subscribers.map((e) =>
         e ? Peer.toJSON(e) : undefined
@@ -1355,7 +1403,10 @@ export const UpdateChannelResponse = {
     const message = createBaseUpdateChannelResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.subscribers =
       object.subscribers?.map((e) => Peer.fromPartial(e)) || [];
     message.owners = object.owners?.map((e) => Peer.fromPartial(e)) || [];
@@ -1364,28 +1415,31 @@ export const UpdateChannelResponse = {
 };
 
 function createBaseDeleteChannelResponse(): DeleteChannelResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const DeleteChannelResponse = {
   encode(
     message: DeleteChannelResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteChannelResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DeleteChannelResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteChannelResponse();
     while (reader.pos < end) {
@@ -1398,7 +1452,7 @@ export const DeleteChannelResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1412,7 +1466,7 @@ export const DeleteChannelResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -1420,7 +1474,8 @@ export const DeleteChannelResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -1430,25 +1485,28 @@ export const DeleteChannelResponse = {
     const message = createBaseDeleteChannelResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseListenChannelResponse(): ListenChannelResponse {
-  return { code: 0, did: "", metadata: {}, message: new Uint8Array() };
+  return { code: 0, did: undefined, metadata: {}, message: new Uint8Array() };
 }
 
 export const ListenChannelResponse = {
   encode(
     message: ListenChannelResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
-    if (message.did !== "") {
-      writer.uint32(18).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(18).fork()).ldelim();
     }
     Object.entries(message.metadata).forEach(([key, value]) => {
       ListenChannelResponse_MetadataEntry.encode(
@@ -1462,8 +1520,11 @@ export const ListenChannelResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ListenChannelResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ListenChannelResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenChannelResponse();
     while (reader.pos < end) {
@@ -1473,7 +1534,7 @@ export const ListenChannelResponse = {
           message.code = reader.int32();
           break;
         case 2:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 3:
           const entry3 = ListenChannelResponse_MetadataEntry.decode(
@@ -1498,7 +1559,7 @@ export const ListenChannelResponse = {
   fromJSON(object: any): ListenChannelResponse {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       metadata: isObject(object.metadata)
         ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
             (acc, [key, value]) => {
@@ -1517,7 +1578,8 @@ export const ListenChannelResponse = {
   toJSON(message: ListenChannelResponse): unknown {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
@@ -1536,7 +1598,10 @@ export const ListenChannelResponse = {
   ): ListenChannelResponse {
     const message = createBaseListenChannelResponse();
     message.code = object.code ?? 0;
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.metadata = Object.entries(object.metadata ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
@@ -1557,8 +1622,8 @@ function createBaseListenChannelResponse_MetadataEntry(): ListenChannelResponse_
 export const ListenChannelResponse_MetadataEntry = {
   encode(
     message: ListenChannelResponse_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1569,10 +1634,10 @@ export const ListenChannelResponse_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): ListenChannelResponse_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenChannelResponse_MetadataEntry();
     while (reader.pos < end) {
@@ -1617,28 +1682,31 @@ export const ListenChannelResponse_MetadataEntry = {
 };
 
 function createBaseCreateBucketResponse(): CreateBucketResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const CreateBucketResponse = {
   encode(
     message: CreateBucketResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): CreateBucketResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateBucketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateBucketResponse();
     while (reader.pos < end) {
@@ -1651,7 +1719,7 @@ export const CreateBucketResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1665,7 +1733,7 @@ export const CreateBucketResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -1673,7 +1741,8 @@ export const CreateBucketResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -1683,31 +1752,34 @@ export const CreateBucketResponse = {
     const message = createBaseCreateBucketResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseReadBucketResponse(): ReadBucketResponse {
-  return { code: 0, message: "", did: "", objects: [], owners: [] };
+  return { code: 0, message: "", did: undefined, objects: [], owners: [] };
 }
 
 export const ReadBucketResponse = {
   encode(
     message: ReadBucketResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.objects) {
-      Object.encode(v!, writer.uint32(34).fork()).ldelim();
+      ObjectDoc.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     for (const v of message.owners) {
       Peer.encode(v!, writer.uint32(42).fork()).ldelim();
@@ -1715,8 +1787,8 @@ export const ReadBucketResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ReadBucketResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReadBucketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReadBucketResponse();
     while (reader.pos < end) {
@@ -1729,10 +1801,10 @@ export const ReadBucketResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
-          message.objects.push(Object.decode(reader, reader.uint32()));
+          message.objects.push(ObjectDoc.decode(reader, reader.uint32()));
           break;
         case 5:
           message.owners.push(Peer.decode(reader, reader.uint32()));
@@ -1749,9 +1821,9 @@ export const ReadBucketResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       objects: Array.isArray(object?.objects)
-        ? object.objects.map((e: any) => Object.fromJSON(e))
+        ? object.objects.map((e: any) => ObjectDoc.fromJSON(e))
         : [],
       owners: Array.isArray(object?.owners)
         ? object.owners.map((e: any) => Peer.fromJSON(e))
@@ -1763,10 +1835,11 @@ export const ReadBucketResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     if (message.objects) {
       obj.objects = message.objects.map((e) =>
-        e ? Object.toJSON(e) : undefined
+        e ? ObjectDoc.toJSON(e) : undefined
       );
     } else {
       obj.objects = [];
@@ -1785,33 +1858,37 @@ export const ReadBucketResponse = {
     const message = createBaseReadBucketResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
-    message.objects = object.objects?.map((e) => Object.fromPartial(e)) || [];
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
+    message.objects =
+      object.objects?.map((e) => ObjectDoc.fromPartial(e)) || [];
     message.owners = object.owners?.map((e) => Peer.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseUpdateBucketResponse(): UpdateBucketResponse {
-  return { code: 0, message: "", did: "", objects: [], owners: [] };
+  return { code: 0, message: "", did: undefined, objects: [], owners: [] };
 }
 
 export const UpdateBucketResponse = {
   encode(
     message: UpdateBucketResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.objects) {
-      Object.encode(v!, writer.uint32(34).fork()).ldelim();
+      ObjectDoc.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     for (const v of message.owners) {
       Peer.encode(v!, writer.uint32(42).fork()).ldelim();
@@ -1819,8 +1896,11 @@ export const UpdateBucketResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateBucketResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateBucketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateBucketResponse();
     while (reader.pos < end) {
@@ -1833,10 +1913,10 @@ export const UpdateBucketResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
-          message.objects.push(Object.decode(reader, reader.uint32()));
+          message.objects.push(ObjectDoc.decode(reader, reader.uint32()));
           break;
         case 5:
           message.owners.push(Peer.decode(reader, reader.uint32()));
@@ -1853,9 +1933,9 @@ export const UpdateBucketResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       objects: Array.isArray(object?.objects)
-        ? object.objects.map((e: any) => Object.fromJSON(e))
+        ? object.objects.map((e: any) => ObjectDoc.fromJSON(e))
         : [],
       owners: Array.isArray(object?.owners)
         ? object.owners.map((e: any) => Peer.fromJSON(e))
@@ -1867,10 +1947,11 @@ export const UpdateBucketResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     if (message.objects) {
       obj.objects = message.objects.map((e) =>
-        e ? Object.toJSON(e) : undefined
+        e ? ObjectDoc.toJSON(e) : undefined
       );
     } else {
       obj.objects = [];
@@ -1889,36 +1970,43 @@ export const UpdateBucketResponse = {
     const message = createBaseUpdateBucketResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
-    message.objects = object.objects?.map((e) => Object.fromPartial(e)) || [];
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
+    message.objects =
+      object.objects?.map((e) => ObjectDoc.fromPartial(e)) || [];
     message.owners = object.owners?.map((e) => Peer.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseDeleteBucketResponse(): DeleteBucketResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const DeleteBucketResponse = {
   encode(
     message: DeleteBucketResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteBucketResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DeleteBucketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteBucketResponse();
     while (reader.pos < end) {
@@ -1931,7 +2019,7 @@ export const DeleteBucketResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1945,7 +2033,7 @@ export const DeleteBucketResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -1953,7 +2041,8 @@ export const DeleteBucketResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -1963,25 +2052,28 @@ export const DeleteBucketResponse = {
     const message = createBaseDeleteBucketResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseListenBucketResponse(): ListenBucketResponse {
-  return { code: 0, did: "", metadata: {}, objects: [] };
+  return { code: 0, did: undefined, metadata: {}, objects: [] };
 }
 
 export const ListenBucketResponse = {
   encode(
     message: ListenBucketResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
-    if (message.did !== "") {
-      writer.uint32(18).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(18).fork()).ldelim();
     }
     Object.entries(message.metadata).forEach(([key, value]) => {
       ListenBucketResponse_MetadataEntry.encode(
@@ -1990,13 +2082,16 @@ export const ListenBucketResponse = {
       ).ldelim();
     });
     for (const v of message.objects) {
-      Object.encode(v!, writer.uint32(34).fork()).ldelim();
+      ObjectDoc.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ListenBucketResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ListenBucketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenBucketResponse();
     while (reader.pos < end) {
@@ -2006,7 +2101,7 @@ export const ListenBucketResponse = {
           message.code = reader.int32();
           break;
         case 2:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 3:
           const entry3 = ListenBucketResponse_MetadataEntry.decode(
@@ -2018,7 +2113,7 @@ export const ListenBucketResponse = {
           }
           break;
         case 4:
-          message.objects.push(Object.decode(reader, reader.uint32()));
+          message.objects.push(ObjectDoc.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -2031,7 +2126,7 @@ export const ListenBucketResponse = {
   fromJSON(object: any): ListenBucketResponse {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       metadata: isObject(object.metadata)
         ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
             (acc, [key, value]) => {
@@ -2042,7 +2137,7 @@ export const ListenBucketResponse = {
           )
         : {},
       objects: Array.isArray(object?.objects)
-        ? object.objects.map((e: any) => Object.fromJSON(e))
+        ? object.objects.map((e: any) => ObjectDoc.fromJSON(e))
         : [],
     };
   },
@@ -2050,7 +2145,8 @@ export const ListenBucketResponse = {
   toJSON(message: ListenBucketResponse): unknown {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
@@ -2059,7 +2155,7 @@ export const ListenBucketResponse = {
     }
     if (message.objects) {
       obj.objects = message.objects.map((e) =>
-        e ? Object.toJSON(e) : undefined
+        e ? ObjectDoc.toJSON(e) : undefined
       );
     } else {
       obj.objects = [];
@@ -2072,7 +2168,10 @@ export const ListenBucketResponse = {
   ): ListenBucketResponse {
     const message = createBaseListenBucketResponse();
     message.code = object.code ?? 0;
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.metadata = Object.entries(object.metadata ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
@@ -2081,7 +2180,8 @@ export const ListenBucketResponse = {
       }
       return acc;
     }, {});
-    message.objects = object.objects?.map((e) => Object.fromPartial(e)) || [];
+    message.objects =
+      object.objects?.map((e) => ObjectDoc.fromPartial(e)) || [];
     return message;
   },
 };
@@ -2093,8 +2193,8 @@ function createBaseListenBucketResponse_MetadataEntry(): ListenBucketResponse_Me
 export const ListenBucketResponse_MetadataEntry = {
   encode(
     message: ListenBucketResponse_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2105,10 +2205,10 @@ export const ListenBucketResponse_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): ListenBucketResponse_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenBucketResponse_MetadataEntry();
     while (reader.pos < end) {
@@ -2153,28 +2253,31 @@ export const ListenBucketResponse_MetadataEntry = {
 };
 
 function createBaseCreateObjectResponse(): CreateObjectResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const CreateObjectResponse = {
   encode(
     message: CreateObjectResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): CreateObjectResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateObjectResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateObjectResponse();
     while (reader.pos < end) {
@@ -2187,7 +2290,7 @@ export const CreateObjectResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2201,7 +2304,7 @@ export const CreateObjectResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -2209,7 +2312,8 @@ export const CreateObjectResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -2219,37 +2323,40 @@ export const CreateObjectResponse = {
     const message = createBaseCreateObjectResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseReadObjectResponse(): ReadObjectResponse {
-  return { code: 0, message: "", did: "", object: undefined };
+  return { code: 0, message: "", did: undefined, object: undefined };
 }
 
 export const ReadObjectResponse = {
   encode(
     message: ReadObjectResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     if (message.object !== undefined) {
-      Object.encode(message.object, writer.uint32(34).fork()).ldelim();
+      ObjectDoc.encode(message.object, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ReadObjectResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReadObjectResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReadObjectResponse();
     while (reader.pos < end) {
@@ -2262,10 +2369,10 @@ export const ReadObjectResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
-          message.object = Object.decode(reader, reader.uint32());
+          message.object = ObjectDoc.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2279,8 +2386,10 @@ export const ReadObjectResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
-      object: isSet(object.object) ? Object.fromJSON(object.object) : undefined,
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
+      object: isSet(object.object)
+        ? ObjectDoc.fromJSON(object.object)
+        : undefined,
     };
   },
 
@@ -2288,9 +2397,12 @@ export const ReadObjectResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     message.object !== undefined &&
-      (obj.object = message.object ? Object.toJSON(message.object) : undefined);
+      (obj.object = message.object
+        ? ObjectDoc.toJSON(message.object)
+        : undefined);
     return obj;
   },
 
@@ -2300,35 +2412,44 @@ export const ReadObjectResponse = {
     const message = createBaseReadObjectResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.object =
       object.object !== undefined && object.object !== null
-        ? Object.fromPartial(object.object)
+        ? ObjectDoc.fromPartial(object.object)
         : undefined;
     return message;
   },
 };
 
 function createBaseUpdateObjectResponse(): UpdateObjectResponse {
-  return { code: 0, message: "", did: "", object: undefined, metadata: {} };
+  return {
+    code: 0,
+    message: "",
+    did: undefined,
+    object: undefined,
+    metadata: {},
+  };
 }
 
 export const UpdateObjectResponse = {
   encode(
     message: UpdateObjectResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     if (message.object !== undefined) {
-      Object.encode(message.object, writer.uint32(34).fork()).ldelim();
+      ObjectDoc.encode(message.object, writer.uint32(34).fork()).ldelim();
     }
     Object.entries(message.metadata).forEach(([key, value]) => {
       UpdateObjectResponse_MetadataEntry.encode(
@@ -2339,8 +2460,11 @@ export const UpdateObjectResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateObjectResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateObjectResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateObjectResponse();
     while (reader.pos < end) {
@@ -2353,10 +2477,10 @@ export const UpdateObjectResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
-          message.object = Object.decode(reader, reader.uint32());
+          message.object = ObjectDoc.decode(reader, reader.uint32());
           break;
         case 5:
           const entry5 = UpdateObjectResponse_MetadataEntry.decode(
@@ -2379,8 +2503,10 @@ export const UpdateObjectResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
-      object: isSet(object.object) ? Object.fromJSON(object.object) : undefined,
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
+      object: isSet(object.object)
+        ? ObjectDoc.fromJSON(object.object)
+        : undefined,
       metadata: isObject(object.metadata)
         ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
             (acc, [key, value]) => {
@@ -2397,9 +2523,12 @@ export const UpdateObjectResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     message.object !== undefined &&
-      (obj.object = message.object ? Object.toJSON(message.object) : undefined);
+      (obj.object = message.object
+        ? ObjectDoc.toJSON(message.object)
+        : undefined);
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
@@ -2415,10 +2544,13 @@ export const UpdateObjectResponse = {
     const message = createBaseUpdateObjectResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.object =
       object.object !== undefined && object.object !== null
-        ? Object.fromPartial(object.object)
+        ? ObjectDoc.fromPartial(object.object)
         : undefined;
     message.metadata = Object.entries(object.metadata ?? {}).reduce<{
       [key: string]: string;
@@ -2439,8 +2571,8 @@ function createBaseUpdateObjectResponse_MetadataEntry(): UpdateObjectResponse_Me
 export const UpdateObjectResponse_MetadataEntry = {
   encode(
     message: UpdateObjectResponse_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2451,10 +2583,10 @@ export const UpdateObjectResponse_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): UpdateObjectResponse_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateObjectResponse_MetadataEntry();
     while (reader.pos < end) {
@@ -2499,28 +2631,31 @@ export const UpdateObjectResponse_MetadataEntry = {
 };
 
 function createBaseDeleteObjectResponse(): DeleteObjectResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const DeleteObjectResponse = {
   encode(
     message: DeleteObjectResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteObjectResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DeleteObjectResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteObjectResponse();
     while (reader.pos < end) {
@@ -2533,7 +2668,7 @@ export const DeleteObjectResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2547,7 +2682,7 @@ export const DeleteObjectResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -2555,7 +2690,8 @@ export const DeleteObjectResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -2565,28 +2701,31 @@ export const DeleteObjectResponse = {
     const message = createBaseDeleteObjectResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseUploadBlobResponse(): UploadBlobResponse {
-  return { code: 0, message: "", did: "", pinned: false };
+  return { code: 0, message: "", did: undefined, pinned: false };
 }
 
 export const UploadBlobResponse = {
   encode(
     message: UploadBlobResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     if (message.pinned === true) {
       writer.uint32(32).bool(message.pinned);
@@ -2594,8 +2733,8 @@ export const UploadBlobResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UploadBlobResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadBlobResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUploadBlobResponse();
     while (reader.pos < end) {
@@ -2608,7 +2747,7 @@ export const UploadBlobResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
           message.pinned = reader.bool();
@@ -2625,7 +2764,7 @@ export const UploadBlobResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       pinned: isSet(object.pinned) ? Boolean(object.pinned) : false,
     };
   },
@@ -2634,7 +2773,8 @@ export const UploadBlobResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     message.pinned !== undefined && (obj.pinned = message.pinned);
     return obj;
   },
@@ -2645,29 +2785,32 @@ export const UploadBlobResponse = {
     const message = createBaseUploadBlobResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.pinned = object.pinned ?? false;
     return message;
   },
 };
 
 function createBaseDownloadBlobResponse(): DownloadBlobResponse {
-  return { code: 0, message: "", did: "", path: "" };
+  return { code: 0, message: "", did: undefined, path: "" };
 }
 
 export const DownloadBlobResponse = {
   encode(
     message: DownloadBlobResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     if (message.path !== "") {
       writer.uint32(34).string(message.path);
@@ -2675,8 +2818,11 @@ export const DownloadBlobResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DownloadBlobResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DownloadBlobResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDownloadBlobResponse();
     while (reader.pos < end) {
@@ -2689,7 +2835,7 @@ export const DownloadBlobResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         case 4:
           message.path = reader.string();
@@ -2706,7 +2852,7 @@ export const DownloadBlobResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
       path: isSet(object.path) ? String(object.path) : "",
     };
   },
@@ -2715,7 +2861,8 @@ export const DownloadBlobResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     message.path !== undefined && (obj.path = message.path);
     return obj;
   },
@@ -2726,32 +2873,38 @@ export const DownloadBlobResponse = {
     const message = createBaseDownloadBlobResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     message.path = object.path ?? "";
     return message;
   },
 };
 
 function createBaseSyncBlobResponse(): SyncBlobResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const SyncBlobResponse = {
-  encode(message: SyncBlobResponse, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: SyncBlobResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): SyncBlobResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SyncBlobResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSyncBlobResponse();
     while (reader.pos < end) {
@@ -2764,7 +2917,7 @@ export const SyncBlobResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2778,7 +2931,7 @@ export const SyncBlobResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -2786,7 +2939,8 @@ export const SyncBlobResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -2796,34 +2950,37 @@ export const SyncBlobResponse = {
     const message = createBaseSyncBlobResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseDeleteBlobResponse(): DeleteBlobResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const DeleteBlobResponse = {
   encode(
     message: DeleteBlobResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteBlobResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteBlobResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteBlobResponse();
     while (reader.pos < end) {
@@ -2836,7 +2993,7 @@ export const DeleteBlobResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2850,7 +3007,7 @@ export const DeleteBlobResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -2858,7 +3015,8 @@ export const DeleteBlobResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -2868,31 +3026,37 @@ export const DeleteBlobResponse = {
     const message = createBaseDeleteBlobResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseParseDidResponse(): ParseDidResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", did: undefined };
 }
 
 export const ParseDidResponse = {
-  encode(message: ParseDidResponse, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ParseDidResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.did !== undefined) {
+      Did.encode(message.did, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ParseDidResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ParseDidResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseParseDidResponse();
     while (reader.pos < end) {
@@ -2905,7 +3069,7 @@ export const ParseDidResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.did = Did.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2919,7 +3083,7 @@ export const ParseDidResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      did: isSet(object.did) ? Did.fromJSON(object.did) : undefined,
     };
   },
 
@@ -2927,7 +3091,8 @@ export const ParseDidResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.did !== undefined &&
+      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
     return obj;
   },
 
@@ -2937,34 +3102,40 @@ export const ParseDidResponse = {
     const message = createBaseParseDidResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.did =
+      object.did !== undefined && object.did !== null
+        ? Did.fromPartial(object.did)
+        : undefined;
     return message;
   },
 };
 
 function createBaseResolveDidResponse(): ResolveDidResponse {
-  return { code: 0, message: "", did: "" };
+  return { code: 0, message: "", didDocument: undefined };
 }
 
 export const ResolveDidResponse = {
   encode(
     message: ResolveDidResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
+    if (message.didDocument !== undefined) {
+      DidDocument.encode(
+        message.didDocument,
+        writer.uint32(26).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ResolveDidResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ResolveDidResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResolveDidResponse();
     while (reader.pos < end) {
@@ -2977,7 +3148,7 @@ export const ResolveDidResponse = {
           message.message = reader.string();
           break;
         case 3:
-          message.did = reader.string();
+          message.didDocument = DidDocument.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2991,7 +3162,9 @@ export const ResolveDidResponse = {
     return {
       code: isSet(object.code) ? Number(object.code) : 0,
       message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
+      didDocument: isSet(object.didDocument)
+        ? DidDocument.fromJSON(object.didDocument)
+        : undefined,
     };
   },
 
@@ -2999,7 +3172,10 @@ export const ResolveDidResponse = {
     const obj: any = {};
     message.code !== undefined && (obj.code = Math.round(message.code));
     message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
+    message.didDocument !== undefined &&
+      (obj.didDocument = message.didDocument
+        ? DidDocument.toJSON(message.didDocument)
+        : undefined);
     return obj;
   },
 
@@ -3009,76 +3185,10 @@ export const ResolveDidResponse = {
     const message = createBaseResolveDidResponse();
     message.code = object.code ?? 0;
     message.message = object.message ?? "";
-    message.did = object.did ?? "";
-    return message;
-  },
-};
-
-function createBaseVerifyDidResponse(): VerifyDidResponse {
-  return { code: 0, message: "", did: "" };
-}
-
-export const VerifyDidResponse = {
-  encode(message: VerifyDidResponse, writer: Writer = Writer.create()): Writer {
-    if (message.code !== 0) {
-      writer.uint32(8).int32(message.code);
-    }
-    if (message.message !== "") {
-      writer.uint32(18).string(message.message);
-    }
-    if (message.did !== "") {
-      writer.uint32(26).string(message.did);
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): VerifyDidResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseVerifyDidResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.code = reader.int32();
-          break;
-        case 2:
-          message.message = reader.string();
-          break;
-        case 3:
-          message.did = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): VerifyDidResponse {
-    return {
-      code: isSet(object.code) ? Number(object.code) : 0,
-      message: isSet(object.message) ? String(object.message) : "",
-      did: isSet(object.did) ? String(object.did) : "",
-    };
-  },
-
-  toJSON(message: VerifyDidResponse): unknown {
-    const obj: any = {};
-    message.code !== undefined && (obj.code = Math.round(message.code));
-    message.message !== undefined && (obj.message = message.message);
-    message.did !== undefined && (obj.did = message.did);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<VerifyDidResponse>, I>>(
-    object: I
-  ): VerifyDidResponse {
-    const message = createBaseVerifyDidResponse();
-    message.code = object.code ?? 0;
-    message.message = object.message ?? "";
-    message.did = object.did ?? "";
+    message.didDocument =
+      object.didDocument !== undefined && object.didDocument !== null
+        ? DidDocument.fromPartial(object.didDocument)
+        : undefined;
     return message;
   },
 };
@@ -3144,11 +3254,9 @@ export type Exact<P, I extends P> = P extends Builtin
         never
       >;
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {

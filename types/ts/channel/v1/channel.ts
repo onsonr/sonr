@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "channel.v1";
 
@@ -93,7 +93,7 @@ function createBaseEvent(): Event {
 }
 
 export const Event = {
-  encode(message: Event, writer: Writer = Writer.create()): Writer {
+  encode(message: Event, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.peer !== "") {
       writer.uint32(10).string(message.peer);
     }
@@ -109,8 +109,8 @@ export const Event = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Event {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Event {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEvent();
     while (reader.pos < end) {
@@ -181,7 +181,7 @@ function createBaseStore(): Store {
 }
 
 export const Store = {
-  encode(message: Store, writer: Writer = Writer.create()): Writer {
+  encode(message: Store, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.data).forEach(([key, value]) => {
       Store_DataEntry.encode(
         { key: key as any, value },
@@ -200,8 +200,8 @@ export const Store = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Store {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Store {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStore();
     while (reader.pos < end) {
@@ -285,7 +285,10 @@ function createBaseStore_DataEntry(): Store_DataEntry {
 }
 
 export const Store_DataEntry = {
-  encode(message: Store_DataEntry, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Store_DataEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -295,8 +298,8 @@ export const Store_DataEntry = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Store_DataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Store_DataEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStore_DataEntry();
     while (reader.pos < end) {
@@ -360,7 +363,10 @@ function createBaseStoreEntry(): StoreEntry {
 }
 
 export const StoreEntry = {
-  encode(message: StoreEntry, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: StoreEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.peer !== "") {
       writer.uint32(10).string(message.peer);
     }
@@ -382,8 +388,8 @@ export const StoreEntry = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): StoreEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): StoreEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStoreEntry();
     while (reader.pos < end) {
@@ -527,11 +533,9 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {

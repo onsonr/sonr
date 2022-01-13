@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { Observable } from "rxjs";
 import {
   AccessNameResponse,
@@ -29,7 +29,6 @@ import {
   DeleteBlobResponse,
   ParseDidResponse,
   ResolveDidResponse,
-  VerifyDidResponse,
 } from "../../../node/highway/v1/response";
 import { map } from "rxjs/operators";
 import {
@@ -59,7 +58,6 @@ import {
   DeleteBlobRequest,
   ParseDidRequest,
   ResolveDidRequest,
-  VerifyDidRequest,
 } from "../../../node/highway/v1/request";
 
 export const protobufPackage = "node.highway.v1";
@@ -157,11 +155,9 @@ export interface HighwayService {
   ParseDid(request: ParseDidRequest): Promise<ParseDidResponse>;
   /**
    * ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has
-   * access to the DID.
+   * access to the DID Document.
    */
   ResolveDid(request: ResolveDidRequest): Promise<ResolveDidResponse>;
-  /** VerifyDid verifies the given DID document against the DID schema. */
-  VerifyDid(request: VerifyDidRequest): Promise<VerifyDidResponse>;
 }
 
 export class HighwayServiceClientImpl implements HighwayService {
@@ -194,7 +190,6 @@ export class HighwayServiceClientImpl implements HighwayService {
     this.DeleteBlob = this.DeleteBlob.bind(this);
     this.ParseDid = this.ParseDid.bind(this);
     this.ResolveDid = this.ResolveDid.bind(this);
-    this.VerifyDid = this.VerifyDid.bind(this);
   }
   AccessName(request: AccessNameRequest): Promise<AccessNameResponse> {
     const data = AccessNameRequest.encode(request).finish();
@@ -203,7 +198,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "AccessName",
       data
     );
-    return promise.then((data) => AccessNameResponse.decode(new Reader(data)));
+    return promise.then((data) =>
+      AccessNameResponse.decode(new _m0.Reader(data))
+    );
   }
 
   RegisterName(request: RegisterNameRequest): Promise<RegisterNameResponse> {
@@ -214,7 +211,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      RegisterNameResponse.decode(new Reader(data))
+      RegisterNameResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -225,7 +222,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "UpdateName",
       data
     );
-    return promise.then((data) => UpdateNameResponse.decode(new Reader(data)));
+    return promise.then((data) =>
+      UpdateNameResponse.decode(new _m0.Reader(data))
+    );
   }
 
   AccessService(request: AccessServiceRequest): Promise<AccessServiceResponse> {
@@ -236,7 +235,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      AccessServiceResponse.decode(new Reader(data))
+      AccessServiceResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -250,7 +249,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      RegisterServiceResponse.decode(new Reader(data))
+      RegisterServiceResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -262,7 +261,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      UpdateServiceResponse.decode(new Reader(data))
+      UpdateServiceResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -274,7 +273,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      CreateChannelResponse.decode(new Reader(data))
+      CreateChannelResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -285,7 +284,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "ReadChannel",
       data
     );
-    return promise.then((data) => ReadChannelResponse.decode(new Reader(data)));
+    return promise.then((data) =>
+      ReadChannelResponse.decode(new _m0.Reader(data))
+    );
   }
 
   UpdateChannel(request: UpdateChannelRequest): Promise<UpdateChannelResponse> {
@@ -296,7 +297,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      UpdateChannelResponse.decode(new Reader(data))
+      UpdateChannelResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -308,7 +309,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      DeleteChannelResponse.decode(new Reader(data))
+      DeleteChannelResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -322,7 +323,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return result.pipe(
-      map((data) => ListenChannelResponse.decode(new Reader(data)))
+      map((data) => ListenChannelResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -334,7 +335,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      CreateBucketResponse.decode(new Reader(data))
+      CreateBucketResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -345,7 +346,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "ReadBucket",
       data
     );
-    return promise.then((data) => ReadBucketResponse.decode(new Reader(data)));
+    return promise.then((data) =>
+      ReadBucketResponse.decode(new _m0.Reader(data))
+    );
   }
 
   UpdateBucket(request: UpdateBucketRequest): Promise<UpdateBucketResponse> {
@@ -356,7 +359,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      UpdateBucketResponse.decode(new Reader(data))
+      UpdateBucketResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -368,7 +371,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      DeleteBucketResponse.decode(new Reader(data))
+      DeleteBucketResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -380,7 +383,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return result.pipe(
-      map((data) => ListenBucketResponse.decode(new Reader(data)))
+      map((data) => ListenBucketResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -392,7 +395,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      CreateObjectResponse.decode(new Reader(data))
+      CreateObjectResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -403,7 +406,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "ReadObject",
       data
     );
-    return promise.then((data) => ReadObjectResponse.decode(new Reader(data)));
+    return promise.then((data) =>
+      ReadObjectResponse.decode(new _m0.Reader(data))
+    );
   }
 
   UpdateObject(request: UpdateObjectRequest): Promise<UpdateObjectResponse> {
@@ -414,7 +419,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      UpdateObjectResponse.decode(new Reader(data))
+      UpdateObjectResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -426,7 +431,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return promise.then((data) =>
-      DeleteObjectResponse.decode(new Reader(data))
+      DeleteObjectResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -438,7 +443,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return result.pipe(
-      map((data) => UploadBlobResponse.decode(new Reader(data)))
+      map((data) => UploadBlobResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -450,7 +455,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return result.pipe(
-      map((data) => DownloadBlobResponse.decode(new Reader(data)))
+      map((data) => DownloadBlobResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -462,7 +467,7 @@ export class HighwayServiceClientImpl implements HighwayService {
       data
     );
     return result.pipe(
-      map((data) => SyncBlobResponse.decode(new Reader(data)))
+      map((data) => SyncBlobResponse.decode(new _m0.Reader(data)))
     );
   }
 
@@ -473,7 +478,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "DeleteBlob",
       data
     );
-    return promise.then((data) => DeleteBlobResponse.decode(new Reader(data)));
+    return promise.then((data) =>
+      DeleteBlobResponse.decode(new _m0.Reader(data))
+    );
   }
 
   ParseDid(request: ParseDidRequest): Promise<ParseDidResponse> {
@@ -483,7 +490,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "ParseDid",
       data
     );
-    return promise.then((data) => ParseDidResponse.decode(new Reader(data)));
+    return promise.then((data) =>
+      ParseDidResponse.decode(new _m0.Reader(data))
+    );
   }
 
   ResolveDid(request: ResolveDidRequest): Promise<ResolveDidResponse> {
@@ -493,17 +502,9 @@ export class HighwayServiceClientImpl implements HighwayService {
       "ResolveDid",
       data
     );
-    return promise.then((data) => ResolveDidResponse.decode(new Reader(data)));
-  }
-
-  VerifyDid(request: VerifyDidRequest): Promise<VerifyDidResponse> {
-    const data = VerifyDidRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "node.highway.v1.HighwayService",
-      "VerifyDid",
-      data
+    return promise.then((data) =>
+      ResolveDidResponse.decode(new _m0.Reader(data))
     );
-    return promise.then((data) => VerifyDidResponse.decode(new Reader(data)));
   }
 }
 
@@ -530,9 +531,7 @@ interface Rpc {
   ): Observable<Uint8Array>;
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }

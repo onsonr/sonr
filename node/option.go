@@ -38,12 +38,6 @@ const (
 // Option is a function that modifies the node options.
 type Option func(*options)
 
-// WithMode starts the Client RPC server as a highway node.
-func WithMode(m Role) Option {
-	return func(o *options) {
-		o.role = m
-	}
-}
 
 // WithLogLevel sets the log level for Logger
 func WithLogLevel(level LogLevel) Option {
@@ -113,7 +107,7 @@ type options struct {
 }
 
 // defaultOptions returns the default options
-func defaultOptions() *options {
+func defaultOptions(r Role) *options {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
 	for _, s := range bootstrapAddrStrs {
@@ -138,7 +132,7 @@ func defaultOptions() *options {
 		configuration:  defaultConfiguration(),
 		host:           ":",
 		port:           26225,
-		role:           Role_MOTOR,
+		role:           r,
 		network:        "tcp",
 		logLevel:       string(InfoLevel),
 		LowWater:       200,

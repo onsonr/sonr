@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import {
   Direction,
   Payload,
@@ -58,7 +58,10 @@ function createBaseSession(): Session {
 }
 
 export const Session = {
-  encode(message: Session, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Session,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.direction !== 0) {
       writer.uint32(8).int32(message.direction);
     }
@@ -89,8 +92,8 @@ export const Session = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Session {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Session {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSession();
     while (reader.pos < end) {
@@ -229,8 +232,8 @@ function createBaseSession_ResultsEntry(): Session_ResultsEntry {
 export const Session_ResultsEntry = {
   encode(
     message: Session_ResultsEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== 0) {
       writer.uint32(8).int32(message.key);
     }
@@ -240,8 +243,11 @@ export const Session_ResultsEntry = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Session_ResultsEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): Session_ResultsEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSession_ResultsEntry();
     while (reader.pos < end) {
@@ -299,7 +305,10 @@ function createBaseSessionItem(): SessionItem {
 }
 
 export const SessionItem = {
-  encode(message: SessionItem, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: SessionItem,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.index !== 0) {
       writer.uint32(8).int32(message.index);
     }
@@ -327,8 +336,8 @@ export const SessionItem = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): SessionItem {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SessionItem {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSessionItem();
     while (reader.pos < end) {
@@ -422,7 +431,10 @@ function createBaseSessionPayload(): SessionPayload {
 }
 
 export const SessionPayload = {
-  encode(message: SessionPayload, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: SessionPayload,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.payload !== undefined) {
       Payload.encode(message.payload, writer.uint32(10).fork()).ldelim();
     }
@@ -432,8 +444,8 @@ export const SessionPayload = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): SessionPayload {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SessionPayload {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSessionPayload();
     while (reader.pos < end) {
@@ -533,11 +545,9 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {

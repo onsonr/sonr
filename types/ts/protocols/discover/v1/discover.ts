@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { Peer, Metadata } from "../../../common/v1/core";
 
 export const protobufPackage = "protocols.discover.v1";
@@ -142,7 +142,10 @@ function createBaseLobbyMessage(): LobbyMessage {
 }
 
 export const LobbyMessage = {
-  encode(message: LobbyMessage, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: LobbyMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.peer !== undefined) {
       Peer.encode(message.peer, writer.uint32(10).fork()).ldelim();
     }
@@ -155,8 +158,8 @@ export const LobbyMessage = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): LobbyMessage {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): LobbyMessage {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLobbyMessage();
     while (reader.pos < end) {
@@ -223,7 +226,10 @@ function createBaseVisibilityRequest(): VisibilityRequest {
 }
 
 export const VisibilityRequest = {
-  encode(message: VisibilityRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: VisibilityRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.sName !== "") {
       writer.uint32(10).string(message.sName);
     }
@@ -236,8 +242,8 @@ export const VisibilityRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): VisibilityRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): VisibilityRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseVisibilityRequest();
     while (reader.pos < end) {
@@ -302,8 +308,8 @@ function createBaseVisibilityResponse(): VisibilityResponse {
 export const VisibilityResponse = {
   encode(
     message: VisibilityResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.success === true) {
       writer.uint32(8).bool(message.success);
     }
@@ -316,8 +322,8 @@ export const VisibilityResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): VisibilityResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): VisibilityResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseVisibilityResponse();
     while (reader.pos < end) {
@@ -433,11 +439,9 @@ export type Exact<P, I extends P> = P extends Builtin
         never
       >;
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {

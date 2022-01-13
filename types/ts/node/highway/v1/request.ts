@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import {
   BucketType,
   ObjectField,
@@ -286,6 +286,8 @@ export interface UploadBlobRequest {
 export interface DownloadBlobRequest {
   /** DID is the identifier of the blob */
   did: string;
+  /** Out Path is the download path of the blob */
+  outPath: string;
 }
 
 /** SyncBlobRequest is the request to sync a blob */
@@ -294,6 +296,8 @@ export interface SyncBlobRequest {
   did: string;
   /** Destination DID is the identifier of the destination service storage */
   destinationDid: string;
+  /** Path is the location of the blob */
+  path: string;
 }
 
 /** DeleteBlobRequest is the request to delete a blob */
@@ -337,25 +341,15 @@ export interface ResolveDidRequest_MetadataEntry {
   value: string;
 }
 
-/** VerifyDidRequest is the request to verify a DID */
-export interface VerifyDidRequest {
-  /** DID is the DID of the DID */
-  did: string;
-  /** Additional metadata for the DID verification */
-  metadata: { [key: string]: string };
-}
-
-export interface VerifyDidRequest_MetadataEntry {
-  key: string;
-  value: string;
-}
-
 function createBaseAccessNameRequest(): AccessNameRequest {
   return { name: "", publicKey: "" };
 }
 
 export const AccessNameRequest = {
-  encode(message: AccessNameRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: AccessNameRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -365,8 +359,8 @@ export const AccessNameRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): AccessNameRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccessNameRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccessNameRequest();
     while (reader.pos < end) {
@@ -424,8 +418,8 @@ function createBaseRegisterNameRequest(): RegisterNameRequest {
 export const RegisterNameRequest = {
   encode(
     message: RegisterNameRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.deviceId !== "") {
       writer.uint32(10).string(message.deviceId);
     }
@@ -447,8 +441,8 @@ export const RegisterNameRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): RegisterNameRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterNameRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterNameRequest();
     while (reader.pos < end) {
@@ -524,7 +518,10 @@ function createBaseUpdateNameRequest(): UpdateNameRequest {
 }
 
 export const UpdateNameRequest = {
-  encode(message: UpdateNameRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: UpdateNameRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -537,8 +534,8 @@ export const UpdateNameRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateNameRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateNameRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateNameRequest();
     while (reader.pos < end) {
@@ -615,8 +612,8 @@ function createBaseUpdateNameRequest_MetadataEntry(): UpdateNameRequest_Metadata
 export const UpdateNameRequest_MetadataEntry = {
   encode(
     message: UpdateNameRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -627,10 +624,10 @@ export const UpdateNameRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): UpdateNameRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateNameRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -681,8 +678,8 @@ function createBaseAccessServiceRequest(): AccessServiceRequest {
 export const AccessServiceRequest = {
   encode(
     message: AccessServiceRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -695,8 +692,11 @@ export const AccessServiceRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): AccessServiceRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): AccessServiceRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccessServiceRequest();
     while (reader.pos < end) {
@@ -773,8 +773,8 @@ function createBaseAccessServiceRequest_MetadataEntry(): AccessServiceRequest_Me
 export const AccessServiceRequest_MetadataEntry = {
   encode(
     message: AccessServiceRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -785,10 +785,10 @@ export const AccessServiceRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): AccessServiceRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccessServiceRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -839,8 +839,8 @@ function createBaseRegisterServiceRequest(): RegisterServiceRequest {
 export const RegisterServiceRequest = {
   encode(
     message: RegisterServiceRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.serviceName !== "") {
       writer.uint32(10).string(message.serviceName);
     }
@@ -856,8 +856,11 @@ export const RegisterServiceRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): RegisterServiceRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RegisterServiceRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterServiceRequest();
     while (reader.pos < end) {
@@ -940,8 +943,8 @@ function createBaseRegisterServiceRequest_ConfigurationEntry(): RegisterServiceR
 export const RegisterServiceRequest_ConfigurationEntry = {
   encode(
     message: RegisterServiceRequest_ConfigurationEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -952,10 +955,10 @@ export const RegisterServiceRequest_ConfigurationEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): RegisterServiceRequest_ConfigurationEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRegisterServiceRequest_ConfigurationEntry();
     while (reader.pos < end) {
@@ -1006,8 +1009,8 @@ function createBaseUpdateServiceRequest(): UpdateServiceRequest {
 export const UpdateServiceRequest = {
   encode(
     message: UpdateServiceRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -1026,8 +1029,11 @@ export const UpdateServiceRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateServiceRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateServiceRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateServiceRequest();
     while (reader.pos < end) {
@@ -1135,8 +1141,8 @@ function createBaseUpdateServiceRequest_ConfigurationEntry(): UpdateServiceReque
 export const UpdateServiceRequest_ConfigurationEntry = {
   encode(
     message: UpdateServiceRequest_ConfigurationEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1147,10 +1153,10 @@ export const UpdateServiceRequest_ConfigurationEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): UpdateServiceRequest_ConfigurationEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateServiceRequest_ConfigurationEntry();
     while (reader.pos < end) {
@@ -1201,8 +1207,8 @@ function createBaseUpdateServiceRequest_MetadataEntry(): UpdateServiceRequest_Me
 export const UpdateServiceRequest_MetadataEntry = {
   encode(
     message: UpdateServiceRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1213,10 +1219,10 @@ export const UpdateServiceRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): UpdateServiceRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateServiceRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -1267,8 +1273,8 @@ function createBaseCreateChannelRequest(): CreateChannelRequest {
 export const CreateChannelRequest = {
   encode(
     message: CreateChannelRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -1281,8 +1287,11 @@ export const CreateChannelRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): CreateChannelRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreateChannelRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateChannelRequest();
     while (reader.pos < end) {
@@ -1346,16 +1355,16 @@ function createBaseReadChannelRequest(): ReadChannelRequest {
 export const ReadChannelRequest = {
   encode(
     message: ReadChannelRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ReadChannelRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReadChannelRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReadChannelRequest();
     while (reader.pos < end) {
@@ -1400,8 +1409,8 @@ function createBaseUpdateChannelRequest(): UpdateChannelRequest {
 export const UpdateChannelRequest = {
   encode(
     message: UpdateChannelRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -1414,8 +1423,11 @@ export const UpdateChannelRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateChannelRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateChannelRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateChannelRequest();
     while (reader.pos < end) {
@@ -1492,8 +1504,8 @@ function createBaseUpdateChannelRequest_MetadataEntry(): UpdateChannelRequest_Me
 export const UpdateChannelRequest_MetadataEntry = {
   encode(
     message: UpdateChannelRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1504,10 +1516,10 @@ export const UpdateChannelRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): UpdateChannelRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateChannelRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -1558,8 +1570,8 @@ function createBaseDeleteChannelRequest(): DeleteChannelRequest {
 export const DeleteChannelRequest = {
   encode(
     message: DeleteChannelRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -1575,8 +1587,11 @@ export const DeleteChannelRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteChannelRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DeleteChannelRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteChannelRequest();
     while (reader.pos < end) {
@@ -1659,8 +1674,8 @@ function createBaseDeleteChannelRequest_MetadataEntry(): DeleteChannelRequest_Me
 export const DeleteChannelRequest_MetadataEntry = {
   encode(
     message: DeleteChannelRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1671,10 +1686,10 @@ export const DeleteChannelRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): DeleteChannelRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteChannelRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -1725,8 +1740,8 @@ function createBaseListenChannelRequest(): ListenChannelRequest {
 export const ListenChannelRequest = {
   encode(
     message: ListenChannelRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -1739,8 +1754,11 @@ export const ListenChannelRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ListenChannelRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ListenChannelRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenChannelRequest();
     while (reader.pos < end) {
@@ -1817,8 +1835,8 @@ function createBaseListenChannelRequest_MetadataEntry(): ListenChannelRequest_Me
 export const ListenChannelRequest_MetadataEntry = {
   encode(
     message: ListenChannelRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1829,10 +1847,10 @@ export const ListenChannelRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): ListenChannelRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenChannelRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -1883,8 +1901,8 @@ function createBaseCreateBucketRequest(): CreateBucketRequest {
 export const CreateBucketRequest = {
   encode(
     message: CreateBucketRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.label !== "") {
       writer.uint32(10).string(message.label);
     }
@@ -1903,8 +1921,8 @@ export const CreateBucketRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): CreateBucketRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreateBucketRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateBucketRequest();
     while (reader.pos < end) {
@@ -1997,8 +2015,8 @@ function createBaseCreateBucketRequest_MetadataEntry(): CreateBucketRequest_Meta
 export const CreateBucketRequest_MetadataEntry = {
   encode(
     message: CreateBucketRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2009,10 +2027,10 @@ export const CreateBucketRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): CreateBucketRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateBucketRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -2061,7 +2079,10 @@ function createBaseReadBucketRequest(): ReadBucketRequest {
 }
 
 export const ReadBucketRequest = {
-  encode(message: ReadBucketRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ReadBucketRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -2074,8 +2095,8 @@ export const ReadBucketRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ReadBucketRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReadBucketRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReadBucketRequest();
     while (reader.pos < end) {
@@ -2152,8 +2173,8 @@ function createBaseReadBucketRequest_MetadataEntry(): ReadBucketRequest_Metadata
 export const ReadBucketRequest_MetadataEntry = {
   encode(
     message: ReadBucketRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2164,10 +2185,10 @@ export const ReadBucketRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): ReadBucketRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReadBucketRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -2218,8 +2239,8 @@ function createBaseUpdateBucketRequest(): UpdateBucketRequest {
 export const UpdateBucketRequest = {
   encode(
     message: UpdateBucketRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -2238,8 +2259,8 @@ export const UpdateBucketRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateBucketRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateBucketRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateBucketRequest();
     while (reader.pos < end) {
@@ -2329,8 +2350,8 @@ function createBaseUpdateBucketRequest_MetadataEntry(): UpdateBucketRequest_Meta
 export const UpdateBucketRequest_MetadataEntry = {
   encode(
     message: UpdateBucketRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2341,10 +2362,10 @@ export const UpdateBucketRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): UpdateBucketRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateBucketRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -2395,8 +2416,8 @@ function createBaseDeleteBucketRequest(): DeleteBucketRequest {
 export const DeleteBucketRequest = {
   encode(
     message: DeleteBucketRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -2412,8 +2433,8 @@ export const DeleteBucketRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteBucketRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteBucketRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteBucketRequest();
     while (reader.pos < end) {
@@ -2496,8 +2517,8 @@ function createBaseDeleteBucketRequest_MetadataEntry(): DeleteBucketRequest_Meta
 export const DeleteBucketRequest_MetadataEntry = {
   encode(
     message: DeleteBucketRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2508,10 +2529,10 @@ export const DeleteBucketRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): DeleteBucketRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteBucketRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -2562,8 +2583,8 @@ function createBaseListenBucketRequest(): ListenBucketRequest {
 export const ListenBucketRequest = {
   encode(
     message: ListenBucketRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -2576,8 +2597,8 @@ export const ListenBucketRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ListenBucketRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ListenBucketRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenBucketRequest();
     while (reader.pos < end) {
@@ -2654,8 +2675,8 @@ function createBaseListenBucketRequest_MetadataEntry(): ListenBucketRequest_Meta
 export const ListenBucketRequest_MetadataEntry = {
   encode(
     message: ListenBucketRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2666,10 +2687,10 @@ export const ListenBucketRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): ListenBucketRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseListenBucketRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -2720,8 +2741,8 @@ function createBaseCreateObjectRequest(): CreateObjectRequest {
 export const CreateObjectRequest = {
   encode(
     message: CreateObjectRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.label !== "") {
       writer.uint32(10).string(message.label);
     }
@@ -2734,8 +2755,8 @@ export const CreateObjectRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): CreateObjectRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreateObjectRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateObjectRequest();
     while (reader.pos < end) {
@@ -2799,15 +2820,18 @@ function createBaseReadObjectRequest(): ReadObjectRequest {
 }
 
 export const ReadObjectRequest = {
-  encode(message: ReadObjectRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ReadObjectRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ReadObjectRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReadObjectRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReadObjectRequest();
     while (reader.pos < end) {
@@ -2852,8 +2876,8 @@ function createBaseUpdateObjectRequest(): UpdateObjectRequest {
 export const UpdateObjectRequest = {
   encode(
     message: UpdateObjectRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -2863,8 +2887,8 @@ export const UpdateObjectRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UpdateObjectRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateObjectRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateObjectRequest();
     while (reader.pos < end) {
@@ -2924,8 +2948,8 @@ function createBaseDeleteObjectRequest(): DeleteObjectRequest {
 export const DeleteObjectRequest = {
   encode(
     message: DeleteObjectRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -2941,8 +2965,8 @@ export const DeleteObjectRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteObjectRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteObjectRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteObjectRequest();
     while (reader.pos < end) {
@@ -3025,8 +3049,8 @@ function createBaseDeleteObjectRequest_MetadataEntry(): DeleteObjectRequest_Meta
 export const DeleteObjectRequest_MetadataEntry = {
   encode(
     message: DeleteObjectRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -3037,10 +3061,10 @@ export const DeleteObjectRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): DeleteObjectRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteObjectRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -3089,7 +3113,10 @@ function createBaseUploadBlobRequest(): UploadBlobRequest {
 }
 
 export const UploadBlobRequest = {
-  encode(message: UploadBlobRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: UploadBlobRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.label !== "") {
       writer.uint32(10).string(message.label);
     }
@@ -3108,8 +3135,8 @@ export const UploadBlobRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): UploadBlobRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadBlobRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUploadBlobRequest();
     while (reader.pos < end) {
@@ -3175,22 +3202,25 @@ export const UploadBlobRequest = {
 };
 
 function createBaseDownloadBlobRequest(): DownloadBlobRequest {
-  return { did: "" };
+  return { did: "", outPath: "" };
 }
 
 export const DownloadBlobRequest = {
   encode(
     message: DownloadBlobRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
+    }
+    if (message.outPath !== "") {
+      writer.uint32(18).string(message.outPath);
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DownloadBlobRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DownloadBlobRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDownloadBlobRequest();
     while (reader.pos < end) {
@@ -3198,6 +3228,9 @@ export const DownloadBlobRequest = {
       switch (tag >>> 3) {
         case 1:
           message.did = reader.string();
+          break;
+        case 2:
+          message.outPath = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3210,12 +3243,14 @@ export const DownloadBlobRequest = {
   fromJSON(object: any): DownloadBlobRequest {
     return {
       did: isSet(object.did) ? String(object.did) : "",
+      outPath: isSet(object.outPath) ? String(object.outPath) : "",
     };
   },
 
   toJSON(message: DownloadBlobRequest): unknown {
     const obj: any = {};
     message.did !== undefined && (obj.did = message.did);
+    message.outPath !== undefined && (obj.outPath = message.outPath);
     return obj;
   },
 
@@ -3224,27 +3259,34 @@ export const DownloadBlobRequest = {
   ): DownloadBlobRequest {
     const message = createBaseDownloadBlobRequest();
     message.did = object.did ?? "";
+    message.outPath = object.outPath ?? "";
     return message;
   },
 };
 
 function createBaseSyncBlobRequest(): SyncBlobRequest {
-  return { did: "", destinationDid: "" };
+  return { did: "", destinationDid: "", path: "" };
 }
 
 export const SyncBlobRequest = {
-  encode(message: SyncBlobRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: SyncBlobRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
     if (message.destinationDid !== "") {
       writer.uint32(18).string(message.destinationDid);
     }
+    if (message.path !== "") {
+      writer.uint32(26).string(message.path);
+    }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): SyncBlobRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SyncBlobRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSyncBlobRequest();
     while (reader.pos < end) {
@@ -3255,6 +3297,9 @@ export const SyncBlobRequest = {
           break;
         case 2:
           message.destinationDid = reader.string();
+          break;
+        case 3:
+          message.path = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3270,6 +3315,7 @@ export const SyncBlobRequest = {
       destinationDid: isSet(object.destinationDid)
         ? String(object.destinationDid)
         : "",
+      path: isSet(object.path) ? String(object.path) : "",
     };
   },
 
@@ -3278,6 +3324,7 @@ export const SyncBlobRequest = {
     message.did !== undefined && (obj.did = message.did);
     message.destinationDid !== undefined &&
       (obj.destinationDid = message.destinationDid);
+    message.path !== undefined && (obj.path = message.path);
     return obj;
   },
 
@@ -3287,6 +3334,7 @@ export const SyncBlobRequest = {
     const message = createBaseSyncBlobRequest();
     message.did = object.did ?? "";
     message.destinationDid = object.destinationDid ?? "";
+    message.path = object.path ?? "";
     return message;
   },
 };
@@ -3296,7 +3344,10 @@ function createBaseDeleteBlobRequest(): DeleteBlobRequest {
 }
 
 export const DeleteBlobRequest = {
-  encode(message: DeleteBlobRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: DeleteBlobRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -3312,8 +3363,8 @@ export const DeleteBlobRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DeleteBlobRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteBlobRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteBlobRequest();
     while (reader.pos < end) {
@@ -3396,8 +3447,8 @@ function createBaseDeleteBlobRequest_MetadataEntry(): DeleteBlobRequest_Metadata
 export const DeleteBlobRequest_MetadataEntry = {
   encode(
     message: DeleteBlobRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -3408,10 +3459,10 @@ export const DeleteBlobRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): DeleteBlobRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeleteBlobRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -3460,7 +3511,10 @@ function createBaseParseDidRequest(): ParseDidRequest {
 }
 
 export const ParseDidRequest = {
-  encode(message: ParseDidRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ParseDidRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -3473,8 +3527,8 @@ export const ParseDidRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ParseDidRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ParseDidRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseParseDidRequest();
     while (reader.pos < end) {
@@ -3551,8 +3605,8 @@ function createBaseParseDidRequest_MetadataEntry(): ParseDidRequest_MetadataEntr
 export const ParseDidRequest_MetadataEntry = {
   encode(
     message: ParseDidRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -3563,10 +3617,10 @@ export const ParseDidRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): ParseDidRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseParseDidRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -3615,7 +3669,10 @@ function createBaseResolveDidRequest(): ResolveDidRequest {
 }
 
 export const ResolveDidRequest = {
-  encode(message: ResolveDidRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ResolveDidRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
@@ -3628,8 +3685,8 @@ export const ResolveDidRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ResolveDidRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ResolveDidRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResolveDidRequest();
     while (reader.pos < end) {
@@ -3706,8 +3763,8 @@ function createBaseResolveDidRequest_MetadataEntry(): ResolveDidRequest_Metadata
 export const ResolveDidRequest_MetadataEntry = {
   encode(
     message: ResolveDidRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -3718,10 +3775,10 @@ export const ResolveDidRequest_MetadataEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): ResolveDidRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResolveDidRequest_MetadataEntry();
     while (reader.pos < end) {
@@ -3759,161 +3816,6 @@ export const ResolveDidRequest_MetadataEntry = {
     object: I
   ): ResolveDidRequest_MetadataEntry {
     const message = createBaseResolveDidRequest_MetadataEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
-    return message;
-  },
-};
-
-function createBaseVerifyDidRequest(): VerifyDidRequest {
-  return { did: "", metadata: {} };
-}
-
-export const VerifyDidRequest = {
-  encode(message: VerifyDidRequest, writer: Writer = Writer.create()): Writer {
-    if (message.did !== "") {
-      writer.uint32(10).string(message.did);
-    }
-    Object.entries(message.metadata).forEach(([key, value]) => {
-      VerifyDidRequest_MetadataEntry.encode(
-        { key: key as any, value },
-        writer.uint32(18).fork()
-      ).ldelim();
-    });
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): VerifyDidRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseVerifyDidRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.did = reader.string();
-          break;
-        case 2:
-          const entry2 = VerifyDidRequest_MetadataEntry.decode(
-            reader,
-            reader.uint32()
-          );
-          if (entry2.value !== undefined) {
-            message.metadata[entry2.key] = entry2.value;
-          }
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): VerifyDidRequest {
-    return {
-      did: isSet(object.did) ? String(object.did) : "",
-      metadata: isObject(object.metadata)
-        ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
-            (acc, [key, value]) => {
-              acc[key] = String(value);
-              return acc;
-            },
-            {}
-          )
-        : {},
-    };
-  },
-
-  toJSON(message: VerifyDidRequest): unknown {
-    const obj: any = {};
-    message.did !== undefined && (obj.did = message.did);
-    obj.metadata = {};
-    if (message.metadata) {
-      Object.entries(message.metadata).forEach(([k, v]) => {
-        obj.metadata[k] = v;
-      });
-    }
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<VerifyDidRequest>, I>>(
-    object: I
-  ): VerifyDidRequest {
-    const message = createBaseVerifyDidRequest();
-    message.did = object.did ?? "";
-    message.metadata = Object.entries(object.metadata ?? {}).reduce<{
-      [key: string]: string;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = String(value);
-      }
-      return acc;
-    }, {});
-    return message;
-  },
-};
-
-function createBaseVerifyDidRequest_MetadataEntry(): VerifyDidRequest_MetadataEntry {
-  return { key: "", value: "" };
-}
-
-export const VerifyDidRequest_MetadataEntry = {
-  encode(
-    message: VerifyDidRequest_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(
-    input: Reader | Uint8Array,
-    length?: number
-  ): VerifyDidRequest_MetadataEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseVerifyDidRequest_MetadataEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.key = reader.string();
-          break;
-        case 2:
-          message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): VerifyDidRequest_MetadataEntry {
-    return {
-      key: isSet(object.key) ? String(object.key) : "",
-      value: isSet(object.value) ? String(object.value) : "",
-    };
-  },
-
-  toJSON(message: VerifyDidRequest_MetadataEntry): unknown {
-    const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<VerifyDidRequest_MetadataEntry>, I>>(
-    object: I
-  ): VerifyDidRequest_MetadataEntry {
-    const message = createBaseVerifyDidRequest_MetadataEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
@@ -3965,11 +3867,9 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {

@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import {
   Direction,
   Payload,
@@ -129,7 +129,10 @@ function createBaseShareResponse(): ShareResponse {
 }
 
 export const ShareResponse = {
-  encode(message: ShareResponse, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ShareResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.success === true) {
       writer.uint32(8).bool(message.success);
     }
@@ -139,8 +142,8 @@ export const ShareResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ShareResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseShareResponse();
     while (reader.pos < end) {
@@ -189,7 +192,10 @@ function createBaseDecideResponse(): DecideResponse {
 }
 
 export const DecideResponse = {
-  encode(message: DecideResponse, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: DecideResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.success === true) {
       writer.uint32(8).bool(message.success);
     }
@@ -199,8 +205,8 @@ export const DecideResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DecideResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecideResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDecideResponse();
     while (reader.pos < end) {
@@ -249,7 +255,10 @@ function createBaseSearchResponse(): SearchResponse {
 }
 
 export const SearchResponse = {
-  encode(message: SearchResponse, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: SearchResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.success === true) {
       writer.uint32(8).bool(message.success);
     }
@@ -268,8 +277,8 @@ export const SearchResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): SearchResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchResponse();
     while (reader.pos < end) {
@@ -342,8 +351,8 @@ function createBaseOnTransmitDecisionResponse(): OnTransmitDecisionResponse {
 export const OnTransmitDecisionResponse = {
   encode(
     message: OnTransmitDecisionResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.decision === true) {
       writer.uint32(8).bool(message.decision);
     }
@@ -357,10 +366,10 @@ export const OnTransmitDecisionResponse = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitDecisionResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitDecisionResponse();
     while (reader.pos < end) {
@@ -422,8 +431,8 @@ function createBaseOnLobbyRefreshResponse(): OnLobbyRefreshResponse {
 export const OnLobbyRefreshResponse = {
   encode(
     message: OnLobbyRefreshResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.olc !== "") {
       writer.uint32(10).string(message.olc);
     }
@@ -436,8 +445,11 @@ export const OnLobbyRefreshResponse = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): OnLobbyRefreshResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): OnLobbyRefreshResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnLobbyRefreshResponse();
     while (reader.pos < end) {
@@ -501,8 +513,8 @@ function createBaseOnTransmitInviteResponse(): OnTransmitInviteResponse {
 export const OnTransmitInviteResponse = {
   encode(
     message: OnTransmitInviteResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.received !== 0) {
       writer.uint32(8).int64(message.received);
     }
@@ -516,10 +528,10 @@ export const OnTransmitInviteResponse = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitInviteResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitInviteResponse();
     while (reader.pos < end) {
@@ -595,8 +607,8 @@ function createBaseOnMailboxMessageResponse(): OnMailboxMessageResponse {
 export const OnMailboxMessageResponse = {
   encode(
     message: OnMailboxMessageResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -616,10 +628,10 @@ export const OnMailboxMessageResponse = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnMailboxMessageResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnMailboxMessageResponse();
     while (reader.pos < end) {
@@ -709,8 +721,8 @@ function createBaseOnTransmitProgressResponse(): OnTransmitProgressResponse {
 export const OnTransmitProgressResponse = {
   encode(
     message: OnTransmitProgressResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.progress !== 0) {
       writer.uint32(9).double(message.progress);
     }
@@ -730,10 +742,10 @@ export const OnTransmitProgressResponse = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitProgressResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitProgressResponse();
     while (reader.pos < end) {
@@ -815,8 +827,8 @@ function createBaseOnTransmitCompleteResponse(): OnTransmitCompleteResponse {
 export const OnTransmitCompleteResponse = {
   encode(
     message: OnTransmitCompleteResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.direction !== 0) {
       writer.uint32(8).int32(message.direction);
     }
@@ -845,10 +857,10 @@ export const OnTransmitCompleteResponse = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitCompleteResponse {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitCompleteResponse();
     while (reader.pos < end) {
@@ -976,8 +988,8 @@ function createBaseOnTransmitCompleteResponse_ResultsEntry(): OnTransmitComplete
 export const OnTransmitCompleteResponse_ResultsEntry = {
   encode(
     message: OnTransmitCompleteResponse_ResultsEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== 0) {
       writer.uint32(8).int32(message.key);
     }
@@ -988,10 +1000,10 @@ export const OnTransmitCompleteResponse_ResultsEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitCompleteResponse_ResultsEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitCompleteResponse_ResultsEntry();
     while (reader.pos < end) {
@@ -1103,11 +1115,9 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {

@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import {
   Connection,
   Environment,
@@ -12,7 +12,7 @@ import {
   connectionToJSON,
   environmentToJSON,
 } from "../../../common/v1/core";
-import { MessageItem, SupplyItem } from "../../../common/v1/data";
+import { SupplyItem } from "../../../common/v1/data";
 
 export const protobufPackage = "node.motor.v1";
 
@@ -143,8 +143,6 @@ export function initializeRequest_IPAddress_FamilyToJSON(
 export interface ShareRequest {
   /** Peer to Share with */
   peer: Peer | undefined;
-  /** Message to Share */
-  message: MessageItem | undefined;
   /** Supply Items to share */
   items: SupplyItem[];
 }
@@ -192,7 +190,10 @@ function createBaseInitializeRequest(): InitializeRequest {
 }
 
 export const InitializeRequest = {
-  encode(message: InitializeRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: InitializeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.location !== undefined) {
       Location.encode(message.location, writer.uint32(10).fork()).ldelim();
     }
@@ -235,8 +236,8 @@ export const InitializeRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): InitializeRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): InitializeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInitializeRequest();
     while (reader.pos < end) {
@@ -413,8 +414,8 @@ function createBaseInitializeRequest_VariablesEntry(): InitializeRequest_Variabl
 export const InitializeRequest_VariablesEntry = {
   encode(
     message: InitializeRequest_VariablesEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -425,10 +426,10 @@ export const InitializeRequest_VariablesEntry = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): InitializeRequest_VariablesEntry {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInitializeRequest_VariablesEntry();
     while (reader.pos < end) {
@@ -479,8 +480,8 @@ function createBaseInitializeRequest_DeviceOptions(): InitializeRequest_DeviceOp
 export const InitializeRequest_DeviceOptions = {
   encode(
     message: InitializeRequest_DeviceOptions,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -497,10 +498,10 @@ export const InitializeRequest_DeviceOptions = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): InitializeRequest_DeviceOptions {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInitializeRequest_DeviceOptions();
     while (reader.pos < end) {
@@ -568,8 +569,8 @@ function createBaseInitializeRequest_HostOptions(): InitializeRequest_HostOption
 export const InitializeRequest_HostOptions = {
   encode(
     message: InitializeRequest_HostOptions,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.quicTransport === true) {
       writer.uint32(8).bool(message.quicTransport);
     }
@@ -586,10 +587,10 @@ export const InitializeRequest_HostOptions = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): InitializeRequest_HostOptions {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInitializeRequest_HostOptions();
     while (reader.pos < end) {
@@ -673,8 +674,8 @@ function createBaseInitializeRequest_ServiceOptions(): InitializeRequest_Service
 export const InitializeRequest_ServiceOptions = {
   encode(
     message: InitializeRequest_ServiceOptions,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.textile === true) {
       writer.uint32(8).bool(message.textile);
     }
@@ -691,10 +692,10 @@ export const InitializeRequest_ServiceOptions = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): InitializeRequest_ServiceOptions {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInitializeRequest_ServiceOptions();
     while (reader.pos < end) {
@@ -758,8 +759,8 @@ function createBaseInitializeRequest_IPAddress(): InitializeRequest_IPAddress {
 export const InitializeRequest_IPAddress = {
   encode(
     message: InitializeRequest_IPAddress,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -776,10 +777,10 @@ export const InitializeRequest_IPAddress = {
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): InitializeRequest_IPAddress {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInitializeRequest_IPAddress();
     while (reader.pos < end) {
@@ -839,25 +840,25 @@ export const InitializeRequest_IPAddress = {
 };
 
 function createBaseShareRequest(): ShareRequest {
-  return { peer: undefined, message: undefined, items: [] };
+  return { peer: undefined, items: [] };
 }
 
 export const ShareRequest = {
-  encode(message: ShareRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: ShareRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.peer !== undefined) {
       Peer.encode(message.peer, writer.uint32(10).fork()).ldelim();
     }
-    if (message.message !== undefined) {
-      MessageItem.encode(message.message, writer.uint32(18).fork()).ldelim();
-    }
     for (const v of message.items) {
-      SupplyItem.encode(v!, writer.uint32(26).fork()).ldelim();
+      SupplyItem.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): ShareRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseShareRequest();
     while (reader.pos < end) {
@@ -867,9 +868,6 @@ export const ShareRequest = {
           message.peer = Peer.decode(reader, reader.uint32());
           break;
         case 2:
-          message.message = MessageItem.decode(reader, reader.uint32());
-          break;
-        case 3:
           message.items.push(SupplyItem.decode(reader, reader.uint32()));
           break;
         default:
@@ -883,9 +881,6 @@ export const ShareRequest = {
   fromJSON(object: any): ShareRequest {
     return {
       peer: isSet(object.peer) ? Peer.fromJSON(object.peer) : undefined,
-      message: isSet(object.message)
-        ? MessageItem.fromJSON(object.message)
-        : undefined,
       items: Array.isArray(object?.items)
         ? object.items.map((e: any) => SupplyItem.fromJSON(e))
         : [],
@@ -896,10 +891,6 @@ export const ShareRequest = {
     const obj: any = {};
     message.peer !== undefined &&
       (obj.peer = message.peer ? Peer.toJSON(message.peer) : undefined);
-    message.message !== undefined &&
-      (obj.message = message.message
-        ? MessageItem.toJSON(message.message)
-        : undefined);
     if (message.items) {
       obj.items = message.items.map((e) =>
         e ? SupplyItem.toJSON(e) : undefined
@@ -918,10 +909,6 @@ export const ShareRequest = {
       object.peer !== undefined && object.peer !== null
         ? Peer.fromPartial(object.peer)
         : undefined;
-    message.message =
-      object.message !== undefined && object.message !== null
-        ? MessageItem.fromPartial(object.message)
-        : undefined;
     message.items = object.items?.map((e) => SupplyItem.fromPartial(e)) || [];
     return message;
   },
@@ -932,7 +919,10 @@ function createBaseDecideRequest(): DecideRequest {
 }
 
 export const DecideRequest = {
-  encode(message: DecideRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: DecideRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.decision === true) {
       writer.uint32(8).bool(message.decision);
     }
@@ -942,8 +932,8 @@ export const DecideRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): DecideRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecideRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDecideRequest();
     while (reader.pos < end) {
@@ -996,7 +986,10 @@ function createBaseSearchRequest(): SearchRequest {
 }
 
 export const SearchRequest = {
-  encode(message: SearchRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: SearchRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.sName !== undefined) {
       writer.uint32(10).string(message.sName);
     }
@@ -1006,8 +999,8 @@ export const SearchRequest = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): SearchRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchRequest();
     while (reader.pos < end) {
@@ -1056,12 +1049,18 @@ function createBaseOnLobbyRefreshRequest(): OnLobbyRefreshRequest {
 }
 
 export const OnLobbyRefreshRequest = {
-  encode(_: OnLobbyRefreshRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    _: OnLobbyRefreshRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): OnLobbyRefreshRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): OnLobbyRefreshRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnLobbyRefreshRequest();
     while (reader.pos < end) {
@@ -1097,12 +1096,18 @@ function createBaseOnMailboxMessageRequest(): OnMailboxMessageRequest {
 }
 
 export const OnMailboxMessageRequest = {
-  encode(_: OnMailboxMessageRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    _: OnMailboxMessageRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): OnMailboxMessageRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): OnMailboxMessageRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnMailboxMessageRequest();
     while (reader.pos < end) {
@@ -1140,16 +1145,16 @@ function createBaseOnTransmitDecisionRequest(): OnTransmitDecisionRequest {
 export const OnTransmitDecisionRequest = {
   encode(
     _: OnTransmitDecisionRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitDecisionRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitDecisionRequest();
     while (reader.pos < end) {
@@ -1185,12 +1190,18 @@ function createBaseOnTransmitInviteRequest(): OnTransmitInviteRequest {
 }
 
 export const OnTransmitInviteRequest = {
-  encode(_: OnTransmitInviteRequest, writer: Writer = Writer.create()): Writer {
+  encode(
+    _: OnTransmitInviteRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): OnTransmitInviteRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): OnTransmitInviteRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitInviteRequest();
     while (reader.pos < end) {
@@ -1228,16 +1239,16 @@ function createBaseOnTransmitProgressRequest(): OnTransmitProgressRequest {
 export const OnTransmitProgressRequest = {
   encode(
     _: OnTransmitProgressRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitProgressRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitProgressRequest();
     while (reader.pos < end) {
@@ -1275,16 +1286,16 @@ function createBaseOnTransmitCompleteRequest(): OnTransmitCompleteRequest {
 export const OnTransmitCompleteRequest = {
   encode(
     _: OnTransmitCompleteRequest,
-    writer: Writer = Writer.create()
-  ): Writer {
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
   decode(
-    input: Reader | Uint8Array,
+    input: _m0.Reader | Uint8Array,
     length?: number
   ): OnTransmitCompleteRequest {
-    const reader = input instanceof Reader ? input : new Reader(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOnTransmitCompleteRequest();
     while (reader.pos < end) {
@@ -1342,11 +1353,9 @@ export type Exact<P, I extends P> = P extends Builtin
         never
       >;
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isObject(value: any): boolean {

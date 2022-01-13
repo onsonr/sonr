@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
-import * as Long from "long";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { MIME, Profile } from "../../common/v1/core";
 
 export const protobufPackage = "common.v1";
@@ -59,244 +59,6 @@ export interface FileItem {
   lastModified: number;
 }
 
-/** For Transfer Text Payload */
-export interface MessageItem {
-  /** Standard Mime Type */
-  mime: MIME | undefined;
-  /** Subject of Message */
-  subject: string;
-  /** Body of Message */
-  body: string;
-  /** Created Time in Seconds */
-  createdAt: number;
-  /** Attachments of Message */
-  attachments: FileItem[];
-}
-
-/** Sonr Url Link Contains metadata of provided URL */
-export interface UrlItem {
-  /** Standard Mime Type */
-  mime: MIME | undefined;
-  /** OG URL Link */
-  link: string;
-  /** Meta Field for Title */
-  title: string;
-  /** Meta field for site */
-  site: string;
-  /** Meta field for sitename */
-  siteName: string;
-  /** Meta field for description */
-  description: string;
-  /** OpenGraph Object */
-  openGraph: OpenGraph | undefined;
-}
-
-/** OpenGraph is a generic OpenGraph object */
-export interface OpenGraph {
-  /** Primary OpenGraph Object */
-  primary: OpenGraph_Primary | undefined;
-  /** Images */
-  images: OpenGraph_Image[];
-  /** Videos */
-  videos: OpenGraph_Video[];
-  /** Audios */
-  audios: OpenGraph_Audio[];
-  /** Twitter Card */
-  twitter: OpenGraph_Twitter | undefined;
-}
-
-/** Url Opengraph Preview Type - In order of Priority */
-export enum OpenGraph_Type {
-  TYPE_UNSPECIFIED = 0,
-  /** TYPE_IMAGE - Image Preview */
-  TYPE_IMAGE = 1,
-  /** TYPE_VIDEO - Video Preview */
-  TYPE_VIDEO = 2,
-  /** TYPE_TWITTER - Twitter Card Preview */
-  TYPE_TWITTER = 3,
-  /** TYPE_AUDIO - Audio Preview */
-  TYPE_AUDIO = 4,
-  /** TYPE_NONE - No Type, Preview not set. */
-  TYPE_NONE = 5,
-  UNRECOGNIZED = -1,
-}
-
-export function openGraph_TypeFromJSON(object: any): OpenGraph_Type {
-  switch (object) {
-    case 0:
-    case "TYPE_UNSPECIFIED":
-      return OpenGraph_Type.TYPE_UNSPECIFIED;
-    case 1:
-    case "TYPE_IMAGE":
-      return OpenGraph_Type.TYPE_IMAGE;
-    case 2:
-    case "TYPE_VIDEO":
-      return OpenGraph_Type.TYPE_VIDEO;
-    case 3:
-    case "TYPE_TWITTER":
-      return OpenGraph_Type.TYPE_TWITTER;
-    case 4:
-    case "TYPE_AUDIO":
-      return OpenGraph_Type.TYPE_AUDIO;
-    case 5:
-    case "TYPE_NONE":
-      return OpenGraph_Type.TYPE_NONE;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return OpenGraph_Type.UNRECOGNIZED;
-  }
-}
-
-export function openGraph_TypeToJSON(object: OpenGraph_Type): string {
-  switch (object) {
-    case OpenGraph_Type.TYPE_UNSPECIFIED:
-      return "TYPE_UNSPECIFIED";
-    case OpenGraph_Type.TYPE_IMAGE:
-      return "TYPE_IMAGE";
-    case OpenGraph_Type.TYPE_VIDEO:
-      return "TYPE_VIDEO";
-    case OpenGraph_Type.TYPE_TWITTER:
-      return "TYPE_TWITTER";
-    case OpenGraph_Type.TYPE_AUDIO:
-      return "TYPE_AUDIO";
-    case OpenGraph_Type.TYPE_NONE:
-      return "TYPE_NONE";
-    default:
-      return "UNKNOWN";
-  }
-}
-
-/** Primary Opengraph Preview */
-export interface OpenGraph_Primary {
-  /** Type of Primary */
-  type: OpenGraph_Type;
-  /** Image */
-  image: OpenGraph_Image | undefined;
-  /** Video */
-  video: OpenGraph_Video | undefined;
-  /** Audio */
-  audio: OpenGraph_Audio | undefined;
-  /** Twitter Card */
-  twitter: OpenGraph_Twitter | undefined;
-}
-
-/** OpenGraph Image */
-export interface OpenGraph_Image {
-  /** `meta:"og:image,og:image:url"` */
-  url: string;
-  /** `meta:"og:image:secure_url"` */
-  secureUrl: string;
-  /** `meta:"og:image:width"` */
-  width: number;
-  /** `meta:"og:image:height"` */
-  height: number;
-  /** `meta:"og:image:type"` */
-  type: string;
-}
-
-/** OpenGraph Video */
-export interface OpenGraph_Video {
-  /** `meta:"og:video,og:video:url"` */
-  url: string;
-  /** `meta:"og:video:secure_url"` */
-  secureUrl: string;
-  /** `meta:"og:video:width"` */
-  width: number;
-  /** `meta:"og:video:height"` */
-  height: number;
-  /** `meta:"og:video:type"` */
-  type: string;
-}
-
-/** OpenGraph Audio */
-export interface OpenGraph_Audio {
-  /** `meta:"og:audio,og:audio:url"` */
-  url: string;
-  /** `meta:"og:audio:secure_url"` */
-  secureUrl: string;
-  /** `meta:"og:audio:type"` */
-  type: string;
-}
-
-/** Twitter Card */
-export interface OpenGraph_Twitter {
-  /** `meta:"twitter:card"` */
-  card: string;
-  /** `meta:"twitter:site"` */
-  site: string;
-  /** `meta:"twitter:site:id"` */
-  siteId: string;
-  /** `meta:"twitter:creator"` */
-  creator: string;
-  /** `meta:"twitter:creator:id"` */
-  creatorId: string;
-  /** `meta:"twitter:description"` */
-  description: string;
-  /** `meta:"twitter:title"` */
-  title: string;
-  /** `meta:"twitter:image,twitter:image:src"` */
-  image: string;
-  /** `meta:"twitter:image:alt"` */
-  imageAlt: string;
-  /** `meta:"twitter:url"` */
-  url: string;
-  /** Twitter Item Player */
-  player: OpenGraph_Twitter_Player | undefined;
-  /** Twitter iPhone Data */
-  iphone: OpenGraph_Twitter_IPhone | undefined;
-  /** Twitter iPad Data */
-  ipad: OpenGraph_Twitter_IPad | undefined;
-  /** Twitter Android Data */
-  googlePlay: OpenGraph_Twitter_GooglePlay | undefined;
-}
-
-export interface OpenGraph_Twitter_Player {
-  /** `meta:"twitter:player"` */
-  url: string;
-  /** `meta:"twitter:width"` */
-  width: number;
-  /** `meta:"twitter:height"` */
-  height: number;
-  /** `meta:"twitter:stream"` */
-  stream: string;
-}
-
-export interface OpenGraph_Twitter_IPhone {
-  /** `meta:"twitter:app:name:iphone"` */
-  name: string;
-  /** `meta:"twitter:app:id:iphone"` */
-  id: string;
-  /** `meta:"twitter:app:url:iphone"` */
-  url: string;
-}
-
-export interface OpenGraph_Twitter_IPad {
-  /** `meta:"twitter:app:name:ipad"` */
-  name: string;
-  /** `meta:"twitter:app:id:ipad"` */
-  id: string;
-  /** `meta:"twitter:app:url:ipad"` */
-  url: string;
-}
-
-export interface OpenGraph_Twitter_GooglePlay {
-  /** `meta:"twitter:app:name:googleplay"` */
-  name: string;
-  /** `meta:"twitter:app:id:googleplay"` */
-  id: string;
-  /** `meta:"twitter:app:url:googleplay"` */
-  url: string;
-}
-
-/** Thumbnail of File */
-export interface Thumbnail {
-  /** Thumbnail Buffer */
-  buffer: Uint8Array;
-  /** Mime Type */
-  mime: MIME | undefined;
-}
-
 /** Payload is Data thats being Passed */
 export interface Payload {
   /** Payload Items */
@@ -318,16 +80,14 @@ export interface Payload_Item {
   /** FILE: File Item */
   file: FileItem | undefined;
   /** URL: Url Item */
-  url: UrlItem | undefined;
+  url: string | undefined;
   /** MESSAGE: Message Item */
-  message: MessageItem | undefined;
+  message: string | undefined;
   /** Thumbnail of the Item */
   thumbnail: Thumbnail | undefined;
-  /** Open Graph Image */
-  openGraph: OpenGraph_Primary | undefined;
 }
 
-/** PayloadItemList is a list of Payload.Item's for Persistent Store */
+/** PayloadList is a list of Payload.Item's for Persistent Store */
 export interface PayloadList {
   /** Payload List */
   payloads: Payload[];
@@ -345,6 +105,14 @@ export interface SupplyItem {
   thumbnail?: Uint8Array | undefined;
 }
 
+/** Thumbnail of File */
+export interface Thumbnail {
+  /** Thumbnail Buffer */
+  buffer: Uint8Array;
+  /** Mime Type */
+  mime: MIME | undefined;
+}
+
 function createBaseFileItem(): FileItem {
   return {
     mime: undefined,
@@ -357,7 +125,10 @@ function createBaseFileItem(): FileItem {
 }
 
 export const FileItem = {
-  encode(message: FileItem, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: FileItem,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.mime !== undefined) {
       MIME.encode(message.mime, writer.uint32(10).fork()).ldelim();
     }
@@ -379,8 +150,8 @@ export const FileItem = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): FileItem {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): FileItem {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFileItem();
     while (reader.pos < end) {
@@ -461,1369 +232,15 @@ export const FileItem = {
   },
 };
 
-function createBaseMessageItem(): MessageItem {
-  return {
-    mime: undefined,
-    subject: "",
-    body: "",
-    createdAt: 0,
-    attachments: [],
-  };
-}
-
-export const MessageItem = {
-  encode(message: MessageItem, writer: Writer = Writer.create()): Writer {
-    if (message.mime !== undefined) {
-      MIME.encode(message.mime, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.subject !== "") {
-      writer.uint32(18).string(message.subject);
-    }
-    if (message.body !== "") {
-      writer.uint32(26).string(message.body);
-    }
-    if (message.createdAt !== 0) {
-      writer.uint32(32).int64(message.createdAt);
-    }
-    for (const v of message.attachments) {
-      FileItem.encode(v!, writer.uint32(42).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): MessageItem {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMessageItem();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.mime = MIME.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.subject = reader.string();
-          break;
-        case 3:
-          message.body = reader.string();
-          break;
-        case 4:
-          message.createdAt = longToNumber(reader.int64() as Long);
-          break;
-        case 5:
-          message.attachments.push(FileItem.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MessageItem {
-    return {
-      mime: isSet(object.mime) ? MIME.fromJSON(object.mime) : undefined,
-      subject: isSet(object.subject) ? String(object.subject) : "",
-      body: isSet(object.body) ? String(object.body) : "",
-      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
-      attachments: Array.isArray(object?.attachments)
-        ? object.attachments.map((e: any) => FileItem.fromJSON(e))
-        : [],
-    };
-  },
-
-  toJSON(message: MessageItem): unknown {
-    const obj: any = {};
-    message.mime !== undefined &&
-      (obj.mime = message.mime ? MIME.toJSON(message.mime) : undefined);
-    message.subject !== undefined && (obj.subject = message.subject);
-    message.body !== undefined && (obj.body = message.body);
-    message.createdAt !== undefined &&
-      (obj.createdAt = Math.round(message.createdAt));
-    if (message.attachments) {
-      obj.attachments = message.attachments.map((e) =>
-        e ? FileItem.toJSON(e) : undefined
-      );
-    } else {
-      obj.attachments = [];
-    }
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MessageItem>, I>>(
-    object: I
-  ): MessageItem {
-    const message = createBaseMessageItem();
-    message.mime =
-      object.mime !== undefined && object.mime !== null
-        ? MIME.fromPartial(object.mime)
-        : undefined;
-    message.subject = object.subject ?? "";
-    message.body = object.body ?? "";
-    message.createdAt = object.createdAt ?? 0;
-    message.attachments =
-      object.attachments?.map((e) => FileItem.fromPartial(e)) || [];
-    return message;
-  },
-};
-
-function createBaseUrlItem(): UrlItem {
-  return {
-    mime: undefined,
-    link: "",
-    title: "",
-    site: "",
-    siteName: "",
-    description: "",
-    openGraph: undefined,
-  };
-}
-
-export const UrlItem = {
-  encode(message: UrlItem, writer: Writer = Writer.create()): Writer {
-    if (message.mime !== undefined) {
-      MIME.encode(message.mime, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.link !== "") {
-      writer.uint32(18).string(message.link);
-    }
-    if (message.title !== "") {
-      writer.uint32(26).string(message.title);
-    }
-    if (message.site !== "") {
-      writer.uint32(34).string(message.site);
-    }
-    if (message.siteName !== "") {
-      writer.uint32(42).string(message.siteName);
-    }
-    if (message.description !== "") {
-      writer.uint32(50).string(message.description);
-    }
-    if (message.openGraph !== undefined) {
-      OpenGraph.encode(message.openGraph, writer.uint32(58).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): UrlItem {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUrlItem();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.mime = MIME.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.link = reader.string();
-          break;
-        case 3:
-          message.title = reader.string();
-          break;
-        case 4:
-          message.site = reader.string();
-          break;
-        case 5:
-          message.siteName = reader.string();
-          break;
-        case 6:
-          message.description = reader.string();
-          break;
-        case 7:
-          message.openGraph = OpenGraph.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UrlItem {
-    return {
-      mime: isSet(object.mime) ? MIME.fromJSON(object.mime) : undefined,
-      link: isSet(object.link) ? String(object.link) : "",
-      title: isSet(object.title) ? String(object.title) : "",
-      site: isSet(object.site) ? String(object.site) : "",
-      siteName: isSet(object.siteName) ? String(object.siteName) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      openGraph: isSet(object.openGraph)
-        ? OpenGraph.fromJSON(object.openGraph)
-        : undefined,
-    };
-  },
-
-  toJSON(message: UrlItem): unknown {
-    const obj: any = {};
-    message.mime !== undefined &&
-      (obj.mime = message.mime ? MIME.toJSON(message.mime) : undefined);
-    message.link !== undefined && (obj.link = message.link);
-    message.title !== undefined && (obj.title = message.title);
-    message.site !== undefined && (obj.site = message.site);
-    message.siteName !== undefined && (obj.siteName = message.siteName);
-    message.description !== undefined &&
-      (obj.description = message.description);
-    message.openGraph !== undefined &&
-      (obj.openGraph = message.openGraph
-        ? OpenGraph.toJSON(message.openGraph)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<UrlItem>, I>>(object: I): UrlItem {
-    const message = createBaseUrlItem();
-    message.mime =
-      object.mime !== undefined && object.mime !== null
-        ? MIME.fromPartial(object.mime)
-        : undefined;
-    message.link = object.link ?? "";
-    message.title = object.title ?? "";
-    message.site = object.site ?? "";
-    message.siteName = object.siteName ?? "";
-    message.description = object.description ?? "";
-    message.openGraph =
-      object.openGraph !== undefined && object.openGraph !== null
-        ? OpenGraph.fromPartial(object.openGraph)
-        : undefined;
-    return message;
-  },
-};
-
-function createBaseOpenGraph(): OpenGraph {
-  return {
-    primary: undefined,
-    images: [],
-    videos: [],
-    audios: [],
-    twitter: undefined,
-  };
-}
-
-export const OpenGraph = {
-  encode(message: OpenGraph, writer: Writer = Writer.create()): Writer {
-    if (message.primary !== undefined) {
-      OpenGraph_Primary.encode(
-        message.primary,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    for (const v of message.images) {
-      OpenGraph_Image.encode(v!, writer.uint32(18).fork()).ldelim();
-    }
-    for (const v of message.videos) {
-      OpenGraph_Video.encode(v!, writer.uint32(26).fork()).ldelim();
-    }
-    for (const v of message.audios) {
-      OpenGraph_Audio.encode(v!, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.twitter !== undefined) {
-      OpenGraph_Twitter.encode(
-        message.twitter,
-        writer.uint32(42).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): OpenGraph {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.primary = OpenGraph_Primary.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.images.push(OpenGraph_Image.decode(reader, reader.uint32()));
-          break;
-        case 3:
-          message.videos.push(OpenGraph_Video.decode(reader, reader.uint32()));
-          break;
-        case 4:
-          message.audios.push(OpenGraph_Audio.decode(reader, reader.uint32()));
-          break;
-        case 5:
-          message.twitter = OpenGraph_Twitter.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph {
-    return {
-      primary: isSet(object.primary)
-        ? OpenGraph_Primary.fromJSON(object.primary)
-        : undefined,
-      images: Array.isArray(object?.images)
-        ? object.images.map((e: any) => OpenGraph_Image.fromJSON(e))
-        : [],
-      videos: Array.isArray(object?.videos)
-        ? object.videos.map((e: any) => OpenGraph_Video.fromJSON(e))
-        : [],
-      audios: Array.isArray(object?.audios)
-        ? object.audios.map((e: any) => OpenGraph_Audio.fromJSON(e))
-        : [],
-      twitter: isSet(object.twitter)
-        ? OpenGraph_Twitter.fromJSON(object.twitter)
-        : undefined,
-    };
-  },
-
-  toJSON(message: OpenGraph): unknown {
-    const obj: any = {};
-    message.primary !== undefined &&
-      (obj.primary = message.primary
-        ? OpenGraph_Primary.toJSON(message.primary)
-        : undefined);
-    if (message.images) {
-      obj.images = message.images.map((e) =>
-        e ? OpenGraph_Image.toJSON(e) : undefined
-      );
-    } else {
-      obj.images = [];
-    }
-    if (message.videos) {
-      obj.videos = message.videos.map((e) =>
-        e ? OpenGraph_Video.toJSON(e) : undefined
-      );
-    } else {
-      obj.videos = [];
-    }
-    if (message.audios) {
-      obj.audios = message.audios.map((e) =>
-        e ? OpenGraph_Audio.toJSON(e) : undefined
-      );
-    } else {
-      obj.audios = [];
-    }
-    message.twitter !== undefined &&
-      (obj.twitter = message.twitter
-        ? OpenGraph_Twitter.toJSON(message.twitter)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph>, I>>(
-    object: I
-  ): OpenGraph {
-    const message = createBaseOpenGraph();
-    message.primary =
-      object.primary !== undefined && object.primary !== null
-        ? OpenGraph_Primary.fromPartial(object.primary)
-        : undefined;
-    message.images =
-      object.images?.map((e) => OpenGraph_Image.fromPartial(e)) || [];
-    message.videos =
-      object.videos?.map((e) => OpenGraph_Video.fromPartial(e)) || [];
-    message.audios =
-      object.audios?.map((e) => OpenGraph_Audio.fromPartial(e)) || [];
-    message.twitter =
-      object.twitter !== undefined && object.twitter !== null
-        ? OpenGraph_Twitter.fromPartial(object.twitter)
-        : undefined;
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Primary(): OpenGraph_Primary {
-  return {
-    type: 0,
-    image: undefined,
-    video: undefined,
-    audio: undefined,
-    twitter: undefined,
-  };
-}
-
-export const OpenGraph_Primary = {
-  encode(message: OpenGraph_Primary, writer: Writer = Writer.create()): Writer {
-    if (message.type !== 0) {
-      writer.uint32(8).int32(message.type);
-    }
-    if (message.image !== undefined) {
-      OpenGraph_Image.encode(message.image, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.video !== undefined) {
-      OpenGraph_Video.encode(message.video, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.audio !== undefined) {
-      OpenGraph_Audio.encode(message.audio, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.twitter !== undefined) {
-      OpenGraph_Twitter.encode(
-        message.twitter,
-        writer.uint32(42).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): OpenGraph_Primary {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Primary();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.type = reader.int32() as any;
-          break;
-        case 2:
-          message.image = OpenGraph_Image.decode(reader, reader.uint32());
-          break;
-        case 3:
-          message.video = OpenGraph_Video.decode(reader, reader.uint32());
-          break;
-        case 4:
-          message.audio = OpenGraph_Audio.decode(reader, reader.uint32());
-          break;
-        case 5:
-          message.twitter = OpenGraph_Twitter.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Primary {
-    return {
-      type: isSet(object.type) ? openGraph_TypeFromJSON(object.type) : 0,
-      image: isSet(object.image)
-        ? OpenGraph_Image.fromJSON(object.image)
-        : undefined,
-      video: isSet(object.video)
-        ? OpenGraph_Video.fromJSON(object.video)
-        : undefined,
-      audio: isSet(object.audio)
-        ? OpenGraph_Audio.fromJSON(object.audio)
-        : undefined,
-      twitter: isSet(object.twitter)
-        ? OpenGraph_Twitter.fromJSON(object.twitter)
-        : undefined,
-    };
-  },
-
-  toJSON(message: OpenGraph_Primary): unknown {
-    const obj: any = {};
-    message.type !== undefined &&
-      (obj.type = openGraph_TypeToJSON(message.type));
-    message.image !== undefined &&
-      (obj.image = message.image
-        ? OpenGraph_Image.toJSON(message.image)
-        : undefined);
-    message.video !== undefined &&
-      (obj.video = message.video
-        ? OpenGraph_Video.toJSON(message.video)
-        : undefined);
-    message.audio !== undefined &&
-      (obj.audio = message.audio
-        ? OpenGraph_Audio.toJSON(message.audio)
-        : undefined);
-    message.twitter !== undefined &&
-      (obj.twitter = message.twitter
-        ? OpenGraph_Twitter.toJSON(message.twitter)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Primary>, I>>(
-    object: I
-  ): OpenGraph_Primary {
-    const message = createBaseOpenGraph_Primary();
-    message.type = object.type ?? 0;
-    message.image =
-      object.image !== undefined && object.image !== null
-        ? OpenGraph_Image.fromPartial(object.image)
-        : undefined;
-    message.video =
-      object.video !== undefined && object.video !== null
-        ? OpenGraph_Video.fromPartial(object.video)
-        : undefined;
-    message.audio =
-      object.audio !== undefined && object.audio !== null
-        ? OpenGraph_Audio.fromPartial(object.audio)
-        : undefined;
-    message.twitter =
-      object.twitter !== undefined && object.twitter !== null
-        ? OpenGraph_Twitter.fromPartial(object.twitter)
-        : undefined;
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Image(): OpenGraph_Image {
-  return { url: "", secureUrl: "", width: 0, height: 0, type: "" };
-}
-
-export const OpenGraph_Image = {
-  encode(message: OpenGraph_Image, writer: Writer = Writer.create()): Writer {
-    if (message.url !== "") {
-      writer.uint32(10).string(message.url);
-    }
-    if (message.secureUrl !== "") {
-      writer.uint32(18).string(message.secureUrl);
-    }
-    if (message.width !== 0) {
-      writer.uint32(24).int32(message.width);
-    }
-    if (message.height !== 0) {
-      writer.uint32(32).int32(message.height);
-    }
-    if (message.type !== "") {
-      writer.uint32(42).string(message.type);
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): OpenGraph_Image {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Image();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.url = reader.string();
-          break;
-        case 2:
-          message.secureUrl = reader.string();
-          break;
-        case 3:
-          message.width = reader.int32();
-          break;
-        case 4:
-          message.height = reader.int32();
-          break;
-        case 5:
-          message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Image {
-    return {
-      url: isSet(object.url) ? String(object.url) : "",
-      secureUrl: isSet(object.secureUrl) ? String(object.secureUrl) : "",
-      width: isSet(object.width) ? Number(object.width) : 0,
-      height: isSet(object.height) ? Number(object.height) : 0,
-      type: isSet(object.type) ? String(object.type) : "",
-    };
-  },
-
-  toJSON(message: OpenGraph_Image): unknown {
-    const obj: any = {};
-    message.url !== undefined && (obj.url = message.url);
-    message.secureUrl !== undefined && (obj.secureUrl = message.secureUrl);
-    message.width !== undefined && (obj.width = Math.round(message.width));
-    message.height !== undefined && (obj.height = Math.round(message.height));
-    message.type !== undefined && (obj.type = message.type);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Image>, I>>(
-    object: I
-  ): OpenGraph_Image {
-    const message = createBaseOpenGraph_Image();
-    message.url = object.url ?? "";
-    message.secureUrl = object.secureUrl ?? "";
-    message.width = object.width ?? 0;
-    message.height = object.height ?? 0;
-    message.type = object.type ?? "";
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Video(): OpenGraph_Video {
-  return { url: "", secureUrl: "", width: 0, height: 0, type: "" };
-}
-
-export const OpenGraph_Video = {
-  encode(message: OpenGraph_Video, writer: Writer = Writer.create()): Writer {
-    if (message.url !== "") {
-      writer.uint32(10).string(message.url);
-    }
-    if (message.secureUrl !== "") {
-      writer.uint32(18).string(message.secureUrl);
-    }
-    if (message.width !== 0) {
-      writer.uint32(24).int32(message.width);
-    }
-    if (message.height !== 0) {
-      writer.uint32(32).int32(message.height);
-    }
-    if (message.type !== "") {
-      writer.uint32(42).string(message.type);
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): OpenGraph_Video {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Video();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.url = reader.string();
-          break;
-        case 2:
-          message.secureUrl = reader.string();
-          break;
-        case 3:
-          message.width = reader.int32();
-          break;
-        case 4:
-          message.height = reader.int32();
-          break;
-        case 5:
-          message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Video {
-    return {
-      url: isSet(object.url) ? String(object.url) : "",
-      secureUrl: isSet(object.secureUrl) ? String(object.secureUrl) : "",
-      width: isSet(object.width) ? Number(object.width) : 0,
-      height: isSet(object.height) ? Number(object.height) : 0,
-      type: isSet(object.type) ? String(object.type) : "",
-    };
-  },
-
-  toJSON(message: OpenGraph_Video): unknown {
-    const obj: any = {};
-    message.url !== undefined && (obj.url = message.url);
-    message.secureUrl !== undefined && (obj.secureUrl = message.secureUrl);
-    message.width !== undefined && (obj.width = Math.round(message.width));
-    message.height !== undefined && (obj.height = Math.round(message.height));
-    message.type !== undefined && (obj.type = message.type);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Video>, I>>(
-    object: I
-  ): OpenGraph_Video {
-    const message = createBaseOpenGraph_Video();
-    message.url = object.url ?? "";
-    message.secureUrl = object.secureUrl ?? "";
-    message.width = object.width ?? 0;
-    message.height = object.height ?? 0;
-    message.type = object.type ?? "";
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Audio(): OpenGraph_Audio {
-  return { url: "", secureUrl: "", type: "" };
-}
-
-export const OpenGraph_Audio = {
-  encode(message: OpenGraph_Audio, writer: Writer = Writer.create()): Writer {
-    if (message.url !== "") {
-      writer.uint32(10).string(message.url);
-    }
-    if (message.secureUrl !== "") {
-      writer.uint32(18).string(message.secureUrl);
-    }
-    if (message.type !== "") {
-      writer.uint32(26).string(message.type);
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): OpenGraph_Audio {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Audio();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.url = reader.string();
-          break;
-        case 2:
-          message.secureUrl = reader.string();
-          break;
-        case 3:
-          message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Audio {
-    return {
-      url: isSet(object.url) ? String(object.url) : "",
-      secureUrl: isSet(object.secureUrl) ? String(object.secureUrl) : "",
-      type: isSet(object.type) ? String(object.type) : "",
-    };
-  },
-
-  toJSON(message: OpenGraph_Audio): unknown {
-    const obj: any = {};
-    message.url !== undefined && (obj.url = message.url);
-    message.secureUrl !== undefined && (obj.secureUrl = message.secureUrl);
-    message.type !== undefined && (obj.type = message.type);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Audio>, I>>(
-    object: I
-  ): OpenGraph_Audio {
-    const message = createBaseOpenGraph_Audio();
-    message.url = object.url ?? "";
-    message.secureUrl = object.secureUrl ?? "";
-    message.type = object.type ?? "";
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Twitter(): OpenGraph_Twitter {
-  return {
-    card: "",
-    site: "",
-    siteId: "",
-    creator: "",
-    creatorId: "",
-    description: "",
-    title: "",
-    image: "",
-    imageAlt: "",
-    url: "",
-    player: undefined,
-    iphone: undefined,
-    ipad: undefined,
-    googlePlay: undefined,
-  };
-}
-
-export const OpenGraph_Twitter = {
-  encode(message: OpenGraph_Twitter, writer: Writer = Writer.create()): Writer {
-    if (message.card !== "") {
-      writer.uint32(10).string(message.card);
-    }
-    if (message.site !== "") {
-      writer.uint32(18).string(message.site);
-    }
-    if (message.siteId !== "") {
-      writer.uint32(26).string(message.siteId);
-    }
-    if (message.creator !== "") {
-      writer.uint32(34).string(message.creator);
-    }
-    if (message.creatorId !== "") {
-      writer.uint32(42).string(message.creatorId);
-    }
-    if (message.description !== "") {
-      writer.uint32(50).string(message.description);
-    }
-    if (message.title !== "") {
-      writer.uint32(58).string(message.title);
-    }
-    if (message.image !== "") {
-      writer.uint32(66).string(message.image);
-    }
-    if (message.imageAlt !== "") {
-      writer.uint32(74).string(message.imageAlt);
-    }
-    if (message.url !== "") {
-      writer.uint32(82).string(message.url);
-    }
-    if (message.player !== undefined) {
-      OpenGraph_Twitter_Player.encode(
-        message.player,
-        writer.uint32(90).fork()
-      ).ldelim();
-    }
-    if (message.iphone !== undefined) {
-      OpenGraph_Twitter_IPhone.encode(
-        message.iphone,
-        writer.uint32(98).fork()
-      ).ldelim();
-    }
-    if (message.ipad !== undefined) {
-      OpenGraph_Twitter_IPad.encode(
-        message.ipad,
-        writer.uint32(106).fork()
-      ).ldelim();
-    }
-    if (message.googlePlay !== undefined) {
-      OpenGraph_Twitter_GooglePlay.encode(
-        message.googlePlay,
-        writer.uint32(114).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): OpenGraph_Twitter {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Twitter();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.card = reader.string();
-          break;
-        case 2:
-          message.site = reader.string();
-          break;
-        case 3:
-          message.siteId = reader.string();
-          break;
-        case 4:
-          message.creator = reader.string();
-          break;
-        case 5:
-          message.creatorId = reader.string();
-          break;
-        case 6:
-          message.description = reader.string();
-          break;
-        case 7:
-          message.title = reader.string();
-          break;
-        case 8:
-          message.image = reader.string();
-          break;
-        case 9:
-          message.imageAlt = reader.string();
-          break;
-        case 10:
-          message.url = reader.string();
-          break;
-        case 11:
-          message.player = OpenGraph_Twitter_Player.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        case 12:
-          message.iphone = OpenGraph_Twitter_IPhone.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        case 13:
-          message.ipad = OpenGraph_Twitter_IPad.decode(reader, reader.uint32());
-          break;
-        case 14:
-          message.googlePlay = OpenGraph_Twitter_GooglePlay.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Twitter {
-    return {
-      card: isSet(object.card) ? String(object.card) : "",
-      site: isSet(object.site) ? String(object.site) : "",
-      siteId: isSet(object.siteId) ? String(object.siteId) : "",
-      creator: isSet(object.creator) ? String(object.creator) : "",
-      creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      title: isSet(object.title) ? String(object.title) : "",
-      image: isSet(object.image) ? String(object.image) : "",
-      imageAlt: isSet(object.imageAlt) ? String(object.imageAlt) : "",
-      url: isSet(object.url) ? String(object.url) : "",
-      player: isSet(object.player)
-        ? OpenGraph_Twitter_Player.fromJSON(object.player)
-        : undefined,
-      iphone: isSet(object.iphone)
-        ? OpenGraph_Twitter_IPhone.fromJSON(object.iphone)
-        : undefined,
-      ipad: isSet(object.ipad)
-        ? OpenGraph_Twitter_IPad.fromJSON(object.ipad)
-        : undefined,
-      googlePlay: isSet(object.googlePlay)
-        ? OpenGraph_Twitter_GooglePlay.fromJSON(object.googlePlay)
-        : undefined,
-    };
-  },
-
-  toJSON(message: OpenGraph_Twitter): unknown {
-    const obj: any = {};
-    message.card !== undefined && (obj.card = message.card);
-    message.site !== undefined && (obj.site = message.site);
-    message.siteId !== undefined && (obj.siteId = message.siteId);
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.creatorId !== undefined && (obj.creatorId = message.creatorId);
-    message.description !== undefined &&
-      (obj.description = message.description);
-    message.title !== undefined && (obj.title = message.title);
-    message.image !== undefined && (obj.image = message.image);
-    message.imageAlt !== undefined && (obj.imageAlt = message.imageAlt);
-    message.url !== undefined && (obj.url = message.url);
-    message.player !== undefined &&
-      (obj.player = message.player
-        ? OpenGraph_Twitter_Player.toJSON(message.player)
-        : undefined);
-    message.iphone !== undefined &&
-      (obj.iphone = message.iphone
-        ? OpenGraph_Twitter_IPhone.toJSON(message.iphone)
-        : undefined);
-    message.ipad !== undefined &&
-      (obj.ipad = message.ipad
-        ? OpenGraph_Twitter_IPad.toJSON(message.ipad)
-        : undefined);
-    message.googlePlay !== undefined &&
-      (obj.googlePlay = message.googlePlay
-        ? OpenGraph_Twitter_GooglePlay.toJSON(message.googlePlay)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Twitter>, I>>(
-    object: I
-  ): OpenGraph_Twitter {
-    const message = createBaseOpenGraph_Twitter();
-    message.card = object.card ?? "";
-    message.site = object.site ?? "";
-    message.siteId = object.siteId ?? "";
-    message.creator = object.creator ?? "";
-    message.creatorId = object.creatorId ?? "";
-    message.description = object.description ?? "";
-    message.title = object.title ?? "";
-    message.image = object.image ?? "";
-    message.imageAlt = object.imageAlt ?? "";
-    message.url = object.url ?? "";
-    message.player =
-      object.player !== undefined && object.player !== null
-        ? OpenGraph_Twitter_Player.fromPartial(object.player)
-        : undefined;
-    message.iphone =
-      object.iphone !== undefined && object.iphone !== null
-        ? OpenGraph_Twitter_IPhone.fromPartial(object.iphone)
-        : undefined;
-    message.ipad =
-      object.ipad !== undefined && object.ipad !== null
-        ? OpenGraph_Twitter_IPad.fromPartial(object.ipad)
-        : undefined;
-    message.googlePlay =
-      object.googlePlay !== undefined && object.googlePlay !== null
-        ? OpenGraph_Twitter_GooglePlay.fromPartial(object.googlePlay)
-        : undefined;
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Twitter_Player(): OpenGraph_Twitter_Player {
-  return { url: "", width: 0, height: 0, stream: "" };
-}
-
-export const OpenGraph_Twitter_Player = {
-  encode(
-    message: OpenGraph_Twitter_Player,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.url !== "") {
-      writer.uint32(10).string(message.url);
-    }
-    if (message.width !== 0) {
-      writer.uint32(16).int32(message.width);
-    }
-    if (message.height !== 0) {
-      writer.uint32(24).int32(message.height);
-    }
-    if (message.stream !== "") {
-      writer.uint32(34).string(message.stream);
-    }
-    return writer;
-  },
-
-  decode(
-    input: Reader | Uint8Array,
-    length?: number
-  ): OpenGraph_Twitter_Player {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Twitter_Player();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.url = reader.string();
-          break;
-        case 2:
-          message.width = reader.int32();
-          break;
-        case 3:
-          message.height = reader.int32();
-          break;
-        case 4:
-          message.stream = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Twitter_Player {
-    return {
-      url: isSet(object.url) ? String(object.url) : "",
-      width: isSet(object.width) ? Number(object.width) : 0,
-      height: isSet(object.height) ? Number(object.height) : 0,
-      stream: isSet(object.stream) ? String(object.stream) : "",
-    };
-  },
-
-  toJSON(message: OpenGraph_Twitter_Player): unknown {
-    const obj: any = {};
-    message.url !== undefined && (obj.url = message.url);
-    message.width !== undefined && (obj.width = Math.round(message.width));
-    message.height !== undefined && (obj.height = Math.round(message.height));
-    message.stream !== undefined && (obj.stream = message.stream);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Twitter_Player>, I>>(
-    object: I
-  ): OpenGraph_Twitter_Player {
-    const message = createBaseOpenGraph_Twitter_Player();
-    message.url = object.url ?? "";
-    message.width = object.width ?? 0;
-    message.height = object.height ?? 0;
-    message.stream = object.stream ?? "";
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Twitter_IPhone(): OpenGraph_Twitter_IPhone {
-  return { name: "", id: "", url: "" };
-}
-
-export const OpenGraph_Twitter_IPhone = {
-  encode(
-    message: OpenGraph_Twitter_IPhone,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (message.id !== "") {
-      writer.uint32(18).string(message.id);
-    }
-    if (message.url !== "") {
-      writer.uint32(26).string(message.url);
-    }
-    return writer;
-  },
-
-  decode(
-    input: Reader | Uint8Array,
-    length?: number
-  ): OpenGraph_Twitter_IPhone {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Twitter_IPhone();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.name = reader.string();
-          break;
-        case 2:
-          message.id = reader.string();
-          break;
-        case 3:
-          message.url = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Twitter_IPhone {
-    return {
-      name: isSet(object.name) ? String(object.name) : "",
-      id: isSet(object.id) ? String(object.id) : "",
-      url: isSet(object.url) ? String(object.url) : "",
-    };
-  },
-
-  toJSON(message: OpenGraph_Twitter_IPhone): unknown {
-    const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.id !== undefined && (obj.id = message.id);
-    message.url !== undefined && (obj.url = message.url);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Twitter_IPhone>, I>>(
-    object: I
-  ): OpenGraph_Twitter_IPhone {
-    const message = createBaseOpenGraph_Twitter_IPhone();
-    message.name = object.name ?? "";
-    message.id = object.id ?? "";
-    message.url = object.url ?? "";
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Twitter_IPad(): OpenGraph_Twitter_IPad {
-  return { name: "", id: "", url: "" };
-}
-
-export const OpenGraph_Twitter_IPad = {
-  encode(
-    message: OpenGraph_Twitter_IPad,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (message.id !== "") {
-      writer.uint32(18).string(message.id);
-    }
-    if (message.url !== "") {
-      writer.uint32(26).string(message.url);
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): OpenGraph_Twitter_IPad {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Twitter_IPad();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.name = reader.string();
-          break;
-        case 2:
-          message.id = reader.string();
-          break;
-        case 3:
-          message.url = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Twitter_IPad {
-    return {
-      name: isSet(object.name) ? String(object.name) : "",
-      id: isSet(object.id) ? String(object.id) : "",
-      url: isSet(object.url) ? String(object.url) : "",
-    };
-  },
-
-  toJSON(message: OpenGraph_Twitter_IPad): unknown {
-    const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.id !== undefined && (obj.id = message.id);
-    message.url !== undefined && (obj.url = message.url);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Twitter_IPad>, I>>(
-    object: I
-  ): OpenGraph_Twitter_IPad {
-    const message = createBaseOpenGraph_Twitter_IPad();
-    message.name = object.name ?? "";
-    message.id = object.id ?? "";
-    message.url = object.url ?? "";
-    return message;
-  },
-};
-
-function createBaseOpenGraph_Twitter_GooglePlay(): OpenGraph_Twitter_GooglePlay {
-  return { name: "", id: "", url: "" };
-}
-
-export const OpenGraph_Twitter_GooglePlay = {
-  encode(
-    message: OpenGraph_Twitter_GooglePlay,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (message.id !== "") {
-      writer.uint32(18).string(message.id);
-    }
-    if (message.url !== "") {
-      writer.uint32(26).string(message.url);
-    }
-    return writer;
-  },
-
-  decode(
-    input: Reader | Uint8Array,
-    length?: number
-  ): OpenGraph_Twitter_GooglePlay {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOpenGraph_Twitter_GooglePlay();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.name = reader.string();
-          break;
-        case 2:
-          message.id = reader.string();
-          break;
-        case 3:
-          message.url = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OpenGraph_Twitter_GooglePlay {
-    return {
-      name: isSet(object.name) ? String(object.name) : "",
-      id: isSet(object.id) ? String(object.id) : "",
-      url: isSet(object.url) ? String(object.url) : "",
-    };
-  },
-
-  toJSON(message: OpenGraph_Twitter_GooglePlay): unknown {
-    const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.id !== undefined && (obj.id = message.id);
-    message.url !== undefined && (obj.url = message.url);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<OpenGraph_Twitter_GooglePlay>, I>>(
-    object: I
-  ): OpenGraph_Twitter_GooglePlay {
-    const message = createBaseOpenGraph_Twitter_GooglePlay();
-    message.name = object.name ?? "";
-    message.id = object.id ?? "";
-    message.url = object.url ?? "";
-    return message;
-  },
-};
-
-function createBaseThumbnail(): Thumbnail {
-  return { buffer: new Uint8Array(), mime: undefined };
-}
-
-export const Thumbnail = {
-  encode(message: Thumbnail, writer: Writer = Writer.create()): Writer {
-    if (message.buffer.length !== 0) {
-      writer.uint32(10).bytes(message.buffer);
-    }
-    if (message.mime !== undefined) {
-      MIME.encode(message.mime, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): Thumbnail {
-    const reader = input instanceof Reader ? input : new Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseThumbnail();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.buffer = reader.bytes();
-          break;
-        case 2:
-          message.mime = MIME.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Thumbnail {
-    return {
-      buffer: isSet(object.buffer)
-        ? bytesFromBase64(object.buffer)
-        : new Uint8Array(),
-      mime: isSet(object.mime) ? MIME.fromJSON(object.mime) : undefined,
-    };
-  },
-
-  toJSON(message: Thumbnail): unknown {
-    const obj: any = {};
-    message.buffer !== undefined &&
-      (obj.buffer = base64FromBytes(
-        message.buffer !== undefined ? message.buffer : new Uint8Array()
-      ));
-    message.mime !== undefined &&
-      (obj.mime = message.mime ? MIME.toJSON(message.mime) : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<Thumbnail>, I>>(
-    object: I
-  ): Thumbnail {
-    const message = createBaseThumbnail();
-    message.buffer = object.buffer ?? new Uint8Array();
-    message.mime =
-      object.mime !== undefined && object.mime !== null
-        ? MIME.fromPartial(object.mime)
-        : undefined;
-    return message;
-  },
-};
-
 function createBasePayload(): Payload {
   return { items: [], owner: undefined, size: 0, createdAt: 0 };
 }
 
 export const Payload = {
-  encode(message: Payload, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Payload,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.items) {
       Payload_Item.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1839,8 +256,8 @@ export const Payload = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Payload {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Payload {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePayload();
     while (reader.pos < end) {
@@ -1915,12 +332,14 @@ function createBasePayload_Item(): Payload_Item {
     url: undefined,
     message: undefined,
     thumbnail: undefined,
-    openGraph: undefined,
   };
 }
 
 export const Payload_Item = {
-  encode(message: Payload_Item, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: Payload_Item,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.mime !== undefined) {
       MIME.encode(message.mime, writer.uint32(10).fork()).ldelim();
     }
@@ -1931,25 +350,19 @@ export const Payload_Item = {
       FileItem.encode(message.file, writer.uint32(26).fork()).ldelim();
     }
     if (message.url !== undefined) {
-      UrlItem.encode(message.url, writer.uint32(34).fork()).ldelim();
+      writer.uint32(34).string(message.url);
     }
     if (message.message !== undefined) {
-      MessageItem.encode(message.message, writer.uint32(42).fork()).ldelim();
+      writer.uint32(42).string(message.message);
     }
     if (message.thumbnail !== undefined) {
       Thumbnail.encode(message.thumbnail, writer.uint32(50).fork()).ldelim();
     }
-    if (message.openGraph !== undefined) {
-      OpenGraph_Primary.encode(
-        message.openGraph,
-        writer.uint32(58).fork()
-      ).ldelim();
-    }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Payload_Item {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): Payload_Item {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePayload_Item();
     while (reader.pos < end) {
@@ -1965,16 +378,13 @@ export const Payload_Item = {
           message.file = FileItem.decode(reader, reader.uint32());
           break;
         case 4:
-          message.url = UrlItem.decode(reader, reader.uint32());
+          message.url = reader.string();
           break;
         case 5:
-          message.message = MessageItem.decode(reader, reader.uint32());
+          message.message = reader.string();
           break;
         case 6:
           message.thumbnail = Thumbnail.decode(reader, reader.uint32());
-          break;
-        case 7:
-          message.openGraph = OpenGraph_Primary.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1989,15 +399,10 @@ export const Payload_Item = {
       mime: isSet(object.mime) ? MIME.fromJSON(object.mime) : undefined,
       size: isSet(object.size) ? Number(object.size) : 0,
       file: isSet(object.file) ? FileItem.fromJSON(object.file) : undefined,
-      url: isSet(object.url) ? UrlItem.fromJSON(object.url) : undefined,
-      message: isSet(object.message)
-        ? MessageItem.fromJSON(object.message)
-        : undefined,
+      url: isSet(object.url) ? String(object.url) : undefined,
+      message: isSet(object.message) ? String(object.message) : undefined,
       thumbnail: isSet(object.thumbnail)
         ? Thumbnail.fromJSON(object.thumbnail)
-        : undefined,
-      openGraph: isSet(object.openGraph)
-        ? OpenGraph_Primary.fromJSON(object.openGraph)
         : undefined,
     };
   },
@@ -2009,19 +414,11 @@ export const Payload_Item = {
     message.size !== undefined && (obj.size = Math.round(message.size));
     message.file !== undefined &&
       (obj.file = message.file ? FileItem.toJSON(message.file) : undefined);
-    message.url !== undefined &&
-      (obj.url = message.url ? UrlItem.toJSON(message.url) : undefined);
-    message.message !== undefined &&
-      (obj.message = message.message
-        ? MessageItem.toJSON(message.message)
-        : undefined);
+    message.url !== undefined && (obj.url = message.url);
+    message.message !== undefined && (obj.message = message.message);
     message.thumbnail !== undefined &&
       (obj.thumbnail = message.thumbnail
         ? Thumbnail.toJSON(message.thumbnail)
-        : undefined);
-    message.openGraph !== undefined &&
-      (obj.openGraph = message.openGraph
-        ? OpenGraph_Primary.toJSON(message.openGraph)
         : undefined);
     return obj;
   },
@@ -2039,21 +436,11 @@ export const Payload_Item = {
       object.file !== undefined && object.file !== null
         ? FileItem.fromPartial(object.file)
         : undefined;
-    message.url =
-      object.url !== undefined && object.url !== null
-        ? UrlItem.fromPartial(object.url)
-        : undefined;
-    message.message =
-      object.message !== undefined && object.message !== null
-        ? MessageItem.fromPartial(object.message)
-        : undefined;
+    message.url = object.url ?? undefined;
+    message.message = object.message ?? undefined;
     message.thumbnail =
       object.thumbnail !== undefined && object.thumbnail !== null
         ? Thumbnail.fromPartial(object.thumbnail)
-        : undefined;
-    message.openGraph =
-      object.openGraph !== undefined && object.openGraph !== null
-        ? OpenGraph_Primary.fromPartial(object.openGraph)
         : undefined;
     return message;
   },
@@ -2064,7 +451,10 @@ function createBasePayloadList(): PayloadList {
 }
 
 export const PayloadList = {
-  encode(message: PayloadList, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: PayloadList,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.payloads) {
       Payload.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -2077,8 +467,8 @@ export const PayloadList = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): PayloadList {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): PayloadList {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePayloadList();
     while (reader.pos < end) {
@@ -2145,7 +535,10 @@ function createBaseSupplyItem(): SupplyItem {
 }
 
 export const SupplyItem = {
-  encode(message: SupplyItem, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: SupplyItem,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.path !== "") {
       writer.uint32(10).string(message.path);
     }
@@ -2155,8 +548,8 @@ export const SupplyItem = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): SupplyItem {
-    const reader = input instanceof Reader ? input : new Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SupplyItem {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSupplyItem();
     while (reader.pos < end) {
@@ -2202,6 +595,78 @@ export const SupplyItem = {
     const message = createBaseSupplyItem();
     message.path = object.path ?? "";
     message.thumbnail = object.thumbnail ?? undefined;
+    return message;
+  },
+};
+
+function createBaseThumbnail(): Thumbnail {
+  return { buffer: new Uint8Array(), mime: undefined };
+}
+
+export const Thumbnail = {
+  encode(
+    message: Thumbnail,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.buffer.length !== 0) {
+      writer.uint32(10).bytes(message.buffer);
+    }
+    if (message.mime !== undefined) {
+      MIME.encode(message.mime, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Thumbnail {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThumbnail();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.buffer = reader.bytes();
+          break;
+        case 2:
+          message.mime = MIME.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Thumbnail {
+    return {
+      buffer: isSet(object.buffer)
+        ? bytesFromBase64(object.buffer)
+        : new Uint8Array(),
+      mime: isSet(object.mime) ? MIME.fromJSON(object.mime) : undefined,
+    };
+  },
+
+  toJSON(message: Thumbnail): unknown {
+    const obj: any = {};
+    message.buffer !== undefined &&
+      (obj.buffer = base64FromBytes(
+        message.buffer !== undefined ? message.buffer : new Uint8Array()
+      ));
+    message.mime !== undefined &&
+      (obj.mime = message.mime ? MIME.toJSON(message.mime) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Thumbnail>, I>>(
+    object: I
+  ): Thumbnail {
+    const message = createBaseThumbnail();
+    message.buffer = object.buffer ?? new Uint8Array();
+    message.mime =
+      object.mime !== undefined && object.mime !== null
+        ? MIME.fromPartial(object.mime)
+        : undefined;
     return message;
   },
 };
@@ -2274,11 +739,9 @@ function longToNumber(long: Long): number {
   return long.toNumber();
 }
 
-// If you get a compile-error about 'Constructor<Long> and ... have no overlap',
-// add '--ts_proto_opt=esModuleInterop=true' as a flag when calling 'protoc'.
-if (util.Long !== Long) {
-  util.Long = Long as any;
-  configure();
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {
