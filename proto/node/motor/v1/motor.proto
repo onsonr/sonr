@@ -1,15 +1,13 @@
-/// This file contains service for the Node RPC Server
 syntax = "proto3";
 
+// Package Motor is used for defining a Motor node and its properties.
 package node.motor.v1;
 
 import "node/motor/v1/request.proto";
 import "node/motor/v1/response.proto";
 option go_package = "github.com/sonr-io/core/node/motor";
 
-
-
-// RPC Service with Equivalent Methods of a binded Node
+// MotorService is a RPC service for interfacing over the Motor node.
 service MotorService {
   // Node Methods
   // Respond Method to an Invite with Decision

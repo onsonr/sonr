@@ -1,14 +1,22 @@
 syntax = "proto3";
 
+// Package common defines commonly used types agnostic to the node role on the Sonr network.
 package common;
 option go_package = "github.com/sonr-io/core/common";
 
 // Internet Connection Type
 enum Connection {
   CONNECTION_UNSPECIFIED = 0;
-  CONNECTION_WIFI = 1;     // Wifi Connection
-  CONNECTION_ETHERNET = 2; // Ethernet Connection
-  CONNECTION_MOBILE = 3;   // Mobile Connection
+  // ConnectionWifi is used for WiFi connections.
+  CONNECTION_WIFI = 1;
+
+  // ConnectionEthernet is used for Ethernet connections.
+  CONNECTION_ETHERNET = 2;
+
+  // ConnectionMobile is used for mobile connections.
+  CONNECTION_MOBILE = 3;
+
+  // CONNECTION_OFFLINE
   CONNECTION_OFFLINE = 4;  // No Internet Connection
 }
 

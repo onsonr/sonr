@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+// Package common defines commonly used types agnostic to the node role on the Sonr network.
 package common;
 import "common/core.proto";
 option go_package = "github.com/sonr-io/core/common";

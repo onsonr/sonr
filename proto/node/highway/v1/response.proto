@@ -1,6 +1,7 @@
 /// This file contains service for the Node RPC Server
 syntax = "proto3";
 
+// Package Highway is used for defining a Highway node and its properties.
 package node.highway.v1;
 import "common/core.proto";
 import "common/object.proto";

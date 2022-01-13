@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+// Package exchange defines interfaces and types for exchange between two nodes in the network.
 package protocols.exchange.v1;
 import "common/core.proto";
 import "common/data.proto";

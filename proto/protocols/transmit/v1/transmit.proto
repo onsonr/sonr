@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+// Package Transmit is utilized for direct data transmission between two peers.
 package protocols.transmit.v1;
 import "common/core.proto";
 import "common/data.proto";
