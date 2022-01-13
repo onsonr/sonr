@@ -19,7 +19,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	common "github.com/sonr-io/core/common"
+	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/device"
 	"github.com/spf13/viper"
 
@@ -181,25 +181,25 @@ func NewMotor(ctx context.Context, l net.Listener, options ...Option) (NodeImpl,
 }
 
 // NewHighway Creates a node with its implemented protocols
-func NewHighway(ctx context.Context, options ...Option) error {
+func NewHighway(ctx context.Context, options ...Option) {
 	// Check if Node is already running
 	if instance != nil {
 		golog.Error("Sonr Instance already active")
-		return errors.New("Sonr Instance already active")
+		panic(errors.New("Sonr Instance already active"))
 	}
 
 	// Initialize DHT
 	opts := defaultOptions(Role_HIGHWAY)
 	node, err := opts.Apply(ctx, options...)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	// Open Listener on Port
 	l, err := net.Listen(opts.network, opts.Address())
 	if err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
-		return err
+		panic(err)
 	}
 
 	// Start Host
@@ -216,7 +216,7 @@ func NewHighway(ctx context.Context, options ...Option) error {
 	)
 	if err != nil {
 		logger.Errorf("%s - NewHost: Failed to create libp2p host", err)
-		return err
+		panic(err)
 	}
 	node.SetStatus(Status_CONNECTING)
 
@@ -224,7 +224,7 @@ func NewHighway(ctx context.Context, options ...Option) error {
 	if err := node.Bootstrap(context.Background()); err != nil {
 		logger.Errorf("%s - Failed to Bootstrap KDHT to Host", err)
 		node.SetStatus(Status_FAIL)
-		return err
+		panic(err)
 	}
 
 	// Connect to Bootstrap Nodes
@@ -240,7 +240,7 @@ func NewHighway(ctx context.Context, options ...Option) error {
 	if err := node.createDHTDiscovery(opts); err != nil {
 		logger.Fatal("Could not start DHT Discovery", err)
 		node.SetStatus(Status_FAIL)
-		return err
+		panic(err)
 	}
 
 	// Initialize Discovery for MDNS
@@ -248,7 +248,6 @@ func NewHighway(ctx context.Context, options ...Option) error {
 	node.SetStatus(Status_READY)
 	go node.Serve()
 	Persist(l)
-	return nil
 }
 
 // HostID returns the ID of the Host
