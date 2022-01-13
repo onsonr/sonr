@@ -14,28 +14,9 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/common"
-	walletV1 "github.com/sonr-io/core/types/go/wallet/v1"
 	"github.com/sonr-io/core/wallet"
 	"google.golang.org/protobuf/proto"
 )
-
-// AuthenticateId verifies UUID value and signature
-func (h *node) AuthenticateId(id *walletV1.UUID) (bool, error) {
-	// Get local node's public key
-	pubKey, err := wallet.DevicePubKey()
-	if err != nil {
-		logger.Errorf("%s - AuthenticateId: Failed to get local host's public key", err)
-		return false, err
-	}
-
-	// verify UUID value
-	result, err := pubKey.Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
-	if err != nil {
-		logger.Errorf("%s - AuthenticateId: Failed to verify signature of UUID", err)
-		return false, err
-	}
-	return result, nil
-}
 
 // AuthenticateMessage Authenticates incoming p2p message
 func (n *node) AuthenticateMessage(msg proto.Message, metadata *common.Metadata) bool {
@@ -183,6 +164,15 @@ func (n *node) SignMessage(message proto.Message) ([]byte, error) {
 		return nil, err
 	}
 	return n.SignData(data)
+}
+
+// SignedMetadataToProto converts a SignedMetadata to a protobuf.
+func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
+	return &common.Metadata{
+		Timestamp: m.Timestamp,
+		NodeId:    m.NodeId,
+		PublicKey: m.PublicKey,
+	}
 }
 
 // Stat returns the host stat info

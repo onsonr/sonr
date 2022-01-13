@@ -142,18 +142,6 @@ func (p *Payload) MapFileItems(fn PayloadItemFunc) error {
 	return nil
 }
 
-// MapUrlItems performs method chaining on ONLY the UrlItems in the Payload
-func (p *Payload) MapUrlItems(fn PayloadItemFunc) error {
-	count := len(p.GetItems())
-	for i, item := range p.GetItems() {
-		if item.GetUrl() != nil {
-			if err := fn(item, i, count); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
 
 // URLCount returns the number of URLs in the Payload
 func (p *Payload) URLCount() int {

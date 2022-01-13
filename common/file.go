@@ -99,11 +99,9 @@ func (f *FileItem) SetPathFromFolder(folder device.Folder) (string, error) {
 // ToTransferItem Returns Transfer for FileItem
 func (f *FileItem) ToTransferItem() *Payload_Item {
 	return &Payload_Item{
-		Size: f.GetSize(),
-		Preview: &Payload_Item_Thumbnail{
-			Thumbnail: f.GetThumbnail(),
-		},
-		Mime: f.GetMime(),
+		Size:      f.GetSize(),
+		Thumbnail: f.GetThumbnail(),
+		Mime:      f.GetMime(),
 		Data: &Payload_Item_File{
 			File: f,
 		},
@@ -124,11 +122,6 @@ func DefaultUrlMIME() *MIME {
 
 // NewMime creates a new MIME type from Path
 func NewMime(path string) (*MIME, error) {
-	// Check if path is URL
-	if IsUrl(path) {
-		return DefaultUrlMIME(), nil
-	}
-
 	// Check if path to file exists
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return nil, err

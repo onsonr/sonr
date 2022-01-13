@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+// Package Channel contains definitions for channel specific events and data.
+package protocols.channel.v1;
+option go_package = "github.com/sonr-io/core/channel";
+
+// EventType is the type of event being performed on a channel.
+enum EventType {
+    // EventTypeUnspecified is the default value.
+    EVENT_TYPE_UNSPECIFIED = 0;
+
+    // EventTypeGet is a get event.
+    EVENT_TYPE_GET = 1;
+
+    // EventTypeSet is a set event.
+    EVENT_TYPE_SET = 2;
+
+    // EventTypeDelete is a delete event.
+    EVENT_TYPE_DELETE = 3;
+
+    // EventTypePut is a put event.
+    EVENT_TYPE_PUT = 4;
+
+    // EventTypeSync is a sync event.
+    EVENT_TYPE_SYNC = 5;
+}
+
+// Event is the base event type for all channel events.
+message Event {
+    // Peer is the peer that originated the event.
+    string peer = 1;
+
+    // Type is the type of event being performed on a channel.
+    EventType type = 2;
+
+    // Entry is the entry being modified in the Store.
+    StoreEntry entry = 3;
+
+    // Store is the store being operated on.
+    Store store = 4;
+}
+
+// Store is a disk based key-value store for channel data.
+message Store {
+    // Data is the data being stored.
+    map<string, StoreEntry> data = 1;
+
+    // Capacity is the maximum number of entries that can be stored.
+    int32 capacity = 2;
+
+    // Modified is the last time the store was modified.
+    int64 modified = 3;
+
+    // TTL is the time to live for entries in the store.
+    int64 ttl = 4;
+}
+
+// StoreEntry is the data being stored in the Store.
+message StoreEntry {
+    // Peer is the peer that originated the event.
+    string peer = 1;
+
+    // Key is the key being modified in the Store.
+    string key = 2;
+
+    // Value is the value being modified in the Store.
+    bytes value = 3;
+
+    // Expiration is the expiration time for the entry.
+    int64 expiration = 4;
+
+    // Created is the time the entry was created.
+    int64 created = 5;
+
+    // Modified is the time the entry was last modified.
+    int64 modified = 6;
+}

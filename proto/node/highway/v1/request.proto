@@ -1,8 +1,9 @@
 /// This file contains service for the Node RPC Server
 syntax = "proto3";
 
+// Package Highway is used for defining a Highway node and its properties.
 package node.highway.v1;
-import "common/v1/object.proto";
+import "common/object.proto";
 option go_package = "github.com/sonr-io/core/node/highway";
 
 // AccessNameRequest is a request to get details from the ".snr" name of a peer
@@ -134,7 +135,7 @@ message CreateBucketRequest {
   string description = 2;
 
   // Owners is the list of provisioned nodes for the bucket
-  common.v1.BucketType bucket_type = 3;
+  common.BucketType bucket_type = 3;
 
   // Metadata is the metadata of the bucket thats being created
   map<string, string> metadata = 4;
@@ -194,7 +195,7 @@ message CreateObjectRequest {
   string name = 2;
 
   // Fields is the fields of the object
-  repeated common.v1.ObjectField fields = 3;
+  repeated common.ObjectField fields = 3;
 }
 
 // ReadObjectRequest is the request to read an object
@@ -209,7 +210,7 @@ message UpdateObjectRequest {
   string did = 1;
 
   // Fields is the fields of the object
-  repeated common.v1.ObjectField fields = 2;
+  repeated common.ObjectField fields = 2;
 }
 
 // DeleteObjectRequest is the request to delete an object
@@ -246,6 +247,9 @@ message UploadBlobRequest {
 message DownloadBlobRequest {
   // DID is the identifier of the blob
   string did = 1;
+
+  // Out Path is the download path of the blob
+  string out_path = 2;
 }
 
 // SyncBlobRequest is the request to sync a blob
@@ -255,6 +259,9 @@ message SyncBlobRequest {
 
   // Destination DID is the identifier of the destination service storage
   string destination_did = 2;
+
+  // Path is the location of the blob
+  string path = 3;
 }
 
 // DeleteBlobRequest is the request to delete a blob
@@ -284,14 +291,5 @@ message ResolveDidRequest {
   string did = 1;
 
   // Metadata is the metadata of the blob thats being deleted
-  map<string, string> metadata = 2;
-}
-
-// VerifyDidRequest is the request to verify a DID
-message VerifyDidRequest {
-  // DID is the DID of the DID
-  string did = 1;
-
-  // Additional metadata for the DID verification
   map<string, string> metadata = 2;
 }

@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+// Package common defines commonly used types agnostic to the node role on the Sonr network.
+package common;
+import "common/core.proto";
+option go_package = "github.com/sonr-io/core/common";
+
+enum Direction {
+  DIRECTION_UNSPECIFIED = 0;
+  DIRECTION_INCOMING = 1;
+  DIRECTION_OUTGOING = 2;
+}
+
+// For Transfer File Payload
+message FileItem {
+  common.MIME mime = 1; // Standard Mime Type
+  string name = 2;         // File Name without Path
+  string path = 3;         // File Location
+  int64 size = 4;          // File Size in Bytes
+  Thumbnail thumbnail = 5; // Thumbnail of File
+  int64 last_modified = 6;  // Last Modified Time in Seconds
+}
+
+
+
+// Payload is Data thats being Passed
+message Payload {
+  repeated Item items = 1; // Payload Items
+  Profile owner = 2;       // PROFILE: General Sender Info
+  int64 size = 3;          // Payload Size in Bytes
+  int64 created_at = 4;     // Payload Creation Time in Seconds
+
+  // Item in Payload
+  message Item {
+    MIME mime = 1;  // MIME of the Item
+    int64 size = 2; // Size of the Item in Bytes
+
+    // Attached Data
+    oneof data {
+      FileItem file = 3;       // FILE: File Item
+      string url = 4;         // URL: Url Item
+      string message = 5; // MESSAGE: Message Item
+    }
+
+    // Thumbnail of the Item
+    Thumbnail thumbnail = 6;         // Thumbnail of the Item
+  }
+}
+
+// PayloadList is a list of Payload.Item's for Persistent Store
+message PayloadList {
+  repeated Payload payloads = 1; // Payload List
+  string key = 2;                // Key of the Payload List
+  int64 last_modified = 3;          // Last Modified Time in Seconds
+}
+
+// SupplyItem is an item supplied to be a payload
+message SupplyItem {
+    string path = 1; // Supply Path
+    optional bytes thumbnail = 2; // Supply Path of the Thumbnail
+}
+
+// Thumbnail of File
+message Thumbnail {
+  bytes buffer = 1; // Thumbnail Buffer
+  MIME mime = 2;    // Mime Type
+}

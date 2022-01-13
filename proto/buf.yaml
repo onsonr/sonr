@@ -2,6 +2,7 @@ version: v1
 breaking:
   use:
     - FILE
+    - WIRE_JSON
 lint:
   use:
     - DEFAULT
