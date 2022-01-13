@@ -4,6 +4,8 @@
 // 	protoc        (unknown)
 // source: protocols/discover/v1/discover.proto
 
+// Package Discover is used to find other Peers in the sonr network.
+
 package discover
 
 import (

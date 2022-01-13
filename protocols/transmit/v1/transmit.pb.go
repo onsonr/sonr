@@ -4,6 +4,8 @@
 // 	protoc        (unknown)
 // source: protocols/transmit/v1/transmit.proto
 
+// Package Transmit is utilized for direct data transmission between two peers.
+
 package transmit
 
 import (

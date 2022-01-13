@@ -4,6 +4,8 @@
 // 	protoc        (unknown)
 // source: protocols/channel/v1/channel.proto
 
+// Package Channel contains definitions for channel specific events and data.
+
 package channel
 
 import (
@@ -20,15 +22,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// EventType is the type of event being performed on a channel.
 type EventType int32
 
 const (
+	// EventTypeUnspecified is the default value.
 	EventType_EVENT_TYPE_UNSPECIFIED EventType = 0
-	EventType_EVENT_TYPE_GET         EventType = 1
-	EventType_EVENT_TYPE_SET         EventType = 2
-	EventType_EVENT_TYPE_DELETE      EventType = 3
-	EventType_EVENT_TYPE_PUT         EventType = 4
-	EventType_EVENT_TYPE_SYNC        EventType = 5
+	// EventTypeGet is a get event.
+	EventType_EVENT_TYPE_GET EventType = 1
+	// EventTypeSet is a set event.
+	EventType_EVENT_TYPE_SET EventType = 2
+	// EventTypeDelete is a delete event.
+	EventType_EVENT_TYPE_DELETE EventType = 3
+	// EventTypePut is a put event.
+	EventType_EVENT_TYPE_PUT EventType = 4
+	// EventTypeSync is a sync event.
+	EventType_EVENT_TYPE_SYNC EventType = 5
 )
 
 // Enum value maps for EventType.
@@ -78,15 +87,20 @@ func (EventType) EnumDescriptor() ([]byte, []int) {
 	return file_protocols_channel_v1_channel_proto_rawDescGZIP(), []int{0}
 }
 
+// Event is the base event type for all channel events.
 type Event struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Peer  string      `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
-	Type  EventType   `protobuf:"varint,2,opt,name=type,proto3,enum=protocols.channel.v1.EventType" json:"type,omitempty"`
+	// Peer is the peer that originated the event.
+	Peer string `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
+	// Type is the type of event being performed on a channel.
+	Type EventType `protobuf:"varint,2,opt,name=type,proto3,enum=protocols.channel.v1.EventType" json:"type,omitempty"`
+	// Entry is the entry being modified in the Store.
 	Entry *StoreEntry `protobuf:"bytes,3,opt,name=entry,proto3" json:"entry,omitempty"`
-	Store *Store      `protobuf:"bytes,4,opt,name=store,proto3" json:"store,omitempty"`
+	// Store is the store being operated on.
+	Store *Store `protobuf:"bytes,4,opt,name=store,proto3" json:"store,omitempty"`
 }
 
 func (x *Event) Reset() {
@@ -149,15 +163,20 @@ func (x *Event) GetStore() *Store {
 	return nil
 }
 
+// Store is a disk based key-value store for channel data.
 type Store struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Data     map[string]*StoreEntry `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Capacity int32                  `protobuf:"varint,2,opt,name=capacity,proto3" json:"capacity,omitempty"`
-	Modified int64                  `protobuf:"varint,3,opt,name=modified,proto3" json:"modified,omitempty"`
-	Ttl      int64                  `protobuf:"varint,4,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	// Data is the data being stored.
+	Data map[string]*StoreEntry `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Capacity is the maximum number of entries that can be stored.
+	Capacity int32 `protobuf:"varint,2,opt,name=capacity,proto3" json:"capacity,omitempty"`
+	// Modified is the last time the store was modified.
+	Modified int64 `protobuf:"varint,3,opt,name=modified,proto3" json:"modified,omitempty"`
+	// TTL is the time to live for entries in the store.
+	Ttl int64 `protobuf:"varint,4,opt,name=ttl,proto3" json:"ttl,omitempty"`
 }
 
 func (x *Store) Reset() {
@@ -220,17 +239,24 @@ func (x *Store) GetTtl() int64 {
 	return 0
 }
 
+// StoreEntry is the data being stored in the Store.
 type StoreEntry struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Peer       string `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
-	Key        string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
-	Value      []byte `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
-	Expiration int64  `protobuf:"varint,4,opt,name=expiration,proto3" json:"expiration,omitempty"`
-	Created    int64  `protobuf:"varint,5,opt,name=created,proto3" json:"created,omitempty"`
-	Modified   int64  `protobuf:"varint,6,opt,name=modified,proto3" json:"modified,omitempty"`
+	// Peer is the peer that originated the event.
+	Peer string `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
+	// Key is the key being modified in the Store.
+	Key string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	// Value is the value being modified in the Store.
+	Value []byte `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	// Expiration is the expiration time for the entry.
+	Expiration int64 `protobuf:"varint,4,opt,name=expiration,proto3" json:"expiration,omitempty"`
+	// Created is the time the entry was created.
+	Created int64 `protobuf:"varint,5,opt,name=created,proto3" json:"created,omitempty"`
+	// Modified is the time the entry was last modified.
+	Modified int64 `protobuf:"varint,6,opt,name=modified,proto3" json:"modified,omitempty"`
 }
 
 func (x *StoreEntry) Reset() {

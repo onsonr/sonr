@@ -4,6 +4,8 @@
 // 	protoc        (unknown)
 // source: common/core.proto
 
+// Package common defines commonly used types agnostic to the node role on the Sonr network.
+
 package common
 
 import (
@@ -25,10 +27,14 @@ type Connection int32
 
 const (
 	Connection_CONNECTION_UNSPECIFIED Connection = 0
-	Connection_CONNECTION_WIFI        Connection = 1 // Wifi Connection
-	Connection_CONNECTION_ETHERNET    Connection = 2 // Ethernet Connection
-	Connection_CONNECTION_MOBILE      Connection = 3 // Mobile Connection
-	Connection_CONNECTION_OFFLINE     Connection = 4 // No Internet Connection
+	// ConnectionWifi is used for WiFi connections.
+	Connection_CONNECTION_WIFI Connection = 1
+	// ConnectionEthernet is used for Ethernet connections.
+	Connection_CONNECTION_ETHERNET Connection = 2
+	// ConnectionMobile is used for mobile connections.
+	Connection_CONNECTION_MOBILE Connection = 3
+	// CONNECTION_OFFLINE
+	Connection_CONNECTION_OFFLINE Connection = 4 // No Internet Connection
 )
 
 // Enum value maps for Connection.

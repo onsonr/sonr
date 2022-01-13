@@ -4,6 +4,8 @@
 // 	protoc        (unknown)
 // source: protocols/exchange/v1/exchange.proto
 
+// Package exchange defines interfaces and types for exchange between two nodes in the network.
+
 package exchange
 
 import (

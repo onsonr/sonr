@@ -4,6 +4,8 @@
 // 	protoc        (unknown)
 // source: common/data.proto
 
+// Package common defines commonly used types agnostic to the node role on the Sonr network.
+
 package common
 
 import (

@@ -6,6 +6,8 @@
 // 	protoc        (unknown)
 // source: node/highway/v1/request.proto
 
+// Package Highway is used for defining a Highway node and its properties.
+
 package highway
 
 import (
