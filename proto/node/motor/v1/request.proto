@@ -63,8 +63,7 @@ message InitializeRequest {
 // (Client) ShareRequest is request to share supplied files/urls with a peer
 message ShareRequest {
   common.v1.Peer peer = 1; // Peer to Share with
-  common.v1.MessageItem message = 2; // Message to Share
-  repeated common.v1.SupplyItem items = 3; // Supply Items to share
+  repeated common.v1.SupplyItem items = 2; // Supply Items to share
 }
 
 // (Client) DecideRequest is request to respond to a share request

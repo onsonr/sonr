@@ -246,6 +246,9 @@ message UploadBlobRequest {
 message DownloadBlobRequest {
   // DID is the identifier of the blob
   string did = 1;
+
+  // Out Path is the download path of the blob
+  string out_path = 2;
 }
 
 // SyncBlobRequest is the request to sync a blob
@@ -255,6 +258,9 @@ message SyncBlobRequest {
 
   // Destination DID is the identifier of the destination service storage
   string destination_did = 2;
+
+  // Path is the location of the blob
+  string path = 3;
 }
 
 // DeleteBlobRequest is the request to delete a blob
@@ -284,14 +290,5 @@ message ResolveDidRequest {
   string did = 1;
 
   // Metadata is the metadata of the blob thats being deleted
-  map<string, string> metadata = 2;
-}
-
-// VerifyDidRequest is the request to verify a DID
-message VerifyDidRequest {
-  // DID is the DID of the DID
-  string did = 1;
-
-  // Additional metadata for the DID verification
   map<string, string> metadata = 2;
 }

@@ -196,17 +196,10 @@ service HighwayService {
   }
 
   // ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has
-  // access to the DID.
+  // access to the DID Document.
   rpc ResolveDid(ResolveDidRequest) returns (ResolveDidResponse) {
     option (google.api.http) = {
       post: "/v1/did/resolve"
-    };
-  }
-
-  // VerifyDid verifies the given DID document against the DID schema.
-  rpc VerifyDid(VerifyDidRequest) returns (VerifyDidResponse) {
-    option (google.api.http) = {
-      post: "/v1/did/verify"
     };
   }
 }
