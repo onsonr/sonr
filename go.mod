@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	git.mills.io/prologic/bitcask v1.0.0
-	github.com/PuerkitoBio/goquery v1.7.1
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
@@ -23,7 +22,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2
+	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/tools v0.1.8-0.20211022200916-316ba0b74098 // indirect
 	google.golang.org/genproto v0.0.0-20210828152312-66f60bf46e71
 	google.golang.org/grpc v1.40.0

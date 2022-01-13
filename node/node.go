@@ -21,7 +21,6 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	common "github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/device"
-	walletV1 "github.com/sonr-io/core/types/go/wallet/v1"
 	"github.com/spf13/viper"
 
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -38,9 +37,6 @@ var (
 
 // NodeImpl returns the NodeImpl for the Main Node
 type NodeImpl interface {
-	// AuthenticateId returns the Authenticated ID
-	AuthenticateId(id *walletV1.UUID) (bool, error)
-
 	// AuthenticateMessage authenticates a message
 	AuthenticateMessage(msg proto.Message, metadata *common.Metadata) bool
 
