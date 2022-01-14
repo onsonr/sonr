@@ -9,7 +9,7 @@ import (
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/node/motor/v1"
-	discoverV1 "github.com/sonr-io/core/protocols/discover/v1"
+	discoverV1 "github.com/sonr-io/core/node/discover/v1"
 	"google.golang.org/protobuf/proto"
 )
 

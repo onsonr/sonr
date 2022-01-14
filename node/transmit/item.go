@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/node/motor/v1"
-	transmitV1 "github.com/sonr-io/core/protocols/transmit/v1"
+	transmitV1 "github.com/sonr-io/core/node/transmit/v1"
 )
 
 // ReadFromStream reads the item from the stream

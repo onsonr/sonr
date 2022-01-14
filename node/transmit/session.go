@@ -9,7 +9,7 @@ import (
 	"github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/node/motor/v1"
 
-	transmitV1 "github.com/sonr-io/core/protocols/transmit/v1"
+	transmitV1 "github.com/sonr-io/core/node/transmit/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.

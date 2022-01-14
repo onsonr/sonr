@@ -11,7 +11,7 @@ import {
 } from "../../../common/data";
 import { Peer } from "../../../common/core";
 
-export const protobufPackage = "protocols.transmit.v1";
+export const protobufPackage = "node.transmit.v1";
 
 export interface Session {
   direction: Direction;

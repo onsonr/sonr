@@ -6,7 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	common "github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node/motor/v1"
-	exchangeV1 "github.com/sonr-io/core/protocols/exchange/v1"
+	exchangeV1 "github.com/sonr-io/core/node/exchange/v1"
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.

@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Payload } from "../../../common/data";
 import { Profile, Metadata, Peer } from "../../../common/core";
 
-export const protobufPackage = "protocols.exchange.v1";
+export const protobufPackage = "node.exchange.v1";
 
 export interface MailboxMessage {
   /** ID is the Message ID */

@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Peer, Metadata } from "../../../common/core";
 
-export const protobufPackage = "protocols.discover.v1";
+export const protobufPackage = "node.discover.v1";
 
 /** LobbyMessage is message passed from Peer in Lobby */
 export interface LobbyMessage {
