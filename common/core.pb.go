@@ -82,66 +82,24 @@ func (Connection) EnumDescriptor() ([]byte, []int) {
 	return file_common_core_proto_rawDescGZIP(), []int{0}
 }
 
-// Environment Type Configuration
-type Environment int32
-
-const (
-	Environment_ENVIRONMENT_UNSPECIFIED Environment = 0
-	Environment_ENVIRONMENT_DEVELOPMENT Environment = 1 // Development Environment
-	Environment_ENVIRONMENT_PRODUCTION  Environment = 2 // Production Environment
-)
-
-// Enum value maps for Environment.
-var (
-	Environment_name = map[int32]string{
-		0: "ENVIRONMENT_UNSPECIFIED",
-		1: "ENVIRONMENT_DEVELOPMENT",
-		2: "ENVIRONMENT_PRODUCTION",
-	}
-	Environment_value = map[string]int32{
-		"ENVIRONMENT_UNSPECIFIED": 0,
-		"ENVIRONMENT_DEVELOPMENT": 1,
-		"ENVIRONMENT_PRODUCTION":  2,
-	}
-)
-
-func (x Environment) Enum() *Environment {
-	p := new(Environment)
-	*p = x
-	return p
-}
-
-func (x Environment) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Environment) Descriptor() protoreflect.EnumDescriptor {
-	return file_common_core_proto_enumTypes[1].Descriptor()
-}
-
-func (Environment) Type() protoreflect.EnumType {
-	return &file_common_core_proto_enumTypes[1]
-}
-
-func (x Environment) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Environment.Descriptor instead.
-func (Environment) EnumDescriptor() ([]byte, []int) {
-	return file_common_core_proto_rawDescGZIP(), []int{1}
-}
-
+// File Content Type
 type MIME_Type int32
 
 const (
-	MIME_TYPE_UNSPECIFIED MIME_Type = 0 // Other File Type - If cannot derive from Subtype
-	MIME_TYPE_AUDIO       MIME_Type = 1 // Sound, Audio Files
-	MIME_TYPE_DOCUMENT    MIME_Type = 2 // Document Files - PDF, Word, Excel, etc.
-	MIME_TYPE_IMAGE       MIME_Type = 3 // Image Files
-	MIME_TYPE_TEXT        MIME_Type = 4 // Text Based Files
-	MIME_TYPE_VIDEO       MIME_Type = 5 // Video Files
-	MIME_TYPE_URL         MIME_Type = 6 // URL Links
+	// Other File Type - If cannot derive from Subtype
+	MIME_TYPE_UNSPECIFIED MIME_Type = 0
+	// Sound, Audio Files
+	MIME_TYPE_AUDIO MIME_Type = 1
+	// Document Files - PDF, Word, Excel, etc.
+	MIME_TYPE_DOCUMENT MIME_Type = 2
+	// Image Files
+	MIME_TYPE_IMAGE MIME_Type = 3
+	// Text Based Files
+	MIME_TYPE_TEXT MIME_Type = 4
+	// Video Files
+	MIME_TYPE_VIDEO MIME_Type = 5
+	// URL Links
+	MIME_TYPE_URL MIME_Type = 6
 )
 
 // Enum value maps for MIME_Type.
@@ -177,11 +135,11 @@ func (x MIME_Type) String() string {
 }
 
 func (MIME_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_common_core_proto_enumTypes[2].Descriptor()
+	return file_common_core_proto_enumTypes[1].Descriptor()
 }
 
 func (MIME_Type) Type() protoreflect.EnumType {
-	return &file_common_core_proto_enumTypes[2]
+	return &file_common_core_proto_enumTypes[1]
 }
 
 func (x MIME_Type) Number() protoreflect.EnumNumber {
@@ -230,11 +188,11 @@ func (x Peer_Status) String() string {
 }
 
 func (Peer_Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_common_core_proto_enumTypes[3].Descriptor()
+	return file_common_core_proto_enumTypes[2].Descriptor()
 }
 
 func (Peer_Status) Type() protoreflect.EnumType {
-	return &file_common_core_proto_enumTypes[3]
+	return &file_common_core_proto_enumTypes[2]
 }
 
 func (x Peer_Status) Number() protoreflect.EnumNumber {
@@ -328,10 +286,14 @@ type Metadata struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Timestamp int64  `protobuf:"varint,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`                 // Unix timestamp
-	NodeId    string `protobuf:"bytes,2,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`          // Node ID
-	Signature []byte `protobuf:"bytes,3,opt,name=signature,proto3" json:"signature,omitempty"`                  // Signature of the message
-	PublicKey []byte `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"` // Public Key of the message sender
+	// Unix timestamp
+	Timestamp int64 `protobuf:"varint,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	// Node ID
+	NodeId string `protobuf:"bytes,2,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	// Signature of the message
+	Signature []byte `protobuf:"bytes,3,opt,name=signature,proto3" json:"signature,omitempty"`
+	// Public Key of the message sender
+	PublicKey []byte `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 }
 
 func (x *Metadata) Reset() {
@@ -400,9 +362,12 @@ type MIME struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type    MIME_Type `protobuf:"varint,1,opt,name=type,proto3,enum=common.MIME_Type" json:"type,omitempty"` // Type of File
-	Subtype string    `protobuf:"bytes,2,opt,name=subtype,proto3" json:"subtype,omitempty"`                  // Extension of File
-	Value   string    `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`                      // Type/Subtype i.e. (image/jpeg)
+	// Type of File
+	Type MIME_Type `protobuf:"varint,1,opt,name=type,proto3,enum=common.MIME_Type" json:"type,omitempty"`
+	// Extension of File
+	Subtype string `protobuf:"bytes,2,opt,name=subtype,proto3" json:"subtype,omitempty"`
+	// Type/Subtype i.e. (image/jpeg)
+	Value string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *MIME) Reset() {
@@ -1053,16 +1018,10 @@ var file_common_core_proto_rawDesc = []byte{
 	0x5f, 0x45, 0x54, 0x48, 0x45, 0x52, 0x4e, 0x45, 0x54, 0x10, 0x02, 0x12, 0x15, 0x0a, 0x11, 0x43,
 	0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x4f, 0x42, 0x49, 0x4c, 0x45,
 	0x10, 0x03, 0x12, 0x16, 0x0a, 0x12, 0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x49, 0x4f, 0x4e,
-	0x5f, 0x4f, 0x46, 0x46, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x04, 0x2a, 0x63, 0x0a, 0x0b, 0x45, 0x6e,
-	0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x1b, 0x0a, 0x17, 0x45, 0x4e, 0x56,
-	0x49, 0x52, 0x4f, 0x4e, 0x4d, 0x45, 0x4e, 0x54, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49,
-	0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x1b, 0x0a, 0x17, 0x45, 0x4e, 0x56, 0x49, 0x52, 0x4f,
-	0x4e, 0x4d, 0x45, 0x4e, 0x54, 0x5f, 0x44, 0x45, 0x56, 0x45, 0x4c, 0x4f, 0x50, 0x4d, 0x45, 0x4e,
-	0x54, 0x10, 0x01, 0x12, 0x1a, 0x0a, 0x16, 0x45, 0x4e, 0x56, 0x49, 0x52, 0x4f, 0x4e, 0x4d, 0x45,
-	0x4e, 0x54, 0x5f, 0x50, 0x52, 0x4f, 0x44, 0x55, 0x43, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x02, 0x42,
-	0x20, 0x5a, 0x1e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f,
-	0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
-	0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x5f, 0x4f, 0x46, 0x46, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x04, 0x42, 0x20, 0x5a, 0x1e, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f,
+	0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1077,29 +1036,28 @@ func file_common_core_proto_rawDescGZIP() []byte {
 	return file_common_core_proto_rawDescData
 }
 
-var file_common_core_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_common_core_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_common_core_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_common_core_proto_goTypes = []interface{}{
 	(Connection)(0),            // 0: common.Connection
-	(Environment)(0),           // 1: common.Environment
-	(MIME_Type)(0),             // 2: common.MIME.Type
-	(Peer_Status)(0),           // 3: common.Peer.Status
-	(*Location)(nil),           // 4: common.Location
-	(*Metadata)(nil),           // 5: common.Metadata
-	(*MIME)(nil),               // 6: common.MIME
-	(*Peer)(nil),               // 7: common.Peer
-	(*Profile)(nil),            // 8: common.Profile
-	(*ProfileList)(nil),        // 9: common.ProfileList
-	(*Location_Placemark)(nil), // 10: common.Location.Placemark
-	(*Peer_Device)(nil),        // 11: common.Peer.Device
+	(MIME_Type)(0),             // 1: common.MIME.Type
+	(Peer_Status)(0),           // 2: common.Peer.Status
+	(*Location)(nil),           // 3: common.Location
+	(*Metadata)(nil),           // 4: common.Metadata
+	(*MIME)(nil),               // 5: common.MIME
+	(*Peer)(nil),               // 6: common.Peer
+	(*Profile)(nil),            // 7: common.Profile
+	(*ProfileList)(nil),        // 8: common.ProfileList
+	(*Location_Placemark)(nil), // 9: common.Location.Placemark
+	(*Peer_Device)(nil),        // 10: common.Peer.Device
 }
 var file_common_core_proto_depIdxs = []int32{
-	10, // 0: common.Location.placemark:type_name -> common.Location.Placemark
-	2,  // 1: common.MIME.type:type_name -> common.MIME.Type
-	3,  // 2: common.Peer.status:type_name -> common.Peer.Status
-	11, // 3: common.Peer.device:type_name -> common.Peer.Device
-	8,  // 4: common.Peer.profile:type_name -> common.Profile
-	8,  // 5: common.ProfileList.profiles:type_name -> common.Profile
+	9,  // 0: common.Location.placemark:type_name -> common.Location.Placemark
+	1,  // 1: common.MIME.type:type_name -> common.MIME.Type
+	2,  // 2: common.Peer.status:type_name -> common.Peer.Status
+	10, // 3: common.Peer.device:type_name -> common.Peer.Device
+	7,  // 4: common.Peer.profile:type_name -> common.Profile
+	7,  // 5: common.ProfileList.profiles:type_name -> common.Profile
 	6,  // [6:6] is the sub-list for method output_type
 	6,  // [6:6] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
@@ -1215,7 +1173,7 @@ func file_common_core_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_common_core_proto_rawDesc,
-			NumEnums:      4,
+			NumEnums:      3,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,

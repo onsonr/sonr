@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+// Package exchange defines interfaces and types for exchange between two nodes in the network.
+package node.exchange.v1;
+import "common/core.proto";
+import "common/data.proto";
+option go_package = "github.com/sonr-io/core/node/exchange";
+
+message MailboxMessage {
+  string id = 1; // ID is the Message ID
+  common.Payload payload = 2;    // Payload is the message data
+  common.Profile from = 3;         // Users Peer Data
+  common.Profile to = 4;           // Receivers Peer Data
+  common.Metadata metadata = 5; // Metadata
+  int64 created_at = 6; // Timestamp
+}
+
+// Invitation Message sent on RPC
+message InviteRequest {
+  common.Payload payload = 1;   // Attached Data
+  common.Peer from = 3;         // Users Peer Data
+  common.Peer to = 4;           // Receivers Peer Data
+  common.Metadata metadata = 5; // Metadata
+}
+
+// Reply Message sent on RPC
+message InviteResponse {
+  bool decision = 1;               // Success
+  common.Peer from = 3;         // Users Peer Data
+  common.Peer to = 4;           // Receivers Peer Data
+  common.Metadata metadata = 5; // Metadata
+}

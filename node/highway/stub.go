@@ -8,9 +8,9 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/node/discover"
+	"github.com/sonr-io/core/node/exchange"
 	"github.com/sonr-io/core/node/highway/v1"
-	"github.com/sonr-io/core/protocols/discover"
-	"github.com/sonr-io/core/protocols/exchange"
 
 	"google.golang.org/grpc"
 )

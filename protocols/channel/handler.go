@@ -111,7 +111,7 @@ func (b *channel) serve() {
 	for {
 		select {
 		case <-b.ctx.Done():
-			logger.Debugf("Closing Beam (%s)", b.id)
+			logger.Debugf("Closing Beam (%s)", b.label)
 			b.storeEventsHandler.Cancel()
 			b.storeEventsSub.Cancel()
 			if err := b.storeEventsTopic.Close(); err != nil {

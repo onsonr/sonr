@@ -5,9 +5,15 @@ package common;
 import "common/core.proto";
 option go_package = "github.com/sonr-io/core/common";
 
+// Direction is the direction of a stream.
 enum Direction {
+  // Unspecified is the default value.
   DIRECTION_UNSPECIFIED = 0;
+
+  // Incoming is the direction of an incoming stream.
   DIRECTION_INCOMING = 1;
+
+  // Outgoing is the direction of an outgoing stream.
   DIRECTION_OUTGOING = 2;
 }
 

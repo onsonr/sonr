@@ -20,13 +20,6 @@ enum Connection {
   CONNECTION_OFFLINE = 4;  // No Internet Connection
 }
 
-// Environment Type Configuration
-enum Environment {
-  ENVIRONMENT_UNSPECIFIED = 0;
-  ENVIRONMENT_DEVELOPMENT = 1; // Development Environment
-  ENVIRONMENT_PRODUCTION = 2;  // Production Environment
-}
-
 // Location from GeoIP and OLC information
 message Location {
   // Location Latitude
@@ -81,26 +74,52 @@ message Location {
 
 // Shared Metadata for Messages on all Protocols
 message Metadata {
-  int64 timestamp = 1; // Unix timestamp
-  string node_id = 2;   // Node ID
-  bytes signature = 3; // Signature of the message
-  bytes public_key = 4; // Public Key of the message sender
+  // Unix timestamp
+  int64 timestamp = 1;
+
+  // Node ID
+  string node_id = 2;
+
+  // Signature of the message
+  bytes signature = 3;
+
+  // Public Key of the message sender
+  bytes public_key = 4;
 }
 
 // Standard MIME with Additional Extensions
 message MIME {
-  Type type = 1;      // Type of File
-  string subtype = 2; // Extension of File
-  string value = 3;   // Type/Subtype i.e. (image/jpeg)
+  // Type of File
+  Type type = 1;
 
+  // Extension of File
+  string subtype = 2;
+
+  // Type/Subtype i.e. (image/jpeg)
+  string value = 3;
+
+  // File Content Type
   enum Type {
-    TYPE_UNSPECIFIED = 0;    // Other File Type - If cannot derive from Subtype
-    TYPE_AUDIO = 1;    // Sound, Audio Files
-    TYPE_DOCUMENT = 2; // Document Files - PDF, Word, Excel, etc.
-    TYPE_IMAGE = 3;    // Image Files
-    TYPE_TEXT = 4;     // Text Based Files
-    TYPE_VIDEO = 5;    // Video Files
-    TYPE_URL = 6;      // URL Links
+    // Other File Type - If cannot derive from Subtype
+    TYPE_UNSPECIFIED = 0;
+
+    // Sound, Audio Files
+    TYPE_AUDIO = 1;
+
+    // Document Files - PDF, Word, Excel, etc.
+    TYPE_DOCUMENT = 2;
+
+    // Image Files
+    TYPE_IMAGE = 3;
+
+    // Text Based Files
+    TYPE_TEXT = 4;
+
+    // Video Files
+    TYPE_VIDEO = 5;
+
+    // URL Links
+    TYPE_URL = 6;
   }
 }
 

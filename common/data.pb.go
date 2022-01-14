@@ -22,12 +22,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Direction is the direction of a stream.
 type Direction int32
 
 const (
+	// Unspecified is the default value.
 	Direction_DIRECTION_UNSPECIFIED Direction = 0
-	Direction_DIRECTION_INCOMING    Direction = 1
-	Direction_DIRECTION_OUTGOING    Direction = 2
+	// Incoming is the direction of an incoming stream.
+	Direction_DIRECTION_INCOMING Direction = 1
+	// Outgoing is the direction of an outgoing stream.
+	Direction_DIRECTION_OUTGOING Direction = 2
 )
 
 // Enum value maps for Direction.

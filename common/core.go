@@ -35,16 +35,6 @@ func (c Connection) IsMdnsCompatible() bool {
 	return c == Connection_CONNECTION_WIFI || c == Connection_CONNECTION_ETHERNET
 }
 
-// IsDev Checks if Enviornment is Development
-func (e Environment) IsDev() bool {
-	return e == Environment_ENVIRONMENT_DEVELOPMENT
-}
-
-// IsProd Checks if Enviornment is Development
-func (e Environment) IsProd() bool {
-	return e == Environment_ENVIRONMENT_PRODUCTION
-}
-
 // OLC returns Open Location code
 func (l *Location) OLC() string {
 	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 4)
