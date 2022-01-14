@@ -93,6 +93,36 @@ func (n *node) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) 
 	return n.Host.NewStream(ctx, pid, pids...)
 }
 
+// NewTopic creates a new topic
+func (n *node) NewTopic(name string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error) {
+	// Check if PubSub is Set
+	if n.PubSub == nil {
+		return nil, nil, nil, errors.New("NewTopic: Pubsub has not been set on SNRHost")
+	}
+
+	// Call Underlying Pubsub to Connect
+	t, err := n.Join(name, opts...)
+	if err != nil {
+		logger.Errorf("%s - NewTopic: Failed to create new topic", err)
+		return nil, nil, nil, err
+	}
+
+	// Create Event Handler
+	h, err := t.EventHandler()
+	if err != nil {
+		logger.Errorf("%s - NewTopic: Failed to create new topic event handler", err)
+		return nil, nil, nil, err
+	}
+
+	// Create Subscriber
+	s, err := t.Subscribe()
+	if err != nil {
+		logger.Errorf("%s - NewTopic: Failed to create new topic subscriber", err)
+		return nil, nil, nil, err
+	}
+	return t, h, s, nil
+}
+
 // Router returns the host node Peer Routing Function
 func (hn *node) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT

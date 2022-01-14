@@ -1,10 +1,10 @@
 syntax = "proto3";
 
 // Package exchange defines interfaces and types for exchange between two nodes in the network.
-package protocols.exchange.v1;
+package node.exchange.v1;
 import "common/core.proto";
 import "common/data.proto";
-option go_package = "github.com/sonr-io/core/exchange";
+option go_package = "github.com/sonr-io/core/node/exchange";
 
 message MailboxMessage {
   string id = 1; // ID is the Message ID

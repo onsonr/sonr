@@ -13,7 +13,7 @@ import (
 func NewStore(opts *options) *v1.ChannelStore {
 	// Create a new store
 	return &v1.ChannelStore{
-		Entries:     make(map[string]*v1.ChannelStoreRecord),
+		Entries:  make(map[string]*v1.ChannelStoreRecord),
 		Capacity: int32(opts.capacity),
 		Modified: time.Now().Unix(),
 		Ttl:      opts.ttl.Milliseconds(),
@@ -62,13 +62,6 @@ func HandleStore(s *v1.ChannelStore, e *v1.ChannelEvent, b *channel) error {
 	case v1.ChannelEventType_CHANNEL_EVENT_TYPE_DELETE:
 		delete(s.Entries, e.Record.Key)
 		return nil
-	case v1.ChannelEventType_CHANNEL_EVENT_TYPE_PUBLISH:
-		if e.Record != nil {
-			s.Entries[e.Record.Key] = e.Record
-			s.Modified = time.Now().Unix()
-			logger.Debug("Store - Added new Store Entry")
-		}
-		return nil
 	case v1.ChannelEventType_CHANNEL_EVENT_TYPE_SET:
 		if e.Record != nil {
 			s.Entries[e.Record.Key] = e.Record
@@ -109,7 +102,7 @@ func SetStoreEntry(se *v1.ChannelStoreRecord, value []byte, selfID string) (*v1.
 	se.Value = value
 	se.Modified = time.Now().Unix()
 	return &v1.ChannelEvent{
-		Type:  v1.ChannelEventType_CHANNEL_EVENT_TYPE_SET,
+		Type:   v1.ChannelEventType_CHANNEL_EVENT_TYPE_SET,
 		Record: se,
 		Owner:  se.GetOwner(),
 	}, nil
@@ -120,12 +113,12 @@ func (b *channel) NewPutEvent(key string, value []byte) (*v1.ChannelEvent, *v1.C
 	entry := &v1.ChannelStoreRecord{
 		Key:      key,
 		Value:    value,
-		Owner:     b.n.HostID().String(),
+		Owner:    b.n.HostID().String(),
 		Created:  time.Now().Unix(),
 		Modified: time.Now().Unix(),
 	}
 	event := &v1.ChannelEvent{
-		Type:  v1.ChannelEventType_CHANNEL_EVENT_TYPE_PUBLISH,
+		Type:   v1.ChannelEventType_CHANNEL_EVENT_TYPE_SET,
 		Owner:  b.n.HostID().String(),
 		Record: entry,
 	}
@@ -136,11 +129,11 @@ func (b *channel) NewPutEvent(key string, value []byte) (*v1.ChannelEvent, *v1.C
 func (b *channel) NewDeleteEvent(key string) *v1.ChannelEvent {
 	entry := &v1.ChannelStoreRecord{
 		Key:      key,
-		Owner:     b.n.HostID().String(),
+		Owner:    b.n.HostID().String(),
 		Modified: time.Now().Unix(),
 	}
 	event := &v1.ChannelEvent{
-		Type:  v1.ChannelEventType_CHANNEL_EVENT_TYPE_DELETE,
+		Type:   v1.ChannelEventType_CHANNEL_EVENT_TYPE_DELETE,
 		Owner:  b.n.HostID().String(),
 		Record: entry,
 	}

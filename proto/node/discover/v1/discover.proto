@@ -1,9 +1,9 @@
 syntax = "proto3";
 
 // Package Discover is used to find other Peers in the sonr network.
-package protocols.discover.v1;
+package node.discover.v1;
 import "common/core.proto";
-option go_package = "github.com/sonr-io/core/discover";
+option go_package = "github.com/sonr-io/core/node/discover";
 
 // LobbyMessage is message passed from Peer in Lobby
 message LobbyMessage {

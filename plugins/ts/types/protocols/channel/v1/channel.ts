@@ -14,8 +14,6 @@ export enum ChannelEventType {
   CHANNEL_EVENT_TYPE_SET = "CHANNEL_EVENT_TYPE_SET",
   /** CHANNEL_EVENT_TYPE_DELETE - EventTypeDelete is a delete event on the record store. */
   CHANNEL_EVENT_TYPE_DELETE = "CHANNEL_EVENT_TYPE_DELETE",
-  /** CHANNEL_EVENT_TYPE_PUBLISH - EventTypePublish is a an event that publishes a message to a channel. */
-  CHANNEL_EVENT_TYPE_PUBLISH = "CHANNEL_EVENT_TYPE_PUBLISH",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -33,9 +31,6 @@ export function channelEventTypeFromJSON(object: any): ChannelEventType {
     case 3:
     case "CHANNEL_EVENT_TYPE_DELETE":
       return ChannelEventType.CHANNEL_EVENT_TYPE_DELETE;
-    case 4:
-    case "CHANNEL_EVENT_TYPE_PUBLISH":
-      return ChannelEventType.CHANNEL_EVENT_TYPE_PUBLISH;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -53,8 +48,6 @@ export function channelEventTypeToJSON(object: ChannelEventType): string {
       return "CHANNEL_EVENT_TYPE_SET";
     case ChannelEventType.CHANNEL_EVENT_TYPE_DELETE:
       return "CHANNEL_EVENT_TYPE_DELETE";
-    case ChannelEventType.CHANNEL_EVENT_TYPE_PUBLISH:
-      return "CHANNEL_EVENT_TYPE_PUBLISH";
     default:
       return "UNKNOWN";
   }
@@ -70,8 +63,6 @@ export function channelEventTypeToNumber(object: ChannelEventType): number {
       return 2;
     case ChannelEventType.CHANNEL_EVENT_TYPE_DELETE:
       return 3;
-    case ChannelEventType.CHANNEL_EVENT_TYPE_PUBLISH:
-      return 4;
     default:
       return 0;
   }

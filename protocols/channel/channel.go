@@ -2,12 +2,16 @@ package channel
 
 import (
 	"context"
+	"time"
 
 	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/common"
 	"github.com/sonr-io/core/node"
 	v1 "github.com/sonr-io/core/protocols/channel/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -16,6 +20,37 @@ var (
 	ErrNotFound       = errors.New("Key not found in store - (Beam)")
 	ErrInvalidMessage = errors.New("Invalid message received in Pubsub Topic - (Beam)")
 )
+
+// Option is a function that modifies the beam options.
+type Option func(*options)
+
+// WithTTL sets the time-to-live for the beam store entries
+func WithTTL(ttl time.Duration) Option {
+	return func(o *options) {
+		o.ttl = ttl
+	}
+}
+
+// WithCapacity sets the capacity of the beam store.
+func WithCapacity(capacity int) Option {
+	return func(o *options) {
+		o.capacity = capacity
+	}
+}
+
+// options is a collection of options for the beam.
+type options struct {
+	ttl      time.Duration
+	capacity int
+}
+
+// defaultOptions is the default options for the beam.
+func defaultOptions() *options {
+	return &options{
+		ttl:      time.Minute * 10,
+		capacity: 4096,
+	}
+}
 
 // Channel is a pubsub based Key-Value store for Libp2p nodes.
 type Channel interface {
@@ -28,6 +63,12 @@ type Channel interface {
 	// Delete removes the value for the given key.
 	Delete(key string) error
 
+	// Read returns a list of all peers subscribed to the channel topic.
+	Read() []peer.ID
+
+	// Publish publishes the given message to the channel topic.
+	Publish(text string, data []byte) error
+
 	// Listen subscribes to the beam topic and returns a channel that will
 	// receive events.
 	Listen() (<-chan *v1.ChannelMessage, error)
@@ -39,9 +80,10 @@ type Channel interface {
 // channel is the implementation of the Beam interface.
 type channel struct {
 	Channel
-	ctx context.Context
-	n   node.NodeImpl
-	id  ID
+	ctx   context.Context
+	n     node.NodeImpl
+	label string
+	did   *common.Did
 
 	// Channel Messages
 	messages        chan *v1.ChannelMessage
@@ -58,39 +100,19 @@ type channel struct {
 }
 
 // New creates a new beam with the given name and options.
-func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channel, error) {
-	logger = golog.Default.Child(id.Prefix())
+func New(ctx context.Context, n node.NodeImpl, id *common.Did, options ...Option) (Channel, error) {
+	logger = golog.Default.Child(id.String())
 	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)
 	}
 
-	mTopic, err := n.Join(id.String())
+	mTopic, mHandler, mSub, err := n.NewTopic(id.String())
 	if err != nil {
 		return nil, err
 	}
 
-	mSub, err := mTopic.Subscribe()
-	if err != nil {
-		return nil, err
-	}
-
-	mHandler, err := mTopic.EventHandler()
-	if err != nil {
-		return nil, err
-	}
-
-	evTopic, err := n.Join(id.String())
-	if err != nil {
-		return nil, err
-	}
-
-	evSub, err := evTopic.Subscribe()
-	if err != nil {
-		return nil, err
-	}
-
-	evHandler, err := evTopic.EventHandler()
+	evTopic, evHandler, evSub, err := n.NewTopic(id.String())
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +120,7 @@ func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channe
 	b := &channel{
 		ctx:                ctx,
 		n:                  n,
-		id:                 id,
+		did:                id,
 		messages:           make(chan *v1.ChannelMessage),
 		messagesHandler:    mHandler,
 		messagesSub:        mSub,
@@ -119,19 +141,65 @@ func New(ctx context.Context, n node.NodeImpl, id ID, options ...Option) (Channe
 	return b, nil
 }
 
+// Read lists all peers subscribed to the beam topic.
+func (b *channel) Read() []peer.ID {
+	storePeers := b.storeEventsTopic.ListPeers()
+	messagesPeers := b.messagesTopic.ListPeers()
+
+	// filter out duplicates
+	peers := make(map[peer.ID]struct{})
+	for _, p := range storePeers {
+		peers[p] = struct{}{}
+	}
+	for _, p := range messagesPeers {
+		peers[p] = struct{}{}
+	}
+
+	// convert to slice
+	var result []peer.ID
+	for p := range peers {
+		result = append(result, p)
+	}
+	return result
+}
+
+// Publish publishes the given message to the beam topic.
+func (b *channel) Publish(text string, data []byte) error {
+	// Check if both text and data are empty.
+	if text == "" && len(data) == 0 {
+		return errors.New("text and data cannot be empty")
+	}
+
+	// Create the message.
+	msg := &v1.ChannelMessage{
+		Text:  text,
+		Data:  data,
+		Owner: b.n.HostID().String(),
+	}
+
+	// Encode the message.
+	buf, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	// Publish the message to the beam topic.
+	return b.messagesTopic.Publish(b.ctx, buf)
+}
+
 // Delete removes the key in the beam store.
 func (b *channel) Delete(key string) error {
-	return DeleteStoreKey(b.store, b.id.Key(key), b)
+	return DeleteStoreKey(b.store, key, b)
 }
 
 // Get returns the value for the given key in the beam store.
 func (b *channel) Get(key string) ([]byte, error) {
-	return GetKey(b.store, b.id.Key(key))
+	return GetKey(b.store, key)
 }
 
 // Put stores the value for the given key in the beam store.
 func (b *channel) Put(key string, value []byte) error {
-	return PutStoreKey(b.store, b.id.Key(key), value, b)
+	return PutStoreKey(b.store, key, value, b)
 }
 
 // Listen subscribes to the beam topic and returns a channel that will

@@ -17,9 +17,8 @@ message InitializeRequest {
   HostOptions host_options = 4;         // Libp2p Host config
   ServiceOptions service_options = 5;   // Service Config
   DeviceOptions device_options = 6;     // File System Config
-  common.Environment environment = 7; // Environment Config
-  map<string,string> variables = 8;     // Domain TXT Records
-  string wallet_passphrase = 9;          // Wallet Passphrase
+  map<string,string> variables = 7;     // Domain TXT Records
+  string wallet_passphrase = 8;          // Wallet Passphrase
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {

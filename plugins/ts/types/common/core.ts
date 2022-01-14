@@ -76,60 +76,6 @@ export function connectionToNumber(object: Connection): number {
   }
 }
 
-/** Environment Type Configuration */
-export enum Environment {
-  ENVIRONMENT_UNSPECIFIED = "ENVIRONMENT_UNSPECIFIED",
-  /** ENVIRONMENT_DEVELOPMENT - Development Environment */
-  ENVIRONMENT_DEVELOPMENT = "ENVIRONMENT_DEVELOPMENT",
-  /** ENVIRONMENT_PRODUCTION - Production Environment */
-  ENVIRONMENT_PRODUCTION = "ENVIRONMENT_PRODUCTION",
-  UNRECOGNIZED = "UNRECOGNIZED",
-}
-
-export function environmentFromJSON(object: any): Environment {
-  switch (object) {
-    case 0:
-    case "ENVIRONMENT_UNSPECIFIED":
-      return Environment.ENVIRONMENT_UNSPECIFIED;
-    case 1:
-    case "ENVIRONMENT_DEVELOPMENT":
-      return Environment.ENVIRONMENT_DEVELOPMENT;
-    case 2:
-    case "ENVIRONMENT_PRODUCTION":
-      return Environment.ENVIRONMENT_PRODUCTION;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return Environment.UNRECOGNIZED;
-  }
-}
-
-export function environmentToJSON(object: Environment): string {
-  switch (object) {
-    case Environment.ENVIRONMENT_UNSPECIFIED:
-      return "ENVIRONMENT_UNSPECIFIED";
-    case Environment.ENVIRONMENT_DEVELOPMENT:
-      return "ENVIRONMENT_DEVELOPMENT";
-    case Environment.ENVIRONMENT_PRODUCTION:
-      return "ENVIRONMENT_PRODUCTION";
-    default:
-      return "UNKNOWN";
-  }
-}
-
-export function environmentToNumber(object: Environment): number {
-  switch (object) {
-    case Environment.ENVIRONMENT_UNSPECIFIED:
-      return 0;
-    case Environment.ENVIRONMENT_DEVELOPMENT:
-      return 1;
-    case Environment.ENVIRONMENT_PRODUCTION:
-      return 2;
-    default:
-      return 0;
-  }
-}
-
 /** Location from GeoIP and OLC information */
 export interface Location {
   /** Location Latitude */
@@ -193,6 +139,7 @@ export interface MIME {
   value: string;
 }
 
+/** File Content Type */
 export enum MIME_Type {
   /** TYPE_UNSPECIFIED - Other File Type - If cannot derive from Subtype */
   TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED",

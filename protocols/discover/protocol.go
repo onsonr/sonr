@@ -30,9 +30,14 @@ type DiscoverProtocol struct {
 
 // New creates new DiscoveryProtocol
 func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
+	// Create global channel
+	did, err := common.NewDID("discover", common.WithFragment("global"))
+	if err != nil {
+		return nil, err
+	}
 
 	// Create BeamStore
-	b, err := channel.New(ctx, node, channel.ID("global"))
+	b, err := channel.New(ctx, node, did)
 	if err != nil {
 		return nil, err
 	}

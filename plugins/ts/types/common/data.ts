@@ -5,9 +5,13 @@ import { MIME, Profile } from "../common/core";
 
 export const protobufPackage = "common";
 
+/** Direction is the direction of a stream. */
 export enum Direction {
+  /** DIRECTION_UNSPECIFIED - Unspecified is the default value. */
   DIRECTION_UNSPECIFIED = "DIRECTION_UNSPECIFIED",
+  /** DIRECTION_INCOMING - Incoming is the direction of an incoming stream. */
   DIRECTION_INCOMING = "DIRECTION_INCOMING",
+  /** DIRECTION_OUTGOING - Outgoing is the direction of an outgoing stream. */
   DIRECTION_OUTGOING = "DIRECTION_OUTGOING",
   UNRECOGNIZED = "UNRECOGNIZED",
 }

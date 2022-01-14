@@ -5,14 +5,10 @@ import {
   Location,
   Profile,
   Connection,
-  Environment,
   Peer,
   connectionToNumber,
-  environmentToNumber,
   connectionFromJSON,
-  environmentFromJSON,
   connectionToJSON,
-  environmentToJSON,
 } from "../../../common/core";
 import { SupplyItem } from "../../../common/data";
 
@@ -37,8 +33,6 @@ export interface InitializeRequest {
   serviceOptions?: InitializeRequest_ServiceOptions;
   /** File System Config */
   deviceOptions?: InitializeRequest_DeviceOptions;
-  /** Environment Config */
-  environment: Environment;
   /** Domain TXT Records */
   variables: { [key: string]: string };
   /** Wallet Passphrase */
@@ -198,7 +192,6 @@ function createBaseInitializeRequest(): InitializeRequest {
     hostOptions: undefined,
     serviceOptions: undefined,
     deviceOptions: undefined,
-    environment: Environment.ENVIRONMENT_UNSPECIFIED,
     variables: {},
     walletPassphrase: "",
   };
@@ -236,17 +229,14 @@ export const InitializeRequest = {
         writer.uint32(50).fork()
       ).ldelim();
     }
-    if (message.environment !== Environment.ENVIRONMENT_UNSPECIFIED) {
-      writer.uint32(56).int32(environmentToNumber(message.environment));
-    }
     Object.entries(message.variables).forEach(([key, value]) => {
       InitializeRequest_VariablesEntry.encode(
         { key: key as any, value },
-        writer.uint32(66).fork()
+        writer.uint32(58).fork()
       ).ldelim();
     });
     if (message.walletPassphrase !== "") {
-      writer.uint32(74).string(message.walletPassphrase);
+      writer.uint32(66).string(message.walletPassphrase);
     }
     return writer;
   },
@@ -286,18 +276,15 @@ export const InitializeRequest = {
           );
           break;
         case 7:
-          message.environment = environmentFromJSON(reader.int32());
-          break;
-        case 8:
-          const entry8 = InitializeRequest_VariablesEntry.decode(
+          const entry7 = InitializeRequest_VariablesEntry.decode(
             reader,
             reader.uint32()
           );
-          if (entry8.value !== undefined) {
-            message.variables[entry8.key] = entry8.value;
+          if (entry7.value !== undefined) {
+            message.variables[entry7.key] = entry7.value;
           }
           break;
-        case 9:
+        case 8:
           message.walletPassphrase = reader.string();
           break;
         default:
@@ -328,9 +315,6 @@ export const InitializeRequest = {
       deviceOptions: isSet(object.deviceOptions)
         ? InitializeRequest_DeviceOptions.fromJSON(object.deviceOptions)
         : undefined,
-      environment: isSet(object.environment)
-        ? environmentFromJSON(object.environment)
-        : Environment.ENVIRONMENT_UNSPECIFIED,
       variables: isObject(object.variables)
         ? Object.entries(object.variables).reduce<{ [key: string]: string }>(
             (acc, [key, value]) => {
@@ -370,8 +354,6 @@ export const InitializeRequest = {
       (obj.deviceOptions = message.deviceOptions
         ? InitializeRequest_DeviceOptions.toJSON(message.deviceOptions)
         : undefined);
-    message.environment !== undefined &&
-      (obj.environment = environmentToJSON(message.environment));
     obj.variables = {};
     if (message.variables) {
       Object.entries(message.variables).forEach(([k, v]) => {
@@ -408,8 +390,6 @@ export const InitializeRequest = {
       object.deviceOptions !== undefined && object.deviceOptions !== null
         ? InitializeRequest_DeviceOptions.fromPartial(object.deviceOptions)
         : undefined;
-    message.environment =
-      object.environment ?? Environment.ENVIRONMENT_UNSPECIFIED;
     message.variables = Object.entries(object.variables ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {

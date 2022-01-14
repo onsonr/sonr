@@ -1,10 +1,10 @@
 syntax = "proto3";
 
 // Package Transmit is utilized for direct data transmission between two peers.
-package protocols.transmit.v1;
+package node.transmit.v1;
 import "common/core.proto";
 import "common/data.proto";
-option go_package = "github.com/sonr-io/core/transmit";
+option go_package = "github.com/sonr-io/core/node/transmit";
 
 message Session {
   common.Direction direction = 1;

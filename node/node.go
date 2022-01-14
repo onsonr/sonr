@@ -58,6 +58,9 @@ type NodeImpl interface {
 	// NewStream opens a new stream to a peer
 	NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error)
 
+	// NewTopic creates a new pubsub topic with event handler and subscription
+	NewTopic(topic string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error)
+
 	// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
 	NeedsWait()
 
