@@ -1,6 +1,6 @@
 {
   "name": "sonr-core-ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The Official Sonr Core Types and Interfaces for the Sonr Network",
   "main": "highway.ts",
   "scripts": {

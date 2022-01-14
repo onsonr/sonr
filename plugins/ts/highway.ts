@@ -7,17 +7,17 @@ const RPC_SERVER_PORT = "26225";
 
 class HighwayService {
     // Create a new stream to the server
-    client: HighwayServiceClient;
-    logging: boolean;
+    static client: HighwayServiceClient;
+    static logging: boolean;
 
-    constructor(port: string = RPC_SERVER_PORT, logging: boolean = false) {
+    static init(port: string = RPC_SERVER_PORT, logging: boolean = false) {
       // Initialize Properties
       this.logging = logging;
       const address: string = `localhost:${port}`;
       this.client = new HighwayServiceClient(address, credentials.createInsecure());
     }
 
-    async accessName(req: AccessNameRequest) : Promise<AccessNameResponse> {
+    static async accessName(req: AccessNameRequest) : Promise<AccessNameResponse> {
       return new Promise((resolve, reject) => {
         this.client.accessName(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -32,7 +32,7 @@ class HighwayService {
     }
 
     // Register the Name of a peer
-    async registerName(req: RegisterNameRequest) : Promise<RegisterNameResponse> {
+    static async registerName(req: RegisterNameRequest) : Promise<RegisterNameResponse> {
       return new Promise((resolve, reject) => {
         this.client.registerName(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -47,7 +47,7 @@ class HighwayService {
     }
 
     // Update the name of a peer
-    async updateName(req: UpdateNameRequest) : Promise<UpdateNameResponse> {
+    static async updateName(req: UpdateNameRequest) : Promise<UpdateNameResponse> {
       return new Promise((resolve, reject) => {
         this.client.updateName(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -61,7 +61,7 @@ class HighwayService {
       });
     }
 
-    async accessService(req: AccessServiceRequest) : Promise<AccessServiceResponse> {
+    static async accessService(req: AccessServiceRequest) : Promise<AccessServiceResponse> {
       return new Promise((resolve, reject) => {
         this.client.accessService(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -76,7 +76,7 @@ class HighwayService {
     }
 
     // Register the Name of a peer
-    async registerService(req: RegisterServiceRequest) : Promise<RegisterServiceResponse> {
+    static async registerService(req: RegisterServiceRequest) : Promise<RegisterServiceResponse> {
       return new Promise((resolve, reject) => {
         this.client.registerService(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -91,7 +91,7 @@ class HighwayService {
     }
 
     // Update the name of a peer
-    async updateService(req: UpdateServiceRequest) : Promise<UpdateServiceResponse> {
+    static async updateService(req: UpdateServiceRequest) : Promise<UpdateServiceResponse> {
       return new Promise((resolve, reject) => {
         this.client.updateService(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -106,7 +106,7 @@ class HighwayService {
     }
 
     // Create a new channel to the server
-    async createChannel(req: CreateChannelRequest) : Promise<CreateChannelResponse> {
+    static async createChannel(req: CreateChannelRequest) : Promise<CreateChannelResponse> {
       return new Promise((resolve, reject) => {
         this.client.createChannel(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -121,7 +121,7 @@ class HighwayService {
     }
 
     // Read channel data from the channel
-    async readChannel(req: ReadChannelRequest) : Promise<ReadChannelResponse> {
+    static async readChannel(req: ReadChannelRequest) : Promise<ReadChannelResponse> {
       return new Promise((resolve, reject) => {
         this.client.readChannel(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -136,7 +136,7 @@ class HighwayService {
     }
 
     // Update channel data from the channel
-    async updateChannel(req: UpdateChannelRequest) : Promise<UpdateChannelResponse> {
+    static async updateChannel(req: UpdateChannelRequest) : Promise<UpdateChannelResponse> {
       return new Promise((resolve, reject) => {
         this.client.updateChannel(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -151,7 +151,7 @@ class HighwayService {
     }
 
     // Delete channel data from the channel
-    async deleteChannel(req: DeleteChannelRequest) : Promise<DeleteChannelResponse> {
+    static async deleteChannel(req: DeleteChannelRequest) : Promise<DeleteChannelResponse> {
       return new Promise((resolve, reject) => {
         this.client.deleteChannel(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -166,12 +166,12 @@ class HighwayService {
     }
 
     // Listen channel data from the channel
-    async listenChannel(req: ListenChannelRequest) : Promise<ClientReadableStream<ListenChannelResponse>> {
+    static async listenChannel(req: ListenChannelRequest) : Promise<ClientReadableStream<ListenChannelResponse>> {
       return this.client.listenChannel(req);
     }
 
     // Create a new bucket to the server
-    async createBucket(req: CreateBucketRequest) : Promise<CreateBucketResponse> {
+    static async createBucket(req: CreateBucketRequest) : Promise<CreateBucketResponse> {
       return new Promise((resolve, reject) => {
         this.client.createBucket(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -186,7 +186,7 @@ class HighwayService {
     }
 
     // Read bucket data from the channel
-    async readBucket(req: ReadBucketRequest) : Promise<ReadBucketResponse> {
+    static async readBucket(req: ReadBucketRequest) : Promise<ReadBucketResponse> {
       return new Promise((resolve, reject) => {
         this.client.readBucket(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -201,7 +201,7 @@ class HighwayService {
     }
 
     // Update bucket data from the channel
-    async updateBucket(req: UpdateBucketRequest) : Promise<UpdateBucketResponse> {
+    static async updateBucket(req: UpdateBucketRequest) : Promise<UpdateBucketResponse> {
       return new Promise((resolve, reject) => {
         this.client.updateBucket(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -216,7 +216,7 @@ class HighwayService {
     }
 
     // Delete bucket data from the channel
-    async deleteBucket(req: DeleteBucketRequest) : Promise<DeleteBucketResponse> {
+    static async deleteBucket(req: DeleteBucketRequest) : Promise<DeleteBucketResponse> {
       return new Promise((resolve, reject) => {
         this.client.deleteBucket(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -231,13 +231,13 @@ class HighwayService {
     }
 
     // Listen bucket data from the channel
-    async listenBucket(req: ListenBucketRequest) : Promise<ClientReadableStream<ListenBucketResponse>> {
+    static async listenBucket(req: ListenBucketRequest) : Promise<ClientReadableStream<ListenBucketResponse>> {
       return this.client.listenBucket(req);
     }
 
 
     // Create a new bucket to the server
-    async createObject(req: CreateObjectRequest) : Promise<CreateObjectResponse> {
+    static async createObject(req: CreateObjectRequest) : Promise<CreateObjectResponse> {
       return new Promise((resolve, reject) => {
         this.client.createObject(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -252,7 +252,7 @@ class HighwayService {
     }
 
     // Read bucket data from the channel
-    async readObject(req: ReadObjectRequest) : Promise<ReadObjectResponse> {
+    static async readObject(req: ReadObjectRequest) : Promise<ReadObjectResponse> {
       return new Promise((resolve, reject) => {
         this.client.readObject(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -267,7 +267,7 @@ class HighwayService {
     }
 
     // Update bucket data from the channel
-    async updateObject(req: UpdateObjectRequest) : Promise<UpdateObjectResponse> {
+    static async updateObject(req: UpdateObjectRequest) : Promise<UpdateObjectResponse> {
       return new Promise((resolve, reject) => {
         this.client.updateObject(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -282,7 +282,7 @@ class HighwayService {
     }
 
       // Delete bucket data from the channel
-    async deleteObject(req: DeleteBucketRequest) : Promise<DeleteBucketResponse> {
+    static async deleteObject(req: DeleteBucketRequest) : Promise<DeleteBucketResponse> {
       return new Promise((resolve, reject) => {
         this.client.deleteObject(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -297,22 +297,22 @@ class HighwayService {
     }
 
     // Delete bucket data from the channel
-    async uploadBlob(req: UploadBlobRequest) : Promise<ClientReadableStream<UploadBlobResponse>> {
+    static async uploadBlob(req: UploadBlobRequest) : Promise<ClientReadableStream<UploadBlobResponse>> {
       return this.client.uploadBlob(req);
     }
 
     // Update bucket data from the channel
-    async downloadBlob(req: DownloadBlobRequest) : Promise<ClientReadableStream<DownloadBlobResponse>> {
+    static async downloadBlob(req: DownloadBlobRequest) : Promise<ClientReadableStream<DownloadBlobResponse>> {
       return this.client.downloadBlob(req);
     }
 
     // Delete bucket data from the channel
-    async syncBlob(req: SyncBlobRequest) : Promise<ClientReadableStream<SyncBlobResponse>> {
+    static async syncBlob(req: SyncBlobRequest) : Promise<ClientReadableStream<SyncBlobResponse>> {
       return this.client.syncBlob(req);
     }
 
     // Update bucket data from the channel
-    async deleteBlob(req: DeleteBlobRequest) : Promise<DeleteBucketResponse> {
+    static async deleteBlob(req: DeleteBlobRequest) : Promise<DeleteBucketResponse> {
       return new Promise((resolve, reject) => {
         this.client.deleteBlob(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -327,7 +327,7 @@ class HighwayService {
     }
 
     // Parse DID converts string to DID object
-    async parseDid(req: ParseDidRequest) : Promise<ParseDidResponse> {
+    static async parseDid(req: ParseDidRequest) : Promise<ParseDidResponse> {
       return new Promise((resolve, reject) => {
         this.client.parseDid(req, (err, res) => {
           if (err !== undefined && err !== null) {
@@ -342,7 +342,7 @@ class HighwayService {
     }
 
     // Resolve DID converts string to DID object
-    async resolveDid(req: ResolveDidRequest) : Promise<ResolveDidResponse> {
+    static async resolveDid(req: ResolveDidRequest) : Promise<ResolveDidResponse> {
       return new Promise((resolve, reject) => {
         this.client.resolveDid(req, (err, res) => {
           if (err !== undefined && err !== null) {
