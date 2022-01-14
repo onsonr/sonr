@@ -6,28 +6,20 @@ import (
 )
 
 // Parse parses a DID string into a DID struct
-func Parse(s string) (*Did, error) {
+func ParseDid(s string) (*Did, error) {
 	var did Did
 
 	if !IsValidDid(Method, s) {
 		return nil, ErrParseInvalid
 	}
+	// methodDid, methodFragment := SplitDidUrlIntoDidAndFragment(methodId)
+	// if len(methodDid) == 0 {
+	// 	result = did + "#" + methodFragment
+	// }
 	// Parse Items from string into DID struct
 	did.Method = Method
 
 	return &did, nil
-}
-
-// ResolveId resolves a DID into a string
-func ResolveId(did string, methodId string) string {
-	result := methodId
-
-	methodDid, methodFragment := SplitDidUrlIntoDidAndFragment(methodId)
-	if len(methodDid) == 0 {
-		result = did + "#" + methodFragment
-	}
-
-	return result
 }
 
 // CreateBaseDID creates a base DID with a given users libp2p public key

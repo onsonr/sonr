@@ -61,6 +61,9 @@ type NodeImpl interface {
 	// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
 	NeedsWait()
 
+	// ParseDid parses a DID
+	ParseDid(did string) (*common.Did, error)
+
 	// Pause tells all of goroutines to pause execution
 	Pause()
 
@@ -69,6 +72,9 @@ type NodeImpl interface {
 
 	// Profile returns the profile of the node from Local Store
 	Profile() (*common.Profile, error)
+
+	// ResolveDid resolves a DID
+	ResolveDid(did string) (*common.DidDocument, error)
 
 	// Resume tells all of goroutines to resume execution
 	Resume()

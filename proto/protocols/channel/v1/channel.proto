@@ -4,46 +4,55 @@ syntax = "proto3";
 package protocols.channel.v1;
 option go_package = "github.com/sonr-io/core/channel";
 
-// EventType is the type of event being performed on a channel.
-enum EventType {
-    // EventTypeUnspecified is the default value.
-    EVENT_TYPE_UNSPECIFIED = 0;
-
-    // EventTypeGet is a get event.
-    EVENT_TYPE_GET = 1;
-
-    // EventTypeSet is a set event.
-    EVENT_TYPE_SET = 2;
-
-    // EventTypeDelete is a delete event.
-    EVENT_TYPE_DELETE = 3;
-
-    // EventTypePut is a put event.
-    EVENT_TYPE_PUT = 4;
-
-    // EventTypeSync is a sync event.
-    EVENT_TYPE_SYNC = 5;
-}
-
-// Event is the base event type for all channel events.
-message Event {
-    // Peer is the peer that originated the event.
-    string peer = 1;
+// ChannelEvent is the base event type for all channel events.
+message ChannelEvent {
+    // Owner is the peer that originated the event.
+    string owner = 1;
 
     // Type is the type of event being performed on a channel.
-    EventType type = 2;
+    ChannelEventType type = 2;
 
-    // Entry is the entry being modified in the Store.
-    StoreEntry entry = 3;
+    // Record is the entry being modified in the Store.
+    ChannelStoreRecord record = 3;
 
-    // Store is the store being operated on.
-    Store store = 4;
+    // Metadata is the metadata associated with the event.
+    map<string, string> metadata = 4;
+}
+
+// ChannelMessage is a message sent to a channel.
+message ChannelMessage {
+    // Owner is the peer that originated the message.
+    string owner = 1;
+
+    // Text is the message text.
+    string text = 2; // optional
+
+    // Data is the data being sent.
+    bytes data = 3; // optional
+
+    // Metadata is the metadata associated with the message.
+    map<string, string> metadata = 4;
+}
+
+// EventType is the type of event being performed on a channel.
+enum ChannelEventType {
+    // EventTypeUnspecified is the default value.
+    CHANNEL_EVENT_TYPE_UNSPECIFIED = 0;
+
+    // EventTypeGet is a get event being performed on a channel record in the store.
+    CHANNEL_EVENT_TYPE_GET = 1;
+
+    // EventTypeSet is a set event on the record store.
+    CHANNEL_EVENT_TYPE_SET = 2;
+
+    // EventTypeDelete is a delete event on the record store.
+    CHANNEL_EVENT_TYPE_DELETE = 3;
 }
 
 // Store is a disk based key-value store for channel data.
-message Store {
-    // Data is the data being stored.
-    map<string, StoreEntry> data = 1;
+message ChannelStore {
+    // Entries is the data being stored.
+    map<string, ChannelStoreRecord> entries = 1;
 
     // Capacity is the maximum number of entries that can be stored.
     int32 capacity = 2;
@@ -55,10 +64,11 @@ message Store {
     int64 ttl = 4;
 }
 
-// StoreEntry is the data being stored in the Store.
-message StoreEntry {
-    // Peer is the peer that originated the event.
-    string peer = 1;
+
+// ChannelStoreRecord is the data being stored in the ChannelStore.
+message ChannelStoreRecord {
+    // Owner is the peer that originated the event.
+    string owner = 1;
 
     // Key is the key being modified in the Store.
     string key = 2;

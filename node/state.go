@@ -11,6 +11,7 @@ import (
 	"syscall"
 
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/common"
 )
 
 // HostStatus is the status of the host
@@ -199,4 +200,15 @@ func (sm *SockManager) NewSockPath() (string, error) {
 	}
 
 	return "", errors.Wrap(err, "can't create new sock")
+}
+
+// ParseDid converts string into a DID struct
+func (n *node) ParseDid(did string) (*common.Did, error) {
+	return common.ParseDid(did)
+}
+
+// ResolveDid resolves a DID to a Did Document
+func (n *node) ResolveDid(did string) (*common.DidDocument, error) {
+	doc := &common.DidDocument{}
+	return doc, nil
 }

@@ -4,16 +4,16 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	channelV1 "github.com/sonr-io/core/protocols/channel/v1"
+	v1 "github.com/sonr-io/core/protocols/channel/v1"
 	"google.golang.org/protobuf/proto"
 )
 
-// handleEvents method listens to Pubsub Events for room
-func (b *channel) handleEvents() {
+// handleStoreEvents method listens to Pubsub Events for room
+func (b *channel) handleChannelEvents() {
 	// Loop Events
 	for {
 		// Get next event
-		event, err := b.handler.NextPeerEvent(b.ctx)
+		event, err := b.messagesHandler.NextPeerEvent(b.ctx)
 		if err != nil {
 			return
 		}
@@ -21,24 +21,72 @@ func (b *channel) handleEvents() {
 		// Check Event and Validate not User
 		switch event.Type {
 		case pubsub.PeerJoin:
-			event := b.NewSyncEvent()
-			err = PublishEvent(b.ctx, b.topic, event)
-			if err != nil {
-				logger.Error(err)
-				continue
-			}
+			// event := b.NewSyncEvent()
+			// err = PublishEvent(b.ctx, b.topic, event)
+			// if err != nil {
+			// 	logger.Error(err)
+			// 	continue
+			// }
 		default:
 			continue
 		}
 	}
 }
 
-// handleMessages method listens to Pubsub Messages for room
-func (b *channel) handleMessages() {
+// handleStoreMessages method listens to Pubsub Messages for room
+func (b *channel) handleChannelMessages() {
 	// Loop Messages
 	for {
 		// Get next message
-		msg, err := b.sub.Next(b.ctx)
+		buf, err := b.messagesSub.Next(b.ctx)
+		if err != nil {
+			return
+		}
+
+		// Unmarshal Message Data
+		msg := &v1.ChannelMessage{}
+		err = proto.Unmarshal(buf.Data, msg)
+		if err != nil {
+			logger.Errorf("failed to Unmarshal Message from pubsub.Message")
+			return
+		}
+
+		// Push Message to Channel
+		b.messages <- msg
+	}
+}
+
+// handleStoreEvents method listens to Pubsub Events for room
+func (b *channel) handleStoreEvents() {
+	// Loop Events
+	for {
+		// Get next event
+		event, err := b.storeEventsHandler.NextPeerEvent(b.ctx)
+		if err != nil {
+			return
+		}
+
+		// Check Event and Validate not User
+		switch event.Type {
+		case pubsub.PeerJoin:
+			// event := b.NewSyncEvent()
+			// err = PublishEvent(b.ctx, b.topic, event)
+			// if err != nil {
+			// 	logger.Error(err)
+			// 	continue
+			// }
+		default:
+			continue
+		}
+	}
+}
+
+// handleStoreMessages method listens to Pubsub Messages for room
+func (b *channel) handleStoreMessages() {
+	// Loop Messages
+	for {
+		// Get next message
+		msg, err := b.storeEventsSub.Next(b.ctx)
 		if err != nil {
 			return
 		}
@@ -63,10 +111,10 @@ func (b *channel) serve() {
 	for {
 		select {
 		case <-b.ctx.Done():
-			logger.Debugf("Closing Beam (%s)", b.id.Prefix())
-			b.handler.Cancel()
-			b.sub.Cancel()
-			if err := b.topic.Close(); err != nil {
+			logger.Debugf("Closing Beam (%s)", b.id)
+			b.storeEventsHandler.Cancel()
+			b.storeEventsSub.Cancel()
+			if err := b.storeEventsTopic.Close(); err != nil {
 				logger.Errorf("%s - Failed to Close Beam", err)
 			}
 			return
@@ -85,7 +133,7 @@ func isEventExit(ev pubsub.PeerEvent) bool {
 }
 
 // eventFromMsg converts a message to an event
-func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*channelV1.Event, error) {
+func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*v1.ChannelEvent, error) {
 	// Check Message
 	if msg.ReceivedFrom == selfID {
 		return nil, errors.Wrap(ErrInvalidMessage, "Same Peer as Node")
@@ -97,7 +145,7 @@ func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*channelV1.Event, error)
 	}
 
 	// Unmarshal Message Data
-	e := &channelV1.Event{}
+	e := &v1.ChannelEvent{}
 	err := proto.Unmarshal(msg.Data, e)
 	if err != nil {
 		logger.Errorf("failed to Unmarshal Event from pubsub.Message")

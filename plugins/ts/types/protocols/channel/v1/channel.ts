@@ -5,103 +5,116 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "protocols.channel.v1";
 
 /** EventType is the type of event being performed on a channel. */
-export enum EventType {
-  /** EVENT_TYPE_UNSPECIFIED - EventTypeUnspecified is the default value. */
-  EVENT_TYPE_UNSPECIFIED = "EVENT_TYPE_UNSPECIFIED",
-  /** EVENT_TYPE_GET - EventTypeGet is a get event. */
-  EVENT_TYPE_GET = "EVENT_TYPE_GET",
-  /** EVENT_TYPE_SET - EventTypeSet is a set event. */
-  EVENT_TYPE_SET = "EVENT_TYPE_SET",
-  /** EVENT_TYPE_DELETE - EventTypeDelete is a delete event. */
-  EVENT_TYPE_DELETE = "EVENT_TYPE_DELETE",
-  /** EVENT_TYPE_PUT - EventTypePut is a put event. */
-  EVENT_TYPE_PUT = "EVENT_TYPE_PUT",
-  /** EVENT_TYPE_SYNC - EventTypeSync is a sync event. */
-  EVENT_TYPE_SYNC = "EVENT_TYPE_SYNC",
+export enum ChannelEventType {
+  /** CHANNEL_EVENT_TYPE_UNSPECIFIED - EventTypeUnspecified is the default value. */
+  CHANNEL_EVENT_TYPE_UNSPECIFIED = "CHANNEL_EVENT_TYPE_UNSPECIFIED",
+  /** CHANNEL_EVENT_TYPE_GET - EventTypeGet is a get event being performed on a channel record in the store. */
+  CHANNEL_EVENT_TYPE_GET = "CHANNEL_EVENT_TYPE_GET",
+  /** CHANNEL_EVENT_TYPE_SET - EventTypeSet is a set event on the record store. */
+  CHANNEL_EVENT_TYPE_SET = "CHANNEL_EVENT_TYPE_SET",
+  /** CHANNEL_EVENT_TYPE_DELETE - EventTypeDelete is a delete event on the record store. */
+  CHANNEL_EVENT_TYPE_DELETE = "CHANNEL_EVENT_TYPE_DELETE",
+  /** CHANNEL_EVENT_TYPE_PUBLISH - EventTypePublish is a an event that publishes a message to a channel. */
+  CHANNEL_EVENT_TYPE_PUBLISH = "CHANNEL_EVENT_TYPE_PUBLISH",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function eventTypeFromJSON(object: any): EventType {
+export function channelEventTypeFromJSON(object: any): ChannelEventType {
   switch (object) {
     case 0:
-    case "EVENT_TYPE_UNSPECIFIED":
-      return EventType.EVENT_TYPE_UNSPECIFIED;
+    case "CHANNEL_EVENT_TYPE_UNSPECIFIED":
+      return ChannelEventType.CHANNEL_EVENT_TYPE_UNSPECIFIED;
     case 1:
-    case "EVENT_TYPE_GET":
-      return EventType.EVENT_TYPE_GET;
+    case "CHANNEL_EVENT_TYPE_GET":
+      return ChannelEventType.CHANNEL_EVENT_TYPE_GET;
     case 2:
-    case "EVENT_TYPE_SET":
-      return EventType.EVENT_TYPE_SET;
+    case "CHANNEL_EVENT_TYPE_SET":
+      return ChannelEventType.CHANNEL_EVENT_TYPE_SET;
     case 3:
-    case "EVENT_TYPE_DELETE":
-      return EventType.EVENT_TYPE_DELETE;
+    case "CHANNEL_EVENT_TYPE_DELETE":
+      return ChannelEventType.CHANNEL_EVENT_TYPE_DELETE;
     case 4:
-    case "EVENT_TYPE_PUT":
-      return EventType.EVENT_TYPE_PUT;
-    case 5:
-    case "EVENT_TYPE_SYNC":
-      return EventType.EVENT_TYPE_SYNC;
+    case "CHANNEL_EVENT_TYPE_PUBLISH":
+      return ChannelEventType.CHANNEL_EVENT_TYPE_PUBLISH;
     case -1:
     case "UNRECOGNIZED":
     default:
-      return EventType.UNRECOGNIZED;
+      return ChannelEventType.UNRECOGNIZED;
   }
 }
 
-export function eventTypeToJSON(object: EventType): string {
+export function channelEventTypeToJSON(object: ChannelEventType): string {
   switch (object) {
-    case EventType.EVENT_TYPE_UNSPECIFIED:
-      return "EVENT_TYPE_UNSPECIFIED";
-    case EventType.EVENT_TYPE_GET:
-      return "EVENT_TYPE_GET";
-    case EventType.EVENT_TYPE_SET:
-      return "EVENT_TYPE_SET";
-    case EventType.EVENT_TYPE_DELETE:
-      return "EVENT_TYPE_DELETE";
-    case EventType.EVENT_TYPE_PUT:
-      return "EVENT_TYPE_PUT";
-    case EventType.EVENT_TYPE_SYNC:
-      return "EVENT_TYPE_SYNC";
+    case ChannelEventType.CHANNEL_EVENT_TYPE_UNSPECIFIED:
+      return "CHANNEL_EVENT_TYPE_UNSPECIFIED";
+    case ChannelEventType.CHANNEL_EVENT_TYPE_GET:
+      return "CHANNEL_EVENT_TYPE_GET";
+    case ChannelEventType.CHANNEL_EVENT_TYPE_SET:
+      return "CHANNEL_EVENT_TYPE_SET";
+    case ChannelEventType.CHANNEL_EVENT_TYPE_DELETE:
+      return "CHANNEL_EVENT_TYPE_DELETE";
+    case ChannelEventType.CHANNEL_EVENT_TYPE_PUBLISH:
+      return "CHANNEL_EVENT_TYPE_PUBLISH";
     default:
       return "UNKNOWN";
   }
 }
 
-export function eventTypeToNumber(object: EventType): number {
+export function channelEventTypeToNumber(object: ChannelEventType): number {
   switch (object) {
-    case EventType.EVENT_TYPE_UNSPECIFIED:
+    case ChannelEventType.CHANNEL_EVENT_TYPE_UNSPECIFIED:
       return 0;
-    case EventType.EVENT_TYPE_GET:
+    case ChannelEventType.CHANNEL_EVENT_TYPE_GET:
       return 1;
-    case EventType.EVENT_TYPE_SET:
+    case ChannelEventType.CHANNEL_EVENT_TYPE_SET:
       return 2;
-    case EventType.EVENT_TYPE_DELETE:
+    case ChannelEventType.CHANNEL_EVENT_TYPE_DELETE:
       return 3;
-    case EventType.EVENT_TYPE_PUT:
+    case ChannelEventType.CHANNEL_EVENT_TYPE_PUBLISH:
       return 4;
-    case EventType.EVENT_TYPE_SYNC:
-      return 5;
     default:
       return 0;
   }
 }
 
-/** Event is the base event type for all channel events. */
-export interface Event {
-  /** Peer is the peer that originated the event. */
-  peer: string;
+/** ChannelEvent is the base event type for all channel events. */
+export interface ChannelEvent {
+  /** Owner is the peer that originated the event. */
+  owner: string;
   /** Type is the type of event being performed on a channel. */
-  type: EventType;
-  /** Entry is the entry being modified in the Store. */
-  entry?: StoreEntry;
-  /** Store is the store being operated on. */
-  store?: Store;
+  type: ChannelEventType;
+  /** Record is the entry being modified in the Store. */
+  record?: ChannelStoreRecord;
+  /** Metadata is the metadata associated with the event. */
+  metadata: { [key: string]: string };
+}
+
+export interface ChannelEvent_MetadataEntry {
+  key: string;
+  value: string;
+}
+
+/** ChannelMessage is a message sent to a channel. */
+export interface ChannelMessage {
+  /** Owner is the peer that originated the message. */
+  owner: string;
+  /** Text is the message text. */
+  text: string;
+  /** Data is the data being sent. */
+  data: Buffer;
+  /** Metadata is the metadata associated with the message. */
+  metadata: { [key: string]: string };
+}
+
+export interface ChannelMessage_MetadataEntry {
+  key: string;
+  value: string;
 }
 
 /** Store is a disk based key-value store for channel data. */
-export interface Store {
-  /** Data is the data being stored. */
-  data: { [key: string]: StoreEntry };
+export interface ChannelStore {
+  /** Entries is the data being stored. */
+  entries: { [key: string]: ChannelStoreRecord };
   /** Capacity is the maximum number of entries that can be stored. */
   capacity: number;
   /** Modified is the last time the store was modified. */
@@ -110,15 +123,15 @@ export interface Store {
   ttl: number;
 }
 
-export interface Store_DataEntry {
+export interface ChannelStore_EntriesEntry {
   key: string;
-  value?: StoreEntry;
+  value?: ChannelStoreRecord;
 }
 
-/** StoreEntry is the data being stored in the Store. */
-export interface StoreEntry {
-  /** Peer is the peer that originated the event. */
-  peer: string;
+/** ChannelStoreRecord is the data being stored in the ChannelStore. */
+export interface ChannelStoreRecord {
+  /** Owner is the peer that originated the event. */
+  owner: string;
   /** Key is the key being modified in the Store. */
   key: string;
   /** Value is the value being modified in the Store. */
@@ -131,50 +144,65 @@ export interface StoreEntry {
   modified: number;
 }
 
-function createBaseEvent(): Event {
+function createBaseChannelEvent(): ChannelEvent {
   return {
-    peer: "",
-    type: EventType.EVENT_TYPE_UNSPECIFIED,
-    entry: undefined,
-    store: undefined,
+    owner: "",
+    type: ChannelEventType.CHANNEL_EVENT_TYPE_UNSPECIFIED,
+    record: undefined,
+    metadata: {},
   };
 }
 
-export const Event = {
-  encode(message: Event, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.peer !== "") {
-      writer.uint32(10).string(message.peer);
+export const ChannelEvent = {
+  encode(
+    message: ChannelEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
     }
-    if (message.type !== EventType.EVENT_TYPE_UNSPECIFIED) {
-      writer.uint32(16).int32(eventTypeToNumber(message.type));
+    if (message.type !== ChannelEventType.CHANNEL_EVENT_TYPE_UNSPECIFIED) {
+      writer.uint32(16).int32(channelEventTypeToNumber(message.type));
     }
-    if (message.entry !== undefined) {
-      StoreEntry.encode(message.entry, writer.uint32(26).fork()).ldelim();
+    if (message.record !== undefined) {
+      ChannelStoreRecord.encode(
+        message.record,
+        writer.uint32(26).fork()
+      ).ldelim();
     }
-    if (message.store !== undefined) {
-      Store.encode(message.store, writer.uint32(34).fork()).ldelim();
-    }
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      ChannelEvent_MetadataEntry.encode(
+        { key: key as any, value },
+        writer.uint32(34).fork()
+      ).ldelim();
+    });
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Event {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChannelEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEvent();
+    const message = createBaseChannelEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.peer = reader.string();
+          message.owner = reader.string();
           break;
         case 2:
-          message.type = eventTypeFromJSON(reader.int32());
+          message.type = channelEventTypeFromJSON(reader.int32());
           break;
         case 3:
-          message.entry = StoreEntry.decode(reader, reader.uint32());
+          message.record = ChannelStoreRecord.decode(reader, reader.uint32());
           break;
         case 4:
-          message.store = Store.decode(reader, reader.uint32());
+          const entry4 = ChannelEvent_MetadataEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry4.value !== undefined) {
+            message.metadata[entry4.key] = entry4.value;
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -184,56 +212,326 @@ export const Event = {
     return message;
   },
 
-  fromJSON(object: any): Event {
+  fromJSON(object: any): ChannelEvent {
     return {
-      peer: isSet(object.peer) ? String(object.peer) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
       type: isSet(object.type)
-        ? eventTypeFromJSON(object.type)
-        : EventType.EVENT_TYPE_UNSPECIFIED,
-      entry: isSet(object.entry)
-        ? StoreEntry.fromJSON(object.entry)
+        ? channelEventTypeFromJSON(object.type)
+        : ChannelEventType.CHANNEL_EVENT_TYPE_UNSPECIFIED,
+      record: isSet(object.record)
+        ? ChannelStoreRecord.fromJSON(object.record)
         : undefined,
-      store: isSet(object.store) ? Store.fromJSON(object.store) : undefined,
+      metadata: isObject(object.metadata)
+        ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
+            (acc, [key, value]) => {
+              acc[key] = String(value);
+              return acc;
+            },
+            {}
+          )
+        : {},
     };
   },
 
-  toJSON(message: Event): unknown {
+  toJSON(message: ChannelEvent): unknown {
     const obj: any = {};
-    message.peer !== undefined && (obj.peer = message.peer);
-    message.type !== undefined && (obj.type = eventTypeToJSON(message.type));
-    message.entry !== undefined &&
-      (obj.entry = message.entry
-        ? StoreEntry.toJSON(message.entry)
+    message.owner !== undefined && (obj.owner = message.owner);
+    message.type !== undefined &&
+      (obj.type = channelEventTypeToJSON(message.type));
+    message.record !== undefined &&
+      (obj.record = message.record
+        ? ChannelStoreRecord.toJSON(message.record)
         : undefined);
-    message.store !== undefined &&
-      (obj.store = message.store ? Store.toJSON(message.store) : undefined);
+    obj.metadata = {};
+    if (message.metadata) {
+      Object.entries(message.metadata).forEach(([k, v]) => {
+        obj.metadata[k] = v;
+      });
+    }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Event>, I>>(object: I): Event {
-    const message = createBaseEvent();
-    message.peer = object.peer ?? "";
-    message.type = object.type ?? EventType.EVENT_TYPE_UNSPECIFIED;
-    message.entry =
-      object.entry !== undefined && object.entry !== null
-        ? StoreEntry.fromPartial(object.entry)
+  fromPartial<I extends Exact<DeepPartial<ChannelEvent>, I>>(
+    object: I
+  ): ChannelEvent {
+    const message = createBaseChannelEvent();
+    message.owner = object.owner ?? "";
+    message.type =
+      object.type ?? ChannelEventType.CHANNEL_EVENT_TYPE_UNSPECIFIED;
+    message.record =
+      object.record !== undefined && object.record !== null
+        ? ChannelStoreRecord.fromPartial(object.record)
         : undefined;
-    message.store =
-      object.store !== undefined && object.store !== null
-        ? Store.fromPartial(object.store)
-        : undefined;
+    message.metadata = Object.entries(object.metadata ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
 
-function createBaseStore(): Store {
-  return { data: {}, capacity: 0, modified: 0, ttl: 0 };
+function createBaseChannelEvent_MetadataEntry(): ChannelEvent_MetadataEntry {
+  return { key: "", value: "" };
 }
 
-export const Store = {
-  encode(message: Store, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    Object.entries(message.data).forEach(([key, value]) => {
-      Store_DataEntry.encode(
+export const ChannelEvent_MetadataEntry = {
+  encode(
+    message: ChannelEvent_MetadataEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ChannelEvent_MetadataEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChannelEvent_MetadataEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChannelEvent_MetadataEntry {
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: ChannelEvent_MetadataEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChannelEvent_MetadataEntry>, I>>(
+    object: I
+  ): ChannelEvent_MetadataEntry {
+    const message = createBaseChannelEvent_MetadataEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseChannelMessage(): ChannelMessage {
+  return { owner: "", text: "", data: Buffer.alloc(0), metadata: {} };
+}
+
+export const ChannelMessage = {
+  encode(
+    message: ChannelMessage,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
+    }
+    if (message.text !== "") {
+      writer.uint32(18).string(message.text);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(26).bytes(message.data);
+    }
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      ChannelMessage_MetadataEntry.encode(
+        { key: key as any, value },
+        writer.uint32(34).fork()
+      ).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChannelMessage {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChannelMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.owner = reader.string();
+          break;
+        case 2:
+          message.text = reader.string();
+          break;
+        case 3:
+          message.data = reader.bytes() as Buffer;
+          break;
+        case 4:
+          const entry4 = ChannelMessage_MetadataEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry4.value !== undefined) {
+            message.metadata[entry4.key] = entry4.value;
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChannelMessage {
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      text: isSet(object.text) ? String(object.text) : "",
+      data: isSet(object.data)
+        ? Buffer.from(bytesFromBase64(object.data))
+        : Buffer.alloc(0),
+      metadata: isObject(object.metadata)
+        ? Object.entries(object.metadata).reduce<{ [key: string]: string }>(
+            (acc, [key, value]) => {
+              acc[key] = String(value);
+              return acc;
+            },
+            {}
+          )
+        : {},
+    };
+  },
+
+  toJSON(message: ChannelMessage): unknown {
+    const obj: any = {};
+    message.owner !== undefined && (obj.owner = message.owner);
+    message.text !== undefined && (obj.text = message.text);
+    message.data !== undefined &&
+      (obj.data = base64FromBytes(
+        message.data !== undefined ? message.data : Buffer.alloc(0)
+      ));
+    obj.metadata = {};
+    if (message.metadata) {
+      Object.entries(message.metadata).forEach(([k, v]) => {
+        obj.metadata[k] = v;
+      });
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChannelMessage>, I>>(
+    object: I
+  ): ChannelMessage {
+    const message = createBaseChannelMessage();
+    message.owner = object.owner ?? "";
+    message.text = object.text ?? "";
+    message.data = object.data ?? Buffer.alloc(0);
+    message.metadata = Object.entries(object.metadata ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+function createBaseChannelMessage_MetadataEntry(): ChannelMessage_MetadataEntry {
+  return { key: "", value: "" };
+}
+
+export const ChannelMessage_MetadataEntry = {
+  encode(
+    message: ChannelMessage_MetadataEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ChannelMessage_MetadataEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChannelMessage_MetadataEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChannelMessage_MetadataEntry {
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: ChannelMessage_MetadataEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChannelMessage_MetadataEntry>, I>>(
+    object: I
+  ): ChannelMessage_MetadataEntry {
+    const message = createBaseChannelMessage_MetadataEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseChannelStore(): ChannelStore {
+  return { entries: {}, capacity: 0, modified: 0, ttl: 0 };
+}
+
+export const ChannelStore = {
+  encode(
+    message: ChannelStore,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    Object.entries(message.entries).forEach(([key, value]) => {
+      ChannelStore_EntriesEntry.encode(
         { key: key as any, value },
         writer.uint32(10).fork()
       ).ldelim();
@@ -250,17 +548,20 @@ export const Store = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Store {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChannelStore {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStore();
+    const message = createBaseChannelStore();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = Store_DataEntry.decode(reader, reader.uint32());
+          const entry1 = ChannelStore_EntriesEntry.decode(
+            reader,
+            reader.uint32()
+          );
           if (entry1.value !== undefined) {
-            message.data[entry1.key] = entry1.value;
+            message.entries[entry1.key] = entry1.value;
           }
           break;
         case 2:
@@ -280,16 +581,15 @@ export const Store = {
     return message;
   },
 
-  fromJSON(object: any): Store {
+  fromJSON(object: any): ChannelStore {
     return {
-      data: isObject(object.data)
-        ? Object.entries(object.data).reduce<{ [key: string]: StoreEntry }>(
-            (acc, [key, value]) => {
-              acc[key] = StoreEntry.fromJSON(value);
-              return acc;
-            },
-            {}
-          )
+      entries: isObject(object.entries)
+        ? Object.entries(object.entries).reduce<{
+            [key: string]: ChannelStoreRecord;
+          }>((acc, [key, value]) => {
+            acc[key] = ChannelStoreRecord.fromJSON(value);
+            return acc;
+          }, {})
         : {},
       capacity: isSet(object.capacity) ? Number(object.capacity) : 0,
       modified: isSet(object.modified) ? Number(object.modified) : 0,
@@ -297,12 +597,12 @@ export const Store = {
     };
   },
 
-  toJSON(message: Store): unknown {
+  toJSON(message: ChannelStore): unknown {
     const obj: any = {};
-    obj.data = {};
-    if (message.data) {
-      Object.entries(message.data).forEach(([k, v]) => {
-        obj.data[k] = StoreEntry.toJSON(v);
+    obj.entries = {};
+    if (message.entries) {
+      Object.entries(message.entries).forEach(([k, v]) => {
+        obj.entries[k] = ChannelStoreRecord.toJSON(v);
       });
     }
     message.capacity !== undefined &&
@@ -313,13 +613,15 @@ export const Store = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Store>, I>>(object: I): Store {
-    const message = createBaseStore();
-    message.data = Object.entries(object.data ?? {}).reduce<{
-      [key: string]: StoreEntry;
+  fromPartial<I extends Exact<DeepPartial<ChannelStore>, I>>(
+    object: I
+  ): ChannelStore {
+    const message = createBaseChannelStore();
+    message.entries = Object.entries(object.entries ?? {}).reduce<{
+      [key: string]: ChannelStoreRecord;
     }>((acc, [key, value]) => {
       if (value !== undefined) {
-        acc[key] = StoreEntry.fromPartial(value);
+        acc[key] = ChannelStoreRecord.fromPartial(value);
       }
       return acc;
     }, {});
@@ -330,28 +632,34 @@ export const Store = {
   },
 };
 
-function createBaseStore_DataEntry(): Store_DataEntry {
+function createBaseChannelStore_EntriesEntry(): ChannelStore_EntriesEntry {
   return { key: "", value: undefined };
 }
 
-export const Store_DataEntry = {
+export const ChannelStore_EntriesEntry = {
   encode(
-    message: Store_DataEntry,
+    message: ChannelStore_EntriesEntry,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
-      StoreEntry.encode(message.value, writer.uint32(18).fork()).ldelim();
+      ChannelStoreRecord.encode(
+        message.value,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Store_DataEntry {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ChannelStore_EntriesEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStore_DataEntry();
+    const message = createBaseChannelStore_EntriesEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -359,7 +667,7 @@ export const Store_DataEntry = {
           message.key = reader.string();
           break;
         case 2:
-          message.value = StoreEntry.decode(reader, reader.uint32());
+          message.value = ChannelStoreRecord.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -369,41 +677,41 @@ export const Store_DataEntry = {
     return message;
   },
 
-  fromJSON(object: any): Store_DataEntry {
+  fromJSON(object: any): ChannelStore_EntriesEntry {
     return {
       key: isSet(object.key) ? String(object.key) : "",
       value: isSet(object.value)
-        ? StoreEntry.fromJSON(object.value)
+        ? ChannelStoreRecord.fromJSON(object.value)
         : undefined,
     };
   },
 
-  toJSON(message: Store_DataEntry): unknown {
+  toJSON(message: ChannelStore_EntriesEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
       (obj.value = message.value
-        ? StoreEntry.toJSON(message.value)
+        ? ChannelStoreRecord.toJSON(message.value)
         : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Store_DataEntry>, I>>(
+  fromPartial<I extends Exact<DeepPartial<ChannelStore_EntriesEntry>, I>>(
     object: I
-  ): Store_DataEntry {
-    const message = createBaseStore_DataEntry();
+  ): ChannelStore_EntriesEntry {
+    const message = createBaseChannelStore_EntriesEntry();
     message.key = object.key ?? "";
     message.value =
       object.value !== undefined && object.value !== null
-        ? StoreEntry.fromPartial(object.value)
+        ? ChannelStoreRecord.fromPartial(object.value)
         : undefined;
     return message;
   },
 };
 
-function createBaseStoreEntry(): StoreEntry {
+function createBaseChannelStoreRecord(): ChannelStoreRecord {
   return {
-    peer: "",
+    owner: "",
     key: "",
     value: Buffer.alloc(0),
     expiration: 0,
@@ -412,13 +720,13 @@ function createBaseStoreEntry(): StoreEntry {
   };
 }
 
-export const StoreEntry = {
+export const ChannelStoreRecord = {
   encode(
-    message: StoreEntry,
+    message: ChannelStoreRecord,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.peer !== "") {
-      writer.uint32(10).string(message.peer);
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
     }
     if (message.key !== "") {
       writer.uint32(18).string(message.key);
@@ -438,15 +746,15 @@ export const StoreEntry = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): StoreEntry {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChannelStoreRecord {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStoreEntry();
+    const message = createBaseChannelStoreRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.peer = reader.string();
+          message.owner = reader.string();
           break;
         case 2:
           message.key = reader.string();
@@ -471,9 +779,9 @@ export const StoreEntry = {
     return message;
   },
 
-  fromJSON(object: any): StoreEntry {
+  fromJSON(object: any): ChannelStoreRecord {
     return {
-      peer: isSet(object.peer) ? String(object.peer) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
       key: isSet(object.key) ? String(object.key) : "",
       value: isSet(object.value)
         ? Buffer.from(bytesFromBase64(object.value))
@@ -484,9 +792,9 @@ export const StoreEntry = {
     };
   },
 
-  toJSON(message: StoreEntry): unknown {
+  toJSON(message: ChannelStoreRecord): unknown {
     const obj: any = {};
-    message.peer !== undefined && (obj.peer = message.peer);
+    message.owner !== undefined && (obj.owner = message.owner);
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
       (obj.value = base64FromBytes(
@@ -501,11 +809,11 @@ export const StoreEntry = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<StoreEntry>, I>>(
+  fromPartial<I extends Exact<DeepPartial<ChannelStoreRecord>, I>>(
     object: I
-  ): StoreEntry {
-    const message = createBaseStoreEntry();
-    message.peer = object.peer ?? "";
+  ): ChannelStoreRecord {
+    const message = createBaseChannelStoreRecord();
+    message.owner = object.owner ?? "";
     message.key = object.key ?? "";
     message.value = object.value ?? Buffer.alloc(0);
     message.expiration = object.expiration ?? 0;
