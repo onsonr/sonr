@@ -11,7 +11,7 @@ plugins:
       - require_unimplemented_servers=false
 
   - name: ts
-    out: plugins/ts/types
+    out: plugins/ts/src
     strategy: all
     path: node_modules/ts-proto/protoc-gen-ts_proto
     opt:

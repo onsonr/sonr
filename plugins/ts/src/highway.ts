@@ -1,11 +1,11 @@
 import { credentials, ClientReadableStream } from "@grpc/grpc-js";
-import { HighwayServiceClient } from './types/node/highway/v1/highway';
-import { AccessNameRequest, RegisterNameRequest, UpdateNameRequest, UpdateServiceRequest, RegisterServiceRequest, AccessServiceRequest, CreateChannelRequest, ReadChannelRequest, UpdateChannelRequest, DeleteChannelRequest, ListenBucketRequest, ListenChannelRequest, CreateBucketRequest, DeleteBlobRequest, DeleteBucketRequest, UpdateBucketRequest, ReadBucketRequest, CreateObjectRequest, UpdateObjectRequest, ReadObjectRequest, UploadBlobRequest, DownloadBlobRequest, SyncBlobRequest, ParseDidRequest, ResolveDidRequest } from './types/node/highway/v1/request';
-import { AccessNameResponse, RegisterNameResponse, UpdateNameResponse, UpdateServiceResponse, RegisterServiceResponse, AccessServiceResponse, CreateChannelResponse, ReadChannelResponse, UpdateChannelResponse, DeleteChannelResponse, ListenChannelResponse, ListenBucketResponse, CreateBucketResponse, DeleteBucketResponse, UpdateBucketResponse, ReadBucketResponse, CreateObjectResponse, UpdateObjectResponse, ReadObjectResponse, UploadBlobResponse, DownloadBlobResponse, SyncBlobResponse, ParseDidResponse, ResolveDidResponse } from './types/node/highway/v1/response';
+import { HighwayServiceClient } from './node/highway/v1/highway';
+import { AccessNameRequest, RegisterNameRequest, UpdateNameRequest, UpdateServiceRequest, RegisterServiceRequest, AccessServiceRequest, CreateChannelRequest, ReadChannelRequest, UpdateChannelRequest, DeleteChannelRequest, ListenBucketRequest, ListenChannelRequest, CreateBucketRequest, DeleteBlobRequest, DeleteBucketRequest, UpdateBucketRequest, ReadBucketRequest, CreateObjectRequest, UpdateObjectRequest, ReadObjectRequest, UploadBlobRequest, DownloadBlobRequest, SyncBlobRequest, ParseDidRequest, ResolveDidRequest } from './node/highway/v1/request';
+import { AccessNameResponse, RegisterNameResponse, UpdateNameResponse, UpdateServiceResponse, RegisterServiceResponse, AccessServiceResponse, CreateChannelResponse, ReadChannelResponse, UpdateChannelResponse, DeleteChannelResponse, ListenChannelResponse, ListenBucketResponse, CreateBucketResponse, DeleteBucketResponse, UpdateBucketResponse, ReadBucketResponse, CreateObjectResponse, UpdateObjectResponse, ReadObjectResponse, UploadBlobResponse, DownloadBlobResponse, SyncBlobResponse, ParseDidResponse, ResolveDidResponse } from './node/highway/v1/response';
 
 const RPC_SERVER_PORT = "26225";
 
-class HighwayService {
+export class HighwayService {
     // Create a new stream to the server
     static client: HighwayServiceClient;
     static logging: boolean;

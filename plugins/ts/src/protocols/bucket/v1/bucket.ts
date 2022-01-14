@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ObjectDoc } from "../../../protocols/object/v1/object";
+import { ObjectDoc } from "../../object/v1/object";
 
 export const protobufPackage = "protocols.bucket.v1";
 
