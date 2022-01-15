@@ -14,11 +14,11 @@ message ServiceConfig {
     // Description is a human readable description of the service.
     string description = 2;
 
+    // Id is the DID of the service.
+    common.Did id = 3;
+
     // Owner is the DID of the service owner.
     common.Did owner = 4;
-
-    // Tags is a list of tags the service is registered with.
-    repeated string tags = 3;
 
     // Channels is a list of channels the service is registered on.
     repeated common.Did channels = 5;

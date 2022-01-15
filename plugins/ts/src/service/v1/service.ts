@@ -12,10 +12,10 @@ export interface ServiceConfig {
   name: string;
   /** Description is a human readable description of the service. */
   description: string;
+  /** Id is the DID of the service. */
+  id?: Did;
   /** Owner is the DID of the service owner. */
   owner?: Did;
-  /** Tags is a list of tags the service is registered with. */
-  tags: string[];
   /** Channels is a list of channels the service is registered on. */
   channels: Did[];
   /** Buckets is a list of buckets the service is registered on. */
@@ -44,8 +44,8 @@ function createBaseServiceConfig(): ServiceConfig {
   return {
     name: "",
     description: "",
+    id: undefined,
     owner: undefined,
-    tags: [],
     channels: [],
     buckets: [],
     objects: {},
@@ -66,11 +66,11 @@ export const ServiceConfig = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
+    if (message.id !== undefined) {
+      Did.encode(message.id, writer.uint32(26).fork()).ldelim();
+    }
     if (message.owner !== undefined) {
       Did.encode(message.owner, writer.uint32(34).fork()).ldelim();
-    }
-    for (const v of message.tags) {
-      writer.uint32(26).string(v!);
     }
     for (const v of message.channels) {
       Did.encode(v!, writer.uint32(42).fork()).ldelim();
@@ -112,11 +112,11 @@ export const ServiceConfig = {
         case 2:
           message.description = reader.string();
           break;
+        case 3:
+          message.id = Did.decode(reader, reader.uint32());
+          break;
         case 4:
           message.owner = Did.decode(reader, reader.uint32());
-          break;
-        case 3:
-          message.tags.push(reader.string());
           break;
         case 5:
           message.channels.push(Did.decode(reader, reader.uint32()));
@@ -160,10 +160,8 @@ export const ServiceConfig = {
     return {
       name: isSet(object.name) ? String(object.name) : "",
       description: isSet(object.description) ? String(object.description) : "",
+      id: isSet(object.id) ? Did.fromJSON(object.id) : undefined,
       owner: isSet(object.owner) ? Did.fromJSON(object.owner) : undefined,
-      tags: Array.isArray(object?.tags)
-        ? object.tags.map((e: any) => String(e))
-        : [],
       channels: Array.isArray(object?.channels)
         ? object.channels.map((e: any) => Did.fromJSON(e))
         : [],
@@ -200,13 +198,10 @@ export const ServiceConfig = {
     message.name !== undefined && (obj.name = message.name);
     message.description !== undefined &&
       (obj.description = message.description);
+    message.id !== undefined &&
+      (obj.id = message.id ? Did.toJSON(message.id) : undefined);
     message.owner !== undefined &&
       (obj.owner = message.owner ? Did.toJSON(message.owner) : undefined);
-    if (message.tags) {
-      obj.tags = message.tags.map((e) => e);
-    } else {
-      obj.tags = [];
-    }
     if (message.channels) {
       obj.channels = message.channels.map((e) =>
         e ? Did.toJSON(e) : undefined
@@ -246,11 +241,14 @@ export const ServiceConfig = {
     const message = createBaseServiceConfig();
     message.name = object.name ?? "";
     message.description = object.description ?? "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Did.fromPartial(object.id)
+        : undefined;
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? Did.fromPartial(object.owner)
         : undefined;
-    message.tags = object.tags?.map((e) => e) || [];
     message.channels = object.channels?.map((e) => Did.fromPartial(e)) || [];
     message.buckets = object.buckets?.map((e) => Did.fromPartial(e)) || [];
     message.objects = Object.entries(object.objects ?? {}).reduce<{
