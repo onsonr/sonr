@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+// Package Service defines Service configuration for a Application on the Sonr network.
+package service.v1;
+import "common/did.proto";
+import "common/object.proto";
+option go_package = "github.com/sonr-io/core/service";
+
+// ServiceConfig is the configuration for a service.
+message ServiceConfig {
+    // Name is the name of the service.
+    string name = 1;
+
+    // Description is a human readable description of the service.
+    string description = 2;
+
+    // Owner is the DID of the service owner.
+    common.Did owner = 4;
+
+    // Tags is a list of tags the service is registered with.
+    repeated string tags = 3;
+
+    // Channels is a list of channels the service is registered on.
+    repeated common.Did channels = 5;
+
+    // Buckets is a list of buckets the service is registered on.
+    repeated common.Did buckets = 6;
+
+    // Objects is a map of objects the service is registered on.
+    map<string, common.ObjectDoc> objects = 7;
+
+    // Endpoints is a list of endpoints the service is registered on.
+    repeated string endpoints = 8;
+
+    // Metadata is the metadata associated with the event.
+    map<string, string> metadata = 9;
+
+    // Version is the version of the service. Version must be a semantic version.
+    string version = 10;
+}

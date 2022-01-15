@@ -54,6 +54,9 @@ func defaultOptions() *options {
 
 // Channel is a pubsub based Key-Value store for Libp2p nodes.
 type Channel interface {
+	// Did returns the DID of the channel.
+	Did() *common.Did
+
 	// Get returns the value for the given key.
 	Get(key string) ([]byte, error)
 
