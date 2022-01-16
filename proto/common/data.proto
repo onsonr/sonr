@@ -27,8 +27,6 @@ message FileItem {
   int64 last_modified = 6;  // Last Modified Time in Seconds
 }
 
-
-
 // Payload is Data thats being Passed
 message Payload {
   repeated Item items = 1; // Payload Items
@@ -51,13 +49,6 @@ message Payload {
     // Thumbnail of the Item
     Thumbnail thumbnail = 6;         // Thumbnail of the Item
   }
-}
-
-// PayloadList is a list of Payload.Item's for Persistent Store
-message PayloadList {
-  repeated Payload payloads = 1; // Payload List
-  string key = 2;                // Key of the Payload List
-  int64 last_modified = 3;          // Last Modified Time in Seconds
 }
 
 // SupplyItem is an item supplied to be a payload

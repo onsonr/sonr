@@ -1,0 +1,2425 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "common/core.proto",
+    "description": "Package common defines commonly used types agnostic to the node role on the Sonr network.",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "HighwayService"
+    },
+    {
+      "name": "MotorService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/blob/delete": {
+      "post": {
+        "summary": "DeleteBlob deletes the given file from the calling node's service IPFS storage.",
+        "operationId": "HighwayService_DeleteBlob",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteBlobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publicKey",
+            "description": "Public key of the node that is deleting the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/blob/download": {
+      "post": {
+        "summary": "DownloadBlob downloads a file or buffer from the calling node's service IPFS storage.",
+        "operationId": "HighwayService_DownloadBlob",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1DownloadBlobResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of v1DownloadBlobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "outPath",
+            "description": "Out Path is the download path of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/blob/sync": {
+      "post": {
+        "summary": "SyncBlob synchronizes a local file from the calling node to the given service's IPFS storage.",
+        "operationId": "HighwayService_SyncBlob",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1SyncBlobResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of v1SyncBlobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "destinationDid",
+            "description": "Destination DID is the identifier of the destination service storage.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "path",
+            "description": "Path is the location of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/blob/upload": {
+      "post": {
+        "summary": "UploadBlob uploads a file or buffer to the calling node's service IPFS storage.",
+        "operationId": "HighwayService_UploadBlob",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1UploadBlobResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of v1UploadBlobResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "label",
+            "description": "Label is the label of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "path",
+            "description": "Path is the path of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bucketDid",
+            "description": "Bucket is the bucket of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "Size is the size of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lastModified",
+            "description": "LastModified is the last modified time of the blob.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/bucket/create": {
+      "post": {
+        "summary": "CreateBucket creates a new bucket for the calling nodes service.",
+        "operationId": "HighwayService_CreateBucket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateBucketResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "label",
+            "description": "Label is the human-readable name of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "description": "Description is the description of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bucketType",
+            "description": "Owners is the list of provisioned nodes for the bucket.\n\n - BUCKET_TYPE_UNSPECIFIED: BucketTypeUnspecified is the default value.\n - BUCKET_TYPE_APP: BucketTypeApp is an App specific bucket. For Assets regarding the service.\n - BUCKET_TYPE_USER: BucketTypeUser is a User specific bucket. For any remote user data that is required\nto be stored in the Network.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "BUCKET_TYPE_UNSPECIFIED",
+              "BUCKET_TYPE_APP",
+              "BUCKET_TYPE_USER"
+            ],
+            "default": "BUCKET_TYPE_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/bucket/delete": {
+      "post": {
+        "summary": "DeleteBucket deletes the given bucket if the calling node is the owner of the bucket.",
+        "operationId": "HighwayService_DeleteBucket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteBucketResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the DID of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publicKey",
+            "description": "Public key of the node that is deleting the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/bucket/listen": {
+      "post": {
+        "summary": "ListenBucket subscribes the calling node to the given bucket and returns all publish events\nas a stream.",
+        "operationId": "HighwayService_ListenBucket",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1ListenBucketResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of v1ListenBucketResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the DID of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/bucket/read": {
+      "post": {
+        "summary": "ReadBucket lists all the blobs in the given bucket. The calling node must have access to the\nbucket.",
+        "operationId": "HighwayService_ReadBucket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReadBucketResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/bucket/update": {
+      "post": {
+        "summary": "UpdateBucket updates the configuration of the given bucket. The calling node must have access\nto the bucket.",
+        "operationId": "HighwayService_UpdateBucket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateBucketResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the DID of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "label",
+            "description": "Label is the human-readable name of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "description": "Description is the description of the bucket.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/channel/create": {
+      "post": {
+        "summary": "CreateChannel creates a new Publish/Subscribe topic channel for the given service.\nThe calling node must have already registered a service for the channel.",
+        "operationId": "HighwayService_CreateChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "Name is the name of the channel.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "description": "Description is the description of the channel.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "owners",
+            "description": "Owners is the list of provisioned nodes for the channel.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/channel/delete": {
+      "post": {
+        "summary": "DeleteChannel deletes the given channel if the calling node is the owner of the channel.",
+        "operationId": "HighwayService_DeleteChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "Did is the DID of the channel.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publicKey",
+            "description": "Public key of the node that is deleting the channel.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/channel/listen": {
+      "post": {
+        "summary": "ListenChannel subscribes the calling node to the given channel and returns all publish events\nas a stream.",
+        "operationId": "HighwayService_ListenChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1ListenChannelResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of v1ListenChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "Name is the name of the channel.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/channel/read": {
+      "post": {
+        "summary": "ReadChannel lists all peers subscribed to the given channel, and additional details about\nthe channels configuration.",
+        "operationId": "HighwayService_ReadChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReadChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the channel.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/channel/update": {
+      "post": {
+        "summary": "UpdateChannel updates the configuration of the given channel.",
+        "operationId": "HighwayService_UpdateChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "Did is the DID of the channel.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/did/parse": {
+      "post": {
+        "summary": "ParseDid parses a potential DID string into a DID object.",
+        "operationId": "HighwayService_ParseDid",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ParseDidResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the DID of the DID.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/did/resolve": {
+      "post": {
+        "summary": "ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has\naccess to the DID Document.",
+        "operationId": "HighwayService_ResolveDid",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ResolveDidResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the DID of the DID.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/name/access": {
+      "post": {
+        "summary": "AccessName returns details and publicly available information about the Peer given calling node\nhas permission to access. i.e \"prad.snr\" -\u003e \"firstname online profilePic city\"",
+        "operationId": "HighwayService_AccessName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccessNameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the peer to get the details from.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publicKey",
+            "description": "The public key of the peer to get the details from.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/name/register": {
+      "post": {
+        "summary": "RegisterName registers a new \".snr\" name for the calling node. It is only allowed to be called\nonce per node.",
+        "operationId": "HighwayService_RegisterName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RegisterNameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "deviceId",
+            "description": "The name of the peer to register the name with.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "os",
+            "description": "The Operating System of the peer to register the name with.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "model",
+            "description": "The model of the peer to register the name with.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "arch",
+            "description": "The architecture of the peer to register the name with.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publicKey",
+            "description": "The public key of the peer to register the name with.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nameToRegister",
+            "description": "The name to register.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/name/update": {
+      "post": {
+        "summary": "UpdateName updates the public information of the calling node.",
+        "operationId": "HighwayService_UpdateName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateNameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the peer to update the name of.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/object/create": {
+      "post": {
+        "summary": "CreateObject defines a new object to be utilized by the calling node's service. The object will\nbe placed in the Highway Service Graph and can be used in channels and other modules.",
+        "operationId": "HighwayService_CreateObject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateObjectResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "label",
+            "description": "Label is the label of the object.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "Name is the name of the object.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/object/delete": {
+      "post": {
+        "summary": "DeleteObject deletes the given object if the calling node is the owner of the object.",
+        "operationId": "HighwayService_DeleteObject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteObjectResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the object.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publicKey",
+            "description": "Public key of the node that is deleting the object.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/object/read": {
+      "post": {
+        "summary": "ReadObject returns the details of the given object provided its DID or Label.",
+        "operationId": "HighwayService_ReadObject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReadObjectResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the object.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/object/update": {
+      "post": {
+        "summary": "UpdateObject modifies the property fields of the given object.",
+        "operationId": "HighwayService_UpdateObject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateObjectResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "DID is the identifier of the object.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/service/access": {
+      "post": {
+        "summary": "AccessService creates a new signing key for the calling node in order to be authorized to\naccess the service. It is only allowed to be called once per node.",
+        "operationId": "HighwayService_AccessService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccessServiceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "The name of the peer to get the service details of.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/service/register": {
+      "post": {
+        "summary": "RegisterService registers a new service for the calling node. The calling node must have\nalready been enabled for development.",
+        "operationId": "HighwayService_RegisterService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RegisterServiceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "serviceName",
+            "description": "The name of the peer to register the service with.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publicKey",
+            "description": "The public key of the peer to register the service with.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    },
+    "/v1/service/update": {
+      "post": {
+        "summary": "UpdateService updates the details and public configuration of the calling node's service.",
+        "operationId": "HighwayService_UpdateService",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateServiceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "description": "The name of the peer to update the service details of.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HighwayService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PayloadItem": {
+      "type": "object",
+      "properties": {
+        "mime": {
+          "$ref": "#/definitions/commonMIME"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64"
+        },
+        "file": {
+          "$ref": "#/definitions/commonFileItem"
+        },
+        "url": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "thumbnail": {
+          "$ref": "#/definitions/commonThumbnail",
+          "title": "Thumbnail of the Item"
+        }
+      },
+      "title": "Item in Payload"
+    },
+    "PeerDevice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "hostName": {
+          "type": "string"
+        },
+        "os": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        }
+      },
+      "title": "Peer Info for Device"
+    },
+    "commonBucketType": {
+      "type": "string",
+      "enum": [
+        "BUCKET_TYPE_UNSPECIFIED",
+        "BUCKET_TYPE_APP",
+        "BUCKET_TYPE_USER"
+      ],
+      "default": "BUCKET_TYPE_UNSPECIFIED",
+      "description": "BucketType is the type of a bucket.\n\n - BUCKET_TYPE_UNSPECIFIED: BucketTypeUnspecified is the default value.\n - BUCKET_TYPE_APP: BucketTypeApp is an App specific bucket. For Assets regarding the service.\n - BUCKET_TYPE_USER: BucketTypeUser is a User specific bucket. For any remote user data that is required\nto be stored in the Network."
+    },
+    "commonDid": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "description": "Method is the method used to create the DID. For the Sonr network it is \"sonr\"."
+        },
+        "network": {
+          "type": "string",
+          "description": "Network is the network the DID is on. For testnet it is \"testnet\". i.e \"did:sonr:testnet:\"."
+        },
+        "id": {
+          "type": "string",
+          "title": "id is the trailing identifier after the network. i.e. \"did:sonr:testnet:abc123\""
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Paths is a list of paths that the DID is valid for. This is used to identify the Service."
+        },
+        "query": {
+          "type": "string",
+          "description": "Query is the query string that was used to create the DID. This is followed by a '?'."
+        },
+        "fragment": {
+          "type": "string",
+          "description": "Fragment is the fragment string that was used to create the DID. This is followed by a '#'."
+        }
+      },
+      "description": "Did represents a string that has been parsed and validated as a DID. The parts are stored\nin the individual fields."
+    },
+    "commonDidDocument": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Context is the context of the DID document. This is used to identify the Service."
+        },
+        "id": {
+          "type": "string",
+          "description": "Id is the DID of the document."
+        },
+        "controller": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Controller is the DID of the controller of the document. This will be the individual user devices and mailboxes."
+        },
+        "verificationMethod": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonVerificationMethod"
+          },
+          "description": "VerificationMethod is the list of verification methods for the user."
+        },
+        "authentication": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Authentication is the list of authentication methods for the user."
+        },
+        "assertionMethod": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "AssertionMethod is the list of assertion methods for the user."
+        },
+        "capabilityInvocation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "CapabilityInvocation is the list of capability invocation methods for the user."
+        },
+        "capabilityDelegation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "CapabilityDelegation is the list of capability delegation methods for the user."
+        },
+        "keyAgreement": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "KeyAgreement is the list of key agreement methods for the user."
+        },
+        "service": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonService"
+          },
+          "description": "Service is the list of services or DApps that the user has access to."
+        },
+        "alsoKnownAs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "AlsoKnownAs is the list of \".snr\" aliases for the user."
+        }
+      },
+      "description": "DidDocument is the document that describes a DID. This document is stored on the blockchain."
+    },
+    "commonDirection": {
+      "type": "string",
+      "enum": [
+        "DIRECTION_UNSPECIFIED",
+        "DIRECTION_INCOMING",
+        "DIRECTION_OUTGOING"
+      ],
+      "default": "DIRECTION_UNSPECIFIED",
+      "description": "Direction is the direction of a stream.\n\n - DIRECTION_UNSPECIFIED: Unspecified is the default value.\n - DIRECTION_INCOMING: Incoming is the direction of an incoming stream.\n - DIRECTION_OUTGOING: Outgoing is the direction of an outgoing stream."
+    },
+    "commonFileItem": {
+      "type": "object",
+      "properties": {
+        "mime": {
+          "$ref": "#/definitions/commonMIME"
+        },
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64"
+        },
+        "thumbnail": {
+          "$ref": "#/definitions/commonThumbnail"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "For Transfer File Payload"
+    },
+    "commonMIME": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/commonMIMEType",
+          "title": "Type of File"
+        },
+        "subtype": {
+          "type": "string",
+          "title": "Extension of File"
+        },
+        "value": {
+          "type": "string",
+          "title": "Type/Subtype i.e. (image/jpeg)"
+        }
+      },
+      "title": "Standard MIME with Additional Extensions"
+    },
+    "commonMIMEType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "TYPE_AUDIO",
+        "TYPE_DOCUMENT",
+        "TYPE_IMAGE",
+        "TYPE_TEXT",
+        "TYPE_VIDEO",
+        "TYPE_URL",
+        "TYPE_CRYPTO"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "description": "- TYPE_UNSPECIFIED: Other File Type - If cannot derive from Subtype\n - TYPE_AUDIO: Sound, Audio Files\n - TYPE_DOCUMENT: Document Files - PDF, Word, Excel, etc.\n - TYPE_IMAGE: Image Files\n - TYPE_TEXT: Text Based Files\n - TYPE_VIDEO: Video Files\n - TYPE_URL: URL Links\n - TYPE_CRYPTO: Crypto Files",
+      "title": "File Content Type"
+    },
+    "commonMetadata": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "int64",
+          "title": "Unix timestamp"
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "Node ID"
+        },
+        "signature": {
+          "type": "string",
+          "format": "byte",
+          "title": "Signature of the message"
+        },
+        "publicKey": {
+          "type": "string",
+          "format": "byte",
+          "title": "Public Key of the message sender"
+        }
+      },
+      "title": "Shared Metadata for Messages on all Protocols"
+    },
+    "commonObjectDoc": {
+      "type": "object",
+      "properties": {
+        "did": {
+          "type": "string",
+          "description": "Did is the identifier of the object."
+        },
+        "service": {
+          "type": "string",
+          "description": "Service is the service that created the object."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags are the tags associated with the object."
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/commonObjectField"
+          },
+          "description": "Fields are the fields associated with the object."
+        }
+      },
+      "description": "ObjectDoc is a document for an Object stored in the graph."
+    },
+    "commonObjectField": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Name is the name of the field"
+        },
+        "type": {
+          "$ref": "#/definitions/commonObjectFieldType",
+          "title": "Type is the type of the field"
+        },
+        "stringValue": {
+          "type": "string",
+          "title": "String is the value of the field"
+        },
+        "intValue": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Int is the value of the field"
+        },
+        "floatValue": {
+          "type": "number",
+          "format": "double",
+          "title": "Float is the value of the field"
+        },
+        "boolValue": {
+          "type": "boolean",
+          "title": "Bool is the value of the field"
+        },
+        "dateValue": {
+          "type": "string",
+          "format": "int64",
+          "description": "Date is defined by milliseconds since epoch."
+        },
+        "blobValue": {
+          "type": "string",
+          "format": "byte",
+          "title": "Blob is the value of the field"
+        },
+        "referenceValue": {
+          "type": "string",
+          "title": "Reference is the value of the field"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Metadata is additional info about the field"
+        }
+      },
+      "description": "ObjectField is a field of an Object."
+    },
+    "commonObjectFieldType": {
+      "type": "string",
+      "enum": [
+        "OBJECT_FIELD_TYPE_UNSPECIFIED",
+        "OBJECT_FIELD_TYPE_STRING",
+        "OBJECT_FIELD_TYPE_INT",
+        "OBJECT_FIELD_TYPE_FLOAT",
+        "OBJECT_FIELD_TYPE_BOOL",
+        "OBJECT_FIELD_TYPE_DATETIME",
+        "OBJECT_FIELD_TYPE_BLOB",
+        "OBJECT_FIELD_TYPE_REFERENCE"
+      ],
+      "default": "OBJECT_FIELD_TYPE_UNSPECIFIED",
+      "description": "- OBJECT_FIELD_TYPE_UNSPECIFIED: ObjectFieldTypeUnspecified is the default value\n - OBJECT_FIELD_TYPE_STRING: ObjectFieldTypeString is a string or text field\n - OBJECT_FIELD_TYPE_INT: ObjectFieldTypeInt is an integer\n - OBJECT_FIELD_TYPE_FLOAT: ObjectFieldTypeFloat is a floating point number\n - OBJECT_FIELD_TYPE_BOOL: ObjectFieldTypeBool is a boolean\n - OBJECT_FIELD_TYPE_DATETIME: ObjectFieldTypeDateTime is a datetime\n - OBJECT_FIELD_TYPE_BLOB: ObjectFieldTypeBlob is a blob which is a byte array\n - OBJECT_FIELD_TYPE_REFERENCE: ObjectFieldTypeReference is a reference to another object",
+      "title": "ObjectFieldType is the type of the field"
+    },
+    "commonPayload": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PayloadItem"
+          }
+        },
+        "owner": {
+          "$ref": "#/definitions/commonProfile"
+        },
+        "size": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "Payload is Data thats being Passed"
+    },
+    "commonPeer": {
+      "type": "object",
+      "properties": {
+        "sName": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/commonPeerStatus"
+        },
+        "device": {
+          "$ref": "#/definitions/PeerDevice"
+        },
+        "profile": {
+          "$ref": "#/definitions/commonProfile"
+        },
+        "publicKey": {
+          "type": "string",
+          "format": "byte"
+        },
+        "peerId": {
+          "type": "string"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "Basic Info Sent to Peers to Establish Connections"
+    },
+    "commonPeerStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_ONLINE",
+        "STATUS_AWAY",
+        "STATUS_BUSY"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "title": "Peers Active Status"
+    },
+    "commonProfile": {
+      "type": "object",
+      "properties": {
+        "sName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "picture": {
+          "type": "string",
+          "format": "byte"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "General Information about Peer passed during Authentication"
+    },
+    "commonService": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID is the DID of the service."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type is the type of the service."
+        },
+        "serviceEndpoint": {
+          "type": "string",
+          "description": "ServiceEndpoint is the endpoint of the service."
+        }
+      },
+      "description": "Service is a Application that runs on the Sonr network."
+    },
+    "commonSupplyItem": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "thumbnail": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "title": "SupplyItem is an item supplied to be a payload"
+    },
+    "commonThumbnail": {
+      "type": "object",
+      "properties": {
+        "buffer": {
+          "type": "string",
+          "format": "byte"
+        },
+        "mime": {
+          "$ref": "#/definitions/commonMIME"
+        }
+      },
+      "title": "Thumbnail of File"
+    },
+    "commonVerificationMethod": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID is the DID of the verification method."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type is the type of the verification method."
+        },
+        "controller": {
+          "type": "string",
+          "description": "Controller is the DID of the controller of the verification method."
+        },
+        "publicKeyHex": {
+          "type": "string",
+          "description": "PublicKeyHex is the public key of the verification method in hexidecimal."
+        },
+        "publicKeyBase58": {
+          "type": "string",
+          "description": "PublicKeyBase58 is the public key of the verification method in base58."
+        },
+        "blockchainAccountId": {
+          "type": "string",
+          "description": "BlockchainAccountId is the blockchain account id of the verification method."
+        }
+      },
+      "description": "VerificationMethod is a method that can be used to verify the DID."
+    },
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "v1AccessNameResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "peer": {
+          "$ref": "#/definitions/commonPeer",
+          "title": "Data of the response"
+        }
+      },
+      "title": "AccessNameResponse is a response to a request for a name"
+    },
+    "v1AccessServiceResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data of the response"
+        }
+      },
+      "title": "AccessServiceResponse is a response to a request for a service"
+    },
+    "v1CreateBucketResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "CreateBucketResponse is a response to a request to create a bucket"
+    },
+    "v1CreateChannelResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "CreateChannelResponse is a response to a request to create a channel"
+    },
+    "v1CreateObjectResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "CreateObjectResponse is a response to a request to create an object"
+    },
+    "v1DecideResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "title": "(Client) RespondResponse is response to RespondRequest"
+    },
+    "v1DeleteBlobResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "DeleteBlobResponse is a response to a request to delete a blob"
+    },
+    "v1DeleteBucketResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "DeleteBucketResponse is a response to a request to delete a bucket"
+    },
+    "v1DeleteChannelResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "DeleteChannelResponse is a response to a request to delete a channel"
+    },
+    "v1DeleteObjectResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "DeleteObjectResponse is a response to a request to delete an object"
+    },
+    "v1DownloadBlobResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "path": {
+          "type": "string",
+          "title": "Path of downloaded blob"
+        }
+      },
+      "title": "DownloadBlobResponse is a response to a request to download a blob"
+    },
+    "v1ListenBucketResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Additional information about the response"
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonObjectDoc"
+          },
+          "title": "Stream of objects in the bucket"
+        }
+      },
+      "title": "ListenBucketResponse is a response of the published data to the bucket"
+    },
+    "v1ListenChannelResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Additional information about the response"
+        },
+        "message": {
+          "type": "string",
+          "format": "byte",
+          "title": "Data of the response"
+        }
+      },
+      "title": "ListenChannelResponse is a response of the published data to the channel"
+    },
+    "v1OnLobbyRefreshResponse": {
+      "type": "object",
+      "properties": {
+        "olc": {
+          "type": "string"
+        },
+        "peers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonPeer"
+          }
+        },
+        "received": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "Message Sent when peer messages Lobby"
+    },
+    "v1OnMailboxMessageResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "buffer": {
+          "type": "string",
+          "format": "byte"
+        },
+        "from": {
+          "$ref": "#/definitions/commonProfile"
+        },
+        "to": {
+          "$ref": "#/definitions/commonProfile"
+        },
+        "metadata": {
+          "$ref": "#/definitions/commonMetadata"
+        }
+      },
+      "title": "Received Mail Event"
+    },
+    "v1OnTransmitCompleteResponse": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "$ref": "#/definitions/commonDirection"
+        },
+        "payload": {
+          "$ref": "#/definitions/commonPayload"
+        },
+        "from": {
+          "$ref": "#/definitions/commonPeer"
+        },
+        "to": {
+          "$ref": "#/definitions/commonPeer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "receivedAt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "results": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        }
+      },
+      "title": "Message Sent after Completed Transfer"
+    },
+    "v1OnTransmitDecisionResponse": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "type": "boolean"
+        },
+        "from": {
+          "$ref": "#/definitions/commonPeer"
+        },
+        "received": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "DecisionEvent is emitted when a decision is made by Peer."
+    },
+    "v1OnTransmitInviteResponse": {
+      "type": "object",
+      "properties": {
+        "received": {
+          "type": "string",
+          "format": "int64"
+        },
+        "from": {
+          "$ref": "#/definitions/commonPeer"
+        },
+        "payload": {
+          "$ref": "#/definitions/commonPayload"
+        }
+      },
+      "title": "InviteEvent notifies Peer that an Invite has been received"
+    },
+    "v1OnTransmitProgressResponse": {
+      "type": "object",
+      "properties": {
+        "progress": {
+          "type": "number",
+          "format": "double"
+        },
+        "received": {
+          "type": "string",
+          "format": "int64"
+        },
+        "current": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "direction": {
+          "$ref": "#/definitions/commonDirection"
+        }
+      },
+      "title": "Transfer Progress Event"
+    },
+    "v1ParseDidResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "ParseDidResponse is a response to a request to parse a DID"
+    },
+    "v1ReadBucketResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonObjectDoc"
+          },
+          "title": "Subscribers of the bucket"
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonPeer"
+          },
+          "title": "Owners of the bucket"
+        }
+      },
+      "title": "ReadBucketResponse is a response to a request to read a bucket"
+    },
+    "v1ReadChannelResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "subscribers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonPeer"
+          },
+          "title": "Subscribers of the channel"
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonPeer"
+          },
+          "title": "Owners of the channel"
+        }
+      },
+      "title": "ReadChannelResponse is a response to a request to read a channel"
+    },
+    "v1ReadObjectResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "object": {
+          "$ref": "#/definitions/commonObjectDoc",
+          "title": "Data of the response"
+        }
+      },
+      "title": "ReadObjectResponse is a response to a request to read an object"
+    },
+    "v1RegisterNameResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "didDocument": {
+          "$ref": "#/definitions/commonDidDocument",
+          "title": "DID of the response"
+        }
+      },
+      "title": "RegisterNameResponse is a request to register a name"
+    },
+    "v1RegisterServiceResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "didDocument": {
+          "$ref": "#/definitions/commonDidDocument",
+          "title": "DID of the response"
+        }
+      },
+      "title": "RegisterServiceResponse is a request to register a name"
+    },
+    "v1ResolveDidResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "didDocument": {
+          "$ref": "#/definitions/commonDidDocument",
+          "title": "DID of the response"
+        }
+      },
+      "title": "ResolveDidResponse is a response to a request to resolve a DID"
+    },
+    "v1SearchResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "error": {
+          "type": "string"
+        },
+        "peer": {
+          "$ref": "#/definitions/commonPeer"
+        },
+        "peerId": {
+          "type": "string"
+        },
+        "sName": {
+          "type": "string"
+        }
+      },
+      "title": "(Client) SearchResponse is Message for Searching for Peer"
+    },
+    "v1ShareResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "title": "(Client) ShareResponse is response to ShareRequest"
+    },
+    "v1SyncBlobResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        }
+      },
+      "title": "SyncBlobResponse is a response to a request to sync a blob"
+    },
+    "v1UpdateBucketResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonObjectDoc"
+          },
+          "title": "Subscribers of the bucket"
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonPeer"
+          },
+          "title": "Owners of the bucket"
+        }
+      },
+      "title": "UpdateBucketResponse is a response to a request to update a bucket"
+    },
+    "v1UpdateChannelResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "subscribers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonPeer"
+          },
+          "title": "Subscribers of the channel"
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonPeer"
+          },
+          "title": "Owners of the channel"
+        }
+      },
+      "title": "UpdateChannelResponse is a response to a request to update a channel"
+    },
+    "v1UpdateNameResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data of the updated name record"
+        }
+      },
+      "title": "UpdateNameResponse is a response to a request to update a name"
+    },
+    "v1UpdateObjectResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "object": {
+          "$ref": "#/definitions/commonObjectDoc",
+          "title": "Data of the response"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Metadata is additional metadata of the response"
+        }
+      },
+      "title": "UpdateObjectResponse is a response to a request to update an object"
+    },
+    "v1UpdateServiceResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data of the updated name record"
+        }
+      },
+      "title": "UpdateServiceResponse is a response to a request to update a name"
+    },
+    "v1UploadBlobResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Code of the response"
+        },
+        "message": {
+          "type": "string",
+          "title": "Message of the response"
+        },
+        "did": {
+          "$ref": "#/definitions/commonDid",
+          "title": "DID of the response"
+        },
+        "pinned": {
+          "type": "boolean",
+          "title": "Pinned is true if the blob is pinned to IPFS"
+        }
+      },
+      "title": "UploadBlobResponse is a response to a request to upload a blob"
+    }
+  }
+}

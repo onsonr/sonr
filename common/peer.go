@@ -72,23 +72,6 @@ func (p *Peer) OS() string {
 	return p.GetDevice().GetOs()
 }
 
-// Add adds a new Profile to the List and
-// updates LastModified time.
-func (p *ProfileList) Add(profile *Profile) {
-	p.Profiles = append(p.Profiles, profile)
-	p.LastModified = time.Now().Unix()
-}
-
-// Count returns the number of Profiles in the List
-func (p *ProfileList) Count() int {
-	return len(p.Profiles)
-}
-
-// IndexAt returns profile at index
-func (p *ProfileList) IndexAt(i int) *Profile {
-	return p.Profiles[i]
-}
-
 // DefaultProfileOption is a type for Profile Options
 type DefaultProfileOption func(profileOpts)
 

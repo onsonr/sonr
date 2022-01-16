@@ -120,6 +120,9 @@ message MIME {
 
     // URL Links
     TYPE_URL = 6;
+
+    // Crypto Files
+    TYPE_CRYPTO = 7;
   }
 }
 
@@ -159,12 +162,4 @@ message Profile {
   bytes picture = 4;           // Profile Picture
   string bio = 6;              // User Biography
   int64 last_modified = 7;      // Last Modified Timestamp
-}
-
-// List of Profiles for Persistent Store
-message ProfileList {
-  repeated Profile profiles = 1; // List of Profiles
-  int64 created_at = 2;          // Creation Timestamp
-  string key = 3;                // Key of the Payload List
-  int64 last_modified = 4;       // Last Modified Timestamp
 }

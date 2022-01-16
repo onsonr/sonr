@@ -155,6 +155,8 @@ export enum MIME_Type {
   TYPE_VIDEO = "TYPE_VIDEO",
   /** TYPE_URL - URL Links */
   TYPE_URL = "TYPE_URL",
+  /** TYPE_CRYPTO - Crypto Files */
+  TYPE_CRYPTO = "TYPE_CRYPTO",
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
@@ -181,6 +183,9 @@ export function mIME_TypeFromJSON(object: any): MIME_Type {
     case 6:
     case "TYPE_URL":
       return MIME_Type.TYPE_URL;
+    case 7:
+    case "TYPE_CRYPTO":
+      return MIME_Type.TYPE_CRYPTO;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -204,6 +209,8 @@ export function mIME_TypeToJSON(object: MIME_Type): string {
       return "TYPE_VIDEO";
     case MIME_Type.TYPE_URL:
       return "TYPE_URL";
+    case MIME_Type.TYPE_CRYPTO:
+      return "TYPE_CRYPTO";
     default:
       return "UNKNOWN";
   }
@@ -225,6 +232,8 @@ export function mIME_TypeToNumber(object: MIME_Type): number {
       return 5;
     case MIME_Type.TYPE_URL:
       return 6;
+    case MIME_Type.TYPE_CRYPTO:
+      return 7;
     default:
       return 0;
   }
@@ -338,18 +347,6 @@ export interface Profile {
   picture: Buffer;
   /** User Biography */
   bio: string;
-  /** Last Modified Timestamp */
-  lastModified: number;
-}
-
-/** List of Profiles for Persistent Store */
-export interface ProfileList {
-  /** List of Profiles */
-  profiles: Profile[];
-  /** Creation Timestamp */
-  createdAt: number;
-  /** Key of the Payload List */
-  key: string;
   /** Last Modified Timestamp */
   lastModified: number;
 }
@@ -1121,100 +1118,6 @@ export const Profile = {
     message.lastName = object.lastName ?? "";
     message.picture = object.picture ?? Buffer.alloc(0);
     message.bio = object.bio ?? "";
-    message.lastModified = object.lastModified ?? 0;
-    return message;
-  },
-};
-
-function createBaseProfileList(): ProfileList {
-  return { profiles: [], createdAt: 0, key: "", lastModified: 0 };
-}
-
-export const ProfileList = {
-  encode(
-    message: ProfileList,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.profiles) {
-      Profile.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.createdAt !== 0) {
-      writer.uint32(16).int64(message.createdAt);
-    }
-    if (message.key !== "") {
-      writer.uint32(26).string(message.key);
-    }
-    if (message.lastModified !== 0) {
-      writer.uint32(32).int64(message.lastModified);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ProfileList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseProfileList();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.profiles.push(Profile.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.createdAt = longToNumber(reader.int64() as Long);
-          break;
-        case 3:
-          message.key = reader.string();
-          break;
-        case 4:
-          message.lastModified = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ProfileList {
-    return {
-      profiles: Array.isArray(object?.profiles)
-        ? object.profiles.map((e: any) => Profile.fromJSON(e))
-        : [],
-      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
-      key: isSet(object.key) ? String(object.key) : "",
-      lastModified: isSet(object.lastModified)
-        ? Number(object.lastModified)
-        : 0,
-    };
-  },
-
-  toJSON(message: ProfileList): unknown {
-    const obj: any = {};
-    if (message.profiles) {
-      obj.profiles = message.profiles.map((e) =>
-        e ? Profile.toJSON(e) : undefined
-      );
-    } else {
-      obj.profiles = [];
-    }
-    message.createdAt !== undefined &&
-      (obj.createdAt = Math.round(message.createdAt));
-    message.key !== undefined && (obj.key = message.key);
-    message.lastModified !== undefined &&
-      (obj.lastModified = Math.round(message.lastModified));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ProfileList>, I>>(
-    object: I
-  ): ProfileList {
-    const message = createBaseProfileList();
-    message.profiles =
-      object.profiles?.map((e) => Profile.fromPartial(e)) || [];
-    message.createdAt = object.createdAt ?? 0;
-    message.key = object.key ?? "";
     message.lastModified = object.lastModified ?? 0;
     return message;
   },

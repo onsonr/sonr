@@ -104,16 +104,6 @@ export interface Payload_Item {
   thumbnail?: Thumbnail;
 }
 
-/** PayloadList is a list of Payload.Item's for Persistent Store */
-export interface PayloadList {
-  /** Payload List */
-  payloads: Payload[];
-  /** Key of the Payload List */
-  key: string;
-  /** Last Modified Time in Seconds */
-  lastModified: number;
-}
-
 /** SupplyItem is an item supplied to be a payload */
 export interface SupplyItem {
   /** Supply Path */
@@ -459,90 +449,6 @@ export const Payload_Item = {
       object.thumbnail !== undefined && object.thumbnail !== null
         ? Thumbnail.fromPartial(object.thumbnail)
         : undefined;
-    return message;
-  },
-};
-
-function createBasePayloadList(): PayloadList {
-  return { payloads: [], key: "", lastModified: 0 };
-}
-
-export const PayloadList = {
-  encode(
-    message: PayloadList,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.payloads) {
-      Payload.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.key !== "") {
-      writer.uint32(18).string(message.key);
-    }
-    if (message.lastModified !== 0) {
-      writer.uint32(24).int64(message.lastModified);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): PayloadList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePayloadList();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.payloads.push(Payload.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.key = reader.string();
-          break;
-        case 3:
-          message.lastModified = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PayloadList {
-    return {
-      payloads: Array.isArray(object?.payloads)
-        ? object.payloads.map((e: any) => Payload.fromJSON(e))
-        : [],
-      key: isSet(object.key) ? String(object.key) : "",
-      lastModified: isSet(object.lastModified)
-        ? Number(object.lastModified)
-        : 0,
-    };
-  },
-
-  toJSON(message: PayloadList): unknown {
-    const obj: any = {};
-    if (message.payloads) {
-      obj.payloads = message.payloads.map((e) =>
-        e ? Payload.toJSON(e) : undefined
-      );
-    } else {
-      obj.payloads = [];
-    }
-    message.key !== undefined && (obj.key = message.key);
-    message.lastModified !== undefined &&
-      (obj.lastModified = Math.round(message.lastModified));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<PayloadList>, I>>(
-    object: I
-  ): PayloadList {
-    const message = createBasePayloadList();
-    message.payloads =
-      object.payloads?.map((e) => Payload.fromPartial(e)) || [];
-    message.key = object.key ?? "";
-    message.lastModified = object.lastModified ?? 0;
     return message;
   },
 };

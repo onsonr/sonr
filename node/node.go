@@ -70,11 +70,17 @@ type NodeImpl interface {
 	// Pause tells all of goroutines to pause execution
 	Pause()
 
+	// Ping sends a ping to a peer to check if it is alive
+	Ping(id string) error
+
 	// Peer returns the peer of the node
 	Peer() (*common.Peer, error)
 
 	// Profile returns the profile of the node from Local Store
 	Profile() (*common.Profile, error)
+
+	// Publish publishes a message to a topic
+	Publish(topic string, msg proto.Message, metadata *common.Metadata) error
 
 	// ResolveDid resolves a DID
 	ResolveDid(did string) (*common.DidDocument, error)
@@ -262,6 +268,16 @@ func NewHighway(ctx context.Context, options ...Option) {
 // HostID returns the ID of the Host
 func (n *node) HostID() peer.ID {
 	return n.Host.ID()
+}
+
+// Ping sends a ping to the peer
+func (n *node) Ping(pid string) error {
+	return nil
+}
+
+// Publish publishes a message to the network
+func (n *node) Publish(t string, message proto.Message, metadata *common.Metadata) error {
+	return nil
 }
 
 // Role returns the role of the node

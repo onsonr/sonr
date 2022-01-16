@@ -190,23 +190,6 @@ func (m *MIME) PermitsThumbnail() bool {
 	return m.IsImage() || m.IsVideo() || m.IsAudio() || m.IsPDF()
 }
 
-// Add adds a new Profile to the List and
-// updates LastModified time.
-func (p *PayloadList) Add(load *Payload) {
-	p.Payloads = append(p.Payloads, load)
-	p.LastModified = time.Now().Unix()
-}
-
-// Count returns the number of Profiles in the List
-func (p *PayloadList) Count() int {
-	return len(p.Payloads)
-}
-
-// IndexAt returns profile at index
-func (p *PayloadList) IndexAt(i int) *Payload {
-	return p.Payloads[i]
-}
-
 // NewThumbnail creates a new thumbnail for the given file
 func NewThumbnail(path string, tbuf []byte, mime *MIME, ch chan *Thumbnail) {
 	if mime.IsImage() {
