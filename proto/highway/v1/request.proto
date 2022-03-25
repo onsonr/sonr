@@ -2,9 +2,8 @@
 syntax = "proto3";
 
 // Package Highway is used for defining a Highway node and its properties.
-package node.highway.v1;
-import "common/object.proto";
-option go_package = "github.com/sonr-io/core/node/highway";
+package highway.v1;
+option go_package = "github.com/sonr-io/core/highway";
 
 // AccessNameRequest is a request to get details from the ".snr" name of a peer
 message AccessNameRequest {
@@ -134,9 +133,6 @@ message CreateBucketRequest {
   // Description is the description of the bucket
   string description = 2;
 
-  // Owners is the list of provisioned nodes for the bucket
-  common.BucketType bucket_type = 3;
-
   // Metadata is the metadata of the bucket thats being created
   map<string, string> metadata = 4;
 }
@@ -193,9 +189,6 @@ message CreateObjectRequest {
 
   // Name is the name of the object
   string name = 2;
-
-  // Fields is the fields of the object
-  repeated common.ObjectField fields = 3;
 }
 
 // ReadObjectRequest is the request to read an object
@@ -208,9 +201,6 @@ message ReadObjectRequest {
 message UpdateObjectRequest {
   // DID is the identifier of the object
   string did = 1;
-
-  // Fields is the fields of the object
-  repeated common.ObjectField fields = 2;
 }
 
 // DeleteObjectRequest is the request to delete an object

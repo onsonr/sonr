@@ -1,0 +1,340 @@
+/*
+ * Copyright 2017 XLAB d.o.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+syntax = "proto3";
+
+package host.zk.v1;
+
+import "google/protobuf/empty.proto";
+
+// A generic message
+message Message {
+	oneof content {
+		BigInt bigint = 4;
+		ECGroupElement ec_group_element = 5;
+		Status status = 6;
+		PedersenFirst pedersen_first = 7;
+		PedersenDecommitment pedersen_decommitment = 8;
+		SchnorrProofData schnorr_proof_data = 9;
+		SchnorrProofRandomData schnorr_proof_random_data = 10;
+		SchnorrECProofRandomData schnorr_ec_proof_random_data = 11;
+		PseudonymsysCACertificate pseudonymsys_ca_certificate = 15;
+		PseudonymsysNymGenProofRandomData pseudonymsys_nym_gen_proof_random_data = 16;
+		PseudonymsysIssueProofRandomData pseudonymsys_issue_proof_random_data = 17;
+		DoubleBigInt double_bigint = 18;
+		PseudonymsysTransferCredentialData pseudonymsys_transfer_credential_data = 19;
+		PseudonymsysCACertificateEC pseudonymsys_ca_certificate_ec = 20;
+		PseudonymsysNymGenProofRandomDataEC pseudonymsys_nym_gen_proof_random_data_ec = 21;
+		PseudonymsysIssueProofRandomDataEC pseudonymsys_issue_proof_random_data_ec = 22;
+		PseudonymsysTransferCredentialDataEC pseudonymsys_transfer_credential_data_ec = 23;
+		SessionKey SessionKey = 30;
+		CLCredReq CLCredReq = 31;
+		CLCredential CLCredential = 32;
+		UpdateCLCredential update_cl_credential = 33;
+		ProveCLCredential prove_cl_credential = 34;
+		RegKey RegKey = 35;
+	}
+	int32 clientId = 28;
+}
+
+message ServiceInfo {
+	string name = 1;
+	string description = 2;
+	string provider = 3;
+}
+
+message AcceptableCred {
+	string orgName = 1;
+	repeated string revealedAttrs = 2;
+}
+
+message AcceptableCreds {
+	repeated AcceptableCred creds = 1;
+}
+
+message Attribute {
+	int32 index = 1;
+	string name = 2;
+	bool known = 4;
+}
+
+message IntAttribute {
+	Attribute attr = 1;
+}
+
+message StringAttribute {
+	Attribute attr = 2;
+}
+
+message CredAttribute {
+	oneof type {
+		StringAttribute stringAttr = 1;
+		IntAttribute intAttr = 2;
+	}
+}
+
+message CredStructure {
+	int32 nKnown = 1;
+	int32 nCommitted = 2;
+	int32 nHidden = 3;
+	repeated CredAttribute attributes = 4;
+}
+
+message Status {
+	bool Success = 1;
+}
+
+message BigInt {
+	bytes X1 = 1;
+}
+
+message DoubleBigInt {
+	bytes X1 = 1;
+	bytes X2 = 2;
+}
+
+message PedersenFirst {
+	bytes H = 1;
+}
+
+message PedersenDecommitment {
+	bytes X = 1;
+ 	bytes R = 2;
+}
+
+message ECGroupElement {
+	bytes X = 1;
+ 	bytes Y = 2;
+}
+
+message Pair {
+	bytes A = 1;
+ 	bytes B = 2;
+}
+
+message SchnorrProofRandomData {
+	bytes X = 1;
+	bytes A = 2;
+	bytes B = 3;
+}
+
+message SchnorrProofData {
+	bytes Z = 1;
+}
+
+message FiatShamir {
+    // Used for example for SchnorrProof and RepresentationProof where challenge is constructed by prover
+	// using hash function.
+	// Note that here we don't have A and B as in SchnorrProofRandomData because usually when proving
+	// the knowledge of X such that A^X = B, A is known beforehand (as part of public key).
+	// So here ProofRandomData is actually only X.
+	bytes ProofRandomData = 1;
+	bytes Challenge = 2;
+	repeated bytes ProofData = 3;
+}
+
+message FiatShamirAlsoNeg {
+    // For proofs where proof data can be negative (see RepresentationProof).
+	bytes ProofRandomData = 1;
+	bytes Challenge = 2;
+	repeated string ProofData = 3;
+}
+
+message SchnorrECProofRandomData {
+	ECGroupElement X = 1;
+	ECGroupElement A = 2;
+	ECGroupElement B = 3;
+}
+
+message PseudonymsysNymGenProofRandomData {
+	bytes X1 = 1;
+	bytes A1 = 2;
+	bytes B1 = 3;
+	bytes X2 = 4;
+	bytes A2 = 5;
+	bytes B2 = 6;
+	bytes R = 7;
+	bytes S = 8;
+	string RegKey = 9;
+}
+
+message PseudonymsysNymGenProofRandomDataEC {
+	ECGroupElement X1 = 1;
+	ECGroupElement A1 = 2;
+	ECGroupElement B1 = 3;
+	ECGroupElement X2 = 4;
+	ECGroupElement A2 = 5;
+	ECGroupElement B2 = 6;
+	bytes R = 7;
+	bytes S = 8;
+	string RegKey = 9;
+}
+
+message PseudonymsysCACertificate {
+	bytes BlindedA = 1;
+	bytes BlindedB = 2;
+	bytes R = 3;
+	bytes S = 4;
+}
+
+message PseudonymsysCACertificateEC {
+	ECGroupElement BlindedA = 1;
+	ECGroupElement BlindedB = 2;
+	bytes R = 3;
+	bytes S = 4;
+}
+
+message PseudonymsysIssueProofRandomData {
+	bytes X11 = 1;
+	bytes X12 = 2;
+	bytes X21 = 3;
+	bytes X22 = 4;
+	bytes A = 5;
+	bytes B = 6;
+}
+
+message PseudonymsysIssueProofRandomDataEC {
+	ECGroupElement X11 = 1;
+	ECGroupElement X12 = 2;
+	ECGroupElement X21 = 3;
+	ECGroupElement X22 = 4;
+	ECGroupElement A = 5;
+	ECGroupElement B = 6;
+}
+
+message PseudonymsysTranscript {
+	bytes A = 1;
+	bytes B = 2;
+	bytes Hash = 3;
+	bytes ZAlpha = 4;
+}
+
+message PseudonymsysTranscriptEC {
+	ECGroupElement A = 1;
+	ECGroupElement B = 2;
+	bytes Hash = 3;
+	bytes ZAlpha = 4;
+}
+
+message PseudonymsysCredential {
+	bytes SmallAToGamma = 1;
+	bytes SmallBToGamma = 2;
+	bytes AToGamma = 3;
+	bytes BToGamma = 4;
+    PseudonymsysTranscript T1 = 5;
+	PseudonymsysTranscript T2 = 6;
+}
+
+message PseudonymsysCredentialEC {
+	ECGroupElement SmallAToGamma = 1;
+	ECGroupElement SmallBToGamma = 2;
+	ECGroupElement AToGamma = 3;
+	ECGroupElement BToGamma = 4;
+    PseudonymsysTranscriptEC T1 = 5;
+	PseudonymsysTranscriptEC T2 = 6;
+}
+
+message PseudonymsysTransferCredentialData {
+	string OrgName = 1;
+	bytes X1 = 2;
+	bytes X2 = 3;
+	bytes NymA = 4;
+	bytes NymB = 5;
+	PseudonymsysCredential Credential = 6;
+}
+
+message PseudonymsysTransferCredentialDataEC {
+	string OrgName = 1;
+	ECGroupElement X1 = 2;
+	ECGroupElement X2 = 3;
+	ECGroupElement NymA = 4;
+	ECGroupElement NymB = 5;
+	PseudonymsysCredentialEC Credential = 6;
+}
+
+message CSPaillierSecretKey {
+	bytes N = 1;
+	bytes G = 2;
+	bytes X1 = 3;
+	bytes X2 = 4;
+	bytes X3 = 5;
+	bytes DLogP = 6;
+	bytes DLogG = 7;
+	bytes DLogQ = 8;
+	bytes VerifiableEncGroupN = 9;
+	bytes VerifiableEncGroupG1 = 10;
+	bytes VerifiableEncGroupH1 = 11;
+	int32 K = 12;
+	int32 K1 = 13;
+}
+
+message CSPaillierPubKey {
+	bytes N = 1;
+	bytes G = 2;
+	bytes Y1 = 3;
+	bytes Y2 = 4;
+	bytes Y3 = 5;
+	bytes DLogP = 6;
+	bytes DLogG = 7;
+	bytes DLogQ = 8;
+	bytes VerifiableEncGroupN = 9;
+	bytes VerifiableEncGroupG1 = 10;
+	bytes VerifiableEncGroupH1 = 11;
+	int32 K = 12;
+	int32 K1 = 13;
+}
+
+message SessionKey {
+	string value = 1;
+}
+
+message RegKey {
+	string RegKey = 1;
+}
+
+message CLCredReq {
+	bytes Nym = 1;
+	repeated bytes KnownAttrs = 2;
+	repeated bytes CommitmentsOfAttrs = 3;
+	FiatShamir NymProof = 4;
+	bytes U = 5;
+	FiatShamirAlsoNeg UProof = 6;
+	repeated FiatShamir CommitmentsOfAttrsProofs = 7;
+	bytes Nonce = 8;
+}
+
+message CLCredential {
+	bytes A = 1;
+	bytes E = 2;
+	bytes V11 = 3;
+	FiatShamirAlsoNeg AProof = 4;
+}
+
+message UpdateCLCredential {
+	bytes Nym = 1;
+	bytes Nonce = 2;
+	repeated bytes NewKnownAttrs = 3;
+}
+
+message ProveCLCredential {
+	bytes A = 1;
+	FiatShamirAlsoNeg Proof = 2;
+	repeated bytes KnownAttrs = 3;
+	repeated bytes CommitmentsOfAttrs = 4;
+	repeated int32 RevealedKnownAttrs = 5;
+	repeated int32 RevealedCommitmentsOfAttrs = 6;
+}

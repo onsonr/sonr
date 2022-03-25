@@ -6,6 +6,6 @@ breaking:
 lint:
   use:
     - DEFAULT
-name: buf.build/sonr/types
+name: buf.build/sonr-io/core
 deps:
   - buf.build/googleapis/googleapis

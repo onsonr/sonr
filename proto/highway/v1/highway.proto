@@ -1,11 +1,11 @@
 syntax = "proto3";
 
 // Package Highway is used for defining a Highway node and its properties.
-package node.highway.v1;
-import "node/highway/v1/request.proto";
+package highway.v1;
+import "highway/v1/request.proto";
 import "google/api/annotations.proto";
-import "node/highway/v1/response.proto";
-option go_package = "github.com/sonr-io/core/node/highway";
+import "highway/v1/response.proto";
+option go_package = "github.com/sonr-io/core/highway";
 
 // HighwayService is a RPC service for interfacing over the Highway node.
 service HighwayService {

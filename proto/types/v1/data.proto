@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-// Package common defines commonly used types agnostic to the node role on the Sonr network.
-package common;
-import "common/core.proto";
-option go_package = "github.com/sonr-io/core/common";
+// Package types defines typesly used types agnostic to the node role on the Sonr network.
+package types.v1;
+import "types/v1/core.proto";
+option go_package = "github.com/sonr-io/core/types";
 
 // Direction is the direction of a stream.
 enum Direction {
@@ -19,7 +19,7 @@ enum Direction {
 
 // For Transfer File Payload
 message FileItem {
-  common.MIME mime = 1; // Standard Mime Type
+  types.v1.MIME mime = 1; // Standard Mime Type
   string name = 2;         // File Name without Path
   string path = 3;         // File Location
   int64 size = 4;          // File Size in Bytes

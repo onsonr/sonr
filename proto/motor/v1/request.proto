@@ -1,19 +1,19 @@
 syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
-package node.motor.v1;
-import "common/core.proto";
-import "common/data.proto";
-option go_package = "github.com/sonr-io/core/node/motor";
+package motor.v1;
+import "types/v1/core.proto";
+import "types/v1/data.proto";
+option go_package = "github.com/sonr-io/core/motor";
 
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
-  common.Location location = 1;     // Current Runtime Location
-  common.Profile profile = 2;       // Users Contact Card
-  common.Connection connection = 3; // Internet Connection Type
+  types.v1.Location location = 1;     // Current Runtime Location
+  types.v1.Profile profile = 2;       // Users Contact Card
+  types.v1.Connection connection = 3; // Internet Connection Type
   HostOptions host_options = 4;         // Libp2p Host config
   ServiceOptions service_options = 5;   // Service Config
   DeviceOptions device_options = 6;     // File System Config
@@ -61,14 +61,14 @@ message InitializeRequest {
 
 // (Client) ShareRequest is request to share supplied files/urls with a peer
 message ShareRequest {
-  common.Peer peer = 1; // Peer to Share with
-  repeated common.SupplyItem items = 2; // Supply Items to share
+  types.v1.Peer peer = 1; // Peer to Share with
+  repeated types.v1.SupplyItem items = 2; // Supply Items to share
 }
 
 // (Client) DecideRequest is request to respond to a share request
 message DecideRequest {
   bool decision = 1;       // True if Supply is Active
-  common.Peer peer = 2; // Peer to Share with
+  types.v1.Peer peer = 2; // Peer to Share with
 }
 
 // (Client) SearchRequest is Message for Searching for Peer

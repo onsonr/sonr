@@ -1,8 +1,8 @@
 syntax = "proto3";
 
 // Package Channel contains definitions for channel specific events and data.
-package protocols.channel.v1;
-option go_package = "github.com/sonr-io/core/protocols/channel";
+package host.channel.v1;
+option go_package = "github.com/sonr-io/core/host/channel";
 
 // ChannelEvent is the base event type for all channel events.
 message ChannelEvent {

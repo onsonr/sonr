@@ -2,12 +2,10 @@
 syntax = "proto3";
 
 // Package Highway is used for defining a Highway node and its properties.
-package node.highway.v1;
-import "common/core.proto";
-import "common/object.proto";
-import "common/did.proto";
+package highway.v1;
+import "types/v1/core.proto";
 
-option go_package = "github.com/sonr-io/core/node/highway";
+option go_package = "github.com/sonr-io/core/highway";
 
 // AccessNameResponse is a response to a request for a name
 message AccessNameResponse {
@@ -18,7 +16,7 @@ message AccessNameResponse {
     string message = 2;
 
     // Data of the response
-    common.Peer peer = 3;
+    types.v1.Peer peer = 3;
 }
 
 // RegisterNameResponse is a request to register a name
@@ -28,9 +26,6 @@ message RegisterNameResponse {
 
     // Message of the response
     string message = 2;
-
-    // DID of the response
-    common.DidDocument did_document = 3;
 }
 
 // UpdateNameResponse is a response to a request to update a name
@@ -42,7 +37,7 @@ message UpdateNameResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Data of the updated name record
     map<string, string> metadata = 4;
@@ -69,7 +64,7 @@ message RegisterServiceResponse {
     string message = 2;
 
     // DID of the response
-    common.DidDocument did_document = 3;
+    string did_document = 3;
 }
 
 // UpdateServiceResponse is a response to a request to update a name
@@ -81,7 +76,7 @@ message UpdateServiceResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Data of the updated name record
     map<string, string> metadata = 4;
@@ -96,7 +91,7 @@ message CreateChannelResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // ReadChannelResponse is a response to a request to read a channel
@@ -108,13 +103,13 @@ message ReadChannelResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Subscribers of the channel
-    repeated common.Peer subscribers = 4;
+    repeated types.v1.Peer subscribers = 4;
 
     // Owners of the channel
-    repeated common.Peer owners = 5;
+    repeated types.v1.Peer owners = 5;
 }
 
 // UpdateChannelResponse is a response to a request to update a channel
@@ -126,13 +121,13 @@ message UpdateChannelResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Subscribers of the channel
-    repeated common.Peer subscribers = 4;
+    repeated types.v1.Peer subscribers = 4;
 
     // Owners of the channel
-    repeated common.Peer owners = 5;
+    repeated types.v1.Peer owners = 5;
 }
 
 // DeleteChannelResponse is a response to a request to delete a channel
@@ -144,7 +139,7 @@ message DeleteChannelResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // ListenChannelResponse is a response of the published data to the channel
@@ -153,7 +148,7 @@ message ListenChannelResponse {
     int32 code = 1;
 
     // DID of the response
-    common.Did did = 2;
+    string did = 2;
 
     // Additional information about the response
     map<string, string> metadata = 3; // optional
@@ -171,7 +166,7 @@ message CreateBucketResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // ReadBucketResponse is a response to a request to read a bucket
@@ -183,13 +178,13 @@ message ReadBucketResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Subscribers of the bucket
-    repeated common.ObjectDoc objects = 4;
+    map<string, string> objects = 4;
 
     // Owners of the bucket
-    repeated common.Peer owners = 5;
+    repeated types.v1.Peer owners = 5;
 }
 
 // UpdateBucketResponse is a response to a request to update a bucket
@@ -201,13 +196,13 @@ message UpdateBucketResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Subscribers of the bucket
-    repeated common.ObjectDoc objects = 4;
+map<string, string> objects = 4;
 
     // Owners of the bucket
-    repeated common.Peer owners = 5;
+    repeated types.v1.Peer owners = 5;
 }
 
 // DeleteBucketResponse is a response to a request to delete a bucket
@@ -219,7 +214,7 @@ message DeleteBucketResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // ListenBucketResponse is a response of the published data to the bucket
@@ -228,13 +223,13 @@ message ListenBucketResponse {
     int32 code = 1;
 
     // DID of the response
-    common.Did did = 2;
+    string did = 2;
 
     // Additional information about the response
     map<string, string> metadata = 3; // optional
 
     // Stream of objects in the bucket
-    repeated common.ObjectDoc objects = 4; // optional
+map<string, string> objects = 4;
 }
 
 // CreateObjectResponse is a response to a request to create an object
@@ -246,7 +241,7 @@ message CreateObjectResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // ReadObjectResponse is a response to a request to read an object
@@ -258,10 +253,10 @@ message ReadObjectResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Data of the response
-    common.ObjectDoc object = 4;
+    map<string, string> object = 4;
 }
 
 // UpdateObjectResponse is a response to a request to update an object
@@ -273,10 +268,10 @@ message UpdateObjectResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Data of the response
-    common.ObjectDoc object = 4;
+    map<string, string> object = 4;
 
     // Metadata is additional metadata of the response
     map<string, string> metadata = 5; // optional
@@ -291,7 +286,7 @@ message DeleteObjectResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // UploadBlobResponse is a response to a request to upload a blob
@@ -303,7 +298,7 @@ message UploadBlobResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Pinned is true if the blob is pinned to IPFS
     bool pinned = 4;
@@ -318,7 +313,7 @@ message DownloadBlobResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 
     // Path of downloaded blob
     string path = 4;
@@ -333,7 +328,7 @@ message SyncBlobResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // DeleteBlobResponse is a response to a request to delete a blob
@@ -345,7 +340,7 @@ message DeleteBlobResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // ParseDidResponse is a response to a request to parse a DID
@@ -357,7 +352,7 @@ message ParseDidResponse {
     string message = 2;
 
     // DID of the response
-    common.Did did = 3;
+    string did = 3;
 }
 
 // ResolveDidResponse is a response to a request to resolve a DID
@@ -369,6 +364,6 @@ message ResolveDidResponse {
     string message = 2;
 
     // DID of the response
-    common.DidDocument did_document = 3; // optional
+    string did_document = 3; // optional
 }
 
