@@ -3,7 +3,7 @@ package vc
 import (
 	"time"
 
-	ssi "github.com/sonr-io/core/pkg/did"
+	ssi "github.com/sonr-io/core/did/ssi"
 )
 
 // Proof represents a credential/presentation proof as defined by the Linked Data Proofs 1.0 specification (https://w3c-ccg.github.io/ld-proofs/).

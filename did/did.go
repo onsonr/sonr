@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/url"
 
-	ssi "github.com/sonr-io/core/pkg/did"
+	 "github.com/sonr-io/core/did/ssi"
 
 	ockamDid "github.com/ockam-network/did"
 )

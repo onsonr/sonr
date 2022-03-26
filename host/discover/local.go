@@ -8,11 +8,11 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
 	"github.com/sonr-io/core/config"
-	"github.com/sonr-io/core/host"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	node "github.com/sonr-io/core/host"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/discover/v1"
-	"google.golang.org/protobuf/proto"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 // ErrFunc is a function that returns an error
@@ -35,6 +35,7 @@ type Local struct {
 
 // newLobby creates a new local instance.
 func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
+
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {

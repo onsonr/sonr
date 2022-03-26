@@ -7,7 +7,7 @@ import (
 	"errors"
 	"testing"
 
-	ssi "github.com/sonr-io/core/pkg/did"
+	"github.com/sonr-io/core/did/ssi"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -9,7 +9,6 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
-	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/kataras/golog v0.1.7

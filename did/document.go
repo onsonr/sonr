@@ -7,12 +7,12 @@ import (
 	"errors"
 	"fmt"
 
-	ssi "github.com/sonr-io/core/pkg/did"
+	"github.com/sonr-io/core/did/ssi"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/shengdoushi/base58"
 
-	"github.com/sonr-io/core/pkg/did/internal/marshal"
+	"github.com/sonr-io/core/did/internal/marshal"
 )
 
 // Document represents a DID Document as specified by the DID Core specification (https://www.w3.org/TR/did-core/).

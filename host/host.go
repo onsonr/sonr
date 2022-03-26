@@ -14,7 +14,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/config"
-	"github.com/sonr-io/core/pkg/wallet"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -176,35 +175,6 @@ func (h *node) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error 
 	return nil
 }
 
-// SignData signs an outgoing p2p message payload
-func (n *node) SignData(data []byte) ([]byte, error) {
-	// Get local node's private key
-	res, err := wallet.Sign(data)
-	if err != nil {
-		logger.Errorf("%s - SignData: Failed to get local host's private key", err)
-		return nil, err
-	}
-	return res, nil
-}
-
-// SignMessage signs an outgoing p2p message payload
-func (n *node) SignMessage(message proto.Message) ([]byte, error) {
-	data, err := proto.Marshal(message)
-	if err != nil {
-		logger.Errorf("%s - SignMessage: Failed to Sign Message", err)
-		return nil, err
-	}
-	return n.SignData(data)
-}
-
-// SignedMetadataToProto converts a SignedMetadata to a protobuf.
-func SignedMetadataToProto(m *wallet.SignedMetadata) *types.Metadata {
-	return &types.Metadata{
-		Timestamp: m.Timestamp,
-		NodeId:    m.NodeId,
-		PublicKey: m.PublicKey,
-	}
-}
 
 // Stat returns the host stat info
 func (hn *node) Stat() (map[string]string, error) {

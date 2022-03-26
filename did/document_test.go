@@ -8,11 +8,11 @@ import (
 	"encoding/json"
 	"testing"
 
-	ssi "github.com/sonr-io/core/pkg/did"
+	"github.com/sonr-io/core/did/ssi"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/sonr-io/core/pkg/did/lib/test"
+	"github.com/sonr-io/core/did/test"
 )
 
 func Test_Document(t *testing.T) {

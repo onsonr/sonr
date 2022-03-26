@@ -15,7 +15,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/config"
-	"github.com/sonr-io/core/pkg/wallet"
 	"github.com/sonr-io/core/util"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
@@ -176,11 +175,7 @@ func (opts *options) Apply(ctx context.Context, options ...Option) (*node, error
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
-		privKey, err := wallet.DevicePrivKey()
-		if err == nil {
-			return privKey, nil
-		}
-		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
+		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
 		if err == nil {
 			logger.Warn("Generated new Account Private Key")
 			return privKey, nil

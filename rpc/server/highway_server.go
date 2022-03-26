@@ -9,7 +9,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/host/channel"
+	"github.com/sonr-io/core/channel"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 
 	"github.com/sonr-io/core/config"

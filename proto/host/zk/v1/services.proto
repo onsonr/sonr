@@ -22,26 +22,28 @@ package host.zk.v1;
 import "host/zk/v1/messages.proto";
 import "google/protobuf/empty.proto";
 
+option go_package = "github.com/sonr-io/core/host/zk";
+
 service PseudonymSystemCA {
-	rpc GenerateCertificate(stream Message) returns (stream Message) {}
-	rpc GenerateCertificate_EC(stream Message) returns (stream Message) {}
+	rpc GenerateCertificate(stream ZkMessage) returns (stream ZkMessage) {}
+	rpc GenerateCertificate_EC(stream ZkMessage) returns (stream ZkMessage) {}
 }
 
 service PseudonymSystem {
-	rpc GenerateNym (stream Message) returns (stream Message) {}
-	rpc GenerateNym_EC (stream Message) returns (stream Message) {}
-	rpc ObtainCredential (stream Message) returns (stream Message) {}
-	rpc ObtainCredential_EC (stream Message) returns (stream Message) {}
-	rpc TransferCredential (stream Message) returns (stream Message) {}
-	rpc TransferCredential_EC (stream Message) returns (stream Message) {}
+	rpc GenerateNym (stream ZkMessage) returns (stream ZkMessage) {}
+	rpc GenerateNym_EC (stream ZkMessage) returns (stream ZkMessage) {}
+	rpc ObtainCredential (stream ZkMessage) returns (stream ZkMessage) {}
+	rpc ObtainCredential_EC (stream ZkMessage) returns (stream ZkMessage) {}
+	rpc TransferCredential (stream ZkMessage) returns (stream ZkMessage) {}
+	rpc TransferCredential_EC (stream ZkMessage) returns (stream ZkMessage) {}
 }
 
 service CL {
 	rpc GetCredentialStructure(google.protobuf.Empty) returns (CredStructure) {}
 	rpc GetAcceptableCredentials(google.protobuf.Empty) returns (AcceptableCreds) {}
-	rpc IssueCredential (stream Message) returns (stream Message) {}
-	rpc UpdateCredential (stream Message) returns (stream Message) {}
-	rpc ProveCredential (stream Message) returns (stream Message) {}
+	rpc IssueCredential (stream ZkMessage) returns (stream ZkMessage) {}
+	rpc UpdateCredential (stream ZkMessage) returns (stream ZkMessage) {}
+	rpc ProveCredential (stream ZkMessage) returns (stream ZkMessage) {}
 }
 
 service Info {
