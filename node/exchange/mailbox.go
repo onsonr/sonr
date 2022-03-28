@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/core/config"
 )
 
 // // // Handle Mailbox Events
@@ -166,7 +166,7 @@ func fetchApiKeys() (string, string, error) {
 // getMailboxPath returns the mailbox path from the device
 func (mb *ExchangeProtocol) getMailboxPath() (string, error) {
 	// Get Mailbox Path
-	path, err := device.ThirdParty.GenPath(TextileMailboxDirName)
+	path, err := config.ThirdParty.GenPath(TextileMailboxDirName)
 	if err != nil {
 		logger.Errorf("%s - Failed to Find Existing Mailbox at Path", err)
 		return "", err

@@ -5,77 +5,77 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node"
-	"github.com/sonr-io/core/node/motor/v1"
+	"github.com/sonr-io/core/config"
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
+	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 
-	transmitV1 "github.com/sonr-io/core/node/transmit/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
-func NewInSession(payload *common.Payload, from *common.Peer, to *common.Peer) *transmitV1.Session {
+func NewInSession(payload *types.Payload, from *types.Peer, to *types.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
-	return &transmitV1.Session{
-		Direction:    common.Direction_DIRECTION_INCOMING,
+	return &v1.Session{
+		Direction:    types.Direction_DIRECTION_INCOMING,
 		Payload:      payload,
 		From:         from,
 		To:           to,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, common.Direction_DIRECTION_INCOMING),
+		Items:        CreatePayloadItems(sessionPayload, types.Direction_DIRECTION_INCOMING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // NewOutSession creates a new Session from the given payload with Outgoing direction.
-func NewOutSession(payload *common.Payload, to *common.Peer, from *common.Peer) *transmitV1.Session {
+func NewOutSession(payload *types.Payload, to *types.Peer, from *types.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
-	return &transmitV1.Session{
-		Direction:    common.Direction_DIRECTION_OUTGOING,
+	return &v1.Session{
+		Direction:    types.Direction_DIRECTION_OUTGOING,
 		Payload:      payload,
 		To:           to,
 		From:         from,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, common.Direction_DIRECTION_OUTGOING),
+		Items:        CreatePayloadItems(sessionPayload, types.Direction_DIRECTION_OUTGOING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // FinalIndex returns the final index of the session.
-func SessionFinalIndex(s *transmitV1.Session) int {
+func SessionFinalIndex(s *v1.Session) int {
 	return len(s.Items) - 1
 }
 
 // HasRead returns true if all files have been read.
-func SessionHasRead(s *transmitV1.Session) bool {
+func SessionHasRead(s *v1.Session) bool {
 	return SessionIsIn(s) && SessionIsDone(s)
 }
 
 // HasWrote returns true if all files have been written.
-func SessionHasWrote(s *transmitV1.Session) bool {
+func SessionHasWrote(s *v1.Session) bool {
 	return SessionIsOut(s) && SessionIsDone(s)
 }
 
 // IsDone returns true if all files have been read or written.
-func SessionIsDone(s *transmitV1.Session) bool {
+func SessionIsDone(s *v1.Session) bool {
 	return int(s.GetCurrentIndex()) >= SessionFinalIndex(s)
 }
 
 // IsOut returns true if the session is outgoing.
-func SessionIsOut(s *transmitV1.Session) bool {
-	return s.Direction == common.Direction_DIRECTION_OUTGOING
+func SessionIsOut(s *v1.Session) bool {
+	return s.Direction == types.Direction_DIRECTION_OUTGOING
 }
 
 // IsIn returns true if the session is incoming.
-func SessionIsIn(s *transmitV1.Session) bool {
-	return s.Direction == common.Direction_DIRECTION_INCOMING
+func SessionIsIn(s *v1.Session) bool {
+	return s.Direction == types.Direction_DIRECTION_INCOMING
 }
 
 // Event returns the complete event for the session.
-func SessionEvent(s *transmitV1.Session) *motor.OnTransmitCompleteResponse {
+func SessionEvent(s *v1.Session) *motor.OnTransmitCompleteResponse {
 	return &motor.OnTransmitCompleteResponse{
 		From:       s.GetFrom(),
 		To:         s.GetTo(),
@@ -88,7 +88,7 @@ func SessionEvent(s *transmitV1.Session) *motor.OnTransmitCompleteResponse {
 }
 
 // RouteStream is used to route the given stream to the given peer.
-func RouteSessionStream(s *transmitV1.Session, stream network.Stream, n node.CallbackImpl) (*motor.OnTransmitCompleteResponse, error) {
+func RouteSessionStream(s *v1.Session, stream network.Stream, n config.CallbackImpl) (*motor.OnTransmitCompleteResponse, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)
@@ -151,7 +151,7 @@ func RouteSessionStream(s *transmitV1.Session, stream network.Stream, n node.Cal
 }
 
 // UpdateCurrent updates the current index of the session.
-func UpdateCurrent(s *transmitV1.Session, result bool) bool {
+func UpdateCurrent(s *v1.Session, result bool) bool {
 	logger.Debugf("Item (%v) transmit result: %v", s.GetCurrentIndex(), result)
 	s.Results[s.GetCurrentIndex()] = result
 	s.CurrentIndex = s.GetCurrentIndex() + 1

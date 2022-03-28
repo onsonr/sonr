@@ -4,13 +4,18 @@ go 1.16
 
 require (
 	git.mills.io/prologic/bitcask v1.0.0
+	github.com/cosmos/cosmos-sdk v0.44.5
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gabriel-vasile/mimetype v1.3.1
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
+	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
-	github.com/google/uuid v1.3.0
+	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/kataras/golog v0.1.7
+	github.com/kr/pretty v0.3.0 // indirect
+	github.com/lestrrat-go/jwx v1.2.20
 	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.9.0
@@ -20,17 +25,22 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.4.0
+	github.com/ockam-network/did v0.1.4-0.20210103172416-02ae01ce06d8
+	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
-	github.com/sonr-io/sonr v0.0.1
-	github.com/spf13/viper v1.9.0
-	github.com/stretchr/testify v1.7.0
+	github.com/prometheus/client_golang v1.11.0
+	github.com/shengdoushi/base58 v1.0.0
+	github.com/spf13/cobra v1.3.0 // indirect
+	github.com/spf13/viper v1.10.1
+	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.1
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
-	golang.org/x/tools v0.1.8-0.20211022200916-316ba0b74098 // indirect
-	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa
-	google.golang.org/grpc v1.43.0
-	google.golang.org/protobuf v1.27.1
+	github.com/tendermint/tendermint v0.34.14
+	go.buf.build/grpc/go/sonr-io/core v1.3.3
+	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
+	google.golang.org/genproto v0.0.0-20220317150908-0efb43f6373e // indirect
+	google.golang.org/grpc v1.45.0
+	google.golang.org/protobuf v1.28.0
 )
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1

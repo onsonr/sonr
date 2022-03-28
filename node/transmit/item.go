@@ -6,13 +6,13 @@ import (
 	"os"
 
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/node"
-	"github.com/sonr-io/core/node/motor/v1"
-	transmitV1 "github.com/sonr-io/core/node/transmit/v1"
+	"github.com/sonr-io/core/config"
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
+	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 )
 
 // ReadFromStream reads the item from the stream
-func ReadItemFromStream(si *transmitV1.SessionItem, node node.CallbackImpl, reader msgio.ReadCloser) error {
+func ReadItemFromStream(si *v1.SessionItem, node config.CallbackImpl, reader msgio.ReadCloser) error {
 	// Create New File
 	dst, err := os.Create(si.GetPath())
 	defer dst.Close()
@@ -52,7 +52,7 @@ func ReadItemFromStream(si *transmitV1.SessionItem, node node.CallbackImpl, read
 }
 
 // WriteToStream writes the item to the stream
-func WriteItemToStream(si *transmitV1.SessionItem, node node.CallbackImpl, writer msgio.WriteCloser) error {
+func WriteItemToStream(si *v1.SessionItem, node config.CallbackImpl, writer msgio.WriteCloser) error {
 	// Create New Chunker
 	f, err := os.Open(si.GetPath())
 	defer f.Close()
@@ -97,7 +97,7 @@ func WriteItemToStream(si *transmitV1.SessionItem, node node.CallbackImpl, write
 }
 
 // Progress pushes a progress event to the node. Returns true if the item is done.
-func ProgressItem(si *transmitV1.SessionItem, wrt int, n node.CallbackImpl) bool {
+func ProgressItem(si *v1.SessionItem, wrt int, n config.CallbackImpl) bool {
 	// Update Progress
 	si.Written += int64(wrt)
 

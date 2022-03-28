@@ -1,0 +1,122 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+// Package Highway is used for defining a Highway node and its accessible API Endpoints
+package sonrio.highway.v1;
+import "registry/peer.proto";
+import "object/object.proto";
+
+option go_package = "github.com/sonr-io/sonr/highway/v1";
+
+
+// MsgAccessNameResponse represents a response to a request for a name
+message MsgAccessNameResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // Data of the response
+    map<string,string> metadata = 3;
+}
+
+message MsgCheckNameResponse {
+    // boolean response to know if a name has been taken
+    bool nameAvailable = 1;
+}
+
+message MsgGenerateCredsResponse {
+    // boolean response to know if token was attached to the did successfully
+    bool tokenAttached = 1;
+}
+
+// AccessServiceResponse represents a response to a request for a service
+message MsgAccessServiceResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // Data of the response
+    map<string, string> metadata = 3;
+}
+
+// MsgUploadBlobResponse represents a response to a request to upload a blob
+message MsgUploadBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Pinned is true if the blob is pinned to IPFS
+    bool pinned = 4;
+}
+
+// MsgDownloadBlobResponse represents a response to a request to download a blob
+message MsgDownloadBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+
+    // Path of downloaded blob
+    string path = 4;
+}
+
+// MsgSyncBlobResponse represents a response to a request to sync a blob
+message MsgSyncBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// MsgDeleteBlobResponse represents a response to a request to delete a blob
+message MsgDeleteBlobResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// MsgParseDidResponse represents a response to a request to parse a DID
+message MsgParseDidResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did = 3;
+}
+
+// MsgResolveDidResponse represents a response to a request to resolve a DID
+message MsgResolveDidResponse {
+    // Code of the response
+    int32 code = 1;
+
+    // Message of the response
+    string message = 2;
+
+    // DID of the response
+    string did_document = 3; // optional
+}

@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+// Package Channel contains definitions for channel specific events and data.
+package host.channel.v1;
+option go_package = "github.com/sonr-io/core/host/channel";
+
+// ChannelEvent is the base event type for all channel events.
+message ChannelEvent {
+    // Owner is the peer that originated the event.
+    string owner = 1;
+
+    // Type is the type of event being performed on a channel.
+    ChannelEventType type = 2;
+
+    // Record is the entry being modified in the Store.
+    ChannelStoreRecord record = 3;
+
+    // Metadata is the metadata associated with the event.
+    map<string, string> metadata = 4;
+}
+
+// ChannelMessage is a message sent to a channel.
+message ChannelMessage {
+    // Owner is the peer that originated the message.
+    string owner = 1;
+
+    // Text is the message text.
+    string text = 2; // optional
+
+    // Data is the data being sent.
+    bytes data = 3; // optional
+
+    // Metadata is the metadata associated with the message.
+    map<string, string> metadata = 4;
+}
+
+// EventType is the type of event being performed on a channel.
+enum ChannelEventType {
+    // EventTypeUnspecified is the default value.
+    CHANNEL_EVENT_TYPE_UNSPECIFIED = 0;
+
+    // EventTypeGet is a get event being performed on a channel record in the store.
+    CHANNEL_EVENT_TYPE_GET = 1;
+
+    // EventTypeSet is a set event on the record store.
+    CHANNEL_EVENT_TYPE_SET = 2;
+
+    // EventTypeDelete is a delete event on the record store.
+    CHANNEL_EVENT_TYPE_DELETE = 3;
+}
+
+// Store is a disk based key-value store for channel data.
+message ChannelStore {
+    // Entries is the data being stored.
+    map<string, ChannelStoreRecord> entries = 1;
+
+    // Capacity is the maximum number of entries that can be stored.
+    int32 capacity = 2;
+
+    // Modified is the last time the store was modified.
+    int64 modified = 3;
+
+    // TTL is the time to live for entries in the store.
+    int64 ttl = 4;
+}
+
+
+// ChannelStoreRecord is the data being stored in the ChannelStore.
+message ChannelStoreRecord {
+    // Owner is the peer that originated the event.
+    string owner = 1;
+
+    // Key is the key being modified in the Store.
+    string key = 2;
+
+    // Value is the value being modified in the Store.
+    bytes value = 3;
+
+    // Expiration is the expiration time for the entry.
+    int64 expiration = 4;
+
+    // Created is the time the entry was created.
+    int64 created = 5;
+
+    // Modified is the time the entry was last modified.
+    int64 modified = 6;
+}

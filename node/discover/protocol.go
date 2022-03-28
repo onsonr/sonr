@@ -5,9 +5,10 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node"
-	"github.com/sonr-io/core/protocols/channel"
+	"github.com/sonr-io/core/config"
+	node "github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/channel"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -20,24 +21,19 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node     node.NodeImpl
-	callback node.CallbackImpl
+	node     node.HostImpl
+	callback config.CallbackImpl
 	ctx      context.Context
 	global   channel.Channel
 	local    *Local
-	mode     node.Role
+	mode     config.Role
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
-	// Create global channel
-	did, err := common.NewDID("discover", common.WithFragment("global"))
-	if err != nil {
-		return nil, err
-	}
+func New(ctx context.Context, node node.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
 
 	// Create BeamStore
-	b, err := channel.New(ctx, node, did)
+	b, err := channel.New(ctx, node, "")
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +57,8 @@ func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options 
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *DiscoverProtocol) Get(sname string) (*common.Peer, error) {
-	peer := &common.Peer{}
+func (p *DiscoverProtocol) Get(sname string) (*types.Peer, error) {
+	peer := &types.Peer{}
 	// Get Peer from KadDHT store
 	if buf, err := p.global.Get(sname); err == nil {
 		// Unmarshal Peer
@@ -79,10 +75,10 @@ func (p *DiscoverProtocol) Get(sname string) (*common.Peer, error) {
 }
 
 // Put method updates peer instance in the store
-func (p *DiscoverProtocol) Put(peer *common.Peer) error {
+func (p *DiscoverProtocol) Put(peer *types.Peer) error {
 	logger.Debug("Updating Peer in BeamStore")
 	// Marshal Peer
-	buf, err := peer.Buffer()
+	buf, err := proto.Marshal(peer)
 	if err != nil {
 		logger.Errorf("Failed to Marshal Peer: %s", err)
 		return err

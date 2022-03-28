@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sonr-io/core/common"
+	"github.com/sonr-io/core/util"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
 // Option is a function that can be applied to ExchangeProtocol config
@@ -12,7 +13,7 @@ type Option func(*options)
 
 // options for ExchangeProtocol config
 type options struct {
-	location        *common.Location
+	location        *types.Location
 	interval        time.Duration
 	autoPushEnabled bool
 }
@@ -34,7 +35,7 @@ func DisableAutoPush() Option {
 }
 
 // WithLocation sets the location of the Topic for Local OLC
-func WithLocation(l *common.Location) Option {
+func WithLocation(l *types.Location) Option {
 	return func(o *options) {
 		if o.location != nil {
 			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
@@ -69,7 +70,7 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		p.Put(peer)
 
 		// Get OLC Code from location
-		code := o.location.OLC()
+		code := util.OLC(o.location)
 		if code == "" {
 			logger.Error("Failed to Determine OLC Code, set to Global")
 			code = "global"

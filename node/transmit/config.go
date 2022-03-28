@@ -5,9 +5,11 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/device"
-	transmitV1 "github.com/sonr-io/core/node/transmit/v1"
+	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/util"
+
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
 // Transfer Protocol ID's
@@ -46,17 +48,17 @@ func (o *options) Apply(p *TransmitProtocol) error {
 }
 
 // NewSessionPayload creates session payload
-func NewSessionPayload(p *common.Payload) *transmitV1.SessionPayload {
-	return &transmitV1.SessionPayload{
+func NewSessionPayload(p *types.Payload) *v1.SessionPayload {
+	return &v1.SessionPayload{
 		Payload: p,
 	}
 }
 
 // CreateItems creates list of sessionItems
-func CreatePayloadItems(sp *transmitV1.SessionPayload, dir common.Direction) []*transmitV1.SessionItem {
+func CreatePayloadItems(sp *v1.SessionPayload, dir types.Direction) []*v1.SessionItem {
 	// Initialize Properties
 	count := len(sp.GetPayload().GetItems())
-	items := make([]*transmitV1.SessionItem, 0)
+	items := make([]*v1.SessionItem, 0)
 
 	// Iterate over items
 	for i, v := range sp.GetPayload().GetItems() {
@@ -65,8 +67,8 @@ func CreatePayloadItems(sp *transmitV1.SessionPayload, dir common.Direction) []*
 		path := fi.GetPath()
 
 		// Set Path for Incoming
-		if dir == common.Direction_DIRECTION_INCOMING {
-			inpath, err := fi.SetPathFromFolder(device.Downloads)
+		if dir == types.Direction_DIRECTION_INCOMING {
+			inpath, err := util.SetPathFromFolder(fi, config.Downloads)
 			if err == nil {
 				path = inpath
 			} else {
@@ -75,7 +77,7 @@ func CreatePayloadItems(sp *transmitV1.SessionPayload, dir common.Direction) []*
 		}
 
 		// Create Session Item
-		item := &transmitV1.SessionItem{
+		item := &v1.SessionItem{
 			Item:      fi,
 			Index:     int32(i),
 			TotalSize: sp.GetPayload().GetSize(),

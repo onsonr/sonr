@@ -4,13 +4,15 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	common "github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node/motor/v1"
-	exchangeV1 "github.com/sonr-io/core/node/exchange/v1"
+	"github.com/sonr-io/core/util"
+
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
+	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func ResponseToEvent(ir *exchangeV1.InviteResponse) *motor.OnTransmitDecisionResponse {
+func ResponseToEvent(ir *v1.InviteResponse) *motor.OnTransmitDecisionResponse {
 	return &motor.OnTransmitDecisionResponse{
 		From:     ir.GetFrom(),
 		Received: int64(time.Now().Unix()),
@@ -19,7 +21,7 @@ func ResponseToEvent(ir *exchangeV1.InviteResponse) *motor.OnTransmitDecisionRes
 }
 
 // ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
-func RequestToEvent(ir *exchangeV1.InviteRequest) *motor.OnTransmitInviteResponse {
+func RequestToEvent(ir *v1.InviteRequest) *motor.OnTransmitInviteResponse {
 	return &motor.OnTransmitInviteResponse{
 		Received: int64(time.Now().Unix()),
 		From:     ir.GetFrom(),
@@ -28,7 +30,7 @@ func RequestToEvent(ir *exchangeV1.InviteRequest) *motor.OnTransmitInviteRespons
 }
 
 // createRequest creates a new InviteRequest
-func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payload) (peer.ID, *exchangeV1.InviteRequest, error) {
+func (p *ExchangeProtocol) createRequest(to *types.Peer, payload *types.Payload) (peer.ID, *v1.InviteRequest, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
@@ -37,7 +39,7 @@ func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payloa
 	}
 
 	// Fetch Peer ID from Public Key
-	toId, err := to.Libp2pID()
+	toId, err := util.Libp2pID(to)
 	if err != nil {
 		logger.Errorf("%s - Failed to fetch peer id from public key", err)
 		return "", nil, err
@@ -51,7 +53,7 @@ func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payloa
 	// }
 
 	// Create Invite Request
-	req := &exchangeV1.InviteRequest{
+	req := &v1.InviteRequest{
 		Payload: payload,
 		// TODO: Implement Signed Meta to Proto Method
 		// Metadata: api.SignedMetadataToProto(meta),
@@ -62,7 +64,7 @@ func (p *ExchangeProtocol) createRequest(to *common.Peer, payload *common.Payloa
 }
 
 // createResponse creates a new InviteResponse
-func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *exchangeV1.InviteResponse, error) {
+func (p *ExchangeProtocol) createResponse(decs bool, to *types.Peer) (peer.ID, *v1.InviteResponse, error) {
 
 	// Call Peer from Node
 	from, err := p.node.Peer()
@@ -79,7 +81,7 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	// }
 
 	// Create Invite Response
-	resp := &exchangeV1.InviteResponse{
+	resp := &v1.InviteResponse{
 		Decision: decs,
 		// TODO: Implement Signed Meta to Proto Method
 		//Metadata: api.SignedMetadataToProto(meta),
@@ -88,7 +90,7 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	}
 
 	// Fetch Peer ID from Public Key
-	toId, err := to.Libp2pID()
+	toId, err := util.Libp2pID(to)
 	if err != nil {
 		logger.Errorf("%s - Failed to fetch peer id from public key", err)
 		return "", nil, err

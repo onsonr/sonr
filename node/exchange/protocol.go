@@ -7,25 +7,27 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
-	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node"
-	"github.com/sonr-io/core/node/motor/v1"
-	exchangeV1 "github.com/sonr-io/core/node/exchange/v1"
+	"github.com/sonr-io/core/config"
+	node "github.com/sonr-io/core/node"
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+
+	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 type ExchangeProtocol struct {
 	ctx      context.Context
-	node     node.NodeImpl
-	callback node.CallbackImpl
+	node     node.HostImpl
+	callback config.CallbackImpl
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
 	invites *cache.Cache
-	mode    node.Role
+	mode    config.Role
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
+func New(ctx context.Context, node node.HostImpl, cb config.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &ExchangeProtocol{
 		ctx:      ctx,
@@ -67,7 +69,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	// 	return err
 	// }
 
-	payload := &common.Payload{
+	payload := &types.Payload{
 		Owner: profile,
 	}
 
@@ -99,7 +101,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload, error) {
+func (p *ExchangeProtocol) Respond(decs bool, to *types.Peer) (*types.Payload, error) {
 	if p.mode.IsHighway() {
 		return nil, ErrNotSupported
 	}
@@ -129,7 +131,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *common.Peer) (*common.Payload,
 
 	// Find Request and get Payload
 	if x, found := p.invites.Get(id.String()); found {
-		req := x.(*exchangeV1.InviteRequest)
+		req := x.(*v1.InviteRequest)
 		return req.GetPayload(), nil
 	}
 	return nil, ErrRequestNotFound
@@ -152,7 +154,7 @@ func (p *ExchangeProtocol) onInviteRequest(s network.Stream) {
 	s.Close()
 
 	// unmarshal it
-	req := &exchangeV1.InviteRequest{}
+	req := &v1.InviteRequest{}
 	err = proto.Unmarshal(buf, req)
 	if err != nil {
 		logger.Errorf("%s - Failed to Unmarshal Invite REQUEST buffer.", err)
@@ -183,7 +185,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	s.Close()
 
 	// Unmarshal response
-	resp := &exchangeV1.InviteResponse{}
+	resp := &v1.InviteResponse{}
 	err = proto.Unmarshal(buf, resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Unmarshal Invite RESPONSE buffer.", err)
@@ -204,7 +206,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 
 	// Get Next Entry
 	if x, found := p.invites.Get(remotePeer.String()); found {
-		req := x.(*exchangeV1.InviteRequest)
+		req := x.(*v1.InviteRequest)
 		logger.Debug(req)
 		// TODO: Implement Decision Response to Event Method
 		//p.callback.OnDecision(resp.ToEvent(), req.ToEvent())

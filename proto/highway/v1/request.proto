@@ -1,0 +1,116 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+// Package Highway is used for defining a Highway node and its accessible API Endpoints
+package sonrio.highway.v1;
+
+option go_package = "github.com/sonr-io/sonr/highway/v1";
+// MsgAccessName represents a request payload to get details from the ".snr" name of a peer
+message MsgAccessName {
+  // The name of the peer to get the details from
+  string name = 1;
+
+  // The public key of the peer to get the details from
+  string public_key = 3; // optional
+}
+
+// MsgCheckName checks the chain to see ifa  name is available
+message MsgCheckName {
+  // Account address of the name owner
+  string nameToRegister = 1;
+
+  // key of account that can access names
+  string creator = 2;
+}
+
+message MsgWebToken {
+  // The JWT
+  string jwt = 1;
+}
+
+// MsgAccessService represents a request payload to get the service details of a peer
+message MsgAccessService {
+  // The name of the peer to get the service details of
+  string did = 1;
+
+  // The metadata for any service information required
+  map<string, string> metadata = 2; // optional
+}
+
+// MsgListenChannel represents a request payload to subscribe to a channel
+message MsgListenChannel {
+  // Name is the name of the channel
+  string did = 1;
+
+  // Metadata is additional metadata for the channel
+  map<string, string> metadata = 2; // optional
+}
+
+
+// MsgUploadBlob represents a request payload to upload a blob
+message MsgUploadBlob {
+  // Label is the label of the blob
+  string label = 1;
+
+  // Path is the path of the blob
+  string path = 2;
+
+  // Bucket or object DID where the blob is being uploaded to
+  string ref_did = 3;
+
+  // Size is the size of the blob
+  int64 size = 4;
+
+  // LastModified is the last modified time of the blob
+  int64 last_modified = 5;
+}
+
+// MsgDownloadBlob represents a request payload to download a blob
+message MsgDownloadBlob {
+  // DID is the identifier of the blob
+  string did = 1;
+
+  // Out Path is the download path of the blob
+  string out_path = 2;
+}
+
+// MsgSyncBlob represents a request payload to sync a blob
+message MsgSyncBlob {
+  // DID is the identifier of the blob
+  string did = 1;
+
+  // Path is the location of the blob
+  string path = 2;
+
+  int32 timeout = 3; // optional
+}
+
+// MsgDeleteBlob represents a request payload to delete a blob
+message MsgDeleteBlob {
+  // DID is the identifier of the blob
+  string did = 1;
+
+  // Metadata is the metadata of the blob thats being deleted
+  map<string, string> metadata = 2;
+
+  // Public key of the node that is deleting the blob
+  string public_key = 3;
+}
+
+// MsgParseDid represents a request payload to convert a string to a DID object
+message MsgParseDid {
+  // DID is the DID of the DID
+  string did_string = 1;
+
+  // Metadata is the metadata of the blob thats being deleted
+  map<string, string> metadata = 2;
+}
+
+// MsgResolveDid represents a request payload to resolve a DID
+message MsgResolveDid {
+  // DID is the DID of the DID
+  string did_string = 1;
+
+  // Metadata is the metadata of the blob thats being deleted
+  map<string, string> metadata = 2;
+}

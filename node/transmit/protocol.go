@@ -4,24 +4,26 @@ import (
 	"context"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/node"
-	"github.com/sonr-io/core/node/motor/v1"
+	"github.com/sonr-io/core/config"
+	node "github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/util"
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
+	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 
-	transmitV1 "github.com/sonr-io/core/node/transmit/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
 // TransmitProtocol type
 type TransmitProtocol struct {
-	callback node.CallbackImpl
-	node     node.NodeImpl
-	ctx      context.Context     // Context
-	current  *transmitV1.Session // current session
-	mode     node.Role
+	callback config.CallbackImpl
+	node     node.HostImpl
+	ctx      context.Context // Context
+	current  *v1.Session     // current session
+	mode     config.Role
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
+func New(ctx context.Context, node node.HostImpl, cb config.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
 	protocol := &TransmitProtocol{
 		ctx:      ctx,
@@ -42,7 +44,7 @@ func New(ctx context.Context, node node.NodeImpl, cb node.CallbackImpl, options 
 }
 
 // CurrentSession returns the current session
-func (p *TransmitProtocol) CurrentSession() (*transmitV1.Session, error) {
+func (p *TransmitProtocol) CurrentSession() (*v1.Session, error) {
 	if p.current != nil {
 		return p.current, nil
 	}
@@ -50,7 +52,7 @@ func (p *TransmitProtocol) CurrentSession() (*transmitV1.Session, error) {
 }
 
 // Incoming is called by the node to accept an incoming transfer
-func (p *TransmitProtocol) Incoming(payload *common.Payload, from *common.Peer) error {
+func (p *TransmitProtocol) Incoming(payload *types.Payload, from *types.Peer) error {
 	// Get User Peer
 	to, err := p.node.Peer()
 	if err != nil {
@@ -64,7 +66,7 @@ func (p *TransmitProtocol) Incoming(payload *common.Payload, from *common.Peer) 
 }
 
 // Outgoing is called by the node to initiate a transfer
-func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) error {
+func (p *TransmitProtocol) Outgoing(payload *types.Payload, to *types.Peer) error {
 	// Get User Peer
 	from, err := p.node.Peer()
 	if err != nil {
@@ -73,7 +75,7 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 	}
 
 	// Get Id
-	toId, err := to.Libp2pID()
+	toId, err := util.Libp2pID(to)
 	if err != nil {
 		logger.Errorf("%s - Failed to Get Peer ID", err)
 		return err
@@ -83,7 +85,7 @@ func (p *TransmitProtocol) Outgoing(payload *common.Payload, to *common.Peer) er
 	p.current = NewOutSession(payload, from, to)
 
 	// Send Files
-	if p.current.Payload.IsFile() {
+	if util.IsFile(p.current.Payload.GetItems()[0].GetMime()) {
 		// Create New Stream
 		stream, err := p.node.NewStream(p.ctx, toId, FilePID)
 		if err != nil {

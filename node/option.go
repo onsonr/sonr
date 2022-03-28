@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"time"
 
-	dsc "github.com/libp2p/go-libp2p-discovery"
-	psub "github.com/libp2p/go-libp2p-pubsub"
-
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
+	dsc "github.com/libp2p/go-libp2p-discovery"
+	psub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/common"
-	"github.com/sonr-io/core/wallet"
+	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/util"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
 // LogLevel is the type for the log level
@@ -37,7 +37,6 @@ const (
 
 // Option is a function that modifies the node options.
 type Option func(*options)
-
 
 // WithLogLevel sets the log level for Logger
 func WithLogLevel(level LogLevel) Option {
@@ -85,12 +84,12 @@ func WithPort(port int) Option {
 
 // options is a collection of options for the node.
 type options struct {
-	configuration *Configuration
-	role          Role
+	configuration *config.Configuration
+	role          config.Role
 
 	// Host
 	BootstrapPeers []peer.AddrInfo
-	Connection     common.Connection
+	Connection     types.Connection
 	LowWater       int
 	HighWater      int
 	GracePeriod    time.Duration
@@ -107,10 +106,10 @@ type options struct {
 }
 
 // defaultOptions returns the default options
-func defaultOptions(r Role) *options {
+func defaultOptions(r config.Role) *options {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
-	for _, s := range bootstrapAddrStrs {
+	for _, s := range config.BootstrapAddrStrs {
 		ma, err := ma.NewMultiaddr(s)
 		if err != nil {
 			continue
@@ -129,7 +128,7 @@ func defaultOptions(r Role) *options {
 	}
 
 	return &options{
-		configuration:  defaultConfiguration(),
+		configuration:  config.DefaultConfiguration(),
 		host:           ":",
 		port:           26225,
 		role:           r,
@@ -151,9 +150,9 @@ func (opts *options) Address() string {
 	return fmt.Sprintf("%s%d", opts.host, opts.port)
 }
 
-func (opts *options) Config() *Configuration {
+func (opts *options) Config() *config.Configuration {
 	if opts.configuration == nil {
-		opts.configuration = &Configuration{}
+		opts.configuration = &config.Configuration{}
 	}
 	return opts.configuration
 }
@@ -176,11 +175,7 @@ func (opts *options) Apply(ctx context.Context, options ...Option) (*node, error
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
-		privKey, err := wallet.DevicePrivKey()
-		if err == nil {
-			return privKey, nil
-		}
-		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
+		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
 		if err == nil {
 			logger.Warn("Generated new Account Private Key")
 			return privKey, nil
@@ -227,8 +222,8 @@ func (hn *node) createDHTDiscovery(opts *options) error {
 // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
 func (hn *node) createMdnsDiscovery(opts *options) {
 	// Verify if MDNS is Enabled
-	if !hn.connection.IsMdnsCompatible() {
-		logger.Errorf("%s - Failed to Start MDNS Discovery ", ErrMDNSInvalidConn)
+	if !util.IsMdnsCompatible(hn.connection) {
+		logger.Errorf("%s - Failed to Start MDNS Discovery ", config.ErrMDNSInvalidConn)
 		return
 	}
 
