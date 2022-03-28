@@ -8,124 +8,20 @@ import (
 	"path/filepath"
 	"syscall"
 
-	"git.mills.io/prologic/bitcask"
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p"
 	cmgr "github.com/libp2p/go-libp2p-connmgr"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-libp2p-core/routing"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/sonr-io/core/config"
 	"github.com/spf13/viper"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
-
-	ps "github.com/libp2p/go-libp2p-pubsub"
 )
 
 var (
 	logger = golog.Default.Child("core/node")
 	ctx    context.Context
 )
-
-// HostImpl returns the HostImpl for the Main Node
-type HostImpl interface {
-	// AuthenticateMessage authenticates a message
-	AuthenticateMessage(msg proto.Message, metadata *types.Metadata) bool
-
-	// Close closes the node
-	Close()
-
-	// Connect to a peer
-	Connect(pi peer.AddrInfo) error
-
-	// HasRouting returns true if the node has routing
-	HasRouting() error
-
-	// HostID returns the ID of the Host
-	HostID() peer.ID
-
-	// Join subsrcibes to a topic
-	Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error)
-
-	// NewStream opens a new stream to a peer
-	NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error)
-
-	// NewTopic creates a new pubsub topic with event handler and subscription
-	NewTopic(topic string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error)
-
-	// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-	NeedsWait()
-
-	// Pause tells all of goroutines to pause execution
-	Pause()
-
-	// Ping sends a ping to a peer to check if it is alive
-	Ping(id string) error
-
-	// Peer returns the peer of the node
-	Peer() (*types.Peer, error)
-
-	// Profile returns the profile of the node from Local Store
-	Profile() (*types.Profile, error)
-
-	// Publish publishes a message to a topic
-	Publish(topic string, msg proto.Message, metadata *types.Metadata) error
-
-	// Resume tells all of goroutines to resume execution
-	Resume()
-
-	// Role returns the role of the node
-	Role() config.Role
-
-	// Router returns the routing.Router
-	Router(h host.Host) (routing.PeerRouting, error)
-
-	// SendMessage sends a message to a peer
-	SendMessage(id peer.ID, p protocol.ID, data proto.Message) error
-
-	// SetStreamHandler sets the handler for a protocol
-	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)
-
-	// SignData signs the data with the private key
-	SignData(data []byte) ([]byte, error)
-
-	// SignMessage signs a message with the node's private key
-	SignMessage(message proto.Message) ([]byte, error)
-
-	// VerifyData verifies the data signature
-	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
-}
-
-// node type - a p2p host implementing one or more p2p protocols
-type node struct {
-	// Standard Node Implementation
-	host.Host
-	HostImpl
-	mode config.Role
-
-	// Host and context
-	connection   types.Connection
-	listener     net.Listener
-	privKey      crypto.PrivKey
-	mdnsPeerChan chan peer.AddrInfo
-	dhtPeerChan  <-chan peer.AddrInfo
-
-	// Properties
-	ctx   context.Context
-	store *bitcask.Bitcask
-	*dht.IpfsDHT
-	*ps.PubSub
-
-	// State
-	flag   uint64
-	Chn    chan bool
-	status HostStatus
-}
 
 // NewMotor Creates a node with its implemented protocols
 func NewMotor(ctx context.Context, l net.Listener, options ...Option) (HostImpl, error) {

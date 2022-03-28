@@ -40,8 +40,8 @@ import (
 	"github.com/sonr-io/core/crypto/ecschnorr"
 	"github.com/sonr-io/core/crypto/pseudsys"
 	"github.com/sonr-io/core/crypto/schnorr"
-	zk "github.com/sonr-io/core/host/zk"
 	"github.com/sonr-io/core/log"
+	"github.com/sonr-io/core/util"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/zk/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -170,7 +170,7 @@ func (s *Server) registerServices() {
 	s.Logger.Notice("Registered gRPC Services")
 }
 
-func (s *Server) send(msg *v1.Message, stream zk.ServerStream) error {
+func (s *Server) send(msg *v1.Message, stream util.ServerStream) error {
 	if err := stream.Send(msg); err != nil {
 		return fmt.Errorf("error sending message: %v", err)
 	}
@@ -181,7 +181,7 @@ func (s *Server) send(msg *v1.Message, stream zk.ServerStream) error {
 	return nil
 }
 
-func (s *Server) receive(stream zk.ServerStream) (*v1.Message, error) {
+func (s *Server) receive(stream util.ServerStream) (*v1.Message, error) {
 	resp, err := stream.Recv()
 	if err == io.EOF {
 		return nil, err
@@ -546,12 +546,12 @@ func (s *Server) GenerateNym_EC(stream v1.PseudonymSystem_GenerateNym_ECServer) 
 	org := ecpseudsys.NewNymGenerator(caPubKey, curve)
 
 	proofRandData := req.GetPseudonymsysNymGenProofRandomDataEc()
-	x1 := zk.GetNativeType(proofRandData.X1)
-	nymA := zk.GetNativeType(proofRandData.A1)
-	nymB := zk.GetNativeType(proofRandData.B1)
-	x2 := zk.GetNativeType(proofRandData.X2)
-	blindedA := zk.GetNativeType(proofRandData.A2)
-	blindedB := zk.GetNativeType(proofRandData.B2)
+	x1 := util.GetNativeType(proofRandData.X1)
+	nymA := util.GetNativeType(proofRandData.A1)
+	nymB := util.GetNativeType(proofRandData.B1)
+	x2 := util.GetNativeType(proofRandData.X2)
+	blindedA := util.GetNativeType(proofRandData.A2)
+	blindedB := util.GetNativeType(proofRandData.B2)
 	signatureR := new(big.Int).SetBytes(proofRandData.R)
 	signatureS := new(big.Int).SetBytes(proofRandData.S)
 
@@ -609,9 +609,9 @@ func (s *Server) ObtainCredential_EC(stream v1.PseudonymSystem_ObtainCredential_
 	}
 
 	proofRandData := req.GetSchnorrEcProofRandomData()
-	x := zk.GetNativeType(proofRandData.X)
-	a := zk.GetNativeType(proofRandData.A)
-	b := zk.GetNativeType(proofRandData.B)
+	x := util.GetNativeType(proofRandData.X)
+	a := util.GetNativeType(proofRandData.A)
+	b := util.GetNativeType(proofRandData.B)
 
 	secKey := config.LoadPseudonymsysOrgSecrets("org1", "ecdlog")
 	org := ecpseudsys.NewCredIssuer(secKey, curve)
@@ -646,12 +646,12 @@ func (s *Server) ObtainCredential_EC(stream v1.PseudonymSystem_ObtainCredential_
 	resp = &v1.Message{
 		Content: &v1.Message_PseudonymsysIssueProofRandomDataEc{
 			&v1.PseudonymsysIssueProofRandomDataEC{
-				X11: zk.ToPbECGroupElement(x11),
-				X12: zk.ToPbECGroupElement(x12),
-				X21: zk.ToPbECGroupElement(x21),
-				X22: zk.ToPbECGroupElement(x22),
-				A:   zk.ToPbECGroupElement(A),
-				B:   zk.ToPbECGroupElement(B),
+				X11: util.ToPbECGroupElement(x11),
+				X12: util.ToPbECGroupElement(x12),
+				X21: util.ToPbECGroupElement(x21),
+				X22: util.ToPbECGroupElement(x22),
+				A:   util.ToPbECGroupElement(A),
+				B:   util.ToPbECGroupElement(B),
 			},
 		},
 	}
@@ -697,10 +697,10 @@ func (s *Server) TransferCredential_EC(stream v1.PseudonymSystem_TransferCredent
 
 	data := req.GetPseudonymsysTransferCredentialDataEc()
 	orgName := data.OrgName
-	x1 := zk.GetNativeType(data.X1)
-	x2 := zk.GetNativeType(data.X2)
-	nymA := zk.GetNativeType(data.NymA)
-	nymB := zk.GetNativeType(data.NymB)
+	x1 := util.GetNativeType(data.X1)
+	x2 := util.GetNativeType(data.X2)
+	nymA := util.GetNativeType(data.NymA)
+	nymB := util.GetNativeType(data.NymB)
 
 	t1 := ecschnorr.NewBlindedTrans(
 		new(big.Int).SetBytes(data.Credential.T1.A.X),
@@ -719,10 +719,10 @@ func (s *Server) TransferCredential_EC(stream v1.PseudonymSystem_TransferCredent
 		new(big.Int).SetBytes(data.Credential.T2.ZAlpha))
 
 	credential := ecpseudsys.NewCred(
-		zk.GetNativeType(data.Credential.SmallAToGamma),
-		zk.GetNativeType(data.Credential.SmallBToGamma),
-		zk.GetNativeType(data.Credential.AToGamma),
-		zk.GetNativeType(data.Credential.BToGamma),
+		util.GetNativeType(data.Credential.SmallAToGamma),
+		util.GetNativeType(data.Credential.SmallBToGamma),
+		util.GetNativeType(data.Credential.AToGamma),
+		util.GetNativeType(data.Credential.BToGamma),
 		t1, t2,
 	)
 
@@ -852,9 +852,9 @@ func (s *Server) GenerateCertificate_EC(stream v1.PseudonymSystemCA_GenerateCert
 	ca := ecpseudsys.NewCA(d, pubKey, curve)
 
 	sProofRandData := req.GetSchnorrEcProofRandomData()
-	x := zk.GetNativeType(sProofRandData.X)
-	a := zk.GetNativeType(sProofRandData.A)
-	b := zk.GetNativeType(sProofRandData.B)
+	x := util.GetNativeType(sProofRandData.X)
+	a := util.GetNativeType(sProofRandData.A)
+	b := util.GetNativeType(sProofRandData.B)
 
 	challenge := ca.GetChallenge(a, b, x)
 	resp := &v1.Message{
@@ -886,8 +886,8 @@ func (s *Server) GenerateCertificate_EC(stream v1.PseudonymSystemCA_GenerateCert
 	resp = &v1.Message{
 		Content: &v1.Message_PseudonymsysCaCertificateEc{
 			&v1.PseudonymsysCACertificateEC{
-				BlindedA: zk.ToPbECGroupElement(cert.BlindedA),
-				BlindedB: zk.ToPbECGroupElement(cert.BlindedB),
+				BlindedA: util.ToPbECGroupElement(cert.BlindedA),
+				BlindedB: util.ToPbECGroupElement(cert.BlindedB),
 				R:        cert.R.Bytes(),
 				S:        cert.S.Bytes(),
 			},
@@ -1010,7 +1010,7 @@ func (s *Server) IssueCredential(stream v1.CL_IssueCredentialServer) error {
 	}
 
 	cReq := req.GetCLCredReq()
-	credReq, err := zk.GetNativeTypeFromCredReq(cReq)
+	credReq, err := util.GetNativeTypeFromCredReq(cReq)
 	if err != nil {
 		return err
 	}
@@ -1025,7 +1025,7 @@ func (s *Server) IssueCredential(stream v1.CL_IssueCredentialServer) error {
 		return err
 	}
 
-	pbCred := zk.ToPbCLCredential(res.Cred, res.AProof)
+	pbCred := util.ToPbCLCredential(res.Cred, res.AProof)
 	resp = &v1.Message{
 		Content: &v1.Message_CLCredential{pbCred},
 	}
@@ -1049,7 +1049,7 @@ func (s *Server) UpdateCredential(stream v1.CL_UpdateCredentialServer) error {
 	}
 
 	u := req.GetUpdateClCredential()
-	nym, nonce, newKnownAttrs := zk.GetNativeTypeFromUpdateCredential(u)
+	nym, nonce, newKnownAttrs := util.GetNativeTypeFromUpdateCredential(u)
 
 	// Retrieve the receiver record from the database
 	rec, err := s.clRecordManager.Load(nym)
@@ -1066,7 +1066,7 @@ func (s *Server) UpdateCredential(stream v1.CL_UpdateCredentialServer) error {
 		return err
 	}
 
-	pbCred := zk.ToPbCLCredential(res.Cred, res.AProof)
+	pbCred := util.ToPbCLCredential(res.Cred, res.AProof)
 	resp := &v1.Message{
 		Content: &v1.Message_CLCredential{pbCred},
 	}
@@ -1109,7 +1109,7 @@ func (s *Server) ProveCredential(stream v1.CL_ProveCredentialServer) error {
 
 	pReq := req.GetProveClCredential()
 	A, proof, knownAttrs, commitmentsOfAttrs, revealedKnownAttrsIndices,
-		revealedCommitmentsOfAttrsIndices, err := zk.GetNativeTypeFromProveCredential(pReq)
+		revealedCommitmentsOfAttrsIndices, err := util.GetNativeTypeFromProveCredential(pReq)
 	if err != nil {
 		return err
 	}

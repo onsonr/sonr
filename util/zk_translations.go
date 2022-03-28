@@ -15,7 +15,7 @@
  *
  */
 
-package proto
+package util
 
 import (
 	"fmt"

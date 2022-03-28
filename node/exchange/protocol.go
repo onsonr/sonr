@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/config"
-	node "github.com/sonr-io/core/host"
+	node "github.com/sonr-io/core/node"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/sonr-io/core/config"
-	node "github.com/sonr-io/core/host"
+	node "github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/util"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"

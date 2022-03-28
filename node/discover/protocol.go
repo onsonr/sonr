@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/config"
-	node "github.com/sonr-io/core/host"
+	node "github.com/sonr-io/core/node"
 	"github.com/sonr-io/core/channel"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"

@@ -13,9 +13,9 @@ import (
 	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
 
 	"github.com/sonr-io/core/config"
-	hn "github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/host/discover"
-	"github.com/sonr-io/core/host/exchange"
+	hn "github.com/sonr-io/core/node"
+	"github.com/sonr-io/core/node/discover"
+	"github.com/sonr-io/core/node/exchange"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
@@ -31,8 +31,8 @@ var (
 	ErrMethodUnimplemented = errors.New("Method is not implemented.")
 )
 
-// HighwayStub is the RPC Service for the Custodian Node.
-type HighwayStub struct {
+// HighwayServer is the RPC Service for the Custodian Node.
+type HighwayServer struct {
 	v1.HighwayServiceServer
 	config.CallbackImpl
 	node   hn.HostImpl
@@ -52,7 +52,7 @@ type HighwayStub struct {
 }
 
 // startHighwayStub creates a new Highway service stub for the node.
-func StartHighwayRPCServer(ctx context.Context, n hn.HostImpl, loc *t.Location, lst net.Listener) (*HighwayStub, error) {
+func StartHighwayRPCServer(ctx context.Context, n hn.HostImpl, loc *t.Location, lst net.Listener) (*HighwayServer, error) {
 	// create an instance of cosmosclient
 	cosmos, err := cosmosclient.New(ctx)
 	if err != nil {
@@ -60,7 +60,7 @@ func StartHighwayRPCServer(ctx context.Context, n hn.HostImpl, loc *t.Location, 
 	}
 
 	// Create the RPC Service
-	stub := &HighwayStub{
+	stub := &HighwayServer{
 		node:   n,
 		ctx:    ctx,
 		mux:    runtime.NewServeMux(),
@@ -98,7 +98,7 @@ func StartHighwayRPCServer(ctx context.Context, n hn.HostImpl, loc *t.Location, 
 }
 
 // Serve serves the RPC Service on the given port.
-func (s *HighwayStub) Serve(ctx context.Context, listener net.Listener) {
+func (s *HighwayServer) Serve(ctx context.Context, listener net.Listener) {
 	// Start HTTP server (and proxy calls to gRPC server endpoint)
 	if err := http.ListenAndServe(":8081", s.mux); err != nil {
 		logger.Errorf("%s - Failed to start HTTP server", err)
@@ -115,7 +115,7 @@ func (s *HighwayStub) Serve(ctx context.Context, listener net.Listener) {
 }
 
 // AccessName accesses a name.
-func (s *HighwayStub) AccessName(ctx context.Context, req *v1.AccessNameRequest) (*v1.AccessNameResponse, error) {
+func (s *HighwayServer) AccessName(ctx context.Context, req *v1.AccessNameRequest) (*v1.AccessNameResponse, error) {
 	// // instantiate a query client for your `blog` blockchain
 	// queryClient := registry.NewQueryClient(s.cosmos.Context)
 
@@ -133,7 +133,7 @@ func (s *HighwayStub) AccessName(ctx context.Context, req *v1.AccessNameRequest)
 }
 
 // RegisterName registers a name.
-func (s *HighwayStub) RegisterName(ctx context.Context, req *v1.RegisterNameRequest) (*v1.RegisterNameResponse, error) {
+func (s *HighwayServer) RegisterName(ctx context.Context, req *v1.RegisterNameRequest) (*v1.RegisterNameResponse, error) {
 	// // account `alice` was initialized during `starport chain serve`
 	// accountName := "alice"
 
@@ -162,12 +162,12 @@ func (s *HighwayStub) RegisterName(ctx context.Context, req *v1.RegisterNameRequ
 }
 
 // UpdateName updates a name.
-func (s *HighwayStub) UpdateName(ctx context.Context, req *v1.UpdateNameRequest) (*v1.UpdateNameResponse, error) {
+func (s *HighwayServer) UpdateName(ctx context.Context, req *v1.UpdateNameRequest) (*v1.UpdateNameResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // AccessService accesses a service.
-func (s *HighwayStub) AccessService(ctx context.Context, req *v1.AccessServiceRequest) (*v1.AccessServiceResponse, error) {
+func (s *HighwayServer) AccessService(ctx context.Context, req *v1.AccessServiceRequest) (*v1.AccessServiceResponse, error) {
 	// // instantiate a query client for your `blog` blockchain
 	// queryClient := types.NewQueryClient(s.cosmos.Context)
 
@@ -185,7 +185,7 @@ func (s *HighwayStub) AccessService(ctx context.Context, req *v1.AccessServiceRe
 }
 
 // RegisterService registers a service.
-func (s *HighwayStub) RegisterService(ctx context.Context, req *v1.RegisterServiceRequest) (*v1.RegisterServiceResponse, error) {
+func (s *HighwayServer) RegisterService(ctx context.Context, req *v1.RegisterServiceRequest) (*v1.RegisterServiceResponse, error) {
 	// // account `alice` was initialized during `starport chain serve`
 	// accountName := "alice"
 
@@ -214,12 +214,12 @@ func (s *HighwayStub) RegisterService(ctx context.Context, req *v1.RegisterServi
 }
 
 // UpdateService updates a service.
-func (s *HighwayStub) UpdateService(ctx context.Context, req *v1.UpdateServiceRequest) (*v1.UpdateServiceResponse, error) {
+func (s *HighwayServer) UpdateService(ctx context.Context, req *v1.UpdateServiceRequest) (*v1.UpdateServiceResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // CreateChannel creates a new channel.
-func (s *HighwayStub) CreateChannel(ctx context.Context, req *v1.CreateChannelRequest) (*v1.CreateChannelResponse, error) {
+func (s *HighwayServer) CreateChannel(ctx context.Context, req *v1.CreateChannelRequest) (*v1.CreateChannelResponse, error) {
 	// Create the Channel
 	ch, err := channel.New(ctx, s.node, req.Name)
 	if err != nil {
@@ -232,7 +232,7 @@ func (s *HighwayStub) CreateChannel(ctx context.Context, req *v1.CreateChannelRe
 }
 
 // ReadChannel reads a channel.
-func (s *HighwayStub) ReadChannel(ctx context.Context, req *v1.ReadChannelRequest) (*v1.ReadChannelResponse, error) {
+func (s *HighwayServer) ReadChannel(ctx context.Context, req *v1.ReadChannelRequest) (*v1.ReadChannelResponse, error) {
 	// Find channel by DID
 	ch, ok := s.channels[req.GetDid()]
 	if !ok {
@@ -248,17 +248,17 @@ func (s *HighwayStub) ReadChannel(ctx context.Context, req *v1.ReadChannelReques
 }
 
 // UpdateChannel updates a channel.
-func (s *HighwayStub) UpdateChannel(ctx context.Context, req *v1.UpdateChannelRequest) (*v1.UpdateChannelResponse, error) {
+func (s *HighwayServer) UpdateChannel(ctx context.Context, req *v1.UpdateChannelRequest) (*v1.UpdateChannelResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // DeleteChannel deletes a channel.
-func (s *HighwayStub) DeleteChannel(ctx context.Context, req *v1.DeleteChannelRequest) (*v1.DeleteChannelResponse, error) {
+func (s *HighwayServer) DeleteChannel(ctx context.Context, req *v1.DeleteChannelRequest) (*v1.DeleteChannelResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // ListenChannel listens to a channel.
-func (s *HighwayStub) ListenChannel(req *v1.ListenChannelRequest, stream v1.HighwayService_ListenChannelServer) error {
+func (s *HighwayServer) ListenChannel(req *v1.ListenChannelRequest, stream v1.HighwayService_ListenChannelServer) error {
 	// Find channel by DID
 	ch, ok := s.channels[req.GetDid()]
 	if !ok {
@@ -288,52 +288,52 @@ func (s *HighwayStub) ListenChannel(req *v1.ListenChannelRequest, stream v1.High
 }
 
 // CreateBucket creates a new bucket.
-func (s *HighwayStub) CreateBucket(ctx context.Context, req *v1.CreateBucketRequest) (*v1.CreateBucketResponse, error) {
+func (s *HighwayServer) CreateBucket(ctx context.Context, req *v1.CreateBucketRequest) (*v1.CreateBucketResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // ReadBucket reads a bucket.
-func (s *HighwayStub) ReadBucket(ctx context.Context, req *v1.ReadBucketRequest) (*v1.ReadBucketResponse, error) {
+func (s *HighwayServer) ReadBucket(ctx context.Context, req *v1.ReadBucketRequest) (*v1.ReadBucketResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // UpdateBucket updates a bucket.
-func (s *HighwayStub) UpdateBucket(ctx context.Context, req *v1.UpdateBucketRequest) (*v1.UpdateBucketResponse, error) {
+func (s *HighwayServer) UpdateBucket(ctx context.Context, req *v1.UpdateBucketRequest) (*v1.UpdateBucketResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // DeleteBucket deletes a bucket.
-func (s *HighwayStub) DeleteBucket(ctx context.Context, req *v1.DeleteBucketRequest) (*v1.DeleteBucketResponse, error) {
+func (s *HighwayServer) DeleteBucket(ctx context.Context, req *v1.DeleteBucketRequest) (*v1.DeleteBucketResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // ListenBucket listens to a bucket.
-func (s *HighwayStub) ListenBucket(req *v1.ListenBucketRequest, stream v1.HighwayService_ListenBucketServer) error {
+func (s *HighwayServer) ListenBucket(req *v1.ListenBucketRequest, stream v1.HighwayService_ListenBucketServer) error {
 	return nil
 }
 
 // CreateObject creates a new object.
-func (s *HighwayStub) CreateObject(ctx context.Context, req *v1.CreateObjectRequest) (*v1.CreateObjectResponse, error) {
+func (s *HighwayServer) CreateObject(ctx context.Context, req *v1.CreateObjectRequest) (*v1.CreateObjectResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // ReadObject reads an object.
-func (s *HighwayStub) ReadObject(ctx context.Context, req *v1.ReadObjectRequest) (*v1.ReadObjectResponse, error) {
+func (s *HighwayServer) ReadObject(ctx context.Context, req *v1.ReadObjectRequest) (*v1.ReadObjectResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // UpdateObject updates an object.
-func (s *HighwayStub) UpdateObject(ctx context.Context, req *v1.UpdateObjectRequest) (*v1.UpdateObjectResponse, error) {
+func (s *HighwayServer) UpdateObject(ctx context.Context, req *v1.UpdateObjectRequest) (*v1.UpdateObjectResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // DeleteObject deletes an object.
-func (s *HighwayStub) DeleteObject(ctx context.Context, req *v1.DeleteObjectRequest) (*v1.DeleteObjectResponse, error) {
+func (s *HighwayServer) DeleteObject(ctx context.Context, req *v1.DeleteObjectRequest) (*v1.DeleteObjectResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // UploadBlob uploads a blob.
-func (s *HighwayStub) UploadBlob(req *v1.UploadBlobRequest, stream v1.HighwayService_UploadBlobServer) error {
+func (s *HighwayServer) UploadBlob(req *v1.UploadBlobRequest, stream v1.HighwayService_UploadBlobServer) error {
 	// hash, err := s.ipfs.Upload(req.Path)
 	// if err != nil {
 	// 	return err
@@ -343,7 +343,7 @@ func (s *HighwayStub) UploadBlob(req *v1.UploadBlobRequest, stream v1.HighwaySer
 }
 
 // DownloadBlob downloads a blob.
-func (s *HighwayStub) DownloadBlob(req *v1.DownloadBlobRequest, stream v1.HighwayService_DownloadBlobServer) error {
+func (s *HighwayServer) DownloadBlob(req *v1.DownloadBlobRequest, stream v1.HighwayService_DownloadBlobServer) error {
 	// path, err := s.ipfs.Download(req.GetDid())
 	// if err != nil {
 	// 	return err
@@ -353,17 +353,17 @@ func (s *HighwayStub) DownloadBlob(req *v1.DownloadBlobRequest, stream v1.Highwa
 }
 
 // SyncBlob synchronizes a blob with remote version.
-func (s *HighwayStub) SyncBlob(req *v1.SyncBlobRequest, stream v1.HighwayService_SyncBlobServer) error {
+func (s *HighwayServer) SyncBlob(req *v1.SyncBlobRequest, stream v1.HighwayService_SyncBlobServer) error {
 	return nil
 }
 
 // DeleteBlob deletes a blob.
-func (s *HighwayStub) DeleteBlob(ctx context.Context, req *v1.DeleteBlobRequest) (*v1.DeleteBlobResponse, error) {
+func (s *HighwayServer) DeleteBlob(ctx context.Context, req *v1.DeleteBlobRequest) (*v1.DeleteBlobResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 
 // ParseDid parses a DID.
-func (s *HighwayStub) ParseDid(ctx context.Context, req *v1.ParseDidRequest) (*v1.ParseDidResponse, error) {
+func (s *HighwayServer) ParseDid(ctx context.Context, req *v1.ParseDidRequest) (*v1.ParseDidResponse, error) {
 	//d, err := s.node.ParseDid(req.GetDid())
 	// if err != nil {
 	// 	return nil, err
@@ -374,7 +374,7 @@ func (s *HighwayStub) ParseDid(ctx context.Context, req *v1.ParseDidRequest) (*v
 }
 
 // ResolveDid resolves a DID.
-func (s *HighwayStub) ResolveDid(ctx context.Context, req *v1.ResolveDidRequest) (*v1.ResolveDidResponse, error) {
+func (s *HighwayServer) ResolveDid(ctx context.Context, req *v1.ResolveDidRequest) (*v1.ResolveDidResponse, error) {
 	return &v1.ResolveDidResponse{
 		DidDocument: "",
 	}, nil

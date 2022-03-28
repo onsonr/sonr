@@ -103,7 +103,7 @@ func ParseDID(input string) (*DID, error) {
 	if err != nil {
 		return nil, err
 	}
-	if did.DID.IsReference() {
+	if did.DID.IsURL() {
 		return nil, ErrInvalidDID.wrap(errors.New("DID can not have path, fragment or query params"))
 	}
 	return did, nil

@@ -1,205 +1,273 @@
 syntax = "proto3";
 
-// Package Highway is used for defining a Highway node and its properties.
-package highway.v1;
+// Node
+package sonrio.highway.v1;
+import "channel/channel.proto";
+import "channel/tx.proto";
+import "bucket/tx.proto";
+import "object/tx.proto";
+import "registry/tx.proto";
 import "highway/v1/request.proto";
-import "google/api/annotations.proto";
 import "highway/v1/response.proto";
-option go_package = "github.com/sonr-io/core/highway";
+import "google/api/annotations.proto";
+option go_package = "github.com/sonr-io/sonr/highway/v1";
 
-// HighwayService is a RPC service for interfacing over the Highway node.
-service HighwayService {
-  // AccessName returns details and publicly available information about the Peer given calling node
-  // has permission to access. i.e "prad.snr" -> "firstname online profilePic city"
-  rpc AccessName(AccessNameRequest) returns (AccessNameResponse) {
+// Highway
+//
+// Provides is a RPC service for interfacing over the Highway node.
+service Highway {
+  // Access a Name
+  //
+  // Returns details and publicly available information about the Peer given calling node
+  // has permission to access.
+  // i.e `prad.snr` -> "firstname online profilePic city"
+  rpc AccessName(sonrio.highway.v1.MsgAccessName) returns (sonrio.highway.v1.MsgAccessNameResponse) {
     option (google.api.http) = {
-      post: "/v1/name/access"
+      get: "/access/name/{name}"
     };
   }
 
-  // RegisterName registers a new ".snr" name for the calling node. It is only allowed to be called
+  // Get a name
+  //
+  // Returns if a name has been taken in the system yet
+  rpc CheckName(sonrio.highway.v1.MsgCheckName) returns (sonrio.highway.v1.MsgCheckNameResponse) {
+    option (google.api.http) = {
+      get: "/access/name/{name}"
+    };
+  }
+
+  // Generate credentials
+  //
+  // Recieves client side JWT and attaches it to the users DID
+  rpc GenerateCreds(sonrio.highway.v1.MsgWebToken) returns (sonrio.highway.v1.MsgGenerateCredsResponse) {
+    option (google.api.http) = {
+      get: "/register/token"
+    };
+  }
+
+  // Register a Name
+  //
+  // Registers a new ".snr" name for the calling node. It is only allowed to be called
   // once per node.
-  rpc RegisterName(RegisterNameRequest) returns (RegisterNameResponse) {
+  rpc RegisterName(sonrio.sonr.registry.MsgRegisterName) returns (sonrio.sonr.registry.MsgRegisterNameResponse) {
     option (google.api.http) = {
-      post: "/v1/name/register"
+      post: "/register/name"
     };
   }
 
-  // UpdateName updates the public information of the calling node.
-  rpc UpdateName(UpdateNameRequest) returns (UpdateNameResponse) {
+  // Update a Name
+  //
+  // Updates the public information of the calling node.
+  rpc UpdateName(sonrio.sonr.registry.MsgUpdateName) returns (sonrio.sonr.registry.MsgUpdateNameResponse) {
     option (google.api.http) = {
-      post: "/v1/name/update"
+      put: "/update/name/{did}"
     };
   }
 
-  // AccessService creates a new signing key for the calling node in order to be authorized to
+  // Access a Service
+  //
+  // Creates a new signing key for the calling node in order to be authorized to
   // access the service. It is only allowed to be called once per node.
-  rpc AccessService(AccessServiceRequest) returns (AccessServiceResponse) {
+  rpc AccessService(sonrio.highway.v1.MsgAccessService) returns (sonrio.highway.v1.MsgAccessServiceResponse) {
     option (google.api.http) = {
-      post: "/v1/service/access"
+      get: "/access/service/{did}"
     };
   }
 
-  // RegisterService registers a new service for the calling node. The calling node must have
+  // Register a Service
+  //
+  // Registers a new service for the calling node. The calling node must have
   // already been enabled for development.
-  rpc RegisterService(RegisterServiceRequest) returns (RegisterServiceResponse) {
+  rpc RegisterService(sonrio.sonr.registry.MsgRegisterService) returns (sonrio.sonr.registry.MsgRegisterServiceResponse) {
     option (google.api.http) = {
-      post: "/v1/service/register"
+      post: "/register/service"
     };
   }
 
-  // UpdateService updates the details and public configuration of the calling node's service.
-  rpc UpdateService(UpdateServiceRequest) returns (UpdateServiceResponse) {
+  // Update a Service
+  //
+  // Updates the details and public configuration of the calling node's service.
+  rpc UpdateService(sonrio.sonr.registry.MsgUpdateService) returns (sonrio.sonr.registry.MsgUpdateServiceResponse) {
     option (google.api.http) = {
-      post: "/v1/service/update"
+      put: "/update/service/{did}"
     };
   }
 
-  // CreateChannel creates a new Publish/Subscribe topic channel for the given service.
+  // Create New Channel
+  //
+  // Creates a new Publish/Subscribe topic channel for the given service.
   // The calling node must have already registered a service for the channel.
-  rpc CreateChannel(CreateChannelRequest) returns (CreateChannelResponse) {
+  rpc CreateChannel(sonrio.sonr.channel.MsgCreateChannel) returns (sonrio.sonr.channel.MsgCreateChannelResponse) {
     option (google.api.http) = {
-      post: "/v1/channel/create"
+      post: "/create/channel"
     };
   }
 
-  // ReadChannel lists all peers subscribed to the given channel, and additional details about
+  // Read a Channel
+  //
+  // Lists all peers subscribed to the given channel, and additional details about
   // the channels configuration.
-  rpc ReadChannel(ReadChannelRequest) returns (ReadChannelResponse) {
+  rpc ReadChannel(sonrio.sonr.channel.MsgReadChannel) returns (sonrio.sonr.channel.MsgReadChannelResponse) {
     option (google.api.http) = {
-      post: "/v1/channel/read"
+      get: "/read/channel/{did}"
     };
   }
 
-  // UpdateChannel updates the configuration of the given channel.
-  rpc UpdateChannel(UpdateChannelRequest) returns (UpdateChannelResponse) {
+  // Update a Channel
+  //
+  // Updates the configuration of the given channel.
+  rpc UpdateChannel(sonrio.sonr.channel.MsgUpdateChannel) returns (sonrio.sonr.channel.MsgUpdateChannelResponse) {
     option (google.api.http) = {
-      post: "/v1/channel/update"
+      put: "/update/channel/{did}"
     };
   }
 
-  // DeleteChannel deletes the given channel if the calling node is the owner of the channel.
-  rpc DeleteChannel(DeleteChannelRequest) returns (DeleteChannelResponse) {
+  // Delete a Channel
+  //
+  // Deletes the given channel if the calling node is the owner of the channel.
+  rpc DeleteChannel(sonrio.sonr.channel.MsgDeleteChannel) returns (sonrio.sonr.channel.MsgDeleteChannelResponse) {
     option (google.api.http) = {
-      post: "/v1/channel/delete"
+      delete: "/delete/channel/{did}"
     };
   }
 
-  // ListenChannel subscribes the calling node to the given channel and returns all publish events
+  // Listen to a Channel
+  //
+  // Subscribes the calling node to the given channel and returns all publish events
   // as a stream.
-  rpc ListenChannel(ListenChannelRequest) returns (stream ListenChannelResponse) {
+  rpc ListenChannel(sonrio.highway.v1.MsgListenChannel) returns (stream sonrio.sonr.channel.ChannelMessage) {
     option (google.api.http) = {
-      post: "/v1/channel/listen"
+      post: "/listen/channel/{did}"
     };
   }
 
-  // CreateBucket creates a new bucket for the calling nodes service.
-  rpc CreateBucket(CreateBucketRequest) returns (CreateBucketResponse) {
+  // Create New Bucket
+  //
+  // Creates a new bucket for the calling nodes service.
+  rpc CreateBucket(sonrio.sonr.bucket.MsgCreateBucket) returns (sonrio.sonr.bucket.MsgCreateBucketResponse) {
     option (google.api.http) = {
-      post: "/v1/bucket/create"
+      post: "/create/bucket"
     };
   }
 
-  // ReadBucket lists all the blobs in the given bucket. The calling node must have access to the
+  // Read a Bucket
+  //
+  // Lists all the blobs in the given bucket. The calling node must have access to the
   // bucket.
-  rpc ReadBucket(ReadBucketRequest) returns (ReadBucketResponse) {
+  rpc ReadBucket(sonrio.sonr.bucket.MsgReadBucket) returns (sonrio.sonr.bucket.MsgReadBucketResponse) {
     option (google.api.http) = {
-      post: "/v1/bucket/read"
+      get: "/read/bucket/{did}"
     };
   }
 
-  // UpdateBucket updates the configuration of the given bucket. The calling node must have access
+  // Update a Bucket
+  //
+  // Updates the configuration of the given bucket. The calling node must have access
   // to the bucket.
-  rpc UpdateBucket(UpdateBucketRequest) returns (UpdateBucketResponse) {
+  rpc UpdateBucket(sonrio.sonr.bucket.MsgUpdateBucket) returns (sonrio.sonr.bucket.MsgUpdateBucketResponse) {
     option (google.api.http) = {
-      post: "/v1/bucket/update"
+      put: "/update/bucket/{did}"
     };
   }
 
-  // DeleteBucket deletes the given bucket if the calling node is the owner of the bucket.
-  rpc DeleteBucket(DeleteBucketRequest) returns (DeleteBucketResponse) {
+  // Delete a Bucket
+  //
+  // Deletes the given bucket if the calling node is the owner of the bucket.
+  rpc DeleteBucket(sonrio.sonr.bucket.MsgDeleteBucket) returns (sonrio.sonr.bucket.MsgDeleteBucketResponse) {
     option (google.api.http) = {
-      post: "/v1/bucket/delete"
+      delete: "/delete/bucket/{did}"
     };
   }
 
-  // ListenBucket subscribes the calling node to the given bucket and returns all publish events
-  // as a stream.
-  rpc ListenBucket(ListenBucketRequest) returns (stream ListenBucketResponse) {
-    option (google.api.http) = {
-      post: "/v1/bucket/listen"
-    };
-  }
-
-  // CreateObject defines a new object to be utilized by the calling node's service. The object will
+  // Create New Object
+  //
+  // Defines a new object to be utilized by the calling node's service. The object will
   // be placed in the Highway Service Graph and can be used in channels and other modules.
-  rpc CreateObject(CreateObjectRequest) returns (CreateObjectResponse) {
+  rpc CreateObject(sonrio.sonr.object.MsgCreateObject) returns (sonrio.sonr.object.MsgCreateObjectResponse) {
     option (google.api.http) = {
-      post: "/v1/object/create"
+      post: "/create/object"
     };
   }
 
-  // ReadObject returns the details of the given object provided its DID or Label.
-  rpc ReadObject(ReadObjectRequest) returns (ReadObjectResponse) {
+  // Read a Object
+  //
+  // Returns the details of the given object provided its DID or Label.
+  rpc ReadObject(sonrio.sonr.object.MsgReadObject) returns (sonrio.sonr.object.MsgReadObjectResponse) {
     option (google.api.http) = {
-      post: "/v1/object/read"
+      get: "/read/object/{did}"
     };
   }
 
-  // UpdateObject modifies the property fields of the given object.
-  rpc UpdateObject(UpdateObjectRequest) returns (UpdateObjectResponse) {
+  // Update a Object
+  //
+  // Modifies the property fields of the given object.
+  rpc UpdateObject(sonrio.sonr.object.MsgUpdateObject) returns (sonrio.sonr.object.MsgUpdateObjectResponse) {
     option (google.api.http) = {
-      post: "/v1/object/update"
+      put: "/update/object/{did}"
     };
   }
 
-  // DeleteObject deletes the given object if the calling node is the owner of the object.
-  rpc DeleteObject(DeleteObjectRequest) returns (DeleteObjectResponse) {
+  // Delete a Object
+  //
+  // Deletes the given object if the calling node is the owner of the object.
+  rpc DeleteObject(sonrio.sonr.object.MsgDeleteObject) returns (sonrio.sonr.object.MsgDeleteObjectResponse) {
     option (google.api.http) = {
-      post: "/v1/object/delete"
+      delete: "/delete/object/{did}"
     };
   }
 
-  // UploadBlob uploads a file or buffer to the calling node's service IPFS storage.
-  rpc UploadBlob(UploadBlobRequest) returns (stream UploadBlobResponse) {
+  // Upload Blob
+  //
+  // Uploads a file or buffer to the calling node's service IPFS storage.
+  rpc UploadBlob(sonrio.highway.v1.MsgUploadBlob) returns (sonrio.highway.v1.MsgUploadBlobResponse) {
     option (google.api.http) = {
-      post: "/v1/blob/upload"
+      post: "/upload/blob"
     };
   }
 
-  // DownloadBlob downloads a file or buffer from the calling node's service IPFS storage.
-  rpc DownloadBlob(DownloadBlobRequest) returns (stream DownloadBlobResponse) {
+  // Download a Blob
+  //
+  // Downloads a file or buffer from the calling node's service IPFS storage.
+  rpc DownloadBlob(sonrio.highway.v1.MsgDownloadBlob) returns (sonrio.highway.v1.MsgDownloadBlobResponse) {
     option (google.api.http) = {
-      post: "/v1/blob/download"
+      get: "/download/blob/{did}"
     };
   }
 
-  // SyncBlob synchronizes a local file from the calling node to the given service's IPFS storage.
-  rpc SyncBlob(SyncBlobRequest) returns (stream SyncBlobResponse) {
+  // Synchronize Blob
+  //
+  // Synchronizes a local file from the calling node to the given service's IPFS storage.
+  rpc SyncBlob(sonrio.highway.v1.MsgSyncBlob) returns (sonrio.highway.v1.MsgSyncBlobResponse) {
     option (google.api.http) = {
-      post: "/v1/blob/sync"
+      put: "/sync/blob/{did}"
     };
   }
 
-  // DeleteBlob deletes the given file from the calling node's service IPFS storage.
-  rpc DeleteBlob(DeleteBlobRequest) returns (DeleteBlobResponse) {
+  // Delete a Blob
+  //
+  // Deletes the given blob from the calling node's service IPFS storage.
+  rpc DeleteBlob(sonrio.highway.v1.MsgDeleteBlob) returns (sonrio.highway.v1.MsgDeleteBlobResponse) {
     option (google.api.http) = {
-      post: "/v1/blob/delete"
+      delete: "/delete/blob/{did}"
     };
   }
 
-  // ParseDid parses a potential DID string into a DID object.
-  rpc ParseDid(ParseDidRequest) returns (ParseDidResponse) {
+  // Parse a Did
+  //
+  // Parses a potential DID string into a DID object, using the calling node's network access.
+  rpc ParseDid(sonrio.highway.v1.MsgParseDid) returns (sonrio.highway.v1.MsgParseDidResponse) {
     option (google.api.http) = {
-      post: "/v1/did/parse"
+      get: "/did/parse/{did_string}"
     };
   }
 
-  // ResolveDid resolves a DID to its DID document if the DID is valid and the calling node has
+  // Resolve Did
+  //
+  // Resolves a DID to its DID document if the DID is valid and the calling node has
   // access to the DID Document.
-  rpc ResolveDid(ResolveDidRequest) returns (ResolveDidResponse) {
+  rpc ResolveDid(sonrio.highway.v1.MsgResolveDid) returns (sonrio.highway.v1.MsgResolveDidResponse) {
     option (google.api.http) = {
-      post: "/v1/did/resolve"
+      post: "/resolve/did/{did_string}"
     };
   }
 }

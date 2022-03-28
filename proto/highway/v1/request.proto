@@ -1,51 +1,35 @@
 /// This file contains service for the Node RPC Server
 syntax = "proto3";
 
-// Package Highway is used for defining a Highway node and its properties.
-package highway.v1;
-option go_package = "github.com/sonr-io/core/highway";
+// Package Highway is used for defining a Highway node and its accessible API Endpoints
+package sonrio.highway.v1;
 
-// AccessNameRequest is a request to get details from the ".snr" name of a peer
-message AccessNameRequest {
+option go_package = "github.com/sonr-io/sonr/highway/v1";
+// MsgAccessName represents a request payload to get details from the ".snr" name of a peer
+message MsgAccessName {
   // The name of the peer to get the details from
   string name = 1;
 
   // The public key of the peer to get the details from
-  string public_key = 2; // optional
+  string public_key = 3; // optional
 }
 
-// RegisterNameRequest is a request to register a name with the ".snr" name of a peer
-message RegisterNameRequest {
-  // The name of the peer to register the name with
-  string device_id = 1;
+// MsgCheckName checks the chain to see ifa  name is available
+message MsgCheckName {
+  // Account address of the name owner
+  string nameToRegister = 1;
 
-  // The Operating System of the peer to register the name with
-  string os = 2;
-
-  // The model of the peer to register the name with
-  string model = 3;
-
-  // The architecture of the peer to register the name with
-  string arch = 4;
-
-  // The public key of the peer to register the name with
-  string public_key = 5;
-
-  // The name to register
-  string name_to_register = 6;
+  // key of account that can access names
+  string creator = 2;
 }
 
-// UpdateNameRequest is a request to update the ".snr" name of a peer
-message UpdateNameRequest {
-  // The name of the peer to update the name of
-  string name = 1;
-
-  // The Updated Metadata
-  map<string, string> metadata = 2; // optional
+message MsgWebToken {
+  // The JWT
+  string jwt = 1;
 }
 
-// AccessServiceRequest is a request to get the service details of a peer
-message AccessServiceRequest {
+// MsgAccessService represents a request payload to get the service details of a peer
+message MsgAccessService {
   // The name of the peer to get the service details of
   string did = 1;
 
@@ -53,71 +37,8 @@ message AccessServiceRequest {
   map<string, string> metadata = 2; // optional
 }
 
-// RegisterServiceRequest is a request to register a service with a peer
-message RegisterServiceRequest {
-  // The name of the peer to register the service with
-  string service_name = 1;
-
-  // The configuration for the service
-  map<string, string> configuration = 2;
-
-  // The public key of the peer to register the service with
-  string public_key = 3;
-}
-
-// UpdateServiceRequest is a request to update the service details of a peer
-message UpdateServiceRequest {
-  // The name of the peer to update the service details of
-  string did = 1;
-
-  // The updated configuration for the service
-  map<string, string> configuration = 2;
-
-  // The metadata for any service information required
-  map<string, string> metadata = 3; // optional
-}
-
-// CreateChannelRequest is the request to create a new channel
-message CreateChannelRequest {
-  // Name is the name of the channel
-  string name = 1;
-
-  // Description is the description of the channel
-  string description = 2;
-
-  // Owners is the list of provisioned nodes for the channel
-  repeated string owners = 3;
-}
-
-// ReadChannelRequest is the request to read a channel
-message ReadChannelRequest {
-  // DID is the identifier of the channel
-  string did = 1;
-}
-
-// UpdateChannelRequest is the request to update a channel
-message UpdateChannelRequest {
-  // Did is the DID of the channel
-  string did = 1;
-
-  // Metadata is the metadata of the channel thats being updated
-  map<string, string> metadata = 2;
-}
-
-// DeleteChannelRequest is the request to delete a channel
-message DeleteChannelRequest {
-  // Did is the DID of the channel
-  string did = 1;
-
-  // Metadata is the metadata of the channel thats being deleted
-  map<string, string> metadata = 2;
-
-  // Public key of the node that is deleting the channel
-  string public_key = 3;
-}
-
-// ListenChannelRequest is the request to subscribe to a channel
-message ListenChannelRequest {
+// MsgListenChannel represents a request payload to subscribe to a channel
+message MsgListenChannel {
   // Name is the name of the channel
   string did = 1;
 
@@ -125,106 +46,17 @@ message ListenChannelRequest {
   map<string, string> metadata = 2; // optional
 }
 
-// CreateBucketRequest is the request to create a new bucket
-message CreateBucketRequest {
-  // Label is the human-readable name of the bucket
-  string label = 1;
 
-  // Description is the description of the bucket
-  string description = 2;
-
-  // Metadata is the metadata of the bucket thats being created
-  map<string, string> metadata = 4;
-}
-
-// ReadBucketRequest is the request to read a bucket
-message ReadBucketRequest {
-  // DID is the identifier of the bucket
-  string did = 1;
-
-  // Metadata is the metadata of the bucket thats being read
-  map<string, string> metadata = 2; // optional
-}
-
-// UpdateBucketRequest is the request to update a bucket
-message UpdateBucketRequest {
-  // DID is the DID of the bucket
-  string did = 1;
-
-  // Label is the human-readable name of the bucket
-  string label = 2;
-
-  // Description is the description of the bucket
-  string description = 3;
-
-  // Metadata is the metadata of the bucket thats being updated
-  map<string, string> metadata = 4;
-}
-
-// DeleteBucketRequest is the request to delete a bucket
-message DeleteBucketRequest {
-  // DID is the DID of the bucket
-  string did = 1;
-
-  // Metadata is the metadata of the bucket thats being deleted
-  map<string, string> metadata = 2;
-
-  // Public key of the node that is deleting the bucket
-  string public_key = 3;
-}
-
-// ListenBucketRequest is the request to subscribe to a bucket
-message ListenBucketRequest {
-  // DID is the DID of the bucket
-  string did = 1;
-
-  // Metadata is the metadata of the bucket thats being listened to
-  map<string, string> metadata = 2; // optional
-}
-
-// CreateObjectRequest is the request to create a new object
-message CreateObjectRequest {
-  // Label is the label of the object
-  string label = 1;
-
-  // Name is the name of the object
-  string name = 2;
-}
-
-// ReadObjectRequest is the request to read an object
-message ReadObjectRequest {
-  // DID is the identifier of the object
-  string did = 1; // optional
-}
-
-// UpdateObjectRequest is the request to update an object
-message UpdateObjectRequest {
-  // DID is the identifier of the object
-  string did = 1;
-}
-
-// DeleteObjectRequest is the request to delete an object
-message DeleteObjectRequest {
-  // DID is the identifier of the object
-  string did = 1;
-
-  // Metadata is the metadata of the object thats being deleted
-  map<string, string> metadata = 2;
-
-  // Public key of the node that is deleting the object
-  string public_key = 3;
-}
-
-// UploadBlobRequest is the request to upload a blob
-message UploadBlobRequest {
+// MsgUploadBlob represents a request payload to upload a blob
+message MsgUploadBlob {
   // Label is the label of the blob
   string label = 1;
 
   // Path is the path of the blob
   string path = 2;
 
-  // Bucket is the bucket of the blob
-  string bucket_did = 3;
+  // Bucket or object DID where the blob is being uploaded to
+  string ref_did = 3;
 
   // Size is the size of the blob
   int64 size = 4;
@@ -233,8 +65,8 @@ message UploadBlobRequest {
   int64 last_modified = 5;
 }
 
-// DownloadBlobRequest is the request to download a blob
-message DownloadBlobRequest {
+// MsgDownloadBlob represents a request payload to download a blob
+message MsgDownloadBlob {
   // DID is the identifier of the blob
   string did = 1;
 
@@ -242,20 +74,19 @@ message DownloadBlobRequest {
   string out_path = 2;
 }
 
-// SyncBlobRequest is the request to sync a blob
-message SyncBlobRequest {
+// MsgSyncBlob represents a request payload to sync a blob
+message MsgSyncBlob {
   // DID is the identifier of the blob
   string did = 1;
 
-  // Destination DID is the identifier of the destination service storage
-  string destination_did = 2;
-
   // Path is the location of the blob
-  string path = 3;
+  string path = 2;
+
+  int32 timeout = 3; // optional
 }
 
-// DeleteBlobRequest is the request to delete a blob
-message DeleteBlobRequest {
+// MsgDeleteBlob represents a request payload to delete a blob
+message MsgDeleteBlob {
   // DID is the identifier of the blob
   string did = 1;
 
@@ -266,19 +97,19 @@ message DeleteBlobRequest {
   string public_key = 3;
 }
 
-// ParseDidRequest is the request to convert a string to a DID object
-message ParseDidRequest {
+// MsgParseDid represents a request payload to convert a string to a DID object
+message MsgParseDid {
   // DID is the DID of the DID
-  string did = 1;
+  string did_string = 1;
 
   // Metadata is the metadata of the blob thats being deleted
   map<string, string> metadata = 2;
 }
 
-// ResolveDidRequest is the request to resolve a DID
-message ResolveDidRequest {
+// MsgResolveDid represents a request payload to resolve a DID
+message MsgResolveDid {
   // DID is the DID of the DID
-  string did = 1;
+  string did_string = 1;
 
   // Metadata is the metadata of the blob thats being deleted
   map<string, string> metadata = 2;
