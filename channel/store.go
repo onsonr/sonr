@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	ps "github.com/libp2p/go-libp2p-pubsub"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/channel/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -141,7 +141,7 @@ func (b *channel) NewDeleteEvent(key string) *v1.ChannelEvent {
 }
 
 // Publish publishes the event to the topic
-func PublishEvent(ctx context.Context, t *pubsub.Topic, e *v1.ChannelEvent) error {
+func PublishEvent(ctx context.Context, t *ps.Topic, e *v1.ChannelEvent) error {
 	buf, err := proto.Marshal(e)
 	if err != nil {
 		return err

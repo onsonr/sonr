@@ -9,7 +9,7 @@ import (
 
 	 "github.com/sonr-io/core/did/ssi"
 
-	ockamDid "github.com/ockam-network/did"
+	odid "github.com/ockam-network/did"
 )
 
 var _ fmt.Stringer = DID{}
@@ -25,7 +25,7 @@ func DIDContextV1URI() ssi.URI {
 
 // DID represents a Decentralized Identifier as specified by the DID Core specification (https://www.w3.org/TR/did-core/#identifier).
 type DID struct {
-	ockamDid.DID
+	odid.DID
 }
 
 // Empty checks whether the DID is set or not
@@ -57,7 +57,7 @@ func (d *DID) UnmarshalJSON(bytes []byte) error {
 	if err != nil {
 		return ErrInvalidDID.wrap(err)
 	}
-	tmp, err := ockamDid.Parse(didString)
+	tmp, err := odid.Parse(didString)
 	if err != nil {
 		return ErrInvalidDID.wrap(err)
 	}
@@ -87,7 +87,7 @@ func (d DID) URI() ssi.URI {
 // https://www.w3.org/TR/did-core/#did-url-syntax
 // A DID URL is a URL that builds on the DID scheme.
 func ParseDIDURL(input string) (*DID, error) {
-	ockDid, err := ockamDid.Parse(input)
+	ockDid, err := odid.Parse(input)
 	if err != nil {
 		return nil, ErrInvalidDID.wrap(err)
 	}

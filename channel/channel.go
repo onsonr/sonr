@@ -6,10 +6,10 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/channel/v1"
-	node "github.com/sonr-io/core/host"
+	nh "github.com/sonr-io/core/host"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -83,26 +83,26 @@ type Channel interface {
 type channel struct {
 	Channel
 	ctx   context.Context
-	n     node.HostImpl
+	n     nh.HostImpl
 	label string
 	did   string
 
 	// Channel Messages
 	messages        chan *v1.ChannelMessage
-	messagesHandler *pubsub.TopicEventHandler
-	messagesSub     *pubsub.Subscription
-	messagesTopic   *pubsub.Topic
+	messagesHandler *ps.TopicEventHandler
+	messagesSub     *ps.Subscription
+	messagesTopic   *ps.Topic
 
 	// Store Events
 	storeEvents        chan *v1.ChannelEvent
-	storeEventsHandler *pubsub.TopicEventHandler
-	storeEventsSub     *pubsub.Subscription
-	storeEventsTopic   *pubsub.Topic
+	storeEventsHandler *ps.TopicEventHandler
+	storeEventsSub     *ps.Subscription
+	storeEventsTopic   *ps.Topic
 	store              *v1.ChannelStore
 }
 
 // New creates a new beam with the given name and options.
-func New(ctx context.Context, n node.HostImpl, id string, options ...Option) (Channel, error) {
+func New(ctx context.Context, n nh.HostImpl, id string, options ...Option) (Channel, error) {
 	logger = golog.Default.Child(id)
 	opts := defaultOptions()
 	for _, option := range options {

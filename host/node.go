@@ -11,7 +11,7 @@ import (
 	"git.mills.io/prologic/bitcask"
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
+	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -139,7 +139,7 @@ func NewMotor(ctx context.Context, l net.Listener, options ...Option) (HostImpl,
 	// Start Host
 	node.Host, err = libp2p.New(ctx,
 		libp2p.Identity(node.privKey),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
+		libp2p.ConnectionManager(cmgr.NewConnManager(
 			opts.LowWater,    // Lowwater
 			opts.HighWater,   // HighWater,
 			opts.GracePeriod, // GracePeriod
@@ -206,7 +206,7 @@ func NewHighway(ctx context.Context, options ...Option) {
 	// Start Host
 	node.Host, err = libp2p.New(ctx,
 		libp2p.Identity(node.privKey),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
+		libp2p.ConnectionManager(cmgr.NewConnManager(
 			opts.LowWater,    // Lowwater
 			opts.HighWater,   // HighWater,
 			opts.GracePeriod, // GracePeriod

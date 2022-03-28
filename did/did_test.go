@@ -7,7 +7,7 @@ import (
 	"io"
 	"testing"
 
-	ockamDid "github.com/ockam-network/did"
+	odid "github.com/ockam-network/did"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +27,7 @@ func TestDID_UnmarshalJSON(t *testing.T) {
 }
 
 func TestDID_MarshalJSON(t *testing.T) {
-	wrappedDid, err := ockamDid.Parse("did:sonr:123")
+	wrappedDid, err := odid.Parse("did:sonr:123")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 		return

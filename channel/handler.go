@@ -2,7 +2,7 @@ package channel
 
 import (
 	"github.com/libp2p/go-libp2p-core/peer"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/channel/v1"
 	"google.golang.org/protobuf/proto"
@@ -20,7 +20,7 @@ func (b *channel) handleChannelEvents() {
 
 		// Check Event and Validate not User
 		switch event.Type {
-		case pubsub.PeerJoin:
+		case ps.PeerJoin:
 			// event := b.NewSyncEvent()
 			// err = PublishEvent(b.ctx, b.topic, event)
 			// if err != nil {
@@ -68,7 +68,7 @@ func (b *channel) handleStoreEvents() {
 
 		// Check Event and Validate not User
 		switch event.Type {
-		case pubsub.PeerJoin:
+		case ps.PeerJoin:
 			// event := b.NewSyncEvent()
 			// err = PublishEvent(b.ctx, b.topic, event)
 			// if err != nil {
@@ -123,17 +123,17 @@ func (b *channel) serve() {
 }
 
 // isEventJoin Checks if PeerEvent is Join and NOT User
-func isEventJoin(ev pubsub.PeerEvent, selfID peer.ID) bool {
-	return ev.Type == pubsub.PeerJoin && ev.Peer != selfID
+func isEventJoin(ev ps.PeerEvent, selfID peer.ID) bool {
+	return ev.Type == ps.PeerJoin && ev.Peer != selfID
 }
 
 // isEventExit Checks if PeerEvent is Exit and NOT User
-func isEventExit(ev pubsub.PeerEvent) bool {
-	return ev.Type == pubsub.PeerLeave
+func isEventExit(ev ps.PeerEvent) bool {
+	return ev.Type == ps.PeerLeave
 }
 
 // eventFromMsg converts a message to an event
-func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*v1.ChannelEvent, error) {
+func eventFromMsg(msg *ps.Message, selfID peer.ID) (*v1.ChannelEvent, error) {
 	// Check Message
 	if msg.ReceivedFrom == selfID {
 		return nil, errors.Wrap(ErrInvalidMessage, "Same Peer as Node")

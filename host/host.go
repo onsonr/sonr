@@ -14,12 +14,12 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/config"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 // AuthenticateMessage Authenticates incoming p2p message
-func (n *node) AuthenticateMessage(msg proto.Message, metadata *types.Metadata) bool {
+func (n *node) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) bool {
 	// store a temp ref to signature and remove it from message data
 	// sign is a string to allow easy reset to zero-value (empty string)
 	sign := metadata.Signature
