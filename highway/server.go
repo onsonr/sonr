@@ -11,11 +11,15 @@ import (
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/protocol"
 	"github.com/duo-labs/webauthn/webauthn"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/gorilla/mux"
 	"github.com/kataras/golog"
 	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/crypto"
+	"github.com/sonr-io/core/did"
+	"github.com/sonr-io/core/did/ssi"
 	"github.com/sonr-io/core/highway/user"
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/discover"
@@ -240,6 +244,19 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 		util.JsonResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	coseKey := crypto.COSEKey{}
+	err = cbor.Unmarshal(credential.PublicKey, &coseKey)
+	if err != nil {
+		log.Println(err)
+		util.JsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	pubKey, err := crypto.DecodePublicKey(&coseKey)
+	if err != nil {
+		log.Println(err)
+		util.JsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	// account `alice` was initialized during `starport chain serve`
 	accountName := "alice"
@@ -250,6 +267,21 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 		log.Println(err)
 		util.JsonResponse(w, "Failed to find blockchain account", http.StatusNotFound)
 	}
+
+	didStr := fmt.Sprintf("did:sonr:%s", acc.Address("snr"))
+	id, err := did.ParseDID(didStr)
+	if err != nil {
+		log.Println(err)
+		util.JsonResponse(w, "Failed to parse DID", http.StatusNotFound)
+	}
+
+	verf, err := did.NewVerificationMethod(*id, ssi.JsonWebKey2020, *id, pubKey)
+	if err != nil {
+		log.Println(err)
+		util.JsonResponse(w, "Failed to create verification method", http.StatusNotFound)
+	}
+
+	log.Println(verf)
 
 	// define a message to create a did
 	msg := &rtv1.MsgRegisterName{
