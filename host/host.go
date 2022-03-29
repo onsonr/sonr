@@ -207,10 +207,6 @@ func (n *node) HostID() peer.ID {
 
 // Listener returns the listener of the node
 func (n *node) Listener() (net.Listener, error) {
-	if n.Role() != config.Role_HIGHWAY {
-		return nil, errors.New("Host is not a highway node")
-	}
-
 	if n.listener == nil {
 		return nil, errors.New("Host is not listening")
 	}
