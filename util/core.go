@@ -11,11 +11,6 @@ var (
 	logger = golog.Default.Child("internal/common")
 )
 
-// IsMdnsCompatible returns true if the Connection is MDNS compatible
-func IsMdnsCompatible(c types.Connection) bool {
-	return c == types.Connection_CONNECTION_WIFI || c == types.Connection_CONNECTION_ETHERNET
-}
-
 // OLC returns Open Location code
 func OLC(l *types.Location) string {
 	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 4)

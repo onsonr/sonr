@@ -15,7 +15,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/config"
-	"github.com/sonr-io/core/util"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
@@ -230,15 +229,11 @@ func (hn *node) createDHTDiscovery(opts *options) error {
 
 // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
 func (hn *node) createMdnsDiscovery(opts *options) {
-	// Verify if MDNS is Enabled
-	if !util.IsMdnsCompatible(hn.connection) {
-		logger.Errorf("%s - Failed to Start MDNS Discovery ", config.ErrMDNSInvalidConn)
-		return
+	if hn.Role() == config.Role_MOTOR {
+		// Create MDNS Service
+		ser := mdns.NewMdnsService(hn.Host, opts.Rendezvous)
+
+		// Handle Events
+		ser.RegisterNotifee(hn)
 	}
-
-	// Create MDNS Service
-	ser := mdns.NewMdnsService(hn.Host, opts.Rendezvous)
-
-	// Handle Events
-	ser.RegisterNotifee(hn)
 }

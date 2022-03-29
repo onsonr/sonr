@@ -145,6 +145,7 @@ func NewHost(ctx context.Context, r config.Role, options ...Option) (HostImpl, e
 			golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
 			return nil, err
 		}
+		logger.Infof("(app) - Listening on %s", node.listener.Addr().String())
 	}
 
 	// Start Host
