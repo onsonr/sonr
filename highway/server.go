@@ -77,6 +77,7 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	// 	return nil, err
 	// }
 
+	// Get the Listener for the Host
 	lst, err := node.Listener()
 	if err != nil {
 		return nil, err
@@ -88,16 +89,13 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 		return nil, err
 	}
 
-	web, err := webauthn.New(&webauthn.Config{
-		RPDisplayName: "Sonr",      // Display Name for your site
-		RPID:          "sonr.io",   // Generally the FQDN for your site
-		RPOrigin:      "localhost", // The origin URL for WebAuthn requests
-		Debug:         true,        // Enable debug mode
-	})
+	// Create a WebAuthn instance
+	web, err := webauthn.New(node.WebauthnConfig())
 	if err != nil {
 		return nil, err
 	}
 
+	// Create a new Session Store
 	sessionStore, err := session.NewStore()
 	if err != nil {
 		return nil, err

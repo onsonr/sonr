@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"git.mills.io/prologic/bitcask"
+	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p"
 	cmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -101,6 +102,9 @@ type HostImpl interface {
 
 	// VerifyData verifies the data signature
 	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
+
+	// WebauthnConfig returns the webauthn config
+	WebauthnConfig() *webauthn.Config
 }
 
 // node type - a p2p host implementing one or more p2p protocols
@@ -128,6 +132,9 @@ type node struct {
 	flag   uint64
 	Chn    chan bool
 	status HostStatus
+
+	// Config
+	webauthnConfig *webauthn.Config
 }
 
 // NewHost Creates a Sonr libp2p Host with the given config
@@ -434,4 +441,9 @@ func (n *node) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyD
 		return false
 	}
 	return res
+}
+
+// WebauthnConfig returns the webauthn config
+func (n *node) WebauthnConfig() *webauthn.Config {
+	return n.webauthnConfig
 }

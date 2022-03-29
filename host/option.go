@@ -7,6 +7,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
@@ -83,6 +84,16 @@ func WithPort(port int) Option {
 	}
 }
 
+// WithWebAuthn sets the webauthn server Properties
+func WithWebAuthn(displayName string, rpId string, rpOrigin string, isDebug bool) Option {
+	return func(o *options) {
+		o.RPDisplayName = displayName
+		o.RPID = rpId
+		o.RPOrigin = rpOrigin
+		o.Debug = isDebug
+	}
+}
+
 // DisableMDNS sets the non-priority of MDNS Discovery
 func (hn *node) DisableMDNS() Option {
 	return func(o *options) {
@@ -112,6 +123,13 @@ type options struct {
 	network      string
 	port         int
 	mdnsDisabled bool
+
+	// WebAuthn
+	RPDisplayName string
+	RPID          string
+	RPOrigin      string
+	RPIcon        string
+	Debug         bool
 }
 
 // defaultOptions returns the default options
@@ -152,6 +170,11 @@ func defaultOptions(r config.Role) *options {
 		Interval:       time.Second * 5,
 		BootstrapPeers: ds,
 		TTL:            dscl.TTL(time.Minute * 2),
+		RPDisplayName:  "Sonr",
+		RPID:           "localhost",
+		RPOrigin:       "localhost:8080",
+		RPIcon:         "",
+		Debug:          true,
 	}
 }
 
@@ -182,6 +205,13 @@ func (opts *options) Apply(ctx context.Context, options ...Option) (*node, error
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		connection:   opts.Connection,
 		role:         opts.role,
+		webauthnConfig: &webauthn.Config{
+			RPDisplayName: opts.RPDisplayName,
+			RPID:          opts.RPID,
+			RPOrigin:      opts.RPOrigin,
+			RPIcon:        opts.RPIcon,
+			Debug:         opts.Debug,
+		},
 	}
 
 	// Open Listener on Port
