@@ -82,6 +82,13 @@ func WithPort(port int) Option {
 	}
 }
 
+// DisableMDNS sets the non-priority of MDNS Discovery
+func (hn *node) DisableMDNS() Option {
+	return func(o *options) {
+		o.mdnsDisabled = true
+	}
+}
+
 // options is a collection of options for the node.
 type options struct {
 	configuration *config.Configuration
@@ -99,10 +106,11 @@ type options struct {
 	TTL            dscl.Option
 
 	// Session
-	host     string
-	logLevel string
-	network  string
-	port     int
+	host         string
+	logLevel     string
+	network      string
+	port         int
+	mdnsDisabled bool
 }
 
 // defaultOptions returns the default options
@@ -133,6 +141,7 @@ func defaultOptions(r config.Role) *options {
 		port:           26225,
 		role:           r,
 		network:        "tcp",
+		mdnsDisabled:   false,
 		logLevel:       string(InfoLevel),
 		LowWater:       200,
 		HighWater:      400,

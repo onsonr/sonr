@@ -108,7 +108,7 @@ type node struct {
 	// Standard Node Implementation
 	host.Host
 	HostImpl
-	mode config.Role
+	role config.Role
 
 	// Host and context
 	connection   types.Connection
@@ -183,13 +183,17 @@ func NewHost(ctx context.Context, r config.Role, options ...Option) (HostImpl, e
 
 	// Initialize Discovery for DHT
 	if err := node.createDHTDiscovery(opts); err != nil {
-		logger.Fatal("Could not start DHT Discovery", err)
+		// Check if we need to close the listener
 		node.SetStatus(Status_FAIL)
+		logger.Fatal("Could not start DHT Discovery", err)
 		return nil, err
 	}
 
 	// Initialize Discovery for MDNS
-	node.createMdnsDiscovery(opts)
+	if !opts.mdnsDisabled {
+		node.createMdnsDiscovery(opts)
+	}
+
 	node.SetStatus(Status_READY)
 	go node.Serve()
 	return node, nil
@@ -224,7 +228,7 @@ func (n *node) Publish(t string, message proto.Message, metadata *types.Metadata
 
 // Role returns the role of the node
 func (n *node) Role() config.Role {
-	return n.mode
+	return n.role
 }
 
 // AuthenticateMessage Authenticates incoming p2p message
