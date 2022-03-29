@@ -153,10 +153,6 @@ func (s *HighwayServer) serveCtxListener(ctx context.Context, listener net.Liste
 	if err := s.grpc.Serve(listener); err != nil {
 		logger.Errorf("%s - Failed to start HTTP server", err)
 	}
-	serverAddress := ":8080"
-	log.Println("Starting WebAuthn server at", serverAddress)
-
-	log.Fatal(http.ListenAndServe(serverAddress, s.router))
 	s.node.Persist()
 }
 
