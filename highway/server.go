@@ -247,6 +247,7 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 	// get account from the keyring by account name and return a bech32 address
 	address, err := s.cosmos.Address(accountName)
 	if err != nil {
+		log.Println(err)
 		util.JsonResponse(w, "Failed to find blockchain account", http.StatusNotFound)
 	}
 
@@ -256,17 +257,20 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 		NameToRegister:  username,
 		PublicKeyBuffer: credential.PublicKey,
 	}
+	log.Println(msg.String())
 
 	// broadcast a transaction from account `alice` with the message to create a did
 	// store response in txResp
 	txResp, err := s.cosmos.BroadcastTx(accountName, msg)
 	if err != nil {
+		log.Println(err)
 		util.JsonResponse(w, "Failed to broadcast to blockchain", http.StatusBadRequest)
 	}
+	log.Println(txResp.String())
 
 	// Return response from broadcasting a transaction
 	user.AddCredential(*credential)
-	util.JsonResponse(w, fmt.Sprintf("Broadcast Tx:\n\n%s\n\n", txResp), http.StatusOK)
+	util.JsonResponse(w, txResp.String(), http.StatusOK)
 }
 
 func (s *HighwayServer) BeginLogin(w http.ResponseWriter, r *http.Request) {
