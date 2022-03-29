@@ -14,6 +14,7 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gorilla/mux"
 	"github.com/kataras/golog"
+	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/config"
 	"github.com/sonr-io/core/highway/user"
@@ -242,8 +243,33 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	user.AddCredential(*credential)
+	// account `alice` was initialized during `starport chain serve`
+	accountName := "alice"
 
+	// get account from the keyring by account name and return a bech32 address
+	address, err := s.cosmos.Address(accountName)
+	if err != nil {
+		util.JsonResponse(w, "Failed to find blockchain account", http.StatusNotFound)
+	}
+
+	// define a message to create a did
+	msg := &rtv1.MsgRegisterName{
+		Creator:         address.String(),
+		NameToRegister:  username,
+		PublicKeyBuffer: credential.PublicKey,
+	}
+
+	// broadcast a transaction from account `alice` with the message to create a did
+	// store response in txResp
+	txResp, err := s.cosmos.BroadcastTx(accountName, msg)
+	if err != nil {
+		util.JsonResponse(w, "Failed to broadcast to blockchain", http.StatusBadRequest)
+	}
+
+	// print response from broadcasting a transaction
+	logger.Infof("\n\nBroadcast Tx:\n\n%s\n\n", txResp)
+
+	user.AddCredential(*credential)
 	util.JsonResponse(w, "Registration Success", http.StatusOK)
 
 }
