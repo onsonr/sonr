@@ -92,6 +92,8 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 		RPDisplayName: "Sonr",                 // Display Name for your site
 		RPID:          "sonr.io",              // Generally the FQDN for your site
 		RPOrigin:      "https://auth.sonr.io", // The origin URL for WebAuthn requests
+		RPOriginPort:  443,                    // The port for the RPOrigin
+		Debug:         true,                   // Enable debug mode
 	})
 	if err != nil {
 		return nil, err
