@@ -84,7 +84,7 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	}
 
 	// create an instance of cosmosclient
-	cosmos, err := cosmosclient.New(ctx, cosmosclient.WithAddressPrefix("snr"))
+	cosmos, err := cosmosclient.New(ctx)
 	if err != nil {
 		return nil, err
 	}
