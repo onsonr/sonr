@@ -7,7 +7,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"strings"
 
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/protocol"
@@ -169,8 +168,7 @@ func (s *HighwayServer) BeginRegistration(w http.ResponseWriter, r *http.Request
 	usr, err := s.userDb.GetUser(username)
 	// user doesn't exist, create new user
 	if err != nil {
-		displayName := strings.Split(username, "@")[0]
-		usr = user.NewUser(username, displayName)
+		usr = user.NewUser(username, fmt.Sprintf("%s.snr", username))
 		s.userDb.PutUser(usr)
 	}
 	// Updating the AuthenticatorSelection options.
