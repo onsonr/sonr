@@ -39,10 +39,10 @@ func (s *HighwayServer) RegisterName(ctx context.Context, req *rt.MsgRegisterNam
 
 	// define a message to create a did
 	msg := &rtv1.MsgRegisterName{
-		Creator:        address.String(),
-		NameToRegister: req.NameToRegister,
-		Payload:        req.Payload,
-		//PublicKeyBuffer: req.GetJwk(),
+		Creator:         address.String(),
+		NameToRegister:  req.NameToRegister,
+		Payload:         req.Payload,
+		PublicKeyBuffer: req.GetPublicKeyBuffer(),
 	}
 
 	// broadcast a transaction from account `alice` with the message to create a did
@@ -56,7 +56,9 @@ func (s *HighwayServer) RegisterName(ctx context.Context, req *rt.MsgRegisterNam
 	logger.Infof("\n\nBroadcast Tx:\n\n%s\n\n", txResp)
 
 	// fmt.Println(txResp)
-	return nil, nil
+	return &rt.MsgRegisterNameResponse{
+		IsSuccess: true,
+	}, nil
 }
 
 // UpdateName updates a name.

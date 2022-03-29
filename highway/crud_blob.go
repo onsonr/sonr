@@ -1,7 +1,5 @@
 package highway
 
-
-
 // // UploadBlob uploads a blob.
 // func (s *HighwayServer) UploadBlob(req *v1.UploadBlobRequest, stream v1.HighwayService_UploadBlobServer) error {
 // 	// hash, err := s.ipfs.Upload(req.Path)
