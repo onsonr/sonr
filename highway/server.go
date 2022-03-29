@@ -266,12 +266,9 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 		util.JsonResponse(w, "Failed to broadcast to blockchain", http.StatusBadRequest)
 	}
 
-	// print response from broadcasting a transaction
-	logger.Infof("\n\nBroadcast Tx:\n\n%s\n\n", txResp)
-
+	// Return response from broadcasting a transaction
 	user.AddCredential(*credential)
-	util.JsonResponse(w, "Registration Success", http.StatusOK)
-
+	util.JsonResponse(w, fmt.Sprintf("Broadcast Tx:\n\n%s\n\n", txResp), http.StatusOK)
 }
 
 func (s *HighwayServer) BeginLogin(w http.ResponseWriter, r *http.Request) {
