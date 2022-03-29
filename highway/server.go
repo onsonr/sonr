@@ -174,7 +174,17 @@ func (s *HighwayServer) BeginRegistration(w http.ResponseWriter, r *http.Request
 		usr = user.NewUser(username, displayName)
 		s.userDb.PutUser(usr)
 	}
+	// Updating the AuthenticatorSelection options.
+	// See the struct declarations for values
+	authSelect := protocol.AuthenticatorSelection{
+		AuthenticatorAttachment: protocol.AuthenticatorAttachment("platform"),
+		RequireResidentKey:      protocol.ResidentKeyUnrequired(),
+		UserVerification:        protocol.VerificationRequired,
+	}
 
+	// Updating the ConveyencePreference options.
+	// See the struct declarations for values
+	conveyencePref := protocol.ConveyancePreference(protocol.PreferNoAttestation)
 	registerOptions := func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
 		credCreationOpts.CredentialExcludeList = usr.CredentialExcludeList()
 	}
@@ -183,6 +193,8 @@ func (s *HighwayServer) BeginRegistration(w http.ResponseWriter, r *http.Request
 	options, sessionData, err := s.auth.BeginRegistration(
 		usr,
 		registerOptions,
+		webauthn.WithAuthenticatorSelection(authSelect),
+		webauthn.WithConveyancePreference(conveyencePref),
 	)
 
 	if err != nil {
