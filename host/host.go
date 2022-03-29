@@ -138,16 +138,6 @@ func NewHost(ctx context.Context, r config.Role, options ...Option) (HostImpl, e
 		return nil, err
 	}
 
-	// Open Listener on Port
-	if node.Role() == config.Role_HIGHWAY {
-		node.listener, err = net.Listen(opts.network, opts.Address())
-		if err != nil {
-			golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
-			return nil, err
-		}
-		logger.Infof("(app) - Listening on %s", node.listener.Addr().String())
-	}
-
 	// Start Host
 	node.Host, err = libp2p.New(ctx,
 		libp2p.Identity(node.privKey),

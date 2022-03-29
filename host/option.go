@@ -4,8 +4,10 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
+	"net"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -179,13 +181,24 @@ func (opts *options) Apply(ctx context.Context, options ...Option) (*node, error
 		status:       Status_IDLE,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		connection:   opts.Connection,
+		role:         opts.role,
+	}
+
+	// Open Listener on Port
+	if opts.role == config.Role_HIGHWAY {
+		hn.listener, err = net.Listen(opts.network, opts.Address())
+		if err != nil {
+			golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
+			return nil, err
+		}
+		logger.Infof("(app) - Listening on %s", hn.listener.Addr().String())
 	}
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
 		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
 		if err == nil {
-			logger.Warn("Generated new Account Private Key")
+			logger.Warn("Generated new Libp2p Private Key")
 			return privKey, nil
 		}
 		return nil, err
