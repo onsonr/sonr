@@ -5,9 +5,9 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/config"
 	host "github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/channel"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -31,9 +31,8 @@ type DiscoverProtocol struct {
 
 // New creates new DiscoveryProtocol
 func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
-
 	// Create BeamStore
-	b, err := channel.New(ctx, host, "")
+	b, err := channel.New(ctx, host, "_discover")
 	if err != nil {
 		return nil, err
 	}
