@@ -28,15 +28,6 @@ message MsgWebToken {
   string jwt = 1;
 }
 
-// MsgAccessService represents a request payload to get the service details of a peer
-message MsgAccessService {
-  // The name of the peer to get the service details of
-  string did = 1;
-
-  // The metadata for any service information required
-  map<string, string> metadata = 2; // optional
-}
-
 // MsgListenChannel represents a request payload to subscribe to a channel
 message MsgListenChannel {
   // Name is the name of the channel

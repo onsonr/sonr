@@ -9,18 +9,6 @@ import "object/object.proto";
 option go_package = "github.com/sonr-io/sonr/highway/v1";
 
 
-// MsgAccessNameResponse represents a response to a request for a name
-message MsgAccessNameResponse {
-    // Code of the response
-    int32 code = 1;
-
-    // Message of the response
-    string message = 2;
-
-    // Data of the response
-    map<string,string> metadata = 3;
-}
-
 message MsgCheckNameResponse {
     // boolean response to know if a name has been taken
     bool nameAvailable = 1;
@@ -29,18 +17,6 @@ message MsgCheckNameResponse {
 message MsgGenerateCredsResponse {
     // boolean response to know if token was attached to the did successfully
     bool tokenAttached = 1;
-}
-
-// AccessServiceResponse represents a response to a request for a service
-message MsgAccessServiceResponse {
-    // Code of the response
-    int32 code = 1;
-
-    // Message of the response
-    string message = 2;
-
-    // Data of the response
-    map<string, string> metadata = 3;
 }
 
 // MsgUploadBlobResponse represents a response to a request to upload a blob

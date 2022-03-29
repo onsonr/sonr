@@ -21,7 +21,7 @@ service Highway {
   // Returns details and publicly available information about the Peer given calling node
   // has permission to access.
   // i.e `prad.snr` -> "firstname online profilePic city"
-  rpc AccessName(sonrio.highway.v1.MsgAccessName) returns (sonrio.highway.v1.MsgAccessNameResponse) {
+  rpc AccessName(sonrio.sonr.registry.MsgAccessName) returns (sonrio.sonr.registry.MsgAccessNameResponse) {
     option (google.api.http) = {
       get: "/access/name/{name}"
     };
@@ -68,7 +68,7 @@ service Highway {
   //
   // Creates a new signing key for the calling node in order to be authorized to
   // access the service. It is only allowed to be called once per node.
-  rpc AccessService(sonrio.highway.v1.MsgAccessService) returns (sonrio.highway.v1.MsgAccessServiceResponse) {
+  rpc AccessService(sonrio.sonr.registry.MsgAccessService) returns (sonrio.sonr.registry.MsgAccessServiceResponse) {
     option (google.api.http) = {
       get: "/access/service/{did}"
     };
