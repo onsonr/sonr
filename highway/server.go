@@ -82,19 +82,20 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 		listener: lst,
 	}
 
-	// Set Discovery Protocol
-	stub.DiscoverProtocol, err = discover.New(ctx, node, stub)
-	if err != nil {
-		logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
-		return nil, err
-	}
+	// TODO Implement P2P Protocols for Sonr Network
+	// // Set Discovery Protocol
+	// stub.DiscoverProtocol, err = discover.New(ctx, node, stub)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
+	// 	return nil, err
+	// }
 
-	// Set Transmit Protocol
-	stub.ExchangeProtocol, err = exchange.New(ctx, node, stub)
-	if err != nil {
-		logger.Errorf("%s - Failed to start TransmitProtocol", err)
-		return nil, err
-	}
+	// // Set Transmit Protocol
+	// stub.ExchangeProtocol, err = exchange.New(ctx, node, stub)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to start TransmitProtocol", err)
+	// 	return nil, err
+	// }
 
 	// Register RPC Service
 	v1.RegisterHighwayServer(stub.grpc, stub)
