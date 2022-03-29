@@ -190,7 +190,7 @@ func NewHost(ctx context.Context, r config.Role, options ...Option) (HostImpl, e
 	}
 
 	// Initialize Discovery for MDNS
-	if !opts.mdnsDisabled {
+	if !opts.mdnsDisabled && node.role != config.Role_HIGHWAY {
 		node.createMdnsDiscovery(opts)
 	}
 
