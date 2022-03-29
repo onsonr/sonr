@@ -245,7 +245,7 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 	accountName := "alice"
 
 	// get account from the keyring by account name and return a bech32 address
-	address, err := s.cosmos.Address(accountName)
+	acc, err := s.cosmos.Account(accountName)
 	if err != nil {
 		log.Println(err)
 		util.JsonResponse(w, "Failed to find blockchain account", http.StatusNotFound)
@@ -253,7 +253,7 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 
 	// define a message to create a did
 	msg := &rtv1.MsgRegisterName{
-		Creator:         address.String(),
+		Creator:         acc.Address("snr"),
 		NameToRegister:  username,
 		PublicKeyBuffer: credential.PublicKey,
 	}
