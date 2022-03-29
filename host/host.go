@@ -120,6 +120,7 @@ type node struct {
 	// Properties
 	ctx   context.Context
 	store *bitcask.Bitcask
+
 	*dht.IpfsDHT
 	*ps.PubSub
 

@@ -6,10 +6,13 @@ require (
 	git.mills.io/prologic/bitcask v1.0.0
 	github.com/cosmos/cosmos-sdk v0.44.5
 	github.com/denisbrodbeck/machineid v1.0.1
+	github.com/duo-labs/webauthn v0.0.0-20220223184316-4d1cf2d34051
+	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
+	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/kataras/golog v0.1.7
 	github.com/lestrrat-go/jwx v1.2.20
