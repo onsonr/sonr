@@ -8,7 +8,7 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
 	"github.com/sonr-io/core/config"
-	node "github.com/sonr-io/core/node"
+	 "github.com/sonr-io/core/host"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/discover/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
@@ -21,7 +21,7 @@ type ErrFunc func() error
 // Local is the protocol for managing local peers.
 type Local struct {
 	callback     config.CallbackImpl
-	node         node.HostImpl
+	node         host.HostImpl
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
 	messages     chan *LobbyEvent

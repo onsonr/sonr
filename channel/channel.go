@@ -9,7 +9,7 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/channel/v1"
-	nh "github.com/sonr-io/core/node"
+	nh "github.com/sonr-io/core/host"
 	"google.golang.org/protobuf/proto"
 )
 

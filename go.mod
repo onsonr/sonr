@@ -11,7 +11,6 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/kataras/golog v0.1.7
 	github.com/lestrrat-go/jwx v1.2.20
 	github.com/libp2p/go-libp2p v0.15.1
@@ -34,7 +33,8 @@ require (
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.1
 	github.com/tendermint/tendermint v0.34.14
-	go.buf.build/grpc/go/sonr-io/core v1.3.5
+	go.buf.build/grpc/go/sonr-io/core v1.3.6
+	go.buf.build/grpc/go/sonr-io/sonr v1.3.14
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 )

@@ -1,4 +1,4 @@
-package node
+package host
 
 import (
 	"context"
@@ -6,6 +6,9 @@ import (
 	"net"
 
 	"git.mills.io/prologic/bitcask"
+	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p"
+	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -19,6 +22,10 @@ import (
 	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
+)
+
+var (
+	logger = golog.Default.Child("core/node")
 )
 
 // HostImpl returns the HostImpl for the Main Node
@@ -41,6 +48,9 @@ type HostImpl interface {
 	// Join subsrcibes to a topic
 	Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error)
 
+	// Listener returns the listener of the node
+	Listener() (net.Listener, error)
+
 	// NewStream opens a new stream to a peer
 	NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error)
 
@@ -52,6 +62,9 @@ type HostImpl interface {
 
 	// Pause tells all of goroutines to pause execution
 	Pause()
+
+	// Persist persists the node to the port and address
+	Persist()
 
 	// Ping sends a ping to a peer to check if it is alive
 	Ping(id string) error
@@ -114,6 +127,104 @@ type node struct {
 	flag   uint64
 	Chn    chan bool
 	status HostStatus
+}
+
+// NewHost Creates a Sonr libp2p Host with the given config
+func NewHost(ctx context.Context, r config.Role, options ...Option) (HostImpl, error) {
+	// Initialize DHT
+	opts := defaultOptions(r)
+	node, err := opts.Apply(ctx, options...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Open Listener on Port
+	if node.Role() == config.Role_HIGHWAY {
+		node.listener, err = net.Listen(opts.network, opts.Address())
+		if err != nil {
+			golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
+			return nil, err
+		}
+	}
+
+	// Start Host
+	node.Host, err = libp2p.New(ctx,
+		libp2p.Identity(node.privKey),
+		libp2p.ConnectionManager(cmgr.NewConnManager(
+			opts.LowWater,    // Lowwater
+			opts.HighWater,   // HighWater,
+			opts.GracePeriod, // GracePeriod
+		)),
+		libp2p.DefaultListenAddrs,
+		libp2p.Routing(node.Router),
+		libp2p.EnableAutoRelay(),
+	)
+	if err != nil {
+		logger.Errorf("%s - NewHost: Failed to create libp2p host", err)
+		return nil, err
+	}
+	node.SetStatus(Status_CONNECTING)
+
+	// Bootstrap DHT
+	if err := node.Bootstrap(context.Background()); err != nil {
+		logger.Errorf("%s - Failed to Bootstrap KDHT to Host", err)
+		node.SetStatus(Status_FAIL)
+		return nil, err
+	}
+
+	// Connect to Bootstrap Nodes
+	for _, pi := range opts.BootstrapPeers {
+		if err := node.Connect(pi); err != nil {
+			continue
+		} else {
+			break
+		}
+	}
+
+	// Initialize Discovery for DHT
+	if err := node.createDHTDiscovery(opts); err != nil {
+		logger.Fatal("Could not start DHT Discovery", err)
+		node.SetStatus(Status_FAIL)
+		return nil, err
+	}
+
+	// Initialize Discovery for MDNS
+	node.createMdnsDiscovery(opts)
+	node.SetStatus(Status_READY)
+	go node.Serve()
+	return node, nil
+}
+
+// HostID returns the ID of the Host
+func (n *node) HostID() peer.ID {
+	return n.Host.ID()
+}
+
+// Listener returns the listener of the node
+func (n *node) Listener() (net.Listener, error) {
+	if n.Role() != config.Role_HIGHWAY {
+		return nil, errors.New("Host is not a highway node")
+	}
+
+	if n.listener == nil {
+		return nil, errors.New("Host is not listening")
+	}
+	return n.listener, nil
+}
+
+// Ping sends a ping to the peer
+func (n *node) Ping(pid string) error {
+	return nil
+}
+
+// Publish publishes a message to the network
+func (n *node) Publish(t string, message proto.Message, metadata *types.Metadata) error {
+	return nil
+}
+
+// Role returns the role of the node
+func (n *node) Role() config.Role {
+	return n.mode
 }
 
 // AuthenticateMessage Authenticates incoming p2p message

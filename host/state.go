@@ -1,16 +1,21 @@
-package node
+package host
 
 import (
+	"context"
 	"fmt"
 	"math"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"sync"
 	"sync/atomic"
 	"syscall"
 
+	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/config"
+	"github.com/spf13/viper"
 )
 
 // HostStatus is the status of the host
@@ -199,4 +204,66 @@ func (sm *SockManager) NewSockPath() (string, error) {
 	}
 
 	return "", errors.Wrap(err, "can't create new sock")
+}
+
+// persist contains the main loop for the Node
+func (n *node) Persist() {
+	// Check if node is highway
+	if n.Role() != config.Role_HIGHWAY {
+		golog.Default.Child("(app)").Errorf("%s - Persist: Node is not a highway node", n.HostID())
+		return
+	}
+
+	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", n.listener.Addr().String())
+	// Check if CLI Mode
+	if config.IsMobile() {
+		golog.Default.Child("(app)").Info("Skipping Serve, Node is mobile...")
+		return
+	}
+
+	// Wait for Exit Signal
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		exit(0, n.ctx)
+	}()
+
+	// Hold until Exit Signal
+	for {
+		select {
+		case <-n.ctx.Done():
+			golog.Default.Child("(app)").Info("Context Done")
+			n.listener.Close()
+			return
+		}
+	}
+}
+
+// Exit handles cleanup on Sonr Node
+func exit(code int, ctx context.Context) {
+	golog.Default.Child("(app)").Debug("Cleaning up Node on Exit...")
+	defer ctx.Done()
+
+	// Check for Full Desktop Node
+	if config.IsDesktop() {
+		golog.Default.Child("(app)").Debug("Removing Bitcask DB...")
+		ex, err := os.Executable()
+		if err != nil {
+			golog.Default.Child("(app)").Errorf("%s - Failed to find Executable", err)
+			return
+		}
+
+		// Delete Executable Path
+		exPath := filepath.Dir(ex)
+		err = os.RemoveAll(filepath.Join(exPath, "sonr_bitcask"))
+		if err != nil {
+			golog.Default.Child("(app)").Warn("Failed to remove Bitcask, ", err)
+		}
+		err = viper.SafeWriteConfig()
+		if err == nil {
+			golog.Default.Child("(app)").Debug("Wrote new config file to Disk")
+		}
+		os.Exit(code)
+	}
 }

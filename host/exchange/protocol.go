@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/config"
-	node "github.com/sonr-io/core/node"
+	 "github.com/sonr-io/core/host"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 
@@ -18,7 +18,7 @@ import (
 
 type ExchangeProtocol struct {
 	ctx      context.Context
-	node     node.HostImpl
+	node     host.HostImpl
 	callback config.CallbackImpl
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
@@ -27,7 +27,7 @@ type ExchangeProtocol struct {
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, node node.HostImpl, cb config.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
+func New(ctx context.Context, node host.HostImpl, cb config.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &ExchangeProtocol{
 		ctx:      ctx,

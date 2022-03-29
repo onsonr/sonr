@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/config"
-	node "github.com/sonr-io/core/node"
+	host "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/channel"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
@@ -21,7 +21,7 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node     node.HostImpl
+	node     host.HostImpl
 	callback config.CallbackImpl
 	ctx      context.Context
 	global   channel.Channel
@@ -30,10 +30,10 @@ type DiscoverProtocol struct {
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, node node.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
+func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
 
 	// Create BeamStore
-	b, err := channel.New(ctx, node, "")
+	b, err := channel.New(ctx, host, "")
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func New(ctx context.Context, node node.HostImpl, cb config.CallbackImpl, option
 	protocol := &DiscoverProtocol{
 		ctx:      ctx,
 		global:   b,
-		node:     node,
+		node:     host,
 		callback: cb,
 	}
 
