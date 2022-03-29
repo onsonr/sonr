@@ -9,12 +9,10 @@ require (
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
-	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/kataras/golog v0.1.7
-	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lestrrat-go/jwx v1.2.20
 	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
@@ -31,14 +29,12 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/spf13/cobra v1.3.0 // indirect
+	github.com/sonr-io/blockchain v0.0.2
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.1
 	github.com/tendermint/tendermint v0.34.14
-	go.buf.build/grpc/go/sonr-io/core v1.3.3
-	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
-	google.golang.org/genproto v0.0.0-20220317150908-0efb43f6373e // indirect
+	go.buf.build/grpc/go/sonr-io/core v1.3.5
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 )

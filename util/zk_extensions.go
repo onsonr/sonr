@@ -26,15 +26,15 @@ import (
 // ServerStream is an interface that fits all the auto-generated server
 // stream interfaces declared within this package.
 type ServerStream interface {
-	Send(*pb.Message) error
-	Recv() (*pb.Message, error)
+	Send(*pb.ZkMessage) error
+	Recv() (*pb.ZkMessage, error)
 	grpc.ServerStream
 }
 
 // ClientStream is an interface that fits all the auto-generated client
 // stream interfaces declared within this package.
 type ClientStream interface {
-	Send(*pb.Message) error
-	Recv() (*pb.Message, error)
+	Send(*pb.ZkMessage) error
+	Recv() (*pb.ZkMessage, error)
 	grpc.ClientStream
 }

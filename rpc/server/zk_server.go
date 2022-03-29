@@ -170,7 +170,7 @@ func (s *Server) registerServices() {
 	s.Logger.Notice("Registered gRPC Services")
 }
 
-func (s *Server) send(msg *v1.Message, stream util.ServerStream) error {
+func (s *Server) send(msg *v1.ZkMessage, stream util.ServerStream) error {
 	if err := stream.Send(msg); err != nil {
 		return fmt.Errorf("error sending message: %v", err)
 	}
@@ -181,7 +181,7 @@ func (s *Server) send(msg *v1.Message, stream util.ServerStream) error {
 	return nil
 }
 
-func (s *Server) receive(stream util.ServerStream) (*v1.Message, error) {
+func (s *Server) receive(stream util.ServerStream) (*v1.ZkMessage, error) {
 	resp, err := stream.Recv()
 	if err == io.EOF {
 		return nil, err
@@ -318,7 +318,7 @@ func (s *Server) GenerateNym(stream v1.PseudonymSystem_GenerateNymServer) error 
 
 	regKeyOk, err := s.RegistrationManager.CheckRegistrationKey(proofRandData.RegKey)
 
-	var resp *v1.Message
+	var resp *v1.ZkMessage
 
 	if !regKeyOk || err != nil {
 		s.Logger.Debugf("registration key %s ok=%t, error=%v",
@@ -332,8 +332,8 @@ func (s *Server) GenerateNym(stream v1.PseudonymSystem_GenerateNymServer) error 
 		return status.Error(codes.Internal, err.Error())
 
 	}
-	resp = &v1.Message{
-		Content:  &v1.Message_PedersenDecommitment{&v1.PedersenDecommitment{X: challenge.Bytes()}},
+	resp = &v1.ZkMessage{
+		Content:  &v1.ZkMessage_PedersenDecommitment{&v1.PedersenDecommitment{X: challenge.Bytes()}},
 		ClientId: 0,
 	}
 
@@ -350,8 +350,8 @@ func (s *Server) GenerateNym(stream v1.PseudonymSystem_GenerateNymServer) error 
 	z := new(big.Int).SetBytes(proofData.Z)
 	valid := org.Verify(z)
 
-	resp = &v1.Message{
-		Content: &v1.Message_Status{&v1.Status{Success: valid}},
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_Status{&v1.Status{Success: valid}},
 	}
 
 	if err = s.send(resp, stream); err != nil {
@@ -377,8 +377,8 @@ func (s *Server) ObtainCredential(stream v1.PseudonymSystem_ObtainCredentialServ
 	b := new(big.Int).SetBytes(sProofRandData.B)
 	challenge := org.GetChallenge(a, b, x)
 
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: challenge.Bytes(),
 			},
@@ -402,8 +402,8 @@ func (s *Server) ObtainCredential(stream v1.PseudonymSystem_ObtainCredentialServ
 		s.Logger.Debug(err)
 		return status.Error(codes.Internal, err.Error())
 	}
-	resp = &v1.Message{
-		Content: &v1.Message_PseudonymsysIssueProofRandomData{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_PseudonymsysIssueProofRandomData{
 			&v1.PseudonymsysIssueProofRandomData{
 				X11: x11.Bytes(),
 				X12: x12.Bytes(),
@@ -429,8 +429,8 @@ func (s *Server) ObtainCredential(stream v1.PseudonymSystem_ObtainCredentialServ
 	challenge2 := new(big.Int).SetBytes(challenges.X2)
 
 	z1, z2 := org.GetProofData(challenge1, challenge2)
-	resp = &v1.Message{
-		Content: &v1.Message_DoubleBigint{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_DoubleBigint{
 			&v1.DoubleBigInt{
 				X1: z1.Bytes(),
 				X2: z2.Bytes(),
@@ -487,8 +487,8 @@ func (s *Server) TransferCredential(stream v1.PseudonymSystem_TransferCredential
 	challenge := org.GetChallenge(nymA, nymB,
 		credential.SmallAToGamma, credential.SmallBToGamma, x1, x2)
 
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: challenge.Bytes(),
 			},
@@ -521,8 +521,8 @@ func (s *Server) TransferCredential(stream v1.PseudonymSystem_TransferCredential
 		return status.Error(codes.Internal, "failed to obtain session key")
 	}
 
-	resp = &v1.Message{
-		Content: &v1.Message_SessionKey{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_SessionKey{
 			SessionKey: &v1.SessionKey{
 				Value: *sessionKey,
 			},
@@ -557,7 +557,7 @@ func (s *Server) GenerateNym_EC(stream v1.PseudonymSystem_GenerateNym_ECServer) 
 
 	regKeyOk, err := s.RegistrationManager.CheckRegistrationKey(proofRandData.RegKey)
 
-	var resp *v1.Message
+	var resp *v1.ZkMessage
 
 	if !regKeyOk || err != nil {
 		s.Logger.Debugf("Registration key %s ok=%t, error=%v",
@@ -570,8 +570,8 @@ func (s *Server) GenerateNym_EC(stream v1.PseudonymSystem_GenerateNym_ECServer) 
 		s.Logger.Debug(err)
 		return status.Error(codes.Internal, err.Error())
 	}
-	resp = &v1.Message{
-		Content: &v1.Message_PedersenDecommitment{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_PedersenDecommitment{
 			&v1.PedersenDecommitment{
 				X: challenge.Bytes(),
 			},
@@ -591,8 +591,8 @@ func (s *Server) GenerateNym_EC(stream v1.PseudonymSystem_GenerateNym_ECServer) 
 	z := new(big.Int).SetBytes(proofData.Z)
 	valid := org.Verify(z)
 
-	resp = &v1.Message{
-		Content: &v1.Message_Status{&v1.Status{Success: valid}},
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_Status{&v1.Status{Success: valid}},
 	}
 
 	if err = s.send(resp, stream); err != nil {
@@ -617,8 +617,8 @@ func (s *Server) ObtainCredential_EC(stream v1.PseudonymSystem_ObtainCredential_
 	org := ecpseudsys.NewCredIssuer(secKey, curve)
 	challenge := org.GetChallenge(a, b, x)
 
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: challenge.Bytes(),
 			},
@@ -643,8 +643,8 @@ func (s *Server) ObtainCredential_EC(stream v1.PseudonymSystem_ObtainCredential_
 		s.Logger.Debug(err)
 		return status.Error(codes.Internal, err.Error())
 	}
-	resp = &v1.Message{
-		Content: &v1.Message_PseudonymsysIssueProofRandomDataEc{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_PseudonymsysIssueProofRandomDataEc{
 			&v1.PseudonymsysIssueProofRandomDataEC{
 				X11: util.ToPbECGroupElement(x11),
 				X12: util.ToPbECGroupElement(x12),
@@ -670,8 +670,8 @@ func (s *Server) ObtainCredential_EC(stream v1.PseudonymSystem_ObtainCredential_
 	challenge2 := new(big.Int).SetBytes(challenges.X2)
 
 	z1, z2 := org.GetProofData(challenge1, challenge2)
-	resp = &v1.Message{
-		Content: &v1.Message_DoubleBigint{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_DoubleBigint{
 			&v1.DoubleBigInt{
 				X1: z1.Bytes(),
 				X2: z2.Bytes(),
@@ -729,8 +729,8 @@ func (s *Server) TransferCredential_EC(stream v1.PseudonymSystem_TransferCredent
 	challenge := org.GetChallenge(nymA, nymB,
 		credential.SmallAToGamma, credential.SmallBToGamma, x1, x2)
 
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: challenge.Bytes(),
 			},
@@ -763,8 +763,8 @@ func (s *Server) TransferCredential_EC(stream v1.PseudonymSystem_TransferCredent
 		return status.Error(codes.Internal, "failed to obtain session key")
 	}
 
-	resp = &v1.Message{
-		Content: &v1.Message_SessionKey{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_SessionKey{
 			SessionKey: &v1.SessionKey{
 				Value: *sessionKey,
 			},
@@ -797,8 +797,8 @@ func (s *Server) GenerateCertificate(stream v1.PseudonymSystemCA_GenerateCertifi
 	b := new(big.Int).SetBytes(sProofRandData.B)
 
 	challenge := ca.GetChallenge(a, b, x)
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: challenge.Bytes(),
 			},
@@ -823,8 +823,8 @@ func (s *Server) GenerateCertificate(stream v1.PseudonymSystemCA_GenerateCertifi
 		return status.Error(codes.Internal, err.Error())
 	}
 
-	resp = &v1.Message{
-		Content: &v1.Message_PseudonymsysCaCertificate{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_PseudonymsysCaCertificate{
 			&v1.PseudonymsysCACertificate{
 				BlindedA: cert.BlindedA.Bytes(),
 				BlindedB: cert.BlindedB.Bytes(),
@@ -857,8 +857,8 @@ func (s *Server) GenerateCertificate_EC(stream v1.PseudonymSystemCA_GenerateCert
 	b := util.GetNativeType(sProofRandData.B)
 
 	challenge := ca.GetChallenge(a, b, x)
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: challenge.Bytes(),
 			},
@@ -883,8 +883,8 @@ func (s *Server) GenerateCertificate_EC(stream v1.PseudonymSystemCA_GenerateCert
 		return status.Error(codes.Internal, err.Error())
 	}
 
-	resp = &v1.Message{
-		Content: &v1.Message_PseudonymsysCaCertificateEc{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_PseudonymsysCaCertificateEc{
 			&v1.PseudonymsysCACertificateEC{
 				BlindedA: util.ToPbECGroupElement(cert.BlindedA),
 				BlindedB: util.ToPbECGroupElement(cert.BlindedB),
@@ -992,8 +992,8 @@ func (s *Server) IssueCredential(stream v1.CL_IssueCredentialServer) error {
 	}
 
 	nonce := org.GetCredIssueNonce()
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: nonce.Bytes(),
 			},
@@ -1026,8 +1026,8 @@ func (s *Server) IssueCredential(stream v1.CL_IssueCredentialServer) error {
 	}
 
 	pbCred := util.ToPbCLCredential(res.Cred, res.AProof)
-	resp = &v1.Message{
-		Content: &v1.Message_CLCredential{pbCred},
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_CLCredential{pbCred},
 	}
 
 	if err := s.send(resp, stream); err != nil {
@@ -1067,8 +1067,8 @@ func (s *Server) UpdateCredential(stream v1.CL_UpdateCredentialServer) error {
 	}
 
 	pbCred := util.ToPbCLCredential(res.Cred, res.AProof)
-	resp := &v1.Message{
-		Content: &v1.Message_CLCredential{pbCred},
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_CLCredential{pbCred},
 	}
 
 	if err := s.send(resp, stream); err != nil {
@@ -1090,8 +1090,8 @@ func (s *Server) ProveCredential(stream v1.CL_ProveCredentialServer) error {
 	}
 
 	nonce := org.GetProveCredNonce()
-	resp := &v1.Message{
-		Content: &v1.Message_Bigint{
+	resp := &v1.ZkMessage{
+		Content: &v1.ZkMessage_Bigint{
 			&v1.BigInt{
 				X1: nonce.Bytes(),
 			},
@@ -1134,8 +1134,8 @@ func (s *Server) ProveCredential(stream v1.CL_ProveCredentialServer) error {
 
 	// TODO: here session key needs to be stored to enable validation
 
-	resp = &v1.Message{
-		Content: &v1.Message_SessionKey{
+	resp = &v1.ZkMessage{
+		Content: &v1.ZkMessage_SessionKey{
 			SessionKey: &v1.SessionKey{
 				Value: *sessionKey,
 			},

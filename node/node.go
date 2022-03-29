@@ -83,20 +83,19 @@ func NewMotor(ctx context.Context, l net.Listener, options ...Option) (HostImpl,
 }
 
 // NewHighway Creates a node with its implemented protocols
-func NewHighway(ctx context.Context, options ...Option) {
-
+func NewHighway(ctx context.Context, options ...Option) (HostImpl, error) {
 	// Initialize DHT
 	opts := defaultOptions(config.Role_HIGHWAY)
 	node, err := opts.Apply(ctx, options...)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// Open Listener on Port
-	l, err := net.Listen(opts.network, opts.Address())
+	node.listener, err = net.Listen(opts.network, opts.Address())
 	if err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
-		panic(err)
+		return nil, err
 	}
 
 	// Start Host
@@ -113,7 +112,7 @@ func NewHighway(ctx context.Context, options ...Option) {
 	)
 	if err != nil {
 		logger.Errorf("%s - NewHost: Failed to create libp2p host", err)
-		panic(err)
+		return nil, err
 	}
 	node.SetStatus(Status_CONNECTING)
 
@@ -121,7 +120,7 @@ func NewHighway(ctx context.Context, options ...Option) {
 	if err := node.Bootstrap(context.Background()); err != nil {
 		logger.Errorf("%s - Failed to Bootstrap KDHT to Host", err)
 		node.SetStatus(Status_FAIL)
-		panic(err)
+		return nil, err
 	}
 
 	// Connect to Bootstrap Nodes
@@ -137,14 +136,14 @@ func NewHighway(ctx context.Context, options ...Option) {
 	if err := node.createDHTDiscovery(opts); err != nil {
 		logger.Fatal("Could not start DHT Discovery", err)
 		node.SetStatus(Status_FAIL)
-		panic(err)
+		return nil, err
 	}
 
 	// Initialize Discovery for MDNS
 	node.createMdnsDiscovery(opts)
 	node.SetStatus(Status_READY)
 	go node.Serve()
-	persist(l)
+	return node, nil
 }
 
 // HostID returns the ID of the Host
@@ -168,8 +167,8 @@ func (n *node) Role() config.Role {
 }
 
 // persist contains the main loop for the Node
-func persist(l net.Listener) {
-	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", l.Addr().String())
+func (n *node) Persist() {
+	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", n.listener.Addr().String())
 	// Check if CLI Mode
 	if config.IsMobile() {
 		golog.Default.Child("(app)").Info("Skipping Serve, Node is mobile...")
@@ -189,7 +188,7 @@ func persist(l net.Listener) {
 		select {
 		case <-ctx.Done():
 			golog.Default.Child("(app)").Info("Context Done")
-			l.Close()
+			n.listener.Close()
 			return
 		}
 	}
