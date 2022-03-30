@@ -72,8 +72,8 @@ func (s *HighwayServer) BeginRegistration(w http.ResponseWriter, r *http.Request
 	JsonResponse(w, options, http.StatusOK)
 }
 
-func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Request) {
 
+func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Request) {
 	// get username
 	vars := mux.Vars(r)
 	username := vars["username"]
