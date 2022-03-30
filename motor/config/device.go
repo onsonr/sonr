@@ -19,7 +19,8 @@ func Init(options ...Option) error {
 	for _, opt := range options {
 		opt(opts)
 	}
-	return opts.Apply()
+	// return opts.Apply()
+	return nil
 }
 
 // Arch returns the current architecture.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sonr-io/core/util"
+	olc "github.com/google/open-location-code/go"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
@@ -70,7 +70,7 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		p.Put(peer)
 
 		// Get OLC Code from location
-		code := util.OLC(o.location)
+		code := OLC(o.location)
 		if code == "" {
 			logger.Error("Failed to Determine OLC Code, set to Global")
 			code = "global"
@@ -94,4 +94,9 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		}
 	}
 	return nil
+}
+
+// OLC returns Open Location code
+func OLC(l *types.Location) string {
+	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 4)
 }

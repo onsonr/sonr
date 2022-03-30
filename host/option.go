@@ -17,7 +17,8 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/core/highway/config"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
@@ -103,8 +104,7 @@ func (hn *node) DisableMDNS() Option {
 
 // options is a collection of options for the node.
 type options struct {
-	configuration *config.Configuration
-	role          config.Role
+	role device.Role
 
 	// Host
 	BootstrapPeers []peer.AddrInfo
@@ -133,7 +133,7 @@ type options struct {
 }
 
 // defaultOptions returns the default options
-func defaultOptions(r config.Role) *options {
+func defaultOptions(r device.Role) *options {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
 	for _, s := range config.BootstrapAddrStrs {
@@ -155,7 +155,6 @@ func defaultOptions(r config.Role) *options {
 	}
 
 	return &options{
-		configuration:  config.DefaultConfiguration(),
 		host:           ":",
 		port:           26225,
 		role:           r,
@@ -183,13 +182,6 @@ func (opts *options) Address() string {
 	return fmt.Sprintf("%s%d", opts.host, opts.port)
 }
 
-func (opts *options) Config() *config.Configuration {
-	if opts.configuration == nil {
-		opts.configuration = &config.Configuration{}
-	}
-	return opts.configuration
-}
-
 // Apply applies the host options and returns new SNRHost
 func (opts *options) Apply(ctx context.Context, options ...Option) (*node, error) {
 	// Iterate over the options.
@@ -215,7 +207,7 @@ func (opts *options) Apply(ctx context.Context, options ...Option) (*node, error
 	}
 
 	// Open Listener on Port
-	if opts.role == config.Role_HIGHWAY {
+	if opts.role == device.Role_HIGHWAY {
 		hn.listener, err = net.Listen(opts.network, opts.Address())
 		if err != nil {
 			golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
@@ -272,7 +264,7 @@ func (hn *node) createDHTDiscovery(opts *options) error {
 
 // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
 func (hn *node) createMdnsDiscovery(opts *options) {
-	if hn.Role() == config.Role_MOTOR {
+	if hn.Role() == device.Role_MOTOR {
 		// Create MDNS Service
 		ser := mdns.NewMdnsService(hn.Host, opts.Rendezvous)
 

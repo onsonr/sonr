@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	git.mills.io/prologic/bitcask v1.0.0
-	github.com/cosmos/cosmos-sdk v0.44.5
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220223184316-4d1cf2d34051
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
@@ -24,7 +23,6 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.13.1
 	github.com/libp2p/go-libp2p-pubsub v0.5.4
 	github.com/libp2p/go-msgio v0.0.6
-	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.4.0
 	github.com/ockam-network/did v0.1.4-0.20210103172416-02ae01ce06d8
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
@@ -36,7 +34,6 @@ require (
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.1
-	github.com/tendermint/tendermint v0.34.14
 	go.buf.build/grpc/go/sonr-io/core v1.3.6
 	go.buf.build/grpc/go/sonr-io/sonr v1.3.15
 	google.golang.org/grpc v1.45.0

@@ -1,10 +1,39 @@
-package config
+package device
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+)
+
+var (
+	// Determined/Provided Paths
+	Home      Folder // ApplicationDocumentsDir on Mobile, HOME_DIR on Desktop
+	Support   Folder // AppSupport Directory
+	Temporary Folder // AppCache Directory
+
+	// Calculated Paths
+	Database   Folder // Device DB Folder
+	Downloads  Folder // Temporary Directory on Mobile for Export, Downloads on Desktop
+	Wallet     Folder // Encrypted Storage Directory
+	ThirdParty Folder // Sub-Directory of Support, used for Textile
+
+	// Path Manipulation Errors
+	ErrDuplicateFilePathOption    = errors.New("Duplicate file path option")
+	ErrPrefixSuffixSetWithReplace = errors.New("Prefix or Suffix set with Replace.")
+	ErrSeparatorLength            = errors.New("Separator length must be 1.")
+	ErrNoFileNameSet              = errors.New("File name was not set by options.")
+
+	// Device ID Errors
+	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
+	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
+
+	// Directory errors
+	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
+	ErrDirectoryUnset   = errors.New("Directory path has not been set")
+	ErrDirectoryJoin    = errors.New("Failed to join directory path")
 )
 
 // IsFile returns true if the given path is a file

@@ -2,11 +2,14 @@ package transmit
 
 import (
 	"context"
+	"errors"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/sonr-io/core/config"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/util"
+	"github.com/sonr-io/core/motor/config"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 
@@ -19,7 +22,7 @@ type TransmitProtocol struct {
 	node     host.HostImpl
 	ctx      context.Context // Context
 	current  *v1.Session     // current session
-	mode     config.Role
+	mode     device.Role
 }
 
 // New creates a new TransferProtocol
@@ -75,7 +78,7 @@ func (p *TransmitProtocol) Outgoing(payload *types.Payload, to *types.Peer) erro
 	}
 
 	// Get Id
-	toId, err := util.Libp2pID(to)
+	toId, err := Libp2pID(to)
 	if err != nil {
 		logger.Errorf("%s - Failed to Get Peer ID", err)
 		return err
@@ -85,7 +88,7 @@ func (p *TransmitProtocol) Outgoing(payload *types.Payload, to *types.Peer) erro
 	p.current = NewOutSession(payload, from, to)
 
 	// Send Files
-	if util.IsFile(p.current.Payload.GetItems()[0].GetMime()) {
+	if p.current.Payload.GetItems()[0].GetMime().Type != types.MIME_TYPE_URL {
 		// Create New Stream
 		stream, err := p.node.NewStream(p.ctx, toId, FilePID)
 		if err != nil {
@@ -148,4 +151,24 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 		return
 	}
 	p.Reset(event)
+}
+
+// Libp2pID returns the PeerID based on PublicKey from Profile
+func Libp2pID(p *types.Peer) (peer.ID, error) {
+	// Check if PublicKey is empty
+	if len(p.GetPublicKey()) == 0 {
+		return "", errors.New("Peer Public Key is not set.")
+	}
+
+	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
+	if err != nil {
+		return "", err
+	}
+
+	// Return Peer ID
+	id, err := peer.IDFromPublicKey(pubKey)
+	if err != nil {
+		return "", err
+	}
+	return id, nil
 }
