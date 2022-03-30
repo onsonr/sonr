@@ -1,11 +1,10 @@
-
 # Sonr Core
 
 **Sonr Core** is a module for common interfaces used by the following repositories:
 
-- `sonr-io/highway`
-- `sonr-io/motor`
-- `sonr-io/sonr`
+- `sonr-io/highway-sdk`
+- `sonr-io/motor-go`
+- `sonr-io/blockchain`
 
 ## Description
 
@@ -24,7 +23,7 @@ For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and 
 
 To install the latest version of the Sonr blockchain node's binary, execute the following command on your machine:
 
-``` shell
+```shell
 go get -u https://github.com/sonr-io/core
 ```
 
@@ -32,31 +31,48 @@ go get -u https://github.com/sonr-io/core
 
 This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
 
-``` text
+```text
 /channel         ->        Real-time Key/Value Store
-/common          ->        Core data types and functions.
+/crypto          ->        Core data types and functions.
 /device          ->        Node Device management
-/docs            ->        Documentation.
-/exchange        ->        Data Transfer related Models.
+/did             ->        Documentation.
+/highway         ->        Data Transfer related Models.
 /host            ->        Libp2p Host Configuration
-/identity        ->        Identity management models and interfaces
-/node            ->        Highway and Motor node builder configuration
+/motor           ->        Identity management models and interfaces
 /proto           ->        Protobuf Definition Files.
-/transmit        ->        Protocol for byte transmission between nodes
-/types           ->        Protobuf Compiled Types
-  └─ cpp         ->        +   C++ Definition Files
-  └─ go          ->        +   Golang Definition Files
-  └─ java        ->        +   Java Definition Files
-/wallet          ->        Interfaces for managing Universal Wallet
+/zk          ->        Interfaces for managing Universal Wallet
 ```
 
 ## Getting Started
 
-## Decentralized Identifiers (DIDs)
+### Creating a Highway Node
 
-A library to parse and generate W3C [DID Documents](https://www.w3.org/TR/did-core/) and W3C [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/).
+The highway node is a relayer node that helps motors interact with the sonr network. It is responsible for routing messages between motors and other relayers. The highway node
+also provides an interface for developers to deploy custom services on the network. To have a custom build of the highway node, execute the following command on your machine:
 
-### Did usage:
+1. `go get -u github.com/sonr-io/core/highway`
+
+2. Create a simple highway node with the following:
+
+```go
+
+	// Create the node.
+	n, err := highway.NewHighway(ctx, host.WithPort(8084), host.WithWebAuthn("Sonr", "localhost", "http://localhost:8080", true))
+	if err != nil {
+		panic(err)
+	}
+```
+
+### Buf.build Type Definition
+
+We utilize the [Buf.build](https://buf.build/) service in order to have standardized protobuf types and gRPC services across our repositories. If you have permitted access to the service, you can use the following command to updated types:
+
+1. `cd proto && buf build`
+2. `buf push`
+
+### Decentralized Identifiers (DIDs) Usage:
+
+> A library to parse and generate W3C [DID Documents](https://www.w3.org/TR/did-core/) and W3C [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/).
 
 Creation of a simple DID Document which is its own controller and contains an AssertionMethod.
 
@@ -117,11 +133,10 @@ Outputs:
 }
 ```
 
-### State of the library
+## State of the library
 
 Currently, the library is under development. The api can change without notice.
 Checkout the issues and PRs to be informed about any development.
-
 
 ## Contributing
 

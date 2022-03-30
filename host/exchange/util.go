@@ -1,10 +1,12 @@
 package exchange
 
 import (
+	"errors"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/util"
+
+	"github.com/libp2p/go-libp2p-core/crypto"
 
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
@@ -39,7 +41,7 @@ func (p *ExchangeProtocol) createRequest(to *types.Peer, payload *types.Payload)
 	}
 
 	// Fetch Peer ID from Public Key
-	toId, err := util.Libp2pID(to)
+	toId, err := Libp2pID(to)
 	if err != nil {
 		logger.Errorf("%s - Failed to fetch peer id from public key", err)
 		return "", nil, err
@@ -90,10 +92,30 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *types.Peer) (peer.ID, *
 	}
 
 	// Fetch Peer ID from Public Key
-	toId, err := util.Libp2pID(to)
+	toId, err := Libp2pID(to)
 	if err != nil {
 		logger.Errorf("%s - Failed to fetch peer id from public key", err)
 		return "", nil, err
 	}
 	return toId, resp, nil
+}
+
+// Libp2pID returns the PeerID based on PublicKey from Profile
+func Libp2pID(p *types.Peer) (peer.ID, error) {
+	// Check if PublicKey is empty
+	if len(p.GetPublicKey()) == 0 {
+		return "", errors.New("Peer Public Key is not set.")
+	}
+
+	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
+	if err != nil {
+		return "", err
+	}
+
+	// Return Peer ID
+	id, err := peer.IDFromPublicKey(pubKey)
+	if err != nil {
+		return "", err
+	}
+	return id, nil
 }
