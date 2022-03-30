@@ -33,7 +33,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/zk/config"
 	"github.com/sonr-io/core/crypto/cl"
 	"github.com/sonr-io/core/crypto/ec"
 	"github.com/sonr-io/core/crypto/ecpseudsys"

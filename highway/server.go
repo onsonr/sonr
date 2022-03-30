@@ -16,7 +16,8 @@ import (
 	"github.com/kataras/golog"
 	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
 	"github.com/sonr-io/core/channel"
-	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/device"
+
 	"github.com/sonr-io/core/crypto"
 	"github.com/sonr-io/core/did"
 	"github.com/sonr-io/core/did/ssi"
@@ -44,7 +45,6 @@ var (
 // HighwayServer is the RPC Service for the Custodian Node.
 type HighwayServer struct {
 	v1.HighwayServer
-	config.CallbackImpl
 	node   hn.HostImpl
 	cosmos cosmosclient.Client
 
@@ -70,7 +70,7 @@ type HighwayServer struct {
 func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) {
 	// Create a new HostImpl
 	r := mux.NewRouter()
-	node, err := hn.NewHost(ctx, config.Role_HIGHWAY, opts...)
+	node, err := hn.NewHost(ctx, device.Role_HIGHWAY, opts...)
 	if err != nil {
 		return nil, err
 	}

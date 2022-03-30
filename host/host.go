@@ -19,7 +19,7 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/device"
 	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
@@ -83,7 +83,7 @@ type HostImpl interface {
 	Resume()
 
 	// Role returns the role of the node
-	Role() config.Role
+	Role() device.Role
 
 	// Router returns the routing.Router
 	Router(h host.Host) (routing.PeerRouting, error)
@@ -112,7 +112,7 @@ type node struct {
 	// Standard Node Implementation
 	host.Host
 	HostImpl
-	role config.Role
+	role device.Role
 
 	// Host and context
 	connection   types.Connection
@@ -138,7 +138,7 @@ type node struct {
 }
 
 // NewHost Creates a Sonr libp2p Host with the given config
-func NewHost(ctx context.Context, r config.Role, options ...Option) (HostImpl, error) {
+func NewHost(ctx context.Context, r device.Role, options ...Option) (HostImpl, error) {
 	// Initialize DHT
 	opts := defaultOptions(r)
 	node, err := opts.Apply(ctx, options...)
@@ -189,7 +189,7 @@ func NewHost(ctx context.Context, r config.Role, options ...Option) (HostImpl, e
 	}
 
 	// Initialize Discovery for MDNS
-	if !opts.mdnsDisabled && node.role != config.Role_HIGHWAY {
+	if !opts.mdnsDisabled && node.role != device.Role_HIGHWAY {
 		node.createMdnsDiscovery(opts)
 	}
 
@@ -222,7 +222,7 @@ func (n *node) Publish(t string, message proto.Message, metadata *types.Metadata
 }
 
 // Role returns the role of the node
-func (n *node) Role() config.Role {
+func (n *node) Role() device.Role {
 	return n.role
 }
 
@@ -275,7 +275,7 @@ func (hn *node) HandlePeerFound(pi peer.AddrInfo) {
 // HasRouting returns no-error if the host is ready for connect
 func (h *node) HasRouting() error {
 	if h.IpfsDHT == nil || h.Host == nil {
-		return config.ErrRoutingNotSet
+		return errors.New("Host is not ready")
 	}
 	return nil
 }

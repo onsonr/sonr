@@ -6,8 +6,9 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/channel"
-	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/device"
 	host "github.com/sonr-io/core/host"
+	"github.com/sonr-io/core/motor/config"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -26,7 +27,7 @@ type DiscoverProtocol struct {
 	ctx      context.Context
 	global   channel.Channel
 	local    *Local
-	mode     config.Role
+	mode     device.Role
 }
 
 // New creates new DiscoveryProtocol

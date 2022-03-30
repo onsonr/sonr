@@ -7,8 +7,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
-	"github.com/sonr-io/core/config"
-	 "github.com/sonr-io/core/host"
+	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/core/host"
+	"github.com/sonr-io/core/motor/config"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 
@@ -23,7 +24,7 @@ type ExchangeProtocol struct {
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
 	invites *cache.Cache
-	mode    config.Role
+	mode    device.Role
 }
 
 // New creates a new ExchangeProtocol

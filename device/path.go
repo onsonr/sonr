@@ -1,6 +1,7 @@
-package config
+package device
 
 import (
+	"log"
 	"path/filepath"
 	"strings"
 )
@@ -211,7 +212,7 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 	// Check if file name is set
 	if fpo.fileName != "" {
 		path := filepath.Join(dir, fpo.fileName)
-		logger.Debugf("Calculated new file path: %s", path)
+		log.Printf("Calculated new file path: %s", path)
 		return path, nil
 	} else {
 		return "", ErrNoFileNameSet

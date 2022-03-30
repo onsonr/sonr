@@ -31,7 +31,7 @@ import (
 	"github.com/sonr-io/core/crypto/pedersen"
 	"github.com/sonr-io/core/crypto/qr"
 	"github.com/sonr-io/core/crypto/schnorr"
-	"github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/zk/config"
 )
 
 type Org struct {

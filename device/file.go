@@ -1,4 +1,4 @@
-package util
+package device
 
 import (
 	"bytes"
@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-	"github.com/sonr-io/core/config"
+
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
@@ -82,7 +82,7 @@ func Header(f *types.FileItem) textproto.MIMEHeader {
 }
 
 // SetPathFromFolder sets the path of the FileItem
-func SetPathFromFolder(f *types.FileItem, folder config.Folder) (string, error) {
+func SetPathFromFolder(f *types.FileItem, folder Folder) (string, error) {
 	// Set Path
 	oldPath := f.GetPath()
 
@@ -148,11 +148,6 @@ func Ext(m *types.MIME) string {
 		return "jpeg"
 	}
 	return m.Subtype
-}
-
-// IsFile Checks if Path is a File
-func IsFile(m *types.MIME) bool {
-	return m.Type != types.MIME_TYPE_URL
 }
 
 // IsAudio Checks if Mime is Audio

@@ -5,8 +5,8 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/config"
-	"github.com/sonr-io/core/util"
+
+	"github.com/sonr-io/core/device"
 
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
@@ -68,7 +68,7 @@ func CreatePayloadItems(sp *v1.SessionPayload, dir types.Direction) []*v1.Sessio
 
 		// Set Path for Incoming
 		if dir == types.Direction_DIRECTION_INCOMING {
-			inpath, err := util.SetPathFromFolder(fi, config.Downloads)
+			inpath, err := device.SetPathFromFolder(fi, device.Downloads)
 			if err == nil {
 				path = inpath
 			} else {
