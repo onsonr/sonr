@@ -3,11 +3,10 @@ package did
 import (
 	"encoding"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/url"
 
-	 "github.com/sonr-io/core/did/ssi"
+	"github.com/sonr-io/core/did/ssi"
 
 	odid "github.com/ockam-network/did"
 )
@@ -102,9 +101,6 @@ func ParseDID(input string) (*DID, error) {
 	did, err := ParseDIDURL(input)
 	if err != nil {
 		return nil, err
-	}
-	if did.DID.IsURL() {
-		return nil, ErrInvalidDID.wrap(errors.New("DID can not have path, fragment or query params"))
 	}
 	return did, nil
 }
