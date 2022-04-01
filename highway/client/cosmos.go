@@ -23,14 +23,15 @@ func NewCosmos(ctx context.Context, accName string, options ...cosmosclient.Opti
 	}
 
 	// get account from the keyring by account name and return a bech32 address
-	acc, err := cosmos.Address(accName)
+	account, err := cosmos.Account(accName)
 	if err != nil {
 		return nil, err
 	}
 
+	// create a new client instance
 	return &Cosmos{
 		accName:  accName,
-		address:  acc.String(),
+		address:  account.Address("snr"),
 		instance: cosmos,
 		query:    types.NewQueryClient(cosmos.Context),
 	}, nil
