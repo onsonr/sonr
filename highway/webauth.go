@@ -111,7 +111,7 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 	}
 
 	// define a message to create a did
-	msg := rtv1.NewMsgRegisterName(s.cosmos.AccountName(), username, *credential)
+	msg := rtv1.NewMsgRegisterName(s.cosmos.Address(), username, *credential)
 
 	// broadcast a transaction from account `alice` with the message to create a did
 	// store response in txResp

@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/sonr-io/blockchain/x/registry/types"
-	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 )
 
 type Cosmos struct {
-	account  cosmosaccount.Account
+	accName  string
+	address  string
 	instance cosmosclient.Client
 	query    types.QueryClient
 }
@@ -23,13 +23,14 @@ func NewCosmos(ctx context.Context, accName string, options ...cosmosclient.Opti
 	}
 
 	// get account from the keyring by account name and return a bech32 address
-	acc, err := cosmos.Account(accName)
+	acc, err := cosmos.Address(accName)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Cosmos{
-		account:  acc,
+		accName:  accName,
+		address:  acc.String(),
 		instance: cosmos,
 		query:    types.NewQueryClient(cosmos.Context),
 	}, nil
@@ -37,12 +38,17 @@ func NewCosmos(ctx context.Context, accName string, options ...cosmosclient.Opti
 
 // AccountName returns the account name as string
 func (cc *Cosmos) AccountName() string {
-	return cc.account.Name
+	return cc.accName
+}
+
+// AccountName returns the account name as string
+func (cc *Cosmos) Address() string {
+	return cc.address
 }
 
 // BroadcastTx broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastRegisterName(msg *types.MsgRegisterName) (cosmosclient.Response, error) {
-	return cc.instance.BroadcastTx(cc.account.Name, msg)
+	return cc.instance.BroadcastTx(cc.accName, msg)
 }
 
 // QueryAllNames returns all names registered on the blockchain
