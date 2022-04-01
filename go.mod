@@ -34,11 +34,11 @@ require (
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/smartystreets/assertions v1.2.1 // indirect
 	github.com/smartystreets/goconvey v1.7.2 // indirect
-	github.com/sonr-io/blockchain v0.0.5
+	github.com/sonr-io/blockchain v0.0.6
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.1
-	go.buf.build/grpc/go/sonr-io/core v1.3.6
+	go.buf.build/grpc/go/sonr-io/core v1.3.8
 	go.buf.build/grpc/go/sonr-io/sonr v1.3.16
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0

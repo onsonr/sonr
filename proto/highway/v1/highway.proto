@@ -16,45 +16,6 @@ option go_package = "github.com/sonr-io/sonr/highway/v1";
 //
 // Provides is a RPC service for interfacing over the Highway node.
 service Highway {
-  // Access a Name
-  //
-  // Returns details and publicly available information about the Peer given calling node
-  // has permission to access.
-  // i.e `prad.snr` -> "firstname online profilePic city"
-  rpc AccessName(sonrio.sonr.registry.MsgAccessName) returns (sonrio.sonr.registry.MsgAccessNameResponse) {
-    option (google.api.http) = {
-      get: "/access/name/{name}"
-    };
-  }
-
-  // Get a name
-  //
-  // Returns if a name has been taken in the system yet
-  rpc CheckName(sonrio.highway.v1.MsgCheckName) returns (sonrio.highway.v1.MsgCheckNameResponse) {
-    option (google.api.http) = {
-      get: "/access/name/{name}"
-    };
-  }
-
-  // Generate credentials
-  //
-  // Recieves client side JWT and attaches it to the users DID
-  rpc GenerateCreds(sonrio.highway.v1.MsgWebToken) returns (sonrio.highway.v1.MsgGenerateCredsResponse) {
-    option (google.api.http) = {
-      get: "/register/token"
-    };
-  }
-
-  // Register a Name
-  //
-  // Registers a new ".snr" name for the calling node. It is only allowed to be called
-  // once per node.
-  rpc RegisterName(sonrio.sonr.registry.MsgRegisterName) returns (sonrio.sonr.registry.MsgRegisterNameResponse) {
-    option (google.api.http) = {
-      post: "/register/name"
-    };
-  }
-
   // Update a Name
   //
   // Updates the public information of the calling node.
@@ -249,25 +210,6 @@ service Highway {
   rpc DeleteBlob(sonrio.highway.v1.MsgDeleteBlob) returns (sonrio.highway.v1.MsgDeleteBlobResponse) {
     option (google.api.http) = {
       delete: "/delete/blob/{did}"
-    };
-  }
-
-  // Parse a Did
-  //
-  // Parses a potential DID string into a DID object, using the calling node's network access.
-  rpc ParseDid(sonrio.highway.v1.MsgParseDid) returns (sonrio.highway.v1.MsgParseDidResponse) {
-    option (google.api.http) = {
-      get: "/did/parse/{did_string}"
-    };
-  }
-
-  // Resolve Did
-  //
-  // Resolves a DID to its DID document if the DID is valid and the calling node has
-  // access to the DID Document.
-  rpc ResolveDid(sonrio.highway.v1.MsgResolveDid) returns (sonrio.highway.v1.MsgResolveDidResponse) {
-    option (google.api.http) = {
-      post: "/resolve/did/{did_string}"
     };
   }
 }

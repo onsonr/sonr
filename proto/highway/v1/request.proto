@@ -5,28 +5,6 @@ syntax = "proto3";
 package sonrio.highway.v1;
 
 option go_package = "github.com/sonr-io/sonr/highway/v1";
-// MsgAccessName represents a request payload to get details from the ".snr" name of a peer
-message MsgAccessName {
-  // The name of the peer to get the details from
-  string name = 1;
-
-  // The public key of the peer to get the details from
-  string public_key = 3; // optional
-}
-
-// MsgCheckName checks the chain to see ifa  name is available
-message MsgCheckName {
-  // Account address of the name owner
-  string nameToRegister = 1;
-
-  // key of account that can access names
-  string creator = 2;
-}
-
-message MsgWebToken {
-  // The JWT
-  string jwt = 1;
-}
 
 // MsgListenChannel represents a request payload to subscribe to a channel
 message MsgListenChannel {
@@ -86,22 +64,4 @@ message MsgDeleteBlob {
 
   // Public key of the node that is deleting the blob
   string public_key = 3;
-}
-
-// MsgParseDid represents a request payload to convert a string to a DID object
-message MsgParseDid {
-  // DID is the DID of the DID
-  string did_string = 1;
-
-  // Metadata is the metadata of the blob thats being deleted
-  map<string, string> metadata = 2;
-}
-
-// MsgResolveDid represents a request payload to resolve a DID
-message MsgResolveDid {
-  // DID is the DID of the DID
-  string did_string = 1;
-
-  // Metadata is the metadata of the blob thats being deleted
-  map<string, string> metadata = 2;
 }
