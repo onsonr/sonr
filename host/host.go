@@ -40,6 +40,9 @@ type HostImpl interface {
 	// Connect to a peer
 	Connect(pi peer.AddrInfo) error
 
+	// CosmosAccountName returns the cosmos account name
+	CosmosAccountName() string
+
 	// HasRouting returns true if the node has routing
 	HasRouting() error
 
@@ -134,7 +137,8 @@ type node struct {
 	status HostStatus
 
 	// Config
-	webauthnConfig *webauthn.Config
+	webauthnConfig    *webauthn.Config
+	cosmosAccountName string
 }
 
 // NewHost Creates a Sonr libp2p Host with the given config
@@ -265,6 +269,11 @@ func (hn *node) Connect(pi peer.AddrInfo) error {
 
 	// Call Underlying Host to Connect
 	return hn.Host.Connect(hn.ctx, pi)
+}
+
+// CosmosAccountName returns the cosmos account name
+func (n *node) CosmosAccountName() string {
+	return n.cosmosAccountName
 }
 
 // HandlePeerFound is to be called when new  peer is found

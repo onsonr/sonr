@@ -7,22 +7,21 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gorilla/mux"
 	"github.com/kataras/golog"
+	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/device"
-
-	"github.com/sonr-io/core/highway/user"
+	"github.com/sonr-io/core/highway/client"
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/discover"
 	"github.com/sonr-io/core/host/exchange"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
-
-	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 )
 
 // Error Definitions
@@ -38,8 +37,9 @@ var (
 // HighwayServer is the RPC Service for the Custodian Node.
 type HighwayServer struct {
 	v1.HighwayServer
-	node   hn.HostImpl
-	cosmos cosmosclient.Client
+	node hn.HostImpl
+
+	cosmos *client.Cosmos
 
 	// Properties
 	ctx      context.Context
@@ -51,8 +51,9 @@ type HighwayServer struct {
 
 	// Configuration
 	auth         *webauthn.WebAuthn
+	cache        *cache.Cache
 	sessionStore *session.Store
-	userDb       *user.UserDB
+
 	// ipfs *storage.IPFSService
 
 	// List of Entries
@@ -61,18 +62,10 @@ type HighwayServer struct {
 
 // NewHighwayServer creates a new Highway service stub for the node.
 func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) {
-	// Create a new HostImpl
-	r := mux.NewRouter()
 	node, err := hn.NewHost(ctx, device.Role_HIGHWAY, opts...)
 	if err != nil {
 		return nil, err
 	}
-
-	// // Set IPFS Service
-	// stub.ipfs, err = storage.Init()
-	// if err != nil {
-	// 	return nil, err
-	// }
 
 	// Get the Listener for the Host
 	lst, err := node.Listener()
@@ -80,8 +73,8 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 		return nil, err
 	}
 
-	// create an instance of cosmosclient
-	cosmos, err := cosmosclient.New(ctx)
+	// Create a new Cosmos Client for Sonr Blockchain
+	cosmos, err := client.NewCosmos(ctx, node.CosmosAccountName())
 	if err != nil {
 		return nil, err
 	}
@@ -98,24 +91,23 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 		return nil, err
 	}
 
+	// Create a cache with a default expiration time of 5 minutes, and which
+	// purges expired items every 10 minutes
+	c := cache.New(5*time.Minute, 10*time.Minute)
+
+
 	// Create the RPC Service
 	stub := &HighwayServer{
-		node:         node,
-		ctx:          ctx,
-		grpc:         grpc.NewServer(),
-		cosmos:       cosmos,
+		cosmos: cosmos,
+		node:   node,
+		cache:  c,
+		ctx:    ctx,
+		grpc:   grpc.NewServer(),
+
 		listener:     lst,
 		auth:         web,
-		router:       r,
 		sessionStore: sessionStore,
-		userDb:       user.DB(),
 	}
-
-	r.HandleFunc("/register/begin/{username}", stub.BeginRegistration).Methods("GET")
-	r.HandleFunc("/register/finish/{username}", stub.FinishRegistration).Methods("POST")
-	r.HandleFunc("/login/begin/{username}", stub.BeginLogin).Methods("GET")
-	r.HandleFunc("/login/finish/{username}", stub.FinishLogin).Methods("POST")
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./")))
 
 	// TODO Implement P2P Protocols for Sonr Network
 	// // Set Discovery Protocol
