@@ -28,37 +28,35 @@ func (s *HighwayServer) AccessName(ctx context.Context, req *rt.MsgAccessName) (
 
 // RegisterName registers a name.
 func (s *HighwayServer) RegisterName(ctx context.Context, req *rt.MsgRegisterName) (*rt.MsgRegisterNameResponse, error) {
-	// account `alice` was initialized during `starport chain serve`
-	accountName := "alice"
-
-	// get account from the keyring by account name and return a bech32 address
-	address, err := s.cosmos.Address(accountName)
-	if err != nil {
-		return nil, err
-	}
 
 	// define a message to create a did
 	msg := &rtv1.MsgRegisterName{
-		Creator:         address.String(),
-		NameToRegister:  req.NameToRegister,
-		Payload:         req.Payload,
-		PublicKeyBuffer: req.GetPublicKeyBuffer(),
+		Creator:        req.GetCreator(),
+		NameToRegister: req.GetNameToRegister(),
+		Credential: &rtv1.Credential{
+			PublicKey:       req.GetCredential().GetPublicKey(),
+			ID:              req.GetCredential().GetID(),
+			AttestationType: req.Credential.GetAttestationType(),
+			Authenticator: &rtv1.Authenticator{
+				Aaguid:       req.GetCredential().GetAuthenticator().GetAaguid(),
+				SignCount:    req.GetCredential().GetAuthenticator().GetSignCount(),
+				CloneWarning: req.GetCredential().GetAuthenticator().GetCloneWarning(),
+			},
+		},
 	}
 
 	// broadcast a transaction from account `alice` with the message to create a did
 	// store response in txResp
-	txResp, err := s.cosmos.BroadcastTx(accountName, msg)
+	txResp, err := s.cosmos.BroadcastRegisterName(msg)
 	if err != nil {
 		return nil, err
 	}
-
-	// print response from broadcasting a transaction
-	logger.Infof("\n\nBroadcast Tx:\n\n%s\n\n", txResp)
-
-	// fmt.Println(txResp)
-	return &rt.MsgRegisterNameResponse{
-		IsSuccess: true,
-	}, nil
+	var resp rt.MsgRegisterNameResponse
+	err = txResp.Decode(&resp)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
 }
 
 // UpdateName updates a name.

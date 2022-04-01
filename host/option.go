@@ -55,6 +55,13 @@ func WithAddress(host string) Option {
 	}
 }
 
+// WithCosmosAccountName sets the cosmos account name to use. defaults to "alice"
+func WithCosmosAccountName(host string) Option {
+	return func(o *options) {
+		o.host = host
+	}
+}
+
 // WithConnOptions sets the connection manager options. Defaults are (lowWater: 15, highWater: 40, gracePeriod: 5m)
 func WithConnOptions(low int, hi int, grace time.Duration) Option {
 	return func(o *options) {
@@ -130,6 +137,9 @@ type options struct {
 	RPOrigin      string
 	RPIcon        string
 	Debug         bool
+
+	// Cosmos SDK
+	accountName string
 }
 
 // defaultOptions returns the default options
@@ -174,6 +184,7 @@ func defaultOptions(r device.Role) *options {
 		RPOrigin:       "localhost:8080",
 		RPIcon:         "",
 		Debug:          true,
+		accountName:    "alice",
 	}
 }
 
@@ -204,6 +215,7 @@ func (opts *options) Apply(ctx context.Context, options ...Option) (*node, error
 			RPIcon:        opts.RPIcon,
 			Debug:         opts.Debug,
 		},
+		cosmosAccountName: opts.accountName,
 	}
 
 	// Open Listener on Port
