@@ -62,7 +62,6 @@ type HighwayServer struct {
 
 // NewHighwayServer creates a new Highway service stub for the node.
 func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) {
-	// Create a new HostImpl
 	node, err := hn.NewHost(ctx, device.Role_HIGHWAY, opts...)
 	if err != nil {
 		return nil, err

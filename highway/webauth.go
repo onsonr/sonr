@@ -7,12 +7,12 @@ import (
 
 	"github.com/duo-labs/webauthn/protocol"
 	"github.com/duo-labs/webauthn/webauthn"
+
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
 )
 
-// BeginRegistration creates a new user and returns a PublicKeyCredentialRequestOptions
 func (s *HighwayServer) BeginRegistration(w http.ResponseWriter, r *http.Request) {
 	// get username/friendly name
 	vars := mux.Vars(r)
@@ -40,7 +40,6 @@ func (s *HighwayServer) BeginRegistration(w http.ResponseWriter, r *http.Request
 
 	// Want performance? Store pointers!
 	s.cache.Set(username, whois, cache.DefaultExpiration)
-
 	// Updating the AuthenticatorSelection options.
 	// See the struct declarations for values
 	authSelect := protocol.AuthenticatorSelection{
@@ -126,7 +125,6 @@ func (s *HighwayServer) FinishRegistration(w http.ResponseWriter, r *http.Reques
 
 // BeginLogin accesses the user's existing credentials and returns a PublicKeyCredentialRequestOptions
 func (s *HighwayServer) BeginLogin(w http.ResponseWriter, r *http.Request) {
-
 	// get username
 	vars := mux.Vars(r)
 	username := vars["username"]
