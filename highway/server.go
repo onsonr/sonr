@@ -20,6 +20,7 @@ import (
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/discover"
 	"github.com/sonr-io/core/host/exchange"
+	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
 )
@@ -74,7 +75,7 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	}
 
 	// Create a new Cosmos Client for Sonr Blockchain
-	cosmos, err := client.NewCosmos(ctx, node.CosmosAccountName())
+	cosmos, err := client.NewCosmos(ctx, node.CosmosAccountName(), cosmosclient.WithAddressPrefix("snr"))
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +95,6 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	// Create a cache with a default expiration time of 5 minutes, and which
 	// purges expired items every 10 minutes
 	c := cache.New(5*time.Minute, 10*time.Minute)
-
 
 	// Create the RPC Service
 	stub := &HighwayServer{
