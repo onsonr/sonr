@@ -15,7 +15,7 @@ var (
 func Test_Build(t *testing.T) {
 
 	logger.Info("Testing dummy Fragment builder")
-	didUrl, err := Build(test_id, WithFragment("#fragment"), WithNetwork("testnet"), WithPathSegments("path"))
+	didUrl, err := NewDID(test_id, WithFragment("#fragment"), WithNetwork("testnet"), WithPathSegments("path"))
 	if !assert.NoError(t, err) {
 		return
 	}
@@ -24,7 +24,7 @@ func Test_Build(t *testing.T) {
 	logger.Info(didUrl.String())
 
 	logger.Info("Testing Channels Fragment builder")
-	didUrl2, err := Build(test_id, WithFragment("#room_87G8P236+"), WithPathSegments("beam", "channels"))
+	didUrl2, err := NewDID(test_id, WithFragment("#room_87G8P236+"), WithPathSegments("beam", "channels"))
 	if !assert.NoError(t, err) {
 		return
 	}
@@ -33,7 +33,7 @@ func Test_Build(t *testing.T) {
 	logger.Info(didUrl2.String())
 
 	logger.Info("Testing Objects Query builder")
-	didUrl3, err := Build(test_id, WithQuery("?Profile"), WithPathSegments("beam", "objects"))
+	didUrl3, err := NewDID(test_id, WithQuery("?Profile"), WithPathSegments("beam", "objects"))
 	if !assert.NoError(t, err) {
 		return
 	}
@@ -42,7 +42,7 @@ func Test_Build(t *testing.T) {
 	logger.Info(didUrl3.String())
 
 	logger.Info("Testing Device Key Id Fragment builder")
-	didUrl4, err := Build(test_id, WithFragment("#iphone_14_5"))
+	didUrl4, err := NewDID(test_id, WithFragment("#iphone_14_5"))
 	if !assert.NoError(t, err) {
 		return
 	}

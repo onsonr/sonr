@@ -5,15 +5,7 @@ import (
 )
 
 // SONR_PREFIX is the prefix for the SONR DID
-const SONR_PREFIX = "did:sonr:"
-
-// DidUrl is a formatted and validated DID URL string.
-type DidUrl string
-
-// String returns the string representation of a DidUrl
-func (d DidUrl) String() string {
-	return string(d)
-}
+const SONR_PREFIX = "did:snr:"
 
 // config is the did string configuration
 type config struct {
@@ -26,20 +18,21 @@ type config struct {
 
 // defaultConfig returns the default configuration
 func defaultConfig(identifier string) *config {
+	// Return Config
 	return &config{
 		fragment:   "",
 		network:    "",
 		paths:      []string{},
 		query:      "",
-		identifier: identifier,
+		identifier: strings.TrimPrefix(identifier, "snr"),
 	}
 }
 
 // Option is a function that can be used to modify the DidUrl.
 type Option func(*config)
 
-// Build creates a new DidUrl from the given options and returns it.
-func Build(identifier string, opts ...Option) (DidUrl, error) {
+// NewDID creates a new DidUrl from the given options and returns it.
+func NewDID(identifier string, opts ...Option) (*DID, error) {
 	// Config options
 	d := defaultConfig(identifier)
 	for _, opt := range opts {
@@ -64,11 +57,9 @@ func Build(identifier string, opts ...Option) (DidUrl, error) {
 
 	// Check if the DID is valid
 	if !IsValidDid(didStr) {
-		return "", ErrParseInvalid
+		return nil, ErrParseInvalid
 	}
-
-	// Return the DID
-	return DidUrl(didStr), nil
+	return ParseDID(didStr)
 }
 
 // WithFragment adds a fragment to a DID
