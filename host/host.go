@@ -151,7 +151,7 @@ func NewHost(ctx context.Context, r device.Role, options ...Option) (HostImpl, e
 	}
 
 	// Start Host
-	node.Host, err = libp2p.New(ctx,
+	node.Host, err = libp2p.New(
 		libp2p.Identity(node.privKey),
 		libp2p.ConnectionManager(cmgr.NewConnManager(
 			opts.LowWater,    // Lowwater

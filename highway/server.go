@@ -12,6 +12,7 @@ import (
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gorilla/mux"
+	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/kataras/golog"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/channel"
@@ -20,6 +21,7 @@ import (
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/discover"
 	"github.com/sonr-io/core/host/exchange"
+	"github.com/sonr-io/core/ipfs"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
@@ -55,7 +57,7 @@ type HighwayServer struct {
 	cache        *cache.Cache
 	sessionStore *session.Store
 
-	// ipfs *storage.IPFSService
+	ipfs *icore.CoreAPI
 
 	// List of Entries
 	channels map[string]channel.Channel
@@ -96,6 +98,12 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	// purges expired items every 10 minutes
 	c := cache.New(5*time.Minute, 10*time.Minute)
 
+	// Spawn a node using the default path (~/.ipfs), assuming that a repo exists there already
+	ipfs, err := ipfs.SpawnDefault(ctx)
+	if err != nil {
+		panic(fmt.Errorf("failed to spawnDefault node: %s", err))
+	}
+
 	// Create the RPC Service
 	stub := &HighwayServer{
 		cosmos: cosmos,
@@ -103,6 +111,7 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 		cache:  c,
 		ctx:    ctx,
 		grpc:   grpc.NewServer(),
+		ipfs:   &ipfs,
 
 		listener:     lst,
 		auth:         web,
@@ -110,14 +119,14 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	}
 
 	// TODO Implement P2P Protocols for Sonr Network
-	// // Set Discovery Protocol
+	// Set Discovery Protocol
 	// stub.DiscoverProtocol, err = discover.New(ctx, node, stub)
 	// if err != nil {
 	// 	logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
 	// 	return nil, err
 	// }
 
-	// // Set Transmit Protocol
+	// Set Transmit Protocol
 	// stub.ExchangeProtocol, err = exchange.New(ctx, node, stub)
 	// if err != nil {
 	// 	logger.Errorf("%s - Failed to start TransmitProtocol", err)

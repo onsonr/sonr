@@ -278,9 +278,10 @@ func (hn *node) createDHTDiscovery(opts *options) error {
 func (hn *node) createMdnsDiscovery(opts *options) {
 	if hn.Role() == device.Role_MOTOR {
 		// Create MDNS Service
-		ser := mdns.NewMdnsService(hn.Host, opts.Rendezvous)
+		ser := mdns.NewMdnsService(hn.Host, opts.Rendezvous, hn)
 
+		ser.Start()
 		// Handle Events
-		ser.RegisterNotifee(hn)
+		// ser.RegisterNotifee(hn)
 	}
 }
