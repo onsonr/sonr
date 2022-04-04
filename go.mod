@@ -5,7 +5,6 @@ go 1.16
 require (
 	git.mills.io/prologic/bitcask v1.0.0
 	github.com/denisbrodbeck/machineid v1.0.1
-	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
 	github.com/fxamacker/cbor/v2 v2.4.0
@@ -26,18 +25,15 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.4.0
 	github.com/ockam-network/did v0.1.4-0.20210103172416-02ae01ce06d8
-	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/smartystreets/assertions v1.2.1 // indirect
-	github.com/smartystreets/goconvey v1.7.2 // indirect
 	github.com/sonr-io/blockchain v0.0.6
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
-	github.com/tendermint/starport v0.19.1
+	github.com/tendermint/starport v0.19.5
 	go.buf.build/grpc/go/sonr-io/core v1.3.8
 	go.buf.build/grpc/go/sonr-io/sonr v1.3.16
 	google.golang.org/grpc v1.45.0

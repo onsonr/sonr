@@ -180,7 +180,7 @@ service Highway {
   // Upload Blob
   //
   // Uploads a file or buffer to the calling node's service IPFS storage.
-  rpc UploadBlob(sonrio.highway.v1.MsgUploadBlob) returns (sonrio.highway.v1.MsgUploadBlobResponse) {
+  rpc UploadBlob(sonrio.highway.v1.MsgUploadBlob) returns (stream sonrio.highway.v1.MsgUploadBlobResponse) {
     option (google.api.http) = {
       post: "/upload/blob"
     };
@@ -189,7 +189,7 @@ service Highway {
   // Download a Blob
   //
   // Downloads a file or buffer from the calling node's service IPFS storage.
-  rpc DownloadBlob(sonrio.highway.v1.MsgDownloadBlob) returns (sonrio.highway.v1.MsgDownloadBlobResponse) {
+  rpc DownloadBlob(sonrio.highway.v1.MsgDownloadBlob) returns (stream sonrio.highway.v1.MsgDownloadBlobResponse) {
     option (google.api.http) = {
       get: "/download/blob/{did}"
     };
@@ -198,7 +198,7 @@ service Highway {
   // Synchronize Blob
   //
   // Synchronizes a local file from the calling node to the given service's IPFS storage.
-  rpc SyncBlob(sonrio.highway.v1.MsgSyncBlob) returns (sonrio.highway.v1.MsgSyncBlobResponse) {
+  rpc SyncBlob(sonrio.highway.v1.MsgSyncBlob) returns (stream sonrio.highway.v1.MsgSyncBlobResponse) {
     option (google.api.http) = {
       put: "/sync/blob/{did}"
     };
