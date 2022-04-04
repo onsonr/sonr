@@ -17,10 +17,10 @@ import (
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/highway/client"
+	"github.com/sonr-io/core/highway/config"
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/discover"
 	"github.com/sonr-io/core/host/exchange"
-	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
 )
@@ -62,8 +62,13 @@ type HighwayServer struct {
 }
 
 // NewHighwayServer creates a new Highway service stub for the node.
-func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) {
-	node, err := hn.NewHost(ctx, device.Role_HIGHWAY, opts...)
+func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, error) {
+	c := config.DefaultConfig()
+	for _, opt := range opts {
+		opt(c)
+	}
+
+	node, err := hn.NewHost(ctx, device.Role_HIGHWAY, c)
 	if err != nil {
 		return nil, err
 	}
@@ -75,13 +80,13 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	}
 
 	// Create a new Cosmos Client for Sonr Blockchain
-	cosmos, err := client.NewCosmos(ctx, node.CosmosAccountName(), cosmosclient.WithAddressPrefix("snr"))
+	cosmos, err := client.NewCosmos(ctx, c)
 	if err != nil {
 		return nil, err
 	}
 
 	// Create a WebAuthn instance
-	web, err := webauthn.New(node.WebauthnConfig())
+	web, err := webauthn.New(c.WebauthnConfig())
 	if err != nil {
 		return nil, err
 	}
@@ -94,13 +99,13 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 
 	// Create a cache with a default expiration time of 5 minutes, and which
 	// purges expired items every 10 minutes
-	c := cache.New(5*time.Minute, 10*time.Minute)
+	cche := cache.New(5*time.Minute, 10*time.Minute)
 
 	// Create the RPC Service
 	stub := &HighwayServer{
 		cosmos: cosmos,
 		node:   node,
-		cache:  c,
+		cache:  cche,
 		ctx:    ctx,
 		grpc:   grpc.NewServer(),
 
