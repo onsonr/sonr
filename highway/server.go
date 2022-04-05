@@ -12,7 +12,7 @@ import (
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gorilla/mux"
-	icore "github.com/ipfs/interface-go-ipfs-core"
+	iface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/kataras/golog"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/channel"
@@ -57,7 +57,7 @@ type HighwayServer struct {
 	cache        *cache.Cache
 	sessionStore *session.Store
 
-	ipfs *icore.CoreAPI
+	ipfs iface.CoreAPI
 
 	// List of Entries
 	channels map[string]channel.Channel
@@ -98,6 +98,19 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	// purges expired items every 10 minutes
 	c := cache.New(5*time.Minute, 10*time.Minute)
 
+	// TODO work with Nick on what exact approach to do on this
+	// if ipfs repo not setup, then do so
+	// if _, err := os.Stat("~/.ipfs"); os.IsNotExist(err) {
+	// 	cmd := exec.Command("ipfs init --profile server") //TODO make sure profile server flag is what we want
+	// 	err := cmd.Run()
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }
+
+	// Note for later "IPFS_PATH" is env variable in ipfs config that changes location of
+	// where to look for .ipfs default this is ~/
+
 	// Spawn a node using the default path (~/.ipfs), assuming that a repo exists there already
 	ipfs, err := ipfs.SpawnDefault(ctx)
 	if err != nil {
@@ -111,7 +124,7 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 		cache:  c,
 		ctx:    ctx,
 		grpc:   grpc.NewServer(),
-		ipfs:   &ipfs,
+		ipfs:   ipfs,
 
 		listener:     lst,
 		auth:         web,

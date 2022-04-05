@@ -195,7 +195,7 @@ func getUnixfsFile(path string) (files.File, error) {
 	return f, nil
 }
 
-func getUnixfsNode(path string) (files.Node, error) {
+func GetUnixfsNode(path string) (files.Node, error) {
 	st, err := os.Stat(path)
 	if err != nil {
 		return nil, err
