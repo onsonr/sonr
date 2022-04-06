@@ -14,9 +14,8 @@ import (
 
 	config "github.com/ipfs/go-ipfs-config"
 	files "github.com/ipfs/go-ipfs-files"
-	icore "github.com/ipfs/interface-go-ipfs-core"
 	iface "github.com/ipfs/interface-go-ipfs-core"
-	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
+	ifacepath "github.com/ipfs/interface-go-ipfs-core/path"
 	ma "github.com/multiformats/go-multiaddr"
 
 	"github.com/ipfs/go-ipfs/core"
@@ -89,7 +88,7 @@ func createTempRepo() (string, error) {
 /// ------ Spawning the node
 
 // Creates an IPFS node and returns its coreAPI
-func createNode(ctx context.Context, repoPath string) (icore.CoreAPI, error) {
+func createNode(ctx context.Context, repoPath string) (iface.CoreAPI, error) {
 	// Open the repo
 	repo, err := fsrepo.Open(repoPath)
 	if err != nil {
@@ -105,7 +104,7 @@ func createNode(ctx context.Context, repoPath string) (icore.CoreAPI, error) {
 		Repo:      repo,
 	}
 
-	node, err := core.NewNode(ctx, nodeOptions) //TODO huge mem error
+	node, err := core.NewNode(ctx, nodeOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +114,7 @@ func createNode(ctx context.Context, repoPath string) (icore.CoreAPI, error) {
 }
 
 // Spawns a node on the default repo location, if the repo exists
-func SpawnDefault(ctx context.Context) (icore.CoreAPI, error) {
+func SpawnDefault(ctx context.Context) (iface.CoreAPI, error) {
 	defaultPath, err := config.PathRoot()
 	if err != nil {
 		// shouldn't be possible
@@ -131,7 +130,7 @@ func SpawnDefault(ctx context.Context) (icore.CoreAPI, error) {
 }
 
 // Spawns a node to be used just for this run (i.e. creates a tmp repo)
-func SpawnEphemeral(ctx context.Context) (icore.CoreAPI, error) {
+func SpawnEphemeral(ctx context.Context) (iface.CoreAPI, error) {
 	if err := setupPlugins(""); err != nil {
 		return nil, err
 	}
@@ -146,7 +145,7 @@ func SpawnEphemeral(ctx context.Context) (icore.CoreAPI, error) {
 	return createNode(ctx, repoPath)
 }
 
-func ConnectToPeers(ctx context.Context, ipfs icore.CoreAPI, peers []string) error {
+func ConnectToPeers(ctx context.Context, ipfs iface.CoreAPI, peers []string) error {
 	var wg sync.WaitGroup
 	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
 	for _, addrStr := range peers {
@@ -221,34 +220,33 @@ type UploadResponse struct {
 }
 
 // External Functions
-func UploadData(data []byte, node iface.CoreAPI) (UploadResponse, error) {
-	var ctx context.Context
+func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadResponse, error) {
+	tempDir := "/tmp/data.txt"
 
 	// TODO add CID preprocessor and name file off of that
 	// use --only-hash option for preprocessor
-
 	var permissions uint32 = 0644 // or whatever you need
-	err := ioutil.WriteFile("./tmp/data.txt", data, fs.FileMode(permissions))
+	err := os.WriteFile(tempDir, data, fs.FileMode(permissions))
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
 
 	// TODO revisit the file strategy and see if there is another way
 
-	file, err := getUnixfsNode("./tmp/data.txt")
+	file, err := getUnixfsNode(tempDir)
 	if err != nil {
-		panic(fmt.Errorf("Could not get File: %s", err))
+		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
 
 	cidFile, err := node.Unixfs().Add(ctx, file)
 	if err != nil {
-		panic(fmt.Errorf("Could not add File: %s", err))
+		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
 
 	fmt.Printf("Added file to IPFS with CID %s\n", cidFile.String())
 
-	oldLocation := "./tmp/data.txt"
-	newLocation := "./ipfs-storage/" + cidFile.String() + "/data.txt"
+	oldLocation := tempDir
+	newLocation := "/ipfs-storage/" + cidFile.String() + "/data.txt"
 	err = os.Rename(oldLocation, newLocation)
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
@@ -270,7 +268,7 @@ type DownloadResponse struct {
 
 func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
 	var ctx context.Context
-	cidPath := icorepath.New(cid)
+	cidPath := ifacepath.New(cid)
 	path := "./ipfs/" + cid + "/data.txt"
 
 	// check local file system first

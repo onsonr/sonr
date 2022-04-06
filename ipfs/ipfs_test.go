@@ -3,13 +3,13 @@ package ipfs
 import (
 	"context"
 	"fmt"
-	"os"
 	"testing"
 
 	iface "github.com/ipfs/interface-go-ipfs-core"
 )
 
 var nodeTemp iface.CoreAPI
+var tempCID string
 
 func TestCreateTemp(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -17,7 +17,7 @@ func TestCreateTemp(t *testing.T) {
 	node, err := SpawnEphemeral(ctx)
 	nodeTemp = node
 	if err != nil {
-		t.Errorf("SpawnDefault(ctx) resulted in %d", err)
+		t.Error(err)
 	}
 	if node == nil {
 		t.Errorf("SpawnDefault(ctx) resulted in nil result")
@@ -25,11 +25,18 @@ func TestCreateTemp(t *testing.T) {
 }
 
 func TestUploadTemp(t *testing.T) {
-	//UploadData
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	data := []byte("Hello World!!!")
+	resp, err := UploadData(ctx, data, nodeTemp)
+	if err != nil {
+		t.Errorf("UploadData([]byte, coreAPI) resulted in status %d", resp.Status)
+		t.Error(err)
+	}
+	tempCID = resp.Cid
 }
 
 func TestCreatePerm(t *testing.T) {
-	os.Setenv("IPFS_PATH", "/Users/peytonthibodeaux/.ipfs")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	node, err := SpawnDefault(ctx)
