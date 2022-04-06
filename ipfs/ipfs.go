@@ -243,7 +243,7 @@ func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
 	fmt.Printf("Added file to IPFS with CID %s\n", cidFile.String())
 
 	oldLocation := "./tmp/data.txt"
-	newLocation := "./ipfs/" + cidFile.String() + "/data.txt"
+	newLocation := "./ipfs-storage/" + cidFile.String() + "/data.txt"
 	err = os.Rename(oldLocation, newLocation)
 	if err != nil {
 		return nil, err
