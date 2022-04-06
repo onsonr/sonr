@@ -16,6 +16,7 @@ import (
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	iface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/ipfs/interface-go-ipfs-core/path"
+	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
 	ma "github.com/multiformats/go-multiaddr"
 
 	"github.com/ipfs/go-ipfs/core"
@@ -146,7 +147,7 @@ func SpawnEphemeral(ctx context.Context) (icore.CoreAPI, error) {
 
 //
 
-func connectToPeers(ctx context.Context, ipfs icore.CoreAPI, peers []string) error {
+func ConnectToPeers(ctx context.Context, ipfs icore.CoreAPI, peers []string) error {
 	var wg sync.WaitGroup
 	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
 	for _, addrStr := range peers {
@@ -248,14 +249,15 @@ func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
 	return cidFile, nil
 }
 
-func DownloadData(cidFile path.Resolved, node iface.CoreAPI) (files.Node, error) {
+func DownloadData(cid string, node iface.CoreAPI) (files.Node, error) {
 	var ctx context.Context
-	rootNodeFile, err := node.Unixfs().Get(ctx, cidFile)
+	cidPath := icorepath.New(cid)
+
+	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
 	if err != nil {
 		return nil, err
 	}
-
-	err = files.WriteTo(rootNodeFile, "./ipfs/"+cidFile.String()+"/data.txt")
+	err = files.WriteTo(rootNodeFile, "./ipfs/"+cid+"/data.txt")
 	if err != nil {
 		return nil, err
 	}

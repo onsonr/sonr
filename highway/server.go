@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
@@ -18,10 +19,11 @@ import (
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/highway/client"
+	"github.com/sonr-io/core/highway/config"
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/discover"
 	"github.com/sonr-io/core/host/exchange"
-	"github.com/sonr-io/core/ipfs"
+	ipfsLib "github.com/sonr-io/core/ipfs"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
@@ -112,10 +114,17 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	// where to look for .ipfs default this is ~/
 
 	// Spawn a node using the default path (~/.ipfs), assuming that a repo exists there already
-	ipfs, err := ipfs.SpawnDefault(ctx)
+	ipfs, err := ipfsLib.SpawnDefault(ctx)
 	if err != nil {
 		panic(fmt.Errorf("failed to spawnDefault node: %s", err))
 	}
+
+	go func() {
+		err := ipfsLib.ConnectToPeers(ctx, ipfs, config.BootstrapAddrStrs)
+		if err != nil {
+			log.Printf("failed connect to peers: %s", err)
+		}
+	}()
 
 	// Create the RPC Service
 	stub := &HighwayServer{
