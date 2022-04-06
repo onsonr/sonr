@@ -2,6 +2,7 @@ package ipfs
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io/fs"
@@ -255,14 +256,17 @@ func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
 func DownloadData(cid string, node iface.CoreAPI) ([]byte, error) {
 	var ctx context.Context
 	cidPath := icorepath.New(cid)
+	path := "./ipfs/" + cid + "/data.txt"
 
-	// TODO check local file system first
+	// check local file system first
+	if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
+		return ioutil.ReadFile(path)
+	}
 
 	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
 	if err != nil {
 		return nil, err
 	}
-	path := "./ipfs/" + cid + "/data.txt"
 	err = files.WriteTo(rootNodeFile, path)
 	if err != nil {
 		return nil, err
