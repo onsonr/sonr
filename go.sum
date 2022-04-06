@@ -1162,7 +1162,6 @@ github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NH
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/influxdata/influxdb v1.2.3-0.20180221223340-01288bdb0883/go.mod h1:qZna6X/4elxqT3yI9iZYdZrWWdeFOOprn86kgg4+IzY=
 github.com/influxdata/influxdb1-client v0.0.0-20191209144304-8bf82d3c094d/go.mod h1:qj24IKcXYK6Iy9ceXlo3Tc+vtHo9lIhSX5JddghvEPo=
-github.com/ipfs/bbloom v0.0.1/go.mod h1:oqo8CVWsJFMOZqTglBG4wydCE4IQA/G2/SEofB0rjUI=
 github.com/ipfs/bbloom v0.0.4 h1:Gi+8EGJ2y5qiD5FbsbpX/TMNcJw8gSqr7eyjHa4Fhvs=
 github.com/ipfs/bbloom v0.0.4/go.mod h1:cS9YprKXpoZ9lT0n/Mw/a6/aFV6DTjTLYHeA+gyqMG0=
 github.com/ipfs/go-bitfield v1.0.0 h1:y/XHm2GEmD9wKngheWNNCNL0pzrWXZwCdQGv1ikXknQ=
@@ -1175,7 +1174,6 @@ github.com/ipfs/go-bitswap v0.3.4/go.mod h1:4T7fvNv/LmOys+21tnLzGKncMeeXUYUd1nUi
 github.com/ipfs/go-bitswap v0.5.1/go.mod h1:P+ckC87ri1xFLvk74NlXdP0Kj9RmWAh4+H78sC6Qopo=
 github.com/ipfs/go-bitswap v0.6.0 h1:f2rc6GZtoSFhEIzQmddgGiel9xntj02Dg0ZNf2hSC+w=
 github.com/ipfs/go-bitswap v0.6.0/go.mod h1:Hj3ZXdOC5wBJvENtdqsixmzzRukqd8EHLxZLZc3mzRA=
-github.com/ipfs/go-block-format v0.0.1/go.mod h1:DK/YYcsSUIVAFNwo/KZCdIIbpN0ROH/baNLgayt4pFc=
 github.com/ipfs/go-block-format v0.0.2/go.mod h1:AWR46JfpcObNfg3ok2JHDUfdiHRgWhJgCQF+KIgOPJY=
 github.com/ipfs/go-block-format v0.0.3 h1:r8t66QstRp/pd/or4dpnbVfXT5Gt7lOqRvC+/dDTpMc=
 github.com/ipfs/go-block-format v0.0.3/go.mod h1:4LmD4ZUw0mhO+JSKdpWwrzATiEfM7WWgQ8H5l6P8MVk=
@@ -1241,15 +1239,8 @@ github.com/ipfs/go-graphsync v0.11.0 h1:PiiD5CnoC3xEHMW8d6uBGqGcoTwiMB5d9CORIEyF
 github.com/ipfs/go-graphsync v0.11.0/go.mod h1:wC+c8vGVjAHthsVIl8LKr37cUra2GOaMYcQNNmMxDqE=
 github.com/ipfs/go-ipfs v0.12.1 h1:stT4AJCiaTS2a+yL382g1IB8Gm+jJFqe7Ssvf+L9KNw=
 github.com/ipfs/go-ipfs v0.12.1/go.mod h1:Sbei4ScHevs2v47nUgONQMtHlUfaJjjTNDbhUU1OzOM=
-github.com/ipfs/go-ipfs-blockstore v0.0.1/go.mod h1:d3WClOmRQKFnJ0Jz/jj/zmksX0ma1gROTlovZKBmN08=
-github.com/ipfs/go-ipfs-blockstore v0.1.0/go.mod h1:5aD0AvHPi7mZc6Ci1WCAhiBQu2IsfTduLl+422H6Rqw=
-github.com/ipfs/go-ipfs-blockstore v0.1.4/go.mod h1:Jxm3XMVjh6R17WvxFEiyKBLUGr86HgIYJW/D/MwqeYQ=
-github.com/ipfs/go-ipfs-blockstore v0.1.6/go.mod h1:Jxm3XMVjh6R17WvxFEiyKBLUGr86HgIYJW/D/MwqeYQ=
-github.com/ipfs/go-ipfs-blockstore v0.2.1/go.mod h1:jGesd8EtCM3/zPgx+qr0/feTXGUeRai6adgwC+Q+JvE=
-github.com/ipfs/go-ipfs-blockstore v1.1.1/go.mod h1:w51tNR9y5+QXB0wkNcHt4O2aSZjTdqaEWaQdSxEyUOY=
+github.com/ipfs/go-ipfs-blockstore v1.1.2 h1:WCXoZcMYnvOTmlpX+RSSnhVN0uCmbWTeepTGX5lgiXw=
 github.com/ipfs/go-ipfs-blockstore v1.1.2/go.mod h1:w51tNR9y5+QXB0wkNcHt4O2aSZjTdqaEWaQdSxEyUOY=
-github.com/ipfs/go-ipfs-blockstore v1.2.0 h1:n3WTeJ4LdICWs/0VSfjHrlqpPpl6MZ+ySd3j8qz0ykw=
-github.com/ipfs/go-ipfs-blockstore v1.2.0/go.mod h1:eh8eTFLiINYNSNawfZOC7HOxNTxpB1PFuA5E1m/7exE=
 github.com/ipfs/go-ipfs-blocksutil v0.0.1 h1:Eh/H4pc1hsvhzsQoMEP3Bke/aW5P5rVM1IWFJMcGIPQ=
 github.com/ipfs/go-ipfs-blocksutil v0.0.1/go.mod h1:Yq4M86uIOmxmGPUHv/uI7uKqZNtLb449gwKqXjIsnRk=
 github.com/ipfs/go-ipfs-chunker v0.0.1/go.mod h1:tWewYK0we3+rMbOh7pPFGDyypCtvGcBFymgY4rSDLAw=
@@ -1361,8 +1352,8 @@ github.com/ipfs/go-verifcid v0.0.1 h1:m2HI7zIuR5TFyQ1b79Da5N9dnnCP1vcu2QqawmWlK2
 github.com/ipfs/go-verifcid v0.0.1/go.mod h1:5Hrva5KBeIog4A+UpqlaIU+DEstipcJYQQZc0g37pY0=
 github.com/ipfs/interface-go-ipfs-core v0.4.0/go.mod h1:UJBcU6iNennuI05amq3FQ7g0JHUkibHFAfhfUIy927o=
 github.com/ipfs/interface-go-ipfs-core v0.5.2/go.mod h1:lNBJrdXHtWS46evMPBdWtDQMDsrKcGbxCOGoKLkztOE=
-github.com/ipfs/interface-go-ipfs-core v0.6.1 h1:V0bV1PWUtKVfrisi1qbeY9wwex+apRu2ZufTc9Tvqkg=
-github.com/ipfs/interface-go-ipfs-core v0.6.1/go.mod h1:h3NuO3wzv2KuKazt0zDF2/i8AFRqiKHusyh5DUQQdPA=
+github.com/ipfs/interface-go-ipfs-core v0.6.2 h1:nnkq9zhb5O8lPzkZeynEymc83RqkTRqfYH4x5JNUkT4=
+github.com/ipfs/interface-go-ipfs-core v0.6.2/go.mod h1:h3NuO3wzv2KuKazt0zDF2/i8AFRqiKHusyh5DUQQdPA=
 github.com/ipfs/tar-utils v0.0.2/go.mod h1:4qlnRWgTVljIMhSG2SqRYn66NT+3wrv/kZt9V+eqxDM=
 github.com/ipld/go-car v0.3.2/go.mod h1:WEjynkVt04dr0GwJhry0KlaTeSDEiEYyMPOxDBQ17KE=
 github.com/ipld/go-codec-dagpb v1.2.0/go.mod h1:6nBN7X7h8EOsEejZGqC7tej5drsdBAXbMHyBT+Fne5s=

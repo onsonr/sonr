@@ -97,15 +97,15 @@ func createNode(ctx context.Context, repoPath string) (icore.CoreAPI, error) {
 	}
 
 	// Construct the node
-
 	nodeOptions := &core.BuildCfg{
 		Online:  true,
 		Routing: libp2p.DHTOption, // This option sets the node to be a full DHT node (both fetching and storing DHT Records)
 		// Routing: libp2p.DHTClientOption, // This option sets the node to be a client DHT node (only fetching records)
-		Repo: repo,
+		Permanent: true,
+		Repo:      repo,
 	}
 
-	node, err := core.NewNode(ctx, nodeOptions)
+	node, err := core.NewNode(ctx, nodeOptions) //TODO huge mem error
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +145,6 @@ func SpawnEphemeral(ctx context.Context) (icore.CoreAPI, error) {
 	// Spawning an ephemeral IPFS node
 	return createNode(ctx, repoPath)
 }
-
-//
 
 func ConnectToPeers(ctx context.Context, ipfs icore.CoreAPI, peers []string) error {
 	var wg sync.WaitGroup

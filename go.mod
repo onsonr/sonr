@@ -17,7 +17,7 @@ require (
 	github.com/ipfs/go-ipfs v0.12.1
 	github.com/ipfs/go-ipfs-config v0.19.0
 	github.com/ipfs/go-ipfs-files v0.1.1
-	github.com/ipfs/interface-go-ipfs-core v0.6.1
+	github.com/ipfs/interface-go-ipfs-core v0.6.2
 	github.com/kataras/golog v0.1.7
 	github.com/lestrrat-go/jwx v1.2.20
 	github.com/libp2p/go-libp2p v0.16.0
@@ -45,3 +45,5 @@ require (
 )
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+
+replace github.com/ipfs/go-ipfs-blockstore => github.com/ipfs/go-ipfs-blockstore v1.1.2
