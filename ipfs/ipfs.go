@@ -28,7 +28,7 @@ import (
 	status "github.com/sonr-io/core/errors"
 )
 
-var flagExp = flag.Bool("experimental", false, "enable experimental features")
+var FlagExp = flag.Bool("experimental", false, "enable experimental features")
 
 func setupPlugins(externalPluginsPath string) error {
 	// Load any external plugins if available on externalPluginsPath
@@ -64,7 +64,7 @@ func createTempRepo() (string, error) {
 	// When creating the repository, you can define custom settings on the repository, such as enabling experimental
 	// features (See experimental-features.md) or customizing the gateway endpoint.
 	// To do such things, you should modify the variable `cfg`. For example:
-	if *flagExp {
+	if *FlagExp {
 		// https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipfs-filestore
 		cfg.Experimental.FilestoreEnabled = true
 		// https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipfs-urlstore
