@@ -25,6 +25,7 @@ import (
 	"github.com/ipfs/go-ipfs/plugin/loader" // This package is needed so that all the preloaded plugins are loaded automatically
 	"github.com/ipfs/go-ipfs/repo/fsrepo"
 	"github.com/libp2p/go-libp2p-core/peer"
+	status "github.com/sonr-io/core/errors"
 )
 
 var flagExp = flag.Bool("experimental", false, "enable experimental features")
@@ -216,7 +217,7 @@ func getUnixfsNode(path string) (files.Node, error) {
 }
 
 type UploadResponse struct {
-	Status int //TODO standardize these
+	Status int
 	Cid    string
 	Path   string
 }
@@ -231,7 +232,7 @@ func UploadData(data []byte, node iface.CoreAPI) (UploadResponse, error) {
 	var permissions uint32 = 0644 // or whatever you need
 	err := ioutil.WriteFile("./tmp/data.txt", data, fs.FileMode(permissions))
 	if err != nil {
-		return UploadResponse{}, err
+		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
 
 	// TODO revisit the file strategy and see if there is another way
@@ -252,18 +253,18 @@ func UploadData(data []byte, node iface.CoreAPI) (UploadResponse, error) {
 	newLocation := "./ipfs-storage/" + cidFile.String() + "/data.txt"
 	err = os.Rename(oldLocation, newLocation)
 	if err != nil {
-		return UploadResponse{}, err
+		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
 
 	return UploadResponse{
-		Status: 200,
+		Status: status.StatusOK,
 		Cid:    cidFile.String(),
 	}, nil
 }
 
 // TODO discuss this with Josh
 type DownloadResponse struct {
-	Status    int //TODO standardize these
+	Status    int
 	FileData  []byte
 	NameSpace string
 	Path      string
@@ -278,10 +279,10 @@ func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
 	if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
-			return DownloadResponse{}, err
+			return DownloadResponse{Status: status.StatusInternalServerError}, err
 		}
 		return DownloadResponse{
-			Status:    200,
+			Status:    status.StatusOK,
 			FileData:  data,
 			Path:      cidPath.String(),
 			NameSpace: cidPath.Namespace(),
@@ -290,18 +291,18 @@ func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
 
 	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
 	if err != nil {
-		return DownloadResponse{}, err
+		return DownloadResponse{Status: status.StatusInternalServerError}, err
 	}
 	err = files.WriteTo(rootNodeFile, path)
 	if err != nil {
-		return DownloadResponse{}, err
+		return DownloadResponse{Status: status.StatusInternalServerError}, err
 	}
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return DownloadResponse{}, err
+		return DownloadResponse{Status: status.StatusInternalServerError}, err
 	}
 	return DownloadResponse{
-		Status:    200,
+		Status:    status.StatusOK,
 		FileData:  data,
 		Path:      cidPath.String(),
 		NameSpace: cidPath.Namespace(),
