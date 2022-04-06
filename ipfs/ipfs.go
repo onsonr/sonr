@@ -219,13 +219,16 @@ func getUnixfsNode(path string) (files.Node, error) {
 func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
 	var ctx context.Context
 
-	//TODO add CID preprocessor and name file off of that
+	// TODO add CID preprocessor and name file off of that
+	// use --only-hash for preprocessor
 
 	var permissions uint32 = 0644 // or whatever you need
 	err := ioutil.WriteFile("./tmp/data.txt", data, fs.FileMode(permissions))
 	if err != nil {
 		return nil, err
 	}
+
+	// TODO revisit the file strategy and see if there is another way
 
 	file, err := getUnixfsNode("./tmp/data.txt")
 	if err != nil {
@@ -249,18 +252,20 @@ func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
 	return cidFile, nil
 }
 
-func DownloadData(cid string, node iface.CoreAPI) (files.Node, error) {
+func DownloadData(cid string, node iface.CoreAPI) ([]byte, error) {
 	var ctx context.Context
 	cidPath := icorepath.New(cid)
+
+	// TODO check local file system first
 
 	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
 	if err != nil {
 		return nil, err
 	}
-	err = files.WriteTo(rootNodeFile, "./ipfs/"+cid+"/data.txt")
+	path := "./ipfs/" + cid + "/data.txt"
+	err = files.WriteTo(rootNodeFile, path)
 	if err != nil {
 		return nil, err
 	}
-
-	return rootNodeFile, nil
+	return ioutil.ReadFile(path)
 }
