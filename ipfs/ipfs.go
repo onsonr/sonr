@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
@@ -13,6 +14,8 @@ import (
 	config "github.com/ipfs/go-ipfs-config"
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
+	iface "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/ipfs/interface-go-ipfs-core/path"
 	ma "github.com/multiformats/go-multiaddr"
 
 	"github.com/ipfs/go-ipfs/core"
@@ -22,6 +25,8 @@ import (
 	"github.com/ipfs/go-ipfs/repo/fsrepo"
 	"github.com/libp2p/go-libp2p-core/peer"
 )
+
+var flagExp = flag.Bool("experimental", false, "enable experimental features")
 
 func setupPlugins(externalPluginsPath string) error {
 	// Load any external plugins if available on externalPluginsPath
@@ -195,7 +200,7 @@ func getUnixfsFile(path string) (files.File, error) {
 	return f, nil
 }
 
-func GetUnixfsNode(path string) (files.Node, error) {
+func getUnixfsNode(path string) (files.Node, error) {
 	st, err := os.Stat(path)
 	if err != nil {
 		return nil, err
@@ -209,4 +214,51 @@ func GetUnixfsNode(path string) (files.Node, error) {
 	return f, nil
 }
 
-var flagExp = flag.Bool("experimental", false, "enable experimental features")
+// External Functions
+func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
+	var ctx context.Context
+
+	//TODO add CID preprocessor and name file off of that
+
+	var permissions uint32 = 0644 // or whatever you need
+	err := ioutil.WriteFile("./tmp/data.txt", data, fs.FileMode(permissions))
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := getUnixfsNode("./tmp/data.txt")
+	if err != nil {
+		panic(fmt.Errorf("Could not get File: %s", err))
+	}
+
+	cidFile, err := node.Unixfs().Add(ctx, file)
+	if err != nil {
+		panic(fmt.Errorf("Could not add File: %s", err))
+	}
+
+	fmt.Printf("Added file to IPFS with CID %s\n", cidFile.String())
+
+	oldLocation := "./tmp/data.txt"
+	newLocation := "./ipfs/" + cidFile.String() + "/data.txt"
+	err = os.Rename(oldLocation, newLocation)
+	if err != nil {
+		return nil, err
+	}
+
+	return cidFile, nil
+}
+
+func DownloadData(cidFile path.Resolved, node iface.CoreAPI) (files.Node, error) {
+	var ctx context.Context
+	rootNodeFile, err := node.Unixfs().Get(ctx, cidFile)
+	if err != nil {
+		return nil, err
+	}
+
+	err = files.WriteTo(rootNodeFile, "./ipfs/"+cidFile.String()+"/data.txt")
+	if err != nil {
+		return nil, err
+	}
+
+	return rootNodeFile, nil
+}
