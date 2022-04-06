@@ -216,7 +216,7 @@ func getUnixfsNode(path string) (files.Node, error) {
 }
 
 type UploadResponse struct {
-	Status string
+	Status int //TODO standardize these
 	Cid    string
 	Path   string
 }
@@ -255,16 +255,18 @@ func UploadData(data []byte, node iface.CoreAPI) (UploadResponse, error) {
 		return UploadResponse{}, err
 	}
 
-	return UploadResponse{Cid: cidFile.String()}, nil
+	return UploadResponse{
+		Status: 200,
+		Cid:    cidFile.String(),
+	}, nil
 }
 
 // TODO discuss this with Josh
 type DownloadResponse struct {
-	Status   string
-	FileData []byte
-	FileName string
-	Path     string
-	Size     int64
+	Status    int //TODO standardize these
+	FileData  []byte
+	NameSpace string
+	Path      string
 }
 
 func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
@@ -278,7 +280,12 @@ func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
 		if err != nil {
 			return DownloadResponse{}, err
 		}
-		return DownloadResponse{FileData: data}, nil
+		return DownloadResponse{
+			Status:    200,
+			FileData:  data,
+			Path:      cidPath.String(),
+			NameSpace: cidPath.Namespace(),
+		}, nil
 	}
 
 	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
@@ -293,5 +300,10 @@ func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
 	if err != nil {
 		return DownloadResponse{}, err
 	}
-	return DownloadResponse{FileData: data}, nil
+	return DownloadResponse{
+		Status:    200,
+		FileData:  data,
+		Path:      cidPath.String(),
+		NameSpace: cidPath.Namespace(),
+	}, nil
 }
