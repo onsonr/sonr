@@ -1,6 +1,6 @@
 module github.com/sonr-io/core
 
-go 1.16
+go 1.17
 
 require (
 	git.mills.io/prologic/bitcask v1.0.0
