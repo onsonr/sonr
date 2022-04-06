@@ -16,7 +16,6 @@ import (
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	iface "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/ipfs/interface-go-ipfs-core/path"
 	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
 	ma "github.com/multiformats/go-multiaddr"
 
@@ -216,17 +215,23 @@ func getUnixfsNode(path string) (files.Node, error) {
 	return f, nil
 }
 
+type UploadResponse struct {
+	Status string
+	Cid    string
+	Path   string
+}
+
 // External Functions
-func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
+func UploadData(data []byte, node iface.CoreAPI) (UploadResponse, error) {
 	var ctx context.Context
 
 	// TODO add CID preprocessor and name file off of that
-	// use --only-hash for preprocessor
+	// use --only-hash option for preprocessor
 
 	var permissions uint32 = 0644 // or whatever you need
 	err := ioutil.WriteFile("./tmp/data.txt", data, fs.FileMode(permissions))
 	if err != nil {
-		return nil, err
+		return UploadResponse{}, err
 	}
 
 	// TODO revisit the file strategy and see if there is another way
@@ -247,29 +252,46 @@ func UploadData(data []byte, node iface.CoreAPI) (path.Resolved, error) {
 	newLocation := "./ipfs-storage/" + cidFile.String() + "/data.txt"
 	err = os.Rename(oldLocation, newLocation)
 	if err != nil {
-		return nil, err
+		return UploadResponse{}, err
 	}
 
-	return cidFile, nil
+	return UploadResponse{Cid: cidFile.String()}, nil
 }
 
-func DownloadData(cid string, node iface.CoreAPI) ([]byte, error) {
+// TODO discuss this with Josh
+type DownloadResponse struct {
+	Status   string
+	FileData []byte
+	FileName string
+	Path     string
+	Size     int64
+}
+
+func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
 	var ctx context.Context
 	cidPath := icorepath.New(cid)
 	path := "./ipfs/" + cid + "/data.txt"
 
 	// check local file system first
 	if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
-		return ioutil.ReadFile(path)
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return DownloadResponse{}, err
+		}
+		return DownloadResponse{FileData: data}, nil
 	}
 
 	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
 	if err != nil {
-		return nil, err
+		return DownloadResponse{}, err
 	}
 	err = files.WriteTo(rootNodeFile, path)
 	if err != nil {
-		return nil, err
+		return DownloadResponse{}, err
 	}
-	return ioutil.ReadFile(path)
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return DownloadResponse{}, err
+	}
+	return DownloadResponse{FileData: data}, nil
 }
