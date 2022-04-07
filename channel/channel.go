@@ -60,11 +60,11 @@ type Channel interface {
 	Read() []peer.ID
 
 	// Publish publishes the given message to the channel topic.
-	Publish(text string, obj *ot.ObjectDoc) error
+	Publish(obj *ot.ObjectDoc) error
 
 	// Listen subscribes to the beam topic and returns a channel that will
 	// receive events.
-	Listen() (<-chan *ct.ChannelMessage, error)
+	Listen() <-chan *ct.ChannelMessage
 
 	// Close closes the channel.
 	Close() error
@@ -134,9 +134,9 @@ func (b *channel) Read() []peer.ID {
 }
 
 // Publish publishes the given message to the beam topic.
-func (b *channel) Publish(text string, obj *ot.ObjectDoc) error {
+func (b *channel) Publish(obj *ot.ObjectDoc) error {
 	// Check if both text and data are empty.
-	if text == "" && obj == nil {
+	if obj == nil {
 		return errors.New("text and data cannot be empty")
 	}
 
@@ -158,8 +158,8 @@ func (b *channel) Publish(text string, obj *ot.ObjectDoc) error {
 }
 
 // Listen subscribes to the beam topic and returns a channel that will
-func (b *channel) Listen() (<-chan *ct.ChannelMessage, error) {
-	return b.messages, nil
+func (b *channel) Listen() <-chan *ct.ChannelMessage {
+	return b.messages
 }
 
 // Close closes the channel.
