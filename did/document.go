@@ -30,6 +30,14 @@ type Document struct {
 	AlsoKnownAs          []string                  `json:"@alsoKnownAs,omitempty"`
 }
 
+// AddController adds a DID as a controller
+func (d *Document) AddController(id DID) {
+	if d.Controller == nil {
+		d.Controller = []DID{}
+	}
+	d.Controller = append(d.Controller, id)
+}
+
 type VerificationMethods []*VerificationMethod
 
 // FindByID find the first VerificationMethod which matches the provided DID.
