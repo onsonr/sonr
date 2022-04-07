@@ -34,8 +34,8 @@ require (
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.5
-	go.buf.build/grpc/go/sonr-io/core v1.3.8
-	go.buf.build/grpc/go/sonr-io/sonr v1.3.16
+	go.buf.build/grpc/go/sonr-io/core v1.3.9
+	go.buf.build/grpc/go/sonr-io/sonr v1.3.17
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 )
