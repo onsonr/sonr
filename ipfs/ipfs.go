@@ -2,6 +2,7 @@ package ipfs
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io/fs"
@@ -27,6 +28,9 @@ import (
 )
 
 var FlagExp = flag.Bool("experimental", false, "enable experimental features")
+
+const tempDir string = "/tmp/bytes.txt"
+const ipfsStorageDir string = "/ipfs-storage"
 
 func setupPlugins(externalPluginsPath string) error {
 	// Load any external plugins if available on externalPluginsPath
@@ -220,9 +224,6 @@ type UploadResponse struct {
 
 // External Functions
 func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadResponse, error) {
-	tempDir := "/tmp/data.txt"
-
-	// TODO add CID preprocessor and name file off of that
 	// use --only-hash option for preprocessor
 	var permissions uint32 = 0644 // or whatever you need
 	err := os.WriteFile(tempDir, data, fs.FileMode(permissions))
@@ -230,7 +231,7 @@ func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadRes
 		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
 
-	// TODO revisit the file strategy and see if there is another way
+	// TODO revisit the file strategy and see if there is a better way
 
 	file, err := getUnixfsNode(tempDir)
 	if err != nil {
@@ -244,7 +245,7 @@ func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadRes
 
 	fmt.Printf("Added file to IPFS with CID %s\n", cidFile.String())
 
-	newLocation := "/ipfs-storage"
+	newLocation := ipfsStorageDir
 	os.Mkdir(newLocation, 0755)
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
@@ -254,7 +255,7 @@ func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadRes
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
-	newLocation += "/data.txt"
+	newLocation += "/bytes.txt"
 	os.WriteFile(newLocation, data, 0644)
 
 	return UploadResponse{
@@ -277,25 +278,24 @@ func DownloadData(ctx context.Context, cid string, node iface.CoreAPI) (Download
 		panic(fmt.Errorf("could not create output dir (%v)", err))
 	}
 
-	// cidPath := ifacepath.New(cid)
-	// path := "/ipfs/" + cid + "/data.txt"
+	//TODO strip cid down to just the cid string portion
 
 	path := outputBasePath + cid
 	cidPath := ifacepath.New(cid)
 
-	// check local file system first
-	// if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
-	// 	data, err := ioutil.ReadFile(path)
-	// 	if err != nil {
-	// 		return DownloadResponse{Status: status.StatusInternalServerError}, err
-	// 	}
-	// 	return DownloadResponse{
-	// 		Status:    status.StatusOK,
-	// 		FileData:  data,
-	// 		Path:      cidPath.String(),
-	// 		NameSpace: cidPath.Namespace(),
-	// 	}, nil
-	// }
+	//check local file system first
+	if _, err := os.Stat(ipfsStorageDir + "/" + cid + "/bytes.txt"); !errors.Is(err, os.ErrNotExist) {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return DownloadResponse{Status: status.StatusInternalServerError}, err
+		}
+		return DownloadResponse{
+			Status:    status.StatusOK,
+			FileData:  data,
+			Path:      cidPath.String(),
+			NameSpace: cidPath.Namespace(),
+		}, nil
+	}
 
 	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
 	if err != nil {
