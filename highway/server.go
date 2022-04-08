@@ -114,7 +114,7 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	// where to look for .ipfs default this is ~/
 
 	// Spawn a node using the default path (~/.ipfs), assuming that a repo exists there already
-	ipfs, err := ipfsLib.SpawnDefault(ctx)
+	ipfs, err := ipfsLib.SpawnEphemeral(ctx)
 	if err != nil {
 		panic(fmt.Errorf("failed to spawnDefault node: %s", err))
 	}

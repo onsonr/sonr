@@ -232,7 +232,6 @@ func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadRes
 	}
 
 	// TODO revisit the file strategy and see if there is a better way
-
 	file, err := getUnixfsNode(tempDir)
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
@@ -264,7 +263,6 @@ func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadRes
 	}, nil
 }
 
-// TODO discuss this with Josh
 type DownloadResponse struct {
 	Status    int
 	FileData  []byte
