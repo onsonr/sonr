@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	status "github.com/sonr-io/core/errors"
+	status "github.com/sonr-io/core/constants/status"
 )
 
 func TestTempNode(t *testing.T) {
