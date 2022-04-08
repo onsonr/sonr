@@ -2,15 +2,17 @@ package ipfs
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"testing"
 
 	iface "github.com/ipfs/interface-go-ipfs-core"
+	status "github.com/sonr-io/core/errors"
 )
 
 var tempNode iface.CoreAPI
 var tempCid string
+
+const debugMode = true
 
 func TestAddFileTemp(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -38,15 +40,22 @@ func TestAddFileTemp(t *testing.T) {
 func TestDonwloadFileTemp(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	// node, err := SpawnEphemeral(ctx)
-	// if err != nil {
-	// 	t.Error(err)
-	// }
-	// if node == nil {
-	// 	t.Errorf("SpawnEphemeral(ctx) resulted in nil result")
-	// 	return
-	// }
-	node := tempNode
+
+	var node iface.CoreAPI
+	var err error
+	if debugMode {
+		node, err = SpawnEphemeral(ctx)
+		if err != nil {
+			t.Error(err)
+		}
+		if node == nil {
+			t.Errorf("SpawnEphemeral(ctx) resulted in nil result")
+			return
+		}
+	} else {
+		//sequential testing
+		node = tempNode
+	}
 
 	bootstrapNodes := []string{
 		// IPFS Bootstrapper nodes.
@@ -82,23 +91,9 @@ func TestDonwloadFileTemp(t *testing.T) {
 		t.Error(err)
 	}
 
-	fmt.Println(resp)
-
-	// fmt.Printf("Fetching a file from the network with CID %s\n", exampleCIDStr)
-	// outputPath := outputBasePath + exampleCIDStr
-	// testCID := icorepath.New(exampleCIDStr)
-
-	// rootNode, err := ipfs.Unixfs().Get(ctx, testCID)
-	// if err != nil {
-	// 	panic(fmt.Errorf("Could not get file with CID: %s", err))
-	// }
-
-	// err = files.WriteTo(rootNode, outputPath)
-	// if err != nil {
-	// 	panic(fmt.Errorf("Could not write out the fetched CID: %s", err))
-	// }
-
-	// fmt.Printf("Wrote the file to %s\n", outputPath)
+	if resp.Status != status.StatusOK {
+		t.Errorf("DownloadData(ctx, cid, node) resulted in not OK status")
+	}
 }
 
 // func TestCreatePerm(t *testing.T) {
