@@ -2,7 +2,6 @@ package ipfs
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"io/fs"
@@ -245,12 +244,18 @@ func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadRes
 
 	fmt.Printf("Added file to IPFS with CID %s\n", cidFile.String())
 
-	oldLocation := tempDir
-	newLocation := "/ipfs-storage/" + cidFile.String() + "/data.txt"
-	err = os.Rename(oldLocation, newLocation)
+	newLocation := "/ipfs-storage"
+	os.Mkdir(newLocation, 0755)
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
+	newLocation += cidFile.String()
+	os.Mkdir(newLocation, 0755)
+	if err != nil {
+		return UploadResponse{Status: status.StatusInternalServerError}, err
+	}
+	newLocation += "/data.txt"
+	os.WriteFile(newLocation, data, 0644)
 
 	return UploadResponse{
 		Status: status.StatusOK,
@@ -266,24 +271,31 @@ type DownloadResponse struct {
 	Path      string
 }
 
-func DownloadData(cid string, node iface.CoreAPI) (DownloadResponse, error) {
-	var ctx context.Context
+func DownloadData(ctx context.Context, cid string, node iface.CoreAPI) (DownloadResponse, error) {
+	outputBasePath, err := ioutil.TempDir("", "example")
+	if err != nil {
+		panic(fmt.Errorf("could not create output dir (%v)", err))
+	}
+
+	// cidPath := ifacepath.New(cid)
+	// path := "/ipfs/" + cid + "/data.txt"
+
+	path := outputBasePath + cid
 	cidPath := ifacepath.New(cid)
-	path := "./ipfs/" + cid + "/data.txt"
 
 	// check local file system first
-	if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
-		data, err := ioutil.ReadFile(path)
-		if err != nil {
-			return DownloadResponse{Status: status.StatusInternalServerError}, err
-		}
-		return DownloadResponse{
-			Status:    status.StatusOK,
-			FileData:  data,
-			Path:      cidPath.String(),
-			NameSpace: cidPath.Namespace(),
-		}, nil
-	}
+	// if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
+	// 	data, err := ioutil.ReadFile(path)
+	// 	if err != nil {
+	// 		return DownloadResponse{Status: status.StatusInternalServerError}, err
+	// 	}
+	// 	return DownloadResponse{
+	// 		Status:    status.StatusOK,
+	// 		FileData:  data,
+	// 		Path:      cidPath.String(),
+	// 		NameSpace: cidPath.Namespace(),
+	// 	}, nil
+	// }
 
 	rootNodeFile, err := node.Unixfs().Get(ctx, cidPath)
 	if err != nil {
