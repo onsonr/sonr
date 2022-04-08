@@ -5,20 +5,18 @@ import (
 	"log"
 	"testing"
 
-	iface "github.com/ipfs/interface-go-ipfs-core"
 	status "github.com/sonr-io/core/errors"
 )
 
-var tempNode iface.CoreAPI
-var tempCid string
-
+// use when you want to run an individual test instead of the normal sequential order
 const debugMode = true
 
-func TestAddFileTemp(t *testing.T) {
+func TestTempNode(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	/// --- Part I: Create an IPFS API node
 	node, err := SpawnEphemeral(ctx)
-	tempNode = node
 	if err != nil {
 		t.Error(err)
 	}
@@ -27,36 +25,15 @@ func TestAddFileTemp(t *testing.T) {
 		return
 	}
 
+	/// --- Part II: Upload a file to IPFS
 	data := []byte("Hello World!!!")
-	resp, err := UploadData(ctx, data, node)
+	respUp, err := UploadData(ctx, data, node)
 	if err != nil {
-		t.Errorf("UploadData([]byte, coreAPI) resulted in status %d", resp.Status)
+		t.Errorf("UploadData([]byte, coreAPI) resulted in status %d", respUp.Status)
 		t.Error(err)
 	}
 
-	tempCid = resp.Cid
-}
-
-func TestDonwloadFileTemp(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	var node iface.CoreAPI
-	var err error
-	if debugMode {
-		node, err = SpawnEphemeral(ctx)
-		if err != nil {
-			t.Error(err)
-		}
-		if node == nil {
-			t.Errorf("SpawnEphemeral(ctx) resulted in nil result")
-			return
-		}
-	} else {
-		//sequential testing
-		node = tempNode
-	}
-
+	/// --- Part III: Retrieve a file off of IPFS
 	bootstrapNodes := []string{
 		// IPFS Bootstrapper nodes.
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
@@ -86,12 +63,12 @@ func TestDonwloadFileTemp(t *testing.T) {
 	}()
 
 	exampleCIDStr := "QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj"
-	resp, err := DownloadData(ctx, exampleCIDStr, node)
+	respDown, err := DownloadData(ctx, exampleCIDStr, node)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if resp.Status != status.StatusOK {
+	if respDown.Status != status.StatusOK {
 		t.Errorf("DownloadData(ctx, cid, node) resulted in not OK status")
 	}
 }
