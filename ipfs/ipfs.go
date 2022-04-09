@@ -251,12 +251,12 @@ func (node IpfsNode) UploadData(ctx context.Context, data []byte) (UploadRespons
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
-	newLocation += cidFile.String()
+	newLocation = filepath.Join(newLocation, cidFile.String())
 	os.Mkdir(newLocation, 0755)
 	if err != nil {
 		return UploadResponse{Status: status.StatusInternalServerError}, err
 	}
-	newLocation += "/bytes.txt"
+	newLocation = filepath.Join(newLocation, "/bytes.txt")
 	os.WriteFile(newLocation, data, 0644)
 
 	return UploadResponse{
@@ -277,7 +277,7 @@ func (node IpfsNode) DownloadData(ctx context.Context, cid string) (DownloadResp
 	cidPath := ifacepath.New(cid)
 
 	//check local file system first
-	if _, err := os.Stat(ipfsStorageDir + "/" + cid + "/bytes.txt"); !errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(filepath.Join(ipfsStorageDir, cid, "/bytes.txt")); !errors.Is(err, os.ErrNotExist) {
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
 			return DownloadResponse{Status: status.StatusInternalServerError}, err
