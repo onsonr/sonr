@@ -32,6 +32,11 @@ var FlagExp = flag.Bool("experimental", false, "enable experimental features")
 const tempDir string = "/tmp/bytes.txt"
 const ipfsStorageDir string = "/ipfs-storage"
 
+// ipfs API wrapper
+type IpfsNode struct {
+	iface.CoreAPI // embedded field types cannot be a pointer to an interface
+}
+
 func setupPlugins(externalPluginsPath string) error {
 	// Load any external plugins if available on externalPluginsPath
 	plugins, err := loader.NewPluginLoader(filepath.Join(externalPluginsPath, "plugins"))
@@ -117,7 +122,7 @@ func createNode(ctx context.Context, repoPath string) (iface.CoreAPI, error) {
 }
 
 // Spawns a node on the default repo location, if the repo exists
-func SpawnDefault(ctx context.Context) (iface.CoreAPI, error) {
+func SpawnDefault(ctx context.Context) (*IpfsNode, error) {
 	defaultPath, err := config.PathRoot()
 	if err != nil {
 		// shouldn't be possible
@@ -129,11 +134,12 @@ func SpawnDefault(ctx context.Context) (iface.CoreAPI, error) {
 
 	}
 
-	return createNode(ctx, defaultPath)
+	node, err := createNode(ctx, defaultPath)
+	return &IpfsNode{CoreAPI: node}, err
 }
 
 // Spawns a node to be used just for this run (i.e. creates a tmp repo)
-func SpawnEphemeral(ctx context.Context) (iface.CoreAPI, error) {
+func SpawnEphemeral(ctx context.Context) (*IpfsNode, error) {
 	if err := setupPlugins(""); err != nil {
 		return nil, err
 	}
@@ -145,7 +151,8 @@ func SpawnEphemeral(ctx context.Context) (iface.CoreAPI, error) {
 	}
 
 	// Spawning an ephemeral IPFS node
-	return createNode(ctx, repoPath)
+	node, err := createNode(ctx, repoPath)
+	return &IpfsNode{CoreAPI: node}, err
 }
 
 func ConnectToPeers(ctx context.Context, ipfs iface.CoreAPI, peers []string) error {
@@ -223,7 +230,7 @@ type UploadResponse struct {
 }
 
 // External Functions
-func UploadData(ctx context.Context, data []byte, node iface.CoreAPI) (UploadResponse, error) {
+func (node IpfsNode) UploadData(ctx context.Context, data []byte) (UploadResponse, error) {
 	// use --only-hash option for preprocessor
 	var permissions uint32 = 0644 // or whatever you need
 	err := os.WriteFile(tempDir, data, fs.FileMode(permissions))
@@ -270,7 +277,7 @@ type DownloadResponse struct {
 	Path      string
 }
 
-func DownloadData(ctx context.Context, cid string, node iface.CoreAPI) (DownloadResponse, error) {
+func (node IpfsNode) DownloadData(ctx context.Context, cid string) (DownloadResponse, error) {
 	outputBasePath, err := ioutil.TempDir("", "example")
 	if err != nil {
 		panic(fmt.Errorf("could not create output dir (%v)", err))

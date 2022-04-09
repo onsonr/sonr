@@ -24,7 +24,7 @@ func TestTempNode(t *testing.T) {
 
 	/// --- Part II: Upload a file to IPFS
 	data := []byte("Hello World!!!")
-	respUp, err := UploadData(ctx, data, node)
+	respUp, err := node.UploadData(ctx, data)
 	if err != nil {
 		t.Errorf("UploadData([]byte, coreAPI) resulted in status %d", respUp.Status)
 		t.Error(err)
@@ -60,7 +60,7 @@ func TestTempNode(t *testing.T) {
 	}()
 
 	exampleCIDStr := "QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj"
-	respDown, err := DownloadData(ctx, exampleCIDStr, node)
+	respDown, err := node.DownloadData(ctx, exampleCIDStr)
 	if err != nil {
 		t.Error(err)
 	}
@@ -86,7 +86,7 @@ func TestPermNode(t *testing.T) {
 
 	/// --- Part II: Upload a file to IPFS
 	data := []byte("Hello World!!!")
-	respUp, err := UploadData(ctx, data, node)
+	respUp, err := node.UploadData(ctx, data)
 	if err != nil {
 		t.Errorf("UploadData([]byte, coreAPI) resulted in status %d", respUp.Status)
 		t.Error(err)
@@ -122,7 +122,7 @@ func TestPermNode(t *testing.T) {
 	}()
 
 	exampleCIDStr := "QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj"
-	respDown, err := DownloadData(ctx, exampleCIDStr, node)
+	respDown, err := node.DownloadData(ctx, exampleCIDStr)
 	if err != nil {
 		t.Error(err)
 	}
