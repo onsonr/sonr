@@ -273,7 +273,7 @@ func (node IpfsNode) DownloadData(ctx context.Context, cid string) (DownloadResp
 
 	//TODO strip cid down to just the cid string portion
 
-	path := outputBasePath + cid
+	path := filepath.Join(outputBasePath, cid)
 	cidPath := ifacepath.New(cid)
 
 	//check local file system first
