@@ -155,6 +155,7 @@ func SpawnEphemeral(ctx context.Context) (*IpfsNode, error) {
 	return &IpfsNode{CoreAPI: node}, err
 }
 
+// Given a list of bootstrapper nodes try and connect to teh ipfs node
 func ConnectToPeers(ctx context.Context, ipfs iface.CoreAPI, peers []string) error {
 	var wg sync.WaitGroup
 	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
@@ -223,12 +224,6 @@ func getUnixfsNode(path string) (files.Node, error) {
 	return f, nil
 }
 
-type UploadResponse struct {
-	Status int
-	Cid    string
-	Path   string
-}
-
 // External Functions
 func (node IpfsNode) UploadData(ctx context.Context, data []byte) (UploadResponse, error) {
 	// use --only-hash option for preprocessor
@@ -268,13 +263,6 @@ func (node IpfsNode) UploadData(ctx context.Context, data []byte) (UploadRespons
 		Status: status.StatusOK,
 		Cid:    cidFile.String(),
 	}, nil
-}
-
-type DownloadResponse struct {
-	Status    int
-	FileData  []byte
-	NameSpace string
-	Path      string
 }
 
 func (node IpfsNode) DownloadData(ctx context.Context, cid string) (DownloadResponse, error) {
