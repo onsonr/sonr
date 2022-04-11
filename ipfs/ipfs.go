@@ -156,7 +156,7 @@ func SpawnEphemeral(ctx context.Context) (*IpfsNode, error) {
 }
 
 // Given a list of bootstrapper nodes try and connect to teh ipfs node
-func ConnectToPeers(ctx context.Context, ipfs iface.CoreAPI, peers []string) error {
+func (n *IpfsNode) ConnectToPeers(ctx context.Context, peers []string) error {
 	var wg sync.WaitGroup
 	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
 	for _, addrStr := range peers {
@@ -180,7 +180,7 @@ func ConnectToPeers(ctx context.Context, ipfs iface.CoreAPI, peers []string) err
 	for _, peerInfo := range peerInfos {
 		go func(peerInfo *peer.AddrInfo) {
 			defer wg.Done()
-			err := ipfs.Swarm().Connect(ctx, *peerInfo)
+			err := n.Swarm().Connect(ctx, *peerInfo)
 			if err != nil {
 				log.Printf("failed to connect to %s: %s", peerInfo.ID, err)
 			}

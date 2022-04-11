@@ -56,7 +56,7 @@ func TestTempNode(t *testing.T) {
 
 	/// --- Part III: Retrieve a file off of IPFS
 	go func() {
-		err := ConnectToPeers(ctx, node, bootstrapNodes)
+		err := node.ConnectToPeers(ctx, bootstrapNodes)
 		if err != nil {
 			log.Printf("failed connect to peers: %s", err)
 		}
@@ -96,7 +96,7 @@ func TestPermNode(t *testing.T) {
 
 	/// --- Part III: Retrieve a file off of IPFS
 	go func() {
-		err := ConnectToPeers(ctx, node, bootstrapNodes)
+		err := node.ConnectToPeers(ctx, bootstrapNodes)
 		if err != nil {
 			log.Printf("failed connect to peers: %s", err)
 		}
