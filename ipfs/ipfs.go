@@ -225,7 +225,7 @@ func getUnixfsNode(path string) (files.Node, error) {
 }
 
 // External Functions
-func (node IpfsNode) UploadData(ctx context.Context, data []byte) (UploadResponse, error) {
+func (node *IpfsNode) UploadData(ctx context.Context, data []byte) (UploadResponse, error) {
 	// use --only-hash option for preprocessor
 	var permissions uint32 = 0644 // or whatever you need
 	err := os.WriteFile(tempDir, data, fs.FileMode(permissions))
@@ -265,7 +265,7 @@ func (node IpfsNode) UploadData(ctx context.Context, data []byte) (UploadRespons
 	}, nil
 }
 
-func (node IpfsNode) DownloadData(ctx context.Context, cid string) (DownloadResponse, error) {
+func (node *IpfsNode) DownloadData(ctx context.Context, cid string) (DownloadResponse, error) {
 	outputBasePath, err := ioutil.TempDir("", "example")
 	if err != nil {
 		panic(fmt.Errorf("could not create output dir (%v)", err))

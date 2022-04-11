@@ -120,7 +120,7 @@ func NewHighway(ctx context.Context, opts ...hn.Option) (*HighwayServer, error) 
 	}
 
 	go func() {
-		err := ipfsLib.ConnectToPeers(ctx, ipfs, config.BootstrapAddrStrs)
+		err := ipfs.ConnectToPeers(ctx, config.BootstrapAddrStrs)
 		if err != nil {
 			log.Printf("failed connect to peers: %s", err)
 		}
