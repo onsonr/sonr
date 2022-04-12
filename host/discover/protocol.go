@@ -5,6 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	ct "github.com/sonr-io/blockchain/x/channel/types"
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/device"
 	host "github.com/sonr-io/core/host"
@@ -32,7 +33,10 @@ type DiscoverProtocol struct {
 // New creates new DiscoveryProtocol
 func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
 	// Create BeamStore
-	b, err := channel.New(ctx, host, "_discover")
+	b, err := channel.New(ctx, host, &ct.ChannelDoc{
+		Label: "_discover",
+		Did:   "did:snr:discover",
+	})
 	if err != nil {
 		return nil, err
 	}

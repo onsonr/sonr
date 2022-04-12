@@ -3,20 +3,41 @@ package highway
 import (
 	context "context"
 
+	ctv1 "github.com/sonr-io/blockchain/x/channel/types"
+	ot "github.com/sonr-io/blockchain/x/object/types"
 	"github.com/sonr-io/core/channel"
 	ct "go.buf.build/grpc/go/sonr-io/sonr/channel"
 )
 
 // CreateChannel creates a new channel.
 func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChannel) (*ct.MsgCreateChannelResponse, error) {
+	// Create ctv1 message to broadcast
+	tx := &ctv1.MsgCreateChannel{
+		Creator: req.GetCreator(),
+		Label:   req.GetLabel(),
+		ObjectToRegister: &ot.ObjectDoc{
+			Label:       req.GetObjectToRegister().GetLabel(),
+			Description: req.GetObjectToRegister().GetDescription(),
+			Did:         req.GetObjectToRegister().GetDid(),
+			BucketDid:   req.GetObjectToRegister().GetBucketDid(),
+			// Fields: req.GetObjectToRegister().GetFields(),
+		},
+	}
+
+	// Broadcast the message
+	res, err := s.cosmos.BroadcastCreateChannel(tx)
+	if err != nil {
+		return nil, err
+	}
+
 	// Create the Channel
-	ch, err := channel.New(ctx, s.node, req.Name)
+	ch, err := channel.New(ctx, s.node, res.GetHowIs().GetChannel())
 	if err != nil {
 		return nil, err
 	}
 
 	// Add to the list of Channels
-	s.channels[req.Name] = ch
+	s.channels[res.GetHowIs().GetDid()] = ch
 	return nil, ErrMethodUnimplemented
 }
 

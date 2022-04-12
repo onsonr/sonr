@@ -30,12 +30,12 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/blockchain v0.0.7
+	github.com/sonr-io/blockchain v0.0.8
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.5
 	go.buf.build/grpc/go/sonr-io/core v1.3.9
-	go.buf.build/grpc/go/sonr-io/sonr v1.3.17
+	go.buf.build/grpc/go/sonr-io/sonr v1.3.18
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 )

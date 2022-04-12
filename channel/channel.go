@@ -79,7 +79,7 @@ type channel struct {
 	did   string
 
 	// Channel Messages
-	config          *ct.Channel
+	config          *ct.ChannelDoc
 	messages        chan *ct.ChannelMessage
 	messagesHandler *ps.TopicEventHandler
 	messagesSub     *ps.Subscription
@@ -87,14 +87,14 @@ type channel struct {
 }
 
 // New creates a new beam with the given name and options.
-func New(ctx context.Context, n nh.HostImpl, id string, options ...Option) (Channel, error) {
-	logger = golog.Default.Child(id)
+func New(ctx context.Context, n nh.HostImpl, config *ct.ChannelDoc, options ...Option) (Channel, error) {
+	logger = golog.Default.Child(config.Label)
 	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)
 	}
 
-	mTopic, mHandler, mSub, err := n.NewTopic(id)
+	mTopic, mHandler, mSub, err := n.NewTopic(config.Did)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,8 @@ func New(ctx context.Context, n nh.HostImpl, id string, options ...Option) (Chan
 	b := &channel{
 		ctx:             ctx,
 		n:               n,
-		did:             id,
+		config:          config,
+		did:             config.Did,
 		messages:        make(chan *ct.ChannelMessage),
 		messagesHandler: mHandler,
 		messagesSub:     mSub,

@@ -13,9 +13,9 @@ import (
 )
 
 type Cosmos struct {
-	accName       string
-	address       string
-	instance      cosmosclient.Client
+	accName string
+	address string
+	cosmosclient.Client
 	bucketQuery   bt.QueryClient
 	channelQuery  ct.QueryClient
 	objectQuery   ot.QueryClient
@@ -40,7 +40,7 @@ func NewCosmos(ctx context.Context, config *config.Config) (*Cosmos, error) {
 	return &Cosmos{
 		accName:       config.CosmosAccountName,
 		address:       account.Address("snr"),
-		instance:      cosmos,
+		Client:        cosmos,
 		bucketQuery:   bt.NewQueryClient(cosmos.Context),
 		channelQuery:  ct.NewQueryClient(cosmos.Context),
 		objectQuery:   ot.NewQueryClient(cosmos.Context),
@@ -58,10 +58,10 @@ func (cc *Cosmos) Address() string {
 	return cc.address
 }
 
-// BroadcastTx broadcasts a transaction to the blockchain
+// BroadcastRegisterName broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegisterNameResponse, error) {
 	// broadcast the transaction to the blockchain
-	resp, err := cc.instance.BroadcastTx(cc.accName, msg)
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
 		golog.Errorf("Error broadcasting transaction: %s", err)
 		return nil, err
@@ -69,6 +69,25 @@ func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegiste
 
 	// Decode the response
 	respMsg := &rt.MsgRegisterNameResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+		golog.Errorf("Error decoding response: %v", err)
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastCreateChannel broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastCreateChannel(msg *ct.MsgCreateChannel) (*ct.MsgCreateChannelResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		golog.Errorf("Error broadcasting transaction: %s", err)
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &ct.MsgCreateChannelResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 		golog.Errorf("Error decoding response: %v", err)

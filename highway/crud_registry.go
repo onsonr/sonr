@@ -124,6 +124,8 @@ func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Reques
 		JsonResponse(w, "Failed to broadcast to blockchain", http.StatusBadRequest)
 		return
 	}
+
+	s.cache.Set("session", txResp.GetSession(), -1)
 	JsonResponse(w, txResp.String(), http.StatusOK)
 }
 
