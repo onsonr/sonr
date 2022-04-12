@@ -170,7 +170,7 @@ func NewHost(ctx context.Context, r device.Role, config *config.Config) (HostImp
 	}
 
 	// Start Host
-	hn.Host, err = libp2p.New(ctx,
+	hn.Host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
 		libp2p.ConnectionManager(cmgr.NewConnManager(
 			config.Libp2pLowWater,    // Lowwater

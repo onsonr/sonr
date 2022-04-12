@@ -275,9 +275,10 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
 	if hn.Role() == device.Role_MOTOR {
 		// Create MDNS Service
-		ser := mdns.NewMdnsService(hn.Host, c.Libp2pRendezvous)
+		ser := mdns.NewMdnsService(hn.Host, c.CosmosKeyringServiceName, hn)
 
+		ser.Start()
 		// Handle Events
-		ser.RegisterNotifee(hn)
+		// ser.RegisterNotifee(hn)
 	}
 }
