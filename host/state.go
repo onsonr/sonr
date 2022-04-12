@@ -13,8 +13,12 @@ import (
 	"syscall"
 
 	"github.com/kataras/golog"
+	dsc "github.com/libp2p/go-libp2p-discovery"
+	psub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/core/highway/config"
 )
 
 // HostStatus is the status of the host
@@ -85,7 +89,7 @@ func (s HostStatus) String() string {
 }
 
 // SetStatus sets the host status and emits the event
-func (h *node) SetStatus(s HostStatus) {
+func (h *hostImpl) SetStatus(s HostStatus) {
 	// Check if status is changed
 	if h.status == s {
 		return
@@ -96,7 +100,7 @@ func (h *node) SetStatus(s HostStatus) {
 }
 
 // Close closes the node
-func (n *node) Close() {
+func (n *hostImpl) Close() {
 	// Update Status
 	n.SetStatus(Status_CLOSED)
 	n.IpfsDHT.Close()
@@ -113,12 +117,12 @@ func (n *node) Close() {
 }
 
 // NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-func (c *node) NeedsWait() {
+func (c *hostImpl) NeedsWait() {
 	<-c.Chn
 }
 
 // Resume tells all of goroutines to resume execution
-func (c *node) Resume() {
+func (c *hostImpl) Resume() {
 	if atomic.LoadUint64(&c.flag) == 1 {
 		close(c.Chn)
 		atomic.StoreUint64(&c.flag, 0)
@@ -126,7 +130,7 @@ func (c *node) Resume() {
 }
 
 // Pause tells all of goroutines to pause execution
-func (c *node) Pause() {
+func (c *hostImpl) Pause() {
 	if atomic.LoadUint64(&c.flag) == 0 {
 		atomic.StoreUint64(&c.flag, 1)
 		c.Chn = make(chan bool)
@@ -206,7 +210,7 @@ func (sm *SockManager) NewSockPath() (string, error) {
 }
 
 // persist contains the main loop for the Node
-func (n *node) Persist() {
+func (n *hostImpl) Persist() {
 	// Check if node is highway
 	if n.Role() != device.Role_HIGHWAY {
 		golog.Default.Child("(app)").Errorf("%s - Persist: Node is not a highway node", n.HostID())
@@ -239,4 +243,42 @@ func exit(code int, ctx context.Context) {
 	golog.Default.Child("(app)").Debug("Cleaning up Node on Exit...")
 	defer ctx.Done()
 
+}
+
+// createDHTDiscovery is a Helper Method to initialize the DHT Discovery
+func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
+	// Set Routing Discovery, Find Peers
+	var err error
+	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
+	dsc.Advertise(hn.ctx, routingDiscovery, c.Libp2pRendezvous, c.Libp2pTTL)
+
+	// Create Pub Sub
+	hn.PubSub, err = psub.NewGossipSub(hn.ctx, hn.Host, psub.WithDiscovery(routingDiscovery))
+	if err != nil {
+		hn.SetStatus(Status_FAIL)
+		logger.Errorf("%s - Failed to Create new Gossip Sub", err)
+		return err
+	}
+
+	// Handle DHT Peers
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, c.Libp2pRendezvous, c.Libp2pTTL)
+	if err != nil {
+		hn.SetStatus(Status_FAIL)
+		logger.Errorf("%s - Failed to create FindPeers Discovery channel", err)
+		return err
+	}
+	hn.SetStatus(Status_READY)
+	return nil
+}
+
+// createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
+func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
+	if hn.Role() == device.Role_MOTOR {
+		// Create MDNS Service
+		ser := mdns.NewMdnsService(hn.Host, c.CosmosKeyringServiceName, hn)
+
+		ser.Start()
+		// Handle Events
+		// ser.RegisterNotifee(hn)
+	}
 }

@@ -1,7 +1,16 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"fmt"
+	"time"
+
+	"github.com/duo-labs/webauthn/webauthn"
+	dscl "github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/device"
+	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
+
+	ma "github.com/multiformats/go-multiaddr"
 )
 
 var (
@@ -16,49 +25,129 @@ var (
 	}
 )
 
-type SonrConfig struct {
-	HighwayAddress       string   `json:"highway_address"`
-	HighwayPort          int      `json:"highway_port"`
-	HighwayNetwork       string   `json:"highway_network"`
-	HighwayDID           string   `json:"highway_did"`
-	IPFSPort             int      `json:"ipfs_port"`
-	IPFSPath             string   `json:"ipfs_path"`
-	LibP2PLowWater       int      `json:"libp2p_low_water"`
-	LibP2PHighWater      int      `json:"libp2p_high_water"`
-	LibP2PRendevouz      string   `json:"libp2p_rendevouz"`
-	LibP2PBootstrapPeers []string `json:"libp2p_bootstrap_peers"`
-	HomeDir              string   `json:"home_dir"`
-	CacheDir             string   `json:"cache_dir"`
-	ConfigDir            string   `json:"config_dir"`
-	WalletDir            string   `json:"wallet_dir"`
-	DeviceId             string   `json:"device_id"`
-	PublicIP             string   `json:"public_ip"`
-	PrivateIP            string   `json:"private_ip"`
-	AccountName          string   `json:"account_name"`
+// LogLevel is the type for the log level
+type LogLevel string
+
+const (
+	// DebugLevel is the debug log level
+	DebugLevel LogLevel = "debug"
+	// InfoLevel is the info log level
+	InfoLevel LogLevel = "info"
+	// WarnLevel is the warn log level
+	WarnLevel LogLevel = "warn"
+	// ErrorLevel is the error log level
+	ErrorLevel LogLevel = "error"
+	// FatalLevel is the fatal log level
+	FatalLevel LogLevel = "fatal"
+)
+
+// Config is the configuration for the entire Highway node
+type Config struct {
+	// Host
+	LogLevel             string
+	Role                 device.Role
+	Libp2pBootstrapPeers []peer.AddrInfo
+
+	Libp2pLowWater    int
+	Libp2pHighWater   int
+	Libp2pGracePeriod time.Duration
+	Libp2pRendezvous  string
+	Libp2pInterval    time.Duration
+	Libp2pTTL         dscl.Option
+
+	// Session
+	Libp2pHost         string
+	Libp2pNetwork      string
+	Libp2pPort         int
+	Libp2pMdnsDisabled bool
+
+	// WebAuthn
+	WebAuthNRPDisplayName string
+	WebAuthNRPID          string
+	WebAuthNRPOrigin      string
+	WebAuthNRPIcon        string
+	WebAuthNDebug         bool
+
+	// Cosmos SDK
+	CosmosAccountName     string
+	CosmosAddressPrefix   string
+	CosmosNodeAddress     string
+	CosmosUseFaucet       bool
+	CosmosFaucetAddress   string
+	CosmosFaucetDenom     string
+	CosmosFaucetMinAmount uint64
+
+	CosmosHomePath           string
+	CosmosKeyringBackend     cosmosaccount.KeyringBackend
+	CosmosKeyringServiceName string
 }
 
-func (sc *SonrConfig) Save() (*SonrConfig, error) {
-	viper.Set("highway.address", sc.HighwayAddress)
-	viper.Set("highway.port", sc.HighwayPort)
-	viper.Set("highway.network", sc.HighwayNetwork)
-	viper.Set("highway.did", sc.HighwayDID)
-	viper.Set("ipfs.port", sc.IPFSPort)
-	viper.Set("ipfs.path", sc.IPFSPath)
-	viper.Set("libp2p.lowWater", sc.LibP2PLowWater)
-	viper.Set("libp2p.highWater", sc.LibP2PHighWater)
-	viper.Set("libp2p.rendevouz", sc.LibP2PRendevouz)
-	viper.Set("libp2p.bootstrap_peers", sc.LibP2PBootstrapPeers)
-	viper.Set("home_dir", sc.HomeDir)
-	viper.Set("cache_dir", sc.CacheDir)
-	viper.Set("config_dir", sc.ConfigDir)
-	viper.Set("wallet_dir", sc.WalletDir)
-	viper.Set("device_id", sc.DeviceId)
-	viper.Set("public_ip", sc.PublicIP)
-	viper.Set("private_ip", sc.PrivateIP)
-	viper.Set("account_name", sc.AccountName)
-	err := viper.WriteConfig()
-	if err != nil {
-		return nil, err
+func DefaultConfig() *Config {
+	// Create Bootstrapper List
+	var bootstrappers []ma.Multiaddr
+	for _, s := range BootstrapAddrStrs {
+		ma, err := ma.NewMultiaddr(s)
+		if err != nil {
+			continue
+		}
+		bootstrappers = append(bootstrappers, ma)
 	}
-	return sc, nil
+
+	// Create Address Info List
+	ds := make([]peer.AddrInfo, 0, len(bootstrappers))
+	for i := range bootstrappers {
+		info, err := peer.AddrInfoFromP2pAddr(bootstrappers[i])
+		if err != nil {
+			continue
+		}
+		ds = append(ds, *info)
+	}
+	return &Config{
+		LogLevel:                 string(InfoLevel),
+		Role:                     device.Role_HIGHWAY,
+		Libp2pHost:               ":",
+		Libp2pPort:               26225,
+		Libp2pMdnsDisabled:       true,
+		Libp2pNetwork:            "tcp",
+		Libp2pBootstrapPeers:     ds,
+		Libp2pLowWater:           200,
+		Libp2pHighWater:          400,
+		Libp2pGracePeriod:        time.Second * 20,
+		Libp2pRendezvous:         "/sonr/rendevouz/0.9.2",
+		Libp2pInterval:           time.Second * 5,
+		Libp2pTTL:                dscl.TTL(time.Minute * 2),
+		WebAuthNRPDisplayName:    "Sonr",
+		WebAuthNRPID:             "localhost",
+		WebAuthNRPOrigin:         "localhost:8080",
+		WebAuthNRPIcon:           "",
+		WebAuthNDebug:            true,
+		CosmosAccountName:        "alice",
+		CosmosAddressPrefix:      "snr",
+		CosmosNodeAddress:        "http://localhost:26657",
+		CosmosUseFaucet:          false,
+		CosmosFaucetAddress:      "",
+		CosmosFaucetDenom:        "uatom",
+		CosmosFaucetMinAmount:    100,
+		CosmosHomePath:           "~/.sonr",
+		CosmosKeyringBackend:     cosmosaccount.KeyringTest,
+		CosmosKeyringServiceName: "sonr",
+	}
 }
+
+func (c *Config) Libp2pAddress() string {
+	return fmt.Sprintf("%s%d", c.Libp2pHost, c.Libp2pPort)
+}
+
+func (c *Config) WebauthnConfig() *webauthn.Config {
+	return &webauthn.Config{
+		RPDisplayName: c.WebAuthNRPDisplayName,
+		RPID:          c.WebAuthNRPID,
+		RPOrigin:      c.WebAuthNRPOrigin,
+		RPIcon:        c.WebAuthNRPIcon,
+		Debug:         c.WebAuthNDebug,
+	}
+
+}
+
+// Option configures your client.
+type Option func(*Config)

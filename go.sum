@@ -529,6 +529,7 @@ github.com/cosmos/iavl v0.17.2/go.mod h1:prJoErZFABYZGDHka1R6Oay4z9PrNeFFiMKHDAM
 github.com/cosmos/iavl v0.17.3 h1:s2N819a2olOmiauVa0WAhoIJq9EhSXE9HDBAoR9k+8Y=
 github.com/cosmos/iavl v0.17.3/go.mod h1:prJoErZFABYZGDHka1R6Oay4z9PrNeFFiMKHDAMOi4w=
 github.com/cosmos/ibc-go v1.2.2/go.mod h1:XmYjsRFOs6Q9Cz+CSsX21icNoH27vQKb3squgnCOCbs=
+github.com/cosmos/ibc-go/v2 v2.0.2/go.mod h1:XUmW7wmubCRhIEAGtMGS+5IjiSSmcAwihoN/yPGd6Kk=
 github.com/cosmos/ledger-cosmos-go v0.11.1 h1:9JIYsGnXP613pb2vPjFeMMjBI5lEDsEaF6oYorTy6J4=
 github.com/cosmos/ledger-cosmos-go v0.11.1/go.mod h1:J8//BsAGTo3OC/vDLjMRFLW6q0WAaXvHnVc7ZmE8iUY=
 github.com/cosmos/ledger-go v0.9.2 h1:Nnao/dLwaVTk1Q5U9THldpUMMXU94BOTWPddSmVB6pI=
@@ -2018,6 +2019,7 @@ github.com/mitchellh/mapstructure v0.0.0-20180220230111-00c29f56e238/go.mod h1:F
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/mitchellh/mapstructure v1.3.3/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/mapstructure v1.4.1/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
+github.com/mitchellh/mapstructure v1.4.2/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/mapstructure v1.4.3 h1:OVowDSCllw/YjdLkam3/sm7wEtOy59d8ndGgCcyj8cs=
 github.com/mitchellh/mapstructure v1.4.3/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/osext v0.0.0-20151018003038-5e2d6d41470f/go.mod h1:OkQIRizQZAeMln+1tSwduZz7+Af5oFlKirV/MSYes2A=
@@ -2600,14 +2602,15 @@ github.com/tendermint/btcd v0.1.1/go.mod h1:DC6/m53jtQzr/NFmMNEu0rxf18/ktVoVtMrn
 github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15 h1:hqAk8riJvK4RMWx1aInLzndwxKalgi5rTqgfXxOxbEI=
 github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15/go.mod h1:z4YtwM70uOnk8h0pjJYlj3zdYwi9l03By6iAIF5j/Pk=
 github.com/tendermint/flutter/v2 v2.0.1/go.mod h1:hnaVhWhzv2Od1LqZFWrRKwiOHeMonsB9EIWP0AGMPw0=
+github.com/tendermint/flutter/v2 v2.0.3/go.mod h1:hnaVhWhzv2Od1LqZFWrRKwiOHeMonsB9EIWP0AGMPw0=
 github.com/tendermint/go-amino v0.16.0 h1:GyhmgQKvqF82e2oZeuMSp9JTN0N09emoSZlb2lyGa2E=
 github.com/tendermint/go-amino v0.16.0/go.mod h1:TQU0M1i/ImAo+tYpZi73AU3V/dKeCoMC9Sphe2ZwGME=
 github.com/tendermint/spm v0.1.8/go.mod h1:iHgfQ5YOI6ONc9E7ugGQolVdfSMHpeXfZ/OpXuN/42Q=
-github.com/tendermint/spm v0.1.9 h1:O1DJF4evS8wgk5SZqRcO29irNNtKQmTpvQ0xFzUiczI=
 github.com/tendermint/spm v0.1.9/go.mod h1:iHgfQ5YOI6ONc9E7ugGQolVdfSMHpeXfZ/OpXuN/42Q=
 github.com/tendermint/spn v0.1.1-0.20211210094128-4ca78a240c57/go.mod h1:p4BO8YC6kOKSKqMfySqaLHfwBmuPE/QcLwnnVhh7H9M=
-github.com/tendermint/starport v0.19.1 h1:yc6tJ7nuYSQjVo+Ow4sOb70pNBD1k6iha4sXFh3c3S8=
 github.com/tendermint/starport v0.19.1/go.mod h1:rjVgon3oGhhWkGjBP/MQdPpiooCMHzf235v35RzIXis=
+github.com/tendermint/starport v0.19.5 h1:5mI//Q4xPfpzHksX1JPTUgamTtdhrVLq4o6RIlM6TSg=
+github.com/tendermint/starport v0.19.5/go.mod h1:XdbMpJ5R6QzP1+yrfsoCk44fnp9/52raponbkvjIMQA=
 github.com/tendermint/tendermint v0.34.0-rc4/go.mod h1:yotsojf2C1QBOw4dZrTcxbyxmPUrT4hNuOQWX9XUwB4=
 github.com/tendermint/tendermint v0.34.0-rc6/go.mod h1:ugzyZO5foutZImv0Iyx/gOFCX6mjJTgbLHTwi17VDVg=
 github.com/tendermint/tendermint v0.34.0/go.mod h1:Aj3PIipBFSNO21r+Lq3TtzQ+uKESxkbA3yo/INM4QwQ=
@@ -2619,6 +2622,7 @@ github.com/tendermint/tm-db v0.6.3/go.mod h1:lfA1dL9/Y/Y8wwyPp2NMLyn5P5Ptr/gvDFN
 github.com/tendermint/tm-db v0.6.4 h1:3N2jlnYQkXNQclQwd/eKV/NzlqPlfK21cpRRIx80XXQ=
 github.com/tendermint/tm-db v0.6.4/go.mod h1:dptYhIpJ2M5kUuenLr+Yyf3zQOv1SgBZcl8/BmWlMBw=
 github.com/tendermint/vue v0.1.55/go.mod h1:Sg9MGPF+uY+SJ79sdZgtC2LnH+FDU2qWuiRxoZn5bmw=
+github.com/tendermint/vue v0.3.5/go.mod h1:Sg9MGPF+uY+SJ79sdZgtC2LnH+FDU2qWuiRxoZn5bmw=
 github.com/tetafro/godot v1.4.9/go.mod h1:LR3CJpxDVGlYOWn3ZZg1PgNZdTUvzsZWu8xaEohUpn8=
 github.com/texttheater/golang-levenshtein v0.0.0-20180516184445-d188e65d659e/go.mod h1:XDKHRm5ThF8YJjx001LtgelzsoaEcvnA7lVWz9EeX3g=
 github.com/tidwall/btree v0.4.2/go.mod h1:huei1BkDWJ3/sLXmO+bsCNELL+Bp2Kks9OLyQFkzvA8=
@@ -2769,11 +2773,13 @@ go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.31 h1:MsSkMZFfDFWk02tl/+0cg5O3NqPPHQ
 go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.31/go.mod h1:xoj76Mv+glMZbbBRkbRbEu8HD2hh7igfOamQS4me8ng=
 go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 h1:movzgRYHiYXq/rd5Fo5KnMtYizbCKlvbEGafqwU2AkU=
 go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1/go.mod h1:Oacq9kdGMFBOTGB/CrAMpHc7GwkJg1P1d0gKF6X0kuU=
-go.buf.build/grpc/go/sonr-io/core v1.3.6 h1:BSkcg3iTWA3hyBfcm9+Ydk6CJsyse1mxo92Ah7W7UWU=
 go.buf.build/grpc/go/sonr-io/core v1.3.6/go.mod h1:fLPswauxZMm8ZAj9uFXIqkO3GKa/bpdD1CceZupNqQE=
+go.buf.build/grpc/go/sonr-io/core v1.3.8 h1:O67T2s2a7hAX57xESaQZAY1kGPbAJ9xd7jHVz5LglR0=
+go.buf.build/grpc/go/sonr-io/core v1.3.8/go.mod h1:fLPswauxZMm8ZAj9uFXIqkO3GKa/bpdD1CceZupNqQE=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.14/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
-go.buf.build/grpc/go/sonr-io/sonr v1.3.15 h1:GkLeRx0Bk6r0LTfObDIEMNIqSBG8xOANai9LK+t83pw=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.15/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
+go.buf.build/grpc/go/sonr-io/sonr v1.3.16 h1:ZSJULXivXPhmnUk7up/LRDoaT47XuEwj98laftFGnb8=
+go.buf.build/grpc/go/sonr-io/sonr v1.3.16/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.4/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
@@ -3623,6 +3629,7 @@ gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2/go.mod h1:Xk6kEKp8OKb+X14hQBKW
 gopkg.in/inf.v0 v0.9.1/go.mod h1:cWUDdTG/fYaXco+Dcufb5Vnc6Gp2YChqWtbxRZE0mXw=
 gopkg.in/ini.v1 v1.51.0/go.mod h1:pNLf8WUiyNEtQjuu5G5vTm06TEv9tsIgeAvK8hOrP4k=
 gopkg.in/ini.v1 v1.62.0/go.mod h1:pNLf8WUiyNEtQjuu5G5vTm06TEv9tsIgeAvK8hOrP4k=
+gopkg.in/ini.v1 v1.63.2/go.mod h1:pNLf8WUiyNEtQjuu5G5vTm06TEv9tsIgeAvK8hOrP4k=
 gopkg.in/ini.v1 v1.66.2 h1:XfR1dOYubytKy4Shzc2LHrrGhU0lDCfDGG1yLPmpgsI=
 gopkg.in/ini.v1 v1.66.2/go.mod h1:pNLf8WUiyNEtQjuu5G5vTm06TEv9tsIgeAvK8hOrP4k=
 gopkg.in/natefinch/lumberjack.v2 v2.0.0/go.mod h1:l0ndWWf7gzL7RNwBG7wST/UCcT4T24xpD6X8LsfU/+k=
