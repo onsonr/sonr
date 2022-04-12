@@ -12,6 +12,18 @@ import (
 // CreateChannel creates a new channel.
 func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChannel) (*ct.MsgCreateChannelResponse, error) {
 	// Create ctv1 message to broadcast
+	var fields map[string]*ot.ObjectField
+
+	fields = make(map[string]*ot.ObjectField, len(req.GetObjectToRegister().GetFields()))
+	for _, f := range req.GetObjectToRegister().GetFields() {
+		fields[f.GetLabel()] = &ot.ObjectField{
+			Label: f.GetLabel(),
+			Type:  ot.ObjectFieldType(f.GetType()),
+			Did:   f.GetDid(),
+		}
+	}
+
+	// Build Transaction
 	tx := &ctv1.MsgCreateChannel{
 		Creator: req.GetCreator(),
 		Label:   req.GetLabel(),
@@ -20,7 +32,7 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 			Description: req.GetObjectToRegister().GetDescription(),
 			Did:         req.GetObjectToRegister().GetDid(),
 			BucketDid:   req.GetObjectToRegister().GetBucketDid(),
-			// Fields: req.GetObjectToRegister().GetFields(),
+			Fields:      fields,
 		},
 	}
 
