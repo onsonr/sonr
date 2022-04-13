@@ -145,7 +145,6 @@ func (b *channel) Publish(obj *ot.ObjectDoc) error {
 	msg := &ct.ChannelMessage{
 		Object: obj,
 		Did:    b.did,
-		// Peer:   b.n.HostID().String(),
 	}
 
 	// Encode the message.

@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"crypto/ed25519"
 	"crypto/rand"
 	"errors"
 	"net"
@@ -44,6 +45,9 @@ type HostImpl interface {
 	// HasRouting returns true if the node has routing
 	HasRouting() error
 
+	// Host returns the Host
+	Host() host.Host
+
 	// HostID returns the ID of the Host
 	HostID() peer.ID
 
@@ -80,6 +84,9 @@ type HostImpl interface {
 	// Publish publishes a message to a topic
 	Publish(topic string, msg proto.Message, metadata *types.Metadata) error
 
+	// Pubsub returns the pubsub of the node
+	Pubsub() *ps.PubSub
+
 	// Resume tells all of goroutines to resume execution
 	Resume()
 
@@ -88,6 +95,12 @@ type HostImpl interface {
 
 	// Router returns the routing.Router
 	Router(h host.Host) (routing.PeerRouting, error)
+
+	// Routing returns the routing.Routing
+	Routing() routing.Routing
+
+	// PrivateKey returns the ed25519 private key instance of the libp2p host
+	PrivateKey() (ed25519.PrivateKey, error)
 
 	// SendMessage sends a message to a peer
 	SendMessage(id peer.ID, p protocol.ID, data proto.Message) error
@@ -108,7 +121,7 @@ type HostImpl interface {
 // hostImpl type - a p2p host implementing one or more p2p protocols
 type hostImpl struct {
 	// Standard Node Implementation
-	host.Host
+	host host.Host
 	HostImpl
 	role device.Role
 
@@ -169,14 +182,16 @@ func NewHost(ctx context.Context, r device.Role, config *config.Config) (HostImp
 		return nil, err
 	}
 
+	// Create Connection Manager
+	cnnmgr, err := cmgr.NewConnManager(config.Libp2pLowWater, config.Libp2pHighWater)
+	if err != nil {
+		return nil, err
+	}
+
 	// Start Host
-	hn.Host, err = libp2p.New(ctx,
+	hn.host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
-		libp2p.ConnectionManager(cmgr.NewConnManager(
-			config.Libp2pLowWater,    // Lowwater
-			config.Libp2pHighWater,   // HighWater,
-			config.Libp2pGracePeriod, // GracePeriod
-		)),
+		libp2p.ConnectionManager(cnnmgr),
 		libp2p.DefaultListenAddrs,
 		libp2p.Routing(hn.Router),
 		libp2p.EnableAutoRelay(),
@@ -213,7 +228,7 @@ func NewHost(ctx context.Context, r device.Role, config *config.Config) (HostImp
 
 	// Initialize Discovery for MDNS
 	if !config.Libp2pMdnsDisabled && hn.role != device.Role_HIGHWAY {
-		hn.createMdnsDiscovery(config)
+		// hn.createMdnsDiscovery(config)
 	}
 
 	hn.SetStatus(Status_READY)
@@ -221,9 +236,14 @@ func NewHost(ctx context.Context, r device.Role, config *config.Config) (HostImp
 	return hn, nil
 }
 
+// Host returns the host of the node
+func (hn *hostImpl) Host() host.Host {
+	return hn.host
+}
+
 // HostID returns the ID of the Host
 func (n *hostImpl) HostID() peer.ID {
-	return n.Host.ID()
+	return n.host.ID()
 }
 
 // Listener returns the listener of the node
@@ -237,6 +257,17 @@ func (n *hostImpl) Listener() (net.Listener, error) {
 // Ping sends a ping to the peer
 func (n *hostImpl) Ping(pid string) error {
 	return nil
+}
+
+// PrivateKey returns the private key of the node
+func (n *hostImpl) PrivateKey() (ed25519.PrivateKey, error) {
+	// Get Raw Private Key
+	buf, err := n.privKey.Raw()
+	if err != nil {
+		logger.Errorf("%s - Failed to get Raw Private Key", err)
+		return nil, err
+	}
+	return ed25519.PrivateKey(buf), nil
 }
 
 // Publish publishes a message to the network
@@ -287,7 +318,7 @@ func (hn *hostImpl) Connect(pi peer.AddrInfo) error {
 	}
 
 	// Call Underlying Host to Connect
-	return hn.Host.Connect(hn.ctx, pi)
+	return hn.host.Connect(hn.ctx, pi)
 }
 
 // HandlePeerFound is to be called when new  peer is found
@@ -297,7 +328,7 @@ func (hn *hostImpl) HandlePeerFound(pi peer.AddrInfo) {
 
 // HasRouting returns no-error if the host is ready for connect
 func (h *hostImpl) HasRouting() error {
-	if h.IpfsDHT == nil || h.Host == nil {
+	if h.IpfsDHT == nil || h.host == nil {
 		return errors.New("Host is not ready")
 	}
 	return nil
@@ -321,7 +352,7 @@ func (hn *hostImpl) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 
 // NewStream opens a new stream to the peer with given peer id
 func (n *hostImpl) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error) {
-	return n.Host.NewStream(ctx, pid, pids...)
+	return n.host.NewStream(ctx, pid, pids...)
 }
 
 // NewTopic creates a new topic
@@ -371,9 +402,19 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 	return hn.IpfsDHT, nil
 }
 
+// PubSub returns the host node PubSub Function
+func (hn *hostImpl) Pubsub() *ps.PubSub {
+	return hn.PubSub
+}
+
+// Routing returns the host node Peer Routing Function
+func (hn *hostImpl) Routing() routing.Routing {
+	return hn.IpfsDHT
+}
+
 // SetStreamHandler sets the handler for a given protocol
 func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
-	n.Host.SetStreamHandler(protocol, handler)
+	n.host.SetStreamHandler(protocol, handler)
 }
 
 // SendMessage writes a protobuf go data object to a network stream
@@ -410,9 +451,9 @@ func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) er
 func (hn *hostImpl) Stat() (map[string]string, error) {
 	// Return Host Stat
 	return map[string]string{
-		"ID":        hn.ID().String(),
+		"ID":        hn.host.ID().String(),
 		"Status":    hn.status.String(),
-		"MultiAddr": hn.Addrs()[0].String(),
+		"MultiAddr": hn.host.Addrs()[0].String(),
 	}, nil
 }
 
@@ -422,13 +463,13 @@ func (hn *hostImpl) Serve() {
 		select {
 		case mdnsPI := <-hn.mdnsPeerChan:
 			if err := hn.Connect(mdnsPI); err != nil {
-				hn.Peerstore().ClearAddrs(mdnsPI.ID)
+				hn.host.Peerstore().ClearAddrs(mdnsPI.ID)
 				continue
 			}
 
 		case dhtPI := <-hn.dhtPeerChan:
 			if err := hn.Connect(dhtPI); err != nil {
-				hn.Peerstore().ClearAddrs(dhtPI.ID)
+				hn.host.Peerstore().ClearAddrs(dhtPI.ID)
 				continue
 			}
 		case <-hn.ctx.Done():

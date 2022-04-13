@@ -15,7 +15,6 @@ import (
 	"github.com/kataras/golog"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/highway/config"
@@ -111,7 +110,7 @@ func (n *hostImpl) Close() {
 	}
 
 	// Close Host
-	if err := n.Host.Close(); err != nil {
+	if err := n.host.Close(); err != nil {
 		logger.Errorf("%s - Failed to close host, ", err)
 	}
 }
@@ -253,7 +252,7 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	dsc.Advertise(hn.ctx, routingDiscovery, c.Libp2pRendezvous, c.Libp2pTTL)
 
 	// Create Pub Sub
-	hn.PubSub, err = psub.NewGossipSub(hn.ctx, hn.Host, psub.WithDiscovery(routingDiscovery))
+	hn.PubSub, err = psub.NewGossipSub(hn.ctx, hn.host, psub.WithDiscovery(routingDiscovery))
 	if err != nil {
 		hn.SetStatus(Status_FAIL)
 		logger.Errorf("%s - Failed to Create new Gossip Sub", err)
@@ -271,13 +270,14 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	return nil
 }
 
-// createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
-func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
-	if hn.Role() == device.Role_MOTOR {
-		// Create MDNS Service
-		ser := mdns.NewMdnsService(hn.Host, c.Libp2pRendezvous)
+// TODO Migrate MDNS Service to latesat libp2p spec
+// // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
+// func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
+// 	if hn.Role() == device.Role_MOTOR {
+// 		// Create MDNS Service
+// 		ser := mdns.NewMdnsService(hn.host, c.Libp2pRendezvous)
 
-		// Handle Events
-		ser.RegisterNotifee(hn)
-	}
-}
+// 		// Handle Events
+// 		ser.RegisterNotifee(hn)
+// 	}
+// }

@@ -19,8 +19,7 @@ import (
 	"github.com/sonr-io/core/highway/client"
 	"github.com/sonr-io/core/highway/config"
 	hn "github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/host/discover"
-	"github.com/sonr-io/core/host/exchange"
+	"github.com/sonr-io/core/host/ipfs"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
 )
@@ -43,12 +42,11 @@ type HighwayServer struct {
 	cosmos *client.Cosmos
 
 	// Properties
-	ctx      context.Context
-	listener net.Listener
-	grpc     *grpc.Server
-	router   *mux.Router
-	*discover.DiscoverProtocol
-	*exchange.ExchangeProtocol
+	ctx          context.Context
+	listener     net.Listener
+	grpc         *grpc.Server
+	router       *mux.Router
+	ipfsProtocol *ipfs.IPFSProtocol
 
 	// Configuration
 	auth         *webauthn.WebAuthn
@@ -112,6 +110,11 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 		listener:     lst,
 		auth:         web,
 		sessionStore: sessionStore,
+	}
+
+	stub.ipfsProtocol, err = ipfs.New(ctx, stub.node)
+	if err != nil {
+		return nil, err
 	}
 
 	// TODO Implement P2P Protocols for Sonr Network
