@@ -2924,8 +2924,8 @@ go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 h1:movzgRYHiYXq/rd5Fo5KnMtYizbCKlv
 go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1/go.mod h1:Oacq9kdGMFBOTGB/CrAMpHc7GwkJg1P1d0gKF6X0kuU=
 go.buf.build/grpc/go/sonr-io/core v1.3.6/go.mod h1:fLPswauxZMm8ZAj9uFXIqkO3GKa/bpdD1CceZupNqQE=
 go.buf.build/grpc/go/sonr-io/core v1.3.8/go.mod h1:fLPswauxZMm8ZAj9uFXIqkO3GKa/bpdD1CceZupNqQE=
-go.buf.build/grpc/go/sonr-io/core v1.3.9 h1:0ASdBp9urq7cDVHPIePWutKipirDKCNqmHr7VCuebIE=
-go.buf.build/grpc/go/sonr-io/core v1.3.9/go.mod h1:fLPswauxZMm8ZAj9uFXIqkO3GKa/bpdD1CceZupNqQE=
+go.buf.build/grpc/go/sonr-io/core v1.3.10 h1:GoVTDmiPhF6B/ZhDZxroeU+PHNLEt+9JaGSFoEGTq3E=
+go.buf.build/grpc/go/sonr-io/core v1.3.10/go.mod h1:fLPswauxZMm8ZAj9uFXIqkO3GKa/bpdD1CceZupNqQE=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.14/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.15/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.16/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
