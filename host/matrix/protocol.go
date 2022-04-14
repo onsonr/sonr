@@ -1,3 +1,6 @@
+// FORKED FROM: https://github.com/matrix-org/dendrite/blob/main/cmd/dendrite-demo-libp2p/p2pdendrite.go.
+// However, modified to utilize our HostImpl struct.
+
 package matrix
 
 import (

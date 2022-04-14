@@ -1,3 +1,5 @@
+// FORKED FROM: https://github.com/matrix-org/dendrite/blob/main/cmd/dendrite-demo-libp2p/publicrooms.go
+
 package matrix
 
 import (
