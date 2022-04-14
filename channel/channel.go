@@ -2,6 +2,7 @@ package channel
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/kataras/golog"
@@ -139,6 +140,11 @@ func (b *channel) Publish(obj *ot.ObjectDoc) error {
 	// Check if both text and data are empty.
 	if obj == nil {
 		return errors.New("text and data cannot be empty")
+	}
+
+	// Check if passed object is one registered in the channel.
+	if !strings.EqualFold(b.config.RegisteredObject.Did, obj.Did) {
+		return errors.New("object not registered in channel")
 	}
 
 	// Create the message.
