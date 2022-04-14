@@ -2,6 +2,7 @@ package highway
 
 import (
 	context "context"
+	"errors"
 
 	ctv1 "github.com/sonr-io/blockchain/x/channel/types"
 	ot "github.com/sonr-io/blockchain/x/object/types"
@@ -11,9 +12,13 @@ import (
 
 // CreateChannel creates a new channel.
 func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChannel) (*ct.MsgCreateChannelResponse, error) {
+	// Verify that channel fields are not nil
+	if req.GetObjectToRegister().GetFields() == nil {
+		return nil, errors.New("object to register must have fields")
+	}
+
 	// Create ctv1 message to broadcast
 	var fields map[string]*ot.ObjectField
-
 	fields = make(map[string]*ot.ObjectField, len(req.GetObjectToRegister().GetFields()))
 	for _, f := range req.GetObjectToRegister().GetFields() {
 		fields[f.GetLabel()] = &ot.ObjectField{

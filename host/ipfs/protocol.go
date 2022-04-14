@@ -1,7 +1,9 @@
 package ipfs
 
 import (
+	"bytes"
 	"context"
+	"io/ioutil"
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
@@ -44,23 +46,31 @@ func (i *IPFSProtocol) DecodeCIDFromString(s string) (cid.Cid, error) {
 
 // GetFile returns a file from IPFS.
 func (i *IPFSProtocol) GetFile(cid cid.Cid) ([]byte, error) {
-	rsc, err := i.GetFile(cid)
+	rsc, err := i.Peer.GetFile(i.ctx, cid)
 	if err != nil {
 		return nil, err
 	}
-	return rsc, nil
+	defer rsc.Close()
+	return ioutil.ReadAll(rsc)
 }
 
 // PutFile puts a file to IPFS and returns the CID.
-func (i *IPFSProtocol) PutFile(data []byte) (cid.Cid, error) {
-	cid, err := i.PutFile(data)
+func (i *IPFSProtocol) PutFile(data []byte) (*cid.Cid, error) {
+	// Create Reader for Data
+	buffer := bytes.NewBuffer(data)
+
+	// Adds file to IPFS
+	nd, err := i.Peer.AddFile(i.ctx, buffer, nil)
 	if err != nil {
-		return cid, err
+		return nil, err
 	}
-	return cid, nil
+
+	// Get Back the CID
+	c := nd.Cid()
+	return &c, nil
 }
 
 // RemoveFile removes a file from IPFS.
 func (i *IPFSProtocol) RemoveFile(cid cid.Cid) error {
-	return i.RemoveFile(cid)
+	return i.Peer.Remove(i.ctx, cid)
 }
