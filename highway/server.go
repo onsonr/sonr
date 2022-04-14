@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
@@ -12,6 +13,7 @@ import (
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gorilla/mux"
+	iface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/kataras/golog"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/core/channel"
@@ -53,7 +55,7 @@ type HighwayServer struct {
 	cache        *cache.Cache
 	sessionStore *session.Store
 
-	// ipfs *storage.IPFSService
+	ipfs iface.CoreAPI
 
 	// List of Entries
 	channels map[string]channel.Channel
@@ -99,6 +101,32 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 	// purges expired items every 10 minutes
 	cche := cache.New(5*time.Minute, 10*time.Minute)
 
+	// TODO work with Nick on what exact approach to do on this
+	// if ipfs repo not setup, then do so
+	// if _, err := os.Stat("~/.ipfs"); os.IsNotExist(err) {
+	// 	cmd := exec.Command("ipfs init --profile server") //TODO make sure profile server flag is what we want
+	// 	err := cmd.Run()
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }
+
+	// Note for later "IPFS_PATH" is env variable in ipfs config that changes location of
+	// where to look for .ipfs default this is ~/
+
+	// Spawn a node using the default path (~/.ipfs), assuming that a repo exists there already
+	ipfs, err := ipfsLib.SpawnEphemeral(ctx)
+	if err != nil {
+		panic(fmt.Errorf("failed to spawnDefault node: %s", err))
+	}
+
+	go func() {
+		err := ipfs.ConnectToPeers(ctx, config.BootstrapAddrStrs)
+		if err != nil {
+			log.Printf("failed connect to peers: %s", err)
+		}
+	}()
+
 	// Create the RPC Service
 	stub := &HighwayServer{
 		cosmos: cosmos,
@@ -106,6 +134,7 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 		cache:  cche,
 		ctx:    ctx,
 		grpc:   grpc.NewServer(),
+		ipfs:   ipfs,
 
 		listener:     lst,
 		auth:         web,
@@ -118,14 +147,14 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 	}
 
 	// TODO Implement P2P Protocols for Sonr Network
-	// // Set Discovery Protocol
+	// Set Discovery Protocol
 	// stub.DiscoverProtocol, err = discover.New(ctx, node, stub)
 	// if err != nil {
 	// 	logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
 	// 	return nil, err
 	// }
 
-	// // Set Transmit Protocol
+	// Set Transmit Protocol
 	// stub.ExchangeProtocol, err = exchange.New(ctx, node, stub)
 	// if err != nil {
 	// 	logger.Errorf("%s - Failed to start TransmitProtocol", err)

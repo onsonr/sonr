@@ -8,7 +8,7 @@ require (
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
 	github.com/fxamacker/cbor/v2 v2.4.0
-	github.com/gabriel-vasile/mimetype v1.3.1
+	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
@@ -17,15 +17,19 @@ require (
 	github.com/hsanjuan/ipfs-lite v1.3.0
 	github.com/ipfs/go-cid v0.1.0
 	github.com/ipfs/go-datastore v0.5.1
+	github.com/ipfs/go-ipfs v0.12.2
+	github.com/ipfs/go-ipfs-config v0.19.0
+	github.com/ipfs/go-ipfs-files v0.0.9
+	github.com/ipfs/interface-go-ipfs-core v0.5.2
 	github.com/kataras/golog v0.1.7
 	github.com/lestrrat-go/jwx v1.2.20
 	github.com/libp2p/go-libp2p v0.17.0
 	github.com/libp2p/go-libp2p-connmgr v0.3.1
 	github.com/libp2p/go-libp2p-core v0.13.0
 	github.com/libp2p/go-libp2p-discovery v0.6.0
-	github.com/libp2p/go-libp2p-http v0.2.0
+	github.com/libp2p/go-libp2p-http v0.2.1
 	github.com/libp2p/go-libp2p-kad-dht v0.15.0
-	github.com/libp2p/go-libp2p-pubsub v0.5.4
+	github.com/libp2p/go-libp2p-pubsub v0.6.0
 	github.com/libp2p/go-msgio v0.1.0
 	github.com/matrix-org/dendrite v0.8.1
 	github.com/matrix-org/gomatrixserverlib v0.0.0-20220408160933-cf558306b56f
@@ -49,3 +53,5 @@ require (
 )
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+
+replace github.com/ipfs/go-ipfs-blockstore => github.com/ipfs/go-ipfs-blockstore v1.1.2
