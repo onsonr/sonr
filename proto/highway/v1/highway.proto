@@ -26,31 +26,12 @@ service Highway {
     };
   }
 
-  // Read a Channel
-  //
-  // Lists all peers subscribed to the given channel, and additional details about
-  // the channels configuration.
-  rpc ReadChannel(sonrio.sonr.channel.MsgReadChannel) returns (sonrio.sonr.channel.MsgReadChannelResponse) {
-    option (google.api.http) = {
-      get: "/read/channel/{did}"
-    };
-  }
-
   // Update a Channel
   //
   // Updates the configuration of the given channel.
   rpc UpdateChannel(sonrio.sonr.channel.MsgUpdateChannel) returns (sonrio.sonr.channel.MsgUpdateChannelResponse) {
     option (google.api.http) = {
       put: "/update/channel/{did}"
-    };
-  }
-
-  // Delete a Channel
-  //
-  // Deletes the given channel if the calling node is the owner of the channel.
-  rpc DeleteChannel(sonrio.sonr.channel.MsgDeleteChannel) returns (sonrio.sonr.channel.MsgDeleteChannelResponse) {
-    option (google.api.http) = {
-      delete: "/delete/channel/{did}"
     };
   }
 

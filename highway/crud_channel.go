@@ -7,7 +7,7 @@ import (
 	ctv1 "github.com/sonr-io/blockchain/x/channel/types"
 	ot "github.com/sonr-io/blockchain/x/object/types"
 	"github.com/sonr-io/core/channel"
-	ct "go.buf.build/grpc/go/sonr-io/sonr/channel"
+	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 )
 
 // CreateChannel creates a new channel.
@@ -58,29 +58,8 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 	return nil, ErrMethodUnimplemented
 }
 
-// ReadChannel reads a channel.
-func (s *HighwayServer) ReadChannel(ctx context.Context, req *ct.MsgReadChannel) (*ct.MsgReadChannelResponse, error) {
-	// Find channel by DID
-	ch, ok := s.channels[req.GetDid()]
-	if !ok {
-		return nil, ErrInvalidQuery
-	}
-
-	// Read the channel
-	peers := ch.Read()
-	logger.Debugf("Read %d peers from channel %s", len(peers), peers)
-	return &ct.MsgReadChannelResponse{
-		// Peers: peers,
-	}, nil
-}
-
 // UpdateChannel updates a channel.
 func (s *HighwayServer) UpdateChannel(ctx context.Context, req *ct.MsgUpdateChannel) (*ct.MsgUpdateChannelResponse, error) {
-	return nil, ErrMethodUnimplemented
-}
-
-// DeleteChannel deletes a channel.
-func (s *HighwayServer) DeleteChannel(ctx context.Context, req *ct.MsgDeleteChannel) (*ct.MsgDeleteChannelResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
 

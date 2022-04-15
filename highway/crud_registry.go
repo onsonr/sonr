@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
-	rt "go.buf.build/grpc/go/sonr-io/sonr/registry"
+	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 // StartRegisterName starts the registration process for webauthn on http

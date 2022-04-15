@@ -49,8 +49,8 @@ require (
 	github.com/tendermint/starport v0.19.5
 	github.com/warpfork/go-testmark v0.9.0 // indirect
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210219115102-f37d292932f2 // indirect
-	go.buf.build/grpc/go/sonr-io/core v1.3.10
-	go.buf.build/grpc/go/sonr-io/sonr v1.3.18
+	go.buf.build/grpc/go/sonr-io/blockchain v1.3.1
+	go.buf.build/grpc/go/sonr-io/core v1.3.11
 	go.uber.org/goleak v1.1.11 // indirect
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
