@@ -17,10 +17,11 @@ require (
 	github.com/hsanjuan/ipfs-lite v1.3.0
 	github.com/ipfs/go-cid v0.1.0
 	github.com/ipfs/go-datastore v0.5.1
-	github.com/ipfs/go-ipfs v0.12.2
-	github.com/ipfs/go-ipfs-config v0.19.0
-	github.com/ipfs/go-ipfs-files v0.0.9
+	github.com/ipfs/go-ipfs-files v0.0.9 // indirect
+	github.com/ipfs/go-path v0.2.1 // indirect
 	github.com/ipfs/interface-go-ipfs-core v0.5.2
+	github.com/ipld/go-codec-dagpb v1.3.2 // indirect
+	github.com/ipld/go-ipld-prime v0.14.2 // indirect
 	github.com/kataras/golog v0.1.7
 	github.com/lestrrat-go/jwx v1.2.20
 	github.com/libp2p/go-libp2p v0.17.0
@@ -42,12 +43,15 @@ require (
 	github.com/prometheus/client_golang v1.12.1
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/sonr-io/blockchain v0.0.8
+	github.com/sonr-io/blockchain v0.0.9
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.5
+	github.com/warpfork/go-testmark v0.9.0 // indirect
+	github.com/whyrusleeping/cbor-gen v0.0.0-20210219115102-f37d292932f2 // indirect
 	go.buf.build/grpc/go/sonr-io/core v1.3.10
 	go.buf.build/grpc/go/sonr-io/sonr v1.3.18
+	go.uber.org/goleak v1.1.11 // indirect
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 )

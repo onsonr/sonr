@@ -8,6 +8,7 @@ import (
 
 // CreateObject creates a new object.
 func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
+	
 	return nil, ErrMethodUnimplemented
 }
 

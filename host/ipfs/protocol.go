@@ -40,16 +40,24 @@ func New(ctx context.Context, host host.HostImpl) (*IPFSProtocol, error) {
 }
 
 // DecodeCIDFromString decodes a CID string to a CID.
-func (i *IPFSProtocol) DecodeCIDFromString(s string) (cid.Cid, error) {
+func DecodeCIDFromString(s string) (cid.Cid, error) {
 	return cid.Decode(s)
 }
 
 // GetFile returns a file from IPFS.
-func (i *IPFSProtocol) GetFile(cid cid.Cid) ([]byte, error) {
-	rsc, err := i.Peer.GetFile(i.ctx, cid)
+func (i *IPFSProtocol) GetFile(cid string) ([]byte, error) {
+	// Decode CID from String
+	c, err := DecodeCIDFromString(cid)
 	if err != nil {
 		return nil, err
 	}
+
+	// Get the file from IPFS
+	rsc, err := i.Peer.GetFile(i.ctx, c)
+	if err != nil {
+		return nil, err
+	}
+
 	defer rsc.Close()
 	return ioutil.ReadAll(rsc)
 }
