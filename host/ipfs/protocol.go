@@ -45,8 +45,12 @@ func (i *IPFSProtocol) DecodeCIDFromString(s string) (cid.Cid, error) {
 }
 
 // GetFile returns a file from IPFS.
-func (i *IPFSProtocol) GetFile(cid cid.Cid) ([]byte, error) {
-	rsc, err := i.Peer.GetFile(i.ctx, cid)
+func (i *IPFSProtocol) GetFile(cid string) ([]byte, error) {
+	validCid, err := i.DecodeCIDFromString(cid)
+	if err != nil {
+		return nil, err
+	}
+	rsc, err := i.Peer.GetFile(i.ctx, validCid)
 	if err != nil {
 		return nil, err
 	}
@@ -71,6 +75,10 @@ func (i *IPFSProtocol) PutFile(data []byte) (*cid.Cid, error) {
 }
 
 // RemoveFile removes a file from IPFS.
-func (i *IPFSProtocol) RemoveFile(cid cid.Cid) error {
-	return i.Peer.Remove(i.ctx, cid)
+func (i *IPFSProtocol) RemoveFile(cid string) error {
+	validCid, err := i.DecodeCIDFromString(cid)
+	if err != nil {
+		return err
+	}
+	return i.Peer.Remove(i.ctx, validCid)
 }
