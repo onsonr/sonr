@@ -8,6 +8,8 @@ import (
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
 
+// TODO for Josh - handles session authentication on methods
+
 // CreateObject creates a new object.
 func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
 	// Verify that object fields are not nil
