@@ -3,8 +3,6 @@ syntax = "proto3";
 
 // Package Highway is used for defining a Highway node and its accessible API Endpoints
 package sonrio.highway.v1;
-import "registry/peer.proto";
-import "object/object.proto";
 
 option go_package = "github.com/sonr-io/sonr/highway/v1";
 

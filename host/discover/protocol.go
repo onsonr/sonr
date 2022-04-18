@@ -5,12 +5,12 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	ct "github.com/sonr-io/blockchain/x/channel/types"
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/device"
 	host "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/motor/config"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
-	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -33,7 +33,10 @@ type DiscoverProtocol struct {
 // New creates new DiscoveryProtocol
 func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
 	// Create BeamStore
-	b, err := channel.New(ctx, host, "_discover")
+	b, err := channel.New(ctx, host, &ct.ChannelDoc{
+		Label: "_discover",
+		Did:   "did:snr:discover",
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -58,39 +61,40 @@ func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, option
 
 // FindPeerId method returns PeerID by SName
 func (p *DiscoverProtocol) Get(sname string) (*types.Peer, error) {
-	peer := &types.Peer{}
+	// peer := &types.Peer{}
 	// Get Peer from KadDHT store
-	if buf, err := p.global.Get(sname); err == nil {
-		// Unmarshal Peer
-		err := proto.Unmarshal(buf, peer)
-		if err != nil {
-			logger.Errorf("%s - Failed to unmarshal Peer", err)
-			return nil, err
-		}
-		return peer, nil
-	} else {
-		logger.Warn("Failed to get Peer from BeamStore: %s", err)
-		return nil, err
-	}
+	// if buf, err := p.global.Get(sname); err == nil {
+	// 	// Unmarshal Peer
+	// 	err := proto.Unmarshal(buf, peer)
+	// 	if err != nil {
+	// 		logger.Errorf("%s - Failed to unmarshal Peer", err)
+	// 		return nil, err
+	// 	}
+	// 	return peer, nil
+	// } else {
+	// 	logger.Warn("Failed to get Peer from BeamStore: %s", err)
+	// 	return nil, err
+	// }
+	return nil, errors.New("Unimplemented method 'Get'")
 }
 
 // Put method updates peer instance in the store
 func (p *DiscoverProtocol) Put(peer *types.Peer) error {
-	logger.Debug("Updating Peer in BeamStore")
-	// Marshal Peer
-	buf, err := proto.Marshal(peer)
-	if err != nil {
-		logger.Errorf("Failed to Marshal Peer: %s", err)
-		return err
-	}
+	// logger.Debug("Updating Peer in BeamStore")
+	// // Marshal Peer
+	// buf, err := proto.Marshal(peer)
+	// if err != nil {
+	// 	logger.Errorf("Failed to Marshal Peer: %s", err)
+	// 	return err
+	// }
 
-	// Add Peer to KadDHT store
-	err = p.global.Put(peer.GetSName(), buf)
-	if err != nil {
-		logger.Errorf("Failed to put item in BeamStore: %s", err)
-		return err
-	}
-	return nil
+	// // Add Peer to KadDHT store
+	// err = p.global.Put(peer.GetSName(), buf)
+	// if err != nil {
+	// 	logger.Errorf("Failed to put item in BeamStore: %s", err)
+	// 	return err
+	// }
+	return errors.New("Unimplemented method 'Put'")
 }
 
 // Update method publishes peer data to the topic

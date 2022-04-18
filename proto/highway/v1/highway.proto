@@ -16,44 +16,6 @@ option go_package = "github.com/sonr-io/sonr/highway/v1";
 //
 // Provides is a RPC service for interfacing over the Highway node.
 service Highway {
-  // Update a Name
-  //
-  // Updates the public information of the calling node.
-  rpc UpdateName(sonrio.sonr.registry.MsgUpdateName) returns (sonrio.sonr.registry.MsgUpdateNameResponse) {
-    option (google.api.http) = {
-      put: "/update/name/{did}"
-    };
-  }
-
-  // Access a Service
-  //
-  // Creates a new signing key for the calling node in order to be authorized to
-  // access the service. It is only allowed to be called once per node.
-  rpc AccessService(sonrio.sonr.registry.MsgAccessService) returns (sonrio.sonr.registry.MsgAccessServiceResponse) {
-    option (google.api.http) = {
-      get: "/access/service/{did}"
-    };
-  }
-
-  // Register a Service
-  //
-  // Registers a new service for the calling node. The calling node must have
-  // already been enabled for development.
-  rpc RegisterService(sonrio.sonr.registry.MsgRegisterService) returns (sonrio.sonr.registry.MsgRegisterServiceResponse) {
-    option (google.api.http) = {
-      post: "/register/service"
-    };
-  }
-
-  // Update a Service
-  //
-  // Updates the details and public configuration of the calling node's service.
-  rpc UpdateService(sonrio.sonr.registry.MsgUpdateService) returns (sonrio.sonr.registry.MsgUpdateServiceResponse) {
-    option (google.api.http) = {
-      put: "/update/service/{did}"
-    };
-  }
-
   // Create New Channel
   //
   // Creates a new Publish/Subscribe topic channel for the given service.
@@ -61,16 +23,6 @@ service Highway {
   rpc CreateChannel(sonrio.sonr.channel.MsgCreateChannel) returns (sonrio.sonr.channel.MsgCreateChannelResponse) {
     option (google.api.http) = {
       post: "/create/channel"
-    };
-  }
-
-  // Read a Channel
-  //
-  // Lists all peers subscribed to the given channel, and additional details about
-  // the channels configuration.
-  rpc ReadChannel(sonrio.sonr.channel.MsgReadChannel) returns (sonrio.sonr.channel.MsgReadChannelResponse) {
-    option (google.api.http) = {
-      get: "/read/channel/{did}"
     };
   }
 
@@ -83,15 +35,6 @@ service Highway {
     };
   }
 
-  // Delete a Channel
-  //
-  // Deletes the given channel if the calling node is the owner of the channel.
-  rpc DeleteChannel(sonrio.sonr.channel.MsgDeleteChannel) returns (sonrio.sonr.channel.MsgDeleteChannelResponse) {
-    option (google.api.http) = {
-      delete: "/delete/channel/{did}"
-    };
-  }
-
   // Listen to a Channel
   //
   // Subscribes the calling node to the given channel and returns all publish events
@@ -99,81 +42,6 @@ service Highway {
   rpc ListenChannel(sonrio.highway.v1.MsgListenChannel) returns (stream sonrio.sonr.channel.ChannelMessage) {
     option (google.api.http) = {
       post: "/listen/channel/{did}"
-    };
-  }
-
-  // Create New Bucket
-  //
-  // Creates a new bucket for the calling nodes service.
-  rpc CreateBucket(sonrio.sonr.bucket.MsgCreateBucket) returns (sonrio.sonr.bucket.MsgCreateBucketResponse) {
-    option (google.api.http) = {
-      post: "/create/bucket"
-    };
-  }
-
-  // Read a Bucket
-  //
-  // Lists all the blobs in the given bucket. The calling node must have access to the
-  // bucket.
-  rpc ReadBucket(sonrio.sonr.bucket.MsgReadBucket) returns (sonrio.sonr.bucket.MsgReadBucketResponse) {
-    option (google.api.http) = {
-      get: "/read/bucket/{did}"
-    };
-  }
-
-  // Update a Bucket
-  //
-  // Updates the configuration of the given bucket. The calling node must have access
-  // to the bucket.
-  rpc UpdateBucket(sonrio.sonr.bucket.MsgUpdateBucket) returns (sonrio.sonr.bucket.MsgUpdateBucketResponse) {
-    option (google.api.http) = {
-      put: "/update/bucket/{did}"
-    };
-  }
-
-  // Delete a Bucket
-  //
-  // Deletes the given bucket if the calling node is the owner of the bucket.
-  rpc DeleteBucket(sonrio.sonr.bucket.MsgDeleteBucket) returns (sonrio.sonr.bucket.MsgDeleteBucketResponse) {
-    option (google.api.http) = {
-      delete: "/delete/bucket/{did}"
-    };
-  }
-
-  // Create New Object
-  //
-  // Defines a new object to be utilized by the calling node's service. The object will
-  // be placed in the Highway Service Graph and can be used in channels and other modules.
-  rpc CreateObject(sonrio.sonr.object.MsgCreateObject) returns (sonrio.sonr.object.MsgCreateObjectResponse) {
-    option (google.api.http) = {
-      post: "/create/object"
-    };
-  }
-
-  // Read a Object
-  //
-  // Returns the details of the given object provided its DID or Label.
-  rpc ReadObject(sonrio.sonr.object.MsgReadObject) returns (sonrio.sonr.object.MsgReadObjectResponse) {
-    option (google.api.http) = {
-      get: "/read/object/{did}"
-    };
-  }
-
-  // Update a Object
-  //
-  // Modifies the property fields of the given object.
-  rpc UpdateObject(sonrio.sonr.object.MsgUpdateObject) returns (sonrio.sonr.object.MsgUpdateObjectResponse) {
-    option (google.api.http) = {
-      put: "/update/object/{did}"
-    };
-  }
-
-  // Delete a Object
-  //
-  // Deletes the given object if the calling node is the owner of the object.
-  rpc DeleteObject(sonrio.sonr.object.MsgDeleteObject) returns (sonrio.sonr.object.MsgDeleteObjectResponse) {
-    option (google.api.http) = {
-      delete: "/delete/object/{did}"
     };
   }
 

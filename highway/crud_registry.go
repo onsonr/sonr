@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
-	rt "go.buf.build/grpc/go/sonr-io/sonr/registry"
+	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 // StartRegisterName starts the registration process for webauthn on http
@@ -42,6 +42,7 @@ func (s *HighwayServer) StartRegisterName(w http.ResponseWriter, r *http.Request
 
 	// Want performance? Store pointers!
 	s.cache.Set(username, whois, cache.DefaultExpiration)
+
 	// Updating the AuthenticatorSelection options.
 	// See the struct declarations for values
 	authSelect := protocol.AuthenticatorSelection{
@@ -121,7 +122,10 @@ func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, "Failed to broadcast to blockchain", http.StatusBadRequest)
+		return
 	}
+
+	s.cache.Set("session", txResp.GetSession(), -1)
 	JsonResponse(w, txResp.String(), http.StatusOK)
 }
 

@@ -3,7 +3,7 @@ name: buf.build/sonr-io/core
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/gogo/protobuf
-  - buf.build/sonr-io/sonr
+  - buf.build/sonr-io/blockchain
 lint:
   use:
     - DEFAULT
