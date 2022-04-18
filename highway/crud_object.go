@@ -4,7 +4,7 @@ import (
 	context "context"
 	"errors"
 
-	otv1 "github.com/sonr-io/blockchain/x/object/types"
+	ot_v1 "github.com/sonr-io/blockchain/x/object/types"
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
 
@@ -15,11 +15,11 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 		return nil, errors.New("object to register must have fields")
 	}
 
-	// Translate ot fields to otv1
+	// Translate ot fields to ot_v1
 	fields := s.bufToBlockchain(req.GetInitialFields())
 
 	// Build Transaction
-	tx := &otv1.MsgCreateObject{
+	tx := &ot_v1.MsgCreateObject{
 		Creator:       req.GetCreator(),
 		Label:         req.GetLabel(),
 		Description:   req.GetDescription(),
@@ -32,8 +32,11 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 		return nil, err
 	}
 
-	// decode otv1 fields to ot
-	outputFields := s.decodeObjectDocFields(res.WhatIs.ObjectDoc.Fields)
+	// decode ot_v1 fields to ot
+	var outputFields map[string]*ot.ObjectField
+	if res.WhatIs.ObjectDoc.Fields != nil {
+		outputFields = s.decodeObjectDocFields(res.WhatIs.ObjectDoc.Fields)
+	}
 
 	return &ot.MsgCreateObjectResponse{
 		Code:    res.GetCode(),
@@ -61,12 +64,12 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 		return nil, errors.New("object to register must have fields")
 	}
 
-	// Translate ot fields to otv1
+	// Translate ot fields to ot_v1
 	addedFields := s.bufToBlockchain(req.GetAddedFields())
 	removedFields := s.bufToBlockchain(req.GetRemovedFields())
 
 	// Build Transaction
-	tx := &otv1.MsgUpdateObject{
+	tx := &ot_v1.MsgUpdateObject{
 		Creator:       req.GetCreator(),
 		Label:         req.GetLabel(),
 		AddedFields:   addedFields,
@@ -79,8 +82,11 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 		return nil, err
 	}
 
-	// decode otv1 fields to ot
-	outputFields := s.decodeObjectDocFields(res.WhatIs.ObjectDoc.Fields)
+	// decode ot_v1 fields to ot
+	var outputFields map[string]*ot.ObjectField
+	if res.WhatIs.ObjectDoc.Fields != nil {
+		outputFields = s.decodeObjectDocFields(res.WhatIs.ObjectDoc.Fields)
+	}
 
 	return &ot.MsgUpdateObjectResponse{
 		Code:    res.GetCode(),
@@ -104,7 +110,7 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 // DeleteObject deletes an object.
 func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactivateObject) (*ot.MsgDeactivateObjectResponse, error) {
 	// Build Transaction
-	tx := &otv1.MsgDeactivateObject{
+	tx := &ot_v1.MsgDeactivateObject{
 		Creator: req.GetCreator(),
 		Did:     req.GetDid(),
 	}
@@ -125,13 +131,13 @@ func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactiv
 // Helper Functions
 // -----------------
 
-// Translate ot (buf) fields to otv1 (blockchain) //TODO rename this
-func (s *HighwayServer) bufToBlockchain(bufFields []*ot.ObjectField) []*otv1.ObjectField {
-	var blockchainFields []*otv1.ObjectField
+// Translate ot (buf) fields to ot_v1 (blockchain) //TODO rename this
+func (s *HighwayServer) bufToBlockchain(bufFields []*ot.ObjectField) []*ot_v1.ObjectField {
+	var blockchainFields []*ot_v1.ObjectField
 	for _, v := range bufFields {
-		item := &otv1.ObjectField{
+		item := &ot_v1.ObjectField{
 			Label: v.Label,
-			Type:  otv1.ObjectFieldType(v.Type),
+			Type:  ot_v1.ObjectFieldType(v.Type),
 			Did:   v.Did,
 			// Value: v.Value,
 		}
@@ -141,9 +147,9 @@ func (s *HighwayServer) bufToBlockchain(bufFields []*ot.ObjectField) []*otv1.Obj
 	return blockchainFields
 }
 
-// Translate the objectDoc otv1 (blockchain) fields to ot (buf) //TODO rename this
-func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*otv1.ObjectField) map[string]*ot.ObjectField {
-	// decode otv1 fields to ot
+// Translate the objectDoc ot_v1 (blockchain) fields to ot (buf) //TODO rename this
+func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1.ObjectField) map[string]*ot.ObjectField {
+	// decode ot_v1 fields to ot
 	outputFields := make(map[string]*ot.ObjectField, len(blockchainFields))
 	for k, v := range blockchainFields {
 		outputFields[k] = &ot.ObjectField{
