@@ -150,6 +150,11 @@ func (s *HighwayServer) bufToBlockchain(bufFields []*ot.ObjectField) []*ot_v1.Ob
 // Translate the objectDoc ot_v1 (blockchain) fields to ot (buf) //TODO rename this
 func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1.ObjectField) map[string]*ot.ObjectField {
 	// decode ot_v1 fields to ot
+
+	if blockchainFields == nil || len(blockchainFields) < 1 {
+		return nil
+	}
+
 	outputFields := make(map[string]*ot.ObjectField, len(blockchainFields))
 	for k, v := range blockchainFields {
 		outputFields[k] = &ot.ObjectField{
