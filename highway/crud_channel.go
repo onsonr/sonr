@@ -4,7 +4,7 @@ import (
 	context "context"
 	"errors"
 
-	ctv1 "github.com/sonr-io/blockchain/x/channel/types"
+	ct_v1 "github.com/sonr-io/blockchain/x/channel/types"
 	ot "github.com/sonr-io/blockchain/x/object/types"
 	"github.com/sonr-io/core/channel"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
@@ -17,7 +17,7 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 		return nil, errors.New("object to register must have fields")
 	}
 
-	// Create ctv1 message to broadcast
+	// Create ct_v1 message to broadcast
 	var fields map[string]*ot.ObjectField
 	fields = make(map[string]*ot.ObjectField, len(req.GetObjectToRegister().GetFields()))
 	for _, f := range req.GetObjectToRegister().GetFields() {
@@ -29,7 +29,7 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 	}
 
 	// Build Transaction
-	tx := &ctv1.MsgCreateChannel{
+	tx := &ct_v1.MsgCreateChannel{
 		Creator: req.GetCreator(),
 		Label:   req.GetLabel(),
 		ObjectToRegister: &ot.ObjectDoc{

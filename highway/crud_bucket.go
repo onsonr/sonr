@@ -4,13 +4,13 @@ import (
 	context "context"
 	"log"
 
-	btt "github.com/sonr-io/blockchain/x/bucket/types"
+	bt_v1 "github.com/sonr-io/blockchain/x/bucket/types"
 	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 
 // CreateBucket creates a new bucket.
 func (s *HighwayServer) CreateBucket(ctx context.Context, req *bt.MsgCreateBucket) (*bt.MsgCreateBucketResponse, error) {
-	tx := &btt.MsgCreateBucket{
+	tx := &bt_v1.MsgCreateBucket{
 		Creator:           req.GetCreator(),
 		Label:             req.GetLabel(),
 		Description:       req.GetDescription(),
