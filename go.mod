@@ -45,6 +45,7 @@ require (
 	github.com/tendermint/starport v0.19.5
 	go.buf.build/grpc/go/sonr-io/blockchain v1.3.1
 	go.buf.build/grpc/go/sonr-io/core v1.3.11
+	go.buf.build/grpc/go/sonr-io/sonr v1.3.16
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 )

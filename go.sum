@@ -2948,6 +2948,7 @@ go.buf.build/grpc/go/sonr-io/core v1.3.11 h1:oEq4wM+q5xAGfRpfCv4f0zuKD1l9U8X6c24
 go.buf.build/grpc/go/sonr-io/core v1.3.11/go.mod h1:0SBlFr+o2nkjOpNx8BWGHM0gYV1Izhzllrn0euAnQTM=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.14/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.15/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
+go.buf.build/grpc/go/sonr-io/sonr v1.3.16 h1:ZSJULXivXPhmnUk7up/LRDoaT47XuEwj98laftFGnb8=
 go.buf.build/grpc/go/sonr-io/sonr v1.3.16/go.mod h1:8wHMs8IK/uhqeGg7uS8CzxMalimT/nI1NJqLJ0/pV3A=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
