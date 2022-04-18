@@ -5,10 +5,10 @@ import (
 	"errors"
 
 	ot_v1 "github.com/sonr-io/blockchain/x/object/types"
+	"github.com/sonr-io/blockchain/x/registry/types"
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
+	"go.buf.build/grpc/go/sonr-io/sonr/registry"
 )
-
-// TODO for Josh - handles session authentication on methods
 
 // CreateObject creates a new object.
 func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
@@ -26,6 +26,7 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 		Label:         req.GetLabel(),
 		Description:   req.GetDescription(),
 		InitialFields: fields,
+		Session:       s.regSessToTypeSess(req.GetSession()),
 	}
 
 	// Broadcast the message
@@ -76,6 +77,7 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 		Label:         req.GetLabel(),
 		AddedFields:   addedFields,
 		RemovedFields: removedFields,
+		Session:       s.regSessToTypeSess(req.GetSession()),
 	}
 
 	// Broadcast the message
@@ -115,6 +117,7 @@ func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactiv
 	tx := &ot_v1.MsgDeactivateObject{
 		Creator: req.GetCreator(),
 		Did:     req.GetDid(),
+		Session: s.regSessToTypeSess(req.GetSession()),
 	}
 
 	// Broadcast the message
@@ -169,4 +172,51 @@ func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1
 	}
 
 	return outputFields
+}
+
+// Translate Registery session to types session
+func (s *HighwayServer) regSessToTypeSess(regSess *registry.Session) *types.Session {
+	return &types.Session{
+		BaseDid: regSess.GetBaseDid(),
+		Whois: &types.WhoIs{
+			Name:        regSess.Whois.GetName(),
+			Did:         regSess.Whois.GetDid(),
+			Document:    regSess.Whois.GetDocument(),
+			Creator:     regSess.Whois.GetCreator(),
+			Credentials: s.regCredtoTypeCred(regSess.Whois.GetCredentials()),
+			Type:        types.WhoIs_Type(regSess.Whois.GetType()),
+			Metadata:    regSess.Whois.GetMetadata(),
+			Timestamp:   regSess.Whois.GetTimestamp(),
+			IsActive:    regSess.Whois.GetIsActive(),
+		},
+		Credential: &types.Credential{
+			ID:              regSess.Credential.GetID(),
+			PublicKey:       regSess.Credential.GetPublicKey(),
+			AttestationType: regSess.Credential.GetAttestationType(),
+			Authenticator: &types.Authenticator{
+				Aaguid:       regSess.Credential.Authenticator.GetAaguid(),
+				SignCount:    regSess.Credential.Authenticator.GetSignCount(),
+				CloneWarning: regSess.Credential.Authenticator.GetCloneWarning(),
+			},
+		},
+	}
+}
+
+// Translate registry credential to types credential
+func (s *HighwayServer) regCredtoTypeCred(regCred []*registry.Credential) []*types.Credential {
+	var typesCred []*types.Credential
+	for _, v := range regCred {
+		typesCred = append(typesCred, &types.Credential{
+			ID:              v.GetID(),
+			PublicKey:       v.GetPublicKey(),
+			AttestationType: v.GetAttestationType(),
+			Authenticator: &types.Authenticator{
+				Aaguid:       v.Authenticator.GetAaguid(),
+				SignCount:    v.Authenticator.GetSignCount(),
+				CloneWarning: v.Authenticator.GetCloneWarning(),
+			},
+		})
+	}
+
+	return typesCred
 }
