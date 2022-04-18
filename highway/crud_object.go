@@ -31,18 +31,9 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 	if err != nil {
 		return nil, err
 	}
-	//v.GetValue()
+
 	// decode otv1 fields to ot
-	outputFields := make(map[string]*ot.ObjectField, len(res.WhatIs.ObjectDoc.Fields))
-	for k, v := range res.WhatIs.ObjectDoc.Fields {
-		outputFields[k] = &ot.ObjectField{
-			Label: v.GetLabel(),
-			Type:  ot.ObjectFieldType(v.GetType()),
-			Did:   v.GetDid(),
-			//Value:    v.Value,
-			Metadata: v.GetMetadata(),
-		}
-	}
+	outputFields := s.decodeObjectDocFields(res.WhatIs.ObjectDoc.Fields)
 
 	return &ot.MsgCreateObjectResponse{
 		Code:    res.GetCode(),
@@ -65,11 +56,53 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 
 // UpdateObject updates an object.
 func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObject) (*ot.MsgUpdateObjectResponse, error) {
-	return nil, ErrMethodUnimplemented
+	// Verify that there are requested changes
+	if req.GetAddedFields() == nil && req.GetRemovedFields() == nil {
+		return nil, errors.New("object to register must have fields")
+	}
+
+	// Translate ot fields to otv1
+	addedFields := s.bufToBlockchain(req.GetAddedFields())
+	removedFields := s.bufToBlockchain(req.GetRemovedFields())
+
+	// Build Transaction
+	tx := &otv1.MsgUpdateObject{
+		Creator:       req.GetCreator(),
+		Label:         req.GetLabel(),
+		AddedFields:   addedFields,
+		RemovedFields: removedFields,
+	}
+
+	// Broadcast the message
+	res, err := s.cosmos.BroadcastUpdateObject(tx)
+	if err != nil {
+		return nil, err
+	}
+
+	// decode otv1 fields to ot
+	outputFields := s.decodeObjectDocFields(res.WhatIs.ObjectDoc.Fields)
+
+	return &ot.MsgUpdateObjectResponse{
+		Code:    res.GetCode(),
+		Message: res.GetMessage(),
+		WhatIs: &ot.WhatIs{
+			Did: res.WhatIs.GetDid(),
+			ObjectDoc: &ot.ObjectDoc{
+				Label:       res.WhatIs.ObjectDoc.GetLabel(),
+				Description: res.WhatIs.ObjectDoc.GetDescription(),
+				Did:         res.WhatIs.ObjectDoc.GetDid(),
+				BucketDid:   res.WhatIs.ObjectDoc.GetBucketDid(),
+				Fields:      outputFields,
+			},
+			Creator:   res.WhatIs.GetCreator(),
+			Timestamp: res.WhatIs.GetTimestamp(),
+			IsActive:  res.WhatIs.GetIsActive(),
+		},
+	}, nil
 }
 
 // // DeleteObject deletes an object.
-// func (s *HighwayServer) DeleteObject(ctx context.Context, req *ot.MsgDeleteObject) (*ot.MsgDeleteObjectResponse, error) {
+// func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeleteObject) (*ot.MsgDeleteObjectResponse, error) {
 // 	return nil, ErrMethodUnimplemented
 // }
 
@@ -93,19 +126,19 @@ func (s *HighwayServer) bufToBlockchain(bufFields []*ot.ObjectField) []*otv1.Obj
 	return blockchainFields
 }
 
-// Translate otv1 (blockchain) fields to ot (buf) //TODO rename this
-func (s *HighwayServer) blockchainToBuf(blockchainFields []*otv1.ObjectField) []*ot.ObjectField {
-	var bufFields []*ot.ObjectField
-	for _, v := range blockchainFields {
-		item := &ot.ObjectField{
-			Label: v.Label,
-			Type:  ot.ObjectFieldType(v.Type),
-			Did:   v.Did,
-			// Value:    v.GetValue(),
+// Translate the objectDoc otv1 (blockchain) fields to ot (buf) //TODO rename this
+func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*otv1.ObjectField) map[string]*ot.ObjectField {
+	// decode otv1 fields to ot
+	outputFields := make(map[string]*ot.ObjectField, len(blockchainFields))
+	for k, v := range blockchainFields {
+		outputFields[k] = &ot.ObjectField{
+			Label: v.GetLabel(),
+			Type:  ot.ObjectFieldType(v.GetType()),
+			Did:   v.GetDid(),
+			//Value:    v.Value,
 			Metadata: v.GetMetadata(),
 		}
-		bufFields = append(bufFields, item)
 	}
 
-	return bufFields
+	return outputFields
 }
