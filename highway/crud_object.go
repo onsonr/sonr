@@ -7,7 +7,7 @@ import (
 	ot_v1 "github.com/sonr-io/blockchain/x/object/types"
 	"github.com/sonr-io/blockchain/x/registry/types"
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
-	"go.buf.build/grpc/go/sonr-io/sonr/registry"
+	registry "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 // CreateObject creates a new object.
