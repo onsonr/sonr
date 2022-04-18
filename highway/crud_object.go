@@ -101,10 +101,25 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 	}, nil
 }
 
-// // DeleteObject deletes an object.
-// func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeleteObject) (*ot.MsgDeleteObjectResponse, error) {
-// 	return nil, ErrMethodUnimplemented
-// }
+// DeleteObject deletes an object.
+func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactivateObject) (*ot.MsgDeactivateObjectResponse, error) {
+	// Build Transaction
+	tx := &otv1.MsgDeactivateObject{
+		Creator: req.GetCreator(),
+		Did:     req.GetDid(),
+	}
+
+	// Broadcast the message
+	res, err := s.cosmos.BroadcastDeactivateObject(tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ot.MsgDeactivateObjectResponse{
+		Code:    res.GetCode(),
+		Message: res.GetMessage(),
+	}, nil
+}
 
 // -----------------
 // Helper Functions
