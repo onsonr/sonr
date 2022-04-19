@@ -26,7 +26,7 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 		Label:         req.GetLabel(),
 		Description:   req.GetDescription(),
 		InitialFields: fields,
-		Session:       s.regSessToTypeSess(req.GetSession()),
+		Session:       s.regSessToTypeSess(*req.GetSession()),
 	}
 
 	// Broadcast the message
@@ -77,7 +77,7 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 		Label:         req.GetLabel(),
 		AddedFields:   addedFields,
 		RemovedFields: removedFields,
-		Session:       s.regSessToTypeSess(req.GetSession()),
+		Session:       s.regSessToTypeSess(*req.GetSession()),
 	}
 
 	// Broadcast the message
@@ -117,7 +117,7 @@ func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactiv
 	tx := &ot_v1.MsgDeactivateObject{
 		Creator: req.GetCreator(),
 		Did:     req.GetDid(),
-		Session: s.regSessToTypeSess(req.GetSession()),
+		Session: s.regSessToTypeSess(*req.GetSession()),
 	}
 
 	// Broadcast the message
@@ -144,7 +144,7 @@ func (s *HighwayServer) bufToBlockchain(bufFields []*ot.ObjectField) []*ot_v1.Ob
 			Label: v.Label,
 			Type:  ot_v1.ObjectFieldType(v.Type),
 			Did:   v.Did,
-			// Value: v.Value,
+			// Value: v.GetValue(), //TODO maybe switch based on specific implementation of type?
 		}
 		blockchainFields = append(blockchainFields, item)
 	}
@@ -157,7 +157,7 @@ func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1
 	// decode ot_v1 fields to ot
 
 	if blockchainFields == nil || len(blockchainFields) < 1 {
-		return nil
+		return map[string]*ot.ObjectField{}
 	}
 
 	outputFields := make(map[string]*ot.ObjectField, len(blockchainFields))
@@ -166,7 +166,7 @@ func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1
 			Label: v.GetLabel(),
 			Type:  ot.ObjectFieldType(v.GetType()),
 			Did:   v.GetDid(),
-			//Value:    v.Value,
+			//Value:    v.GetValue(), //TODO this should work
 			Metadata: v.GetMetadata(),
 		}
 	}
@@ -175,7 +175,7 @@ func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1
 }
 
 // Translate Registery session to types session
-func (s *HighwayServer) regSessToTypeSess(regSess *registry.Session) *types.Session {
+func (s *HighwayServer) regSessToTypeSess(regSess registry.Session) *types.Session {
 	return &types.Session{
 		BaseDid: regSess.GetBaseDid(),
 		Whois: &types.WhoIs{
@@ -193,11 +193,11 @@ func (s *HighwayServer) regSessToTypeSess(regSess *registry.Session) *types.Sess
 			ID:              regSess.Credential.GetID(),
 			PublicKey:       regSess.Credential.GetPublicKey(),
 			AttestationType: regSess.Credential.GetAttestationType(),
-			Authenticator: &types.Authenticator{
-				Aaguid:       regSess.Credential.Authenticator.GetAaguid(),
-				SignCount:    regSess.Credential.Authenticator.GetSignCount(),
-				CloneWarning: regSess.Credential.Authenticator.GetCloneWarning(),
-			},
+			// Authenticator: &types.Authenticator{  //TODO this causes nil dereference, figure out why
+			// 	Aaguid:       regSess.Credential.Authenticator.Aaguid,
+			// 	SignCount:    regSess.Credential.Authenticator.SignCount,
+			// 	CloneWarning: regSess.Credential.Authenticator.CloneWarning,
+			// },
 		},
 	}
 }
