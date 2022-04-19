@@ -2,6 +2,7 @@ package highway
 
 import (
 	context "context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,7 +12,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	rt_v1 "github.com/sonr-io/blockchain/x/registry/types"
-	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 // StartRegisterName starts the registration process for webauthn on http
@@ -136,10 +136,24 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	username := vars["username"]
 
 	// get user
-	whois, err := s.cosmos.QueryName(username)
+	whoisAll, err := s.cosmos.QueryAllNames()
+	var who *rt_v1.WhoIs
+
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	for _, whoIs := range whoisAll {
+		if whoIs.Name == username {
+			who = &whoIs
+		}
+	}
+
+	if who == nil {
+		log.Println(err)
+		JsonResponse(w, errors.New("Error while querying did for domain name"), http.StatusBadRequest)
 		return
 	}
 
@@ -151,7 +165,7 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// generate PublicKeyCredentialRequestOptions, session data
-	options, sessionData, err := s.auth.BeginLogin(whois)
+	options, sessionData, err := s.auth.BeginLogin(who)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusInternalServerError)
@@ -175,19 +189,20 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-	// get user
-	whois, err := s.cosmos.QueryName(username)
+	// get user by querying the entire
+	whoisAll, err := s.cosmos.QueryAllNames()
+	var who *rt_v1.WhoIs
+
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// user doesn't exist
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
+	for _, whoIs := range whoisAll {
+		if whoIs.Name == username {
+			who = &whoIs
+		}
 	}
 
 	// load the session data
@@ -201,7 +216,7 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	// in an actual implementation, we should perform additional checks on
 	// the returned 'credential', i.e. check 'credential.Authenticator.CloneWarning'
 	// and then increment the credentials counter
-	_, err = s.auth.FinishLogin(whois, sessionData, r)
+	_, err = s.auth.FinishLogin(who, sessionData, r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
@@ -213,6 +228,6 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 }
 
 // UpdateName updates a name.
-func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
+func (s *HighwayServer) UpdateName(ctx context.Context, req *rt_v1.MsgUpdateName) (*rt_v1.MsgUpdateNameResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
