@@ -74,3 +74,21 @@ func (s *HighwayServer) UpdateBucket(ctx context.Context, req *bt.MsgUpdateBucke
 		},
 	}, nil
 }
+
+// UpdateBucket updates a bucket.
+func (s *HighwayServer) DeactivateBucket(ctx context.Context, req *bt.MsgDeactivateBucket) (*bt.MsgDeactivateBucketResponse, error) {
+	tx := &bt_v1.MsgDeactivateBucket{
+		Creator: req.GetCreator(),
+		Session: s.regSessToTypeSess(*req.GetSession()),
+		Did:     req.GetDid(),
+	}
+	resp, err := s.cosmos.BroadcastDeactivateBucket(tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &bt.MsgDeactivateBucketResponse{
+		Code:    resp.GetCode(),
+		Message: resp.GetMessage(),
+	}, nil
+}
