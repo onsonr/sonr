@@ -35,8 +35,8 @@ func (s *HighwayServer) CreateBucket(ctx context.Context, req *bt.MsgCreateBucke
 				Did:         resp.WhichIs.GetDid(),
 				ObjectDids:  resp.WhichIs.Bucket.GetObjectDids(),
 			},
-			Timestamp: resp.WhichIs.Timestamp,
-			IsActive:  resp.WhichIs.IsActive,
+			Timestamp: resp.WhichIs.GetTimestamp(),
+			IsActive:  resp.WhichIs.GetIsActive(),
 		},
 	}, nil
 }
@@ -69,8 +69,8 @@ func (s *HighwayServer) UpdateBucket(ctx context.Context, req *bt.MsgUpdateBucke
 				Did:         resp.WhichIs.GetDid(),
 				ObjectDids:  resp.WhichIs.Bucket.GetObjectDids(),
 			},
-			Timestamp: resp.WhichIs.Timestamp,
-			IsActive:  resp.WhichIs.IsActive,
+			Timestamp: resp.WhichIs.GetTimestamp(),
+			IsActive:  resp.WhichIs.GetIsActive(),
 		},
 	}, nil
 }
