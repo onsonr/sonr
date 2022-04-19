@@ -10,7 +10,7 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
-	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
+	rt_v1 "github.com/sonr-io/blockchain/x/registry/types"
 	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
@@ -32,12 +32,12 @@ func (s *HighwayServer) StartRegisterName(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	whois := &rtv1.WhoIs{
+	whois := &rt_v1.WhoIs{
 		Name:        username,
 		Did:         "",
 		Document:    nil,
 		Creator:     s.cosmos.AccountName(),
-		Credentials: make([]*rtv1.Credential, 0),
+		Credentials: make([]*rt_v1.Credential, 0),
 	}
 
 	// Want performance? Store pointers!
@@ -96,7 +96,7 @@ func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Reques
 		JsonResponse(w, "Cache expired. User not found", http.StatusBadRequest)
 		return
 	}
-	whois := x.(*rtv1.WhoIs)
+	whois := x.(*rt_v1.WhoIs)
 
 	// load the session data
 	sessionData, err := s.sessionStore.GetWebauthnSession("registration", r)
@@ -114,7 +114,7 @@ func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Reques
 	}
 
 	// define a message to create a did
-	msg := rtv1.NewMsgRegisterName(s.cosmos.Address(), username, *credential)
+	msg := rt_v1.NewMsgRegisterName(s.cosmos.Address(), username, *credential)
 
 	// broadcast a transaction from account `alice` with the message to create a did
 	// store response in txResp
