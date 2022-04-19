@@ -16,13 +16,30 @@ func (s *HighwayServer) CreateBucket(ctx context.Context, req *bt.MsgCreateBucke
 		Description:       req.GetDescription(),
 		Kind:              req.GetKind(),
 		InitialObjectDids: req.GetInitialObjectDids(),
+		Session:           s.regSessToTypeSess(*req.GetSession()),
 	}
 	resp, err := s.cosmos.BroadcastCreateBucket(tx)
 	if err != nil {
 		return nil, err
 	}
 	log.Println(resp.String())
-	return nil, nil
+	return &bt.MsgCreateBucketResponse{
+		Code:    resp.GetCode(),
+		Message: resp.GetMessage(),
+		WhichIs: &bt.WhichIs{
+			Did:     resp.WhichIs.GetDid(),
+			Creator: resp.WhichIs.GetCreator(),
+			Bucket: &bt.BucketDoc{
+				Label:       resp.WhichIs.Bucket.GetLabel(),
+				Description: resp.WhichIs.Bucket.GetDescription(),
+				Type:        bt.BucketType(resp.WhichIs.Bucket.GetType()),
+				Did:         resp.WhichIs.GetDid(),
+				ObjectDids:  resp.WhichIs.Bucket.GetObjectDids(),
+			},
+			Timestamp: resp.WhichIs.Timestamp,
+			IsActive:  resp.WhichIs.IsActive,
+		},
+	}, nil
 }
 
 // UpdateBucket updates a bucket.

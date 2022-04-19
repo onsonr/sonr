@@ -132,6 +132,7 @@ func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactiv
 	}, nil
 }
 
+// TODO move helper functions to a more central location in this folder
 // -----------------
 // Helper Functions
 // -----------------
