@@ -167,7 +167,7 @@ func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1
 			Label: v.GetLabel(),
 			Type:  ot.ObjectFieldType(v.GetType()),
 			Did:   v.GetDid(),
-			//Value:    v.GetValue(), //TODO this should work
+			// Value:    v.GetValue(), //TODO this should work
 			Metadata: v.GetMetadata(),
 		}
 	}
