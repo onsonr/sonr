@@ -194,11 +194,11 @@ func (s *HighwayServer) regSessToTypeSess(regSess registry.Session) *types.Sessi
 			ID:              regSess.Credential.GetID(),
 			PublicKey:       regSess.Credential.GetPublicKey(),
 			AttestationType: regSess.Credential.GetAttestationType(),
-			// Authenticator: &types.Authenticator{  //TODO this causes nil dereference, figure out why
-			// 	Aaguid:       regSess.Credential.Authenticator.Aaguid,
-			// 	SignCount:    regSess.Credential.Authenticator.SignCount,
-			// 	CloneWarning: regSess.Credential.Authenticator.CloneWarning,
-			// },
+			Authenticator: &types.Authenticator{
+				Aaguid:       regSess.Credential.Authenticator.Aaguid,
+				SignCount:    regSess.Credential.Authenticator.SignCount,
+				CloneWarning: regSess.Credential.Authenticator.CloneWarning,
+			},
 		},
 	}
 }
