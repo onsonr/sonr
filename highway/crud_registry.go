@@ -216,7 +216,7 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	// in an actual implementation, we should perform additional checks on
 	// the returned 'credential', i.e. check 'credential.Authenticator.CloneWarning'
 	// and then increment the credentials counter
-	_, err = s.auth.FinishLogin(who, sessionData, r)
+	credential, err := s.auth.FinishLogin(who, sessionData, r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
@@ -224,7 +224,8 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	}
 
 	// handle successful login
-	JsonResponse(w, "Login Success", http.StatusOK)
+	JsonResponse(w, credential, http.StatusOK)
+
 }
 
 // UpdateName updates a name.
