@@ -113,8 +113,8 @@ func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
 // QueryName returns a DIDDocument for the given name registered on the blockchain
 func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryGetWhoIsRequest{
-		Index: name,
+	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
+		Did: name,
 	})
 	if err != nil {
 		golog.Errorf("Error querying name: %s", err)
@@ -198,8 +198,8 @@ func (cc *Cosmos) QueryAllBuckets() ([]bt.WhichIs, error) {
 // QueryBucket returns all names registered on the blockchain
 func (cc *Cosmos) QueryBucket(name string) (*bt.WhichIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.bucketQuery.WhichIs(context.Background(), &bt.QueryGetWhichIsRequest{
-		Index: name,
+	queryResp, err := cc.bucketQuery.WhichIs(context.Background(), &bt.QueryWhichIsRequest{
+		Did: name,
 	})
 	if err != nil {
 		golog.Errorf("Error querying name: %s", err)
@@ -283,8 +283,8 @@ func (cc *Cosmos) QueryAllChannels() ([]ct.HowIs, error) {
 // QueryChannel returns all names registered on the blockchain
 func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.channelQuery.HowIs(context.Background(), &ct.QueryGetHowIsRequest{
-		Index: name,
+	queryResp, err := cc.channelQuery.HowIs(context.Background(), &ct.QueryHowIsRequest{
+		Did: name,
 	})
 	if err != nil {
 		golog.Errorf("Error querying name: %s", err)
@@ -368,8 +368,8 @@ func (cc *Cosmos) QueryAllObjects() ([]ot.WhatIs, error) {
 // QueryObject returns all names registered on the blockchain
 func (cc *Cosmos) QueryObject(name string) (*ot.WhatIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.objectQuery.WhatIs(context.Background(), &ot.QueryGetWhatIsRequest{
-		Index: name,
+	queryResp, err := cc.objectQuery.WhatIs(context.Background(), &ot.QueryWhatIsRequest{
+		Did: name,
 	})
 	if err != nil {
 		golog.Errorf("Error querying name: %s", err)

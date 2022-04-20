@@ -74,17 +74,6 @@ func New(ctx context.Context, host host.HostImpl, name string) (*MatrixProtocol,
 		panic("failed to create new public rooms provider: " + err.Error())
 	}
 
-	// serv, err := p2pdisc.NewMdnsService(
-	// 	ctx,
-	// 	host.Host(),
-	// 	time.Second*10,
-	// 	"_matrix-dendrite-p2p._tcp",
-	// )
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// serv.RegisterNotifee(&mdns)
-
 	monolith := setup.Monolith{
 		Config:    &p.config,
 		AccountDB: p.accountDB,

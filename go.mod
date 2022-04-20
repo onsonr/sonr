@@ -39,7 +39,7 @@ require (
 	github.com/prometheus/client_golang v1.12.1
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/sonr-io/blockchain v0.0.9
+	github.com/sonr-io/blockchain v0.0.10
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.5
