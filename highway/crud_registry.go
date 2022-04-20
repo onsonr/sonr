@@ -11,7 +11,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
 	rt_v1 "github.com/sonr-io/blockchain/x/registry/types"
-	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 // StartRegisterName starts the registration process for webauthn on http
@@ -136,12 +135,7 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	username := vars["username"]
 
 	// get user
-	whois, err := s.cosmos.QueryName(username)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	whoIs, err := s.cosmos.QueryName(username)
 
 	// user doesn't exist
 	if err != nil {
@@ -151,7 +145,7 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// generate PublicKeyCredentialRequestOptions, session data
-	options, sessionData, err := s.auth.BeginLogin(whois)
+	options, sessionData, err := s.auth.BeginLogin(whoIs)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusInternalServerError)
@@ -176,14 +170,8 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	username := vars["username"]
 
 	// get user
-	whois, err := s.cosmos.QueryName(username)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	whoIs, err := s.cosmos.QueryName(username)
 
-	// user doesn't exist
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
@@ -201,7 +189,7 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	// in an actual implementation, we should perform additional checks on
 	// the returned 'credential', i.e. check 'credential.Authenticator.CloneWarning'
 	// and then increment the credentials counter
-	_, err = s.auth.FinishLogin(whois, sessionData, r)
+	credential, err := s.auth.FinishLogin(whoIs, sessionData, r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
@@ -209,10 +197,11 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	}
 
 	// handle successful login
-	JsonResponse(w, "Login Success", http.StatusOK)
+	JsonResponse(w, credential, http.StatusOK)
+
 }
 
 // UpdateName updates a name.
-func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
+func (s *HighwayServer) UpdateName(ctx context.Context, req *rt_v1.MsgUpdateName) (*rt_v1.MsgUpdateNameResponse, error) {
 	return nil, ErrMethodUnimplemented
 }
