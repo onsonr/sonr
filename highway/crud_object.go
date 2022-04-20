@@ -132,7 +132,6 @@ func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactiv
 	}, nil
 }
 
-// TODO move helper functions to a more central location in this folder
 // -----------------
 // Helper Functions
 // -----------------
@@ -167,7 +166,7 @@ func (s *HighwayServer) decodeObjectDocFields(blockchainFields map[string]*ot_v1
 			Label: v.GetLabel(),
 			Type:  ot.ObjectFieldType(v.GetType()),
 			Did:   v.GetDid(),
-			// Value:    v.GetValue(), //TODO this should work
+			//Value:    v.GetValue(), //TODO this should work
 			Metadata: v.GetMetadata(),
 		}
 	}
@@ -194,11 +193,11 @@ func (s *HighwayServer) regSessToTypeSess(regSess registry.Session) *types.Sessi
 			ID:              regSess.Credential.GetID(),
 			PublicKey:       regSess.Credential.GetPublicKey(),
 			AttestationType: regSess.Credential.GetAttestationType(),
-			Authenticator: &types.Authenticator{
-				Aaguid:       regSess.Credential.Authenticator.Aaguid,
-				SignCount:    regSess.Credential.Authenticator.SignCount,
-				CloneWarning: regSess.Credential.Authenticator.CloneWarning,
-			},
+			// Authenticator: &types.Authenticator{  //TODO this causes nil dereference, figure out why
+			// 	Aaguid:       regSess.Credential.Authenticator.Aaguid,
+			// 	SignCount:    regSess.Credential.Authenticator.SignCount,
+			// 	CloneWarning: regSess.Credential.Authenticator.CloneWarning,
+			// },
 		},
 	}
 }
