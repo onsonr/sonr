@@ -2,7 +2,6 @@ package highway
 
 import (
 	context "context"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -136,26 +135,7 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	username := vars["username"]
 
 	// get user
-	whoisAll, err := s.cosmos.QueryAllNames()
-	var who *rt_v1.WhoIs
-
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	for _, whoIs := range whoisAll {
-		if whoIs.Name == username {
-			who = &whoIs
-		}
-	}
-
-	if who == nil {
-		log.Println(err)
-		JsonResponse(w, errors.New("Error while querying did for domain name"), http.StatusBadRequest)
-		return
-	}
+	whoIs, err := s.cosmos.QueryName(username)
 
 	// user doesn't exist
 	if err != nil {
@@ -165,7 +145,7 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// generate PublicKeyCredentialRequestOptions, session data
-	options, sessionData, err := s.auth.BeginLogin(who)
+	options, sessionData, err := s.auth.BeginLogin(whoIs)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusInternalServerError)
@@ -189,20 +169,13 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-	// get user by querying the entire
-	whoisAll, err := s.cosmos.QueryAllNames()
-	var who *rt_v1.WhoIs
+	// get user
+	whoIs, err := s.cosmos.QueryName(username)
 
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
 		return
-	}
-
-	for _, whoIs := range whoisAll {
-		if whoIs.Name == username {
-			who = &whoIs
-		}
 	}
 
 	// load the session data
@@ -216,7 +189,7 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	// in an actual implementation, we should perform additional checks on
 	// the returned 'credential', i.e. check 'credential.Authenticator.CloneWarning'
 	// and then increment the credentials counter
-	credential, err := s.auth.FinishLogin(who, sessionData, r)
+	credential, err := s.auth.FinishLogin(whoIs, sessionData, r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)

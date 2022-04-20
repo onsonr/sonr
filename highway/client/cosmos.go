@@ -131,7 +131,7 @@ func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
 	}
 
 	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
-		Did: name,
+		Did: whoIsMatch.Did,
 	})
 	if err != nil {
 		golog.Errorf("Error querying name: %s", err.Error())
