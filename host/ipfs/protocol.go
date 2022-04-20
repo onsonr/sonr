@@ -3,11 +3,16 @@ package ipfs
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io/ioutil"
+	"os"
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
+	"github.com/ipld/go-ipld-prime"
+	"github.com/ipld/go-ipld-prime/codec/dagjson"
+	"github.com/ipld/go-ipld-prime/node/bindnode"
 	"github.com/sonr-io/core/host"
 )
 
@@ -42,6 +47,33 @@ func New(ctx context.Context, host host.HostImpl) (*IPFSProtocol, error) {
 // DecodeCIDFromString decodes a CID string to a CID.
 func DecodeCIDFromString(s string) (cid.Cid, error) {
 	return cid.Decode(s)
+}
+
+// Encode IPLD Dag to CID
+func (i *IPFSProtocol) Encode(data []byte) (*cid.Cid, error) {
+	type Person struct {
+		Name    string
+		Age     int
+		Friends []string
+	}
+
+	ts, err := ipld.LoadSchemaBytes([]byte(`
+		type Person struct {
+			name    String
+			age     Int
+			friends [String]
+		} representation tuple
+	`))
+	if err != nil {
+		panic(err)
+	}
+	schemaType := ts.TypeByName("Person")
+	person := &Person{Name: "Alice", Age: 34, Friends: []string{"Bob"}}
+	node := bindnode.Wrap(person, schemaType)
+
+	fmt.Printf("%#v\n", person)
+	dagjson.Encode(node.Representation(), os.Stdout)
+	return nil, nil
 }
 
 // GetFile returns a file from IPFS.
