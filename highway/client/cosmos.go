@@ -100,6 +100,44 @@ func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegiste
 	return respMsg, nil
 }
 
+// BroadcastUpdateApplication broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastUpdateApplication(msg *rt.MsgUpdateApplication) (*rt.MsgUpdateApplicationResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		golog.Errorf("Error broadcasting transaction: %s", err)
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgUpdateApplicationResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+		golog.Errorf("Error decoding response: %v", err)
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastUpdateName broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		golog.Errorf("Error broadcasting transaction: %s", err)
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgUpdateNameResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+		golog.Errorf("Error decoding response: %v", err)
+		return nil, err
+	}
+	return respMsg, nil
+}
+
 // QueryAllNames returns all DIDDocuments registered on the blockchain
 func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
@@ -114,24 +152,8 @@ func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
 // QueryName returns a DIDDocument for the given name registered on the blockchain
 func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
-	whoIsAll, err := cc.QueryAllNames()
-	if err != nil {
-		return nil, err
-	}
-	var whoIsMatch *rt.WhoIs
-	for _, whoIs := range whoIsAll {
-		if whoIs.Name == name {
-			whoIsMatch = &whoIs
-			break
-		}
-	}
-
-	if whoIsMatch == nil {
-		return nil, fmt.Errorf("DID not found for name '%s'", name)
-	}
-
 	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
-		Did: whoIsMatch.Did,
+		Did: name,
 	})
 	if err != nil {
 		golog.Errorf("Error querying name: %s", err.Error())
@@ -213,10 +235,10 @@ func (cc *Cosmos) QueryAllBuckets() ([]bt.WhichIs, error) {
 }
 
 // QueryBucket returns all names registered on the blockchain
-func (cc *Cosmos) QueryBucket(did string) (*bt.WhichIs, error) {
-	// Query WhichIs by DID
+func (cc *Cosmos) QueryBucket(name string) (*bt.WhichIs, error) {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.bucketQuery.WhichIs(context.Background(), &bt.QueryWhichIsRequest{
-		Did: did,
+		Did: name,
 	})
 	if err != nil {
 		golog.Errorf("Error querying bucket: %s", err.Error())
@@ -298,10 +320,10 @@ func (cc *Cosmos) QueryAllChannels() ([]ct.HowIs, error) {
 }
 
 // QueryChannel returns all names registered on the blockchain
-func (cc *Cosmos) QueryChannel(did string) (*ct.HowIs, error) {
-	// Query channel by DID
+func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.channelQuery.HowIs(context.Background(), &ct.QueryHowIsRequest{
-		Did: did,
+		Did: name,
 	})
 	if err != nil {
 		golog.Errorf("Error querying channel: %s", err.Error())

@@ -6,6 +6,11 @@ package sonrio.highway.v1;
 
 option go_package = "github.com/sonr-io/sonr/highway/v1";
 
+message MsgRegisterNameStartResponse {}
+message MsgRegisterNameFinishResponse {}
+message MsgAccessNameStartResponse {}
+message MsgAccessNameFinishResponse {}
+
 // MsgUploadBlobResponse represents a response to a request to upload a blob
 message MsgUploadBlobResponse {
     // Code of the response

@@ -3,11 +3,15 @@ package ipfs
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io/ioutil"
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
-	"github.com/ipfs/go-datastore"
+	"github.com/ipld/go-ipld-prime/codec/dagjson"
+	"github.com/ipld/go-ipld-prime/datamodel"
+	basicnode "github.com/ipld/go-ipld-prime/node/basic"
+	ot "github.com/sonr-io/blockchain/x/object/types"
 	"github.com/sonr-io/core/host"
 )
 
@@ -15,15 +19,15 @@ import (
 type IPFSProtocol struct {
 	ctx       context.Context
 	node      host.HostImpl
-	dataStore datastore.Batching
+	dataStore *MemoryStore
 	*ipfslite.Peer
 }
 
 // New creates a new IPFSProtocol instance with Host Implementation
 func New(ctx context.Context, host host.HostImpl) (*IPFSProtocol, error) {
-	// TODO - Create a better batching.Batching data store opposed to just in-memory
-	ds := ipfslite.NewInMemoryDatastore()
-	ipfsLite, err := ipfslite.New(ctx, ds, host.Host(), host.Routing(), nil)
+	// Create IPFS Peer
+	ds := NewMemoryStore()
+	ipfsLite, err := ipfslite.New(ctx, ds.Batching(), host.Host(), host.Routing(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -44,8 +48,8 @@ func DecodeCIDFromString(s string) (cid.Cid, error) {
 	return cid.Decode(s)
 }
 
-// GetFile returns a file from IPFS.
-func (i *IPFSProtocol) GetFile(cid string) ([]byte, error) {
+// GetData returns a file from IPFS.
+func (i *IPFSProtocol) GetData(cid string) ([]byte, error) {
 	// Decode CID from String
 	c, err := DecodeCIDFromString(cid)
 	if err != nil {
@@ -62,8 +66,29 @@ func (i *IPFSProtocol) GetFile(cid string) ([]byte, error) {
 	return ioutil.ReadAll(rsc)
 }
 
-// PutFile puts a file to IPFS and returns the CID.
-func (i *IPFSProtocol) PutFile(data []byte) (*cid.Cid, error) {
+// GetObjectSchema returns an object schema from IPFS.
+func (i *IPFSProtocol) GetObjectSchema(cid *cid.Cid) (datamodel.Node, error) {
+	// Get the file from IPFS
+	buf, err := i.GetData(cid.String())
+	if err != nil {
+		return nil, err
+	}
+
+	// Create bytes reader
+	serial := bytes.NewReader(buf)
+
+	// Decode IPLD Node
+	np := basicnode.Prototype.Any // Pick a stle for the in-memory data.
+	nb := np.NewBuilder()         // Create a builder.
+	dagjson.Decode(nb, serial)    // Hand the builder to decoding -- decoding will fill it in!
+	n := nb.Build()               // Call 'Build' to get the resulting Node.  (It's immutable!)
+	fmt.Printf("the data decoded was a %s kind\n", n.Kind())
+	fmt.Printf("the length of the node is %d\n", n.Length())
+	return n, nil
+}
+
+// PutData puts a file to IPFS and returns the CID.
+func (i *IPFSProtocol) PutData(data []byte) (*cid.Cid, error) {
 	// Create Reader for Data
 	buffer := bytes.NewBuffer(data)
 
@@ -76,6 +101,55 @@ func (i *IPFSProtocol) PutFile(data []byte) (*cid.Cid, error) {
 	// Get Back the CID
 	c := nd.Cid()
 	return &c, nil
+}
+
+// PutObjectSchema puts an object schema to IPFS and returns the CID.
+func (i *IPFSProtocol) PutObjectSchema(doc *ot.ObjectDoc) (*cid.Cid, error) {
+	// Create IPLD Node
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder()                               // Create a builder.
+	ma, err := nb.BeginMap(int64(len(doc.GetFields()))) // Begin assembling a map.
+	if err != nil {
+		return nil, err
+	}
+
+	// Add each field to the map
+	for _, field := range doc.GetFields() {
+		ma.AssembleKey().AssignString(field.GetName())
+		switch field.GetKind() {
+		case ot.TypeKind_TypeKind_String:
+			ma.AssembleValue().AssignString("")
+		case ot.TypeKind_TypeKind_Int:
+			ma.AssembleValue().AssignInt(0)
+		case ot.TypeKind_TypeKind_Float:
+			ma.AssembleValue().AssignFloat(0.0)
+		case ot.TypeKind_TypeKind_Bool:
+			ma.AssembleValue().AssignBool(false)
+		case ot.TypeKind_TypeKind_Bytes:
+			ma.AssembleValue().AssignBytes([]byte{})
+		case ot.TypeKind_TypeKind_Link:
+			ma.AssembleValue().AssignLink(nil)
+		default:
+			ma.AssembleValue().AssignNull()
+		}
+	}
+
+	// End assembling the map.
+	err = ma.Finish()
+	if err != nil {
+		return nil, err
+	}
+
+	// Build IPLD Node
+	n := nb.Build()
+	buffer := &bytes.Buffer{}
+	err = dagjson.Encode(n, buffer)
+	if err != nil {
+		return nil, err
+	}
+
+	// Adds file to IPFS
+	return i.PutData(buffer.Bytes())
 }
 
 // RemoveFile removes a file from IPFS.

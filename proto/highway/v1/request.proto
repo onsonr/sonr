@@ -6,6 +6,22 @@ package sonrio.highway.v1;
 
 option go_package = "github.com/sonr-io/sonr/highway/v1";
 
+message MsgAccessNameStart {
+  string username = 1;
+}
+
+message MsgAccessNameFinish {
+  string username = 1;
+}
+
+message MsgRegisterNameStart {
+  string username = 1;
+}
+
+message MsgRegisterNameFinish {
+  string username = 1;
+}
+
 // MsgListenChannel represents a request payload to subscribe to a channel
 message MsgListenChannel {
   // Name is the name of the channel
