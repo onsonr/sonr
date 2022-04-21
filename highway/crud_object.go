@@ -6,6 +6,7 @@ import (
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
 
+
 // CreateObject creates a new object.
 func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
 

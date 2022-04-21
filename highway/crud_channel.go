@@ -18,8 +18,8 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 	}
 
 	// Create ctv1 message to broadcast
-	var fields map[string]*ot.ObjectField
-	fields = make(map[string]*ot.ObjectField, len(req.GetObjectToRegister().GetFields()))
+	var fields map[string]*ot.TypeField
+	fields = make(map[string]*ot.TypeField, len(req.GetObjectToRegister().GetFields()))
 	for _, f := range req.GetObjectToRegister().GetFields() {
 		fields[f.GetLabel()] = &ot.ObjectField{
 			Label: f.GetLabel(),
