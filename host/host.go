@@ -69,9 +69,6 @@ type HostImpl interface {
 	// Pause tells all of goroutines to pause execution
 	Pause()
 
-	// Persist persists the node to the port and address
-	Persist()
-
 	// Ping sends a ping to a peer to check if it is alive
 	Ping(id string) error
 

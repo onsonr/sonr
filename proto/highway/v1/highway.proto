@@ -16,68 +16,23 @@ option go_package = "github.com/sonr-io/sonr/highway/v1";
 //
 // Provides is a RPC service for interfacing over the Highway node.
 service Highway {
-  // Start Access new name sequence for an account
-  //
-  // This method is used to register new names for accounts.
-  rpc AccessNameStart(sonrio.highway.v1.MsgAccessNameStart) returns (sonrio.highway.v1.MsgAccessNameStartResponse) {
-    option (google.api.http) = {
-      get: "/access/name/start/{username}"
-    };
-  }
-
-  // Finish Access new name sequence for an account
-  //
-  // This method is used to register new names for accounts.
-  rpc AccessNameFinish(sonrio.highway.v1.MsgAccessNameFinish) returns (sonrio.highway.v1.MsgAccessNameFinishResponse) {
-    option (google.api.http) = {
-      post: "/access/name/finish/{username}"
-    };
-  }
-
-  // Start Register new name sequence for an account
-  //
-  // This method is used to register new names for accounts.
-  rpc RegisterNameStart(sonrio.highway.v1.MsgRegisterNameStart) returns (sonrio.highway.v1.MsgRegisterNameStartResponse) {
-    option (google.api.http) = {
-      get: "/register/name/start/{username}"
-    };
-  }
-
-  // Finish Register new name sequence for an account
-  //
-  // This method is used to register new names for accounts.
-  rpc RegisterNameFinish(sonrio.highway.v1.MsgRegisterNameFinish) returns (sonrio.highway.v1.MsgRegisterNameFinishResponse) {
-    option (google.api.http) = {
-      post: "/register/name/finish/{username}"
-    };
-  }
-
   // Create New Object
   //
   // Creates a new Publish/Subscribe topic object for the given service.
   // The calling node must have already registered a service for the object.
   rpc CreateObject(sonrio.sonr.object.MsgCreateObject) returns (sonrio.sonr.object.MsgCreateObjectResponse) {
-    option (google.api.http) = {
-      post: "/create/object"
-    };
   }
 
   // Update a Object
   //
   // Updates the configuration of the given object.
   rpc UpdateObject(sonrio.sonr.object.MsgUpdateObject) returns (sonrio.sonr.object.MsgUpdateObjectResponse) {
-    option (google.api.http) = {
-      post: "/update/object"
-    };
   }
 
   // Deactivate a Object
   //
   // Deactivates the given object.
   rpc DeactivateObject(sonrio.sonr.object.MsgDeactivateObject) returns (sonrio.sonr.object.MsgDeactivateObjectResponse) {
-    option (google.api.http) = {
-      post: "/deactivate/object"
-    };
   }
 
   // Create New Bucket
@@ -85,27 +40,18 @@ service Highway {
   // Creates a new Publish/Subscribe topic bucket for the given service.
   // The calling node must have already registered a service for the bucket.
   rpc CreateBucket(sonrio.sonr.bucket.MsgCreateBucket) returns (sonrio.sonr.bucket.MsgCreateBucketResponse) {
-    option (google.api.http) = {
-      post: "/create/bucket"
-    };
   }
 
   // Update a Bucket
   //
   // Updates the configuration of the given bucket.
   rpc UpdateBucket(sonrio.sonr.bucket.MsgUpdateBucket) returns (sonrio.sonr.bucket.MsgUpdateBucketResponse) {
-    option (google.api.http) = {
-      post: "/update/bucket"
-    };
   }
 
   // Deactivate a Bucket
   //
   // Deactivates the given bucket.
   rpc DeactivateBucket(sonrio.sonr.bucket.MsgDeactivateBucket) returns (sonrio.sonr.bucket.MsgDeactivateBucketResponse) {
-    option (google.api.http) = {
-      post: "/deactivate/bucket"
-    };
   }
 
   // Create New Channel
@@ -113,27 +59,18 @@ service Highway {
   // Creates a new Publish/Subscribe topic channel for the given service.
   // The calling node must have already registered a service for the channel.
   rpc CreateChannel(sonrio.sonr.channel.MsgCreateChannel) returns (sonrio.sonr.channel.MsgCreateChannelResponse) {
-    option (google.api.http) = {
-      post: "/create/channel"
-    };
   }
 
   // Update a Channel
   //
   // Updates the configuration of the given channel.
   rpc UpdateChannel(sonrio.sonr.channel.MsgUpdateChannel) returns (sonrio.sonr.channel.MsgUpdateChannelResponse) {
-    option (google.api.http) = {
-      post: "/update/channel"
-    };
   }
 
   // Deactivate a Channel
   //
   // Deactivates the given channel.
   rpc DeactivateChannel(sonrio.sonr.channel.MsgDeactivateChannel) returns (sonrio.sonr.channel.MsgDeactivateChannelResponse) {
-    option (google.api.http) = {
-      post: "/deactivate/channel"
-    };
   }
 
   // Listen to a Channel
@@ -141,9 +78,6 @@ service Highway {
   // Subscribes the calling node to the given channel and returns all publish events
   // as a stream.
   rpc ListenChannel(sonrio.highway.v1.MsgListenChannel) returns (stream sonrio.sonr.channel.ChannelMessage) {
-    option (google.api.http) = {
-      post: "/listen/channel"
-    };
   }
 
 

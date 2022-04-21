@@ -44,22 +44,25 @@ const (
 // Config is the configuration for the entire Highway node
 type Config struct {
 	// Host
-	LogLevel             string
 	Role                 device.Role
+	LogLevel             string
 	Libp2pBootstrapPeers []peer.AddrInfo
+	Libp2pLowWater       int
+	Libp2pHighWater      int
+	Libp2pGracePeriod    time.Duration
+	Libp2pRendezvous     string
+	Libp2pInterval       time.Duration
+	Libp2pTTL            dscl.Option
 
-	Libp2pLowWater    int
-	Libp2pHighWater   int
-	Libp2pGracePeriod time.Duration
-	Libp2pRendezvous  string
-	Libp2pInterval    time.Duration
-	Libp2pTTL         dscl.Option
-
-	// Session
+	// Libp2p Session
 	Libp2pHost         string
 	Libp2pNetwork      string
 	Libp2pPort         int
 	Libp2pMdnsDisabled bool
+
+	// Highway Config
+	HighwayGRPCEndpoint string
+	HighwayHTTPEndpoint string
 
 	// WebAuthn
 	WebAuthNRPDisplayName string
@@ -69,14 +72,13 @@ type Config struct {
 	WebAuthNDebug         bool
 
 	// Cosmos SDK
-	CosmosAccountName     string
-	CosmosAddressPrefix   string
-	CosmosNodeAddress     string
-	CosmosUseFaucet       bool
-	CosmosFaucetAddress   string
-	CosmosFaucetDenom     string
-	CosmosFaucetMinAmount uint64
-
+	CosmosAccountName        string
+	CosmosAddressPrefix      string
+	CosmosNodeAddress        string
+	CosmosUseFaucet          bool
+	CosmosFaucetAddress      string
+	CosmosFaucetDenom        string
+	CosmosFaucetMinAmount    uint64
 	CosmosHomePath           string
 	CosmosKeyringBackend     cosmosaccount.KeyringBackend
 	CosmosKeyringServiceName string
@@ -131,6 +133,8 @@ func DefaultConfig() *Config {
 		CosmosHomePath:           "~/.sonr",
 		CosmosKeyringBackend:     cosmosaccount.KeyringTest,
 		CosmosKeyringServiceName: "sonr",
+		HighwayGRPCEndpoint:      "localhost:8443",
+		HighwayHTTPEndpoint:      ":8081",
 	}
 }
 

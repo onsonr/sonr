@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/gin-gonic/gin"
 	ctv1 "github.com/sonr-io/blockchain/x/channel/types"
 	otv1 "github.com/sonr-io/blockchain/x/object/types"
 	"github.com/sonr-io/core/channel"
@@ -40,6 +41,33 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 	}, nil
 }
 
+// CreateChannelHTTP creates a new channel via HTTP.
+func (s *HighwayServer) CreateChannelHTTP(c *gin.Context) {
+	// Unmarshal the request body
+	var req ct.MsgCreateChannel
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	// Create the channel
+	resp, err := s.grpcClient.CreateChannel(s.ctx, &req)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	// Return the response
+	c.JSON(200, gin.H{
+		"code":    resp.Code,
+		"message": resp.Message,
+		"how_is":  ctv1.NewHowIsFromBuf(resp.HowIs),
+	})
+}
+
 // UpdateChannel updates a channel.
 func (s *HighwayServer) UpdateChannel(ctx context.Context, req *ct.MsgUpdateChannel) (*ct.MsgUpdateChannelResponse, error) {
 	resp, err := s.cosmos.BroadcastUpdateChannel(ctv1.NewMsgUpdateChannelFromBuf(req))
@@ -51,6 +79,31 @@ func (s *HighwayServer) UpdateChannel(ctx context.Context, req *ct.MsgUpdateChan
 		Code:    resp.Code,
 		Message: resp.Message,
 	}, nil
+}
+
+// UpdateChannelHTTP updates a channel via HTTP.
+func (s *HighwayServer) UpdateChannelHTTP(c *gin.Context) {
+	// Unmarshal the request body
+	var req ct.MsgUpdateChannel
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	// Update the channel
+	resp, err := s.grpcClient.UpdateChannel(s.ctx, &req)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	// Return the response
+	c.JSON(200, gin.H{
+		"code":    resp.Code,
+		"message": resp.Message,
+	})
 }
 
 // ListenChannel listens to a channel.

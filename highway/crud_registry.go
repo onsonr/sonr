@@ -3,203 +3,98 @@ package highway
 import (
 	context "context"
 	"fmt"
-	"log"
 	"net/http"
 
-	"github.com/duo-labs/webauthn/protocol"
-	"github.com/duo-labs/webauthn/webauthn"
-	"github.com/gorilla/mux"
-	"github.com/patrickmn/go-cache"
+	"github.com/gin-gonic/gin"
 	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
 	rt "go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain/registry"
 )
 
-// StartRegisterName starts the registration process for webauthn on http
-func (s *HighwayServer) StartRegisterName(w http.ResponseWriter, r *http.Request) {
-	// get username/friendly name
-	vars := mux.Vars(r)
-	username, ok := vars["username"]
-	if !ok {
-		JsonResponse(w, fmt.Errorf("must supply a valid username i.e. foo.snr"), http.StatusBadRequest)
-		return
+// RegisterNameStart starts the registration process for webauthn on http
+func (s *HighwayServer) StartRegisterName(c *gin.Context) {
+	if username := c.Param("username"); username != "" {
+		// Check if user exists and return error if it does
+		if exists := s.cosmos.ExistsName(username); exists {
+			c.JSON(http.StatusConflict, gin.H{"error": "username already exists"})
+		}
+
+		creator := s.cosmos.AccountName()
+
+		// Save Registration Session
+		options, err := s.webauthn.SaveRegistrationSession(c.Request, c.Writer, username, creator)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusOK, options)
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
 	}
-
-	// Check if user exists and return error if it does
-	_, err := s.cosmos.QueryName(username)
-	if err == nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	whois := &rtv1.WhoIs{
-		Name:        username,
-		Did:         "",
-		Document:    nil,
-		Creator:     s.cosmos.AccountName(),
-		Credentials: make([]*rtv1.Credential, 0),
-	}
-
-	// Want performance? Store pointers!
-	s.cache.Set(username, whois, cache.DefaultExpiration)
-
-	// Updating the AuthenticatorSelection options.
-	// See the struct declarations for values
-	authSelect := protocol.AuthenticatorSelection{
-		AuthenticatorAttachment: protocol.AuthenticatorAttachment("platform"),
-		RequireResidentKey:      protocol.ResidentKeyUnrequired(),
-		UserVerification:        protocol.VerificationRequired,
-	}
-
-	// Updating the ConveyencePreference options.
-	// See the struct declarations for values
-	conveyencePref := protocol.ConveyancePreference(protocol.PreferNoAttestation)
-	registerOptions := func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-		credCreationOpts.CredentialExcludeList = whois.CredentialExcludeList()
-	}
-
-	// generate PublicKeyCredentialCreationOptions, session data
-	options, sessionData, err := s.auth.BeginRegistration(
-		whois,
-		registerOptions,
-		webauthn.WithAuthenticatorSelection(authSelect),
-		webauthn.WithConveyancePreference(conveyencePref),
-	)
-
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// store session data as marshaled JSON
-	err = s.sessionStore.SaveWebauthnSession("registration", sessionData, r, w)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	JsonResponse(w, options, http.StatusOK)
 }
 
 // FinishRegisterName handles the registration of a new credential
-func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Request) {
+func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	// get username
-	vars := mux.Vars(r)
-	username := vars["username"]
-
-	// get user
-	x, found := s.cache.Get(username)
-	if !found {
-		log.Println("Cache expired. user not found")
-		JsonResponse(w, "Cache expired. User not found", http.StatusBadRequest)
-		return
-	}
-	whois := x.(*rtv1.WhoIs)
-
-	// load the session data
-	sessionData, err := s.sessionStore.GetWebauthnSession("registration", r)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
+	username := c.Param("username")
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
 	}
 
-	credential, err := s.auth.FinishRegistration(whois, sessionData, r)
+	// Finish Registration Session
+	cred, err := s.webauthn.FinishRegistrationSession(c.Request, username)
 	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	// define a message to create a did
-	msg := rtv1.NewMsgRegisterName(s.cosmos.Address(), username, *credential)
+	msg := rtv1.NewMsgRegisterName(s.cosmos.Address(), username, *cred)
 
 	// broadcast a transaction from account `alice` with the message to create a did
 	// store response in txResp
 	txResp, err := s.cosmos.BroadcastRegisterName(msg)
 	if err != nil {
-		log.Println(err)
-		JsonResponse(w, "Failed to broadcast to blockchain", http.StatusBadRequest)
-		return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-
-	s.cache.Set("session", txResp.GetSession(), -1)
-	JsonResponse(w, txResp.String(), http.StatusOK)
+	c.JSON(http.StatusOK, txResp)
 }
 
 // StartAccessName accesses the user's existing credentials and returns a PublicKeyCredentialRequestOptions
-func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) {
+func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	// get username
-	vars := mux.Vars(r)
-	username := vars["username"]
+	username := c.Param("username")
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+	}
 
-	// get user
+	// Check if user exists and return error if it does not
 	whoIs, err := s.cosmos.QueryName(username)
-
-	// user doesn't exist
 	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	// generate PublicKeyCredentialRequestOptions, session data
-	options, sessionData, err := s.auth.BeginLogin(whoIs)
+	// Call Save to store the session data
+	options, err := s.webauthn.SaveAuthenticationSession(c.Request, c.Writer, whoIs)
 	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
-		return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-
-	// store session data as marshaled JSON
-	err = s.sessionStore.SaveWebauthnSession("authentication", sessionData, r, w)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	JsonResponse(w, options, http.StatusOK)
+	c.JSON(http.StatusOK, options)
 }
 
 // FinishAccessName handles the login of a credential and returns a PublicKeyCredentialResponse
-func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request) {
+func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 	// get username
-	vars := mux.Vars(r)
-	username := vars["username"]
-
-	// get user
-	whoIs, err := s.cosmos.QueryName(username)
-
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
+	username := c.Param("username")
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
 	}
 
-	// load the session data
-	sessionData, err := s.sessionStore.GetWebauthnSession("authentication", r)
+	// Finish the authentication session
+	cred, err := s.webauthn.FinishAuthenticationSession(c.Request, username)
 	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// in an actual implementation, we should perform additional checks on
-	// the returned 'credential', i.e. check 'credential.Authenticator.CloneWarning'
-	// and then increment the credentials counter
-	credential, err := s.auth.FinishLogin(whoIs, sessionData, r)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	// handle successful login
-	JsonResponse(w, credential, http.StatusOK)
-
+	c.JSON(http.StatusOK, cred)
 }
 
 // UpdateName updates a name.
