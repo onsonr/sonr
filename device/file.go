@@ -18,7 +18,7 @@ import (
 
 	"github.com/gabriel-vasile/mimetype"
 
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	types "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
 )
 
 var (

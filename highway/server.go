@@ -21,7 +21,7 @@ import (
 	"github.com/sonr-io/core/highway/config"
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/ipfs"
-	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
+	v1 "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
 )
 
@@ -117,7 +117,8 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 	if err != nil {
 		return nil, err
 	}
-	
+	// mux := runtime.NewServeMux()
+
 	// Register RPC Service
 	v1.RegisterHighwayServer(stub.grpc, stub)
 	return stub, nil

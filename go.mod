@@ -35,11 +35,12 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/sonr-io/blockchain v0.0.11
+	github.com/sonr-io/blockchain v0.0.12
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.5
-	go.buf.build/grpc/go/sonr-io/blockchain v1.3.2
-	go.buf.build/grpc/go/sonr-io/core v1.3.13
+	go.buf.build/grpc/go/sonr-io/core v1.3.8
+	go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain v1.1.2
+	go.buf.build/sonr-io/grpc-gateway/sonr-io/core v1.1.15
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/square/go-jose.v2 v2.6.0
@@ -125,6 +126,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
@@ -321,8 +323,8 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
 	github.com/zondax/hid v0.9.0 // indirect
-	go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.47 // indirect
-	go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 // indirect
+	go.buf.build/sonr-io/grpc-gateway/cosmos/cosmos-sdk v1.1.47 // indirect
+	go.buf.build/sonr-io/grpc-gateway/cosmos/gogo-proto v1.1.1 // indirect
 	go.etcd.io/bbolt v1.3.5 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.1 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.1 // indirect
