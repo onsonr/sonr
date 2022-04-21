@@ -19,7 +19,7 @@ package host
 // 	"github.com/pkg/errors"
 // 	"github.com/sonr-io/core/device"
 // 	"github.com/sonr-io/core/highway/config"
-// 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+// 	types "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
 // )
 
 // // LogLevel is the type for the log level

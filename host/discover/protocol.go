@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/core/device"
 	host "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/motor/config"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	types "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
 )
 
 var (

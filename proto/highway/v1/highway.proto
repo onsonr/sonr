@@ -67,7 +67,7 @@ service Highway {
   // Updates the configuration of the given object.
   rpc UpdateObject(sonrio.sonr.object.MsgUpdateObject) returns (sonrio.sonr.object.MsgUpdateObjectResponse) {
     option (google.api.http) = {
-      put: "/update/object/{did}"
+      post: "/update/object"
     };
   }
 
@@ -76,7 +76,7 @@ service Highway {
   // Deactivates the given object.
   rpc DeactivateObject(sonrio.sonr.object.MsgDeactivateObject) returns (sonrio.sonr.object.MsgDeactivateObjectResponse) {
     option (google.api.http) = {
-      delete: "/deactivate/object/{did}"
+      post: "/deactivate/object"
     };
   }
 
@@ -95,7 +95,7 @@ service Highway {
   // Updates the configuration of the given bucket.
   rpc UpdateBucket(sonrio.sonr.bucket.MsgUpdateBucket) returns (sonrio.sonr.bucket.MsgUpdateBucketResponse) {
     option (google.api.http) = {
-      put: "/update/bucket/{did}"
+      post: "/update/bucket"
     };
   }
 
@@ -104,7 +104,7 @@ service Highway {
   // Deactivates the given bucket.
   rpc DeactivateBucket(sonrio.sonr.bucket.MsgDeactivateBucket) returns (sonrio.sonr.bucket.MsgDeactivateBucketResponse) {
     option (google.api.http) = {
-      delete: "/deactivate/bucket/{did}"
+      post: "/deactivate/bucket"
     };
   }
 
@@ -123,7 +123,7 @@ service Highway {
   // Updates the configuration of the given channel.
   rpc UpdateChannel(sonrio.sonr.channel.MsgUpdateChannel) returns (sonrio.sonr.channel.MsgUpdateChannelResponse) {
     option (google.api.http) = {
-      put: "/update/channel/{did}"
+      post: "/update/channel"
     };
   }
 
@@ -132,7 +132,7 @@ service Highway {
   // Deactivates the given channel.
   rpc DeactivateChannel(sonrio.sonr.channel.MsgDeactivateChannel) returns (sonrio.sonr.channel.MsgDeactivateChannelResponse) {
     option (google.api.http) = {
-      delete: "/deactivate/channel/{did}"
+      post: "/deactivate/channel"
     };
   }
 
@@ -142,7 +142,7 @@ service Highway {
   // as a stream.
   rpc ListenChannel(sonrio.highway.v1.MsgListenChannel) returns (stream sonrio.sonr.channel.ChannelMessage) {
     option (google.api.http) = {
-      post: "/listen/channel/{did}"
+      post: "/listen/channel"
     };
   }
 

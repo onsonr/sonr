@@ -22,8 +22,8 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/highway/config"
-	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	t "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
+	types "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
 

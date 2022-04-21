@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"time"
 
-	mv1 "go.buf.build/grpc/go/sonr-io/core/motor/v1"
+	mv1 "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/motor/v1"
 	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
