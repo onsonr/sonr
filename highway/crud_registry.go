@@ -10,8 +10,7 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gorilla/mux"
 	"github.com/patrickmn/go-cache"
-	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
-	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
+	rt_v1 "github.com/sonr-io/blockchain/x/registry/types"
 )
 
 // StartRegisterName starts the registration process for webauthn on http
@@ -32,12 +31,12 @@ func (s *HighwayServer) StartRegisterName(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	whois := &rtv1.WhoIs{
+	whois := &rt_v1.WhoIs{
 		Name:        username,
 		Did:         "",
 		Document:    nil,
 		Creator:     s.cosmos.AccountName(),
-		Credentials: make([]*rtv1.Credential, 0),
+		Credentials: make([]*rt_v1.Credential, 0),
 	}
 
 	// Want performance? Store pointers!
@@ -96,7 +95,7 @@ func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Reques
 		JsonResponse(w, "Cache expired. User not found", http.StatusBadRequest)
 		return
 	}
-	whois := x.(*rtv1.WhoIs)
+	whois := x.(*rt_v1.WhoIs)
 
 	// load the session data
 	sessionData, err := s.sessionStore.GetWebauthnSession("registration", r)
@@ -114,7 +113,7 @@ func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Reques
 	}
 
 	// define a message to create a did
-	msg := rtv1.NewMsgRegisterName(s.cosmos.Address(), username, *credential)
+	msg := rt_v1.NewMsgRegisterName(s.cosmos.Address(), username, *credential)
 
 	// broadcast a transaction from account `alice` with the message to create a did
 	// store response in txResp
@@ -136,12 +135,7 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	username := vars["username"]
 
 	// get user
-	whois, err := s.cosmos.QueryName(username)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	whoIs, err := s.cosmos.QueryName(username)
 
 	// user doesn't exist
 	if err != nil {
@@ -151,7 +145,7 @@ func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// generate PublicKeyCredentialRequestOptions, session data
-	options, sessionData, err := s.auth.BeginLogin(whois)
+	options, sessionData, err := s.auth.BeginLogin(whoIs)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusInternalServerError)
@@ -176,14 +170,8 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	username := vars["username"]
 
 	// get user
-	whois, err := s.cosmos.QueryName(username)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	whoIs, err := s.cosmos.QueryName(username)
 
-	// user doesn't exist
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
@@ -201,7 +189,7 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	// in an actual implementation, we should perform additional checks on
 	// the returned 'credential', i.e. check 'credential.Authenticator.CloneWarning'
 	// and then increment the credentials counter
-	_, err = s.auth.FinishLogin(whois, sessionData, r)
+	credential, err := s.auth.FinishLogin(whoIs, sessionData, r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
@@ -209,7 +197,8 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 	}
 
 	// handle successful login
-	JsonResponse(w, "Login Success", http.StatusOK)
+	JsonResponse(w, credential, http.StatusOK)
+
 }
 
 // UpdateName updates a name.
