@@ -3,6 +3,7 @@ package highway
 import (
 	context "context"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	otv1 "github.com/sonr-io/blockchain/x/object/types"
@@ -32,8 +33,8 @@ func (s *HighwayServer) CreateObjectHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ot.MsgCreateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": ErrRequestBody.Error(),
 		})
 		return
 	}
@@ -41,13 +42,13 @@ func (s *HighwayServer) CreateObjectHTTP(c *gin.Context) {
 	// Create the bucket
 	resp, err := s.grpcClient.CreateObject(s.ctx, &req)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
 	}
 
 	// Return the response
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":    resp.Code,
 		"message": resp.Message,
 		"what_is": otv1.NewWhatIsFromBuf(resp.WhatIs),
@@ -74,8 +75,8 @@ func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ot.MsgUpdateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": ErrRequestBody.Error(),
 		})
 		return
 	}
@@ -83,13 +84,13 @@ func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 	// Create the bucket
 	resp, err := s.grpcClient.UpdateObject(s.ctx, &req)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
 	}
 
 	// Return the response
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":    resp.Code,
 		"message": resp.Message,
 		"what_is": otv1.NewWhatIsFromBuf(resp.WhatIs),

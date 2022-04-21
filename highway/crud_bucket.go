@@ -3,6 +3,7 @@ package highway
 import (
 	context "context"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	btt "github.com/sonr-io/blockchain/x/bucket/types"
@@ -28,8 +29,8 @@ func (s *HighwayServer) CreateBucketHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req bt.MsgCreateBucket
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": ErrRequestBody.Error(),
 		})
 		return
 	}
@@ -37,13 +38,13 @@ func (s *HighwayServer) CreateBucketHTTP(c *gin.Context) {
 	// Create the bucket
 	resp, err := s.grpcClient.CreateBucket(s.ctx, &req)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
 	}
 
 	// Return the response
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":     resp.Code,
 		"message":  resp.Message,
 		"which_is": btt.NewWhichIsFromBuf(resp.WhichIs),
@@ -69,8 +70,8 @@ func (s *HighwayServer) UpdateBucketHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req bt.MsgUpdateBucket
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": ErrRequestBody.Error(),
 		})
 		return
 	}
@@ -78,13 +79,13 @@ func (s *HighwayServer) UpdateBucketHTTP(c *gin.Context) {
 	// Update the bucket
 	resp, err := s.grpcClient.UpdateBucket(s.ctx, &req)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
 	}
 
 	// Return the response
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":     resp.Code,
 		"message":  resp.Message,
 		"which_is": btt.NewWhichIsFromBuf(resp.WhichIs),

@@ -42,7 +42,7 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	// Finish Registration Session
 	cred, err := s.webauthn.FinishRegistrationSession(c.Request, username)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	// define a message to create a did
@@ -52,7 +52,7 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	// store response in txResp
 	txResp, err := s.cosmos.BroadcastRegisterName(msg)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	}
 	c.JSON(http.StatusOK, txResp)
 }
@@ -68,13 +68,13 @@ func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	// Check if user exists and return error if it does not
 	whoIs, err := s.cosmos.QueryName(username)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	}
 
 	// Call Save to store the session data
 	options, err := s.webauthn.SaveAuthenticationSession(c.Request, c.Writer, whoIs)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	c.JSON(http.StatusOK, options)
 }
@@ -90,7 +90,7 @@ func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 	// Finish the authentication session
 	cred, err := s.webauthn.FinishAuthenticationSession(c.Request, username)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	// handle successful login

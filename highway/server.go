@@ -86,11 +86,12 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 
 // Serve starts the RPC Service.
 func (s *HighwayServer) Serve() {
+	// Print the Server Address's
+	logger.Infof("Serving RPC Server on %s", s.listener.Addr().String())
+	logger.Infof("Serving HTTP Server on %s", s.config.HighwayHTTPEndpoint)
+
 	// Start the gRPC Server
 	go func() {
-		// Print the gRPC Server Address
-		logger.Infof("Serving RPC Server on %s", s.listener.Addr().String())
-
 		// Start gRPC server (and proxy calls to gRPC server endpoint)
 		if err := s.grpc.Serve(s.listener); err != nil {
 			logger.Errorf("%s - Failed to start HTTP server", err)
@@ -99,9 +100,6 @@ func (s *HighwayServer) Serve() {
 
 	// Start HTTP server on a separate goroutine
 	go func() {
-		// Print the gRPC Server Address
-		logger.Infof("Serving HTTP Server on %s", s.config.HighwayHTTPEndpoint)
-
 		// Start HTTP server (and proxy calls to gRPC server endpoint)
 		if err := s.httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Fatalf("%s - Failed to start HTTP server", err)
@@ -160,6 +158,7 @@ func setupBaseStub(ctx context.Context, c *config.Config) (*HighwayServer, error
 		ctx:    ctx,
 		gin:    gin.Default(),
 		grpc:   grpc.NewServer(),
+		config: c,
 
 		listener: lst,
 		webauthn: webauthn,
