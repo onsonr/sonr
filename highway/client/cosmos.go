@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/kataras/golog"
 	bt "github.com/sonr-io/blockchain/x/bucket/types"

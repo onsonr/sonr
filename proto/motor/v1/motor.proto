@@ -9,6 +9,8 @@ option go_package = "github.com/sonr-io/core/motor";
 
 // MotorService is a RPC service for interfacing over the Motor node.
 service MotorService {
+  
+
   // Node Methods
   // Respond Method to an Invite with Decision
   rpc Share(motor.v1.ShareRequest) returns (motor.v1.ShareResponse) {}
