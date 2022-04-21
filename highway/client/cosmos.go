@@ -99,6 +99,44 @@ func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegiste
 	return respMsg, nil
 }
 
+// BroadcastUpdateApplication broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastUpdateApplication(msg *rt.MsgUpdateApplication) (*rt.MsgUpdateApplicationResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		golog.Errorf("Error broadcasting transaction: %s", err)
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgUpdateApplicationResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+		golog.Errorf("Error decoding response: %v", err)
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastUpdateName broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		golog.Errorf("Error broadcasting transaction: %s", err)
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgUpdateNameResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+		golog.Errorf("Error decoding response: %v", err)
+		return nil, err
+	}
+	return respMsg, nil
+}
+
 // QueryAllNames returns all DIDDocuments registered on the blockchain
 func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names

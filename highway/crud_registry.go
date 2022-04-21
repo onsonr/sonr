@@ -214,5 +214,15 @@ func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request)
 
 // UpdateName updates a name.
 func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
-	return nil, ErrMethodUnimplemented
+	// Broadcast the Transaction
+	resp, err := s.cosmos.BroadcastUpdateName(rtv1.NewMsgUpdateNameFromBuf(req))
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(resp.String())
+	return &rt.MsgUpdateNameResponse{
+		Code:    resp.Code,
+		Message: resp.Message,
+		WhoIs:   rtv1.NewWhoIsToBuf(resp.WhoIs),
+	}, nil
 }

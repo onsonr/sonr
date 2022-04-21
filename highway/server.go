@@ -107,7 +107,6 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 		cache:  cche,
 		ctx:    ctx,
 		grpc:   grpc.NewServer(),
-		//		ipfs:   ipfs,
 
 		listener:     lst,
 		auth:         web,

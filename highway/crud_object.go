@@ -10,32 +10,35 @@ import (
 
 // CreateObject creates a new object.
 func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
-	// Create ctv1 message to broadcast
-	fields := make([]*otv1.TypeField, len(req.GetInitialFields()))
-	for i, f := range req.GetInitialFields() {
-		fields[i] = &otv1.TypeField{
-			Name: f.GetName(),
-			Kind: otv1.TypeKind(f.GetKind()),
-		}
-	}
-
-	// Build Transaction
-	tx := &otv1.MsgCreateObject{
-		Creator:       req.GetCreator(),
-		Label:         req.GetLabel(),
-		InitialFields: fields,
-	}
-	resp, err := s.cosmos.BroadcastCreateObject(tx)
+	// Broadcast the Transaction
+	resp, err := s.cosmos.BroadcastCreateObject(otv1.NewMsgCreateObjectFromBuf(req))
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(resp.String())
+
+	// Upload Object Schema to IPFS
+	cid, err := s.ipfsProtocol.PutObjectSchema(resp.GetWhatIs().GetObjectDoc())
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(cid)
 	return &ot.MsgCreateObjectResponse{}, nil
 }
 
 // UpdateObject updates an object.
 func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObject) (*ot.MsgUpdateObjectResponse, error) {
-	return nil, ErrMethodUnimplemented
+	// Broadcast the Transaction
+	resp, err := s.cosmos.BroadcastUpdateObject(otv1.NewMsgUpdateObjectFromBuf(req))
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(resp.String())
+	return &ot.MsgUpdateObjectResponse{
+		Code:    resp.Code,
+		Message: resp.Message,
+		WhatIs:  otv1.NewWhatIsToBuf(resp.WhatIs),
+	}, nil
 }
 
 // // DeleteObject deletes an object.
