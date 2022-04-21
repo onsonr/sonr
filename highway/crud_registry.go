@@ -111,3 +111,17 @@ func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (
 		WhoIs:   rtv1.NewWhoIsToBuf(resp.WhoIs),
 	}, nil
 }
+
+// UpdateNameHTTP updates a name via http.
+func (s *HighwayServer) UpdateNameHTTP(c *gin.Context) {
+	var req rt.MsgUpdateName
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	resp, err := s.UpdateName(c.Request.Context(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	c.JSON(http.StatusOK, resp)
+}

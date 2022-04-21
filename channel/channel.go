@@ -65,7 +65,7 @@ type Channel interface {
 
 	// Listen subscribes to the beam topic and returns a channel that will
 	// receive events.
-	Listen() <-chan *ct.ChannelMessage
+	Listen(opChan chan *ct.ChannelMessage)
 
 	// Close closes the channel.
 	Close() error
@@ -165,8 +165,16 @@ func (b *channel) Publish(obj *ot.ObjectDoc) error {
 }
 
 // Listen subscribes to the beam topic and returns a channel that will
-func (b *channel) Listen() <-chan *ct.ChannelMessage {
-	return b.messages
+func (b *channel) Listen(opChan chan *ct.ChannelMessage) {
+	for {
+		select {
+		case msg := <-b.messages:
+			// Send messages to the ops channel.
+			opChan <- msg
+		case <-b.ctx.Done():
+			return
+		}
+	}
 }
 
 // Close closes the channel.

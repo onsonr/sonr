@@ -32,7 +32,6 @@ func (s *HighwayServer) CreateBucketHTTP(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": ErrRequestBody.Error(),
 		})
-		return
 	}
 
 	// Create the bucket
@@ -73,7 +72,6 @@ func (s *HighwayServer) UpdateBucketHTTP(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": ErrRequestBody.Error(),
 		})
-		return
 	}
 
 	// Update the bucket
@@ -89,5 +87,43 @@ func (s *HighwayServer) UpdateBucketHTTP(c *gin.Context) {
 		"code":     resp.Code,
 		"message":  resp.Message,
 		"which_is": btt.NewWhichIsFromBuf(resp.WhichIs),
+	})
+}
+
+// DeactivateBucket disables a bucket for a registered application
+func (s *HighwayServer) DeactivateBucket(ctx context.Context, req *bt.MsgDeactivateBucket) (*bt.MsgDeactivateBucketResponse, error) {
+	resp, err := s.cosmos.BroadcastDeactivateBucket(btt.NewMsgDeactivateBucketFromBuf(req))
+	if err != nil {
+		return nil, err
+	}
+	log.Println(resp.String())
+	return &bt.MsgDeactivateBucketResponse{
+		Code:    resp.Code,
+		Message: resp.Message,
+	}, nil
+}
+
+// DeactivateBucketHTTP disables a bucket for a registered application via HTTP.
+func (s *HighwayServer) DeactivateBucketHTTP(c *gin.Context) {
+	// Unmarshal the request body
+	var req bt.MsgDeactivateBucket
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": ErrRequestBody.Error(),
+		})
+	}
+
+	// Deactivate the bucket
+	resp, err := s.grpcClient.DeactivateBucket(s.ctx, &req)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	// Return the response
+	c.JSON(http.StatusOK, gin.H{
+		"code":    resp.Code,
+		"message": resp.Message,
 	})
 }

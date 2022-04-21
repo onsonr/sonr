@@ -3,6 +3,7 @@ package highway
 import (
 	context "context"
 	"errors"
+	"io"
 	"log"
 	"net/http"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/sonr-io/core/channel"
 	ct "go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain/channel"
 	v1 "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/highway/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 // CreateChannel creates a new channel.
@@ -50,7 +52,6 @@ func (s *HighwayServer) CreateChannelHTTP(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": ErrRequestBody.Error(),
 		})
-		return
 	}
 
 	// Create the channel
@@ -109,27 +110,117 @@ func (s *HighwayServer) UpdateChannelHTTP(c *gin.Context) {
 
 // ListenChannel listens to a channel.
 func (s *HighwayServer) ListenChannel(req *v1.MsgListenChannel, stream v1.Highway_ListenChannelServer) error {
-	// Find channel by DID
+	// Initialize the channel listener
+	opChan := make(chan *ctv1.ChannelMessage)
 	ch, ok := s.channels[req.GetDid()]
 	if !ok {
 		return ErrInvalidQuery
 	}
+	go ch.Listen(opChan)
 
 	// Listen to the channel
 	for {
 		select {
-		case msg := <-ch.Listen():
-			// Send peer to client
-			if err := stream.Send(&ct.ChannelMessage{
-				PeerDid:  msg.PeerDid,
-				Did:      msg.Did,
-				Object:   otv1.NewObjectDocToBuf(msg.Object),
-				Metadata: msg.Metadata,
-			}); err != nil {
+		case op := <-opChan:
+			// Send the operation
+			err := stream.Send(&ct.ChannelMessage{
+				PeerDid:  op.GetPeerDid(),
+				Did:      op.GetDid(),
+				Object:   otv1.NewObjectDocToBuf(op.Object),
+				Metadata: op.GetMetadata(),
+			})
+			if err != nil {
 				return err
 			}
 		case <-stream.Context().Done():
 			return nil
 		}
 	}
+}
+
+// ListenChannelHTTP listens to a channel via HTTP.
+func (s *HighwayServer) ListenChannelHTTP(c *gin.Context) {
+	// Unmarshal the request body
+	var req v1.MsgListenChannel
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": ErrRequestBody.Error(),
+		})
+	}
+
+	// Setup concurrent stream
+	opChan := make(chan *ctv1.ChannelMessage)
+	ch, ok := s.channels[req.GetDid()]
+	if !ok {
+		c.JSON(http.StatusBadRequest, ErrRequestBody.Error())
+	}
+	go ch.Listen(opChan)
+
+	// Listen to the channel
+	c.Stream(func(io.Writer) bool {
+		// Get the next operation
+		op, ok := <-opChan
+		if !ok {
+			return false
+		}
+
+		// Create ChannelMessage
+		msg := &ct.ChannelMessage{
+			PeerDid:  op.GetPeerDid(),
+			Did:      op.GetDid(),
+			Object:   otv1.NewObjectDocToBuf(op.Object),
+			Metadata: op.GetMetadata(),
+		}
+
+		// Marshal the proto message
+		data, err := proto.Marshal(msg)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return false
+		}
+
+		// Send the message
+		c.Writer.Write(data)
+		return true
+	})
+}
+
+// DeactivateBucket disables a bucket for a registered application
+func (s *HighwayServer) DeactivateChannel(ctx context.Context, req *ct.MsgDeactivateChannel) (*ct.MsgDeactivateChannelResponse, error) {
+	resp, err := s.cosmos.BroadcastDeactivateChannel(ctv1.NewMsgDeactivateChannelFromBuf(req))
+	if err != nil {
+		return nil, err
+	}
+	log.Println(resp.String())
+	return &ct.MsgDeactivateChannelResponse{
+		Code:    resp.Code,
+		Message: resp.Message,
+	}, nil
+}
+
+// DeactivateBucketHTTP disables a bucket for a registered application via HTTP.
+func (s *HighwayServer) DeactivateChannelHTTP(c *gin.Context) {
+	// Unmarshal the request body
+	var req ct.MsgDeactivateChannel
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": ErrRequestBody.Error(),
+		})
+	}
+
+	// Deactivate the bucket
+	resp, err := s.grpcClient.DeactivateChannel(s.ctx, &req)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	// Return the response
+	c.JSON(http.StatusOK, gin.H{
+		"code":    resp.Code,
+		"message": resp.Message,
+	})
 }
