@@ -2,8 +2,9 @@ package highway
 
 import (
 	context "context"
+	"log"
 
-	bt_v1 "github.com/sonr-io/blockchain/x/bucket/types"
+	btt "github.com/sonr-io/blockchain/x/bucket/types"
 	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 

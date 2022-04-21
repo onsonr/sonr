@@ -31,10 +31,10 @@ func TestMsgCreateObject_ValidateBasic(t *testing.T) {
 				Creator:     "snr1ulu0a0eew3w3sj8nk8lx5z3cmaw46u383kek9t",
 				Label:       "a label",
 				Description: "a description",
-				InitialFields: []*ot.ObjectField{
+				InitialFields: []*ot.TypeField{
 					{
-						Label: "another label",
-						Type:  0,
+						Name: "another label",
+						Kind:  0,
 					},
 				},
 				Session: &registry.Session{
