@@ -3,7 +3,6 @@ module github.com/sonr-io/core
 go 1.17
 
 require (
-	git.mills.io/prologic/bitcask v1.0.0
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
@@ -11,6 +10,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
+	github.com/google/uuid v1.3.0
 	github.com/hsanjuan/ipfs-lite v1.3.0
 	github.com/ipfs/go-cid v0.1.0
 	github.com/ipfs/go-datastore v0.5.1
@@ -34,12 +34,11 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/sonr-io/blockchain v0.0.12
+	github.com/sonr-io/blockchain v0.0.11
 	github.com/stretchr/testify v1.7.1
 	github.com/tendermint/starport v0.19.5
-	go.buf.build/grpc/go/sonr-io/core v1.3.8
-	go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain v1.1.2
-	go.buf.build/sonr-io/grpc-gateway/sonr-io/core v1.1.15
+	go.buf.build/grpc/go/sonr-io/blockchain v1.3.3
+	go.buf.build/grpc/go/sonr-io/core v1.3.19
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/square/go-jose.v2 v2.6.0
@@ -53,7 +52,6 @@ require (
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d // indirect
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/MFAshby/stdemuxerhook v1.0.0 // indirect
-	github.com/abcum/lcp v0.0.0-20201209214815-7a3f3840be81 // indirect
 	github.com/alecthomas/units v0.0.0-20210927113745-59d0afb8317a // indirect
 	github.com/armon/go-metrics v0.3.10 // indirect
 	github.com/benbjohnson/clock v1.1.0 // indirect
@@ -112,7 +110,6 @@ require (
 	github.com/goccy/go-json v0.9.4 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/godbus/dbus/v5 v5.0.4 // indirect
-	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/gogo/protobuf v1.3.3 // indirect
 	github.com/golang-jwt/jwt/v4 v4.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -121,8 +118,8 @@ require (
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/certificate-transparency-go v1.1.2-0.20210511102531-373a877eec92 // indirect
+	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/gopacket v1.1.19 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.0 // indirect
@@ -130,7 +127,6 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
@@ -278,7 +274,6 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
-	github.com/plar/go-adaptive-radix-tree v1.0.4 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/polydawn/refmt v0.0.0-20201211092308-30ac6d18308e // indirect
 	github.com/pressly/goose v2.7.0+incompatible // indirect
@@ -329,8 +324,8 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
 	github.com/zondax/hid v0.9.0 // indirect
-	go.buf.build/sonr-io/grpc-gateway/cosmos/cosmos-sdk v1.1.47 // indirect
-	go.buf.build/sonr-io/grpc-gateway/cosmos/gogo-proto v1.1.1 // indirect
+	go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.47 // indirect
+	go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 // indirect
 	go.etcd.io/bbolt v1.3.5 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.1 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.1 // indirect
@@ -348,7 +343,6 @@ require (
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.19.1 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
-	golang.org/x/exp v0.0.0-20200331195152-e8c3332aa8e5 // indirect
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410 // indirect
 	golang.org/x/mod v0.5.0 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect

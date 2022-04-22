@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	rtv1 "github.com/sonr-io/blockchain/x/registry/types"
-	rt "go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain/registry"
+	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 // RegisterNameStart starts the registration process for webauthn on http

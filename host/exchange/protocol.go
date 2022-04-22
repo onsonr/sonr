@@ -10,10 +10,10 @@ import (
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/motor/config"
-	v1 "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/host/exchange/v1"
-	types "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 
-	motor "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/motor/v1"
+	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -59,10 +59,6 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 		return ErrNotSupported
 	}
 	to := shareReq.GetPeer()
-	profile, err := p.node.Profile()
-	if err != nil {
-		return err
-	}
 
 	// // TODO: Implement Share Request to Payload Method
 	// payload, err := shareReq.ToPayload(profile)
@@ -71,7 +67,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	// }
 
 	payload := &types.Payload{
-		Owner: profile,
+		// Owner: profile,
 	}
 
 	// Create Request

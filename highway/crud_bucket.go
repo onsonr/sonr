@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	btt "github.com/sonr-io/blockchain/x/bucket/types"
-	bt "go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain/bucket"
+	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 
 // CreateBucket creates a new bucket.

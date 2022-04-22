@@ -5,9 +5,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"errors"
-	"net"
 
-	"git.mills.io/prologic/bitcask"
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p"
 	cmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -22,8 +20,8 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/highway/config"
-	t "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
-	types "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
+	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -54,9 +52,6 @@ type HostImpl interface {
 	// Join subsrcibes to a topic
 	Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error)
 
-	// Listener returns the listener of the node
-	Listener() (net.Listener, error)
-
 	// NewStream opens a new stream to a peer
 	NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error)
 
@@ -74,12 +69,6 @@ type HostImpl interface {
 
 	// Peer returns the peer of the node
 	Peer() (*types.Peer, error)
-
-	// Profile returns the profile of the node from Local Store
-	Profile() (*types.Profile, error)
-
-	// Publish publishes a message to a topic
-	Publish(topic string, msg proto.Message, metadata *types.Metadata) error
 
 	// Pubsub returns the pubsub of the node
 	Pubsub() *ps.PubSub
@@ -124,14 +113,12 @@ type hostImpl struct {
 
 	// Host and context
 	connection   types.Connection
-	listener     net.Listener
 	privKey      crypto.PrivKey
 	mdnsPeerChan chan peer.AddrInfo
 	dhtPeerChan  <-chan peer.AddrInfo
 
 	// Properties
-	ctx   context.Context
-	store *bitcask.Bitcask
+	ctx context.Context
 
 	*dht.IpfsDHT
 	*ps.PubSub
@@ -151,16 +138,6 @@ func NewHost(ctx context.Context, r device.Role, config *config.Config) (HostImp
 		status:       Status_IDLE,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		role:         config.Role,
-	}
-
-	// Open Listener on Port
-	if config.Role == device.Role_HIGHWAY {
-		hn.listener, err = net.Listen(config.Libp2pNetwork, config.Libp2pAddress())
-		if err != nil {
-			golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
-			return nil, err
-		}
-		logger.Infof("(app) - Listening on %s", hn.listener.Addr().String())
 	}
 
 	// findPrivKey returns the private key for the host.
@@ -243,14 +220,6 @@ func (n *hostImpl) HostID() peer.ID {
 	return n.host.ID()
 }
 
-// Listener returns the listener of the node
-func (n *hostImpl) Listener() (net.Listener, error) {
-	if n.listener == nil {
-		return nil, errors.New("Host is not listening")
-	}
-	return n.listener, nil
-}
-
 // Ping sends a ping to the peer
 func (n *hostImpl) Ping(pid string) error {
 	return nil
@@ -265,11 +234,6 @@ func (n *hostImpl) PrivateKey() (ed25519.PrivateKey, error) {
 		return nil, err
 	}
 	return ed25519.PrivateKey(buf), nil
-}
-
-// Publish publishes a message to the network
-func (n *hostImpl) Publish(t string, message proto.Message, metadata *types.Metadata) error {
-	return nil
 }
 
 // Role returns the role of the node

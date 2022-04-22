@@ -17,7 +17,7 @@ import (
 	"github.com/sonr-io/core/highway/config"
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/ipfs"
-	v1 "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/highway/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -34,24 +34,25 @@ var (
 
 // HighwayServer is the RPC Service for the Custodian Node.
 type HighwayServer struct {
+	// Config
 	v1.HighwayServer
+	ctx    context.Context
+	config *config.Config
 
 	// Clients
 	node     hn.HostImpl
 	cosmos   *client.Cosmos
 	webauthn *client.WebAuthn
 
-	// Config
-	ctx      context.Context
-	config   *config.Config
-	listener net.Listener
-	gin      *gin.Engine
-	httpSrv  *http.Server
+	// Http Properties
+	router     *gin.Engine
+	httpServer *http.Server
 
-	// Grpc Server
-	grpc       *grpc.Server
-	grpcConn   *grpc.ClientConn
-	grpcClient v1.HighwayClient
+	// Grpc Properties
+	grpc         *grpc.Server
+	grpcConn     *grpc.ClientConn
+	grpcClient   v1.HighwayClient
+	grpcListener net.Listener
 
 	// Protocols
 	channels     map[string]channel.Channel
@@ -87,13 +88,13 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*HighwayServer, err
 // Serve starts the RPC Service.
 func (s *HighwayServer) Serve() {
 	// Print the Server Address's
-	logger.Infof("Serving RPC Server on %s", s.listener.Addr().String())
+	logger.Infof("Serving RPC Server on %s", s.grpcListener.Addr().String())
 	logger.Infof("Serving HTTP Server on %s", s.config.HighwayHTTPEndpoint)
 
 	// Start the gRPC Server
 	go func() {
 		// Start gRPC server (and proxy calls to gRPC server endpoint)
-		if err := s.grpc.Serve(s.listener); err != nil {
+		if err := s.grpc.Serve(s.grpcListener); err != nil {
 			logger.Errorf("%s - Failed to start HTTP server", err)
 		}
 	}()
@@ -101,7 +102,7 @@ func (s *HighwayServer) Serve() {
 	// Start HTTP server on a separate goroutine
 	go func() {
 		// Start HTTP server (and proxy calls to gRPC server endpoint)
-		if err := s.httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Fatalf("%s - Failed to start HTTP server", err)
 		}
 	}()
@@ -116,7 +117,7 @@ func (s *HighwayServer) Serve() {
 	// the request it is currently handling
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := s.httpSrv.Shutdown(ctx); err != nil {
+	if err := s.httpServer.Shutdown(ctx); err != nil {
 		logger.Fatal("Server forced to shutdown: ", err)
 	}
 
@@ -134,7 +135,7 @@ func setupBaseStub(ctx context.Context, c *config.Config) (*HighwayServer, error
 	}
 
 	// Get the Listener for the Host
-	lst, err := node.Listener()
+	lst, err := net.Listen(c.HighwayGRPCNetwork, c.HighwayGRPCEndpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -156,12 +157,12 @@ func setupBaseStub(ctx context.Context, c *config.Config) (*HighwayServer, error
 		cosmos: cosmos,
 		node:   node,
 		ctx:    ctx,
-		gin:    gin.Default(),
+		router: gin.Default(),
 		grpc:   grpc.NewServer(),
 		config: c,
 
-		listener: lst,
-		webauthn: webauthn,
+		grpcListener: lst,
+		webauthn:     webauthn,
 	}
 	return stub, nil
 }
@@ -195,27 +196,32 @@ func setupAPI(ctx context.Context, s *HighwayServer) error {
 	s.grpcClient = v1.NewHighwayClient(conn)
 
 	// Register WebAuthn HTTP Routes
-	s.gin.GET("/register/name/start/{username}", s.StartRegisterName)
-	s.gin.POST("/register/name/finish/{username}", s.FinishRegisterName)
-	s.gin.GET("/access/name/start/{username}", s.StartAccessName)
-	s.gin.POST("/access/name/finish/{username}", s.FinishAccessName)
+	s.router.GET("/v1/name/register/start/:username", s.StartRegisterName)
+	s.router.POST("/v1/name/register/finish/:username", s.FinishRegisterName)
+	s.router.GET("/v1/name/access/start/:username", s.StartAccessName)
+	s.router.POST("/v1/name/access/finish/:username", s.FinishAccessName)
 
 	// Register Cosmos HTTP Routes
-	s.gin.POST("/create/bucket", s.CreateBucketHTTP)
-	s.gin.POST("/create/channel", s.CreateChannelHTTP)
-	s.gin.POST("/create/object", s.CreateObjectHTTP)
-	s.gin.POST("/deactivate/bucket", s.DeactivateBucketHTTP)
-	s.gin.POST("/deactivate/channel", s.DeactivateChannelHTTP)
-	s.gin.POST("/deactivate/object", s.DeactivateObjectlHTTP)
-	s.gin.GET("/listen/channel", s.ListenChannelHTTP)
-	s.gin.POST("/update/bucket", s.UpdateBucketHTTP)
-	s.gin.POST("/update/channel", s.UpdateChannelHTTP)
-	s.gin.POST("/update/object", s.UpdateObjectHTTP)
+	s.router.POST("/v1/bucket/create", s.CreateBucketHTTP)
+	s.router.POST("/v1/bucket/update", s.UpdateBucketHTTP)
+	s.router.POST("/v1/bucket/deactivate", s.DeactivateBucketHTTP)
+	s.router.POST("/v1/channel/create", s.CreateChannelHTTP)
+	s.router.POST("/v1/channel/update", s.UpdateChannelHTTP)
+	s.router.POST("/v1/channel/deactivate", s.DeactivateChannelHTTP)
+	s.router.GET("/v1/channel/listen", s.ListenChannelHTTP)
+	s.router.POST("/v1/object/create", s.CreateObjectHTTP)
+	s.router.POST("/v1/object/update", s.UpdateObjectHTTP)
+	s.router.POST("/v1/object/deactivate", s.DeactivateObjectlHTTP)
+
+	// Register IPFS HTTP Routes
+	s.router.PUT("/v1/blob/upload", s.UploadBlobHTTP)
+	s.router.GET("/v1/blob/download/:cid", s.DownloadBlobHTTP)
+	s.router.POST("/v1/blob/remove/:cid", s.RemoveBlobHTTP)
 
 	// Setup HTTP Server
-	s.httpSrv = &http.Server{
+	s.httpServer = &http.Server{
 		Addr:    s.config.HighwayHTTPEndpoint,
-		Handler: s.gin,
+		Handler: s.router,
 	}
 	return nil
 }

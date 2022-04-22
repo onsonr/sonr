@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/duo-labs/webauthn/webauthn"
@@ -9,20 +8,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/device"
 	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
+	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 
 	ma "github.com/multiformats/go-multiaddr"
-)
-
-var (
-	// Default P2P Properties
-	BootstrapAddrStrs = []string{
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
-		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-	}
 )
 
 // LogLevel is the type for the log level
@@ -46,6 +34,7 @@ type Config struct {
 	// Host
 	Role                 device.Role
 	LogLevel             string
+	Libp2pMdnsDisabled   bool
 	Libp2pBootstrapPeers []peer.AddrInfo
 	Libp2pLowWater       int
 	Libp2pHighWater      int
@@ -54,13 +43,8 @@ type Config struct {
 	Libp2pInterval       time.Duration
 	Libp2pTTL            dscl.Option
 
-	// Libp2p Session
-	Libp2pHost         string
-	Libp2pNetwork      string
-	Libp2pPort         int
-	Libp2pMdnsDisabled bool
-
 	// Highway Config
+	HighwayGRPCNetwork  string
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
@@ -84,10 +68,21 @@ type Config struct {
 	CosmosKeyringServiceName string
 }
 
+// DefaultConfig returns the default configuration for the Highway node
 func DefaultConfig() *Config {
+	// Define the default bootstrappers
+	bootstrapAddrStrs := []string{
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+	}
+
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
-	for _, s := range BootstrapAddrStrs {
+	for _, s := range bootstrapAddrStrs {
 		ma, err := ma.NewMultiaddr(s)
 		if err != nil {
 			continue
@@ -107,10 +102,8 @@ func DefaultConfig() *Config {
 	return &Config{
 		LogLevel:                 string(InfoLevel),
 		Role:                     device.Role_HIGHWAY,
-		Libp2pHost:               ":",
-		Libp2pPort:               26225,
 		Libp2pMdnsDisabled:       true,
-		Libp2pNetwork:            "tcp",
+		HighwayGRPCNetwork:       "tcp",
 		Libp2pBootstrapPeers:     ds,
 		Libp2pLowWater:           200,
 		Libp2pHighWater:          400,
@@ -133,15 +126,30 @@ func DefaultConfig() *Config {
 		CosmosHomePath:           "~/.sonr",
 		CosmosKeyringBackend:     cosmosaccount.KeyringTest,
 		CosmosKeyringServiceName: "sonr",
-		HighwayGRPCEndpoint:      "localhost:8443",
+		HighwayGRPCEndpoint:      "localhost:26225",
 		HighwayHTTPEndpoint:      ":8081",
 	}
 }
 
-func (c *Config) Libp2pAddress() string {
-	return fmt.Sprintf("%s%d", c.Libp2pHost, c.Libp2pPort)
+// CosmosOptions returns the cosmos options for the highway node
+func (c *Config) CosmosOptions() []cosmosclient.Option {
+	// Create the options
+	opts := make([]cosmosclient.Option, 0)
+	if c.CosmosUseFaucet {
+		opts = append(opts, cosmosclient.WithUseFaucet(c.CosmosFaucetAddress, c.CosmosFaucetDenom, c.CosmosFaucetMinAmount))
+	}
+
+	// Add remaining cosmos options
+	opts = append(opts, cosmosclient.WithNodeAddress(c.CosmosNodeAddress),
+		cosmosclient.WithAddressPrefix(c.CosmosAddressPrefix),
+		cosmosclient.WithHome(c.CosmosHomePath),
+		cosmosclient.WithKeyringBackend(c.CosmosKeyringBackend),
+		cosmosclient.WithKeyringServiceName(c.CosmosKeyringServiceName))
+
+	return opts
 }
 
+// WebauthnConfig returns the configuration for the WebAuthn module
 func (c *Config) WebauthnConfig() *webauthn.Config {
 	return &webauthn.Config{
 		RPDisplayName: c.WebAuthNRPDisplayName,
@@ -152,6 +160,3 @@ func (c *Config) WebauthnConfig() *webauthn.Config {
 	}
 
 }
-
-// Option configures your client.
-type Option func(*Config)

@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	otv1 "github.com/sonr-io/blockchain/x/object/types"
-	ot "go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain/object"
+	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
 
 // CreateObject creates a new object.

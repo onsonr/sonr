@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	ot "go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain/object"
-	"go.buf.build/sonr-io/grpc-gateway/sonr-io/blockchain/registry"
+	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
+	"go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 func TestMsgCreateObject_ValidateBasic(t *testing.T) {
