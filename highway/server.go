@@ -235,6 +235,9 @@ func setupAPI(ctx context.Context, s *HighwayServer) error {
 	docs.SwaggerInfo.BasePath = "/v1"
 	s.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	// Serve demo webpage
+	s.router.Static("/v1/login", "./")
+
 	// Setup HTTP Server
 	s.httpServer = &http.Server{
 		Addr:    s.config.HighwayHTTPEndpoint,
