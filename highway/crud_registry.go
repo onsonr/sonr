@@ -110,7 +110,13 @@ func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (
 	}, nil
 }
 
-// UpdateNameHTTP updates a name via http.
+// @Summary Update Name
+// @Schemes
+// @Description DeactivateChannel disables a Channel for a registered application
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/update [post]
 func (s *HighwayServer) UpdateNameHTTP(c *gin.Context) {
 	var req rt.MsgUpdateName
 	if err := c.ShouldBindJSON(&req); err != nil {

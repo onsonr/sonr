@@ -123,6 +123,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/channel/deactivate": {
+            "get": {
+                "description": "DeactivateObject disables an Object for a registered application via HTTP",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Deactivate Bucket",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "502": {
+                        "description": "Bad Gateway",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     }
 }`
