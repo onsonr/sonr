@@ -137,8 +137,8 @@ func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameR
 	return respMsg, nil
 }
 
-// ExistsName checks if a name exists on the blockchain
-func (cc *Cosmos) ExistsName(name string) bool {
+// NameExists checks if a name exists on the blockchain
+func (cc *Cosmos) NameExists(name string) bool {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{Did: name})
 	if err != nil {
@@ -147,11 +147,6 @@ func (cc *Cosmos) ExistsName(name string) bool {
 
 	// check if the name exists
 	return queryResp.GetWhoIs().Name == name
-}
-
-// ExistsName checks if a name exists on the blockchain
-func (cc *Cosmos) ExistsNotName(name string) bool {
-	return !cc.ExistsName(name)
 }
 
 // QueryAllNames returns all DIDDocuments registered on the blockchain

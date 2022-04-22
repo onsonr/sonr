@@ -30,7 +30,7 @@ type WebAuthn struct {
 	sessions *session.Store
 }
 
-// NewCosmos creates a Sonr Blockchain client with the given account and provides helper functions
+// NewWebauthn creates a new WebAuthn instance with the given configuration
 func NewWebauthn(ctx context.Context, config *config.Config) (*WebAuthn, error) {
 	// Create a WebAuthn instance
 	web, err := webauthn.New(config.WebauthnConfig())
@@ -96,7 +96,7 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 	return credential, nil
 }
 
-// SaveLoginSession saves the login session for the given user
+// SaveAuthenticationSession saves the login session for the given user
 func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseWriter, whoIs *rtv1.WhoIs) (*protocol.CredentialAssertion, error) {
 	// generate PublicKeyCredentialRequestOptions, session data
 	wan.cache.Set(authenticationCacheKey(whoIs.Name), whoIs, cache.DefaultExpiration)
@@ -113,7 +113,7 @@ func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseW
 	return options, nil
 }
 
-// SaveLoginSession saves the login session for the given user
+// SaveRegistrationSession saves the registration session for the given user
 func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWriter, username string, creator string) (*protocol.CredentialCreation, error) {
 	// Create Blank WhoIs
 	whoIs := blankWhoIs(username, creator)

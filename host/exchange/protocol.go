@@ -21,10 +21,8 @@ type ExchangeProtocol struct {
 	ctx      context.Context
 	node     host.HostImpl
 	callback config.CallbackImpl
-	// mail    *local.Mail
-	//mailbox *local.Mailbox
-	invites *cache.Cache
-	mode    device.Role
+	invites  *cache.Cache
+	mode     device.Role
 }
 
 // New creates a new ExchangeProtocol
@@ -58,20 +56,9 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	if p.mode.IsHighway() {
 		return ErrNotSupported
 	}
-	to := shareReq.GetPeer()
-
-	// // TODO: Implement Share Request to Payload Method
-	// payload, err := shareReq.ToPayload(profile)
-	// if err != nil {
-	// 	return err
-	// }
-
-	payload := &types.Payload{
-		// Owner: profile,
-	}
 
 	// Create Request
-	id, req, err := p.createRequest(to, payload)
+	id, req, err := p.createRequest(shareReq.GetPeer(), &types.Payload{})
 	if err != nil {
 		logger.Errorf("%s - Failed to Create Request", err)
 		return err

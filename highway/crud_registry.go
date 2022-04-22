@@ -14,14 +14,12 @@ import (
 func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 	if username := c.Param("username"); username != "" {
 		// Check if user exists and return error if it does
-		if exists := s.cosmos.ExistsName(username); exists {
+		if exists := s.cosmos.NameExists(username); exists {
 			c.JSON(http.StatusConflict, gin.H{"error": "username already exists"})
 		}
 
-		creator := s.cosmos.AccountName()
-
 		// Save Registration Session
-		options, err := s.webauthn.SaveRegistrationSession(c.Request, c.Writer, username, creator)
+		options, err := s.webauthn.SaveRegistrationSession(c.Request, c.Writer, username, s.cosmos.AccountName())
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
