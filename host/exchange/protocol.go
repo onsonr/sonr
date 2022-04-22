@@ -10,10 +10,10 @@ import (
 	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/motor/config"
-	v1 "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/host/exchange/v1"
-	types "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/types/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
+	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 
-	motor "go.buf.build/sonr-io/grpc-gateway/sonr-io/core/motor/v1"
+	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -21,10 +21,8 @@ type ExchangeProtocol struct {
 	ctx      context.Context
 	node     host.HostImpl
 	callback config.CallbackImpl
-	// mail    *local.Mail
-	//mailbox *local.Mailbox
-	invites *cache.Cache
-	mode    device.Role
+	invites  *cache.Cache
+	mode     device.Role
 }
 
 // New creates a new ExchangeProtocol
@@ -58,24 +56,9 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	if p.mode.IsHighway() {
 		return ErrNotSupported
 	}
-	to := shareReq.GetPeer()
-	profile, err := p.node.Profile()
-	if err != nil {
-		return err
-	}
-
-	// // TODO: Implement Share Request to Payload Method
-	// payload, err := shareReq.ToPayload(profile)
-	// if err != nil {
-	// 	return err
-	// }
-
-	payload := &types.Payload{
-		Owner: profile,
-	}
 
 	// Create Request
-	id, req, err := p.createRequest(to, payload)
+	id, req, err := p.createRequest(shareReq.GetPeer(), &types.Payload{})
 	if err != nil {
 		logger.Errorf("%s - Failed to Create Request", err)
 		return err

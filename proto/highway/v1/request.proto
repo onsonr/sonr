@@ -6,31 +6,11 @@ package sonrio.highway.v1;
 
 option go_package = "github.com/sonr-io/sonr/highway/v1";
 
-message MsgAccessNameStart {
-  string username = 1;
-}
-
-message MsgAccessNameFinish {
-  string username = 1;
-}
-
-message MsgRegisterNameStart {
-  string username = 1;
-}
-
-message MsgRegisterNameFinish {
-  string username = 1;
-}
-
 // MsgListenChannel represents a request payload to subscribe to a channel
 message MsgListenChannel {
-  // Name is the name of the channel
+  // DID of the channel to listen to
   string did = 1;
-
-  // Metadata is additional metadata for the channel
-  map<string, string> metadata = 2; // optional
 }
-
 
 // MsgUploadBlob represents a request payload to upload a blob
 message MsgUploadBlob {
@@ -39,45 +19,19 @@ message MsgUploadBlob {
 
   // Path is the path of the blob
   string path = 2;
-
-  // Bucket or object DID where the blob is being uploaded to
-  string ref_did = 3;
-
-  // Size is the size of the blob
-  int64 size = 4;
-
-  // LastModified is the last modified time of the blob
-  int64 last_modified = 5;
 }
 
 // MsgDownloadBlob represents a request payload to download a blob
 message MsgDownloadBlob {
-  // DID is the identifier of the blob
-  string did = 1;
+  // CID (Content Identifier) of the blob to download
+  string cid = 1;
 
   // Out Path is the download path of the blob
   string out_path = 2;
 }
 
-// MsgSyncBlob represents a request payload to sync a blob
-message MsgSyncBlob {
-  // DID is the identifier of the blob
-  string did = 1;
-
-  // Path is the location of the blob
-  string path = 2;
-
-  int32 timeout = 3; // optional
-}
-
-// MsgDeleteBlob represents a request payload to delete a blob
-message MsgDeleteBlob {
-  // DID is the identifier of the blob
-  string did = 1;
-
-  // Metadata is the metadata of the blob thats being deleted
-  map<string, string> metadata = 2;
-
-  // Public key of the node that is deleting the blob
-  string public_key = 3;
+// MsgRemoveBlob represents a request payload to delete a blob
+message MsgRemoveBlob {
+  // CID (Content Identifier) of the blob to delete
+  string cid = 1;
 }

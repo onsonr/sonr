@@ -153,6 +153,10 @@ func (i *IPFSProtocol) PutObjectSchema(doc *ot.ObjectDoc) (*cid.Cid, error) {
 }
 
 // RemoveFile removes a file from IPFS.
-func (i *IPFSProtocol) RemoveFile(cid cid.Cid) error {
+func (i *IPFSProtocol) RemoveFile(cidstr string) error {
+	cid, err := DecodeCIDFromString(cidstr)
+	if err != nil {
+		return err
+	}
 	return i.Peer.Remove(i.ctx, cid)
 }

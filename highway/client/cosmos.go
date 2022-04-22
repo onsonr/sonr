@@ -25,7 +25,7 @@ type Cosmos struct {
 // NewCosmos creates a Sonr Blockchain client with the given account and provides helper functions
 func NewCosmos(ctx context.Context, config *config.Config) (*Cosmos, error) {
 	// Create a new cosmos client
-	cosmos, err := cosmosclient.New(ctx, cosmosclient.WithAddressPrefix(config.CosmosAddressPrefix), cosmosclient.WithKeyringBackend(config.CosmosKeyringBackend))
+	cosmos, err := cosmosclient.New(ctx, config.CosmosOptions()...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +135,18 @@ func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameR
 		return nil, err
 	}
 	return respMsg, nil
+}
+
+// NameExists checks if a name exists on the blockchain
+func (cc *Cosmos) NameExists(name string) bool {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
+	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{Did: name})
+	if err != nil {
+		return false
+	}
+
+	// check if the name exists
+	return queryResp.GetWhoIs().Name == name
 }
 
 // QueryAllNames returns all DIDDocuments registered on the blockchain

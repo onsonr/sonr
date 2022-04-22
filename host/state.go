@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"strconv"
 	"sync"
@@ -16,7 +15,6 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/device"
 	"github.com/sonr-io/core/highway/config"
 )
 
@@ -103,11 +101,6 @@ func (n *hostImpl) Close() {
 	// Update Status
 	n.SetStatus(Status_CLOSED)
 	n.IpfsDHT.Close()
-
-	// Close Store
-	if err := n.store.Close(); err != nil {
-		logger.Errorf("%s - Failed to close store, ", err)
-	}
 
 	// Close Host
 	if err := n.host.Close(); err != nil {
@@ -206,35 +199,6 @@ func (sm *SockManager) NewSockPath() (string, error) {
 	}
 
 	return "", errors.Wrap(err, "can't create new sock")
-}
-
-// persist contains the main loop for the Node
-func (n *hostImpl) Persist() {
-	// Check if node is highway
-	if n.Role() != device.Role_HIGHWAY {
-		golog.Default.Child("(app)").Errorf("%s - Persist: Node is not a highway node", n.HostID())
-		return
-	}
-
-	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", n.listener.Addr().String())
-
-	// Wait for Exit Signal
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-c
-		exit(0, n.ctx)
-	}()
-
-	// Hold until Exit Signal
-	for {
-		select {
-		case <-n.ctx.Done():
-			golog.Default.Child("(app)").Info("Context Done")
-			n.listener.Close()
-			return
-		}
-	}
 }
 
 // Exit handles cleanup on Sonr Node
