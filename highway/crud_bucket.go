@@ -104,6 +104,14 @@ func (s *HighwayServer) DeactivateBucket(ctx context.Context, req *bt.MsgDeactiv
 }
 
 // DeactivateBucketHTTP disables a bucket for a registered application via HTTP.
+// @Summary Deactivate Bucket
+// @Schemes
+// @Description DeactivateBucket disables a bucket for a registered application via HTTP.
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      400  {string}  message
+// @Failure      502  {string}  message
+// @Router /bucket/deactivate/:cid [get]
 func (s *HighwayServer) DeactivateBucketHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req bt.MsgDeactivateBucket

@@ -1,3 +1,13 @@
+// @title Highway API
+// @version v0.23.0
+// @description Manage your Sonr Powered services and blockchain registered types with the Highway API.
+// @contact.name Sonr Inc.
+// @contact.url https://sonr.io
+// @contact.email team@sonr.io
+// @license.name OpenGLv3
+// @host localhost:8081
+// @BasePath /v1
+
 package highway
 
 import (
@@ -13,10 +23,13 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/channel"
 	"github.com/sonr-io/core/device"
+	docs "github.com/sonr-io/core/docs"
 	"github.com/sonr-io/core/highway/client"
 	"github.com/sonr-io/core/highway/config"
 	hn "github.com/sonr-io/core/host"
 	"github.com/sonr-io/core/host/ipfs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -214,9 +227,13 @@ func setupAPI(ctx context.Context, s *HighwayServer) error {
 	s.router.POST("/v1/object/deactivate", s.DeactivateObjectlHTTP)
 
 	// Register IPFS HTTP Routes
-	s.router.PUT("/v1/blob/upload", s.UploadBlobHTTP)
+	s.router.POST("/v1/blob/upload", s.UploadBlobHTTP)
 	s.router.GET("/v1/blob/download/:cid", s.DownloadBlobHTTP)
 	s.router.POST("/v1/blob/remove/:cid", s.RemoveBlobHTTP)
+
+	// Setup Swagger UI
+	docs.SwaggerInfo.BasePath = "/v1"
+	s.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	// Setup HTTP Server
 	s.httpServer = &http.Server{

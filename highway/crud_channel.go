@@ -187,7 +187,7 @@ func (s *HighwayServer) ListenChannelHTTP(c *gin.Context) {
 	})
 }
 
-// DeactivateBucket disables a bucket for a registered application
+// DeactivateChannel disables a Channel for a registered application
 func (s *HighwayServer) DeactivateChannel(ctx context.Context, req *ct.MsgDeactivateChannel) (*ct.MsgDeactivateChannelResponse, error) {
 	resp, err := s.cosmos.BroadcastDeactivateChannel(ctv1.NewMsgDeactivateChannelFromBuf(req))
 	if err != nil {
@@ -200,7 +200,12 @@ func (s *HighwayServer) DeactivateChannel(ctx context.Context, req *ct.MsgDeacti
 	}, nil
 }
 
-// DeactivateBucketHTTP disables a bucket for a registered application via HTTP.
+// @Summary Deactivate Channel
+// @Schemes
+// @Description DeactivateChannel disables a Channel for a registered application
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
 func (s *HighwayServer) DeactivateChannelHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ct.MsgDeactivateChannel

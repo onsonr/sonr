@@ -10,11 +10,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
+	highwayv1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 )
 
 // UploadBlob uploads a file to IPFS and returns its CID.
-func (s *HighwayServer) UploadBlob(ctx context.Context, req *v1.MsgUploadBlob) (*v1.MsgUploadBlobResponse, error) {
+func (s *HighwayServer) UploadBlob(ctx context.Context, req *highwayv1.MsgUploadBlob) (*highwayv1.MsgUploadBlobResponse, error) {
 	// Read the file at the given path
 	buf, err := ioutil.ReadFile(req.Path)
 	if err != nil {
@@ -28,14 +28,20 @@ func (s *HighwayServer) UploadBlob(ctx context.Context, req *v1.MsgUploadBlob) (
 	}
 
 	// Return the response
-	return &v1.MsgUploadBlobResponse{
+	return &highwayv1.MsgUploadBlobResponse{
 		Code:    200,
 		Message: fmt.Sprintf("Succesfully uploaded blob of size %d to IPFS!", len(buf)),
 		Cid:     resp.String(),
 	}, nil
 }
 
-// UploadBlobHTTP uploads a file to IPFS and returns its CID via HTTP.
+// @Summary Upload File
+// @Schemes
+// @Description UploadBlob uploads a file to IPFS and returns its CID.
+// @Produce json
+// @Success      200  {string}  cid
+// @Failure      500  {string}  message
+// @Router /blob/upload [post]
 func (s *HighwayServer) UploadBlobHTTP(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -78,7 +84,7 @@ func (s *HighwayServer) UploadBlobHTTP(c *gin.Context) {
 }
 
 // DownloadBlob downloads a file from IPFS given its CID.
-func (s *HighwayServer) DownloadBlob(ctx context.Context, req *v1.MsgDownloadBlob) (*v1.MsgDownloadBlobResponse, error) {
+func (s *HighwayServer) DownloadBlob(ctx context.Context, req *highwayv1.MsgDownloadBlob) (*highwayv1.MsgDownloadBlobResponse, error) {
 	// Upload the file to ipfsProtocol
 	resp, err := s.ipfsProtocol.GetData(req.GetCid())
 	if err != nil {
@@ -92,7 +98,7 @@ func (s *HighwayServer) DownloadBlob(ctx context.Context, req *v1.MsgDownloadBlo
 	}
 
 	// Return the response
-	return &v1.MsgDownloadBlobResponse{
+	return &highwayv1.MsgDownloadBlobResponse{
 		Code:    200,
 		Message: fmt.Sprintf("Succesfully uploaded blob of size %d to IPFS!", len(resp)),
 		Cid:     req.GetCid(),
@@ -101,7 +107,13 @@ func (s *HighwayServer) DownloadBlob(ctx context.Context, req *v1.MsgDownloadBlo
 	}, nil
 }
 
-// DownloadBlobHTTP downloads a file from IPFS given its CID via HTTP.
+// @Summary Download File
+// @Schemes
+// @Description DownloadBlob downloads a file from IPFS given its CID.
+// @Produce json
+// @Success      200  {array}  byte
+// @Failure      500  {string}  message
+// @Router /blob/download/:cid [get]
 func (s *HighwayServer) DownloadBlobHTTP(c *gin.Context) {
 	cid := c.Param("cid")
 	if cid == "" {
@@ -124,7 +136,7 @@ func (s *HighwayServer) DownloadBlobHTTP(c *gin.Context) {
 }
 
 // RemoveBlob deletes a file from IPFS given its CID.
-func (s *HighwayServer) RemoveBlob(ctx context.Context, req *v1.MsgRemoveBlob) (*v1.MsgRemoveBlobResponse, error) {
+func (s *HighwayServer) RemoveBlob(ctx context.Context, req *highwayv1.MsgRemoveBlob) (*highwayv1.MsgRemoveBlobResponse, error) {
 	// Upload the file to ipfsProtocol
 	err := s.ipfsProtocol.RemoveFile(req.GetCid())
 	if err != nil {
@@ -132,14 +144,20 @@ func (s *HighwayServer) RemoveBlob(ctx context.Context, req *v1.MsgRemoveBlob) (
 	}
 
 	// Return the response
-	return &v1.MsgRemoveBlobResponse{
+	return &highwayv1.MsgRemoveBlobResponse{
 		Code:    200,
 		Message: fmt.Sprintf("Succesfully deleted blob with CID %s from IPFS!", req.GetCid()),
 		Cid:     req.GetCid(),
 	}, nil
 }
 
-// RemoveBlobHTTP downloads a file from IPFS given its CID via HTTP.
+// @Summary Remove Blob
+// @Schemes
+// @Description RemoveBlob deletes a file from IPFS given its CID.
+// @Produce json
+// @Success      200  {boolean}  success
+// @Failure      500  {string}  message
+// @Router /blob/remove/:cid [get]
 func (s *HighwayServer) RemoveBlobHTTP(c *gin.Context) {
 	cid := c.Param("cid")
 	if cid == "" {
