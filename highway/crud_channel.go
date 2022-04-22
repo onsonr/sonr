@@ -206,6 +206,7 @@ func (s *HighwayServer) DeactivateChannel(ctx context.Context, req *ct.MsgDeacti
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
+// @Router /channel/deactivate [post]
 func (s *HighwayServer) DeactivateChannelHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ct.MsgDeactivateChannel
