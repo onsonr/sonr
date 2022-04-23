@@ -19,18 +19,13 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 	}
 	fmt.Println(resp.String())
 
-	// TODO: actually make use of this. For now I'm just going to store the entire object on chain
 	// Upload Object Schema to IPFS
 	cid, err := s.ipfsProtocol.PutObjectSchema(resp.GetWhatIs().GetObjectDoc())
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(cid)
-	return &ot.MsgCreateObjectResponse{
-		Code:    resp.GetCode(),
-		Message: resp.GetMessage(),
-		WhatIs:  otv1.NewWhatIsToBuf(resp.GetWhatIs()),
-	}, nil
+	return &ot.MsgCreateObjectResponse{}, nil
 }
 
 // CreateBucketHTTP creates a new bucket via HTTP.
@@ -56,45 +51,6 @@ func (s *HighwayServer) CreateObjectHTTP(c *gin.Context) {
 		"code":    resp.Code,
 		"message": resp.Message,
 		"what_is": otv1.NewWhatIsFromBuf(resp.WhatIs),
-	})
-}
-
-func (s *HighwayServer) QueryObject(ctx context.Context, req *ot.MsgQueryObject) (*ot.MsgQueryObjectResponse, error) {
-	// TODO: check permissions for accessing bucket
-	obj, err := s.cosmos.QueryObject(req.GetDid())
-	if err != nil {
-		return nil, err
-	}
-
-	return &ot.MsgQueryObjectResponse{
-		Code:    200, // TODO: implement BroadcastQueryObject for code and message
-		Message: "success",
-		WhatIs:  otv1.NewWhatIsToBuf(obj),
-	}, nil
-}
-
-func (s *HighwayServer) QueryObjectHTTP(c *gin.Context) {
-	// Unmarshal the request body
-	var req ot.MsgQueryObject
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": ErrRequestBody.Error(),
-		})
-	}
-
-	// Create the bucket
-	resp, err := s.grpcClient.QueryObject(s.ctx, &req)
-	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
-	}
-
-	// Return the response
-	c.JSON(http.StatusOK, gin.H{
-		"code":    resp.Code,
-		"message": resp.Message,
-		"what_is": otv1.NewWhatIsFromBuf(resp.GetWhatIs()),
 	})
 }
 

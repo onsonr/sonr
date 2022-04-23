@@ -31,8 +31,11 @@ func TestMsgCreateObject_ValidateBasic(t *testing.T) {
 				Creator:     "snr1ulu0a0eew3w3sj8nk8lx5z3cmaw46u383kek9t",
 				Label:       "a label",
 				Description: "a description",
-				InitialFields: map[string]*ot.ObjectValue{
-					"label": {Value: &ot.ObjectValue_StringValue{StringValue: "another label"}},
+				InitialFields: []*ot.TypeField{
+					{
+						Name: "another label",
+						Kind: 0,
+					},
 				},
 				Session: &registry.Session{
 					Whois: &registry.WhoIs{
