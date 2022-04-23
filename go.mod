@@ -2,12 +2,6 @@ module github.com/sonr-io/core
 
 go 1.17
 
-replace (
-	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/ipfs/go-ipfs-blockstore => github.com/ipfs/go-ipfs-blockstore v1.1.2
-	github.com/sonr-io/blockchain => ../blockchain
-)
-
 require (
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
@@ -46,8 +40,8 @@ require (
 	github.com/swaggo/gin-swagger v1.4.2
 	github.com/swaggo/swag v1.8.1
 	github.com/tendermint/starport v0.19.5
-	go.buf.build/grpc/go/sonr-io/blockchain v1.3.5
-	go.buf.build/grpc/go/sonr-io/core v1.3.20
+	go.buf.build/grpc/go/sonr-io/blockchain v1.3.3
+	go.buf.build/grpc/go/sonr-io/core v1.3.19
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/square/go-jose.v2 v2.6.0
@@ -132,6 +126,7 @@ require (
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/certificate-transparency-go v1.1.2-0.20210511102531-373a877eec92 // indirect
+	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/gopacket v1.1.19 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
@@ -330,6 +325,7 @@ require (
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/urfave/cli v1.22.5 // indirect
+	github.com/warpfork/go-testmark v0.9.0 // indirect
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210219115102-f37d292932f2 // indirect
 	github.com/whyrusleeping/chunker v0.0.0-20181014151217-fe64bd25879f // indirect
 	github.com/whyrusleeping/go-keyspace v0.0.0-20160322163242-5b898ac5add1 // indirect
@@ -353,6 +349,7 @@ require (
 	go.etcd.io/etcd/v3 v3.5.0-alpha.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
+	go.uber.org/goleak v1.1.11 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.19.1 // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
@@ -379,3 +376,9 @@ require (
 	lukechampine.com/blake3 v1.1.6 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
+
+replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+
+replace github.com/sonr-io/blockchain => ../blockchain
+
+replace github.com/ipfs/go-ipfs-blockstore => github.com/ipfs/go-ipfs-blockstore v1.1.2
