@@ -3,6 +3,7 @@ package ipfs
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 
@@ -114,20 +115,37 @@ func (i *IPFSProtocol) PutObjectSchema(doc *ot.ObjectDoc) (*cid.Cid, error) {
 	}
 
 	// Add each field to the map
-	for _, field := range doc.GetFields() {
-		ma.AssembleKey().AssignString(field.GetName())
-		switch field.GetKind() {
-		case ot.TypeKind_TypeKind_String:
-			ma.AssembleValue().AssignString("")
-		case ot.TypeKind_TypeKind_Int:
-			ma.AssembleValue().AssignInt(0)
-		case ot.TypeKind_TypeKind_Float:
-			ma.AssembleValue().AssignFloat(0.0)
-		case ot.TypeKind_TypeKind_Bool:
-			ma.AssembleValue().AssignBool(false)
-		case ot.TypeKind_TypeKind_Bytes:
-			ma.AssembleValue().AssignBytes([]byte{})
-		case ot.TypeKind_TypeKind_Link:
+	for k, v := range doc.GetFields() {
+		ma.AssembleKey().AssignString(k)
+		if len(v.ListValue) > 0 {
+			jv, err := json.Marshal(v.ListValue)
+			if err != nil {
+				return nil, err
+			}
+			ma.AssembleValue().AssignBytes(jv)
+			continue
+		}
+		if len(v.MapValue) > 0 {
+			jv, err := json.Marshal(v.MapValue)
+			if err != nil {
+				return nil, err
+			}
+			ma.AssembleValue().AssignBytes(jv)
+			continue
+		}
+		switch v.Value.(type) {
+		case *ot.ObjectValue_StringValue:
+			ma.AssembleValue().AssignString(v.GetStringValue())
+		case *ot.ObjectValue_IntValue:
+			ma.AssembleValue().AssignInt(v.GetIntValue())
+		case *ot.ObjectValue_FloatValue:
+			ma.AssembleValue().AssignFloat(float64(v.GetFloatValue()))
+		case *ot.ObjectValue_BoolValue:
+			ma.AssembleValue().AssignBool(v.GetBoolValue())
+		case *ot.ObjectValue_BytesValue:
+			ma.AssembleValue().AssignBytes(v.GetBytesValue())
+		case *ot.ObjectValue_LinkValue:
+			// TODO
 			ma.AssembleValue().AssignLink(nil)
 		default:
 			ma.AssembleValue().AssignNull()

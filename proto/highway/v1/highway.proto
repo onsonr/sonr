@@ -20,6 +20,9 @@ service Highway {
   // The calling node must have already registered a service for the object.
   rpc CreateObject(sonrio.sonr.object.MsgCreateObject) returns (sonrio.sonr.object.MsgCreateObjectResponse) {}
 
+  // QueryObject
+  rpc QueryObject(sonrio.sonr.object.MsgQueryObject) returns (sonrio.sonr.object.MsgQueryObjectResponse) {}
+
   // Update a Object
   //
   // Updates the configuration of the given object.
@@ -35,6 +38,8 @@ service Highway {
   // Creates a new Publish/Subscribe topic bucket for the given service.
   // The calling node must have already registered a service for the bucket.
   rpc CreateBucket(sonrio.sonr.bucket.MsgCreateBucket) returns (sonrio.sonr.bucket.MsgCreateBucketResponse) {}
+
+  rpc QueryBucket(sonrio.sonr.bucket.MsgQueryBucket) returns (sonrio.sonr.bucket.MsgQueryBucketResponse) {}
 
   // Update a Bucket
   //
