@@ -40,8 +40,8 @@ func (d *Document) CreateJWS(buf []byte) (string, error) {
 	return serialized, nil
 }
 
-// CreateJWE creates a JWE object
-func (d *Document) CreateJWE(buf []byte) (string, error) {
+// EncryptJWE creates a JWE object
+func (d *Document) EncryptJWE(buf []byte) (string, error) {
 	vm := d.VerificationMethod.FindByID(d.ID)
 	if vm == nil {
 		return "", errors.New("Document VerificationMethod not found")
@@ -74,8 +74,8 @@ func (d *Document) CreateJWE(buf []byte) (string, error) {
 	return serialized, nil
 }
 
-// VerifyJWE verifies the JWE and returns the buffer
-func (d *Document) VerifyJWE(serial string) ([]byte, error) {
+// DecryptJWE verifies the JWE and returns the buffer
+func (d *Document) DecryptJWE(serial string) ([]byte, error) {
 	vm := d.VerificationMethod.FindByID(d.ID)
 	if vm == nil {
 		return nil, errors.New("Document VerificationMethod not found")
