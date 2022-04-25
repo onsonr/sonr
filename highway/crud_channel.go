@@ -44,7 +44,13 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 	}, nil
 }
 
-// CreateChannelHTTP creates a new channel via HTTP.
+// @Summary Create Channel
+// @Schemes
+// @Description CreateChannel creates a specified channel for a registered application
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /channel/create [post]
 func (s *HighwayServer) CreateChannelHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ct.MsgCreateChannel
@@ -83,7 +89,13 @@ func (s *HighwayServer) UpdateChannel(ctx context.Context, req *ct.MsgUpdateChan
 	}, nil
 }
 
-// UpdateChannelHTTP updates a channel via HTTP.
+// @Summary Update Channel
+// @Schemes
+// @Description ListenChannel puts a Channel into a listening state registered application
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /channel/update [post]
 func (s *HighwayServer) UpdateChannelHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ct.MsgUpdateChannel
@@ -138,7 +150,13 @@ func (s *HighwayServer) ListenChannel(req *v1.MsgListenChannel, stream v1.Highwa
 	}
 }
 
-// ListenChannelHTTP listens to a channel via HTTP.
+// @Summary Listen Channel
+// @Schemes
+// @Description ListenChannel puts a Channel into a listening state registered application
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /channel/listen [post]
 func (s *HighwayServer) ListenChannelHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req v1.MsgListenChannel
@@ -206,6 +224,7 @@ func (s *HighwayServer) DeactivateChannel(ctx context.Context, req *ct.MsgDeacti
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
+// @Router /channel/deactivate [post]
 func (s *HighwayServer) DeactivateChannelHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ct.MsgDeactivateChannel

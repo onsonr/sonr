@@ -69,7 +69,13 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 	}, nil
 }
 
-// CreateBucketHTTP creates a new bucket via HTTP.
+// @Summary Update Object
+// @Schemes
+// @Description UpdateObject updates and object reference for a registered application
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /Object/update [post]
 func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ot.MsgUpdateObject
@@ -108,7 +114,13 @@ func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactiv
 	}, nil
 }
 
-// DeactivateBucketHTTP disables a bucket for a registered application via HTTP.
+// @Summary  Deactivate Object
+// @Schemes
+// @Description DeactivateObject disables a Object for a registered application
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /channel/deactivate/:cid [post]
 func (s *HighwayServer) DeactivateObjectlHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req ot.MsgDeactivateObject
