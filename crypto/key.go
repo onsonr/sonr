@@ -195,7 +195,7 @@ func (k *keySet) CryptoPubKey() crypto.PubKey {
 
 // DID returns the DID of the Sonr keyset
 func (k *keySet) DID() string {
-	return fmt.Sprintf("did:sonr:%s", k.Address())
+	return fmt.Sprintf("did:snr:%s", k.Address())
 }
 
 // LegacyAminoPubKey returns the legacy amino public key for multisig
