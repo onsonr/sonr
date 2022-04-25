@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - echo "Building swagger api docs for highway"
+      - swag i -g highway/server.go

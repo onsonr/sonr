@@ -37,7 +37,7 @@ func (s *HighwayServer) UploadBlob(ctx context.Context, req *highwayv1.MsgUpload
 
 // @Summary Upload File
 // @Schemes
-// @Description UploadBlob uploads a file to IPFS and returns its CID.
+// @Description UploadBlob uploads a file to storage and returns its CID.
 // @Produce json
 // @Success      200  {string}  cid
 // @Failure      500  {string}  message
@@ -109,7 +109,7 @@ func (s *HighwayServer) DownloadBlob(ctx context.Context, req *highwayv1.MsgDown
 
 // @Summary Download File
 // @Schemes
-// @Description DownloadBlob downloads a file from IPFS given its CID.
+// @Description DownloadBlob downloads a file from storage given its CID.
 // @Produce json
 // @Success      200  {array}  byte
 // @Failure      500  {string}  message
@@ -153,7 +153,7 @@ func (s *HighwayServer) RemoveBlob(ctx context.Context, req *highwayv1.MsgRemove
 
 // @Summary Remove Blob
 // @Schemes
-// @Description RemoveBlob deletes a file from IPFS given its CID.
+// @Description RemoveBlob deletes a file from storage given its CID.
 // @Produce json
 // @Success      200  {boolean}  success
 // @Failure      500  {string}  message
