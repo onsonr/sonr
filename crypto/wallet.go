@@ -10,8 +10,10 @@ import (
 	"github.com/sonr-io/core/device"
 )
 
+// WalletOption is a function that modifies the options for a Wallet.
 type WalletOption func(*options) error
 
+// WithPassphrase sets the passphrase for the keyring.
 func WithPassphrase(s string) WalletOption {
 	return func(o *options) error {
 		o.passphrase = s
@@ -19,9 +21,18 @@ func WithPassphrase(s string) WalletOption {
 	}
 }
 
+// WithFolderPath sets the folder path for the keyring.
 func WithFolderPath(s string) WalletOption {
 	return func(o *options) error {
 		o.folder = device.Folder(s)
+		return nil
+	}
+}
+
+// WithWalletName sets the name of the wallet to be created.
+func WithWalletName(s string) WalletOption {
+	return func(o *options) error {
+		o.walletName = s
 		return nil
 	}
 }
@@ -32,6 +43,7 @@ type options struct {
 	folder     device.Folder
 }
 
+// defaultOptions returns the default options for a Wallet.
 func defaultOptions() *options {
 	return &options{
 		walletName: "sonr",

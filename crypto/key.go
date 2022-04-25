@@ -21,20 +21,24 @@ const (
 	MASTER_PRIVKEY_FILE = "sonr-master.privkey"
 )
 
+// publicKey implements crypto.PubKey
 type publicKey struct {
 	p2p crypto.PubKey
 	cryptotypes.PubKey
 }
 
+// privateKey implements crypto.PrivKey
 type privateKey struct {
 	crypto.PrivKey
 	p2p *secp256k1.PrivKey
 }
 
+// Marshal returns the amino bytes of the public key
 func (pk *privateKey) Marshal() ([]byte, error) {
 	return crypto.MarshalPrivateKey(pk.PrivKey)
 }
 
+// Sign signs the given message with the key.
 func (pk *privateKey) Sign(msg []byte) ([]byte, []byte, error) {
 	sig, err := pk.p2p.Sign(msg)
 	if err != nil {
@@ -124,6 +128,7 @@ func CreateKeySet(seed string) (KeySet, error) {
 	}, nil
 }
 
+// LoadKeyset loads a keyset from the given folder
 func LoadKeyset(folder device.Folder) (KeySet, error) {
 	buf, err := folder.ReadFile(DEVICE_PRIVKEY_FILE)
 	if err != nil {
