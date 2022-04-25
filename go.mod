@@ -3,6 +3,7 @@ module github.com/sonr-io/core
 go 1.17
 
 require (
+	github.com/cosmos/cosmos-sdk v0.44.5
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
@@ -28,6 +29,7 @@ require (
 	github.com/matrix-org/dendrite v0.8.1
 	github.com/matrix-org/gomatrixserverlib v0.0.0-20220408160933-cf558306b56f
 	github.com/matrix-org/util v0.0.0-20200807132607-55161520e1d4
+	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.5.0
 	github.com/ockam-network/did v0.1.4-0.20210103172416-02ae01ce06d8
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -40,6 +42,7 @@ require (
 	github.com/swaggo/gin-swagger v1.4.2
 	github.com/swaggo/swag v1.8.1
 	github.com/tendermint/starport v0.19.5
+	github.com/tendermint/tendermint v0.34.14
 	go.buf.build/grpc/go/sonr-io/blockchain v1.3.3
 	go.buf.build/grpc/go/sonr-io/core v1.3.19
 	google.golang.org/grpc v1.45.0
@@ -76,7 +79,6 @@ require (
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/cosmos/btcutil v1.0.4 // indirect
-	github.com/cosmos/cosmos-sdk v0.44.5 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/iavl v0.17.3 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.11.1 // indirect
@@ -259,7 +261,6 @@ require (
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/multiformats/go-base32 v0.0.3 // indirect
 	github.com/multiformats/go-base36 v0.1.0 // indirect
@@ -314,7 +315,6 @@ require (
 	github.com/tendermint/btcd v0.1.1 // indirect
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15 // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
-	github.com/tendermint/tendermint v0.34.14 // indirect
 	github.com/tendermint/tm-db v0.6.4 // indirect
 	github.com/tidwall/gjson v1.14.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
