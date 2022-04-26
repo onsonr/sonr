@@ -22,7 +22,7 @@ tasks:
     summary: Build the project for production without release mode
     dir: cmd/sonrd
     cmds:
-      - starport chain build
+      - starport chain build --path=../../internal/blockchain
     silent: true
 
   serve-chain:
@@ -35,7 +35,7 @@ tasks:
   start-chain:
     summary: Start a locally built blockchain daemon
     dir: internal/blockchain
-    deps: [build]
+    deps: [build-chain]
     cmds:
       - rm -rf ~/.sonr
       - sonrd init my-node --chain-id sonr
