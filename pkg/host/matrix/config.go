@@ -10,7 +10,7 @@ import (
 	p2phttp "github.com/libp2p/go-libp2p-http"
 	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/gomatrixserverlib"
-	"github.com/sonr-io/core/host"
+	"github.com/sonr-io/sonr/pkg/host"
 )
 
 func defaultConfig(host host.HostImpl) (config.Dendrite, error) {

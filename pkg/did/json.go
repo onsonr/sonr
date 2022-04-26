@@ -1,7 +1,7 @@
 package did
 
 import (
-	"github.com/sonr-io/core/did/internal/marshal"
+	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
 )
 
 const contextKey = "@context"

@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/sonr-io/core/did/ssi"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 
 	odid "github.com/ockam-network/did"
 )

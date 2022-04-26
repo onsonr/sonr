@@ -5,7 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/sonr/pkg/motor/device"
 )
 
 // Textile API definitions

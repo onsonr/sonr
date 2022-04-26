@@ -5,11 +5,11 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	ct "github.com/sonr-io/blockchain/x/channel/types"
-	"github.com/sonr-io/core/channel"
-	"github.com/sonr-io/core/device"
-	host "github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/motor/config"
+	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
+	"github.com/sonr-io/sonr/pkg/channel"
+	host "github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/pkg/motor/config"
+	"github.com/sonr-io/sonr/pkg/motor/device"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 

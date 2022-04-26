@@ -21,13 +21,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/channel"
-	"github.com/sonr-io/core/device"
-	docs "github.com/sonr-io/core/docs"
-	"github.com/sonr-io/core/highway/client"
-	"github.com/sonr-io/core/highway/config"
-	hn "github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/host/ipfs"
+	"github.com/sonr-io/sonr/pkg/channel"
+	"github.com/sonr-io/sonr/pkg/highway/client"
+	"github.com/sonr-io/sonr/pkg/highway/config"
+	hn "github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/pkg/host/ipfs"
+	"github.com/sonr-io/sonr/pkg/motor/device"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
@@ -232,8 +231,7 @@ func setupAPI(ctx context.Context, s *HighwayServer) error {
 	s.router.POST("/v1/blob/remove/:cid", s.RemoveBlobHTTP)
 
 	// Setup Swagger UI
-	docs.SwaggerInfo.BasePath = "/v1"
-	s.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	s.router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	// Setup HTTP Server
 	s.httpServer = &http.Server{

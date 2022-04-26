@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/sonr/pkg/motor/device"
 )
 
 // // // Handle Mailbox Events

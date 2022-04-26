@@ -8,9 +8,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	ctv1 "github.com/sonr-io/blockchain/x/channel/types"
-	otv1 "github.com/sonr-io/blockchain/x/object/types"
-	"github.com/sonr-io/core/channel"
+	ctv1 "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
+	otv1 "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
+	"github.com/sonr-io/sonr/pkg/channel"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/protobuf/proto"

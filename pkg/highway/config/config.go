@@ -6,7 +6,7 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/sonr/pkg/motor/device"
 	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 

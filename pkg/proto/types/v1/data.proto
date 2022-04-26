@@ -3,7 +3,7 @@ syntax = "proto3";
 // Package types defines typesly used types agnostic to the node role on the Sonr network.
 package types.v1;
 import "types/v1/core.proto";
-option go_package = "github.com/sonr-io/core/types";
+option go_package = "github.com/sonr-io/sonr/pkg/types";
 
 // Direction is the direction of a stream.
 enum Direction {

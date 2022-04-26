@@ -2,7 +2,7 @@ syntax = "proto3";
 
 // Package common defines commonly used types agnostic to the node role on the Sonr network.
 package types.v1;
-option go_package = "github.com/sonr-io/core/types";
+option go_package = "github.com/sonr-io/sonr/pkg/types";
 
 // Internet Connection Type
 enum Connection {

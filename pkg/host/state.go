@@ -15,7 +15,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/highway/config"
+	"github.com/sonr-io/sonr/pkg/highway/config"
 )
 
 // HostStatus is the status of the host

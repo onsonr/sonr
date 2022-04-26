@@ -18,7 +18,7 @@ import (
 	us "github.com/matrix-org/dendrite/userapi/storage"
 	"github.com/matrix-org/gomatrixserverlib"
 	"github.com/sirupsen/logrus"
-	"github.com/sonr-io/core/host"
+	"github.com/sonr-io/sonr/pkg/host"
 )
 
 const (

@@ -9,9 +9,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	ct "github.com/sonr-io/blockchain/x/channel/types"
-	ot "github.com/sonr-io/blockchain/x/object/types"
-	nh "github.com/sonr-io/core/host"
+	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
+	ot "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
+	nh "github.com/sonr-io/sonr/pkg/host"
 )
 
 var (
@@ -149,8 +149,8 @@ func (b *channel) Publish(obj *ot.ObjectDoc) error {
 
 	// Create the message.
 	msg := &ct.ChannelMessage{
-		Object: obj,
-		Did:    b.did,
+		Object:  obj,
+		Did:     b.did,
 		PeerDid: b.n.HostID().String(),
 	}
 

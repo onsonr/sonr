@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/core/device"
+	"github.com/sonr-io/sonr/pkg/motor/device"
 )
 
 // WalletOption is a function that modifies the options for a Wallet.

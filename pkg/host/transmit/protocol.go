@@ -7,9 +7,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/device"
-	"github.com/sonr-io/core/host"
-	"github.com/sonr-io/core/motor/config"
+	"github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/pkg/motor/config"
+	"github.com/sonr-io/sonr/pkg/motor/device"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 

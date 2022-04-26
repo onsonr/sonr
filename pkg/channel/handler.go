@@ -1,7 +1,7 @@
 package channel
 
 import (
-	ct "github.com/sonr-io/blockchain/x/channel/types"
+	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 )
 
 // handleStoreMessages method listens to Pubsub Messages for room
@@ -37,4 +37,3 @@ func (b *channel) serve() {
 		}
 	}
 }
-

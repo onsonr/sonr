@@ -4,7 +4,7 @@ syntax = "proto3";
 package host.transmit.v1;
 import "types/v1/core.proto";
 import "types/v1/data.proto";
-option go_package = "github.com/sonr-io/core/host/transmit";
+option go_package = "github.com/sonr-io/sonr/pkg/host/transmit";
 
 message Session {
   types.v1.Direction direction = 1;
