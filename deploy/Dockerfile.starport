@@ -1,0 +1,19 @@
+# Build with
+# docker build . -f Dockerfile.starport -t starport-docker-local 
+# Use like this:
+# docker run -p 1317:1317 -p 26657:26657 -p 9090:9090 -p 26656:26656 starport-docker-local chain serve
+# You can change out the "chain serve" for any other starport command.
+# You can also pass --entrypoint=/bin/bash and -it to run the container in interactive mode.
+# Use like this: 
+# docker run -p 1317:1317 -p 26657:26657 -p 9090:9090 -p 26656:26656 -it --entrypoint=/bin/bash starport-docker-local
+FROM --platform=linux/amd64 amd64/golang:1.17
+
+RUN curl https://get.starport.network/starport! | bash
+
+COPY . .
+
+ENV GOPATH=
+EXPOSE 26656 26657 1317 9090
+
+ENTRYPOINT [ "starport" ]
+CMD ["chain serve"]
