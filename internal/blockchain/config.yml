@@ -1,0 +1,19 @@
+accounts:
+  - name: alice
+    coins: ["20000snr", "200000000stake"]
+  - name: bob
+    coins: ["10000snr", "100000000stake"]
+validator:
+  name: alice
+  staked: "100000000stake"
+client:
+  openapi:
+    path: "docs/static/openapi.yml"
+  vuex:
+    path: "vue/src/store"
+faucet:
+  name: bob
+  coins: ["5snr", "100000stake"]
+build:
+  main: "../../"
+  binary: "sonrd"

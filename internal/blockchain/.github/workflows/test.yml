@@ -1,0 +1,26 @@
+name: "Run Tests 📢 "
+on:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        platfrom: [ubuntu-latest, macos-latest]
+    name: "Run Tests 📢 "
+    runs-on: ${{ matrix.platfrom }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.1'
+      - name: Build
+        id: build
+        run: go build -v ./...
+      - name: Run Tests
+        id: test
+        run: go test -v ./...
