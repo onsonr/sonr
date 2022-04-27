@@ -18,23 +18,20 @@ tasks:
       - echo "Building swagger api docs for highway"
       - swag i -g highway/server.go
 
-  build-chain:
+  chain-build:
     summary: Build the project for production without release mode
-    dir: cmd/sonrd
     cmds:
-      - starport chain build --path=../../internal/blockchain
+      - starport chain build
     silent: true
 
-  serve-chain:
+  chain-serve:
     summary: Serve the blockchain using starport
-    dir: internal/blockchain
     cmds:
       - starport chain serve --reset-once
     silent: true
   
-  start-chain:
+  chain-start:
     summary: Start a locally built blockchain daemon
-    dir: internal/blockchain
     deps: [build-chain]
     cmds:
       - rm -rf ~/.sonr

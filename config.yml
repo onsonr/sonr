@@ -8,12 +8,12 @@ validator:
   staked: "100000000stake"
 client:
   openapi:
-    path: "docs/static/openapi.yml"
+    path: "internal/blockchain/docs/static/openapi.yml"
   vuex:
-    path: "vue/src/store"
+    path: "internal/blockchain/vue/src/store"
 faucet:
   name: bob
   coins: ["5snr", "100000stake"]
 build:
-  main: "../../"
+  main: "cmd/sonrd"
   binary: "sonrd"
