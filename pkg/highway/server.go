@@ -5,7 +5,7 @@
 // @contact.url https://sonr.io
 // @contact.email team@sonr.io
 // @license.name OpenGLv3
-// @host localhost:8081
+// @host localhost:8080
 // @BasePath /v1
 
 package highway
