@@ -40,7 +40,6 @@ The core packages (`/pkg`) is structured as follows:
 /motor           ->        Identity management models and interfaces
 --/device        ->        Node Device management
 /proto           ->        Protobuf Definition Files.
-/zk          ->        Interfaces for managing Universal Wallet
 ```
 
 ## Getting Started
