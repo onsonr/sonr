@@ -1,16 +1,12 @@
-# Sonr Core
-
-**Sonr Core** is a module for common interfaces used by the following repositories:
-
-- `sonr-io/highway-sdk`
-- `sonr-io/motor-go`
-- `sonr-io/blockchain`
-
 ## Description
 
-Sonr is building the most immersive DWeb experience for both Users and Developers alike. We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols.
+Sonr is a platform for developers to build decentralized applications which put user privacy first and foremost. It weds decentralized storage technologies such as [IPFS](https://ipfs.io) and [lipp2p](https://libp2p.io) with an intuitive, firebase-like developer experience.
 
-For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and our Layer 1 Blockchain with [Starport](“https://starport.com”). Our network comprises of two separate nodes: [Highway](“https://github.com/sonr-io/highway”) and [Motor](“https://github.com/sonr-io/motor”), which each have a specific use case on the network.
+Sonr's platform aims to be the most immersive and powerful DWeb experience for both Users and Developers alike. We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols.
+
+For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and our Layer 1 Blockchain with [Starport](“https://starport.com”). Our network comprises of two separate nodes: [Highway](“https://github.com/sonr-io/sonr/tree/dev/pkg”) and [Motor](“https://github.com/sonr-io/sonr/tree/dev/motor), which each have a specific use case on the network.
+
+For a more in-depth look at building on the Sonr network, check out our [docs](https://docs.sonr.io).
 
 ## Getting Started
 
@@ -18,27 +14,31 @@ For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and 
 
 - [Golang](https://go.dev)
 - [Libp2p](https://libp2p.io)
+- [Starport](https://starport.com)
 
-### Installing
+<!-- TODO: create a brew install for sonrd -->
+<!-- ### Installing
 
 To install the latest version of the Sonr blockchain node's binary, execute the following command on your machine:
 
 ```shell
 go get -u https://github.com/sonr-io/core
-```
+``` -->
 
 ### Configuration
 
-This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
+The `sonr` repo follows the Go project structure outlined in https://github.com/golang-standards/project-layout.
+
+The core packages (`/pkg`) is structured as follows:
 
 ```text
 /channel         ->        Real-time Key/Value Store
 /crypto          ->        Core data types and functions.
-/device          ->        Node Device management
 /did             ->        Documentation.
 /highway         ->        Data Transfer related Models.
 /host            ->        Libp2p Host Configuration
 /motor           ->        Identity management models and interfaces
+--/device        ->        Node Device management
 /proto           ->        Protobuf Definition Files.
 /zk          ->        Interfaces for managing Universal Wallet
 ```
@@ -50,17 +50,23 @@ This project is a pseudo-monorepo, meaning it has a single root directory and al
 The highway node is a relayer node that helps motors interact with the sonr network. It is responsible for routing messages between motors and other relayers. The highway node
 also provides an interface for developers to deploy custom services on the network. To have a custom build of the highway node, execute the following command on your machine:
 
-1. `go get -u github.com/sonr-io/core/highway`
+1. `go get -u github.com/sonr-io/sonr`
 
 2. Create a simple highway node with the following:
 
 ```go
+import (
+  "github.com/sonr-io/sonr/pkg/highway"
+  "github.com/sonr-io/sonr/pkg/host"
+)
 
+func main() {
 	// Create the node.
 	n, err := highway.NewHighway(ctx, host.WithPort(8084), host.WithWebAuthn("Sonr", "localhost", "http://localhost:8080", true))
 	if err != nil {
 		panic(err)
 	}
+}
 ```
 
 ### Buf.build Type Definition
@@ -135,7 +141,7 @@ Outputs:
 
 ## State of the library
 
-Currently, the library is under development. The api can change without notice.
+Currently, the library is under development. The API can change without notice.
 Checkout the issues and PRs to be informed about any development.
 
 ## Contributing
