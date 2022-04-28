@@ -1,7 +1,59 @@
-version: '3'
+version: "3"
+
+includes:
+  vue:
+    taskfile: ./internal/blockchain/vue/Taskfile.yaml
+    dir: internal/blockchain/vue
 
 tasks:
-  build:
+  build-cli:
+    dir: cmd/highway-cli
+    cmds:
+      - echo "Building Sonr Highway CLI"
+      - go build -o highway-cli main.go
+
+  build-swagger:
+    dir: pkg
     cmds:
       - echo "Building swagger api docs for highway"
       - swag i -g highway/server.go
+
+  chain-build:
+    summary: Build the project for production without release mode
+    cmds:
+      - starport chain build
+    silent: true
+
+  chain-serve:
+    summary: Serve the blockchain using starport
+    cmds:
+      - starport chain serve --reset-once
+    silent: true
+  
+  chain-start:
+    summary: Start a locally built blockchain daemon
+    deps: [build-chain]
+    cmds:
+      - rm -rf ~/.sonr
+      - sonrd init my-node --chain-id sonr
+      - sonrd keys add --keyring-backend test alice --home ~/.sonr
+      - sonrd add-genesis-account $(sonrd keys show alice -a) 1000000000000000stake,1000000000000snr
+      - sonrd gentx alice 1000000000000000stake --chain-id sonr
+      - sonrd collect-gentxs
+      - sonrd start
+
+  chain-gen:
+    summary: Generates protobuf, openapi, and vue stores
+    cmds:
+      - starport generate openapi
+      - starport generate proto-go
+      - go mod tidy
+    silent: true
+
+  buf:
+    dir: pkg/proto
+    cmds:
+      - echo "Generating and Pushing Protobufs"
+      - buf mod update
+      - buf build
+      - buf push

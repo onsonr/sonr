@@ -5,6 +5,7 @@
 *.so
 *.dylib
 *.DS_Store
+.idea/
 build/
 lib/dist
 lib/package-lock.json
@@ -19,9 +20,9 @@ chain
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 node_modules/
-build/
+jspm_packages/
 
 ### Node ###
 # Logs
@@ -64,10 +65,6 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
-# Dependency directories
-node_modules/
-jspm_packages/
-
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
@@ -96,9 +93,10 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
-.env.test
-.env.production
+**/.env
+**/*.env
+**/*.env.*
+!**/*.env.sample
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -135,6 +133,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-#docs
-docs/

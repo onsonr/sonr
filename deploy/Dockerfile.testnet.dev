@@ -1,0 +1,22 @@
+FROM alpine
+WORKDIR /root
+RUN apk add --no-cache bash
+
+
+## Pull the latest sonrd binary
+COPY release/blockchain_linux_amd64.tar.gz blockchain_linux_amd64.tar.gz
+# Copy the setup script
+COPY scripts/setup_chain_dev.sh setup_chain_dev.sh
+# Unzip the binary
+RUN tar -xzvf blockchain_linux_amd64.tar.gz
+# Setup the execution of the binary
+RUN mv sonrd /usr/local/bin/
+RUN chmod +x /usr/local/bin/sonrd
+# Test the binary version
+RUN sonrd version
+# Run the setup script
+RUN chmod +x setup_chain_dev.sh
+RUN ./setup_chain_dev.sh
+
+# # Start the node
+ENTRYPOINT [ "sonrd", "start" ]
