@@ -2,7 +2,11 @@
   "folders": [
     {
       "path": "..",
-      "name": "🚀  Core"
+      "name": "🚀  Core",
+    },
+    {
+      "path": "../internal/blockchain",
+      "name": "📦  Blockchain",
     }
   ],
   "settings": {

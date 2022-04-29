@@ -2,8 +2,8 @@ version: "3"
 
 includes:
   vue:
-    taskfile: ./internal/blockchain/vue/Taskfile.yaml
-    dir: internal/blockchain/vue
+    taskfile: ./web/wallet/Taskfile.yaml
+    dir: web/wallet
 
 tasks:
   build-cli:
@@ -13,7 +13,6 @@ tasks:
       - go build -o highway-cli main.go
 
   build-swagger:
-    dir: pkg
     cmds:
       - echo "Building swagger api docs for highway"
       - swag i -g pkg/highway/server.go --output docs/highway
@@ -29,7 +28,7 @@ tasks:
     cmds:
       - starport chain serve --reset-once
     silent: true
-  
+
   chain-start:
     summary: Start a locally built blockchain daemon
     deps: [build-chain]
