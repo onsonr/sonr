@@ -49,6 +49,12 @@ tasks:
       - starport generate proto-go
       - go mod tidy
     silent: true
+  
+  highway-serve:
+    summary: Serve the highway node
+    dir: cmd/highway-cli
+    cmds:
+      - go run main.go serve
 
   buf:
     dir: pkg/proto

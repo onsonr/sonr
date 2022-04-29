@@ -1,9 +1,9 @@
-package cmd
+package highwaycmd
 
 import (
 	"context"
 
-	"github.com/sonr-io/sonr/cmd/highway-cli/cmd/bucket"
+	"github.com/sonr-io/sonr/cmd/highway-cli/highwaycmd/bucket"
 	"github.com/spf13/cobra"
 )
 
