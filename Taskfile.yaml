@@ -30,18 +30,11 @@ tasks:
 
   build:
     cmds:
-      - task: build:buf
+      - task: build:buf:core
+      - task: build:buf:blockchain
       - task: build:cli
       - task: build:swagger
       - task: build:chain
-
-  build:buf:
-    dir: pkg/proto
-    cmds:
-      - echo "Generating and Pushing Protobufs"
-      - buf mod update
-      - buf build
-      - buf push
 
   build:chain:
     summary: Build the project for production without release mode
@@ -63,6 +56,28 @@ tasks:
       - starport generate openapi
       - starport generate proto-go
       - go mod tidy
+
+  build:buf:
+    cmds:
+      - echo "Building Protobufs and pushing to registry"
+      - task: build:buf:core
+      - task: build:buf:blockchain
+
+  build:buf:core:
+    dir: proto
+    cmds:
+      - echo "Generating and Pushing Protobufs for Highway, Motor, and Host"
+      - buf mod update
+      - buf build
+      - buf push
+
+  build:buf:blockchain:
+    dir: internal/blockchain/proto
+    cmds:
+      - echo "Generating and Pushing Protobufs for Blockchain Modules"
+      - buf mod update
+      - buf build
+      - buf push
 
   serve:chain:
     summary: Serve the blockchain using starport
