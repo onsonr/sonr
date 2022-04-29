@@ -64,13 +64,13 @@ tasks:
       - starport generate proto-go
       - go mod tidy
 
-  chain:serve:
+  serve:chain:
     summary: Serve the blockchain using starport
     cmds:
       - starport chain serve --reset-once
     silent: true
 
-  chain:start:
+  start:chain:
     summary: Start a locally built blockchain daemon
     deps: [build-chain]
     cmds:

@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
 
-	"github.com/sonr-io/sonr/pkg/motor/device"
+	device "github.com/sonr-io/sonr/pkg/fs"
 
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"

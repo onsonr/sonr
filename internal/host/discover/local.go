@@ -7,8 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
-	"github.com/sonr-io/sonr/pkg/host"
-	"github.com/sonr-io/sonr/pkg/motor/config"
+	"github.com/sonr-io/sonr/internal/host"
+	"github.com/sonr-io/sonr/cmd/motor-lib/config"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/discover/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"

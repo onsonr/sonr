@@ -12,7 +12,7 @@ import (
 	"github.com/ipld/go-ipld-prime/datamodel"
 	basicnode "github.com/ipld/go-ipld-prime/node/basic"
 	ot "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
-	"github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/internal/host"
 )
 
 // IPFSProtocol leverages the IPFSLite library to provide simple file operations.

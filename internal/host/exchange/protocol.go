@@ -7,9 +7,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
-	"github.com/sonr-io/sonr/pkg/host"
-	"github.com/sonr-io/sonr/pkg/motor/config"
-	"github.com/sonr-io/sonr/pkg/motor/device"
+	"github.com/sonr-io/sonr/cmd/motor-lib/config"
+	"github.com/sonr-io/sonr/internal/host"
+	device "github.com/sonr-io/sonr/pkg/fs"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 

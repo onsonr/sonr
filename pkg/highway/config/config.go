@@ -6,7 +6,7 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/sonr/pkg/motor/device"
+	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 
@@ -32,7 +32,7 @@ const (
 // Config is the configuration for the entire Highway node
 type Config struct {
 	// Host
-	Role                 device.Role
+	Role                 fs.Role
 	LogLevel             string
 	Libp2pMdnsDisabled   bool
 	Libp2pBootstrapPeers []peer.AddrInfo
@@ -101,7 +101,7 @@ func DefaultConfig() *Config {
 	}
 	return &Config{
 		LogLevel:                 string(InfoLevel),
-		Role:                     device.Role_HIGHWAY,
+		Role:                     fs.Role_HIGHWAY,
 		Libp2pMdnsDisabled:       true,
 		HighwayGRPCNetwork:       "tcp",
 		Libp2pBootstrapPeers:     ds,

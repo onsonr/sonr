@@ -56,7 +56,7 @@ also provides an interface for developers to deploy custom services on the netwo
 ```go
 import (
   "github.com/sonr-io/sonr/pkg/highway"
-  "github.com/sonr-io/sonr/pkg/host"
+  "github.com/sonr-io/sonr/internal/host"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/sonr/pkg/motor/config"
+	"github.com/sonr-io/sonr/cmd/motor-lib/config"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 
