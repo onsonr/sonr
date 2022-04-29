@@ -132,13 +132,17 @@ tasks:
       # - task: web:dashboard:build
       - task: web:wallet:build
 
-
   docs:
     cmds:
       - echo "yarn docusaurus..."
       - yarn docusaurus
     silent: true
-    dir: docs
+
+  highway-serve:
+    summary: Serve the highway node
+    dir: cmd/highway-cli
+    cmds:
+      - go run main.go serve
 
   docs:start:
     cmds:
