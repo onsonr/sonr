@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	ctv1 "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	otv1 "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
-	"github.com/sonr-io/sonr/pkg/channel"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
 	"google.golang.org/protobuf/proto"
@@ -30,7 +29,7 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 	}
 
 	// Create the Channel
-	ch, err := channel.New(ctx, s.node, res.GetHowIs().GetChannel())
+	ch, err := ctv1.NewChannel(ctx, s.node, res.GetHowIs().GetChannel())
 	if err != nil {
 		return nil, err
 	}

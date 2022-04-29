@@ -1,43 +1,42 @@
-name: CD Core Workflow
+name: Release Workflow
 
-# Controls when the action will run.
 on:
-  workflow_run:
-    workflows: ["CI Core Workflow"]
-    types:
-      - completed
+  push:
+    tags:
+      - v*
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # Checks if Build has succeeded.
-  # Returns: `needs.result.outputs.is_success == 'failure' |  `success``
-  status:
-    runs-on: ubuntu-latest
-    outputs:
-      result: ${{ steps.status.outputs.result }}
-    steps:
-      - name: Determine Status
-        id: status
-        run: echo "::set-output name=result::${{ github.event.workflow_run.conclusion }}"
-
-  # Posts Build Status to Discord
-  notify-result:
-    needs: [status]
+  release-binaries:
+    name: "Release Assets 📢 "
     runs-on: ubuntu-latest
     steps:
-      - name: Discord Success Notification
-        if: ${{ needs.status.outputs.result == 'success' }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
-          args: 'Core build succeeded!.'
+          fetch-depth: 0
+      - uses: actions/setup-go@v2
+      - name: Prepare Release Variables
+        id: vars
+        uses: tendermint/starport/actions/release/vars@develop
 
-      - name: Discord Failed Notification
-        if: ${{ needs.status.outputs.result != 'success' }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
+      - name: Issue Release Assets
+        uses: ignite-hq/cli/actions/cli@develop
         with:
-          args: 'Failed to build Core.'
+          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: latest
+          args: release
+
+      - name: Create the "latest" Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "${{ github.workspace }}/release/*.tar.gz, ${{ github.workspace }}/dist/*.tar.gz, ${{ github.workspace }}/dist/checksums.txt, ${{ github.workspace }}/release/checksum.txt, ${{ github.workspace }}/README.md, ${{ github.workspace }}/CHANGELOG.md, ${{ github.workspace }}/LICENSE"
+          replacesArtifacts: false
+          name: ${{ steps.vars.outputs.tag_name }}
+          token: ${{ secrets.ACTIONS_GH_TOKEN }}
