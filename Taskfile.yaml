@@ -16,7 +16,7 @@ tasks:
     dir: pkg
     cmds:
       - echo "Building swagger api docs for highway"
-      - swag i -g highway/server.go
+      - swag i -g pkg/highway/server.go --output docs/highway
 
   chain-build:
     summary: Build the project for production without release mode
