@@ -1,0 +1,42 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - rm -rf dist
+    - go mod tidy
+
+builds:
+  - main: ./cmd/highway-cli
+    id: "cli"
+    binary: "highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    goos:
+      - linux
+      - darwin
+    goarch:
+    - arm64
+    no_unique_dist_dir: true
+
+universal_binaries:
+-
+  replace: true
+  id: "cli"
+  name_template: "highway-cli_{{ .Version }}_darwin_universal"
+
+archives:
+  -
+    id: "cli"
+    builds: [cli]
+    name_template: "highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

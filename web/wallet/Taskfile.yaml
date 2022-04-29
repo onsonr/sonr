@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - npm run build
+
+  lint:
+    cmds:
+      - npm run lint
+
+  dev:
+    cmds:
+      - npm run dev
+
+  test:
+    cmds:
+      - npm run test
+
+  serve:
+    cmds:
+      - npm run serve
