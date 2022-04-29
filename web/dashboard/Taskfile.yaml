@@ -6,20 +6,16 @@ tasks:
       - npm install
       - npm run build
 
-  lint:
-    cmds:
-      - npm run lint
-
-  dev:
+  start:
     cmds:
       - npm install
-      - npm run dev
+      - npm run start
+
+  eject:
+    cmds:
+      - npm run eject
 
   test:
     cmds:
-      - npm run test
-
-  serve:
-    cmds:
       - npm install
-      - npm run serve
+      - npm run test

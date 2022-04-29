@@ -1,7 +1,10 @@
 version: "3"
 
 includes:
-  vue:
+  web:dashboard:
+    taskfile: ./web/dashboard/Taskfile.yaml
+    dir: web/dashboard
+  web:wallet:
     taskfile: ./web/wallet/Taskfile.yaml
     dir: web/wallet
 
@@ -27,9 +30,24 @@ tasks:
 
   build:
     cmds:
+      - task: build:buf
       - task: build:cli
       - task: build:swagger
       - task: build:chain
+
+  build:buf:
+    dir: pkg/proto
+    cmds:
+      - echo "Generating and Pushing Protobufs"
+      - buf mod update
+      - buf build
+      - buf push
+
+  build:chain:
+    summary: Build the project for production without release mode
+    cmds:
+      - starport chain build
+    silent: true
 
   build:cli:
     dir: cmd/highway-cli
@@ -45,12 +63,6 @@ tasks:
       - starport generate openapi
       - starport generate proto-go
       - go mod tidy
-
-  build:chain:
-    summary: Build the project for production without release mode
-    cmds:
-      - starport chain build
-    silent: true
 
   chain:serve:
     summary: Serve the blockchain using starport
@@ -70,10 +82,8 @@ tasks:
       - sonrd collect-gentxs
       - sonrd start
 
-  buf:
-    dir: pkg/proto
+  release:web:
+    summary: Build the web dashboard for release
     cmds:
-      - echo "Generating and Pushing Protobufs"
-      - buf mod update
-      - buf build
-      - buf push
+      # - task: web:dashboard:build
+      - task: web:wallet:build
