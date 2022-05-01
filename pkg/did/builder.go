@@ -5,7 +5,7 @@ import (
 )
 
 // SONR_PREFIX is the prefix for the SONR DID
-const SONR_PREFIX = "did:snr:"
+const SONR_PREFIX = "did:sonr:"
 
 // config is the did string configuration
 type config struct {

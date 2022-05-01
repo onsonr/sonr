@@ -69,14 +69,17 @@ func TestParseDID(t *testing.T) {
 	})
 	t.Run("error - DID URL", func(t *testing.T) {
 		id, err := ParseDID("did:sonr:123/path?query#fragment")
-		assert.Nil(t, id)
-		assert.EqualError(t, err, "invalid DID: DID can not have path, fragment or query params")
+
+		assert.Nil(t, err)
+		// After parsing the did, the parser should ignore everyhing after '/' as it is non valid did formation.
+		assert.Len(t, id.PathSegments, 1)
+		assert.Equal(t, id.IDStrings[0], "123")
 	})
 }
 
 func TestMustParseDID(t *testing.T) {
 	assert.Panics(t, func() {
-		MustParseDID("did:sonr:123/path?query#fragment")
+		MustParseDID("did:sonr:")
 	})
 }
 

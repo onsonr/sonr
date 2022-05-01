@@ -140,10 +140,11 @@ func IsValidDid(did string) bool {
 		return false
 	}
 
-	if ContainsFragment(did) && ContainsQuery(did) {
-		return false
-	}
-
+	/*
+		if ContainsFragment(did) && ContainsQuery(did) {
+			return false
+		}
+	*/
 	return strings.HasPrefix(did, "did:sonr:")
 }
 
