@@ -1,5 +1,5 @@
 basePath: /v1
-host: localhost:8081
+host: localhost:8080
 info:
   contact:
     email: team@sonr.io
@@ -12,9 +12,24 @@ info:
   title: Highway API
   version: v0.23.0
 paths:
+  /Object/update:
+    post:
+      description: UpdateObject updates and object reference for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update Object
   /blob/download/:cid:
     get:
-      description: DownloadBlob downloads a file from IPFS given its CID.
+      description: DownloadBlob downloads a file from storage given its CID.
       produces:
       - application/json
       responses:
@@ -31,7 +46,7 @@ paths:
       summary: Download File
   /blob/remove/:cid:
     get:
-      description: RemoveBlob deletes a file from IPFS given its CID.
+      description: RemoveBlob deletes a file from storage given its CID.
       produces:
       - application/json
       responses:
@@ -46,7 +61,7 @@ paths:
       summary: Remove Blob
   /blob/upload:
     post:
-      description: UploadBlob uploads a file to IPFS and returns its CID.
+      description: UploadBlob uploads a file to storage and returns its CID.
       produces:
       - application/json
       responses:
@@ -79,4 +94,96 @@ paths:
           schema:
             type: string
       summary: Deactivate Bucket
+  /channel/create:
+    post:
+      description: CreateChannel creates a specified channel for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create Channel
+  /channel/deactivate:
+    post:
+      description: DeactivateChannel disables a Channel for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Deactivate Channel
+  /channel/deactivate/:cid:
+    post:
+      description: DeactivateObject disables a Object for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Deactivate Object
+  /channel/listen:
+    post:
+      description: ListenChannel puts a Channel into a listening state registered
+        application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Listen Channel
+  /channel/update:
+    post:
+      description: ListenChannel puts a Channel into a listening state registered
+        application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update Channel
+  /name/update:
+    post:
+      description: DeactivateChannel disables a Channel for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update Name
 swagger: "2.0"

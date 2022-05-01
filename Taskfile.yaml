@@ -1,36 +1,91 @@
 version: "3"
 
 includes:
-  vue:
-    taskfile: ./internal/blockchain/vue/Taskfile.yaml
-    dir: internal/blockchain/vue
+  web:dashboard:
+    taskfile: ./web/dashboard/Taskfile.yaml
+    dir: web/dashboard
+  web:wallet:
+    taskfile: ./web/wallet/Taskfile.yaml
+    dir: web/wallet
 
 tasks:
-  build-cli:
-    dir: cmd/highway-cli
+  bind:
     cmds:
-      - echo "Building Sonr Highway CLI"
-      - go build -o highway-cli main.go
+      - echo "Setting up Gomobile..."
+      - go install golang.org/x/mobile/cmd/gomobile@latest
+      - go mod download golang.org/x/mobile
+      - gomobile init
+      - task: bind:ios
+      - task: bind:android
 
-  build-swagger:
-    dir: pkg
+  bind:android:
     cmds:
-      - echo "Building swagger api docs for highway"
-      - swag i -g highway/server.go
+      - echo "Building Sonr Motor Node (Android)"
+      - gomobile bind -ldflags='-s -w' -target=android -o .../dist/io.sonr.motor.aar
 
-  chain-build:
+  bind:ios:
+    cmds:
+      - echo "Building Sonr Motor Node (iOS)"
+      - gomobile bind -ldflags='-s -w' -bundleid=io.sonr.motor -target=ios -o .../dist/SonrMotor.xcframework
+
+  build:
+    cmds:
+      - task: build:buf:core
+      - task: build:buf:blockchain
+      - task: build:cli
+      - task: build:swagger
+      - task: build:chain
+
+  build:chain:
     summary: Build the project for production without release mode
     cmds:
       - starport chain build
     silent: true
 
-  chain-serve:
+  build:cli:
+    dir: cmd/highway-cli
+    cmds:
+      - echo "Building Sonr Highway CLI"
+      - go build -o highway-cli main.go
+
+  build:swagger:
+    cmds:
+      - echo "Building swagger api docs for highway"
+      - swag i -g pkg/highway/server.go --output docs/highway
+      - echo "Building Open api docs for Blockchain"
+      - starport generate openapi
+      - starport generate proto-go
+      - go mod tidy
+
+  build:buf:
+    cmds:
+      - echo "Building Protobufs and pushing to registry"
+      - task: build:buf:core
+      - task: build:buf:blockchain
+
+  build:buf:core:
+    dir: proto
+    cmds:
+      - echo "Generating and Pushing Protobufs for Highway, Motor, and Host"
+      - buf mod update
+      - buf build
+      - buf push
+
+  build:buf:blockchain:
+    dir: internal/blockchain/proto
+    cmds:
+      - echo "Generating and Pushing Protobufs for Blockchain Modules"
+      - buf mod update
+      - buf build
+      - buf push
+
+  serve:chain:
     summary: Serve the blockchain using starport
     cmds:
       - starport chain serve --reset-once
     silent: true
-  
-  chain-start:
+
+  start:chain:
     summary: Start a locally built blockchain daemon
     deps: [build-chain]
     cmds:
@@ -42,18 +97,8 @@ tasks:
       - sonrd collect-gentxs
       - sonrd start
 
-  chain-gen:
-    summary: Generates protobuf, openapi, and vue stores
+  release:web:
+    summary: Build the web dashboard for release
     cmds:
-      - starport generate openapi
-      - starport generate proto-go
-      - go mod tidy
-    silent: true
-
-  buf:
-    dir: pkg/proto
-    cmds:
-      - echo "Generating and Pushing Protobufs"
-      - buf mod update
-      - buf build
-      - buf push
+      # - task: web:dashboard:build
+      - task: web:wallet:build

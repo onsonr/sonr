@@ -5,7 +5,7 @@
 // @contact.url https://sonr.io
 // @contact.email team@sonr.io
 // @license.name OpenGLv3
-// @host localhost:8081
+// @host localhost:8080
 // @BasePath /v1
 
 package highway
@@ -21,12 +21,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/sonr/pkg/channel"
+
+	ctv1 "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
+	hn "github.com/sonr-io/sonr/internal/host"
+	"github.com/sonr-io/sonr/internal/host/ipfs"
 	"github.com/sonr-io/sonr/pkg/highway/client"
 	"github.com/sonr-io/sonr/pkg/highway/config"
-	hn "github.com/sonr-io/sonr/pkg/host"
-	"github.com/sonr-io/sonr/pkg/host/ipfs"
-	"github.com/sonr-io/sonr/pkg/motor/device"
+	"github.com/sonr-io/sonr/pkg/fs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
@@ -67,7 +68,7 @@ type HighwayServer struct {
 	grpcListener net.Listener
 
 	// Protocols
-	channels     map[string]channel.Channel
+	channels     map[string]ctv1.Channel
 	ipfsProtocol *ipfs.IPFSProtocol
 }
 
@@ -141,7 +142,7 @@ func (s *HighwayServer) Serve() {
 
 // setupBaseStub creates the base Highway Server.
 func setupBaseStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
-	node, err := hn.NewHost(ctx, device.Role_HIGHWAY, c)
+	node, err := hn.NewHost(ctx, fs.Role_HIGHWAY, c)
 	if err != nil {
 		return nil, err
 	}
