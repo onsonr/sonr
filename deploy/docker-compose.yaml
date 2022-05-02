@@ -9,3 +9,9 @@ services:
       - "127.0.0.1:24659:26659"
       - "127.0.0.1:24318:1318"
       - "127.0.0.1:24450:4500"
+  highwayd.0:
+    build:
+      context: ./deploy
+      dockerfile: Dockerfile.highwayd
+  
+
