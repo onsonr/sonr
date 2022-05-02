@@ -15,4 +15,4 @@ RUN cd cmd/highway-cli && go mod tidy
 
 RUN cd cmd/highway-cli && go build -o highwayd
 
-ENTRYPOINT [ "./highwayd" "serve"]
+ENTRYPOINT [ "highwayd" "serve"]
