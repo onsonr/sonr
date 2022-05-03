@@ -29,7 +29,7 @@ tasks:
   bind:ios:
     cmds:
       - echo "Building Sonr Motor Node (iOS)"
-      - gomobile bind -ldflags='-s -w' -bundleid=io.sonr.motor -target=ios -o .../dist/SonrMotor.xcframework
+      - gomobile bind -ldflags='-s -w' -bundleid=io.sonr.motor -target=ios -o SonrMotor.xcframework
 
   build:
     cmds:
