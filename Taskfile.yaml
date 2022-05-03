@@ -82,6 +82,12 @@ tasks:
       - buf build
       - buf push
 
+  deploy:docs:
+    dir: docs
+    cmds:
+      - echo "Deploying docs to gh-pages"
+      - USE_SSH=true yarn deploy
+
   gen:proto:
     cmds:
       - echo "Generating Protobufs"
