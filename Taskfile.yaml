@@ -1,6 +1,9 @@
 version: "3"
 
 includes:
+  docs:
+    taskfile: docs/Taskfile.yaml
+    dir: docs
   web:dashboard:
     taskfile: ./web/dashboard/Taskfile.yaml
     dir: web/dashboard
@@ -79,10 +82,29 @@ tasks:
       - buf build
       - buf push
 
+  deploy:docs:
+    dir: docs
+    cmds:
+      - echo "Deploying docs to gh-pages"
+      - USE_SSH=true yarn deploy
+
+  gen:proto:
+    cmds:
+      - echo "Generating Protobufs"
+      - ignite generate proto-go
+      - ignite generate openapi
+      - go mod tidy
+
   serve:chain:
     summary: Serve the blockchain using starport
     cmds:
-      - starport chain serve --reset-once
+      - ignite chain serve --reset-once
+    silent: true
+
+  serve:docs:
+    summary: Serve the documentation using starport
+    cmds:
+      - task: docs:serve
     silent: true
 
   start:chain:
@@ -96,6 +118,11 @@ tasks:
       - sonrd gentx alice 1000000000000000stake --chain-id sonr
       - sonrd collect-gentxs
       - sonrd start
+
+  start:docs:
+    summary: Start the documentation server
+    cmds:
+      - task: docs:start
 
   release:web:
     summary: Build the web dashboard for release
