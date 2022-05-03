@@ -8,7 +8,7 @@ validator:
   staked: "100000000stake"
 client:
   openapi:
-    path: "docs/blockchain/static/openapi.yml"
+    path: "docs/static/blockchain-api.yml"
   vuex:
     path: "web/wallet/src/store"
 faucet:
