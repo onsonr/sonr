@@ -8,7 +8,7 @@ deps:
   - remote: buf.build
     owner: cosmos
     repository: cosmos-sdk
-    commit: 86d2a697b026488089f13a71ceb3815c
+    commit: 5d1e35ab577941928da26feb1245f56a
   - remote: buf.build
     owner: cosmos
     repository: gogo-proto
@@ -24,4 +24,4 @@ deps:
   - remote: buf.build
     owner: sonr-io
     repository: blockchain
-    commit: 98fbf1d47adf40a7a60bceaa4a7c1207
+    commit: a9ebeed9b8dc4f408f8c078064b6ce55
