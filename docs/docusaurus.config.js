@@ -8,15 +8,16 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Sonr',
   tagline: 'The Internet rebuilt for you',
-  url: 'https://docs.sonr.io',
+  url: 'https://sonr-io.github.io',
+  organizationName: 'sonr-io', // Usually your GitHub org/user name.
+  projectName: 'sonr', // Usually your repo name.
   trailingSlash: false,
-  staticDirectories: ['public', 'static'],
-  baseUrl: '/',
+  staticDirectories: ['static'],
+  baseUrl: '/sonr/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'sonr-io', // Usually your GitHub org/user name.
-  projectName: 'sonr', // Usually your repo name.
+
   plugins: [
     [
       // Search
@@ -25,7 +26,7 @@ const config = {
         language: ["en"],
         hashed: true,
         indexBlog: false,
-        docsRouteBasePath: ["/docs", "/protodocs"]
+        docsRouteBasePath: ["/articles"]
       },
     ],
   ],
@@ -33,7 +34,6 @@ const config = {
     [
       "@docusaurus/preset-classic",
       {
-        debug: undefined,
         docs: {
           path: 'articles',
           routeBasePath: 'articles',
@@ -98,19 +98,19 @@ const config = {
       footer: {
         style: 'dark',
         links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Fundamentals',
-                to: '/docs/fundamentals/identifiers',
-              },
-              {
-                label: 'Node',
-                to: '/docs/node/comparison',
-              },
-            ],
-          },
+          // {
+          //   title: 'Docs',
+          //   items: [
+          //     {
+          //       label: 'Fundamentals',
+          //       to: '/docs/fundamentals/identifiers',
+          //     },
+          //     {
+          //       label: 'Node',
+          //       to: '/docs/node/comparison',
+          //     },
+          //   ],
+          // },
           {
             title: 'Resources',
             items: [

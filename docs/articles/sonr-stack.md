@@ -19,8 +19,8 @@ Sonr enabled DApps or Wallets will have Discovery, Identity, and Transmission ca
 When the node operates in Highway Mode it works as a custodian in the Network to weed out bad actors and helps relay Peers amongst themselves. Along with custodial duty, Highway nodes manage the registration of HDNS Subdomains and interaction with the Sonr Blockchain.
 
 
-
-[ts]("https://www.figma.com/file/gL4iAj7V42JSAsTxUE6J4G/Highway-SDK-Topology?node-id=0%3A1")
+<!--
+[ts]("https://www.figma.com/file/gL4iAj7V42JSAsTxUE6J4G/Highway-SDK-Topology?node-id=0%3A1") -->
 
 
 

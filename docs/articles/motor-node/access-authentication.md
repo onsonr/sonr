@@ -8,7 +8,7 @@ We think authentication should be simple, yet secure. The Sonr network uses s.
 
 
 
-[t]("https://www.figma.com/file/4BeBs2QYmytTN0RII1i4d8/Webauthn-flow?node-id=0%3A1")
+<!-- [t]("https://www.figma.com/file/4BeBs2QYmytTN0RII1i4d8/Webauthn-flow?node-id=0%3A1") -->
 
 
 
