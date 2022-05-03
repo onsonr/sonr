@@ -1,6 +1,7 @@
 ---
 title: Security
 id: security
+displayed_sidebar: basicsSidebar
 ---
 
 Both of Sonr's Highwawy and Motor Nodes require 3 separate pairs of keys to interact with the Network. An Account Key, Link Key, and Group Key.

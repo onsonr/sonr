@@ -1,6 +1,7 @@
 ---
 title: Token
 id: token
+displayed_sidebar: basicsSidebar
 ---
 
 Online P2P exchanges between Motor Nodes have zero tolls. Outlined are some methods for the Sonr Utility Token.

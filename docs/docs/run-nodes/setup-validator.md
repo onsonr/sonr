@@ -1,6 +1,7 @@
 ---
 title: Setup Validator
 id: setup-validator
+displayed_sidebar: runSidebar
 ---
 
 # Adding a Validator Node

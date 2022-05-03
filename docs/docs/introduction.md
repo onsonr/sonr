@@ -1,6 +1,7 @@
 ---
 id: introduction
 title: Introduction
+displayed_sidebar: basicsSidebar
 ---
 
 Imagine a world where you can sign up to get a driver's license for the internet. This driver's license would be encrypted on the Sonr network blockchain retaining a record book of all your devices and data quickly guaranteeing you universal validity. Only you will be able to access your record book with your driver’s license.

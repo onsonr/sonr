@@ -1,7 +1,7 @@
 ---
 id: why-sonr
 title: Why Sonr?
-position: 2
+displayed_sidebar: basicsSidebar
 ---
 
 Sonr's decentralized realtime network provides Web3 developers with a toolset that makes it possible to quickly deploy scalable Web3 applications with verifiable data that can be reused and shared across all Sonr powered applications.

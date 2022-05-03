@@ -1,6 +1,7 @@
 ---
 title: Identifiers
 id: identifiers
+displayed_sidebar: basicsSidebar
 ---
 
 Sonr uses the handshake protocol to register subdomains on the .snr/ TLD -- Top-Level-Domain. Using a .snr/ instead of a traditional username was an idea that came to fruition when we realized how much we disliked passwords and not having a genuine identity on the internet. Right now 90% of all social logins on the internet are proxied through Facebook and Google. We believe that ownership of data should reside in the people, not the services that facilitate it.

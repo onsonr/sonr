@@ -1,7 +1,7 @@
 ---
 id: how-it-works
 title: How It Works
-position: 3
+displayed_sidebar: basicsSidebar
 ---
 
 Sonr decentralizes application databases, making data universally composable and reusable across applications. The network consists of three core parts: &#x20;

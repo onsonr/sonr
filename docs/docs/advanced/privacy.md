@@ -1,6 +1,7 @@
 ---
 title: Privacy
 id: privacy
+displayed_sidebar: basicsSidebar
 ---
 
 # Overview
