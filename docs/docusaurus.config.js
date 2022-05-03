@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Sonr',
   tagline: 'The Internet rebuilt for you',
-  url: 'https://docs.sonr.io',
+  url: 'https://sonr-io.github.io',
   organizationName: 'sonr-io', // Usually your GitHub org/user name.
   projectName: 'sonr', // Usually your repo name.
   trailingSlash: false,
