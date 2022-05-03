@@ -8,12 +8,12 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Sonr',
   tagline: 'The Internet rebuilt for you',
-  url: 'https://sonr-io.github.io',
+  url: 'https://docs.sonr.io',
   organizationName: 'sonr-io', // Usually your GitHub org/user name.
   projectName: 'sonr', // Usually your repo name.
   trailingSlash: false,
   staticDirectories: ['static'],
-  baseUrl: '/sonr/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
@@ -49,6 +49,11 @@ const config = {
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
+          colorMode: {
+            defaultMode: 'dark',
+            disableSwitch: false,
+            respectPrefersColorScheme: true,
+          },
         },
       },
     ],
@@ -93,6 +98,12 @@ const config = {
           { to: '/blog', label: 'Guides', position: 'left' },
           { href: '/highway', label: 'Highway API', position: 'right' },
           { href: '/blockchain', label: 'Blockchain API', position: 'right' },
+          {
+            href: 'https://github.com/sonr-io/sonr',
+            position: 'right',
+            className: 'header-github-logo',
+            'aria-label': 'GitHub repository',
+          },
         ],
       },
       footer: {
