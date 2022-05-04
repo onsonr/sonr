@@ -49,6 +49,7 @@ const config = {
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
+          disableSwitch: true,
           colorMode: {
             defaultMode: 'dark',
             disableSwitch: false,
@@ -95,8 +96,9 @@ const config = {
             position: 'left',
             label: 'Run Nodes',
           },
+          { to: '/blog', label: 'Guides', position: 'left' },
           {
-            position: 'left',
+            position: 'right',
             label: 'API Reference',
             type: 'dropdown',
             items: [
@@ -104,7 +106,6 @@ const config = {
               { href: '/blockchain', label: 'Blockchain API' },
             ],
           },
-          { to: '/blog', label: 'Guides', position: 'left' },
         ],
       },
       footer: {
