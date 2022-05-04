@@ -1,16 +1,17 @@
-package keeper
+package msg
 
 import (
+	"github.com/sonr-io/sonr/internal/blockchain/x/channel/keeper"
 	"github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 )
 
 type msgServer struct {
-	Keeper
+	keeper.Keeper
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper) types.MsgServer {
+func NewMsgServerImpl(keeper keeper.Keeper) types.MsgServer {
 	return &msgServer{Keeper: keeper}
 }
 
