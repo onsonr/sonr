@@ -25,9 +25,9 @@ import (
 	ctv1 "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	hn "github.com/sonr-io/sonr/internal/host"
 	"github.com/sonr-io/sonr/internal/host/ipfs"
+	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/highway/client"
 	"github.com/sonr-io/sonr/pkg/highway/config"
-	"github.com/sonr-io/sonr/pkg/fs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
@@ -53,7 +53,7 @@ type HighwayServer struct {
 	config *config.Config
 
 	// Clients
-	node     hn.HostImpl
+	node     hn.SonrHost
 	cosmos   *client.Cosmos
 	webauthn *client.WebAuthn
 
@@ -142,7 +142,8 @@ func (s *HighwayServer) Serve() {
 
 // setupBaseStub creates the base Highway Server.
 func setupBaseStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
-	node, err := hn.NewHost(ctx, fs.Role_HIGHWAY, c)
+	c.Role = fs.Role_HIGHWAY
+	node, err := hn.NewMachineHost(ctx, c)
 	if err != nil {
 		return nil, err
 	}

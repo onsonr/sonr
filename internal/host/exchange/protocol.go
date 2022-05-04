@@ -19,14 +19,14 @@ import (
 
 type ExchangeProtocol struct {
 	ctx      context.Context
-	node     host.HostImpl
+	node     host.SonrHost
 	callback config.CallbackImpl
 	invites  *cache.Cache
 	mode     device.Role
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, node host.HostImpl, cb config.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
+func New(ctx context.Context, node host.SonrHost, cb config.CallbackImpl, options ...Option) (*ExchangeProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &ExchangeProtocol{
 		ctx:      ctx,

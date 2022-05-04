@@ -95,15 +95,16 @@ const config = {
             position: 'left',
             label: 'Run Nodes',
           },
-          { to: '/blog', label: 'Guides', position: 'left' },
-          { href: '/highway', label: 'Highway API', position: 'right' },
-          { href: '/blockchain', label: 'Blockchain API', position: 'right' },
           {
-            href: 'https://github.com/sonr-io/sonr',
-            position: 'right',
-            className: 'header-github-logo',
-            'aria-label': 'GitHub repository',
+            position: 'left',
+            label: 'API Reference',
+            type: 'dropdown',
+            items: [
+              { href: '/highway', label: 'Highway API' },
+              { href: '/blockchain', label: 'Blockchain API' },
+            ],
           },
+          { to: '/blog', label: 'Guides', position: 'left' },
         ],
       },
       footer: {

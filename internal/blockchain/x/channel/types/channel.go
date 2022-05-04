@@ -93,7 +93,7 @@ type Channel interface {
 type channel struct {
 	Channel
 	ctx   context.Context
-	n     nh.HostImpl
+	n     nh.SonrHost
 	label string
 	did   string
 
@@ -106,7 +106,7 @@ type channel struct {
 }
 
 // NewChannel creates a new beam with the given name and options.
-func NewChannel(ctx context.Context, n nh.HostImpl, config *ChannelDoc, options ...Option) (Channel, error) {
+func NewChannel(ctx context.Context, n nh.SonrHost, config *ChannelDoc, options ...Option) (Channel, error) {
 	logger = golog.Default.Child(config.Label)
 	opts := defaultOptions()
 	for _, option := range options {

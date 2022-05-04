@@ -21,7 +21,7 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node     host.HostImpl
+	node     host.SonrHost
 	callback config.CallbackImpl
 	ctx      context.Context
 	global   ct.Channel
@@ -30,7 +30,7 @@ type DiscoverProtocol struct {
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
 	// Create BeamStore
 	b, err := ct.NewChannel(ctx, host, &ct.ChannelDoc{
 		Label: "_discover",

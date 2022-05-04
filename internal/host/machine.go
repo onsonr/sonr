@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"errors"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p"
 	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -15,6 +14,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
+	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
@@ -25,90 +25,11 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var (
-	logger = golog.Default.Child("core/node")
-)
-
-// HostImpl returns the HostImpl for the Main Node
-type HostImpl interface {
-	// AuthenticateMessage authenticates a message
-	AuthenticateMessage(msg proto.Message, metadata *types.Metadata) bool
-
-	// Close closes the node
-	Close()
-
-	// Connect to a peer
-	Connect(pi peer.AddrInfo) error
-
-	// HasRouting returns true if the node has routing
-	HasRouting() error
-
-	// Host returns the Host
-	Host() host.Host
-
-	// HostID returns the ID of the Host
-	HostID() peer.ID
-
-	// Join subsrcibes to a topic
-	Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error)
-
-	// NewStream opens a new stream to a peer
-	NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error)
-
-	// NewTopic creates a new pubsub topic with event handler and subscription
-	NewTopic(topic string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error)
-
-	// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-	NeedsWait()
-
-	// Pause tells all of goroutines to pause execution
-	Pause()
-
-	// Ping sends a ping to a peer to check if it is alive
-	Ping(id string) error
-
-	// Peer returns the peer of the node
-	Peer() (*types.Peer, error)
-
-	// Pubsub returns the pubsub of the node
-	Pubsub() *ps.PubSub
-
-	// Resume tells all of goroutines to resume execution
-	Resume()
-
-	// Role returns the role of the node
-	Role() device.Role
-
-	// Router returns the routing.Router
-	Router(h host.Host) (routing.PeerRouting, error)
-
-	// Routing returns the routing.Routing
-	Routing() routing.Routing
-
-	// PrivateKey returns the ed25519 private key instance of the libp2p host
-	PrivateKey() (ed25519.PrivateKey, error)
-
-	// SendMessage sends a message to a peer
-	SendMessage(id peer.ID, p protocol.ID, data proto.Message) error
-
-	// SetStreamHandler sets the handler for a protocol
-	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)
-
-	// SignData signs the data with the private key
-	SignData(data []byte) ([]byte, error)
-
-	// SignMessage signs a message with the node's private key
-	SignMessage(message proto.Message) ([]byte, error)
-
-	// VerifyData verifies the data signature
-	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
-}
-
-// hostImpl type - a p2p host implementing one or more p2p protocols
-type hostImpl struct {
+// machineHostImpl type - a p2p host implementing one or more p2p protocols
+type machineHostImpl struct {
 	// Standard Node Implementation
 	host host.Host
-	HostImpl
+	SonrHost
 	role device.Role
 
 	// Host and context
@@ -129,11 +50,11 @@ type hostImpl struct {
 	status HostStatus
 }
 
-// NewHost Creates a Sonr libp2p Host with the given config
-func NewHost(ctx context.Context, r device.Role, config *config.Config) (HostImpl, error) {
+// NewMachineHost Creates a Sonr libp2p Host with the given config
+func NewMachineHost(ctx context.Context, config *config.Config) (SonrHost, error) {
 	var err error
 	// Create the host.
-	hn := &hostImpl{
+	hn := &machineHostImpl{
 		ctx:          ctx,
 		status:       Status_IDLE,
 		mdnsPeerChan: make(chan peer.AddrInfo),
@@ -211,22 +132,22 @@ func NewHost(ctx context.Context, r device.Role, config *config.Config) (HostImp
 }
 
 // Host returns the host of the node
-func (hn *hostImpl) Host() host.Host {
+func (hn *machineHostImpl) Host() host.Host {
 	return hn.host
 }
 
 // HostID returns the ID of the Host
-func (n *hostImpl) HostID() peer.ID {
+func (n *machineHostImpl) HostID() peer.ID {
 	return n.host.ID()
 }
 
 // Ping sends a ping to the peer
-func (n *hostImpl) Ping(pid string) error {
+func (n *machineHostImpl) Ping(pid string) error {
 	return nil
 }
 
 // PrivateKey returns the private key of the node
-func (n *hostImpl) PrivateKey() (ed25519.PrivateKey, error) {
+func (n *machineHostImpl) PrivateKey() (ed25519.PrivateKey, error) {
 	// Get Raw Private Key
 	buf, err := n.privKey.Raw()
 	if err != nil {
@@ -237,12 +158,12 @@ func (n *hostImpl) PrivateKey() (ed25519.PrivateKey, error) {
 }
 
 // Role returns the role of the node
-func (n *hostImpl) Role() device.Role {
+func (n *machineHostImpl) Role() device.Role {
 	return n.role
 }
 
 // AuthenticateMessage Authenticates incoming p2p message
-func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) bool {
+func (n *machineHostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) bool {
 	// store a temp ref to signature and remove it from message data
 	// sign is a string to allow easy reset to zero-value (empty string)
 	sign := metadata.Signature
@@ -271,7 +192,7 @@ func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) 
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
-func (hn *hostImpl) Connect(pi peer.AddrInfo) error {
+func (hn *machineHostImpl) Connect(pi peer.AddrInfo) error {
 	// Check if host is ready
 	if err := hn.HasRouting(); err != nil {
 		logger.Warn("Connect: Underlying host is not ready, failed to call Connect()")
@@ -283,12 +204,12 @@ func (hn *hostImpl) Connect(pi peer.AddrInfo) error {
 }
 
 // HandlePeerFound is to be called when new  peer is found
-func (hn *hostImpl) HandlePeerFound(pi peer.AddrInfo) {
+func (hn *machineHostImpl) HandlePeerFound(pi peer.AddrInfo) {
 	hn.mdnsPeerChan <- pi
 }
 
 // HasRouting returns no-error if the host is ready for connect
-func (h *hostImpl) HasRouting() error {
+func (h *machineHostImpl) HasRouting() error {
 	if h.IpfsDHT == nil || h.host == nil {
 		return errors.New("Host is not ready")
 	}
@@ -296,7 +217,7 @@ func (h *hostImpl) HasRouting() error {
 }
 
 // Join wraps around PubSub.Join and returns topic. Checks wether the host is ready before joining.
-func (hn *hostImpl) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
+func (hn *machineHostImpl) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 	// Check if PubSub is Set
 	if hn.PubSub == nil {
 		return nil, errors.New("Join: Pubsub has not been set on SNRHost")
@@ -312,12 +233,12 @@ func (hn *hostImpl) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 }
 
 // NewStream opens a new stream to the peer with given peer id
-func (n *hostImpl) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error) {
+func (n *machineHostImpl) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error) {
 	return n.host.NewStream(ctx, pid, pids...)
 }
 
 // NewTopic creates a new topic
-func (n *hostImpl) NewTopic(name string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error) {
+func (n *machineHostImpl) NewTopic(name string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error) {
 	// Check if PubSub is Set
 	if n.PubSub == nil {
 		return nil, nil, nil, errors.New("NewTopic: Pubsub has not been set on SNRHost")
@@ -347,7 +268,7 @@ func (n *hostImpl) NewTopic(name string, opts ...ps.TopicOpt) (*ps.Topic, *ps.To
 }
 
 // Router returns the host node Peer Routing Function
-func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
+func (hn *machineHostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
@@ -364,22 +285,22 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 }
 
 // PubSub returns the host node PubSub Function
-func (hn *hostImpl) Pubsub() *ps.PubSub {
+func (hn *machineHostImpl) Pubsub() *ps.PubSub {
 	return hn.PubSub
 }
 
 // Routing returns the host node Peer Routing Function
-func (hn *hostImpl) Routing() routing.Routing {
+func (hn *machineHostImpl) Routing() routing.Routing {
 	return hn.IpfsDHT
 }
 
 // SetStreamHandler sets the handler for a given protocol
-func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
+func (n *machineHostImpl) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
 	n.host.SetStreamHandler(protocol, handler)
 }
 
 // SendMessage writes a protobuf go data object to a network stream
-func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+func (h *machineHostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
 	err := h.HasRouting()
 	if err != nil {
 		return err
@@ -409,7 +330,7 @@ func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) er
 }
 
 // Stat returns the host stat info
-func (hn *hostImpl) Stat() (map[string]string, error) {
+func (hn *machineHostImpl) Stat() (map[string]string, error) {
 	// Return Host Stat
 	return map[string]string{
 		"ID":        hn.host.ID().String(),
@@ -419,7 +340,7 @@ func (hn *hostImpl) Stat() (map[string]string, error) {
 }
 
 // Serve handles incoming peer Addr Info
-func (hn *hostImpl) Serve() {
+func (hn *machineHostImpl) Serve() {
 	for {
 		select {
 		case mdnsPI := <-hn.mdnsPeerChan:
@@ -440,7 +361,7 @@ func (hn *hostImpl) Serve() {
 }
 
 // VerifyData verifies incoming p2p message data integrity
-func (n *hostImpl) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
+func (n *machineHostImpl) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
 		logger.Errorf("%s - Failed to extract key from message key data", err)
@@ -467,3 +388,41 @@ func (n *hostImpl) VerifyData(data []byte, signature []byte, peerId peer.ID, pub
 	}
 	return res
 }
+
+// createDHTDiscovery is a Helper Method to initialize the DHT Discovery
+func (hn *machineHostImpl) createDHTDiscovery(c *config.Config) error {
+	// Set Routing Discovery, Find Peers
+	var err error
+	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
+	dsc.Advertise(hn.ctx, routingDiscovery, c.Libp2pRendezvous, c.Libp2pTTL)
+
+	// Create Pub Sub
+	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
+	if err != nil {
+		hn.SetStatus(Status_FAIL)
+		logger.Errorf("%s - Failed to Create new Gossip Sub", err)
+		return err
+	}
+
+	// Handle DHT Peers
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, c.Libp2pRendezvous, c.Libp2pTTL)
+	if err != nil {
+		hn.SetStatus(Status_FAIL)
+		logger.Errorf("%s - Failed to create FindPeers Discovery channel", err)
+		return err
+	}
+	hn.SetStatus(Status_READY)
+	return nil
+}
+
+// TODO Migrate MDNS Service to latesat libp2p spec
+// // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
+// func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
+// 	if hn.Role() == device.Role_MOTOR {
+// 		// Create MDNS Service
+// 		ser := mdns.NewMdnsService(hn.host, c.Libp2pRendezvous)
+
+// 		// Handle Events
+// 		ser.RegisterNotifee(hn)
+// 	}
+// }

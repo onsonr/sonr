@@ -14,6 +14,7 @@
   --ifm-color-primary-lighter: #00BFFF;
   --ifm-color-primary-lightest: #00BFFF;
   --ifm-code-font-size: 95%;
+  --ifm-font-family-base: 'THICCCBOI';
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -36,4 +37,170 @@ html[data-theme='dark'] {
 
 html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+}
+
+.typographyRichTextHeading2
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 44px;
+  line-height: 52px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographyRichTextHeading3
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographyRichTextHeading4
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographyRichTextHeading5
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographyRichTextParagraphSmall
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographyRichTextParagraphDefault
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographySpecialTextDisplay1
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 80px;
+  line-height: 94px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographyRichTextBold
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographySpecialTextDisplay2
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 76px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographySpecialTextDisplay3
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 36px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
+}
+
+.typographyRichTextHeading6
+ {
+
+  font-family: "THICCCBOI";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing:
+  0em;
+  text-indent: 0px;
+
 }

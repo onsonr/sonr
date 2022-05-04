@@ -19,14 +19,14 @@ import (
 // TransmitProtocol type
 type TransmitProtocol struct {
 	callback config.CallbackImpl
-	node     host.HostImpl
+	node     host.SonrHost
 	ctx      context.Context // Context
 	current  *v1.Session     // current session
 	mode     device.Role
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, cb config.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
 	protocol := &TransmitProtocol{
 		ctx:      ctx,

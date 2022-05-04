@@ -1,8 +1,14 @@
 swagger: '2.0'
 info:
-  title: HTTP API Console
-  name: ''
-  description: ''
+  contact:
+    email: team@sonr.io
+    name: Sonr Inc.
+    url: https://sonr.io
+  description: Interact with the underlying Sonr blockchain.
+  license:
+    name: OpenGLv3
+  title: Blockchain API
+  version: v0.1.0
 paths:
   /cosmos/auth/v1beta1/accounts:
     get:
