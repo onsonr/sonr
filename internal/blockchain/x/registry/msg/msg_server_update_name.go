@@ -1,4 +1,4 @@
-package keeper
+package msg
 
 import (
 	"context"
@@ -7,11 +7,11 @@ import (
 	"github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
 )
 
-func (k msgServer) UpdateApplication(goCtx context.Context, msg *types.MsgUpdateApplication) (*types.MsgUpdateApplicationResponse, error) {
+func (k msgServer) UpdateName(goCtx context.Context, msg *types.MsgUpdateName) (*types.MsgUpdateNameResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO: Handling the message
 	_ = ctx
 
-	return &types.MsgUpdateApplicationResponse{}, nil
+	return &types.MsgUpdateNameResponse{}, nil
 }

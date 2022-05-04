@@ -1,4 +1,4 @@
-package keeper_test
+package msg_test
 
 import (
 	"strconv"
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	keepertest "github.com/sonr-io/sonr/internal/blockchain/testutil/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/registry/keeper"
+	"github.com/sonr-io/sonr/internal/blockchain/x/registry/msg"
 	"github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
 )
 
@@ -18,7 +18,7 @@ var _ = strconv.IntSize
 
 func TestWhoIsMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.RegistryKeeper(t)
-	srv := keeper.NewMsgServerImpl(*k)
+	srv := msg.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
 	creator := "A"
 	for i := 0; i < 5; i++ {
@@ -67,7 +67,7 @@ func TestWhoIsMsgServerUpdate(t *testing.T) {
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.RegistryKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
+			srv := msg.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgCreateWhoIs{Creator: creator,
 				Did: strconv.Itoa(0),
@@ -121,7 +121,7 @@ func TestWhoIsMsgServerDelete(t *testing.T) {
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.RegistryKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
+			srv := msg.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
 			_, err := srv.CreateWhoIs(wctx, &types.MsgCreateWhoIs{Creator: creator,

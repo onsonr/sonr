@@ -1,4 +1,4 @@
-package keeper
+package msg
 
 import (
 	"context"
@@ -7,17 +7,16 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
 )
 
-// RegisterApplication registers an application with the registry
-func (k msgServer) RegisterApplication(goCtx context.Context, msg *types.MsgRegisterApplication) (*types.MsgRegisterApplicationResponse, error) {
+// RegisterName registers a name with the registry for the given validated
+func (k msgServer) RegisterName(goCtx context.Context, msg *types.MsgRegisterName) (*types.MsgRegisterNameResponse, error) {
 	// Get the sender address and Generate BaseID
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check for valid length
-	name, err := types.ValidateAppName(msg.GetApplicationName())
+	name, err := types.ValidateName(msg.GetNameToRegister())
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +33,7 @@ func (k msgServer) RegisterApplication(goCtx context.Context, msg *types.MsgRegi
 	}
 
 	// Create a new DID Document
-	doc, err := types.GenerateApplicationDid(msg.GetCreator(), name, msg.GetCredential())
+	doc, err := types.GenerateNameDid(msg.GetCreator(), name, msg.GetCredential())
 	if err != nil {
 		return nil, err
 	}
@@ -45,21 +44,13 @@ func (k msgServer) RegisterApplication(goCtx context.Context, msg *types.MsgRegi
 		return nil, err
 	}
 
-	// Generate Metadata for the Application
-	m := make(map[string]string)
-	m["app_name"] = name
-	m["app_description"] = msg.GetApplicationDescription()
-	m["app_url"] = msg.GetApplicationUrl()
-	m["app_category"] = msg.GetApplicationCategory()
-
 	// Create a new who is record
 	newWhois := types.WhoIs{
 		Name:      name,
 		Did:       doc.ID.ID,
 		Document:  didJson,
 		Creator:   msg.GetCreator(),
-		Type:      types.WhoIs_Application,
-		Metadata:  m,
+		Type:      types.WhoIs_User,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
 	}
@@ -76,10 +67,10 @@ func (k msgServer) RegisterApplication(goCtx context.Context, msg *types.MsgRegi
 	k.SetWhoIs(ctx, newWhois)
 
 	// Return the DID and WhoIs information
-	return &types.MsgRegisterApplicationResponse{
+	return &types.MsgRegisterNameResponse{
 		Code:    100,
-		Message: fmt.Sprintf("New Application (%s) has been registered to DID (%s)", name, doc.ID.ID),
-		Session: session,
+		Message: fmt.Sprintf("New name (%s) has been registered to DID (%s)", name, doc.ID.ID),
 		WhoIs:   &newWhois,
+		Session: session,
 	}, nil
 }
