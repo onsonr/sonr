@@ -6,12 +6,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/keeper"
+	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/keeper/msg"
 	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
 )
 
 // NewHandler ...
 func NewHandler(k keeper.Keeper) sdk.Handler {
-	msgServer := keeper.NewMsgServerImpl(k)
+	msgServer := msg.NewMsgServerImpl(k)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())

@@ -1,4 +1,4 @@
-package keeper_test
+package msg_test
 
 import (
 	"strconv"
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	keepertest "github.com/sonr-io/sonr/internal/blockchain/testutil/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/keeper"
+	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/keeper/msg"
 	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
 )
 
@@ -18,7 +18,7 @@ var _ = strconv.IntSize
 
 func TestWhichIsMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.BucketKeeper(t)
-	srv := keeper.NewMsgServerImpl(*k)
+	srv := msg.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
 	creator := "A"
 	for i := 0; i < 5; i++ {
@@ -68,7 +68,7 @@ func TestWhichIsMsgServerUpdate(t *testing.T) {
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.BucketKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
+			srv := msg.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgCreateWhichIs{Creator: creator,
 				Did: strconv.Itoa(0),
@@ -125,7 +125,7 @@ func TestWhichIsMsgServerDelete(t *testing.T) {
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.BucketKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
+			srv := msg.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
 			_, err := srv.CreateWhichIs(wctx, &types.MsgCreateWhichIs{Creator: creator,
