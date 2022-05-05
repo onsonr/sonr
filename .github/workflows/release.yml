@@ -25,8 +25,8 @@ jobs:
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind AAR and XCFramework
         run: |
-          IOS_DIR=${{ github.workspace }}/build/motorlib_darwin_{{ .version }}_arm64
-          ANDROID_DIR=${{ github.workspace }}/build/motorlib_android_{{ .version }}_arm64
+          IOS_DIR=${{ github.workspace }}/build/motorlib_darwin_$GIT_TAG_NAME_arm64
+          ANDROID_DIR=${{ github.workspace }}/build/motorlib_android_$GIT_TAG_NAME_arm64
           mkdir -p $IOS_DIR
           mkdir -p $ANDROID_DIR
           go install golang.org/x/mobile/cmd/gomobile@latest
