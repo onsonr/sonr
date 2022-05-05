@@ -20,6 +20,8 @@ jobs:
 
       - name: Setup Gomobile
         run: |
+          brew install FiloSottile/musl-cross/musl-cross
+          brew install mingw-w64
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
         working-directory: ${{ github.workspace }}/cmd/motor-lib
