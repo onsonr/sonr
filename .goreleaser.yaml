@@ -5,38 +5,172 @@ before:
     # You may remove this if you don't use go modules.
     - rm -rf dist
     - go mod tidy
+    - go mod download
 
 builds:
-  - main: ./cmd/highway-cli
-    id: "cli"
-    binary: "highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  # Highway CLI for macOS
+  - id: "highway-cli-darwin"
+    main: ./cmd/highway-cli
+    binary: bin/highway-cli
     goos:
-      - linux
+      - darwin
+    goarch:
+    - amd64
+
+  # Highway CLI for macOS (arm64)
+  - id: "highway-cli-darwin-arm64"
+    main: ./cmd/highway-cli
+    binary: bin/highway-cli
+    goos:
       - darwin
     goarch:
     - arm64
-    no_unique_dist_dir: true
 
-universal_binaries:
--
-  replace: true
-  id: "cli"
-  name_template: "highway-cli_{{ .Version }}_darwin_universal"
+  # Highway CLI for Linux
+  - id: "highway-cli-linux"
+    main: ./cmd/highway-cli
+    binary: bin/highway-cli
+    goos:
+      - linux
+    goarch:
+    - amd64
 
+  # Highway CLI for Linux (arm64)
+  - id: "highway-cli-linux-arm64"
+    main: ./cmd/highway-cli
+    binary: bin/highway-cli
+    goos:
+      - linux
+    goarch:
+    - arm64
+
+  # Blockchain Daemon for macOS
+  - id: "sonrd-darwin"
+    main: ./cmd/sonrd
+    binary: bin/sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=o64-clang
+      - CXX=o64-clang++
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    flags:
+        - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+  # Blockchain Daemon for macOS (arm64)
+  - id: "sonrd-darwin-arm64"
+    main: ./cmd/sonrd
+    binary: bin/sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=oa64-clang
+      - CXX=oa64-clang++
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    flags:
+      - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+  # Blockchain Daemon for Linux
+  - id: "sonrd-linux"
+    main: ./cmd/sonrd
+    binary: bin/sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=g++
+    goos:
+      - linux
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+  # Blockchain Daemon for Linux (arm64)
+  - id: "sonrd-linux-arm64"
+    main: ./cmd/sonrd
+    binary: bin/sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=aarch64-linux-gnu-gcc
+      - CXX=aarch64-linux-gnu-g++
+    goos:
+      - linux
+    goarch:
+      - arm64
+    flags:
+      - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+  # Blockchain Daemon for Windows
+  - id: "sonrd-windows"
+    main: ./cmd/sonrd
+    binary: bin/sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+# Artifacts from the build
 archives:
-  -
-    id: "cli"
-    builds: [cli]
-    name_template: "highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+# Templating for blockchain daemons
+- name_template: 'sonrd_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  builds:
+  - sonrd-darwin
+  - sonrd-darwin-arm64
+  - sonrd-windows
+  - sonrd-linux
+  - sonrd-linux-arm64
 
+# Templating for CLI
+- name_template: 'highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    amd64: x86_64
+  builds:
+  - highway-cli-darwin
+  - highway-cli-darwin-arm64
+  - highway-cli-linux
+  - highway-cli-linux-arm64
+
+# Checksums for the archives
 checksum:
   name_template: 'checksums.txt'
-
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+    - '^docs:'
+    - '^test:'
+
+# Snapshot of the current version
+snapshot:
+  name_template: "{{ .Tag }}-next"

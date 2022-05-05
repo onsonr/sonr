@@ -9,40 +9,23 @@ includes:
     dir: web/wallet
 
 tasks:
-  bind:
+  motor:build:
     cmds:
       - echo "Setting up Gomobile..."
       - go install golang.org/x/mobile/cmd/gomobile@latest
-      - go mod download golang.org/x/mobile
-      - gomobile init
-      - task: bind:ios
-      - task: bind:android
-
-  bind:android:
-    cmds:
       - echo "Building Sonr Motor Node (Android)"
       - gomobile bind -ldflags='-s -w' -target=android -o .../dist/io.sonr.motor.aar
-
-  bind:ios:
-    cmds:
       - echo "Building Sonr Motor Node (iOS)"
       - gomobile bind -ldflags='-s -w' -bundleid=io.sonr.motor -target=ios -o SonrMotor.xcframework
 
-  build:
-    cmds:
-      - task: build:buf:core
-      - task: build:buf:blockchain
-      - task: build:cli
-      - task: build:swagger
-      - task: build:chain
-
-  build:chain:
+  chain:build:
     summary: Build the project for production without release mode
     cmds:
       - starport chain build
     silent: true
 
-  build:cli:
+
+  cli:build:
     dir: cmd/highway-cli
     cmds:
       - echo "Building Sonr Highway CLI"
