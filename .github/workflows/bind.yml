@@ -52,7 +52,7 @@ jobs:
           command: c
           cwd: ${{ github.workspace }}/build
           files: |
-            - ./build/${{ steps.version.outputs.tag }}-io.sonr.motor.aar
+            - ./${{ steps.version.outputs.tag }}-io.sonr.motor.aar
           outPath: ${{ github.workspace }}/build/${{ steps.version.outputs.tag }}-sonr-motor-android.tar.gz
 
       # Append release with artifact
@@ -111,7 +111,7 @@ jobs:
           command: c
           cwd: ${{ github.workspace }}/build
           files: |
-            - ./build/SonrMotor-${{ steps.version.outputs.tag }}.xcframework
+            - ./SonrMotor-${{ steps.version.outputs.tag }}.xcframework
           outPath: ${{ github.workspace }}/build/${{ steps.version.outputs.tag }}-sonr-motor-ios.tar.gz
 
       # Append release with artifact
