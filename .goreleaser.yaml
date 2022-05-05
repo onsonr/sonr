@@ -5,12 +5,6 @@
 # -- Pre Build Hooks --
 before:
   hooks:
-    # Clean existing build artifacts
-    - rm -rf build
-    - rm -rf dist
-
-    # Install dependencies
-    - go mod tidy
     - go mod download
 
 # -- Individual Builds --
@@ -197,21 +191,12 @@ checksum:
 
 # -- Changelog Configuration --
 changelog:
-  use: github-native
+  use: github
   sort: asc
   filters:
     exclude:
     - '^docs:'
     - '^test:'
-  groups:
-    - title: Features
-      regexp: "^.*feat[(\\w)]*:+.*$"
-      order: 0
-    - title: 'Bug fixes'
-      regexp: "^.*fix[(\\w)]*:+.*$"
-      order: 1
-    - title: Others
-      order: 999
 
 # -- Snapshot of the current version --
 snapshot:
