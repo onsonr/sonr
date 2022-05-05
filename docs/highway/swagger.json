@@ -13,12 +13,35 @@
         },
         "version": "v0.23.0"
     },
-    "host": "localhost:8081",
+    "host": "localhost:8080",
     "basePath": "/v1",
     "paths": {
+        "/Object/update": {
+            "post": {
+                "description": "UpdateObject updates and object reference for a registered application",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update Object",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/blob/download/:cid": {
             "get": {
-                "description": "DownloadBlob downloads a file from IPFS given its CID.",
+                "description": "DownloadBlob downloads a file from storage given its CID.",
                 "produces": [
                     "application/json"
                 ],
@@ -44,7 +67,7 @@
         },
         "/blob/remove/:cid": {
             "get": {
-                "description": "RemoveBlob deletes a file from IPFS given its CID.",
+                "description": "RemoveBlob deletes a file from storage given its CID.",
                 "produces": [
                     "application/json"
                 ],
@@ -67,7 +90,7 @@
         },
         "/blob/upload": {
             "post": {
-                "description": "UploadBlob uploads a file to IPFS and returns its CID.",
+                "description": "UploadBlob uploads a file to storage and returns its CID.",
                 "produces": [
                     "application/json"
                 ],
@@ -110,6 +133,144 @@
                     },
                     "502": {
                         "description": "Bad Gateway",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/channel/create": {
+            "post": {
+                "description": "CreateChannel creates a specified channel for a registered application",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create Channel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/channel/deactivate": {
+            "post": {
+                "description": "DeactivateChannel disables a Channel for a registered application",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Deactivate Channel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/channel/deactivate/:cid": {
+            "post": {
+                "description": "DeactivateObject disables a Object for a registered application",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Deactivate Object",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/channel/listen": {
+            "post": {
+                "description": "ListenChannel puts a Channel into a listening state registered application",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Listen Channel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/channel/update": {
+            "post": {
+                "description": "ListenChannel puts a Channel into a listening state registered application",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update Channel",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/name/update": {
+            "post": {
+                "description": "DeactivateChannel disables a Channel for a registered application",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update Name",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
                         }

@@ -1,0 +1,74 @@
+---
+slug: installation
+title: Installation
+authors: [ntindle]
+tags: [docusaurus]
+---
+
+# Installing the Sonr Blockchain
+
+### [](https://github.com/sonr-io/blockchain#requirements)Requirements&#xA;
+
+- [Go](https://golang.org/doc/install) installed on machine
+
+- [Ignite](https://ignite.com/cli)
+
+### Steps to install the Sonr Blockchain
+
+##### 1. Download Ignite
+
+:::tip
+
+```shell
+curl https://get.ignite.com/cli! | bash
+```
+
+:::
+
+##### 2. Move into the chain directory
+
+:::tip
+
+```shell
+cd blockchain
+```
+
+:::
+
+##### 3. Serve the blockchain
+
+:::tip
+
+```shell
+ignite chain serve
+```
+
+:::
+
+- This is the command that starts the blockchain.
+
+- By adding the flag --reset-once it will reset the blockchain on the first startup
+
+## Sonr Highway-SDK
+
+#### Installation&#x20;
+
+- Install and run the Sonr Blockchain using the above guide
+
+#### Clone the Highway-SDK repo
+
+```shell
+git clone https://github.com/sonr-io/highway-sdk.git
+```
+
+#### Run the Highway-SDK in place
+
+```shell
+go run main.go serve
+```
+
+#### Add more building blocks with the CLI
+
+```shell
+go run main.go <serve/>
+```
