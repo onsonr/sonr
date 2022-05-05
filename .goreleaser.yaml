@@ -1,91 +1,114 @@
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
+# Sonr Build Pipeline
+#
+#
+
+# -- Pre Build Hooks --
 before:
   hooks:
-    # You may remove this if you don't use go modules.
+    # Clean existing build artifacts
+    - rm -rf build
     - rm -rf dist
+
+    # Install dependencies
     - go mod tidy
     - go mod download
 
+# -- Individual Builds --
 builds:
+  # Motor libraries are prebuilt using gomobile for android
+  - id: "motor-android"
+    builder: prebuilt
+    goos:
+    - android
+    goarch:
+    - arm64
+    prebuilt:
+      path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
+    hooks:
+      pre:
+        - sh scripts/bind.sh -v {{ .Version }} -a
+
+  # Motor libraries are prebuilt using gomobile for ios
+  - id: "motor-ios"
+    builder: prebuilt
+    goos:
+    - darwin
+    goarch:
+    - arm64
+    prebuilt:
+      path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
+    hooks:
+      pre:
+        - sh scripts/bind.sh -v {{ .Version }} -i
+
   # Highway CLI for macOS
   - id: "highway-cli-darwin"
     main: ./cmd/highway-cli
-    binary: bin/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=o64-clang++
     goos:
       - darwin
     goarch:
     - amd64
-
-  # Highway CLI for macOS (arm64)
-  - id: "highway-cli-darwin-arm64"
-    main: ./cmd/highway-cli
-    binary: bin/highway-cli
-    goos:
-      - darwin
-    goarch:
     - arm64
 
   # Highway CLI for Linux
   - id: "highway-cli-linux"
     main: ./cmd/highway-cli
-    binary: bin/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=0
+      - CC=gcc
+      - CXX=g++
     goos:
       - linux
-    goarch:
-    - amd64
 
-  # Highway CLI for Linux (arm64)
-  - id: "highway-cli-linux-arm64"
+
+  # Blockchain Daemon for Windows
+  - id: "highway-cli-windows"
     main: ./cmd/highway-cli
-    binary: bin/highway-cli
+    binary: sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
     goos:
-      - linux
+      - windows
     goarch:
-    - arm64
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
 
   # Blockchain Daemon for macOS
   - id: "sonrd-darwin"
     main: ./cmd/sonrd
-    binary: bin/sonrd
+    binary: sonrd
     env:
       - CGO_ENABLED=1
-      - CC=o64-clang
+      - CC=gcc
       - CXX=o64-clang++
     goos:
       - darwin
     goarch:
       - amd64
-    flags:
-        - -tags=cgo
-    ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
-
-  # Blockchain Daemon for macOS (arm64)
-  - id: "sonrd-darwin-arm64"
-    main: ./cmd/sonrd
-    binary: bin/sonrd
-    env:
-      - CGO_ENABLED=1
-      - CC=oa64-clang
-      - CXX=oa64-clang++
-    goos:
-      - darwin
-    goarch:
       - arm64
     flags:
-      - -tags=cgo
+        - -tags=cgo
     ldflags:
       - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
 
   # Blockchain Daemon for Linux
   - id: "sonrd-linux"
     main: ./cmd/sonrd
-    binary: bin/sonrd
+    binary: sonrd
     env:
       - CGO_ENABLED=1
-      - CC=gcc
-      - CXX=g++
+      - CC=x86_64-linux-musl-gcc
+      - CXX=x86_64-linux-musl-g++
     goos:
       - linux
     goarch:
@@ -93,24 +116,7 @@ builds:
     flags:
       - -tags=cgo
     ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
-
-  # Blockchain Daemon for Linux (arm64)
-  - id: "sonrd-linux-arm64"
-    main: ./cmd/sonrd
-    binary: bin/sonrd
-    env:
-      - CGO_ENABLED=1
-      - CC=aarch64-linux-gnu-gcc
-      - CXX=aarch64-linux-gnu-g++
-    goos:
-      - linux
-    goarch:
-      - arm64
-    flags:
-      - -tags=cgo
-    ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+      - -s -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
 
   # Blockchain Daemon for Windows
   - id: "sonrd-windows"
@@ -130,49 +136,121 @@ builds:
     ldflags:
       - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
 
-# Artifacts from the build
+# -- Artifacts from the build --
 archives:
 # Templating for blockchain daemons
 - id: "sonrd-archive"
   name_template: 'sonrd_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
+    darwin: macos
+    windows: win
     amd64: x86_64
   format_overrides:
     - goos: windows
       format: zip
   builds:
   - sonrd-darwin
-  - sonrd-darwin-arm64
   - sonrd-windows
   - sonrd-linux
-  - sonrd-linux-arm64
+
+# Templating for Motor Android
+- id: "motor-android-archive"
+  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  builds:
+  - motor-android
+  files:
+    - src: build/motorlib_android_**/*
+      dst: .
+      strip_parent: true
+
+# Templating for Motor iOS
+- id: "motor-ios-archive"
+  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  builds:
+  - motor-ios
+  replacements:
+    darwin: ios
+  files:
+    - src: build/motorlib_darwin_**/*
+      dst: .
+      strip_parent: true
+
 
 # Templating for CLI
 - id: "highway-cli-archive"
   name_template: 'highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   replacements:
-    darwin: Darwin
-    linux: Linux
+    darwin: macos
+    windows: win
     amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
   builds:
   - highway-cli-darwin
-  - highway-cli-darwin-arm64
   - highway-cli-linux
-  - highway-cli-linux-arm64
+  - highway-cli-windows
 
-# Checksums for the archives
+# -- Checksums for the archives --
 checksum:
   name_template: 'checksums.txt'
+
+# -- Changelog Configuration --
 changelog:
+  use: github-native
   sort: asc
   filters:
     exclude:
     - '^docs:'
     - '^test:'
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: Others
+      order: 999
 
-# Snapshot of the current version
+# -- Snapshot of the current version --
 snapshot:
   name_template: "{{ .Tag }}-next"
+
+# -- Release settings --
+release:
+  github:
+    owner: sonr-io
+    name: sonr
+  prerelease: auto
+  discussion_category_name: General
+  mode: append
+  extra_files:
+    - name_template: CHANGELOG.md
+    - name_template: LICENSE
+    - name_template: README.md
+  # Header template for the release body.
+  # Defaults to empty.
+  header: |
+    ## Release {{ .Tag }} - {{ .Date }}
+
+    Welcome to the new {{ .Tag }} Sonr release. This release includes the following changes:
+
+    {{ if .Changes }}
+    {{ range .Changes }}
+    * {{ . }}
+    {{ end }}
+    {{ end }}
+
+
+  # Footer template for the release body.
+  # Defaults to empty.
+  footer: |
+    ## Thanks!
+
+    Those were the changes on {{ .Tag }}! With much love from the [Sonr Team](https://sonr.io).
+
+    #### Connect with us
+    - [Discord](https://discord.gg/HSTPCzDUsW)
+    - [Twitter](https://twitter.com/sonr_io)
+    - [Documentation](https://docs.sonr.io)

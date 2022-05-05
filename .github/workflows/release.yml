@@ -1,4 +1,4 @@
-name: Blockchain Release Workflow
+name: Release Workflow
 
 on:
   push:
@@ -15,28 +15,14 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-go@v2
-      - name: Prepare Release Variables
-        id: vars
-        uses: tendermint/starport/actions/release/vars@develop
-
-      - name: Issue Release Assets
-        uses: ignite-hq/cli/actions/cli@develop
         with:
-          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
-
+          go-version: 1.17.7
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
-          distribution: goreleaser
+          distribution: goreleaser-pro
           version: latest
-          args: release
-
-      - name: Create the "latest" Release
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: "${{ github.workspace }}/release/*.tar.gz, ${{ github.workspace }}/dist/*.tar.gz, ${{ github.workspace }}/dist/checksums.txt, ${{ github.workspace }}/release/checksum.txt, ${{ github.workspace }}/README.md, ${{ github.workspace }}/CHANGELOG.md, ${{ github.workspace }}/LICENSE"
-          replacesArtifacts: false
-          name: ${{ steps.vars.outputs.tag_name }}
-          token: ${{ secrets.ACTIONS_GH_TOKEN }}
+          args: release --rm-dist
+        env:
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
