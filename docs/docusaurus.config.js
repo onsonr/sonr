@@ -185,10 +185,6 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Guides',
-                to: '/blog',
-              },
-              {
                 label: 'GitHub',
                 href: 'https://github.com/sonr-io/sonr',
               },
