@@ -9,7 +9,7 @@ export const protobufPackage = "ibc.applications.transfer.v1";
 /**
  * MsgTransfer defines a msg to transfer fungible tokens (i.e Coins) between
  * ICS20 enabled chains. See ICS Spec here:
- * https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures
+ * https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
  */
 export interface MsgTransfer {
   /** the port on which the packet will be sent */

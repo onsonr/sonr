@@ -1,6 +1,6 @@
 {
-  "name": "@starport/template",
-  "version": "0.3.0",
+  "name": "@sonr-io/wallet-vue",
+  "version": "0.3.5",
   "description": "A Vue 3 boilerplate project utilizing @starport/vue and @starport/vuex",
   "author": "Tendermint, Inc <hello@tendermint.com>",
   "private": true,
@@ -10,11 +10,11 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@cosmjs/stargate": "0.27.0",
     "@cosmjs/launchpad": "0.27.0",
     "@cosmjs/proto-signing": "0.27.0",
-    "@starport/vue": "^0.3.0",
-    "@starport/vuex": "^0.3.0",
+    "@cosmjs/stargate": "0.27.0",
+    "@starport/vue": "^0.3.5",
+    "@starport/vuex": "^0.3.5",
     "buffer": "^6.0.3",
     "core-js": "^3.18.2",
     "vue": "^3.2.6",

@@ -1,11 +1,10 @@
 import { txClient, queryClient, MissingWalletError , registry} from './module'
 
-import { FungibleTokenPacketData } from "./module/types/ibc/applications/transfer/v1/transfer"
 import { DenomTrace } from "./module/types/ibc/applications/transfer/v1/transfer"
 import { Params } from "./module/types/ibc/applications/transfer/v1/transfer"
 
 
-export { FungibleTokenPacketData, DenomTrace, Params };
+export { DenomTrace, Params };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -48,7 +47,6 @@ const getDefaultState = () => {
 				Params: {},
 				
 				_Structure: {
-						FungibleTokenPacketData: getStructure(FungibleTokenPacketData.fromPartial({})),
 						DenomTrace: getStructure(DenomTrace.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						

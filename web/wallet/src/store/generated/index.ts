@@ -1,7 +1,6 @@
 // THIS FILE IS GENERATED AUTOMATICALLY. DO NOT MODIFY.
 
 import CosmosCosmosSdkCosmosAuthV1Beta1 from './cosmos/cosmos-sdk/cosmos.auth.v1beta1'
-import CosmosCosmosSdkCosmosAuthzV1Beta1 from './cosmos/cosmos-sdk/cosmos.authz.v1beta1'
 import CosmosCosmosSdkCosmosBankV1Beta1 from './cosmos/cosmos-sdk/cosmos.bank.v1beta1'
 import CosmosCosmosSdkCosmosBaseTendermintV1Beta1 from './cosmos/cosmos-sdk/cosmos.base.tendermint.v1beta1'
 import CosmosCosmosSdkCosmosCrisisV1Beta1 from './cosmos/cosmos-sdk/cosmos.crisis.v1beta1'
@@ -20,22 +19,11 @@ import CosmosIbcGoIbcApplicationsTransferV1 from './cosmos/ibc-go/ibc.applicatio
 import CosmosIbcGoIbcCoreChannelV1 from './cosmos/ibc-go/ibc.core.channel.v1'
 import CosmosIbcGoIbcCoreClientV1 from './cosmos/ibc-go/ibc.core.client.v1'
 import CosmosIbcGoIbcCoreConnectionV1 from './cosmos/ibc-go/ibc.core.connection.v1'
-import SonrIoBlockchainSonrioSonrBlob from './sonr-io/blockchain/sonrio.sonr.blob'
-import SonrIoBlockchainSonrioSonrBucket from './sonr-io/blockchain/sonrio.sonr.bucket'
-import SonrIoBlockchainSonrioSonrChannel from './sonr-io/blockchain/sonrio.sonr.channel'
-import SonrIoBlockchainSonrioSonrObject from './sonr-io/blockchain/sonrio.sonr.object'
-import SonrIoBlockchainSonrioSonrRegistry from './sonr-io/blockchain/sonrio.sonr.registry'
-import SonrIoBlockchainSonrioSonrVault from './sonr-io/blockchain/sonrio.sonr.vault'
-import SonrIoSonrSonrioSonrBlob from './sonr-io/sonr/sonrio.sonr.blob'
-import SonrIoSonrSonrioSonrBucket from './sonr-io/sonr/sonrio.sonr.bucket'
-import SonrIoSonrSonrioSonrChannel from './sonr-io/sonr/sonrio.sonr.channel'
-import SonrIoSonrSonrioSonrObject from './sonr-io/sonr/sonrio.sonr.object'
-import SonrIoSonrSonrioSonrRegistry from './sonr-io/sonr/sonrio.sonr.registry'
+import CosmosIbcGoIbcCorePortV1 from './cosmos/ibc-go/ibc.core.port.v1'
 
 
 export default { 
   CosmosCosmosSdkCosmosAuthV1Beta1: load(CosmosCosmosSdkCosmosAuthV1Beta1, 'cosmos.auth.v1beta1'),
-  CosmosCosmosSdkCosmosAuthzV1Beta1: load(CosmosCosmosSdkCosmosAuthzV1Beta1, 'cosmos.authz.v1beta1'),
   CosmosCosmosSdkCosmosBankV1Beta1: load(CosmosCosmosSdkCosmosBankV1Beta1, 'cosmos.bank.v1beta1'),
   CosmosCosmosSdkCosmosBaseTendermintV1Beta1: load(CosmosCosmosSdkCosmosBaseTendermintV1Beta1, 'cosmos.base.tendermint.v1beta1'),
   CosmosCosmosSdkCosmosCrisisV1Beta1: load(CosmosCosmosSdkCosmosCrisisV1Beta1, 'cosmos.crisis.v1beta1'),
@@ -54,17 +42,7 @@ export default {
   CosmosIbcGoIbcCoreChannelV1: load(CosmosIbcGoIbcCoreChannelV1, 'ibc.core.channel.v1'),
   CosmosIbcGoIbcCoreClientV1: load(CosmosIbcGoIbcCoreClientV1, 'ibc.core.client.v1'),
   CosmosIbcGoIbcCoreConnectionV1: load(CosmosIbcGoIbcCoreConnectionV1, 'ibc.core.connection.v1'),
-  SonrIoBlockchainSonrioSonrBlob: load(SonrIoBlockchainSonrioSonrBlob, 'sonrio.sonr.blob'),
-  SonrIoBlockchainSonrioSonrBucket: load(SonrIoBlockchainSonrioSonrBucket, 'sonrio.sonr.bucket'),
-  SonrIoBlockchainSonrioSonrChannel: load(SonrIoBlockchainSonrioSonrChannel, 'sonrio.sonr.channel'),
-  SonrIoBlockchainSonrioSonrObject: load(SonrIoBlockchainSonrioSonrObject, 'sonrio.sonr.object'),
-  SonrIoBlockchainSonrioSonrRegistry: load(SonrIoBlockchainSonrioSonrRegistry, 'sonrio.sonr.registry'),
-  SonrIoBlockchainSonrioSonrVault: load(SonrIoBlockchainSonrioSonrVault, 'sonrio.sonr.vault'),
-  SonrIoSonrSonrioSonrBlob: load(SonrIoSonrSonrioSonrBlob, 'sonrio.sonr.blob'),
-  SonrIoSonrSonrioSonrBucket: load(SonrIoSonrSonrioSonrBucket, 'sonrio.sonr.bucket'),
-  SonrIoSonrSonrioSonrChannel: load(SonrIoSonrSonrioSonrChannel, 'sonrio.sonr.channel'),
-  SonrIoSonrSonrioSonrObject: load(SonrIoSonrSonrioSonrObject, 'sonrio.sonr.object'),
-  SonrIoSonrSonrioSonrRegistry: load(SonrIoSonrSonrioSonrRegistry, 'sonrio.sonr.registry'),
+  CosmosIbcGoIbcCorePortV1: load(CosmosIbcGoIbcCorePortV1, 'ibc.core.port.v1'),
   
 }
 
