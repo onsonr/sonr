@@ -19,10 +19,6 @@ while getopts "iav:" opt; do
       ANDROID_ARTIFACT=${ANDROID_OUT}/io.sonr.motor.aar
       mkdir -p ${ANDROID_OUT}
 
-      cd ${MOTOR_DIR}
-      go install golang.org/x/mobile/cmd/gomobile@latest
-      gomobile init
-
       echo "🔷 Binding Android..."
       gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -v
       ;;
@@ -32,10 +28,6 @@ while getopts "iav:" opt; do
       IOS_OUT=${PROJECT_DIR}/build/${IOS_BUILD_PATH}
       IOS_ARTIFACT=${IOS_OUT}/SonrMotor.xcframework
       mkdir -p ${IOS_OUT}
-
-      cd ${MOTOR_DIR}
-      go install golang.org/x/mobile/cmd/gomobile@latest
-      gomobile init
 
       echo "🔷 Binding iOS..."
       gomobile bind -ldflags='-s -w' -target=ios/arm64 -o ${IOS_ARTIFACT} -v

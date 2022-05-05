@@ -20,7 +20,7 @@ builds:
       path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
     hooks:
       pre:
-        - sh scripts/bind.sh -v {{ .Version }} -a
+        - ./scripts/bind.sh -v {{ .Version }} -a
 
   # Motor libraries are prebuilt using gomobile for ios
   - id: "motor-ios"
@@ -33,7 +33,7 @@ builds:
       path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
     hooks:
       pre:
-        - sh scripts/bind.sh -v {{ .Version }} -i
+        - ./scripts/bind.sh -v {{ .Version }} -i
 
   # Highway CLI for macOS
   - id: "highway-cli-darwin"

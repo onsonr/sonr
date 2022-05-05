@@ -8,6 +8,10 @@ includes:
     taskfile: ./web/wallet/Taskfile.yaml
     dir: web/wallet
 
+
+vars:
+  VERSION: "{{ github.ref }}"
+
 tasks:
   build:swagger:
     cmds:
