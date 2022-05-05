@@ -1,4 +1,4 @@
-name: Motor Bind Workflow
+name: Motor Release Workflow
 
 # Controls when the action will run.
 on:
@@ -7,7 +7,7 @@ on:
       - v*
 
 jobs:
-  build-android:
+  release-android:
     # Configuration
     name: "Android AAR  🔗 "
     env:
@@ -51,8 +51,7 @@ jobs:
         with:
           command: c
           cwd: ${{ github.workspace }}/build
-          files: |
-            - ./${{ steps.version.outputs.tag }}-io.sonr.motor.aar
+          files: ${{ steps.version.outputs.tag }}-io.sonr.motor.aar
           outPath: ${{ github.workspace }}/build/${{ steps.version.outputs.tag }}-sonr-motor-android.tar.gz
 
       # Append release with artifact
@@ -65,8 +64,8 @@ jobs:
           name: ${{ steps.version.outputs.tag }}
           token: ${{ secrets.ACTIONS_GH_TOKEN }}
 
-  # Bind iOS Framework
-  build-ios:
+  # Bind and Release iOS Framework
+  release-ios:
     # Configuration
     name: "iOS Framework  🔗 "
     env:
@@ -110,8 +109,7 @@ jobs:
         with:
           command: c
           cwd: ${{ github.workspace }}/build
-          files: |
-            - ./SonrMotor-${{ steps.version.outputs.tag }}.xcframework
+          files: SonrMotor-${{ steps.version.outputs.tag }}.xcframework
           outPath: ${{ github.workspace }}/build/${{ steps.version.outputs.tag }}-sonr-motor-ios.tar.gz
 
       # Append release with artifact
