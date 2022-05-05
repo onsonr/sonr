@@ -133,7 +133,8 @@ builds:
 # Artifacts from the build
 archives:
 # Templating for blockchain daemons
-- name_template: 'sonrd_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+- id: "sonrd-archive"
+  name_template: 'sonrd_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: Darwin
     linux: Linux
@@ -150,7 +151,8 @@ archives:
   - sonrd-linux-arm64
 
 # Templating for CLI
-- name_template: 'highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+- id: "highway-cli-archive"
+  name_template: 'highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: Darwin
     linux: Linux
