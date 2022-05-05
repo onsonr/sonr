@@ -16,7 +16,7 @@ func TestW3CSpecValidator(t *testing.T) {
 		assert.NoError(t, W3CSpecValidator{}.Validate(document()))
 	})
 	t.Run("base", func(t *testing.T) {
-		didUrl, err := ParseDIDURL("did:example:123")
+		didUrl, err := ParseDIDURL("did:sonr:123#test")
 		if !assert.NoError(t, err) {
 			return
 		}
@@ -38,13 +38,14 @@ func TestW3CSpecValidator(t *testing.T) {
 
 		t.Run("invalid controller - is empty", func(t *testing.T) {
 			input := document()
-			input.Controller = append(input.Controller, DID{})
+			input.Controller = append(make([]string, 0), "")
 			assertIsError(t, ErrInvalidController, W3CSpecValidator{}.Validate(input))
 		})
 
 		t.Run("invalid controller - is URL", func(t *testing.T) {
 			input := document()
-			input.Controller = append(input.Controller, *didUrl)
+
+			input.Controller = append(make([]string, 0), "did:url:example.com")
 			assertIsError(t, ErrInvalidController, W3CSpecValidator{}.Validate(input))
 		})
 	})
@@ -172,7 +173,7 @@ func document() Document {
 	doc := Document{
 		Context:            []ssi.URI{DIDContextV1URI()},
 		ID:                 *did,
-		Controller:         []DID{*did},
+		Controller:         []string{did.String()},
 		VerificationMethod: []*VerificationMethod{vm},
 		Service: []Service{{
 			ID:              serviceID.URI(),

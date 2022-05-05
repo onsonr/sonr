@@ -33,8 +33,8 @@ func Test_Document(t *testing.T) {
 			t.Errorf("unexpected error: %s", err)
 			return
 		}
-		if doc.Controller[0].String() != "did:sonr:123" {
-			t.Errorf("expected 'did:sonr:123', got: %s", doc.Controller[0].String())
+		if doc.Controller[0] != "did:sonr:123" {
+			t.Errorf("expected 'did:sonr:123', got: %s", doc.Controller[0])
 		}
 	})
 
@@ -65,12 +65,12 @@ func Test_Document(t *testing.T) {
 			return
 		}
 		expected := "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
-		if expected != actual.Controller[0].String() {
-			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[0].String())
+		if expected != actual.Controller[0] {
+			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[0])
 		}
 		expected = "did:sonr:f03a00f1-9615-4060-bd00-bd282e150c46"
-		if expected != actual.Controller[1].String() {
-			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[1].String())
+		if expected != actual.Controller[1] {
+			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[1])
 		}
 	})
 	t.Run("it can parse assertionMethods", func(t *testing.T) {
@@ -662,15 +662,15 @@ func TestDocument_IsController(t *testing.T) {
 	id456, _ := ParseDID("did:example:456")
 
 	t.Run("no controllers", func(t *testing.T) {
-		assert.False(t, Document{}.IsController(*id123))
+		assert.False(t, Document{}.IsController(id123.String()))
 	})
 	t.Run("empty input", func(t *testing.T) {
-		assert.False(t, Document{}.IsController(DID{}))
+		assert.False(t, Document{}.IsController(""))
 	})
 	t.Run("is a controller", func(t *testing.T) {
-		assert.True(t, Document{Controller: []DID{*id123, *id456}}.IsController(*id123))
+		assert.True(t, Document{Controller: []string{id123.String(), id456.String()}}.IsController(id123.String()))
 	})
 	t.Run("is not a controller", func(t *testing.T) {
-		assert.False(t, Document{Controller: []DID{*id456}}.IsController(*id123))
+		assert.False(t, Document{Controller: []string{id456.String()}}.IsController(id123.String()))
 	})
 }
