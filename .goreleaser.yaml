@@ -192,7 +192,6 @@ checksum:
 
 # -- Changelog Configuration --
 changelog:
-  use: github
   sort: asc
   filters:
     exclude:
@@ -221,12 +220,6 @@ release:
     ## Release {{ .Tag }} - {{ .Date }}
 
     Welcome to the new {{ .Tag }} Sonr release. This release includes the following changes:
-
-    {{ if .Changes }}
-    {{ range .Changes }}
-    * {{ . }}
-    {{ end }}
-    {{ end }}
 
 
   # Footer template for the release body.
