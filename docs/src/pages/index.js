@@ -11,11 +11,12 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <h1 className="hero__title">Sonr Developer Portal</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <h1 className="typographySpecialTextDisplay2">Sonr Developer Portal</h1>
+        <p className=".typographyRichTextParagraphDefault
+">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
+            className="button button--secondary button--lg typographyRichTextHeading"
             to="/articles/introduction">
             Get Started 🎉
           </Link>

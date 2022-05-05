@@ -18,6 +18,7 @@ const sidebars = {
     'introduction',
     'why-sonr',
     'how-it-works',
+    'sonr-stack',
     {
       type: 'category',
       label: 'Advanced',
@@ -26,19 +27,23 @@ const sidebars = {
       collapsed: true,
     },
   ],
-  // But you can create a sidebar manually
-  buildSidebar: [
-    'sonr-stack',
+
+  motorSidebar: [
+    'motor-node/access-authentication', 'motor-node/discovery', 'motor-node/transmission',
     {
       type: 'category',
-      label: 'Motor Node',
-      items: ['motor-node/access-authentication', 'motor-node/discovery', 'motor-node/transmission'],
+      label: 'Getting Started',
+      items: ['motor-node/installation'],
       collapsible: true,
       collapsed: false,
     },
+  ],
+
+  highwaySidebar: [
+    'highway-sdk/using-cli',
     {
       type: 'category',
-      label: 'Highway SDK',
+      label: 'Modules',
       items: ['highway-sdk/registry', 'highway-sdk/objects', 'highway-sdk/channels', 'highway-sdk/buckets'],
       collapsible: true,
       collapsed: false,
@@ -47,6 +52,12 @@ const sidebars = {
   // But you can create a sidebar manually
   runSidebar: [
     'run-nodes/setup-validator',
+  ],
+
+  // But you can create a sidebar manually
+  resourcesSidebar: [
+    'reference/adr-001',
+    'reference/adr-002',
   ],
 };
 

@@ -1,7 +1,7 @@
 ---
 title: Access & Authentication
 id: access-authentication
-displayed_sidebar: buildSidebar
+displayed_sidebar: motorSidebar
 ---
 
 We think authentication should be simple, yet secure. The Sonr network uses s.

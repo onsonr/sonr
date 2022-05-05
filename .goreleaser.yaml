@@ -1,42 +1,235 @@
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
+# Sonr Build Pipeline
+#
+#
+
+# -- Pre Build Hooks --
 before:
   hooks:
-    # You may remove this if you don't use go modules.
-    - rm -rf dist
-    - go mod tidy
+    - go mod download
 
+# -- Individual Builds --
 builds:
-  - main: ./cmd/highway-cli
-    id: "cli"
-    binary: "highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  # Motor libraries are prebuilt using gomobile for android
+  - id: "motor-android"
+    builder: prebuilt
     goos:
-      - linux
-      - darwin
+    - android
     goarch:
     - arm64
-    no_unique_dist_dir: true
+    prebuilt:
+      path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
+    hooks:
+      pre:
+        - sh scripts/bind.sh -v {{ .Version }} -a
 
-universal_binaries:
--
-  replace: true
-  id: "cli"
-  name_template: "highway-cli_{{ .Version }}_darwin_universal"
+  # Motor libraries are prebuilt using gomobile for ios
+  - id: "motor-ios"
+    builder: prebuilt
+    goos:
+    - darwin
+    goarch:
+    - arm64
+    prebuilt:
+      path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
+    hooks:
+      pre:
+        - mkdir -p build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}
+        - sh scripts/bind.sh -v {{ .Version }} -i
 
+  # Highway CLI for macOS
+  - id: "highway-cli-darwin"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=o64-clang++
+    goos:
+      - darwin
+    goarch:
+    - amd64
+    - arm64
+
+  # Highway CLI for Linux
+  - id: "highway-cli-linux"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=0
+      - CC=gcc
+      - CXX=g++
+    goos:
+      - linux
+
+
+  # Blockchain Daemon for Windows
+  - id: "highway-cli-windows"
+    main: ./cmd/highway-cli
+    binary: sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
+
+  # Blockchain Daemon for macOS
+  - id: "sonrd-darwin"
+    main: ./cmd/sonrd
+    binary: sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=o64-clang++
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+        - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+  # Blockchain Daemon for Linux
+  - id: "sonrd-linux"
+    main: ./cmd/sonrd
+    binary: sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-linux-musl-gcc
+      - CXX=x86_64-linux-musl-g++
+    goos:
+      - linux
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+    ldflags:
+      - -s -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+  # Blockchain Daemon for Windows
+  - id: "sonrd-windows"
+    main: ./cmd/sonrd
+    binary: bin/sonrd
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+
+# -- Artifacts from the build --
 archives:
-  -
-    id: "cli"
-    builds: [cli]
-    name_template: "highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+# Templating for blockchain daemons
+- id: "sonrd-archive"
+  name_template: 'sonrd_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  replacements:
+    darwin: macos
+    windows: win
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  builds:
+  - sonrd-darwin
+  - sonrd-windows
+  - sonrd-linux
 
+# Templating for Motor Android
+- id: "motor-android-archive"
+  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  builds:
+  - motor-android
+  files:
+    - src: build/motorlib_android_**/*
+      dst: .
+      strip_parent: true
+
+# Templating for Motor iOS
+- id: "motor-ios-archive"
+  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  builds:
+  - motor-ios
+  replacements:
+    darwin: ios
+  files:
+    - src: build/motorlib_darwin_**/*
+      dst: .
+      strip_parent: true
+
+
+# Templating for CLI
+- id: "highway-cli-archive"
+  name_template: 'highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  replacements:
+    darwin: macos
+    windows: win
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  builds:
+  - highway-cli-darwin
+  - highway-cli-linux
+  - highway-cli-windows
+
+# -- Checksums for the archives --
 checksum:
   name_template: 'checksums.txt'
 
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+# -- Changelog Configuration --
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+    - '^docs:'
+    - '^test:'
+
+# -- Snapshot of the current version --
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+# -- Release settings --
+release:
+  github:
+    owner: sonr-io
+    name: sonr
+  prerelease: auto
+  discussion_category_name: General
+  mode: append
+  extra_files:
+    - name_template: CHANGELOG.md
+    - name_template: LICENSE
+    - name_template: README.md
+  # Header template for the release body.
+  # Defaults to empty.
+  header: |
+    ## Release {{ .Tag }} - {{ .Date }}
+
+    Welcome to the new {{ .Tag }} Sonr release. This release includes the following changes:
+
+
+  # Footer template for the release body.
+  # Defaults to empty.
+  footer: |
+    ## Thanks!
+
+    Those were the changes on {{ .Tag }}! With much love from the [Sonr Team](https://sonr.io).
+
+    #### Connect with us
+    - [Discord](https://discord.gg/HSTPCzDUsW)
+    - [Twitter](https://twitter.com/sonr_io)
+    - [Documentation](https://docs.sonr.io)

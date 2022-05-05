@@ -27,7 +27,7 @@ const (
 
 type MatrixProtocol struct {
 	ctx    context.Context
-	node   host.HostImpl
+	node   host.SonrHost
 	config config.Dendrite
 
 	Base *base.BaseDendrite
@@ -39,7 +39,7 @@ type MatrixProtocol struct {
 	accountDB us.Database
 }
 
-func New(ctx context.Context, host host.HostImpl, name string) (*MatrixProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, name string) (*MatrixProtocol, error) {
 	// Get Config
 	cfg, err := defaultConfig(host)
 	if err != nil {

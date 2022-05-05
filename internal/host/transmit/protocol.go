@@ -7,8 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/sonr/cmd/motor-lib/config"
 	"github.com/sonr-io/sonr/internal/host"
+	"github.com/sonr-io/sonr/pkg/config"
 	device "github.com/sonr-io/sonr/pkg/fs"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
@@ -18,15 +18,15 @@ import (
 
 // TransmitProtocol type
 type TransmitProtocol struct {
-	callback config.CallbackImpl
-	node     host.HostImpl
+	callback config.MotorCallback
+	node     host.SonrHost
 	ctx      context.Context // Context
 	current  *v1.Session     // current session
 	mode     device.Role
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*TransmitProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, cb config.MotorCallback, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
 	protocol := &TransmitProtocol{
 		ctx:      ctx,
