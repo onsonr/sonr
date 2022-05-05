@@ -8,11 +8,34 @@ includes:
     taskfile: ./web/wallet/Taskfile.yaml
     dir: web/wallet
 
-
 vars:
-  VERSION: "{{ github.ref }}"
+  VERSION: v0.0.1-test
 
 tasks:
+  bind:
+    cmds:
+      - mkdir -p {{ .IOS_DIR }}
+      - task: bind:ios OUT={{ .IOS_DIR }}
+    vars:
+      ANDROID_DIR: build/motorlib_darwin_{{ .VERSION }}_arm64
+      IOS_DIR: build/motorlib_ios_{{ .VERSION }}_arm64
+
+  bind:ios:
+    cmds:
+      - gomobile init
+      - gomobile bind -target=ios/arm64 -o {{ .OUT_DIR }}/SonrMotor.xcframework
+    dir: cmd/motor-lib
+    vars:
+      OUT_DIR: ""
+
+  bind:android:
+    cmds:
+      - gomobile init
+      - gomobile bind -target=android/arm64 -o {{ .OUT_DIR }}/SonrMotor.aar
+    dir: cmd/motor-lib
+    vars:
+      OUT_DIR: ""
+
   build:swagger:
     cmds:
       - echo "Building swagger api docs for highway"

@@ -6,7 +6,7 @@ on:
       - v*
 
 jobs:
-  release-binaries:
+  run-goreleaser:
     name: "Release Assets 📢 "
     runs-on: ubuntu-latest
     steps:
@@ -17,15 +17,23 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: 1.17.7
-      - name: Make Scripts Executable
-        run: |
-          chmod +x scripts/*
 
-      - name: Install dependencies
+       # 2. Get the latest version of the module
+      - uses: olegtarasov/get-tag@v2.1
+        id: version
+
+      # 4. Bind iOS Framework to Plugin
+      - name: Setup and Bind AAR and XCFramework
         run: |
+          IOS_DIR=${{ github.workspace }}/build/motorlib_darwin_{{ .version }}_arm64
+          ANDROID_DIR=${{ github.workspace }}/build/motorlib_android_{{ .version }}_arm64
+          mkdir -p $IOS_DIR
+          mkdir -p $ANDROID_DIR
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
-        working-directory: "${{ github.workspace }}/cmd/motor-lib"
+          gomobile bind -ldflags='-s -w' -target=ios -bundleid=io.sonr.motor -o $IOS_DIR/SonrMotor.xcframework
+          gomobile bind -ldflags='-s -w' -target=android -o $ANDROID_DIR/io.sonr.motor.aar
+        working-directory: ${{ github.workspace }}/cmd/motor-lib
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
