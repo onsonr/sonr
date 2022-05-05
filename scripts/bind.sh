@@ -20,6 +20,7 @@ while getopts "iav:" opt; do
       mkdir -p ${ANDROID_OUT}
 
       echo "🔷 Binding Android..."
+      cd ${MOTOR_DIR}
       gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -v
       ;;
     i)
@@ -30,6 +31,7 @@ while getopts "iav:" opt; do
       mkdir -p ${IOS_OUT}
 
       echo "🔷 Binding iOS..."
+      cd ${MOTOR_DIR}
       gomobile bind -ldflags='-s -w' -target=ios/arm64 -o ${IOS_ARTIFACT} -v
       ;;
     ?)
