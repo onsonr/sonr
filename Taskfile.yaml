@@ -1,9 +1,6 @@
 version: "3"
 
 includes:
-  docs:
-    taskfile: docs/Taskfile.yaml
-    dir: docs
   web:dashboard:
     taskfile: ./web/dashboard/Taskfile.yaml
     dir: web/dashboard
@@ -11,45 +8,33 @@ includes:
     taskfile: ./web/wallet/Taskfile.yaml
     dir: web/wallet
 
+vars:
+  VERSION: v0.0.1-test
+
 tasks:
   bind:
     cmds:
-      - echo "Setting up Gomobile..."
-      - go install golang.org/x/mobile/cmd/gomobile@latest
-      - go mod download golang.org/x/mobile
-      - gomobile init
-      - task: bind:ios
-      - task: bind:android
-
-  bind:android:
-    cmds:
-      - echo "Building Sonr Motor Node (Android)"
-      - gomobile bind -ldflags='-s -w' -target=android -o .../dist/io.sonr.motor.aar
+      - mkdir -p {{ .IOS_DIR }}
+      - task: bind:ios OUT={{ .IOS_DIR }}
+    vars:
+      ANDROID_DIR: build/motorlib_darwin_{{ .VERSION }}_arm64
+      IOS_DIR: build/motorlib_ios_{{ .VERSION }}_arm64
 
   bind:ios:
     cmds:
-      - echo "Building Sonr Motor Node (iOS)"
-      - gomobile bind -ldflags='-s -w' -bundleid=io.sonr.motor -target=ios -o .../dist/SonrMotor.xcframework
+      - gomobile init
+      - gomobile bind -target=ios/arm64 -o {{ .OUT_DIR }}/SonrMotor.xcframework
+    dir: cmd/motor-lib
+    vars:
+      OUT_DIR: ""
 
-  build:
+  bind:android:
     cmds:
-      - task: build:buf:core
-      - task: build:buf:blockchain
-      - task: build:cli
-      - task: build:swagger
-      - task: build:chain
-
-  build:chain:
-    summary: Build the project for production without release mode
-    cmds:
-      - starport chain build
-    silent: true
-
-  build:cli:
-    dir: cmd/highway-cli
-    cmds:
-      - echo "Building Sonr Highway CLI"
-      - go build -o highway-cli main.go
+      - gomobile init
+      - gomobile bind -target=android/arm64 -o {{ .OUT_DIR }}/SonrMotor.aar
+    dir: cmd/motor-lib
+    vars:
+      OUT_DIR: ""
 
   build:swagger:
     cmds:
@@ -146,3 +131,53 @@ tasks:
     cmds:
       # - task: web:dashboard:build
       - task: web:wallet:build
+
+
+  docs:
+    cmds:
+      - echo "yarn docusaurus..."
+      - yarn docusaurus
+    silent: true
+    dir: docs
+
+  docs:start:
+    cmds:
+      - echo "yarn start..."
+      - yarn start
+    silent: true
+    dir: docs
+
+  docs:build:
+    cmds:
+      - echo "yarn build..."
+      - yarn build
+    silent: true
+    dir: docs
+
+  docs:swizzle:
+    cmds:
+      - echo "yarn swizzle..."
+      - yarn swizzle
+    silent: true
+    dir: docs
+
+  docs:deploy:
+    cmds:
+      - echo "yarn deploy..."
+      - USE_SSH=true yarn deploy
+    silent: true
+    dir: docs
+
+  docs:clear:
+    cmds:
+      - echo "yarn clear..."
+      - yarn clear
+    silent: true
+    dir: docs
+
+  docs:serve:
+    cmds:
+      - echo "yarn serve..."
+      - yarn serve
+    silent: true
+    dir: docs

@@ -1,7 +1,7 @@
 ---
 title: Buckets
 id: buckets
-displayed_sidebar: buildSidebar
+displayed_sidebar: highwaySidebar
 ---
 
 Similar to Amazon S3 or DigitalOcean Spaces, developers can leverage our decentralized storage module for uploading either application specific assets or user specific assets. While we encourage developers to use our SDK for best results, this storage is S3-compliant.
