@@ -1,7 +1,7 @@
 ---
 title: Discovery
 id: discovery
-displayed_sidebar: buildSidebar
+displayed_sidebar: motorSidebar
 ---
 
 The Sonr protocol uses various methods and fallbacks to ensure no friction discoverability when finding another user. Its node has an Exchange service that provides immediate discovery, validation, and verification access for every peer. The service operates in two separate modes: Local and Global, with the Local mode functioning similar to Airdrop and Global to Email.

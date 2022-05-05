@@ -1,13 +1,7 @@
 ---
-title: Building with Highway
-slug: building-with-highway
-date: 2022-04-15T21:43:34.000Z
-authors: [mcjcloud]
-tags: [hello, docusaurus]
----
-
-
-
+title: Using the CLI
+id: using-cli
+displayed_sidebar: highwaySidebar
 ---
 
 # Overview
@@ -17,7 +11,7 @@ The highway is a single binary which allows for interfacing with the Sonr Blockc
 We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols. For this, we built our Networking layer in Libp2p and our Layer 1 Blockchain with Starport. Our network comprises of two separate nodes: Highway and Motor, which each have a specific use case on the network. In order to maximize the onboarding experience, we developed our own Wallet which has value right out of the gate!
 
 
-<!-- 
+<!--
 [t]("https://www.figma.com/file/kZVXK3yJOxmukNdckjh2RT/Highway-SDK?node-id=2%3A12") -->
 
 

@@ -1,7 +1,7 @@
 ---
 title: Channels
 id: channels
-displayed_sidebar: buildSidebar
+displayed_sidebar: highwaySidebar
 ---
 
 The Sonr channel module is used to store the records of the active pubsub topics associated with Applications powered by the Sonr Network. Each record contains an `ChannelDoc` which describes the Topic configuration and status of the channel. Each channel is required to have a set RegisteredType to pass as a payload with ChannelMessages.

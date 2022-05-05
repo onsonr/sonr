@@ -1,7 +1,7 @@
 ---
 title: Transmission
 id: transmission
-displayed_sidebar: buildSidebar
+displayed_sidebar: motorSidebar
 ---
 
 We believe that the most neglected aspect of the current internet is File Transfer. Simply put, there's been little change in how file transfer has worked since the invention of Mediafire. Right now sharing files is equivalent to mailing a letter to your next-door neighbor instead of just handing it to them yourself.

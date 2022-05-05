@@ -159,7 +159,7 @@ tasks:
   docs:deploy:
     cmds:
       - echo "yarn deploy..."
-      - yarn deploy
+      - USE_SSH=true yarn deploy
     silent: true
     dir: docs
 

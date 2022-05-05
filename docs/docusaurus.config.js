@@ -86,24 +86,51 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'sonr-stack',
-            position: 'left',
-            label: 'Build Apps',
-          },
-          {
-            type: 'doc',
             docId: 'run-nodes/setup-validator',
             position: 'left',
             label: 'Run Nodes',
           },
-          { to: '/blog', label: 'Guides', position: 'left' },
+          {
+            position: 'left',
+            label: 'Build Apps',
+            type: 'dropdown',
+            items: [
+              {
+                type: 'doc',
+                docId: 'highway-sdk/using-cli',
+                label: 'Highway SDK',
+              },
+              {
+                type: 'doc',
+                docId: 'motor-node/installation',
+                label: 'Motor Library',
+              },
+            ],
+          },
+          {
+            position: 'left',
+            label: 'Resources',
+            type: 'dropdown',
+            items: [
+              {
+                type: 'doc',
+                docId: 'reference/adr-001',
+                label: 'ADR-001',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-002',
+                label: 'ADR-002',
+              },
+            ],
+          },
           {
             position: 'right',
             label: 'API Reference',
             type: 'dropdown',
             items: [
-              { href: '/highway', label: 'Highway API' },
-              { href: '/blockchain', label: 'Blockchain API' },
+              { href: '/highway', label: '🛣 Highway API' },
+              { href: '/blockchain', label: '⛓ Blockchain API' },
             ],
           },
         ],

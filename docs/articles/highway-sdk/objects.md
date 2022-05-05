@@ -1,7 +1,7 @@
 ---
 title: Objects
 id: objects
-displayed_sidebar: buildSidebar
+displayed_sidebar: highwaySidebar
 ---
 
 The Sonr object module is used to store the records of verifiable objects for a specific application powered by the Sonr Network. Each record contains an `ObjectDoc` which describes the type definition of the associated object.
