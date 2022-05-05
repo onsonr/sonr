@@ -6,45 +6,98 @@ on:
       - v*
 
 jobs:
-  bind-frameworks:
-    name: Bind Frameworks
-    runs-on: macos-latest
+  bind-android:
+    # Configuration
+    name: "Bind Android AAR"
+    env:
+      GO111MODULE: on
+      GOMOD: ${{ github.workspace }}/go.mod
+      MOD_CACHE: ~/go/pkg/mod
+      BUILD_CACHE: ~/.cache/go-build
+    runs-on: ubuntu-latest
+
+    # Steps
     steps:
-      - name: Checkout
+      # 1. Checkout the branch
+      - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@v2
-        with:
-          go-version: 1.17.7
 
-       # 2. Get the latest version of the module
+      # 2. Get the latest version of the module
       - uses: olegtarasov/get-tag@v2.1
         id: version
 
-      # 4. Bind iOS Framework to Plugin
-      - name: Setup and Bind AAR and XCFramework
+      # 2. Setup Go environment
+      - name: Setup Go Env
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      # 4. Bind Android Framework to Plugin
+      - name: Setup and Bind AAR
         run: |
-          IOS_DIR=${{ github.workspace }}/build/motorlib_darwin_$GIT_TAG_NAME_arm64
-          ANDROID_DIR=${{ github.workspace }}/build/motorlib_android_$GIT_TAG_NAME_arm64
-          mkdir -p $IOS_DIR
-          mkdir -p $ANDROID_DIR
+          mkdir -p ${{ github.workspace }}/build
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
-          gomobile bind -ldflags='-s -w' -target=ios -bundleid=io.sonr.motor -o $IOS_DIR/SonrMotor.xcframework
-          gomobile bind -ldflags='-s -w' -target=android -o $ANDROID_DIR/io.sonr.motor.aar
+          gomobile bind -ldflags='-s -w' -target=android -o ${{ github.workspace }}/build/$GIT_TAG_NAME-io.sonr.motor.aar
         working-directory: ${{ github.workspace }}/cmd/motor-lib
 
       - uses: actions/upload-artifact@v3
         with:
-          name: motor-artifacts
-          path: ${{ github.workspace }}/build/
+          name: motor-android
+          path: ${{ github.workspace }}/build/motorlib_android_${{ steps.version.output.tag }}_arm64/
+
+  # Bind and Release iOS Framework
+  bind-ios:
+    # Configuration
+    name: "Bind iOS Framework"
+    env:
+      GO111MODULE: on
+      GOMOD: ${{ github.workspace }}/go.mod
+      MOD_CACHE: ~/go/pkg/mod
+      BUILD_CACHE: ~/Library/Caches/go-build
+    runs-on: macos-latest
+
+    # Steps
+    steps:
+      # 1. Checkout the branch
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # 2. Setup Go environment
+      - name: Setup Go Env
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      # 2. Get the latest version of the module
+      - uses: olegtarasov/get-tag@v2.1
+        id: version
+
+      # 4. Bind iOS Framework to Plugin
+      - name: Setup and Bind
+        run: |
+          IOS_DIR=${{ github.workspace }}/build/motorlib_darwin_$GIT_TAG_NAME_arm64
+          mkdir -p $IOS_DIR
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          gomobile init
+          gomobile bind -ldflags='-s -w' -target=ios -bundleid=io.sonr.motor -o $IOS_DIR/SonrMotor.xcframework
+        working-directory: ${{ github.workspace }}/cmd/motor-lib
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: motor-ios
+          path: ${{ github.workspace }}/build/motorlib_darwin_${{ steps.version.output.tag }}_arm64/
 
   run-goreleaser:
     name: "Release Assets 📢 "
     runs-on: ubuntu-latest
     needs:
-      - bind-frameworks
+      - bind-ios
+      - bind-android
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -54,10 +107,10 @@ jobs:
         with:
           go-version: 1.17.7
 
+      - run: mkdir -p ${{ github.workspace }}/build
       - uses: actions/download-artifact@v3
         with:
-          name: motor-artifacts
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/build
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
