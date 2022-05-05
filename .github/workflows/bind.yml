@@ -52,15 +52,15 @@ jobs:
           command: c
           cwd: ${{ github.workspace }}/build
           files: |
-            - ./build/io.sonr.motor.aar
-          outPath: ${{ steps.version.outputs.tag }}-io.sonr.motor.tar.gz
+            - ./build/${{ steps.version.outputs.tag }}-io.sonr.motor.aar
+          outPath: ${{ steps.version.outputs.tag }}-sonr-motor-android.tar.gz
 
       # Append release with artifact
       - name: Create the "latest" Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "${{ github.workspace }}/build/$GIT_TAG_NAME-io.sonr.motor.tar.gz"
+          artifacts: "${{ github.workspace }}/build/${{ steps.version.outputs.tag }}-sonr-motor-android.tar.gz"
           replacesArtifacts: false
           name: ${{ steps.version.outputs.tag }}
           token: ${{ secrets.ACTIONS_GH_TOKEN }}
@@ -111,15 +111,15 @@ jobs:
           command: c
           cwd: ${{ github.workspace }}/build
           files: |
-            - ./build/SonrMotor-$GIT_TAG_NAME.xcframework
-          outPath: ${{ steps.version.outputs.tag }}-SonrMotor.tar.gz
+            - ./build/SonrMotor-${{ steps.version.outputs.tag }}.xcframework
+          outPath: ${{ steps.version.outputs.tag }}-sonr-motor-ios.tar.gz
 
       # Append release with artifact
       - name: Create the "latest" Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "${{ github.workspace }}/build/$GIT_TAG_NAME-SonrMotor.tar.gz"
+          artifacts: "${{ github.workspace }}/build/${{ steps.version.outputs.tag }}-sonr-motor-ios.tar.gz"
           replacesArtifacts: false
           name: ${{ steps.version.outputs.tag }}
           token: ${{ secrets.ACTIONS_GH_TOKEN }}
