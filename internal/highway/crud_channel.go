@@ -46,6 +46,7 @@ func (s *HighwayServer) CreateChannel(ctx context.Context, req *ct.MsgCreateChan
 // @Summary Create Channel
 // @Schemes
 // @Description CreateChannel creates a specified channel for a registered application
+// @Tags Channel
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
@@ -91,6 +92,7 @@ func (s *HighwayServer) UpdateChannel(ctx context.Context, req *ct.MsgUpdateChan
 // @Summary Update Channel
 // @Schemes
 // @Description ListenChannel puts a Channel into a listening state registered application
+// @Tags Channel
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
@@ -152,6 +154,7 @@ func (s *HighwayServer) ListenChannel(req *v1.MsgListenChannel, stream v1.Highwa
 // @Summary Listen Channel
 // @Schemes
 // @Description ListenChannel puts a Channel into a listening state registered application
+// @Tags Channel
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
@@ -220,6 +223,7 @@ func (s *HighwayServer) DeactivateChannel(ctx context.Context, req *ct.MsgDeacti
 // @Summary Deactivate Channel
 // @Schemes
 // @Description DeactivateChannel disables a Channel for a registered application
+// @Tags Channel
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message

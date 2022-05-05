@@ -12,7 +12,7 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/patrickmn/go-cache"
 	rtv1 "github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
-	"github.com/sonr-io/sonr/pkg/highway/config"
+	"github.com/sonr-io/sonr/pkg/config"
 )
 
 const (

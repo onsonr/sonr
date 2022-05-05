@@ -15,7 +15,7 @@ cmd/full/sonr_bitcask
 chain
 # Dependencies
 /node_modules
-yarn.lock
+
 
 # Production
 /build

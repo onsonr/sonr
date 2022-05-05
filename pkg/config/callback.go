@@ -10,8 +10,8 @@ import (
 	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
-// CallbackImpl is the implementation of Callback interface
-type CallbackImpl interface {
+// MotorCallback is the implementation of Callback interface
+type MotorCallback interface {
 	// OnRefresh is called when the LobbyProtocol is refreshed and pushes a RefreshEvent
 	OnRefresh(event *mv1.OnLobbyRefreshResponse)
 

@@ -8,7 +8,7 @@ import (
 	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	ot "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
 	rt "github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
-	"github.com/sonr-io/sonr/pkg/highway/config"
+	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 )
 

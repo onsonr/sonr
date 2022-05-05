@@ -14,8 +14,8 @@ func init() {
 }
 
 // Init initializes the device package.
-func Init(options ...Option) error {
-	opts := defaultOptions()
+func Init(options ...MotorOption) error {
+	opts := defaultMotorOptions()
 	for _, opt := range options {
 		opt(opts)
 	}

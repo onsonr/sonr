@@ -2,8 +2,10 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"time"
 
+	"github.com/denisbrodbeck/machineid"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
 )
@@ -84,4 +86,94 @@ func WithLibp2pMDNS(isActive bool) Option {
 	return func(o *Config) {
 		o.Libp2pMdnsDisabled = isActive
 	}
+}
+
+type MotorOption func(o *motorOptions)
+
+// SetDeviceID sets the device ID
+func SetDeviceID(id string) MotorOption {
+	return func(o *motorOptions) {
+		// Set Home Directory
+		if id != "" {
+			o.deviceID = id
+		}
+	}
+}
+
+// WithHomePath sets the Home Directory
+func WithHomePath(p string) MotorOption {
+	return func(o *motorOptions) {
+		// Set Home Directory
+		if p != "" {
+			o.HomeDir = p
+		}
+	}
+}
+
+// WithTempPath sets the Temporary Directory
+func WithTempPath(p string) MotorOption {
+	return func(o *motorOptions) {
+		// Set Home Directory
+		if p != "" {
+			o.TempDir = p
+		}
+	}
+}
+
+// WithSupportPath sets the Support Directory
+func WithSupportPath(p string) MotorOption {
+	return func(o *motorOptions) {
+		// Set Home Directory
+		if p != "" {
+			o.SupportDir = p
+		}
+	}
+}
+
+// motorOptions holds directory list
+type motorOptions struct {
+	HomeDir    string
+	TempDir    string
+	SupportDir string
+
+	walletDir    string
+	databaseDir  string
+	downloadsDir string
+	textileDir   string
+	deviceID     string
+}
+
+// defaultMotorOptions returns fsOptions
+func defaultMotorOptions() *motorOptions {
+	opts := &motorOptions{}
+	if IsDesktop() {
+		hp, err := os.UserHomeDir()
+		if err != nil {
+			logger.Errorf("%s - Failed to get HomeDir, ", err)
+		} else {
+			opts.HomeDir = hp
+		}
+
+		tp, err := os.UserCacheDir()
+		if err != nil {
+			logger.Errorf("%s - Failed to get TempDir, ", err)
+		} else {
+			opts.TempDir = tp
+		}
+
+		sp, err := os.UserConfigDir()
+		if err != nil {
+			logger.Errorf("%s - Failed to get SupportDir, ", err)
+		} else {
+			opts.SupportDir = sp
+		}
+
+		id, err := machineid.ID()
+		if err != nil {
+			logger.Errorf("%s - Failed to get Device ID", err)
+		} else {
+			opts.deviceID = id
+		}
+	}
+	return opts
 }

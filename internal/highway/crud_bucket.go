@@ -24,7 +24,14 @@ func (s *HighwayServer) CreateBucket(ctx context.Context, req *bt.MsgCreateBucke
 	}, nil
 }
 
-// CreateBucketHTTP creates a new bucket via HTTP.
+// @Summary Create Bucket
+// @Schemes
+// @Description CreateBucket creates a new bucket for a registered application via HTTP.
+// @Tags Bucket
+// @Produce json
+// @Success      200  {string}  cid
+// @Failure      500  {string}  message
+// @Router /bucket/create [post]
 func (s *HighwayServer) CreateBucketHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req bt.MsgCreateBucket
@@ -64,7 +71,14 @@ func (s *HighwayServer) UpdateBucket(ctx context.Context, req *bt.MsgUpdateBucke
 	}, nil
 }
 
-// UpdateBucketHTTP updates a bucket via HTTP.
+// @Summary Update Bucket
+// @Schemes
+// @Description UpdateBucket updates a bucket for a registered application via HTTP.
+// @Tags Bucket
+// @Produce json
+// @Success      200  {string}  cid
+// @Failure      500  {string}  message
+// @Router /bucket/update [post]
 func (s *HighwayServer) UpdateBucketHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req bt.MsgUpdateBucket
@@ -103,15 +117,15 @@ func (s *HighwayServer) DeactivateBucket(ctx context.Context, req *bt.MsgDeactiv
 	}, nil
 }
 
-// DeactivateBucketHTTP disables a bucket for a registered application via HTTP.
 // @Summary Deactivate Bucket
 // @Schemes
 // @Description DeactivateBucket disables a bucket for a registered application via HTTP.
+// @Tags Bucket
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      400  {string}  message
 // @Failure      502  {string}  message
-// @Router /bucket/deactivate/:cid [get]
+// @Router /bucket/deactivate [post]
 func (s *HighwayServer) DeactivateBucketHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req bt.MsgDeactivateBucket

@@ -10,7 +10,14 @@ import (
 	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
-// RegisterNameStart starts the registration process for webauthn on http
+// @Summary Start Register Name
+// @Schemes
+// @Description StartRegisterName starts the registration process and returns a PublicKeyCredentialCreationOptions. Initiating the registration process for a Sonr Account.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/register/start/:username [get]
 func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 	if username := c.Param("username"); username != "" {
 		// Check if user exists and return error if it does
@@ -29,7 +36,14 @@ func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 	}
 }
 
-// FinishRegisterName handles the registration of a new credential
+// @Summary Finish Register Name
+// @Schemes
+// @Description FinishRegisterName finishes the registration process and returns a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential to a Sonr Account.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/register/finish/:username [post]
 func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	// get username
 	username := c.Param("username")
@@ -55,7 +69,14 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	c.JSON(http.StatusOK, txResp)
 }
 
-// StartAccessName accesses the user's existing credentials and returns a PublicKeyCredentialRequestOptions
+// @Summary Start Access Name
+// @Schemes
+// @Description StartAccessName accesses the user's existing credentials and returns a PublicKeyCredentialRequestOptions. Beggining the authentication process.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/access/start/:username [get]
 func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	// get username
 	username := c.Param("username")
@@ -77,7 +98,14 @@ func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	c.JSON(http.StatusOK, options)
 }
 
-// FinishAccessName handles the login of a credential and returns a PublicKeyCredentialResponse
+// @Summary Finish Access Name
+// @Schemes
+// @Description FinishAccessName finishes the authentication process and returns a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/access/finish/:username [post]
 func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 	// get username
 	username := c.Param("username")
@@ -112,7 +140,8 @@ func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (
 
 // @Summary Update Name
 // @Schemes
-// @Description DeactivateChannel disables a Channel for a registered application
+// @Description UpdateName updates a name on the Sonr blockchain registry.
+// @Tags Registry
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message

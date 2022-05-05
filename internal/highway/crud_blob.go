@@ -35,9 +35,10 @@ func (s *HighwayServer) UploadBlob(ctx context.Context, req *highwayv1.MsgUpload
 	}, nil
 }
 
-// @Summary Upload File
+// @Summary Upload Blob
 // @Schemes
-// @Description UploadBlob uploads a file to storage and returns its CID.
+// @Description UploadBlob uploads a buffer or file to IPFS and returns its CID.
+// @Tags Blob
 // @Produce json
 // @Success      200  {string}  cid
 // @Failure      500  {string}  message
@@ -110,6 +111,7 @@ func (s *HighwayServer) DownloadBlob(ctx context.Context, req *highwayv1.MsgDown
 // @Summary Download File
 // @Schemes
 // @Description DownloadBlob downloads a file from storage given its CID.
+// @Tags Blob
 // @Produce json
 // @Success      200  {array}  byte
 // @Failure      500  {string}  message
@@ -154,10 +156,11 @@ func (s *HighwayServer) RemoveBlob(ctx context.Context, req *highwayv1.MsgRemove
 // @Summary Remove Blob
 // @Schemes
 // @Description RemoveBlob deletes a file from storage given its CID.
+// @Tags Blob
 // @Produce json
 // @Success      200  {boolean}  success
 // @Failure      500  {string}  message
-// @Router /blob/remove/:cid [get]
+// @Router /blob/remove/:cid [post]
 func (s *HighwayServer) RemoveBlobHTTP(c *gin.Context) {
 	cid := c.Param("cid")
 	if cid == "" {
