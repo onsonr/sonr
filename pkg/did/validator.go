@@ -115,7 +115,7 @@ func (w baseValidator) Validate(document Document) error {
 	}
 	// Verify `controller`
 	for _, controller := range document.Controller {
-		if controller == "" {
+		if controller.Empty() {
 			return makeValidationError(ErrInvalidController)
 		}
 	}

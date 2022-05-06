@@ -58,8 +58,8 @@ func GenerateApplicationDid(accountAddr, appToRegister string, cred *Credential)
 		Context:     []ssi.URI{did.DIDContextV1URI()},
 		ID:          *appDid,
 		AlsoKnownAs: genAlsoKnownAs(appToRegister),
-		Controller: []string{
-			baseDid.String(),
+		Controller: []did.DID{
+			*baseDid,
 		},
 	}
 
@@ -108,8 +108,8 @@ func GenerateNameDid(accountAddr, nameToRegister string, cred *Credential) (*did
 		Context:     []ssi.URI{did.DIDContextV1URI()},
 		ID:          *baseDid,
 		AlsoKnownAs: genAlsoKnownAs(nameToRegister),
-		Controller: []string{
-			baseDid.String(),
+		Controller: []did.DID{
+			*baseDid,
 		},
 	}
 

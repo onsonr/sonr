@@ -19,7 +19,7 @@ import (
 type Document struct {
 	Context              []ssi.URI                 `json:"@context"`
 	ID                   DID                       `json:"id"`
-	Controller           []string                  `json:"controller,omitempty"`
+	Controller           []DID                     `json:"controller,omitempty"`
 	VerificationMethod   VerificationMethods       `json:"verificationMethod,omitempty"`
 	Authentication       VerificationRelationships `json:"authentication,omitempty"`
 	AssertionMethod      VerificationRelationships `json:"assertionMethod,omitempty"`
@@ -31,9 +31,9 @@ type Document struct {
 }
 
 // AddController adds a DID as a controller
-func (d *Document) AddController(id string) {
+func (d *Document) AddController(id DID) {
 	if d.Controller == nil {
-		d.Controller = []string{}
+		d.Controller = []DID{}
 	}
 	d.Controller = append(d.Controller, id)
 }
@@ -221,13 +221,12 @@ func (d *Document) UnmarshalJSON(b []byte) error {
 }
 
 // IsController returns whether the given DID is a controller of the DID document.
-func (d Document) IsController(controller string) bool {
-	if controller == "" {
+func (d Document) IsController(controller DID) bool {
+	if controller.Empty() {
 		return false
 	}
-
 	for _, curr := range d.Controller {
-		if curr == controller {
+		if curr.Equals(controller) {
 			return true
 		}
 	}
