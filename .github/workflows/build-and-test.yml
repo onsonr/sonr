@@ -1,10 +1,10 @@
-name: Release Workflow
+name: Build and Test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ dev ]
 
 jobs:
   run-goreleaser:
