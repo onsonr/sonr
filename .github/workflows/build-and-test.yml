@@ -8,7 +8,7 @@ on:
 
 jobs:
   run-goreleaser:
-    name: "Release All Binaries and Frameworks"
+    name: "Build All Binaries and Frameworks"
     runs-on: macos-latest
     steps:
       - name: Checkout
