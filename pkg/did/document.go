@@ -225,6 +225,7 @@ func (d Document) IsController(controller string) bool {
 	if controller == "" {
 		return false
 	}
+
 	for _, curr := range d.Controller {
 		if curr == controller {
 			return true
