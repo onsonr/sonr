@@ -20,7 +20,7 @@ func Test_Build(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, "did:sonr:testnet:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I/test", didUrl.String())
+	assert.Equal(t, "did:snr:testnet:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I/test", didUrl.String())
 	logger.Info(didUrl.String())
 
 	logger.Info("Testing Channels Fragment builder")
@@ -29,7 +29,7 @@ func Test_Build(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, "did:sonr:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I/beam/channels", didUrl2.String())
+	assert.Equal(t, "did:snr:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I/beam/channels", didUrl2.String())
 	logger.Info(didUrl2.String())
 
 	logger.Info("Testing Objects Query builder")
@@ -38,7 +38,7 @@ func Test_Build(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, "did:sonr:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I/beam/objects?Profile", didUrl3.String())
+	assert.Equal(t, "did:snr:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I/beam/objects?Profile", didUrl3.String())
 	logger.Info(didUrl3.String())
 
 	logger.Info("Testing Device Key Id Fragment builder")
@@ -47,6 +47,6 @@ func Test_Build(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, "did:sonr:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I#iphone_14_5", didUrl4.String())
+	assert.Equal(t, "did:snr:WIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0I#iphone_14_5", didUrl4.String())
 	logger.Info(didUrl3.String())
 }

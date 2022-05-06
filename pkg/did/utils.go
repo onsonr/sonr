@@ -140,7 +140,7 @@ func IsValidDid(did string) bool {
 		return false
 	}
 
-	return strings.HasPrefix(did, "did:sonr:")
+	return strings.HasPrefix(did, "did:snr:")
 }
 
 // ExtractBase extracts the did base (did:sonr:<network>:<address>) or (did:sonr:address)
