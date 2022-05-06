@@ -156,7 +156,6 @@ archives:
   files:
     - src: build/motorlib_android_**/*
       dst: .
-      strip_parent: true
 
 # Templating for Motor iOS
 - id: "motor-ios-archive"
@@ -168,7 +167,6 @@ archives:
   files:
     - src: build/motorlib_darwin_**/*
       dst: .
-      strip_parent: true
 
 
 # Templating for CLI

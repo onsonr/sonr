@@ -66,7 +66,7 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	}
-	c.JSON(http.StatusOK, txResp)
+	c.JSON(http.StatusOK, txResp.Session)
 }
 
 // @Summary Start Access Name

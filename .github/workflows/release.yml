@@ -48,3 +48,19 @@ jobs:
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+
+      - name: motor-ios Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.ACTIONS_GH_TOKEN }}
+          repository: sonr-io/motor-ios
+          event-type: new-ios-framework
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
+      - name: motor-android Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.ACTIONS_GH_TOKEN }}
+          repository: sonr-io/motor-android
+          event-type: new-android-framework
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
