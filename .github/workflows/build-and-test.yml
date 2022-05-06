@@ -45,7 +45,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: build --rm-dist
+          args: build --rm-dist --snapshot
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
