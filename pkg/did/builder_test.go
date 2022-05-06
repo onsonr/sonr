@@ -15,7 +15,7 @@ var (
 func Test_Build(t *testing.T) {
 
 	logger.Info("Testing dummy Fragment builder")
-	didUrl, err := NewDID(test_id, WithNetwork("testnet"), WithPathSegments("test"))
+	didUrl, err := NewDID(test_id, WithNetwork("testnet"), WithFragment("#fragment"), WithPathSegments("test"))
 	if !assert.NoError(t, err) {
 		return
 	}
