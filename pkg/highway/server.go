@@ -207,6 +207,13 @@ func setupAPI(ctx context.Context, s *HighwayServer) error {
 	s.grpcConn = conn
 	s.grpcClient = v1.NewHighwayClient(conn)
 
+	// Enable CORS
+	// The highway will not be operating under same origin outside of local env
+	s.router.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Next()
+	})
+
 	// Register WebAuthn HTTP Routes
 	s.router.GET("/v1/name/register/start/:username", s.StartRegisterName)
 	s.router.POST("/v1/name/register/finish/:username", s.FinishRegisterName)

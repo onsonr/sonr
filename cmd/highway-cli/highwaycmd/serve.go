@@ -18,7 +18,7 @@ func bootstrapServeCommand(ctx context.Context) (serveCmd *cobra.Command) {
 		HTTP_PORT      = viper.GetInt("HTTP_PORT")
 		DISPLAY_NAME   = viper.GetString("DISPLAY_NAME")
 		RP_ID          = viper.GetString("RP_ID")
-		RP_ORIGIN      = viper.GetString("RP_ORIGIN")
+		RP_AUTH_ORIGIN = viper.GetString("RP_AUTH_ORIGIN")
 		IS_DEBUG       = viper.GetBool("IS_DEBUG")
 	)
 
@@ -33,7 +33,7 @@ func bootstrapServeCommand(ctx context.Context) (serveCmd *cobra.Command) {
 			node, err := highway.NewHighway(
 				ctx,
 				config.WithHighwayAPISettings("tcp", "localhost", GRPC_PORT, HTTP_PORT),
-				config.WithWebAuthnConfig(DISPLAY_NAME, RP_ID, RP_ORIGIN, IS_DEBUG))
+				config.WithWebAuthnConfig(DISPLAY_NAME, RP_ID, RP_AUTH_ORIGIN, IS_DEBUG))
 			cobra.CheckErr(err)
 
 			node.Serve()

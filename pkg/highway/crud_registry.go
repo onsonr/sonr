@@ -12,21 +12,26 @@ import (
 
 // RegisterNameStart starts the registration process for webauthn on http
 func (s *HighwayServer) StartRegisterName(c *gin.Context) {
-	if username := c.Param("username"); username != "" {
-		// Check if user exists and return error if it does
-		if exists := s.cosmos.NameExists(username); exists {
-			c.JSON(http.StatusConflict, gin.H{"error": "username already exists"})
-		}
-
-		// Save Registration Session
-		options, err := s.webauthn.SaveRegistrationSession(c.Request, c.Writer, username, s.cosmos.AccountName())
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-		c.JSON(http.StatusOK, options)
-	} else {
+	username := c.Param("username")
+	if username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+		return
 	}
+
+	// Check if user exists and return error if it does
+	if exists := s.cosmos.NameExists(username); exists {
+		c.JSON(http.StatusConflict, gin.H{"error": "username already exists"})
+		return
+	}
+
+	// Save Registration Session
+	options, err := s.webauthn.SaveRegistrationSession(c.Request, c.Writer, username, s.cosmos.AccountName())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, options)
 }
 
 // FinishRegisterName handles the registration of a new credential
@@ -35,12 +40,14 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	username := c.Param("username")
 	if username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+		return
 	}
 
 	// Finish Registration Session
 	cred, err := s.webauthn.FinishRegistrationSession(c.Request, username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	// define a message to create a did
@@ -51,6 +58,7 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	txResp, err := s.cosmos.BroadcastRegisterName(msg)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		return
 	}
 	c.JSON(http.StatusOK, txResp)
 }

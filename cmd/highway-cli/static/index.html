@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Sonr On-Chain Login Demo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="./main.js"></script>
+
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
+
+    <!-- Automatically start registration/login process -->
+    <script>
+      function main() {
+        // Check compatability
+        if (!window.PublicKeyCredential || !navigator.credentials) {
+          hide("processing")
+          show("unsupported")
+          return
+        }
+
+        const params = new URLSearchParams(window.location.search)
+        const username = params.get("username")
+        const operation = params.get("operation")
+        const rpOrigin = params.get("rp_origin")
+        if (!username || !operation || !rpOrigin) {
+          hide("processing")
+          show("bad-request")
+          return
+        }
+
+        console.log({ username, operation, rpOrigin })
+        const op = operation === "register" ? register : login
+        op(username, rpOrigin).then((result) => {
+          console.log({ result })
+          const xhr = new XMLHttpRequest()
+          xhr.onload = function() {
+            hide("processing")
+            show("success")
+          }
+  
+          xhr.open("POST", "/callback", false)
+          xhr.setRequestHeader("Content-Type", "application/json")
+          xhr.send(JSON.stringify(result))
+        })
+      }
+
+      function register(name, rpOrigin) {
+        hide("processing")
+        show("prompt")
+        console.log({ name })
+        return startUserRegistration({ name }, rpOrigin)
+      }
+      
+      function login(name, rpOrigin) {
+        hide("processing")
+        show("prompt")
+        return startUserLogin({ name }, rpOrigin)
+      }
+
+      function show(id) {
+        document.getElementById(id).classList.remove("hidden")
+      }
+
+      function hide(id) {
+        document.getElementById(id).classList.add("hidden")
+      }
+    </script>
+</head>
+
+<body onload="main()">
+  <div id="unsupported" class="hidden">
+    <h2>Webauthn is not supported by your browser.</h2>
+  </div>
+
+  <div id="bad-request" class="hidden">
+    <h2>Missing query parameters</h2>
+  </div>
+
+  <div id="processing">
+    <h2>Processing...</h2>
+  </div>
+
+  <div id="prompt" class="hidden">
+    <h2>Waiting for user...</h2>
+  </div>
+
+  <div id="success" class="hidden">
+    <h2>Success</h2>
+  </div>
+
+  <div id="failure" class="hidden">
+    <h2>Failed to authenticate.</h2>
+  </div>
+</body>
+
+</html>

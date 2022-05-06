@@ -54,40 +54,72 @@ func NewWebauthn(ctx context.Context, config *config.Config) (*WebAuthn, error) 
 	}, nil
 }
 
-// FinishAuthenticationSession returns the registration session for the given user
-func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string) (*webauthn.Credential, error) {
-	// get user
-	x, found := w.cache.Get(authenticationCacheKey(username))
-	if !found {
-		return nil, errors.New("user not found")
-	}
-	whois := x.(*rtv1.WhoIs)
+// SaveRegistrationSession saves the registration session for the given user
+func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWriter, username string, creator string) (*protocol.CredentialCreation, error) {
+	// Create Blank WhoIs
+	whoIs := blankWhoIs(username, creator)
+	wan.cache.Set(registerCacheKey(username), whoIs, cache.DefaultExpiration)
 
-	sessionData, err := w.sessions.GetWebauthnSession(AUTHENTICATION_SESSION_KEY, r)
+	// generate PublicKeyCredentialCreationOptions, session data
+	options, sessionData, err := wan.instance.BeginRegistration(
+		whoIs,
+		registerOptions(whoIs),
+		webauthn.WithAuthenticatorSelection(authSelect()),
+		webauthn.WithConveyancePreference(conveyancePreference()),
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	credential, err := w.instance.FinishLogin(whois, sessionData, r)
-	if err != nil {
-		return nil, err
-	}
-	return credential, nil
+	// TODO: replace with SaveWebauthnSession below when it works
+	wan.cache.Set(registerSessionCacheKey(username), *sessionData, cache.DefaultExpiration)
+
+	// store session data as marshaled JSON
+	// err = wan.sessions.SaveWebauthnSession(REGISTRATION_SESSION_KEY, *sessionData, r, w)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// TODO: remove this
+	// d, err := wan.sessions.GetWebauthnSession(REGISTRATION_SESSION_KEY, r)
+	// fmt.Println("load")
+	// fmt.Println(d)
+	// fmt.Println(err)
+
+	return options, nil
 }
 
 // FinishRegistrationSession returns the registration session for the given user
 func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (*webauthn.Credential, error) {
 	// get user
-	x, found := w.cache.Get(registerCacheKey(username))
+	wi, found := w.cache.Get(registerCacheKey(username))
 	if !found {
 		return nil, errors.New("user not found")
 	}
-	whois := x.(*rtv1.WhoIs)
+	whois := wi.(*rtv1.WhoIs)
 
-	sessionData, err := w.sessions.GetWebauthnSession(REGISTRATION_SESSION_KEY, r)
-	if err != nil {
-		return nil, err
+	fmt.Println("store")
+	fmt.Println(*whois)
+	fmt.Printf("%+v\n", *w.sessions.Options)
+
+	// TODO: replace with GetWebauthnSession below when it works
+	cacheResult, found := w.cache.Get(registerSessionCacheKey(username))
+	if !found {
+		return nil, errors.New("could not find session data")
 	}
+	fmt.Printf("cacheResult: %+v\n", cacheResult)
+	sessionData, ok := cacheResult.(webauthn.SessionData)
+	if !ok {
+		return nil, errors.New("found unexpected data type in cache")
+	}
+
+	// sessionData, err := w.sessions.GetWebauthnSession(REGISTRATION_SESSION_KEY, r)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	fmt.Print("finish sessionData: ")
+	fmt.Println(sessionData)
 
 	credential, err := w.instance.FinishRegistration(whois, sessionData, r)
 	if err != nil {
@@ -113,29 +145,25 @@ func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseW
 	return options, nil
 }
 
-// SaveRegistrationSession saves the registration session for the given user
-func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWriter, username string, creator string) (*protocol.CredentialCreation, error) {
-	// Create Blank WhoIs
-	whoIs := blankWhoIs(username, creator)
-	wan.cache.Set(registerCacheKey(username), whoIs, cache.DefaultExpiration)
+// FinishAuthenticationSession returns the registration session for the given user
+func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string) (*webauthn.Credential, error) {
+	// get user
+	x, found := w.cache.Get(authenticationCacheKey(username))
+	if !found {
+		return nil, errors.New("user not found")
+	}
+	whois := x.(*rtv1.WhoIs)
 
-	// generate PublicKeyCredentialCreationOptions, session data
-	options, sessionData, err := wan.instance.BeginRegistration(
-		whoIs,
-		registerOptions(whoIs),
-		webauthn.WithAuthenticatorSelection(authSelect()),
-		webauthn.WithConveyancePreference(conveyancePreference()),
-	)
+	sessionData, err := w.sessions.GetWebauthnSession(AUTHENTICATION_SESSION_KEY, r)
 	if err != nil {
 		return nil, err
 	}
 
-	// store session data as marshaled JSON
-	err = wan.sessions.SaveWebauthnSession("registration", sessionData, r, w)
+	credential, err := w.instance.FinishLogin(whois, sessionData, r)
 	if err != nil {
 		return nil, err
 	}
-	return options, nil
+	return credential, nil
 }
 
 // ----------------
@@ -175,6 +203,10 @@ func conveyancePreference() protocol.ConveyancePreference {
 // registerCacheKey is a helper function to create a cache key for a registration session
 func registerCacheKey(username string) string {
 	return fmt.Sprintf("%s_registration", username)
+}
+
+func registerSessionCacheKey(username string) string {
+	return fmt.Sprintf("%s_sessiondata", username)
 }
 
 // registerOptions is a helper function to create a PublicKeyCredentialCreationOptions
