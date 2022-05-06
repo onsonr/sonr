@@ -104,23 +104,6 @@ tasks:
       - sonrd collect-gentxs
       - sonrd start
 
-  chain-gen:
-    summary: Generates protobuf, openapi, and vue stores
-    cmds:
-      - starport generate openapi
-      - starport generate proto-go
-      - go mod tidy
-    silent: true
-
-  highway-serve:
-    summary: Serve the highway node
-    dir: cmd/highway-cli
-    cmds:
-      - go run main.go serve
-
-  buf:
-    dir: pkg/proto
-
   start:docs:
     summary: Start the documentation server
     cmds:
@@ -132,17 +115,13 @@ tasks:
       # - task: web:dashboard:build
       - task: web:wallet:build
 
+
   docs:
     cmds:
       - echo "yarn docusaurus..."
       - yarn docusaurus
     silent: true
-
-  highway-serve:
-    summary: Serve the highway node
-    dir: cmd/highway-cli
-    cmds:
-      - go run main.go serve
+    dir: docs
 
   docs:start:
     cmds:
