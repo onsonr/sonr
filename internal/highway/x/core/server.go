@@ -23,7 +23,6 @@ import (
 
 	ctv1 "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
-	"github.com/sonr-io/sonr/internal/highway/x/matrix"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
@@ -64,9 +63,9 @@ type HighwayServer struct {
 	GRPCListener net.Listener
 
 	// Protocols
-	channels       map[string]ctv1.Channel
-	ipfsProtocol   *ipfs.IPFSProtocol
-	matrixProtocol *matrix.MatrixProtocol
+	channels     map[string]ctv1.Channel
+	ipfsProtocol *ipfs.IPFSProtocol
+	// matrixProtocol *matrix.MatrixProtocol
 }
 
 // setupBaseStub creates the base Highway Server.
@@ -100,11 +99,12 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
+	// TODO: Enabling Matrix Protocol breaks build for Darwin
 	// Create the Matrix Protocol
-	matrix, err := matrix.New(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	// matrix, err := matrix.New(ctx, node)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Create the RPC Service
 	stub := &HighwayServer{
@@ -115,10 +115,10 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		GRPCServer: grpc.NewServer(),
 		Config:     c,
 
-		GRPCListener:   lst,
-		Webauthn:       webauthn,
-		ipfsProtocol:   ipfs,
-		matrixProtocol: matrix,
+		GRPCListener: lst,
+		Webauthn:     webauthn,
+		ipfsProtocol: ipfs,
+		// matrixProtocol: matrix,
 	}
 	return stub, nil
 }
