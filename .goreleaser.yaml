@@ -9,6 +9,19 @@ before:
 
 # -- Individual Builds --
 builds:
+  # Motor Framework for Wasm
+  - id: "motor-wasm"
+    builder: prebuilt
+    goos:
+    - js
+    goarch:
+    - wasm
+    prebuilt:
+      path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
+    hooks:
+      pre:
+        - sh scripts/bind.sh -v {{ .Version }} -w
+
   # Motor Framework for Android
   - id: "motor-android"
     builder: prebuilt
@@ -35,6 +48,7 @@ builds:
       pre:
         - mkdir -p build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}
         - sh scripts/bind.sh -v {{ .Version }} -i
+
 
     # Highway Daemon for macOS
   - id: "highwayd-darwin"

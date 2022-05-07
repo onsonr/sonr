@@ -4,19 +4,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/duo-labs/webauthn/webauthn"
-	"github.com/kataras/golog"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
-	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 
 	ma "github.com/multiformats/go-multiaddr"
 	t "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-)
-
-var (
-	logger = golog.Default.Child("pkg/config")
 )
 
 // LogLevel is the type for the log level
@@ -70,7 +62,7 @@ type Config struct {
 	CosmosFaucetDenom        string
 	CosmosFaucetMinAmount    uint64
 	CosmosHomePath           string
-	CosmosKeyringBackend     cosmosaccount.KeyringBackend
+	CosmosKeyringBackend     string
 	CosmosKeyringServiceName string
 
 	// Device Config
@@ -144,7 +136,7 @@ func DefaultConfig(r Role) *Config {
 		CosmosFaucetDenom:        "uatom",
 		CosmosFaucetMinAmount:    100,
 		CosmosHomePath:           "~/.sonr",
-		CosmosKeyringBackend:     cosmosaccount.KeyringTest,
+		CosmosKeyringBackend:     "test",
 		CosmosKeyringServiceName: "sonr",
 		HighwayGRPCEndpoint:      "localhost:26225",
 		HighwayHTTPEndpoint:      ":8081",
@@ -177,36 +169,6 @@ func DefaultConfig(r Role) *Config {
 		}
 	}
 	return conf
-}
-
-// CosmosOptions returns the cosmos options for the highway node
-func (c *Config) CosmosOptions() []cosmosclient.Option {
-	// Create the options
-	opts := make([]cosmosclient.Option, 0)
-	if c.CosmosUseFaucet {
-		opts = append(opts, cosmosclient.WithUseFaucet(c.CosmosFaucetAddress, c.CosmosFaucetDenom, c.CosmosFaucetMinAmount))
-	}
-
-	// Add remaining cosmos options
-	opts = append(opts, cosmosclient.WithNodeAddress(c.CosmosNodeAddress),
-		cosmosclient.WithAddressPrefix(c.CosmosAddressPrefix),
-		cosmosclient.WithHome(c.CosmosHomePath),
-		cosmosclient.WithKeyringBackend(c.CosmosKeyringBackend),
-		cosmosclient.WithKeyringServiceName(c.CosmosKeyringServiceName))
-
-	return opts
-}
-
-// WebauthnConfig returns the configuration for the WebAuthn module
-func (c *Config) WebauthnConfig() *webauthn.Config {
-	return &webauthn.Config{
-		RPDisplayName: c.WebAuthNRPDisplayName,
-		RPID:          c.WebAuthNRPID,
-		RPOrigin:      c.WebAuthNRPOrigin,
-		RPIcon:        c.WebAuthNRPIcon,
-		Debug:         c.WebAuthNDebug,
-	}
-
 }
 
 // DefaultLocation returns the Sonr HQ as default location

@@ -71,7 +71,7 @@ type HighwayServer struct {
 
 // setupBaseStub creates the base Highway Server.
 func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
-	node, err := hn.NewMachineHost(ctx, c)
+	node, err := hn.NewDefaultHost(ctx, c)
 	if err != nil {
 		return nil, err
 	}

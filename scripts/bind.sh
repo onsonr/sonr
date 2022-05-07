@@ -3,9 +3,10 @@
 SCRIPTS_DIR=$(dirname "$0")
 cd ${SCRIPTS_DIR}/../
 PROJECT_DIR=$(pwd);
-MOTOR_DIR=${PROJECT_DIR}/cmd/motorlib
+MOTOR_LIB_DIR=${PROJECT_DIR}/cmd/motor-lib
+MOTOR_WASM_DIR=${PROJECT_DIR}/cmd/motor-wasm
 
-while getopts "iav:" opt; do
+while getopts "iawv:" opt; do
   case $opt in
     v)
       echo "🔷 Binding with Version: $OPTARG" >&2
@@ -20,7 +21,7 @@ while getopts "iav:" opt; do
       mkdir -p ${ANDROID_OUT}
 
       echo "🔷 Binding Android..."
-      cd ${MOTOR_DIR}
+      cd ${MOTOR_LIB_DIR}
       gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -v
       ;;
     i)
@@ -31,8 +32,19 @@ while getopts "iav:" opt; do
       mkdir -p ${IOS_OUT}
 
       echo "🔷 Binding iOS..."
-      cd ${MOTOR_DIR}
+      cd ${MOTOR_LIB_DIR}
       gomobile bind -ldflags='-s -w' -target=ios/arm64 -o ${IOS_ARTIFACT} -v
+      ;;
+    w)
+      echo "🔷 Setting up build Environment..."
+      WASM_BUILD_PATH="motorlib_js_${VERSION}_wasm"
+      WASM_OUT=${PROJECT_DIR}/build/${WASM_BUILD_PATH}
+      WASM_ARTIFACT=${WASM_OUT}/motorlib.wasm
+      mkdir -p ${WASM_OUT}
+
+      echo "🔷 Binding Web..."
+      cd ${MOTOR_WASM_DIR}
+      GOOS=js GOARCH=wasm go build -o ${WASM_ARTIFACT} -v
       ;;
     ?)
       echo "Invalid option: -$OPTARG" >&2

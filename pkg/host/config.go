@@ -6,7 +6,6 @@ import (
 	"sync/atomic"
 
 	"github.com/kataras/go-events"
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -17,10 +16,6 @@ import (
 
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
-)
-
-var (
-	logger = golog.Default.Child("core/node")
 )
 
 // SonrHost returns the SonrHost for the Main Node
@@ -172,7 +167,7 @@ func (s HostStatus) String() string {
 }
 
 // SetStatus sets the host status and emits the event
-func (h *defaultHostImpl) SetStatus(s HostStatus) {
+func (h *hostImpl) SetStatus(s HostStatus) {
 	// Check if status is changed
 	if h.status == s {
 		return
@@ -183,24 +178,20 @@ func (h *defaultHostImpl) SetStatus(s HostStatus) {
 }
 
 // Close closes the node
-func (n *defaultHostImpl) Close() {
+func (n *hostImpl) Close() {
 	// Update Status
 	n.SetStatus(Status_CLOSED)
 	n.IpfsDHT.Close()
-
-	// Close Host
-	if err := n.host.Close(); err != nil {
-		logger.Errorf("%s - Failed to close host, ", err)
-	}
+	n.host.Close()
 }
 
 // NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-func (c *defaultHostImpl) NeedsWait() {
+func (c *hostImpl) NeedsWait() {
 	<-c.Chn
 }
 
 // Resume tells all of goroutines to resume execution
-func (c *defaultHostImpl) Resume() {
+func (c *hostImpl) Resume() {
 	if atomic.LoadUint64(&c.flag) == 1 {
 		close(c.Chn)
 		atomic.StoreUint64(&c.flag, 0)
@@ -208,7 +199,7 @@ func (c *defaultHostImpl) Resume() {
 }
 
 // Pause tells all of goroutines to pause execution
-func (c *defaultHostImpl) Pause() {
+func (c *hostImpl) Pause() {
 	if atomic.LoadUint64(&c.flag) == 0 {
 		atomic.StoreUint64(&c.flag, 1)
 		c.Chn = make(chan bool)

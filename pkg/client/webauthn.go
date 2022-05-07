@@ -33,7 +33,7 @@ type WebAuthn struct {
 // NewWebauthn creates a new WebAuthn instance with the given configuration
 func NewWebauthn(ctx context.Context, config *config.Config) (*WebAuthn, error) {
 	// Create a WebAuthn instance
-	web, err := webauthn.New(config.WebauthnConfig())
+	web, err := webauthn.New(toWebauthnConfig(config))
 	if err != nil {
 		return nil, err
 	}
