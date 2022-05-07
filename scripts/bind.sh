@@ -3,7 +3,7 @@
 SCRIPTS_DIR=$(dirname "$0")
 cd ${SCRIPTS_DIR}/../
 PROJECT_DIR=$(pwd);
-MOTOR_DIR=${PROJECT_DIR}/cmd/motor-lib
+MOTOR_DIR=${PROJECT_DIR}/cmd/motorlib
 
 while getopts "iav:" opt; do
   case $opt in

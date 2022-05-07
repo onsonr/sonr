@@ -60,6 +60,8 @@ builds:
       - CXX=g++
     goos:
       - linux
+    goarch:
+    - amd64
 
   # Highway Daemon for Windows
   - id: "highwayd-windows"
@@ -177,7 +179,7 @@ builds:
 archives:
 # Templating for blockchain daemons
 - id: "sonrd-archive"
-  name_template: 'sonrd_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'sonrd_{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: macos
     windows: win
@@ -192,7 +194,7 @@ archives:
 
 # Templating for Motor Android
 - id: "motor-android-archive"
-  name_template: 'motorlib_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'motorlib_{{ .Os }}_{{ .Arch }}'
   builds:
   - motor-android
   files:
@@ -201,7 +203,7 @@ archives:
 
 # Templating for Motor iOS
 - id: "motor-ios-archive"
-  name_template: 'motorlib_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'motorlib_{{ .Os }}_{{ .Arch }}'
   builds:
   - motor-ios
   replacements:
@@ -213,7 +215,7 @@ archives:
 
 # Templating for CLI
 - id: "highway-cli-archive"
-  name_template: 'highway-cli_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'highway-cli_{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: macos
     windows: win
@@ -228,7 +230,7 @@ archives:
 
   # Templating for Highway Daemon
 - id: "highwayd-archive"
-  name_template: 'highwayd_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'highwayd_{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: macos
     windows: win
