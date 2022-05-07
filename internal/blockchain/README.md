@@ -4,7 +4,7 @@
   :trident: :dolphin: :godmode: :trident:
 </div>
 <div align="center">
-  <strong>The Official Sonr Blockchain source code</strong>
+  <strong>The Official Sonr Monorepo source code</strong>
 </div>
 <div align="center">
   A <code>easy-to-use</code> framework for building immersive decentralized applications.
@@ -74,6 +74,8 @@
 - [Install](#install)
   - [Requirements](#requirements)
     - [Development](#development)
+    - [Development without starport](#development-without-starport)
+    - [<b>Or just run this</b>](#bor-just-run-thisb)
   - [Release](#release)
 - [Usage](#usage)
   - [Start the Blockchain](#start-the-blockchain)
@@ -166,7 +168,7 @@ sudo mv starport /usr/local/bin/ # Move to Directory
 starport chain serve # Serve without resetting the chain
 starport chain serve --reset-once # Reset the chain
 ```
-#### Development without starport 
+#### Development without starport
 1. Initialize the chain: `./sonrd init my-node --chain-id sonr`
 1. Add a key to your keyring (using test): `./sonrd keys add --keyring-backend test alice --home ~/.sonr`
 1. Add the account as a genesis account: `./sonrd add-genesis-account $(./sonrd keys show alice -a) 1000000000000000stake,1000000000000snr`
