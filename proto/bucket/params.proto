@@ -3,7 +3,7 @@ package sonrio.sonr.bucket;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sonr-io/blockchain/x/bucket/types";
+option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
 // Params defines the parameters for the module.
 message Params {

@@ -76,12 +76,12 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	registryGenesis := types.GenesisState{
 		WhoIsList: []types.WhoIs{
 			{
-				Creator: sample.AccAddress(),
-				Name:    "0",
+				Owner: sample.AccAddress(),
+				Name:  "0",
 			},
 			{
-				Creator: sample.AccAddress(),
-				Name:    "1",
+				Owner: sample.AccAddress(),
+				Name:  "1",
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState

@@ -1,32 +1,62 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
-import { Did, DidDocument } from "../registry/did";
+import { Credential } from "../registry/credential";
+import { WhoIs, Session } from "../registry/who_is";
 
 export const protobufPackage = "sonrio.sonr.registry";
 
-export interface MsgRegisterService {
+export interface MsgRegisterApplication {
+  /** Creator is the account address of the creator of the Application. */
   creator: string;
-  serviceName: string;
-  publicKey: string;
+  /** Client side JSON Web Token for AssertionMethod */
+  credential: Credential | undefined;
+  /** Application Name is the endpoint of the Application. */
+  application_name: string;
+  /** Application Description is the description of the Application. */
+  application_description: string;
+  /** Application URL is the URL of the Application. */
+  application_url: string;
+  /** Application Category is the category of the Application. */
+  application_category: string;
 }
 
-export interface MsgRegisterServiceResponse {}
+export interface MsgRegisterApplicationResponse {
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+  /** WhoIs for the registered name */
+  who_is: WhoIs | undefined;
+  /** Session returns the session for the name */
+  session: Session | undefined;
+}
 
 /** MsgRegisterName is a request to register a name with the ".snr" name of a peer */
 export interface MsgRegisterName {
+  /** Account address of the name owner */
   creator: string;
-  deviceId: string;
-  os: string;
-  model: string;
-  arch: string;
-  publicKey: string;
-  nameToRegister: string;
+  /** Selected Name to register */
+  name_to_register: string;
+  /** Client side JSON Web Token for AssertionMethod */
+  credential: Credential | undefined;
+  /** The Updated Metadata */
+  metadata: { [key: string]: string };
+}
+
+export interface MsgRegisterName_MetadataEntry {
+  key: string;
+  value: string;
 }
 
 export interface MsgRegisterNameResponse {
-  isSuccess: boolean;
-  did: Did | undefined;
-  didDocument: DidDocument | undefined;
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+  /** WhoIs for the registered name */
+  who_is: WhoIs | undefined;
+  /** Session returns the session for the name */
+  session: Session | undefined;
 }
 
 /** MsgAccessName defines the MsgAccessName transaction. */
@@ -35,25 +65,32 @@ export interface MsgAccessName {
   creator: string;
   /** The name to access */
   name: string;
-  /** The Public Key of the peer to access */
-  publicKey: string;
-  /** The Libp2p peer ID of the peer to access */
-  peerId: string;
+  /** Client side JSON Web Token for AssertionMethod */
+  credential: Credential | undefined;
 }
 
 export interface MsgAccessNameResponse {
-  name: string;
-  publicKey: string;
-  peerId: string;
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+  /** WhoIs for the registered name */
+  who_is: WhoIs | undefined;
+  /** Session returns the session for the name */
+  session: Session | undefined;
 }
 
 export interface MsgUpdateName {
   /** The account that owns the name. */
   creator: string;
-  /** The name of the peer to update the name of */
-  name: string;
+  /** The did of the peer to update the name of */
+  did: string;
+  /** Client side JSON Web Token for AssertionMethod. For additional devices being linked. */
+  credential: Credential | undefined;
   /** The Updated Metadata */
   metadata: { [key: string]: string };
+  /** Session returns the session for the name */
+  session: Session | undefined;
 }
 
 export interface MsgUpdateName_MetadataEntry {
@@ -62,103 +99,154 @@ export interface MsgUpdateName_MetadataEntry {
 }
 
 export interface MsgUpdateNameResponse {
-  didDocument: DidDocument | undefined;
-  /** optional */
-  metadata: { [key: string]: string };
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+  /** WhoIs for the registered name */
+  who_is: WhoIs | undefined;
 }
 
-export interface MsgUpdateNameResponse_MetadataEntry {
-  key: string;
-  value: string;
-}
-
-export interface MsgAccessService {
-  /** The account that is accessing the service */
+export interface MsgAccessApplication {
+  /** The account that is accessing the Application */
   creator: string;
-  /** The name of the service to access */
-  did: string;
+  /** The name of the Application to access */
+  app_name: string;
+  /** Client side JSON Web Token for AssertionMethod */
+  credential: Credential | undefined;
 }
 
-export interface MsgAccessServiceResponse {
+export interface MsgAccessApplicationResponse {
   /** Code of the response */
   code: number;
   /** Message of the response */
   message: string;
   /** Data of the response */
   metadata: { [key: string]: string };
+  /** WhoIs for the registered name */
+  who_is: WhoIs | undefined;
+  /** Session returns the session for the name */
+  session: Session | undefined;
 }
 
-export interface MsgAccessServiceResponse_MetadataEntry {
+export interface MsgAccessApplicationResponse_MetadataEntry {
   key: string;
   value: string;
 }
 
-export interface MsgUpdateService {
+export interface MsgUpdateApplication {
   /** The account that owns the name. */
   creator: string;
-  /** The name of the peer to update the service details of */
+  /** The name of the peer to update the Application details of */
   did: string;
-  /** The updated configuration for the service */
-  configuration: { [key: string]: string };
-  /** The metadata for any service information required */
+  /** The updated configuration for the Application */
   metadata: { [key: string]: string };
+  /** Session returns the session for the name */
+  session: Session | undefined;
 }
 
-export interface MsgUpdateService_ConfigurationEntry {
+export interface MsgUpdateApplication_MetadataEntry {
   key: string;
   value: string;
 }
 
-export interface MsgUpdateService_MetadataEntry {
-  key: string;
-  value: string;
-}
-
-export interface MsgUpdateServiceResponse {
-  didDocument: DidDocument | undefined;
-  /** The updated configuration for the service */
-  configuration: { [key: string]: string };
-  /** The metadata for any service information required */
+export interface MsgUpdateApplicationResponse {
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+  /** Data of the response */
   metadata: { [key: string]: string };
+  /** WhoIs for the registered name */
+  who_is: WhoIs | undefined;
 }
 
-export interface MsgUpdateServiceResponse_ConfigurationEntry {
+export interface MsgUpdateApplicationResponse_MetadataEntry {
   key: string;
   value: string;
 }
 
-export interface MsgUpdateServiceResponse_MetadataEntry {
-  key: string;
-  value: string;
+export interface MsgCreateWhoIs {
+  creator: string;
+  did: string;
+  document: Uint8Array;
+  credentials: Credential[];
+  name: string;
 }
 
-const baseMsgRegisterService: object = {
+export interface MsgCreateWhoIsResponse {
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+  who_is: WhoIs | undefined;
+}
+
+export interface MsgUpdateWhoIs {
+  creator: string;
+  did: string;
+  document: Uint8Array;
+  credentials: Credential[];
+}
+
+export interface MsgUpdateWhoIsResponse {
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+  who_is: WhoIs | undefined;
+}
+
+export interface MsgDeleteWhoIs {
+  creator: string;
+  did: string;
+}
+
+export interface MsgDeleteWhoIsResponse {
+  /** Code of the response */
+  code: number;
+  /** Message of the response */
+  message: string;
+}
+
+const baseMsgRegisterApplication: object = {
   creator: "",
-  serviceName: "",
-  publicKey: "",
+  application_name: "",
+  application_description: "",
+  application_url: "",
+  application_category: "",
 };
 
-export const MsgRegisterService = {
+export const MsgRegisterApplication = {
   encode(
-    message: MsgRegisterService,
+    message: MsgRegisterApplication,
     writer: Writer = Writer.create()
   ): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.serviceName !== "") {
-      writer.uint32(18).string(message.serviceName);
+    if (message.credential !== undefined) {
+      Credential.encode(message.credential, writer.uint32(18).fork()).ldelim();
     }
-    if (message.publicKey !== "") {
-      writer.uint32(26).string(message.publicKey);
+    if (message.application_name !== "") {
+      writer.uint32(26).string(message.application_name);
+    }
+    if (message.application_description !== "") {
+      writer.uint32(34).string(message.application_description);
+    }
+    if (message.application_url !== "") {
+      writer.uint32(42).string(message.application_url);
+    }
+    if (message.application_category !== "") {
+      writer.uint32(50).string(message.application_category);
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): MsgRegisterService {
+  decode(input: Reader | Uint8Array, length?: number): MsgRegisterApplication {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRegisterService } as MsgRegisterService;
+    const message = { ...baseMsgRegisterApplication } as MsgRegisterApplication;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -166,10 +254,19 @@ export const MsgRegisterService = {
           message.creator = reader.string();
           break;
         case 2:
-          message.serviceName = reader.string();
+          message.credential = Credential.decode(reader, reader.uint32());
           break;
         case 3:
-          message.publicKey = reader.string();
+          message.application_name = reader.string();
+          break;
+        case 4:
+          message.application_description = reader.string();
+          break;
+        case 5:
+          message.application_url = reader.string();
+          break;
+        case 6:
+          message.application_category = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -179,78 +276,167 @@ export const MsgRegisterService = {
     return message;
   },
 
-  fromJSON(object: any): MsgRegisterService {
-    const message = { ...baseMsgRegisterService } as MsgRegisterService;
+  fromJSON(object: any): MsgRegisterApplication {
+    const message = { ...baseMsgRegisterApplication } as MsgRegisterApplication;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
       message.creator = "";
     }
-    if (object.serviceName !== undefined && object.serviceName !== null) {
-      message.serviceName = String(object.serviceName);
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromJSON(object.credential);
     } else {
-      message.serviceName = "";
+      message.credential = undefined;
     }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = String(object.publicKey);
+    if (
+      object.application_name !== undefined &&
+      object.application_name !== null
+    ) {
+      message.application_name = String(object.application_name);
     } else {
-      message.publicKey = "";
+      message.application_name = "";
+    }
+    if (
+      object.application_description !== undefined &&
+      object.application_description !== null
+    ) {
+      message.application_description = String(object.application_description);
+    } else {
+      message.application_description = "";
+    }
+    if (
+      object.application_url !== undefined &&
+      object.application_url !== null
+    ) {
+      message.application_url = String(object.application_url);
+    } else {
+      message.application_url = "";
+    }
+    if (
+      object.application_category !== undefined &&
+      object.application_category !== null
+    ) {
+      message.application_category = String(object.application_category);
+    } else {
+      message.application_category = "";
     }
     return message;
   },
 
-  toJSON(message: MsgRegisterService): unknown {
+  toJSON(message: MsgRegisterApplication): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.serviceName !== undefined &&
-      (obj.serviceName = message.serviceName);
-    message.publicKey !== undefined && (obj.publicKey = message.publicKey);
+    message.credential !== undefined &&
+      (obj.credential = message.credential
+        ? Credential.toJSON(message.credential)
+        : undefined);
+    message.application_name !== undefined &&
+      (obj.application_name = message.application_name);
+    message.application_description !== undefined &&
+      (obj.application_description = message.application_description);
+    message.application_url !== undefined &&
+      (obj.application_url = message.application_url);
+    message.application_category !== undefined &&
+      (obj.application_category = message.application_category);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgRegisterService>): MsgRegisterService {
-    const message = { ...baseMsgRegisterService } as MsgRegisterService;
+  fromPartial(
+    object: DeepPartial<MsgRegisterApplication>
+  ): MsgRegisterApplication {
+    const message = { ...baseMsgRegisterApplication } as MsgRegisterApplication;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
       message.creator = "";
     }
-    if (object.serviceName !== undefined && object.serviceName !== null) {
-      message.serviceName = object.serviceName;
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromPartial(object.credential);
     } else {
-      message.serviceName = "";
+      message.credential = undefined;
     }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = object.publicKey;
+    if (
+      object.application_name !== undefined &&
+      object.application_name !== null
+    ) {
+      message.application_name = object.application_name;
     } else {
-      message.publicKey = "";
+      message.application_name = "";
+    }
+    if (
+      object.application_description !== undefined &&
+      object.application_description !== null
+    ) {
+      message.application_description = object.application_description;
+    } else {
+      message.application_description = "";
+    }
+    if (
+      object.application_url !== undefined &&
+      object.application_url !== null
+    ) {
+      message.application_url = object.application_url;
+    } else {
+      message.application_url = "";
+    }
+    if (
+      object.application_category !== undefined &&
+      object.application_category !== null
+    ) {
+      message.application_category = object.application_category;
+    } else {
+      message.application_category = "";
     }
     return message;
   },
 };
 
-const baseMsgRegisterServiceResponse: object = {};
+const baseMsgRegisterApplicationResponse: object = { code: 0, message: "" };
 
-export const MsgRegisterServiceResponse = {
+export const MsgRegisterApplicationResponse = {
   encode(
-    _: MsgRegisterServiceResponse,
+    message: MsgRegisterApplicationResponse,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
+    }
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
+    }
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.session !== undefined) {
+      Session.encode(message.session, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
   decode(
     input: Reader | Uint8Array,
     length?: number
-  ): MsgRegisterServiceResponse {
+  ): MsgRegisterApplicationResponse {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgRegisterServiceResponse,
-    } as MsgRegisterServiceResponse;
+      ...baseMsgRegisterApplicationResponse,
+    } as MsgRegisterApplicationResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.code = reader.int32();
+          break;
+        case 2:
+          message.message = reader.string();
+          break;
+        case 3:
+          message.who_is = WhoIs.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.session = Session.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -259,61 +445,95 @@ export const MsgRegisterServiceResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRegisterServiceResponse {
+  fromJSON(object: any): MsgRegisterApplicationResponse {
     const message = {
-      ...baseMsgRegisterServiceResponse,
-    } as MsgRegisterServiceResponse;
+      ...baseMsgRegisterApplicationResponse,
+    } as MsgRegisterApplicationResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromJSON(object.session);
+    } else {
+      message.session = undefined;
+    }
     return message;
   },
 
-  toJSON(_: MsgRegisterServiceResponse): unknown {
+  toJSON(message: MsgRegisterApplicationResponse): unknown {
     const obj: any = {};
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
+    message.session !== undefined &&
+      (obj.session = message.session
+        ? Session.toJSON(message.session)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgRegisterServiceResponse>
-  ): MsgRegisterServiceResponse {
+    object: DeepPartial<MsgRegisterApplicationResponse>
+  ): MsgRegisterApplicationResponse {
     const message = {
-      ...baseMsgRegisterServiceResponse,
-    } as MsgRegisterServiceResponse;
+      ...baseMsgRegisterApplicationResponse,
+    } as MsgRegisterApplicationResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromPartial(object.session);
+    } else {
+      message.session = undefined;
+    }
     return message;
   },
 };
 
-const baseMsgRegisterName: object = {
-  creator: "",
-  deviceId: "",
-  os: "",
-  model: "",
-  arch: "",
-  publicKey: "",
-  nameToRegister: "",
-};
+const baseMsgRegisterName: object = { creator: "", name_to_register: "" };
 
 export const MsgRegisterName = {
   encode(message: MsgRegisterName, writer: Writer = Writer.create()): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.deviceId !== "") {
-      writer.uint32(18).string(message.deviceId);
+    if (message.name_to_register !== "") {
+      writer.uint32(18).string(message.name_to_register);
     }
-    if (message.os !== "") {
-      writer.uint32(26).string(message.os);
+    if (message.credential !== undefined) {
+      Credential.encode(message.credential, writer.uint32(26).fork()).ldelim();
     }
-    if (message.model !== "") {
-      writer.uint32(34).string(message.model);
-    }
-    if (message.arch !== "") {
-      writer.uint32(42).string(message.arch);
-    }
-    if (message.publicKey !== "") {
-      writer.uint32(50).string(message.publicKey);
-    }
-    if (message.nameToRegister !== "") {
-      writer.uint32(58).string(message.nameToRegister);
-    }
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      MsgRegisterName_MetadataEntry.encode(
+        { key: key as any, value },
+        writer.uint32(34).fork()
+      ).ldelim();
+    });
     return writer;
   },
 
@@ -321,6 +541,7 @@ export const MsgRegisterName = {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseMsgRegisterName } as MsgRegisterName;
+    message.metadata = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -328,22 +549,19 @@ export const MsgRegisterName = {
           message.creator = reader.string();
           break;
         case 2:
-          message.deviceId = reader.string();
+          message.name_to_register = reader.string();
           break;
         case 3:
-          message.os = reader.string();
+          message.credential = Credential.decode(reader, reader.uint32());
           break;
         case 4:
-          message.model = reader.string();
-          break;
-        case 5:
-          message.arch = reader.string();
-          break;
-        case 6:
-          message.publicKey = reader.string();
-          break;
-        case 7:
-          message.nameToRegister = reader.string();
+          const entry4 = MsgRegisterName_MetadataEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry4.value !== undefined) {
+            message.metadata[entry4.key] = entry4.value;
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -355,40 +573,29 @@ export const MsgRegisterName = {
 
   fromJSON(object: any): MsgRegisterName {
     const message = { ...baseMsgRegisterName } as MsgRegisterName;
+    message.metadata = {};
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
       message.creator = "";
     }
-    if (object.deviceId !== undefined && object.deviceId !== null) {
-      message.deviceId = String(object.deviceId);
+    if (
+      object.name_to_register !== undefined &&
+      object.name_to_register !== null
+    ) {
+      message.name_to_register = String(object.name_to_register);
     } else {
-      message.deviceId = "";
+      message.name_to_register = "";
     }
-    if (object.os !== undefined && object.os !== null) {
-      message.os = String(object.os);
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromJSON(object.credential);
     } else {
-      message.os = "";
+      message.credential = undefined;
     }
-    if (object.model !== undefined && object.model !== null) {
-      message.model = String(object.model);
-    } else {
-      message.model = "";
-    }
-    if (object.arch !== undefined && object.arch !== null) {
-      message.arch = String(object.arch);
-    } else {
-      message.arch = "";
-    }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = String(object.publicKey);
-    } else {
-      message.publicKey = "";
-    }
-    if (object.nameToRegister !== undefined && object.nameToRegister !== null) {
-      message.nameToRegister = String(object.nameToRegister);
-    } else {
-      message.nameToRegister = "";
+    if (object.metadata !== undefined && object.metadata !== null) {
+      Object.entries(object.metadata).forEach(([key, value]) => {
+        message.metadata[key] = String(value);
+      });
     }
     return message;
   },
@@ -396,75 +603,157 @@ export const MsgRegisterName = {
   toJSON(message: MsgRegisterName): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.deviceId !== undefined && (obj.deviceId = message.deviceId);
-    message.os !== undefined && (obj.os = message.os);
-    message.model !== undefined && (obj.model = message.model);
-    message.arch !== undefined && (obj.arch = message.arch);
-    message.publicKey !== undefined && (obj.publicKey = message.publicKey);
-    message.nameToRegister !== undefined &&
-      (obj.nameToRegister = message.nameToRegister);
+    message.name_to_register !== undefined &&
+      (obj.name_to_register = message.name_to_register);
+    message.credential !== undefined &&
+      (obj.credential = message.credential
+        ? Credential.toJSON(message.credential)
+        : undefined);
+    obj.metadata = {};
+    if (message.metadata) {
+      Object.entries(message.metadata).forEach(([k, v]) => {
+        obj.metadata[k] = v;
+      });
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgRegisterName>): MsgRegisterName {
     const message = { ...baseMsgRegisterName } as MsgRegisterName;
+    message.metadata = {};
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
       message.creator = "";
     }
-    if (object.deviceId !== undefined && object.deviceId !== null) {
-      message.deviceId = object.deviceId;
+    if (
+      object.name_to_register !== undefined &&
+      object.name_to_register !== null
+    ) {
+      message.name_to_register = object.name_to_register;
     } else {
-      message.deviceId = "";
+      message.name_to_register = "";
     }
-    if (object.os !== undefined && object.os !== null) {
-      message.os = object.os;
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromPartial(object.credential);
     } else {
-      message.os = "";
+      message.credential = undefined;
     }
-    if (object.model !== undefined && object.model !== null) {
-      message.model = object.model;
-    } else {
-      message.model = "";
-    }
-    if (object.arch !== undefined && object.arch !== null) {
-      message.arch = object.arch;
-    } else {
-      message.arch = "";
-    }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = object.publicKey;
-    } else {
-      message.publicKey = "";
-    }
-    if (object.nameToRegister !== undefined && object.nameToRegister !== null) {
-      message.nameToRegister = object.nameToRegister;
-    } else {
-      message.nameToRegister = "";
+    if (object.metadata !== undefined && object.metadata !== null) {
+      Object.entries(object.metadata).forEach(([key, value]) => {
+        if (value !== undefined) {
+          message.metadata[key] = String(value);
+        }
+      });
     }
     return message;
   },
 };
 
-const baseMsgRegisterNameResponse: object = { isSuccess: false };
+const baseMsgRegisterName_MetadataEntry: object = { key: "", value: "" };
+
+export const MsgRegisterName_MetadataEntry = {
+  encode(
+    message: MsgRegisterName_MetadataEntry,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgRegisterName_MetadataEntry {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRegisterName_MetadataEntry,
+    } as MsgRegisterName_MetadataEntry;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterName_MetadataEntry {
+    const message = {
+      ...baseMsgRegisterName_MetadataEntry,
+    } as MsgRegisterName_MetadataEntry;
+    if (object.key !== undefined && object.key !== null) {
+      message.key = String(object.key);
+    } else {
+      message.key = "";
+    }
+    if (object.value !== undefined && object.value !== null) {
+      message.value = String(object.value);
+    } else {
+      message.value = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgRegisterName_MetadataEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRegisterName_MetadataEntry>
+  ): MsgRegisterName_MetadataEntry {
+    const message = {
+      ...baseMsgRegisterName_MetadataEntry,
+    } as MsgRegisterName_MetadataEntry;
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = "";
+    }
+    if (object.value !== undefined && object.value !== null) {
+      message.value = object.value;
+    } else {
+      message.value = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgRegisterNameResponse: object = { code: 0, message: "" };
 
 export const MsgRegisterNameResponse = {
   encode(
     message: MsgRegisterNameResponse,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.isSuccess === true) {
-      writer.uint32(8).bool(message.isSuccess);
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
     }
-    if (message.did !== undefined) {
-      Did.encode(message.did, writer.uint32(18).fork()).ldelim();
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
     }
-    if (message.didDocument !== undefined) {
-      DidDocument.encode(
-        message.didDocument,
-        writer.uint32(26).fork()
-      ).ldelim();
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.session !== undefined) {
+      Session.encode(message.session, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -479,13 +768,16 @@ export const MsgRegisterNameResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.isSuccess = reader.bool();
+          message.code = reader.int32();
           break;
         case 2:
-          message.did = Did.decode(reader, reader.uint32());
+          message.message = reader.string();
           break;
         case 3:
-          message.didDocument = DidDocument.decode(reader, reader.uint32());
+          message.who_is = WhoIs.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -499,32 +791,38 @@ export const MsgRegisterNameResponse = {
     const message = {
       ...baseMsgRegisterNameResponse,
     } as MsgRegisterNameResponse;
-    if (object.isSuccess !== undefined && object.isSuccess !== null) {
-      message.isSuccess = Boolean(object.isSuccess);
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
     } else {
-      message.isSuccess = false;
+      message.code = 0;
     }
-    if (object.did !== undefined && object.did !== null) {
-      message.did = Did.fromJSON(object.did);
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
     } else {
-      message.did = undefined;
+      message.message = "";
     }
-    if (object.didDocument !== undefined && object.didDocument !== null) {
-      message.didDocument = DidDocument.fromJSON(object.didDocument);
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
     } else {
-      message.didDocument = undefined;
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromJSON(object.session);
+    } else {
+      message.session = undefined;
     }
     return message;
   },
 
   toJSON(message: MsgRegisterNameResponse): unknown {
     const obj: any = {};
-    message.isSuccess !== undefined && (obj.isSuccess = message.isSuccess);
-    message.did !== undefined &&
-      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
-    message.didDocument !== undefined &&
-      (obj.didDocument = message.didDocument
-        ? DidDocument.toJSON(message.didDocument)
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
+    message.session !== undefined &&
+      (obj.session = message.session
+        ? Session.toJSON(message.session)
         : undefined);
     return obj;
   },
@@ -535,31 +833,31 @@ export const MsgRegisterNameResponse = {
     const message = {
       ...baseMsgRegisterNameResponse,
     } as MsgRegisterNameResponse;
-    if (object.isSuccess !== undefined && object.isSuccess !== null) {
-      message.isSuccess = object.isSuccess;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
     } else {
-      message.isSuccess = false;
+      message.code = 0;
     }
-    if (object.did !== undefined && object.did !== null) {
-      message.did = Did.fromPartial(object.did);
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
     } else {
-      message.did = undefined;
+      message.message = "";
     }
-    if (object.didDocument !== undefined && object.didDocument !== null) {
-      message.didDocument = DidDocument.fromPartial(object.didDocument);
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
     } else {
-      message.didDocument = undefined;
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromPartial(object.session);
+    } else {
+      message.session = undefined;
     }
     return message;
   },
 };
 
-const baseMsgAccessName: object = {
-  creator: "",
-  name: "",
-  publicKey: "",
-  peerId: "",
-};
+const baseMsgAccessName: object = { creator: "", name: "" };
 
 export const MsgAccessName = {
   encode(message: MsgAccessName, writer: Writer = Writer.create()): Writer {
@@ -569,11 +867,8 @@ export const MsgAccessName = {
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.publicKey !== "") {
-      writer.uint32(26).string(message.publicKey);
-    }
-    if (message.peerId !== "") {
-      writer.uint32(34).string(message.peerId);
+    if (message.credential !== undefined) {
+      Credential.encode(message.credential, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -592,10 +887,7 @@ export const MsgAccessName = {
           message.name = reader.string();
           break;
         case 3:
-          message.publicKey = reader.string();
-          break;
-        case 4:
-          message.peerId = reader.string();
+          message.credential = Credential.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -617,15 +909,10 @@ export const MsgAccessName = {
     } else {
       message.name = "";
     }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = String(object.publicKey);
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromJSON(object.credential);
     } else {
-      message.publicKey = "";
-    }
-    if (object.peerId !== undefined && object.peerId !== null) {
-      message.peerId = String(object.peerId);
-    } else {
-      message.peerId = "";
+      message.credential = undefined;
     }
     return message;
   },
@@ -634,8 +921,10 @@ export const MsgAccessName = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.name !== undefined && (obj.name = message.name);
-    message.publicKey !== undefined && (obj.publicKey = message.publicKey);
-    message.peerId !== undefined && (obj.peerId = message.peerId);
+    message.credential !== undefined &&
+      (obj.credential = message.credential
+        ? Credential.toJSON(message.credential)
+        : undefined);
     return obj;
   },
 
@@ -651,39 +940,33 @@ export const MsgAccessName = {
     } else {
       message.name = "";
     }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = object.publicKey;
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromPartial(object.credential);
     } else {
-      message.publicKey = "";
-    }
-    if (object.peerId !== undefined && object.peerId !== null) {
-      message.peerId = object.peerId;
-    } else {
-      message.peerId = "";
+      message.credential = undefined;
     }
     return message;
   },
 };
 
-const baseMsgAccessNameResponse: object = {
-  name: "",
-  publicKey: "",
-  peerId: "",
-};
+const baseMsgAccessNameResponse: object = { code: 0, message: "" };
 
 export const MsgAccessNameResponse = {
   encode(
     message: MsgAccessNameResponse,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
     }
-    if (message.publicKey !== "") {
-      writer.uint32(18).string(message.publicKey);
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
     }
-    if (message.peerId !== "") {
-      writer.uint32(26).string(message.peerId);
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.session !== undefined) {
+      Session.encode(message.session, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -696,13 +979,16 @@ export const MsgAccessNameResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.name = reader.string();
+          message.code = reader.int32();
           break;
         case 2:
-          message.publicKey = reader.string();
+          message.message = reader.string();
           break;
         case 3:
-          message.peerId = reader.string();
+          message.who_is = WhoIs.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -714,29 +1000,39 @@ export const MsgAccessNameResponse = {
 
   fromJSON(object: any): MsgAccessNameResponse {
     const message = { ...baseMsgAccessNameResponse } as MsgAccessNameResponse;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
     } else {
-      message.name = "";
+      message.code = 0;
     }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = String(object.publicKey);
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
     } else {
-      message.publicKey = "";
+      message.message = "";
     }
-    if (object.peerId !== undefined && object.peerId !== null) {
-      message.peerId = String(object.peerId);
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
     } else {
-      message.peerId = "";
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromJSON(object.session);
+    } else {
+      message.session = undefined;
     }
     return message;
   },
 
   toJSON(message: MsgAccessNameResponse): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.publicKey !== undefined && (obj.publicKey = message.publicKey);
-    message.peerId !== undefined && (obj.peerId = message.peerId);
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
+    message.session !== undefined &&
+      (obj.session = message.session
+        ? Session.toJSON(message.session)
+        : undefined);
     return obj;
   },
 
@@ -744,41 +1040,52 @@ export const MsgAccessNameResponse = {
     object: DeepPartial<MsgAccessNameResponse>
   ): MsgAccessNameResponse {
     const message = { ...baseMsgAccessNameResponse } as MsgAccessNameResponse;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
     } else {
-      message.name = "";
+      message.code = 0;
     }
-    if (object.publicKey !== undefined && object.publicKey !== null) {
-      message.publicKey = object.publicKey;
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
     } else {
-      message.publicKey = "";
+      message.message = "";
     }
-    if (object.peerId !== undefined && object.peerId !== null) {
-      message.peerId = object.peerId;
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
     } else {
-      message.peerId = "";
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromPartial(object.session);
+    } else {
+      message.session = undefined;
     }
     return message;
   },
 };
 
-const baseMsgUpdateName: object = { creator: "", name: "" };
+const baseMsgUpdateName: object = { creator: "", did: "" };
 
 export const MsgUpdateName = {
   encode(message: MsgUpdateName, writer: Writer = Writer.create()): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+    if (message.did !== "") {
+      writer.uint32(18).string(message.did);
+    }
+    if (message.credential !== undefined) {
+      Credential.encode(message.credential, writer.uint32(26).fork()).ldelim();
     }
     Object.entries(message.metadata).forEach(([key, value]) => {
       MsgUpdateName_MetadataEntry.encode(
         { key: key as any, value },
-        writer.uint32(26).fork()
+        writer.uint32(34).fork()
       ).ldelim();
     });
+    if (message.session !== undefined) {
+      Session.encode(message.session, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -794,16 +1101,22 @@ export const MsgUpdateName = {
           message.creator = reader.string();
           break;
         case 2:
-          message.name = reader.string();
+          message.did = reader.string();
           break;
         case 3:
-          const entry3 = MsgUpdateName_MetadataEntry.decode(
+          message.credential = Credential.decode(reader, reader.uint32());
+          break;
+        case 4:
+          const entry4 = MsgUpdateName_MetadataEntry.decode(
             reader,
             reader.uint32()
           );
-          if (entry3.value !== undefined) {
-            message.metadata[entry3.key] = entry3.value;
+          if (entry4.value !== undefined) {
+            message.metadata[entry4.key] = entry4.value;
           }
+          break;
+        case 5:
+          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -821,15 +1134,25 @@ export const MsgUpdateName = {
     } else {
       message.creator = "";
     }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
+    if (object.did !== undefined && object.did !== null) {
+      message.did = String(object.did);
     } else {
-      message.name = "";
+      message.did = "";
+    }
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromJSON(object.credential);
+    } else {
+      message.credential = undefined;
     }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {
         message.metadata[key] = String(value);
       });
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromJSON(object.session);
+    } else {
+      message.session = undefined;
     }
     return message;
   },
@@ -837,13 +1160,21 @@ export const MsgUpdateName = {
   toJSON(message: MsgUpdateName): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.name !== undefined && (obj.name = message.name);
+    message.did !== undefined && (obj.did = message.did);
+    message.credential !== undefined &&
+      (obj.credential = message.credential
+        ? Credential.toJSON(message.credential)
+        : undefined);
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
         obj.metadata[k] = v;
       });
     }
+    message.session !== undefined &&
+      (obj.session = message.session
+        ? Session.toJSON(message.session)
+        : undefined);
     return obj;
   },
 
@@ -855,10 +1186,15 @@ export const MsgUpdateName = {
     } else {
       message.creator = "";
     }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
+    if (object.did !== undefined && object.did !== null) {
+      message.did = object.did;
     } else {
-      message.name = "";
+      message.did = "";
+    }
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromPartial(object.credential);
+    } else {
+      message.credential = undefined;
     }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {
@@ -866,6 +1202,11 @@ export const MsgUpdateName = {
           message.metadata[key] = String(value);
         }
       });
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromPartial(object.session);
+    } else {
+      message.session = undefined;
     }
     return message;
   },
@@ -957,25 +1298,22 @@ export const MsgUpdateName_MetadataEntry = {
   },
 };
 
-const baseMsgUpdateNameResponse: object = {};
+const baseMsgUpdateNameResponse: object = { code: 0, message: "" };
 
 export const MsgUpdateNameResponse = {
   encode(
     message: MsgUpdateNameResponse,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.didDocument !== undefined) {
-      DidDocument.encode(
-        message.didDocument,
-        writer.uint32(10).fork()
-      ).ldelim();
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
     }
-    Object.entries(message.metadata).forEach(([key, value]) => {
-      MsgUpdateNameResponse_MetadataEntry.encode(
-        { key: key as any, value },
-        writer.uint32(18).fork()
-      ).ldelim();
-    });
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
+    }
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(26).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -983,21 +1321,17 @@ export const MsgUpdateNameResponse = {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseMsgUpdateNameResponse } as MsgUpdateNameResponse;
-    message.metadata = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.didDocument = DidDocument.decode(reader, reader.uint32());
+          message.code = reader.int32();
           break;
         case 2:
-          const entry2 = MsgUpdateNameResponse_MetadataEntry.decode(
-            reader,
-            reader.uint32()
-          );
-          if (entry2.value !== undefined) {
-            message.metadata[entry2.key] = entry2.value;
-          }
+          message.message = reader.string();
+          break;
+        case 3:
+          message.who_is = WhoIs.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1009,32 +1343,30 @@ export const MsgUpdateNameResponse = {
 
   fromJSON(object: any): MsgUpdateNameResponse {
     const message = { ...baseMsgUpdateNameResponse } as MsgUpdateNameResponse;
-    message.metadata = {};
-    if (object.didDocument !== undefined && object.didDocument !== null) {
-      message.didDocument = DidDocument.fromJSON(object.didDocument);
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
     } else {
-      message.didDocument = undefined;
+      message.code = 0;
     }
-    if (object.metadata !== undefined && object.metadata !== null) {
-      Object.entries(object.metadata).forEach(([key, value]) => {
-        message.metadata[key] = String(value);
-      });
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
+    } else {
+      message.who_is = undefined;
     }
     return message;
   },
 
   toJSON(message: MsgUpdateNameResponse): unknown {
     const obj: any = {};
-    message.didDocument !== undefined &&
-      (obj.didDocument = message.didDocument
-        ? DidDocument.toJSON(message.didDocument)
-        : undefined);
-    obj.metadata = {};
-    if (message.metadata) {
-      Object.entries(message.metadata).forEach(([k, v]) => {
-        obj.metadata[k] = v;
-      });
-    }
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
     return obj;
   },
 
@@ -1042,126 +1374,48 @@ export const MsgUpdateNameResponse = {
     object: DeepPartial<MsgUpdateNameResponse>
   ): MsgUpdateNameResponse {
     const message = { ...baseMsgUpdateNameResponse } as MsgUpdateNameResponse;
-    message.metadata = {};
-    if (object.didDocument !== undefined && object.didDocument !== null) {
-      message.didDocument = DidDocument.fromPartial(object.didDocument);
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
     } else {
-      message.didDocument = undefined;
+      message.code = 0;
     }
-    if (object.metadata !== undefined && object.metadata !== null) {
-      Object.entries(object.metadata).forEach(([key, value]) => {
-        if (value !== undefined) {
-          message.metadata[key] = String(value);
-        }
-      });
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
+    } else {
+      message.who_is = undefined;
     }
     return message;
   },
 };
 
-const baseMsgUpdateNameResponse_MetadataEntry: object = { key: "", value: "" };
+const baseMsgAccessApplication: object = { creator: "", app_name: "" };
 
-export const MsgUpdateNameResponse_MetadataEntry = {
+export const MsgAccessApplication = {
   encode(
-    message: MsgUpdateNameResponse_MetadataEntry,
+    message: MsgAccessApplication,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(
-    input: Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateNameResponse_MetadataEntry {
-    const reader = input instanceof Uint8Array ? new Reader(input) : input;
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateNameResponse_MetadataEntry,
-    } as MsgUpdateNameResponse_MetadataEntry;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.key = reader.string();
-          break;
-        case 2:
-          message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgUpdateNameResponse_MetadataEntry {
-    const message = {
-      ...baseMsgUpdateNameResponse_MetadataEntry,
-    } as MsgUpdateNameResponse_MetadataEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = String(object.key);
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = String(object.value);
-    } else {
-      message.value = "";
-    }
-    return message;
-  },
-
-  toJSON(message: MsgUpdateNameResponse_MetadataEntry): unknown {
-    const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgUpdateNameResponse_MetadataEntry>
-  ): MsgUpdateNameResponse_MetadataEntry {
-    const message = {
-      ...baseMsgUpdateNameResponse_MetadataEntry,
-    } as MsgUpdateNameResponse_MetadataEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = object.value;
-    } else {
-      message.value = "";
-    }
-    return message;
-  },
-};
-
-const baseMsgAccessService: object = { creator: "", did: "" };
-
-export const MsgAccessService = {
-  encode(message: MsgAccessService, writer: Writer = Writer.create()): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.did !== "") {
-      writer.uint32(18).string(message.did);
+    if (message.app_name !== "") {
+      writer.uint32(18).string(message.app_name);
+    }
+    if (message.credential !== undefined) {
+      Credential.encode(message.credential, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): MsgAccessService {
+  decode(input: Reader | Uint8Array, length?: number): MsgAccessApplication {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgAccessService } as MsgAccessService;
+    const message = { ...baseMsgAccessApplication } as MsgAccessApplication;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1169,7 +1423,10 @@ export const MsgAccessService = {
           message.creator = reader.string();
           break;
         case 2:
-          message.did = reader.string();
+          message.app_name = reader.string();
+          break;
+        case 3:
+          message.credential = Credential.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1179,49 +1436,63 @@ export const MsgAccessService = {
     return message;
   },
 
-  fromJSON(object: any): MsgAccessService {
-    const message = { ...baseMsgAccessService } as MsgAccessService;
+  fromJSON(object: any): MsgAccessApplication {
+    const message = { ...baseMsgAccessApplication } as MsgAccessApplication;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
       message.creator = "";
     }
-    if (object.did !== undefined && object.did !== null) {
-      message.did = String(object.did);
+    if (object.app_name !== undefined && object.app_name !== null) {
+      message.app_name = String(object.app_name);
     } else {
-      message.did = "";
+      message.app_name = "";
+    }
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromJSON(object.credential);
+    } else {
+      message.credential = undefined;
     }
     return message;
   },
 
-  toJSON(message: MsgAccessService): unknown {
+  toJSON(message: MsgAccessApplication): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.did !== undefined && (obj.did = message.did);
+    message.app_name !== undefined && (obj.app_name = message.app_name);
+    message.credential !== undefined &&
+      (obj.credential = message.credential
+        ? Credential.toJSON(message.credential)
+        : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgAccessService>): MsgAccessService {
-    const message = { ...baseMsgAccessService } as MsgAccessService;
+  fromPartial(object: DeepPartial<MsgAccessApplication>): MsgAccessApplication {
+    const message = { ...baseMsgAccessApplication } as MsgAccessApplication;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
       message.creator = "";
     }
-    if (object.did !== undefined && object.did !== null) {
-      message.did = object.did;
+    if (object.app_name !== undefined && object.app_name !== null) {
+      message.app_name = object.app_name;
     } else {
-      message.did = "";
+      message.app_name = "";
+    }
+    if (object.credential !== undefined && object.credential !== null) {
+      message.credential = Credential.fromPartial(object.credential);
+    } else {
+      message.credential = undefined;
     }
     return message;
   },
 };
 
-const baseMsgAccessServiceResponse: object = { code: 0, message: "" };
+const baseMsgAccessApplicationResponse: object = { code: 0, message: "" };
 
-export const MsgAccessServiceResponse = {
+export const MsgAccessApplicationResponse = {
   encode(
-    message: MsgAccessServiceResponse,
+    message: MsgAccessApplicationResponse,
     writer: Writer = Writer.create()
   ): Writer {
     if (message.code !== 0) {
@@ -1231,23 +1502,29 @@ export const MsgAccessServiceResponse = {
       writer.uint32(18).string(message.message);
     }
     Object.entries(message.metadata).forEach(([key, value]) => {
-      MsgAccessServiceResponse_MetadataEntry.encode(
+      MsgAccessApplicationResponse_MetadataEntry.encode(
         { key: key as any, value },
         writer.uint32(26).fork()
       ).ldelim();
     });
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.session !== undefined) {
+      Session.encode(message.session, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
   decode(
     input: Reader | Uint8Array,
     length?: number
-  ): MsgAccessServiceResponse {
+  ): MsgAccessApplicationResponse {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgAccessServiceResponse,
-    } as MsgAccessServiceResponse;
+      ...baseMsgAccessApplicationResponse,
+    } as MsgAccessApplicationResponse;
     message.metadata = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -1259,13 +1536,19 @@ export const MsgAccessServiceResponse = {
           message.message = reader.string();
           break;
         case 3:
-          const entry3 = MsgAccessServiceResponse_MetadataEntry.decode(
+          const entry3 = MsgAccessApplicationResponse_MetadataEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry3.value !== undefined) {
             message.metadata[entry3.key] = entry3.value;
           }
+          break;
+        case 4:
+          message.who_is = WhoIs.decode(reader, reader.uint32());
+          break;
+        case 5:
+          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1275,10 +1558,10 @@ export const MsgAccessServiceResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgAccessServiceResponse {
+  fromJSON(object: any): MsgAccessApplicationResponse {
     const message = {
-      ...baseMsgAccessServiceResponse,
-    } as MsgAccessServiceResponse;
+      ...baseMsgAccessApplicationResponse,
+    } as MsgAccessApplicationResponse;
     message.metadata = {};
     if (object.code !== undefined && object.code !== null) {
       message.code = Number(object.code);
@@ -1295,10 +1578,20 @@ export const MsgAccessServiceResponse = {
         message.metadata[key] = String(value);
       });
     }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromJSON(object.session);
+    } else {
+      message.session = undefined;
+    }
     return message;
   },
 
-  toJSON(message: MsgAccessServiceResponse): unknown {
+  toJSON(message: MsgAccessApplicationResponse): unknown {
     const obj: any = {};
     message.code !== undefined && (obj.code = message.code);
     message.message !== undefined && (obj.message = message.message);
@@ -1308,15 +1601,21 @@ export const MsgAccessServiceResponse = {
         obj.metadata[k] = v;
       });
     }
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
+    message.session !== undefined &&
+      (obj.session = message.session
+        ? Session.toJSON(message.session)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgAccessServiceResponse>
-  ): MsgAccessServiceResponse {
+    object: DeepPartial<MsgAccessApplicationResponse>
+  ): MsgAccessApplicationResponse {
     const message = {
-      ...baseMsgAccessServiceResponse,
-    } as MsgAccessServiceResponse;
+      ...baseMsgAccessApplicationResponse,
+    } as MsgAccessApplicationResponse;
     message.metadata = {};
     if (object.code !== undefined && object.code !== null) {
       message.code = object.code;
@@ -1335,18 +1634,28 @@ export const MsgAccessServiceResponse = {
         }
       });
     }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromPartial(object.session);
+    } else {
+      message.session = undefined;
+    }
     return message;
   },
 };
 
-const baseMsgAccessServiceResponse_MetadataEntry: object = {
+const baseMsgAccessApplicationResponse_MetadataEntry: object = {
   key: "",
   value: "",
 };
 
-export const MsgAccessServiceResponse_MetadataEntry = {
+export const MsgAccessApplicationResponse_MetadataEntry = {
   encode(
-    message: MsgAccessServiceResponse_MetadataEntry,
+    message: MsgAccessApplicationResponse_MetadataEntry,
     writer: Writer = Writer.create()
   ): Writer {
     if (message.key !== "") {
@@ -1361,12 +1670,12 @@ export const MsgAccessServiceResponse_MetadataEntry = {
   decode(
     input: Reader | Uint8Array,
     length?: number
-  ): MsgAccessServiceResponse_MetadataEntry {
+  ): MsgAccessApplicationResponse_MetadataEntry {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgAccessServiceResponse_MetadataEntry,
-    } as MsgAccessServiceResponse_MetadataEntry;
+      ...baseMsgAccessApplicationResponse_MetadataEntry,
+    } as MsgAccessApplicationResponse_MetadataEntry;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1384,10 +1693,10 @@ export const MsgAccessServiceResponse_MetadataEntry = {
     return message;
   },
 
-  fromJSON(object: any): MsgAccessServiceResponse_MetadataEntry {
+  fromJSON(object: any): MsgAccessApplicationResponse_MetadataEntry {
     const message = {
-      ...baseMsgAccessServiceResponse_MetadataEntry,
-    } as MsgAccessServiceResponse_MetadataEntry;
+      ...baseMsgAccessApplicationResponse_MetadataEntry,
+    } as MsgAccessApplicationResponse_MetadataEntry;
     if (object.key !== undefined && object.key !== null) {
       message.key = String(object.key);
     } else {
@@ -1401,7 +1710,7 @@ export const MsgAccessServiceResponse_MetadataEntry = {
     return message;
   },
 
-  toJSON(message: MsgAccessServiceResponse_MetadataEntry): unknown {
+  toJSON(message: MsgAccessApplicationResponse_MetadataEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
@@ -1409,11 +1718,11 @@ export const MsgAccessServiceResponse_MetadataEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgAccessServiceResponse_MetadataEntry>
-  ): MsgAccessServiceResponse_MetadataEntry {
+    object: DeepPartial<MsgAccessApplicationResponse_MetadataEntry>
+  ): MsgAccessApplicationResponse_MetadataEntry {
     const message = {
-      ...baseMsgAccessServiceResponse_MetadataEntry,
-    } as MsgAccessServiceResponse_MetadataEntry;
+      ...baseMsgAccessApplicationResponse_MetadataEntry,
+    } as MsgAccessApplicationResponse_MetadataEntry;
     if (object.key !== undefined && object.key !== null) {
       message.key = object.key;
     } else {
@@ -1428,36 +1737,35 @@ export const MsgAccessServiceResponse_MetadataEntry = {
   },
 };
 
-const baseMsgUpdateService: object = { creator: "", did: "" };
+const baseMsgUpdateApplication: object = { creator: "", did: "" };
 
-export const MsgUpdateService = {
-  encode(message: MsgUpdateService, writer: Writer = Writer.create()): Writer {
+export const MsgUpdateApplication = {
+  encode(
+    message: MsgUpdateApplication,
+    writer: Writer = Writer.create()
+  ): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.did !== "") {
       writer.uint32(18).string(message.did);
     }
-    Object.entries(message.configuration).forEach(([key, value]) => {
-      MsgUpdateService_ConfigurationEntry.encode(
+    Object.entries(message.metadata).forEach(([key, value]) => {
+      MsgUpdateApplication_MetadataEntry.encode(
         { key: key as any, value },
         writer.uint32(26).fork()
       ).ldelim();
     });
-    Object.entries(message.metadata).forEach(([key, value]) => {
-      MsgUpdateService_MetadataEntry.encode(
-        { key: key as any, value },
-        writer.uint32(34).fork()
-      ).ldelim();
-    });
+    if (message.session !== undefined) {
+      Session.encode(message.session, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): MsgUpdateService {
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdateApplication {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateService } as MsgUpdateService;
-    message.configuration = {};
+    const message = { ...baseMsgUpdateApplication } as MsgUpdateApplication;
     message.metadata = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -1469,22 +1777,16 @@ export const MsgUpdateService = {
           message.did = reader.string();
           break;
         case 3:
-          const entry3 = MsgUpdateService_ConfigurationEntry.decode(
+          const entry3 = MsgUpdateApplication_MetadataEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry3.value !== undefined) {
-            message.configuration[entry3.key] = entry3.value;
+            message.metadata[entry3.key] = entry3.value;
           }
           break;
         case 4:
-          const entry4 = MsgUpdateService_MetadataEntry.decode(
-            reader,
-            reader.uint32()
-          );
-          if (entry4.value !== undefined) {
-            message.metadata[entry4.key] = entry4.value;
-          }
+          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1494,9 +1796,8 @@ export const MsgUpdateService = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdateService {
-    const message = { ...baseMsgUpdateService } as MsgUpdateService;
-    message.configuration = {};
+  fromJSON(object: any): MsgUpdateApplication {
+    const message = { ...baseMsgUpdateApplication } as MsgUpdateApplication;
     message.metadata = {};
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
@@ -1508,41 +1809,38 @@ export const MsgUpdateService = {
     } else {
       message.did = "";
     }
-    if (object.configuration !== undefined && object.configuration !== null) {
-      Object.entries(object.configuration).forEach(([key, value]) => {
-        message.configuration[key] = String(value);
-      });
-    }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {
         message.metadata[key] = String(value);
       });
     }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromJSON(object.session);
+    } else {
+      message.session = undefined;
+    }
     return message;
   },
 
-  toJSON(message: MsgUpdateService): unknown {
+  toJSON(message: MsgUpdateApplication): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.did !== undefined && (obj.did = message.did);
-    obj.configuration = {};
-    if (message.configuration) {
-      Object.entries(message.configuration).forEach(([k, v]) => {
-        obj.configuration[k] = v;
-      });
-    }
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
         obj.metadata[k] = v;
       });
     }
+    message.session !== undefined &&
+      (obj.session = message.session
+        ? Session.toJSON(message.session)
+        : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgUpdateService>): MsgUpdateService {
-    const message = { ...baseMsgUpdateService } as MsgUpdateService;
-    message.configuration = {};
+  fromPartial(object: DeepPartial<MsgUpdateApplication>): MsgUpdateApplication {
+    const message = { ...baseMsgUpdateApplication } as MsgUpdateApplication;
     message.metadata = {};
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
@@ -1554,13 +1852,6 @@ export const MsgUpdateService = {
     } else {
       message.did = "";
     }
-    if (object.configuration !== undefined && object.configuration !== null) {
-      Object.entries(object.configuration).forEach(([key, value]) => {
-        if (value !== undefined) {
-          message.configuration[key] = String(value);
-        }
-      });
-    }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -1568,15 +1859,20 @@ export const MsgUpdateService = {
         }
       });
     }
+    if (object.session !== undefined && object.session !== null) {
+      message.session = Session.fromPartial(object.session);
+    } else {
+      message.session = undefined;
+    }
     return message;
   },
 };
 
-const baseMsgUpdateService_ConfigurationEntry: object = { key: "", value: "" };
+const baseMsgUpdateApplication_MetadataEntry: object = { key: "", value: "" };
 
-export const MsgUpdateService_ConfigurationEntry = {
+export const MsgUpdateApplication_MetadataEntry = {
   encode(
-    message: MsgUpdateService_ConfigurationEntry,
+    message: MsgUpdateApplication_MetadataEntry,
     writer: Writer = Writer.create()
   ): Writer {
     if (message.key !== "") {
@@ -1591,12 +1887,12 @@ export const MsgUpdateService_ConfigurationEntry = {
   decode(
     input: Reader | Uint8Array,
     length?: number
-  ): MsgUpdateService_ConfigurationEntry {
+  ): MsgUpdateApplication_MetadataEntry {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgUpdateService_ConfigurationEntry,
-    } as MsgUpdateService_ConfigurationEntry;
+      ...baseMsgUpdateApplication_MetadataEntry,
+    } as MsgUpdateApplication_MetadataEntry;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1614,10 +1910,10 @@ export const MsgUpdateService_ConfigurationEntry = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdateService_ConfigurationEntry {
+  fromJSON(object: any): MsgUpdateApplication_MetadataEntry {
     const message = {
-      ...baseMsgUpdateService_ConfigurationEntry,
-    } as MsgUpdateService_ConfigurationEntry;
+      ...baseMsgUpdateApplication_MetadataEntry,
+    } as MsgUpdateApplication_MetadataEntry;
     if (object.key !== undefined && object.key !== null) {
       message.key = String(object.key);
     } else {
@@ -1631,7 +1927,7 @@ export const MsgUpdateService_ConfigurationEntry = {
     return message;
   },
 
-  toJSON(message: MsgUpdateService_ConfigurationEntry): unknown {
+  toJSON(message: MsgUpdateApplication_MetadataEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
@@ -1639,11 +1935,11 @@ export const MsgUpdateService_ConfigurationEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgUpdateService_ConfigurationEntry>
-  ): MsgUpdateService_ConfigurationEntry {
+    object: DeepPartial<MsgUpdateApplication_MetadataEntry>
+  ): MsgUpdateApplication_MetadataEntry {
     const message = {
-      ...baseMsgUpdateService_ConfigurationEntry,
-    } as MsgUpdateService_ConfigurationEntry;
+      ...baseMsgUpdateApplication_MetadataEntry,
+    } as MsgUpdateApplication_MetadataEntry;
     if (object.key !== undefined && object.key !== null) {
       message.key = object.key;
     } else {
@@ -1658,148 +1954,52 @@ export const MsgUpdateService_ConfigurationEntry = {
   },
 };
 
-const baseMsgUpdateService_MetadataEntry: object = { key: "", value: "" };
+const baseMsgUpdateApplicationResponse: object = { code: 0, message: "" };
 
-export const MsgUpdateService_MetadataEntry = {
+export const MsgUpdateApplicationResponse = {
   encode(
-    message: MsgUpdateService_MetadataEntry,
+    message: MsgUpdateApplicationResponse,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
     }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
     }
-    return writer;
-  },
-
-  decode(
-    input: Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateService_MetadataEntry {
-    const reader = input instanceof Uint8Array ? new Reader(input) : input;
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateService_MetadataEntry,
-    } as MsgUpdateService_MetadataEntry;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.key = reader.string();
-          break;
-        case 2:
-          message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgUpdateService_MetadataEntry {
-    const message = {
-      ...baseMsgUpdateService_MetadataEntry,
-    } as MsgUpdateService_MetadataEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = String(object.key);
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = String(object.value);
-    } else {
-      message.value = "";
-    }
-    return message;
-  },
-
-  toJSON(message: MsgUpdateService_MetadataEntry): unknown {
-    const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgUpdateService_MetadataEntry>
-  ): MsgUpdateService_MetadataEntry {
-    const message = {
-      ...baseMsgUpdateService_MetadataEntry,
-    } as MsgUpdateService_MetadataEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = object.value;
-    } else {
-      message.value = "";
-    }
-    return message;
-  },
-};
-
-const baseMsgUpdateServiceResponse: object = {};
-
-export const MsgUpdateServiceResponse = {
-  encode(
-    message: MsgUpdateServiceResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.didDocument !== undefined) {
-      DidDocument.encode(
-        message.didDocument,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    Object.entries(message.configuration).forEach(([key, value]) => {
-      MsgUpdateServiceResponse_ConfigurationEntry.encode(
-        { key: key as any, value },
-        writer.uint32(18).fork()
-      ).ldelim();
-    });
     Object.entries(message.metadata).forEach(([key, value]) => {
-      MsgUpdateServiceResponse_MetadataEntry.encode(
+      MsgUpdateApplicationResponse_MetadataEntry.encode(
         { key: key as any, value },
         writer.uint32(26).fork()
       ).ldelim();
     });
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
   decode(
     input: Reader | Uint8Array,
     length?: number
-  ): MsgUpdateServiceResponse {
+  ): MsgUpdateApplicationResponse {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgUpdateServiceResponse,
-    } as MsgUpdateServiceResponse;
-    message.configuration = {};
+      ...baseMsgUpdateApplicationResponse,
+    } as MsgUpdateApplicationResponse;
     message.metadata = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.didDocument = DidDocument.decode(reader, reader.uint32());
+          message.code = reader.int32();
           break;
         case 2:
-          const entry2 = MsgUpdateServiceResponse_ConfigurationEntry.decode(
-            reader,
-            reader.uint32()
-          );
-          if (entry2.value !== undefined) {
-            message.configuration[entry2.key] = entry2.value;
-          }
+          message.message = reader.string();
           break;
         case 3:
-          const entry3 = MsgUpdateServiceResponse_MetadataEntry.decode(
+          const entry3 = MsgUpdateApplicationResponse_MetadataEntry.decode(
             reader,
             reader.uint32()
           );
@@ -1807,6 +2007,9 @@ export const MsgUpdateServiceResponse = {
             message.metadata[entry3.key] = entry3.value;
           }
           break;
+        case 4:
+          message.who_is = WhoIs.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1815,70 +2018,65 @@ export const MsgUpdateServiceResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdateServiceResponse {
+  fromJSON(object: any): MsgUpdateApplicationResponse {
     const message = {
-      ...baseMsgUpdateServiceResponse,
-    } as MsgUpdateServiceResponse;
-    message.configuration = {};
+      ...baseMsgUpdateApplicationResponse,
+    } as MsgUpdateApplicationResponse;
     message.metadata = {};
-    if (object.didDocument !== undefined && object.didDocument !== null) {
-      message.didDocument = DidDocument.fromJSON(object.didDocument);
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
     } else {
-      message.didDocument = undefined;
+      message.code = 0;
     }
-    if (object.configuration !== undefined && object.configuration !== null) {
-      Object.entries(object.configuration).forEach(([key, value]) => {
-        message.configuration[key] = String(value);
-      });
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = "";
     }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {
         message.metadata[key] = String(value);
       });
     }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
     return message;
   },
 
-  toJSON(message: MsgUpdateServiceResponse): unknown {
+  toJSON(message: MsgUpdateApplicationResponse): unknown {
     const obj: any = {};
-    message.didDocument !== undefined &&
-      (obj.didDocument = message.didDocument
-        ? DidDocument.toJSON(message.didDocument)
-        : undefined);
-    obj.configuration = {};
-    if (message.configuration) {
-      Object.entries(message.configuration).forEach(([k, v]) => {
-        obj.configuration[k] = v;
-      });
-    }
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
         obj.metadata[k] = v;
       });
     }
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgUpdateServiceResponse>
-  ): MsgUpdateServiceResponse {
+    object: DeepPartial<MsgUpdateApplicationResponse>
+  ): MsgUpdateApplicationResponse {
     const message = {
-      ...baseMsgUpdateServiceResponse,
-    } as MsgUpdateServiceResponse;
-    message.configuration = {};
+      ...baseMsgUpdateApplicationResponse,
+    } as MsgUpdateApplicationResponse;
     message.metadata = {};
-    if (object.didDocument !== undefined && object.didDocument !== null) {
-      message.didDocument = DidDocument.fromPartial(object.didDocument);
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
     } else {
-      message.didDocument = undefined;
+      message.code = 0;
     }
-    if (object.configuration !== undefined && object.configuration !== null) {
-      Object.entries(object.configuration).forEach(([key, value]) => {
-        if (value !== undefined) {
-          message.configuration[key] = String(value);
-        }
-      });
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = "";
     }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {
@@ -1887,18 +2085,23 @@ export const MsgUpdateServiceResponse = {
         }
       });
     }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
     return message;
   },
 };
 
-const baseMsgUpdateServiceResponse_ConfigurationEntry: object = {
+const baseMsgUpdateApplicationResponse_MetadataEntry: object = {
   key: "",
   value: "",
 };
 
-export const MsgUpdateServiceResponse_ConfigurationEntry = {
+export const MsgUpdateApplicationResponse_MetadataEntry = {
   encode(
-    message: MsgUpdateServiceResponse_ConfigurationEntry,
+    message: MsgUpdateApplicationResponse_MetadataEntry,
     writer: Writer = Writer.create()
   ): Writer {
     if (message.key !== "") {
@@ -1913,12 +2116,12 @@ export const MsgUpdateServiceResponse_ConfigurationEntry = {
   decode(
     input: Reader | Uint8Array,
     length?: number
-  ): MsgUpdateServiceResponse_ConfigurationEntry {
+  ): MsgUpdateApplicationResponse_MetadataEntry {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgUpdateServiceResponse_ConfigurationEntry,
-    } as MsgUpdateServiceResponse_ConfigurationEntry;
+      ...baseMsgUpdateApplicationResponse_MetadataEntry,
+    } as MsgUpdateApplicationResponse_MetadataEntry;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1936,10 +2139,10 @@ export const MsgUpdateServiceResponse_ConfigurationEntry = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdateServiceResponse_ConfigurationEntry {
+  fromJSON(object: any): MsgUpdateApplicationResponse_MetadataEntry {
     const message = {
-      ...baseMsgUpdateServiceResponse_ConfigurationEntry,
-    } as MsgUpdateServiceResponse_ConfigurationEntry;
+      ...baseMsgUpdateApplicationResponse_MetadataEntry,
+    } as MsgUpdateApplicationResponse_MetadataEntry;
     if (object.key !== undefined && object.key !== null) {
       message.key = String(object.key);
     } else {
@@ -1953,7 +2156,7 @@ export const MsgUpdateServiceResponse_ConfigurationEntry = {
     return message;
   },
 
-  toJSON(message: MsgUpdateServiceResponse_ConfigurationEntry): unknown {
+  toJSON(message: MsgUpdateApplicationResponse_MetadataEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
@@ -1961,11 +2164,11 @@ export const MsgUpdateServiceResponse_ConfigurationEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgUpdateServiceResponse_ConfigurationEntry>
-  ): MsgUpdateServiceResponse_ConfigurationEntry {
+    object: DeepPartial<MsgUpdateApplicationResponse_MetadataEntry>
+  ): MsgUpdateApplicationResponse_MetadataEntry {
     const message = {
-      ...baseMsgUpdateServiceResponse_ConfigurationEntry,
-    } as MsgUpdateServiceResponse_ConfigurationEntry;
+      ...baseMsgUpdateApplicationResponse_MetadataEntry,
+    } as MsgUpdateApplicationResponse_MetadataEntry;
     if (object.key !== undefined && object.key !== null) {
       message.key = object.key;
     } else {
@@ -1980,42 +2183,50 @@ export const MsgUpdateServiceResponse_ConfigurationEntry = {
   },
 };
 
-const baseMsgUpdateServiceResponse_MetadataEntry: object = {
-  key: "",
-  value: "",
-};
+const baseMsgCreateWhoIs: object = { creator: "", did: "", name: "" };
 
-export const MsgUpdateServiceResponse_MetadataEntry = {
-  encode(
-    message: MsgUpdateServiceResponse_MetadataEntry,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
+export const MsgCreateWhoIs = {
+  encode(message: MsgCreateWhoIs, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
     }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
+    if (message.did !== "") {
+      writer.uint32(18).string(message.did);
+    }
+    if (message.document.length !== 0) {
+      writer.uint32(26).bytes(message.document);
+    }
+    for (const v of message.credentials) {
+      Credential.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.name !== "") {
+      writer.uint32(42).string(message.name);
     }
     return writer;
   },
 
-  decode(
-    input: Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateServiceResponse_MetadataEntry {
+  decode(input: Reader | Uint8Array, length?: number): MsgCreateWhoIs {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateServiceResponse_MetadataEntry,
-    } as MsgUpdateServiceResponse_MetadataEntry;
+    const message = { ...baseMsgCreateWhoIs } as MsgCreateWhoIs;
+    message.credentials = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.key = reader.string();
+          message.creator = reader.string();
           break;
         case 2:
-          message.value = reader.string();
+          message.did = reader.string();
+          break;
+        case 3:
+          message.document = reader.bytes();
+          break;
+        case 4:
+          message.credentials.push(Credential.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.name = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2025,61 +2236,605 @@ export const MsgUpdateServiceResponse_MetadataEntry = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdateServiceResponse_MetadataEntry {
-    const message = {
-      ...baseMsgUpdateServiceResponse_MetadataEntry,
-    } as MsgUpdateServiceResponse_MetadataEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = String(object.key);
+  fromJSON(object: any): MsgCreateWhoIs {
+    const message = { ...baseMsgCreateWhoIs } as MsgCreateWhoIs;
+    message.credentials = [];
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
     } else {
-      message.key = "";
+      message.creator = "";
     }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = String(object.value);
+    if (object.did !== undefined && object.did !== null) {
+      message.did = String(object.did);
     } else {
-      message.value = "";
+      message.did = "";
+    }
+    if (object.document !== undefined && object.document !== null) {
+      message.document = bytesFromBase64(object.document);
+    }
+    if (object.credentials !== undefined && object.credentials !== null) {
+      for (const e of object.credentials) {
+        message.credentials.push(Credential.fromJSON(e));
+      }
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
     }
     return message;
   },
 
-  toJSON(message: MsgUpdateServiceResponse_MetadataEntry): unknown {
+  toJSON(message: MsgCreateWhoIs): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.did !== undefined && (obj.did = message.did);
+    message.document !== undefined &&
+      (obj.document = base64FromBytes(
+        message.document !== undefined ? message.document : new Uint8Array()
+      ));
+    if (message.credentials) {
+      obj.credentials = message.credentials.map((e) =>
+        e ? Credential.toJSON(e) : undefined
+      );
+    } else {
+      obj.credentials = [];
+    }
+    message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgUpdateServiceResponse_MetadataEntry>
-  ): MsgUpdateServiceResponse_MetadataEntry {
-    const message = {
-      ...baseMsgUpdateServiceResponse_MetadataEntry,
-    } as MsgUpdateServiceResponse_MetadataEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
+  fromPartial(object: DeepPartial<MsgCreateWhoIs>): MsgCreateWhoIs {
+    const message = { ...baseMsgCreateWhoIs } as MsgCreateWhoIs;
+    message.credentials = [];
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
     } else {
-      message.key = "";
+      message.creator = "";
     }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = object.value;
+    if (object.did !== undefined && object.did !== null) {
+      message.did = object.did;
     } else {
-      message.value = "";
+      message.did = "";
+    }
+    if (object.document !== undefined && object.document !== null) {
+      message.document = object.document;
+    } else {
+      message.document = new Uint8Array();
+    }
+    if (object.credentials !== undefined && object.credentials !== null) {
+      for (const e of object.credentials) {
+        message.credentials.push(Credential.fromPartial(e));
+      }
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
     }
     return message;
   },
 };
 
-/** Msg defines the Msg service. */
+const baseMsgCreateWhoIsResponse: object = { code: 0, message: "" };
+
+export const MsgCreateWhoIsResponse = {
+  encode(
+    message: MsgCreateWhoIsResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
+    }
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
+    }
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgCreateWhoIsResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateWhoIsResponse } as MsgCreateWhoIsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.code = reader.int32();
+          break;
+        case 2:
+          message.message = reader.string();
+          break;
+        case 3:
+          message.who_is = WhoIs.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateWhoIsResponse {
+    const message = { ...baseMsgCreateWhoIsResponse } as MsgCreateWhoIsResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateWhoIsResponse): unknown {
+    const obj: any = {};
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateWhoIsResponse>
+  ): MsgCreateWhoIsResponse {
+    const message = { ...baseMsgCreateWhoIsResponse } as MsgCreateWhoIsResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateWhoIs: object = { creator: "", did: "" };
+
+export const MsgUpdateWhoIs = {
+  encode(message: MsgUpdateWhoIs, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.did !== "") {
+      writer.uint32(18).string(message.did);
+    }
+    if (message.document.length !== 0) {
+      writer.uint32(26).bytes(message.document);
+    }
+    for (const v of message.credentials) {
+      Credential.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdateWhoIs {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateWhoIs } as MsgUpdateWhoIs;
+    message.credentials = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.did = reader.string();
+          break;
+        case 3:
+          message.document = reader.bytes();
+          break;
+        case 4:
+          message.credentials.push(Credential.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateWhoIs {
+    const message = { ...baseMsgUpdateWhoIs } as MsgUpdateWhoIs;
+    message.credentials = [];
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.did !== undefined && object.did !== null) {
+      message.did = String(object.did);
+    } else {
+      message.did = "";
+    }
+    if (object.document !== undefined && object.document !== null) {
+      message.document = bytesFromBase64(object.document);
+    }
+    if (object.credentials !== undefined && object.credentials !== null) {
+      for (const e of object.credentials) {
+        message.credentials.push(Credential.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUpdateWhoIs): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.did !== undefined && (obj.did = message.did);
+    message.document !== undefined &&
+      (obj.document = base64FromBytes(
+        message.document !== undefined ? message.document : new Uint8Array()
+      ));
+    if (message.credentials) {
+      obj.credentials = message.credentials.map((e) =>
+        e ? Credential.toJSON(e) : undefined
+      );
+    } else {
+      obj.credentials = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateWhoIs>): MsgUpdateWhoIs {
+    const message = { ...baseMsgUpdateWhoIs } as MsgUpdateWhoIs;
+    message.credentials = [];
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.did !== undefined && object.did !== null) {
+      message.did = object.did;
+    } else {
+      message.did = "";
+    }
+    if (object.document !== undefined && object.document !== null) {
+      message.document = object.document;
+    } else {
+      message.document = new Uint8Array();
+    }
+    if (object.credentials !== undefined && object.credentials !== null) {
+      for (const e of object.credentials) {
+        message.credentials.push(Credential.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateWhoIsResponse: object = { code: 0, message: "" };
+
+export const MsgUpdateWhoIsResponse = {
+  encode(
+    message: MsgUpdateWhoIsResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
+    }
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
+    }
+    if (message.who_is !== undefined) {
+      WhoIs.encode(message.who_is, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdateWhoIsResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateWhoIsResponse } as MsgUpdateWhoIsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.code = reader.int32();
+          break;
+        case 2:
+          message.message = reader.string();
+          break;
+        case 3:
+          message.who_is = WhoIs.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateWhoIsResponse {
+    const message = { ...baseMsgUpdateWhoIsResponse } as MsgUpdateWhoIsResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromJSON(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUpdateWhoIsResponse): unknown {
+    const obj: any = {};
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
+    message.who_is !== undefined &&
+      (obj.who_is = message.who_is ? WhoIs.toJSON(message.who_is) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateWhoIsResponse>
+  ): MsgUpdateWhoIsResponse {
+    const message = { ...baseMsgUpdateWhoIsResponse } as MsgUpdateWhoIsResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = "";
+    }
+    if (object.who_is !== undefined && object.who_is !== null) {
+      message.who_is = WhoIs.fromPartial(object.who_is);
+    } else {
+      message.who_is = undefined;
+    }
+    return message;
+  },
+};
+
+const baseMsgDeleteWhoIs: object = { creator: "", did: "" };
+
+export const MsgDeleteWhoIs = {
+  encode(message: MsgDeleteWhoIs, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.did !== "") {
+      writer.uint32(18).string(message.did);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDeleteWhoIs {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeleteWhoIs } as MsgDeleteWhoIs;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.did = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteWhoIs {
+    const message = { ...baseMsgDeleteWhoIs } as MsgDeleteWhoIs;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.did !== undefined && object.did !== null) {
+      message.did = String(object.did);
+    } else {
+      message.did = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeleteWhoIs): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.did !== undefined && (obj.did = message.did);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDeleteWhoIs>): MsgDeleteWhoIs {
+    const message = { ...baseMsgDeleteWhoIs } as MsgDeleteWhoIs;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.did !== undefined && object.did !== null) {
+      message.did = object.did;
+    } else {
+      message.did = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgDeleteWhoIsResponse: object = { code: 0, message: "" };
+
+export const MsgDeleteWhoIsResponse = {
+  encode(
+    message: MsgDeleteWhoIsResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.code !== 0) {
+      writer.uint32(8).int32(message.code);
+    }
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDeleteWhoIsResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeleteWhoIsResponse } as MsgDeleteWhoIsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.code = reader.int32();
+          break;
+        case 2:
+          message.message = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteWhoIsResponse {
+    const message = { ...baseMsgDeleteWhoIsResponse } as MsgDeleteWhoIsResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = Number(object.code);
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = String(object.message);
+    } else {
+      message.message = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeleteWhoIsResponse): unknown {
+    const obj: any = {};
+    message.code !== undefined && (obj.code = message.code);
+    message.message !== undefined && (obj.message = message.message);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeleteWhoIsResponse>
+  ): MsgDeleteWhoIsResponse {
+    const message = { ...baseMsgDeleteWhoIsResponse } as MsgDeleteWhoIsResponse;
+    if (object.code !== undefined && object.code !== null) {
+      message.code = object.code;
+    } else {
+      message.code = 0;
+    }
+    if (object.message !== undefined && object.message !== null) {
+      message.message = object.message;
+    } else {
+      message.message = "";
+    }
+    return message;
+  },
+};
+
+/** Msg defines the Msg Application. */
 export interface Msg {
-  RegisterService(
-    request: MsgRegisterService
-  ): Promise<MsgRegisterServiceResponse>;
+  /**
+   * Register Application
+   *
+   * RegisterApplication registers a new application on the Registry module.
+   */
+  RegisterApplication(
+    request: MsgRegisterApplication
+  ): Promise<MsgRegisterApplicationResponse>;
+  /**
+   * Register Name
+   *
+   * RegisterName registers a .snr/ name for an account on the Registry module.
+   */
   RegisterName(request: MsgRegisterName): Promise<MsgRegisterNameResponse>;
+  /**
+   * Access Name
+   *
+   * AccessName allows an account to access a .snr/ name on the Registry module. The equivalent of
+   * of a traditional Login method.
+   */
   AccessName(request: MsgAccessName): Promise<MsgAccessNameResponse>;
+  /**
+   * Update Name
+   *
+   * UpdateName allows an account to update a .snr/ name on the Registry module. Or,
+   * in other words, link a new device to an existing .snr/ name.
+   */
   UpdateName(request: MsgUpdateName): Promise<MsgUpdateNameResponse>;
-  AccessService(request: MsgAccessService): Promise<MsgAccessServiceResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
-  UpdateService(request: MsgUpdateService): Promise<MsgUpdateServiceResponse>;
+  /**
+   * Access Application
+   *
+   * AccessApplication allows an account to access an application on the Registry module.
+   */
+  AccessApplication(
+    request: MsgAccessApplication
+  ): Promise<MsgAccessApplicationResponse>;
+  /**
+   * Update Application
+   *
+   * UpdateApplication allows an account to update an application's config on the Registry module.
+   */
+  UpdateApplication(
+    request: MsgUpdateApplication
+  ): Promise<MsgUpdateApplicationResponse>;
+  /**
+   * Create WhoIs
+   *
+   * CreateWhoIs allows an account to create a WhoIs on the Registry module.
+   */
+  CreateWhoIs(request: MsgCreateWhoIs): Promise<MsgCreateWhoIsResponse>;
+  /**
+   * Update WhoIs
+   *
+   * UpdateWhoIs allows an account to update a WhoIs on the Registry module.
+   */
+  UpdateWhoIs(request: MsgUpdateWhoIs): Promise<MsgUpdateWhoIsResponse>;
+  /**
+   * Delete WhoIs
+   *
+   * DeleteWhoIs allows an account to delete a WhoIs on the Registry module.
+   */
+  DeleteWhoIs(request: MsgDeleteWhoIs): Promise<MsgDeleteWhoIsResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2087,17 +2842,17 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
   }
-  RegisterService(
-    request: MsgRegisterService
-  ): Promise<MsgRegisterServiceResponse> {
-    const data = MsgRegisterService.encode(request).finish();
+  RegisterApplication(
+    request: MsgRegisterApplication
+  ): Promise<MsgRegisterApplicationResponse> {
+    const data = MsgRegisterApplication.encode(request).finish();
     const promise = this.rpc.request(
       "sonrio.sonr.registry.Msg",
-      "RegisterService",
+      "RegisterApplication",
       data
     );
     return promise.then((data) =>
-      MsgRegisterServiceResponse.decode(new Reader(data))
+      MsgRegisterApplicationResponse.decode(new Reader(data))
     );
   }
 
@@ -2137,27 +2892,67 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  AccessService(request: MsgAccessService): Promise<MsgAccessServiceResponse> {
-    const data = MsgAccessService.encode(request).finish();
+  AccessApplication(
+    request: MsgAccessApplication
+  ): Promise<MsgAccessApplicationResponse> {
+    const data = MsgAccessApplication.encode(request).finish();
     const promise = this.rpc.request(
       "sonrio.sonr.registry.Msg",
-      "AccessService",
+      "AccessApplication",
       data
     );
     return promise.then((data) =>
-      MsgAccessServiceResponse.decode(new Reader(data))
+      MsgAccessApplicationResponse.decode(new Reader(data))
     );
   }
 
-  UpdateService(request: MsgUpdateService): Promise<MsgUpdateServiceResponse> {
-    const data = MsgUpdateService.encode(request).finish();
+  UpdateApplication(
+    request: MsgUpdateApplication
+  ): Promise<MsgUpdateApplicationResponse> {
+    const data = MsgUpdateApplication.encode(request).finish();
     const promise = this.rpc.request(
       "sonrio.sonr.registry.Msg",
-      "UpdateService",
+      "UpdateApplication",
       data
     );
     return promise.then((data) =>
-      MsgUpdateServiceResponse.decode(new Reader(data))
+      MsgUpdateApplicationResponse.decode(new Reader(data))
+    );
+  }
+
+  CreateWhoIs(request: MsgCreateWhoIs): Promise<MsgCreateWhoIsResponse> {
+    const data = MsgCreateWhoIs.encode(request).finish();
+    const promise = this.rpc.request(
+      "sonrio.sonr.registry.Msg",
+      "CreateWhoIs",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateWhoIsResponse.decode(new Reader(data))
+    );
+  }
+
+  UpdateWhoIs(request: MsgUpdateWhoIs): Promise<MsgUpdateWhoIsResponse> {
+    const data = MsgUpdateWhoIs.encode(request).finish();
+    const promise = this.rpc.request(
+      "sonrio.sonr.registry.Msg",
+      "UpdateWhoIs",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateWhoIsResponse.decode(new Reader(data))
+    );
+  }
+
+  DeleteWhoIs(request: MsgDeleteWhoIs): Promise<MsgDeleteWhoIsResponse> {
+    const data = MsgDeleteWhoIs.encode(request).finish();
+    const promise = this.rpc.request(
+      "sonrio.sonr.registry.Msg",
+      "DeleteWhoIs",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeleteWhoIsResponse.decode(new Reader(data))
     );
   }
 }
@@ -2168,6 +2963,39 @@ interface Rpc {
     method: string,
     data: Uint8Array
   ): Promise<Uint8Array>;
+}
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (let i = 0; i < arr.byteLength; ++i) {
+    bin.push(String.fromCharCode(arr[i]));
+  }
+  return btoa(bin.join(""));
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | undefined;

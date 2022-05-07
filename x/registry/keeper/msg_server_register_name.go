@@ -25,7 +25,7 @@ func (k msgServer) RegisterName(goCtx context.Context, msg *types.MsgRegisterNam
 	whois, found := k.GetWhoIs(ctx, name)
 	if found {
 		// If the message sender address doesn't match the name owner, throw an error
-		if !(msg.Creator == whois.GetCreator()) {
+		if !(msg.Creator == whois.GetOwner()) {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Registered name is owned by another address")
 		} else {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Name already registered to this Account")
@@ -49,7 +49,7 @@ func (k msgServer) RegisterName(goCtx context.Context, msg *types.MsgRegisterNam
 		Name:      name,
 		Did:       doc.ID.ID,
 		Document:  didJson,
-		Creator:   msg.GetCreator(),
+		Owner:   msg.GetCreator(),
 		Type:      types.WhoIs_User,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

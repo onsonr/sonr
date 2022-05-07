@@ -41,7 +41,7 @@ func (k msgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucke
 	// Create a new channel record
 	newWhichIs := types.WhichIs{
 		Did:       did.ID,
-		Creator:   msg.GetSession().Creator(),
+		Creator:   msg.GetSession().Owner(),
 		Bucket:    doc,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

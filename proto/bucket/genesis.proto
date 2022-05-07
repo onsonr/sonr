@@ -6,7 +6,7 @@ import "bucket/params.proto";
 import "bucket/which_is.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
-option go_package = "github.com/sonr-io/blockchain/x/bucket/types";
+option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
 // GenesisState defines the bucket module's genesis state.
 message GenesisState {

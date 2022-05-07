@@ -54,10 +54,10 @@ func setupAPI(ctx context.Context, s *core.HighwayServer) error {
 	s.GRPCClient = v1.NewHighwayClient(conn)
 
 	// Register WebAuthn HTTP Routes
-	s.Router.GET("/v1/name/register/start/:username", s.StartRegisterName)
-	s.Router.POST("/v1/name/register/finish/:username", s.FinishRegisterName)
-	s.Router.GET("/v1/name/access/start/:username", s.StartAccessName)
-	s.Router.POST("/v1/name/access/finish/:username", s.FinishAccessName)
+	s.Router.GET("/v1/auth/register/start/:username", s.StartRegisterName)
+	s.Router.POST("/v1/auth/register/finish/:username", s.FinishRegisterName)
+	s.Router.GET("/v1/auth/access/start/:username", s.StartAccessName)
+	s.Router.POST("/v1/auth/access/finish/:username", s.FinishAccessName)
 
 	// Register Cosmos HTTP Routes
 	s.Router.POST("/v1/bucket/create", s.CreateBucketHTTP)

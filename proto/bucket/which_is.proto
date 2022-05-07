@@ -1,7 +1,7 @@
 syntax = "proto3";
 package sonrio.sonr.bucket;
 import "bucket/bucket.proto";
-option go_package = "github.com/sonr-io/blockchain/x/bucket/types";
+option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
 message WhichIs {
   // DID is the DID of the bucket.

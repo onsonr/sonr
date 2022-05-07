@@ -8,7 +8,7 @@ import "registry/params.proto";
 import "registry/who_is.proto";
 // this line is used by starport scaffolding # 1
 
-option go_package = "github.com/sonr-io/blockchain/x/registry/types";
+option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -31,6 +31,11 @@ service Query {
 	// Queries a list of WhoIs items.
 	rpc WhoIsAll(QueryAllWhoIsRequest) returns (QueryAllWhoIsResponse) {
 		option (google.api.http).get = "/sonr-io/sonr/registry/who_is";
+	}
+
+// Queries a list of WhoIsByAlias items.
+	rpc WhoIsByAlias(QueryWhoIsByAliasRequest) returns (QueryWhoIsByAliasResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/registry/who_is_by_alias/{alias}";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -60,6 +65,13 @@ message QueryAllWhoIsRequest {
 message QueryAllWhoIsResponse {
 	repeated WhoIs who_is = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryWhoIsByAliasRequest {
+  string alias = 1;
+}
+
+message QueryWhoIsByAliasResponse {
 }
 
 // this line is used by starport scaffolding # 3

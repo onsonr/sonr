@@ -32,7 +32,7 @@ func TestWhoIsMsgServerCreate(t *testing.T) {
 			expected.Did,
 		)
 		require.True(t, found)
-		require.Equal(t, expected.Creator, rst.Creator)
+		require.Equal(t, expected.Creator, rst.Owner)
 	}
 }
 
@@ -84,7 +84,7 @@ func TestWhoIsMsgServerUpdate(t *testing.T) {
 					expected.Did,
 				)
 				require.True(t, found)
-				require.Equal(t, expected.Creator, rst.Creator)
+				require.Equal(t, expected.Creator, rst.Owner)
 			}
 		})
 	}

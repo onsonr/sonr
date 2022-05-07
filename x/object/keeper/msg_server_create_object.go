@@ -41,7 +41,7 @@ func (k msgServer) CreateObject(goCtx context.Context, msg *types.MsgCreateObjec
 	// Create a new Object record
 	newWhatIs := types.WhatIs{
 		Did:       did.ID,
-		Creator:   msg.GetSession().Creator(),
+		Creator:   msg.GetSession().Owner(),
 		ObjectDoc: doc,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

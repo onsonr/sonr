@@ -1,7 +1,7 @@
 syntax = "proto3";
 package sonrio.sonr.channel;
 import "object/object.proto";
-option go_package = "github.com/sonr-io/blockchain/x/channel/types";
+option go_package = "github.com/sonr-io/sonr/x/channel/types";
 
 message ChannelDoc {
     // Label is human-readable name of the channel.

@@ -18,7 +18,7 @@ func (k msgServer) AccessApplication(goCtx context.Context, msg *types.MsgAccess
 	}
 
 	// If the message sender address doesn't match the name owner, throw an error
-	if !(msg.Creator == whois.GetCreator()) {
+	if !(msg.Creator == whois.GetOwner()) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Registered name is owned by another address")
 	}
 

@@ -195,8 +195,8 @@ func (s *Session) BaseDID() (*did.DID, error) {
 }
 
 // DIDDocument returns the DID Document for the underlying WhoIs
-func (s *Session) Creator() string {
-	return s.GetWhois().GetCreator()
+func (s *Session) Owner() string {
+	return s.GetWhois().GetOwner()
 }
 
 // DIDDocument returns the DID Document for the underlying WhoIs

@@ -42,7 +42,7 @@ func (k msgServer) CreateChannel(goCtx context.Context, msg *types.MsgCreateChan
 	// Create a new channel record
 	newHowis := types.HowIs{
 		Did:       did.ID,
-		Creator:   msg.GetSession().Creator(),
+		Creator:   msg.GetSession().Owner(),
 		Channel:   doc,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

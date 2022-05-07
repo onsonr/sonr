@@ -2,7 +2,7 @@ syntax = "proto3";
 package sonrio.sonr.registry;
 import "registry/credential.proto";
 
-option go_package = "github.com/sonr-io/blockchain/x/registry/types";
+option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 // WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument.
 message WhoIs {
@@ -15,8 +15,8 @@ message WhoIs {
   // Document is the DID Document of the registered name and account encoded as JSON
   bytes document = 3;
 
-  // Creator is the Account Address of the creator of the DID Document
-  string creator = 4;
+  // Owner is the Account Address of the creator of the DID Document
+  string owner = 4;
 
   // Credentials are the biometric info of the registered name and account encoded with public key
   repeated Credential credentials = 5;

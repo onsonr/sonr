@@ -3,7 +3,7 @@ package sonrio.sonr.registry;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sonr-io/blockchain/x/registry/types";
+option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 // Params defines the parameters for the module.
 message Params {

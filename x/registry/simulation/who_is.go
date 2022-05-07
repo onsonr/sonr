@@ -69,7 +69,7 @@ func SimulateMsgUpdateWhoIs(
 			found      = false
 		)
 		for _, obj := range allWhoIs {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Owner)
 			if found {
 				whoIs = obj
 				break
@@ -115,7 +115,7 @@ func SimulateMsgDeleteWhoIs(
 			found      = false
 		)
 		for _, obj := range allWhoIs {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Owner)
 			if found {
 				whoIs = obj
 				break

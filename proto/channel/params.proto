@@ -3,7 +3,7 @@ package sonrio.sonr.channel;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sonr-io/blockchain/x/channel/types";
+option go_package = "github.com/sonr-io/sonr/x/channel/types";
 
 // Params defines the parameters for the module.
 message Params {

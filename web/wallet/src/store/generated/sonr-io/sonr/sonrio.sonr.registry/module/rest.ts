@@ -9,125 +9,273 @@
  * ---------------------------------------------------------------
  */
 
-export interface GooglerpcStatus {
-  /** @format int32 */
-  code?: number;
-  message?: string;
-  details?: ProtobufAny[];
-}
+/**
+* `Any` contains an arbitrary serialized protocol buffer message along with a
+URL that describes the type of the serialized message.
 
+Protobuf library provides support to pack/unpack Any values in the form
+of utility functions or additional generated methods of the Any type.
+
+Example 1: Pack and unpack a message in C++.
+
+    Foo foo = ...;
+    Any any;
+    any.PackFrom(foo);
+    ...
+    if (any.UnpackTo(&foo)) {
+      ...
+    }
+
+Example 2: Pack and unpack a message in Java.
+
+    Foo foo = ...;
+    Any any = Any.pack(foo);
+    ...
+    if (any.is(Foo.class)) {
+      foo = any.unpack(Foo.class);
+    }
+
+ Example 3: Pack and unpack a message in Python.
+
+    foo = Foo(...)
+    any = Any()
+    any.Pack(foo)
+    ...
+    if any.Is(Foo.DESCRIPTOR):
+      any.Unpack(foo)
+      ...
+
+ Example 4: Pack and unpack a message in Go
+
+     foo := &pb.Foo{...}
+     any, err := anypb.New(foo)
+     if err != nil {
+       ...
+     }
+     ...
+     foo := &pb.Foo{}
+     if err := any.UnmarshalTo(foo); err != nil {
+       ...
+     }
+
+The pack methods provided by protobuf library will by default use
+'type.googleapis.com/full.type.name' as the type URL and the unpack
+methods only use the fully qualified type name after the last '/'
+in the type URL, for example "foo.bar.com/x/y.z" will yield type
+name "y.z".
+
+
+JSON
+====
+The JSON representation of an `Any` value uses the regular
+representation of the deserialized, embedded message, with an
+additional field `@type` which contains the type URL. Example:
+
+    package google.profile;
+    message Person {
+      string first_name = 1;
+      string last_name = 2;
+    }
+
+    {
+      "@type": "type.googleapis.com/google.profile.Person",
+      "firstName": <string>,
+      "lastName": <string>
+    }
+
+If the embedded message type is well-known and has a custom JSON
+representation, that representation will be embedded adding a field
+`value` which holds the custom JSON in addition to the `@type`
+field. Example (for message [google.protobuf.Duration][]):
+
+    {
+      "@type": "type.googleapis.com/google.protobuf.Duration",
+      "value": "1.212s"
+    }
+*/
 export interface ProtobufAny {
+  /**
+   * A URL/resource name that uniquely identifies the type of the serialized
+   * protocol buffer message. This string must contain at least
+   * one "/" character. The last segment of the URL's path must represent
+   * the fully qualified name of the type (as in
+   * `path/google.protobuf.Duration`). The name should be in a canonical form
+   * (e.g., leading "." is not accepted).
+   *
+   * In practice, teams usually precompile into the binary all types that they
+   * expect it to use in the context of Any. However, for URLs which use the
+   * scheme `http`, `https`, or no scheme, one can optionally set up a type
+   * server that maps type URLs to message definitions as follows:
+   *
+   * * If no scheme is provided, `https` is assumed.
+   * * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+   *   value in binary format, or produce an error.
+   * * Applications are allowed to cache lookup results based on the
+   *   URL, or have them precompiled into a binary to avoid any
+   *   lookup. Therefore, binary compatibility needs to be preserved
+   *   on changes to types. (Use versioned type names to manage
+   *   breaking changes.)
+   *
+   * Note: this functionality is not currently available in the official
+   * protobuf release, and it is not used for type URLs beginning with
+   * type.googleapis.com.
+   *
+   * Schemes other than `http`, `https` (or the empty scheme) might be
+   * used with implementation specific semantics.
+   */
   "@type"?: string;
 }
 
-/**
-* Did represents a string that has been parsed and validated as a DID. The parts are stored
-in the individual fields.
-*/
-export interface RegistryDid {
-  /** Method is the method used to create the DID. For the Sonr network it is "sonr". */
-  method?: string;
+export interface RegistryAuthenticator {
+  /**
+   * The AAGUID of the authenticator. An AAGUID is defined as an array containing the globally unique
+   * identifier of the authenticator model being sought.
+   * @format byte
+   */
+  aaguid?: string;
 
-  /** Network is the network the DID is on. For testnet it is "testnet". i.e "did:sonr:testnet:". */
-  network?: string;
-  id?: string;
+  /**
+   * SignCount -Upon a new login operation, the Relying Party compares the stored signature counter value
+   * with the new sign_count value returned in the assertion’s authenticator data. If this new
+   * signCount value is less than or equal to the stored value, a cloned authenticator may
+   * exist, or the authenticator may be malfunctioning.
+   * @format int64
+   */
+  sign_count?: number;
 
-  /** Paths is a list of paths that the DID is valid for. This is used to identify the Service. */
-  paths?: string[];
-
-  /** Query is the query string that was used to create the DID. This is followed by a '?'. */
-  query?: string;
-
-  /** Fragment is the fragment string that was used to create the DID. This is followed by a '#'. */
-  fragment?: string;
+  /**
+   * CloneWarning - This is a signal that the authenticator may be cloned, i.e. at least two copies of the
+   * credential private key may exist and are being used in parallel. Relying Parties should incorporate
+   * this information into their risk scoring. Whether the Relying Party updates the stored signature
+   * counter value in this case, or not, or fails the authentication ceremony or not, is Relying Party-specific.
+   */
+  clone_warning?: boolean;
 }
 
-/**
- * DidDocument is the document that describes a DID. This document is stored on the blockchain.
- */
-export interface RegistryDidDocument {
-  /** Context is the context of the DID document. This is used to identify the Service. */
-  context?: string[];
+export interface RegistryCredential {
+  /**
+   * A probabilistically-unique byte sequence identifying a public key credential source and its authentication assertions.
+   * @format byte
+   */
+  i_d?: string;
 
-  /** Id is the DID of the document. */
-  id?: string;
+  /**
+   * The public key portion of a Relying Party-specific credential key pair, generated by an authenticator and returned to
+   * a Relying Party at registration time (see also public key credential). The private key portion of the credential key
+   * pair is known as the credential private key. Note that in the case of self attestation, the credential key pair is also
+   * used as the attestation key pair, see self attestation for details.
+   * @format byte
+   */
+  public_key?: string;
 
-  /** Controller is the DID of the controller of the document. This will be the individual user devices and mailboxes. */
-  controller?: string[];
-
-  /** VerificationMethod is the list of verification methods for the user. */
-  verificationMethod?: RegistryVerificationMethod[];
-
-  /** Authentication is the list of authentication methods for the user. */
-  authentication?: string[];
-
-  /** AssertionMethod is the list of assertion methods for the user. */
-  assertionMethod?: string[];
-
-  /** CapabilityInvocation is the list of capability invocation methods for the user. */
-  capabilityInvocation?: string[];
-
-  /** CapabilityDelegation is the list of capability delegation methods for the user. */
-  capabilityDelegation?: string[];
-
-  /** KeyAgreement is the list of key agreement methods for the user. */
-  keyAgreement?: string[];
-
-  /** Service is the list of services or DApps that the user has access to. */
-  service?: RegistryService[];
-
-  /** AlsoKnownAs is the list of ".snr" aliases for the user. */
-  alsoKnownAs?: string[];
-
-  /** Metadata is the metadata of the service. */
-  metadata?: Record<string, string>;
+  /** The attestation format used (if any) by the authenticator when creating the credential. */
+  attestation_type?: string;
+  authenticator?: RegistryAuthenticator;
 }
 
-export interface RegistryMsgAccessNameResponse {
-  name?: string;
-  publicKey?: string;
-  peerId?: string;
-}
-
-export interface RegistryMsgAccessServiceResponse {
+export interface RegistryMsgAccessApplicationResponse {
   /** @format int32 */
   code?: number;
   message?: string;
   metadata?: Record<string, string>;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
+  session?: RegistrySession;
+}
+
+export interface RegistryMsgAccessNameResponse {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
+  session?: RegistrySession;
+}
+
+export interface RegistryMsgCreateWhoIsResponse {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
+}
+
+export interface RegistryMsgDeleteWhoIsResponse {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+}
+
+export interface RegistryMsgRegisterApplicationResponse {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
+  session?: RegistrySession;
 }
 
 export interface RegistryMsgRegisterNameResponse {
-  isSuccess?: boolean;
+  /** @format int32 */
+  code?: number;
+  message?: string;
 
-  /**
-   * Did represents a string that has been parsed and validated as a DID. The parts are stored
-   * in the individual fields.
-   */
-  did?: RegistryDid;
-
-  /** DidDocument is the document that describes a DID. This document is stored on the blockchain. */
-  didDocument?: RegistryDidDocument;
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
+  session?: RegistrySession;
 }
 
-export type RegistryMsgRegisterServiceResponse = object;
+export interface RegistryMsgUpdateApplicationResponse {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+  metadata?: Record<string, string>;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
+}
 
 export interface RegistryMsgUpdateNameResponse {
-  /** DidDocument is the document that describes a DID. This document is stored on the blockchain. */
-  didDocument?: RegistryDidDocument;
-  metadata?: Record<string, string>;
+  /** @format int32 */
+  code?: number;
+  message?: string;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
 }
 
-export interface RegistryMsgUpdateServiceResponse {
-  /** DidDocument is the document that describes a DID. This document is stored on the blockchain. */
-  didDocument?: RegistryDidDocument;
-  configuration?: Record<string, string>;
-  metadata?: Record<string, string>;
+export interface RegistryMsgUpdateWhoIsResponse {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
 }
 
 /**
  * Params defines the parameters for the module.
  */
 export type RegistryParams = object;
+
+export interface RegistryQueryAllWhoIsResponse {
+  who_is?: RegistryWhoIs[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -137,109 +285,120 @@ export interface RegistryQueryParamsResponse {
   params?: RegistryParams;
 }
 
+export interface RegistryQueryWhoIsResponse {
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  who_is?: RegistryWhoIs;
+}
+
+export interface RegistrySession {
+  base_did?: string;
+
+  /** WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument. */
+  whois?: RegistryWhoIs;
+  credential?: RegistryCredential;
+}
+
 /**
- * Service is a Application that runs on the Sonr network.
+ * WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument.
  */
-export interface RegistryService {
-  /** ID is the DID of the service. */
-  id?: string;
+export interface RegistryWhoIs {
+  name?: string;
+  did?: string;
 
-  /** Type is the type of the service. */
-  type?: RegistryServiceType;
+  /** @format byte */
+  document?: string;
+  owner?: string;
+  credentials?: RegistryCredential[];
 
-  /** ServiceEndpoint is the endpoint of the service. */
-  serviceEndpoint?: RegistryServiceEndpoint;
-
-  /** Metadata is the metadata of the service. */
+  /**
+   * - User: User is the type of the registered name
+   *  - Application: Application is the type of the registered name
+   */
+  type?: RegistryWhoIsType;
   metadata?: Record<string, string>;
+
+  /** @format int64 */
+  timestamp?: string;
+  is_active?: boolean;
 }
 
 /**
- * ServiceEndpoint is the endpoint of the service.
- */
-export interface RegistryServiceEndpoint {
-  /** TransportType is the type of transport used to connect to the service. */
-  transportType?: string;
-
-  /** Network is the network the service is on. */
-  network?: string;
-  supportedProtocols?: RegistryServiceProtocol[];
-}
-
-/**
-* ServiceProtocol are core modules that can be installed on custom services on the Sonr network.
-
- - SERVICE_PROTOCOL_UNSPECIFIED: SERVICE_PROTOCOL_UNSPECIFIED is the default value.
- - SERVICE_PROTOCOL_BUCKETS: SERVICE_PROTOCOL_BUCKETS is the module that provides the ability to store and retrieve data.
- - SERVICE_PROTOCOL_CHANNEL: SERVICE_PROTOCOL_CHANNEL is the module that provides the ability to communicate with other services.
- - SERVICE_PROTOCOL_OBJECTS: SERVICE_PROTOCOL_OBJECTS is the module that provides the ability to create new schemas for data on the network.
- - SERVICE_PROTOCOL_FUNCTIONS: SERVICE_PROTOCOL_FUNCTIONS is the module that provides the ability to create new functions for data on the network.
+* - User: User is the type of the registered name
+ - Application: Application is the type of the registered name
 */
-export enum RegistryServiceProtocol {
-  SERVICE_PROTOCOL_UNSPECIFIED = "SERVICE_PROTOCOL_UNSPECIFIED",
-  SERVICE_PROTOCOL_BUCKETS = "SERVICE_PROTOCOL_BUCKETS",
-  SERVICE_PROTOCOL_CHANNEL = "SERVICE_PROTOCOL_CHANNEL",
-  SERVICE_PROTOCOL_OBJECTS = "SERVICE_PROTOCOL_OBJECTS",
-  SERVICE_PROTOCOL_FUNCTIONS = "SERVICE_PROTOCOL_FUNCTIONS",
+export enum RegistryWhoIsType {
+  User = "User",
+  Application = "Application",
+}
+
+export interface RpcStatus {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+  details?: ProtobufAny[];
 }
 
 /**
-* ServiceType is the type of service that is being registered.
-
- - SERVICE_TYPE_UNSPECIFIED: SERVICE_TYPE_UNSPECIFIED is the default value.
- - SERVICE_TYPE_DID_COMM_MESSAGING: SERVICE_TYPE_APPLICATION is the type of service that is a DApp.
- - SERVICE_TYPE_LINKED_DOMAINS: SERVICE_TYPE_SERVICE is the type of service that is a service.
- - SERVICE_TYPE_SONR: SERVICE_TYPE_SONR is the type of service that is a DApp.
+* message SomeRequest {
+         Foo some_parameter = 1;
+         PageRequest pagination = 2;
+ }
 */
-export enum RegistryServiceType {
-  SERVICE_TYPE_UNSPECIFIED = "SERVICE_TYPE_UNSPECIFIED",
-  SERVICE_TYPE_DID_COMM_MESSAGING = "SERVICE_TYPE_DID_COMM_MESSAGING",
-  SERVICE_TYPE_LINKED_DOMAINS = "SERVICE_TYPE_LINKED_DOMAINS",
-  SERVICE_TYPE_SONR = "SERVICE_TYPE_SONR",
+export interface V1Beta1PageRequest {
+  /**
+   * key is a value returned in PageResponse.next_key to begin
+   * querying the next page most efficiently. Only one of offset or key
+   * should be set.
+   * @format byte
+   */
+  key?: string;
+
+  /**
+   * offset is a numeric offset that can be used when key is unavailable.
+   * It is less efficient than using key. Only one of offset or key should
+   * be set.
+   * @format uint64
+   */
+  offset?: string;
+
+  /**
+   * limit is the total number of results to be returned in the result page.
+   * If left empty it will default to a value to be set by each app.
+   * @format uint64
+   */
+  limit?: string;
+
+  /**
+   * count_total is set to true  to indicate that the result set should include
+   * a count of the total number of items available for pagination in UIs.
+   * count_total is only respected when offset is used. It is ignored when key
+   * is set.
+   */
+  count_total?: boolean;
+
+  /**
+   * reverse is set to true if results are to be returned in the descending order.
+   *
+   * Since: cosmos-sdk 0.43
+   */
+  reverse?: boolean;
 }
 
 /**
- * VerificationMethod is a method that can be used to verify the DID.
- */
-export interface RegistryVerificationMethod {
-  /** ID is the DID of the verification method. */
-  id?: string;
+* PageResponse is to be embedded in gRPC response messages where the
+corresponding request message has used PageRequest.
 
-  /** Type is the type of the verification method. */
-  type?: RegistryVerificationMethodType;
-
-  /** Controller is the DID of the controller of the verification method. */
-  controller?: string;
-
-  /** PublicKeyHex is the public key of the verification method in hexidecimal. */
-  publicKeyHex?: string;
-
-  /** PublicKeyBase58 is the public key of the verification method in base58. */
-  publicKeyBase58?: string;
-
-  /** BlockchainAccountId is the blockchain account id of the verification method. */
-  blockchainAccountId?: string;
-}
-
-/**
-*  - TYPE_UNSPECIFIED: TYPE_UNSPECIFIED is the default value.
- - TYPE_ECDSA_SECP256K1: TYPE_ECDSA_SECP256K1 represents the Ed25519VerificationKey2018 key type.
- - TYPE_X25519: TYPE_X25519 represents the X25519KeyAgreementKey2019 key type.
- - TYPE_ED25519: TYPE_ED25519 represents the Ed25519VerificationKey2018 key type.
- - TYPE_BLS_12381_G1: TYPE_BLS_12381_G1 represents the Bls12381G1Key2020 key type
- - TYPE_BLS_12381_G2: TYPE_BLS_12381_G2 represents the Bls12381G2Key2020 key type
- - TYPE_RSA: TYPE_RSA represents the RsaVerificationKey2018 key type.
- - TYPE_VERIFIABLE_CONDITION: TYPE_VERIFIABLE_CONDITION represents the VerifiableCondition2021 key type.
+ message SomeResponse {
+         repeated Bar results = 1;
+         PageResponse page = 2;
+ }
 */
-export enum RegistryVerificationMethodType {
-  TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED",
-  TYPEECDSASECP256K1 = "TYPE_ECDSA_SECP256K1",
-  TYPEX25519 = "TYPE_X25519",
-  TYPEED25519 = "TYPE_ED25519",
-  TYPEBLS12381G1 = "TYPE_BLS_12381_G1",
-  TYPEBLS12381G2 = "TYPE_BLS_12381_G2",
-  TYPE_RSA = "TYPE_RSA",
-  TYPE_VERIFIABLE_CONDITION = "TYPE_VERIFIABLE_CONDITION",
+export interface V1Beta1PageResponse {
+  /** @format byte */
+  next_key?: string;
+
+  /** @format uint64 */
+  total?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -434,20 +593,62 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title registry/config.proto
+ * @title registry/credential.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   /**
-   * No description
+   * @description Queries a list of WhoIs items.
+   *
+   * @tags Query
+   * @name QueryWhoIsAll
+   * @summary WhoIsAll
+   * @request GET:/sonr-io/sonr/registry/who_is
+   */
+  queryWhoIsAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<RegistryQueryAllWhoIsResponse, RpcStatus>({
+      path: `/sonr-io/sonr/registry/who_is`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * @description Queries a WhoIs by did.
+   *
+   * @tags Query
+   * @name QueryWhoIs
+   * @summary WhoIs
+   * @request GET:/sonr-io/sonr/registry/who_is/{did}
+   */
+  queryWhoIs = (did: string, params: RequestParams = {}) =>
+    this.request<RegistryQueryWhoIsResponse, RpcStatus>({
+      path: `/sonr-io/sonr/registry/who_is/${did}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * @description Params queries the parameters of the Registry Module.
    *
    * @tags Query
    * @name QueryParams
-   * @summary Parameters queries the parameters of the module.
+   * @summary Params
    * @request GET:/sonrio/sonr/registry/params
    */
   queryParams = (params: RequestParams = {}) =>
-    this.request<RegistryQueryParamsResponse, GooglerpcStatus>({
+    this.request<RegistryQueryParamsResponse, RpcStatus>({
       path: `/sonrio/sonr/registry/params`,
       method: "GET",
       format: "json",

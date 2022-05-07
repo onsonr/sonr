@@ -1,7 +1,7 @@
 syntax = "proto3";
 package sonrio.sonr.bucket;
 import "object/object.proto";
-option go_package = "github.com/sonr-io/blockchain/x/bucket/types";
+option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
 // Bucket is a collection of objects.
 message BucketDoc {

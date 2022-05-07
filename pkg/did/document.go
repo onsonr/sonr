@@ -27,7 +27,7 @@ type Document struct {
 	CapabilityInvocation VerificationRelationships `json:"capabilityInvocation,omitempty"`
 	CapabilityDelegation VerificationRelationships `json:"capabilityDelegation,omitempty"`
 	Service              []Service                 `json:"service,omitempty"`
-	AlsoKnownAs          []string                  `json:"@alsoKnownAs,omitempty"`
+	AlsoKnownAs          []string                  `json:"alsoKnownAs,omitempty"`
 }
 
 // AddController adds a DID as a controller

@@ -1,30 +1,28 @@
 /* eslint-disable */
-import { Did } from "../registry/did";
 import { ObjectDoc } from "../object/object";
-import { Peer } from "../registry/peer";
 import { Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "sonrio.sonr.channel";
 
-export interface Channel {
+export interface ChannelDoc {
   /** Label is human-readable name of the channel. */
   label: string;
   /** Description is a human-readable description of the channel. */
   description: string;
   /** Did is the identifier of the channel. */
-  did: Did | undefined;
+  did: string;
   /** RegisterdObject is the object that is registered as the payload for the channel. */
-  registeredObject: ObjectDoc | undefined;
+  registered_object: ObjectDoc | undefined;
 }
 
 /** ChannelMessage is a message sent to a channel. */
 export interface ChannelMessage {
   /** Owner is the peer that originated the message. */
-  peer: Peer | undefined;
+  peer_did: string;
   /** Did is the identifier of the channel. */
-  did: Did | undefined;
+  did: string;
   /** Data is the data being sent. */
-  data: ObjectDoc | undefined;
+  object: ObjectDoc | undefined;
   /** Metadata is the metadata associated with the message. */
   metadata: { [key: string]: string };
 }
@@ -34,32 +32,32 @@ export interface ChannelMessage_MetadataEntry {
   value: string;
 }
 
-const baseChannel: object = { label: "", description: "" };
+const baseChannelDoc: object = { label: "", description: "", did: "" };
 
-export const Channel = {
-  encode(message: Channel, writer: Writer = Writer.create()): Writer {
+export const ChannelDoc = {
+  encode(message: ChannelDoc, writer: Writer = Writer.create()): Writer {
     if (message.label !== "") {
       writer.uint32(10).string(message.label);
     }
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.did !== undefined) {
-      Did.encode(message.did, writer.uint32(34).fork()).ldelim();
+    if (message.did !== "") {
+      writer.uint32(34).string(message.did);
     }
-    if (message.registeredObject !== undefined) {
+    if (message.registered_object !== undefined) {
       ObjectDoc.encode(
-        message.registeredObject,
+        message.registered_object,
         writer.uint32(42).fork()
       ).ldelim();
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Channel {
+  decode(input: Reader | Uint8Array, length?: number): ChannelDoc {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseChannel } as Channel;
+    const message = { ...baseChannelDoc } as ChannelDoc;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -70,10 +68,10 @@ export const Channel = {
           message.description = reader.string();
           break;
         case 4:
-          message.did = Did.decode(reader, reader.uint32());
+          message.did = reader.string();
           break;
         case 5:
-          message.registeredObject = ObjectDoc.decode(reader, reader.uint32());
+          message.registered_object = ObjectDoc.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -83,8 +81,8 @@ export const Channel = {
     return message;
   },
 
-  fromJSON(object: any): Channel {
-    const message = { ...baseChannel } as Channel;
+  fromJSON(object: any): ChannelDoc {
+    const message = { ...baseChannelDoc } as ChannelDoc;
     if (object.label !== undefined && object.label !== null) {
       message.label = String(object.label);
     } else {
@@ -96,37 +94,36 @@ export const Channel = {
       message.description = "";
     }
     if (object.did !== undefined && object.did !== null) {
-      message.did = Did.fromJSON(object.did);
+      message.did = String(object.did);
     } else {
-      message.did = undefined;
+      message.did = "";
     }
     if (
-      object.registeredObject !== undefined &&
-      object.registeredObject !== null
+      object.registered_object !== undefined &&
+      object.registered_object !== null
     ) {
-      message.registeredObject = ObjectDoc.fromJSON(object.registeredObject);
+      message.registered_object = ObjectDoc.fromJSON(object.registered_object);
     } else {
-      message.registeredObject = undefined;
+      message.registered_object = undefined;
     }
     return message;
   },
 
-  toJSON(message: Channel): unknown {
+  toJSON(message: ChannelDoc): unknown {
     const obj: any = {};
     message.label !== undefined && (obj.label = message.label);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.did !== undefined &&
-      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
-    message.registeredObject !== undefined &&
-      (obj.registeredObject = message.registeredObject
-        ? ObjectDoc.toJSON(message.registeredObject)
+    message.did !== undefined && (obj.did = message.did);
+    message.registered_object !== undefined &&
+      (obj.registered_object = message.registered_object
+        ? ObjectDoc.toJSON(message.registered_object)
         : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Channel>): Channel {
-    const message = { ...baseChannel } as Channel;
+  fromPartial(object: DeepPartial<ChannelDoc>): ChannelDoc {
+    const message = { ...baseChannelDoc } as ChannelDoc;
     if (object.label !== undefined && object.label !== null) {
       message.label = object.label;
     } else {
@@ -138,34 +135,36 @@ export const Channel = {
       message.description = "";
     }
     if (object.did !== undefined && object.did !== null) {
-      message.did = Did.fromPartial(object.did);
+      message.did = object.did;
     } else {
-      message.did = undefined;
+      message.did = "";
     }
     if (
-      object.registeredObject !== undefined &&
-      object.registeredObject !== null
+      object.registered_object !== undefined &&
+      object.registered_object !== null
     ) {
-      message.registeredObject = ObjectDoc.fromPartial(object.registeredObject);
+      message.registered_object = ObjectDoc.fromPartial(
+        object.registered_object
+      );
     } else {
-      message.registeredObject = undefined;
+      message.registered_object = undefined;
     }
     return message;
   },
 };
 
-const baseChannelMessage: object = {};
+const baseChannelMessage: object = { peer_did: "", did: "" };
 
 export const ChannelMessage = {
   encode(message: ChannelMessage, writer: Writer = Writer.create()): Writer {
-    if (message.peer !== undefined) {
-      Peer.encode(message.peer, writer.uint32(10).fork()).ldelim();
+    if (message.peer_did !== "") {
+      writer.uint32(10).string(message.peer_did);
     }
-    if (message.did !== undefined) {
-      Did.encode(message.did, writer.uint32(18).fork()).ldelim();
+    if (message.did !== "") {
+      writer.uint32(18).string(message.did);
     }
-    if (message.data !== undefined) {
-      ObjectDoc.encode(message.data, writer.uint32(26).fork()).ldelim();
+    if (message.object !== undefined) {
+      ObjectDoc.encode(message.object, writer.uint32(26).fork()).ldelim();
     }
     Object.entries(message.metadata).forEach(([key, value]) => {
       ChannelMessage_MetadataEntry.encode(
@@ -185,13 +184,13 @@ export const ChannelMessage = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.peer = Peer.decode(reader, reader.uint32());
+          message.peer_did = reader.string();
           break;
         case 2:
-          message.did = Did.decode(reader, reader.uint32());
+          message.did = reader.string();
           break;
         case 3:
-          message.data = ObjectDoc.decode(reader, reader.uint32());
+          message.object = ObjectDoc.decode(reader, reader.uint32());
           break;
         case 4:
           const entry4 = ChannelMessage_MetadataEntry.decode(
@@ -213,20 +212,20 @@ export const ChannelMessage = {
   fromJSON(object: any): ChannelMessage {
     const message = { ...baseChannelMessage } as ChannelMessage;
     message.metadata = {};
-    if (object.peer !== undefined && object.peer !== null) {
-      message.peer = Peer.fromJSON(object.peer);
+    if (object.peer_did !== undefined && object.peer_did !== null) {
+      message.peer_did = String(object.peer_did);
     } else {
-      message.peer = undefined;
+      message.peer_did = "";
     }
     if (object.did !== undefined && object.did !== null) {
-      message.did = Did.fromJSON(object.did);
+      message.did = String(object.did);
     } else {
-      message.did = undefined;
+      message.did = "";
     }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = ObjectDoc.fromJSON(object.data);
+    if (object.object !== undefined && object.object !== null) {
+      message.object = ObjectDoc.fromJSON(object.object);
     } else {
-      message.data = undefined;
+      message.object = undefined;
     }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {
@@ -238,12 +237,12 @@ export const ChannelMessage = {
 
   toJSON(message: ChannelMessage): unknown {
     const obj: any = {};
-    message.peer !== undefined &&
-      (obj.peer = message.peer ? Peer.toJSON(message.peer) : undefined);
-    message.did !== undefined &&
-      (obj.did = message.did ? Did.toJSON(message.did) : undefined);
-    message.data !== undefined &&
-      (obj.data = message.data ? ObjectDoc.toJSON(message.data) : undefined);
+    message.peer_did !== undefined && (obj.peer_did = message.peer_did);
+    message.did !== undefined && (obj.did = message.did);
+    message.object !== undefined &&
+      (obj.object = message.object
+        ? ObjectDoc.toJSON(message.object)
+        : undefined);
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
@@ -256,20 +255,20 @@ export const ChannelMessage = {
   fromPartial(object: DeepPartial<ChannelMessage>): ChannelMessage {
     const message = { ...baseChannelMessage } as ChannelMessage;
     message.metadata = {};
-    if (object.peer !== undefined && object.peer !== null) {
-      message.peer = Peer.fromPartial(object.peer);
+    if (object.peer_did !== undefined && object.peer_did !== null) {
+      message.peer_did = object.peer_did;
     } else {
-      message.peer = undefined;
+      message.peer_did = "";
     }
     if (object.did !== undefined && object.did !== null) {
-      message.did = Did.fromPartial(object.did);
+      message.did = object.did;
     } else {
-      message.did = undefined;
+      message.did = "";
     }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = ObjectDoc.fromPartial(object.data);
+    if (object.object !== undefined && object.object !== null) {
+      message.object = ObjectDoc.fromPartial(object.object);
     } else {
-      message.data = undefined;
+      message.object = undefined;
     }
     if (object.metadata !== undefined && object.metadata !== null) {
       Object.entries(object.metadata).forEach(([key, value]) => {

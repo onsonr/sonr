@@ -1,6 +1,6 @@
 syntax = "proto3";
 package sonrio.sonr.object;
-option go_package = "github.com/sonr-io/blockchain/x/object/types";
+option go_package = "github.com/sonr-io/sonr/x/object/types";
 
 // ObjectDoc is a document for an Object stored in the graph.
 message ObjectDoc {

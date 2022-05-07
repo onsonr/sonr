@@ -6,7 +6,7 @@ import "registry/params.proto";
 import "registry/who_is.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
-option go_package = "github.com/sonr-io/blockchain/x/registry/types";
+option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 // GenesisState defines the registry module's genesis state.
 message GenesisState {

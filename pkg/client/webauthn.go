@@ -162,7 +162,7 @@ func blankWhoIs(username, creator string) *rtv1.WhoIs {
 		Name:        username,
 		Did:         "",
 		Document:    nil,
-		Creator:     creator,
+		Owner:     creator,
 		Credentials: make([]*rtv1.Credential, 0),
 	}
 }

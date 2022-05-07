@@ -1,7 +1,7 @@
 syntax = "proto3";
 package sonrio.sonr.channel;
 import "channel/channel.proto";
-option go_package = "github.com/sonr-io/blockchain/x/channel/types";
+option go_package = "github.com/sonr-io/sonr/x/channel/types";
 
 message HowIs {
   // Did is the DID of the channel
