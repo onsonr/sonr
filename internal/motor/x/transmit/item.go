@@ -10,8 +10,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
 	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
 )
 
 // ReadFromStream reads the item from the stream

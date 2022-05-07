@@ -5,8 +5,8 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	"github.com/sonr-io/sonr/pkg/config"
+	ct "github.com/sonr-io/sonr/x/channel/types"
 
 	host "github.com/sonr-io/sonr/pkg/host"
 	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"

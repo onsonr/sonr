@@ -5,7 +5,7 @@ import (
 	"os"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-	"github.com/sonr-io/sonr/internal/blockchain/app"
+	"github.com/sonr-io/sonr/app"
 	cmd "github.com/tendermint/spm/cosmoscmd"
 )
 

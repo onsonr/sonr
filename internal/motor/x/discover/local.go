@@ -9,8 +9,8 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/discover/v1"
 	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/discover/v1"
 
 	"google.golang.org/protobuf/proto"
 )

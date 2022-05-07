@@ -6,17 +6,11 @@ PROJECT_DIR=$(pwd);
 MOTOR_LIB_DIR=${PROJECT_DIR}/cmd/motor-lib
 MOTOR_WASM_DIR=${PROJECT_DIR}/cmd/motor-wasm
 
-while getopts "iawv:" opt; do
+while getopts "iaw" opt; do
   case $opt in
-    v)
-      echo "🔷 Binding with Version: $OPTARG" >&2
-      # Set Environment Variables
-      VERSION=$OPTARG
-      ;;
     a)
       echo "🔷 Setting up build Environment..."
-      ANDROID_BUILD_PATH="motorlib_android_${VERSION}_arm64"
-      ANDROID_OUT=${PROJECT_DIR}/build/${ANDROID_BUILD_PATH}
+      ANDROID_OUT=${PROJECT_DIR}/build/android
       ANDROID_ARTIFACT=${ANDROID_OUT}/io.sonr.motor.aar
       mkdir -p ${ANDROID_OUT}
 
@@ -26,8 +20,7 @@ while getopts "iawv:" opt; do
       ;;
     i)
       echo "🔷 Setting up build Environment..."
-      IOS_BUILD_PATH="motorlib_darwin_${VERSION}_arm64"
-      IOS_OUT=${PROJECT_DIR}/build/${IOS_BUILD_PATH}
+      IOS_OUT=${PROJECT_DIR}/build/ios
       IOS_ARTIFACT=${IOS_OUT}/SonrMotor.xcframework
       mkdir -p ${IOS_OUT}
 
@@ -37,9 +30,8 @@ while getopts "iawv:" opt; do
       ;;
     w)
       echo "🔷 Setting up build Environment..."
-      WASM_BUILD_PATH="motorlib_js_${VERSION}_wasm"
-      WASM_OUT=${PROJECT_DIR}/build/${WASM_BUILD_PATH}
-      WASM_ARTIFACT=${WASM_OUT}/motorlib.wasm
+      WASM_OUT=${PROJECT_DIR}/build/js
+      WASM_ARTIFACT=${WASM_OUT}/sonr-motor.wasm
       mkdir -p ${WASM_OUT}
 
       echo "🔷 Binding Web..."

@@ -81,8 +81,6 @@ func Header(f *types.FileItem) textproto.MIMEHeader {
 	}
 }
 
-
-
 // ToTransferItem Returns Transfer for FileItem
 func ToTransferItem(f *types.FileItem) *types.Payload_Item {
 	return &types.Payload_Item{

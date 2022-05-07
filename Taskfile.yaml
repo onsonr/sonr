@@ -12,14 +12,7 @@ vars:
   VERSION: v0.0.1-test
 
 tasks:
-  swagger:build:
-    cmds:
-      - echo "Building swagger api docs for highway"
-      - swag i -g pkg/highway/server.go --output docs/highway
-      - echo "Building Open api docs for Blockchain"
-      - starport generate openapi
-      - starport generate proto-go
-      - go mod tidy
+
 
   buf:build:
     cmds:
@@ -51,6 +44,17 @@ tasks:
       - buf mod update
       - buf build
       - buf push
+
+  clean:
+    cmds:
+      - echo "Cleaning"
+      - rm -rf ./build
+      - rm -rf ./dist
+      - rm -rf ./io.sonr.motor.aar
+      - rm -rf ./sonr-motor.wasm
+      - rm -rf ./SonrMotor.xcframework
+      - rm -rf ./docs/.docusaurus/
+      - rm -rf ./docs/build
 
   deploy:docs:
     dir: docs
@@ -89,16 +93,20 @@ tasks:
       - sonrd collect-gentxs
       - sonrd start
 
-  start:docs:
-    summary: Start the documentation server
-    cmds:
-      - task: docs:start
-
   release:web:
     summary: Build the web dashboard for release
     cmds:
       # - task: web:dashboard:build
       - task: web:wallet:build
+
+  swagger:build:
+    cmds:
+      - echo "Building swagger api docs for highway"
+      - swag i -g pkg/highway/x/core/server.go --output docs/highway
+      - echo "Building Open api docs for Blockchain"
+      - starport generate openapi
+      - starport generate proto-go
+      - go mod tidy
 
 
   docs:

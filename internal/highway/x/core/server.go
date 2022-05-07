@@ -21,11 +21,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
 
-	ctv1 "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
+	ctv1 "github.com/sonr-io/sonr/x/channel/types"
 	v1 "go.buf.build/grpc/go/sonr-io/highway/v1"
 	"google.golang.org/grpc"
 )

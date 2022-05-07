@@ -8,8 +8,8 @@ import (
 
 	device "github.com/sonr-io/sonr/pkg/fs"
 
-	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
 	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
 )
 
 // Transfer Protocol ID's

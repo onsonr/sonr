@@ -68,7 +68,7 @@ func (p *MatrixProtocol) setupMonolith() error {
 	provider := newPublicRoomsProvider(p.Host.Pubsub(), rsAPI)
 	err := provider.Start()
 	if err != nil {
-		
+
 		return err
 	}
 

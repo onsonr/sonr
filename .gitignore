@@ -5,6 +5,9 @@
 *.so
 *.dylib
 *.DS_Store
+*.wasm
+*.aar
+*.xcframework
 .idea/
 build/
 release/

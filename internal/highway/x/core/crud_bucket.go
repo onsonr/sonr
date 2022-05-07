@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	btt "github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
 	t "github.com/sonr-io/sonr/types"
+	btt "github.com/sonr-io/sonr/x/bucket/types"
 	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 

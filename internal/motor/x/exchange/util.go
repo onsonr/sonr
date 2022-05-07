@@ -8,8 +8,8 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	v1 "go.buf.build/grpc/go/sonr-io/motor/exchange/v1"
 	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/exchange/v1"
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.

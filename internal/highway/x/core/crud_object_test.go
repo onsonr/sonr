@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
+	hw "github.com/sonr-io/sonr/internal/highway"
 	"github.com/stretchr/testify/require"
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
-	hw "github.com/sonr-io/sonr/internal/highway"
 	"go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
