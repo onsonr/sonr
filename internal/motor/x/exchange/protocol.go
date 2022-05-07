@@ -8,12 +8,10 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/sonr/pkg/config"
-t "github.com/sonr-io/sonr/types"
 	"github.com/sonr-io/sonr/pkg/host"
-	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
-
-	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
+	t "github.com/sonr-io/sonr/types"
+	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/exchange/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -56,7 +54,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 	}
 
 	// Create Request
-	id, req, err := p.createRequest(shareReq.GetPeer(), &types.Payload{})
+	id, req, err := p.createRequest(shareReq.GetPeer(), &motor.Payload{})
 	if err != nil {
 		logger.Errorf("%s - Failed to Create Request", err)
 		return err
@@ -83,7 +81,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *ExchangeProtocol) Respond(decs bool, to *types.Peer) (*types.Payload, error) {
+func (p *ExchangeProtocol) Respond(decs bool, to *motor.Peer) (*motor.Payload, error) {
 	if p.mode.IsHighway() {
 		return nil, ErrNotSupported
 	}
@@ -114,7 +112,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *types.Peer) (*types.Payload, e
 	// Find Request and get Payload
 	if x, found := p.invites.Get(id.String()); found {
 		req := x.(*v1.InviteRequest)
-		return req.GetPayload(), nil
+		return req.Payload, nil
 	}
 	return nil, ErrRequestNotFound
 }

@@ -1,7 +1,7 @@
 package motor
 
 import (
-	mv1 "go.buf.build/grpc/go/sonr-io/core/motor/v1"
+	mv1 "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // MotorCallback is the implementation of Callback interface

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	olc "github.com/google/open-location-code/go"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // Option is a function that can be applied to ExchangeProtocol config

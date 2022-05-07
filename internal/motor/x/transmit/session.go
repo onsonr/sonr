@@ -6,38 +6,38 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/host"
-	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
-	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
-func NewInSession(payload *types.Payload, from *types.Peer, to *types.Peer) *v1.Session {
+func NewInSession(payload *motor.Payload, from *motor.Peer, to *motor.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
-		Direction:    types.Direction_DIRECTION_INCOMING,
+		Direction:    motor.Direction_DIRECTION_INCOMING,
 		Payload:      payload,
 		From:         from,
 		To:           to,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, types.Direction_DIRECTION_INCOMING),
+		Items:        CreatePayloadItems(sessionPayload, motor.Direction_DIRECTION_INCOMING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // NewOutSession creates a new Session from the given payload with Outgoing direction.
-func NewOutSession(payload *types.Payload, to *types.Peer, from *types.Peer) *v1.Session {
+func NewOutSession(payload *motor.Payload, to *motor.Peer, from *motor.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
-		Direction:    types.Direction_DIRECTION_OUTGOING,
+		Direction:    motor.Direction_DIRECTION_OUTGOING,
 		Payload:      payload,
 		To:           to,
 		From:         from,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, types.Direction_DIRECTION_OUTGOING),
+		Items:        CreatePayloadItems(sessionPayload, motor.Direction_DIRECTION_OUTGOING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
@@ -65,12 +65,12 @@ func SessionIsDone(s *v1.Session) bool {
 
 // IsOut returns true if the session is outgoing.
 func SessionIsOut(s *v1.Session) bool {
-	return s.Direction == types.Direction_DIRECTION_OUTGOING
+	return s.Direction == motor.Direction_DIRECTION_OUTGOING
 }
 
 // IsIn returns true if the session is incoming.
 func SessionIsIn(s *v1.Session) bool {
-	return s.Direction == types.Direction_DIRECTION_INCOMING
+	return s.Direction == motor.Direction_DIRECTION_INCOMING
 }
 
 // Event returns the complete event for the session.

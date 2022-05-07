@@ -8,9 +8,8 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
-	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/exchange/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
@@ -32,7 +31,7 @@ func RequestToEvent(ir *v1.InviteRequest) *motor.OnTransmitInviteResponse {
 }
 
 // createRequest creates a new InviteRequest
-func (p *ExchangeProtocol) createRequest(to *types.Peer, payload *types.Payload) (peer.ID, *v1.InviteRequest, error) {
+func (p *ExchangeProtocol) createRequest(to *motor.Peer, payload *motor.Payload) (peer.ID, *v1.InviteRequest, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
@@ -66,7 +65,7 @@ func (p *ExchangeProtocol) createRequest(to *types.Peer, payload *types.Payload)
 }
 
 // createResponse creates a new InviteResponse
-func (p *ExchangeProtocol) createResponse(decs bool, to *types.Peer) (peer.ID, *v1.InviteResponse, error) {
+func (p *ExchangeProtocol) createResponse(decs bool, to *motor.Peer) (peer.ID, *v1.InviteResponse, error) {
 
 	// Call Peer from Node
 	from, err := p.node.Peer()
@@ -101,7 +100,7 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *types.Peer) (peer.ID, *
 }
 
 // Libp2pID returns the PeerID based on PublicKey from Profile
-func Libp2pID(p *types.Peer) (peer.ID, error) {
+func Libp2pID(p *motor.Peer) (peer.ID, error) {
 	// Check if PublicKey is empty
 	if len(p.GetPublicKey()) == 0 {
 		return "", errors.New("Peer Public Key is not set.")

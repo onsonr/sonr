@@ -10,9 +10,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
-	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
-	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // TransmitProtocol type
@@ -52,7 +51,7 @@ func (p *TransmitProtocol) CurrentSession() (*v1.Session, error) {
 }
 
 // Incoming is called by the node to accept an incoming transfer
-func (p *TransmitProtocol) Incoming(payload *types.Payload, from *types.Peer) error {
+func (p *TransmitProtocol) Incoming(payload *motor.Payload, from *motor.Peer) error {
 	// Get User Peer
 	to, err := p.node.Peer()
 	if err != nil {
@@ -66,7 +65,7 @@ func (p *TransmitProtocol) Incoming(payload *types.Payload, from *types.Peer) er
 }
 
 // Outgoing is called by the node to initiate a transfer
-func (p *TransmitProtocol) Outgoing(payload *types.Payload, to *types.Peer) error {
+func (p *TransmitProtocol) Outgoing(payload *motor.Payload, to *motor.Peer) error {
 	// Get User Peer
 	from, err := p.node.Peer()
 	if err != nil {
@@ -85,7 +84,7 @@ func (p *TransmitProtocol) Outgoing(payload *types.Payload, to *types.Peer) erro
 	p.current = NewOutSession(payload, from, to)
 
 	// Send Files
-	if p.current.Payload.GetItems()[0].GetMime().Type != types.MIME_TYPE_URL {
+	if p.current.Payload.GetItems()[0].GetMime().Type != motor.MIME_TYPE_URL {
 		// Create New Stream
 		stream, err := p.node.NewStream(p.ctx, toId, FilePID)
 		if err != nil {
@@ -151,7 +150,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 }
 
 // Libp2pID returns the PeerID based on PublicKey from Profile
-func Libp2pID(p *types.Peer) (peer.ID, error) {
+func Libp2pID(p *motor.Peer) (peer.ID, error) {
 	// Check if PublicKey is empty
 	if len(p.GetPublicKey()) == 0 {
 		return "", errors.New("Peer Public Key is not set.")

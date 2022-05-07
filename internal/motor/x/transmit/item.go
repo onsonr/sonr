@@ -7,11 +7,11 @@ import (
 	"os"
 
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
-	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
-	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
+	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // ReadFromStream reads the item from the stream
@@ -106,7 +106,7 @@ func ProgressItem(si *v1.SessionItem, wrt int, h host.SonrHost) bool {
 
 	// Create Progress Event
 	if (si.GetWritten() % ITEM_INTERVAL) == 0 {
-		event := &motor.OnTransmitProgressResponse{
+		event := &types.OnTransmitProgressResponse{
 			Direction: si.GetDirection(),
 			Progress:  (float64(si.GetWritten()) / float64(si.GetTotalSize())),
 			Current:   int32(si.GetIndex()) + 1,
@@ -185,4 +185,20 @@ func URLCount(p *types.Payload) int {
 
 	// Return Count
 	return count
+}
+
+// SetPathFromFolder sets the path of the FileItem
+func SetPathFromFolder(f *types.FileItem, folder fs.Folder) (string, error) {
+	// Set Path
+	oldPath := f.GetPath()
+
+	// generate path
+	path, err := folder.GenPath(oldPath)
+	if err != nil {
+		return "", err
+	}
+
+	// Define Check Path Function
+	f.Path = path
+	return f.Path, nil
 }

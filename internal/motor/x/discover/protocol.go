@@ -9,7 +9,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 
 	host "github.com/sonr-io/sonr/pkg/host"
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 var (
@@ -57,7 +57,7 @@ func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverP
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *DiscoverProtocol) Get(sname string) (*types.Peer, error) {
+func (p *DiscoverProtocol) Get(sname string) (*motor.Peer, error) {
 	// peer := &types.Peer{}
 	// Get Peer from KadDHT store
 	// if buf, err := p.global.Get(sname); err == nil {
@@ -76,7 +76,7 @@ func (p *DiscoverProtocol) Get(sname string) (*types.Peer, error) {
 }
 
 // Put method updates peer instance in the store
-func (p *DiscoverProtocol) Put(peer *types.Peer) error {
+func (p *DiscoverProtocol) Put(peer *motor.Peer) error {
 	// logger.Debug("Updating Peer in BeamStore")
 	// // Marshal Peer
 	// buf, err := proto.Marshal(peer)

@@ -14,7 +14,7 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/sonr/pkg/config"
 
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 	"google.golang.org/protobuf/proto"
 )
 
