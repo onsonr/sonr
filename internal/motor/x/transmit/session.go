@@ -5,10 +5,9 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/sonr/pkg/config"
+	"github.com/sonr-io/sonr/pkg/host"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
-
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
@@ -88,7 +87,7 @@ func SessionEvent(s *v1.Session) *motor.OnTransmitCompleteResponse {
 }
 
 // RouteStream is used to route the given stream to the given peer.
-func RouteSessionStream(s *v1.Session, stream network.Stream, n config.MotorCallback) (*motor.OnTransmitCompleteResponse, error) {
+func RouteSessionStream(s *v1.Session, stream network.Stream, h host.SonrHost) (*motor.OnTransmitCompleteResponse, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)
@@ -103,7 +102,7 @@ func RouteSessionStream(s *v1.Session, stream network.Stream, n config.MotorCall
 			// Read all items
 			for _, v := range s.GetItems() {
 				// Read Stream to File
-				if err := ReadItemFromStream(v, n, rs); err != nil {
+				if err := ReadItemFromStream(v, h, rs); err != nil {
 					logger.Errorf("Error reading stream: %v", err)
 					dchan <- false
 				} else {
@@ -126,7 +125,7 @@ func RouteSessionStream(s *v1.Session, stream network.Stream, n config.MotorCall
 			// Write all items
 			for _, v := range s.GetItems() {
 				// Write File to Stream
-				if err := WriteItemToStream(v, n, wc); err != nil {
+				if err := WriteItemToStream(v, h, wc); err != nil {
 					logger.Errorf("Error writing file: %v", err)
 					dchan <- false
 				} else {

@@ -12,31 +12,7 @@ vars:
   VERSION: v0.0.1-test
 
 tasks:
-  bind:
-    cmds:
-      - mkdir -p {{ .IOS_DIR }}
-      - task: bind:ios OUT={{ .IOS_DIR }}
-    vars:
-      ANDROID_DIR: build/motorlib_darwin_{{ .VERSION }}_arm64
-      IOS_DIR: build/motorlib_ios_{{ .VERSION }}_arm64
-
-  bind:ios:
-    cmds:
-      - gomobile init
-      - gomobile bind -target=ios/arm64 -o {{ .OUT_DIR }}/SonrMotor.xcframework
-    dir: cmd/motor-lib
-    vars:
-      OUT_DIR: ""
-
-  bind:android:
-    cmds:
-      - gomobile init
-      - gomobile bind -target=android/arm64 -o {{ .OUT_DIR }}/SonrMotor.aar
-    dir: cmd/motor-lib
-    vars:
-      OUT_DIR: ""
-
-  build:swagger:
+  swagger:build:
     cmds:
       - echo "Building swagger api docs for highway"
       - swag i -g pkg/highway/server.go --output docs/highway
@@ -45,24 +21,33 @@ tasks:
       - starport generate proto-go
       - go mod tidy
 
-  build:buf:
+  buf:build:
     cmds:
       - echo "Building Protobufs and pushing to registry"
-      - task: build:buf:core
-      - task: build:buf:blockchain
+      - task: buf:build:blockchain
+      - task: buf:build:highway
+      - task: buf:build:motor
 
-  build:buf:core:
-    dir: proto
+  buf:build:motor:
+    dir: internal/motor/proto
     cmds:
-      - echo "Generating and Pushing Protobufs for Highway, Motor, and Host"
+      - echo "Generating and Pushing Protobufs for Motor"
       - buf mod update
       - buf build
       - buf push
 
-  build:buf:blockchain:
+  buf:build:highway:
+    dir: internal/highway/proto
+    cmds:
+      - echo "Generating and Pushing Protobufs for Highway"
+      - buf mod update
+      - buf build
+      - buf push
+
+  buf:build:blockchain:
     dir: internal/blockchain/proto
     cmds:
-      - echo "Generating and Pushing Protobufs for Blockchain Modules"
+      - echo "Generating and Pushing Protobufs for Blockchain"
       - buf mod update
       - buf build
       - buf push

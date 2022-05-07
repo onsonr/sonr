@@ -6,19 +6,19 @@ import (
 	"net/http"
 
 	"github.com/sonr-io/sonr/internal/highway/x/core"
+	_ "github.com/sonr-io/sonr/internal/highway/x/core"
 	"github.com/sonr-io/sonr/pkg/config"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/highway/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	_ "github.com/sonr-io/sonr/internal/highway/x/core"
 )
 
 // NewHighwayServer creates a new Highway service stub for the node.
 func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer, error) {
 	// Create Config
-	c := config.DefaultConfig()
+	c := config.DefaultConfig(config.Role_HIGHWAY)
 	for _, opt := range opts {
 		opt(c)
 	}

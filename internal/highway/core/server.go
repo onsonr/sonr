@@ -119,6 +119,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Webauthn:       webauthn,
 		ipfsProtocol:   ipfs,
 		matrixProtocol: matrix,
+		channels:       make(map[string]ctv1.Channel),
 	}
 	return stub, nil
 }

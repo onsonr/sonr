@@ -2,15 +2,15 @@ syntax = "proto3";
 
 // Package Transmit is utilized for direct data transmission between two peers.
 package sonrio.motor.transmit.v1;
-import "types/v1/core.proto";
-import "types/v1/data.proto";
+import "core/v1/core.proto";
+import "core/v1/data.proto";
 option go_package = "github.com/sonr-io/sonr/pkg/host/transmit";
 
 message Session {
-  types.v1.Direction direction = 1;
-  types.v1.Peer from = 2;
-  types.v1.Peer to = 3;
-  types.v1.Payload payload = 4;
+  core.v1.Direction direction = 1;
+  core.v1.Peer from = 2;
+  core.v1.Peer to = 3;
+  core.v1.Payload payload = 4;
   int64 last_updated = 5;
   repeated SessionItem items = 6;
   int32 current_index = 7;
@@ -20,15 +20,15 @@ message Session {
 message SessionItem {
   int32 index = 1;
   int32 count = 2;
-  types.v1.FileItem item = 3;
+  core.v1.FileItem item = 3;
   int64 written = 4;
   int64 size = 5;
   int64 total_size = 6;
-  types.v1.Direction direction = 7;
+  core.v1.Direction direction = 7;
   string path = 8;
 }
 
 message SessionPayload {
-  types.v1.Payload payload = 1;
-  types.v1.Direction direction = 2;
+  core.v1.Payload payload = 1;
+  core.v1.Direction direction = 2;
 }

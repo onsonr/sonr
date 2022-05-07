@@ -6,8 +6,8 @@ import "channel/channel.proto";
 import "channel/tx.proto";
 import "bucket/tx.proto";
 import "object/tx.proto";
-import "highway/v1/request.proto";
-import "highway/v1/response.proto";
+import "v1/request.proto";
+import "v1/response.proto";
 option go_package = "github.com/sonr-io/sonr/highway/v1";
 
 // Highway

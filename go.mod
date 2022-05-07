@@ -21,6 +21,7 @@ require (
 	github.com/ipfs/go-cid v0.1.0
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipld/go-ipld-prime v0.14.2
+	github.com/kataras/go-events v0.0.3
 	github.com/kataras/golog v0.1.7
 	github.com/lestrrat-go/jwx v1.2.20
 	github.com/libp2p/go-libp2p v0.17.0
@@ -52,8 +53,10 @@ require (
 	github.com/tendermint/starport v0.19.5
 	github.com/tendermint/tendermint v0.34.14
 	github.com/tendermint/tm-db v0.6.4
-	go.buf.build/grpc/go/sonr-io/blockchain v1.3.3
+	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7
 	go.buf.build/grpc/go/sonr-io/core v1.3.19
+	go.buf.build/grpc/go/sonr-io/highway v1.3.1
+	go.buf.build/grpc/go/sonr-io/motor v1.3.1
 	golang.org/x/mobile v0.0.0-20220414153400-ce6a79cf6a13
 	google.golang.org/genproto v0.0.0-20220317150908-0efb43f6373e
 	google.golang.org/grpc v1.45.0
@@ -349,7 +352,7 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
 	github.com/zondax/hid v0.9.0 // indirect
-	go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.47 // indirect
+	go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.52 // indirect
 	go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 // indirect
 	go.etcd.io/bbolt v1.3.5 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.1 // indirect

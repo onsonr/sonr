@@ -5,6 +5,7 @@ import (
 	"crypto/ed25519"
 	"sync/atomic"
 
+	"github.com/kataras/go-events"
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -12,7 +13,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	device "github.com/sonr-io/sonr/pkg/fs"
+	"github.com/sonr-io/sonr/pkg/config"
+
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -29,8 +31,14 @@ type SonrHost interface {
 	// Close closes the node
 	Close()
 
+	// Config returns the configuration of the node
+	Config() *config.Config
+
 	// Connect to a peer
 	Connect(pi peer.AddrInfo) error
+
+	// Events returns the events manager of the node
+	Events() events.EventEmmiter
 
 	// HasRouting returns true if the node has routing
 	HasRouting() error
@@ -69,7 +77,7 @@ type SonrHost interface {
 	Resume()
 
 	// Role returns the role of the node
-	Role() device.Role
+	Role() config.Role
 
 	// Router returns the routing.Router
 	Router(h host.Host) (routing.PeerRouting, error)

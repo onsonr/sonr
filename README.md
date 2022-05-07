@@ -118,10 +118,13 @@ Outputs:
 
 ```json
 {
-  "assertionMethod": ["did:sonr:123#key-1"],
   "@context": "https://www.w3.org/ns/did/v1",
   "controller": "did:sonr:123",
   "id": "did:sonr:123",
+  "alsoKnownAs": [
+    "test.snr",
+    "example.sonr"
+  ],
   "verificationMethod": [
     {
       "controller": "did:sonr:123",

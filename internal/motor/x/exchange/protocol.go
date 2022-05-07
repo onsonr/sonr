@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/sonr/pkg/config"
-	device "github.com/sonr-io/sonr/pkg/fs"
+t "github.com/sonr-io/sonr/types"
 	"github.com/sonr-io/sonr/pkg/host"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/exchange/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
@@ -18,21 +18,19 @@ import (
 )
 
 type ExchangeProtocol struct {
-	ctx      context.Context
-	node     host.SonrHost
-	callback config.MotorCallback
-	invites  *cache.Cache
-	mode     device.Role
+	ctx     context.Context
+	node    host.SonrHost
+	invites *cache.Cache
+	mode    config.Role
 }
 
 // New creates a new ExchangeProtocol
-func New(ctx context.Context, node host.SonrHost, cb config.MotorCallback, options ...Option) (*ExchangeProtocol, error) {
+func New(ctx context.Context, node host.SonrHost, options ...Option) (*ExchangeProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &ExchangeProtocol{
-		ctx:      ctx,
-		node:     node,
-		invites:  cache.New(5*time.Minute, 10*time.Minute),
-		callback: cb,
+		ctx:     ctx,
+		node:    node,
+		invites: cache.New(5*time.Minute, 10*time.Minute),
 	}
 
 	// Set Default Options
@@ -149,7 +147,8 @@ func (p *ExchangeProtocol) onInviteRequest(s network.Stream) {
 	p.invites.Set(remotePeer.String(), req, cache.DefaultExpiration)
 
 	// store request data into Context
-	p.callback.OnInvite(RequestToEvent(req))
+
+	p.node.Events().Emit(t.ON_INVITE, RequestToEvent(req))
 }
 
 // onInviteResponse response handler

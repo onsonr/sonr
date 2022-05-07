@@ -7,8 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
-	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/host"
+	t "github.com/sonr-io/sonr/types"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/discover/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
@@ -20,7 +20,6 @@ type ErrFunc func() error
 
 // Local is the protocol for managing local peers.
 type Local struct {
-	callback     config.MotorCallback
 	node         host.SonrHost
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
@@ -52,7 +51,6 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 
 	// Create Local Struct
 	e.local = &Local{
-		callback:     e.callback,
 		ctx:          e.ctx,
 		selfID:       e.node.HostID(),
 		node:         e.node,
@@ -162,7 +160,9 @@ func (p *Local) handleEvents() {
 func (lp *Local) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
-	lp.callback.OnRefresh(&motor.OnLobbyRefreshResponse{
+
+	// Emit Refresh Event
+	lp.node.Events().Emit(t.ON_REFRESH, &motor.OnLobbyRefreshResponse{
 		Olc:      lp.olc,
 		Peers:    lp.peers,
 		Received: int64(time.Now().Unix()),

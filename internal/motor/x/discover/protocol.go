@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	"github.com/sonr-io/sonr/pkg/config"
-	device "github.com/sonr-io/sonr/pkg/fs"
+
 	host "github.com/sonr-io/sonr/pkg/host"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
@@ -21,16 +21,15 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node     host.SonrHost
-	callback config.MotorCallback
-	ctx      context.Context
-	global   ct.Channel
-	local    *Local
-	mode     device.Role
+	node   host.SonrHost
+	ctx    context.Context
+	global ct.Channel
+	local  *Local
+	mode   config.Role
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, host host.SonrHost, cb config.MotorCallback, options ...Option) (*DiscoverProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverProtocol, error) {
 	// Create BeamStore
 	b, err := ct.NewChannel(ctx, host, &ct.ChannelDoc{
 		Label: "_discover",
@@ -42,10 +41,9 @@ func New(ctx context.Context, host host.SonrHost, cb config.MotorCallback, optio
 
 	// Create Exchange Protocol
 	protocol := &DiscoverProtocol{
-		ctx:      ctx,
-		global:   b,
-		node:     host,
-		callback: cb,
+		ctx:    ctx,
+		global: b,
+		node:   host,
 	}
 
 	// Set options

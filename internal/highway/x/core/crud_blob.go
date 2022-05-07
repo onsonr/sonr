@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	highwayv1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
+	highwayv1 "go.buf.build/grpc/go/sonr-io/highway/v1"
 )
 
 // UploadBlob uploads a file to IPFS and returns its CID.

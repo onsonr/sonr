@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"errors"
 
+	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p"
 	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -19,7 +20,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/config"
-	device "github.com/sonr-io/sonr/pkg/fs"
 	t "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 	"google.golang.org/protobuf/proto"
@@ -30,7 +30,8 @@ type defaultHostImpl struct {
 	// Standard Node Implementation
 	host host.Host
 	SonrHost
-	role device.Role
+	config *config.Config
+	events events.EventEmmiter
 
 	// Host and context
 	connection   types.Connection
@@ -51,14 +52,15 @@ type defaultHostImpl struct {
 }
 
 // NewMachineHost Creates a Sonr libp2p Host with the given config
-func NewMachineHost(ctx context.Context, config *config.Config) (SonrHost, error) {
+func NewMachineHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	var err error
 	// Create the host.
 	hn := &defaultHostImpl{
 		ctx:          ctx,
 		status:       Status_IDLE,
 		mdnsPeerChan: make(chan peer.AddrInfo),
-		role:         config.Role,
+		config:       c,
+		events:       events.New(),
 	}
 
 	// findPrivKey returns the private key for the host.
@@ -78,7 +80,7 @@ func NewMachineHost(ctx context.Context, config *config.Config) (SonrHost, error
 	}
 
 	// Create Connection Manager
-	cnnmgr, err := cmgr.NewConnManager(config.Libp2pLowWater, config.Libp2pHighWater)
+	cnnmgr, err := cmgr.NewConnManager(c.Libp2pLowWater, c.Libp2pHighWater)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +107,7 @@ func NewMachineHost(ctx context.Context, config *config.Config) (SonrHost, error
 	}
 
 	// Connect to Bootstrap Nodes
-	for _, pi := range config.Libp2pBootstrapPeers {
+	for _, pi := range c.Libp2pBootstrapPeers {
 		if err := hn.Connect(pi); err != nil {
 			continue
 		} else {
@@ -114,7 +116,7 @@ func NewMachineHost(ctx context.Context, config *config.Config) (SonrHost, error
 	}
 
 	// Initialize Discovery for DHT
-	if err := hn.createDHTDiscovery(config); err != nil {
+	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
 		hn.SetStatus(Status_FAIL)
 		logger.Fatal("Could not start DHT Discovery", err)
@@ -122,13 +124,18 @@ func NewMachineHost(ctx context.Context, config *config.Config) (SonrHost, error
 	}
 
 	// Initialize Discovery for MDNS
-	if !config.Libp2pMdnsDisabled && hn.role != device.Role_HIGHWAY {
+	if !c.Libp2pMdnsDisabled && hn.Role() != config.Role_HIGHWAY {
 		// hn.createMdnsDiscovery(config)
 	}
 
 	hn.SetStatus(Status_READY)
 	go hn.Serve()
 	return hn, nil
+}
+
+// Config returns the configuration of the node
+func (n *defaultHostImpl) Config() *config.Config {
+	return n.config
 }
 
 // Host returns the host of the node
@@ -158,8 +165,8 @@ func (n *defaultHostImpl) PrivateKey() (ed25519.PrivateKey, error) {
 }
 
 // Role returns the role of the node
-func (n *defaultHostImpl) Role() device.Role {
-	return n.role
+func (n *defaultHostImpl) Role() config.Role {
+	return n.config.Role
 }
 
 // AuthenticateMessage Authenticates incoming p2p message

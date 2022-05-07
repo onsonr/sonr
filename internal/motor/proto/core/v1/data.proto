@@ -2,7 +2,7 @@ syntax = "proto3";
 
 // Package types defines typesly used types agnostic to the node role on the Sonr network.
 package sonrio.motor.core.v1;
-import "types/v1/core.proto";
+import "core/v1/core.proto";
 option go_package = "github.com/sonr-io/sonr/pkg/types";
 
 // Direction is the direction of a stream.
@@ -19,7 +19,7 @@ enum Direction {
 
 // For Transfer File Payload
 message FileItem {
-  types.v1.MIME mime = 1; // Standard Mime Type
+  core.v1.MIME mime = 1; // Standard Mime Type
   string name = 2;         // File Name without Path
   string path = 3;         // File Location
   int64 size = 4;          // File Size in Bytes
@@ -30,7 +30,7 @@ message FileItem {
 // Payload is Data thats being Passed
 message Payload {
   repeated Item items = 1; // Payload Items
-  Profile owner = 2;       // PROFILE: General Sender Info
+  Peer owner = 2;       // PROFILE: General Sender Info
   int64 size = 3;          // Payload Size in Bytes
   int64 created_at = 4;     // Payload Creation Time in Seconds
 

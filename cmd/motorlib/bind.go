@@ -1,11 +1,11 @@
-package sonr
+package motor
 
 import (
 	//"github.com/kataras/golog"
 	//"github.com/sonr-io/core/node"
 	// motor "github.com/sonr-io/core/node/motor/v1"
 	// "google.golang.org/protobuf/proto"
-	_ "golang.org/x/mobile/bind"	
+	_ "golang.org/x/mobile/bind"
 )
 
 // Start starts the host, node, and rpc service.

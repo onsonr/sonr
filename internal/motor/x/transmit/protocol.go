@@ -8,30 +8,27 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/sonr/pkg/config"
-	device "github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/host"
+	t "github.com/sonr-io/sonr/types"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
-
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 
 // TransmitProtocol type
 type TransmitProtocol struct {
-	callback config.MotorCallback
-	node     host.SonrHost
-	ctx      context.Context // Context
-	current  *v1.Session     // current session
-	mode     device.Role
+	node    host.SonrHost
+	ctx     context.Context // Context
+	current *v1.Session     // current session
+	mode    config.Role
 }
 
 // New creates a new TransferProtocol
-func New(ctx context.Context, host host.SonrHost, cb config.MotorCallback, options ...Option) (*TransmitProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, options ...Option) (*TransmitProtocol, error) {
 	// create a new transfer protocol
 	protocol := &TransmitProtocol{
-		ctx:      ctx,
-		node:     host,
-		callback: cb,
+		ctx:  ctx,
+		node: host,
 	}
 	// Set options
 	opts := defaultOptions()
@@ -106,7 +103,7 @@ func (p *TransmitProtocol) Outgoing(payload *types.Payload, to *types.Peer) erro
 // Reset resets the current session
 func (p *TransmitProtocol) Reset(event *motor.OnTransmitCompleteResponse) {
 	logger.Debug("Resetting TransmitProtocol")
-	p.callback.OnComplete(event)
+	p.node.Events().Emit(t.ON_COMPLETE, event)
 	p.current = nil
 }
 
@@ -122,7 +119,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	}
 
 	// Create New Reader
-	event, err := RouteSessionStream(entry, stream, p.callback)
+	event, err := RouteSessionStream(entry, stream, p.node)
 	if err != nil {
 		logger.Errorf("%s - Failed to Read From Stream", err)
 		stream.Close()
@@ -144,7 +141,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 	}
 
 	// Create New Writer
-	event, err := RouteSessionStream(entry, stream, p.callback)
+	event, err := RouteSessionStream(entry, stream, p.node)
 	if err != nil {
 		logger.Errorf("%s - Failed to Write To Stream", err)
 		stream.Close()

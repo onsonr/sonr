@@ -8,7 +8,14 @@ import (
 	"net/http"
 
 	p2phttp "github.com/libp2p/go-libp2p-http"
+	"github.com/matrix-org/dendrite/appservice"
+	"github.com/matrix-org/dendrite/federationapi"
+	"github.com/matrix-org/dendrite/keyserver"
+	"github.com/matrix-org/dendrite/roomserver"
+	"github.com/matrix-org/dendrite/setup"
 	"github.com/matrix-org/dendrite/setup/config"
+
+	"github.com/matrix-org/dendrite/userapi"
 	"github.com/matrix-org/gomatrixserverlib"
 	"github.com/sonr-io/sonr/pkg/host"
 )
@@ -42,8 +49,56 @@ func defaultConfig(host host.SonrHost) (config.Dendrite, error) {
 	return cfg, nil
 }
 
-func (p *MatrixProtocol) Init() {
+func (p *MatrixProtocol) setupMonolith() error {
+	keyAPI := keyserver.NewInternalAPI(p.Base, &p.Config.KeyServer, p.fedClient)
+	rsAPI := roomserver.NewInternalAPI(
+		p.Base,
+	)
 
+	userAPI := userapi.NewInternalAPI(p.Base, p.accountDB, &p.Config.UserAPI, nil, keyAPI, rsAPI, p.Base.PushGatewayHTTPClient())
+	keyAPI.SetUserAPI(userAPI)
+
+	asAPI := appservice.NewInternalAPI(p.Base, userAPI, rsAPI)
+	rsAPI.SetAppserviceAPI(asAPI)
+	fsAPI := federationapi.NewInternalAPI(
+		p.Base, p.fedClient, rsAPI, p.Base.Caches, nil, true,
+	)
+	keyRing := fsAPI.KeyRing()
+	rsAPI.SetFederationAPI(fsAPI, keyRing)
+	provider := newPublicRoomsProvider(p.Host.Pubsub(), rsAPI)
+	err := provider.Start()
+	if err != nil {
+		
+		return err
+	}
+
+	monolith := setup.Monolith{
+		Config:    &p.Config,
+		AccountDB: p.accountDB,
+		Client:    p.client,
+		FedClient: p.fedClient,
+		KeyRing:   keyRing,
+
+		AppserviceAPI:          asAPI,
+		FederationAPI:          fsAPI,
+		RoomserverAPI:          rsAPI,
+		UserAPI:                userAPI,
+		KeyAPI:                 keyAPI,
+		ExtPublicRoomsProvider: provider,
+	}
+	monolith.AddAllPublicRoutes(
+		p.Base.ProcessContext,
+		p.Base.PublicClientAPIMux,
+		p.Base.PublicFederationAPIMux,
+		p.Base.PublicKeyAPIMux,
+		p.Base.PublicWellKnownAPIMux,
+		p.Base.PublicMediaAPIMux,
+		p.Base.SynapseAdminMux,
+	)
+	return nil
+}
+
+func (p *MatrixProtocol) setupClients() {
 	p.accountDB = p.Base.CreateAccountsDB()
 
 	fmt.Println("Running in libp2p federation mode")
@@ -51,7 +106,7 @@ func (p *MatrixProtocol) Init() {
 	tr := &http.Transport{}
 	tr.RegisterProtocol(
 		"matrix",
-		p2phttp.NewTransport(p.node.Host(), p2phttp.ProtocolOption("/matrix")),
+		p2phttp.NewTransport(p.Host.Host(), p2phttp.ProtocolOption("/matrix")),
 	)
 
 	// Setup FederationClient
@@ -65,7 +120,7 @@ func (p *MatrixProtocol) Init() {
 	tr2 := &http.Transport{}
 	tr.RegisterProtocol(
 		"matrix",
-		p2phttp.NewTransport(p.node.Host(), p2phttp.ProtocolOption("/matrix")),
+		p2phttp.NewTransport(p.Host.Host(), p2phttp.ProtocolOption("/matrix")),
 	)
 	p.client = gomatrixserverlib.NewClient(
 		gomatrixserverlib.WithTransport(tr2),

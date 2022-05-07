@@ -12,7 +12,7 @@ import (
 	otv1 "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
 	t "github.com/sonr-io/sonr/types"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
-	v1 "go.buf.build/grpc/go/sonr-io/core/highway/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/highway/v1"
 	"google.golang.org/protobuf/proto"
 )
 

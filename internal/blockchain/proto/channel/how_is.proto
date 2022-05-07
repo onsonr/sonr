@@ -16,7 +16,7 @@ message HowIs {
   // Timestamp is the time of the last update of the DID Document
   int64 timestamp = 4;
 
-  // IsActive is the status of the DID Document
+  // Is Active is the status of the DID Document
   bool is_active = 5;
 }
 
