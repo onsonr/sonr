@@ -9,7 +9,7 @@ before:
 
 # -- Individual Builds --
 builds:
-  # Motor libraries are prebuilt using gomobile for android
+  # Motor Framework for Android
   - id: "motor-android"
     builder: prebuilt
     goos:
@@ -22,7 +22,7 @@ builds:
       pre:
         - sh scripts/bind.sh -v {{ .Version }} -a
 
-  # Motor libraries are prebuilt using gomobile for ios
+  # Motor Framework for iOS
   - id: "motor-ios"
     builder: prebuilt
     goos:
@@ -36,10 +36,10 @@ builds:
         - mkdir -p build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}
         - sh scripts/bind.sh -v {{ .Version }} -i
 
-  # Highway CLI for macOS
-  - id: "highway-cli-darwin"
-    main: ./cmd/highway-cli
-    binary: highway-cli
+    # Highway Daemon for macOS
+  - id: "highwayd-darwin"
+    main: ./cmd/highwayd
+    binary: highwayd
     env:
       - CGO_ENABLED=1
       - CC=gcc
@@ -50,10 +50,10 @@ builds:
     - amd64
     - arm64
 
-  # Highway CLI for Linux
-  - id: "highway-cli-linux"
-    main: ./cmd/highway-cli
-    binary: highway-cli
+  # Highway Daemon for Linux
+  - id: "highwayd-linux"
+    main: ./cmd/highwayd
+    binary: highwayd
     env:
       - CGO_ENABLED=0
       - CC=gcc
@@ -61,11 +61,10 @@ builds:
     goos:
       - linux
 
-
-  # Blockchain Daemon for Windows
-  - id: "highway-cli-windows"
-    main: ./cmd/highway-cli
-    binary: sonrd
+  # Highway Daemon for Windows
+  - id: "highwayd-windows"
+    main: ./cmd/highwayd
+    binary: highwayd
     env:
       - CGO_ENABLED=1
       - CC=x86_64-w64-mingw32-gcc
@@ -131,11 +130,54 @@ builds:
     ldflags:
       - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
 
+  # Highway CLI for macOS
+  - id: "highway-cli-darwin"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=o64-clang++
+    goos:
+      - darwin
+    goarch:
+    - amd64
+    - arm64
+
+  # Highway CLI for Linux
+  - id: "highway-cli-linux"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=0
+      - CC=gcc
+      - CXX=g++
+    goos:
+      - linux
+
+
+  # Highway CLI for Windows
+  - id: "highway-cli-windows"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
+
+
 # -- Artifacts from the build --
 archives:
 # Templating for blockchain daemons
 - id: "sonrd-archive"
-  name_template: 'sonrd_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'sonrd_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: macos
     windows: win
@@ -150,7 +192,7 @@ archives:
 
 # Templating for Motor Android
 - id: "motor-android-archive"
-  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'motorlib_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   builds:
   - motor-android
   files:
@@ -159,7 +201,7 @@ archives:
 
 # Templating for Motor iOS
 - id: "motor-ios-archive"
-  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'motorlib_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   builds:
   - motor-ios
   replacements:
@@ -171,7 +213,7 @@ archives:
 
 # Templating for CLI
 - id: "highway-cli-archive"
-  name_template: 'highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'highway-cli_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: macos
     windows: win
@@ -183,6 +225,21 @@ archives:
   - highway-cli-darwin
   - highway-cli-linux
   - highway-cli-windows
+
+  # Templating for Highway Daemon
+- id: "highwayd-archive"
+  name_template: 'highwayd_v{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  replacements:
+    darwin: macos
+    windows: win
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  builds:
+  - highwayd-darwin
+  - highwayd-linux
+  - highwayd-windows
 
 # -- Checksums for the archives --
 checksum:
