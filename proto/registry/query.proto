@@ -53,7 +53,7 @@ message QueryWhoIsRequest {
 }
 
 message QueryWhoIsResponse {
-	WhoIs WhoIs = 1 [(gogoproto.nullable) = false];
+	WhoIs WhoIs = 1 [(gogoproto.nullable) = true];
 }
 
 message QueryAllWhoIsRequest {
@@ -66,17 +66,21 @@ message QueryAllWhoIsResponse {
 }
 
 message QueryWhoIsAliasRequest {
-  string alias = 1;
+	// Alias of a WhoIs.
+  	string alias = 1;
 }
 
 message QueryWhoIsAliasResponse {
+	WhoIs WhoIs = 1 [(gogoproto.nullable) = true];
 }
 
 message QueryWhoIsControllerRequest {
-  string controller = 1;
+	// Controller did string
+  	string controller = 1;
 }
 
 message QueryWhoIsControllerResponse {
+	WhoIs WhoIs = 1 [(gogoproto.nullable) = true];
 }
 
 // this line is used by starport scaffolding # 3

@@ -33,14 +33,14 @@ func TestWhoIsQuerySingle(t *testing.T) {
 			request: &types.QueryWhoIsRequest{
 				Did: msgs[0].Owner,
 			},
-			response: &types.QueryWhoIsResponse{WhoIs: msgs[0]},
+			response: &types.QueryWhoIsResponse{WhoIs: &msgs[0]},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryWhoIsRequest{
 				Did: msgs[1].Owner,
 			},
-			response: &types.QueryWhoIsResponse{WhoIs: msgs[1]},
+			response: &types.QueryWhoIsResponse{WhoIs: &msgs[1]},
 		},
 		{
 			desc: "KeyNotFound",
