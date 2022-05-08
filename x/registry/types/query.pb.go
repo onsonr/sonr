@@ -158,7 +158,7 @@ func (m *QueryWhoIsRequest) GetDid() string {
 }
 
 type QueryWhoIsResponse struct {
-	WhoIs WhoIs `protobuf:"bytes,1,opt,name=who_is,json=whoIs,proto3" json:"who_is"`
+	WhoIs WhoIs `protobuf:"bytes,1,opt,name=WhoIs,proto3" json:"WhoIs"`
 }
 
 func (m *QueryWhoIsResponse) Reset()         { *m = QueryWhoIsResponse{} }
@@ -246,7 +246,7 @@ func (m *QueryAllWhoIsRequest) GetPagination() *query.PageRequest {
 }
 
 type QueryAllWhoIsResponse struct {
-	WhoIs      []WhoIs             `protobuf:"bytes,1,rep,name=who_is,json=whoIs,proto3" json:"who_is"`
+	WhoIs      []WhoIs             `protobuf:"bytes,1,rep,name=WhoIs,proto3" json:"WhoIs"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -297,6 +297,166 @@ func (m *QueryAllWhoIsResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+type QueryWhoIsAliasRequest struct {
+	Alias string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
+}
+
+func (m *QueryWhoIsAliasRequest) Reset()         { *m = QueryWhoIsAliasRequest{} }
+func (m *QueryWhoIsAliasRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryWhoIsAliasRequest) ProtoMessage()    {}
+func (*QueryWhoIsAliasRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33b7babacada5cb6, []int{6}
+}
+func (m *QueryWhoIsAliasRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryWhoIsAliasRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryWhoIsAliasRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryWhoIsAliasRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryWhoIsAliasRequest.Merge(m, src)
+}
+func (m *QueryWhoIsAliasRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryWhoIsAliasRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryWhoIsAliasRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryWhoIsAliasRequest proto.InternalMessageInfo
+
+func (m *QueryWhoIsAliasRequest) GetAlias() string {
+	if m != nil {
+		return m.Alias
+	}
+	return ""
+}
+
+type QueryWhoIsAliasResponse struct {
+}
+
+func (m *QueryWhoIsAliasResponse) Reset()         { *m = QueryWhoIsAliasResponse{} }
+func (m *QueryWhoIsAliasResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryWhoIsAliasResponse) ProtoMessage()    {}
+func (*QueryWhoIsAliasResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33b7babacada5cb6, []int{7}
+}
+func (m *QueryWhoIsAliasResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryWhoIsAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryWhoIsAliasResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryWhoIsAliasResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryWhoIsAliasResponse.Merge(m, src)
+}
+func (m *QueryWhoIsAliasResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryWhoIsAliasResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryWhoIsAliasResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryWhoIsAliasResponse proto.InternalMessageInfo
+
+type QueryWhoIsControllerRequest struct {
+	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+}
+
+func (m *QueryWhoIsControllerRequest) Reset()         { *m = QueryWhoIsControllerRequest{} }
+func (m *QueryWhoIsControllerRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryWhoIsControllerRequest) ProtoMessage()    {}
+func (*QueryWhoIsControllerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33b7babacada5cb6, []int{8}
+}
+func (m *QueryWhoIsControllerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryWhoIsControllerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryWhoIsControllerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryWhoIsControllerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryWhoIsControllerRequest.Merge(m, src)
+}
+func (m *QueryWhoIsControllerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryWhoIsControllerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryWhoIsControllerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryWhoIsControllerRequest proto.InternalMessageInfo
+
+func (m *QueryWhoIsControllerRequest) GetController() string {
+	if m != nil {
+		return m.Controller
+	}
+	return ""
+}
+
+type QueryWhoIsControllerResponse struct {
+}
+
+func (m *QueryWhoIsControllerResponse) Reset()         { *m = QueryWhoIsControllerResponse{} }
+func (m *QueryWhoIsControllerResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryWhoIsControllerResponse) ProtoMessage()    {}
+func (*QueryWhoIsControllerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33b7babacada5cb6, []int{9}
+}
+func (m *QueryWhoIsControllerResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryWhoIsControllerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryWhoIsControllerResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryWhoIsControllerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryWhoIsControllerResponse.Merge(m, src)
+}
+func (m *QueryWhoIsControllerResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryWhoIsControllerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryWhoIsControllerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryWhoIsControllerResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "sonrio.sonr.registry.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "sonrio.sonr.registry.QueryParamsResponse")
@@ -304,43 +464,55 @@ func init() {
 	proto.RegisterType((*QueryWhoIsResponse)(nil), "sonrio.sonr.registry.QueryWhoIsResponse")
 	proto.RegisterType((*QueryAllWhoIsRequest)(nil), "sonrio.sonr.registry.QueryAllWhoIsRequest")
 	proto.RegisterType((*QueryAllWhoIsResponse)(nil), "sonrio.sonr.registry.QueryAllWhoIsResponse")
+	proto.RegisterType((*QueryWhoIsAliasRequest)(nil), "sonrio.sonr.registry.QueryWhoIsAliasRequest")
+	proto.RegisterType((*QueryWhoIsAliasResponse)(nil), "sonrio.sonr.registry.QueryWhoIsAliasResponse")
+	proto.RegisterType((*QueryWhoIsControllerRequest)(nil), "sonrio.sonr.registry.QueryWhoIsControllerRequest")
+	proto.RegisterType((*QueryWhoIsControllerResponse)(nil), "sonrio.sonr.registry.QueryWhoIsControllerResponse")
 }
 
 func init() { proto.RegisterFile("registry/query.proto", fileDescriptor_33b7babacada5cb6) }
 
 var fileDescriptor_33b7babacada5cb6 = []byte{
-	// 496 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xbf, 0x6f, 0x13, 0x31,
-	0x14, 0xc7, 0xe3, 0x86, 0x44, 0x60, 0x16, 0x30, 0x57, 0x09, 0x1d, 0xe1, 0x8a, 0x0e, 0x42, 0x43,
-	0x2b, 0x6c, 0xb5, 0x2c, 0x88, 0xad, 0x19, 0x40, 0x2c, 0xa8, 0xcd, 0x82, 0xc4, 0x00, 0x72, 0x1a,
-	0xeb, 0x62, 0xe9, 0x72, 0xef, 0x7a, 0xbe, 0x50, 0x22, 0xc4, 0x02, 0x03, 0x12, 0x13, 0x12, 0x1b,
-	0x33, 0x7f, 0x4c, 0xc7, 0x4a, 0x2c, 0x4c, 0x08, 0x25, 0xfc, 0x21, 0xe8, 0x9e, 0x5d, 0x9a, 0x1f,
-	0xa7, 0xb4, 0x9d, 0xec, 0x38, 0xdf, 0xf7, 0xfd, 0x7e, 0xfc, 0x9e, 0x8f, 0x7a, 0x99, 0x8a, 0xb4,
-	0xc9, 0xb3, 0x91, 0x38, 0x18, 0xaa, 0x6c, 0xc4, 0xd3, 0x0c, 0x72, 0x60, 0x9e, 0x81, 0x24, 0xd3,
-	0xc0, 0x8b, 0x85, 0x9f, 0x28, 0x7c, 0x2f, 0x82, 0x08, 0x50, 0x20, 0x8a, 0x9d, 0xd5, 0xfa, 0x8d,
-	0x08, 0x20, 0x8a, 0x95, 0x90, 0xa9, 0x16, 0x32, 0x49, 0x20, 0x97, 0xb9, 0x86, 0xc4, 0xb8, 0x7f,
-	0x37, 0xf6, 0xc1, 0x0c, 0xc0, 0x88, 0xae, 0x34, 0xca, 0x46, 0x88, 0xb7, 0x5b, 0x5d, 0x95, 0xcb,
-	0x2d, 0x91, 0xca, 0x48, 0x27, 0x28, 0x76, 0xda, 0xd5, 0xff, 0x2c, 0xa9, 0xcc, 0xe4, 0xc0, 0x2c,
-	0x1c, 0x1f, 0xf6, 0xe1, 0x8d, 0x76, 0xc7, 0xa1, 0x47, 0xd9, 0x5e, 0xe1, 0xb7, 0x8b, 0xda, 0x8e,
-	0x3a, 0x18, 0x2a, 0x93, 0x87, 0x7b, 0xf4, 0xc6, 0xcc, 0xa9, 0x49, 0x21, 0x31, 0x8a, 0x3d, 0xa1,
-	0x75, 0xeb, 0x79, 0x93, 0xdc, 0x21, 0xad, 0xab, 0xdb, 0x0d, 0x5e, 0x76, 0x43, 0x6e, 0xab, 0xda,
-	0x97, 0x8e, 0x7e, 0xaf, 0x55, 0x3a, 0xae, 0x22, 0x6c, 0xd2, 0xeb, 0x68, 0xf9, 0xb2, 0x0f, 0xcf,
-	0x4f, 0x72, 0xd8, 0x35, 0x5a, 0xed, 0xe9, 0x1e, 0xba, 0x5d, 0xe9, 0x14, 0xdb, 0xf0, 0x85, 0xe3,
-	0x71, 0x32, 0x17, 0xfc, 0x98, 0xd6, 0x2d, 0xb5, 0x0b, 0xbe, 0x55, 0x1e, 0x8c, 0x45, 0x2e, 0xb7,
-	0x76, 0x58, 0xfc, 0x08, 0x5f, 0x53, 0x0f, 0xfd, 0x76, 0xe2, 0x78, 0x26, 0xf9, 0x29, 0xa5, 0xa7,
-	0x9d, 0x73, 0xae, 0xf7, 0xb9, 0x6d, 0x33, 0x2f, 0xda, 0xcc, 0xed, 0x24, 0x5d, 0x9b, 0xf9, 0xae,
-	0x8c, 0x94, 0xab, 0xed, 0x4c, 0x55, 0x86, 0xdf, 0x09, 0x5d, 0x9d, 0x0b, 0x28, 0x61, 0xae, 0x5e,
-	0x84, 0x99, 0x3d, 0x9b, 0x61, 0x5b, 0x41, 0xb6, 0xf5, 0x33, 0xd9, 0x6c, 0xec, 0x34, 0xdc, 0xf6,
-	0x8f, 0x2a, 0xad, 0x21, 0x1c, 0xfb, 0x44, 0x68, 0xdd, 0x8e, 0x85, 0xb5, 0xca, 0x39, 0x16, 0x5f,
-	0x81, 0xff, 0xe0, 0x1c, 0x4a, 0x9b, 0x1a, 0xde, 0xfb, 0xf8, 0xf3, 0xef, 0xb7, 0x95, 0x80, 0x35,
-	0x84, 0x2d, 0xc1, 0x45, 0xcc, 0xbd, 0x44, 0xf6, 0x99, 0xd0, 0x1a, 0xde, 0x97, 0xad, 0x2f, 0xb1,
-	0x9e, 0x9e, 0x93, 0xdf, 0x3a, 0x5b, 0xe8, 0x10, 0x36, 0x11, 0xa1, 0xc9, 0xee, 0x62, 0xf6, 0xc3,
-	0x05, 0x06, 0x3b, 0x0c, 0xf1, 0xbe, 0xa7, 0x7b, 0x1f, 0xd8, 0x17, 0x42, 0x2f, 0x63, 0xf9, 0x4e,
-	0x1c, 0xb3, 0x8d, 0x25, 0x19, 0x73, 0xef, 0xc6, 0xdf, 0x3c, 0x97, 0xd6, 0x21, 0x35, 0x11, 0x69,
-	0x8d, 0xdd, 0x5e, 0x8a, 0xd4, 0x6e, 0x1f, 0x8d, 0x03, 0x72, 0x3c, 0x0e, 0xc8, 0x9f, 0x71, 0x40,
-	0xbe, 0x4e, 0x82, 0xca, 0xf1, 0x24, 0xa8, 0xfc, 0x9a, 0x04, 0x95, 0x57, 0xad, 0x48, 0xe7, 0xfd,
-	0x61, 0x97, 0xef, 0xc3, 0x60, 0xd6, 0xe2, 0xdd, 0xa9, 0x49, 0x3e, 0x4a, 0x95, 0xe9, 0xd6, 0xf1,
-	0x73, 0x7e, 0xf4, 0x2f, 0x00, 0x00, 0xff, 0xff, 0x6e, 0x50, 0x29, 0x47, 0x8a, 0x04, 0x00, 0x00,
+	// 620 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x4f, 0x6f, 0x12, 0x4f,
+	0x18, 0x66, 0xdb, 0x1f, 0xcd, 0xcf, 0xd7, 0x83, 0x3a, 0x6e, 0xfd, 0xb3, 0xc5, 0xad, 0x59, 0xc5,
+	0x62, 0x91, 0x9d, 0x40, 0x63, 0x9a, 0x98, 0x78, 0x28, 0x26, 0x1a, 0x0f, 0x26, 0x2d, 0x17, 0x13,
+	0x0f, 0x36, 0x03, 0x4c, 0x96, 0x4d, 0x96, 0x9d, 0xed, 0xce, 0xa2, 0x12, 0xc2, 0x45, 0x0f, 0x26,
+	0x9e, 0x4c, 0x3c, 0x79, 0xf1, 0x6b, 0xf8, 0x15, 0x7a, 0x6c, 0xe2, 0xc5, 0x93, 0x31, 0xe0, 0xf7,
+	0xd0, 0xec, 0xcc, 0xc0, 0x02, 0x4b, 0x80, 0x9e, 0x66, 0x78, 0xf7, 0x79, 0x9f, 0xe7, 0x99, 0x77,
+	0x9e, 0x01, 0xf4, 0x90, 0x3a, 0x2e, 0x8f, 0xc2, 0x2e, 0x3e, 0xe9, 0xd0, 0xb0, 0x6b, 0x07, 0x21,
+	0x8b, 0x18, 0xd2, 0x39, 0xf3, 0x43, 0x97, 0xd9, 0xf1, 0x62, 0x8f, 0x10, 0x86, 0xee, 0x30, 0x87,
+	0x09, 0x00, 0x8e, 0x77, 0x12, 0x6b, 0xe4, 0x1c, 0xc6, 0x1c, 0x8f, 0x62, 0x12, 0xb8, 0x98, 0xf8,
+	0x3e, 0x8b, 0x48, 0xe4, 0x32, 0x9f, 0xab, 0xaf, 0xbb, 0x0d, 0xc6, 0xdb, 0x8c, 0xe3, 0x3a, 0xe1,
+	0x54, 0x4a, 0xe0, 0x37, 0xe5, 0x3a, 0x8d, 0x48, 0x19, 0x07, 0xc4, 0x71, 0x7d, 0x01, 0x56, 0xd8,
+	0xcd, 0xb1, 0x97, 0x80, 0x84, 0xa4, 0xcd, 0x53, 0xe5, 0xb7, 0x2d, 0x76, 0xec, 0xaa, 0xb2, 0xa5,
+	0x03, 0x3a, 0x8a, 0xf9, 0x0e, 0x05, 0xb6, 0x46, 0x4f, 0x3a, 0x94, 0x47, 0xd6, 0x11, 0x5c, 0x9d,
+	0xaa, 0xf2, 0x80, 0xf9, 0x9c, 0xa2, 0x47, 0xb0, 0x21, 0x39, 0x6f, 0x68, 0xb7, 0xb5, 0xc2, 0xc5,
+	0x4a, 0xce, 0x9e, 0x77, 0x42, 0x5b, 0x76, 0x55, 0xff, 0x3b, 0xfd, 0xb5, 0x9d, 0xa9, 0xa9, 0x0e,
+	0x2b, 0x0f, 0x57, 0x04, 0xe5, 0xcb, 0x16, 0x7b, 0x3e, 0xd2, 0x41, 0x97, 0x61, 0xbd, 0xe9, 0x36,
+	0x05, 0xdb, 0x85, 0x5a, 0xbc, 0xb5, 0x5e, 0x28, 0x3f, 0x0a, 0xa6, 0x84, 0xf7, 0x21, 0x2b, 0x0a,
+	0x4a, 0x77, 0x6b, 0xbe, 0xae, 0x80, 0x28, 0x59, 0x89, 0xb7, 0x5e, 0x83, 0x2e, 0xe8, 0x0e, 0x3c,
+	0x6f, 0x4a, 0xf8, 0x29, 0x40, 0x32, 0x38, 0xc5, 0x7a, 0xcf, 0x96, 0x53, 0xb6, 0xe3, 0x29, 0xdb,
+	0xf2, 0x22, 0xd5, 0x94, 0xed, 0x43, 0xe2, 0x50, 0xd5, 0x5b, 0x9b, 0xe8, 0xb4, 0xbe, 0x6a, 0xb0,
+	0x39, 0x23, 0x90, 0xb6, 0xbc, 0x7e, 0x1e, 0xcb, 0xe8, 0xd9, 0x94, 0xb5, 0x35, 0x61, 0x6d, 0x67,
+	0xa9, 0x35, 0xa9, 0x3a, 0xe5, 0xcd, 0x86, 0x6b, 0xc9, 0x28, 0x0f, 0x3c, 0x97, 0x8c, 0x4f, 0xaf,
+	0x43, 0x96, 0xc4, 0xbf, 0xd5, 0xe0, 0xe5, 0x0f, 0xeb, 0x26, 0x5c, 0x4f, 0xe1, 0x25, 0xad, 0xf5,
+	0x18, 0xb6, 0x92, 0x4f, 0x4f, 0x98, 0x1f, 0x85, 0xcc, 0xf3, 0x68, 0x38, 0xe2, 0x33, 0x01, 0x1a,
+	0xe3, 0xa2, 0x22, 0x9d, 0xa8, 0x58, 0x26, 0xe4, 0xe6, 0xb7, 0x4b, 0xfa, 0xca, 0xdf, 0x2c, 0x64,
+	0x05, 0x00, 0x7d, 0xd0, 0x60, 0x43, 0xc6, 0x07, 0x15, 0xe6, 0x4f, 0x2c, 0x9d, 0x56, 0xe3, 0xfe,
+	0x0a, 0x48, 0x75, 0x90, 0xbb, 0xef, 0x7f, 0xfc, 0xf9, 0xb2, 0x66, 0xa2, 0x1c, 0x96, 0x2d, 0x62,
+	0xc1, 0x33, 0x2f, 0x06, 0x7d, 0xd4, 0xd4, 0xe5, 0xa1, 0x9d, 0x05, 0xd4, 0x93, 0x81, 0x32, 0x0a,
+	0xcb, 0x81, 0xca, 0x42, 0x51, 0x58, 0xc8, 0xa3, 0x3b, 0x42, 0xbb, 0x94, 0xf2, 0x20, 0x9f, 0x27,
+	0xee, 0x35, 0xdd, 0x66, 0x1f, 0x7d, 0xd2, 0xe0, 0x7f, 0x75, 0x1f, 0x1e, 0xda, 0x5d, 0xa0, 0x31,
+	0x13, 0x70, 0xa3, 0xb8, 0x12, 0x56, 0x59, 0xca, 0x0b, 0x4b, 0xdb, 0xe8, 0xd6, 0x42, 0x4b, 0xe8,
+	0x9b, 0x06, 0x90, 0x84, 0x03, 0x3d, 0x58, 0x76, 0xe4, 0xc9, 0xcc, 0x19, 0xa5, 0x15, 0xd1, 0xca,
+	0xd2, 0x9e, 0xb0, 0x54, 0x42, 0xc5, 0x85, 0x96, 0x8e, 0x45, 0x72, 0x71, 0x4f, 0x2c, 0x7d, 0xf4,
+	0x5d, 0x83, 0x4b, 0x33, 0x19, 0x43, 0xe5, 0x65, 0xba, 0xa9, 0x38, 0x1b, 0x95, 0xf3, 0xb4, 0x8c,
+	0x5e, 0x88, 0xf0, 0xbb, 0x8f, 0x1e, 0x2e, 0xf6, 0x9b, 0x3c, 0x0a, 0xdc, 0x4b, 0xf6, 0xfd, 0x6a,
+	0xf5, 0x74, 0x60, 0x6a, 0x67, 0x03, 0x53, 0xfb, 0x3d, 0x30, 0xb5, 0xcf, 0x43, 0x33, 0x73, 0x36,
+	0x34, 0x33, 0x3f, 0x87, 0x66, 0xe6, 0x55, 0xc1, 0x71, 0xa3, 0x56, 0xa7, 0x6e, 0x37, 0x58, 0x7b,
+	0x9a, 0xfa, 0x5d, 0x42, 0x1e, 0x75, 0x03, 0xca, 0xeb, 0x1b, 0xe2, 0x1f, 0x7d, 0xef, 0x5f, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x45, 0x10, 0x8e, 0xf5, 0x8d, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -355,18 +527,16 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Params
-	//
-	// Params queries the parameters of the Registry Module.
+	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// WhoIs
-	//
-	// Queries a WhoIs by did.
+	// Queries a WhoIs by id.
 	WhoIs(ctx context.Context, in *QueryWhoIsRequest, opts ...grpc.CallOption) (*QueryWhoIsResponse, error)
-	// WhoIsAll
-	//
 	// Queries a list of WhoIs items.
 	WhoIsAll(ctx context.Context, in *QueryAllWhoIsRequest, opts ...grpc.CallOption) (*QueryAllWhoIsResponse, error)
+	// Queries a list of WhoIsAlias items.
+	WhoIsAlias(ctx context.Context, in *QueryWhoIsAliasRequest, opts ...grpc.CallOption) (*QueryWhoIsAliasResponse, error)
+	// Queries a list of WhoIsController items.
+	WhoIsController(ctx context.Context, in *QueryWhoIsControllerRequest, opts ...grpc.CallOption) (*QueryWhoIsControllerResponse, error)
 }
 
 type queryClient struct {
@@ -404,20 +574,36 @@ func (c *queryClient) WhoIsAll(ctx context.Context, in *QueryAllWhoIsRequest, op
 	return out, nil
 }
 
+func (c *queryClient) WhoIsAlias(ctx context.Context, in *QueryWhoIsAliasRequest, opts ...grpc.CallOption) (*QueryWhoIsAliasResponse, error) {
+	out := new(QueryWhoIsAliasResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Query/WhoIsAlias", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) WhoIsController(ctx context.Context, in *QueryWhoIsControllerRequest, opts ...grpc.CallOption) (*QueryWhoIsControllerResponse, error) {
+	out := new(QueryWhoIsControllerResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Query/WhoIsController", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Params
-	//
-	// Params queries the parameters of the Registry Module.
+	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// WhoIs
-	//
-	// Queries a WhoIs by did.
+	// Queries a WhoIs by id.
 	WhoIs(context.Context, *QueryWhoIsRequest) (*QueryWhoIsResponse, error)
-	// WhoIsAll
-	//
 	// Queries a list of WhoIs items.
 	WhoIsAll(context.Context, *QueryAllWhoIsRequest) (*QueryAllWhoIsResponse, error)
+	// Queries a list of WhoIsAlias items.
+	WhoIsAlias(context.Context, *QueryWhoIsAliasRequest) (*QueryWhoIsAliasResponse, error)
+	// Queries a list of WhoIsController items.
+	WhoIsController(context.Context, *QueryWhoIsControllerRequest) (*QueryWhoIsControllerResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -432,6 +618,12 @@ func (*UnimplementedQueryServer) WhoIs(ctx context.Context, req *QueryWhoIsReque
 }
 func (*UnimplementedQueryServer) WhoIsAll(ctx context.Context, req *QueryAllWhoIsRequest) (*QueryAllWhoIsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WhoIsAll not implemented")
+}
+func (*UnimplementedQueryServer) WhoIsAlias(ctx context.Context, req *QueryWhoIsAliasRequest) (*QueryWhoIsAliasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WhoIsAlias not implemented")
+}
+func (*UnimplementedQueryServer) WhoIsController(ctx context.Context, req *QueryWhoIsControllerRequest) (*QueryWhoIsControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WhoIsController not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -492,6 +684,42 @@ func _Query_WhoIsAll_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_WhoIsAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryWhoIsAliasRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).WhoIsAlias(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrio.sonr.registry.Query/WhoIsAlias",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).WhoIsAlias(ctx, req.(*QueryWhoIsAliasRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_WhoIsController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryWhoIsControllerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).WhoIsController(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrio.sonr.registry.Query/WhoIsController",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).WhoIsController(ctx, req.(*QueryWhoIsControllerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sonrio.sonr.registry.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -507,6 +735,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WhoIsAll",
 			Handler:    _Query_WhoIsAll_Handler,
+		},
+		{
+			MethodName: "WhoIsAlias",
+			Handler:    _Query_WhoIsAlias_Handler,
+		},
+		{
+			MethodName: "WhoIsController",
+			Handler:    _Query_WhoIsController_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -716,6 +952,112 @@ func (m *QueryAllWhoIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryWhoIsAliasRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryWhoIsAliasRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryWhoIsAliasRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Alias)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryWhoIsAliasResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryWhoIsAliasResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryWhoIsAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryWhoIsControllerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryWhoIsControllerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryWhoIsControllerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryWhoIsControllerResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryWhoIsControllerResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryWhoIsControllerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -800,6 +1142,50 @@ func (m *QueryAllWhoIsResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	return n
+}
+
+func (m *QueryWhoIsAliasRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Alias)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryWhoIsAliasResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryWhoIsControllerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryWhoIsControllerResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -1292,6 +1678,270 @@ func (m *QueryAllWhoIsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryWhoIsAliasRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryWhoIsAliasRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryWhoIsAliasRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryWhoIsAliasResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryWhoIsAliasResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryWhoIsAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryWhoIsControllerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryWhoIsControllerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryWhoIsControllerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryWhoIsControllerResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryWhoIsControllerResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryWhoIsControllerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

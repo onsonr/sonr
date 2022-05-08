@@ -10,6 +10,7 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
+		PortId:    PortID,
 		WhoIsList: []WhoIs{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
@@ -23,7 +24,7 @@ func (gs GenesisState) Validate() error {
 	whoIsIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.WhoIsList {
-		index := string(WhoIsKey(elem.Name))
+		index := string(WhoIsKey(elem.Owner))
 		if _, ok := whoIsIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for whoIs")
 		}

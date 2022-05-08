@@ -22,54 +22,48 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Type is the type of the registered name
-type WhoIs_Type int32
+type WhoIsType int32
 
 const (
 	// User is the type of the registered name
-	WhoIs_User WhoIs_Type = 0
+	WhoIsType_USER WhoIsType = 0
 	// Application is the type of the registered name
-	WhoIs_Application WhoIs_Type = 1
+	WhoIsType_APPLICATION WhoIsType = 1
 )
 
-var WhoIs_Type_name = map[int32]string{
-	0: "User",
-	1: "Application",
+var WhoIsType_name = map[int32]string{
+	0: "USER",
+	1: "APPLICATION",
 }
 
-var WhoIs_Type_value = map[string]int32{
-	"User":        0,
-	"Application": 1,
+var WhoIsType_value = map[string]int32{
+	"USER":        0,
+	"APPLICATION": 1,
 }
 
-func (x WhoIs_Type) String() string {
-	return proto.EnumName(WhoIs_Type_name, int32(x))
+func (x WhoIsType) String() string {
+	return proto.EnumName(WhoIsType_name, int32(x))
 }
 
-func (WhoIs_Type) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_9d9bdfc8d37d9424, []int{0, 0}
+func (WhoIsType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_9d9bdfc8d37d9424, []int{0}
 }
 
-// WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument.
 type WhoIs struct {
-	// Name is the registered name of the User or Application
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// DID is the DID of the account
-	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
-	// Document is the DID Document of the registered name and account encoded as JSON
-	Document []byte `protobuf:"bytes,3,opt,name=document,proto3" json:"document,omitempty"`
-	// Owner is the Account Address of the creator of the DID Document
-	Owner string `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
+	// Alias is the list of registered `alsoKnownAs` identifiers of the User or Application
+	Alias []string `protobuf:"bytes,1,rep,name=alias,proto3" json:"alias,omitempty"`
+	// Owner is the top level DID of the User or Application derived from the multisignature wallet.
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// DIDDocument is the bytes representation of DIDDocument within the WhoIs
+	DidDocument []byte `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 	// Credentials are the biometric info of the registered name and account encoded with public key
-	Credentials []*Credential `protobuf:"bytes,5,rep,name=credentials,proto3" json:"credentials,omitempty"`
+	Controllers []string `protobuf:"bytes,4,rep,name=controllers,proto3" json:"controllers,omitempty"`
 	// Type is the type of the registered name
-	Type WhoIs_Type `protobuf:"varint,6,opt,name=type,proto3,enum=sonrio.sonr.registry.WhoIs_Type" json:"type,omitempty"`
-	// Additional Metadata for associated WhoIs
-	Metadata map[string]string `protobuf:"bytes,7,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Type WhoIsType `protobuf:"varint,5,opt,name=type,proto3,enum=sonrio.sonr.registry.WhoIsType" json:"type,omitempty"`
 	// Timestamp is the time of the last update of the DID Document
-	Timestamp int64 `protobuf:"varint,8,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Timestamp int64 `protobuf:"varint,6,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	// IsActive is the status of the DID Document
-	IsActive bool `protobuf:"varint,9,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	IsActive bool `protobuf:"varint,7,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
 }
 
 func (m *WhoIs) Reset()         { *m = WhoIs{} }
@@ -105,23 +99,9 @@ func (m *WhoIs) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_WhoIs proto.InternalMessageInfo
 
-func (m *WhoIs) GetName() string {
+func (m *WhoIs) GetAlias() []string {
 	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *WhoIs) GetDid() string {
-	if m != nil {
-		return m.Did
-	}
-	return ""
-}
-
-func (m *WhoIs) GetDocument() []byte {
-	if m != nil {
-		return m.Document
+		return m.Alias
 	}
 	return nil
 }
@@ -133,25 +113,25 @@ func (m *WhoIs) GetOwner() string {
 	return ""
 }
 
-func (m *WhoIs) GetCredentials() []*Credential {
+func (m *WhoIs) GetDidDocument() []byte {
 	if m != nil {
-		return m.Credentials
+		return m.DidDocument
 	}
 	return nil
 }
 
-func (m *WhoIs) GetType() WhoIs_Type {
+func (m *WhoIs) GetControllers() []string {
+	if m != nil {
+		return m.Controllers
+	}
+	return nil
+}
+
+func (m *WhoIs) GetType() WhoIsType {
 	if m != nil {
 		return m.Type
 	}
-	return WhoIs_User
-}
-
-func (m *WhoIs) GetMetadata() map[string]string {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
+	return WhoIsType_USER
 }
 
 func (m *WhoIs) GetTimestamp() int64 {
@@ -168,109 +148,35 @@ func (m *WhoIs) GetIsActive() bool {
 	return false
 }
 
-// Session is the metadata for current user or application
-type Session struct {
-	// Base DID is the current Account or Application whois DID url
-	BaseDid string `protobuf:"bytes,1,opt,name=base_did,json=baseDid,proto3" json:"base_did,omitempty"`
-	// WhoIs is the current Document for the DID
-	Whois *WhoIs `protobuf:"bytes,2,opt,name=whois,proto3" json:"whois,omitempty"`
-	// Credential is the current Credential for the DID
-	Credential *Credential `protobuf:"bytes,3,opt,name=credential,proto3" json:"credential,omitempty"`
-}
-
-func (m *Session) Reset()         { *m = Session{} }
-func (m *Session) String() string { return proto.CompactTextString(m) }
-func (*Session) ProtoMessage()    {}
-func (*Session) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9d9bdfc8d37d9424, []int{1}
-}
-func (m *Session) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Session) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Session.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Session) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Session.Merge(m, src)
-}
-func (m *Session) XXX_Size() int {
-	return m.Size()
-}
-func (m *Session) XXX_DiscardUnknown() {
-	xxx_messageInfo_Session.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Session proto.InternalMessageInfo
-
-func (m *Session) GetBaseDid() string {
-	if m != nil {
-		return m.BaseDid
-	}
-	return ""
-}
-
-func (m *Session) GetWhois() *WhoIs {
-	if m != nil {
-		return m.Whois
-	}
-	return nil
-}
-
-func (m *Session) GetCredential() *Credential {
-	if m != nil {
-		return m.Credential
-	}
-	return nil
-}
-
 func init() {
-	proto.RegisterEnum("sonrio.sonr.registry.WhoIs_Type", WhoIs_Type_name, WhoIs_Type_value)
+	proto.RegisterEnum("sonrio.sonr.registry.WhoIsType", WhoIsType_name, WhoIsType_value)
 	proto.RegisterType((*WhoIs)(nil), "sonrio.sonr.registry.WhoIs")
-	proto.RegisterMapType((map[string]string)(nil), "sonrio.sonr.registry.WhoIs.MetadataEntry")
-	proto.RegisterType((*Session)(nil), "sonrio.sonr.registry.Session")
 }
 
 func init() { proto.RegisterFile("registry/who_is.proto", fileDescriptor_9d9bdfc8d37d9424) }
 
 var fileDescriptor_9d9bdfc8d37d9424 = []byte{
-	// 448 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0x4d, 0x8f, 0xd3, 0x30,
-	0x10, 0xad, 0x37, 0xe9, 0x36, 0x9d, 0xf2, 0x51, 0x59, 0x8b, 0xe4, 0xed, 0xa2, 0x28, 0xf4, 0x14,
-	0x0e, 0xa4, 0x62, 0xe1, 0x80, 0xe0, 0xc2, 0x16, 0xf6, 0xc0, 0x81, 0x4b, 0x00, 0x21, 0x71, 0xa9,
-	0xdc, 0xc4, 0xda, 0x8c, 0x68, 0xe2, 0x28, 0x76, 0xb7, 0xe4, 0x5f, 0x70, 0xe5, 0xb7, 0xf0, 0x07,
-	0x38, 0xee, 0x91, 0x23, 0x6a, 0xff, 0x08, 0xb2, 0x53, 0xd2, 0x45, 0x82, 0x6a, 0x4f, 0x9e, 0x67,
-	0xbd, 0x37, 0x63, 0xbf, 0x37, 0x70, 0xaf, 0x12, 0x17, 0xa8, 0x74, 0x55, 0x4f, 0x56, 0x99, 0x9c,
-	0xa1, 0x8a, 0xca, 0x4a, 0x6a, 0x49, 0x8f, 0x94, 0x2c, 0x2a, 0x94, 0x91, 0x39, 0xa2, 0x3f, 0x94,
-	0xd1, 0x71, 0x4b, 0x4e, 0x2a, 0x91, 0x8a, 0x42, 0x23, 0x5f, 0x34, 0x82, 0xf1, 0x77, 0x07, 0xba,
-	0x1f, 0x33, 0xf9, 0x46, 0x51, 0x0a, 0x6e, 0xc1, 0x73, 0xc1, 0x48, 0x40, 0xc2, 0x7e, 0x6c, 0x6b,
-	0x3a, 0x04, 0x27, 0xc5, 0x94, 0x1d, 0xd8, 0x2b, 0x53, 0xd2, 0x11, 0x78, 0xa9, 0x4c, 0x96, 0xb9,
-	0x28, 0x34, 0x73, 0x02, 0x12, 0xde, 0x8a, 0x5b, 0x4c, 0x8f, 0xa0, 0x2b, 0x57, 0x85, 0xa8, 0x98,
-	0x6b, 0xf9, 0x0d, 0xa0, 0x53, 0x18, 0xec, 0xa6, 0x2a, 0xd6, 0x0d, 0x9c, 0x70, 0x70, 0x1a, 0x44,
-	0xff, 0x7a, 0x68, 0xf4, 0xaa, 0x25, 0xc6, 0xd7, 0x45, 0xf4, 0x29, 0xb8, 0xba, 0x2e, 0x05, 0x3b,
-	0x0c, 0x48, 0x78, 0xe7, 0x7f, 0x62, 0xfb, 0x8d, 0xe8, 0x7d, 0x5d, 0x8a, 0xd8, 0xb2, 0xe9, 0x39,
-	0x78, 0xb9, 0xd0, 0x3c, 0xe5, 0x9a, 0xb3, 0x9e, 0x1d, 0xfb, 0x70, 0x9f, 0xf2, 0xed, 0x96, 0x7b,
-	0x5e, 0xe8, 0xaa, 0x8e, 0x5b, 0x29, 0xbd, 0x0f, 0x7d, 0x8d, 0xb9, 0x50, 0x9a, 0xe7, 0x25, 0xf3,
-	0x02, 0x12, 0x3a, 0xf1, 0xee, 0x82, 0x9e, 0x40, 0x1f, 0xd5, 0x8c, 0x27, 0x1a, 0x2f, 0x05, 0xeb,
-	0x07, 0x24, 0xf4, 0x62, 0x0f, 0xd5, 0x99, 0xc5, 0xa3, 0x17, 0x70, 0xfb, 0xaf, 0xae, 0xc6, 0xd0,
-	0xcf, 0xa2, 0xde, 0x7a, 0x6c, 0x4a, 0x63, 0xda, 0x25, 0x5f, 0x2c, 0xc5, 0xd6, 0xe4, 0x06, 0x3c,
-	0x3f, 0x78, 0x46, 0xc6, 0x0f, 0xc0, 0x35, 0x9f, 0xa1, 0x1e, 0xb8, 0x1f, 0x94, 0xa8, 0x86, 0x1d,
-	0x7a, 0x17, 0x06, 0x67, 0x65, 0xb9, 0xc0, 0x84, 0x6b, 0x94, 0xc5, 0x90, 0x8c, 0xbf, 0x11, 0xe8,
-	0xbd, 0x13, 0x4a, 0xa1, 0x2c, 0xe8, 0x31, 0x78, 0x73, 0xae, 0xc4, 0xcc, 0x04, 0xd6, 0xf4, 0xef,
-	0x19, 0xfc, 0x1a, 0x53, 0xfa, 0x18, 0xba, 0xab, 0x4c, 0xa2, 0xb2, 0x33, 0x06, 0xa7, 0x27, 0x7b,
-	0x5c, 0x88, 0x1b, 0x26, 0x7d, 0x09, 0xb0, 0x0b, 0xc0, 0x26, 0x7d, 0x93, 0xd0, 0xae, 0x69, 0xa6,
-	0xd3, 0x1f, 0x6b, 0x9f, 0x5c, 0xad, 0x7d, 0xf2, 0x6b, 0xed, 0x93, 0xaf, 0x1b, 0xbf, 0x73, 0xb5,
-	0xf1, 0x3b, 0x3f, 0x37, 0x7e, 0xe7, 0x53, 0x78, 0x81, 0x3a, 0x5b, 0xce, 0xa3, 0x44, 0xe6, 0x13,
-	0xd3, 0xea, 0x11, 0x4a, 0x7b, 0x4e, 0xbe, 0x4c, 0xda, 0x45, 0x35, 0x01, 0xaa, 0xf9, 0xa1, 0x5d,
-	0xd2, 0x27, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xc5, 0x02, 0xa6, 0xc0, 0xee, 0x02, 0x00, 0x00,
+	// 318 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x90, 0xcd, 0x4a, 0xc3, 0x40,
+	0x14, 0x85, 0x33, 0xf6, 0xc7, 0x66, 0x5a, 0xb4, 0x0c, 0x15, 0x06, 0x94, 0x38, 0xba, 0x90, 0x20,
+	0x98, 0x80, 0x7d, 0x82, 0x56, 0x5d, 0x14, 0x44, 0xcb, 0x58, 0x11, 0xdc, 0x94, 0x34, 0x19, 0xda,
+	0x81, 0x26, 0x37, 0xcc, 0x4c, 0xad, 0x7d, 0x0b, 0x1f, 0xcb, 0x65, 0x97, 0x2e, 0xa5, 0xdd, 0xf8,
+	0x18, 0x92, 0x51, 0xab, 0x0b, 0x57, 0x97, 0xf3, 0x71, 0x39, 0x7c, 0x1c, 0xbc, 0xa7, 0xc4, 0x58,
+	0x6a, 0xa3, 0x16, 0xe1, 0x7c, 0x02, 0x43, 0xa9, 0x83, 0x5c, 0x81, 0x01, 0xd2, 0xd2, 0x90, 0x29,
+	0x09, 0x41, 0x71, 0x82, 0x9f, 0x97, 0xe3, 0x0f, 0x84, 0x2b, 0x0f, 0x13, 0xe8, 0x69, 0xd2, 0xc2,
+	0x95, 0x68, 0x2a, 0x23, 0x4d, 0x11, 0x2b, 0xf9, 0x2e, 0xff, 0x0a, 0x05, 0x85, 0x79, 0x26, 0x14,
+	0xdd, 0x62, 0xa8, 0xa0, 0x36, 0x90, 0x23, 0xdc, 0x48, 0x64, 0x32, 0x4c, 0x20, 0x9e, 0xa5, 0x22,
+	0x33, 0xb4, 0xc4, 0x90, 0xdf, 0xe0, 0xf5, 0x44, 0x26, 0x97, 0xdf, 0x88, 0x30, 0x5c, 0x8f, 0x21,
+	0x33, 0x0a, 0xa6, 0x53, 0xa1, 0x34, 0x2d, 0xdb, 0xd2, 0xbf, 0x88, 0xb4, 0x71, 0xd9, 0x2c, 0x72,
+	0x41, 0x2b, 0x0c, 0xf9, 0x3b, 0xe7, 0x87, 0xc1, 0x7f, 0x7e, 0x81, 0x75, 0x1b, 0x2c, 0x72, 0xc1,
+	0xed, 0x33, 0x39, 0xc0, 0xae, 0x91, 0xa9, 0xd0, 0x26, 0x4a, 0x73, 0x5a, 0x65, 0xc8, 0x2f, 0xf1,
+	0x5f, 0x40, 0xf6, 0xb1, 0x2b, 0xf5, 0x30, 0x8a, 0x8d, 0x7c, 0x12, 0x74, 0x9b, 0x21, 0xbf, 0xc6,
+	0x6b, 0x52, 0x77, 0x6c, 0x3e, 0x3d, 0xc1, 0xee, 0xa6, 0x8d, 0xd4, 0x70, 0xf9, 0xfe, 0xee, 0x8a,
+	0x37, 0x1d, 0xb2, 0x8b, 0xeb, 0x9d, 0x7e, 0xff, 0xba, 0x77, 0xd1, 0x19, 0xf4, 0x6e, 0x6f, 0x9a,
+	0xa8, 0xdb, 0x7d, 0x5d, 0x79, 0x68, 0xb9, 0xf2, 0xd0, 0xfb, 0xca, 0x43, 0x2f, 0x6b, 0xcf, 0x59,
+	0xae, 0x3d, 0xe7, 0x6d, 0xed, 0x39, 0x8f, 0xfe, 0x58, 0x9a, 0xc9, 0x6c, 0x14, 0xc4, 0x90, 0x86,
+	0x85, 0xe6, 0x99, 0x04, 0x7b, 0xc3, 0xe7, 0x70, 0xb3, 0x79, 0x61, 0xa9, 0x47, 0x55, 0xbb, 0x79,
+	0xfb, 0x33, 0x00, 0x00, 0xff, 0xff, 0x7d, 0x71, 0x18, 0x78, 0x8c, 0x01, 0x00, 0x00,
 }
 
 func (m *WhoIs) Marshal() (dAtA []byte, err error) {
@@ -301,132 +207,49 @@ func (m *WhoIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x48
+		dAtA[i] = 0x38
 	}
 	if m.Timestamp != 0 {
 		i = encodeVarintWhoIs(dAtA, i, uint64(m.Timestamp))
 		i--
-		dAtA[i] = 0x40
-	}
-	if len(m.Metadata) > 0 {
-		for k := range m.Metadata {
-			v := m.Metadata[k]
-			baseI := i
-			i -= len(v)
-			copy(dAtA[i:], v)
-			i = encodeVarintWhoIs(dAtA, i, uint64(len(v)))
-			i--
-			dAtA[i] = 0x12
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintWhoIs(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintWhoIs(dAtA, i, uint64(baseI-i))
-			i--
-			dAtA[i] = 0x3a
-		}
+		dAtA[i] = 0x30
 	}
 	if m.Type != 0 {
 		i = encodeVarintWhoIs(dAtA, i, uint64(m.Type))
 		i--
-		dAtA[i] = 0x30
+		dAtA[i] = 0x28
 	}
-	if len(m.Credentials) > 0 {
-		for iNdEx := len(m.Credentials) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Credentials[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintWhoIs(dAtA, i, uint64(size))
-			}
+	if len(m.Controllers) > 0 {
+		for iNdEx := len(m.Controllers) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Controllers[iNdEx])
+			copy(dAtA[i:], m.Controllers[iNdEx])
+			i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Controllers[iNdEx])))
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x22
 		}
+	}
+	if len(m.DidDocument) > 0 {
+		i -= len(m.DidDocument)
+		copy(dAtA[i:], m.DidDocument)
+		i = encodeVarintWhoIs(dAtA, i, uint64(len(m.DidDocument)))
+		i--
+		dAtA[i] = 0x1a
 	}
 	if len(m.Owner) > 0 {
 		i -= len(m.Owner)
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Owner)))
 		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Document) > 0 {
-		i -= len(m.Document)
-		copy(dAtA[i:], m.Document)
-		i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Document)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Did)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Session) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Session) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Session) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Credential != nil {
-		{
-			size, err := m.Credential.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintWhoIs(dAtA, i, uint64(size))
+	if len(m.Alias) > 0 {
+		for iNdEx := len(m.Alias) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Alias[iNdEx])
+			copy(dAtA[i:], m.Alias[iNdEx])
+			i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Alias[iNdEx])))
+			i--
+			dAtA[i] = 0xa
 		}
-		i--
-		dAtA[i] = 0x1a
-	}
-	if m.Whois != nil {
-		{
-			size, err := m.Whois.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintWhoIs(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.BaseDid) > 0 {
-		i -= len(m.BaseDid)
-		copy(dAtA[i:], m.BaseDid)
-		i = encodeVarintWhoIs(dAtA, i, uint64(len(m.BaseDid)))
-		i--
-		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -448,65 +271,34 @@ func (m *WhoIs) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovWhoIs(uint64(l))
-	}
-	l = len(m.Did)
-	if l > 0 {
-		n += 1 + l + sovWhoIs(uint64(l))
-	}
-	l = len(m.Document)
-	if l > 0 {
-		n += 1 + l + sovWhoIs(uint64(l))
+	if len(m.Alias) > 0 {
+		for _, s := range m.Alias {
+			l = len(s)
+			n += 1 + l + sovWhoIs(uint64(l))
+		}
 	}
 	l = len(m.Owner)
 	if l > 0 {
 		n += 1 + l + sovWhoIs(uint64(l))
 	}
-	if len(m.Credentials) > 0 {
-		for _, e := range m.Credentials {
-			l = e.Size()
+	l = len(m.DidDocument)
+	if l > 0 {
+		n += 1 + l + sovWhoIs(uint64(l))
+	}
+	if len(m.Controllers) > 0 {
+		for _, s := range m.Controllers {
+			l = len(s)
 			n += 1 + l + sovWhoIs(uint64(l))
 		}
 	}
 	if m.Type != 0 {
 		n += 1 + sovWhoIs(uint64(m.Type))
 	}
-	if len(m.Metadata) > 0 {
-		for k, v := range m.Metadata {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovWhoIs(uint64(len(k))) + 1 + len(v) + sovWhoIs(uint64(len(v)))
-			n += mapEntrySize + 1 + sovWhoIs(uint64(mapEntrySize))
-		}
-	}
 	if m.Timestamp != 0 {
 		n += 1 + sovWhoIs(uint64(m.Timestamp))
 	}
 	if m.IsActive {
 		n += 2
-	}
-	return n
-}
-
-func (m *Session) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.BaseDid)
-	if l > 0 {
-		n += 1 + l + sovWhoIs(uint64(l))
-	}
-	if m.Whois != nil {
-		l = m.Whois.Size()
-		n += 1 + l + sovWhoIs(uint64(l))
-	}
-	if m.Credential != nil {
-		l = m.Credential.Size()
-		n += 1 + l + sovWhoIs(uint64(l))
 	}
 	return n
 }
@@ -548,7 +340,7 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -576,75 +368,9 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Name = string(dAtA[iNdEx:postIndex])
+			m.Alias = append(m.Alias, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Did = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Document", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Document = append(m.Document[:0], dAtA[iNdEx:postIndex]...)
-			if m.Document == nil {
-				m.Document = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
@@ -676,11 +402,11 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 			}
 			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Credentials", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
-			var msglen int
+			var byteLen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowWhoIs
@@ -690,264 +416,29 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			if byteLen < 0 {
 				return ErrInvalidLengthWhoIs
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + byteLen
 			if postIndex < 0 {
 				return ErrInvalidLengthWhoIs
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Credentials = append(m.Credentials, &Credential{})
-			if err := m.Credentials[len(m.Credentials)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
+			m.DidDocument = append(m.DidDocument[:0], dAtA[iNdEx:postIndex]...)
+			if m.DidDocument == nil {
+				m.DidDocument = []byte{}
 			}
 			iNdEx = postIndex
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
-			}
-			m.Type = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Type |= WhoIs_Type(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
+		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Metadata == nil {
-				m.Metadata = make(map[string]string)
-			}
-			var mapkey string
-			var mapvalue string
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowWhoIs
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowWhoIs
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthWhoIs
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthWhoIs
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var stringLenmapvalue uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowWhoIs
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapvalue |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapvalue := int(stringLenmapvalue)
-					if intStringLenmapvalue < 0 {
-						return ErrInvalidLengthWhoIs
-					}
-					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
-					if postStringIndexmapvalue < 0 {
-						return ErrInvalidLengthWhoIs
-					}
-					if postStringIndexmapvalue > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
-					iNdEx = postStringIndexmapvalue
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipWhoIs(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthWhoIs
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Metadata[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
-			}
-			m.Timestamp = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Timestamp |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IsActive", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.IsActive = bool(v != 0)
-		default:
-			iNdEx = preIndex
-			skippy, err := skipWhoIs(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Session) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowWhoIs
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Session: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Session: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BaseDid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Controllers", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -975,13 +466,13 @@ func (m *Session) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.BaseDid = string(dAtA[iNdEx:postIndex])
+			m.Controllers = append(m.Controllers, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Whois", wireType)
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
 			}
-			var msglen int
+			m.Type = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowWhoIs
@@ -991,33 +482,16 @@ func (m *Session) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				m.Type |= WhoIsType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
-				return ErrInvalidLengthWhoIs
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
 			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Whois == nil {
-				m.Whois = &WhoIs{}
-			}
-			if err := m.Whois.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Credential", wireType)
-			}
-			var msglen int
+			m.Timestamp = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowWhoIs
@@ -1027,28 +501,31 @@ func (m *Session) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				m.Timestamp |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
-				return ErrInvalidLengthWhoIs
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsActive", wireType)
 			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthWhoIs
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWhoIs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
 			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Credential == nil {
-				m.Credential = &Credential{}
-			}
-			if err := m.Credential.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
+			m.IsActive = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipWhoIs(dAtA[iNdEx:])

@@ -3,36 +3,20 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
 const (
-	TypeMsgCreateWhoIs = "create_who_is"
-	TypeMsgUpdateWhoIs = "update_who_is"
-	TypeMsgDeleteWhoIs = "delete_who_is"
+	TypeMsgCreateWhoIs     = "create_who_is"
+	TypeMsgUpdateWhoIs     = "update_who_is"
+	TypeMsgDeactivateWhoIs = "delete_who_is"
 )
 
 var _ sdk.Msg = &MsgCreateWhoIs{}
 
-func NewMsgCreateWhoIs(
-	creator string,
-	did string,
-	doc []byte,
-	c []*Credential,
-	n string,
-
-) *MsgCreateWhoIs {
+func NewMsgCreateWhoIs(owner string) *MsgCreateWhoIs {
 	return &MsgCreateWhoIs{
-		Creator:     creator,
-		Did:         did,
-		Document:    doc,
-		Credentials: c,
-		Name:        n,
+		Owner: owner,
 	}
-}
-
-func NewMsgCreateWhoIsFromBuf(msg *rt.MsgCreateWhoIs) *MsgCreateWhoIs {
-	return NewMsgCreateWhoIs(msg.GetCreator(), msg.GetDid(), msg.GetDocument(), NewCredentialListFromBuf(msg.GetCredentials()), msg.GetName())
 }
 
 func (msg *MsgCreateWhoIs) Route() string {
@@ -44,11 +28,11 @@ func (msg *MsgCreateWhoIs) Type() string {
 }
 
 func (msg *MsgCreateWhoIs) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{owner}
 }
 
 func (msg *MsgCreateWhoIs) GetSignBytes() []byte {
@@ -57,26 +41,19 @@ func (msg *MsgCreateWhoIs) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateWhoIs) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }
 
 var _ sdk.Msg = &MsgUpdateWhoIs{}
 
-func NewMsgUpdateWhoIs(
-	creator string,
-	did string,
-	doc []byte,
-	c []*Credential,
-) *MsgUpdateWhoIs {
+func NewMsgUpdateWhoIs(owner string, id string) *MsgUpdateWhoIs {
 	return &MsgUpdateWhoIs{
-		Creator:     creator,
-		Did:         did,
-		Document:    doc,
-		Credentials: c,
+		Did:   id,
+		Owner: owner,
 	}
 }
 
@@ -89,11 +66,11 @@ func (msg *MsgUpdateWhoIs) Type() string {
 }
 
 func (msg *MsgUpdateWhoIs) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{owner}
 }
 
 func (msg *MsgUpdateWhoIs) GetSignBytes() []byte {
@@ -102,50 +79,46 @@ func (msg *MsgUpdateWhoIs) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdateWhoIs) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }
 
-var _ sdk.Msg = &MsgDeleteWhoIs{}
+var _ sdk.Msg = &MsgDeactivateWhoIs{}
 
-func NewMsgDeleteWhoIs(
-	creator string,
-	did string,
-
-) *MsgDeleteWhoIs {
-	return &MsgDeleteWhoIs{
-		Creator: creator,
-		Did:     did,
+func NewMsgDeactivateWhoIs(owner string, id string) *MsgDeactivateWhoIs {
+	return &MsgDeactivateWhoIs{
+		Did:   id,
+		Owner: owner,
 	}
 }
-func (msg *MsgDeleteWhoIs) Route() string {
+func (msg *MsgDeactivateWhoIs) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgDeleteWhoIs) Type() string {
-	return TypeMsgDeleteWhoIs
+func (msg *MsgDeactivateWhoIs) Type() string {
+	return TypeMsgDeactivateWhoIs
 }
 
-func (msg *MsgDeleteWhoIs) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+func (msg *MsgDeactivateWhoIs) GetSigners() []sdk.AccAddress {
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{owner}
 }
 
-func (msg *MsgDeleteWhoIs) GetSignBytes() []byte {
+func (msg *MsgDeactivateWhoIs) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgDeleteWhoIs) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+func (msg *MsgDeactivateWhoIs) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }

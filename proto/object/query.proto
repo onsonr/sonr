@@ -6,7 +6,6 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "object/params.proto";
 import "object/what_is.proto";
-import "registry/who_is.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/sonr-io/sonr/x/object/types";
@@ -48,7 +47,6 @@ message QueryParamsResponse {
 
 message QueryWhatIsRequest {
 	string did = 1;
-	sonrio.sonr.registry.Session session = 2;
 }
 
 message QueryWhatIsResponse {
@@ -57,7 +55,6 @@ message QueryWhatIsResponse {
 
 message QueryAllWhatIsRequest {
 	cosmos.base.query.v1beta1.PageRequest pagination = 1;
-	sonrio.sonr.registry.Session session = 2;
 }
 
 message QueryAllWhatIsResponse {

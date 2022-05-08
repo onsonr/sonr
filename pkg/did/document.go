@@ -268,6 +268,15 @@ func (d *Document) ResolveEndpointURL(serviceType string) (endpointID ssi.URI, e
 	return services[0].ID, endpointURL, nil
 }
 
+// ControllersAsString returns all DID controllers as a string array
+func (d *Document) ControllersAsString() []string {
+	var controllers []string
+	for _, controller := range d.Controller {
+		controllers = append(controllers, controller.String())
+	}
+	return controllers
+}
+
 // Service represents a DID Service as specified by the DID Core specification (https://www.w3.org/TR/did-core/#service-endpoints).
 type Service struct {
 	ID              ssi.URI     `json:"id"`

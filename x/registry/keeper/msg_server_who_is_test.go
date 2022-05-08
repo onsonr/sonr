@@ -1,43 +1,26 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	keepertest "github.com/sonr-io/sonr/testutil/keeper"
-	"github.com/sonr-io/sonr/x/registry/keeper"
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestWhoIsMsgServerCreate(t *testing.T) {
-	k, ctx := keepertest.RegistryKeeper(t)
-	srv := keeper.NewMsgServerImpl(*k)
-	wctx := sdk.WrapSDKContext(ctx)
-	creator := "A"
+	srv, ctx := setupMsgServer(t)
+	owner := "A"
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateWhoIs{
-			Creator: creator,
-			Did:     strconv.Itoa(i),
-		}
-		_, err := srv.CreateWhoIs(wctx, expected)
+		resp, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{Owner: owner})
 		require.NoError(t, err)
-		rst, found := k.GetWhoIs(ctx,
-			expected.Did,
-		)
-		require.True(t, found)
-		require.Equal(t, expected.Creator, rst.Owner)
+		require.Equal(t, i, resp.Did)
 	}
 }
 
 func TestWhoIsMsgServerUpdate(t *testing.T) {
-	creator := "A"
+	owner := "A"
 
 	for _, tc := range []struct {
 		desc    string
@@ -45,98 +28,68 @@ func TestWhoIsMsgServerUpdate(t *testing.T) {
 		err     error
 	}{
 		{
-			desc: "Completed",
-			request: &types.MsgUpdateWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
-			},
+			desc:    "Completed",
+			request: &types.MsgUpdateWhoIs{Owner: owner},
 		},
 		{
-			desc: "Unauthorized",
-			request: &types.MsgUpdateWhoIs{Creator: "B",
-				Did: strconv.Itoa(0),
-			},
-			err: sdkerrors.ErrUnauthorized,
+			desc:    "Unauthorized",
+			request: &types.MsgUpdateWhoIs{Owner: "B"},
+			err:     sdkerrors.ErrUnauthorized,
 		},
 		{
-			desc: "KeyNotFound",
-			request: &types.MsgUpdateWhoIs{Creator: creator,
-				Did: strconv.Itoa(100000),
-			},
-			err: sdkerrors.ErrKeyNotFound,
+			desc:    "Unauthorized",
+			request: &types.MsgUpdateWhoIs{Owner: owner, Did: "10"},
+			err:     sdkerrors.ErrKeyNotFound,
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
-			k, ctx := keepertest.RegistryKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
-			}
-			_, err := srv.CreateWhoIs(wctx, expected)
+			srv, ctx := setupMsgServer(t)
+			_, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{Owner: owner})
 			require.NoError(t, err)
 
-			_, err = srv.UpdateWhoIs(wctx, tc.request)
+			_, err = srv.UpdateWhoIs(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				rst, found := k.GetWhoIs(ctx,
-					expected.Did,
-				)
-				require.True(t, found)
-				require.Equal(t, expected.Creator, rst.Owner)
 			}
 		})
 	}
 }
 
 func TestWhoIsMsgServerDelete(t *testing.T) {
-	creator := "A"
+	owner := "A"
 
 	for _, tc := range []struct {
 		desc    string
-		request *types.MsgDeleteWhoIs
+		request *types.MsgDeactivateWhoIs
 		err     error
 	}{
 		{
-			desc: "Completed",
-			request: &types.MsgDeleteWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
-			},
+			desc:    "Completed",
+			request: &types.MsgDeactivateWhoIs{Owner: owner},
 		},
 		{
-			desc: "Unauthorized",
-			request: &types.MsgDeleteWhoIs{Creator: "B",
-				Did: strconv.Itoa(0),
-			},
-			err: sdkerrors.ErrUnauthorized,
+			desc:    "Unauthorized",
+			request: &types.MsgDeactivateWhoIs{Owner: "B"},
+			err:     sdkerrors.ErrUnauthorized,
 		},
 		{
-			desc: "KeyNotFound",
-			request: &types.MsgDeleteWhoIs{Creator: creator,
-				Did: strconv.Itoa(100000),
-			},
-			err: sdkerrors.ErrKeyNotFound,
+			desc:    "KeyNotFound",
+			request: &types.MsgDeactivateWhoIs{Owner: owner, Did: "10"},
+			err:     sdkerrors.ErrKeyNotFound,
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
-			k, ctx := keepertest.RegistryKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
+			srv, ctx := setupMsgServer(t)
 
-			_, err := srv.CreateWhoIs(wctx, &types.MsgCreateWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
-			})
+			_, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{Owner: owner})
 			require.NoError(t, err)
-			_, err = srv.DeleteWhoIs(wctx, tc.request)
+			_, err = srv.DeleteWhoIs(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				_, found := k.GetWhoIs(ctx,
-					tc.request.Did,
-				)
-				require.False(t, found)
 			}
 		})
 	}

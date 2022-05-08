@@ -12,7 +12,7 @@ import (
 func CmdListWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-who-is",
-		Short: "list all whoIs",
+		Short: "list all WhoIs",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -44,18 +44,15 @@ func CmdListWhoIs() *cobra.Command {
 
 func CmdShowWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-who-is [did]",
-		Short: "shows a whoIs",
+		Use:   "show-who-is [id]",
+		Short: "shows a WhoIs",
 		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argDid := args[0]
-
 			params := &types.QueryWhoIsRequest{
-				Did: argDid,
+				Did: args[0],
 			}
 
 			res, err := queryClient.WhoIs(context.Background(), params)

@@ -17,13 +17,13 @@ func TestMsgCreateWhoIs_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreateWhoIs{
-				Creator: "invalid_address",
+				Owner: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateWhoIs{
-				Creator: sample.AccAddress(),
+				Owner: sample.AccAddress(),
 			},
 		},
 	}
@@ -48,13 +48,13 @@ func TestMsgUpdateWhoIs_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdateWhoIs{
-				Creator: "invalid_address",
+				Owner: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateWhoIs{
-				Creator: sample.AccAddress(),
+				Owner: sample.AccAddress(),
 			},
 		},
 	}
@@ -70,22 +70,22 @@ func TestMsgUpdateWhoIs_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgDeleteWhoIs_ValidateBasic(t *testing.T) {
+func TestMsgDeactivateWhoIs_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDeleteWhoIs
+		msg  MsgDeactivateWhoIs
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDeleteWhoIs{
-				Creator: "invalid_address",
+			msg: MsgDeactivateWhoIs{
+				Owner: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDeleteWhoIs{
-				Creator: sample.AccAddress(),
+			msg: MsgDeactivateWhoIs{
+				Owner: sample.AccAddress(),
 			},
 		},
 	}

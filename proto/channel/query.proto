@@ -48,7 +48,6 @@ message QueryParamsResponse {
 
 message QueryHowIsRequest {
 	string did = 1;
-	sonrio.sonr.registry.Session session = 2;
 }
 
 message QueryHowIsResponse {
@@ -57,7 +56,6 @@ message QueryHowIsResponse {
 
 message QueryAllHowIsRequest {
 	cosmos.base.query.v1beta1.PageRequest pagination = 1;
-	sonrio.sonr.registry.Session session = 2;
 }
 
 message QueryAllHowIsResponse {

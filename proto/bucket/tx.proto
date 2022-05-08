@@ -48,11 +48,8 @@ message MsgCreateBucket {
   string description = 3;
   string kind = 4;
 
-  // Authenticated user session data
-  sonrio.sonr.registry.Session session = 5;
-
   // Provided initial objects for the bucket
-  repeated string initial_object_dids = 6;
+  repeated string initial_object_dids = 5;
 }
 
 message MsgCreateBucketResponse {
@@ -75,9 +72,6 @@ message MsgUpdateBucket {
   // New bucket description
   string description = 3;
 
-  // Session data of authenticated user
-  sonrio.sonr.registry.Session session = 4;
-
   // Added Objects
   repeated string added_object_dids = 5;
 
@@ -99,7 +93,6 @@ message MsgUpdateBucketResponse {
 message MsgDeactivateBucket {
   string creator = 1;
   string did = 2;
-  sonrio.sonr.registry.Session session = 3;
 }
 
 message MsgDeactivateBucketResponse {

@@ -2,7 +2,6 @@ package simulation
 
 import (
 	"math/rand"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
@@ -13,9 +12,6 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func SimulateMsgCreateWhoIs(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
@@ -25,15 +21,8 @@ func SimulateMsgCreateWhoIs(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		i := r.Int()
 		msg := &types.MsgCreateWhoIs{
-			Creator: simAccount.Address.String(),
-			Did:     strconv.Itoa(i),
-		}
-
-		_, found := k.GetWhoIs(ctx, msg.Did)
-		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "WhoIs already exist"), nil, nil
+			Owner: simAccount.Address.String(),
 		}
 
 		txCtx := simulation.OperationInput{
@@ -76,11 +65,11 @@ func SimulateMsgUpdateWhoIs(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs owner not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-
-		msg.Did = whoIs.Did
+		msg.Owner = simAccount.Address.String()
+		msg.DidDocument = whoIs.DidDocument
+		msg.Did = whoIs.Owner
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -122,11 +111,10 @@ func SimulateMsgDeleteWhoIs(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs owner not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-
-		msg.Did = whoIs.Did
+		msg.Owner = simAccount.Address.String()
+		msg.Did = whoIs.Owner
 
 		txCtx := simulation.OperationInput{
 			R:               r,

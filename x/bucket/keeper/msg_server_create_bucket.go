@@ -13,13 +13,8 @@ import (
 
 func (k msgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucket) (*types.MsgCreateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	appName, err := msg.GetSession().GetWhois().ApplicationName()
-	if err != nil {
-		return nil, err
-	}
-
 	// Generate a new channel Did
-	did, err := msg.GetSession().GenerateDID(did.WithPathSegments(appName, "bucket"), did.WithFragment(msg.GetLabel()))
+	did, err := did.ParseDID(msg.Creator)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +36,7 @@ func (k msgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucke
 	// Create a new channel record
 	newWhichIs := types.WhichIs{
 		Did:       did.ID,
-		Creator:   msg.GetSession().Owner(),
+		Creator:   msg.Creator,
 		Bucket:    doc,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

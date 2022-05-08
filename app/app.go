@@ -418,11 +418,8 @@ func New(
 		keys[registrymoduletypes.StoreKey],
 		keys[registrymoduletypes.MemStoreKey],
 		app.GetSubspace(registrymoduletypes.ModuleName),
-
-		app.AccountKeeper,
 		app.BankKeeper,
-		app.CapabilityKeeper,
-		app.MintKeeper,
+		app.AccountKeeper,
 	)
 	registryModule := registrymodule.NewAppModule(appCodec, app.RegistryKeeper, app.AccountKeeper, app.BankKeeper)
 

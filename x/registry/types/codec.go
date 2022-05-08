@@ -8,41 +8,33 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgRegisterApplication{}, "registry/RegisterApplication", nil)
-	cdc.RegisterConcrete(&MsgRegisterName{}, "registry/RegisterName", nil)
-	cdc.RegisterConcrete(&MsgAccessName{}, "registry/AccessName", nil)
-	cdc.RegisterConcrete(&MsgUpdateName{}, "registry/UpdateName", nil)
-	cdc.RegisterConcrete(&MsgAccessApplication{}, "registry/AccessApplication", nil)
-	cdc.RegisterConcrete(&MsgUpdateApplication{}, "registry/UpdateApplication", nil)
 	cdc.RegisterConcrete(&MsgCreateWhoIs{}, "registry/CreateWhoIs", nil)
 	cdc.RegisterConcrete(&MsgUpdateWhoIs{}, "registry/UpdateWhoIs", nil)
-	cdc.RegisterConcrete(&MsgDeleteWhoIs{}, "registry/DeleteWhoIs", nil)
+	cdc.RegisterConcrete(&MsgDeactivateWhoIs{}, "registry/DeactivateWhoIs", nil)
+	cdc.RegisterConcrete(&MsgBuyNameAlias{}, "registry/BuyNameAlias", nil)
+	cdc.RegisterConcrete(&MsgBuyAppAlias{}, "registry/BuyAppAlias", nil)
+	cdc.RegisterConcrete(&MsgTransferNameAlias{}, "registry/TransferNameAlias", nil)
+	cdc.RegisterConcrete(&MsgTransferAppAlias{}, "registry/TransferAppAlias", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRegisterApplication{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRegisterName{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgAccessName{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateName{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgAccessApplication{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateApplication{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateWhoIs{},
 		&MsgUpdateWhoIs{},
-		&MsgDeleteWhoIs{},
+		&MsgDeactivateWhoIs{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgBuyNameAlias{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgBuyAppAlias{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgTransferNameAlias{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgTransferAppAlias{},
 	)
 	// this line is used by starport scaffolding # 3
 

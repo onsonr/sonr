@@ -2,7 +2,6 @@ syntax = "proto3";
 package sonrio.sonr.object;
 import "object/object.proto";
 import "object/what_is.proto";
-import "registry/who_is.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/sonr-io/sonr/x/object/types";
@@ -46,7 +45,6 @@ message MsgCreateObject {
   string label = 2;
   string description = 3;
   repeated TypeField initial_fields = 4;
-  sonrio.sonr.registry.Session session = 5;
 }
 
 message MsgCreateObjectResponse {
@@ -65,9 +63,6 @@ message MsgUpdateObject {
 
   // Label of the Object
   string label = 2;
-
-  // Authenticated session data
-  sonrio.sonr.registry.Session session = 3;
 
   // Added fields to the object
   repeated TypeField added_fields = 4;
@@ -93,7 +88,6 @@ message MsgUpdateObjectResponse {
 message MsgDeactivateObject {
   string creator = 1;
   string did = 2;
-  sonrio.sonr.registry.Session session = 3;
 }
 
 message MsgDeactivateObjectResponse {

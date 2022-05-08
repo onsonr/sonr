@@ -47,7 +47,7 @@ func (k Keeper) WhoIs(c context.Context, req *types.QueryWhoIsRequest) (*types.Q
 
 	val, found := k.GetWhoIs(
 		ctx,
-		req.Did,
+		req.GetDid(),
 	)
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")

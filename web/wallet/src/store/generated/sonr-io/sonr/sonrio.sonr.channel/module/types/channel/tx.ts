@@ -1,7 +1,6 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
 import { ObjectDoc } from "../object/object";
-import { Session } from "../registry/who_is";
 import { HowIs } from "../channel/how_is";
 import { ChannelDoc } from "../channel/channel";
 
@@ -12,7 +11,6 @@ export interface MsgCreateChannel {
   label: string;
   description: string;
   object_to_register: ObjectDoc | undefined;
-  session: Session | undefined;
 }
 
 export interface MsgCreateChannelResponse {
@@ -27,7 +25,6 @@ export interface MsgCreateChannelResponse {
 export interface MsgDeactivateChannel {
   creator: string;
   did: string;
-  session: Session | undefined;
 }
 
 export interface MsgDeactivateChannelResponse {
@@ -43,7 +40,6 @@ export interface MsgUpdateChannel {
   label: string;
   description: string;
   object_to_register: ObjectDoc | undefined;
-  session: Session | undefined;
 }
 
 export interface MsgUpdateChannelResponse {
@@ -116,9 +112,6 @@ export const MsgCreateChannel = {
         writer.uint32(34).fork()
       ).ldelim();
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(42).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -143,9 +136,6 @@ export const MsgCreateChannel = {
             reader,
             reader.uint32()
           );
-          break;
-        case 5:
-          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -182,11 +172,6 @@ export const MsgCreateChannel = {
     } else {
       message.object_to_register = undefined;
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     return message;
   },
 
@@ -199,10 +184,6 @@ export const MsgCreateChannel = {
     message.object_to_register !== undefined &&
       (obj.object_to_register = message.object_to_register
         ? ObjectDoc.toJSON(message.object_to_register)
-        : undefined);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
         : undefined);
     return obj;
   },
@@ -233,11 +214,6 @@ export const MsgCreateChannel = {
       );
     } else {
       message.object_to_register = undefined;
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     return message;
   },
@@ -360,9 +336,6 @@ export const MsgDeactivateChannel = {
     if (message.did !== "") {
       writer.uint32(18).string(message.did);
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(26).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -378,9 +351,6 @@ export const MsgDeactivateChannel = {
           break;
         case 2:
           message.did = reader.string();
-          break;
-        case 3:
-          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -402,11 +372,6 @@ export const MsgDeactivateChannel = {
     } else {
       message.did = "";
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     return message;
   },
 
@@ -414,10 +379,6 @@ export const MsgDeactivateChannel = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.did !== undefined && (obj.did = message.did);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
-        : undefined);
     return obj;
   },
 
@@ -432,11 +393,6 @@ export const MsgDeactivateChannel = {
       message.did = object.did;
     } else {
       message.did = "";
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     return message;
   },
@@ -555,9 +511,6 @@ export const MsgUpdateChannel = {
         writer.uint32(42).fork()
       ).ldelim();
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(50).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -585,9 +538,6 @@ export const MsgUpdateChannel = {
             reader,
             reader.uint32()
           );
-          break;
-        case 6:
-          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -629,11 +579,6 @@ export const MsgUpdateChannel = {
     } else {
       message.object_to_register = undefined;
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     return message;
   },
 
@@ -647,10 +592,6 @@ export const MsgUpdateChannel = {
     message.object_to_register !== undefined &&
       (obj.object_to_register = message.object_to_register
         ? ObjectDoc.toJSON(message.object_to_register)
-        : undefined);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
         : undefined);
     return obj;
   },
@@ -686,11 +627,6 @@ export const MsgUpdateChannel = {
       );
     } else {
       message.object_to_register = undefined;
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     return message;
   },

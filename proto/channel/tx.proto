@@ -47,7 +47,6 @@ message MsgCreateChannel {
   string label = 2;
   string description = 3;
   sonrio.sonr.object.ObjectDoc object_to_register = 4;
-  sonrio.sonr.registry.Session session = 5;
 }
 
 message MsgCreateChannelResponse {
@@ -64,7 +63,6 @@ message MsgCreateChannelResponse {
 message MsgDeactivateChannel {
   string creator = 1;
   string did = 2;
-  sonrio.sonr.registry.Session session = 3;
 }
 
 message MsgDeactivateChannelResponse {
@@ -82,7 +80,6 @@ message MsgUpdateChannel {
   string label = 3;
   string description = 4;
   sonrio.sonr.object.ObjectDoc object_to_register = 5;
-  sonrio.sonr.registry.Session session = 6;
 }
 
 message MsgUpdateChannelResponse {

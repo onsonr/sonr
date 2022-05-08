@@ -10,24 +10,17 @@ import (
 
 func CmdCreateWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-who-is [did] [value]",
-		Short: "Create a new whoIs",
-		Args:  cobra.ExactArgs(3),
+		Use:   "create-who-is",
+		Short: "Create a new WhoIs",
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get did
-			did := args[0]
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgCreateWhoIs(
-				clientCtx.GetFromAddress().String(),
-				did,
-				nil,
-				nil,
-				"",
-			)
+			msg := types.NewMsgCreateWhoIs(clientCtx.GetFromAddress().String())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -42,24 +35,16 @@ func CmdCreateWhoIs() *cobra.Command {
 
 func CmdUpdateWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-who-is [did] [value]",
-		Short: "Update a whoIs",
-		Args:  cobra.ExactArgs(3),
+		Use:   "update-who-is [id]",
+		Short: "Update a WhoIs",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get did
-			did := args[0]
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgUpdateWhoIs(
-				clientCtx.GetFromAddress().String(),
-				did,
-				nil,
-				nil,
-			)
+			msg := types.NewMsgUpdateWhoIs(clientCtx.GetFromAddress().String(), args[0])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -72,23 +57,18 @@ func CmdUpdateWhoIs() *cobra.Command {
 	return cmd
 }
 
-func CmdDeleteWhoIs() *cobra.Command {
+func CmdDeactivateWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-who-is [did]",
-		Short: "Delete a whoIs",
+		Use:   "delete-who-is [id]",
+		Short: "Delete a WhoIs by id",
 		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			did := args[0]
-
+		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgDeleteWhoIs(
-				clientCtx.GetFromAddress().String(),
-				did,
-			)
+			msg := types.NewMsgDeactivateWhoIs(clientCtx.GetFromAddress().String(), args[0])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

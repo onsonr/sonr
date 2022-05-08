@@ -11,6 +11,8 @@ option go_package = "github.com/sonr-io/sonr/x/registry/types";
 // GenesisState defines the registry module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated WhoIs whoIsList = 2 [(gogoproto.nullable) = false];
+  string port_id = 2;
+  repeated WhoIs whoIsList = 3 [(gogoproto.nullable) = false];
+  uint64 whoIsCount = 4;
   // this line is used by starport scaffolding # genesis/proto/state
 }

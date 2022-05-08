@@ -3,90 +3,88 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
+// CreateWhoIs creates a whoIs from the store
 func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs) (*types.MsgCreateWhoIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Check if the value already exists
-	_, isFound := k.GetWhoIs(
-		ctx,
-		msg.Did,
-	)
-	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("WhoIs with DID '%s' already exists", msg.Did))
+	// UnmarshalJSON from DID document
+	doc := did.Document{}
+	err := doc.UnmarshalJSON(msg.DidDocument)
+	if err != nil {
+		return nil, err
 	}
 
 	var whoIs = types.WhoIs{
-		Owner:       msg.Creator,
-		Name:        msg.Name,
-		Did:         msg.Did,
-		Document:    msg.Document,
-		Credentials: msg.Credentials,
-	}
-
-	k.SetWhoIs(
-		ctx,
-		whoIs,
-	)
-	return &types.MsgCreateWhoIsResponse{}, nil
-}
-
-func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs) (*types.MsgUpdateWhoIsResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// Check if the value exists
-	valFound, isFound := k.GetWhoIs(
-		ctx,
-		msg.Did,
-	)
-	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "UpdateWhoIs: DID not found")
-	}
-
-	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Owner {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
-
-	var whoIs = types.WhoIs{
-		Owner:       msg.Creator,
-		Name:        valFound.Name,
-		Did:         msg.Did,
-		Document:    msg.Document,
-		Credentials: msg.Credentials,
+		Owner:       msg.Owner,
+		DidDocument: msg.DidDocument,
+		Type:        msg.WhoisType,
+		Alias:       doc.AlsoKnownAs,
+		Controllers: doc.ControllersAsString(),
+		IsActive:    true,
+		Timestamp:   time.Now().Unix(),
 	}
 
 	k.SetWhoIs(ctx, whoIs)
 
-	return &types.MsgUpdateWhoIsResponse{}, nil
+	return &types.MsgCreateWhoIsResponse{
+		WhoIs: &whoIs,
+	}, nil
 }
 
-func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeleteWhoIs) (*types.MsgDeleteWhoIsResponse, error) {
+// UpdateWhoIs updates a whoIs from the store
+func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs) (*types.MsgUpdateWhoIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Check if the value exists
-	valFound, isFound := k.GetWhoIs(
-		ctx,
-		msg.Did,
-	)
-	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("WhoIs with DID '%s' not found", msg.Did))
+	// UnmarshalJSON from DID document
+	doc := did.Document{}
+	err := doc.UnmarshalJSON(msg.DidDocument)
+	if err != nil {
+		return nil, err
+	}
+	// Checks that the element exists
+	val, found := k.GetWhoIs(ctx, msg.Did)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
 	}
 
-	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Owner {
+	// Checks if the msg owner is the same as the current owner
+	if msg.Owner != val.Owner {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.RemoveWhoIs(
-		ctx,
-		msg.Did,
-	)
+	err = val.CopyFromDidDocument(&doc)
+	if err != nil {
+		return nil, err
+	}
+	k.SetWhoIs(ctx, val)
+	return &types.MsgUpdateWhoIsResponse{}, nil
+}
 
-	return &types.MsgDeleteWhoIsResponse{}, nil
+// DeleteWhoIs deletes a whoIs from the store
+func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeactivateWhoIs) (*types.MsgDeactivateWhoIsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Checks that the element exists
+	val, found := k.GetWhoIs(ctx, msg.Did)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
+	}
+
+	// Checks if the msg owner is the same as the current owner
+	if msg.Owner != val.Owner {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	// Deactivates the element
+	val.IsActive = false
+	k.SetWhoIs(ctx, val)
+	return &types.MsgDeactivateWhoIsResponse{}, nil
 }

@@ -15,13 +15,8 @@ func (k msgServer) UpdateObject(goCtx context.Context, msg *types.MsgUpdateObjec
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Get Properties
-	appName, err := msg.GetSession().GetWhois().ApplicationName()
-	if err != nil {
-		return nil, err
-	}
-
-	// Generate a new Object Did
-	did, err := msg.GetSession().GenerateDID(did.WithPathSegments(appName, "object"), did.WithFragment(msg.GetLabel()))
+	// Generate a new channel Did
+	did, err := did.ParseDID(msg.Creator)
 	if err != nil {
 		return nil, err
 	}

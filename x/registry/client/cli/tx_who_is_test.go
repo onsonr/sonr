@@ -2,7 +2,6 @@ package cli_test
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -15,26 +14,19 @@ import (
 	"github.com/sonr-io/sonr/x/registry/client/cli"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestCreateWhoIs(t *testing.T) {
 	net := network.New(t)
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"xyz", "xyz"}
+	fields := []string{}
 	for _, tc := range []struct {
 		desc string
-		did  string
-
 		args []string
 		err  error
 		code uint32
 	}{
 		{
-			did: strconv.Itoa(0),
-
 			desc: "valid",
 			args: []string{
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -46,9 +38,7 @@ func TestCreateWhoIs(t *testing.T) {
 	} {
 		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
-			args := []string{
-				tc.did,
-			}
+			args := []string{}
 			args = append(args, fields...)
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateWhoIs(), args)
@@ -66,19 +56,18 @@ func TestCreateWhoIs(t *testing.T) {
 
 func TestUpdateWhoIs(t *testing.T) {
 	net := network.New(t)
+
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"xyz", "xyz"}
+	fields := []string{}
 	common := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdk.NewInt(10))).String()),
 	}
-	args := []string{
-		"0",
-	}
+	args := []string{}
 	args = append(args, fields...)
 	args = append(args, common...)
 	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateWhoIs(), args)
@@ -86,31 +75,26 @@ func TestUpdateWhoIs(t *testing.T) {
 
 	for _, tc := range []struct {
 		desc string
-		did  string
-
+		id   string
 		args []string
 		code uint32
 		err  error
 	}{
 		{
 			desc: "valid",
-			did:  strconv.Itoa(0),
-
+			id:   "0",
 			args: common,
 		},
 		{
 			desc: "key not found",
-			did:  strconv.Itoa(100000),
-
+			id:   "1",
 			args: common,
 			code: sdkerrors.ErrKeyNotFound.ABCICode(),
 		},
 	} {
 		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
-			args := []string{
-				tc.did,
-			}
+			args := []string{tc.id}
 			args = append(args, fields...)
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdUpdateWhoIs(), args)
@@ -126,22 +110,20 @@ func TestUpdateWhoIs(t *testing.T) {
 	}
 }
 
-func TestDeleteWhoIs(t *testing.T) {
+func TestDeactivateWhoIs(t *testing.T) {
 	net := network.New(t)
 
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"xyz", "xyz"}
+	fields := []string{}
 	common := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdk.NewInt(10))).String()),
 	}
-	args := []string{
-		"0",
-	}
+	args := []string{}
 	args = append(args, fields...)
 	args = append(args, common...)
 	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateWhoIs(), args)
@@ -149,33 +131,26 @@ func TestDeleteWhoIs(t *testing.T) {
 
 	for _, tc := range []struct {
 		desc string
-		did  string
-
+		id   string
 		args []string
 		code uint32
 		err  error
 	}{
 		{
 			desc: "valid",
-			did:  strconv.Itoa(0),
-
+			id:   "0",
 			args: common,
 		},
 		{
 			desc: "key not found",
-			did:  strconv.Itoa(100000),
-
+			id:   "1",
 			args: common,
 			code: sdkerrors.ErrKeyNotFound.ABCICode(),
 		},
 	} {
 		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
-			args := []string{
-				tc.did,
-			}
-			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdDeleteWhoIs(), args)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdDeactivateWhoIs(), append([]string{tc.id}, tc.args...))
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

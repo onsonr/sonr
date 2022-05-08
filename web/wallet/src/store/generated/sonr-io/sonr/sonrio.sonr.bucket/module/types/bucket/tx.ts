@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
-import { Session } from "../registry/who_is";
 import { WhichIs } from "../bucket/which_is";
 import { BucketDoc } from "../bucket/bucket";
 
@@ -11,8 +10,6 @@ export interface MsgCreateBucket {
   label: string;
   description: string;
   kind: string;
-  /** Authenticated user session data */
-  session: Session | undefined;
   /** Provided initial objects for the bucket */
   initial_object_dids: string[];
 }
@@ -32,8 +29,6 @@ export interface MsgUpdateBucket {
   label: string;
   /** New bucket description */
   description: string;
-  /** Session data of authenticated user */
-  session: Session | undefined;
   /** Added Objects */
   added_object_dids: string[];
   /** Removed Objects */
@@ -52,7 +47,6 @@ export interface MsgUpdateBucketResponse {
 export interface MsgDeactivateBucket {
   creator: string;
   did: string;
-  session: Session | undefined;
 }
 
 export interface MsgDeactivateBucketResponse {
@@ -107,11 +101,8 @@ export const MsgCreateBucket = {
     if (message.kind !== "") {
       writer.uint32(34).string(message.kind);
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(42).fork()).ldelim();
-    }
     for (const v of message.initial_object_dids) {
-      writer.uint32(50).string(v!);
+      writer.uint32(42).string(v!);
     }
     return writer;
   },
@@ -137,9 +128,6 @@ export const MsgCreateBucket = {
           message.kind = reader.string();
           break;
         case 5:
-          message.session = Session.decode(reader, reader.uint32());
-          break;
-        case 6:
           message.initial_object_dids.push(reader.string());
           break;
         default:
@@ -173,11 +161,6 @@ export const MsgCreateBucket = {
     } else {
       message.kind = "";
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     if (
       object.initial_object_dids !== undefined &&
       object.initial_object_dids !== null
@@ -196,10 +179,6 @@ export const MsgCreateBucket = {
     message.description !== undefined &&
       (obj.description = message.description);
     message.kind !== undefined && (obj.kind = message.kind);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
-        : undefined);
     if (message.initial_object_dids) {
       obj.initial_object_dids = message.initial_object_dids.map((e) => e);
     } else {
@@ -230,11 +209,6 @@ export const MsgCreateBucket = {
       message.kind = object.kind;
     } else {
       message.kind = "";
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     if (
       object.initial_object_dids !== undefined &&
@@ -370,9 +344,6 @@ export const MsgUpdateBucket = {
     if (message.description !== "") {
       writer.uint32(26).string(message.description);
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(34).fork()).ldelim();
-    }
     for (const v of message.added_object_dids) {
       writer.uint32(42).string(v!);
     }
@@ -399,9 +370,6 @@ export const MsgUpdateBucket = {
           break;
         case 3:
           message.description = reader.string();
-          break;
-        case 4:
-          message.session = Session.decode(reader, reader.uint32());
           break;
         case 5:
           message.added_object_dids.push(reader.string());
@@ -436,11 +404,6 @@ export const MsgUpdateBucket = {
     } else {
       message.description = "";
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     if (
       object.added_object_dids !== undefined &&
       object.added_object_dids !== null
@@ -466,10 +429,6 @@ export const MsgUpdateBucket = {
     message.label !== undefined && (obj.label = message.label);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
-        : undefined);
     if (message.added_object_dids) {
       obj.added_object_dids = message.added_object_dids.map((e) => e);
     } else {
@@ -501,11 +460,6 @@ export const MsgUpdateBucket = {
       message.description = object.description;
     } else {
       message.description = "";
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     if (
       object.added_object_dids !== undefined &&
@@ -643,9 +597,6 @@ export const MsgDeactivateBucket = {
     if (message.did !== "") {
       writer.uint32(18).string(message.did);
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(26).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -661,9 +612,6 @@ export const MsgDeactivateBucket = {
           break;
         case 2:
           message.did = reader.string();
-          break;
-        case 3:
-          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -685,11 +633,6 @@ export const MsgDeactivateBucket = {
     } else {
       message.did = "";
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     return message;
   },
 
@@ -697,10 +640,6 @@ export const MsgDeactivateBucket = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.did !== undefined && (obj.did = message.did);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
-        : undefined);
     return obj;
   },
 
@@ -715,11 +654,6 @@ export const MsgDeactivateBucket = {
       message.did = object.did;
     } else {
       message.did = "";
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     return message;
   },

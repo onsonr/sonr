@@ -4,7 +4,6 @@ SCRIPTS_DIR=$(dirname "$0")
 cd ${SCRIPTS_DIR}/../
 PROJECT_DIR=$(pwd);
 MOTOR_LIB_DIR=${PROJECT_DIR}/cmd/motor-lib
-MOTOR_WASM_DIR=${PROJECT_DIR}/cmd/motor-wasm
 
 while getopts "iaw" opt; do
   case $opt in
@@ -35,8 +34,8 @@ while getopts "iaw" opt; do
       mkdir -p ${WASM_OUT}
 
       echo "🔷 Binding Web..."
-      cd ${MOTOR_WASM_DIR}
-      GOOS=js GOARCH=wasm go build -o ${WASM_ARTIFACT} -v
+      cd ${MOTOR_LIB_DIR}
+      GOOS=js GOARCH=wasm go build -tags wasm -o ${WASM_ARTIFACT} -v
       ;;
     ?)
       echo "Invalid option: -$OPTARG" >&2

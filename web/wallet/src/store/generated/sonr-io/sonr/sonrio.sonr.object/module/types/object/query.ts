@@ -1,7 +1,6 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
 import { Params } from "../object/params";
-import { Session } from "../registry/who_is";
 import { WhatIs } from "../object/what_is";
 import {
   PageRequest,
@@ -21,7 +20,6 @@ export interface QueryParamsResponse {
 
 export interface QueryWhatIsRequest {
   did: string;
-  session: Session | undefined;
 }
 
 export interface QueryWhatIsResponse {
@@ -30,7 +28,6 @@ export interface QueryWhatIsResponse {
 
 export interface QueryAllWhatIsRequest {
   pagination: PageRequest | undefined;
-  session: Session | undefined;
 }
 
 export interface QueryAllWhatIsResponse {
@@ -145,9 +142,6 @@ export const QueryWhatIsRequest = {
     if (message.did !== "") {
       writer.uint32(10).string(message.did);
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(18).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -160,9 +154,6 @@ export const QueryWhatIsRequest = {
       switch (tag >>> 3) {
         case 1:
           message.did = reader.string();
-          break;
-        case 2:
-          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -179,21 +170,12 @@ export const QueryWhatIsRequest = {
     } else {
       message.did = "";
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     return message;
   },
 
   toJSON(message: QueryWhatIsRequest): unknown {
     const obj: any = {};
     message.did !== undefined && (obj.did = message.did);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
-        : undefined);
     return obj;
   },
 
@@ -203,11 +185,6 @@ export const QueryWhatIsRequest = {
       message.did = object.did;
     } else {
       message.did = "";
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     return message;
   },
@@ -284,9 +261,6 @@ export const QueryAllWhatIsRequest = {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
-    if (message.session !== undefined) {
-      Session.encode(message.session, writer.uint32(18).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -299,9 +273,6 @@ export const QueryAllWhatIsRequest = {
       switch (tag >>> 3) {
         case 1:
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.session = Session.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -318,11 +289,6 @@ export const QueryAllWhatIsRequest = {
     } else {
       message.pagination = undefined;
     }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromJSON(object.session);
-    } else {
-      message.session = undefined;
-    }
     return message;
   },
 
@@ -331,10 +297,6 @@ export const QueryAllWhatIsRequest = {
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
         ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    message.session !== undefined &&
-      (obj.session = message.session
-        ? Session.toJSON(message.session)
         : undefined);
     return obj;
   },
@@ -347,11 +309,6 @@ export const QueryAllWhatIsRequest = {
       message.pagination = PageRequest.fromPartial(object.pagination);
     } else {
       message.pagination = undefined;
-    }
-    if (object.session !== undefined && object.session !== null) {
-      message.session = Session.fromPartial(object.session);
-    } else {
-      message.session = undefined;
     }
     return message;
   },
