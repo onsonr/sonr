@@ -12,8 +12,12 @@ vars:
   VERSION: v0.0.1-test
 
 tasks:
-
-
+  bind:
+    cmds:
+      - echo "Binding Motor Node for all platforms"
+      - sh ./scripts/bind.sh -i
+      - sh ./scripts/bind.sh -a
+      - sh ./scripts/bind.sh -w
   buf:
     cmds:
       - echo "Building Protobufs and pushing to registry"

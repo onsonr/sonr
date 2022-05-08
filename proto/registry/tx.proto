@@ -35,7 +35,10 @@ message MsgUpdateWhoIs {
   bytes did_document = 3;
 }
 
-message MsgUpdateWhoIsResponse {}
+message MsgUpdateWhoIsResponse {
+  string did = 1;
+  WhoIs who_is = 2;
+}
 
 message MsgDeactivateWhoIs {
   string owner = 1;
@@ -55,6 +58,8 @@ message MsgBuyNameAlias {
 }
 
 message MsgBuyNameAliasResponse {
+  string did = 1;
+  WhoIs who_is = 2;
 }
 
 message MsgBuyAppAlias {
@@ -65,6 +70,8 @@ message MsgBuyAppAlias {
 }
 
 message MsgBuyAppAliasResponse {
+  string did = 1;
+  WhoIs who_is = 2;
 }
 
 message MsgTransferNameAlias {
@@ -75,6 +82,8 @@ message MsgTransferNameAlias {
 }
 
 message MsgTransferNameAliasResponse {
+  bool success = 1;
+  WhoIs who_is = 2;
 }
 
 message MsgTransferAppAlias {
@@ -85,6 +94,8 @@ message MsgTransferAppAlias {
 }
 
 message MsgTransferAppAliasResponse {
+  bool success = 1;
+  WhoIs who_is = 2;
 }
 
 // this line is used by starport scaffolding # proto/tx/message
