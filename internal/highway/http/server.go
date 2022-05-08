@@ -13,7 +13,6 @@ package core
 import (
 	"context"
 	"errors"
-	"net"
 	"net/http"
 	"os"
 	"time"
@@ -26,8 +25,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
 	ctv1 "github.com/sonr-io/sonr/x/channel/types"
-	v1 "go.buf.build/grpc/go/sonr-io/highway/v1"
-	"google.golang.org/grpc"
 )
 
 // Error Definitions
@@ -43,7 +40,6 @@ var (
 // HighwayServer is the RPC Service for the Custodian Node.
 type HighwayServer struct {
 	// Config
-	v1.HighwayServer
 	ctx    context.Context
 	Config *config.Config
 
@@ -56,12 +52,6 @@ type HighwayServer struct {
 	Router     *gin.Engine
 	HTTPServer *http.Server
 
-	// Grpc Properties
-	GRPCServer   *grpc.Server
-	GRPCConn     *grpc.ClientConn
-	GRPCClient   v1.HighwayClient
-	GRPCListener net.Listener
-
 	// Protocols
 	channels     map[string]ctv1.Channel
 	ipfsProtocol *ipfs.IPFSProtocol
@@ -71,12 +61,6 @@ type HighwayServer struct {
 // setupBaseStub creates the base Highway Server.
 func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	node, err := hn.NewDefaultHost(ctx, c)
-	if err != nil {
-		return nil, err
-	}
-
-	// Get the Listener for the Host
-	lst, err := net.Listen(c.HighwayGRPCNetwork, c.HighwayGRPCEndpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -108,14 +92,11 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 
 	// Create the RPC Service
 	stub := &HighwayServer{
-		Cosmos:     cosmos,
-		Host:       node,
-		ctx:        ctx,
-		Router:     gin.Default(),
-		GRPCServer: grpc.NewServer(),
-		Config:     c,
-
-		GRPCListener: lst,
+		Cosmos:       cosmos,
+		Host:         node,
+		ctx:          ctx,
+		Router:       gin.Default(),
+		Config:       c,
 		Webauthn:     webauthn,
 		ipfsProtocol: ipfs,
 		// matrixProtocol: matrix,
@@ -126,16 +107,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 // Serve starts the RPC Service.
 func (s *HighwayServer) Serve() {
 	// Print the Server Address's
-	logger.Infof("Serving RPC Server on %s", s.GRPCListener.Addr().String())
 	logger.Infof("Serving HTTP Server on %s", s.Config.HighwayHTTPEndpoint)
-
-	// Start the gRPC Server
-	go func() {
-		// Start gRPC server (and proxy calls to gRPC server endpoint)
-		if err := s.GRPCServer.Serve(s.GRPCListener); err != nil {
-			logger.Errorf("%s - Failed to start HTTP server", err)
-		}
-	}()
 
 	// Start HTTP server on a separate goroutine
 	go func() {
@@ -158,9 +130,5 @@ func (s *HighwayServer) Serve() {
 	if err := s.HTTPServer.Shutdown(ctx); err != nil {
 		logger.Fatal("Server forced to shutdown: ", err)
 	}
-
-	// Close the gRPC server
-	logger.Warn("Shutting down gRPC server...")
-	s.GRPCServer.GracefulStop()
 	logger.Info("Goodbye!")
 }

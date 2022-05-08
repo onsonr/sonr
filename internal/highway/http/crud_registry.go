@@ -14,7 +14,7 @@ import (
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /name/register/start/:username [get]
+// @Router /auth/register/start/:username [get]
 func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 	if username := c.Param("username"); username != "" {
 		// Check if user exists and return error if it does
@@ -40,7 +40,7 @@ func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /name/register/finish/:username [post]
+// @Router /auth/register/finish/:username [post]
 func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	// get username
 	username := c.Param("username")
@@ -53,16 +53,6 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-
-	// // define a message to create a did
-	// msg := rtv1.NewMsgBuyNameAlias(s.Cosmos.Address(), username, *cred)
-
-	// // broadcast a transaction from account `alice` with the message to create a did
-	// // store response in txResp
-	// txResp, err := s.Cosmos.BroadcastRegisterName(msg)
-	// if err != nil {
-	// 	c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
-	// }
 	c.JSON(http.StatusOK, cred)
 }
 
@@ -73,7 +63,7 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /name/access/start/:username [get]
+// @Router /auth/access/start/:username [get]
 func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	// get username
 	username := c.Param("username")
@@ -102,7 +92,7 @@ func (s *HighwayServer) StartAccessName(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /name/access/finish/:username [post]
+// @Router /auth/access/finish/:username [post]
 func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 	// get username
 	username := c.Param("username")
@@ -120,7 +110,7 @@ func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 	c.JSON(http.StatusOK, cred)
 }
 
-// @Summary Update Name
+// @Summary Create WhoIs DIDDocument
 // @Schemes
 // @Description UpdateName updates a name on the Sonr blockchain registry.
 // @Tags Registry
@@ -128,7 +118,103 @@ func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
 // @Router /name/update [post]
-func (s *HighwayServer) UpdateNameHTTP(c *gin.Context) {
+func (s *HighwayServer) CreateWhoIs(c *gin.Context) {
+	var req rt.MsgUpdateName
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	//c.JSON(http.StatusOK, resp)
+}
+
+// @Summary Update WhoIs DIDDocument
+// @Schemes
+// @Description UpdateName updates a name on the Sonr blockchain registry.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/update [post]
+func (s *HighwayServer) UpdateWhoIs(c *gin.Context) {
+	var req rt.MsgUpdateName
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	//c.JSON(http.StatusOK, resp)
+}
+
+// @Summary Deactivate WhoIs DIDDocument
+// @Schemes
+// @Description UpdateName updates a name on the Sonr blockchain registry.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/update [post]
+func (s *HighwayServer) DeactivateWhoIs(c *gin.Context) {
+	var req rt.MsgUpdateName
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	//c.JSON(http.StatusOK, resp)
+}
+
+// @Summary Buy a Name Alias for a User
+// @Schemes
+// @Description UpdateName updates a name on the Sonr blockchain registry.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/update [post]
+func (s *HighwayServer) BuyNameAlias(c *gin.Context) {
+	var req rt.MsgUpdateName
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	//c.JSON(http.StatusOK, resp)
+}
+
+// @Summary Buy an Alias for an App
+// @Schemes
+// @Description UpdateName updates a name on the Sonr blockchain registry.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/update [post]
+func (s *HighwayServer) BuyAppAlias(c *gin.Context) {
+	var req rt.MsgUpdateName
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	//c.JSON(http.StatusOK, resp)
+}
+
+// @Summary Transfer a name alias
+// @Schemes
+// @Description UpdateName updates a name on the Sonr blockchain registry.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/update [post]
+func (s *HighwayServer) TransferNameAlias(c *gin.Context) {
+	var req rt.MsgUpdateName
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	//c.JSON(http.StatusOK, resp)
+}
+
+// @Summary Transfer an App Alias
+// @Schemes
+// @Description UpdateName updates a name on the Sonr blockchain registry.
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /name/update [post]
+func (s *HighwayServer) TransferAppAlias(c *gin.Context) {
 	var req rt.MsgUpdateName
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

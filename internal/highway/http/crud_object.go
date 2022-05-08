@@ -1,33 +1,12 @@
 package core
 
 import (
-	context "context"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	t "github.com/sonr-io/sonr/types"
 	otv1 "github.com/sonr-io/sonr/x/object/types"
-	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
-
-// CreateObject creates a new object.
-func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
-	// Broadcast the Transaction
-	resp, err := s.Cosmos.BroadcastCreateObject(otv1.NewMsgCreateObjectFromBuf(req))
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(resp.String())
-
-	// Upload Object Schema to IPFS
-	cid, err := s.ipfsProtocol.PutObjectSchema(resp.GetWhatIs().GetObjectDoc())
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(cid)
-	return &ot.MsgCreateObjectResponse{}, nil
-}
 
 // @Summary Create Object
 // @Schemes
@@ -37,44 +16,30 @@ func (s *HighwayServer) CreateObject(ctx context.Context, req *ot.MsgCreateObjec
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
 // @Router /object/create [post]
-func (s *HighwayServer) CreateObjectHTTP(c *gin.Context) {
+func (s *HighwayServer) CreateObject(c *gin.Context) {
 	// Unmarshal the request body
-	var req ot.MsgCreateObject
+	var req otv1.MsgCreateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
 	}
 
-	// Create the bucket
-	resp, err := s.GRPCClient.CreateObject(s.ctx, &req)
+	// Broadcast the Transaction
+	resp, err := s.Cosmos.BroadcastCreateObject(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
 	}
 
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{
 		"code":    resp.Code,
 		"message": resp.Message,
-		"what_is": otv1.NewWhatIsFromBuf(resp.WhatIs),
+		"what_is": resp.WhatIs,
 	})
-}
-
-// UpdateObject updates an object.
-func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObject) (*ot.MsgUpdateObjectResponse, error) {
-	// Broadcast the Transaction
-	resp, err := s.Cosmos.BroadcastUpdateObject(otv1.NewMsgUpdateObjectFromBuf(req))
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(resp.String())
-	return &ot.MsgUpdateObjectResponse{
-		Code:    resp.Code,
-		Message: resp.Message,
-		WhatIs:  otv1.NewWhatIsToBuf(resp.WhatIs),
-	}, nil
 }
 
 // @Summary Update Object
@@ -87,15 +52,15 @@ func (s *HighwayServer) UpdateObject(ctx context.Context, req *ot.MsgUpdateObjec
 // @Router /object/update [post]
 func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 	// Unmarshal the request body
-	var req ot.MsgUpdateObject
+	var req otv1.MsgUpdateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
 	}
 
-	// Create the bucket
-	resp, err := s.GRPCClient.UpdateObject(s.ctx, &req)
+	// Broadcast the Transaction
+	resp, err := s.Cosmos.BroadcastUpdateObject(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -106,21 +71,8 @@ func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    resp.Code,
 		"message": resp.Message,
-		"what_is": otv1.NewWhatIsFromBuf(resp.WhatIs),
+		"what_is": resp.WhatIs,
 	})
-}
-
-// DeactivateBucket disables a bucket for a registered application
-func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactivateObject) (*ot.MsgDeactivateObjectResponse, error) {
-	resp, err := s.Cosmos.BroadcastDeactivateObject(otv1.NewMsgDeactivateObjectFromBuf(req))
-	if err != nil {
-		return nil, err
-	}
-	logger.Infof(resp.String())
-	return &ot.MsgDeactivateObjectResponse{
-		Code:    resp.Code,
-		Message: resp.Message,
-	}, nil
 }
 
 // @Summary  Deactivate Object
@@ -131,9 +83,9 @@ func (s *HighwayServer) DeactivateObject(ctx context.Context, req *ot.MsgDeactiv
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
 // @Router /object/deactivate [post]
-func (s *HighwayServer) DeactivateObjectlHTTP(c *gin.Context) {
+func (s *HighwayServer) DeactivateObject(c *gin.Context) {
 	// Unmarshal the request body
-	var req ot.MsgDeactivateObject
+	var req otv1.MsgDeactivateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
@@ -141,7 +93,7 @@ func (s *HighwayServer) DeactivateObjectlHTTP(c *gin.Context) {
 	}
 
 	// Deactivate the bucket
-	resp, err := s.GRPCClient.DeactivateObject(s.ctx, &req)
+	resp, err := s.Cosmos.BroadcastDeactivateObject(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),

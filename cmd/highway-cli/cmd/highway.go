@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	highway "github.com/sonr-io/sonr/internal/highway/x/core"
+	highway "github.com/sonr-io/sonr/internal/highway/http"
 	"github.com/spf13/cobra"
 )
 
