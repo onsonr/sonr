@@ -18,21 +18,12 @@ tasks:
     cmds:
       - echo "Building Protobufs and pushing to registry"
       - task: buf:build:blockchain
-      - task: buf:build:highway
       - task: buf:build:motor
 
   buf:build:motor:
     dir: internal/motor/proto
     cmds:
       - echo "Generating and Pushing Protobufs for Motor"
-      - buf mod update
-      - buf build
-      - buf push
-
-  buf:build:highway:
-    dir: internal/highway/proto
-    cmds:
-      - echo "Generating and Pushing Protobufs for Highway"
       - buf mod update
       - buf build
       - buf push
