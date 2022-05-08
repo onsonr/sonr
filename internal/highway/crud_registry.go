@@ -90,18 +90,21 @@ func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	username := c.Param("username")
 	if username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+		return
 	}
 
 	// Check if user exists and return error if it does not
 	whoIs, err := s.cosmos.QueryName(username)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
 	}
 
 	// Call Save to store the session data
 	options, err := s.webauthn.SaveAuthenticationSession(c.Request, c.Writer, whoIs)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	c.JSON(http.StatusOK, options)
 }
@@ -119,12 +122,14 @@ func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 	username := c.Param("username")
 	if username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+		return
 	}
 
 	// Finish the authentication session
 	cred, err := s.webauthn.FinishAuthenticationSession(c.Request, username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	// handle successful login
@@ -158,11 +163,13 @@ func (s *HighwayServer) UpdateNameHTTP(c *gin.Context) {
 	var req rt.MsgUpdateName
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	resp, err := s.UpdateName(c.Request.Context(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }

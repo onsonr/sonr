@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	
+
 	"github.com/duo-labs/webauthn/webauthn"
 )
 
@@ -18,13 +18,13 @@ func NewMsgRegisterName(creator string, nameToRegister string, cred webauthn.Cre
 	return &MsgRegisterName{
 		Creator:        creator,
 		Credential:     ConvertToSonrCredential(cred),
-		NameToRegister: CleanNameForSuffix(nameToRegister),
+		NameToRegister: SuffixWithSnr(nameToRegister),
 	}
 }
 
 // CleanName checks if the username is available
-func CleanNameForSuffix(name string) string {
-	if strings.Contains(name, ".snr") {
+func SuffixWithSnr(name string) string {
+	if strings.HasSuffix(name, ".snr") {
 		return name
 	}
 	return name + ".snr"

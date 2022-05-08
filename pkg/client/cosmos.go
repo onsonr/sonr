@@ -2,6 +2,8 @@ package client
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/kataras/golog"
 	bt "github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
@@ -139,14 +141,8 @@ func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameR
 
 // NameExists checks if a name exists on the blockchain
 func (cc *Cosmos) NameExists(name string) bool {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{Did: name})
-	if err != nil {
-		return false
-	}
-
-	// check if the name exists
-	return queryResp.GetWhoIs().Name == name
+	_, err := cc.QueryName(name)
+	return err == nil
 }
 
 // QueryAllNames returns all DIDDocuments registered on the blockchain
@@ -163,15 +159,22 @@ func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
 // QueryName returns a DIDDocument for the given name registered on the blockchain
 func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
-		Did: name,
-	})
+	whos, err := cc.QueryAllNames()
 	if err != nil {
-		golog.Errorf("Error querying name: %s", err.Error())
+		golog.Errorf("Error querying all names: %s", err.Error())
 		return nil, err
 	}
-	whois := queryResp.GetWhoIs()
-	return &whois, nil
+
+	// TODO: this should probably be optimized at some point. Maybe we need to index names
+	// Also, the suffix must be removed because it's removed in chain.
+	// Not sure if that's ultimately necessary
+	trimmedName := strings.TrimSuffix(name, ".snr")
+	for _, whoIs := range whos {
+		if whoIs.Name == trimmedName {
+			return &whoIs, nil
+		}
+	}
+	return nil, fmt.Errorf("name '%s' not found", name)
 }
 
 // -------

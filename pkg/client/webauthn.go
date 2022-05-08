@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/duo-labs/webauthn.io/session"
@@ -80,12 +81,6 @@ func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWri
 	// 	return nil, err
 	// }
 
-	// TODO: remove this
-	// d, err := wan.sessions.GetWebauthnSession(REGISTRATION_SESSION_KEY, r)
-	// fmt.Println("load")
-	// fmt.Println(d)
-	// fmt.Println(err)
-
 	return options, nil
 }
 
@@ -98,16 +93,12 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 	}
 	whois := wi.(*rtv1.WhoIs)
 
-	fmt.Println("store")
-	fmt.Println(*whois)
-	fmt.Printf("%+v\n", *w.sessions.Options)
-
 	// TODO: replace with GetWebauthnSession below when it works
 	cacheResult, found := w.cache.Get(registerSessionCacheKey(username))
 	if !found {
 		return nil, errors.New("could not find session data")
 	}
-	fmt.Printf("cacheResult: %+v\n", cacheResult)
+
 	sessionData, ok := cacheResult.(webauthn.SessionData)
 	if !ok {
 		return nil, errors.New("found unexpected data type in cache")
@@ -118,30 +109,31 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 	// 	return nil, err
 	// }
 
-	fmt.Print("finish sessionData: ")
-	fmt.Println(sessionData)
-
 	credential, err := w.instance.FinishRegistration(whois, sessionData, r)
 	if err != nil {
 		return nil, err
 	}
+	w.cache.Delete(registerSessionCacheKey(username))
 	return credential, nil
 }
 
 // SaveAuthenticationSession saves the login session for the given user
 func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseWriter, whoIs *rtv1.WhoIs) (*protocol.CredentialAssertion, error) {
 	// generate PublicKeyCredentialRequestOptions, session data
-	wan.cache.Set(authenticationCacheKey(whoIs.Name), whoIs, cache.DefaultExpiration)
+	wan.cache.Set(authenticationCacheKey(whoIs.Name+".snr"), whoIs, cache.DefaultExpiration)
 	options, sessionData, err := wan.instance.BeginLogin(whoIs)
 	if err != nil {
 		return nil, err
 	}
 
+	// TODO: replace with SaveWebauthnSession below when it works
+	wan.cache.Set(AUTHENTICATION_SESSION_KEY, *sessionData, cache.DefaultExpiration)
+
 	// store session data as marshaled JSON
-	err = wan.sessions.SaveWebauthnSession("authentication", sessionData, r, w)
-	if err != nil {
-		return nil, err
-	}
+	// err = wan.sessions.SaveWebauthnSession("authentication", sessionData, r, w)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	return options, nil
 }
 
@@ -154,15 +146,27 @@ func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string)
 	}
 	whois := x.(*rtv1.WhoIs)
 
-	sessionData, err := w.sessions.GetWebauthnSession(AUTHENTICATION_SESSION_KEY, r)
-	if err != nil {
-		return nil, err
+	// TODO: replace with GetWebauthnSession below when it works
+	cacheResult, found := w.cache.Get(AUTHENTICATION_SESSION_KEY)
+	if !found {
+		return nil, errors.New("could not find session data")
 	}
+
+	sessionData, ok := cacheResult.(webauthn.SessionData)
+	if !ok {
+		return nil, errors.New("found unexpected data type in cache")
+	}
+
+	// sessionData, err := w.sessions.GetWebauthnSession(AUTHENTICATION_SESSION_KEY, r)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	credential, err := w.instance.FinishLogin(whois, sessionData, r)
 	if err != nil {
 		return nil, err
 	}
+	w.cache.Delete(AUTHENTICATION_SESSION_KEY)
 	return credential, nil
 }
 
@@ -172,7 +176,12 @@ func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string)
 
 // authenticationCacheKey is a helper function to create a cache key for the given user
 func authenticationCacheKey(username string) string {
-	return fmt.Sprintf("%s_authentication", username)
+	// the username needs the suffix since it's included in the webauthn ID during fetch
+	uname := username
+	if !strings.HasSuffix(username, ".snr") {
+		uname = username + ".snr"
+	}
+	return fmt.Sprintf("%s_authentication", uname)
 }
 
 // authSelect is a helper function to create a AuthenticatorSelection

@@ -79,6 +79,11 @@ tasks:
       - ignite generate proto-go
       - ignite generate openapi
       - go mod tidy
+  
+  build:chain:
+    summary: Build the blockchain
+    cmds:
+      - ignite chain build
 
   serve:chain:
     summary: Serve the blockchain using starport
