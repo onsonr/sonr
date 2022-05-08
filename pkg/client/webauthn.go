@@ -68,7 +68,12 @@ func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string)
 		return nil, err
 	}
 
-	credential, err := w.instance.FinishLogin(whois, sessionData, r)
+	doc, err := whois.UnmarshalDidDocument()
+	if err != nil {
+		return nil, err
+	}
+
+	credential, err := w.instance.FinishLogin(doc, sessionData, r)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +94,12 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 		return nil, err
 	}
 
-	credential, err := w.instance.FinishRegistration(whois, sessionData, r)
+	doc, err := whois.UnmarshalDidDocument()
+	if err != nil {
+		return nil, err
+	}
+
+	credential, err := w.instance.FinishRegistration(doc, sessionData, r)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +109,13 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 // SaveAuthenticationSession saves the login session for the given user
 func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseWriter, whoIs *rtv1.WhoIs) (*protocol.CredentialAssertion, error) {
 	// generate PublicKeyCredentialRequestOptions, session data
-	wan.cache.Set(authenticationCacheKey(whoIs.Name), whoIs, cache.DefaultExpiration)
-	options, sessionData, err := wan.instance.BeginLogin(whoIs)
+	wan.cache.Set(authenticationCacheKey(whoIs.Owner), whoIs, cache.DefaultExpiration)
+	doc, err := whoIs.UnmarshalDidDocument()
+	if err != nil {
+		return nil, err
+	}
+
+	options, sessionData, err := wan.instance.BeginLogin(doc)
 	if err != nil {
 		return nil, err
 	}
@@ -119,10 +134,15 @@ func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWri
 	whoIs := blankWhoIs(username, creator)
 	wan.cache.Set(registerCacheKey(username), whoIs, cache.DefaultExpiration)
 
+	doc, err := whoIs.UnmarshalDidDocument()
+	if err != nil {
+		return nil, err
+	}
+
 	// generate PublicKeyCredentialCreationOptions, session data
 	options, sessionData, err := wan.instance.BeginRegistration(
-		whoIs,
-		registerOptions(whoIs),
+		doc,
+		// registerOptions(whoIs),
 		webauthn.WithAuthenticatorSelection(authSelect()),
 		webauthn.WithConveyancePreference(conveyancePreference()),
 	)
@@ -159,11 +179,7 @@ func authSelect() protocol.AuthenticatorSelection {
 // blankWhoIs is a helper function to create a blank WhoIs
 func blankWhoIs(username, creator string) *rtv1.WhoIs {
 	return &rtv1.WhoIs{
-		Name:        username,
-		Did:         "",
-		Document:    nil,
-		Owner:     creator,
-		Credentials: make([]*rtv1.Credential, 0),
+		Owner: creator,
 	}
 }
 
@@ -177,9 +193,13 @@ func registerCacheKey(username string) string {
 	return fmt.Sprintf("%s_registration", username)
 }
 
-// registerOptions is a helper function to create a PublicKeyCredentialCreationOptions
-func registerOptions(whois *rtv1.WhoIs) func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-	return func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-		credCreationOpts.CredentialExcludeList = whois.CredentialExcludeList()
-	}
-}
+// // registerOptions is a helper function to create a PublicKeyCredentialCreationOptions
+// func registerOptions(whois *rtv1.WhoIs) func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
+// 	return func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
+// 		doc, err := whois.UnmarshalDidDocument()
+// 		if err != nil {
+// 			return
+// 		}
+// 		credCreationOpts.CredentialExcludeList = doc.CredentialExcludeList()
+// 	}
+// }

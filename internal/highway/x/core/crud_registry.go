@@ -1,12 +1,9 @@
 package core
 
 import (
-	context "context"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	rtv1 "github.com/sonr-io/sonr/x/registry/types"
 	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
@@ -57,16 +54,16 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	// define a message to create a did
-	msg := rtv1.NewMsgRegisterName(s.Cosmos.Address(), username, *cred)
+	// // define a message to create a did
+	// msg := rtv1.NewMsgBuyNameAlias(s.Cosmos.Address(), username, *cred)
 
-	// broadcast a transaction from account `alice` with the message to create a did
-	// store response in txResp
-	txResp, err := s.Cosmos.BroadcastRegisterName(msg)
-	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
-	}
-	c.JSON(http.StatusOK, txResp.Session)
+	// // broadcast a transaction from account `alice` with the message to create a did
+	// // store response in txResp
+	// txResp, err := s.Cosmos.BroadcastRegisterName(msg)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+	// }
+	c.JSON(http.StatusOK, cred)
 }
 
 // @Summary Start Access Name
@@ -123,21 +120,6 @@ func (s *HighwayServer) FinishAccessName(c *gin.Context) {
 	c.JSON(http.StatusOK, cred)
 }
 
-// UpdateName updates a name.
-func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
-	// Broadcast the Transaction
-	resp, err := s.Cosmos.BroadcastUpdateName(rtv1.NewMsgUpdateNameFromBuf(req))
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(resp.String())
-	return &rt.MsgUpdateNameResponse{
-		Code:    resp.Code,
-		Message: resp.Message,
-		WhoIs:   rtv1.NewWhoIsToBuf(resp.WhoIs),
-	}, nil
-}
-
 // @Summary Update Name
 // @Schemes
 // @Description UpdateName updates a name on the Sonr blockchain registry.
@@ -151,10 +133,5 @@ func (s *HighwayServer) UpdateNameHTTP(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-
-	resp, err := s.UpdateName(c.Request.Context(), &req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	}
-	c.JSON(http.StatusOK, resp)
+	//c.JSON(http.StatusOK, resp)
 }

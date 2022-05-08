@@ -61,7 +61,7 @@ func (cc *Cosmos) Address() string {
 // Registry
 // -------
 // BroadcastRegisterApplication broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgRegisterApplication) (*rt.MsgRegisterApplicationResponse, error) {
+func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgBuyAppAlias) (*rt.MsgBuyAppAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -70,7 +70,7 @@ func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgRegisterApplication) (
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgRegisterApplicationResponse{}
+	respMsg := &rt.MsgBuyAppAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 
@@ -80,7 +80,7 @@ func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgRegisterApplication) (
 }
 
 // BroadcastRegisterName broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegisterNameResponse, error) {
+func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgBuyNameAlias) (*rt.MsgBuyNameAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -89,7 +89,7 @@ func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegiste
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgRegisterNameResponse{}
+	respMsg := &rt.MsgBuyNameAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 
@@ -99,7 +99,7 @@ func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegiste
 }
 
 // BroadcastUpdateApplication broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastUpdateApplication(msg *rt.MsgUpdateApplication) (*rt.MsgUpdateApplicationResponse, error) {
+func (cc *Cosmos) BroadcastCreateWhoIs(msg *rt.MsgCreateWhoIs) (*rt.MsgCreateWhoIsResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -107,7 +107,24 @@ func (cc *Cosmos) BroadcastUpdateApplication(msg *rt.MsgUpdateApplication) (*rt.
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgUpdateApplicationResponse{}
+	respMsg := &rt.MsgCreateWhoIsResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastUpdateApplication broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastUpdateWhoIs(msg *rt.MsgUpdateWhoIs) (*rt.MsgUpdateWhoIsResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgUpdateWhoIsResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 		return nil, err
@@ -116,7 +133,7 @@ func (cc *Cosmos) BroadcastUpdateApplication(msg *rt.MsgUpdateApplication) (*rt.
 }
 
 // BroadcastUpdateName broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
+func (cc *Cosmos) BroadcastDeactivateWhoIs(msg *rt.MsgDeactivateWhoIs) (*rt.MsgDeactivateWhoIsResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -124,7 +141,7 @@ func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameR
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgUpdateNameResponse{}
+	respMsg := &rt.MsgDeactivateWhoIsResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 		return nil, err
@@ -141,7 +158,7 @@ func (cc *Cosmos) NameExists(name string) bool {
 	}
 
 	// check if the name exists
-	return queryResp.GetWhoIs().Name == name
+	return queryResp.GetWhoIs().Alias[0] == name
 }
 
 // QueryAllNames returns all DIDDocuments registered on the blockchain

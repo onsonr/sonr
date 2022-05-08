@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 
 	"github.com/lestrrat-go/jwx/jwk"
@@ -330,6 +331,7 @@ type VerificationMethod struct {
 	Controller      DID                    `json:"controller,omitempty"`
 	PublicKeyBase58 string                 `json:"publicKeyBase58,omitempty"`
 	PublicKeyJwk    map[string]interface{} `json:"publicKeyJwk,omitempty"`
+	Credential      *Credential            `json:"credential,omitempty"`
 }
 
 // NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
@@ -477,4 +479,49 @@ func resolveVerificationRelationship(reference DID, methods []*VerificationMetho
 		}
 	}
 	return nil
+}
+
+// User ID according to the Relying Party
+func (w *Document) WebAuthnID() []byte {
+	return []byte(w.ID.String())
+}
+
+// User Name according to the Relying Party
+func (w *Document) WebAuthnName() string {
+	if w.AlsoKnownAs != nil {
+		if len(w.AlsoKnownAs) > 0 {
+			return w.AlsoKnownAs[0]
+		}
+	}
+	return w.ID.String()
+}
+
+// Display Name of the user
+func (w *Document) WebAuthnDisplayName() string {
+	return w.Controller[0].ID
+}
+
+// User's icon url
+func (w *Document) WebAuthnIcon() string {
+	return ""
+}
+
+// Credentials owned by the user
+func (w *Document) WebAuthnCredentials() []webauthn.Credential {
+	var credentials []webauthn.Credential
+	for _, vm := range w.VerificationMethod {
+		if vm.Credential != nil {
+			credentials = append(credentials, webauthn.Credential{
+				ID:              vm.Credential.ID,
+				PublicKey:       vm.Credential.PublicKey,
+				AttestationType: vm.Credential.AttestationType,
+				Authenticator: webauthn.Authenticator{
+					AAGUID:       vm.Credential.Authenticator.AAGUID,
+					SignCount:    vm.Credential.Authenticator.SignCount,
+					CloneWarning: vm.Credential.Authenticator.CloneWarning,
+				},
+			})
+		}
+	}
+	return credentials
 }

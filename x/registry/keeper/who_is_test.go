@@ -43,13 +43,12 @@ func TestWhoIsRemove(t *testing.T) {
 	keeper, ctx := keepertest.RegistryKeeper(t)
 	items := createNWhoIs(keeper, ctx, 10)
 	for _, item := range items {
-		keeper.RemoveWhoIs(ctx,
+		item.IsActive = false
+		keeper.SetWhoIs(ctx, item)
+		i, _ := keeper.GetWhoIs(ctx,
 			item.Owner,
 		)
-		_, found := keeper.GetWhoIs(ctx,
-			item.Owner,
-		)
-		require.False(t, found)
+		require.False(t, i.IsActive)
 	}
 }
 
