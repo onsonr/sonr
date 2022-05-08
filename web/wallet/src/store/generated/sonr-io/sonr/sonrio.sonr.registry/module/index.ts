@@ -5,22 +5,22 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgTransferNameAlias } from "./types/registry/tx";
-import { MsgCreateWhoIs } from "./types/registry/tx";
+import { MsgBuyNameAlias } from "./types/registry/tx";
 import { MsgUpdateWhoIs } from "./types/registry/tx";
+import { MsgBuyAppAlias } from "./types/registry/tx";
+import { MsgCreateWhoIs } from "./types/registry/tx";
 import { MsgDeactivateWhoIs } from "./types/registry/tx";
 import { MsgTransferAppAlias } from "./types/registry/tx";
-import { MsgBuyAppAlias } from "./types/registry/tx";
-import { MsgBuyNameAlias } from "./types/registry/tx";
 
 
 const types = [
   ["/sonrio.sonr.registry.MsgTransferNameAlias", MsgTransferNameAlias],
-  ["/sonrio.sonr.registry.MsgCreateWhoIs", MsgCreateWhoIs],
+  ["/sonrio.sonr.registry.MsgBuyNameAlias", MsgBuyNameAlias],
   ["/sonrio.sonr.registry.MsgUpdateWhoIs", MsgUpdateWhoIs],
+  ["/sonrio.sonr.registry.MsgBuyAppAlias", MsgBuyAppAlias],
+  ["/sonrio.sonr.registry.MsgCreateWhoIs", MsgCreateWhoIs],
   ["/sonrio.sonr.registry.MsgDeactivateWhoIs", MsgDeactivateWhoIs],
   ["/sonrio.sonr.registry.MsgTransferAppAlias", MsgTransferAppAlias],
-  ["/sonrio.sonr.registry.MsgBuyAppAlias", MsgBuyAppAlias],
-  ["/sonrio.sonr.registry.MsgBuyNameAlias", MsgBuyNameAlias],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -54,12 +54,12 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
     msgTransferNameAlias: (data: MsgTransferNameAlias): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgTransferNameAlias", value: MsgTransferNameAlias.fromPartial( data ) }),
-    msgCreateWhoIs: (data: MsgCreateWhoIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgCreateWhoIs", value: MsgCreateWhoIs.fromPartial( data ) }),
+    msgBuyNameAlias: (data: MsgBuyNameAlias): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgBuyNameAlias", value: MsgBuyNameAlias.fromPartial( data ) }),
     msgUpdateWhoIs: (data: MsgUpdateWhoIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgUpdateWhoIs", value: MsgUpdateWhoIs.fromPartial( data ) }),
+    msgBuyAppAlias: (data: MsgBuyAppAlias): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgBuyAppAlias", value: MsgBuyAppAlias.fromPartial( data ) }),
+    msgCreateWhoIs: (data: MsgCreateWhoIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgCreateWhoIs", value: MsgCreateWhoIs.fromPartial( data ) }),
     msgDeactivateWhoIs: (data: MsgDeactivateWhoIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgDeactivateWhoIs", value: MsgDeactivateWhoIs.fromPartial( data ) }),
     msgTransferAppAlias: (data: MsgTransferAppAlias): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgTransferAppAlias", value: MsgTransferAppAlias.fromPartial( data ) }),
-    msgBuyAppAlias: (data: MsgBuyAppAlias): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgBuyAppAlias", value: MsgBuyAppAlias.fromPartial( data ) }),
-    msgBuyNameAlias: (data: MsgBuyNameAlias): EncodeObject => ({ typeUrl: "/sonrio.sonr.registry.MsgBuyNameAlias", value: MsgBuyNameAlias.fromPartial( data ) }),
     
   };
 };

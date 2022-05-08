@@ -88,7 +88,7 @@ import (
 	"github.com/tendermint/spm/cosmoscmd"
 	"github.com/tendermint/spm/openapiconsole"
 
-	docs "github.com/sonr-io/sonr/docs/blockchain"
+	docs "github.com/sonr-io/sonr/docs"
 	bucketmodule "github.com/sonr-io/sonr/x/bucket"
 	bucketmodulekeeper "github.com/sonr-io/sonr/x/bucket/keeper"
 	bucketmoduletypes "github.com/sonr-io/sonr/x/bucket/types"

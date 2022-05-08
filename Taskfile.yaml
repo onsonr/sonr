@@ -100,13 +100,14 @@ tasks:
       # - task: web:dashboard:build
       - task: web:wallet:build
 
-  swagger:build:
+  swag:build:
     cmds:
       - echo "Building swagger api docs for highway"
-      - swag i -g pkg/highway/x/core/server.go --output docs/highway
+      - swag i -g internal/highway/http/server.go --output docs/static
+      - mv docs/static/swagger.yaml docs/static/highway.yaml
+      - rm -rf docs/static/swagger.json
       - echo "Building Open api docs for Blockchain"
-      - starport generate openapi
-      - starport generate proto-go
+      - ignite generate openapi
       - go mod tidy
 
 
@@ -119,6 +120,7 @@ tasks:
 
   docs:start:
     cmds:
+      - task: swag:build
       - echo "yarn start..."
       - yarn start
     silent: true
@@ -126,6 +128,7 @@ tasks:
 
   docs:build:
     cmds:
+      - task: swag:build
       - echo "yarn build..."
       - yarn build
     silent: true

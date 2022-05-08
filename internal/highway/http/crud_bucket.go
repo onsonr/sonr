@@ -15,7 +15,7 @@ import (
 // @Produce json
 // @Success      200  {string}  cid
 // @Failure      500  {string}  message
-// @Router /bucket/create [post]
+// @Router /v1/bucket/create [post]
 func (s *HighwayServer) CreateBucket(c *gin.Context) {
 	// Unmarshal the request body
 	var req btt.MsgCreateBucket
@@ -46,7 +46,7 @@ func (s *HighwayServer) CreateBucket(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  cid
 // @Failure      500  {string}  message
-// @Router /bucket/update [post]
+// @Router /v1/bucket/update [post]
 func (s *HighwayServer) UpdateBucket(c *gin.Context) {
 	// Unmarshal the request body
 	var req btt.MsgUpdateBucket
@@ -79,7 +79,7 @@ func (s *HighwayServer) UpdateBucket(c *gin.Context) {
 // @Success      200  {string}  message
 // @Failure      400  {string}  message
 // @Failure      502  {string}  message
-// @Router /bucket/deactivate [post]
+// @Router /v1/bucket/deactivate [post]
 func (s *HighwayServer) DeactivateBucket(c *gin.Context) {
 	// Unmarshal the request body
 	var req btt.MsgDeactivateBucket

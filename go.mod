@@ -7,6 +7,7 @@ require (
 	github.com/cosmos/ibc-go v1.2.2
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
+	github.com/fxamacker/cbor v1.5.1
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
@@ -56,7 +57,6 @@ require (
 	github.com/tendermint/tendermint v0.34.14
 	github.com/tendermint/tm-db v0.6.4
 	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7
-	go.buf.build/grpc/go/sonr-io/highway v1.3.1
 	go.buf.build/grpc/go/sonr-io/motor v1.3.1
 	golang.org/x/mobile v0.0.0-20220414153400-ce6a79cf6a13
 	google.golang.org/genproto v0.0.0-20220317150908-0efb43f6373e

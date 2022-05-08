@@ -15,7 +15,7 @@ import (
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /object/create [post]
+// @Router /v1/object/create [post]
 func (s *HighwayServer) CreateObject(c *gin.Context) {
 	// Unmarshal the request body
 	var req otv1.MsgCreateObject
@@ -49,7 +49,7 @@ func (s *HighwayServer) CreateObject(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /object/update [post]
+// @Router /v1/object/update [post]
 func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 	// Unmarshal the request body
 	var req otv1.MsgUpdateObject
@@ -82,7 +82,7 @@ func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /object/deactivate [post]
+// @Router /v1/object/deactivate [post]
 func (s *HighwayServer) DeactivateObject(c *gin.Context) {
 	// Unmarshal the request body
 	var req otv1.MsgDeactivateObject

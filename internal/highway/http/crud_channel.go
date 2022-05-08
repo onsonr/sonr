@@ -1,16 +1,11 @@
 package core
 
 import (
-	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	t "github.com/sonr-io/sonr/types"
 	ctv1 "github.com/sonr-io/sonr/x/channel/types"
-	otv1 "github.com/sonr-io/sonr/x/object/types"
-	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
-	v1 "go.buf.build/grpc/go/sonr-io/highway/v1"
-	"google.golang.org/protobuf/proto"
 )
 
 // @Summary Create Channel
@@ -20,7 +15,7 @@ import (
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /channel/create [post]
+// @Router /v1/channel/create [post]
 func (s *HighwayServer) CreateChannel(c *gin.Context) {
 	// Unmarshal the request body
 	var req ctv1.MsgCreateChannel
@@ -60,7 +55,7 @@ func (s *HighwayServer) CreateChannel(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /channel/update [post]
+// @Router /v1/channel/update [post]
 func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 	// Unmarshal the request body
 	var req ctv1.MsgUpdateChannel
@@ -84,61 +79,61 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 	})
 }
 
-// @Summary Listen Channel
-// @Schemes
-// @Description ListenChannel puts a Channel into a listening state registered application
-// @Tags Channel
-// @Produce json
-// @Success      200  {string}  message
-// @Failure      500  {string}  message
-// @Router /channel/listen [post]
-func (s *HighwayServer) ListenChannel(c *gin.Context) {
-	// Unmarshal the request body
-	var req v1.MsgListenChannel
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": t.ErrRequestBody.Error(),
-		})
-	}
+// // @Summary Listen Channel
+// // @Schemes
+// // @Description ListenChannel puts a Channel into a listening state registered application
+// // @Tags Channel
+// // @Produce json
+// // @Success      200  {string}  message
+// // @Failure      500  {string}  message
+// // @Router /channel/listen [post]
+// func (s *HighwayServer) ListenChannel(c *gin.Context) {
+// 	// Unmarshal the request body
+// 	var req ctv1.MsgListenChannel
+// 	if err := c.ShouldBindJSON(&req); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": t.ErrRequestBody.Error(),
+// 		})
+// 	}
 
-	// Setup concurrent stream
-	opChan := make(chan *ctv1.ChannelMessage)
-	ch, ok := s.channels[req.GetDid()]
-	if !ok {
-		c.JSON(http.StatusBadRequest, t.ErrRequestBody.Error())
-	}
-	go ch.Listen(opChan)
+// 	// Setup concurrent stream
+// 	opChan := make(chan *ctv1.ChannelMessage)
+// 	ch, ok := s.channels[req.GetDid()]
+// 	if !ok {
+// 		c.JSON(http.StatusBadRequest, t.ErrRequestBody.Error())
+// 	}
+// 	go ch.Listen(opChan)
 
-	// Listen to the channel
-	c.Stream(func(io.Writer) bool {
-		// Get the next operation
-		op, ok := <-opChan
-		if !ok {
-			return false
-		}
+// 	// Listen to the channel
+// 	c.Stream(func(io.Writer) bool {
+// 		// Get the next operation
+// 		op, ok := <-opChan
+// 		if !ok {
+// 			return false
+// 		}
 
-		// Create ChannelMessage
-		msg := &ct.ChannelMessage{
-			PeerDid:  op.GetPeerDid(),
-			Did:      op.GetDid(),
-			Object:   otv1.NewObjectDocToBuf(op.Object),
-			Metadata: op.GetMetadata(),
-		}
+// 		// Create ChannelMessage
+// 		msg := &ct.ChannelMessage{
+// 			PeerDid:  op.GetPeerDid(),
+// 			Did:      op.GetDid(),
+// 			Object:   otv1.NewObjectDocToBuf(op.Object),
+// 			Metadata: op.GetMetadata(),
+// 		}
 
-		// Marshal the proto message
-		data, err := proto.Marshal(msg)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": err.Error(),
-			})
-			return false
-		}
+// 		// Marshal the proto message
+// 		data, err := proto.Marshal(msg)
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, gin.H{
+// 				"error": err.Error(),
+// 			})
+// 			return false
+// 		}
 
-		// Send the message
-		c.Writer.Write(data)
-		return true
-	})
-}
+// 		// Send the message
+// 		c.Writer.Write(data)
+// 		return true
+// 	})
+// }
 
 // @Summary Deactivate Channel
 // @Schemes
@@ -147,7 +142,7 @@ func (s *HighwayServer) ListenChannel(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /channel/deactivate [post]
+// @Router /v1/channel/deactivate [post]
 func (s *HighwayServer) DeactivateChannel(c *gin.Context) {
 	// Unmarshal the request body
 	var req ctv1.MsgDeactivateChannel

@@ -8,6 +8,32 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 )
 
+// ContainsAlias checks if the alias is in the list of aliases of the whois
+func (w *WhoIs) ContainsAlias(target string) bool {
+	for _, a := range w.Alias {
+		if a == target {
+			return true
+		}
+	}
+	return false
+}
+
+// ContainsController checks if the controller is in the list of controllers of the whois
+func (w *WhoIs) ContainsController(target string) bool {
+	// Validates DID String
+	if _, err := did.ParseDID(target); err != nil {
+		return false
+	}
+
+	// Checks if the controller is in the list of controllers
+	for _, c := range w.Controllers {
+		if c == target {
+			return true
+		}
+	}
+	return false
+}
+
 // UnmarshalDidDocument unmarshals the whois document into a DID document
 func (w *WhoIs) UnmarshalDidDocument() (*did.Document, error) {
 	doc := did.Document{}

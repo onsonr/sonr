@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/sonr-io/sonr/internal/highway/http"
+	core "github.com/sonr-io/sonr/internal/highway/http"
 	"github.com/sonr-io/sonr/pkg/config"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -24,11 +24,19 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 		return nil, err
 	}
 
-	// Register WebAuthn HTTP Routes
-	s.Router.GET("/v1/auth/register/start/:username", s.StartRegisterName)
-	s.Router.POST("/v1/auth/register/finish/:username", s.FinishRegisterName)
-	s.Router.GET("/v1/auth/access/start/:username", s.StartAccessName)
-	s.Router.POST("/v1/auth/access/finish/:username", s.FinishAccessName)
+	// Register Cosmos HTTP Routes - Registry
+	s.Router.POST("/v1/registry/create/whois", s.CreateWhoIs)
+	s.Router.POST("/v1/registry/update/whois", s.UpdateWhoIs)
+	s.Router.POST("/v1/registry/deactivate/whois", s.DeactivateWhoIs)
+	s.Router.POST("/v1/registry/buy/alias/name", s.BuyNameAlias)
+	s.Router.POST("/v1/registry/buy/alias/app", s.BuyAppAlias)
+	s.Router.POST("/v1/registry/transfer/alias/name", s.TransferNameAlias)
+	s.Router.POST("/v1/registry/transfer/alias/app", s.TransferAppAlias)
+
+	// Register Cosmos HTTP Routes - Object
+	s.Router.POST("/v1/object/create", s.CreateObject)
+	s.Router.POST("/v1/object/update", s.UpdateObjectHTTP)
+	s.Router.POST("/v1/object/deactivate", s.DeactivateObject)
 
 	// Register Cosmos HTTP Routes - Bucket
 	s.Router.POST("/v1/bucket/create", s.CreateBucket)
@@ -39,26 +47,17 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 	s.Router.POST("/v1/channel/create", s.CreateChannel)
 	s.Router.POST("/v1/channel/update", s.UpdateChannel)
 	s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
-	s.Router.GET("/v1/channel/listen", s.ListenChannel)
-
-	// Register Cosmos HTTP Routes - Object
-	s.Router.POST("/v1/object/create", s.CreateObject)
-	s.Router.POST("/v1/object/update", s.UpdateObjectHTTP)
-	s.Router.POST("/v1/object/deactivate", s.DeactivateObject)
-
-	// Register Cosmos HTTP Routes - Registry
-	s.Router.POST("/v1/registry/create/whois", s.CreateWhoIs)
-	s.Router.POST("/v1/registry/update/whois", s.UpdateWhoIs)
-	s.Router.POST("/v1/registry/deactivate/whois", s.DeactivateWhoIs)
-	s.Router.POST("/v1/registry/buy/alias/name", s.BuyNameAlias)
-	s.Router.POST("/v1/registry/buy/alias/app", s.BuyAppAlias)
-	s.Router.POST("/v1/registry/transfer/alias/name", s.TransferNameAlias)
-	s.Router.POST("/v1/registry/transfer/alias/app", s.TransferAppAlias)
 
 	// Register IPFS HTTP Routes
 	s.Router.POST("/v1/ipfs/upload", s.UploadBlob)
 	s.Router.GET("/v1/ipfs/download/:cid", s.DownloadBlob)
 	s.Router.POST("/v1/ipfs/remove/:cid", s.RemoveBlob)
+
+	// Register WebAuthn HTTP Routes
+	s.Router.GET("/v1/auth/register/start/:username", s.StartRegisterName)
+	s.Router.POST("/v1/auth/register/finish/:username", s.FinishRegisterName)
+	s.Router.GET("/v1/auth/access/start/:username", s.StartAccessName)
+	s.Router.POST("/v1/auth/access/finish/:username", s.FinishAccessName)
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

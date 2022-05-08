@@ -12,45 +12,28 @@ info:
   title: Highway API
   version: v0.23.0
 paths:
-  /blob/download/:cid:
+  /v1/auth/access/finish/:username:
+    post:
+      description: FinishAccessName finishes the authentication process and returns
+        a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Finish Access Name
+      tags:
+      - WebAuthn
+  /v1/auth/access/start/:username:
     get:
-      description: DownloadBlob downloads a buffer or file from IPFS given its CID.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              type: integer
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Download File
-      tags:
-      - Blob
-  /blob/remove/:cid:
-    post:
-      description: RemoveBlob deletes a buffer or file from IPFS given its CID.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: boolean
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Remove Blob
-      tags:
-      - Blob
-  /blob/upload:
-    post:
-      description: UploadBlob uploads a buffer or file to IPFS and returns its CID.
+      description: StartAccessName accesses the user's existing credentials and returns
+        a PublicKeyCredentialRequestOptions. Beggining the authentication process.
       produces:
       - application/json
       responses:
@@ -62,12 +45,50 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Upload Blob
+      summary: Start Access Name
       tags:
-      - Blob
-  /bucket/create:
+      - WebAuthn
+  /v1/auth/register/finish/:username:
     post:
-      description: CreateBucket creates a new bucket instance for a registered application on the blockchain.
+      description: FinishRegisterName finishes the registration process and returns
+        a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential
+        to a Sonr Account.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Finish Register Name
+      tags:
+      - WebAuthn
+  /v1/auth/register/start/:username:
+    get:
+      description: StartRegisterName starts the registration process and returns a
+        PublicKeyCredentialCreationOptions. Initiating the registration process for
+        a Sonr Account.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Start Register Name
+      tags:
+      - WebAuthn
+  /v1/bucket/create:
+    post:
+      description: CreateBucket creates a new bucket for a registered application
         via HTTP.
       produces:
       - application/json
@@ -83,9 +104,9 @@ paths:
       summary: Create Bucket
       tags:
       - Bucket
-  /bucket/deactivate:
+  /v1/bucket/deactivate:
     post:
-      description: DeactivateBucket disables a bucket for a registered application on the blockchain.
+      description: DeactivateBucket disables a bucket for a registered application
         via HTTP.
       produces:
       - application/json
@@ -105,7 +126,7 @@ paths:
       summary: Deactivate Bucket
       tags:
       - Bucket
-  /bucket/update:
+  /v1/bucket/update:
     post:
       description: UpdateBucket updates a bucket for a registered application via
         HTTP.
@@ -123,7 +144,7 @@ paths:
       summary: Update Bucket
       tags:
       - Bucket
-  /channel/create:
+  /v1/channel/create:
     post:
       description: CreateChannel creates a specified channel for a registered application
       produces:
@@ -140,7 +161,7 @@ paths:
       summary: Create Channel
       tags:
       - Channel
-  /channel/deactivate:
+  /v1/channel/deactivate:
     post:
       description: DeactivateChannel disables a Channel for a registered application
       produces:
@@ -157,25 +178,7 @@ paths:
       summary: Deactivate Channel
       tags:
       - Channel
-  /channel/listen:
-    post:
-      description: ListenChannel puts a Channel into a listening state registered
-        application
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Listen Channel
-      tags:
-      - Channel
-  /channel/update:
+  /v1/channel/update:
     post:
       description: ListenChannel puts a Channel into a listening state registered
         application
@@ -193,83 +196,45 @@ paths:
       summary: Update Channel
       tags:
       - Channel
-  /name/access/finish/:username:
-    post:
-      description: FinishAccessName finishes the authentication process and returns
-        a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Finish Access Name
-      tags:
-      - Registry
-  /name/access/start/:username:
+  /v1/ipfs/download/:cid:
     get:
-      description: StartAccessName accesses the user's existing credentials and returns
-        a PublicKeyCredentialRequestOptions. Beggining the authentication process.
+      description: DownloadBlob downloads a file from storage given its CID.
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            items:
+              type: integer
+            type: array
         "500":
           description: Internal Server Error
           schema:
             type: string
-      summary: Start Access Name
+      summary: Download File
       tags:
-      - Registry
-  /name/register/finish/:username:
+      - Blob
+  /v1/ipfs/remove/:cid:
     post:
-      description: FinishRegisterName finishes the registration process and returns
-        a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential
-        to a Sonr Account.
+      description: RemoveBlob deletes a file from storage given its CID.
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            type: boolean
         "500":
           description: Internal Server Error
           schema:
             type: string
-      summary: Finish Register Name
+      summary: Remove Blob
       tags:
-      - Registry
-  /name/register/start/:username:
-    get:
-      description: StartRegisterName starts the registration process and returns a
-        PublicKeyCredentialCreationOptions. Initiating the registration process for
-        a Sonr Account.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Start Register Name
-      tags:
-      - Registry
-  /name/update:
+      - Blob
+  /v1/ipfs/upload:
     post:
-      description: UpdateName updates a name on the Sonr blockchain registry.
+      description: UploadBlob uploads a buffer or file to IPFS and returns its CID.
       produces:
       - application/json
       responses:
@@ -281,10 +246,10 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Update Name
+      summary: Upload Blob
       tags:
-      - Registry
-  /object/create:
+      - Blob
+  /v1/object/create:
     post:
       description: CreateObject creates a Object for a registered application
       produces:
@@ -301,7 +266,7 @@ paths:
       summary: Create Object
       tags:
       - Object
-  /object/deactivate:
+  /v1/object/deactivate:
     post:
       description: DeactivateObject disables a Object for a registered application
       produces:
@@ -318,7 +283,7 @@ paths:
       summary: Deactivate Object
       tags:
       - Object
-  /object/update:
+  /v1/object/update:
     post:
       description: UpdateObject updates and object reference for a registered application
       produces:
@@ -335,4 +300,143 @@ paths:
       summary: Update Object
       tags:
       - Object
+  /v1/registry/buy/alias/app:
+    post:
+      description: This method purchases an app name extension i.e. example.snr/{appname},
+        and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request
+        fails when the DIDDoc type doesnt match, wallet balance is too low, the alias
+        has already been purchased, creator is not the owner of the app, or WhoIs
+        is deactivated.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Buy an Alias for an App
+      tags:
+      - Registry
+  /v1/registry/buy/alias/name:
+    post:
+      description: This method purchases a user alias .snr domain i.e. {example}.snr,
+        and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request
+        fails when the DIDDoc type doesnt match, wallet balance is too low, the alias
+        has already been purchased, creator is not listed as controller of DIDDoc,
+        or WhoIs is deactivated.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Buy an Alias for a User
+      tags:
+      - Registry
+  /v1/registry/create/whois:
+    post:
+      description: 'This method takes a DIDDocument as an input along with the did
+        of the account calling the TX, and verifies the signature. If succesful, and
+        there is no existing WhoIs created for the user or application. Paramaters
+        include: signature, diddocument, address, and whoIsType.'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create WhoIs Entry
+      tags:
+      - Registry
+  /v1/registry/deactivate/whois:
+    post:
+      description: This method sets the state of a particular WhoIs to be deactivated.
+        In order to Succesfully perform this request, the TX creator and signature
+        must be the same as the WhoIs owner.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Deactivate WhoIs Entry
+      tags:
+      - Registry
+  /v1/registry/transfer/alias/app:
+    post:
+      description: This method transfers an existing App Alias to the specified peer.
+        The alias is removed from the current App's `alsoKnownAs` list and inserted
+        into the new App's `alsoKnownAs` list.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Transfer an App Alias
+      tags:
+      - Registry
+  /v1/registry/transfer/alias/name:
+    post:
+      description: This method transfers an existing User .snr name Alias to the specified
+        peer. The alias is removed from the current App's `alsoKnownAs` list and inserted
+        into the new App's `alsoKnownAs` list.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Transfer a Name alias
+      tags:
+      - Registry
+  /v1/registry/update/whois:
+    post:
+      description: This method takes an updated DIDDocument as a JSON buffer along
+        with the signature of the current tx creator, and then verifies the account
+        calling the TX is a controller of the On-chain DIDDocument. If so, the DIDDocument
+        is updated on the blockchain and the transaction is broadcast.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update WhoIs Entry
+      tags:
+      - Registry
 swagger: "2.0"

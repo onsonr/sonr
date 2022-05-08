@@ -743,6 +743,8 @@ github.com/fullstorydev/grpcurl v1.6.0/go.mod h1:ZQ+ayqbKMJNhzLmbpCiurTVlaK2M/3n
 github.com/fullstorydev/grpcurl v1.8.0/go.mod h1:Mn2jWbdMrQGJQ8UD62uNyMumT2acsZUCkZIqFxsQf1o=
 github.com/fullstorydev/grpcurl v1.8.1 h1:Pp648wlTTg3OKySeqxM5pzh8XF6vLqrm8wRq66+5Xo0=
 github.com/fullstorydev/grpcurl v1.8.1/go.mod h1:3BWhvHZwNO7iLXaQlojdg5NA6SxUDePli4ecpK1N7gw=
+github.com/fxamacker/cbor v1.5.1 h1:XjQWBgdmQyqimslUh5r4tUGmoqzHmBFQOImkWGi2awg=
+github.com/fxamacker/cbor v1.5.1/go.mod h1:3aPGItF174ni7dDzd6JZ206H8cmr4GDNBGpPa971zsU=
 github.com/fxamacker/cbor/v2 v2.4.0 h1:ri0ArlOR+5XunOP8CRUowT0pSJOwhW098ZCUyskZD88=
 github.com/fxamacker/cbor/v2 v2.4.0/go.mod h1:TA1xS00nchWmaBnEIxPSE5oHLuJBAVvqrtAnWBwBCVo=
 github.com/fzipp/gocyclo v0.3.1/go.mod h1:DJHO6AUmbdqj2ET4Z9iArSuwWgYDRryYt2wASxc7x3E=
@@ -2983,8 +2985,6 @@ go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 h1:movzgRYHiYXq/rd5Fo5KnMtYizbCKlv
 go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1/go.mod h1:Oacq9kdGMFBOTGB/CrAMpHc7GwkJg1P1d0gKF6X0kuU=
 go.buf.build/grpc/go/sonr-io/blockchain v1.3.7 h1:XRr0pkZG12nbsWnvWfQggECwS4UwvBK4BNoYNioJ1fA=
 go.buf.build/grpc/go/sonr-io/blockchain v1.3.7/go.mod h1:kh09boSnQtZNONulz1c/8vPaa9ae4XkiYIANi/vNVks=
-go.buf.build/grpc/go/sonr-io/highway v1.3.1 h1:m4Ctge+IgNqtOOQeiGDX4ySSxYXaNGTAKPrEQDiJdFk=
-go.buf.build/grpc/go/sonr-io/highway v1.3.1/go.mod h1:2uyAy4WdY9MUWsX5RndyFurRKIFyGMl2TqRAvF8WGTk=
 go.buf.build/grpc/go/sonr-io/motor v1.3.1 h1:3Dxod9fjT6VmVhPWmgIDELKQVAWgK5iI3FURfxN4+5Y=
 go.buf.build/grpc/go/sonr-io/motor v1.3.1/go.mod h1:o8LpED3VyN9VeejYAK5tDQ6d2C3XdkmitACeEG1IsKc=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

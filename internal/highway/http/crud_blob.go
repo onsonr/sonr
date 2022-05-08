@@ -18,7 +18,7 @@ import (
 // @Produce json
 // @Success      200  {string}  cid
 // @Failure      500  {string}  message
-// @Router /blob/upload [post]
+// @Router /v1/ipfs/upload [post]
 func (s *HighwayServer) UploadBlob(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -67,7 +67,7 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 // @Produce json
 // @Success      200  {array}  byte
 // @Failure      500  {string}  message
-// @Router /blob/download/:cid [get]
+// @Router /v1/ipfs/download/:cid [get]
 func (s *HighwayServer) DownloadBlob(c *gin.Context) {
 	cid := c.Param("cid")
 	if cid == "" {
@@ -96,7 +96,7 @@ func (s *HighwayServer) DownloadBlob(c *gin.Context) {
 // @Produce json
 // @Success      200  {boolean}  success
 // @Failure      500  {string}  message
-// @Router /blob/remove/:cid [post]
+// @Router /v1/ipfs/remove/:cid [post]
 func (s *HighwayServer) RemoveBlob(c *gin.Context) {
 	cid := c.Param("cid")
 	if cid == "" {

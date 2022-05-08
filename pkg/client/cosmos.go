@@ -60,8 +60,8 @@ func (cc *Cosmos) Address() string {
 // -------
 // Registry
 // -------
-// BroadcastRegisterApplication broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgBuyAppAlias) (*rt.MsgBuyAppAliasResponse, error) {
+// BroadcastBuyAppAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastBuyAppAlias(msg *rt.MsgBuyAppAlias) (*rt.MsgBuyAppAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -79,8 +79,8 @@ func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgBuyAppAlias) (*rt.MsgB
 	return respMsg, nil
 }
 
-// BroadcastRegisterName broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgBuyNameAlias) (*rt.MsgBuyNameAliasResponse, error) {
+// BroadcastBuyNameAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastBuyNameAlias(msg *rt.MsgBuyNameAlias) (*rt.MsgBuyNameAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -90,6 +90,44 @@ func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgBuyNameAlias) (*rt.MsgBuyName
 
 	// Decode the response
 	respMsg := &rt.MsgBuyNameAliasResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastTransferAppAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastTransferAppAlias(msg *rt.MsgTransferAppAlias) (*rt.MsgTransferAppAliasResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgTransferAppAliasResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastTransferNameAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastTransferNameAlias(msg *rt.MsgTransferNameAlias) (*rt.MsgTransferNameAliasResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgTransferNameAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 

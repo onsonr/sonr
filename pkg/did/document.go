@@ -7,6 +7,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/fxamacker/cbor"
+	snrcrypto "github.com/sonr-io/sonr/pkg/crypto"
+
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 
@@ -374,8 +377,51 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	return vm, nil
 }
 
+// NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
+// It automatically encodes the provided public key based on the keyType.
+func NewVerificationMethodFromWebauthn(id DID, controller DID, cred *Credential) (*VerificationMethod, error) {
+	coseKey := snrcrypto.COSEKey{}
+	err := cbor.Unmarshal(cred.PublicKey, &coseKey)
+	if err != nil {
+		return nil, err
+	}
+	pubKey, err := snrcrypto.DecodePublicKey(&coseKey)
+	if err != nil {
+		return nil, err
+	}
+	vm := &VerificationMethod{
+		ID:         id,
+		Type:       ssi.JsonWebKey2020,
+		Controller: controller,
+		Credential: cred,
+	}
+
+	// Add JWK
+	keyAsJWK, err := jwk.New(pubKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert to JSON and back to fix encoding of key material to make sure
+	keyAsJSON, err := json.Marshal(keyAsJWK)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Key as Map
+	keyAsMap := map[string]interface{}{}
+	json.Unmarshal(keyAsJSON, &keyAsMap)
+
+	// Set JWK
+	vm.PublicKeyJwk = keyAsMap
+	return vm, nil
+}
+
 // JWK returns the key described by the VerificationMethod as JSON Web Key.
 func (v VerificationMethod) JWK() (jwk.Key, error) {
+	if v.Credential != nil {
+		// v.Credential.
+	}
 	if v.PublicKeyJwk == nil {
 		return nil, nil
 	}
