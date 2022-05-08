@@ -55,6 +55,7 @@ tasks:
       - rm -rf ./SonrMotor.xcframework
       - rm -rf ./docs/.docusaurus/
       - rm -rf ./docs/build
+      - go mod tidy
 
   deploy:docs:
     dir: docs
