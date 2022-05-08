@@ -1,66 +1,6 @@
-<h1 align="center">Sonr Blockchain</h1>
+[![Release Workflow](https://github.com/sonr-io/sonr/actions/workflows/release.yml/badge.svg?branch=dev)](https://github.com/sonr-io/sonr/actions/workflows/release.yml)
 
-<div align="center">
-  :trident: :dolphin: :godmode: :trident:
-</div>
-<div align="center">
-  <strong>The Official Sonr Monorepo source code</strong>
-</div>
-<div align="center">
-  A <code>easy-to-use</code> framework for building immersive decentralized applications.
-</div>
-
-<br />
-
-<div align="center">
-  <!-- Stability -->
-    <img alt="CodeFactor Grade" src="https://img.shields.io/codefactor/grade/github/sonr-io/sonr/master?style=for-the-badge">
-  <!-- NPM version -->
-  <a href="https://godoc.org/github.com/sonr-io/blockchain">
-  <img src="http://img.shields.io/badge/godoc-reference-5272B4.svg?style=for-the-badge" />
-  </a>
-  <!-- Test Coverage -->
-  <a href="https://codecov.io/github/choojs/choo">
-<img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/sonr-io/blockchain?label=TLOC&style=for-the-badge">
-  </a>
-  <!-- Downloads -->
-<img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/sonr_io?color=%2300ACEE&label=🐦 sonr_io&style=for-the-badge">
-</div>
-
-<div align="center">
-  <h3>
-    <a href="https://sonr.io">
-      Home
-    </a>
-    <span> | </span>
-    <a href="https://discord.gg/tjWMfvQZ7b">
-      Discord
-    </a>
-    <span> | </span>
-    <a href="https://github.com/sonr-io/blockchain/issues">
-      Issues
-    </a>
-    <span> | </span>
-      <!-- <span> | </span> -->
-    <a href="https://docs.sonr.io">
-      Docs
-    </a>
-     <span> | </span>
-      <!-- <span> | </span> -->
-    <a href="./CHANGELOG.md">
-      Changelog
-    </a>
-  </h3>
-</div>
-
-<div align="center">
-  <sub>The quickest way to production in Web3. Built with ❤︎ by the
-  <a href="mailto:team@sonr.io">Sonr Team</a> and
-  <a href="https://github.com/sonr-io/blockchain/graphs/contributors">
-    contributors
-  </a>
-</div>
-
+## Description
 
 Sonr is a platform for developers to build decentralized applications which put user privacy first and foremost. It weds decentralized storage technologies such as [IPFS](https://ipfs.io) and [lipp2p](https://libp2p.io) with an intuitive, firebase-like developer experience.
 
@@ -118,7 +58,7 @@ also provides an interface for developers to deploy custom services on the netwo
 ```go
 import (
   "github.com/sonr-io/sonr/pkg/highway"
-  "github.com/sonr-io/sonr/pkg/host"
+  "github.com/sonr-io/sonr/internal/host"
 )
 
 func main() {
@@ -180,13 +120,10 @@ Outputs:
 
 ```json
 {
+  "assertionMethod": ["did:sonr:123#key-1"],
   "@context": "https://www.w3.org/ns/did/v1",
   "controller": "did:sonr:123",
   "id": "did:sonr:123",
-  "alsoKnownAs": [
-    "test.snr",
-    "example.sonr"
-  ],
   "verificationMethod": [
     {
       "controller": "did:sonr:123",
