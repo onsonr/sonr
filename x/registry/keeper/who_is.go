@@ -56,6 +56,38 @@ func (k Keeper) GetWhoIs(ctx sdk.Context, id string) (val types.WhoIs, found boo
 	return val, true
 }
 
+// GetWhoIsFromAlias returns a WhoIs whos DIDDocument contains the given alias in its 'alsoKnownAs' field
+func (k Keeper) GetWhoIsFromAlias(ctx sdk.Context, alias string) (val types.WhoIs, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhoIsKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.WhoIs
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.ContainsAlias(alias) {
+			return val, true
+		}
+	}
+	return val, false
+}
+
+// GetWhoIsFromController returns a WhoIs whos DIDDocument contains the given controller
+func (k Keeper) GetWhoIsFromController(ctx sdk.Context, controller string) (val types.WhoIs, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhoIsKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.WhoIs
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.ContainsController(controller) {
+			return val, true
+		}
+	}
+	return val, false
+}
+
 // GetAllWhoIs returns all whoIs
 func (k Keeper) GetAllWhoIs(ctx sdk.Context) (list []types.WhoIs) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhoIsKeyPrefix))

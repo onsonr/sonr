@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/x/registry/types"
 	"google.golang.org/grpc/codes"
@@ -14,23 +13,17 @@ func (k Keeper) WhoIsAlias(goCtx context.Context, req *types.QueryWhoIsAliasRequ
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhoIsKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.WhoIs
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		if val.ContainsAlias(req.GetAlias()) {
-			return &types.QueryWhoIsAliasResponse{
-				WhoIs: &val,
-			}, nil
-		}
+	val, found := k.GetWhoIsFromAlias(
+		ctx,
+		req.GetAlias(),
+	)
+	if !found {
+		return nil, status.Error(codes.InvalidArgument, "not found")
 	}
 
-	return &types.QueryWhoIsAliasResponse{}, nil
+	return &types.QueryWhoIsAliasResponse{
+		WhoIs: &val,
+	}, nil
 }

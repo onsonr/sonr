@@ -199,8 +199,8 @@ func (cc *Cosmos) NameExists(name string) bool {
 	return queryResp.GetWhoIs().Alias[0] == name
 }
 
-// QueryAllNames returns all DIDDocuments registered on the blockchain
-func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
+// QueryAllWhoIs returns all DIDDocuments registered on the blockchain
+func (cc *Cosmos) QueryAllWhoIs() ([]rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.registryQuery.WhoIsAll(context.Background(), &rt.QueryAllWhoIsRequest{})
 	if err != nil {
@@ -209,17 +209,43 @@ func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
 	return queryResp.GetWhoIs(), nil
 }
 
-// QueryName returns a DIDDocument for the given name registered on the blockchain
-func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
+// QueryWhoIs returns a DIDDocument for the given name registered on the blockchain
+func (cc *Cosmos) QueryWhoIs(did string) (*rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
-		Did: name,
+		Did: did,
 	})
 	if err != nil {
 		return nil, err
 	}
 	whois := queryResp.GetWhoIs()
-	return &whois, nil
+	return whois, nil
+}
+
+// QueryWhoIsAlias returns a DIDDocument for the given alias registered on the blockchain
+func (cc *Cosmos) QueryWhoIsAlias(alias string) (*rt.WhoIs, error) {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
+	queryResp, err := cc.registryQuery.WhoIsAlias(context.Background(), &rt.QueryWhoIsAliasRequest{
+		Alias: alias,
+	})
+	if err != nil {
+		return nil, err
+	}
+	whois := queryResp.GetWhoIs()
+	return whois, nil
+}
+
+// QueryWhoIsController returns the controller for the given name registered on the blockchain
+func (cc *Cosmos) QueryWhoIsController(controller string) (*rt.WhoIs, error) {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
+	queryResp, err := cc.registryQuery.WhoIsController(context.Background(), &rt.QueryWhoIsControllerRequest{
+		Controller: controller,
+	})
+	if err != nil {
+		return nil, err
+	}
+	whois := queryResp.GetWhoIs()
+	return whois, nil
 }
 
 // -------

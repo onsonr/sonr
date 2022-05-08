@@ -236,7 +236,7 @@ func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	}
 
 	// Check if user exists and return error if it does not
-	whoIs, err := s.Cosmos.QueryName(username)
+	whoIs, err := s.Cosmos.QueryWhoIs(username)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	}
