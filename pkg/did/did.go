@@ -68,7 +68,7 @@ func (d *DID) UnmarshalJSON(bytes []byte) error {
 // Address returns the Sonr Account address from the given DID
 func (d *DID) Address() string {
 	for _, str := range d.IDStrings {
-		if strings.EqualFold(str, "did") || strings.EqualFold(str, "sonr") {
+		if strings.EqualFold(str, "did") || strings.EqualFold(str, "snr") {
 			continue
 		}
 		return str
