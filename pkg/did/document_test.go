@@ -25,7 +25,7 @@ func Test_Document(t *testing.T) {
 {
 	"@context": ["https://www.w3.org/ns/did/v1"],
 	"id": "did:web:identity.foundation",
-	"Controller": ["did:sonr:123", "did:web:example.org"]
+	"Controller": ["did:snr:123", "did:web:example.org"]
 }`
 		doc := Document{}
 		err := json.Unmarshal([]byte(jsonDoc), &doc)
@@ -33,8 +33,8 @@ func Test_Document(t *testing.T) {
 			t.Errorf("unexpected error: %s", err)
 			return
 		}
-		if doc.Controller[0].String() != "did:sonr:123" {
-			t.Errorf("expected 'did:sonr:123', got: %s", doc.Controller[0])
+		if doc.Controller[0].String() != "did:snr:123" {
+			t.Errorf("expected 'did:snr:123', got: %s", doc.Controller[0])
 		}
 	})
 
