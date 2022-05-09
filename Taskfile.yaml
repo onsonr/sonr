@@ -14,107 +14,43 @@ vars:
 tasks:
   bind:
     cmds:
-      - mkdir -p {{ .IOS_DIR }}
-      - task: bind:ios OUT={{ .IOS_DIR }}
-    vars:
-      ANDROID_DIR: build/motorlib_darwin_{{ .VERSION }}_arm64
-      IOS_DIR: build/motorlib_ios_{{ .VERSION }}_arm64
-
-  bind:ios:
-    cmds:
-      - gomobile init
-      - gomobile bind -target=ios/arm64 -o {{ .OUT_DIR }}/SonrMotor.xcframework
-    dir: cmd/motor-lib
-    vars:
-      OUT_DIR: ""
-
-  bind:android:
-    cmds:
-      - gomobile init
-      - gomobile bind -target=android/arm64 -o {{ .OUT_DIR }}/SonrMotor.aar
-    dir: cmd/motor-lib
-    vars:
-      OUT_DIR: ""
-
-  build:swagger:
-    cmds:
-      - echo "Building swagger api docs for highway"
-      - swag i -g pkg/highway/server.go --output docs/highway
-      - echo "Building Open api docs for Blockchain"
-      - starport generate openapi
-      - starport generate proto-go
-      - go mod tidy
-
-  build:buf:
+      - echo "Binding Motor Node for all platforms"
+      - sh ./scripts/bind.sh -i
+      - sh ./scripts/bind.sh -a
+      
+  buf:
     cmds:
       - echo "Building Protobufs and pushing to registry"
-      - task: build:buf:core
-      - task: build:buf:blockchain
+      - task: buf:blockchain
+      - task: buf:motor
 
-  build:buf:core:
-    dir: proto
+  buf:motor:
+    dir: internal/motor/proto
     cmds:
-      - echo "Generating and Pushing Protobufs for Highway, Motor, and Host"
+      - echo "Generating and Pushing Protobufs for Motor"
       - buf mod update
       - buf build
       - buf push
 
-  build:buf:blockchain:
+  buf:blockchain:
     dir: internal/blockchain/proto
     cmds:
-      - echo "Generating and Pushing Protobufs for Blockchain Modules"
+      - echo "Generating and Pushing Protobufs for Blockchain"
       - buf mod update
       - buf build
       - buf push
 
-  deploy:docs:
-    dir: docs
+  clean:
     cmds:
-      - echo "Deploying docs to gh-pages"
-      - USE_SSH=true yarn deploy
-
-  gen:proto:
-    cmds:
-      - echo "Generating Protobufs"
-      - ignite generate proto-go
-      - ignite generate openapi
+      - echo "Cleaning"
+      - rm -rf ./build
+      - rm -rf ./dist
+      - rm -rf ./io.sonr.motor.aar
+      - rm -rf ./sonr-motor.wasm
+      - rm -rf ./SonrMotor.xcframework
+      - rm -rf ./docs/.docusaurus/
+      - rm -rf ./docs/build
       - go mod tidy
-
-  serve:chain:
-    summary: Serve the blockchain using starport
-    cmds:
-      - ignite chain serve --reset-once
-    silent: true
-
-  serve:docs:
-    summary: Serve the documentation using starport
-    cmds:
-      - task: docs:serve
-    silent: true
-
-  start:chain:
-    summary: Start a locally built blockchain daemon
-    deps: [build-chain]
-    cmds:
-      - rm -rf ~/.sonr
-      - sonrd init my-node --chain-id sonr
-      - sonrd keys add --keyring-backend test alice --home ~/.sonr
-      - sonrd add-genesis-account $(sonrd keys show alice -a) 1000000000000000stake,1000000000000snr
-      - sonrd gentx alice 1000000000000000stake --chain-id sonr
-      - sonrd collect-gentxs
-      - sonrd start
-
-  start:docs:
-    summary: Start the documentation server
-    cmds:
-      - task: docs:start
-
-  release:web:
-    summary: Build the web dashboard for release
-    cmds:
-      # - task: web:dashboard:build
-      - task: web:wallet:build
-
 
   docs:
     cmds:
@@ -125,6 +61,7 @@ tasks:
 
   docs:start:
     cmds:
+      - task: swag:build
       - echo "yarn start..."
       - yarn start
     silent: true
@@ -132,6 +69,7 @@ tasks:
 
   docs:build:
     cmds:
+      - task: swag:build
       - echo "yarn build..."
       - yarn build
     silent: true
@@ -164,3 +102,26 @@ tasks:
       - yarn serve
     silent: true
     dir: docs
+
+  proto:go:
+    cmds:
+      - echo "Generating Protobufs"
+      - ignite generate proto-go
+      - go mod tidy
+
+  chain:serve:
+    summary: Serve the blockchain using starport
+    cmds:
+      - ignite chain serve --reset-once
+    silent: true
+
+  swag:build:
+    cmds:
+      - echo "Building swagger api docs for highway"
+      - swag i -g internal/highway/http/server.go --output docs/static
+      - mv docs/static/swagger.yaml docs/static/highway.yaml
+      - rm -rf docs/static/swagger.json
+      - echo "Building Open api docs for Blockchain"
+      - ignite generate openapi
+      - go mod tidy
+
