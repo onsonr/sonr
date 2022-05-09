@@ -12,37 +12,127 @@ vars:
   VERSION: v0.0.1-test
 
 tasks:
-  bind:
+
+## ------------------------------------------------------------
+## Node tasks
+## ------------------------------------------------------------
+  motor:bind:
     cmds:
       - echo "Binding Motor Node for all platforms"
       - sh ./scripts/bind.sh -i
       - sh ./scripts/bind.sh -a
       - sh ./scripts/bind.sh -w
-  buf:
+
+  chain:build:
+    summary: "Build cosmos blockchain using ignite"
     cmds:
-      - echo "Building Protobufs and pushing to registry"
+      - ignite chain build
+
+  chain:serve:
+    summary: Serve the blockchain using ignite
+    cmds:
+      - ignite chain serve --reset-once
+    silent: true
+
+## ------------------------------------------------------------
+## Documentation tasks
+## ------------------------------------------------------------
+  docs:start:
+    summary: "Calls yarn start in docs directory"
+    cmds:
+      - task: swag:build
+      - yarn start
+    silent: true
+    dir: docs
+
+  docs:build:
+    summary: "Calls yarn build in docs directory"
+    cmds:
+      - task: swag:build
+      - yarn build
+    silent: true
+    dir: docs
+
+  docs:swizzle:
+    summary: "Calls yarn swizzle in docs directory"
+    cmds:
+      - yarn swizzle
+    silent: true
+    dir: docs
+
+  docs:deploy:
+    summary: "Calls yarn deploy in docs directory"
+    cmds:
+      - USE_SSH=true yarn deploy
+    silent: true
+    dir: docs
+
+  docs:clear:
+    summary: "Calls yarn clear in docs directory"
+    cmds:
+      - yarn clear
+    silent: true
+    dir: docs
+
+  docs:serve:
+    summary: "Calls yarn serve in docs directory"
+    cmds:
+      - yarn serve
+    silent: true
+    dir: docs
+
+## ------------------------------------------------------------
+## Protobuf tasks
+## ------------------------------------------------------------
+  buf:
+    summary: "Build and Push Protobuf files to buf.build"
+    cmds:
       - task: buf:blockchain
       - task: buf:motor
 
   buf:motor:
+    summary: "Build and Push Motor Protobuf files to buf.build"
     dir: internal/motor/proto
     cmds:
-      - echo "Generating and Pushing Protobufs for Motor"
       - buf mod update
       - buf build
       - buf push
 
   buf:blockchain:
-    dir: internal/blockchain/proto
+    summary: "Build and Push Blockchain Protobuf files to buf.build"
+    dir: proto
     cmds:
-      - echo "Generating and Pushing Protobufs for Blockchain"
       - buf mod update
       - buf build
       - buf push
 
-  clean:
+  proto:go:
+    summary: "Generate cosmos-sdk protobuf files using ignite"
     cmds:
-      - echo "Cleaning"
+      - ignite generate proto-go
+      - go mod tidy
+
+  swag:build:
+    summary: "Generate swagger files for highway and blockchain using ignite"
+    cmds:
+      - swag i -g internal/highway/http/server.go --output docs/static
+      - mv docs/static/swagger.yaml docs/static/highway.yaml
+      - rm -rf docs/static/swagger.json
+      - ignite generate openapi
+      - go mod tidy
+
+
+## ------------------------------------------------------------
+## Utility tasks
+## ------------------------------------------------------------
+  release:
+    summary: "Create a local release for all binaries using goreleaser"
+    cmds:
+      - goreleaser release --skip-publish --snapshot --rm-dist --parallelism 4
+
+  clean:
+    summary: "Clean all binaries and generated files and directories"
+    cmds:
       - rm -rf ./build
       - rm -rf ./dist
       - rm -rf ./io.sonr.motor.aar
@@ -51,82 +141,3 @@ tasks:
       - rm -rf ./docs/.docusaurus/
       - rm -rf ./docs/build
       - go mod tidy
-
-  docs:
-    cmds:
-      - echo "yarn docusaurus..."
-      - yarn docusaurus
-    silent: true
-    dir: docs
-
-  docs:start:
-    cmds:
-      - task: swag:build
-      - echo "yarn start..."
-      - yarn start
-    silent: true
-    dir: docs
-
-  docs:build:
-    cmds:
-      - task: swag:build
-      - echo "yarn build..."
-      - yarn build
-    silent: true
-    dir: docs
-
-  docs:swizzle:
-    cmds:
-      - echo "yarn swizzle..."
-      - yarn swizzle
-    silent: true
-    dir: docs
-
-  docs:deploy:
-    cmds:
-      - echo "yarn deploy..."
-      - USE_SSH=true yarn deploy
-    silent: true
-    dir: docs
-
-  docs:clear:
-    cmds:
-      - echo "yarn clear..."
-      - yarn clear
-    silent: true
-    dir: docs
-
-  docs:serve:
-    cmds:
-      - echo "yarn serve..."
-      - yarn serve
-    silent: true
-    dir: docs
-
-  proto:go:
-    cmds:
-      - echo "Generating Protobufs"
-      - ignite generate proto-go
-      - go mod tidy
-
-  chain:serve:
-    summary: Serve the blockchain using starport
-    cmds:
-      - ignite chain serve --reset-once
-    silent: true
-
-  release:
-    cmds:
-      - echo "Releasing all binaries..."
-      - goreleaser release --skip-publish --snapshot --rm-dist --parallelism 4
-
-  swag:build:
-    cmds:
-      - echo "Building swagger api docs for highway"
-      - swag i -g internal/highway/http/server.go --output docs/static
-      - mv docs/static/swagger.yaml docs/static/highway.yaml
-      - rm -rf docs/static/swagger.json
-      - echo "Building Open api docs for Blockchain"
-      - ignite generate openapi
-      - go mod tidy
-
