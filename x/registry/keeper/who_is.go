@@ -6,11 +6,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/x/registry/types"
-	"go.etcd.io/etcd/store"
 )
 
 // GetWhoIsCount get the total number of whoIs
 func (k Keeper) GetWhoIsCount(ctx sdk.Context) uint64 {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	byteKey := types.KeyPrefix(types.WhoIsCountKey)
 	bz := store.Get(byteKey)
 
@@ -30,6 +30,15 @@ func (k Keeper) SetWhoIsCount(ctx sdk.Context, count uint64) {
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, count)
 	store.Set(byteKey, bz)
+}
+
+// SetWhoIs set a specific whoIs in the store
+func (k Keeper) SetWhoIs(ctx sdk.Context, whoIs types.WhoIs) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhoIsKeyPrefix))
+	b := k.cdc.MustMarshal(&whoIs)
+	store.Set(types.WhoIsKey(
+		whoIs.Owner,
+	), b)
 }
 
 // GetWhoIs returns a whoIs from its id
