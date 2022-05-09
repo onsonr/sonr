@@ -63,12 +63,39 @@ definitions:
       who_is:
         $ref: '#/definitions/types.WhoIs'
     type: object
+  types.MsgBuyNameAlias:
+    properties:
+      amount:
+        type: integer
+      creator:
+        type: string
+      did:
+        type: string
+      name:
+        type: string
+    type: object
   types.MsgBuyNameAliasResponse:
     properties:
       did:
         type: string
       who_is:
         $ref: '#/definitions/types.WhoIs'
+    type: object
+  types.MsgCreateBucket:
+    properties:
+      creator:
+        type: string
+      description:
+        type: string
+      initial_object_dids:
+        description: Provided initial objects for the bucket
+        items:
+          type: string
+        type: array
+      kind:
+        type: string
+      label:
+        type: string
     type: object
   types.MsgCreateBucketResponse:
     properties:
@@ -82,6 +109,17 @@ definitions:
         $ref: '#/definitions/types.WhichIs'
         description: Whichis response of the ObjectDoc
     type: object
+  types.MsgCreateChannel:
+    properties:
+      creator:
+        type: string
+      description:
+        type: string
+      label:
+        type: string
+      object_to_register:
+        $ref: '#/definitions/types.ObjectDoc'
+    type: object
   types.MsgCreateChannelResponse:
     properties:
       code:
@@ -92,6 +130,19 @@ definitions:
         description: HowIs of the Channel
       message:
         description: Message of the response
+        type: string
+    type: object
+  types.MsgCreateObject:
+    properties:
+      creator:
+        type: string
+      description:
+        type: string
+      initial_fields:
+        items:
+          $ref: '#/definitions/types.TypeField'
+        type: array
+      label:
         type: string
     type: object
   types.MsgCreateObjectResponse:
@@ -106,12 +157,30 @@ definitions:
         $ref: '#/definitions/types.WhatIs'
         description: WhatIs of the Channel
     type: object
+  types.MsgCreateWhoIs:
+    properties:
+      did_document:
+        items:
+          type: integer
+        type: array
+      owner:
+        type: string
+      whois_type:
+        type: integer
+    type: object
   types.MsgCreateWhoIsResponse:
     properties:
       did:
         type: string
       who_is:
         $ref: '#/definitions/types.WhoIs'
+    type: object
+  types.MsgDeactivateBucket:
+    properties:
+      creator:
+        type: string
+      did:
+        type: string
     type: object
   types.MsgDeactivateBucketResponse:
     properties:
@@ -120,6 +189,13 @@ definitions:
         type: integer
       message:
         description: Message of the response
+        type: string
+    type: object
+  types.MsgDeactivateChannel:
+    properties:
+      creator:
+        type: string
+      did:
         type: string
     type: object
   types.MsgDeactivateChannelResponse:
@@ -131,6 +207,13 @@ definitions:
         description: Message of the response
         type: string
     type: object
+  types.MsgDeactivateObject:
+    properties:
+      creator:
+        type: string
+      did:
+        type: string
+    type: object
   types.MsgDeactivateObjectResponse:
     properties:
       code:
@@ -140,12 +223,30 @@ definitions:
         description: Message of the response
         type: string
     type: object
+  types.MsgDeactivateWhoIs:
+    properties:
+      did:
+        type: string
+      owner:
+        type: string
+    type: object
   types.MsgDeactivateWhoIsResponse:
     properties:
       did:
         type: string
       success:
         type: boolean
+    type: object
+  types.MsgTransferAppAlias:
+    properties:
+      alias:
+        type: string
+      creator:
+        type: string
+      did:
+        type: string
+      recipient:
+        type: string
     type: object
   types.MsgTransferAppAliasResponse:
     properties:
@@ -154,12 +255,44 @@ definitions:
       who_is:
         $ref: '#/definitions/types.WhoIs'
     type: object
+  types.MsgTransferNameAlias:
+    properties:
+      alias:
+        type: string
+      creator:
+        type: string
+      did:
+        type: string
+      recipient:
+        type: string
+    type: object
   types.MsgTransferNameAliasResponse:
     properties:
       success:
         type: boolean
       who_is:
         $ref: '#/definitions/types.WhoIs'
+    type: object
+  types.MsgUpdateBucket:
+    properties:
+      added_object_dids:
+        description: Added Objects
+        items:
+          type: string
+        type: array
+      creator:
+        type: string
+      description:
+        description: New bucket description
+        type: string
+      label:
+        description: The Bucket label
+        type: string
+      removed_object_dids:
+        description: Removed Objects
+        items:
+          type: string
+        type: array
     type: object
   types.MsgUpdateBucketResponse:
     properties:
@@ -173,6 +306,19 @@ definitions:
         $ref: '#/definitions/types.WhichIs'
         description: Whichis response of the ObjectDoc
     type: object
+  types.MsgUpdateChannel:
+    properties:
+      creator:
+        type: string
+      description:
+        type: string
+      did:
+        type: string
+      label:
+        type: string
+      object_to_register:
+        $ref: '#/definitions/types.ObjectDoc'
+    type: object
   types.MsgUpdateChannelResponse:
     properties:
       code:
@@ -181,6 +327,27 @@ definitions:
       message:
         description: Message of the response
         type: string
+    type: object
+  types.MsgUpdateObject:
+    properties:
+      added_fields:
+        description: Added fields to the object
+        items:
+          $ref: '#/definitions/types.TypeField'
+        type: array
+      cid:
+        description: Contend Identifier of the object
+        type: string
+      creator:
+        type: string
+      label:
+        description: Label of the Object
+        type: string
+      removed_fields:
+        description: Removed fields from the object
+        items:
+          $ref: '#/definitions/types.TypeField'
+        type: array
     type: object
   types.MsgUpdateObjectResponse:
     properties:
@@ -193,6 +360,17 @@ definitions:
       what_is:
         $ref: '#/definitions/types.WhatIs'
         description: WhatIs of the Channel
+    type: object
+  types.MsgUpdateWhoIs:
+    properties:
+      did:
+        type: string
+      did_document:
+        items:
+          type: integer
+        type: array
+      owner:
+        type: string
     type: object
   types.MsgUpdateWhoIsResponse:
     properties:
@@ -395,6 +573,13 @@ paths:
     post:
       description: CreateBucket creates a new bucket for a registered application
         via HTTP.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgCreateBucket'
       produces:
       - application/json
       responses:
@@ -413,6 +598,13 @@ paths:
     post:
       description: DeactivateBucket disables a bucket for a registered application
         via HTTP.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgDeactivateBucket'
       produces:
       - application/json
       responses:
@@ -435,6 +627,13 @@ paths:
     post:
       description: UpdateBucket updates a bucket for a registered application via
         HTTP.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgUpdateBucket'
       produces:
       - application/json
       responses:
@@ -452,6 +651,13 @@ paths:
   /v1/channel/create:
     post:
       description: CreateChannel creates a specified channel for a registered application
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgCreateChannel'
       produces:
       - application/json
       responses:
@@ -469,6 +675,13 @@ paths:
   /v1/channel/deactivate:
     post:
       description: DeactivateChannel disables a Channel for a registered application
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgDeactivateChannel'
       produces:
       - application/json
       responses:
@@ -487,6 +700,13 @@ paths:
     post:
       description: ListenChannel puts a Channel into a listening state registered
         application
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgUpdateChannel'
       produces:
       - application/json
       responses:
@@ -557,6 +777,13 @@ paths:
   /v1/object/create:
     post:
       description: CreateObject creates a Object for a registered application
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgCreateObject'
       produces:
       - application/json
       responses:
@@ -574,6 +801,13 @@ paths:
   /v1/object/deactivate:
     post:
       description: DeactivateObject disables a Object for a registered application
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgDeactivateObject'
       produces:
       - application/json
       responses:
@@ -591,6 +825,13 @@ paths:
   /v1/object/update:
     post:
       description: UpdateObject updates and object reference for a registered application
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgUpdateObject'
       produces:
       - application/json
       responses:
@@ -612,6 +853,13 @@ paths:
         fails when the DIDDoc type doesnt match, wallet balance is too low, the alias
         has already been purchased, creator is not the owner of the app, or WhoIs
         is deactivated.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgBuyNameAlias'
       produces:
       - application/json
       responses:
@@ -633,6 +881,13 @@ paths:
         fails when the DIDDoc type doesnt match, wallet balance is too low, the alias
         has already been purchased, creator is not listed as controller of DIDDoc,
         or WhoIs is deactivated.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgBuyNameAlias'
       produces:
       - application/json
       responses:
@@ -653,6 +908,13 @@ paths:
         of the account calling the TX, and verifies the signature. If succesful, and
         there is no existing WhoIs created for the user or application. Paramaters
         include: signature, diddocument, address, and whoIsType.'
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgCreateWhoIs'
       produces:
       - application/json
       responses:
@@ -672,6 +934,13 @@ paths:
       description: This method sets the state of a particular WhoIs to be deactivated.
         In order to Succesfully perform this request, the TX creator and signature
         must be the same as the WhoIs owner.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgDeactivateWhoIs'
       produces:
       - application/json
       responses:
@@ -691,6 +960,13 @@ paths:
       description: This method transfers an existing App Alias to the specified peer.
         The alias is removed from the current App's `alsoKnownAs` list and inserted
         into the new App's `alsoKnownAs` list.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgTransferAppAlias'
       produces:
       - application/json
       responses:
@@ -710,6 +986,13 @@ paths:
       description: This method transfers an existing User .snr name Alias to the specified
         peer. The alias is removed from the current App's `alsoKnownAs` list and inserted
         into the new App's `alsoKnownAs` list.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgTransferNameAlias'
       produces:
       - application/json
       responses:
@@ -730,6 +1013,13 @@ paths:
         with the signature of the current tx creator, and then verifies the account
         calling the TX is a controller of the On-chain DIDDocument. If so, the DIDDocument
         is updated on the blockchain and the transaction is broadcast.
+      parameters:
+      - description: Parameters
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.MsgUpdateWhoIs'
       produces:
       - application/json
       responses:

@@ -13,6 +13,7 @@ import (
 // @Description This method takes a DIDDocument as an input along with the did of the account calling the TX, and verifies the signature. If succesful, and there is no existing WhoIs created for the user or application. Paramaters include: signature, diddocument, address, and whoIsType.
 // @Tags Registry
 // @Produce json
+// @Param 		 data body rt.MsgCreateWhoIs true "Parameters"
 // @Success 	 200  {object}  rt.MsgCreateWhoIsResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/create/whois [post]
@@ -38,6 +39,7 @@ func (s *HighwayServer) CreateWhoIs(c *gin.Context) {
 // @Description This method takes an updated DIDDocument as a JSON buffer along with the signature of the current tx creator, and then verifies the account calling the TX is a controller of the On-chain DIDDocument. If so, the DIDDocument is updated on the blockchain and the transaction is broadcast.
 // @Tags Registry
 // @Produce json
+// @Param 		 data body rt.MsgUpdateWhoIs true "Parameters"
 // @Success 	 200  {object}  rt.MsgUpdateWhoIsResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/update/whois [post]
@@ -61,6 +63,7 @@ func (s *HighwayServer) UpdateWhoIs(c *gin.Context) {
 // @Description This method sets the state of a particular WhoIs to be deactivated. In order to Succesfully perform this request, the TX creator and signature must be the same as the WhoIs owner.
 // @Tags Registry
 // @Produce json
+// @Param 		 data body rt.MsgDeactivateWhoIs true "Parameters"
 // @Success 	 200  {object}  rt.MsgDeactivateWhoIsResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/deactivate/whois [post]
@@ -84,6 +87,7 @@ func (s *HighwayServer) DeactivateWhoIs(c *gin.Context) {
 // @Description This method purchases a user alias .snr domain i.e. {example}.snr, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not listed as controller of DIDDoc, or WhoIs is deactivated.
 // @Tags Registry
 // @Produce json
+// @Param 		 data body rt.MsgBuyNameAlias true "Parameters"
 // @Success 	 200  {object}  rt.MsgBuyNameAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/name [post]
@@ -107,6 +111,7 @@ func (s *HighwayServer) BuyNameAlias(c *gin.Context) {
 // @Description This method purchases an app name extension i.e. example.snr/{appname}, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not the owner of the app, or WhoIs is deactivated.
 // @Tags Registry
 // @Produce json
+// @Param 		 data body rt.MsgBuyNameAlias true "Parameters"
 // @Success 	 200  {object}  rt.MsgBuyAppAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/app [post]
@@ -130,6 +135,7 @@ func (s *HighwayServer) BuyAppAlias(c *gin.Context) {
 // @Description This method transfers an existing User .snr name Alias to the specified peer. The alias is removed from the current App's `alsoKnownAs` list and inserted into the new App's `alsoKnownAs` list.
 // @Tags Registry
 // @Produce json
+// @Param 		 data body rt.MsgTransferNameAlias true "Parameters"
 // @Success      200  {object}  rt.MsgTransferNameAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/transfer/alias/name [post]
@@ -153,6 +159,7 @@ func (s *HighwayServer) TransferNameAlias(c *gin.Context) {
 // @Description This method transfers an existing App Alias to the specified peer. The alias is removed from the current App's `alsoKnownAs` list and inserted into the new App's `alsoKnownAs` list.
 // @Tags Registry
 // @Produce json
+// @Param 		 data body rt.MsgTransferAppAlias true "Parameters"
 // @Success      200  {object}  rt.MsgTransferAppAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/transfer/alias/app [post]

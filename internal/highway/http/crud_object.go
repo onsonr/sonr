@@ -13,6 +13,7 @@ import (
 // @Description CreateObject creates a Object for a registered application
 // @Tags Object
 // @Produce json
+// @Param 		 data body ot.MsgCreateObject true "Parameters"
 // @Success      200  {object}  ot.MsgCreateObjectResponse
 // @Failure      500  {string}  message
 // @Router /v1/object/create [post]
@@ -47,6 +48,7 @@ func (s *HighwayServer) CreateObject(c *gin.Context) {
 // @Description UpdateObject updates and object reference for a registered application
 // @Tags Object
 // @Produce json
+// @Param 		 data body ot.MsgUpdateObject true "Parameters"
 // @Success      200  {object}  ot.MsgUpdateObjectResponse
 // @Failure      500  {string}  message
 // @Router /v1/object/update [post]
@@ -80,6 +82,7 @@ func (s *HighwayServer) UpdateObject(c *gin.Context) {
 // @Description DeactivateObject disables a Object for a registered application
 // @Tags Object
 // @Produce json
+// @Param 		 data body ot.MsgDeactivateObject true "Parameters"
 // @Success      200  {object}  ot.MsgDeactivateObjectResponse
 // @Failure      500  {string}  message
 // @Router /v1/object/deactivate [post]

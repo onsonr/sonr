@@ -141,6 +141,17 @@ const docTemplate = `{
                     "Bucket"
                 ],
                 "summary": "Create Bucket",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgCreateBucket"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -167,6 +178,17 @@ const docTemplate = `{
                     "Bucket"
                 ],
                 "summary": "Deactivate Bucket",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgDeactivateBucket"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -199,6 +221,17 @@ const docTemplate = `{
                     "Bucket"
                 ],
                 "summary": "Update Bucket",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgUpdateBucket"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -225,6 +258,17 @@ const docTemplate = `{
                     "Channel"
                 ],
                 "summary": "Create Channel",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgCreateChannel"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -251,6 +295,17 @@ const docTemplate = `{
                     "Channel"
                 ],
                 "summary": "Deactivate Channel",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgDeactivateChannel"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -277,6 +332,17 @@ const docTemplate = `{
                     "Channel"
                 ],
                 "summary": "Update Channel",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgUpdateChannel"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -384,6 +450,17 @@ const docTemplate = `{
                     "Object"
                 ],
                 "summary": "Create Object",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgCreateObject"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -410,6 +487,17 @@ const docTemplate = `{
                     "Object"
                 ],
                 "summary": "Deactivate Object",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgDeactivateObject"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -436,6 +524,17 @@ const docTemplate = `{
                     "Object"
                 ],
                 "summary": "Update Object",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgUpdateObject"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -462,6 +561,17 @@ const docTemplate = `{
                     "Registry"
                 ],
                 "summary": "Buy an Alias for an App",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgBuyNameAlias"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -488,6 +598,17 @@ const docTemplate = `{
                     "Registry"
                 ],
                 "summary": "Buy an Alias for a User",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgBuyNameAlias"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -514,6 +635,17 @@ const docTemplate = `{
                     "Registry"
                 ],
                 "summary": "Create WhoIs Entry",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgCreateWhoIs"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -540,6 +672,17 @@ const docTemplate = `{
                     "Registry"
                 ],
                 "summary": "Deactivate WhoIs Entry",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgDeactivateWhoIs"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -566,6 +709,17 @@ const docTemplate = `{
                     "Registry"
                 ],
                 "summary": "Transfer an App Alias",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgTransferAppAlias"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -592,6 +746,17 @@ const docTemplate = `{
                     "Registry"
                 ],
                 "summary": "Transfer a Name alias",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgTransferNameAlias"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -618,6 +783,17 @@ const docTemplate = `{
                     "Registry"
                 ],
                 "summary": "Update WhoIs Entry",
+                "parameters": [
+                    {
+                        "description": "Parameters",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgUpdateWhoIs"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -721,6 +897,23 @@ const docTemplate = `{
                 }
             }
         },
+        "types.MsgBuyNameAlias": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "types.MsgBuyNameAliasResponse": {
             "type": "object",
             "properties": {
@@ -729,6 +922,30 @@ const docTemplate = `{
                 },
                 "who_is": {
                     "$ref": "#/definitions/types.WhoIs"
+                }
+            }
+        },
+        "types.MsgCreateBucket": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "initial_object_dids": {
+                    "description": "Provided initial objects for the bucket",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
                 }
             }
         },
@@ -749,6 +966,23 @@ const docTemplate = `{
                 }
             }
         },
+        "types.MsgCreateChannel": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "object_to_register": {
+                    "$ref": "#/definitions/types.ObjectDoc"
+                }
+            }
+        },
         "types.MsgCreateChannelResponse": {
             "type": "object",
             "properties": {
@@ -762,6 +996,26 @@ const docTemplate = `{
                 },
                 "message": {
                     "description": "Message of the response",
+                    "type": "string"
+                }
+            }
+        },
+        "types.MsgCreateObject": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "initial_fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.TypeField"
+                    }
+                },
+                "label": {
                     "type": "string"
                 }
             }
@@ -783,6 +1037,23 @@ const docTemplate = `{
                 }
             }
         },
+        "types.MsgCreateWhoIs": {
+            "type": "object",
+            "properties": {
+                "did_document": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "whois_type": {
+                    "type": "integer"
+                }
+            }
+        },
         "types.MsgCreateWhoIsResponse": {
             "type": "object",
             "properties": {
@@ -791,6 +1062,17 @@ const docTemplate = `{
                 },
                 "who_is": {
                     "$ref": "#/definitions/types.WhoIs"
+                }
+            }
+        },
+        "types.MsgDeactivateBucket": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
                 }
             }
         },
@@ -803,6 +1085,17 @@ const docTemplate = `{
                 },
                 "message": {
                     "description": "Message of the response",
+                    "type": "string"
+                }
+            }
+        },
+        "types.MsgDeactivateChannel": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string"
+                },
+                "did": {
                     "type": "string"
                 }
             }
@@ -820,6 +1113,17 @@ const docTemplate = `{
                 }
             }
         },
+        "types.MsgDeactivateObject": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
+                }
+            }
+        },
         "types.MsgDeactivateObjectResponse": {
             "type": "object",
             "properties": {
@@ -829,6 +1133,17 @@ const docTemplate = `{
                 },
                 "message": {
                     "description": "Message of the response",
+                    "type": "string"
+                }
+            }
+        },
+        "types.MsgDeactivateWhoIs": {
+            "type": "object",
+            "properties": {
+                "did": {
+                    "type": "string"
+                },
+                "owner": {
                     "type": "string"
                 }
             }
@@ -844,6 +1159,23 @@ const docTemplate = `{
                 }
             }
         },
+        "types.MsgTransferAppAlias": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "type": "string"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
+                },
+                "recipient": {
+                    "type": "string"
+                }
+            }
+        },
         "types.MsgTransferAppAliasResponse": {
             "type": "object",
             "properties": {
@@ -855,6 +1187,23 @@ const docTemplate = `{
                 }
             }
         },
+        "types.MsgTransferNameAlias": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "type": "string"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
+                },
+                "recipient": {
+                    "type": "string"
+                }
+            }
+        },
         "types.MsgTransferNameAliasResponse": {
             "type": "object",
             "properties": {
@@ -863,6 +1212,36 @@ const docTemplate = `{
                 },
                 "who_is": {
                     "$ref": "#/definitions/types.WhoIs"
+                }
+            }
+        },
+        "types.MsgUpdateBucket": {
+            "type": "object",
+            "properties": {
+                "added_object_dids": {
+                    "description": "Added Objects",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "description": {
+                    "description": "New bucket description",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "The Bucket label",
+                    "type": "string"
+                },
+                "removed_object_dids": {
+                    "description": "Removed Objects",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -883,6 +1262,26 @@ const docTemplate = `{
                 }
             }
         },
+        "types.MsgUpdateChannel": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "object_to_register": {
+                    "$ref": "#/definitions/types.ObjectDoc"
+                }
+            }
+        },
         "types.MsgUpdateChannelResponse": {
             "type": "object",
             "properties": {
@@ -893,6 +1292,36 @@ const docTemplate = `{
                 "message": {
                     "description": "Message of the response",
                     "type": "string"
+                }
+            }
+        },
+        "types.MsgUpdateObject": {
+            "type": "object",
+            "properties": {
+                "added_fields": {
+                    "description": "Added fields to the object",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.TypeField"
+                    }
+                },
+                "cid": {
+                    "description": "Contend Identifier of the object",
+                    "type": "string"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label of the Object",
+                    "type": "string"
+                },
+                "removed_fields": {
+                    "description": "Removed fields from the object",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.TypeField"
+                    }
                 }
             }
         },
@@ -910,6 +1339,23 @@ const docTemplate = `{
                 "what_is": {
                     "description": "WhatIs of the Channel",
                     "$ref": "#/definitions/types.WhatIs"
+                }
+            }
+        },
+        "types.MsgUpdateWhoIs": {
+            "type": "object",
+            "properties": {
+                "did": {
+                    "type": "string"
+                },
+                "did_document": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "owner": {
+                    "type": "string"
                 }
             }
         },

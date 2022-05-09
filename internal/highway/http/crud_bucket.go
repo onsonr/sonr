@@ -13,6 +13,7 @@ import (
 // @Description CreateBucket creates a new bucket for a registered application via HTTP.
 // @Tags Bucket
 // @Produce json
+// @Param 		 data body bt.MsgCreateBucket true "Parameters"
 // @Success      200  {object}  bt.MsgCreateBucketResponse
 // @Failure      500  {string}  message
 // @Router /v1/bucket/create [post]
@@ -44,6 +45,7 @@ func (s *HighwayServer) CreateBucket(c *gin.Context) {
 // @Description UpdateBucket updates a bucket for a registered application via HTTP.
 // @Tags Bucket
 // @Produce json
+// @Param 		 data body bt.MsgUpdateBucket true "Parameters"
 // @Success      200  {object}  bt.MsgUpdateBucketResponse
 // @Failure      500  {string}  message
 // @Router /v1/bucket/update [post]
@@ -76,6 +78,7 @@ func (s *HighwayServer) UpdateBucket(c *gin.Context) {
 // @Description DeactivateBucket disables a bucket for a registered application via HTTP.
 // @Tags Bucket
 // @Produce json
+// @Param 		 data body bt.MsgDeactivateBucket true "Parameters"
 // @Success      200  {object}  bt.MsgDeactivateBucketResponse
 // @Failure      400  {string}  message
 // @Failure      502  {string}  message

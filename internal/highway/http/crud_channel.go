@@ -13,6 +13,7 @@ import (
 // @Description CreateChannel creates a specified channel for a registered application
 // @Tags Channel
 // @Produce json
+// @Param 		 data body ct.MsgCreateChannel true "Parameters"
 // @Success      200  {object}  ct.MsgCreateChannelResponse
 // @Failure      500  {string}  message
 // @Router /v1/channel/create [post]
@@ -53,6 +54,7 @@ func (s *HighwayServer) CreateChannel(c *gin.Context) {
 // @Description ListenChannel puts a Channel into a listening state registered application
 // @Tags Channel
 // @Produce json
+// @Param 		 data body ct.MsgUpdateChannel true "Parameters"
 // @Success      200  {object}  ct.MsgUpdateChannelResponse
 // @Failure      500  {string}  message
 // @Router /v1/channel/update [post]
@@ -140,6 +142,7 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 // @Description DeactivateChannel disables a Channel for a registered application
 // @Tags Channel
 // @Produce json
+// @Param 		 data body ct.MsgDeactivateChannel true "Parameters"
 // @Success      200  {object}  ct.MsgDeactivateChannelResponse
 // @Failure      500  {string}  message
 // @Router /v1/channel/deactivate [post]
