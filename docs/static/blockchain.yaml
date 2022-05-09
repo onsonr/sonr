@@ -28903,6 +28903,51 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              WhoIs:
+                type: object
+                properties:
+                  alias:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      Alias is the list of registered `alsoKnownAs` identifiers
+                      of the User or Application
+                  owner:
+                    type: string
+                    description: >-
+                      Owner is the top level DID of the User or Application
+                      derived from the multisignature wallet.
+                  did_document:
+                    type: string
+                    format: byte
+                    title: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs
+                  controllers:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      Credentials are the biometric info of the registered name
+                      and account encoded with public key
+                  type:
+                    title: Type is the type of the registered name
+                    type: string
+                    enum:
+                      - USER
+                      - APPLICATION
+                    default: USER
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -28923,6 +28968,7 @@ paths:
                   additionalProperties: {}
       parameters:
         - name: alias
+          description: Alias of a WhoIs.
           in: path
           required: true
           type: string
@@ -28937,6 +28983,51 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              WhoIs:
+                type: object
+                properties:
+                  alias:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      Alias is the list of registered `alsoKnownAs` identifiers
+                      of the User or Application
+                  owner:
+                    type: string
+                    description: >-
+                      Owner is the top level DID of the User or Application
+                      derived from the multisignature wallet.
+                  did_document:
+                    type: string
+                    format: byte
+                    title: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs
+                  controllers:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      Credentials are the biometric info of the registered name
+                      and account encoded with public key
+                  type:
+                    title: Type is the type of the registered name
+                    type: string
+                    enum:
+                      - USER
+                      - APPLICATION
+                    default: USER
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -28957,6 +29048,7 @@ paths:
                   additionalProperties: {}
       parameters:
         - name: controller
+          description: Controller did string
           in: path
           required: true
           type: string
@@ -49753,8 +49845,98 @@ definitions:
         title: IsActive is the status of the DID Document
   sonrio.sonr.registry.MsgBuyAppAliasResponse:
     type: object
+    properties:
+      did:
+        type: string
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: string
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            type: string
+            format: byte
+            title: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: Type is the type of the registered name
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.registry.MsgBuyNameAliasResponse:
     type: object
+    properties:
+      did:
+        type: string
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: string
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            type: string
+            format: byte
+            title: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: Type is the type of the registered name
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.registry.MsgCreateWhoIsResponse:
     type: object
     properties:
@@ -49811,10 +49993,145 @@ definitions:
         type: string
   sonrio.sonr.registry.MsgTransferAppAliasResponse:
     type: object
+    properties:
+      success:
+        type: boolean
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: string
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            type: string
+            format: byte
+            title: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: Type is the type of the registered name
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.registry.MsgTransferNameAliasResponse:
     type: object
+    properties:
+      success:
+        type: boolean
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: string
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            type: string
+            format: byte
+            title: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: Type is the type of the registered name
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.registry.MsgUpdateWhoIsResponse:
     type: object
+    properties:
+      did:
+        type: string
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: string
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            type: string
+            format: byte
+            title: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: Type is the type of the registered name
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.registry.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -49899,8 +50216,94 @@ definitions:
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrio.sonr.registry.QueryWhoIsAliasResponse:
     type: object
+    properties:
+      WhoIs:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: string
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            type: string
+            format: byte
+            title: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: Type is the type of the registered name
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.registry.QueryWhoIsControllerResponse:
     type: object
+    properties:
+      WhoIs:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: string
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            type: string
+            format: byte
+            title: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: Type is the type of the registered name
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.registry.QueryWhoIsResponse:
     type: object
     properties:

@@ -115,6 +115,11 @@ tasks:
       - ignite chain serve --reset-once
     silent: true
 
+  release:
+    cmds:
+      - echo "Releasing all binaries..."
+      - goreleaser release --skip-publish --snapshot --rm-dist --parallelism 4
+
   swag:build:
     cmds:
       - echo "Building swagger api docs for highway"

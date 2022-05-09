@@ -25,6 +25,8 @@ builds:
     - wasm
     prebuilt:
       path: build/js
+    # UNCOMMENT THIS LINE TO DISABLE BUILD FOR WASM
+    # skip: true
     hooks:
       pre:
         - sh scripts/bind.sh -w
@@ -34,6 +36,8 @@ builds:
   # Motor Framework for Android
   - id: "motor-android"
     builder: prebuilt
+    # UNCOMMENT THIS LINE TO DISABLE BUILD FOR ANDROID
+    # skip: true
     goos:
     - android
     goarch:
@@ -49,6 +53,8 @@ builds:
   # Motor Framework for iOS
   - id: "motor-ios"
     builder: prebuilt
+    # UNCOMMENT THIS LINE TO DISABLE BUILD FOR IOS
+    # skip: true
     goos:
     - darwin
     goarch:
