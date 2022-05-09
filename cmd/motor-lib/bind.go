@@ -5,21 +5,18 @@ import (
 	//"github.com/sonr-io/core/node"
 	// motor "github.com/sonr-io/core/node/motor/v1"
 	// "google.golang.org/protobuf/proto"
-	"context"
 
-	"github.com/sonr-io/sonr/pkg/config"
-	"github.com/sonr-io/sonr/pkg/host"
 	_ "golang.org/x/mobile/bind"
 )
 
 // Start starts the host, node, and rpc service.
 func Start(reqBuf []byte) {
-	config := config.DefaultConfig(config.Role_MOTOR)
-	_, err := host.NewWasmHost(context.Background(), config)
-	if err != nil {
-		//golog.Fatal(err)
-		panic(err)
-	}
+	//config := config.DefaultConfig(config.Role_MOTOR)
+	// _, err := host.NewWasmHost(context.Background(), config)
+	// if err != nil {
+	// 	//golog.Fatal(err)
+	// 	panic(err)
+	// }
 	//	node.Start(reqBuf)
 	// Unmarshal request
 	// req := &motor.InitializeRequest{}

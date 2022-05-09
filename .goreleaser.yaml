@@ -13,6 +13,8 @@ after:
   - rm -rf ./SonrMotor.xcframework
   - rm -rf ./io.sonr.motor.aar
   - rm -rf ./sonr-motor.wasm
+  - rm -rf ./dist
+  - rm -rf ./build
 
 # -- Individual Builds --
 builds:
