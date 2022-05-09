@@ -5,7 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/sonr/cmd/motor-lib/config"
+	"github.com/sonr-io/sonr/pkg/config"
 	v1 "go.buf.build/grpc/go/sonr-io/core/host/transmit/v1"
 	motor "go.buf.build/grpc/go/sonr-io/core/motor/v1"
 
@@ -88,7 +88,7 @@ func SessionEvent(s *v1.Session) *motor.OnTransmitCompleteResponse {
 }
 
 // RouteStream is used to route the given stream to the given peer.
-func RouteSessionStream(s *v1.Session, stream network.Stream, n config.CallbackImpl) (*motor.OnTransmitCompleteResponse, error) {
+func RouteSessionStream(s *v1.Session, stream network.Stream, n config.MotorCallback) (*motor.OnTransmitCompleteResponse, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)

@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/kataras/golog"
-	"github.com/sonr-io/sonr/pkg/highway"
-	"github.com/sonr-io/sonr/pkg/highway/config"
+	"github.com/sonr-io/sonr/internal/highway"
+	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

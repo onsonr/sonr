@@ -13,7 +13,7 @@ import (
 	"github.com/sonr-io/sonr/internal/host"
 )
 
-func defaultConfig(host host.HostImpl) (config.Dendrite, error) {
+func defaultConfig(host host.SonrHost) (config.Dendrite, error) {
 	// Get Private Key
 	cfg := config.Dendrite{}
 	priv, err := host.PrivateKey()

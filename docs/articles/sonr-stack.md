@@ -1,7 +1,7 @@
 ---
 title: The Sonr Stack
 id: sonr-stack
-displayed_sidebar: buildSidebar
+displayed_sidebar: basicsSidebar
 ---
 #The Sonr Stack
 The Sonr Node has two different modes: Motor and Highway. The Motor node operates on every client implementation of Sonr.  The Highway node facilitates the flow of Motor Nodes interfacing on the Sonr network. The binary sizes by Operating System are below:

@@ -1,7 +1,7 @@
 ---
 title: Transmission
 id: transmission
-displayed_sidebar: buildSidebar
+displayed_sidebar: motorSidebar
 ---
 #Transmission
 ***

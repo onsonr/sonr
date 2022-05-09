@@ -49,6 +49,7 @@ const config = {
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
+          disableSwitch: true,
           colorMode: {
             defaultMode: 'dark',
             disableSwitch: false,
@@ -85,24 +86,52 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'sonr-stack',
-            position: 'left',
-            label: 'Build Apps',
-          },
-          {
-            type: 'doc',
             docId: 'run-nodes/setup-validator',
             position: 'left',
             label: 'Run Nodes',
           },
-          { to: '/blog', label: 'Guides', position: 'left' },
-          { href: '/highway', label: 'Highway API', position: 'right' },
-          { href: '/blockchain', label: 'Blockchain API', position: 'right' },
           {
-            href: 'https://github.com/sonr-io/sonr',
+            position: 'left',
+            label: 'Build Apps',
+            type: 'dropdown',
+            items: [
+              {
+                type: 'doc',
+                docId: 'highway-sdk/using-cli',
+                label: 'Highway SDK',
+              },
+              {
+                type: 'doc',
+                docId: 'motor-node/installation',
+                label: 'Motor Library',
+              },
+            ],
+          },
+          {
+            position: 'left',
+            label: 'Resources',
+            type: 'dropdown',
+            items: [
+              {
+                type: 'doc',
+                docId: 'reference/adr-001',
+                label: 'ADR-001',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-002',
+                label: 'ADR-002',
+              },
+            ],
+          },
+          {
             position: 'right',
-            className: 'header-github-logo',
-            'aria-label': 'GitHub repository',
+            label: 'API Reference',
+            type: 'dropdown',
+            items: [
+              { href: '/highway', label: '🛣 Highway API' },
+              { href: '/blockchain', label: '⛓ Blockchain API' },
+            ],
           },
         ],
       },
@@ -155,10 +184,6 @@ const config = {
           {
             title: 'More',
             items: [
-              {
-                label: 'Guides',
-                to: '/blog',
-              },
               {
                 label: 'GitHub',
                 href: 'https://github.com/sonr-io/sonr',

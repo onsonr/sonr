@@ -1,7 +1,7 @@
 ---
 title: Discovery
 id: discovery
-displayed_sidebar: buildSidebar
+displayed_sidebar: motorSidebar
 ---
 #Discovery
 ***

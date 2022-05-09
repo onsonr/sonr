@@ -8,7 +8,7 @@ Both of Sonr's Highwawy and Motor Nodes require 3 separate pairs of keys to inte
 
 ### Master Key
 
-This key is generated once a user claims a <<glossary:SName>>. This key provides a traditional seed phrase for recovery and creates a new DID Document for the User on the Sonr Blockchain. The `also_known_as` field will be pointing to the newly registered name.
+This key is generated once a user claims a SName. This key provides a traditional seed phrase for recovery and creates a new DID Document for the User on the Sonr Blockchain. The `also_known_as` field will be pointing to the newly registered name.
 
 ### Device Key
 

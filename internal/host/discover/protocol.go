@@ -5,9 +5,9 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/sonr/cmd/motor-lib/config"
 	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	host "github.com/sonr-io/sonr/internal/host"
+	"github.com/sonr-io/sonr/pkg/config"
 	device "github.com/sonr-io/sonr/pkg/fs"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
@@ -21,8 +21,8 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node     host.HostImpl
-	callback config.CallbackImpl
+	node     host.SonrHost
+	callback config.MotorCallback
 	ctx      context.Context
 	global   ct.Channel
 	local    *Local
@@ -30,7 +30,7 @@ type DiscoverProtocol struct {
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, host host.HostImpl, cb config.CallbackImpl, options ...Option) (*DiscoverProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, cb config.MotorCallback, options ...Option) (*DiscoverProtocol, error) {
 	// Create BeamStore
 	b, err := ct.NewChannel(ctx, host, &ct.ChannelDoc{
 		Label: "_discover",

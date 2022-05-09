@@ -1,7 +1,7 @@
 ---
 title: Registry
 id: registry
-displayed_sidebar: buildSidebar
+displayed_sidebar: highwaySidebar
 ---
 #Registry
 The Sonr registry module is used to store the records of user accounts and applications. Each record contains a DIDDocument and additional WebAuthn credential information.
