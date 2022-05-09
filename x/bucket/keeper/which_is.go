@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
+	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
 // SetWhichIs set a specific whichIs in the store from its did

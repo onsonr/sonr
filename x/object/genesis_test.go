@@ -3,10 +3,10 @@ package object_test
 import (
 	"testing"
 
-	keepertest "github.com/sonr-io/sonr/internal/blockchain/testutil/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/testutil/nullify"
-	"github.com/sonr-io/sonr/internal/blockchain/x/object"
-	"github.com/sonr-io/sonr/internal/blockchain/x/object/types"
+	keepertest "github.com/sonr-io/sonr/testutil/keeper"
+	"github.com/sonr-io/sonr/testutil/nullify"
+	"github.com/sonr-io/sonr/x/object"
+	"github.com/sonr-io/sonr/x/object/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -3,7 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	rt "github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 )
 

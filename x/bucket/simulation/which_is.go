@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
+	"github.com/sonr-io/sonr/x/bucket/keeper"
+	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
 // Prevent strconv unused error

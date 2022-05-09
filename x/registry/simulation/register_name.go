@@ -11,8 +11,8 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/duo-labs/webauthn/webauthn"
-	"github.com/sonr-io/sonr/internal/blockchain/x/registry/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
+	"github.com/sonr-io/sonr/x/registry/keeper"
+	"github.com/sonr-io/sonr/x/registry/types"
 )
 
 func SimulateMsgRegisterName(

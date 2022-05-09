@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/sonr-io/sonr/internal/blockchain/x/object/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/object/types"
+	"github.com/sonr-io/sonr/x/object/keeper"
+	"github.com/sonr-io/sonr/x/object/types"
 )
 
 func SimulateMsgUpdateObject(

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
+	"github.com/sonr-io/sonr/x/registry/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

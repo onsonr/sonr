@@ -7,8 +7,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonr-io/sonr/internal/blockchain/x/object/types"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/x/object/types"
 )
 
 func (k msgServer) UpdateObject(goCtx context.Context, msg *types.MsgUpdateObject) (*types.MsgUpdateObjectResponse, error) {

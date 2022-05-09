@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	testkeeper "github.com/sonr-io/sonr/internal/blockchain/testutil/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
+	testkeeper "github.com/sonr-io/sonr/testutil/keeper"
+	"github.com/sonr-io/sonr/x/channel/types"
 	"github.com/stretchr/testify/require"
 )
 

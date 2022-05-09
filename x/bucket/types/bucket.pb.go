@@ -6,7 +6,7 @@ package types
 import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
-	types "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
+	types "github.com/sonr-io/sonr/x/object/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

@@ -7,8 +7,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
 func (k msgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucket) (*types.MsgCreateBucketResponse, error) {

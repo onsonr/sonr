@@ -2,8 +2,8 @@ package channel
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/internal/blockchain/x/channel/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
+	"github.com/sonr-io/sonr/x/channel/keeper"
+	"github.com/sonr-io/sonr/x/channel/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

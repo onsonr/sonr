@@ -3,10 +3,10 @@ package channel_test
 import (
 	"testing"
 
-	keepertest "github.com/sonr-io/sonr/internal/blockchain/testutil/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/testutil/nullify"
-	"github.com/sonr-io/sonr/internal/blockchain/x/channel"
-	"github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
+	keepertest "github.com/sonr-io/sonr/testutil/keeper"
+	"github.com/sonr-io/sonr/testutil/nullify"
+	"github.com/sonr-io/sonr/x/channel"
+	"github.com/sonr-io/sonr/x/channel/types"
 	"github.com/stretchr/testify/require"
 )
 

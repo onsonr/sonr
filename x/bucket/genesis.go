@@ -2,8 +2,8 @@ package bucket
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
+	"github.com/sonr-io/sonr/x/bucket/keeper"
+	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

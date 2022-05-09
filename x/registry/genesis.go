@@ -2,8 +2,8 @@ package registry
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/internal/blockchain/x/registry/keeper"
-	"github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
+	"github.com/sonr-io/sonr/x/registry/keeper"
+	"github.com/sonr-io/sonr/x/registry/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis
