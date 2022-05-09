@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	t "github.com/sonr-io/sonr/types"
-	otv1 "github.com/sonr-io/sonr/x/object/types"
+	ot "github.com/sonr-io/sonr/x/object/types"
 )
 
 // @Summary Create Object
@@ -13,12 +13,12 @@ import (
 // @Description CreateObject creates a Object for a registered application
 // @Tags Object
 // @Produce json
-// @Success      200  {string}  message
+// @Success      200  {object}  ot.MsgCreateObjectResponse
 // @Failure      500  {string}  message
 // @Router /v1/object/create [post]
 func (s *HighwayServer) CreateObject(c *gin.Context) {
 	// Unmarshal the request body
-	var req otv1.MsgCreateObject
+	var req ot.MsgCreateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
@@ -47,12 +47,12 @@ func (s *HighwayServer) CreateObject(c *gin.Context) {
 // @Description UpdateObject updates and object reference for a registered application
 // @Tags Object
 // @Produce json
-// @Success      200  {string}  message
+// @Success      200  {object}  ot.MsgUpdateObjectResponse
 // @Failure      500  {string}  message
 // @Router /v1/object/update [post]
-func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
+func (s *HighwayServer) UpdateObject(c *gin.Context) {
 	// Unmarshal the request body
-	var req otv1.MsgUpdateObject
+	var req ot.MsgUpdateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
@@ -80,12 +80,12 @@ func (s *HighwayServer) UpdateObjectHTTP(c *gin.Context) {
 // @Description DeactivateObject disables a Object for a registered application
 // @Tags Object
 // @Produce json
-// @Success      200  {string}  message
+// @Success      200  {object}  ot.MsgDeactivateObjectResponse
 // @Failure      500  {string}  message
 // @Router /v1/object/deactivate [post]
 func (s *HighwayServer) DeactivateObject(c *gin.Context) {
 	// Unmarshal the request body
-	var req otv1.MsgDeactivateObject
+	var req ot.MsgDeactivateObject
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),

@@ -115,16 +115,19 @@ tasks:
   swag:build:
     summary: "Generate swagger files for highway and blockchain using ignite"
     cmds:
-      - swag i -g internal/highway/http/server.go --output docs/static
+      - swag i -d ./ -g internal/highway/http/server.go -o docs/static
       - mv docs/static/swagger.yaml docs/static/highway.yaml
       - rm -rf docs/static/swagger.json
-      - ignite generate openapi
-      - go mod tidy
 
 
 ## ------------------------------------------------------------
 ## Utility tasks
 ## ------------------------------------------------------------
+  default:
+    summary: "Displays tasks and descriptions"
+    cmds:
+      - task --list-all
+
   release:
     summary: "Create a local release for all binaries using goreleaser"
     cmds:

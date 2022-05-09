@@ -27,6 +27,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// swagger:model MsgCreateWhoIs
 type MsgCreateWhoIs struct {
 	Owner       string    `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	DidDocument []byte    `protobuf:"bytes,2,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`

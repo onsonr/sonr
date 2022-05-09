@@ -35,7 +35,7 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 
 	// Register Cosmos HTTP Routes - Object
 	s.Router.POST("/v1/object/create", s.CreateObject)
-	s.Router.POST("/v1/object/update", s.UpdateObjectHTTP)
+	s.Router.POST("/v1/object/update", s.UpdateObject)
 	s.Router.POST("/v1/object/deactivate", s.DeactivateObject)
 
 	// Register Cosmos HTTP Routes - Bucket

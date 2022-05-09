@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	t "github.com/sonr-io/sonr/types"
-	ctv1 "github.com/sonr-io/sonr/x/channel/types"
+	ct "github.com/sonr-io/sonr/x/channel/types"
 )
 
 // @Summary Create Channel
@@ -13,12 +13,12 @@ import (
 // @Description CreateChannel creates a specified channel for a registered application
 // @Tags Channel
 // @Produce json
-// @Success      200  {string}  message
+// @Success      200  {object}  ct.MsgCreateChannelResponse
 // @Failure      500  {string}  message
 // @Router /v1/channel/create [post]
 func (s *HighwayServer) CreateChannel(c *gin.Context) {
 	// Unmarshal the request body
-	var req ctv1.MsgCreateChannel
+	var req ct.MsgCreateChannel
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
@@ -53,12 +53,12 @@ func (s *HighwayServer) CreateChannel(c *gin.Context) {
 // @Description ListenChannel puts a Channel into a listening state registered application
 // @Tags Channel
 // @Produce json
-// @Success      200  {string}  message
+// @Success      200  {object}  ct.MsgUpdateChannelResponse
 // @Failure      500  {string}  message
 // @Router /v1/channel/update [post]
 func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 	// Unmarshal the request body
-	var req ctv1.MsgUpdateChannel
+	var req ct.MsgUpdateChannel
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
@@ -140,12 +140,12 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 // @Description DeactivateChannel disables a Channel for a registered application
 // @Tags Channel
 // @Produce json
-// @Success      200  {string}  message
+// @Success      200  {object}  ct.MsgDeactivateChannelResponse
 // @Failure      500  {string}  message
 // @Router /v1/channel/deactivate [post]
 func (s *HighwayServer) DeactivateChannel(c *gin.Context) {
 	// Unmarshal the request body
-	var req ctv1.MsgDeactivateChannel
+	var req ct.MsgDeactivateChannel
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),

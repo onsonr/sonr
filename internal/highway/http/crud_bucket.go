@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	t "github.com/sonr-io/sonr/types"
-	btt "github.com/sonr-io/sonr/x/bucket/types"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
 // @Summary Create Bucket
@@ -13,12 +13,12 @@ import (
 // @Description CreateBucket creates a new bucket for a registered application via HTTP.
 // @Tags Bucket
 // @Produce json
-// @Success      200  {string}  cid
+// @Success      200  {object}  bt.MsgCreateBucketResponse
 // @Failure      500  {string}  message
 // @Router /v1/bucket/create [post]
 func (s *HighwayServer) CreateBucket(c *gin.Context) {
 	// Unmarshal the request body
-	var req btt.MsgCreateBucket
+	var req bt.MsgCreateBucket
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
@@ -44,12 +44,12 @@ func (s *HighwayServer) CreateBucket(c *gin.Context) {
 // @Description UpdateBucket updates a bucket for a registered application via HTTP.
 // @Tags Bucket
 // @Produce json
-// @Success      200  {string}  cid
+// @Success      200  {object}  bt.MsgUpdateBucketResponse
 // @Failure      500  {string}  message
 // @Router /v1/bucket/update [post]
 func (s *HighwayServer) UpdateBucket(c *gin.Context) {
 	// Unmarshal the request body
-	var req btt.MsgUpdateBucket
+	var req bt.MsgUpdateBucket
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
@@ -76,13 +76,13 @@ func (s *HighwayServer) UpdateBucket(c *gin.Context) {
 // @Description DeactivateBucket disables a bucket for a registered application via HTTP.
 // @Tags Bucket
 // @Produce json
-// @Success      200  {string}  message
+// @Success      200  {object}  bt.MsgDeactivateBucketResponse
 // @Failure      400  {string}  message
 // @Failure      502  {string}  message
 // @Router /v1/bucket/deactivate [post]
 func (s *HighwayServer) DeactivateBucket(c *gin.Context) {
 	// Unmarshal the request body
-	var req btt.MsgDeactivateBucket
+	var req bt.MsgDeactivateBucket
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),

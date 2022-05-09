@@ -18,6 +18,7 @@ service Msg {
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
+// swagger:model MsgCreateWhoIs
 message MsgCreateWhoIs {
   string owner = 1;
   bytes did_document = 2;

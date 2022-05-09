@@ -9,6 +9,7 @@ import { Reader, Writer } from "protobufjs/minimal";
 
 export const protobufPackage = "sonrio.sonr.registry";
 
+/** swagger:model MsgCreateWhoIs */
 export interface MsgCreateWhoIs {
   owner: string;
   did_document: Uint8Array;
