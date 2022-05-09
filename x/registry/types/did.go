@@ -71,7 +71,7 @@ func GenerateApplicationDid(accountAddr, appToRegister string, cred *Credential)
 // GenerateNameDid generates a new did document
 func GenerateNameDid(accountAddr, nameToRegister string, cred *Credential) (*did.Document, error) {
 	// Generate a new DID String
-	baseDid, err := did.ParseDID(fmt.Sprintf("did:sonr:%s", strings.TrimPrefix(accountAddr, "sonr")))
+	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(accountAddr, "sonr")))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse base DID")
 	}
