@@ -11,20 +11,20 @@ import (
 	"github.com/ipld/go-ipld-prime/codec/dagjson"
 	"github.com/ipld/go-ipld-prime/datamodel"
 	basicnode "github.com/ipld/go-ipld-prime/node/basic"
-	ot "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
 	"github.com/sonr-io/sonr/internal/host"
+	ot "github.com/sonr-io/sonr/x/object/types"
 )
 
 // IPFSProtocol leverages the IPFSLite library to provide simple file operations.
 type IPFSProtocol struct {
 	ctx       context.Context
-	node      host.HostImpl
+	node      host.SonrHost
 	dataStore *MemoryStore
 	*ipfslite.Peer
 }
 
 // New creates a new IPFSProtocol instance with Host Implementation
-func New(ctx context.Context, host host.HostImpl) (*IPFSProtocol, error) {
+func New(ctx context.Context, host host.SonrHost) (*IPFSProtocol, error) {
 	// Create IPFS Peer
 	ds := NewMemoryStore()
 	ipfsLite, err := ipfslite.New(ctx, ds.Batching(), host.Host(), host.Routing(), nil)

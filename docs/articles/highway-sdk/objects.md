@@ -1,9 +1,9 @@
 ---
 title: Objects
 id: objects
-displayed_sidebar: buildSidebar
+displayed_sidebar: highwaySidebar
 ---
-
+#Objects
 The Sonr object module is used to store the records of verifiable objects for a specific application powered by the Sonr Network. Each record contains an `ObjectDoc` which describes the type definition of the associated object.
 
 ## Overview
@@ -45,7 +45,7 @@ The record type utilized in the **Object module** is the `WhatIs` type. This typ
 
 ## Status Codes
 
-```azcli
+```
 200 - SUCCESS
 300 - MULTIPLE CHOICE
 304 - NOT MODIFIED

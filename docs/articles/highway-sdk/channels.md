@@ -1,10 +1,10 @@
 ---
 title: Channels
 id: channels
-displayed_sidebar: buildSidebar
+displayed_sidebar: highwaySidebar
 ---
-
-The Sonr channel module is used to store the records of the active pubsub topics associated with Applications powered by the Sonr Network. Each record contains an `ChannelDoc` which describes the Topic configuration and status of the channel. Each channel is required to have a set RegisteredType to pass as a payload with ChannelMessages.
+#Channels
+The Sonr channel module is used to store the records of the active pubsub topics associated with Applications powered by the Sonr Network. Each record contains a `ChannelDoc` which describes the Topic configuration and status of the channel. Each channel is required to have a set RegisteredType to pass as a payload with ChannelMessages.
 
 ## Overview
 
@@ -40,7 +40,7 @@ While channels determine and facilitate the actions passed through an applicatio
 
 ## Status Codes
 
-```azcli
+```
 200 - SUCCESS
 300 - MULTIPLE CHOICE
 304 - NOT MODIFIED

@@ -1,10 +1,11 @@
 ---
 title: Access & Authentication
 id: access-authentication
-displayed_sidebar: buildSidebar
+displayed_sidebar: motorSidebar
 ---
+#Access and Authentication
+We think authentication should be simple, yet secure. The Sonr network uses Webauthn a key-based authentication system utilizing credential systems found on the user operating system to perform key exchanges with our Highway Nodes which then grants you access to the network. The following is a diagram outlining our authentication and registration flows.
 
-We think authentication should be simple, yet secure. The Sonr network uses s.
 
 
 

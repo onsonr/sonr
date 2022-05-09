@@ -12,24 +12,9 @@ info:
   title: Highway API
   version: v0.23.0
 paths:
-  /Object/update:
-    post:
-      description: UpdateObject updates and object reference for a registered application
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Update Object
   /blob/download/:cid:
     get:
-      description: DownloadBlob downloads a file from storage given its CID.
+      description: DownloadBlob downloads a buffer or file from IPFS given its CID.
       produces:
       - application/json
       responses:
@@ -44,9 +29,11 @@ paths:
           schema:
             type: string
       summary: Download File
+      tags:
+      - Blob
   /blob/remove/:cid:
-    get:
-      description: RemoveBlob deletes a file from storage given its CID.
+    post:
+      description: RemoveBlob deletes a buffer or file from IPFS given its CID.
       produces:
       - application/json
       responses:
@@ -59,9 +46,11 @@ paths:
           schema:
             type: string
       summary: Remove Blob
+      tags:
+      - Blob
   /blob/upload:
     post:
-      description: UploadBlob uploads a file to storage and returns its CID.
+      description: UploadBlob uploads a buffer or file to IPFS and returns its CID.
       produces:
       - application/json
       responses:
@@ -73,10 +62,30 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Upload File
-  /bucket/deactivate/:cid:
-    get:
-      description: DeactivateBucket disables a bucket for a registered application
+      summary: Upload Blob
+      tags:
+      - Blob
+  /bucket/create:
+    post:
+      description: CreateBucket creates a new bucket instance for a registered application on the blockchain.
+        via HTTP.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create Bucket
+      tags:
+      - Bucket
+  /bucket/deactivate:
+    post:
+      description: DeactivateBucket disables a bucket for a registered application on the blockchain.
         via HTTP.
       produces:
       - application/json
@@ -94,6 +103,26 @@ paths:
           schema:
             type: string
       summary: Deactivate Bucket
+      tags:
+      - Bucket
+  /bucket/update:
+    post:
+      description: UpdateBucket updates a bucket for a registered application via
+        HTTP.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update Bucket
+      tags:
+      - Bucket
   /channel/create:
     post:
       description: CreateChannel creates a specified channel for a registered application
@@ -109,6 +138,8 @@ paths:
           schema:
             type: string
       summary: Create Channel
+      tags:
+      - Channel
   /channel/deactivate:
     post:
       description: DeactivateChannel disables a Channel for a registered application
@@ -124,21 +155,8 @@ paths:
           schema:
             type: string
       summary: Deactivate Channel
-  /channel/deactivate/:cid:
-    post:
-      description: DeactivateObject disables a Object for a registered application
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Deactivate Object
+      tags:
+      - Channel
   /channel/listen:
     post:
       description: ListenChannel puts a Channel into a listening state registered
@@ -155,6 +173,8 @@ paths:
           schema:
             type: string
       summary: Listen Channel
+      tags:
+      - Channel
   /channel/update:
     post:
       description: ListenChannel puts a Channel into a listening state registered
@@ -171,9 +191,85 @@ paths:
           schema:
             type: string
       summary: Update Channel
+      tags:
+      - Channel
+  /name/access/finish/:username:
+    post:
+      description: FinishAccessName finishes the authentication process and returns
+        a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Finish Access Name
+      tags:
+      - Registry
+  /name/access/start/:username:
+    get:
+      description: StartAccessName accesses the user's existing credentials and returns
+        a PublicKeyCredentialRequestOptions. Beggining the authentication process.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Start Access Name
+      tags:
+      - Registry
+  /name/register/finish/:username:
+    post:
+      description: FinishRegisterName finishes the registration process and returns
+        a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential
+        to a Sonr Account.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Finish Register Name
+      tags:
+      - Registry
+  /name/register/start/:username:
+    get:
+      description: StartRegisterName starts the registration process and returns a
+        PublicKeyCredentialCreationOptions. Initiating the registration process for
+        a Sonr Account.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Start Register Name
+      tags:
+      - Registry
   /name/update:
     post:
-      description: DeactivateChannel disables a Channel for a registered application
+      description: UpdateName updates a name on the Sonr blockchain registry.
       produces:
       - application/json
       responses:
@@ -186,4 +282,57 @@ paths:
           schema:
             type: string
       summary: Update Name
+      tags:
+      - Registry
+  /object/create:
+    post:
+      description: CreateObject creates a Object for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create Object
+      tags:
+      - Object
+  /object/deactivate:
+    post:
+      description: DeactivateObject disables a Object for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Deactivate Object
+      tags:
+      - Object
+  /object/update:
+    post:
+      description: UpdateObject updates and object reference for a registered application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update Object
+      tags:
+      - Object
 swagger: "2.0"
