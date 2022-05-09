@@ -3,7 +3,7 @@ title: Token
 id: token
 displayed_sidebar: basicsSidebar
 ---
-
+#Token
 Online P2P exchanges between Motor Nodes have zero tolls. Outlined are some methods for the Sonr Utility Token.
 
 *   **Swapping** - Highway nodes that facilitate swaps from Sonr Token for ETH, BTC, etc. earn Token.
@@ -12,7 +12,7 @@ Online P2P exchanges between Motor Nodes have zero tolls. Outlined are some meth
 
 *   **Offline Exchanges** - Motor Nodes pay a Toll when interacting with offline peers, or storing data in long term.
 
-## Distribution
+### Distribution
 
 This token allocation is a 🚧 WIP, based on a Token Supply of 500,000,000.
 
