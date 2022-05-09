@@ -1,9 +1,8 @@
 syntax = "proto3";
 package sonrio.sonr.channel;
-import "channel/how_is.proto";
-import "channel/channel.proto";
-import "object/object.proto";
-import "registry/who_is.proto";
+import "channel/v1/how_is.proto";
+import "channel/v1/channel.proto";
+import "object/v1/object.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/sonr-io/sonr/x/channel/types";

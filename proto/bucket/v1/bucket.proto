@@ -1,6 +1,6 @@
 syntax = "proto3";
 package sonrio.sonr.bucket;
-import "object/object.proto";
+import "object/v1/object.proto";
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
 // Bucket is a collection of objects.

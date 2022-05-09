@@ -1,15 +1,14 @@
 syntax = "proto3";
-package sonrio.sonr.channel;
+package sonrio.sonr.object;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "channel/params.proto";
-import "registry/who_is.proto";
-import "channel/how_is.proto";
+import "object/v1/params.proto";
+import "object/v1/what_is.proto";
 // this line is used by starport scaffolding # 1
 
-option go_package = "github.com/sonr-io/sonr/x/channel/types";
+option go_package = "github.com/sonr-io/sonr/x/object/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -17,21 +16,21 @@ service Query {
 	//
 	// Parameters queries the parameters of the module.
 	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/sonrio/sonr/channel/params";
+		option (google.api.http).get = "/sonrio/sonr/object/params";
 	}
 
-	// HowIs
+	// WhatIs
 	//
-	// Queries a HowIs by did.
-	rpc HowIs(QueryHowIsRequest) returns (QueryHowIsResponse) {
-		option (google.api.http).get = "/sonr-io/sonr/channel/how_is/{did}";
+	// Queries a WhatIs by DID.
+	rpc WhatIs(QueryWhatIsRequest) returns (QueryWhatIsResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/object/what_is/{did}";
 	}
 
-	// HowIsAll
+	// WhatIsAll
 	//
-	// Queries a list of HowIs items.
-	rpc HowIsAll(QueryAllHowIsRequest) returns (QueryAllHowIsResponse) {
-		option (google.api.http).get = "/sonr-io/sonr/channel/how_is";
+	// Queries a list of WhatIs items.
+	rpc WhatIsAll(QueryAllWhatIsRequest) returns (QueryAllWhatIsResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/object/what_is";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -46,20 +45,20 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryHowIsRequest {
+message QueryWhatIsRequest {
 	string did = 1;
 }
 
-message QueryHowIsResponse {
-	HowIs how_is = 1 [(gogoproto.nullable) = false];
+message QueryWhatIsResponse {
+	WhatIs what_is = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryAllHowIsRequest {
+message QueryAllWhatIsRequest {
 	cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-message QueryAllHowIsResponse {
-	repeated HowIs how_is = 1 [(gogoproto.nullable) = false];
+message QueryAllWhatIsResponse {
+	repeated WhatIs what_is = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

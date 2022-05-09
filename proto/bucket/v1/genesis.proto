@@ -2,8 +2,8 @@ syntax = "proto3";
 package sonrio.sonr.bucket;
 
 import "gogoproto/gogo.proto";
-import "bucket/params.proto";
-import "bucket/which_is.proto";
+import "bucket/v1/params.proto";
+import "bucket/v1/which_is.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";

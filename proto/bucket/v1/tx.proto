@@ -1,8 +1,7 @@
 syntax = "proto3";
 package sonrio.sonr.bucket;
-import "bucket/bucket.proto";
-import "bucket/which_is.proto";
-import "registry/who_is.proto";
+import "bucket/v1/bucket.proto";
+import "bucket/v1/which_is.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
