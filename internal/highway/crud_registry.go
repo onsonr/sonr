@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	rtv1 "github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
+	rtv1 "github.com/sonr-io/sonr/x/registry/types"
 	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 

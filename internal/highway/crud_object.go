@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	otv1 "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
+	otv1 "github.com/sonr-io/sonr/x/object/types"
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
 

@@ -1,3 +1,5 @@
+[![Release Workflow](https://github.com/sonr-io/sonr/actions/workflows/release.yml/badge.svg?branch=dev)](https://github.com/sonr-io/sonr/actions/workflows/release.yml)
+
 ## Description
 
 Sonr is a platform for developers to build decentralized applications which put user privacy first and foremost. It weds decentralized storage technologies such as [IPFS](https://ipfs.io) and [lipp2p](https://libp2p.io) with an intuitive, firebase-like developer experience.
