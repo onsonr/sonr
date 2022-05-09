@@ -7,7 +7,6 @@ require (
 	github.com/cosmos/ibc-go v1.2.2
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
-	github.com/fxamacker/cbor v1.5.1
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
@@ -57,6 +56,7 @@ require (
 	github.com/tendermint/tendermint v0.34.14
 	github.com/tendermint/tm-db v0.6.4
 	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7
+	go.buf.build/grpc/go/sonr-io/highway v1.3.1
 	go.buf.build/grpc/go/sonr-io/motor v1.3.1
 	golang.org/x/mobile v0.0.0-20220414153400-ce6a79cf6a13
 	google.golang.org/genproto v0.0.0-20220317150908-0efb43f6373e
@@ -144,6 +144,7 @@ require (
 	github.com/godbus/dbus/v5 v5.0.4 // indirect
 	github.com/gogo/gateway v1.1.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.1.0 // indirect
+	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
@@ -158,6 +159,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
@@ -413,5 +415,4 @@ replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/ipfs/go-ipfs-blockstore => github.com/ipfs/go-ipfs-blockstore v1.1.2
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
-	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

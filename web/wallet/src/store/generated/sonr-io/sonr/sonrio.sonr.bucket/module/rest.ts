@@ -382,7 +382,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title bucket/bucket.proto
+ * @title bucket/v1/bucket.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {

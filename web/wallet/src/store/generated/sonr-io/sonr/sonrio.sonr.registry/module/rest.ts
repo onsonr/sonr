@@ -13,9 +13,15 @@ export interface ProtobufAny {
   "@type"?: string;
 }
 
-export type RegistryMsgBuyAppAliasResponse = object;
+export interface RegistryMsgBuyAppAliasResponse {
+  did?: string;
+  who_is?: RegistryWhoIs;
+}
 
-export type RegistryMsgBuyNameAliasResponse = object;
+export interface RegistryMsgBuyNameAliasResponse {
+  did?: string;
+  who_is?: RegistryWhoIs;
+}
 
 export interface RegistryMsgCreateWhoIsResponse {
   did?: string;
@@ -27,11 +33,20 @@ export interface RegistryMsgDeactivateWhoIsResponse {
   did?: string;
 }
 
-export type RegistryMsgTransferAppAliasResponse = object;
+export interface RegistryMsgTransferAppAliasResponse {
+  success?: boolean;
+  who_is?: RegistryWhoIs;
+}
 
-export type RegistryMsgTransferNameAliasResponse = object;
+export interface RegistryMsgTransferNameAliasResponse {
+  success?: boolean;
+  who_is?: RegistryWhoIs;
+}
 
-export type RegistryMsgUpdateWhoIsResponse = object;
+export interface RegistryMsgUpdateWhoIsResponse {
+  did?: string;
+  who_is?: RegistryWhoIs;
+}
 
 /**
  * Params defines the parameters for the module.
@@ -61,9 +76,13 @@ export interface RegistryQueryParamsResponse {
   params?: RegistryParams;
 }
 
-export type RegistryQueryWhoIsAliasResponse = object;
+export interface RegistryQueryWhoIsAliasResponse {
+  WhoIs?: RegistryWhoIs;
+}
 
-export type RegistryQueryWhoIsControllerResponse = object;
+export interface RegistryQueryWhoIsControllerResponse {
+  WhoIs?: RegistryWhoIs;
+}
 
 export interface RegistryQueryWhoIsResponse {
   WhoIs?: RegistryWhoIs;
@@ -352,7 +371,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title registry/genesis.proto
+ * @title registry/v1/genesis.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {

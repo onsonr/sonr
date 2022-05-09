@@ -415,7 +415,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title channel/channel.proto
+ * @title channel/v1/channel.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
