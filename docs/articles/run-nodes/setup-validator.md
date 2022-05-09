@@ -3,8 +3,8 @@ title: Setup Validator
 id: setup-validator
 displayed_sidebar: runSidebar
 ---
-
-# Adding a Validator Node
+#Setup Validator
+## Adding a Validator Node
 
 After creating your first node (which will be the proposer) you will need to hit the genesis endpoint of the node.
 

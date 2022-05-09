@@ -3,7 +3,7 @@ title: Buckets
 id: buckets
 displayed_sidebar: highwaySidebar
 ---
-
+#Buckets
 Similar to Amazon S3 or DigitalOcean Spaces, developers can leverage our decentralized storage module for uploading either application specific assets or user specific assets. While we encourage developers to use our SDK for best results, this storage is S3-compliant.
 
 The Sonr bucket module is used to record the defined collections of Objects utilized by an Application on the Sonr Network. A bucket can be either public access, private access, or restricted access based on Developer configuration. A bucket is used to help organize similar objects for a given application.
@@ -48,7 +48,7 @@ The record type utilized in the **Bucket module** is the `WhichIs` type. This ty
 
 
 
-```azcli
+```
 200 - SUCCESS
 300 - MULTIPLE CHOICE
 304 - NOT MODIFIED
