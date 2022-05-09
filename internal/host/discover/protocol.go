@@ -5,10 +5,10 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
 	host "github.com/sonr-io/sonr/internal/host"
 	"github.com/sonr-io/sonr/pkg/config"
 	device "github.com/sonr-io/sonr/pkg/fs"
+	ct "github.com/sonr-io/sonr/x/channel/types"
 	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
 )
 

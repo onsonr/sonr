@@ -3,7 +3,7 @@ title: Registry
 id: registry
 displayed_sidebar: highwaySidebar
 ---
-
+#Registry
 The Sonr registry module is used to store the records of user accounts and applications. Each record contains a DIDDocument and additional WebAuthn credential information.
 
 ## Overview
@@ -52,9 +52,9 @@ The record type utilized in the **Registry module** is the `WhoIs` type. This ty
 
 ## Record Type: `WhoIs`
 
-``
 
-```none
+
+```
 - ('string') Name           : Name is the registered name of the User or Application
 - ('string') DID            : DID is the DID of the account
 - ('bytes') Document       : Document is the DID Document of the registered name and account encoded as JSON
@@ -74,7 +74,7 @@ The record type utilized in the **Registry module** is the `WhoIs` type. This ty
 
 
 
-```azcli
+```
 200 - SUCCESS
 300 - MULTIPLE CHOICE
 304 - NOT MODIFIED

@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/kataras/golog"
-	bt "github.com/sonr-io/sonr/internal/blockchain/x/bucket/types"
-	ct "github.com/sonr-io/sonr/internal/blockchain/x/channel/types"
-	ot "github.com/sonr-io/sonr/internal/blockchain/x/object/types"
-	rt "github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
 	"github.com/sonr-io/sonr/pkg/config"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
+	ct "github.com/sonr-io/sonr/x/channel/types"
+	ot "github.com/sonr-io/sonr/x/object/types"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 )
 
