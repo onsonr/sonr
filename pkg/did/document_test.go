@@ -380,18 +380,18 @@ func TestRoundTripMarshalling(t *testing.T) {
 
 func TestVerificationRelationship_UnmarshalJSON(t *testing.T) {
 	t.Run("ok - unmarshal single did", func(t *testing.T) {
-		input := `"did:sonr:123#key-1"`
+		input := `"did:snr:123#key-1"`
 		actual := VerificationRelationship{}
 		err := json.Unmarshal([]byte(input), &actual)
 		assert.NoError(t, err)
-		assert.Equal(t, "did:sonr:123#key-1", actual.reference.String())
+		assert.Equal(t, "did:snr:123#key-1", actual.reference.String())
 	})
 	t.Run("ok - unmarshal object", func(t *testing.T) {
-		input := `{"id": "did:sonr:123#key-1"}`
+		input := `{"id": "did:snr:123#key-1"}`
 		actual := VerificationRelationship{}
 		err := json.Unmarshal([]byte(input), &actual)
 		assert.NoError(t, err)
-		assert.Equal(t, "did:sonr:123#key-1", actual.ID.String())
+		assert.Equal(t, "did:snr:123#key-1", actual.ID.String())
 	})
 }
 
