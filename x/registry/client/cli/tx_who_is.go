@@ -4,23 +4,25 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+
 	"github.com/sonr-io/sonr/x/registry/types"
 	"github.com/spf13/cobra"
 )
 
 func CmdCreateWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-who-is",
+		Use:   "create-who-is [didJson]",
 		Short: "Create a new WhoIs",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
+			whoIsType := types.WhoIsType(1)
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgCreateWhoIs(clientCtx.GetFromAddress().String())
+			msg := types.NewMsgCreateWhoIs(clientCtx.GetFromAddress().String(), []byte(args[0]), whoIsType)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -29,13 +31,12 @@ func CmdCreateWhoIs() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 	return cmd
 }
 
 func CmdUpdateWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-who-is [id]",
+		Use:   "update-who-is [did] [didJson]",
 		Short: "Update a WhoIs",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -44,7 +45,7 @@ func CmdUpdateWhoIs() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateWhoIs(clientCtx.GetFromAddress().String(), args[0])
+			msg := types.NewMsgUpdateWhoIs(clientCtx.GetFromAddress().String(), args[0], []byte(args[1]))
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -53,14 +54,13 @@ func CmdUpdateWhoIs() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 	return cmd
 }
 
 func CmdDeactivateWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-who-is [id]",
-		Short: "Delete a WhoIs by id",
+		Use:   "delete-who-is [did]",
+		Short: "Delete a WhoIs by Did",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -77,6 +77,5 @@ func CmdDeactivateWhoIs() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 	return cmd
 }

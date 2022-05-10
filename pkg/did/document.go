@@ -37,7 +37,7 @@ type Document struct {
 // AddController adds a DID as a controller
 func (d *Document) AddController(id DID) {
 	if d.Controller == nil {
-		d.Controller = []DID{}
+		d.Controller = make([]DID, 0)
 	}
 	d.Controller = append(d.Controller, id)
 }
@@ -555,7 +555,7 @@ func (w *Document) WebAuthnIcon() string {
 // Credentials owned by the user
 func (w *Document) WebAuthnCredentials() []webauthn.Credential {
 	var credentials []webauthn.Credential
-	for _, vm := range w.VerificationMethod {
+	for _, vm := range w.Authentication {
 		if vm.Credential != nil {
 			credentials = append(credentials, webauthn.Credential{
 				ID:              vm.Credential.ID,

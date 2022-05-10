@@ -1,9 +1,9 @@
-package cmd
+package highwaycmd
 
 import (
 	"context"
 
-	"github.com/sonr-io/sonr/cmd/highway-cli/cmd/bucket"
+	"github.com/sonr-io/sonr/cmd/highway-cli/highwaycmd/bucket"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +22,8 @@ func bootstrapRootCommand(ctx context.Context) (rootCmd *cobra.Command) {
 	}
 
 	rootCmd.AddCommand(bootstrapServeCommand(ctx))
+	rootCmd.AddCommand(bootstrapRegisterCommand(ctx))
+	rootCmd.AddCommand(bootstrapLoginCommand(ctx))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx))
-
 	return
 }

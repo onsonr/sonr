@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sonr-io/sonr/cmd/highway-cli/cmd"
+	"github.com/sonr-io/sonr/cmd/highway-cli/highwaycmd"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -17,6 +17,7 @@ const (
 // load environment variables
 func loadEnv() error {
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("../../")
 
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
@@ -26,6 +27,6 @@ func loadEnv() error {
 }
 
 func main() {
-	cobra.CheckErr(loadEnv())
-	cobra.CheckErr(cmd.Execute())
+	//cobra.CheckErr(loadEnv())
+	cobra.CheckErr(highwaycmd.Execute())
 }
