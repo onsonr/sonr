@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 
@@ -52,6 +53,10 @@ type Config struct {
 	WebAuthNRPOrigin      string
 	WebAuthNRPIcon        string
 	WebAuthNDebug         bool
+
+	// JWT
+	Secret        string
+	SigningMethod jwt.SigningMethod
 
 	// Cosmos SDK
 	CosmosAccountName        string
