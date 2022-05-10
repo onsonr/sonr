@@ -125,7 +125,7 @@ func DefaultConfig(r Role) *Config {
 		Libp2pTTL:                dscl.TTL(time.Minute * 2),
 		WebAuthNRPDisplayName:    "Sonr",
 		WebAuthNRPID:             "localhost",
-		WebAuthNRPOrigin:         "localhost:8080",
+		WebAuthNRPOrigin:         "http://localhost:8989",
 		WebAuthNRPIcon:           "",
 		WebAuthNDebug:            true,
 		CosmosAccountName:        "alice",
