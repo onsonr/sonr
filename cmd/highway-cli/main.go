@@ -27,6 +27,6 @@ func loadEnv() error {
 }
 
 func main() {
-	cobra.CheckErr(loadEnv())
+	//cobra.CheckErr(loadEnv())
 	cobra.CheckErr(highwaycmd.Execute())
 }

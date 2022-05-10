@@ -9,8 +9,8 @@ import (
 
 
 // EncryptJWE creates a JWE object
-func (d *Document) EncryptJWE(buf []byte) (string, error) {
-	vm := d.VerificationMethod.FindByID(d.ID)
+func (d *Document) EncryptJWE(id DID, buf []byte) (string, error) {
+	vm := d.VerificationMethod.FindByID(id)
 	if vm == nil {
 		return "", errors.New("Document VerificationMethod not found")
 	}
@@ -43,8 +43,8 @@ func (d *Document) EncryptJWE(buf []byte) (string, error) {
 }
 
 // DecryptJWE verifies the JWE and returns the buffer
-func (d *Document) DecryptJWE(serial string) ([]byte, error) {
-	vm := d.VerificationMethod.FindByID(d.ID)
+func (d *Document) DecryptJWE(id DID, serial string) ([]byte, error) {
+	vm := d.VerificationMethod.FindByID(id)
 	if vm == nil {
 		return nil, errors.New("Document VerificationMethod not found")
 	}

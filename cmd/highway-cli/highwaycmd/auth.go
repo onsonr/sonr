@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/sonr-io/sonr/internal/blockchain/x/registry/types"
+	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -77,30 +77,36 @@ func run(name, url string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Minute))
 	defer cancel()
 
-	sessChan := make(chan types.Session)
+	sessChan := make(chan *webauthn.Credential)
 	go startEphemeralAuthServer(sessChan, cancel)
 
 	err := openBrowser(url)
+	if err != nil {
+		fmt.Println("Failed to open browser:", err)
+		return
+	}
 	cobra.CheckErr(err)
 
 	select {
 	case <-ctx.Done():
 		fmt.Println("failed.")
-	case session := <-sessChan:
+	case c := <-sessChan:
 		fmt.Println("done.")
 		fmt.Print("Saving session... ")
-		saveSession(session)
+		fmt.Println(c.ID)
 		fmt.Println("done.")
 	}
 }
 
-func startEphemeralAuthServer(sessChan chan<- types.Session, cancel context.CancelFunc) {
+func startEphemeralAuthServer(sessChan chan<- *webauthn.Credential, cancel context.CancelFunc) {
 	http.Handle("/", http.FileServer(http.Dir("./cmd/highway-cli/static")))
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
 		cobra.CheckErr(err)
-
-		var session types.Session
+		if err != nil {
+			fmt.Println("Failed to read body:", err)
+		}
+		var session *webauthn.Credential
 		cobra.CheckErr(json.Unmarshal(body, &session))
 		sessChan <- session
 	})
@@ -124,8 +130,4 @@ func openBrowser(url string) error {
 		err = fmt.Errorf("unsupported platform")
 	}
 	return err
-}
-
-func saveSession(session types.Session) error {
-	return nil
 }

@@ -37,8 +37,10 @@ func DidUtilCmd() *cobra.Command {
 
 			if answers.Goal == "Create a new DID" {
 				err = surveyNewDid()
+				cobra.CheckErr(err)
 			} else {
 				err = surveyExistingDid()
+				cobra.CheckErr(err)
 			}
 
 			return nil

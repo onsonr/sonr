@@ -37,7 +37,7 @@ type Document struct {
 // AddController adds a DID as a controller
 func (d *Document) AddController(id DID) {
 	if d.Controller == nil {
-		d.Controller = []DID{}
+		d.Controller = make([]DID, 0)
 	}
 	d.Controller = append(d.Controller, id)
 }

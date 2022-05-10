@@ -87,10 +87,8 @@ func surveyNewDid() error {
 		doc := &did.Document{
 			Context: []ssi.URI{*ctx},
 			ID:      *didRoot,
-			Controller: []did.DID{
-				*didController,
-			},
 		}
+		doc.AddController(*didController)
 		doc.AddAuthenticationMethod(vm)
 		buf, err := doc.MarshalJSON()
 		if err != nil {

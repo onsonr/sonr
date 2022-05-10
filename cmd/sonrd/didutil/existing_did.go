@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/sonr/x/object/types"
 )
 
 func surveyExistingDid() error {
@@ -89,9 +90,44 @@ func surveyExistingDid() error {
 		// Generate JWE
 		genIpld := false
 		prompt := &survey.Confirm{
-			Message: "Would you like to create Object from IPLD schema?",
+			Message: "Would you like to generate Object from IPLD schema?",
 		}
 		survey.AskOne(prompt, &genIpld)
+		if genIpld {
+			// Generate IPLD
+			obj := types.ObjectDoc{
+				Label: "test",
+				Fields: []*types.TypeField{
+					{
+						Name: "test",
+						Kind: types.TypeKind_TypeKind_String,
+					},
+					{
+						Name: "test2",
+						Kind: types.TypeKind_TypeKind_Float,
+					},
+					{
+						Name: "test3",
+						Kind: types.TypeKind_TypeKind_Bool,
+					},
+				},
+			}
+
+			// Marshal Object
+			buf, err := obj.Marshal()
+			if err != nil {
+				return err
+			}
+
+			// Encrypt JWE with the DIDDoc
+			str, err := doc.EncryptJWE(doc.Controller[0], buf)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("Object Serial: %s\n", str)
+		} else {
+			fmt.Println("Pasting objects is WIP...")
+		}
 	case "Decrypt JWE":
 		text := ""
 		prompt := &survey.Multiline{
@@ -99,7 +135,7 @@ func surveyExistingDid() error {
 		}
 		survey.AskOne(prompt, &text)
 		// Decrypt JWE
-		buf, err := doc.DecryptJWE(text)
+		buf, err := doc.DecryptJWE(doc.Controller[0], text)
 		if err != nil {
 			return err
 		}
