@@ -12,7 +12,9 @@ require (
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
+	github.com/go-errors/errors v1.0.1
 	github.com/gogo/protobuf v1.3.3
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
 	github.com/google/uuid v1.3.0
