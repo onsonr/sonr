@@ -890,9 +890,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "who_is": {
+                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
                     "$ref": "#/definitions/types.WhoIs"
                 }
             }
@@ -900,16 +902,16 @@ const docTemplate = `{
         "types.MsgBuyNameAlias": {
             "type": "object",
             "properties": {
-                "amount": {
-                    "type": "integer"
-                },
                 "creator": {
+                    "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
                 },
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "name": {
+                    "description": "Name is the name of the alias to be bought. i.e. {alias}.snr",
                     "type": "string"
                 }
             }
@@ -918,9 +920,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "who_is": {
+                    "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
                     "$ref": "#/definitions/types.WhoIs"
                 }
             }
@@ -1040,16 +1044,19 @@ const docTemplate = `{
         "types.MsgCreateWhoIs": {
             "type": "object",
             "properties": {
+                "creator": {
+                    "description": "Creator is the wallet address of the creator of the transaction.",
+                    "type": "string"
+                },
                 "did_document": {
+                    "description": "DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
                 },
-                "owner": {
-                    "type": "string"
-                },
                 "whois_type": {
+                    "description": "WhoIsType is the type of the WhoIs to be created. Possible values are: \"USER\", \"APPLICATION\".",
                     "type": "integer"
                 }
             }
@@ -1058,9 +1065,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "did": {
+                    "description": "Did is the top level DID of the created WhoIs.",
                     "type": "string"
                 },
                 "who_is": {
+                    "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
                     "$ref": "#/definitions/types.WhoIs"
                 }
             }
@@ -1140,10 +1149,12 @@ const docTemplate = `{
         "types.MsgDeactivateWhoIs": {
             "type": "object",
             "properties": {
-                "did": {
+                "creator": {
+                    "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
                 },
-                "owner": {
+                "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 }
             }
@@ -1152,9 +1163,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "success": {
+                    "description": "Success is true if the WhoIs was successfully deactivated.",
                     "type": "boolean"
                 }
             }
@@ -1163,15 +1176,23 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "alias": {
+                    "description": "Alias is the name of the app alias to be transferred to the recipient.  i.e. example.snr/{name}",
                     "type": "string"
                 },
+                "amount": {
+                    "description": "Amount is the amount of the alias to be transferred.",
+                    "type": "integer"
+                },
                 "creator": {
+                    "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
                 },
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "recipient": {
+                    "description": "Recipient is the wallet address of the recipient of the alias.",
                     "type": "string"
                 }
             }
@@ -1180,9 +1201,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "success": {
+                    "description": "Success is true if the Alias was successfully transferred.",
                     "type": "boolean"
                 },
                 "who_is": {
+                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
                     "$ref": "#/definitions/types.WhoIs"
                 }
             }
@@ -1191,15 +1214,23 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "alias": {
+                    "description": "Alias is the name of the user domain alias to be transferred to the recipient. i.e. {alias}.snr",
                     "type": "string"
                 },
+                "amount": {
+                    "description": "Amount is the amount of the alias to be transferred.",
+                    "type": "integer"
+                },
                 "creator": {
+                    "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
                 },
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "recipient": {
+                    "description": "Recipient is the wallet address of the recipient of the alias.",
                     "type": "string"
                 }
             }
@@ -1208,9 +1239,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "success": {
+                    "description": "Success is true if the Alias was successfully transferred.",
                     "type": "boolean"
                 },
                 "who_is": {
+                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
                     "$ref": "#/definitions/types.WhoIs"
                 }
             }
@@ -1345,17 +1378,20 @@ const docTemplate = `{
         "types.MsgUpdateWhoIs": {
             "type": "object",
             "properties": {
+                "creator": {
+                    "description": "Creator is the wallet address of the creator of the transaction.",
+                    "type": "string"
+                },
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "did_document": {
+                    "description": "DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).",
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "owner": {
-                    "type": "string"
                 }
             }
         },
@@ -1363,9 +1399,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "did": {
+                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "who_is": {
+                    "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
                     "$ref": "#/definitions/types.WhoIs"
                 }
             }

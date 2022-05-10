@@ -79,7 +79,7 @@ func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeactivateWh
 	}
 
 	// Checks if the msg owner is the same as the current owner
-	if msg.Owner != val.Owner {
+	if msg.Creator != val.Owner {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 

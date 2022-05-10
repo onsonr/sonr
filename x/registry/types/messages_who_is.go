@@ -94,7 +94,7 @@ var _ sdk.Msg = &MsgDeactivateWhoIs{}
 func NewMsgDeactivateWhoIs(owner string, id string) *MsgDeactivateWhoIs {
 	return &MsgDeactivateWhoIs{
 		Did:   id,
-		Owner: owner,
+		Creator: owner,
 	}
 }
 func (msg *MsgDeactivateWhoIs) Route() string {
@@ -106,7 +106,7 @@ func (msg *MsgDeactivateWhoIs) Type() string {
 }
 
 func (msg *MsgDeactivateWhoIs) GetSigners() []sdk.AccAddress {
-	owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
 	}
@@ -119,7 +119,7 @@ func (msg *MsgDeactivateWhoIs) GetSignBytes() []byte {
 }
 
 func (msg *MsgDeactivateWhoIs) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Owner)
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}

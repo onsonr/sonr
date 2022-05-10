@@ -67,16 +67,16 @@ func TestWhoIsMsgServerDelete(t *testing.T) {
 	}{
 		{
 			desc:    "Completed",
-			request: &types.MsgDeactivateWhoIs{Owner: owner},
+			request: &types.MsgDeactivateWhoIs{Creator: owner},
 		},
 		{
 			desc:    "Unauthorized",
-			request: &types.MsgDeactivateWhoIs{Owner: "B"},
+			request: &types.MsgDeactivateWhoIs{Creator: "B"},
 			err:     sdkerrors.ErrUnauthorized,
 		},
 		{
 			desc:    "KeyNotFound",
-			request: &types.MsgDeactivateWhoIs{Owner: owner, Did: "10"},
+			request: &types.MsgDeactivateWhoIs{Creator: owner, Did: "10"},
 			err:     sdkerrors.ErrKeyNotFound,
 		},
 	} {

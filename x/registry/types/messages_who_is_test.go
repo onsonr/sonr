@@ -79,13 +79,13 @@ func TestMsgDeactivateWhoIs_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgDeactivateWhoIs{
-				Owner: "invalid_address",
+				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDeactivateWhoIs{
-				Owner: sample.AccAddress(),
+				Creator: sample.AccAddress(),
 			},
 		},
 	}

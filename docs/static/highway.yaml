@@ -59,27 +59,34 @@ definitions:
   types.MsgBuyAppAliasResponse:
     properties:
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       who_is:
         $ref: '#/definitions/types.WhoIs'
+        description: WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
     type: object
   types.MsgBuyNameAlias:
     properties:
-      amount:
-        type: integer
       creator:
+        description: Creator is the wallet address of the creator of the transaction.
         type: string
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       name:
+        description: Name is the name of the alias to be bought. i.e. {alias}.snr
         type: string
     type: object
   types.MsgBuyNameAliasResponse:
     properties:
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       who_is:
         $ref: '#/definitions/types.WhoIs'
+        description: WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
     type: object
   types.MsgCreateBucket:
     properties:
@@ -159,21 +166,29 @@ definitions:
     type: object
   types.MsgCreateWhoIs:
     properties:
+      creator:
+        description: Creator is the wallet address of the creator of the transaction.
+        type: string
       did_document:
+        description: DidDocument is the DID document to be stored, in JSON format
+          (see https://w3c-ccg.github.io/did-spec/#did-json-ld).
         items:
           type: integer
         type: array
-      owner:
-        type: string
       whois_type:
+        description: 'WhoIsType is the type of the WhoIs to be created. Possible values
+          are: "USER", "APPLICATION".'
         type: integer
     type: object
   types.MsgCreateWhoIsResponse:
     properties:
       did:
+        description: Did is the top level DID of the created WhoIs.
         type: string
       who_is:
         $ref: '#/definitions/types.WhoIs'
+        description: WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
     type: object
   types.MsgDeactivateBucket:
     properties:
@@ -225,53 +240,79 @@ definitions:
     type: object
   types.MsgDeactivateWhoIs:
     properties:
-      did:
+      creator:
+        description: Creator is the wallet address of the creator of the transaction.
         type: string
-      owner:
+      did:
+        description: Did is the top level DID of the WhoIs.
         type: string
     type: object
   types.MsgDeactivateWhoIsResponse:
     properties:
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       success:
+        description: Success is true if the WhoIs was successfully deactivated.
         type: boolean
     type: object
   types.MsgTransferAppAlias:
     properties:
       alias:
+        description: Alias is the name of the app alias to be transferred to the recipient.  i.e.
+          example.snr/{name}
         type: string
+      amount:
+        description: Amount is the amount of the alias to be transferred.
+        type: integer
       creator:
+        description: Creator is the wallet address of the creator of the transaction.
         type: string
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       recipient:
+        description: Recipient is the wallet address of the recipient of the alias.
         type: string
     type: object
   types.MsgTransferAppAliasResponse:
     properties:
       success:
+        description: Success is true if the Alias was successfully transferred.
         type: boolean
       who_is:
         $ref: '#/definitions/types.WhoIs'
+        description: WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
     type: object
   types.MsgTransferNameAlias:
     properties:
       alias:
+        description: Alias is the name of the user domain alias to be transferred
+          to the recipient. i.e. {alias}.snr
         type: string
+      amount:
+        description: Amount is the amount of the alias to be transferred.
+        type: integer
       creator:
+        description: Creator is the wallet address of the creator of the transaction.
         type: string
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       recipient:
+        description: Recipient is the wallet address of the recipient of the alias.
         type: string
     type: object
   types.MsgTransferNameAliasResponse:
     properties:
       success:
+        description: Success is true if the Alias was successfully transferred.
         type: boolean
       who_is:
         $ref: '#/definitions/types.WhoIs'
+        description: WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
     type: object
   types.MsgUpdateBucket:
     properties:
@@ -363,21 +404,28 @@ definitions:
     type: object
   types.MsgUpdateWhoIs:
     properties:
+      creator:
+        description: Creator is the wallet address of the creator of the transaction.
+        type: string
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       did_document:
+        description: DidDocument is the DID document to be stored, in JSON format
+          (see https://w3c-ccg.github.io/did-spec/#did-json-ld).
         items:
           type: integer
         type: array
-      owner:
-        type: string
     type: object
   types.MsgUpdateWhoIsResponse:
     properties:
       did:
+        description: Did is the top level DID of the WhoIs.
         type: string
       who_is:
         $ref: '#/definitions/types.WhoIs'
+        description: WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
     type: object
   types.ObjectDoc:
     properties:

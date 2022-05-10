@@ -10,13 +10,13 @@ message WhoIs {
   // Owner is the top level DID of the User or Application derived from the multisignature wallet.
   string owner = 2;
 
-  // DIDDocument is the bytes representation of DIDDocument within the WhoIs
+  // DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.
   bytes did_document = 3;
 
   // Credentials are the biometric info of the registered name and account encoded with public key
   repeated string controllers = 4;
 
-  // Type is the type of the registered name
+  // Type is the kind of the entity. Possible values are: "user", "application"
   WhoIsType type = 5;
 
   // Timestamp is the time of the last update of the DID Document
@@ -25,6 +25,8 @@ message WhoIs {
   // IsActive is the status of the DID Document
   bool is_active = 7;
 }
+
+
 enum WhoIsType {
   // User is the type of the registered name
   USER = 0;
