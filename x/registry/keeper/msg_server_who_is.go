@@ -23,7 +23,7 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	}
 
 	var whoIs = types.WhoIs{
-		Owner:       msg.Owner,
+		Owner:       msg.Creator,
 		DidDocument: msg.DidDocument,
 		Type:        msg.WhoisType,
 		Alias:       doc.AlsoKnownAs,
@@ -56,7 +56,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	}
 
 	// Checks if the msg owner is the same as the current owner
-	if msg.Owner != val.Owner {
+	if msg.Creator != val.Owner {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 

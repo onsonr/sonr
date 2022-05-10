@@ -3,24 +3,35 @@ package did
 import (
 	"errors"
 
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	jose "gopkg.in/square/go-jose.v2"
 )
 
 // EncryptJWE creates a JWE object
 func (d *Document) EncryptJWE(id DID, buf []byte) (string, error) {
+	var err error
 	vm := d.Authentication.FindByID(id)
 	if vm == nil {
 		return "", errors.New("Document VerificationMethod not found")
 	}
 
-	publicKey, err := vm.PublicKey()
-	if err != nil {
-		return "", err
+	// check type of key
+	var key interface{}
+	switch vm.Type {
+	case ssi.JsonWebKey2020:
+		key, err = vm.JWK()
+		if err != nil {
+			return "", err
+		}
+	default:
+		key, err = vm.PublicKey()
+		if err != nil {
+			return "", err
+		}
 	}
-
 	// Instantiate an encrypter using RSA-OAEP with AES128-GCM. An error would
 	// indicate that the selected algorithm(s) are not currently supported.
-	encrypter, err := jose.NewEncrypter(jose.A128GCM, jose.Recipient{Algorithm: jose.DIRECT, Key: publicKey}, nil)
+	encrypter, err := jose.NewEncrypter(jose.A128GCM, jose.Recipient{Algorithm: jose.DIRECT, Key: key}, nil)
 	if err != nil {
 		return "", err
 	}

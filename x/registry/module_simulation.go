@@ -63,11 +63,11 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		PortId: types.PortID,
 		WhoIsList: []types.WhoIs{
 			{
-				DidDocument: []byte("did:sonr:1"),
+				DidDocument: []byte("did:snr:1"),
 				Owner:       sample.AccAddress(),
 			},
 			{
-				DidDocument: []byte("did:sonr:2"),
+				DidDocument: []byte("did:snr:2"),
 				Owner:       sample.AccAddress(),
 			},
 		},

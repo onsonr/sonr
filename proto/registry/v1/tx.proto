@@ -20,7 +20,7 @@ service Msg {
 
 // swagger:model MsgCreateWhoIs
 message MsgCreateWhoIs {
-  string owner = 1;
+  string creator = 1;
   bytes did_document = 2;
   WhoIsType whois_type = 3;
 }
@@ -31,7 +31,7 @@ message MsgCreateWhoIsResponse {
 }
 
 message MsgUpdateWhoIs {
-  string owner = 1;
+  string creator = 1;
   string did = 2;
   bytes did_document = 3;
 }
@@ -54,8 +54,7 @@ message MsgDeactivateWhoIsResponse {
 message MsgBuyNameAlias {
   string creator = 1;
   string did = 2;
-  int32 amount = 3;
-  string name = 4;
+  string name = 3;
 }
 
 message MsgBuyNameAliasResponse {
@@ -66,8 +65,7 @@ message MsgBuyNameAliasResponse {
 message MsgBuyAppAlias {
   string creator = 1;
   string did = 2;
-  int32 amount = 3;
-  string name = 4;
+  string name = 3;
 }
 
 message MsgBuyAppAliasResponse {
@@ -80,6 +78,7 @@ message MsgTransferNameAlias {
   string did = 2;
   string alias = 3;
   string recipient = 4;
+  int32 amount = 5;
 }
 
 message MsgTransferNameAliasResponse {
@@ -92,6 +91,7 @@ message MsgTransferAppAlias {
   string did = 2;
   string alias = 3;
   string recipient = 4;
+  int32 amount = 5;
 }
 
 message MsgTransferAppAliasResponse {

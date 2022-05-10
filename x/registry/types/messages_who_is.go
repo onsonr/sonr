@@ -15,7 +15,7 @@ var _ sdk.Msg = &MsgCreateWhoIs{}
 
 func NewMsgCreateWhoIs(owner string, didDoc []byte, t WhoIsType) *MsgCreateWhoIs {
 	return &MsgCreateWhoIs{
-		Owner:       owner,
+		Creator:       owner,
 		DidDocument: didDoc,
 		WhoisType:   t,
 	}
@@ -30,7 +30,7 @@ func (msg *MsgCreateWhoIs) Type() string {
 }
 
 func (msg *MsgCreateWhoIs) GetSigners() []sdk.AccAddress {
-	owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
 	}
@@ -43,7 +43,7 @@ func (msg *MsgCreateWhoIs) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateWhoIs) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Owner)
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
@@ -55,7 +55,7 @@ var _ sdk.Msg = &MsgUpdateWhoIs{}
 func NewMsgUpdateWhoIs(owner string, id string, doc []byte) *MsgUpdateWhoIs {
 	return &MsgUpdateWhoIs{
 		Did:   id,
-		Owner: owner,
+		Creator: owner,
 		DidDocument: doc,
 	}
 }
@@ -69,7 +69,7 @@ func (msg *MsgUpdateWhoIs) Type() string {
 }
 
 func (msg *MsgUpdateWhoIs) GetSigners() []sdk.AccAddress {
-	owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
 	}
@@ -82,7 +82,7 @@ func (msg *MsgUpdateWhoIs) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdateWhoIs) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Owner)
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}

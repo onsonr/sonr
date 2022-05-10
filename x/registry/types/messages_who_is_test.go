@@ -17,13 +17,13 @@ func TestMsgCreateWhoIs_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreateWhoIs{
-				Owner: "invalid_address",
+				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateWhoIs{
-				Owner: sample.AccAddress(),
+				Creator: sample.AccAddress(),
 			},
 		},
 	}
@@ -48,13 +48,13 @@ func TestMsgUpdateWhoIs_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdateWhoIs{
-				Owner: "invalid_address",
+				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateWhoIs{
-				Owner: sample.AccAddress(),
+				Creator: sample.AccAddress(),
 			},
 		},
 	}
