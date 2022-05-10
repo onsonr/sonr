@@ -13,9 +13,11 @@ const (
 
 var _ sdk.Msg = &MsgCreateWhoIs{}
 
-func NewMsgCreateWhoIs(owner string) *MsgCreateWhoIs {
+func NewMsgCreateWhoIs(owner string, didDoc []byte, t WhoIsType) *MsgCreateWhoIs {
 	return &MsgCreateWhoIs{
-		Owner: owner,
+		Owner:       owner,
+		DidDocument: didDoc,
+		WhoisType:   t,
 	}
 }
 
@@ -50,10 +52,11 @@ func (msg *MsgCreateWhoIs) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgUpdateWhoIs{}
 
-func NewMsgUpdateWhoIs(owner string, id string) *MsgUpdateWhoIs {
+func NewMsgUpdateWhoIs(owner string, id string, doc []byte) *MsgUpdateWhoIs {
 	return &MsgUpdateWhoIs{
 		Did:   id,
 		Owner: owner,
+		DidDocument: doc,
 	}
 }
 

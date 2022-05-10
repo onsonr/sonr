@@ -1,0 +1,13 @@
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "authentication": ["did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f"],
+  "id": "did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f",
+  "controller": ["did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f#test"],
+  "verificationMethod": [
+    {
+      "controller": "did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f#test",
+      "id": "did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f",
+      "type": "EcdsaSecp256k1VerificationKey2019"
+    }
+  ]
+}

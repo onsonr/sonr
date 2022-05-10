@@ -23,6 +23,6 @@ func bootstrapRootCommand(ctx context.Context) (rootCmd *cobra.Command) {
 
 	rootCmd.AddCommand(bootstrapServeCommand(ctx))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx))
-
+	rootCmd.AddCommand(DidUtilCmd())
 	return
 }

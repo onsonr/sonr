@@ -13,27 +13,11 @@ But beyond sign-in, your driver’s license could directly contact every other d
 Soon you won’t even have to imagine it!🚀
 
 
-# Overview
-
-Sonr is a data delivery protocol that integrates Identifiers, Discovery, and Transmission for a seamless Web3 experience.
-
-With Sonr, you can easily share any type of data across the world with the ease of use of Airdrop. When you install the Sonr wallet or Sonr enabled DApp, the device becomes a peer on the Network.  It can talk to other peers, and call functions on them - kind of like [Serverless Functions](https://en.wikipedia.org/wiki/Serverless_computing).
-
-![Superior Node Detail](https://archbee-image-uploads.s3.amazonaws.com/YigsjtwFFq_eX7dhChoeN/_M4vOm4zOLsOD4C-otN1d_info.png)
-
-Prior to interacting with the network, you register your verified `.snr` subdomain. From your SName, *(i.e. jony.snr) *you become accessible by other Peers on the Sonr Network. This is the central point of access from where you can receive files, money, or any arbitrary data - it's also where you can showcase your content with DApps.
-
-:::hint
-**For Example,** let's say there is an Instagram type DApp on Sonr called *'DGram'. *To access the user's page you would access `example.snr/dgram`* - *where everything is **resolved automatically**.
-
-&#x20;
-
-See DApps for more details.
-:::
+# Quick Start
 
 
 
-***
+
 
 # Community
 

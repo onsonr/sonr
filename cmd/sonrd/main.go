@@ -18,7 +18,7 @@ func main() {
 		app.ModuleBasics,
 		app.New,
 		cmd.WithEnvPrefix("SONR_CHAIN"),
-		cmd.AddSubCmd(AddGenesisAccountCmd(app.DefaultNodeHome)),
+		cmd.AddSubCmd(AddGenesisAccountCmd(app.DefaultNodeHome), DidUtilCmd()),
 		// this line is used by starport scaffolding # root/arguments
 
 	)
