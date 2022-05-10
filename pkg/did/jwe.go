@@ -6,11 +6,9 @@ import (
 	jose "gopkg.in/square/go-jose.v2"
 )
 
-
-
 // EncryptJWE creates a JWE object
 func (d *Document) EncryptJWE(id DID, buf []byte) (string, error) {
-	vm := d.VerificationMethod.FindByID(id)
+	vm := d.Authentication.FindByID(id)
 	if vm == nil {
 		return "", errors.New("Document VerificationMethod not found")
 	}
@@ -44,7 +42,7 @@ func (d *Document) EncryptJWE(id DID, buf []byte) (string, error) {
 
 // DecryptJWE verifies the JWE and returns the buffer
 func (d *Document) DecryptJWE(id DID, serial string) ([]byte, error) {
-	vm := d.VerificationMethod.FindByID(id)
+	vm := d.Authentication.FindByID(id)
 	if vm == nil {
 		return nil, errors.New("Document VerificationMethod not found")
 	}

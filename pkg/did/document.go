@@ -555,7 +555,7 @@ func (w *Document) WebAuthnIcon() string {
 // Credentials owned by the user
 func (w *Document) WebAuthnCredentials() []webauthn.Credential {
 	var credentials []webauthn.Credential
-	for _, vm := range w.VerificationMethod {
+	for _, vm := range w.Authentication {
 		if vm.Credential != nil {
 			credentials = append(credentials, webauthn.Credential{
 				ID:              vm.Credential.ID,

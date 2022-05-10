@@ -1,13 +1,1 @@
-{
-  "@context": "https://www.w3.org/ns/did/v1",
-  "authentication": ["did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f"],
-  "id": "did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f",
-  "controller": ["did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f#test"],
-  "verificationMethod": [
-    {
-      "controller": "did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f#test",
-      "id": "did:snr:16htkxahex8etp20wt7d0gj6lgvszsd690749f",
-      "type": "EcdsaSecp256k1VerificationKey2019"
-    }
-  ]
-}
+{"@context":"https://www.w3.org/ns/did/v1","authentication":["did:snr:1nfs2kw3vmwujckl375q2exq9gcw4dkuh9j0kk3"],"controller":"did:snr:1nfs2kw3vmwujckl375q2exq9gcw4dkuh9j0kk3#test","id":"did:snr:1nfs2kw3vmwujckl375q2exq9gcw4dkuh9j0kk3","verificationMethod":[{"controller":"did:snr:1nfs2kw3vmwujckl375q2exq9gcw4dkuh9j0kk3#test","id":"did:snr:1nfs2kw3vmwujckl375q2exq9gcw4dkuh9j0kk3","type":"EcdsaSecp256k1VerificationKey2019"}]}
