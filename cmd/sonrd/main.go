@@ -6,6 +6,7 @@ import (
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	"github.com/sonr-io/sonr/app"
+	"github.com/sonr-io/sonr/cmd/sonrd/didutil"
 	cmd "github.com/tendermint/spm/cosmoscmd"
 )
 
@@ -18,7 +19,7 @@ func main() {
 		app.ModuleBasics,
 		app.New,
 		cmd.WithEnvPrefix("SONR_CHAIN"),
-		cmd.AddSubCmd(AddGenesisAccountCmd(app.DefaultNodeHome), DidUtilCmd()),
+		cmd.AddSubCmd(AddGenesisAccountCmd(app.DefaultNodeHome), didutil.DidUtilCmd()),
 		// this line is used by starport scaffolding # root/arguments
 
 	)
