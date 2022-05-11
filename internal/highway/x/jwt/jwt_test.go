@@ -27,6 +27,16 @@ func Test_JWT(t *testing.T) {
 	pub := priv.PubKey()
 	vm, _ := did.NewVerificationMethod(*id, ssi.ECDSASECP256K1VerificationKey2019, *didController, pub)
 
+	thing := func() *did.Document {
+		doc := &did.Document{
+			ID:      *id,
+			Context: []ssi.URI{*ctx},
+		}
+		doc.AddController(*didController)
+		doc.AddAuthenticationMethod(vm)
+		return doc
+	}
+
 	t.Run("JWT creation should contain options", func(t *testing.T) {
 		jwt := DefaultNew()
 		assert.NotNil(t, jwt)
@@ -34,20 +44,40 @@ func Test_JWT(t *testing.T) {
 	})
 
 	t.Run("Should generate JWT from did uri", func(t *testing.T) {
-		doc := &did.Document{
-			ID:      *id,
-			Context: []ssi.URI{*ctx},
-		}
-		doc.AddController(*didController)
-		doc.AddAuthenticationMethod(vm)
+		doc := thing()
 		jwt := DefaultNew()
 		token, err := jwt.Generate(doc)
-
 		if err != nil {
 			t.Errorf("Error while generating token %s", err)
 		}
 
-		assert.NotNil(t, token)
+		tokenObj, error := jwt.Parse(token)
+
+		if error != nil {
+			t.Errorf("Error while generating token %s", err)
+		}
+
+		assert.NotNil(t, tokenObj)
 		assert.Greater(t, len(token), 0)
 	})
+
+	t.Run("Should create token from string and contain did as iss", func(t *testing.T) {
+		doc := thing()
+		jwt := DefaultNew()
+		token, err := jwt.Generate(doc)
+		if err != nil {
+			t.Errorf("Error while generating token %s", err)
+		}
+
+		tokenObj, error := jwt.Parse(token)
+
+		if error != nil {
+			t.Errorf("Error while generating token %s", err)
+		}
+
+		// add did check when figure out claims obj ???
+		// weird map that isnt a map in the struct
+		assert.NotNil(t, tokenObj)
+	})
+
 }
