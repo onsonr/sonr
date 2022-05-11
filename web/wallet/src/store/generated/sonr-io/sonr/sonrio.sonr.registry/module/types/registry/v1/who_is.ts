@@ -43,11 +43,11 @@ export interface WhoIs {
   alias: string[];
   /** Owner is the top level DID of the User or Application derived from the multisignature wallet. */
   owner: string;
-  /** DIDDocument is the bytes representation of DIDDocument within the WhoIs */
+  /** DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON. */
   did_document: Uint8Array;
   /** Credentials are the biometric info of the registered name and account encoded with public key */
   controllers: string[];
-  /** Type is the type of the registered name */
+  /** Type is the kind of the entity. Possible values are: "user", "application" */
   type: WhoIsType;
   /** Timestamp is the time of the last update of the DID Document */
   timestamp: number;

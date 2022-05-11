@@ -51,10 +51,10 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 	s.Router.GET("/v1/auth/access/start/:username", s.StartAccessName)
 	s.Router.POST("/v1/auth/access/finish/:username", s.FinishAccessName)
 
-	// Register IPFS HTTP Routes
-	s.Router.POST("/v1/ipfs/upload", s.UploadBlob)
-	s.Router.GET("/v1/ipfs/download/:cid", s.DownloadBlob)
-	s.Router.POST("/v1/ipfs/remove/:cid", s.RemoveBlob)
+	// Register Blob HTTP Routes
+	s.Router.POST("/v1/blob/upload", s.UploadBlob)
+	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
+	s.Router.POST("/v1/blob/remove/:cid", s.RemoveBlob)
 
 	// WebAuthn Endpoints
 	s.Router.POST("/v1/registry/create/whois", s.CreateWhoIs)

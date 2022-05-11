@@ -31,7 +31,7 @@ tasks:
   chain:serve:
     summary: Serve the blockchain using ignite
     cmds:
-      - ignite chain serve --reset-once
+      - ignite chain serve
     silent: true
 
 ## ------------------------------------------------------------

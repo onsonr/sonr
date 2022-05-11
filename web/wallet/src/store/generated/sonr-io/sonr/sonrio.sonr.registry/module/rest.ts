@@ -14,37 +14,58 @@ export interface ProtobufAny {
 }
 
 export interface RegistryMsgBuyAppAliasResponse {
+  /** Did is the top level DID of the WhoIs. */
   did?: string;
+
+  /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
 export interface RegistryMsgBuyNameAliasResponse {
+  /** Did is the top level DID of the WhoIs. */
   did?: string;
+
+  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
 export interface RegistryMsgCreateWhoIsResponse {
+  /** Did is the top level DID of the created WhoIs. */
   did?: string;
+
+  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
 export interface RegistryMsgDeactivateWhoIsResponse {
+  /** Success is true if the WhoIs was successfully deactivated. */
   success?: boolean;
+
+  /** Did is the top level DID of the WhoIs. */
   did?: string;
 }
 
 export interface RegistryMsgTransferAppAliasResponse {
+  /** Success is true if the Alias was successfully transferred. */
   success?: boolean;
+
+  /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
 export interface RegistryMsgTransferNameAliasResponse {
+  /** Success is true if the Alias was successfully transferred. */
   success?: boolean;
+
+  /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
 export interface RegistryMsgUpdateWhoIsResponse {
+  /** Did is the top level DID of the WhoIs. */
   did?: string;
+
+  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
@@ -94,7 +115,10 @@ export interface RegistryWhoIs {
   /** Owner is the top level DID of the User or Application derived from the multisignature wallet. */
   owner?: string;
 
-  /** @format byte */
+  /**
+   * DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.
+   * @format byte
+   */
   did_document?: string;
   controllers?: string[];
   type?: RegistryWhoIsType;

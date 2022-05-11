@@ -28685,9 +28685,9 @@ paths:
                     did_document:
                       type: string
                       format: byte
-                      title: >-
+                      description: >-
                         DIDDocument is the bytes representation of DIDDocument
-                        within the WhoIs
+                        within the WhoIs. Initially marshalled as JSON.
                     controllers:
                       type: array
                       items:
@@ -28696,7 +28696,9 @@ paths:
                         Credentials are the biometric info of the registered
                         name and account encoded with public key
                     type:
-                      title: Type is the type of the registered name
+                      title: >-
+                        Type is the kind of the entity. Possible values are:
+                        "user", "application"
                       type: string
                       enum:
                         - USER
@@ -28843,9 +28845,9 @@ paths:
                   did_document:
                     type: string
                     format: byte
-                    title: >-
+                    description: >-
                       DIDDocument is the bytes representation of DIDDocument
-                      within the WhoIs
+                      within the WhoIs. Initially marshalled as JSON.
                   controllers:
                     type: array
                     items:
@@ -28854,7 +28856,9 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
-                    title: Type is the type of the registered name
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -28922,9 +28926,9 @@ paths:
                   did_document:
                     type: string
                     format: byte
-                    title: >-
+                    description: >-
                       DIDDocument is the bytes representation of DIDDocument
-                      within the WhoIs
+                      within the WhoIs. Initially marshalled as JSON.
                   controllers:
                     type: array
                     items:
@@ -28933,7 +28937,9 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
-                    title: Type is the type of the registered name
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -29002,9 +29008,9 @@ paths:
                   did_document:
                     type: string
                     format: byte
-                    title: >-
+                    description: >-
                       DIDDocument is the bytes representation of DIDDocument
-                      within the WhoIs
+                      within the WhoIs. Initially marshalled as JSON.
                   controllers:
                     type: array
                     items:
@@ -29013,7 +29019,9 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
-                    title: Type is the type of the registered name
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -49848,6 +49856,7 @@ definitions:
     properties:
       did:
         type: string
+        description: Did is the top level DID of the WhoIs.
       who_is:
         type: object
         properties:
@@ -49866,9 +49875,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -49877,7 +49886,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -49890,11 +49901,15 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgBuyNameAliasResponse:
     type: object
     properties:
       did:
         type: string
+        description: Did is the top level DID of the WhoIs.
       who_is:
         type: object
         properties:
@@ -49913,9 +49928,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -49924,7 +49939,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -49937,11 +49954,15 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgCreateWhoIsResponse:
     type: object
     properties:
       did:
         type: string
+        description: Did is the top level DID of the created WhoIs.
       who_is:
         type: object
         properties:
@@ -49960,9 +49981,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -49971,7 +49992,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -49984,18 +50007,24 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgDeactivateWhoIsResponse:
     type: object
     properties:
       success:
         type: boolean
+        description: Success is true if the WhoIs was successfully deactivated.
       did:
         type: string
+        description: Did is the top level DID of the WhoIs.
   sonrio.sonr.registry.MsgTransferAppAliasResponse:
     type: object
     properties:
       success:
         type: boolean
+        description: Success is true if the Alias was successfully transferred.
       who_is:
         type: object
         properties:
@@ -50014,9 +50043,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -50025,7 +50054,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -50038,11 +50069,15 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgTransferNameAliasResponse:
     type: object
     properties:
       success:
         type: boolean
+        description: Success is true if the Alias was successfully transferred.
       who_is:
         type: object
         properties:
@@ -50061,9 +50096,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -50072,7 +50107,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -50085,11 +50122,15 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgUpdateWhoIsResponse:
     type: object
     properties:
       did:
         type: string
+        description: Did is the top level DID of the WhoIs.
       who_is:
         type: object
         properties:
@@ -50108,9 +50149,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -50119,7 +50160,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -50132,6 +50175,9 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -50158,9 +50204,9 @@ definitions:
             did_document:
               type: string
               format: byte
-              title: >-
+              description: >-
                 DIDDocument is the bytes representation of DIDDocument within
-                the WhoIs
+                the WhoIs. Initially marshalled as JSON.
             controllers:
               type: array
               items:
@@ -50169,7 +50215,9 @@ definitions:
                 Credentials are the biometric info of the registered name and
                 account encoded with public key
             type:
-              title: Type is the type of the registered name
+              title: >-
+                Type is the kind of the entity. Possible values are: "user",
+                "application"
               type: string
               enum:
                 - USER
@@ -50235,9 +50283,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -50246,7 +50294,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -50280,9 +50330,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -50291,7 +50341,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -50325,9 +50377,9 @@ definitions:
           did_document:
             type: string
             format: byte
-            title: >-
+            description: >-
               DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs
+              WhoIs. Initially marshalled as JSON.
           controllers:
             type: array
             items:
@@ -50336,7 +50388,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: Type is the type of the registered name
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -50367,9 +50421,9 @@ definitions:
       did_document:
         type: string
         format: byte
-        title: >-
+        description: >-
           DIDDocument is the bytes representation of DIDDocument within the
-          WhoIs
+          WhoIs. Initially marshalled as JSON.
       controllers:
         type: array
         items:
@@ -50378,7 +50432,9 @@ definitions:
           Credentials are the biometric info of the registered name and account
           encoded with public key
       type:
-        title: Type is the type of the registered name
+        title: >-
+          Type is the kind of the entity. Possible values are: "user",
+          "application"
         type: string
         enum:
           - USER

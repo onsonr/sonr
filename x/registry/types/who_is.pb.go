@@ -54,11 +54,11 @@ type WhoIs struct {
 	Alias []string `protobuf:"bytes,1,rep,name=alias,proto3" json:"alias,omitempty"`
 	// Owner is the top level DID of the User or Application derived from the multisignature wallet.
 	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
-	// DIDDocument is the bytes representation of DIDDocument within the WhoIs
+	// DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.
 	DidDocument []byte `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 	// Credentials are the biometric info of the registered name and account encoded with public key
 	Controllers []string `protobuf:"bytes,4,rep,name=controllers,proto3" json:"controllers,omitempty"`
-	// Type is the type of the registered name
+	// Type is the kind of the entity. Possible values are: "user", "application"
 	Type WhoIsType `protobuf:"varint,5,opt,name=type,proto3,enum=sonrio.sonr.registry.WhoIsType" json:"type,omitempty"`
 	// Timestamp is the time of the last update of the DID Document
 	Timestamp int64 `protobuf:"varint,6,opt,name=timestamp,proto3" json:"timestamp,omitempty"`

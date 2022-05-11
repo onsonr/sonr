@@ -19,7 +19,7 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	doc := did.Document{}
 	err := doc.UnmarshalJSON(msg.DidDocument)
 	if err != nil {
-		return nil, err
+		return nil, types.ErrDidDocumentInvalid
 	}
 
 	var whoIs = types.WhoIs{
@@ -33,7 +33,6 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	}
 
 	k.SetWhoIs(ctx, whoIs)
-
 	return &types.MsgCreateWhoIsResponse{
 		WhoIs: &whoIs,
 	}, nil
