@@ -12,7 +12,7 @@ import (
 )
 
 func TestDID_UnmarshalJSON(t *testing.T) {
-	jsonTestSting := `"did:sonr:123"`
+	jsonTestSting := `"did:snr:123"`
 
 	id := DID{}
 	err := json.Unmarshal([]byte(jsonTestSting), &id)
@@ -20,14 +20,14 @@ func TestDID_UnmarshalJSON(t *testing.T) {
 		t.Errorf("unexpected error: %s", err)
 		return
 	}
-	if id.DID.Method != "sonr" {
-		t.Errorf("expected sonr got %s", id.Method)
+	if id.DID.Method != "snr" {
+		t.Errorf("expected snr got %s", id.Method)
 		return
 	}
 }
 
 func TestDID_MarshalJSON(t *testing.T) {
-	wrappedDid, err := odid.Parse("did:sonr:123")
+	wrappedDid, err := odid.Parse("did:snr:123")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 		return
@@ -42,23 +42,23 @@ func TestDID_MarshalJSON(t *testing.T) {
 		t.Errorf("unexpected error: %s", err)
 		return
 	}
-	if string(result) != `"did:sonr:123"` {
-		t.Errorf("expected \"did:sonr:123\" got: %s", result)
+	if string(result) != `"did:snr:123"` {
+		t.Errorf("expected \"did:snr:123\" got: %s", result)
 	}
 
 }
 
 func TestParseDID(t *testing.T) {
 	t.Run("parse a DID", func(t *testing.T) {
-		id, err := ParseDID("did:sonr:123")
+		id, err := ParseDID("did:snr:123")
 
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
 			return
 		}
 
-		if id.String() != "did:sonr:123" {
-			t.Errorf("expected parsed did to be 'did:sonr:123', got: %s", id.String())
+		if id.String() != "did:snr:123" {
+			t.Errorf("expected parsed did to be 'did:snr:123', got: %s", id.String())
 		}
 	})
 	t.Run("error - invalid DID", func(t *testing.T) {
@@ -68,35 +68,38 @@ func TestParseDID(t *testing.T) {
 
 	})
 	t.Run("error - DID URL", func(t *testing.T) {
-		id, err := ParseDID("did:sonr:123/path?query#fragment")
-		assert.Nil(t, id)
-		assert.EqualError(t, err, "invalid DID: DID can not have path, fragment or query params")
+		id, err := ParseDID("did:snr:123/path?query#fragment")
+
+		assert.Nil(t, err)
+		// After parsing the did, the parser should ignore everyhing after '/' as it is non valid did formation.
+		assert.Len(t, id.PathSegments, 1)
+		assert.Equal(t, id.IDStrings[0], "123")
 	})
 }
 
 func TestMustParseDID(t *testing.T) {
 	assert.Panics(t, func() {
-		MustParseDID("did:sonr:123/path?query#fragment")
+		MustParseDID("did:snr:")
 	})
 }
 
 func TestParseDIDURL(t *testing.T) {
 	t.Run("ok parse a DID", func(t *testing.T) {
-		id, err := ParseDIDURL("did:sonr:123")
+		id, err := ParseDIDURL("did:snr:123")
 
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
 			return
 		}
 
-		if id.String() != "did:sonr:123" {
-			t.Errorf("expected parsed did to be 'did:sonr:123', got: %s", id.String())
+		if id.String() != "did:snr:123" {
+			t.Errorf("expected parsed did to be 'did:snr:123', got: %s", id.String())
 		}
 	})
 
 	t.Run("ok - parse a DID URL", func(t *testing.T) {
-		id, err := ParseDIDURL("did:sonr:123/path?query#fragment")
-		assert.Equal(t, "did:sonr:123/path?query#fragment", id.String())
+		id, err := ParseDIDURL("did:snr:123/path?query#fragment")
+		assert.Equal(t, "did:snr:123/path?query#fragment", id.String())
 		assert.NoError(t, err)
 	})
 
@@ -115,13 +118,13 @@ func TestMustParseDIDURL(t *testing.T) {
 }
 
 func TestDID_String(t *testing.T) {
-	expected := "did:sonr:123"
+	expected := "did:snr:123"
 	id, _ := ParseDID(expected)
 	assert.Equal(t, expected, fmt.Sprintf("%s", *id))
 }
 
 func TestDID_MarshalText(t *testing.T) {
-	expected := "did:sonr:123"
+	expected := "did:snr:123"
 	id, _ := ParseDID(expected)
 	actual, err := id.MarshalText()
 	assert.NoError(t, err)
@@ -130,7 +133,7 @@ func TestDID_MarshalText(t *testing.T) {
 
 func TestDID_Empty(t *testing.T) {
 	t.Run("not empty for filled did", func(t *testing.T) {
-		id, err := ParseDID("did:sonr:123")
+		id, err := ParseDID("did:snr:123")
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
 			return
@@ -145,7 +148,7 @@ func TestDID_Empty(t *testing.T) {
 }
 
 func TestDID_URI(t *testing.T) {
-	id, err := ParseDID("did:sonr:123")
+	id, err := ParseDID("did:snr:123")
 
 	if !assert.NoError(t, err) {
 		return

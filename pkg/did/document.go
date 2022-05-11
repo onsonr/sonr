@@ -230,6 +230,7 @@ func (d Document) IsController(controller DID) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
