@@ -77,7 +77,7 @@ func TestParseDID(t *testing.T) {
 
 func TestMustParseDID(t *testing.T) {
 	assert.Panics(t, func() {
-		MustParseDID("did:snr:123/path?query#fragment")
+		MustParseDID("bad-did")
 	})
 }
 

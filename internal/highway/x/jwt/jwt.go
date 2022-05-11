@@ -38,11 +38,13 @@ func (j *JWT) Generate(doc *did.Document) (string, error) {
 		return "", errors.New("highway/jwt Document cannot be nil")
 	}
 
+	time := time.Now().Unix()
+	exp := time + j.options.ttl // expiers in one hour after issue
 	// Create a new token object, specifying signing method and the claims
 	// Will use current timespant at time of execution for token issue time.
 	token := jwt.NewWithClaims(j.options.singingMethod, jwt.StandardClaims{
-		IssuedAt:  time.Now().Unix(),
-		ExpiresAt: 15000,
+		IssuedAt:  time,
+		ExpiresAt: exp,
 		Issuer:    doc.ID.DID.String(),
 	})
 
@@ -55,6 +57,9 @@ func (j *JWT) Generate(doc *did.Document) (string, error) {
 	return tokenString, err
 }
 
+/*
+
+ */
 func (j *JWT) Parse(token string) (*jwt.Token, error) {
 	parsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return j.options.secret, nil
@@ -63,14 +68,19 @@ func (j *JWT) Parse(token string) (*jwt.Token, error) {
 	if parsed.Valid {
 	} else if ve, ok := err.(*jwt.ValidationError); ok {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-			//return nil, jwt.ErrECDSAVerification
+			return nil, jwt.ErrECDSAVerification
 		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-			//return nil, jwt.ErrECDSAVerification
+			return nil, jwt.ErrECDSAVerification
 		} else {
-			//return nil, jwt.ErrECDSAVerification
+			return nil, jwt.ErrECDSAVerification
 		}
-	} else {
 	}
 
 	return parsed, nil
+}
+
+func (j *JWT) GetClaims(token *jwt.Token) *jwt.StandardClaims {
+	claims := token.Claims.(*jwt.StandardClaims)
+
+	return claims
 }

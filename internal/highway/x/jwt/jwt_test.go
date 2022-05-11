@@ -70,7 +70,6 @@ func Test_JWT(t *testing.T) {
 		}
 
 		tokenObj, error := jwt.Parse(token)
-
 		if error != nil {
 			t.Errorf("Error while generating token %s", err)
 		}
@@ -78,6 +77,6 @@ func Test_JWT(t *testing.T) {
 		// add did check when figure out claims obj ???
 		// weird map that isnt a map in the struct
 		assert.NotNil(t, tokenObj)
+		assert.Equal(t, tokenObj.Valid, true)
 	})
-
 }
