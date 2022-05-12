@@ -78,9 +78,3 @@ func (j *JWT) Parse(token string) (*jwt.Token, error) {
 
 	return parsed, nil
 }
-
-func (j *JWT) GetClaims(token *jwt.Token) *jwt.StandardClaims {
-	claims := token.Claims.(*jwt.StandardClaims)
-
-	return claims
-}
