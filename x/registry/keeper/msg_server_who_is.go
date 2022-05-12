@@ -19,11 +19,11 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	doc := did.Document{}
 	err := doc.UnmarshalJSON(msg.DidDocument)
 	if err != nil {
-		return nil, err
+		return nil, types.ErrDidDocumentInvalid
 	}
 
 	var whoIs = types.WhoIs{
-		Owner:       msg.Owner,
+		Owner:       msg.Creator,
 		DidDocument: msg.DidDocument,
 		Type:        msg.WhoisType,
 		Alias:       doc.AlsoKnownAs,
@@ -33,7 +33,6 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	}
 
 	k.SetWhoIs(ctx, whoIs)
-
 	return &types.MsgCreateWhoIsResponse{
 		WhoIs: &whoIs,
 	}, nil
@@ -56,7 +55,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	}
 
 	// Checks if the msg owner is the same as the current owner
-	if msg.Owner != val.Owner {
+	if msg.Creator != val.Owner {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
@@ -79,7 +78,7 @@ func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeactivateWh
 	}
 
 	// Checks if the msg owner is the same as the current owner
-	if msg.Owner != val.Owner {
+	if msg.Creator != val.Owner {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 

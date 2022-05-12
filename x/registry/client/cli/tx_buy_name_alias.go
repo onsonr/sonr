@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/sonr-io/sonr/x/registry/types"
-	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
@@ -20,11 +19,7 @@ func CmdBuyNameAlias() *cobra.Command {
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argDid := args[0]
-			argAmount, err := cast.ToInt32E(args[1])
-			if err != nil {
-				return err
-			}
-			argName := args[2]
+			argName := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -34,7 +29,6 @@ func CmdBuyNameAlias() *cobra.Command {
 			msg := types.NewMsgBuyNameAlias(
 				clientCtx.GetFromAddress().String(),
 				argDid,
-				argAmount,
 				argName,
 			)
 			if err := msg.ValidateBasic(); err != nil {

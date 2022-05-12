@@ -192,7 +192,7 @@ export default {
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgSubmitEvidence:Init Could not initialize signing client. Wallet is required.')
-				}else{
+				} else{
 					throw new Error('TxClient:MsgSubmitEvidence:Create Could not create message: ' + e.message)
 				}
 			}

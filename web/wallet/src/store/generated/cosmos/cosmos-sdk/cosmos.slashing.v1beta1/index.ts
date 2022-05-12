@@ -229,7 +229,7 @@ export default {
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgUnjail:Init Could not initialize signing client. Wallet is required.')
-				}else{
+				} else{
 					throw new Error('TxClient:MsgUnjail:Create Could not create message: ' + e.message)
 				}
 			}

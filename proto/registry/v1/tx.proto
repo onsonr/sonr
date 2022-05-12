@@ -20,82 +20,144 @@ service Msg {
 
 // swagger:model MsgCreateWhoIs
 message MsgCreateWhoIs {
-  string owner = 1;
+  // Creator is the wallet address of the creator of the transaction.
+  string creator = 1;
+
+  // DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).
   bytes did_document = 2;
+
+  // WhoIsType is the type of the WhoIs to be created. Possible values are: "USER", "APPLICATION".
   WhoIsType whois_type = 3;
 }
 
 message MsgCreateWhoIsResponse {
+  // Did is the top level DID of the created WhoIs.
   string did = 1;
+
+  // WhoIs is the created WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
 }
 
 message MsgUpdateWhoIs {
-  string owner = 1;
+  // Creator is the wallet address of the creator of the transaction.
+  string creator = 1;
+
+  // Did is the top level DID of the WhoIs.
   string did = 2;
+
+  // DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).
   bytes did_document = 3;
 }
 
 message MsgUpdateWhoIsResponse {
+  // Did is the top level DID of the WhoIs.
   string did = 1;
+
+  // WhoIs is the created WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
 }
 
 message MsgDeactivateWhoIs {
-  string owner = 1;
+  // Creator is the wallet address of the creator of the transaction.
+  string creator = 1;
+
+  // Did is the top level DID of the WhoIs.
   string did = 2;
 }
 
 message MsgDeactivateWhoIsResponse {
+  // Success is true if the WhoIs was successfully deactivated.
   bool success = 1;
+
+  // Did is the top level DID of the WhoIs.
   string did = 2;
 }
 
 message MsgBuyNameAlias {
+  // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
+
+  // Did is the top level DID of the WhoIs.
   string did = 2;
-  int32 amount = 3;
-  string name = 4;
+
+  // Name is the name of the alias to be bought. i.e. {alias}.snr
+  string name = 3;
 }
 
 message MsgBuyNameAliasResponse {
+  // Did is the top level DID of the WhoIs.
   string did = 1;
+
+  // WhoIs is the created WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
 }
 
 message MsgBuyAppAlias {
+  // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
+
+  // Did is the top level DID of the WhoIs.
   string did = 2;
-  int32 amount = 3;
-  string name = 4;
+
+  // Name is the name of the alias app extension to be bought. i.e. example.snr/{name}
+  string name = 3;
 }
 
 message MsgBuyAppAliasResponse {
+  // Did is the top level DID of the WhoIs.
   string did = 1;
+
+  // WhoIs is the updated WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
 }
 
 message MsgTransferNameAlias {
+  // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
+
+  // Did is the top level DID of the WhoIs.
   string did = 2;
+
+  // Alias is the name of the user domain alias to be transferred to the recipient. i.e. {alias}.snr
   string alias = 3;
+
+  // Recipient is the wallet address of the recipient of the alias.
   string recipient = 4;
+
+  // Amount is the amount of the alias to be transferred.
+  int32 amount = 5;
 }
 
 message MsgTransferNameAliasResponse {
+  // Success is true if the Alias was successfully transferred.
   bool success = 1;
+
+  // WhoIs is the updated WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
 }
 
 message MsgTransferAppAlias {
+  // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
+
+  // Did is the top level DID of the WhoIs.
   string did = 2;
+
+  // Alias is the name of the app alias to be transferred to the recipient.  i.e. example.snr/{name}
   string alias = 3;
+
+  // Recipient is the wallet address of the recipient of the alias.
   string recipient = 4;
+
+  // Amount is the amount of the alias to be transferred.
+  int32 amount = 5;
 }
 
 message MsgTransferAppAliasResponse {
+  // Success is true if the Alias was successfully transferred.
   bool success = 1;
+
+  // WhoIs is the updated WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
 }
 

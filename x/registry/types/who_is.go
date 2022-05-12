@@ -49,8 +49,9 @@ func (w *WhoIs) CopyFromDidDocument(doc *did.Document) error {
 	if w.Owner != strings.TrimLeft(doc.ID.ID, "did:snr:") {
 		return fmt.Errorf("owner mismatch: %s != %s", w.Owner, doc.ID.ID)
 	}
-
-	w.Alias = doc.AlsoKnownAs
+	if doc.AlsoKnownAs != nil {
+		w.Alias = doc.AlsoKnownAs
+	}
 	w.Controllers = doc.ControllersAsString()
 	w.Timestamp = time.Now().Unix()
 	w.IsActive = true

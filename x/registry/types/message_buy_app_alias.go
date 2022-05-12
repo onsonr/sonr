@@ -9,11 +9,10 @@ const TypeMsgBuyAppAlias = "buy_app_alias"
 
 var _ sdk.Msg = &MsgBuyAppAlias{}
 
-func NewMsgBuyAppAlias(creator string, did string, amount int32, name string) *MsgBuyAppAlias {
+func NewMsgBuyAppAlias(creator string, did string, name string) *MsgBuyAppAlias {
 	return &MsgBuyAppAlias{
 		Creator: creator,
 		Did:     did,
-		Amount:  amount,
 		Name:    name,
 	}
 }

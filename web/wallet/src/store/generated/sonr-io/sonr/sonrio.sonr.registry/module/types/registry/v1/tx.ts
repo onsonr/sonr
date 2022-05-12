@@ -11,91 +11,129 @@ export const protobufPackage = "sonrio.sonr.registry";
 
 /** swagger:model MsgCreateWhoIs */
 export interface MsgCreateWhoIs {
-  owner: string;
+  /** Creator is the wallet address of the creator of the transaction. */
+  creator: string;
+  /** DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld). */
   did_document: Uint8Array;
+  /** WhoIsType is the type of the WhoIs to be created. Possible values are: "USER", "APPLICATION". */
   whois_type: WhoIsType;
 }
 
 export interface MsgCreateWhoIsResponse {
+  /** Did is the top level DID of the created WhoIs. */
   did: string;
+  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is: WhoIs | undefined;
 }
 
 export interface MsgUpdateWhoIs {
-  owner: string;
+  /** Creator is the wallet address of the creator of the transaction. */
+  creator: string;
+  /** Did is the top level DID of the WhoIs. */
   did: string;
+  /** DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld). */
   did_document: Uint8Array;
 }
 
 export interface MsgUpdateWhoIsResponse {
+  /** Did is the top level DID of the WhoIs. */
   did: string;
+  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is: WhoIs | undefined;
 }
 
 export interface MsgDeactivateWhoIs {
-  owner: string;
+  /** Creator is the wallet address of the creator of the transaction. */
+  creator: string;
+  /** Did is the top level DID of the WhoIs. */
   did: string;
 }
 
 export interface MsgDeactivateWhoIsResponse {
+  /** Success is true if the WhoIs was successfully deactivated. */
   success: boolean;
+  /** Did is the top level DID of the WhoIs. */
   did: string;
 }
 
 export interface MsgBuyNameAlias {
+  /** Creator is the wallet address of the creator of the transaction. */
   creator: string;
+  /** Did is the top level DID of the WhoIs. */
   did: string;
-  amount: number;
+  /** Name is the name of the alias to be bought. i.e. {alias}.snr */
   name: string;
 }
 
 export interface MsgBuyNameAliasResponse {
+  /** Did is the top level DID of the WhoIs. */
   did: string;
+  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is: WhoIs | undefined;
 }
 
 export interface MsgBuyAppAlias {
+  /** Creator is the wallet address of the creator of the transaction. */
   creator: string;
+  /** Did is the top level DID of the WhoIs. */
   did: string;
-  amount: number;
+  /** Name is the name of the alias app extension to be bought. i.e. example.snr/{name} */
   name: string;
 }
 
 export interface MsgBuyAppAliasResponse {
+  /** Did is the top level DID of the WhoIs. */
   did: string;
+  /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
   who_is: WhoIs | undefined;
 }
 
 export interface MsgTransferNameAlias {
+  /** Creator is the wallet address of the creator of the transaction. */
   creator: string;
+  /** Did is the top level DID of the WhoIs. */
   did: string;
+  /** Alias is the name of the user domain alias to be transferred to the recipient. i.e. {alias}.snr */
   alias: string;
+  /** Recipient is the wallet address of the recipient of the alias. */
   recipient: string;
+  /** Amount is the amount of the alias to be transferred. */
+  amount: number;
 }
 
 export interface MsgTransferNameAliasResponse {
+  /** Success is true if the Alias was successfully transferred. */
   success: boolean;
+  /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
   who_is: WhoIs | undefined;
 }
 
 export interface MsgTransferAppAlias {
+  /** Creator is the wallet address of the creator of the transaction. */
   creator: string;
+  /** Did is the top level DID of the WhoIs. */
   did: string;
+  /** Alias is the name of the app alias to be transferred to the recipient.  i.e. example.snr/{name} */
   alias: string;
+  /** Recipient is the wallet address of the recipient of the alias. */
   recipient: string;
+  /** Amount is the amount of the alias to be transferred. */
+  amount: number;
 }
 
 export interface MsgTransferAppAliasResponse {
+  /** Success is true if the Alias was successfully transferred. */
   success: boolean;
+  /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
   who_is: WhoIs | undefined;
 }
 
-const baseMsgCreateWhoIs: object = { owner: "", whois_type: 0 };
+const baseMsgCreateWhoIs: object = { creator: "", whois_type: 0 };
 
 export const MsgCreateWhoIs = {
   encode(message: MsgCreateWhoIs, writer: Writer = Writer.create()): Writer {
-    if (message.owner !== "") {
-      writer.uint32(10).string(message.owner);
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
     }
     if (message.did_document.length !== 0) {
       writer.uint32(18).bytes(message.did_document);
@@ -114,7 +152,7 @@ export const MsgCreateWhoIs = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.owner = reader.string();
+          message.creator = reader.string();
           break;
         case 2:
           message.did_document = reader.bytes();
@@ -132,10 +170,10 @@ export const MsgCreateWhoIs = {
 
   fromJSON(object: any): MsgCreateWhoIs {
     const message = { ...baseMsgCreateWhoIs } as MsgCreateWhoIs;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
     } else {
-      message.owner = "";
+      message.creator = "";
     }
     if (object.did_document !== undefined && object.did_document !== null) {
       message.did_document = bytesFromBase64(object.did_document);
@@ -150,7 +188,7 @@ export const MsgCreateWhoIs = {
 
   toJSON(message: MsgCreateWhoIs): unknown {
     const obj: any = {};
-    message.owner !== undefined && (obj.owner = message.owner);
+    message.creator !== undefined && (obj.creator = message.creator);
     message.did_document !== undefined &&
       (obj.did_document = base64FromBytes(
         message.did_document !== undefined
@@ -164,10 +202,10 @@ export const MsgCreateWhoIs = {
 
   fromPartial(object: DeepPartial<MsgCreateWhoIs>): MsgCreateWhoIs {
     const message = { ...baseMsgCreateWhoIs } as MsgCreateWhoIs;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
     } else {
-      message.owner = "";
+      message.creator = "";
     }
     if (object.did_document !== undefined && object.did_document !== null) {
       message.did_document = object.did_document;
@@ -261,12 +299,12 @@ export const MsgCreateWhoIsResponse = {
   },
 };
 
-const baseMsgUpdateWhoIs: object = { owner: "", did: "" };
+const baseMsgUpdateWhoIs: object = { creator: "", did: "" };
 
 export const MsgUpdateWhoIs = {
   encode(message: MsgUpdateWhoIs, writer: Writer = Writer.create()): Writer {
-    if (message.owner !== "") {
-      writer.uint32(10).string(message.owner);
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
     }
     if (message.did !== "") {
       writer.uint32(18).string(message.did);
@@ -285,7 +323,7 @@ export const MsgUpdateWhoIs = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.owner = reader.string();
+          message.creator = reader.string();
           break;
         case 2:
           message.did = reader.string();
@@ -303,10 +341,10 @@ export const MsgUpdateWhoIs = {
 
   fromJSON(object: any): MsgUpdateWhoIs {
     const message = { ...baseMsgUpdateWhoIs } as MsgUpdateWhoIs;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
     } else {
-      message.owner = "";
+      message.creator = "";
     }
     if (object.did !== undefined && object.did !== null) {
       message.did = String(object.did);
@@ -321,7 +359,7 @@ export const MsgUpdateWhoIs = {
 
   toJSON(message: MsgUpdateWhoIs): unknown {
     const obj: any = {};
-    message.owner !== undefined && (obj.owner = message.owner);
+    message.creator !== undefined && (obj.creator = message.creator);
     message.did !== undefined && (obj.did = message.did);
     message.did_document !== undefined &&
       (obj.did_document = base64FromBytes(
@@ -334,10 +372,10 @@ export const MsgUpdateWhoIs = {
 
   fromPartial(object: DeepPartial<MsgUpdateWhoIs>): MsgUpdateWhoIs {
     const message = { ...baseMsgUpdateWhoIs } as MsgUpdateWhoIs;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
     } else {
-      message.owner = "";
+      message.creator = "";
     }
     if (object.did !== undefined && object.did !== null) {
       message.did = object.did;
@@ -431,15 +469,15 @@ export const MsgUpdateWhoIsResponse = {
   },
 };
 
-const baseMsgDeactivateWhoIs: object = { owner: "", did: "" };
+const baseMsgDeactivateWhoIs: object = { creator: "", did: "" };
 
 export const MsgDeactivateWhoIs = {
   encode(
     message: MsgDeactivateWhoIs,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.owner !== "") {
-      writer.uint32(10).string(message.owner);
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
     }
     if (message.did !== "") {
       writer.uint32(18).string(message.did);
@@ -455,7 +493,7 @@ export const MsgDeactivateWhoIs = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.owner = reader.string();
+          message.creator = reader.string();
           break;
         case 2:
           message.did = reader.string();
@@ -470,10 +508,10 @@ export const MsgDeactivateWhoIs = {
 
   fromJSON(object: any): MsgDeactivateWhoIs {
     const message = { ...baseMsgDeactivateWhoIs } as MsgDeactivateWhoIs;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
     } else {
-      message.owner = "";
+      message.creator = "";
     }
     if (object.did !== undefined && object.did !== null) {
       message.did = String(object.did);
@@ -485,17 +523,17 @@ export const MsgDeactivateWhoIs = {
 
   toJSON(message: MsgDeactivateWhoIs): unknown {
     const obj: any = {};
-    message.owner !== undefined && (obj.owner = message.owner);
+    message.creator !== undefined && (obj.creator = message.creator);
     message.did !== undefined && (obj.did = message.did);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgDeactivateWhoIs>): MsgDeactivateWhoIs {
     const message = { ...baseMsgDeactivateWhoIs } as MsgDeactivateWhoIs;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
     } else {
-      message.owner = "";
+      message.creator = "";
     }
     if (object.did !== undefined && object.did !== null) {
       message.did = object.did;
@@ -592,12 +630,7 @@ export const MsgDeactivateWhoIsResponse = {
   },
 };
 
-const baseMsgBuyNameAlias: object = {
-  creator: "",
-  did: "",
-  amount: 0,
-  name: "",
-};
+const baseMsgBuyNameAlias: object = { creator: "", did: "", name: "" };
 
 export const MsgBuyNameAlias = {
   encode(message: MsgBuyNameAlias, writer: Writer = Writer.create()): Writer {
@@ -607,11 +640,8 @@ export const MsgBuyNameAlias = {
     if (message.did !== "") {
       writer.uint32(18).string(message.did);
     }
-    if (message.amount !== 0) {
-      writer.uint32(24).int32(message.amount);
-    }
     if (message.name !== "") {
-      writer.uint32(34).string(message.name);
+      writer.uint32(26).string(message.name);
     }
     return writer;
   },
@@ -630,9 +660,6 @@ export const MsgBuyNameAlias = {
           message.did = reader.string();
           break;
         case 3:
-          message.amount = reader.int32();
-          break;
-        case 4:
           message.name = reader.string();
           break;
         default:
@@ -655,11 +682,6 @@ export const MsgBuyNameAlias = {
     } else {
       message.did = "";
     }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Number(object.amount);
-    } else {
-      message.amount = 0;
-    }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
@@ -672,7 +694,6 @@ export const MsgBuyNameAlias = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.did !== undefined && (obj.did = message.did);
-    message.amount !== undefined && (obj.amount = message.amount);
     message.name !== undefined && (obj.name = message.name);
     return obj;
   },
@@ -688,11 +709,6 @@ export const MsgBuyNameAlias = {
       message.did = object.did;
     } else {
       message.did = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = 0;
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
@@ -787,12 +803,7 @@ export const MsgBuyNameAliasResponse = {
   },
 };
 
-const baseMsgBuyAppAlias: object = {
-  creator: "",
-  did: "",
-  amount: 0,
-  name: "",
-};
+const baseMsgBuyAppAlias: object = { creator: "", did: "", name: "" };
 
 export const MsgBuyAppAlias = {
   encode(message: MsgBuyAppAlias, writer: Writer = Writer.create()): Writer {
@@ -802,11 +813,8 @@ export const MsgBuyAppAlias = {
     if (message.did !== "") {
       writer.uint32(18).string(message.did);
     }
-    if (message.amount !== 0) {
-      writer.uint32(24).int32(message.amount);
-    }
     if (message.name !== "") {
-      writer.uint32(34).string(message.name);
+      writer.uint32(26).string(message.name);
     }
     return writer;
   },
@@ -825,9 +833,6 @@ export const MsgBuyAppAlias = {
           message.did = reader.string();
           break;
         case 3:
-          message.amount = reader.int32();
-          break;
-        case 4:
           message.name = reader.string();
           break;
         default:
@@ -850,11 +855,6 @@ export const MsgBuyAppAlias = {
     } else {
       message.did = "";
     }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Number(object.amount);
-    } else {
-      message.amount = 0;
-    }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
@@ -867,7 +867,6 @@ export const MsgBuyAppAlias = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.did !== undefined && (obj.did = message.did);
-    message.amount !== undefined && (obj.amount = message.amount);
     message.name !== undefined && (obj.name = message.name);
     return obj;
   },
@@ -883,11 +882,6 @@ export const MsgBuyAppAlias = {
       message.did = object.did;
     } else {
       message.did = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = 0;
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
@@ -981,6 +975,7 @@ const baseMsgTransferNameAlias: object = {
   did: "",
   alias: "",
   recipient: "",
+  amount: 0,
 };
 
 export const MsgTransferNameAlias = {
@@ -999,6 +994,9 @@ export const MsgTransferNameAlias = {
     }
     if (message.recipient !== "") {
       writer.uint32(34).string(message.recipient);
+    }
+    if (message.amount !== 0) {
+      writer.uint32(40).int32(message.amount);
     }
     return writer;
   },
@@ -1021,6 +1019,9 @@ export const MsgTransferNameAlias = {
           break;
         case 4:
           message.recipient = reader.string();
+          break;
+        case 5:
+          message.amount = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1052,6 +1053,11 @@ export const MsgTransferNameAlias = {
     } else {
       message.recipient = "";
     }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = Number(object.amount);
+    } else {
+      message.amount = 0;
+    }
     return message;
   },
 
@@ -1061,6 +1067,7 @@ export const MsgTransferNameAlias = {
     message.did !== undefined && (obj.did = message.did);
     message.alias !== undefined && (obj.alias = message.alias);
     message.recipient !== undefined && (obj.recipient = message.recipient);
+    message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
 
@@ -1085,6 +1092,11 @@ export const MsgTransferNameAlias = {
       message.recipient = object.recipient;
     } else {
       message.recipient = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = object.amount;
+    } else {
+      message.amount = 0;
     }
     return message;
   },
@@ -1182,6 +1194,7 @@ const baseMsgTransferAppAlias: object = {
   did: "",
   alias: "",
   recipient: "",
+  amount: 0,
 };
 
 export const MsgTransferAppAlias = {
@@ -1200,6 +1213,9 @@ export const MsgTransferAppAlias = {
     }
     if (message.recipient !== "") {
       writer.uint32(34).string(message.recipient);
+    }
+    if (message.amount !== 0) {
+      writer.uint32(40).int32(message.amount);
     }
     return writer;
   },
@@ -1222,6 +1238,9 @@ export const MsgTransferAppAlias = {
           break;
         case 4:
           message.recipient = reader.string();
+          break;
+        case 5:
+          message.amount = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1253,6 +1272,11 @@ export const MsgTransferAppAlias = {
     } else {
       message.recipient = "";
     }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = Number(object.amount);
+    } else {
+      message.amount = 0;
+    }
     return message;
   },
 
@@ -1262,6 +1286,7 @@ export const MsgTransferAppAlias = {
     message.did !== undefined && (obj.did = message.did);
     message.alias !== undefined && (obj.alias = message.alias);
     message.recipient !== undefined && (obj.recipient = message.recipient);
+    message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
 
@@ -1286,6 +1311,11 @@ export const MsgTransferAppAlias = {
       message.recipient = object.recipient;
     } else {
       message.recipient = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = object.amount;
+    } else {
+      message.amount = 0;
     }
     return message;
   },
