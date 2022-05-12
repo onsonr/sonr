@@ -57,6 +57,7 @@ type Config struct {
 	// JWT
 	Secret        string
 	SigningMethod jwt.SigningMethod
+	Expiration    int64
 
 	// Cosmos SDK
 	CosmosAccountName        string

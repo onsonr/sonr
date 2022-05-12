@@ -18,6 +18,7 @@ func New(ctx context.Context, hn host.SonrHost) JWT {
 	options = JWTOptions{}
 	options.secret = []byte(hn.Config().Secret)
 	options.singingMethod = hn.Config().SigningMethod
+	options.ttl = hn.Config().Expiration
 
 	return JWT{
 		options: options,

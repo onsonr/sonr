@@ -19,8 +19,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
-
 	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
+	"github.com/sonr-io/sonr/internal/highway/x/jwt"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
@@ -47,6 +47,7 @@ type HighwayServer struct {
 	Host     hn.SonrHost
 	Cosmos   *client.Cosmos
 	Webauthn *client.WebAuthn
+	jwtToken *jwt.JWT
 
 	// Http Properties
 	Router     *gin.Engine
@@ -83,6 +84,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
+	tokenClient := jwt.DefaultNew()
 	// TODO: Enabling Matrix Protocol breaks build for Darwin
 	// Create the Matrix Protocol
 	// matrix, err := matrix.New(ctx, node)
@@ -99,6 +101,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Config:       c,
 		Webauthn:     webauthn,
 		ipfsProtocol: ipfs,
+		jwtToken:     &tokenClient,
 		// matrixProtocol: matrix,
 	}
 	return stub, nil
