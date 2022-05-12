@@ -25,6 +25,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
 	ctv1 "github.com/sonr-io/sonr/x/channel/types"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // Error Definitions
@@ -47,7 +49,7 @@ type HighwayServer struct {
 	Host     hn.SonrHost
 	Cosmos   *client.Cosmos
 	Webauthn *client.WebAuthn
-	jwtToken *jwt.JWT
+	JwtToken *jwt.JWT
 
 	// Http Properties
 	Router     *gin.Engine
@@ -84,7 +86,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
-	tokenClient := jwt.DefaultNew()
+	tokenClient := jwt.New(ctx, node)
 	// TODO: Enabling Matrix Protocol breaks build for Darwin
 	// Create the Matrix Protocol
 	// matrix, err := matrix.New(ctx, node)
@@ -101,10 +103,65 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Config:       c,
 		Webauthn:     webauthn,
 		ipfsProtocol: ipfs,
-		jwtToken:     &tokenClient,
+		JwtToken:     &tokenClient,
 		// matrixProtocol: matrix,
 	}
 	return stub, nil
+}
+
+func (s *HighwayServer) ConfigureRoutes() {
+	// Register Cosmos HTTP Routes - Registry
+	s.Router.POST("/v1/registry/create/whois", s.CreateWhoIs)
+	s.Router.POST("/v1/registry/update/whois", s.UpdateWhoIs)
+	s.Router.POST("/v1/registry/deactivate/whois", s.DeactivateWhoIs)
+	s.Router.POST("/v1/registry/buy/alias/name", s.BuyNameAlias)
+	s.Router.POST("/v1/registry/buy/alias/app", s.BuyAppAlias)
+	s.Router.POST("/v1/registry/transfer/alias/name", s.TransferNameAlias)
+	s.Router.POST("/v1/registry/transfer/alias/app", s.TransferAppAlias)
+
+	// Register Cosmos HTTP Routes - Object
+	s.Router.POST("/v1/object/create", s.CreateObject)
+	s.Router.POST("/v1/object/update", s.UpdateObject)
+	s.Router.POST("/v1/object/deactivate", s.DeactivateObject)
+
+	// Register Cosmos HTTP Routes - Bucket
+	s.Router.POST("/v1/bucket/create", s.CreateBucket)
+	s.Router.POST("/v1/bucket/update", s.UpdateBucket)
+	s.Router.POST("/v1/bucket/deactivate", s.DeactivateBucket)
+
+	// Register Cosmos HTTP Routes - Channel
+	s.Router.POST("/v1/channel/create", s.CreateChannel)
+	s.Router.POST("/v1/channel/update", s.UpdateChannel)
+	s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
+
+	// Register IPFS HTTP Routes
+	s.Router.POST("/v1/ipfs/upload", s.UploadBlob)
+	s.Router.GET("/v1/ipfs/download/:cid", s.DownloadBlob)
+	s.Router.POST("/v1/ipfs/remove/:cid", s.RemoveBlob)
+
+	// Register WebAuthn HTTP Routes
+	s.Router.GET("/v1/auth/register/start/:username", s.StartRegisterName)
+	s.Router.POST("/v1/auth/register/finish/:username", s.FinishRegisterName)
+	s.Router.GET("/v1/auth/access/start/:username", s.StartAccessName)
+	s.Router.POST("/v1/auth/access/finish/:username", s.FinishAccessName)
+
+	// Setup Swagger UI
+	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+}
+
+func (s *HighwayServer) ConfigureMiddleware() {
+	s.Router.Use(func(ctx *gin.Context) {
+		token := ctx.GetHeader("Authorization")
+		if token != "" {
+			error := s.JwtToken.BuildJWTParseMiddleware(token)()
+
+			if error != nil {
+				logger.Errorf("Error while processing authorization header", error)
+				return
+			}
+			ctx.Next()
+		}
+	})
 }
 
 // Serve starts the RPC Service.
