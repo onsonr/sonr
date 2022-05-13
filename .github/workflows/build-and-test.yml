@@ -39,7 +39,9 @@ jobs:
           gomobile init
         working-directory: ${{ github.workspace }}/cmd/motor-lib
 
-
+      - name: Run coverage
+        continue-on-error: true
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -49,3 +51,5 @@ jobs:
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
