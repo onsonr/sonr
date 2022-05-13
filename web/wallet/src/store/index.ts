@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+
 import init from './config'
 
 const store = createStore({
@@ -6,7 +7,7 @@ const store = createStore({
     return {}
   },
   mutations: {},
-  actions: {},
+  actions: {}
 })
 init(store)
 export default store

@@ -1,13 +1,5 @@
 version: "3"
 
-includes:
-  web:dashboard:
-    taskfile: ./web/dashboard/Taskfile.yaml
-    dir: web/dashboard
-  web:wallet:
-    taskfile: ./web/wallet/Taskfile.yaml
-    dir: web/wallet
-
 vars:
   VERSION: v0.0.1-test
 
@@ -32,6 +24,12 @@ tasks:
     summary: Serve the blockchain using ignite
     cmds:
       - ignite chain serve
+    silent: true
+
+  highway:serve:
+    summary: Serve the highway daemon using ignite
+    cmds:
+      - go run cmd/highwayd/main.go
     silent: true
 
 ## ------------------------------------------------------------
@@ -118,6 +116,12 @@ tasks:
       - swag i -d ./ -g internal/highway/http/server.go -o docs/static
       - mv docs/static/swagger.yaml docs/static/highway.yaml
       - rm -rf docs/static/swagger.json
+
+  wallet:dev:
+    summary: "Run wallet in development mode"
+    dir: web/wallet
+    cmds:
+      - npm run dev
 
 
 ## ------------------------------------------------------------

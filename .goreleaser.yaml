@@ -69,6 +69,51 @@ builds:
       post:
         - mv build/ios/SonrMotor.xcframework ./SonrMotor.xcframework
 
+
+    # Highway Daemon for macOS
+  - id: "highwayd-darwin"
+    main: ./cmd/highwayd
+    binary: highwayd
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=o64-clang++
+    goos:
+      - darwin
+    goarch:
+    - amd64
+    - arm64
+
+  # Highway Daemon for Linux
+  - id: "highwayd-linux"
+    main: ./cmd/highwayd
+    binary: highwayd
+    env:
+      - CGO_ENABLED=0
+      - CC=gcc
+      - CXX=g++
+    goos:
+      - linux
+    goarch:
+    - amd64
+
+  # Highway Daemon for Windows
+  - id: "highwayd-windows"
+    main: ./cmd/highwayd
+    binary: highwayd
+    env:
+      - CGO_ENABLED=0
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
+
+
   # Blockchain Daemon for macOS
   - id: "sonrd-darwin"
     main: ./cmd/sonrd
@@ -227,6 +272,21 @@ archives:
   - highway-cli-linux
   - highway-cli-windows
 
+  # Templating for Highway Daemon
+- id: "highwayd-archive"
+  name_template: 'highwayd-{{ .Os }}_{{ .Arch }}'
+  replacements:
+    darwin: macos
+    windows: win
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  builds:
+  - highwayd-darwin
+  - highwayd-linux
+  - highwayd-windows
+
 # -- Checksums for the archives --
 checksum:
   name_template: 'checksums.txt'
@@ -258,7 +318,7 @@ release:
   # Header template for the release body.
   # Defaults to empty.
   header: |
-    ## Release {{ .Tag }} - {{ .Date }}
+    #### Release {{ .Tag }} - {{ .Date }}
 
     Welcome to the new {{ .Tag }} Sonr release. This release includes the following changes:
 

@@ -209,7 +209,7 @@ func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 // @Description FinishRegisterName finishes the registration process and returns a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential to a Sonr Account.
 // @Tags WebAuthn
 // @Produce json
-// @Success      200  {object}  map[string]interface{}
+// @Success      200  {object}  did.Document
 // @Failure      500  {string}  message
 // @Router /v1/auth/register/finish/:username [post]
 func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
