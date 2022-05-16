@@ -2,9 +2,6 @@ package did
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
 	"testing"
 
 	odid "github.com/ockam-network/did"
@@ -82,4 +79,3 @@ func TestParseDID(t *testing.T) {
 		assert.Equal(t, id.IDStrings[0], "123")
 	})
 }
-

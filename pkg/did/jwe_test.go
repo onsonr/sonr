@@ -8,8 +8,7 @@ import (
 
 func Test_JWE(t *testing.T) {
 	doc := document()
-	jwe, err := doc.CreateJWS([]byte(doc.VerificationMethod[0].PublicKeyBase58))
-
+	jwe, err := doc.EncryptJWE(doc.VerificationMethod[0].ID, []byte("test"))
 	if err != nil {
 		t.Errorf("Error while creating JWT")
 	}

@@ -17,7 +17,7 @@ func TestW3CSpecValidator(t *testing.T) {
 	})
 	t.Run("base", func(t *testing.T) {
 
-		didUrl, err := ParseDIDURL("did:snr:123#fragment")
+		didUrl, err := ParseDID("did:snr:123#fragment")
 		if !assert.NoError(t, err) {
 			return
 		}
