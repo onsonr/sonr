@@ -1,1 +1,1 @@
-package prometheus
+package metrics

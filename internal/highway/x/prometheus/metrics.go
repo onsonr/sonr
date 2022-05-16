@@ -1,10 +1,11 @@
-package prometheus
+package metrics
 
 import (
 	"context"
 	"net/http"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -16,21 +17,24 @@ type HighwayTelemetry struct {
 }
 
 var (
+	logger       = golog.Default.Child("node/telemetry")
 	opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
 		Namespace: "Sonr",
-		Name:      "total events processed",
+		Name:      "total_events_processed",
 		Help:      "The total number of processed events on the highway",
 	})
 
 	objectsAdded = promauto.NewGauge(prometheus.GaugeOpts{
 		Namespace: "Sonr",
-		Subsystem: "data storage",
+		Name:      "objects",
+		Subsystem: "data_storage",
 		Help:      "Counts the number of objects added to the highway",
 	})
 
 	blobsAdded = promauto.NewGauge(prometheus.GaugeOpts{
 		Namespace: "Sonr",
-		Subsystem: "file storage",
+		Name:      "files",
+		Subsystem: "file_storage",
 		Help:      "Counts the number of objects added to the highway",
 	})
 )

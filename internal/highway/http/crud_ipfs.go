@@ -9,6 +9,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
+
+	"github.com/kataras/go-events"
 )
 
 // @Summary Upload Blob
@@ -51,7 +54,7 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 			"message": "Unable to upload the file to IPFS",
 		})
 	}
-
+	defer events.Emit(metrics.ON_BLOB_ADD, "")
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{
 		"code":    200,
