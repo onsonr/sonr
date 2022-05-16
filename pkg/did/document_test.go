@@ -25,7 +25,7 @@ func Test_Document(t *testing.T) {
 {
 	"@context": ["https://www.w3.org/ns/did/v1"],
 	"id": "did:web:identity.foundation",
-	"Controller": ["did:sonr:123", "did:web:example.org"]
+	"Controller": ["did:snr:123", "did:web:example.org"]
 }`
 		doc := Document{}
 		err := json.Unmarshal([]byte(jsonDoc), &doc)
@@ -33,8 +33,8 @@ func Test_Document(t *testing.T) {
 			t.Errorf("unexpected error: %s", err)
 			return
 		}
-		if doc.Controller[0].String() != "did:sonr:123" {
-			t.Errorf("expected 'did:sonr:123', got: %s", doc.Controller[0].String())
+		if doc.Controller[0].String() != "did:snr:123" {
+			t.Errorf("expected 'did:snr:123', got: %s", doc.Controller[0])
 		}
 	})
 
@@ -66,11 +66,11 @@ func Test_Document(t *testing.T) {
 		}
 		expected := "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
 		if expected != actual.Controller[0].String() {
-			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[0].String())
+			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[0])
 		}
 		expected = "did:sonr:f03a00f1-9615-4060-bd00-bd282e150c46"
 		if expected != actual.Controller[1].String() {
-			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[1].String())
+			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[1])
 		}
 	})
 	t.Run("it can parse assertionMethods", func(t *testing.T) {
@@ -380,18 +380,18 @@ func TestRoundTripMarshalling(t *testing.T) {
 
 func TestVerificationRelationship_UnmarshalJSON(t *testing.T) {
 	t.Run("ok - unmarshal single did", func(t *testing.T) {
-		input := `"did:sonr:123#key-1"`
+		input := `"did:snr:123#key-1"`
 		actual := VerificationRelationship{}
 		err := json.Unmarshal([]byte(input), &actual)
 		assert.NoError(t, err)
-		assert.Equal(t, "did:sonr:123#key-1", actual.reference.String())
+		assert.Equal(t, "did:snr:123#key-1", actual.reference.String())
 	})
 	t.Run("ok - unmarshal object", func(t *testing.T) {
-		input := `{"id": "did:sonr:123#key-1"}`
+		input := `{"id": "did:snr:123#key-1"}`
 		actual := VerificationRelationship{}
 		err := json.Unmarshal([]byte(input), &actual)
 		assert.NoError(t, err)
-		assert.Equal(t, "did:sonr:123#key-1", actual.ID.String())
+		assert.Equal(t, "did:snr:123#key-1", actual.ID.String())
 	})
 }
 
