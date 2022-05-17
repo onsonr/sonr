@@ -157,19 +157,18 @@ func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
 	return queryResp.GetWhoIs(), nil
 }
 
-// QueryName ...
-func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
-	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
-		Did: name,
-	})
+// QueryWhoIs with the given DID
+func (cc *Cosmos) QueryWhoIs(did string) (_ *rt.WhoIs, exists bool, err error) {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
+	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{Did: did})
 	if err != nil {
-		golog.Errorf("Error querying name: %s", err.Error())
-		return nil, err
+		return nil, false, err
 	}
 
-	whois := queryResp.GetWhoIs()
+	// check if the name exists
+	whoIs := queryResp.GetWhoIs()
 
-	return &whois, nil
+	return &whoIs, true, nil
 }
 
 // BroadcastCreateBucket broadcasts a transaction to the blockchain
