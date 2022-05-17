@@ -11,10 +11,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateWhoIs{}, "registry/CreateWhoIs", nil)
 	cdc.RegisterConcrete(&MsgUpdateWhoIs{}, "registry/UpdateWhoIs", nil)
 	cdc.RegisterConcrete(&MsgDeactivateWhoIs{}, "registry/DeactivateWhoIs", nil)
-	cdc.RegisterConcrete(&MsgBuyNameAlias{}, "registry/BuyNameAlias", nil)
-	cdc.RegisterConcrete(&MsgBuyAppAlias{}, "registry/BuyAppAlias", nil)
-	cdc.RegisterConcrete(&MsgTransferNameAlias{}, "registry/TransferNameAlias", nil)
-	cdc.RegisterConcrete(&MsgTransferAppAlias{}, "registry/TransferAppAlias", nil)
+	cdc.RegisterConcrete(&MsgBuyAlias{}, "registry/BuyAlias", nil)
+	cdc.RegisterConcrete(&MsgSellAlias{}, "registry/SellAlias", nil)
+	cdc.RegisterConcrete(&MsgTransferAlias{}, "registry/TransferAlias", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -25,16 +24,13 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgDeactivateWhoIs{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgBuyNameAlias{},
+		&MsgBuyAlias{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgBuyAppAlias{},
+		&MsgSellAlias{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgTransferNameAlias{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgTransferAppAlias{},
+		&MsgTransferAlias{},
 	)
 	// this line is used by starport scaffolding # 3
 

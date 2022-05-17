@@ -72,25 +72,6 @@ message MsgDeactivateWhoIsResponse {
   string did = 2;
 }
 
-message MsgBuyNameAlias {
-  // Creator is the wallet address of the creator of the transaction.
-  string creator = 1;
-
-  // Did is the top level DID of the WhoIs.
-  string did = 2;
-
-  // Name is the name of the alias to be bought. i.e. {alias}.snr
-  string name = 3;
-}
-
-message MsgBuyNameAliasResponse {
-  // Did is the top level DID of the WhoIs.
-  string did = 1;
-
-  // WhoIs is the created WhoIs, contains the DID document and associated metadata.
-  WhoIs who_is = 2;
-}
-
 message MsgBuyAlias {
   // Creator is the wallet address of the creator of the transaction.
   string creator = 1;

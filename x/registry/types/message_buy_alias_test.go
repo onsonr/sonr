@@ -8,21 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgBuyNameAlias_ValidateBasic(t *testing.T) {
+func TestMsgBuyAlias_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgBuyNameAlias
+		msg  MsgBuyAlias
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgBuyNameAlias{
+			msg: MsgBuyAlias{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgBuyNameAlias{
+			msg: MsgBuyAlias{
 				Creator: sample.AccAddress(),
 			},
 		},
