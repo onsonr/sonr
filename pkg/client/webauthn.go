@@ -16,18 +16,18 @@ import (
 )
 
 const (
-	REGISTRATION_SESSION_KEY   = "registration_session"
-	AUTHENTICATION_SESSION_KEY = "authentication_session"
+	RegistrationSessionKey   = "registration_session"
+	AuthenticationSessionKey = "authentication_session"
 )
 
 // WebAuthn manages the WebAuthn interface
 type WebAuthn struct {
 	instance *webauthn.WebAuthn
 
-	ctx      context.Context
-	cache    *cache.Cache
-	config   *config.Config
-	sessions *session.Store
+	ctx          context.Context
+	cache        *cache.Cache
+	config       *config.Config
+	sessionStore *session.Store
 }
 
 // NewWebauthn creates a new WebAuthn instance with the given configuration
@@ -46,24 +46,24 @@ func NewWebauthn(ctx context.Context, config *config.Config) (*WebAuthn, error) 
 
 	// return a new WebAuthn instance
 	return &WebAuthn{
-		instance: web,
-		ctx:      ctx,
-		cache:    cache.New(5*time.Minute, 10*time.Minute),
-		config:   config,
-		sessions: sessionStore,
+		instance:     web,
+		ctx:          ctx,
+		cache:        cache.New(5*time.Minute, 10*time.Minute),
+		config:       config,
+		sessionStore: sessionStore,
 	}, nil
 }
 
 // FinishAuthenticationSession returns the registration session for the given user
 func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string) (*webauthn.Credential, error) {
 	// get user
-	x, found := w.cache.Get(authenticationCacheKey(username))
+	x, found := w.cache.Get(AuthenticationCacheKey(username))
 	if !found {
 		return nil, errors.New("user not found")
 	}
 	whois := x.(*rtv1.WhoIs)
 
-	sessionData, err := w.sessions.GetWebauthnSession(AUTHENTICATION_SESSION_KEY, r)
+	sessionData, err := w.sessionStore.GetWebauthnSession(AuthenticationSessionKey, r)
 	if err != nil {
 		return nil, err
 	}
@@ -78,13 +78,13 @@ func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string)
 // FinishRegistrationSession returns the registration session for the given user
 func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (*webauthn.Credential, error) {
 	// get user
-	x, found := w.cache.Get(registerCacheKey(username))
+	x, found := w.cache.Get(RegisterCacheKey(username))
 	if !found {
 		return nil, errors.New("user not found")
 	}
 	whois := x.(*rtv1.WhoIs)
 
-	sessionData, err := w.sessions.GetWebauthnSession(REGISTRATION_SESSION_KEY, r)
+	sessionData, err := w.sessionStore.GetWebauthnSession(RegistrationSessionKey, r)
 	if err != nil {
 		return nil, err
 	}
@@ -97,30 +97,40 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 }
 
 // SaveAuthenticationSession saves the login session for the given user
-func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseWriter, whoIs *rtv1.WhoIs) (*protocol.CredentialAssertion, error) {
+func (w *WebAuthn) SaveAuthenticationSession(
+	r *http.Request,
+	rw http.ResponseWriter,
+	whoIs *rtv1.WhoIs,
+) (*protocol.CredentialAssertion, error) {
 	// generate PublicKeyCredentialRequestOptions, session data
-	wan.cache.Set(authenticationCacheKey(whoIs.Name), whoIs, cache.DefaultExpiration)
-	options, sessionData, err := wan.instance.BeginLogin(whoIs)
+	w.cache.Set(AuthenticationCacheKey(whoIs.Name), whoIs, cache.DefaultExpiration)
+
+	options, sessionData, err := w.instance.BeginLogin(whoIs)
 	if err != nil {
 		return nil, err
 	}
 
 	// store session data as marshaled JSON
-	err = wan.sessions.SaveWebauthnSession("authentication", sessionData, r, w)
+	err = w.sessionStore.SaveWebauthnSession("authentication", sessionData, r, rw)
 	if err != nil {
 		return nil, err
 	}
+
 	return options, nil
 }
 
 // SaveRegistrationSession saves the registration session for the given user
-func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWriter, username string, creator string) (*protocol.CredentialCreation, error) {
-	// Create Blank WhoIs
-	whoIs := blankWhoIs(username, creator)
-	wan.cache.Set(registerCacheKey(username), whoIs, cache.DefaultExpiration)
+func (w *WebAuthn) SaveRegistrationSession(
+	r *http.Request,
+	rw http.ResponseWriter,
+	username string,
+	creator string,
+) (*protocol.CredentialCreation, error) {
+	whoIs := NewBlankWhoIs(username, creator)
+	w.cache.Set(RegisterCacheKey(username), whoIs, cache.DefaultExpiration)
 
-	// generate PublicKeyCredentialCreationOptions, session data
-	options, sessionData, err := wan.instance.BeginRegistration(
+	// generate PublicKeyCredentialCreationOptions session data
+	options, sessionData, err := w.instance.BeginRegistration(
 		whoIs,
 		registerOptions(whoIs),
 		webauthn.WithAuthenticatorSelection(authSelect()),
@@ -131,10 +141,11 @@ func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWri
 	}
 
 	// store session data as marshaled JSON
-	err = wan.sessions.SaveWebauthnSession("registration", sessionData, r, w)
+	err = w.sessionStore.SaveWebauthnSession("registration", sessionData, r, rw)
 	if err != nil {
 		return nil, err
 	}
+
 	return options, nil
 }
 
@@ -142,8 +153,8 @@ func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWri
 // HELPER FUNCTIONS
 // ----------------
 
-// authenticationCacheKey is a helper function to create a cache key for the given user
-func authenticationCacheKey(username string) string {
+// AuthenticationCacheKey is a helper function to create a cache key for the given user
+func AuthenticationCacheKey(username string) string {
 	return fmt.Sprintf("%s_authentication", username)
 }
 
@@ -156,8 +167,8 @@ func authSelect() protocol.AuthenticatorSelection {
 	}
 }
 
-// blankWhoIs is a helper function to create a blank WhoIs
-func blankWhoIs(username, creator string) *rtv1.WhoIs {
+// NewBlankWhoIs is a helper function to create a blank WhoIs
+func NewBlankWhoIs(username string, creator string) *rtv1.WhoIs {
 	return &rtv1.WhoIs{
 		Name:        username,
 		Did:         "",
@@ -172,8 +183,8 @@ func conveyancePreference() protocol.ConveyancePreference {
 	return protocol.ConveyancePreference(protocol.PreferNoAttestation)
 }
 
-// registerCacheKey is a helper function to create a cache key for a registration session
-func registerCacheKey(username string) string {
+// RegisterCacheKey is a helper function to create a cache key for a registration session
+func RegisterCacheKey(username string) string {
 	return fmt.Sprintf("%s_registration", username)
 }
 

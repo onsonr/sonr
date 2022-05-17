@@ -4,7 +4,8 @@ import "registry/credential.proto";
 
 option go_package = "github.com/sonr-io/blockchain/x/registry/types";
 
-// WhoIs is the entry pointing a registered name to a user account address, Did Url string, and a DIDDocument.
+// WhoIs is the entry pointing a registered name to a user account address
+// Did Url string, and a DIDDocument.
 message WhoIs {
   // Name is the registered name of the User or Application
   string name = 1;
@@ -12,13 +13,15 @@ message WhoIs {
   // DID is the DID of the account
   string did = 2;
 
-  // Document is the DID Document of the registered name and account encoded as JSON
+  // Document is the DID Document of the registered name and account
+  // encoded as JSON
   bytes document = 3;
 
   // Creator is the Account Address of the creator of the DID Document
   string creator = 4;
 
-  // Credentials are the biometric info of the registered name and account encoded with public key
+  // Credentials are the biometric info of the registered name and account
+  // encoded with public key
   repeated Credential credentials = 5;
 
   // Type is the type of the registered name

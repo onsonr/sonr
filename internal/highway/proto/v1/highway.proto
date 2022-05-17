@@ -82,4 +82,7 @@ service Highway {
   //
   // Deletes the given blob from the calling node's service IPFS storage.
   rpc RemoveBlob(sonrio.highway.v1.MsgRemoveBlob) returns (sonrio.highway.v1.MsgRemoveBlobResponse) {}
+
+  // ...
+  rpc QueryWhoIs(sonrio.sonr.registry.QueryWhoIsRequest) returns (sonrio.sonr.registry.QueryWhoIsResponse) {}
 }

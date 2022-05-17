@@ -1,8 +1,7 @@
 package highway
 
 import (
-	context "context"
-	"fmt"
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +9,41 @@ import (
 	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
+func (s *HighwayServer) WhoIsHTTP(c *gin.Context) {
+	names, err := s.cosmos.QueryAllNames()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, names)
+}
+
+// WhoIsDIDHTTP
+// @Summary
+// @Schemes
+// @Description WhoIsDIDHTTP
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /register/start/:username [GET]
+func (s *HighwayServer) WhoIsDIDHTTP(c *gin.Context) {
+	if did := c.Param("did"); did != "" {
+		res, err := s.cosmos.QueryName(did)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, res)
+		return
+	}
+
+	c.JSON(http.StatusBadRequest, gin.H{"error": "did is required"})
+}
+
+// StartRegisterName starts the registration process for a Sonr Account.
 // @Summary Start Register Name
 // @Schemes
 // @Description StartRegisterName starts the registration process and returns a PublicKeyCredentialCreationOptions. Initiating the registration process for a Sonr Account.
@@ -17,25 +51,30 @@ import (
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /name/register/start/:username [get]
+// @Router /name/register/start/:username [GET]
 func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 	if username := c.Param("username"); username != "" {
-		// Check if user exists and return error if it does
-		if exists := s.cosmos.NameExists(username); exists {
+		if s.cosmos.NameExists(username) {
 			c.JSON(http.StatusConflict, gin.H{"error": "username already exists"})
 		}
 
-		// Save Registration Session
-		options, err := s.webauthn.SaveRegistrationSession(c.Request, c.Writer, username, s.cosmos.AccountName())
+		options, err := s.webauthn.SaveRegistrationSession(
+			c.Request,
+			c.Writer,
+			username,
+			s.cosmos.AccountName(),
+		)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
+
 		c.JSON(http.StatusOK, options)
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
 	}
 }
 
+// FinishRegisterName finishes the registration process for a Sonr Account.
 // @Summary Finish Register Name
 // @Schemes
 // @Description FinishRegisterName finishes the registration process and returns a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential to a Sonr Account.
@@ -43,15 +82,13 @@ func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /name/register/finish/:username [post]
+// @Router /name/register/finish/:username [POST]
 func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
-	// get username
-	username := c.Param("username")
-	if username == "" {
+	var username string
+	if username = c.Param("username"); username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
 	}
 
-	// Finish Registration Session
 	cred, err := s.webauthn.FinishRegistrationSession(c.Request, username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -60,15 +97,17 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	// define a message to create a did
 	msg := rtv1.NewMsgRegisterName(s.cosmos.Address(), username, *cred)
 
-	// broadcast a transaction from account `alice` with the message to create a did
-	// store response in txResp
+	// broadcast a transaction from account `alice` with the message
+	// to create a did and return the response
 	txResp, err := s.cosmos.BroadcastRegisterName(msg)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	}
+
 	c.JSON(http.StatusOK, txResp)
 }
 
+// StartAccessName accesses the user's existing credentials initiating the authentication process.
 // @Summary Start Access Name
 // @Schemes
 // @Description StartAccessName accesses the user's existing credentials and returns a PublicKeyCredentialRequestOptions. Beggining the authentication process.
@@ -76,11 +115,10 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /name/access/start/:username [get]
+// @Router /name/access/start/:username [GET]
 func (s *HighwayServer) StartAccessName(c *gin.Context) {
-	// get username
-	username := c.Param("username")
-	if username == "" {
+	var username string
+	if username = c.Param("username"); username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
 	}
 
@@ -95,42 +133,41 @@ func (s *HighwayServer) StartAccessName(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
+
 	c.JSON(http.StatusOK, options)
 }
 
+// FinishAccessName finishes the authentication process successfully logging in the Sonr Account.
 // @Summary Finish Access Name
 // @Schemes
-// @Description FinishAccessName finishes the authentication process and returns a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.
+// @Description FinishAccessName finishes the authentication process and returns a PublicKeyCredentialResponse
+//				successfully logging in a Sonr Account.
 // @Tags Registry
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
 // @Router /name/access/finish/:username [post]
 func (s *HighwayServer) FinishAccessName(c *gin.Context) {
-	// get username
-	username := c.Param("username")
-	if username == "" {
+	var username string
+	if username = c.Param("username"); username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
 	}
 
-	// Finish the authentication session
 	cred, err := s.webauthn.FinishAuthenticationSession(c.Request, username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	// handle successful login
 	c.JSON(http.StatusOK, cred)
 }
 
 // UpdateName updates a name.
 func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
-	// Broadcast the Transaction
 	resp, err := s.cosmos.BroadcastUpdateName(rtv1.NewMsgUpdateNameFromBuf(req))
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(resp.String())
+
 	return &rt.MsgUpdateNameResponse{
 		Code:    resp.Code,
 		Message: resp.Message,
@@ -138,6 +175,7 @@ func (s *HighwayServer) UpdateName(ctx context.Context, req *rt.MsgUpdateName) (
 	}, nil
 }
 
+// UpdateNameHTTP updates a name on the Sonr blockchain registry.
 // @Summary Update Name
 // @Schemes
 // @Description UpdateName updates a name on the Sonr blockchain registry.
