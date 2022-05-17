@@ -91,8 +91,8 @@ func (s *HighwayServer) DeactivateWhoIs(c *gin.Context) {
 // @Success 	 200  {object}  rt.MsgBuyNameAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/name [post]
-func (s *HighwayServer) BuyNameAlias(c *gin.Context) {
-	var req rt.MsgBuyNameAlias
+func (s *HighwayServer) BuyAlias(c *gin.Context) {
+	var req rt.MsgBuyAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -115,12 +115,12 @@ func (s *HighwayServer) BuyNameAlias(c *gin.Context) {
 // @Success 	 200  {object}  rt.MsgBuyAppAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/app [post]
-func (s *HighwayServer) BuyAppAlias(c *gin.Context) {
-	var req rt.MsgBuyAppAlias
+func (s *HighwayServer) SellAlias(c *gin.Context) {
+	var req rt.MsgBuyAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	resp, err := s.Cosmos.BroadcastBuyAppAlias(&req)
+	resp, err := s.Cosmos.BroadcastBuyAlias(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -139,12 +139,12 @@ func (s *HighwayServer) BuyAppAlias(c *gin.Context) {
 // @Success      200  {object}  rt.MsgTransferNameAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/transfer/alias/name [post]
-func (s *HighwayServer) TransferNameAlias(c *gin.Context) {
-	var req rt.MsgTransferNameAlias
+func (s *HighwayServer) TransferAlias(c *gin.Context) {
+	var req rt.MsgTransferAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	resp, err := s.Cosmos.BroadcastTransferNameAlias(&req)
+	resp, err := s.Cosmos.BroadcastTransferAlias(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -154,29 +154,6 @@ func (s *HighwayServer) TransferNameAlias(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary Transfer an App Alias
-// @Schemes
-// @Description This method transfers an existing App Alias to the specified peer. The alias is removed from the current App's `alsoKnownAs` list and inserted into the new App's `alsoKnownAs` list.
-// @Tags Registry
-// @Produce json
-// @Param 		 data body rt.MsgTransferAppAlias true "Parameters"
-// @Success      200  {object}  rt.MsgTransferAppAliasResponse
-// @Failure      500  {string}  message
-// @Router /v1/registry/transfer/alias/app [post]
-func (s *HighwayServer) TransferAppAlias(c *gin.Context) {
-	var req rt.MsgTransferAppAlias
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-	resp, err := s.Cosmos.BroadcastTransferAppAlias(&req)
-	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
-	}
-	// Return the response
-	c.JSON(http.StatusOK, resp)
-}
 
 // @Summary Start Register Name
 // @Schemes
