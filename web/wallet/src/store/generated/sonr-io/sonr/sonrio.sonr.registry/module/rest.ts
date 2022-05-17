@@ -21,19 +21,11 @@ export interface RegistryAlias {
   amount?: number;
 }
 
-export interface RegistryMsgBuyAppAliasResponse {
+export interface RegistryMsgBuyAliasResponse {
   /** Did is the top level DID of the WhoIs. */
   did?: string;
 
   /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
-  who_is?: RegistryWhoIs;
-}
-
-export interface RegistryMsgBuyNameAliasResponse {
-  /** Did is the top level DID of the WhoIs. */
-  did?: string;
-
-  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
@@ -53,7 +45,7 @@ export interface RegistryMsgDeactivateWhoIsResponse {
   did?: string;
 }
 
-export interface RegistryMsgTransferAppAliasResponse {
+export interface RegistryMsgSellAliasResponse {
   /** Success is true if the Alias was successfully transferred. */
   success?: boolean;
 
@@ -61,7 +53,7 @@ export interface RegistryMsgTransferAppAliasResponse {
   who_is?: RegistryWhoIs;
 }
 
-export interface RegistryMsgTransferNameAliasResponse {
+export interface RegistryMsgTransferAliasResponse {
   /** Success is true if the Alias was successfully transferred. */
   success?: boolean;
 

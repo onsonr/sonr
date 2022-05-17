@@ -78,3 +78,13 @@ func (w *WhoIs) AddAlsoKnownAs(as []string) error {
 	}
 	return nil
 }
+
+// FindAliasByName returns the alias and index with the given name or error if not found
+func (w *WhoIs) FindAliasByName(name string) (int, *Alias, error) {
+	for i, a := range w.Alias {
+		if a.GetName() == name {
+			return i, a, nil
+		}
+	}
+	return -1, nil, fmt.Errorf("alias %s not found", name)
+}

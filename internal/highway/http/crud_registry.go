@@ -84,11 +84,11 @@ func (s *HighwayServer) DeactivateWhoIs(c *gin.Context) {
 
 // @Summary Buy an Alias for a User
 // @Schemes
-// @Description This method purchases a user alias .snr domain i.e. {example}.snr, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not listed as controller of DIDDoc, or WhoIs is deactivated.
+// @Description This method purchases a user alias .snr domain i.e. {example}.snr or application alias extension i.e. example.snr/{appName}, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not listed as controller of DIDDoc, or WhoIs is deactivated.
 // @Tags Registry
 // @Produce json
-// @Param 		 data body rt.MsgBuyNameAlias true "Parameters"
-// @Success 	 200  {object}  rt.MsgBuyNameAliasResponse
+// @Param 		 data body rt.MsgBuyAlias true "Parameters"
+// @Success 	 200  {object}  rt.MsgBuyAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/name [post]
 func (s *HighwayServer) BuyAlias(c *gin.Context) {
@@ -106,13 +106,13 @@ func (s *HighwayServer) BuyAlias(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary Buy an Alias for an App
+// @Summary Sell an Alias
 // @Schemes
-// @Description This method purchases an app name extension i.e. example.snr/{appname}, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not the owner of the app, or WhoIs is deactivated.
+// @Description This method Sets a particular owned alias by a User or Application to `true` for the IsForSale property. It also takes the amount parameter in order to define how much the user owned alias is for sale.
 // @Tags Registry
 // @Produce json
-// @Param 		 data body rt.MsgBuyNameAlias true "Parameters"
-// @Success 	 200  {object}  rt.MsgBuyAppAliasResponse
+// @Param 		 data body rt.MsgSellAlias true "Parameters"
+// @Success 	 200  {object}  rt.MsgSellAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/app [post]
 func (s *HighwayServer) SellAlias(c *gin.Context) {
@@ -130,13 +130,13 @@ func (s *HighwayServer) SellAlias(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary Transfer a Name alias
+// @Summary Transfer an alias
 // @Schemes
-// @Description This method transfers an existing User .snr name Alias to the specified peer. The alias is removed from the current App's `alsoKnownAs` list and inserted into the new App's `alsoKnownAs` list.
+// @Description This method transfers an existing User .snr name or Application extension name Alias to the specified peer DIDDocument. The alias is removed from the current App or User's `alsoKnownAs` list and inserted into the new DIDDocument's `alsoKnownAs` list.
 // @Tags Registry
 // @Produce json
-// @Param 		 data body rt.MsgTransferNameAlias true "Parameters"
-// @Success      200  {object}  rt.MsgTransferNameAliasResponse
+// @Param 		 data body rt.MsgTransferAlias true "Parameters"
+// @Success      200  {object}  rt.MsgTransferAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/transfer/alias/name [post]
 func (s *HighwayServer) TransferAlias(c *gin.Context) {
@@ -153,7 +153,6 @@ func (s *HighwayServer) TransferAlias(c *gin.Context) {
 	// Return the response
 	c.JSON(http.StatusOK, resp)
 }
-
 
 // @Summary Start Register Name
 // @Schemes
@@ -186,7 +185,7 @@ func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 // @Description FinishRegisterName finishes the registration process and returns a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential to a Sonr Account.
 // @Tags WebAuthn
 // @Produce json
-// @Success      200  {object}  did.Document
+// @Success      200  {object}   map[string]interface{}
 // @Failure      500  {string}  message
 // @Router /v1/auth/register/finish/:username [post]
 func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
