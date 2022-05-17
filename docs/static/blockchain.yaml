@@ -28673,7 +28673,26 @@ paths:
                     alias:
                       type: array
                       items:
-                        type: string
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            title: Name is the string name of an Alias
+                          is_for_sale:
+                            type: boolean
+                            title: >-
+                              IsForSale is the boolean value indicating if the
+                              Alias is for sale
+                          amount:
+                            type: integer
+                            format: int32
+                            title: >-
+                              Amount is the amount listed for purchasing the
+                              Alias from the User/Application
+                        title: >-
+                          Alias is a message detailing a known "alsoKnownAs"
+                          identifier of a DIDDocument and contains properties
+                          for transfer/exchange
                       title: >-
                         Alias is the list of registered `alsoKnownAs`
                         identifiers of the User or Application
@@ -28704,6 +28723,9 @@ paths:
                         - USER
                         - APPLICATION
                       default: USER
+                      description: |-
+                        - USER: User is the type of the registered name
+                         - APPLICATION: Application is the type of the registered name
                     timestamp:
                       type: string
                       format: int64
@@ -28833,7 +28855,26 @@ paths:
                   alias:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
                     title: >-
                       Alias is the list of registered `alsoKnownAs` identifiers
                       of the User or Application
@@ -28864,6 +28905,9 @@ paths:
                       - USER
                       - APPLICATION
                     default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
                   timestamp:
                     type: string
                     format: int64
@@ -28914,7 +28958,26 @@ paths:
                   alias:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
                     title: >-
                       Alias is the list of registered `alsoKnownAs` identifiers
                       of the User or Application
@@ -28945,6 +29008,9 @@ paths:
                       - USER
                       - APPLICATION
                     default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
                   timestamp:
                     type: string
                     format: int64
@@ -28996,7 +29062,26 @@ paths:
                   alias:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
                     title: >-
                       Alias is the list of registered `alsoKnownAs` identifiers
                       of the User or Application
@@ -29027,6 +29112,9 @@ paths:
                       - USER
                       - APPLICATION
                     default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
                   timestamp:
                     type: string
                     format: int64
@@ -49851,6 +49939,24 @@ definitions:
       is_active:
         type: boolean
         title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.Alias:
+    type: object
+    properties:
+      name:
+        type: string
+        title: Name is the string name of an Alias
+      is_for_sale:
+        type: boolean
+        title: IsForSale is the boolean value indicating if the Alias is for sale
+      amount:
+        type: integer
+        format: int32
+        title: >-
+          Amount is the amount listed for purchasing the Alias from the
+          User/Application
+    title: >-
+      Alias is a message detailing a known "alsoKnownAs" identifier of a
+      DIDDocument and contains properties for transfer/exchange
   sonrio.sonr.registry.MsgBuyAppAliasResponse:
     type: object
     properties:
@@ -49863,7 +49969,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -49894,6 +50018,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -49916,7 +50043,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -49947,6 +50092,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -49969,7 +50117,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50000,6 +50166,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50031,7 +50200,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50062,6 +50249,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50084,7 +50274,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50115,6 +50323,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50137,7 +50348,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50168,6 +50397,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50192,7 +50424,25 @@ definitions:
             alias:
               type: array
               items:
-                type: string
+                type: object
+                properties:
+                  name:
+                    type: string
+                    title: Name is the string name of an Alias
+                  is_for_sale:
+                    type: boolean
+                    title: >-
+                      IsForSale is the boolean value indicating if the Alias is
+                      for sale
+                  amount:
+                    type: integer
+                    format: int32
+                    title: >-
+                      Amount is the amount listed for purchasing the Alias from
+                      the User/Application
+                title: >-
+                  Alias is a message detailing a known "alsoKnownAs" identifier
+                  of a DIDDocument and contains properties for transfer/exchange
               title: >-
                 Alias is the list of registered `alsoKnownAs` identifiers of the
                 User or Application
@@ -50223,6 +50473,9 @@ definitions:
                 - USER
                 - APPLICATION
               default: USER
+              description: |-
+                - USER: User is the type of the registered name
+                 - APPLICATION: Application is the type of the registered name
             timestamp:
               type: string
               format: int64
@@ -50271,7 +50524,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50302,6 +50573,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50318,7 +50592,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50349,6 +50641,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50365,7 +50660,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50396,6 +50709,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50409,7 +50725,25 @@ definitions:
       alias:
         type: array
         items:
-          type: string
+          type: object
+          properties:
+            name:
+              type: string
+              title: Name is the string name of an Alias
+            is_for_sale:
+              type: boolean
+              title: >-
+                IsForSale is the boolean value indicating if the Alias is for
+                sale
+            amount:
+              type: integer
+              format: int32
+              title: >-
+                Amount is the amount listed for purchasing the Alias from the
+                User/Application
+          title: >-
+            Alias is a message detailing a known "alsoKnownAs" identifier of a
+            DIDDocument and contains properties for transfer/exchange
         title: >-
           Alias is the list of registered `alsoKnownAs` identifiers of the User
           or Application
@@ -50440,6 +50774,9 @@ definitions:
           - USER
           - APPLICATION
         default: USER
+        description: |-
+          - USER: User is the type of the registered name
+           - APPLICATION: Application is the type of the registered name
       timestamp:
         type: string
         format: int64
@@ -50453,6 +50790,7 @@ definitions:
       - USER
       - APPLICATION
     default: USER
-    title: |-
+    description: |-
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
+    title: WhoIsType is the type of DIDDocument stored in the registry module

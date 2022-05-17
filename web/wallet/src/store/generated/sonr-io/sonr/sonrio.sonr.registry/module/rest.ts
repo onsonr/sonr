@@ -13,6 +13,14 @@ export interface ProtobufAny {
   "@type"?: string;
 }
 
+export interface RegistryAlias {
+  name?: string;
+  is_for_sale?: boolean;
+
+  /** @format int32 */
+  amount?: number;
+}
+
 export interface RegistryMsgBuyAppAliasResponse {
   /** Did is the top level DID of the WhoIs. */
   did?: string;
@@ -110,7 +118,7 @@ export interface RegistryQueryWhoIsResponse {
 }
 
 export interface RegistryWhoIs {
-  alias?: string[];
+  alias?: RegistryAlias[];
 
   /** Owner is the top level DID of the User or Application derived from the multisignature wallet. */
   owner?: string;
@@ -121,6 +129,11 @@ export interface RegistryWhoIs {
    */
   did_document?: string;
   controllers?: string[];
+
+  /**
+   * - USER: User is the type of the registered name
+   *  - APPLICATION: Application is the type of the registered name
+   */
   type?: RegistryWhoIsType;
 
   /** @format int64 */
@@ -128,6 +141,10 @@ export interface RegistryWhoIs {
   is_active?: boolean;
 }
 
+/**
+* - USER: User is the type of the registered name
+ - APPLICATION: Application is the type of the registered name
+*/
 export enum RegistryWhoIsType {
   USER = "USER",
   APPLICATION = "APPLICATION",

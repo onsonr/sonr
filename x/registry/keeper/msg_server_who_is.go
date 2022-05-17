@@ -26,12 +26,13 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 		Owner:       msg.Creator,
 		DidDocument: msg.DidDocument,
 		Type:        msg.WhoisType,
-		Alias:       doc.AlsoKnownAs,
 		Controllers: doc.ControllersAsString(),
 		IsActive:    true,
 		Timestamp:   time.Now().Unix(),
 	}
 
+	// Add the also known as to the whois
+	whoIs.AddAlsoKnownAs(doc.AlsoKnownAs)
 	k.SetWhoIs(ctx, whoIs)
 	return &types.MsgCreateWhoIsResponse{
 		WhoIs: &whoIs,

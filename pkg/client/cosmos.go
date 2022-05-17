@@ -196,7 +196,7 @@ func (cc *Cosmos) NameExists(name string) bool {
 	}
 
 	// check if the name exists
-	return queryResp.GetWhoIs().Alias[0] == name
+	return queryResp.GetWhoIs().Alias[0].GetName() == name
 }
 
 // QueryAllWhoIs returns all DIDDocuments registered on the blockchain

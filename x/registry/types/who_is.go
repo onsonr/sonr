@@ -11,7 +11,7 @@ import (
 // ContainsAlias checks if the alias is in the list of aliases of the whois
 func (w *WhoIs) ContainsAlias(target string) bool {
 	for _, a := range w.Alias {
-		if a == target {
+		if a.GetName() == target {
 			return true
 		}
 	}
@@ -49,11 +49,32 @@ func (w *WhoIs) CopyFromDidDocument(doc *did.Document) error {
 	if w.Owner != strings.TrimLeft(doc.ID.ID, "did:snr:") {
 		return fmt.Errorf("owner mismatch: %s != %s", w.Owner, doc.ID.ID)
 	}
-	if doc.AlsoKnownAs != nil {
-		w.Alias = doc.AlsoKnownAs
-	}
+	w.AddAlsoKnownAs(doc.AlsoKnownAs)
 	w.Controllers = doc.ControllersAsString()
 	w.Timestamp = time.Now().Unix()
 	w.IsActive = true
+	return nil
+}
+
+// GetAlsoKnownAs returns the list of aliases of the whois as string array
+func (w *WhoIs) GetAlsoKnownAs() []string {
+	var aliases []string
+	for _, a := range w.Alias {
+		aliases = append(aliases, a.GetName())
+	}
+	return aliases
+}
+
+// AddAlsoKnownAs adds an alias to the list of aliases of the whois
+func (w *WhoIs) AddAlsoKnownAs(as []string) error {
+	for _, a := range as {
+		if !w.ContainsAlias(a) {
+			w.Alias = append(w.Alias, &Alias{
+				Name:      a,
+				IsForSale: false,
+				Amount:    10,
+			})
+		}
+	}
 	return nil
 }
