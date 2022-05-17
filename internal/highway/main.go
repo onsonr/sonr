@@ -226,8 +226,8 @@ func setupAPI(ctx context.Context, s *HighwayServer) error {
 	s.router.POST("/v1/object/create", s.CreateObjectHTTP)
 	s.router.POST("/v1/object/update", s.UpdateObjectHTTP)
 	s.router.POST("/v1/object/deactivate", s.DeactivateObjectlHTTP)
-	s.router.GET("/v1/registry/who_is", s.WhoIsHTTP)
-	s.router.GET("/v1/registry/who_is/:did", s.WhoIsDIDHTTP)
+	s.router.GET("/v1/registry/query/whois", s.QueryWhoIsHTTP)
+	s.router.GET("/v1/registry/query/whois/:did", s.QueryWhoIsDIDHTTP)
 
 	// Register IPFS HTTP Routes
 	s.router.POST("/v1/blob/upload", s.UploadBlobHTTP)

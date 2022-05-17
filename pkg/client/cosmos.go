@@ -58,9 +58,6 @@ func (cc *Cosmos) Address() string {
 	return cc.address
 }
 
-// -------
-// Registry
-// -------
 // BroadcastRegisterApplication broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgRegisterApplication) (*rt.MsgRegisterApplicationResponse, error) {
 	// broadcast the transaction to the blockchain
@@ -149,20 +146,19 @@ func (cc *Cosmos) NameExists(name string) bool {
 	return queryResp.GetWhoIs().Name == name
 }
 
-// QueryAllNames returns all DIDDocuments registered on the blockchain
+// QueryAllNames ...
 func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.registryQuery.WhoIsAll(context.Background(), &rt.QueryAllWhoIsRequest{})
 	if err != nil {
 		golog.Errorf("Error querying all names: %s", err.Error())
 		return nil, err
 	}
+
 	return queryResp.GetWhoIs(), nil
 }
 
-// QueryName returns a DIDDocument for the given name registered on the blockchain
+// QueryName ...
 func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
 		Did: name,
 	})
@@ -170,13 +166,12 @@ func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
 		golog.Errorf("Error querying name: %s", err.Error())
 		return nil, err
 	}
+
 	whois := queryResp.GetWhoIs()
+
 	return &whois, nil
 }
 
-// -------
-// Buckets
-// -------
 // BroadcastCreateBucket broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastCreateBucket(msg *bt.MsgCreateBucket) (*bt.MsgCreateBucketResponse, error) {
 	// broadcast the transaction to the blockchain
@@ -259,10 +254,7 @@ func (cc *Cosmos) QueryBucket(name string) (*bt.WhichIs, error) {
 	return &whichIs, nil
 }
 
-// -------
-// Channels
-// -------
-// BroadcastDeactivateChannel broadcasts a transaction to the blockchain
+// BroadcastCreateChannel broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastCreateChannel(msg *ct.MsgCreateChannel) (*ct.MsgCreateChannelResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
@@ -300,7 +292,7 @@ func (cc *Cosmos) BroadcastUpdateChannel(msg *ct.MsgUpdateChannel) (*ct.MsgUpdat
 	return respMsg, nil
 }
 
-// BroadcastUpdateChannel broadcasts a transaction to the blockchain
+// BroadcastDeactivateChannel broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastDeactivateChannel(msg *ct.MsgDeactivateChannel) (*ct.MsgDeactivateChannelResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
@@ -344,9 +336,6 @@ func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
 	return &howIs, nil
 }
 
-// -------
-// Objects
-// -------
 // BroadcastCreateObject broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastCreateObject(msg *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
 	// broadcast the transaction to the blockchain
@@ -385,7 +374,7 @@ func (cc *Cosmos) BroadcastUpdateObject(msg *ot.MsgUpdateObject) (*ot.MsgUpdateO
 	return respMsg, nil
 }
 
-// BroadcastUpdateChannel broadcasts a transaction to the blockchain
+// BroadcastDeactivateObject broadcasts a transaction to the blockchain
 func (cc *Cosmos) BroadcastDeactivateObject(msg *ot.MsgDeactivateObject) (*ot.MsgDeactivateObjectResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)

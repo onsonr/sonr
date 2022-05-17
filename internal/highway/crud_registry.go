@@ -9,26 +9,39 @@ import (
 	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
-func (s *HighwayServer) WhoIsHTTP(c *gin.Context) {
+// QueryWhoIsHTTP
+// @Summary
+// @Schemes
+// @Description QueryWhoIsHTTP
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /registry/who_is[GET]
+func (s *HighwayServer) QueryWhoIsHTTP(c *gin.Context) {
 	names, err := s.cosmos.QueryAllNames()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	if names == nil {
+		c.JSON(http.StatusOK, []rtv1.WhoIs{})
+	}
+
 	c.JSON(http.StatusOK, names)
 }
 
-// WhoIsDIDHTTP
+// QueryWhoIsDIDHTTP
 // @Summary
 // @Schemes
-// @Description WhoIsDIDHTTP
+// @Description QueryWhoIsDIDHTTP
 // @Tags Registry
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /register/start/:username [GET]
-func (s *HighwayServer) WhoIsDIDHTTP(c *gin.Context) {
+// @Router /registry/who_is/:did [GET]
+func (s *HighwayServer) QueryWhoIsDIDHTTP(c *gin.Context) {
 	if did := c.Param("did"); did != "" {
 		res, err := s.cosmos.QueryName(did)
 		if err != nil {
@@ -37,7 +50,6 @@ func (s *HighwayServer) WhoIsDIDHTTP(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, res)
-		return
 	}
 
 	c.JSON(http.StatusBadRequest, gin.H{"error": "did is required"})
