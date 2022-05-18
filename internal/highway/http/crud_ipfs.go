@@ -117,6 +117,7 @@ func (s *HighwayServer) RemoveBlob(c *gin.Context) {
 		})
 	}
 
+	defer events.Emit(metrics.ON_BLOB_REMOVE, "")
 	// Save the file to temporary directory
 	c.JSON(http.StatusOK, gin.H{
 		"code":    200,
