@@ -19,7 +19,8 @@ func (k msgServer) SellAlias(goCtx context.Context, msg *types.MsgSellAlias) (*t
 	}
 
 	// Get whois from controller
-	whois, isFound := k.GetWhoIsFromController(ctx, msg.Creator)
+	// TODO: Implement Multisig for root level owner
+	whois, isFound := k.GetWhoIsFromOwner(ctx, msg.Creator)
 	if !isFound {
 		return nil, sdkerrors.Wrapf(types.ErrControllerNotFound, "creator %s", msg.Creator)
 	}

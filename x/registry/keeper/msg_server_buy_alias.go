@@ -22,8 +22,9 @@ func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*typ
 		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name already has an owner")
 	}
 
-	// Get whois from controller
-	whois, isFound := k.GetWhoIsFromController(ctx, msg.Creator)
+	// Get whois from Owner
+	// TODO: Implement Multisig for root level owner
+	whois, isFound := k.GetWhoIsFromOwner(ctx, msg.Creator)
 	if !isFound {
 		return nil, sdkerrors.Wrapf(types.ErrControllerNotFound, "creator %s", msg.Creator)
 	}
