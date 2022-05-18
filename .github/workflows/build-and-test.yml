@@ -40,7 +40,6 @@ jobs:
         working-directory: ${{ github.workspace }}/cmd/motor-lib
 
       - name: Run coverage
-        continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
