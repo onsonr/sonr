@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-func SimulateMsgBuyNameAlias(
+func SimulateMsgTransferAlias(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,12 +18,12 @@ func SimulateMsgBuyNameAlias(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgBuyNameAlias{
+		msg := &types.MsgTransferAlias{
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handling the BuyNameAlias simulation
+		// TODO: Handling the TransferAppAlias simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "BuyNameAlias simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "TransferAppAlias simulation not implemented"), nil, nil
 	}
 }

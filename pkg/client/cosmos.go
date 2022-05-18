@@ -61,7 +61,7 @@ func (cc *Cosmos) Address() string {
 // Registry
 // -------
 // BroadcastBuyAppAlias broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastBuyAppAlias(msg *rt.MsgBuyAppAlias) (*rt.MsgBuyAppAliasResponse, error) {
+func (cc *Cosmos) BroadcastBuyAlias(msg *rt.MsgBuyAlias) (*rt.MsgBuyAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -70,7 +70,7 @@ func (cc *Cosmos) BroadcastBuyAppAlias(msg *rt.MsgBuyAppAlias) (*rt.MsgBuyAppAli
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgBuyAppAliasResponse{}
+	respMsg := &rt.MsgBuyAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 
@@ -80,7 +80,7 @@ func (cc *Cosmos) BroadcastBuyAppAlias(msg *rt.MsgBuyAppAlias) (*rt.MsgBuyAppAli
 }
 
 // BroadcastBuyNameAlias broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastBuyNameAlias(msg *rt.MsgBuyNameAlias) (*rt.MsgBuyNameAliasResponse, error) {
+func (cc *Cosmos) BroadcastBuyNameAlias(msg *rt.MsgBuyAlias) (*rt.MsgBuyAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -89,7 +89,7 @@ func (cc *Cosmos) BroadcastBuyNameAlias(msg *rt.MsgBuyNameAlias) (*rt.MsgBuyName
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgBuyNameAliasResponse{}
+	respMsg := &rt.MsgBuyAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 
@@ -98,8 +98,8 @@ func (cc *Cosmos) BroadcastBuyNameAlias(msg *rt.MsgBuyNameAlias) (*rt.MsgBuyName
 	return respMsg, nil
 }
 
-// BroadcastTransferAppAlias broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastTransferAppAlias(msg *rt.MsgTransferAppAlias) (*rt.MsgTransferAppAliasResponse, error) {
+// BroadcastSellAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastSellAlias(msg *rt.MsgSellAlias) (*rt.MsgSellAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -108,7 +108,7 @@ func (cc *Cosmos) BroadcastTransferAppAlias(msg *rt.MsgTransferAppAlias) (*rt.Ms
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgTransferAppAliasResponse{}
+	respMsg := &rt.MsgSellAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 
@@ -118,7 +118,7 @@ func (cc *Cosmos) BroadcastTransferAppAlias(msg *rt.MsgTransferAppAlias) (*rt.Ms
 }
 
 // BroadcastTransferNameAlias broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastTransferNameAlias(msg *rt.MsgTransferNameAlias) (*rt.MsgTransferNameAliasResponse, error) {
+func (cc *Cosmos) BroadcastTransferAlias(msg *rt.MsgTransferAlias) (*rt.MsgTransferAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
@@ -127,7 +127,7 @@ func (cc *Cosmos) BroadcastTransferNameAlias(msg *rt.MsgTransferNameAlias) (*rt.
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgTransferNameAliasResponse{}
+	respMsg := &rt.MsgTransferAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
 
@@ -196,7 +196,7 @@ func (cc *Cosmos) NameExists(name string) bool {
 	}
 
 	// check if the name exists
-	return queryResp.GetWhoIs().Alias[0] == name
+	return queryResp.GetWhoIs().Alias[0].GetName() == name
 }
 
 // QueryAllWhoIs returns all DIDDocuments registered on the blockchain

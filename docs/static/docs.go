@@ -553,14 +553,14 @@ const docTemplate = `{
         },
         "/v1/registry/buy/alias/app": {
             "post": {
-                "description": "This method purchases an app name extension i.e. example.snr/{appname}, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not the owner of the app, or WhoIs is deactivated.",
+                "description": "This method Sets a particular owned alias by a User or Application to ` + "`" + `true` + "`" + ` for the IsForSale property. It also takes the amount parameter in order to define how much the user owned alias is for sale.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Registry"
                 ],
-                "summary": "Buy an Alias for an App",
+                "summary": "Sell an Alias",
                 "parameters": [
                     {
                         "description": "Parameters",
@@ -568,7 +568,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/types.MsgBuyNameAlias"
+                            "$ref": "#/definitions/types.MsgSellAlias"
                         }
                     }
                 ],
@@ -576,7 +576,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.MsgBuyAppAliasResponse"
+                            "$ref": "#/definitions/types.MsgSellAliasResponse"
                         }
                     },
                     "500": {
@@ -590,7 +590,7 @@ const docTemplate = `{
         },
         "/v1/registry/buy/alias/name": {
             "post": {
-                "description": "This method purchases a user alias .snr domain i.e. {example}.snr, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not listed as controller of DIDDoc, or WhoIs is deactivated.",
+                "description": "This method purchases a user alias .snr domain i.e. {example}.snr or application alias extension i.e. example.snr/{appName}, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not listed as controller of DIDDoc, or WhoIs is deactivated.",
                 "produces": [
                     "application/json"
                 ],
@@ -605,7 +605,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/types.MsgBuyNameAlias"
+                            "$ref": "#/definitions/types.MsgBuyAlias"
                         }
                     }
                 ],
@@ -613,7 +613,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.MsgBuyNameAliasResponse"
+                            "$ref": "#/definitions/types.MsgBuyAliasResponse"
                         }
                     },
                     "500": {
@@ -699,53 +699,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/registry/transfer/alias/app": {
-            "post": {
-                "description": "This method transfers an existing App Alias to the specified peer. The alias is removed from the current App's ` + "`" + `alsoKnownAs` + "`" + ` list and inserted into the new App's ` + "`" + `alsoKnownAs` + "`" + ` list.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Registry"
-                ],
-                "summary": "Transfer an App Alias",
-                "parameters": [
-                    {
-                        "description": "Parameters",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgTransferAppAlias"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgTransferAppAliasResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/registry/transfer/alias/name": {
             "post": {
-                "description": "This method transfers an existing User .snr name Alias to the specified peer. The alias is removed from the current App's ` + "`" + `alsoKnownAs` + "`" + ` list and inserted into the new App's ` + "`" + `alsoKnownAs` + "`" + ` list.",
+                "description": "This method transfers an existing User .snr name or Application extension name Alias to the specified peer DIDDocument. The alias is removed from the current App or User's ` + "`" + `alsoKnownAs` + "`" + ` list and inserted into the new DIDDocument's ` + "`" + `alsoKnownAs` + "`" + ` list.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Registry"
                 ],
-                "summary": "Transfer a Name alias",
+                "summary": "Transfer an alias",
                 "parameters": [
                     {
                         "description": "Parameters",
@@ -753,7 +716,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/types.MsgTransferNameAlias"
+                            "$ref": "#/definitions/types.MsgTransferAlias"
                         }
                     }
                 ],
@@ -761,7 +724,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.MsgTransferNameAliasResponse"
+                            "$ref": "#/definitions/types.MsgTransferAliasResponse"
                         }
                     },
                     "500": {
@@ -812,6 +775,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "types.Alias": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Amount is the amount listed for purchasing the Alias from the User/Application",
+                    "type": "integer"
+                },
+                "is_for_sale": {
+                    "description": "IsForSale is the boolean value indicating if the Alias is for sale",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "Name is the string name of an Alias",
+                    "type": "string"
+                }
+            }
+        },
         "types.BucketDoc": {
             "type": "object",
             "properties": {
@@ -886,20 +866,7 @@ const docTemplate = `{
                 }
             }
         },
-        "types.MsgBuyAppAliasResponse": {
-            "type": "object",
-            "properties": {
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
-                },
-                "who_is": {
-                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
-                    "$ref": "#/definitions/types.WhoIs"
-                }
-            }
-        },
-        "types.MsgBuyNameAlias": {
+        "types.MsgBuyAlias": {
             "type": "object",
             "properties": {
                 "creator": {
@@ -911,12 +878,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "description": "Name is the name of the alias to be bought. i.e. {alias}.snr",
+                    "description": "Name is the name of the alias app extension to be bought. i.e. example.snr/{name}",
                     "type": "string"
                 }
             }
         },
-        "types.MsgBuyNameAliasResponse": {
+        "types.MsgBuyAliasResponse": {
             "type": "object",
             "properties": {
                 "did": {
@@ -924,7 +891,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "who_is": {
-                    "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
+                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
                     "$ref": "#/definitions/types.WhoIs"
                 }
             }
@@ -1172,7 +1139,7 @@ const docTemplate = `{
                 }
             }
         },
-        "types.MsgTransferAppAlias": {
+        "types.MsgSellAlias": {
             "type": "object",
             "properties": {
                 "alias": {
@@ -1190,14 +1157,10 @@ const docTemplate = `{
                 "did": {
                     "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
-                },
-                "recipient": {
-                    "description": "Recipient is the wallet address of the recipient of the alias.",
-                    "type": "string"
                 }
             }
         },
-        "types.MsgTransferAppAliasResponse": {
+        "types.MsgSellAliasResponse": {
             "type": "object",
             "properties": {
                 "success": {
@@ -1210,7 +1173,7 @@ const docTemplate = `{
                 }
             }
         },
-        "types.MsgTransferNameAlias": {
+        "types.MsgTransferAlias": {
             "type": "object",
             "properties": {
                 "alias": {
@@ -1235,7 +1198,7 @@ const docTemplate = `{
                 }
             }
         },
-        "types.MsgTransferNameAliasResponse": {
+        "types.MsgTransferAliasResponse": {
             "type": "object",
             "properties": {
                 "success": {
@@ -1506,7 +1469,7 @@ const docTemplate = `{
                     "description": "Alias is the list of registered ` + "`" + `alsoKnownAs` + "`" + ` identifiers of the User or Application",
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/types.Alias"
                     }
                 },
                 "controllers": {
@@ -1517,7 +1480,7 @@ const docTemplate = `{
                     }
                 },
                 "did_document": {
-                    "description": "DIDDocument is the bytes representation of DIDDocument within the WhoIs",
+                    "description": "DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.",
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -1536,7 +1499,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "type": {
-                    "description": "Type is the type of the registered name",
+                    "description": "Type is the kind of the entity. Possible values are: \"user\", \"application\"",
                     "type": "integer"
                 }
             }

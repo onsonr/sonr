@@ -5,12 +5,12 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgTransferNameAlias = "transfer_name_alias"
+const TypeMsgTransferAlias = "transfer_alias"
 
-var _ sdk.Msg = &MsgTransferNameAlias{}
+var _ sdk.Msg = &MsgTransferAlias{}
 
-func NewMsgTransferNameAlias(creator string, did string, alias string, recipient string) *MsgTransferNameAlias {
-	return &MsgTransferNameAlias{
+func NewMsgTransferAlias(creator string, did string, alias string, recipient string) *MsgTransferAlias {
+	return &MsgTransferAlias{
 		Creator:   creator,
 		Did:       did,
 		Alias:     alias,
@@ -18,15 +18,15 @@ func NewMsgTransferNameAlias(creator string, did string, alias string, recipient
 	}
 }
 
-func (msg *MsgTransferNameAlias) Route() string {
+func (msg *MsgTransferAlias) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgTransferNameAlias) Type() string {
-	return TypeMsgTransferNameAlias
+func (msg *MsgTransferAlias) Type() string {
+	return TypeMsgTransferAlias
 }
 
-func (msg *MsgTransferNameAlias) GetSigners() []sdk.AccAddress {
+func (msg *MsgTransferAlias) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -34,12 +34,12 @@ func (msg *MsgTransferNameAlias) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgTransferNameAlias) GetSignBytes() []byte {
+func (msg *MsgTransferAlias) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgTransferNameAlias) ValidateBasic() error {
+func (msg *MsgTransferAlias) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

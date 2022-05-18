@@ -13,19 +13,19 @@ export interface ProtobufAny {
   "@type"?: string;
 }
 
-export interface RegistryMsgBuyAppAliasResponse {
+export interface RegistryAlias {
+  name?: string;
+  is_for_sale?: boolean;
+
+  /** @format int32 */
+  amount?: number;
+}
+
+export interface RegistryMsgBuyAliasResponse {
   /** Did is the top level DID of the WhoIs. */
   did?: string;
 
   /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
-  who_is?: RegistryWhoIs;
-}
-
-export interface RegistryMsgBuyNameAliasResponse {
-  /** Did is the top level DID of the WhoIs. */
-  did?: string;
-
-  /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
 }
 
@@ -45,7 +45,7 @@ export interface RegistryMsgDeactivateWhoIsResponse {
   did?: string;
 }
 
-export interface RegistryMsgTransferAppAliasResponse {
+export interface RegistryMsgSellAliasResponse {
   /** Success is true if the Alias was successfully transferred. */
   success?: boolean;
 
@@ -53,7 +53,7 @@ export interface RegistryMsgTransferAppAliasResponse {
   who_is?: RegistryWhoIs;
 }
 
-export interface RegistryMsgTransferNameAliasResponse {
+export interface RegistryMsgTransferAliasResponse {
   /** Success is true if the Alias was successfully transferred. */
   success?: boolean;
 
@@ -110,7 +110,7 @@ export interface RegistryQueryWhoIsResponse {
 }
 
 export interface RegistryWhoIs {
-  alias?: string[];
+  alias?: RegistryAlias[];
 
   /** Owner is the top level DID of the User or Application derived from the multisignature wallet. */
   owner?: string;
@@ -121,6 +121,11 @@ export interface RegistryWhoIs {
    */
   did_document?: string;
   controllers?: string[];
+
+  /**
+   * - USER: User is the type of the registered name
+   *  - APPLICATION: Application is the type of the registered name
+   */
   type?: RegistryWhoIsType;
 
   /** @format int64 */
@@ -128,6 +133,10 @@ export interface RegistryWhoIs {
   is_active?: boolean;
 }
 
+/**
+* - USER: User is the type of the registered name
+ - APPLICATION: Application is the type of the registered name
+*/
 export enum RegistryWhoIsType {
   USER = "USER",
   APPLICATION = "APPLICATION",

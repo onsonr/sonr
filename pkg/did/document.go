@@ -234,6 +234,7 @@ func (d Document) IsController(controller DID) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -380,15 +381,20 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 // NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
 // It automatically encodes the provided public key based on the keyType.
 func NewVerificationMethodFromWebauthn(id DID, controller DID, cred *Credential) (*VerificationMethod, error) {
+	// Unmarshal the credential into a COSEKey for us to extract the public key interface
 	coseKey := snrcrypto.COSEKey{}
 	err := cbor.Unmarshal(cred.PublicKey, &coseKey)
 	if err != nil {
 		return nil, err
 	}
+
+	// Decode the public key from COSEKey into a crypto.PublicKey
 	pubKey, err := snrcrypto.DecodePublicKey(&coseKey)
 	if err != nil {
 		return nil, err
 	}
+
+	// Create a new VerificationMethod based on the public key
 	vm := &VerificationMethod{
 		ID:         id,
 		Type:       ssi.JsonWebKey2020,
@@ -396,7 +402,7 @@ func NewVerificationMethodFromWebauthn(id DID, controller DID, cred *Credential)
 		Credential: cred,
 	}
 
-	// Add JWK
+	// Add JWK based on the public key
 	keyAsJWK, err := jwk.New(pubKey)
 	if err != nil {
 		return nil, err

@@ -13,10 +13,7 @@ func AccAddress() string {
 	return sdk.AccAddress(addr).String()
 }
 
-/*
-	Mock Credential object from webauthn test bench
-	https://github.com/psteniusubi/webauthn-tester
-*/
+// Mock Credential object from webauthn test bench https://github.com/psteniusubi/webauthn-tester
 func CreateMockCredential() *did.Credential {
 	return &did.Credential{
 		ID:              []byte("ktIQAlFosR9OMGnyJnGthmKcIodPb323F3UqPVe9kvB-eOYrE-pNchsSuiN4ZE0ICyAaRiCb6vfF-7Y5nrvcoD-D42KQsXzhJd14ciqzibA"),

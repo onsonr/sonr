@@ -9,7 +9,7 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (k msgServer) BuyNameAlias(goCtx context.Context, msg *types.MsgBuyNameAlias) (*types.MsgBuyNameAliasResponse, error) {
+func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*types.MsgBuyAliasResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if err := types.ValidateAlias(msg.GetName()); err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (k msgServer) BuyNameAlias(goCtx context.Context, msg *types.MsgBuyNameAlia
 	doc := did.Document{}
 	err := doc.UnmarshalJSON(whois.GetDidDocument())
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "Failed to unmarshal DID document")
+		return nil, sdkerrors.Wrap(types.ErrDidDocumentInvalid, "Failed to unmarshal DID document")
 	}
 
 	// Convert owner and buyer address strings to sdk.AccAddress
@@ -44,12 +44,12 @@ func (k msgServer) BuyNameAlias(goCtx context.Context, msg *types.MsgBuyNameAlia
 	}
 
 	// Create an updated whois record
-	doc.AddAlias(types.FormatNameAlias(msg.GetName()))
+	doc.AddAlias(types.FormatAppAlias(msg.GetName()))
 	whois.CopyFromDidDocument(&doc)
 	k.SetWhoIs(ctx, whois)
 
 	// Return response
-	return &types.MsgBuyNameAliasResponse{
+	return &types.MsgBuyAliasResponse{
 		Did:   whois.Owner,
 		WhoIs: &whois,
 	}, nil

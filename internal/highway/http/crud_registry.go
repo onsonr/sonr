@@ -84,15 +84,15 @@ func (s *HighwayServer) DeactivateWhoIs(c *gin.Context) {
 
 // @Summary Buy an Alias for a User
 // @Schemes
-// @Description This method purchases a user alias .snr domain i.e. {example}.snr, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not listed as controller of DIDDoc, or WhoIs is deactivated.
+// @Description This method purchases a user alias .snr domain i.e. {example}.snr or application alias extension i.e. example.snr/{appName}, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not listed as controller of DIDDoc, or WhoIs is deactivated.
 // @Tags Registry
 // @Produce json
-// @Param 		 data body rt.MsgBuyNameAlias true "Parameters"
-// @Success 	 200  {object}  rt.MsgBuyNameAliasResponse
+// @Param 		 data body rt.MsgBuyAlias true "Parameters"
+// @Success 	 200  {object}  rt.MsgBuyAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/name [post]
-func (s *HighwayServer) BuyNameAlias(c *gin.Context) {
-	var req rt.MsgBuyNameAlias
+func (s *HighwayServer) BuyAlias(c *gin.Context) {
+	var req rt.MsgBuyAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -106,21 +106,21 @@ func (s *HighwayServer) BuyNameAlias(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary Buy an Alias for an App
+// @Summary Sell an Alias
 // @Schemes
-// @Description This method purchases an app name extension i.e. example.snr/{appname}, and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when the DIDDoc type doesnt match, wallet balance is too low, the alias has already been purchased, creator is not the owner of the app, or WhoIs is deactivated.
+// @Description This method Sets a particular owned alias by a User or Application to `true` for the IsForSale property. It also takes the amount parameter in order to define how much the user owned alias is for sale.
 // @Tags Registry
 // @Produce json
-// @Param 		 data body rt.MsgBuyNameAlias true "Parameters"
-// @Success 	 200  {object}  rt.MsgBuyAppAliasResponse
+// @Param 		 data body rt.MsgSellAlias true "Parameters"
+// @Success 	 200  {object}  rt.MsgSellAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/buy/alias/app [post]
-func (s *HighwayServer) BuyAppAlias(c *gin.Context) {
-	var req rt.MsgBuyAppAlias
+func (s *HighwayServer) SellAlias(c *gin.Context) {
+	var req rt.MsgBuyAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	resp, err := s.Cosmos.BroadcastBuyAppAlias(&req)
+	resp, err := s.Cosmos.BroadcastBuyAlias(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -130,45 +130,21 @@ func (s *HighwayServer) BuyAppAlias(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary Transfer a Name alias
+// @Summary Transfer an alias
 // @Schemes
-// @Description This method transfers an existing User .snr name Alias to the specified peer. The alias is removed from the current App's `alsoKnownAs` list and inserted into the new App's `alsoKnownAs` list.
+// @Description This method transfers an existing User .snr name or Application extension name Alias to the specified peer DIDDocument. The alias is removed from the current App or User's `alsoKnownAs` list and inserted into the new DIDDocument's `alsoKnownAs` list.
 // @Tags Registry
 // @Produce json
-// @Param 		 data body rt.MsgTransferNameAlias true "Parameters"
-// @Success      200  {object}  rt.MsgTransferNameAliasResponse
+// @Param 		 data body rt.MsgTransferAlias true "Parameters"
+// @Success      200  {object}  rt.MsgTransferAliasResponse
 // @Failure      500  {string}  message
 // @Router /v1/registry/transfer/alias/name [post]
-func (s *HighwayServer) TransferNameAlias(c *gin.Context) {
-	var req rt.MsgTransferNameAlias
+func (s *HighwayServer) TransferAlias(c *gin.Context) {
+	var req rt.MsgTransferAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	resp, err := s.Cosmos.BroadcastTransferNameAlias(&req)
-	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
-	}
-	// Return the response
-	c.JSON(http.StatusOK, resp)
-}
-
-// @Summary Transfer an App Alias
-// @Schemes
-// @Description This method transfers an existing App Alias to the specified peer. The alias is removed from the current App's `alsoKnownAs` list and inserted into the new App's `alsoKnownAs` list.
-// @Tags Registry
-// @Produce json
-// @Param 		 data body rt.MsgTransferAppAlias true "Parameters"
-// @Success      200  {object}  rt.MsgTransferAppAliasResponse
-// @Failure      500  {string}  message
-// @Router /v1/registry/transfer/alias/app [post]
-func (s *HighwayServer) TransferAppAlias(c *gin.Context) {
-	var req rt.MsgTransferAppAlias
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-	resp, err := s.Cosmos.BroadcastTransferAppAlias(&req)
+	resp, err := s.Cosmos.BroadcastTransferAlias(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -209,7 +185,7 @@ func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 // @Description FinishRegisterName finishes the registration process and returns a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential to a Sonr Account.
 // @Tags WebAuthn
 // @Produce json
-// @Success      200  {object}  did.Document
+// @Success      200  {object}   map[string]interface{}
 // @Failure      500  {string}  message
 // @Router /v1/auth/register/finish/:username [post]
 func (s *HighwayServer) FinishRegisterName(c *gin.Context) {

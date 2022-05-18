@@ -12,24 +12,25 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdBuyAppAlias() *cobra.Command {
+func CmdSellAlias() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "buy-app-alias [did] [name] ",
-		Short: "Broadcast message BuyAppAlias",
+		Use:   "transfer-app-alias [did] [alias] [recipient]",
+		Short: "Broadcast message TransferAppAlias",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argDid := args[0]
-			argName := args[1]
+			argAlias := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgBuyAppAlias(
+			msg := types.NewMsgSellAlias(
 				clientCtx.GetFromAddress().String(),
 				argDid,
-				argName,
+				argAlias,
+				0,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

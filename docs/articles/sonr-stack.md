@@ -12,7 +12,7 @@ The Sonr Node has two different modes: Motor and Highway. The Motor node operate
 
 When the node operates in Light Mode it becomes a Peer in the Sonr Network. It has methods and receives callbacks for Discovery and Transmission updates.
 
-Sonr enabled DApps or Wallets will have Discovery, Identity, and Transmission capabilities enabled by default - along with a full Motor Node. Motor Nodes automatically communicate with Highway Nodes when needed.
+Sonr enabled Apps or Wallets will have Discovery, Identity, and Transmission capabilities enabled by default - along with a full Motor Node. Motor Nodes automatically communicate with Highway Nodes when needed.
 
 ## 2. Highway
 
@@ -26,7 +26,7 @@ When the node operates in Highway Mode it works as a custodian in the Network to
 
 ### Developer SDK
 
-The Sonr Highway SDK is a cross-stack framework for developers to easily build decentralized applications (”dApps” for shorthand) on the Sonr platform. Modeled after Amazon Web Services and Google Firebase, the goal is to enable developers to build the future of applications on Web3 with ease and elegance.
+The Sonr Highway SDK is a cross-stack framework for developers to easily build decentralized applications (”Apps” for shorthand) on the Sonr platform. Modeled after Amazon Web Services and Google Firebase, the goal is to enable developers to build the future of applications on Web3 with ease and elegance.
 
 The Highway SDK consists of five unique modules:
 
