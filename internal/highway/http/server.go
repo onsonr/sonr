@@ -21,6 +21,7 @@ import (
 	"github.com/kataras/golog"
 
 	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
+	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
@@ -56,6 +57,9 @@ type HighwayServer struct {
 	channels     map[string]ctv1.Channel
 	ipfsProtocol *ipfs.IPFSProtocol
 	// matrixProtocol *matrix.MatrixProtocol
+
+	//Prometheus
+	Telemetry *metrics.HighwayTelemetry
 }
 
 // setupBaseStub creates the base Highway Server.
@@ -83,6 +87,8 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
+	metrics, err := metrics.New(ctx, node)
+
 	// TODO: Enabling Matrix Protocol breaks build for Darwin
 	// Create the Matrix Protocol
 	// matrix, err := matrix.New(ctx, node)
@@ -100,6 +106,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Webauthn:     webauthn,
 		ipfsProtocol: ipfs,
 		// matrixProtocol: matrix,
+		Telemetry: metrics,
 	}
 	return stub, nil
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	core "github.com/sonr-io/sonr/internal/highway/http"
 	"github.com/sonr-io/sonr/pkg/config"
 	swaggerfiles "github.com/swaggo/files"
@@ -62,6 +63,8 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	s.Router.GET("/metrics", gin.WrapH(s.Telemetry.GetMetricsHandler()))
 
 	// Setup HTTP Server
 	s.HTTPServer = &http.Server{

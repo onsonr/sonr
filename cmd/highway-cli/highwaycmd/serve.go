@@ -30,6 +30,7 @@ func bootstrapServeCommand(ctx context.Context) (serveCmd *cobra.Command) {
 		Short: "Starts the highwayd and launches frontend in browser.",
 
 		Run: func(cmd *cobra.Command, args []string) {
+			logger.Infof("Serving new highway instance")
 			node, err := highway.NewHighway(
 				ctx,
 				config.WithHighwayAPISettings("tcp", "localhost", GRPC_PORT, HTTP_PORT),
