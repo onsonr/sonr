@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
 
       - name: Configure Homebrew w/ cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/Library/Caches/Homebrew/foo--*
@@ -52,4 +52,4 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
