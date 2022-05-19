@@ -134,6 +134,7 @@ func SimulateMsgDeleteWhoIs(
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Did = whoIs.Owner
+		msg.DidDocument = whoIs.DidDocument
 
 		txCtx := simulation.OperationInput{
 			R:               r,
