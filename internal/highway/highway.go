@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	core "github.com/sonr-io/sonr/internal/highway/http"
 	"github.com/sonr-io/sonr/pkg/config"
 	swaggerfiles "github.com/swaggo/files"
@@ -25,10 +26,9 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 	}
 
 	// Register Cosmos HTTP Routes - Registry
-	s.Router.POST("/v1/registry/buy/alias/name", s.BuyNameAlias)
-	s.Router.POST("/v1/registry/buy/alias/app", s.BuyAppAlias)
-	s.Router.POST("/v1/registry/transfer/alias/name", s.TransferNameAlias)
-	s.Router.POST("/v1/registry/transfer/alias/app", s.TransferAppAlias)
+	s.Router.POST("/v1/registry/buy/alias", s.BuyAlias)
+	s.Router.POST("/v1/registry/sell/alias", s.SellAlias)
+	s.Router.POST("/v1/registry/transfer/alias", s.TransferAlias)
 
 	// Register Cosmos HTTP Routes - Object
 	s.Router.POST("/v1/object/create", s.CreateObject)
@@ -63,6 +63,8 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	s.Router.GET("/metrics", gin.WrapH(s.Telemetry.GetMetricsHandler()))
 
 	// Setup HTTP Server
 	s.HTTPServer = &http.Server{

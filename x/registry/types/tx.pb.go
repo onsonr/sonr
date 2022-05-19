@@ -370,124 +370,7 @@ func (m *MsgDeactivateWhoIsResponse) GetDid() string {
 	return ""
 }
 
-type MsgBuyNameAlias struct {
-	// Creator is the wallet address of the creator of the transaction.
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	// Did is the top level DID of the WhoIs.
-	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
-	// Name is the name of the alias to be bought. i.e. {alias}.snr
-	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-}
-
-func (m *MsgBuyNameAlias) Reset()         { *m = MsgBuyNameAlias{} }
-func (m *MsgBuyNameAlias) String() string { return proto.CompactTextString(m) }
-func (*MsgBuyNameAlias) ProtoMessage()    {}
-func (*MsgBuyNameAlias) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{6}
-}
-func (m *MsgBuyNameAlias) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgBuyNameAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgBuyNameAlias.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgBuyNameAlias) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgBuyNameAlias.Merge(m, src)
-}
-func (m *MsgBuyNameAlias) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgBuyNameAlias) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgBuyNameAlias.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgBuyNameAlias proto.InternalMessageInfo
-
-func (m *MsgBuyNameAlias) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *MsgBuyNameAlias) GetDid() string {
-	if m != nil {
-		return m.Did
-	}
-	return ""
-}
-
-func (m *MsgBuyNameAlias) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-type MsgBuyNameAliasResponse struct {
-	// Did is the top level DID of the WhoIs.
-	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	// WhoIs is the created WhoIs, contains the DID document and associated metadata.
-	WhoIs *WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
-}
-
-func (m *MsgBuyNameAliasResponse) Reset()         { *m = MsgBuyNameAliasResponse{} }
-func (m *MsgBuyNameAliasResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgBuyNameAliasResponse) ProtoMessage()    {}
-func (*MsgBuyNameAliasResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{7}
-}
-func (m *MsgBuyNameAliasResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgBuyNameAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgBuyNameAliasResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgBuyNameAliasResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgBuyNameAliasResponse.Merge(m, src)
-}
-func (m *MsgBuyNameAliasResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgBuyNameAliasResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgBuyNameAliasResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgBuyNameAliasResponse proto.InternalMessageInfo
-
-func (m *MsgBuyNameAliasResponse) GetDid() string {
-	if m != nil {
-		return m.Did
-	}
-	return ""
-}
-
-func (m *MsgBuyNameAliasResponse) GetWhoIs() *WhoIs {
-	if m != nil {
-		return m.WhoIs
-	}
-	return nil
-}
-
-type MsgBuyAppAlias struct {
+type MsgBuyAlias struct {
 	// Creator is the wallet address of the creator of the transaction.
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// Did is the top level DID of the WhoIs.
@@ -496,18 +379,18 @@ type MsgBuyAppAlias struct {
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
-func (m *MsgBuyAppAlias) Reset()         { *m = MsgBuyAppAlias{} }
-func (m *MsgBuyAppAlias) String() string { return proto.CompactTextString(m) }
-func (*MsgBuyAppAlias) ProtoMessage()    {}
-func (*MsgBuyAppAlias) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{8}
+func (m *MsgBuyAlias) Reset()         { *m = MsgBuyAlias{} }
+func (m *MsgBuyAlias) String() string { return proto.CompactTextString(m) }
+func (*MsgBuyAlias) ProtoMessage()    {}
+func (*MsgBuyAlias) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a79e7bbd703e66f0, []int{6}
 }
-func (m *MsgBuyAppAlias) XXX_Unmarshal(b []byte) error {
+func (m *MsgBuyAlias) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgBuyAppAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgBuyAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgBuyAppAlias.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgBuyAlias.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -517,58 +400,58 @@ func (m *MsgBuyAppAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *MsgBuyAppAlias) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgBuyAppAlias.Merge(m, src)
+func (m *MsgBuyAlias) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgBuyAlias.Merge(m, src)
 }
-func (m *MsgBuyAppAlias) XXX_Size() int {
+func (m *MsgBuyAlias) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgBuyAppAlias) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgBuyAppAlias.DiscardUnknown(m)
+func (m *MsgBuyAlias) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgBuyAlias.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgBuyAppAlias proto.InternalMessageInfo
+var xxx_messageInfo_MsgBuyAlias proto.InternalMessageInfo
 
-func (m *MsgBuyAppAlias) GetCreator() string {
+func (m *MsgBuyAlias) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgBuyAppAlias) GetDid() string {
+func (m *MsgBuyAlias) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-func (m *MsgBuyAppAlias) GetName() string {
+func (m *MsgBuyAlias) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-type MsgBuyAppAliasResponse struct {
+type MsgBuyAliasResponse struct {
 	// Did is the top level DID of the WhoIs.
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
 	// WhoIs is the updated WhoIs, contains the DID document and associated metadata.
 	WhoIs *WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
 }
 
-func (m *MsgBuyAppAliasResponse) Reset()         { *m = MsgBuyAppAliasResponse{} }
-func (m *MsgBuyAppAliasResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgBuyAppAliasResponse) ProtoMessage()    {}
-func (*MsgBuyAppAliasResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{9}
+func (m *MsgBuyAliasResponse) Reset()         { *m = MsgBuyAliasResponse{} }
+func (m *MsgBuyAliasResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgBuyAliasResponse) ProtoMessage()    {}
+func (*MsgBuyAliasResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a79e7bbd703e66f0, []int{7}
 }
-func (m *MsgBuyAppAliasResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgBuyAliasResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgBuyAppAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgBuyAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgBuyAppAliasResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgBuyAliasResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -578,33 +461,33 @@ func (m *MsgBuyAppAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *MsgBuyAppAliasResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgBuyAppAliasResponse.Merge(m, src)
+func (m *MsgBuyAliasResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgBuyAliasResponse.Merge(m, src)
 }
-func (m *MsgBuyAppAliasResponse) XXX_Size() int {
+func (m *MsgBuyAliasResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgBuyAppAliasResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgBuyAppAliasResponse.DiscardUnknown(m)
+func (m *MsgBuyAliasResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgBuyAliasResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgBuyAppAliasResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgBuyAliasResponse proto.InternalMessageInfo
 
-func (m *MsgBuyAppAliasResponse) GetDid() string {
+func (m *MsgBuyAliasResponse) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-func (m *MsgBuyAppAliasResponse) GetWhoIs() *WhoIs {
+func (m *MsgBuyAliasResponse) GetWhoIs() *WhoIs {
 	if m != nil {
 		return m.WhoIs
 	}
 	return nil
 }
 
-type MsgTransferNameAlias struct {
+type MsgTransferAlias struct {
 	// Creator is the wallet address of the creator of the transaction.
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// Did is the top level DID of the WhoIs.
@@ -617,18 +500,18 @@ type MsgTransferNameAlias struct {
 	Amount int32 `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
-func (m *MsgTransferNameAlias) Reset()         { *m = MsgTransferNameAlias{} }
-func (m *MsgTransferNameAlias) String() string { return proto.CompactTextString(m) }
-func (*MsgTransferNameAlias) ProtoMessage()    {}
-func (*MsgTransferNameAlias) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{10}
+func (m *MsgTransferAlias) Reset()         { *m = MsgTransferAlias{} }
+func (m *MsgTransferAlias) String() string { return proto.CompactTextString(m) }
+func (*MsgTransferAlias) ProtoMessage()    {}
+func (*MsgTransferAlias) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a79e7bbd703e66f0, []int{8}
 }
-func (m *MsgTransferNameAlias) XXX_Unmarshal(b []byte) error {
+func (m *MsgTransferAlias) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransferNameAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgTransferAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransferNameAlias.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgTransferAlias.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -638,72 +521,72 @@ func (m *MsgTransferNameAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *MsgTransferNameAlias) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransferNameAlias.Merge(m, src)
+func (m *MsgTransferAlias) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgTransferAlias.Merge(m, src)
 }
-func (m *MsgTransferNameAlias) XXX_Size() int {
+func (m *MsgTransferAlias) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransferNameAlias) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransferNameAlias.DiscardUnknown(m)
+func (m *MsgTransferAlias) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgTransferAlias.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransferNameAlias proto.InternalMessageInfo
+var xxx_messageInfo_MsgTransferAlias proto.InternalMessageInfo
 
-func (m *MsgTransferNameAlias) GetCreator() string {
+func (m *MsgTransferAlias) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgTransferNameAlias) GetDid() string {
+func (m *MsgTransferAlias) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-func (m *MsgTransferNameAlias) GetAlias() string {
+func (m *MsgTransferAlias) GetAlias() string {
 	if m != nil {
 		return m.Alias
 	}
 	return ""
 }
 
-func (m *MsgTransferNameAlias) GetRecipient() string {
+func (m *MsgTransferAlias) GetRecipient() string {
 	if m != nil {
 		return m.Recipient
 	}
 	return ""
 }
 
-func (m *MsgTransferNameAlias) GetAmount() int32 {
+func (m *MsgTransferAlias) GetAmount() int32 {
 	if m != nil {
 		return m.Amount
 	}
 	return 0
 }
 
-type MsgTransferNameAliasResponse struct {
+type MsgTransferAliasResponse struct {
 	// Success is true if the Alias was successfully transferred.
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// WhoIs is the updated WhoIs, contains the DID document and associated metadata.
 	WhoIs *WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
 }
 
-func (m *MsgTransferNameAliasResponse) Reset()         { *m = MsgTransferNameAliasResponse{} }
-func (m *MsgTransferNameAliasResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgTransferNameAliasResponse) ProtoMessage()    {}
-func (*MsgTransferNameAliasResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{11}
+func (m *MsgTransferAliasResponse) Reset()         { *m = MsgTransferAliasResponse{} }
+func (m *MsgTransferAliasResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgTransferAliasResponse) ProtoMessage()    {}
+func (*MsgTransferAliasResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a79e7bbd703e66f0, []int{9}
 }
-func (m *MsgTransferNameAliasResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgTransferAliasResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransferNameAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgTransferAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransferNameAliasResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgTransferAliasResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -713,57 +596,55 @@ func (m *MsgTransferNameAliasResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *MsgTransferNameAliasResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransferNameAliasResponse.Merge(m, src)
+func (m *MsgTransferAliasResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgTransferAliasResponse.Merge(m, src)
 }
-func (m *MsgTransferNameAliasResponse) XXX_Size() int {
+func (m *MsgTransferAliasResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransferNameAliasResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransferNameAliasResponse.DiscardUnknown(m)
+func (m *MsgTransferAliasResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgTransferAliasResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransferNameAliasResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgTransferAliasResponse proto.InternalMessageInfo
 
-func (m *MsgTransferNameAliasResponse) GetSuccess() bool {
+func (m *MsgTransferAliasResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *MsgTransferNameAliasResponse) GetWhoIs() *WhoIs {
+func (m *MsgTransferAliasResponse) GetWhoIs() *WhoIs {
 	if m != nil {
 		return m.WhoIs
 	}
 	return nil
 }
 
-type MsgTransferAppAlias struct {
+type MsgSellAlias struct {
 	// Creator is the wallet address of the creator of the transaction.
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// Did is the top level DID of the WhoIs.
 	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 	// Alias is the name of the app alias to be transferred to the recipient.  i.e. example.snr/{name}
 	Alias string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
-	// Recipient is the wallet address of the recipient of the alias.
-	Recipient string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
 	// Amount is the amount of the alias to be transferred.
-	Amount int32 `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty"`
+	Amount int32 `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
-func (m *MsgTransferAppAlias) Reset()         { *m = MsgTransferAppAlias{} }
-func (m *MsgTransferAppAlias) String() string { return proto.CompactTextString(m) }
-func (*MsgTransferAppAlias) ProtoMessage()    {}
-func (*MsgTransferAppAlias) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{12}
+func (m *MsgSellAlias) Reset()         { *m = MsgSellAlias{} }
+func (m *MsgSellAlias) String() string { return proto.CompactTextString(m) }
+func (*MsgSellAlias) ProtoMessage()    {}
+func (*MsgSellAlias) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a79e7bbd703e66f0, []int{10}
 }
-func (m *MsgTransferAppAlias) XXX_Unmarshal(b []byte) error {
+func (m *MsgSellAlias) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransferAppAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSellAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransferAppAlias.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSellAlias.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -773,72 +654,65 @@ func (m *MsgTransferAppAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *MsgTransferAppAlias) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransferAppAlias.Merge(m, src)
+func (m *MsgSellAlias) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSellAlias.Merge(m, src)
 }
-func (m *MsgTransferAppAlias) XXX_Size() int {
+func (m *MsgSellAlias) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransferAppAlias) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransferAppAlias.DiscardUnknown(m)
+func (m *MsgSellAlias) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSellAlias.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransferAppAlias proto.InternalMessageInfo
+var xxx_messageInfo_MsgSellAlias proto.InternalMessageInfo
 
-func (m *MsgTransferAppAlias) GetCreator() string {
+func (m *MsgSellAlias) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgTransferAppAlias) GetDid() string {
+func (m *MsgSellAlias) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-func (m *MsgTransferAppAlias) GetAlias() string {
+func (m *MsgSellAlias) GetAlias() string {
 	if m != nil {
 		return m.Alias
 	}
 	return ""
 }
 
-func (m *MsgTransferAppAlias) GetRecipient() string {
-	if m != nil {
-		return m.Recipient
-	}
-	return ""
-}
-
-func (m *MsgTransferAppAlias) GetAmount() int32 {
+func (m *MsgSellAlias) GetAmount() int32 {
 	if m != nil {
 		return m.Amount
 	}
 	return 0
 }
 
-type MsgTransferAppAliasResponse struct {
+type MsgSellAliasResponse struct {
 	// Success is true if the Alias was successfully transferred.
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// WhoIs is the updated WhoIs, contains the DID document and associated metadata.
 	WhoIs *WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
 }
 
-func (m *MsgTransferAppAliasResponse) Reset()         { *m = MsgTransferAppAliasResponse{} }
-func (m *MsgTransferAppAliasResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgTransferAppAliasResponse) ProtoMessage()    {}
-func (*MsgTransferAppAliasResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a79e7bbd703e66f0, []int{13}
+func (m *MsgSellAliasResponse) Reset()         { *m = MsgSellAliasResponse{} }
+func (m *MsgSellAliasResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSellAliasResponse) ProtoMessage()    {}
+func (*MsgSellAliasResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a79e7bbd703e66f0, []int{11}
 }
-func (m *MsgTransferAppAliasResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSellAliasResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransferAppAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSellAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransferAppAliasResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSellAliasResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -848,26 +722,26 @@ func (m *MsgTransferAppAliasResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *MsgTransferAppAliasResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransferAppAliasResponse.Merge(m, src)
+func (m *MsgSellAliasResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSellAliasResponse.Merge(m, src)
 }
-func (m *MsgTransferAppAliasResponse) XXX_Size() int {
+func (m *MsgSellAliasResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransferAppAliasResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransferAppAliasResponse.DiscardUnknown(m)
+func (m *MsgSellAliasResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSellAliasResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransferAppAliasResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSellAliasResponse proto.InternalMessageInfo
 
-func (m *MsgTransferAppAliasResponse) GetSuccess() bool {
+func (m *MsgSellAliasResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *MsgTransferAppAliasResponse) GetWhoIs() *WhoIs {
+func (m *MsgSellAliasResponse) GetWhoIs() *WhoIs {
 	if m != nil {
 		return m.WhoIs
 	}
@@ -881,59 +755,55 @@ func init() {
 	proto.RegisterType((*MsgUpdateWhoIsResponse)(nil), "sonrio.sonr.registry.MsgUpdateWhoIsResponse")
 	proto.RegisterType((*MsgDeactivateWhoIs)(nil), "sonrio.sonr.registry.MsgDeactivateWhoIs")
 	proto.RegisterType((*MsgDeactivateWhoIsResponse)(nil), "sonrio.sonr.registry.MsgDeactivateWhoIsResponse")
-	proto.RegisterType((*MsgBuyNameAlias)(nil), "sonrio.sonr.registry.MsgBuyNameAlias")
-	proto.RegisterType((*MsgBuyNameAliasResponse)(nil), "sonrio.sonr.registry.MsgBuyNameAliasResponse")
-	proto.RegisterType((*MsgBuyAppAlias)(nil), "sonrio.sonr.registry.MsgBuyAppAlias")
-	proto.RegisterType((*MsgBuyAppAliasResponse)(nil), "sonrio.sonr.registry.MsgBuyAppAliasResponse")
-	proto.RegisterType((*MsgTransferNameAlias)(nil), "sonrio.sonr.registry.MsgTransferNameAlias")
-	proto.RegisterType((*MsgTransferNameAliasResponse)(nil), "sonrio.sonr.registry.MsgTransferNameAliasResponse")
-	proto.RegisterType((*MsgTransferAppAlias)(nil), "sonrio.sonr.registry.MsgTransferAppAlias")
-	proto.RegisterType((*MsgTransferAppAliasResponse)(nil), "sonrio.sonr.registry.MsgTransferAppAliasResponse")
+	proto.RegisterType((*MsgBuyAlias)(nil), "sonrio.sonr.registry.MsgBuyAlias")
+	proto.RegisterType((*MsgBuyAliasResponse)(nil), "sonrio.sonr.registry.MsgBuyAliasResponse")
+	proto.RegisterType((*MsgTransferAlias)(nil), "sonrio.sonr.registry.MsgTransferAlias")
+	proto.RegisterType((*MsgTransferAliasResponse)(nil), "sonrio.sonr.registry.MsgTransferAliasResponse")
+	proto.RegisterType((*MsgSellAlias)(nil), "sonrio.sonr.registry.MsgSellAlias")
+	proto.RegisterType((*MsgSellAliasResponse)(nil), "sonrio.sonr.registry.MsgSellAliasResponse")
 }
 
 func init() { proto.RegisterFile("registry/v1/tx.proto", fileDescriptor_a79e7bbd703e66f0) }
 
 var fileDescriptor_a79e7bbd703e66f0 = []byte{
-	// 615 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0x41, 0x6f, 0xd3, 0x4c,
-	0x10, 0xed, 0x36, 0x4d, 0xfa, 0x65, 0x12, 0xf5, 0x2b, 0x4b, 0x54, 0x2c, 0xb7, 0x32, 0xc1, 0x2a,
-	0x92, 0x41, 0xd4, 0xa1, 0xe1, 0x8e, 0x68, 0xc8, 0x01, 0x0e, 0x41, 0x60, 0x15, 0x21, 0x71, 0x20,
-	0x72, 0xed, 0xc5, 0x59, 0x91, 0x78, 0x2d, 0xaf, 0xdd, 0x34, 0x3f, 0xa2, 0x88, 0x9f, 0xc5, 0xb1,
-	0x47, 0x8e, 0x28, 0x91, 0xf8, 0x1d, 0xc8, 0x8e, 0xed, 0x3a, 0x89, 0x13, 0x4c, 0x14, 0x4e, 0xbb,
-	0x63, 0xbf, 0x99, 0xf7, 0xde, 0x78, 0x3d, 0x5a, 0xa8, 0xb9, 0xc4, 0xa2, 0xdc, 0x73, 0x47, 0x8d,
-	0xcb, 0xd3, 0x86, 0x77, 0xa5, 0x3a, 0x2e, 0xf3, 0x18, 0xae, 0x71, 0x66, 0xbb, 0x94, 0xa9, 0xc1,
-	0xa2, 0xc6, 0x08, 0x51, 0x48, 0x63, 0x87, 0x3d, 0xd6, 0xa5, 0x7c, 0x8a, 0x97, 0xaf, 0x11, 0xec,
-	0x75, 0xb8, 0xf5, 0xd2, 0x25, 0xba, 0x47, 0x3e, 0xf4, 0xd8, 0x6b, 0x8e, 0x05, 0xd8, 0x35, 0x82,
-	0x90, 0xb9, 0x02, 0xaa, 0x23, 0xa5, 0xac, 0xc5, 0x21, 0x7e, 0x00, 0x55, 0x93, 0x9a, 0x5d, 0x93,
-	0x19, 0xfe, 0x80, 0xd8, 0x9e, 0xb0, 0x5d, 0x47, 0x4a, 0x55, 0xab, 0x98, 0xd4, 0x6c, 0x47, 0x8f,
-	0xf0, 0x73, 0x80, 0x61, 0x8f, 0x51, 0xde, 0xf5, 0x46, 0x0e, 0x11, 0x0a, 0x75, 0xa4, 0xec, 0x35,
-	0xef, 0xab, 0x59, 0xa2, 0xd4, 0x90, 0xed, 0x7c, 0xe4, 0x10, 0xad, 0x1c, 0xa6, 0x04, 0x5b, 0xf9,
-	0x13, 0x1c, 0xcc, 0xca, 0xd1, 0x08, 0x77, 0x98, 0xcd, 0x09, 0xde, 0x87, 0x82, 0x49, 0xcd, 0x48,
-	0x52, 0xb0, 0xc5, 0x4d, 0x28, 0x4d, 0xbd, 0x84, 0x42, 0x2a, 0xcd, 0xc3, 0x15, 0x3c, 0x5a, 0x71,
-	0x18, 0x2c, 0x72, 0x37, 0xb4, 0xfb, 0xde, 0x31, 0x73, 0xd8, 0x8d, 0x18, 0xb7, 0x6f, 0x19, 0xe7,
-	0x1b, 0x50, 0x58, 0x68, 0x40, 0x64, 0x20, 0x45, 0xb0, 0x61, 0x03, 0x2f, 0x00, 0x77, 0xb8, 0xd5,
-	0x26, 0xba, 0xe1, 0xd1, 0xcb, 0x75, 0x4c, 0xc8, 0xaf, 0x40, 0x5c, 0xac, 0x90, 0xa8, 0x14, 0x60,
-	0x97, 0xfb, 0x86, 0x41, 0x38, 0x0f, 0x2b, 0xfd, 0xa7, 0xc5, 0x61, 0x46, 0xa5, 0x77, 0xf0, 0x7f,
-	0x87, 0x5b, 0x2d, 0x7f, 0xf4, 0x46, 0x1f, 0x90, 0xb3, 0x3e, 0xd5, 0xff, 0xae, 0x9b, 0x18, 0x76,
-	0x6c, 0x7d, 0x30, 0x3d, 0x25, 0x65, 0x2d, 0xdc, 0xcb, 0x5d, 0xb8, 0x37, 0x57, 0x72, 0xc3, 0xfd,
-	0x7b, 0x1b, 0x1e, 0x80, 0x96, 0x3f, 0x3a, 0x73, 0x9c, 0xcd, 0x48, 0x9e, 0x7e, 0xf1, 0x54, 0xc5,
-	0x0d, 0x2b, 0xfe, 0x8a, 0xa0, 0xd6, 0xe1, 0xd6, 0xb9, 0xab, 0xdb, 0xfc, 0x33, 0x71, 0xd7, 0xeb,
-	0x75, 0x0d, 0x8a, 0x7a, 0x90, 0x14, 0x29, 0x9f, 0x06, 0xf8, 0x08, 0xca, 0x2e, 0x31, 0xa8, 0x43,
-	0x83, 0xc3, 0xbc, 0x13, 0xbe, 0xb9, 0x7d, 0x80, 0x0f, 0xa0, 0xa4, 0x0f, 0x98, 0x6f, 0x7b, 0x42,
-	0xb1, 0x8e, 0x94, 0xa2, 0x16, 0x45, 0x72, 0x1f, 0x8e, 0xb2, 0xf4, 0xe4, 0x38, 0x42, 0xeb, 0xd8,
-	0xbf, 0x46, 0x70, 0x37, 0x45, 0xb7, 0xd6, 0x67, 0xdb, 0xa4, 0xfb, 0x2f, 0x70, 0x98, 0x21, 0xe7,
-	0xdf, 0x98, 0x6f, 0xfe, 0x2a, 0x42, 0xa1, 0xc3, 0x2d, 0xac, 0x43, 0x25, 0x3d, 0xa2, 0x8f, 0xb3,
-	0x53, 0x67, 0x27, 0xa7, 0xf8, 0x24, 0x0f, 0x2a, 0x11, 0xae, 0x43, 0x25, 0x3d, 0x16, 0x97, 0x53,
-	0xa4, 0x50, 0x2b, 0x28, 0xb2, 0x26, 0x20, 0x85, 0x4a, 0x9b, 0xf4, 0x49, 0x4c, 0xa1, 0x2c, 0x4d,
-	0x9e, 0x1b, 0x4e, 0xe2, 0xd3, 0xbc, 0xc8, 0x84, 0xca, 0x84, 0xea, 0xcc, 0x5c, 0x7a, 0xb8, 0xb4,
-	0x42, 0x1a, 0x26, 0x9e, 0xe4, 0x82, 0xa5, 0x7b, 0x96, 0x9e, 0x24, 0xc7, 0xab, 0xb2, 0x63, 0xd4,
-	0x8a, 0x9e, 0x65, 0xcd, 0x10, 0x0e, 0x77, 0x16, 0xff, 0xfc, 0xc7, 0x4b, 0x4b, 0x2c, 0x60, 0xc5,
-	0x66, 0x7e, 0x6c, 0x42, 0xea, 0xc0, 0xfe, 0xc2, 0xff, 0xf6, 0xe8, 0x8f, 0x75, 0x12, 0x87, 0xa7,
-	0xb9, 0xa1, 0x31, 0x63, 0xab, 0xf5, 0x7d, 0x2c, 0xa1, 0x9b, 0xb1, 0x84, 0x7e, 0x8e, 0x25, 0xf4,
-	0x6d, 0x22, 0x6d, 0xdd, 0x4c, 0xa4, 0xad, 0x1f, 0x13, 0x69, 0xeb, 0xa3, 0x62, 0x51, 0xaf, 0xe7,
-	0x5f, 0xa8, 0x06, 0x1b, 0x34, 0x82, 0x7a, 0x27, 0x94, 0x85, 0x6b, 0xe3, 0xaa, 0x91, 0xdc, 0x6a,
-	0x82, 0xcb, 0x06, 0xbf, 0x28, 0x85, 0x57, 0x9a, 0x67, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xa8,
-	0xad, 0xce, 0xbf, 0x1a, 0x09, 0x00, 0x00,
+	// 582 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x55, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0xcd, 0x36, 0x1f, 0x6d, 0xc6, 0xa1, 0xaa, 0x96, 0xa8, 0xb2, 0x0c, 0x32, 0xa9, 0x85, 0x90,
+	0x41, 0xe0, 0x40, 0xb8, 0x23, 0x08, 0x39, 0xc0, 0xc1, 0x17, 0x53, 0x04, 0xa2, 0x12, 0x91, 0x6b,
+	0x2f, 0xf6, 0x4a, 0x89, 0xd7, 0xf2, 0x3a, 0x4d, 0xf3, 0x17, 0x90, 0x90, 0xf8, 0x59, 0x1c, 0x7b,
+	0x42, 0x1c, 0x51, 0xf2, 0x47, 0x90, 0x1d, 0xdb, 0x71, 0xd2, 0xa4, 0x75, 0xab, 0x70, 0xda, 0x1d,
+	0xe7, 0xcd, 0xbc, 0xf7, 0x26, 0xbb, 0xb3, 0xd0, 0x0c, 0x88, 0x43, 0x79, 0x18, 0x4c, 0xda, 0x67,
+	0x2f, 0xda, 0xe1, 0xb9, 0xe6, 0x07, 0x2c, 0x64, 0xb8, 0xc9, 0x99, 0x17, 0x50, 0xa6, 0x45, 0x8b,
+	0x96, 0x22, 0x24, 0x31, 0x8f, 0x1d, 0xbb, 0xac, 0x4f, 0xf9, 0x1c, 0xaf, 0xfc, 0x40, 0xb0, 0xaf,
+	0x73, 0xe7, 0x6d, 0x40, 0xcc, 0x90, 0x7c, 0x72, 0xd9, 0x7b, 0x8e, 0x45, 0xd8, 0xb5, 0xa2, 0x90,
+	0x05, 0x22, 0x6a, 0x21, 0xb5, 0x6e, 0xa4, 0x21, 0x3e, 0x82, 0x86, 0x4d, 0xed, 0xbe, 0xcd, 0xac,
+	0xd1, 0x90, 0x78, 0xa1, 0xb8, 0xd3, 0x42, 0x6a, 0xc3, 0x10, 0x6c, 0x6a, 0xf7, 0x92, 0x4f, 0xf8,
+	0x15, 0xc0, 0xd8, 0x65, 0x94, 0xf7, 0xc3, 0x89, 0x4f, 0xc4, 0x72, 0x0b, 0xa9, 0xfb, 0x9d, 0x07,
+	0xda, 0x3a, 0x51, 0x5a, 0xcc, 0x76, 0x3c, 0xf1, 0x89, 0x51, 0x8f, 0x53, 0xa2, 0xad, 0xf2, 0x15,
+	0x0e, 0x97, 0xe5, 0x18, 0x84, 0xfb, 0xcc, 0xe3, 0x04, 0x1f, 0x40, 0xd9, 0xa6, 0x76, 0x22, 0x29,
+	0xda, 0xe2, 0x0e, 0xd4, 0xe6, 0x5e, 0x62, 0x21, 0x42, 0xe7, 0xde, 0x15, 0x3c, 0x46, 0x75, 0x1c,
+	0x2d, 0x4a, 0x3f, 0xb6, 0xfb, 0xd1, 0xb7, 0x0b, 0xd8, 0x4d, 0x18, 0x77, 0x16, 0x8c, 0xab, 0x0d,
+	0x28, 0x5f, 0x6a, 0x40, 0x62, 0x20, 0x47, 0xb0, 0x65, 0x03, 0xaf, 0x01, 0xeb, 0xdc, 0xe9, 0x11,
+	0xd3, 0x0a, 0xe9, 0xd9, 0x6d, 0x4c, 0x28, 0xef, 0x40, 0xba, 0x5c, 0x21, 0x53, 0x29, 0xc2, 0x2e,
+	0x1f, 0x59, 0x16, 0xe1, 0x3c, 0xae, 0xb4, 0x67, 0xa4, 0xe1, 0x9a, 0x4a, 0x3a, 0x08, 0x3a, 0x77,
+	0xba, 0xa3, 0xc9, 0x9b, 0x01, 0x35, 0x6f, 0xd6, 0x49, 0x0c, 0x15, 0xcf, 0x1c, 0xce, 0x4f, 0x48,
+	0xdd, 0x88, 0xf7, 0xca, 0x09, 0xdc, 0xcd, 0x95, 0xdb, 0x72, 0xdf, 0xbe, 0x23, 0x38, 0xd0, 0xb9,
+	0x73, 0x1c, 0x98, 0x1e, 0xff, 0x46, 0x82, 0x9b, 0x2b, 0x6e, 0x42, 0xd5, 0x8c, 0x92, 0x12, 0xc9,
+	0xf3, 0x00, 0xdf, 0x87, 0x7a, 0x40, 0x2c, 0xea, 0xd3, 0xe8, 0x38, 0x54, 0xe2, 0x5f, 0x16, 0x1f,
+	0xf0, 0x21, 0xd4, 0xcc, 0x21, 0x1b, 0x79, 0xa1, 0x58, 0x6d, 0x21, 0xb5, 0x6a, 0x24, 0x91, 0xe2,
+	0x82, 0xb8, 0xaa, 0xa5, 0xc0, 0x1f, 0x70, 0x1b, 0xdb, 0x2e, 0x34, 0x74, 0xee, 0x7c, 0x20, 0x83,
+	0xc1, 0xb6, 0x1c, 0x2f, 0x3c, 0x55, 0x96, 0x3c, 0xd9, 0xd0, 0xcc, 0x33, 0xfd, 0x1f, 0x3f, 0x9d,
+	0xdf, 0x15, 0x28, 0xeb, 0xdc, 0xc1, 0x26, 0x08, 0xf9, 0x99, 0xf5, 0x70, 0x7d, 0xea, 0xf2, 0x28,
+	0x91, 0x9e, 0x16, 0x41, 0x65, 0xc2, 0x4d, 0x10, 0xf2, 0x73, 0x62, 0x33, 0x45, 0x0e, 0x75, 0x05,
+	0xc5, 0xba, 0x91, 0x40, 0x41, 0xe8, 0x91, 0x01, 0x49, 0x29, 0xd4, 0x8d, 0xc9, 0x2b, 0xb7, 0x55,
+	0x7a, 0x5e, 0x14, 0x99, 0x51, 0x7d, 0x86, 0xbd, 0xec, 0xa2, 0x1e, 0x6d, 0xcc, 0x4e, 0x21, 0xd2,
+	0xe3, 0x6b, 0x21, 0x59, 0xe5, 0x13, 0xa8, 0x2f, 0xce, 0x97, 0xb2, 0x31, 0x2f, 0xc3, 0x48, 0x4f,
+	0xae, 0xc7, 0x64, 0xc5, 0x1d, 0xb8, 0xb3, 0x7c, 0x65, 0x1f, 0x6d, 0x4c, 0x5e, 0xc2, 0x49, 0x5a,
+	0x31, 0x5c, 0x4a, 0xd4, 0xed, 0xfe, 0x9a, 0xca, 0xe8, 0x62, 0x2a, 0xa3, 0xbf, 0x53, 0x19, 0xfd,
+	0x9c, 0xc9, 0xa5, 0x8b, 0x99, 0x5c, 0xfa, 0x33, 0x93, 0x4b, 0x5f, 0x54, 0x87, 0x86, 0xee, 0xe8,
+	0x54, 0xb3, 0xd8, 0xb0, 0x1d, 0x15, 0x7b, 0x46, 0x59, 0xbc, 0xb6, 0xcf, 0xdb, 0xd9, 0xb3, 0x1a,
+	0xbd, 0x76, 0xfc, 0xb4, 0x16, 0xbf, 0xa9, 0x2f, 0xff, 0x05, 0x00, 0x00, 0xff, 0xff, 0x3a, 0xd6,
+	0xa3, 0x3f, 0x9b, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -951,10 +821,9 @@ type MsgClient interface {
 	CreateWhoIs(ctx context.Context, in *MsgCreateWhoIs, opts ...grpc.CallOption) (*MsgCreateWhoIsResponse, error)
 	UpdateWhoIs(ctx context.Context, in *MsgUpdateWhoIs, opts ...grpc.CallOption) (*MsgUpdateWhoIsResponse, error)
 	DeleteWhoIs(ctx context.Context, in *MsgDeactivateWhoIs, opts ...grpc.CallOption) (*MsgDeactivateWhoIsResponse, error)
-	BuyNameAlias(ctx context.Context, in *MsgBuyNameAlias, opts ...grpc.CallOption) (*MsgBuyNameAliasResponse, error)
-	BuyAppAlias(ctx context.Context, in *MsgBuyAppAlias, opts ...grpc.CallOption) (*MsgBuyAppAliasResponse, error)
-	TransferNameAlias(ctx context.Context, in *MsgTransferNameAlias, opts ...grpc.CallOption) (*MsgTransferNameAliasResponse, error)
-	TransferAppAlias(ctx context.Context, in *MsgTransferAppAlias, opts ...grpc.CallOption) (*MsgTransferAppAliasResponse, error)
+	BuyAlias(ctx context.Context, in *MsgBuyAlias, opts ...grpc.CallOption) (*MsgBuyAliasResponse, error)
+	SellAlias(ctx context.Context, in *MsgSellAlias, opts ...grpc.CallOption) (*MsgSellAliasResponse, error)
+	TransferAlias(ctx context.Context, in *MsgTransferAlias, opts ...grpc.CallOption) (*MsgTransferAliasResponse, error)
 }
 
 type msgClient struct {
@@ -992,36 +861,27 @@ func (c *msgClient) DeleteWhoIs(ctx context.Context, in *MsgDeactivateWhoIs, opt
 	return out, nil
 }
 
-func (c *msgClient) BuyNameAlias(ctx context.Context, in *MsgBuyNameAlias, opts ...grpc.CallOption) (*MsgBuyNameAliasResponse, error) {
-	out := new(MsgBuyNameAliasResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Msg/BuyNameAlias", in, out, opts...)
+func (c *msgClient) BuyAlias(ctx context.Context, in *MsgBuyAlias, opts ...grpc.CallOption) (*MsgBuyAliasResponse, error) {
+	out := new(MsgBuyAliasResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Msg/BuyAlias", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) BuyAppAlias(ctx context.Context, in *MsgBuyAppAlias, opts ...grpc.CallOption) (*MsgBuyAppAliasResponse, error) {
-	out := new(MsgBuyAppAliasResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Msg/BuyAppAlias", in, out, opts...)
+func (c *msgClient) SellAlias(ctx context.Context, in *MsgSellAlias, opts ...grpc.CallOption) (*MsgSellAliasResponse, error) {
+	out := new(MsgSellAliasResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Msg/SellAlias", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) TransferNameAlias(ctx context.Context, in *MsgTransferNameAlias, opts ...grpc.CallOption) (*MsgTransferNameAliasResponse, error) {
-	out := new(MsgTransferNameAliasResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Msg/TransferNameAlias", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) TransferAppAlias(ctx context.Context, in *MsgTransferAppAlias, opts ...grpc.CallOption) (*MsgTransferAppAliasResponse, error) {
-	out := new(MsgTransferAppAliasResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Msg/TransferAppAlias", in, out, opts...)
+func (c *msgClient) TransferAlias(ctx context.Context, in *MsgTransferAlias, opts ...grpc.CallOption) (*MsgTransferAliasResponse, error) {
+	out := new(MsgTransferAliasResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.registry.Msg/TransferAlias", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1033,10 +893,9 @@ type MsgServer interface {
 	CreateWhoIs(context.Context, *MsgCreateWhoIs) (*MsgCreateWhoIsResponse, error)
 	UpdateWhoIs(context.Context, *MsgUpdateWhoIs) (*MsgUpdateWhoIsResponse, error)
 	DeleteWhoIs(context.Context, *MsgDeactivateWhoIs) (*MsgDeactivateWhoIsResponse, error)
-	BuyNameAlias(context.Context, *MsgBuyNameAlias) (*MsgBuyNameAliasResponse, error)
-	BuyAppAlias(context.Context, *MsgBuyAppAlias) (*MsgBuyAppAliasResponse, error)
-	TransferNameAlias(context.Context, *MsgTransferNameAlias) (*MsgTransferNameAliasResponse, error)
-	TransferAppAlias(context.Context, *MsgTransferAppAlias) (*MsgTransferAppAliasResponse, error)
+	BuyAlias(context.Context, *MsgBuyAlias) (*MsgBuyAliasResponse, error)
+	SellAlias(context.Context, *MsgSellAlias) (*MsgSellAliasResponse, error)
+	TransferAlias(context.Context, *MsgTransferAlias) (*MsgTransferAliasResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -1052,17 +911,14 @@ func (*UnimplementedMsgServer) UpdateWhoIs(ctx context.Context, req *MsgUpdateWh
 func (*UnimplementedMsgServer) DeleteWhoIs(ctx context.Context, req *MsgDeactivateWhoIs) (*MsgDeactivateWhoIsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWhoIs not implemented")
 }
-func (*UnimplementedMsgServer) BuyNameAlias(ctx context.Context, req *MsgBuyNameAlias) (*MsgBuyNameAliasResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BuyNameAlias not implemented")
+func (*UnimplementedMsgServer) BuyAlias(ctx context.Context, req *MsgBuyAlias) (*MsgBuyAliasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BuyAlias not implemented")
 }
-func (*UnimplementedMsgServer) BuyAppAlias(ctx context.Context, req *MsgBuyAppAlias) (*MsgBuyAppAliasResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BuyAppAlias not implemented")
+func (*UnimplementedMsgServer) SellAlias(ctx context.Context, req *MsgSellAlias) (*MsgSellAliasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SellAlias not implemented")
 }
-func (*UnimplementedMsgServer) TransferNameAlias(ctx context.Context, req *MsgTransferNameAlias) (*MsgTransferNameAliasResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TransferNameAlias not implemented")
-}
-func (*UnimplementedMsgServer) TransferAppAlias(ctx context.Context, req *MsgTransferAppAlias) (*MsgTransferAppAliasResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TransferAppAlias not implemented")
+func (*UnimplementedMsgServer) TransferAlias(ctx context.Context, req *MsgTransferAlias) (*MsgTransferAliasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransferAlias not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1123,74 +979,56 @@ func _Msg_DeleteWhoIs_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_BuyNameAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgBuyNameAlias)
+func _Msg_BuyAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgBuyAlias)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).BuyNameAlias(ctx, in)
+		return srv.(MsgServer).BuyAlias(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.registry.Msg/BuyNameAlias",
+		FullMethod: "/sonrio.sonr.registry.Msg/BuyAlias",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).BuyNameAlias(ctx, req.(*MsgBuyNameAlias))
+		return srv.(MsgServer).BuyAlias(ctx, req.(*MsgBuyAlias))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_BuyAppAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgBuyAppAlias)
+func _Msg_SellAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSellAlias)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).BuyAppAlias(ctx, in)
+		return srv.(MsgServer).SellAlias(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.registry.Msg/BuyAppAlias",
+		FullMethod: "/sonrio.sonr.registry.Msg/SellAlias",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).BuyAppAlias(ctx, req.(*MsgBuyAppAlias))
+		return srv.(MsgServer).SellAlias(ctx, req.(*MsgSellAlias))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_TransferNameAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgTransferNameAlias)
+func _Msg_TransferAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgTransferAlias)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).TransferNameAlias(ctx, in)
+		return srv.(MsgServer).TransferAlias(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.registry.Msg/TransferNameAlias",
+		FullMethod: "/sonrio.sonr.registry.Msg/TransferAlias",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).TransferNameAlias(ctx, req.(*MsgTransferNameAlias))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_TransferAppAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgTransferAppAlias)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).TransferAppAlias(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sonrio.sonr.registry.Msg/TransferAppAlias",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).TransferAppAlias(ctx, req.(*MsgTransferAppAlias))
+		return srv.(MsgServer).TransferAlias(ctx, req.(*MsgTransferAlias))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1212,20 +1050,16 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_DeleteWhoIs_Handler,
 		},
 		{
-			MethodName: "BuyNameAlias",
-			Handler:    _Msg_BuyNameAlias_Handler,
+			MethodName: "BuyAlias",
+			Handler:    _Msg_BuyAlias_Handler,
 		},
 		{
-			MethodName: "BuyAppAlias",
-			Handler:    _Msg_BuyAppAlias_Handler,
+			MethodName: "SellAlias",
+			Handler:    _Msg_SellAlias_Handler,
 		},
 		{
-			MethodName: "TransferNameAlias",
-			Handler:    _Msg_TransferNameAlias_Handler,
-		},
-		{
-			MethodName: "TransferAppAlias",
-			Handler:    _Msg_TransferAppAlias_Handler,
+			MethodName: "TransferAlias",
+			Handler:    _Msg_TransferAlias_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1479,7 +1313,7 @@ func (m *MsgDeactivateWhoIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgBuyNameAlias) Marshal() (dAtA []byte, err error) {
+func (m *MsgBuyAlias) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1489,12 +1323,12 @@ func (m *MsgBuyNameAlias) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgBuyNameAlias) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgBuyAlias) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgBuyNameAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgBuyAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1523,7 +1357,7 @@ func (m *MsgBuyNameAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgBuyNameAliasResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgBuyAliasResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1533,12 +1367,12 @@ func (m *MsgBuyNameAliasResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgBuyNameAliasResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgBuyAliasResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgBuyNameAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgBuyAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1565,7 +1399,7 @@ func (m *MsgBuyNameAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgBuyAppAlias) Marshal() (dAtA []byte, err error) {
+func (m *MsgTransferAlias) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1575,98 +1409,12 @@ func (m *MsgBuyAppAlias) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgBuyAppAlias) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgTransferAlias) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgBuyAppAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Did)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgBuyAppAliasResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgBuyAppAliasResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgBuyAppAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.WhoIs != nil {
-		{
-			size, err := m.WhoIs.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Did)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgTransferNameAlias) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgTransferNameAlias) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgTransferNameAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgTransferAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1707,7 +1455,7 @@ func (m *MsgTransferNameAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgTransferNameAliasResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgTransferAliasResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1717,12 +1465,12 @@ func (m *MsgTransferNameAliasResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgTransferNameAliasResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgTransferAliasResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgTransferNameAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgTransferAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1752,7 +1500,7 @@ func (m *MsgTransferNameAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgTransferAppAlias) Marshal() (dAtA []byte, err error) {
+func (m *MsgSellAlias) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1762,12 +1510,12 @@ func (m *MsgTransferAppAlias) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgTransferAppAlias) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSellAlias) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgTransferAppAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSellAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1775,14 +1523,7 @@ func (m *MsgTransferAppAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Amount != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.Amount))
 		i--
-		dAtA[i] = 0x28
-	}
-	if len(m.Recipient) > 0 {
-		i -= len(m.Recipient)
-		copy(dAtA[i:], m.Recipient)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Recipient)))
-		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x20
 	}
 	if len(m.Alias) > 0 {
 		i -= len(m.Alias)
@@ -1808,7 +1549,7 @@ func (m *MsgTransferAppAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgTransferAppAliasResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSellAliasResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1818,12 +1559,12 @@ func (m *MsgTransferAppAliasResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgTransferAppAliasResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSellAliasResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgTransferAppAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSellAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1972,7 +1713,7 @@ func (m *MsgDeactivateWhoIsResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgBuyNameAlias) Size() (n int) {
+func (m *MsgBuyAlias) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1993,7 +1734,7 @@ func (m *MsgBuyNameAlias) Size() (n int) {
 	return n
 }
 
-func (m *MsgBuyNameAliasResponse) Size() (n int) {
+func (m *MsgBuyAliasResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2010,45 +1751,7 @@ func (m *MsgBuyNameAliasResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgBuyAppAlias) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Did)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgBuyAppAliasResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Did)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.WhoIs != nil {
-		l = m.WhoIs.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgTransferNameAlias) Size() (n int) {
+func (m *MsgTransferAlias) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2076,7 +1779,7 @@ func (m *MsgTransferNameAlias) Size() (n int) {
 	return n
 }
 
-func (m *MsgTransferNameAliasResponse) Size() (n int) {
+func (m *MsgTransferAliasResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2092,7 +1795,7 @@ func (m *MsgTransferNameAliasResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgTransferAppAlias) Size() (n int) {
+func (m *MsgSellAlias) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2110,17 +1813,13 @@ func (m *MsgTransferAppAlias) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Recipient)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
 	if m.Amount != 0 {
 		n += 1 + sovTx(uint64(m.Amount))
 	}
 	return n
 }
 
-func (m *MsgTransferAppAliasResponse) Size() (n int) {
+func (m *MsgSellAliasResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2877,7 +2576,7 @@ func (m *MsgDeactivateWhoIsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgBuyNameAlias) Unmarshal(dAtA []byte) error {
+func (m *MsgBuyAlias) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2900,10 +2599,10 @@ func (m *MsgBuyNameAlias) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgBuyNameAlias: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgBuyAlias: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgBuyNameAlias: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgBuyAlias: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3023,7 +2722,7 @@ func (m *MsgBuyNameAlias) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgBuyNameAliasResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgBuyAliasResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3046,10 +2745,10 @@ func (m *MsgBuyNameAliasResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgBuyNameAliasResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgBuyAliasResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgBuyNameAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgBuyAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3141,7 +2840,7 @@ func (m *MsgBuyNameAliasResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgBuyAppAlias) Unmarshal(dAtA []byte) error {
+func (m *MsgTransferAlias) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3164,274 +2863,10 @@ func (m *MsgBuyAppAlias) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgBuyAppAlias: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgTransferAlias: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgBuyAppAlias: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Did = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgBuyAppAliasResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgBuyAppAliasResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgBuyAppAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Did = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WhoIs", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.WhoIs == nil {
-				m.WhoIs = &WhoIs{}
-			}
-			if err := m.WhoIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgTransferNameAlias) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransferNameAlias: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransferNameAlias: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgTransferAlias: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3602,7 +3037,7 @@ func (m *MsgTransferNameAlias) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgTransferNameAliasResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgTransferAliasResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3625,10 +3060,10 @@ func (m *MsgTransferNameAliasResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransferNameAliasResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgTransferAliasResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransferNameAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgTransferAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3708,7 +3143,7 @@ func (m *MsgTransferNameAliasResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgTransferAppAlias) Unmarshal(dAtA []byte) error {
+func (m *MsgSellAlias) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3731,10 +3166,10 @@ func (m *MsgTransferAppAlias) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransferAppAlias: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSellAlias: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransferAppAlias: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSellAlias: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3834,38 +3269,6 @@ func (m *MsgTransferAppAlias) Unmarshal(dAtA []byte) error {
 			m.Alias = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Recipient", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Recipient = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -3905,7 +3308,7 @@ func (m *MsgTransferAppAlias) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgTransferAppAliasResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSellAliasResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3928,10 +3331,10 @@ func (m *MsgTransferAppAliasResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransferAppAliasResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSellAliasResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransferAppAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSellAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

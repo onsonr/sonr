@@ -28,17 +28,14 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgDeactivateWhoIs:
 			res, err := msgServer.DeleteWhoIs(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgBuyNameAlias:
-			res, err := msgServer.BuyNameAlias(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgBuyAlias:
+			res, err := msgServer.BuyAlias(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgBuyAppAlias:
-			res, err := msgServer.BuyAppAlias(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgSellAlias:
+			res, err := msgServer.SellAlias(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgTransferNameAlias:
-			res, err := msgServer.TransferNameAlias(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgTransferAppAlias:
-			res, err := msgServer.TransferAppAlias(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgTransferAlias:
+			res, err := msgServer.TransferAlias(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:

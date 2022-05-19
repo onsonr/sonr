@@ -10,6 +10,7 @@ import (
 var (
 	ErrInvalidPacketTimeout = sdkerrors.Register(ModuleName, 1500, "invalid packet timeout")
 	ErrInvalidVersion       = sdkerrors.Register(ModuleName, 1501, "invalid version")
+	ErrInsufficientFunds    = sdkerrors.Register(ModuleName, 1502, "insufficient funds")
 
 	// Controller
 	ErrControllerNotFound = sdkerrors.Register(ModuleName, 1401, "controller not found")

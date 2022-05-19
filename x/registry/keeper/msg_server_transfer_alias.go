@@ -7,11 +7,11 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (k msgServer) TransferNameAlias(goCtx context.Context, msg *types.MsgTransferNameAlias) (*types.MsgTransferNameAliasResponse, error) {
+func (k msgServer) TransferAlias(goCtx context.Context, msg *types.MsgTransferAlias) (*types.MsgTransferAliasResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO: Handling the message
 	_ = ctx
 
-	return &types.MsgTransferNameAliasResponse{}, nil
+	return &types.MsgTransferAliasResponse{}, nil
 }

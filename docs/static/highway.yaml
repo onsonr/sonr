@@ -1,5 +1,19 @@
 basePath: /v1
 definitions:
+  types.Alias:
+    properties:
+      amount:
+        description: Amount is the amount listed for purchasing the Alias from the
+          User/Application
+        type: integer
+      is_for_sale:
+        description: IsForSale is the boolean value indicating if the Alias is for
+          sale
+        type: boolean
+      name:
+        description: Name is the string name of an Alias
+        type: string
+    type: object
   types.BucketDoc:
     properties:
       description:
@@ -56,17 +70,7 @@ definitions:
         description: Timestamp is the time of the last update of the DID Document
         type: integer
     type: object
-  types.MsgBuyAppAliasResponse:
-    properties:
-      did:
-        description: Did is the top level DID of the WhoIs.
-        type: string
-      who_is:
-        $ref: '#/definitions/types.WhoIs'
-        description: WhoIs is the updated WhoIs, contains the DID document and associated
-          metadata.
-    type: object
-  types.MsgBuyNameAlias:
+  types.MsgBuyAlias:
     properties:
       creator:
         description: Creator is the wallet address of the creator of the transaction.
@@ -75,17 +79,18 @@ definitions:
         description: Did is the top level DID of the WhoIs.
         type: string
       name:
-        description: Name is the name of the alias to be bought. i.e. {alias}.snr
+        description: Name is the name of the alias app extension to be bought. i.e.
+          example.snr/{name}
         type: string
     type: object
-  types.MsgBuyNameAliasResponse:
+  types.MsgBuyAliasResponse:
     properties:
       did:
         description: Did is the top level DID of the WhoIs.
         type: string
       who_is:
         $ref: '#/definitions/types.WhoIs'
-        description: WhoIs is the created WhoIs, contains the DID document and associated
+        description: WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
     type: object
   types.MsgCreateBucket:
@@ -256,7 +261,7 @@ definitions:
         description: Success is true if the WhoIs was successfully deactivated.
         type: boolean
     type: object
-  types.MsgTransferAppAlias:
+  types.MsgSellAlias:
     properties:
       alias:
         description: Alias is the name of the app alias to be transferred to the recipient.  i.e.
@@ -271,11 +276,8 @@ definitions:
       did:
         description: Did is the top level DID of the WhoIs.
         type: string
-      recipient:
-        description: Recipient is the wallet address of the recipient of the alias.
-        type: string
     type: object
-  types.MsgTransferAppAliasResponse:
+  types.MsgSellAliasResponse:
     properties:
       success:
         description: Success is true if the Alias was successfully transferred.
@@ -285,7 +287,7 @@ definitions:
         description: WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
     type: object
-  types.MsgTransferNameAlias:
+  types.MsgTransferAlias:
     properties:
       alias:
         description: Alias is the name of the user domain alias to be transferred
@@ -304,7 +306,7 @@ definitions:
         description: Recipient is the wallet address of the recipient of the alias.
         type: string
     type: object
-  types.MsgTransferNameAliasResponse:
+  types.MsgTransferAliasResponse:
     properties:
       success:
         description: Success is true if the Alias was successfully transferred.
@@ -498,7 +500,7 @@ definitions:
         description: Alias is the list of registered `alsoKnownAs` identifiers of
           the User or Application
         items:
-          type: string
+          $ref: '#/definitions/types.Alias'
         type: array
       controllers:
         description: Credentials are the biometric info of the registered name and
@@ -508,7 +510,7 @@ definitions:
         type: array
       did_document:
         description: DIDDocument is the bytes representation of DIDDocument within
-          the WhoIs
+          the WhoIs. Initially marshalled as JSON.
         items:
           type: integer
         type: array
@@ -523,7 +525,8 @@ definitions:
         description: Timestamp is the time of the last update of the DID Document
         type: integer
       type:
-        description: Type is the type of the registered name
+        description: 'Type is the kind of the entity. Possible values are: "user",
+          "application"'
         type: integer
     type: object
 host: localhost:8080
@@ -896,53 +899,52 @@ paths:
       - Object
   /v1/registry/buy/alias/app:
     post:
-      description: This method purchases an app name extension i.e. example.snr/{appname},
-        and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request
-        fails when the DIDDoc type doesnt match, wallet balance is too low, the alias
-        has already been purchased, creator is not the owner of the app, or WhoIs
-        is deactivated.
+      description: This method Sets a particular owned alias by a User or Application
+        to `true` for the IsForSale property. It also takes the amount parameter in
+        order to define how much the user owned alias is for sale.
       parameters:
       - description: Parameters
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/types.MsgBuyNameAlias'
+          $ref: '#/definitions/types.MsgSellAlias'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.MsgBuyAppAliasResponse'
+            $ref: '#/definitions/types.MsgSellAliasResponse'
         "500":
           description: Internal Server Error
           schema:
             type: string
-      summary: Buy an Alias for an App
+      summary: Sell an Alias
       tags:
       - Registry
   /v1/registry/buy/alias/name:
     post:
-      description: This method purchases a user alias .snr domain i.e. {example}.snr,
-        and inserts it into the 'alsoKnownAs' field of the app's DIDDocument. Request
-        fails when the DIDDoc type doesnt match, wallet balance is too low, the alias
-        has already been purchased, creator is not listed as controller of DIDDoc,
-        or WhoIs is deactivated.
+      description: This method purchases a user alias .snr domain i.e. {example}.snr
+        or application alias extension i.e. example.snr/{appName}, and inserts it
+        into the 'alsoKnownAs' field of the app's DIDDocument. Request fails when
+        the DIDDoc type doesnt match, wallet balance is too low, the alias has already
+        been purchased, creator is not listed as controller of DIDDoc, or WhoIs is
+        deactivated.
       parameters:
       - description: Parameters
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/types.MsgBuyNameAlias'
+          $ref: '#/definitions/types.MsgBuyAlias'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.MsgBuyNameAliasResponse'
+            $ref: '#/definitions/types.MsgBuyAliasResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -1003,56 +1005,31 @@ paths:
       summary: Deactivate WhoIs Entry
       tags:
       - Registry
-  /v1/registry/transfer/alias/app:
-    post:
-      description: This method transfers an existing App Alias to the specified peer.
-        The alias is removed from the current App's `alsoKnownAs` list and inserted
-        into the new App's `alsoKnownAs` list.
-      parameters:
-      - description: Parameters
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.MsgTransferAppAlias'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.MsgTransferAppAliasResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Transfer an App Alias
-      tags:
-      - Registry
   /v1/registry/transfer/alias/name:
     post:
-      description: This method transfers an existing User .snr name Alias to the specified
-        peer. The alias is removed from the current App's `alsoKnownAs` list and inserted
-        into the new App's `alsoKnownAs` list.
+      description: This method transfers an existing User .snr name or Application
+        extension name Alias to the specified peer DIDDocument. The alias is removed
+        from the current App or User's `alsoKnownAs` list and inserted into the new
+        DIDDocument's `alsoKnownAs` list.
       parameters:
       - description: Parameters
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/types.MsgTransferNameAlias'
+          $ref: '#/definitions/types.MsgTransferAlias'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.MsgTransferNameAliasResponse'
+            $ref: '#/definitions/types.MsgTransferAliasResponse'
         "500":
           description: Internal Server Error
           schema:
             type: string
-      summary: Transfer a Name alias
+      summary: Transfer an alias
       tags:
       - Registry
   /v1/registry/update/whois:

@@ -5,7 +5,7 @@ option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 message WhoIs {
   // Alias is the list of registered `alsoKnownAs` identifiers of the User or Application
-  repeated string alias = 1;
+  repeated Alias alias = 1;
 
   // Owner is the top level DID of the User or Application derived from the multisignature wallet.
   string owner = 2;
@@ -26,7 +26,7 @@ message WhoIs {
   bool is_active = 7;
 }
 
-
+// WhoIsType is the type of DIDDocument stored in the registry module
 enum WhoIsType {
   // User is the type of the registered name
   USER = 0;
@@ -34,3 +34,17 @@ enum WhoIsType {
   // Application is the type of the registered name
   APPLICATION = 1;
 }
+
+// Alias is a message detailing a known "alsoKnownAs" identifier of a DIDDocument and contains properties for transfer/exchange
+message Alias {
+  // Name is the string name of an Alias
+  string name = 1;
+
+  // IsForSale is the boolean value indicating if the Alias is for sale
+  bool is_for_sale = 2;
+
+  // Amount is the amount listed for purchasing the Alias from the User/Application
+  int32 amount = 3;
+}
+
+

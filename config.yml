@@ -13,7 +13,7 @@ client:
     path: "web/wallet/src/store"
 faucet:
   name: bob
-  coins: ["5snr", "100000stake"]
+  coins: ["50000snr", "100000stake"]
 build:
   main: "cmd/sonrd"
   binary: "sonrd"

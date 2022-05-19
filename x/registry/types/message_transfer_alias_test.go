@@ -8,21 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgTransferAppAlias_ValidateBasic(t *testing.T) {
+func TestMsgTransferNameAlias_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgTransferAppAlias
+		msg  MsgTransferAlias
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgTransferAppAlias{
+			msg: MsgTransferAlias{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgTransferAppAlias{
+			msg: MsgTransferAlias{
 				Creator: sample.AccAddress(),
 			},
 		},

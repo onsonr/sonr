@@ -2,9 +2,6 @@ package did
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
 	"testing"
 
 	odid "github.com/ockam-network/did"
@@ -73,59 +70,12 @@ func TestParseDID(t *testing.T) {
 		assert.EqualError(t, err, "invalid DID: input does not begin with 'did:' prefix")
 
 	})
-}
+	t.Run("error - DID URL", func(t *testing.T) {
+		id, err := ParseDID("did:snr:123/path?query#fragment")
 
-func TestMustParseDID(t *testing.T) {
-	assert.Panics(t, func() {
-		MustParseDID("did:snr:123/path?query#fragment")
+		assert.Nil(t, err)
+		// After parsing the did, the parser should ignore everyhing after '/' as it is non valid did formation.
+		assert.Len(t, id.PathSegments, 1)
+		assert.Equal(t, id.IDStrings[0], "123")
 	})
-}
-
-func TestDID_String(t *testing.T) {
-	expected := "did:snr:123"
-	id, _ := ParseDID(expected)
-	assert.Equal(t, expected, fmt.Sprintf("%s", *id))
-}
-
-func TestDID_MarshalText(t *testing.T) {
-	expected := "did:snr:123"
-	id, _ := ParseDID(expected)
-	actual, err := id.MarshalText()
-	assert.NoError(t, err)
-	assert.Equal(t, []byte(expected), actual)
-}
-
-func TestDID_Empty(t *testing.T) {
-	t.Run("not empty for filled did", func(t *testing.T) {
-		id, err := ParseDID("did:snr:123")
-		if err != nil {
-			t.Errorf("unexpected error: %s", err)
-			return
-		}
-		assert.False(t, id.Empty())
-	})
-
-	t.Run("empty when just generated", func(t *testing.T) {
-		id := DID{}
-		assert.True(t, id.Empty())
-	})
-}
-
-func TestDID_URI(t *testing.T) {
-	id, err := ParseDID("did:snr:123")
-
-	if !assert.NoError(t, err) {
-		return
-	}
-
-	uri := id.URI()
-
-	assert.Equal(t, id.String(), uri.String())
-}
-
-func TestError(t *testing.T) {
-	actual := ErrInvalidDID.wrap(io.EOF)
-	assert.True(t, errors.Is(actual, ErrInvalidDID))
-	assert.True(t, errors.Is(actual, io.EOF))
-	assert.False(t, errors.Is(actual, io.ErrShortBuffer))
 }

@@ -4,6 +4,7 @@ import { util, configure, Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "sonrio.sonr.registry";
 
+/** WhoIsType is the type of DIDDocument stored in the registry module */
 export enum WhoIsType {
   /** USER - User is the type of the registered name */
   USER = 0,
@@ -40,7 +41,7 @@ export function whoIsTypeToJSON(object: WhoIsType): string {
 
 export interface WhoIs {
   /** Alias is the list of registered `alsoKnownAs` identifiers of the User or Application */
-  alias: string[];
+  alias: Alias[];
   /** Owner is the top level DID of the User or Application derived from the multisignature wallet. */
   owner: string;
   /** DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON. */
@@ -55,8 +56,17 @@ export interface WhoIs {
   is_active: boolean;
 }
 
+/** Alias is a message detailing a known "alsoKnownAs" identifier of a DIDDocument and contains properties for transfer/exchange */
+export interface Alias {
+  /** Name is the string name of an Alias */
+  name: string;
+  /** IsForSale is the boolean value indicating if the Alias is for sale */
+  is_for_sale: boolean;
+  /** Amount is the amount listed for purchasing the Alias from the User/Application */
+  amount: number;
+}
+
 const baseWhoIs: object = {
-  alias: "",
   owner: "",
   controllers: "",
   type: 0,
@@ -67,7 +77,7 @@ const baseWhoIs: object = {
 export const WhoIs = {
   encode(message: WhoIs, writer: Writer = Writer.create()): Writer {
     for (const v of message.alias) {
-      writer.uint32(10).string(v!);
+      Alias.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.owner !== "") {
       writer.uint32(18).string(message.owner);
@@ -100,7 +110,7 @@ export const WhoIs = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.alias.push(reader.string());
+          message.alias.push(Alias.decode(reader, reader.uint32()));
           break;
         case 2:
           message.owner = reader.string();
@@ -134,7 +144,7 @@ export const WhoIs = {
     message.controllers = [];
     if (object.alias !== undefined && object.alias !== null) {
       for (const e of object.alias) {
-        message.alias.push(String(e));
+        message.alias.push(Alias.fromJSON(e));
       }
     }
     if (object.owner !== undefined && object.owner !== null) {
@@ -171,7 +181,7 @@ export const WhoIs = {
   toJSON(message: WhoIs): unknown {
     const obj: any = {};
     if (message.alias) {
-      obj.alias = message.alias.map((e) => e);
+      obj.alias = message.alias.map((e) => (e ? Alias.toJSON(e) : undefined));
     } else {
       obj.alias = [];
     }
@@ -199,7 +209,7 @@ export const WhoIs = {
     message.controllers = [];
     if (object.alias !== undefined && object.alias !== null) {
       for (const e of object.alias) {
-        message.alias.push(e);
+        message.alias.push(Alias.fromPartial(e));
       }
     }
     if (object.owner !== undefined && object.owner !== null) {
@@ -231,6 +241,96 @@ export const WhoIs = {
       message.is_active = object.is_active;
     } else {
       message.is_active = false;
+    }
+    return message;
+  },
+};
+
+const baseAlias: object = { name: "", is_for_sale: false, amount: 0 };
+
+export const Alias = {
+  encode(message: Alias, writer: Writer = Writer.create()): Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.is_for_sale === true) {
+      writer.uint32(16).bool(message.is_for_sale);
+    }
+    if (message.amount !== 0) {
+      writer.uint32(24).int32(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): Alias {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseAlias } as Alias;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.is_for_sale = reader.bool();
+          break;
+        case 3:
+          message.amount = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Alias {
+    const message = { ...baseAlias } as Alias;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
+    }
+    if (object.is_for_sale !== undefined && object.is_for_sale !== null) {
+      message.is_for_sale = Boolean(object.is_for_sale);
+    } else {
+      message.is_for_sale = false;
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = Number(object.amount);
+    } else {
+      message.amount = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: Alias): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.is_for_sale !== undefined &&
+      (obj.is_for_sale = message.is_for_sale);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Alias>): Alias {
+    const message = { ...baseAlias } as Alias;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
+    }
+    if (object.is_for_sale !== undefined && object.is_for_sale !== null) {
+      message.is_for_sale = object.is_for_sale;
+    } else {
+      message.is_for_sale = false;
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = object.amount;
+    } else {
+      message.amount = 0;
     }
     return message;
   },

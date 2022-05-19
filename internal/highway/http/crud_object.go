@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kataras/go-events"
+	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
 	t "github.com/sonr-io/sonr/types"
 	ot "github.com/sonr-io/sonr/x/object/types"
 )
@@ -34,6 +36,8 @@ func (s *HighwayServer) CreateObject(c *gin.Context) {
 		})
 
 	}
+
+	defer events.Emit(metrics.ON_OBJECT_ADD, "")
 
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{
@@ -102,6 +106,8 @@ func (s *HighwayServer) DeactivateObject(c *gin.Context) {
 			"error": err.Error(),
 		})
 	}
+
+	defer events.Emit(metrics.ON_OBJECT_REMOVE, "")
 
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{

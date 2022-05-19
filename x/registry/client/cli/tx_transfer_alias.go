@@ -12,7 +12,7 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdTransferNameAlias() *cobra.Command {
+func CmdTransferAlias() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-name-alias [did] [alias] [recipient]",
 		Short: "Broadcast message TransferNameAlias",
@@ -27,7 +27,7 @@ func CmdTransferNameAlias() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgTransferNameAlias(
+			msg := types.NewMsgTransferAlias(
 				clientCtx.GetFromAddress().String(),
 				argDid,
 				argAlias,
