@@ -39,7 +39,7 @@ func SimulateMsgSellAlias(
 			WhoisType:   types.WhoIsType_USER,
 		}
 
-		txCtx := simulation.OperationInput{
+		txCreateCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
@@ -53,7 +53,7 @@ func SimulateMsgSellAlias(
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}
-		_, _, err = simulation.GenAndDeliverTxWithRandFees(txCtx)
+		_, _, err = simulation.GenAndDeliverTxWithRandFees(txCreateCtx)
 		if err != nil {
 			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
 		}
@@ -63,7 +63,7 @@ func SimulateMsgSellAlias(
 			Name:    "test",
 		}
 
-		txCtx = simulation.OperationInput{
+		txSellCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
@@ -78,7 +78,7 @@ func SimulateMsgSellAlias(
 			Bankkeeper:      bk,
 		}
 
-		_, _, err = simulation.GenAndDeliverTxWithRandFees(txCtx)
+		_, _, err = simulation.GenAndDeliverTxWithRandFees(txSellCtx)
 		if err != nil {
 			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
 		}
@@ -89,7 +89,7 @@ func SimulateMsgSellAlias(
 			Amount:  11,
 		}
 
-		txCtx = simulation.OperationInput{
+		txTransferCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
@@ -103,6 +103,7 @@ func SimulateMsgSellAlias(
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
+
+		return simulation.GenAndDeliverTxWithRandFees(txTransferCtx)
 	}
 }
