@@ -26,15 +26,19 @@ func (k msgServer) SellAlias(goCtx context.Context, msg *types.MsgSellAlias) (*t
 	}
 
 	// Find associated Alias in whoIs
-	idx, alias, err := whois.FindAliasByName(msg.GetAlias())
-	if err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrAliasNotFound, "alias %s", msg.GetAlias())
+	foundAlias := false
+	for _, a := range whois.Alias {
+		if a.GetName() == msg.GetAlias() {
+			a.IsForSale = true
+			a.Amount = msg.GetAmount()
+			foundAlias = true
+		}
 	}
 
-	// Update alias to be sold, and set amount
-	alias.IsForSale = true
-	alias.Amount = msg.GetAmount()
-	whois.Alias[idx] = alias
+	// If alias not found
+	if !foundAlias {
+		return nil, sdkerrors.Wrapf(types.ErrAliasNotFound, "Alias %s not found", msg.GetAlias())
+	}
 
 	// Update WhoIs in Keeper store
 	k.SetWhoIs(ctx, whois)

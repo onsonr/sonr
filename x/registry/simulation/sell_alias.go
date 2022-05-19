@@ -81,6 +81,7 @@ func SimulateMsgSellAlias(
 		_, _, err = simulation.GenAndDeliverTxWithRandFees(txSellCtx)
 		if err != nil {
 			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
+			return simtypes.NoOpMsg(types.ModuleName, "buyAlias", "failed to buy alias"), nil, err
 		}
 
 		sellmsg := &types.MsgSellAlias{
@@ -99,7 +100,7 @@ func SimulateMsgSellAlias(
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
+			CoinsSpentInMsg: sdk.NewCoins(),
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}

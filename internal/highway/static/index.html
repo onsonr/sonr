@@ -11,7 +11,7 @@
 
     Username:
     <br>
-    <input type="text" name="username" id="email" placeholder="i.e. foo@bar.com">
+    <input type="text" name="username" id="username" placeholder="i.e. foo@bar.com">
     <br>
     <br>
     <button onclick="registerUser()">Register</button>
@@ -43,7 +43,7 @@
 
         function registerUser() {
 
-            username = $("#email").val()
+            username = $("#username").val()
             if (username === "") {
                 alert("Please enter a username");
                 return;
@@ -104,7 +104,7 @@
 
         function loginUser() {
 
-            username = $("#email").val()
+            username = $("#username").val()
             if (username === "") {
                 alert("Please enter a username");
                 return;

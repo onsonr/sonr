@@ -1,9 +1,7 @@
 package types
 
 import (
-	"fmt"
 	"regexp"
-	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -61,18 +59,4 @@ func ValidateAlias(name string) error {
 		return sdkerrors.Wrap(ErrAliasUnavailable, "Alias must be alphanumeric")
 	}
 	return nil
-}
-
-func FormatNameAlias(alias string) string {
-	if strings.Contains(alias, ".snr") {
-		return alias
-	}
-	return fmt.Sprintf("%s.snr", alias)
-}
-
-func FormatAppAlias(alias string) string {
-	if strings.Contains(alias, "/") {
-		return alias
-	}
-	return fmt.Sprintf("/%s", alias)
 }

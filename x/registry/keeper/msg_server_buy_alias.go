@@ -45,7 +45,7 @@ func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*typ
 	}
 
 	// Create an updated whois record
-	doc.AddAlias(types.FormatAppAlias(msg.GetName()))
+	doc.AddAlias(msg.GetName())
 	whois.CopyFromDidDocument(&doc)
 	k.SetWhoIs(ctx, whois)
 
