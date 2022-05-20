@@ -45,12 +45,6 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 	s.Router.POST("/v1/channel/update", s.UpdateChannel)
 	s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
 
-	// Register WebAuthn HTTP Routes
-	s.Router.GET("/v1/auth/register/start/:username", s.StartRegisterName)
-	s.Router.POST("/v1/auth/register/finish/:username", s.FinishRegisterName)
-	s.Router.GET("/v1/auth/access/start/:username", s.StartAccessName)
-	s.Router.POST("/v1/auth/access/finish/:username", s.FinishAccessName)
-
 	// Register Blob HTTP Routes
 	s.Router.POST("/v1/blob/upload", s.UploadBlob)
 	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
@@ -63,7 +57,6 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-
 	s.Router.GET("/metrics", gin.WrapH(s.Telemetry.GetMetricsHandler()))
 
 	// Setup HTTP Server

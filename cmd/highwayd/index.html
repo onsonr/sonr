@@ -11,7 +11,7 @@
 
     Username:
     <br>
-    <input type="text" name="username" id="email" placeholder="i.e. foo@bar.com">
+    <input type="text" name="username" id="username" placeholder="i.e. foo@bar.com">
     <br>
     <br>
     <button onclick="registerUser()">Register</button>
@@ -43,14 +43,14 @@
 
         function registerUser() {
 
-            username = $("#email").val()
+            username = $("#username").val()
             if (username === "") {
                 alert("Please enter a username");
                 return;
             }
 
             $.get(
-                '/v1/auth/register/start/' + username,
+                '/register/begin/' + username,
                 null,
                 function (data) {
                     return data
@@ -77,7 +77,7 @@
                     let rawId = credential.rawId;
 
                     $.post(
-                        '/v1/auth/register/finish/' + username,
+                        '/register/finish/' + username,
                         JSON.stringify({
                             id: credential.id,
                             rawId: bufferEncode(rawId),
@@ -104,14 +104,14 @@
 
         function loginUser() {
 
-            username = $("#email").val()
+            username = $("#username").val()
             if (username === "") {
                 alert("Please enter a username");
                 return;
             }
 
             $.get(
-                '/v1/auth/access/start/' + username,
+                '/login/begin/' + username,
                 null,
                 function (data) {
                     return data
@@ -137,7 +137,7 @@
                     let userHandle = assertion.response.userHandle;
 
                     $.post(
-                        '/v1/auth/access/finish/' + username,
+                        '/login/finish/' + username,
                         JSON.stringify({
                             id: assertion.id,
                             rawId: bufferEncode(rawId),

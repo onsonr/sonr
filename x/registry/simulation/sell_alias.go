@@ -33,7 +33,7 @@ func SimulateMsgSellAlias(
 			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to marshal json document"), nil, err
 		}
 
-		msg := &types.MsgCreateWhoIs{
+		createMsg := &types.MsgCreateWhoIs{
 			Creator:     simAccount.Address.String(),
 			DidDocument: docBytes,
 			WhoisType:   types.WhoIsType_USER,
@@ -44,8 +44,8 @@ func SimulateMsgSellAlias(
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
-			Msg:             msg,
-			MsgType:         msg.Type(),
+			Msg:             createMsg,
+			MsgType:         createMsg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -58,9 +58,35 @@ func SimulateMsgSellAlias(
 			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
 		}
 
-		buymsg := &types.MsgBuyAlias{
+		buyMsg := &types.MsgBuyAlias{
 			Creator: simAccount.Address.String(),
 			Name:    "test",
+		}
+
+		txBuyCtx := simulation.OperationInput{
+			R:               r,
+			App:             app,
+			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
+			Cdc:             nil,
+			Msg:             buyMsg,
+			MsgType:         buyMsg.Type(),
+			Context:         ctx,
+			SimAccount:      simAccount,
+			ModuleName:      types.ModuleName,
+			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
+			AccountKeeper:   ak,
+			Bankkeeper:      bk,
+		}
+
+		_, _, err = simulation.GenAndDeliverTxWithRandFees(txBuyCtx)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, "buyAlias", "failed to buy alias"), nil, err
+		}
+
+		sellMsg := &types.MsgSellAlias{
+			Creator: simAccount.Address.String(),
+			Alias:   "test",
+			Amount:  11,
 		}
 
 		txSellCtx := simulation.OperationInput{
@@ -68,42 +94,16 @@ func SimulateMsgSellAlias(
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
-			Msg:             buymsg,
-			MsgType:         buymsg.Type(),
+			Msg:             sellMsg,
+			MsgType:         sellMsg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
+			CoinsSpentInMsg: sdk.NewCoins(),
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}
 
-		_, _, err = simulation.GenAndDeliverTxWithRandFees(txSellCtx)
-		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
-		}
-
-		sellmsg := &types.MsgSellAlias{
-			Creator: simAccount.Address.String(),
-			Alias:   "test",
-			Amount:  11,
-		}
-
-		txTransferCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
-			Msg:             sellmsg,
-			MsgType:         sellmsg.Type(),
-			Context:         ctx,
-			SimAccount:      simAccount,
-			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
-			AccountKeeper:   ak,
-			Bankkeeper:      bk,
-		}
-
-		return simulation.GenAndDeliverTxWithRandFees(txTransferCtx)
+		return simulation.GenAndDeliverTxWithRandFees(txSellCtx)
 	}
 }

@@ -67,6 +67,10 @@ func (w *WhoIs) GetAlsoKnownAs() []string {
 
 // AddAlsoKnownAs adds an alias to the list of aliases of the whois
 func (w *WhoIs) AddAlsoKnownAs(as []string) error {
+	if w.Alias == nil {
+		w.Alias = make([]*Alias, 0)
+	}
+
 	for _, a := range as {
 		if !w.ContainsAlias(a) {
 			w.Alias = append(w.Alias, &Alias{

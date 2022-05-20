@@ -1,9 +1,17 @@
 package core
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 
+	"github.com/fxamacker/cbor"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
+	snrcrypto "github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	t "github.com/sonr-io/sonr/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
@@ -162,22 +170,20 @@ func (s *HighwayServer) TransferAlias(c *gin.Context) {
 // @Success      200  {object}  map[string]interface{}
 // @Failure      500  {string}  message
 // @Router /v1/auth/register/start/:username [get]
-func (s *HighwayServer) StartRegisterName(c *gin.Context) {
-	if username := c.Param("username"); username != "" {
-		// Check if user exists and return error if it does
-		if exists := s.Cosmos.NameExists(username); exists {
-			c.JSON(http.StatusConflict, gin.H{"error": "username already exists"})
-		}
-
-		// Save Registration Session
-		options, err := s.Webauthn.SaveRegistrationSession(c.Request, c.Writer, username, s.Cosmos.AccountName())
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-		c.JSON(http.StatusOK, options)
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+func (s *HighwayServer) StartRegisterName(w http.ResponseWriter, r *http.Request) {
+	// get username/friendly name
+	vars := mux.Vars(r)
+	username, ok := vars["username"]
+	if !ok {
+		jsonResponse(w, fmt.Errorf("must supply a valid username i.e. foo@bar.com"), http.StatusBadRequest)
+		return
 	}
+	// Save Registration Session
+	options, err := s.Webauthn.SaveRegistrationSession(r, w, username, s.Cosmos.AccountName())
+	if err != nil {
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+	}
+	jsonResponse(w, options, http.StatusOK)
 }
 
 // @Summary Finish Register Name
@@ -188,19 +194,85 @@ func (s *HighwayServer) StartRegisterName(c *gin.Context) {
 // @Success      200  {object}   map[string]interface{}
 // @Failure      500  {string}  message
 // @Router /v1/auth/register/finish/:username [post]
-func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
+func (s *HighwayServer) FinishRegisterName(w http.ResponseWriter, r *http.Request) {
 	// get username
-	username := c.Param("username")
-	if username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+	vars := mux.Vars(r)
+	username, ok := vars["username"]
+	if !ok {
+		jsonResponse(w, fmt.Errorf("must supply a valid username i.e. foo@bar.com"), http.StatusBadRequest)
+		return
 	}
 
 	// Finish Registration Session
-	cred, err := s.Webauthn.FinishRegistrationSession(c.Request, username)
+	cred, err := s.Webauthn.FinishRegistrationSession(r, username)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Println(err)
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
 	}
-	c.JSON(http.StatusOK, cred)
+
+	// Create DID Context
+	ctxUri, err := ssi.ParseURI("https://www.w3.org/ns/did/v1")
+	if err != nil {
+		log.Println(err)
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Parse did from username
+	baseDid, err := did.ParseDID(fmt.Sprintf("did:sonr:%s", s.Cosmos.Address()))
+	if err != nil {
+		log.Println(err)
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Define Document
+	doc := did.Document{
+		ID:      *baseDid,
+		Context: []ssi.URI{*ctxUri},
+	}
+
+	// Create Controller DID with Device Info
+	controllerDid, err := did.ParseDID(fmt.Sprintf("did:sonr:%s#%s", s.Cosmos.Address(), s.Cosmos.AccountName()))
+	if err != nil {
+		log.Println(err)
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Unmarshal the credential into a COSEKey for us to extract the public key interface
+	coseKey := snrcrypto.COSEKey{}
+	err = cbor.Unmarshal(cred.PublicKey, &coseKey)
+	if err != nil {
+		log.Println(err)
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	log.Println(coseKey)
+
+	// Decode the public key from COSEKey into a crypto.PublicKey
+	pubKey, err := snrcrypto.DecodePublicKey(&coseKey)
+	if err != nil {
+		log.Println(err)
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Create verification method and add to document
+	vm, err := did.NewVerificationMethod(*baseDid, ssi.JsonWebKey2020, *controllerDid, pubKey)
+	if err != nil {
+		log.Println(err)
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	doc.AddAuthenticationMethod(vm)
+
+	log.Println(doc)
+
+	// Create DID Document from credential
+	jsonResponse(w, doc, http.StatusOK)
 }
 
 // @Summary Start Access Name
@@ -211,25 +283,26 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 // @Success      200  {object}  map[string]interface{}
 // @Failure      500  {string}  message
 // @Router /v1/auth/access/start/:username [get]
-func (s *HighwayServer) StartAccessName(c *gin.Context) {
+func (s *HighwayServer) StartAccessName(w http.ResponseWriter, r *http.Request) {
 	// get username
-	username := c.Param("username")
+	vars := mux.Vars(r)
+	username := vars["username"]
 	if username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+		jsonResponse(w, ErrMissingParam, http.StatusBadRequest)
 	}
 
 	// Check if user exists and return error if it does not
 	whoIs, err := s.Cosmos.QueryWhoIs(username)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
 	}
 
 	// Call Save to store the session data
-	options, err := s.Webauthn.SaveAuthenticationSession(c.Request, c.Writer, whoIs)
+	options, err := s.Webauthn.SaveAuthenticationSession(r, w, whoIs)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
 	}
-	c.JSON(http.StatusOK, options)
+	jsonResponse(w, options, http.StatusOK)
 }
 
 // @Summary Finish Access Name
@@ -240,19 +313,31 @@ func (s *HighwayServer) StartAccessName(c *gin.Context) {
 // @Success      200  {object}  map[string]interface{}
 // @Failure      500  {string}  message
 // @Router /v1/auth/access/finish/:username [post]
-func (s *HighwayServer) FinishAccessName(c *gin.Context) {
+func (s *HighwayServer) FinishAccessName(w http.ResponseWriter, r *http.Request) {
 	// get username
-	username := c.Param("username")
+	vars := mux.Vars(r)
+	username := vars["username"]
 	if username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username is required"})
+		jsonResponse(w, ErrMissingParam, http.StatusBadRequest)
 	}
 
 	// Finish the authentication session
-	cred, err := s.Webauthn.FinishAuthenticationSession(c.Request, username)
+	cred, err := s.Webauthn.FinishAuthenticationSession(r, username)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		jsonResponse(w, err.Error(), http.StatusBadRequest)
 	}
 
 	// handle successful login
-	c.JSON(http.StatusOK, cred)
+	jsonResponse(w, cred, http.StatusOK)
+}
+
+// from: https://github.com/duo-labs/webauthn.io/blob/3f03b482d21476f6b9fb82b2bf1458ff61a61d41/server/response.go#L15
+func jsonResponse(w http.ResponseWriter, d interface{}, c int) {
+	dj, err := json.Marshal(d)
+	if err != nil {
+		http.Error(w, "Error creating JSON response", http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(c)
+	fmt.Fprintf(w, "%s", dj)
 }
