@@ -100,16 +100,26 @@ type SonrHost interface {
 }
 
 // HostStatus is the status of the host
-type HostStatus int
+type HostStatus string
 
 // SNRHostStatus Definitions
 const (
-	Status_IDLE       HostStatus = iota // Host is idle, default state
-	Status_STANDBY                      // Host is standby, waiting for connection
-	Status_CONNECTING                   // Host is connecting
-	Status_READY                        // Host is ready
-	Status_FAIL                         // Host failed to connect
-	Status_CLOSED                       // Host is closed
+	Status_IDLE       HostStatus = "IDLE"
+	Status_STANDBY    HostStatus = "STANDBY"    // Host is standby, waiting for connection
+	Status_CONNECTING HostStatus = "CONNECTING" // Host is connecting
+	Status_READY      HostStatus = "READY"      // Host is ready
+	Status_FAIL       HostStatus = "FAILURE"    // Host failed to connect
+	Status_CLOSED     HostStatus = "CLOSED"     // Host is closed
+)
+
+var (
+	//state mapings
+	STATE_MAPPINGS = map[HostStatus][]HostStatus{
+		Status_IDLE:       {Status_STANDBY, Status_CLOSED},
+		Status_STANDBY:    {Status_READY, Status_CLOSED},
+		Status_CONNECTING: {Status_READY, Status_FAIL, Status_CLOSED},
+		Status_READY:      {Status_STANDBY, Status_CLOSED},
+	}
 )
 
 // Equals returns true if given SNRHostStatus matches this one
@@ -149,21 +159,7 @@ func (s HostStatus) IsClosed() bool {
 
 // String returns the string representation of the SNRHostStatus
 func (s HostStatus) String() string {
-	switch s {
-	case Status_IDLE:
-		return "IDLE"
-	case Status_STANDBY:
-		return "STANDBY"
-	case Status_CONNECTING:
-		return "CONNECTING"
-	case Status_READY:
-		return "READY"
-	case Status_FAIL:
-		return "FAIL"
-	case Status_CLOSED:
-		return "CLOSED"
-	}
-	return "UNKNOWN"
+	return s.String()
 }
 
 // SetStatus sets the host status and emits the event
@@ -172,9 +168,12 @@ func (h *hostImpl) SetStatus(s HostStatus) {
 	if h.status == s {
 		return
 	}
-
-	// Update Status
-	h.status = s
+	status_bucket := STATE_MAPPINGS[h.status]
+	for _, status := range status_bucket {
+		if status == s {
+			h.status = s
+		}
+	}
 }
 
 // Close closes the node
