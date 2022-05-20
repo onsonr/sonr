@@ -1,9 +1,12 @@
 package core
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	t "github.com/sonr-io/sonr/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
@@ -200,7 +203,52 @@ func (s *HighwayServer) FinishRegisterName(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	c.JSON(http.StatusOK, cred)
+
+	// Convert to DID Credential
+	webauthnCred := did.Credential{
+		ID:              cred.ID,
+		PublicKey:       cred.PublicKey,
+		AttestationType: cred.AttestationType,
+		Authenticator: did.Authenticator{
+			AAGUID:       cred.Authenticator.AAGUID,
+			SignCount:    cred.Authenticator.SignCount,
+			CloneWarning: cred.Authenticator.CloneWarning,
+		},
+	}
+
+	// Create DID Context
+	ctxUri, err := ssi.ParseURI("https://www.w3.org/ns/did/v1")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// Parse did from username
+	baseDid, err := did.ParseDID(fmt.Sprintf("did:sonr:%s", username))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// Define Document
+	doc := did.Document{
+		ID:      *baseDid,
+		Context: []ssi.URI{*ctxUri},
+	}
+
+	// Create Controller DID with Device Info
+	controllerDid, err := did.ParseDID(fmt.Sprintf("did:sonr:%s", cred.ID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// Create verification method and add to document
+	vm, err := did.NewVerificationMethodFromWebauthn(*baseDid, *controllerDid, &webauthnCred)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	doc.AddAuthenticationMethod(vm)
+
+	// Create DID Document from credential
+	c.JSON(http.StatusOK, doc)
 }
 
 // @Summary Start Access Name
