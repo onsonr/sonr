@@ -7,11 +7,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/cloudflare/cfssl/log"
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/protocol"
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/sonr/pkg/config"
+	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	rtv1 "github.com/sonr-io/sonr/x/registry/types"
 )
 
@@ -91,16 +94,19 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 
 	sessionData, err := w.sessions.GetWebauthnSession(REGISTRATION_SESSION_KEY, r)
 	if err != nil {
+		log.Errorf("error finishing registration: %s", err)
 		return nil, err
 	}
 
 	doc, err := whois.UnmarshalDidDocument()
 	if err != nil {
+		log.Errorf("error finishing registration: %s", err)
 		return nil, err
 	}
 
 	credential, err := w.instance.FinishRegistration(doc, sessionData, r)
 	if err != nil {
+		log.Errorf("error finishing registration: %s", err)
 		return nil, err
 	}
 	return credential, nil
@@ -121,7 +127,7 @@ func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseW
 	}
 
 	// store session data as marshaled JSON
-	err = wan.sessions.SaveWebauthnSession("authentication", sessionData, r, w)
+	err = wan.sessions.SaveWebauthnSession(AUTHENTICATION_SESSION_KEY, sessionData, r, w)
 	if err != nil {
 		return nil, err
 	}
@@ -136,23 +142,26 @@ func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWri
 
 	doc, err := whoIs.UnmarshalDidDocument()
 	if err != nil {
+		log.Errorf("error finishing registration: %s", err)
 		return nil, err
 	}
 
 	// generate PublicKeyCredentialCreationOptions, session data
 	options, sessionData, err := wan.instance.BeginRegistration(
 		doc,
-		// registerOptions(whoIs),
+		registerOptions(whoIs),
 		webauthn.WithAuthenticatorSelection(authSelect()),
 		webauthn.WithConveyancePreference(conveyancePreference()),
 	)
 	if err != nil {
+		log.Errorf("error finishing registration: %s", err)
 		return nil, err
 	}
 
 	// store session data as marshaled JSON
-	err = wan.sessions.SaveWebauthnSession("registration", sessionData, r, w)
+	err = wan.sessions.SaveWebauthnSession(REGISTRATION_SESSION_KEY, sessionData, r, w)
 	if err != nil {
+		log.Errorf("error finishing registration: %s", err)
 		return nil, err
 	}
 	return options, nil
@@ -171,15 +180,35 @@ func authenticationCacheKey(username string) string {
 func authSelect() protocol.AuthenticatorSelection {
 	return protocol.AuthenticatorSelection{
 		AuthenticatorAttachment: protocol.AuthenticatorAttachment("platform"),
-		RequireResidentKey:      protocol.ResidentKeyUnrequired(),
+		RequireResidentKey:      protocol.ResidentKeyRequired(),
 		UserVerification:        protocol.VerificationRequired,
 	}
 }
 
 // blankWhoIs is a helper function to create a blank WhoIs
 func blankWhoIs(username, creator string) *rtv1.WhoIs {
+	didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", creator))
+	if err != nil {
+		return nil
+	}
+	ctxUri, err := ssi.ParseURI("https://www.w3.org/ns/did/v1")
+	if err != nil {
+		return nil
+	}
+
+	doc := did.Document{
+		ID:      *didUrl,
+		Context: []ssi.URI{*ctxUri},
+	}
+
+	docBuf, err := doc.MarshalJSON()
+	if err != nil {
+		return nil
+	}
+
 	return &rtv1.WhoIs{
-		Owner: creator,
+		Owner:       creator,
+		DidDocument: docBuf,
 	}
 }
 
@@ -193,13 +222,13 @@ func registerCacheKey(username string) string {
 	return fmt.Sprintf("%s_registration", username)
 }
 
-// // registerOptions is a helper function to create a PublicKeyCredentialCreationOptions
-// func registerOptions(whois *rtv1.WhoIs) func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-// 	return func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-// 		doc, err := whois.UnmarshalDidDocument()
-// 		if err != nil {
-// 			return
-// 		}
-// 		credCreationOpts.CredentialExcludeList = doc.CredentialExcludeList()
-// 	}
-// }
+// registerOptions is a helper function to create a PublicKeyCredentialCreationOptions
+func registerOptions(whois *rtv1.WhoIs) func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
+	return func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
+		doc, err := whois.UnmarshalDidDocument()
+		if err != nil {
+			return
+		}
+		credCreationOpts.CredentialExcludeList = doc.WebAuthnCredentialExcludeList()
+	}
+}

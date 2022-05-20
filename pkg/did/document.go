@@ -7,15 +7,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/fxamacker/cbor"
-	snrcrypto "github.com/sonr-io/sonr/pkg/crypto"
-
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/shengdoushi/base58"
-
+	"github.com/duo-labs/webauthn/protocol"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
 )
 
@@ -378,51 +375,6 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	return vm, nil
 }
 
-// NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
-// It automatically encodes the provided public key based on the keyType.
-func NewVerificationMethodFromWebauthn(id DID, controller DID, cred *Credential) (*VerificationMethod, error) {
-	// Unmarshal the credential into a COSEKey for us to extract the public key interface
-	coseKey := snrcrypto.COSEKey{}
-	err := cbor.Unmarshal(cred.PublicKey, &coseKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the public key from COSEKey into a crypto.PublicKey
-	pubKey, err := snrcrypto.DecodePublicKey(&coseKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create a new VerificationMethod based on the public key
-	vm := &VerificationMethod{
-		ID:         id,
-		Type:       ssi.JsonWebKey2020,
-		Controller: controller,
-		Credential: cred,
-	}
-
-	// Add JWK based on the public key
-	keyAsJWK, err := jwk.New(pubKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Convert to JSON and back to fix encoding of key material to make sure
-	keyAsJSON, err := json.Marshal(keyAsJWK)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create Key as Map
-	keyAsMap := map[string]interface{}{}
-	json.Unmarshal(keyAsJSON, &keyAsMap)
-
-	// Set JWK
-	vm.PublicKeyJwk = keyAsMap
-	return vm, nil
-}
-
 // JWK returns the key described by the VerificationMethod as JSON Web Key.
 func (v VerificationMethod) JWK() (jwk.Key, error) {
 	if v.Credential != nil {
@@ -550,7 +502,7 @@ func (w *Document) WebAuthnName() string {
 
 // Display Name of the user
 func (w *Document) WebAuthnDisplayName() string {
-	return w.Controller[0].ID
+	return w.ID.ID
 }
 
 // User's icon url
@@ -614,3 +566,18 @@ func (w *Document) WebAuthnCredentials() []webauthn.Credential {
 //         fmt.Printf("%s\t%v\n", key, value)
 //     }
 // }
+
+// CredentialExcludeList returns a CredentialDescriptor array filled
+// with all the user's credentials
+func (w *Document) WebAuthnCredentialExcludeList() []protocol.CredentialDescriptor {
+	credentialExcludeList := []protocol.CredentialDescriptor{}
+	for _, cred := range w.WebAuthnCredentials() {
+		descriptor := protocol.CredentialDescriptor{
+			Type:         protocol.PublicKeyCredentialType,
+			CredentialID: cred.ID,
+		}
+		credentialExcludeList = append(credentialExcludeList, descriptor)
+	}
+
+	return credentialExcludeList
+}

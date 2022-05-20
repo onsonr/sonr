@@ -50,7 +50,7 @@
             }
 
             $.get(
-                '/v1/auth/register/start/' + username,
+                '/register/begin/' + username,
                 null,
                 function (data) {
                     return data
@@ -77,7 +77,7 @@
                     let rawId = credential.rawId;
 
                     $.post(
-                        '/v1/auth/register/finish/' + username,
+                        '/register/finish/' + username,
                         JSON.stringify({
                             id: credential.id,
                             rawId: bufferEncode(rawId),
@@ -111,7 +111,7 @@
             }
 
             $.get(
-                '/v1/auth/access/start/' + username,
+                '/login/begin/' + username,
                 null,
                 function (data) {
                     return data
@@ -137,7 +137,7 @@
                     let userHandle = assertion.response.userHandle;
 
                     $.post(
-                        '/v1/auth/access/finish/' + username,
+                        '/login/finish/' + username,
                         JSON.stringify({
                             id: assertion.id,
                             rawId: bufferEncode(rawId),
