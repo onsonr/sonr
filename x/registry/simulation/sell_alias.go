@@ -33,7 +33,7 @@ func SimulateMsgSellAlias(
 			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to marshal json document"), nil, err
 		}
 
-		createMsg := &types.MsgCreateWhoIs{
+		msg := &types.MsgCreateWhoIs{
 			Creator:     simAccount.Address.String(),
 			DidDocument: docBytes,
 			WhoisType:   types.WhoIsType_USER,
@@ -44,8 +44,8 @@ func SimulateMsgSellAlias(
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
-			Msg:             createMsg,
-			MsgType:         createMsg.Type(),
+			Msg:             msg,
+			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -58,18 +58,18 @@ func SimulateMsgSellAlias(
 			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
 		}
 
-		buyMsg := &types.MsgBuyAlias{
+		buymsg := &types.MsgBuyAlias{
 			Creator: simAccount.Address.String(),
 			Name:    "test",
 		}
 
-		txBuyCtx := simulation.OperationInput{
+		txSellCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
-			Msg:             buyMsg,
-			MsgType:         buyMsg.Type(),
+			Msg:             buymsg,
+			MsgType:         buymsg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -78,32 +78,32 @@ func SimulateMsgSellAlias(
 			Bankkeeper:      bk,
 		}
 
-		_, _, err = simulation.GenAndDeliverTxWithRandFees(txBuyCtx)
+		_, _, err = simulation.GenAndDeliverTxWithRandFees(txSellCtx)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, "buyAlias", "failed to buy alias"), nil, err
+			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
 		}
 
-		sellMsg := &types.MsgSellAlias{
+		sellmsg := &types.MsgSellAlias{
 			Creator: simAccount.Address.String(),
 			Alias:   "test",
 			Amount:  11,
 		}
 
-		txSellCtx := simulation.OperationInput{
+		txTransferCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
-			Msg:             sellMsg,
-			MsgType:         sellMsg.Type(),
+			Msg:             sellmsg,
+			MsgType:         sellmsg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(),
+			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}
 
-		return simulation.GenAndDeliverTxWithRandFees(txSellCtx)
+		return simulation.GenAndDeliverTxWithRandFees(txTransferCtx)
 	}
 }
