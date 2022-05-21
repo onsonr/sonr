@@ -5,20 +5,20 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgCreateObject } from "./types/object/v1/tx";
-import { MsgDeactivateObject } from "./types/object/v1/tx";
-import { MsgUpdateObject } from "./types/object/v1/tx";
+import { MsgUpdateWhatIs } from "./types/object/v1/tx";
 import { MsgDeleteWhatIs } from "./types/object/v1/tx";
 import { MsgCreateWhatIs } from "./types/object/v1/tx";
-import { MsgUpdateWhatIs } from "./types/object/v1/tx";
+import { MsgUpdateObject } from "./types/object/v1/tx";
+import { MsgDeactivateObject } from "./types/object/v1/tx";
 
 
 const types = [
   ["/sonrio.sonr.object.MsgCreateObject", MsgCreateObject],
-  ["/sonrio.sonr.object.MsgDeactivateObject", MsgDeactivateObject],
-  ["/sonrio.sonr.object.MsgUpdateObject", MsgUpdateObject],
+  ["/sonrio.sonr.object.MsgUpdateWhatIs", MsgUpdateWhatIs],
   ["/sonrio.sonr.object.MsgDeleteWhatIs", MsgDeleteWhatIs],
   ["/sonrio.sonr.object.MsgCreateWhatIs", MsgCreateWhatIs],
-  ["/sonrio.sonr.object.MsgUpdateWhatIs", MsgUpdateWhatIs],
+  ["/sonrio.sonr.object.MsgUpdateObject", MsgUpdateObject],
+  ["/sonrio.sonr.object.MsgDeactivateObject", MsgDeactivateObject],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -52,11 +52,11 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
     msgCreateObject: (data: MsgCreateObject): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgCreateObject", value: MsgCreateObject.fromPartial( data ) }),
-    msgDeactivateObject: (data: MsgDeactivateObject): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgDeactivateObject", value: MsgDeactivateObject.fromPartial( data ) }),
-    msgUpdateObject: (data: MsgUpdateObject): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgUpdateObject", value: MsgUpdateObject.fromPartial( data ) }),
+    msgUpdateWhatIs: (data: MsgUpdateWhatIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgUpdateWhatIs", value: MsgUpdateWhatIs.fromPartial( data ) }),
     msgDeleteWhatIs: (data: MsgDeleteWhatIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgDeleteWhatIs", value: MsgDeleteWhatIs.fromPartial( data ) }),
     msgCreateWhatIs: (data: MsgCreateWhatIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgCreateWhatIs", value: MsgCreateWhatIs.fromPartial( data ) }),
-    msgUpdateWhatIs: (data: MsgUpdateWhatIs): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgUpdateWhatIs", value: MsgUpdateWhatIs.fromPartial( data ) }),
+    msgUpdateObject: (data: MsgUpdateObject): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgUpdateObject", value: MsgUpdateObject.fromPartial( data ) }),
+    msgDeactivateObject: (data: MsgDeactivateObject): EncodeObject => ({ typeUrl: "/sonrio.sonr.object.MsgDeactivateObject", value: MsgDeactivateObject.fromPartial( data ) }),
     
   };
 };
