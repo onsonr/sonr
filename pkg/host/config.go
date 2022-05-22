@@ -99,69 +99,6 @@ type SonrHost interface {
 	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
 }
 
-// HostStatus is the status of the host
-type HostStatus string
-
-// SNRHostStatus Definitions
-const (
-	Status_IDLE       HostStatus = "IDLE"
-	Status_STANDBY    HostStatus = "STANDBY"    // Host is standby, waiting for connection
-	Status_CONNECTING HostStatus = "CONNECTING" // Host is connecting
-	Status_READY      HostStatus = "READY"      // Host is ready
-	Status_FAIL       HostStatus = "FAILURE"    // Host failed to connect
-	Status_CLOSED     HostStatus = "CLOSED"     // Host is closed
-)
-
-var (
-	//state mapings
-	STATE_MAPPINGS = map[HostStatus][]HostStatus{
-		Status_IDLE:       {Status_STANDBY, Status_CLOSED},
-		Status_STANDBY:    {Status_READY, Status_CLOSED},
-		Status_CONNECTING: {Status_READY, Status_FAIL, Status_CLOSED},
-		Status_READY:      {Status_STANDBY, Status_CLOSED},
-	}
-)
-
-// Equals returns true if given SNRHostStatus matches this one
-func (s HostStatus) Equals(other HostStatus) bool {
-	return s == other
-}
-
-// IsNotIdle returns true if the SNRHostStatus != Status_IDLE
-func (s HostStatus) IsNotIdle() bool {
-	return s != Status_IDLE
-}
-
-// IsStandby returns true if the SNRHostStatus == Status_STANDBY
-func (s HostStatus) IsStandby() bool {
-	return s == Status_STANDBY
-}
-
-// IsReady returns true if the SNRHostStatus == Status_READY
-func (s HostStatus) IsReady() bool {
-	return s == Status_READY
-}
-
-// IsConnecting returns true if the SNRHostStatus == Status_CONNECTING
-func (s HostStatus) IsConnecting() bool {
-	return s == Status_CONNECTING
-}
-
-// IsFail returns true if the SNRHostStatus == Status_FAIL
-func (s HostStatus) IsFail() bool {
-	return s == Status_FAIL
-}
-
-// IsClosed returns true if the SNRHostStatus == Status_CLOSED
-func (s HostStatus) IsClosed() bool {
-	return s == Status_CLOSED
-}
-
-// String returns the string representation of the SNRHostStatus
-func (s HostStatus) String() string {
-	return s.String()
-}
-
 // SetStatus sets the host status and emits the event
 func (h *hostImpl) SetStatus(s HostStatus) {
 	// Check if status is changed
