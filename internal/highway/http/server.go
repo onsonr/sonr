@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 	"github.com/kataras/golog"
 
 	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
@@ -50,7 +51,8 @@ type HighwayServer struct {
 	Webauthn *client.WebAuthn
 
 	// Http Properties
-	Router     *gin.Engine
+	Router     *mux.Router
+	Engine     *gin.Engine
 	HTTPServer *http.Server
 
 	// Protocols
@@ -101,7 +103,8 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Cosmos:       cosmos,
 		Host:         node,
 		ctx:          ctx,
-		Router:       gin.Default(),
+		Router:       mux.NewRouter(),
+		Engine:       gin.Default(),
 		Config:       c,
 		Webauthn:     webauthn,
 		ipfsProtocol: ipfs,
@@ -116,10 +119,18 @@ func (s *HighwayServer) Serve() {
 	// Print the Server Address's
 	logger.Infof("Serving HTTP Server on %s", s.Config.HighwayHTTPEndpoint)
 
-	// Start HTTP server on a separate goroutine
+	// Start Highway HTTP server on a separate goroutine
 	go func() {
 		// Start HTTP server (and proxy calls to gRPC server endpoint)
 		if err := s.HTTPServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Fatalf("%s - Failed to start HTTP server", err)
+		}
+	}()
+
+	// Start Webauthn HTTP server on a separate goroutine
+	go func() {
+		// Start HTTP server (and proxy calls to gRPC server endpoint)
+		if err := http.ListenAndServe(s.Config.WebAuthNAddress, s.Router); err != nil && err != http.ErrServerClosed {
 			logger.Fatalf("%s - Failed to start HTTP server", err)
 		}
 	}()

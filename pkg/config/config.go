@@ -47,6 +47,8 @@ type Config struct {
 	HighwayHTTPEndpoint string
 
 	// WebAuthn
+	WebAuthNAddress       string
+	WebAuthNFSDir         string
 	WebAuthNRPDisplayName string
 	WebAuthNRPID          string
 	WebAuthNRPOrigin      string
@@ -123,9 +125,11 @@ func DefaultConfig(r Role) *Config {
 		Libp2pRendezvous:         "/sonr/rendevouz/0.9.2",
 		Libp2pInterval:           time.Second * 5,
 		Libp2pTTL:                dscl.TTL(time.Minute * 2),
+		WebAuthNAddress:          ":8080",
+		WebAuthNFSDir:            "./templates/",
 		WebAuthNRPDisplayName:    "Sonr",
 		WebAuthNRPID:             "localhost",
-		WebAuthNRPOrigin:         "http://localhost:8081",
+		WebAuthNRPOrigin:         "http://localhost:8080",
 		WebAuthNRPIcon:           "",
 		WebAuthNDebug:            true,
 		CosmosAccountName:        "alice",
