@@ -28,7 +28,13 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	}
 
 	// Create the new buffer
-	didDocBuf, err := doc.MarshalJSON()
+	didDocBuf, err := doc.GetDocument().MarshalJSON()
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
+	// Create Sonr DID Doc to store in WhoIs
+	sonrDidDoc, err := types.NewDIDDocumentFromBytes(didDocBuf)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
@@ -36,7 +42,7 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	// TODO: Implement Multisig for root level owner #322
 	var whoIs = types.WhoIs{
 		Owner:       msg.Creator,
-		DidDocument: didDocBuf,
+		DidDocument: sonrDidDoc,
 		Type:        msg.WhoisType,
 		Controllers: doc.ControllersAsString(),
 		IsActive:    true,
@@ -94,14 +100,16 @@ func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactiva
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
+	sonrDidDoc, err := types.NewDIDDocumentFromPkg(doc.GetDocument())
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
 	// Deactivates the element
 	val.IsActive = false
 	val.Timestamp = time.Now().Unix()
 	val.Alias = make([]*types.Alias, 0)
-	val.DidDocument, err = doc.MarshalJSON()
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
-	}
+	val.DidDocument = sonrDidDoc
 	k.SetWhoIs(ctx, val)
 	return &types.MsgDeactivateWhoIsResponse{}, nil
 }

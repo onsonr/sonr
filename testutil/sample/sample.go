@@ -35,7 +35,7 @@ func CreateMockCredential() *did.Credential {
 }
 
 // CreateMockDidDocument creates a mock did document for testing
-func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
+func CreateMockDidDocument(simAccount simtypes.Account) (did.Document, error) {
 	rawCreator := simAccount.Address.String()
 
 	// Trim snr account prefix
@@ -49,10 +49,11 @@ func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
 	}
 
 	// UnmarshalJSON from DID document
-	doc, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
+	docI, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
 		return nil, err
 	}
+	doc := docI.GetDocument()
 
 	//webauthncred := CreateMockCredential()
 	pubKey, _, err := ed.GenerateKey(cryptrand.Reader)
@@ -60,11 +61,11 @@ func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
 		return nil, err
 	}
 
-	didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", simAccount.Address.String()))
+	didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
 		return nil, err
 	}
-	didController, err := did.ParseDID(fmt.Sprintf("did:snr:%s#test", simAccount.Address.String()))
+	didController, err := did.ParseDID(fmt.Sprintf("did:snr:%s#test", rawCreator))
 	if err != nil {
 		return nil, err
 	}
@@ -75,5 +76,5 @@ func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
 	}
 
 	doc.AddAuthenticationMethod(vm)
-	return doc, nil
+	return doc.GetDocument(), nil
 }

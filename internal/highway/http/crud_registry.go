@@ -23,12 +23,16 @@ func (s *HighwayServer) CreateWhoIs(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+
+		return
 	}
 	resp, err := s.Cosmos.BroadcastCreateWhoIs(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, resp)
@@ -47,12 +51,16 @@ func (s *HighwayServer) UpdateWhoIs(c *gin.Context) {
 	var req rt.MsgUpdateWhoIs
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
 	}
 	resp, err := s.Cosmos.BroadcastUpdateWhoIs(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, resp)
@@ -71,12 +79,16 @@ func (s *HighwayServer) DeactivateWhoIs(c *gin.Context) {
 	var req rt.MsgDeactivateWhoIs
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
 	}
 	resp, err := s.Cosmos.BroadcastDeactivateWhoIs(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, resp)
@@ -95,12 +107,16 @@ func (s *HighwayServer) BuyAlias(c *gin.Context) {
 	var req rt.MsgBuyAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
 	}
 	resp, err := s.Cosmos.BroadcastBuyNameAlias(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, resp)
@@ -119,12 +135,16 @@ func (s *HighwayServer) SellAlias(c *gin.Context) {
 	var req rt.MsgBuyAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
 	}
 	resp, err := s.Cosmos.BroadcastBuyAlias(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, resp)
@@ -143,12 +163,16 @@ func (s *HighwayServer) TransferAlias(c *gin.Context) {
 	var req rt.MsgTransferAlias
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
 	}
 	resp, err := s.Cosmos.BroadcastTransferAlias(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, resp)

@@ -30,7 +30,7 @@ func SimulateMsgBuyAlias(
 			R:               r,
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
+			Cdc:             types.ModuleCdc,
 			Msg:             buymsg,
 			MsgType:         buymsg.Type(),
 			Context:         ctx,

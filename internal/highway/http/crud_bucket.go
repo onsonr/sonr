@@ -24,12 +24,16 @@ func (s *HighwayServer) CreateBucket(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+
+		return
 	}
 	resp, err := s.Cosmos.BroadcastCreateBucket(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 
 	// Return the response

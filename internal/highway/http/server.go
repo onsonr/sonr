@@ -45,9 +45,8 @@ type HighwayServer struct {
 	Config *config.Config
 
 	// Clients
-	Host     hn.SonrHost
-	Cosmos   *client.Cosmos
-	Webauthn *client.WebAuthn
+	Host   hn.SonrHost
+	Cosmos *client.Cosmos
 
 	// Http Properties
 	Router     *gin.Engine
@@ -75,12 +74,6 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
-	// Create a new WebAuthn Client for Sonr Blockchain
-	webauthn, err := client.NewWebauthn(ctx, c)
-	if err != nil {
-		return nil, err
-	}
-
 	// Create the IPFS Protocol
 	ipfs, err := ipfs.New(ctx, node)
 	if err != nil {
@@ -103,7 +96,6 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		ctx:          ctx,
 		Router:       gin.Default(),
 		Config:       c,
-		Webauthn:     webauthn,
 		ipfsProtocol: ipfs,
 		// matrixProtocol: matrix,
 		Telemetry: metrics,

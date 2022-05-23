@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/spf13/viper"
@@ -88,7 +90,7 @@ func surveyNewDid() error {
 		}
 
 		// Document properties
-		doc := &did.Document{
+		doc := &did.DocumentImpl{
 			Context: []ssi.URI{*ctx},
 			ID:      *didRoot,
 		}
@@ -114,4 +116,20 @@ func surveyNewDid() error {
 		}
 	}
 	return nil
+}
+
+// AccAddress returns a sample account address
+func genAccAddressDid() string {
+	pk := ed25519.GenPrivKey().PubKey()
+	addr := pk.Address()
+	addrStr := sdk.AccAddress(addr).String()
+	addrStr = strings.TrimLeft(addrStr, "snr")
+	addrStr = strings.TrimRight(addrStr, "cosmos")
+
+	d, err := did.New(addrStr)
+	if err != nil {
+		fmt.Printf("Error: failed to create did: %s", err.Error())
+		panic(err) // this should never happen
+	}
+	return d.String()
 }

@@ -28,6 +28,10 @@ type DID struct {
 	odid.DID
 }
 
+func New(addr string) (*DID, error) {
+	return ParseDID(fmt.Sprintf("did:snr:%s", addr))
+}
+
 // Empty checks whether the DID is set or not
 func (d DID) Empty() bool {
 	return d.Method == ""

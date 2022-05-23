@@ -26,6 +26,8 @@ func (s *HighwayServer) CreateObject(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+
+		return
 	}
 
 	// Broadcast the Transaction
@@ -35,6 +37,7 @@ func (s *HighwayServer) CreateObject(c *gin.Context) {
 			"error": err.Error(),
 		})
 
+		return
 	}
 
 	defer events.Emit(metrics.ON_OBJECT_ADD, "")

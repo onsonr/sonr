@@ -29,11 +29,10 @@ func CreateMockWhoIs(simAcc simtypes.Account) (types.WhoIs, error) {
 		return types.WhoIs{}, err
 	}
 
-	docBuf, err := doc.MarshalJSON()
+	sonrDoc, err := types.NewDIDDocumentFromPkg(doc)
 	if err != nil {
 		return types.WhoIs{}, err
 	}
-
 	return types.WhoIs{
 		Alias:       make([]*types.Alias, 0),
 		Owner:       simAcc.Address.String(),
@@ -41,7 +40,7 @@ func CreateMockWhoIs(simAcc simtypes.Account) (types.WhoIs, error) {
 		Type:        types.WhoIsType_USER,
 		IsActive:    true,
 		Timestamp:   time.Now().Unix(),
-		DidDocument: docBuf,
+		DidDocument: sonrDoc,
 	}, nil
 }
 
@@ -60,7 +59,7 @@ func CreateMockCredential() (*did.Credential, error) {
 }
 
 // CreateMockDidDocument creates a mock did document for testing
-func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
+func CreateMockDidDocument(simAccount simtypes.Account) (did.Document, error) {
 	rawCreator := simAccount.Address.String()
 
 	// Trim snr account prefix
@@ -74,10 +73,11 @@ func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
 	}
 
 	// UnmarshalJSON from DID document
-	doc, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
+	docI, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
 		return nil, err
 	}
+	doc := docI.GetDocument()
 
 	//webauthncred := CreateMockCredential()
 	pubKey, _, err := ed25519.GenerateKey(cryptrand.Reader)
@@ -85,11 +85,11 @@ func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
 		return nil, err
 	}
 
-	didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", simAccount.Address.String()))
+	didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
 		return nil, err
 	}
-	didController, err := did.ParseDID(fmt.Sprintf("did:snr:%s#test", simAccount.Address.String()))
+	didController, err := did.ParseDID(fmt.Sprintf("did:snr:%s#test", rawCreator))
 	if err != nil {
 		return nil, err
 	}
@@ -99,6 +99,6 @@ func CreateMockDidDocument(simAccount simtypes.Account) (*did.Document, error) {
 		return nil, err
 	}
 
-	doc.AddAuthenticationMethod(vm)
-	return doc, nil
+	doc.GetDocument().AddAuthenticationMethod(vm)
+	return doc.GetDocument(), nil
 }

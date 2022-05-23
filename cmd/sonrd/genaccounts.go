@@ -41,33 +41,19 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			depCdc := clientCtx.Codec
-			cdc := depCdc.(codec.Codec)
+			cdc, ok := depCdc.(codec.Codec)
+			if !ok {
+				return fmt.Errorf("Could not find codec in client context")
+			}
 
 			serverCtx := server.GetServerContextFromCmd(cmd)
 			config := serverCtx.Config
 
 			config.SetRoot(clientCtx.HomeDir)
 
-			var kr keyring.Keyring
-			addr, err := sdk.AccAddressFromBech32(args[0])
+			addr, err := accAddressFromBech32(args[0], *cmd, clientCtx)
 			if err != nil {
-				inBuf := bufio.NewReader(cmd.InOrStdin())
-				keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
-				if keyringBackend != "" && clientCtx.Keyring == nil {
-					var err error
-					kr, err = keyring.New(sdk.KeyringServiceName(), keyringBackend, clientCtx.HomeDir, inBuf)
-					if err != nil {
-						return err
-					}
-				} else {
-					kr = clientCtx.Keyring
-				}
-
-				info, err := kr.Key(args[0])
-				if err != nil {
-					return fmt.Errorf("failed to get address from Keyring: %w", err)
-				}
-				addr = info.GetAddress()
+				return err
 			}
 
 			coins, err := sdk.ParseCoinsNormalized(args[1])
@@ -75,9 +61,18 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 				return fmt.Errorf("failed to parse coins: %w", err)
 			}
 
-			vestingStart, _ := cmd.Flags().GetInt64(flagVestingStart)
-			vestingEnd, _ := cmd.Flags().GetInt64(flagVestingEnd)
-			vestingAmtStr, _ := cmd.Flags().GetString(flagVestingAmt)
+			vestingStart, err := cmd.Flags().GetInt64(flagVestingStart)
+			if err != nil {
+				return err
+			}
+			vestingEnd, err := cmd.Flags().GetInt64(flagVestingEnd)
+			if err != nil {
+				return err
+			}
+			vestingAmtStr, err := cmd.Flags().GetString(flagVestingAmt)
+			if err != nil {
+				return err
+			}
 
 			vestingAmt, err := sdk.ParseCoinsNormalized(vestingAmtStr)
 			if err != nil {
@@ -181,4 +176,33 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func accAddressFromBech32(address string, cmd cobra.Command, clientCtx client.Context) (sdk.AccAddress, error) {
+	addr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		inBuf := bufio.NewReader(cmd.InOrStdin())
+		keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
+		if err != nil {
+			return nil, err
+		}
+
+		var kr keyring.Keyring
+		if keyringBackend != "" && clientCtx.Keyring == nil {
+			var err error
+			kr, err = keyring.New(sdk.KeyringServiceName(), keyringBackend, clientCtx.HomeDir, inBuf)
+			if err != nil {
+				return addr, err
+			}
+		} else {
+			kr = clientCtx.Keyring
+		}
+
+		info, err := kr.Key(address)
+		if err != nil {
+			return addr, fmt.Errorf("failed to get address from Keyring: %w", err)
+		}
+		addr = info.GetAddress()
+	}
+	return addr, nil
 }

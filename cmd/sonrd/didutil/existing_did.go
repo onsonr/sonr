@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/x/object/types"
+	"github.com/spf13/cobra"
 )
 
 func surveyExistingDid() error {
@@ -28,7 +29,7 @@ func surveyExistingDid() error {
 	if err != nil {
 		return err
 	}
-	doc := &did.Document{}
+	doc := &did.DocumentImpl{}
 	err = doc.UnmarshalJSON(buf)
 	if err != nil {
 		return err
@@ -62,7 +63,9 @@ func surveyExistingDid() error {
 		}
 		priv := secp256k1.GenPrivKey()
 		pub := priv.PubKey()
-		vm, _ := did.NewVerificationMethod(doc.ID, ssi.ECDSASECP256K1VerificationKey2019, *didController, pub)
+		vm, err := did.NewVerificationMethod(doc.ID, ssi.ECDSASECP256K1VerificationKey2019, *didController, pub)
+		cobra.CheckErr(err)
+
 		vm.Credential = CreateMockCredential()
 		doc.AddAssertionMethod(vm)
 	case "Add Invocation Method":
@@ -147,6 +150,20 @@ func surveyExistingDid() error {
 		fmt.Println(string(buf))
 	default:
 		return errors.New("Invalid option")
+	}
+
+	saveFile := false
+	persistPrompt := &survey.Confirm{
+		Message: "Would you like to save the JSON output to disk?",
+	}
+	survey.AskOne(persistPrompt, &saveFile)
+
+	if saveFile {
+		path := filepath.Join(CONFIG_PATH, "testutil", "sample", "did.json")
+		ioutil.WriteFile(path, buf, 0644)
+		fmt.Printf("Saved DID JSON Document to: %s\n", path)
+	} else {
+		fmt.Println(string(buf))
 	}
 
 	return nil

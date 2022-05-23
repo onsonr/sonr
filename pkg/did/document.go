@@ -16,8 +16,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
 )
 
-// Document represents a DID Document as specified by the DID Core specification (https://www.w3.org/TR/did-core/).
-type Document struct {
+// DocumentImpl represents a DID Document as specified by the DID Core specification (https://www.w3.org/TR/did-core/).
+type DocumentImpl struct {
 	Context              []ssi.URI                 `json:"@context"`
 	ID                   DID                       `json:"id"`
 	Controller           []DID                     `json:"controller,omitempty"`
@@ -32,7 +32,7 @@ type Document struct {
 }
 
 // NewDocument creates a new blank DID Document and parses the given did string into it.
-func NewDocument(idStr string) (*Document, error) {
+func NewDocument(idStr string) (*DocumentImpl, error) {
 	fmt.Println(idStr)
 	id, err := ParseDID(idStr)
 	if err != nil {
@@ -44,7 +44,7 @@ func NewDocument(idStr string) (*Document, error) {
 		return nil, err
 	}
 
-	return &Document{
+	return &DocumentImpl{
 		ID:                   *id,
 		Context:              []ssi.URI{*ctxUri},
 		VerificationMethod:   make(VerificationMethods, 0),
@@ -58,9 +58,13 @@ func NewDocument(idStr string) (*Document, error) {
 	}, nil
 }
 
+func (d *DocumentImpl) GetDocument() Document {
+	return d
+}
+
 // CopyFromBytes unmarshals a JSON document from a byte slice and copies the data into the receiver.
-func (d *Document) CopyFromBytes(b []byte) error {
-	var newDoc Document
+func (d *DocumentImpl) CopyFromBytes(b []byte) error {
+	var newDoc DocumentImpl
 	err := newDoc.UnmarshalJSON(b)
 	if err != nil {
 		return err
@@ -69,7 +73,7 @@ func (d *Document) CopyFromBytes(b []byte) error {
 }
 
 // AddController adds a DID as a controller
-func (d *Document) AddController(id DID) {
+func (d *DocumentImpl) AddController(id DID) {
 	if d.Controller == nil {
 		d.Controller = make([]DID, 0)
 	}
@@ -168,7 +172,7 @@ func (vmr *VerificationRelationships) Add(vm *VerificationMethod) {
 
 // AddAuthenticationMethod adds a VerificationMethod as AuthenticationMethod
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddAuthenticationMethod(v *VerificationMethod) {
+func (d *DocumentImpl) AddAuthenticationMethod(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -178,7 +182,7 @@ func (d *Document) AddAuthenticationMethod(v *VerificationMethod) {
 
 // AddAssertionMethod adds a VerificationMethod as AssertionMethod
 // If the controller is not set, it will be set to the documents ID
-func (d *Document) AddAssertionMethod(v *VerificationMethod) {
+func (d *DocumentImpl) AddAssertionMethod(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -188,7 +192,7 @@ func (d *Document) AddAssertionMethod(v *VerificationMethod) {
 
 // AddKeyAgreement adds a VerificationMethod as KeyAgreement
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddKeyAgreement(v *VerificationMethod) {
+func (d *DocumentImpl) AddKeyAgreement(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -198,7 +202,7 @@ func (d *Document) AddKeyAgreement(v *VerificationMethod) {
 
 // AddCapabilityInvocation adds a VerificationMethod as CapabilityInvocation
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddCapabilityInvocation(v *VerificationMethod) {
+func (d *DocumentImpl) AddCapabilityInvocation(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -208,7 +212,7 @@ func (d *Document) AddCapabilityInvocation(v *VerificationMethod) {
 
 // AddCapabilityDelegation adds a VerificationMethod as CapabilityDelegation
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddCapabilityDelegation(v *VerificationMethod) {
+func (d *DocumentImpl) AddCapabilityDelegation(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -216,8 +220,8 @@ func (d *Document) AddCapabilityDelegation(v *VerificationMethod) {
 	d.CapabilityDelegation.Add(v)
 }
 
-func (d Document) MarshalJSON() ([]byte, error) {
-	type alias Document
+func (d DocumentImpl) MarshalJSON() ([]byte, error) {
+	type alias DocumentImpl
 	tmp := alias(d)
 	if data, err := json.Marshal(tmp); err != nil {
 		return nil, err
@@ -226,18 +230,18 @@ func (d Document) MarshalJSON() ([]byte, error) {
 	}
 }
 
-func (d *Document) UnmarshalJSON(b []byte) error {
-	type Alias Document
+func (d *DocumentImpl) UnmarshalJSON(b []byte) error {
 	normalizedDoc, err := marshal.NormalizeDocument(b, pluralContext, marshal.Plural(controllerKey))
 	if err != nil {
 		return err
 	}
-	doc := Alias{}
+
+	var doc DocumentImpl
 	err = json.Unmarshal(normalizedDoc, &doc)
 	if err != nil {
 		return err
 	}
-	*d = (Document)(doc)
+	*d = doc
 
 	const errMsg = "unable to resolve all '%s' references: %w"
 	if err = resolveVerificationRelationships(d.Authentication, d.VerificationMethod); err != nil {
@@ -259,7 +263,7 @@ func (d *Document) UnmarshalJSON(b []byte) error {
 }
 
 // IsController returns whether the given DID is a controller of the DID document.
-func (d Document) IsController(controller DID) bool {
+func (d DocumentImpl) IsController(controller DID) bool {
 	if controller.Empty() {
 		return false
 	}
@@ -274,7 +278,7 @@ func (d Document) IsController(controller DID) bool {
 
 // AddAlias adds a string alias to the document for a .snr domain name into the AlsoKnownAs field
 // in the document.
-func (d *Document) AddAlias(alias string) {
+func (d *DocumentImpl) AddAlias(alias string) {
 	if d.AlsoKnownAs == nil {
 		d.AlsoKnownAs = make([]string, 0)
 	}
@@ -287,7 +291,7 @@ func (d *Document) AddAlias(alias string) {
 // - service with given type doesn't exist,
 // - multiple services match,
 // - serviceEndpoint isn't a string.
-func (d *Document) ResolveEndpointURL(serviceType string) (endpointID ssi.URI, endpointURL string, err error) {
+func (d *DocumentImpl) ResolveEndpointURL(serviceType string) (endpointID ssi.URI, endpointURL string, err error) {
 	var services []Service
 	for _, service := range d.Service {
 		if service.Type == serviceType {
@@ -308,7 +312,7 @@ func (d *Document) ResolveEndpointURL(serviceType string) (endpointID ssi.URI, e
 }
 
 // ControllersAsString returns all DID controllers as a string array
-func (d *Document) ControllersAsString() []string {
+func (d *DocumentImpl) ControllersAsString() []string {
 	var controllers []string
 	for _, controller := range d.Controller {
 		controllers = append(controllers, controller.String())
@@ -536,12 +540,12 @@ func resolveVerificationRelationship(reference DID, methods []*VerificationMetho
 }
 
 // User ID according to the Relying Party
-func (w *Document) WebAuthnID() []byte {
+func (w *DocumentImpl) WebAuthnID() []byte {
 	return []byte(w.ID.String())
 }
 
 // User Name according to the Relying Party
-func (w *Document) WebAuthnName() string {
+func (w *DocumentImpl) WebAuthnName() string {
 	if w.AlsoKnownAs != nil {
 		if len(w.AlsoKnownAs) > 0 {
 			return w.AlsoKnownAs[0]
@@ -551,17 +555,17 @@ func (w *Document) WebAuthnName() string {
 }
 
 // Display Name of the user
-func (w *Document) WebAuthnDisplayName() string {
+func (w *DocumentImpl) WebAuthnDisplayName() string {
 	return w.ID.ID
 }
 
 // User's icon url
-func (w *Document) WebAuthnIcon() string {
+func (w *DocumentImpl) WebAuthnIcon() string {
 	return ""
 }
 
 // Credentials owned by the user
-func (w *Document) WebAuthnCredentials() []webauthn.Credential {
+func (w *DocumentImpl) WebAuthnCredentials() []webauthn.Credential {
 	var credentials []webauthn.Credential
 	for _, vm := range w.Authentication {
 		if vm.Credential != nil {
@@ -619,7 +623,7 @@ func (w *Document) WebAuthnCredentials() []webauthn.Credential {
 
 // CredentialExcludeList returns a CredentialDescriptor array filled
 // with all the user's credentials
-func (w *Document) WebAuthnCredentialExcludeList() []protocol.CredentialDescriptor {
+func (w *DocumentImpl) WebAuthnCredentialExcludeList() []protocol.CredentialDescriptor {
 	credentialExcludeList := []protocol.CredentialDescriptor{}
 	for _, cred := range w.WebAuthnCredentials() {
 		descriptor := protocol.CredentialDescriptor{

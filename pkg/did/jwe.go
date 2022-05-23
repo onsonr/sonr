@@ -8,7 +8,7 @@ import (
 )
 
 // EncryptJWE creates a JWE object
-func (d *Document) EncryptJWE(id DID, buf []byte) (string, error) {
+func (d *DocumentImpl) EncryptJWE(id DID, buf []byte) (string, error) {
 	var err error
 	vm := d.Authentication.FindByID(id)
 	if vm == nil {
@@ -52,7 +52,7 @@ func (d *Document) EncryptJWE(id DID, buf []byte) (string, error) {
 }
 
 // DecryptJWE verifies the JWE and returns the buffer
-func (d *Document) DecryptJWE(id DID, serial string) ([]byte, error) {
+func (d *DocumentImpl) DecryptJWE(id DID, serial string) ([]byte, error) {
 	vm := d.Authentication.FindByID(id)
 	if vm == nil {
 		return nil, errors.New("Document VerificationMethod not found")

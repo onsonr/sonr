@@ -24,6 +24,8 @@ func (s *HighwayServer) CreateChannel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+
+		return
 	}
 
 	// Verify that channel fields are not nil
@@ -31,6 +33,8 @@ func (s *HighwayServer) CreateChannel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+
+		return
 	}
 
 	// Broadcast the message
@@ -39,6 +43,8 @@ func (s *HighwayServer) CreateChannel(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 
 	// Return the response
@@ -65,6 +71,8 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+
+		return
 	}
 
 	resp, err := s.Cosmos.BroadcastUpdateChannel(&req)
@@ -72,6 +80,8 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 
 	// Return the response
@@ -153,6 +163,8 @@ func (s *HighwayServer) DeactivateChannel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+
+		return
 	}
 
 	resp, err := s.Cosmos.BroadcastDeactivateChannel(&req)
@@ -160,6 +172,8 @@ func (s *HighwayServer) DeactivateChannel(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{

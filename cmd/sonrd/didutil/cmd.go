@@ -1,13 +1,8 @@
 package didutil
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 )
 
@@ -49,14 +44,4 @@ func DidUtilCmd() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
-}
-
-// AccAddress returns a sample account address
-func genAccAddressDid() string {
-	pk := ed25519.GenPrivKey().PubKey()
-	addr := pk.Address()
-	addrStr := sdk.AccAddress(addr).String()
-	addrStr = strings.TrimLeft(addrStr, "snr")
-	addrStr = strings.TrimRight(addrStr, "cosmos")
-	return fmt.Sprintf("did:snr:%s", addrStr)
 }
