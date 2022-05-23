@@ -42,6 +42,9 @@ jobs:
       - name: Run coverage
         continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
+      - name: Run simulate
+        continue-on-error: true
+        run: go test -benchmem -run=^$ -bench ^BenchmarkSimulation ./app -NumBlocks=200 -BlockSize 50 -Commit=true -Verbose=true -Enabled=true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
