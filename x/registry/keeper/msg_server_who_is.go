@@ -22,6 +22,7 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 		return nil, types.ErrDidDocumentInvalid
 	}
 
+	// TODO: Implement Multisig for root level owner #322
 	var whoIs = types.WhoIs{
 		Owner:       msg.Creator,
 		DidDocument: msg.DidDocument,

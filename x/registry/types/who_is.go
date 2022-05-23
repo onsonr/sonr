@@ -76,7 +76,7 @@ func (w *WhoIs) AddAlsoKnownAs(as []string) error {
 			w.Alias = append(w.Alias, &Alias{
 				Name:      a,
 				IsForSale: false,
-				Amount:    10,
+				Amount:    -1,
 			})
 		}
 	}
