@@ -26,43 +26,50 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 	}
 
 	// Register Cosmos HTTP Routes - Registry
-	s.Router.POST("/v1/registry/buy/alias", s.BuyAlias)
-	s.Router.POST("/v1/registry/sell/alias", s.SellAlias)
-	s.Router.POST("/v1/registry/transfer/alias", s.TransferAlias)
+	s.Engine.POST("/v1/registry/alias/buy", s.BuyAlias)
+	s.Engine.POST("/v1/registry/alias/sell", s.SellAlias)
+	s.Engine.POST("/v1/registry/alias/transfer", s.TransferAlias)
 
 	// Register Cosmos HTTP Routes - Object
-	s.Router.POST("/v1/object/create", s.CreateObject)
-	s.Router.POST("/v1/object/update", s.UpdateObject)
-	s.Router.POST("/v1/object/deactivate", s.DeactivateObject)
+	s.Engine.POST("/v1/object/create", s.CreateObject)
+	s.Engine.POST("/v1/object/update", s.UpdateObject)
+	s.Engine.POST("/v1/object/deactivate", s.DeactivateObject)
 
 	// Register Cosmos HTTP Routes - Bucket
-	s.Router.POST("/v1/bucket/create", s.CreateBucket)
-	s.Router.POST("/v1/bucket/update", s.UpdateBucket)
-	s.Router.POST("/v1/bucket/deactivate", s.DeactivateBucket)
+	s.Engine.POST("/v1/bucket/create", s.CreateBucket)
+	s.Engine.POST("/v1/bucket/update", s.UpdateBucket)
+	s.Engine.POST("/v1/bucket/deactivate", s.DeactivateBucket)
 
 	// Register Cosmos HTTP Routes - Channel
-	s.Router.POST("/v1/channel/create", s.CreateChannel)
-	s.Router.POST("/v1/channel/update", s.UpdateChannel)
-	s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
+	s.Engine.POST("/v1/channel/create", s.CreateChannel)
+	s.Engine.POST("/v1/channel/update", s.UpdateChannel)
+	s.Engine.POST("/v1/channel/deactivate", s.DeactivateChannel)
 
 	// Register Blob HTTP Routes
-	s.Router.POST("/v1/blob/upload", s.UploadBlob)
-	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
-	s.Router.POST("/v1/blob/remove/:cid", s.RemoveBlob)
+	s.Engine.POST("/v1/blob/upload", s.UploadBlob)
+	s.Engine.GET("/v1/blob/download/:cid", s.DownloadBlob)
+	s.Engine.POST("/v1/blob/remove/:cid", s.RemoveBlob)
 
 	// WebAuthn Endpoints
-	s.Router.POST("/v1/registry/create/whois", s.CreateWhoIs)
-	s.Router.POST("/v1/registry/update/whois", s.UpdateWhoIs)
-	s.Router.POST("/v1/registry/deactivate/whois", s.DeactivateWhoIs)
+	s.Engine.POST("/v1/registry/whois/create", s.CreateWhoIs)
+	s.Engine.POST("/v1/registry/whois/update", s.UpdateWhoIs)
+	s.Engine.POST("/v1/registry/whois/deactivate", s.DeactivateWhoIs)
 
 	// Setup Swagger UI
-	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	s.Router.GET("/metrics", gin.WrapH(s.Telemetry.GetMetricsHandler()))
+	s.Engine.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	s.Engine.GET("/metrics", gin.WrapH(s.Telemetry.GetMetricsHandler()))
+
+	// Setup the Webauthn HTTP Server
+	s.Router.HandleFunc("/register/begin/{username}", s.StartRegisterName).Methods("GET")
+	s.Router.HandleFunc("/register/finish/{username}", s.FinishRegisterName).Methods("POST")
+	s.Router.HandleFunc("/login/begin/{username}", s.StartAccessName).Methods("GET")
+	s.Router.HandleFunc("/login/finish/{username}", s.FinishAccessName).Methods("POST")
+	s.Router.PathPrefix("/").Handler(http.FileServer(http.Dir(c.WebAuthNFSDir)))
 
 	// Setup HTTP Server
 	s.HTTPServer = &http.Server{
 		Addr:    s.Config.HighwayHTTPEndpoint,
-		Handler: s.Router,
+		Handler: s.Engine,
 	}
 	return s, nil
 }
