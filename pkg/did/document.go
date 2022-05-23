@@ -38,9 +38,15 @@ func NewDocument(idStr string) (*Document, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	ctxUri, err := ssi.ParseURI("https://www.w3.org/ns/did/v1")
+	if err != nil {
+		return nil, err
+	}
+
 	return &Document{
 		ID:                   *id,
-		Context:              make([]ssi.URI, 0),
+		Context:              []ssi.URI{*ctxUri},
 		VerificationMethod:   make(VerificationMethods, 0),
 		Authentication:       make(VerificationRelationships, 0),
 		AssertionMethod:      make(VerificationRelationships, 0),

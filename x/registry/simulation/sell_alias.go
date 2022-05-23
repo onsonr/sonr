@@ -23,7 +23,7 @@ func SimulateMsgSellAlias(
 
 		sellmsg := &types.MsgSellAlias{
 			Creator: simAccount.Address.String(),
-			Alias:   "test",
+			Alias:   simAccount.Address.String(),
 			Amount:  11,
 		}
 
@@ -37,7 +37,7 @@ func SimulateMsgSellAlias(
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
+			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 11)),
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}

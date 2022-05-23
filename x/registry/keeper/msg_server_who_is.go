@@ -74,8 +74,8 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	return &types.MsgUpdateWhoIsResponse{}, nil
 }
 
-// DeleteWhoIs deletes a whoIs from the store
-func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeactivateWhoIs) (*types.MsgDeactivateWhoIsResponse, error) {
+// DeactivateWhoIs deletes a whoIs from the store
+func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactivateWhoIs) (*types.MsgDeactivateWhoIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists

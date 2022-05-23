@@ -39,7 +39,7 @@ func SimulateMsgTransferAlias(
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
+			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 11)),
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}

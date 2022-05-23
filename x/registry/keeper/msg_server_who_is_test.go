@@ -85,7 +85,7 @@ func TestWhoIsMsgServerDelete(t *testing.T) {
 
 			_, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{Creator: owner})
 			require.NoError(t, err)
-			_, err = srv.DeleteWhoIs(ctx, tc.request)
+			_, err = srv.DeactivateWhoIs(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

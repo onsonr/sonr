@@ -50,24 +50,20 @@ const (
 
 // GenerateGenesisState creates a randomized GenState of the module
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
+	// Define initial state for each module account
 	accs := make([]string, len(simState.Accounts))
+	whoIsList := make([]types.WhoIs, len(simState.Accounts))
+
+	// Iterate over all accounts
 	for i, acc := range simState.Accounts {
 		accs[i] = acc.Address.String()
+		whoIsList[i], _ = registrysimulation.CreateMockWhoIs(acc)
 	}
 	registryGenesis := types.GenesisState{
-		Params: types.DefaultParams(),
-		PortId: types.PortID,
-		WhoIsList: []types.WhoIs{
-			{
-				DidDocument: []byte("did:snr:1"),
-				Owner:       sample.AccAddress(),
-			},
-			{
-				DidDocument: []byte("did:snr:2"),
-				Owner:       sample.AccAddress(),
-			},
-		},
-		WhoIsCount: 2,
+		Params:     types.DefaultParams(),
+		PortId:     types.PortID,
+		WhoIsList:  whoIsList,
+		WhoIsCount: uint64(len(whoIsList)),
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&registryGenesis)

@@ -19,10 +19,11 @@ func SimulateMsgBuyAlias(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
+		//Babble seems to be incompatible with WIN32
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		buymsg := &types.MsgBuyAlias{
 			Creator: simAccount.Address.String(),
-			Name:    "test",
+			Name:    simAccount.Address.String(),
 		}
 
 		txCtx := simulation.OperationInput{
@@ -35,7 +36,7 @@ func SimulateMsgBuyAlias(
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
+			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 10)),
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}

@@ -23,7 +23,7 @@ export interface RegistryAlias {
 
 export interface RegistryMsgBuyAliasResponse {
   /** Did is the top level DID of the WhoIs. */
-  did?: string;
+  success?: boolean;
 
   /** WhoIs is the updated WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
@@ -31,7 +31,7 @@ export interface RegistryMsgBuyAliasResponse {
 
 export interface RegistryMsgCreateWhoIsResponse {
   /** Did is the top level DID of the created WhoIs. */
-  did?: string;
+  success?: boolean;
 
   /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;
@@ -63,7 +63,7 @@ export interface RegistryMsgTransferAliasResponse {
 
 export interface RegistryMsgUpdateWhoIsResponse {
   /** Did is the top level DID of the WhoIs. */
-  did?: string;
+  success?: boolean;
 
   /** WhoIs is the created WhoIs, contains the DID document and associated metadata. */
   who_is?: RegistryWhoIs;

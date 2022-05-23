@@ -10,7 +10,7 @@ option go_package = "github.com/sonr-io/sonr/x/registry/types";
 service Msg {
   rpc CreateWhoIs(MsgCreateWhoIs) returns (MsgCreateWhoIsResponse);
   rpc UpdateWhoIs(MsgUpdateWhoIs) returns (MsgUpdateWhoIsResponse);
-  rpc DeleteWhoIs(MsgDeactivateWhoIs) returns (MsgDeactivateWhoIsResponse);
+  rpc DeactivateWhoIs(MsgDeactivateWhoIs) returns (MsgDeactivateWhoIsResponse);
   rpc BuyAlias(MsgBuyAlias) returns (MsgBuyAliasResponse);
   rpc SellAlias(MsgSellAlias) returns (MsgSellAliasResponse);
   rpc TransferAlias(MsgTransferAlias) returns (MsgTransferAliasResponse);

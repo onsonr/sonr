@@ -49960,8 +49960,8 @@ definitions:
   sonrio.sonr.registry.MsgBuyAliasResponse:
     type: object
     properties:
-      did:
-        type: string
+      success:
+        type: boolean
         description: Did is the top level DID of the WhoIs.
       who_is:
         type: object
@@ -50034,8 +50034,8 @@ definitions:
   sonrio.sonr.registry.MsgCreateWhoIsResponse:
     type: object
     properties:
-      did:
-        type: string
+      success:
+        type: boolean
         description: Did is the top level DID of the created WhoIs.
       who_is:
         type: object
@@ -50265,8 +50265,8 @@ definitions:
   sonrio.sonr.registry.MsgUpdateWhoIsResponse:
     type: object
     properties:
-      did:
-        type: string
+      success:
+        type: boolean
         description: Did is the top level DID of the WhoIs.
       who_is:
         type: object
