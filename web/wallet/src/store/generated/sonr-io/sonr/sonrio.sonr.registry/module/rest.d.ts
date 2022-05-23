@@ -14,7 +14,7 @@ in the individual fields.
 export interface RegistryDid {
     /** Method is the method used to create the DID. For the Sonr network it is "sonr". */
     method?: string;
-    /** Network is the network the DID is on. For testnet it is "testnet". i.e "did:sonr:testnet:". */
+    /** Network is the network the DID is on. For testnet it is "testnet". i.e "did:snr:testnet:". */
     network?: string;
     id?: string;
     /** Paths is a list of paths that the DID is valid for. This is used to identify the Service. */

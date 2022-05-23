@@ -44,7 +44,7 @@ func Test_Document(t *testing.T) {
 		return
 	}
 	t.Run("validate ID", func(t *testing.T) {
-		expected := "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
+		expected := "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
 		if expected != actual.ID.String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.ID.String())
 		}
@@ -64,11 +64,11 @@ func Test_Document(t *testing.T) {
 			t.Errorf("expected controller to contain 2 entries got: %d", len(actual.Controller))
 			return
 		}
-		expected := "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
+		expected := "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
 		if expected != actual.Controller[0].String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[0])
 		}
-		expected = "did:sonr:f03a00f1-9615-4060-bd00-bd282e150c46"
+		expected = "did:snr:f03a00f1-9615-4060-bd00-bd282e150c46"
 		if expected != actual.Controller[1].String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[1])
 		}
@@ -77,14 +77,14 @@ func Test_Document(t *testing.T) {
 		if !assert.Len(t, actual.AssertionMethod, 1) {
 			return
 		}
-		assert.Equal(t, "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.AssertionMethod[0].ID.String())
+		assert.Equal(t, "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.AssertionMethod[0].ID.String())
 		assert.Equal(t, "SVqB4JcUD6lsfvqMr-OKUNUphdNn64Eay60978ZlL74", actual.AssertionMethod[0].PublicKeyJwk["x"])
 	})
 	t.Run("it can parse authentication", func(t *testing.T) {
 		if !assert.Len(t, actual.Authentication, 2) {
 			return
 		}
-		assert.Equal(t, "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.Authentication[0].ID.String())
+		assert.Equal(t, "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.Authentication[0].ID.String())
 		assert.Equal(t, "SVqB4JcUD6lsfvqMr-OKUNUphdNn64Eay60978ZlL74", actual.Authentication[0].PublicKeyJwk["x"])
 	})
 	t.Run("it can parse services", func(t *testing.T) {
@@ -97,7 +97,7 @@ func Test_Document(t *testing.T) {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Service[0].Type)
 		}
 
-		expected = "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#service-1"
+		expected = "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#service-1"
 		if expected != actual.Service[0].ID.String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Service[0].ID.String())
 		}

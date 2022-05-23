@@ -37,6 +37,7 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to save the file to temporary directory",
 		})
+		return
 	}
 
 	// Read the file at the given path
@@ -45,6 +46,7 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to load the file from temporary directory",
 		})
+		return
 	}
 
 	// Upload the file to ipfsProtocol
@@ -53,6 +55,7 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to upload the file to IPFS",
 		})
+		return
 	}
 	defer events.Emit(metrics.ON_BLOB_ADD, "")
 	// Return the response
@@ -86,6 +89,7 @@ func (s *HighwayServer) DownloadBlob(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to download the file from IPFS",
 		})
+		return
 	}
 
 	// Save the file to temporary directory
@@ -115,6 +119,7 @@ func (s *HighwayServer) RemoveBlob(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to download the file from IPFS",
 		})
+		return
 	}
 
 	defer events.Emit(metrics.ON_BLOB_REMOVE, "")

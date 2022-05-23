@@ -66,6 +66,7 @@ func (s *HighwayServer) UpdateObject(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+		return
 	}
 
 	// Broadcast the Transaction
@@ -74,6 +75,7 @@ func (s *HighwayServer) UpdateObject(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	// Return the response
@@ -100,6 +102,7 @@ func (s *HighwayServer) DeactivateObject(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+		return
 	}
 
 	// Deactivate the bucket
@@ -108,6 +111,7 @@ func (s *HighwayServer) DeactivateObject(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	defer events.Emit(metrics.ON_OBJECT_REMOVE, "")

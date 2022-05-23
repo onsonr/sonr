@@ -84,7 +84,7 @@ We utilize the [Buf.build](https://buf.build/) service in order to have standard
 Creation of a simple DID Document which is its own controller and contains an AssertionMethod.
 
 ```go
-didID, err := did.ParseDID("did:sonr:123")
+didID, err := did.ParseDID("did:snr:123")
 
 // Empty did document:
 doc := &did.Document{
@@ -93,7 +93,7 @@ doc := &did.Document{
 }
 
 // Add an assertionMethod
-keyID, _ =: did.ParseDIDURL("did:sonr:123#key-1")
+keyID, _ =: did.ParseDIDURL("did:snr:123#key-1")
 
 keyPair, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 verificationMethod, err := did.NewVerificationMethod(*keyID, did.JsonWebKey2020, did.DID{}, keyPair.Public())
@@ -120,14 +120,14 @@ Outputs:
 
 ```json
 {
-  "assertionMethod": ["did:sonr:123#key-1"],
+  "assertionMethod": ["did:snr:123#key-1"],
   "@context": "https://www.w3.org/ns/did/v1",
-  "controller": "did:sonr:123",
-  "id": "did:sonr:123",
+  "controller": "did:snr:123",
+  "id": "did:snr:123",
   "verificationMethod": [
     {
-      "controller": "did:sonr:123",
-      "id": "did:sonr:123#key-1",
+      "controller": "did:snr:123",
+      "id": "did:snr:123#key-1",
       "publicKeyJwk": {
         "crv": "P-256",
         "kty": "EC",

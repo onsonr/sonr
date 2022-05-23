@@ -5,13 +5,13 @@ export const protobufPackage = "sonrio.sonr.registry";
 
 /** NetworkType is the type of network the DID is on. */
 export enum NetworkType {
-  /** NETWORK_TYPE_UNSPECIFIED - Unspecified is the default value. Gets converted to "did:sonr:". */
+  /** NETWORK_TYPE_UNSPECIFIED - Unspecified is the default value. Gets converted to "did:snr:". */
   NETWORK_TYPE_UNSPECIFIED = 0,
-  /** NETWORK_TYPE_MAINNET - Mainnet is the main network. It prefix is "did:sonr:" or "did:sonr:mainnet:". */
+  /** NETWORK_TYPE_MAINNET - Mainnet is the main network. It prefix is "did:snr:" or "did:snr:mainnet:". */
   NETWORK_TYPE_MAINNET = 1,
-  /** NETWORK_TYPE_TESTNET - Testnet is the deployed test network. It's prefix is "did:sonr:testnet:". */
+  /** NETWORK_TYPE_TESTNET - Testnet is the deployed test network. It's prefix is "did:snr:testnet:". */
   NETWORK_TYPE_TESTNET = 2,
-  /** NETWORK_TYPE_DEVNET - Devnet is the localhost test network. It's prefix is "did:sonr:devnet:". */
+  /** NETWORK_TYPE_DEVNET - Devnet is the localhost test network. It's prefix is "did:snr:devnet:". */
   NETWORK_TYPE_DEVNET = 3,
   UNRECOGNIZED = -1,
 }
@@ -164,9 +164,9 @@ export function serviceTypeToJSON(object: ServiceType): string {
 export interface Did {
   /** Method is the method used to create the DID. For the Sonr network it is "sonr". */
   method: string;
-  /** Network is the network the DID is on. For testnet it is "testnet". i.e "did:sonr:testnet:". */
+  /** Network is the network the DID is on. For testnet it is "testnet". i.e "did:snr:testnet:". */
   network: string;
-  /** id is the trailing identifier after the network. i.e. "did:sonr:testnet:abc123" */
+  /** id is the trailing identifier after the network. i.e. "did:snr:testnet:abc123" */
   id: string;
   /** Paths is a list of paths that the DID is valid for. This is used to identify the Service. */
   paths: string[];

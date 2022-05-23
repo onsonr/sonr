@@ -46,7 +46,6 @@ func CreateMockWhoIs(simAcc simtypes.Account) (types.WhoIs, error) {
 
 // Mock Credential object from webauthn test bench https://github.com/psteniusubi/webauthn-tester
 func CreateMockCredential() (*did.Credential, error) {
-
 	return &did.Credential{
 		ID:              []byte("ktIQAlFosR9OMGnyJnGthmKcIodPb323F3UqPVe9kvB-eOYrE-pNchsSuiN4ZE0ICyAaRiCb6vfF-7Y5nrvcoD-D42KQsXzhJd14ciqzibA"),
 		AttestationType: "platform",
@@ -73,11 +72,10 @@ func CreateMockDidDocument(simAccount simtypes.Account) (did.Document, error) {
 	}
 
 	// UnmarshalJSON from DID document
-	docI, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
+	doc, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
 		return nil, err
 	}
-	doc := docI.GetDocument()
 
 	//webauthncred := CreateMockCredential()
 	pubKey, _, err := ed25519.GenerateKey(cryptrand.Reader)
@@ -98,7 +96,6 @@ func CreateMockDidDocument(simAccount simtypes.Account) (did.Document, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	doc.GetDocument().AddAuthenticationMethod(vm)
-	return doc.GetDocument(), nil
+	doc.AddAuthenticationMethod(vm)
+	return doc, nil
 }

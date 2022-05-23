@@ -4,13 +4,13 @@ export const protobufPackage = "sonrio.sonr.registry";
 /** NetworkType is the type of network the DID is on. */
 export var NetworkType;
 (function (NetworkType) {
-    /** NETWORK_TYPE_UNSPECIFIED - Unspecified is the default value. Gets converted to "did:sonr:". */
+    /** NETWORK_TYPE_UNSPECIFIED - Unspecified is the default value. Gets converted to "did:snr:". */
     NetworkType[NetworkType["NETWORK_TYPE_UNSPECIFIED"] = 0] = "NETWORK_TYPE_UNSPECIFIED";
-    /** NETWORK_TYPE_MAINNET - Mainnet is the main network. It prefix is "did:sonr:" or "did:sonr:mainnet:". */
+    /** NETWORK_TYPE_MAINNET - Mainnet is the main network. It prefix is "did:snr:" or "did:snr:mainnet:". */
     NetworkType[NetworkType["NETWORK_TYPE_MAINNET"] = 1] = "NETWORK_TYPE_MAINNET";
-    /** NETWORK_TYPE_TESTNET - Testnet is the deployed test network. It's prefix is "did:sonr:testnet:". */
+    /** NETWORK_TYPE_TESTNET - Testnet is the deployed test network. It's prefix is "did:snr:testnet:". */
     NetworkType[NetworkType["NETWORK_TYPE_TESTNET"] = 2] = "NETWORK_TYPE_TESTNET";
-    /** NETWORK_TYPE_DEVNET - Devnet is the localhost test network. It's prefix is "did:sonr:devnet:". */
+    /** NETWORK_TYPE_DEVNET - Devnet is the localhost test network. It's prefix is "did:snr:devnet:". */
     NetworkType[NetworkType["NETWORK_TYPE_DEVNET"] = 3] = "NETWORK_TYPE_DEVNET";
     NetworkType[NetworkType["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(NetworkType || (NetworkType = {}));

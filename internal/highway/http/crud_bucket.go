@@ -60,6 +60,7 @@ func (s *HighwayServer) UpdateBucket(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+		return
 	}
 
 	resp, err := s.Cosmos.BroadcastUpdateBucket(&req)
@@ -67,6 +68,7 @@ func (s *HighwayServer) UpdateBucket(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	// Return the response
@@ -94,12 +96,14 @@ func (s *HighwayServer) DeactivateBucket(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
+		return
 	}
 	resp, err := s.Cosmos.BroadcastDeactivateBucket(&req)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{

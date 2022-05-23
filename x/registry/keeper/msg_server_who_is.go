@@ -28,7 +28,7 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 	}
 
 	// Create the new buffer
-	didDocBuf, err := doc.GetDocument().MarshalJSON()
+	didDocBuf, err := doc.MarshalJSON()
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
@@ -72,11 +72,25 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	newWhoIs, err := val.UpdateDidBuffer(msg.DidDocument)
+	// Trim snr account prefix
+	doc, err := types.NewDIDDocumentFromBytes(msg.DidDocument)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
-	k.SetWhoIs(ctx, newWhoIs)
+	err = doc.CopyFromBytes(msg.GetDidDocument())
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+	for _, a := range doc.GetAlsoKnownAs() {
+		if !val.ContainsAlias(a) {
+			val.AddAlsoKnownAs(a, false)
+		}
+	}
+	val.Controllers = doc.ControllersAsString()
+	val.Timestamp = time.Now().Unix()
+	val.IsActive = true
+	val.DidDocument = doc
+	k.SetWhoIs(ctx, val)
 	return &types.MsgUpdateWhoIsResponse{}, nil
 }
 
@@ -100,7 +114,7 @@ func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactiva
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
-	sonrDidDoc, err := types.NewDIDDocumentFromPkg(doc.GetDocument())
+	sonrDidDoc, err := types.NewDIDDocumentFromPkg(doc)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}

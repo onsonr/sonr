@@ -49,11 +49,10 @@ func CreateMockDidDocument(simAccount simtypes.Account) (did.Document, error) {
 	}
 
 	// UnmarshalJSON from DID document
-	docI, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
+	doc, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
 		return nil, err
 	}
-	doc := docI.GetDocument()
 
 	//webauthncred := CreateMockCredential()
 	pubKey, _, err := ed.GenerateKey(cryptrand.Reader)
@@ -74,7 +73,6 @@ func CreateMockDidDocument(simAccount simtypes.Account) (did.Document, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	doc.AddAuthenticationMethod(vm)
-	return doc.GetDocument(), nil
+	return doc, nil
 }

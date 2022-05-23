@@ -106,6 +106,7 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 // 		c.JSON(http.StatusBadRequest, gin.H{
 // 			"error": t.ErrRequestBody.Error(),
 // 		})
+//		return
 // 	}
 
 // 	// Setup concurrent stream
@@ -113,6 +114,7 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 // 	ch, ok := s.channels[req.GetDid()]
 // 	if !ok {
 // 		c.JSON(http.StatusBadRequest, t.ErrRequestBody.Error())
+//.     return
 // 	}
 // 	go ch.Listen(opChan)
 
@@ -121,7 +123,7 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 // 		// Get the next operation
 // 		op, ok := <-opChan
 // 		if !ok {
-// 			return false
+// 			return
 // 		}
 
 // 		// Create ChannelMessage
@@ -138,12 +140,12 @@ func (s *HighwayServer) UpdateChannel(c *gin.Context) {
 // 			c.JSON(http.StatusInternalServerError, gin.H{
 // 				"error": err.Error(),
 // 			})
-// 			return false
+// 			return
 // 		}
 
 // 		// Send the message
 // 		c.Writer.Write(data)
-// 		return true
+// 		return
 // 	})
 // }
 

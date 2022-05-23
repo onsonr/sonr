@@ -43,47 +43,35 @@ func (w *WhoIs) OwnerAccAddress() (addr sdk.AccAddress, err error) {
 // UpdateDidBuffer copies the DID document into the WhoIs object if the DID document has the same DID owner
 func (w *WhoIs) UpdateDidBuffer(buf []byte) (WhoIs, error) {
 	// Trim snr account prefix
-	var rawCreator string
-	if strings.HasPrefix(w.Owner, "snr") {
-		rawCreator = strings.TrimLeft(rawCreator, "snr")
-	}
-
-	// Trim cosmos account prefix
-	if strings.HasPrefix(rawCreator, "cosmos") {
-		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
-	}
-
-	doc, err := did.NewDocument(fmt.Sprintf("did:sonr:%s", rawCreator))
-	if err != nil {
-
-	err := doc.CopyFromBytes(buf)
+	rawCreator := strings.TrimPrefix(w.GetOwner(), "snr")
+	docI, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
 		return *w, err
 	}
-	for _, a := range doc.AlsoKnownAs {
+	err = docI.CopyFromBytes(buf)
+	if err != nil {
+		return *w, err
+	}
+	for _, a := range docI.GetAlsoKnownAs() {
 		if !w.ContainsAlias(a) {
 			w.AddAlsoKnownAs(a, false)
 		}
 	}
 
-	snrDoc, err := NewDIDDocumentFromPkg(&doc)
+	snrDoc, err := NewDIDDocumentFromPkg(docI)
 	if err != nil {
 		return *w, err
 	}
 
-	w.Controllers = doc.ControllersAsString()
+	w.Controllers = docI.ControllersAsString()
 	w.Timestamp = time.Now().Unix()
 	w.IsActive = true
 	w.DidDocument = snrDoc
-	if err != nil {
-		return *w, err
-	}
 	return *w, nil
 }
 
-
 // GetAlsoKnownAs returns the list of aliases of the whois as string array
-func (w *WhoIs) GetAlsoKnownAsList() []string {
+func (w *WhoIs) GetAlsoKnownAs() []string {
 	var aliases []string
 	for _, a := range w.Alias {
 		aliases = append(aliases, a.GetName())

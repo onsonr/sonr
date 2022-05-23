@@ -31,8 +31,23 @@ type DocumentImpl struct {
 	AlsoKnownAs          []string                  `json:"alsoKnownAs,omitempty"`
 }
 
-// NewDocument creates a new blank DID Document and parses the given did string into it.
-func NewDocument(idStr string) (*DocumentImpl, error) {
+// BlankDocument creates a Blank Default DID Document
+func BlankDocument() Document {
+	return &DocumentImpl{
+		Context:              make([]ssi.URI, 0),
+		VerificationMethod:   make(VerificationMethods, 0),
+		Authentication:       make(VerificationRelationships, 0),
+		AssertionMethod:      make(VerificationRelationships, 0),
+		KeyAgreement:         make(VerificationRelationships, 0),
+		CapabilityInvocation: make(VerificationRelationships, 0),
+		CapabilityDelegation: make(VerificationRelationships, 0),
+		Service:              make([]Service, 0),
+		AlsoKnownAs:          make([]string, 0),
+	}
+}
+
+// NewDocument generates a new DID Document for the provided ID string
+func NewDocument(idStr string) (Document, error) {
 	fmt.Println(idStr)
 	id, err := ParseDID(idStr)
 	if err != nil {
@@ -58,8 +73,25 @@ func NewDocument(idStr string) (*DocumentImpl, error) {
 	}, nil
 }
 
-func (d *DocumentImpl) GetDocument() Document {
-	return d
+func (d *DocumentImpl) ControllerCount() int {
+	return len(d.Controller)
+}
+
+func (d *DocumentImpl) GetController(did DID) (DID, error) {
+	for _, c := range d.Controller {
+		if c.Equals(did) {
+			return c, nil
+		}
+	}
+	return DID{}, errors.New("did not found")
+}
+
+func (d *DocumentImpl) GetID() DID {
+	return d.ID
+}
+
+func (d *DocumentImpl) GetAlsoKnownAs() []string {
+	return d.AlsoKnownAs
 }
 
 // CopyFromBytes unmarshals a JSON document from a byte slice and copies the data into the receiver.
@@ -231,17 +263,17 @@ func (d DocumentImpl) MarshalJSON() ([]byte, error) {
 }
 
 func (d *DocumentImpl) UnmarshalJSON(b []byte) error {
+	type Alias DocumentImpl
 	normalizedDoc, err := marshal.NormalizeDocument(b, pluralContext, marshal.Plural(controllerKey))
 	if err != nil {
 		return err
 	}
-
-	var doc DocumentImpl
+	doc := Alias{}
 	err = json.Unmarshal(normalizedDoc, &doc)
 	if err != nil {
 		return err
 	}
-	*d = doc
+	*d = (DocumentImpl)(doc)
 
 	const errMsg = "unable to resolve all '%s' references: %w"
 	if err = resolveVerificationRelationships(d.Authentication, d.VerificationMethod); err != nil {
