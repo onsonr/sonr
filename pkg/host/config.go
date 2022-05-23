@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"crypto/ed25519"
-	"sync/atomic"
 
 	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -99,45 +98,20 @@ type SonrHost interface {
 	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
 }
 
-// SetStatus sets the host status and emits the event
-func (h *hostImpl) SetStatus(s HostStatus) {
-	// Check if status is changed
-	if h.status == s {
-		return
-	}
-	status_bucket := STATE_MAPPINGS[h.status]
-	for _, status := range status_bucket {
-		if status == s {
-			h.status = s
-		}
-	}
-}
-
 // Close closes the node
 func (n *hostImpl) Close() {
 	// Update Status
-	n.SetStatus(Status_CLOSED)
+	n.fsm.SetStatus(Status_CLOSED)
 	n.IpfsDHT.Close()
 	n.host.Close()
 }
 
-// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-func (c *hostImpl) NeedsWait() {
-	<-c.Chn
-}
-
 // Resume tells all of goroutines to resume execution
 func (c *hostImpl) Resume() {
-	if atomic.LoadUint64(&c.flag) == 1 {
-		close(c.Chn)
-		atomic.StoreUint64(&c.flag, 0)
-	}
+	c.fsm.ResumeOperation()
 }
 
 // Pause tells all of goroutines to pause execution
 func (c *hostImpl) Pause() {
-	if atomic.LoadUint64(&c.flag) == 0 {
-		atomic.StoreUint64(&c.flag, 1)
-		c.Chn = make(chan bool)
-	}
+	c.fsm.PauseOperation()
 }
