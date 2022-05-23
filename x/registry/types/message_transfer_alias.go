@@ -15,7 +15,6 @@ var _ sdk.Msg = &MsgTransferAlias{}
 func NewMsgTransferAlias(creator string, did string, alias string, recipient string) *MsgTransferAlias {
 	return &MsgTransferAlias{
 		Creator:   creator,
-		Did:       did,
 		Alias:     alias,
 		Recipient: recipient,
 	}

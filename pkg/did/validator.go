@@ -327,8 +327,8 @@ func (d Document) EqualsAlsoKnownAs(doc *Document) bool {
 
 // Equals is a helper function that compares two documents and returns true if they are equal.
 func (d *Document) copyDocument(doc *Document) error {
-	if !d.MatchesID(doc) {
-		return makeValidationError(ErrInvalidID)
+	if !d.MatchesID(doc) && doc.ID.String() != "" {
+		d.ID = doc.ID
 	}
 	if !d.EqualsVerificationMethod(doc) && doc.VerificationMethod != nil {
 		d.VerificationMethod = doc.VerificationMethod

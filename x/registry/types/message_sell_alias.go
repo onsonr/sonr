@@ -15,7 +15,6 @@ var _ sdk.Msg = &MsgSellAlias{}
 func NewMsgSellAlias(creator string, did string, alias string, amount int32) *MsgSellAlias {
 	return &MsgSellAlias{
 		Creator: creator,
-		Did:     did,
 		Alias:   alias,
 		Amount:  amount,
 	}

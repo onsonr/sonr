@@ -5,7 +5,6 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -13,6 +12,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/spf13/viper"
+)
+
+var (
+	CONFIG_PATH = viper.GetString("LOCAL_CONFIG_DIR")
 )
 
 func surveyNewDid() error {
@@ -102,8 +106,7 @@ func surveyNewDid() error {
 		survey.AskOne(prompt, &saveFile)
 
 		if saveFile {
-			rootPath, _ := os.Getwd()
-			path := filepath.Join(rootPath, "testutil", "sample", "did.json")
+			path := filepath.Join(CONFIG_PATH, "testutil", "sample", "did.json")
 			ioutil.WriteFile(path, buf, 0644)
 			fmt.Printf("Saved DID JSON Document to: %s\n", path)
 		} else {

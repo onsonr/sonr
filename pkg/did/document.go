@@ -33,6 +33,7 @@ type Document struct {
 
 // NewDocument creates a new blank DID Document and parses the given did string into it.
 func NewDocument(idStr string) (*Document, error) {
+	fmt.Println(idStr)
 	id, err := ParseDID(idStr)
 	if err != nil {
 		return nil, err

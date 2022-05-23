@@ -49,7 +49,7 @@ func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*typ
 
 	// Return response
 	return &types.MsgBuyAliasResponse{
-		Did:   whois.Owner,
+		Success: true,
 		WhoIs: &whois,
 	}, nil
 }

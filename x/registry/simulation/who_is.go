@@ -83,7 +83,6 @@ func SimulateMsgUpdateWhoIs(
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.DidDocument = whoIs.DidDocument
-		msg.Did = whoIs.Owner
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -103,7 +102,7 @@ func SimulateMsgUpdateWhoIs(
 	}
 }
 
-func SimulateMsgDeleteWhoIs(
+func SimulateMsgDeactivateWhoIs(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -128,7 +127,6 @@ func SimulateMsgDeleteWhoIs(
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs owner not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
-		msg.Did = whoIs.Owner
 		msg.DidDocument = whoIs.DidDocument
 
 		txCtx := simulation.OperationInput{

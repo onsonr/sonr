@@ -56,25 +56,23 @@ func (msg *MsgCreateWhoIs) ValidateBasic() error {
 // GetCreatorDid returns the creator did
 func (msg *MsgCreateWhoIs) GetCreatorDid() string {
 	rawCreator := msg.GetCreator()
-	var identifier string
 
 	// Trim snr account prefix
 	if strings.HasPrefix(rawCreator, "snr") {
-		identifier = strings.TrimLeft(rawCreator, "snr")
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
 	}
 
 	// Trim cosmos account prefix
-	if strings.HasPrefix(identifier, "cosmos") {
-		identifier = strings.TrimLeft(identifier, "cosmos")
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
 	}
-	return fmt.Sprintf("did:snr:%s", identifier)
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }
 
 var _ sdk.Msg = &MsgUpdateWhoIs{}
 
 func NewMsgUpdateWhoIs(owner string, id string, doc []byte) *MsgUpdateWhoIs {
 	return &MsgUpdateWhoIs{
-		Did:         id,
 		Creator:     owner,
 		DidDocument: doc,
 	}
@@ -129,7 +127,6 @@ var _ sdk.Msg = &MsgDeactivateWhoIs{}
 
 func NewMsgDeactivateWhoIs(owner string, id string) *MsgDeactivateWhoIs {
 	return &MsgDeactivateWhoIs{
-		Did:     id,
 		Creator: owner,
 	}
 }

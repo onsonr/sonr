@@ -15,7 +15,7 @@ func TestWhoIsMsgServerCreate(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		resp, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{Creator: owner})
 		require.NoError(t, err)
-		require.Equal(t, i, resp.Did)
+		require.Equal(t, i, resp.GetWhoIs())
 	}
 }
 
@@ -38,7 +38,7 @@ func TestWhoIsMsgServerUpdate(t *testing.T) {
 		},
 		{
 			desc:    "Unauthorized",
-			request: &types.MsgUpdateWhoIs{Creator: owner, Did: "10"},
+			request: &types.MsgUpdateWhoIs{Creator: owner},
 			err:     sdkerrors.ErrKeyNotFound,
 		},
 	} {
@@ -76,7 +76,7 @@ func TestWhoIsMsgServerDelete(t *testing.T) {
 		},
 		{
 			desc:    "KeyNotFound",
-			request: &types.MsgDeactivateWhoIs{Creator: owner, Did: "10"},
+			request: &types.MsgDeactivateWhoIs{Creator: owner},
 			err:     sdkerrors.ErrKeyNotFound,
 		},
 	} {

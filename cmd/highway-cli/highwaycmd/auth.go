@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"time"
 
@@ -21,10 +22,11 @@ import (
 func bootstrapRegisterCommand(ctx context.Context) (registerCmd *cobra.Command) {
 	// env
 	var (
-		RP_ORIGIN      = viper.GetString("RP_ORIGIN")
-		RP_AUTH_ORIGIN = viper.GetString("RP_AUTH_ORIGIN")
-		HTTP_PORT      = viper.GetInt("HTTP_PORT")
-		API_ENDPOINT   = fmt.Sprintf("%s:%d/v1", RP_ORIGIN, HTTP_PORT)
+		RP_ORIGIN        = viper.GetString("RP_ORIGIN")
+		RP_AUTH_ORIGIN   = viper.GetString("RP_AUTH_ORIGIN")
+		HTTP_PORT        = viper.GetInt("HTTP_PORT")
+		LOCAL_CONFIG_DIR = viper.GetString("LOCAL_CONFIG_DIR")
+		API_ENDPOINT     = fmt.Sprintf("%s:%d/v1", RP_ORIGIN, HTTP_PORT)
 	)
 
 	registerCmd = &cobra.Command{
@@ -37,11 +39,12 @@ func bootstrapRegisterCommand(ctx context.Context) (registerCmd *cobra.Command) 
 			}
 
 			fmt.Print("Registering... ")
-			run(args[0], fmt.Sprintf(
+			run(fmt.Sprintf(
 				"%s?operation=register&rp_origin=%s&username=%s",
 				RP_AUTH_ORIGIN,
 				url.QueryEscape(API_ENDPOINT),
 				url.QueryEscape(args[0])),
+				LOCAL_CONFIG_DIR,
 			)
 		},
 	}
@@ -68,19 +71,19 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 
 			fmt.Print("Logging in... ")
-			run(args[0], fmt.Sprintf(
+			run(fmt.Sprintf(
 				"%s?operation=login&rp_origin=%s&username=%s",
 				RP_AUTH_ORIGIN,
 				url.QueryEscape(API_ENDPOINT),
 				url.QueryEscape(args[0])),
-				LOCAL_CONFIG_DIR,
+				filepath.Join(LOCAL_CONFIG_DIR, "highway-cli", "login.json"),
 			)
 		},
 	}
 	return
 }
 
-func run(name, url, saveDir string) {
+func run(url, saveDir string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Minute))
 	defer cancel()
 

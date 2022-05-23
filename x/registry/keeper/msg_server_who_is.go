@@ -58,7 +58,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	// Checks that the element exists
 	val, found := k.GetWhoIsFromOwner(ctx, msg.GetCreator())
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.GetCreator()))
 	}
 
 	// Checks if the msg owner is the same as the current owner
@@ -81,7 +81,7 @@ func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeactivateWh
 	// Checks that the element exists
 	val, found := k.GetWhoIsFromOwner(ctx, msg.GetCreator())
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.GetCreator()))
 	}
 
 	// Checks if the msg owner is the same as the current owner

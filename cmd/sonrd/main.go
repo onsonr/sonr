@@ -5,6 +5,7 @@ import (
 	"os"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/app"
 	"github.com/sonr-io/sonr/cmd/sonrd/didutil"
 	"github.com/spf13/viper"
@@ -13,6 +14,10 @@ import (
 
 const (
 	CONFIG_PATH_ROOT = "../../"
+)
+
+var (
+	logger = golog.Default.Child("sonrd")
 )
 
 // load environment variables
@@ -29,8 +34,9 @@ func loadEnv() error {
 func main() {
 	err := loadEnv()
 	if err != nil {
-
+		logger.Errorf("Error while loading config for enviorment %s", err)
 	}
+
 	rootCmd, _ := cmd.NewRootCmd(
 		app.Name,
 		app.AccountAddressPrefix,
