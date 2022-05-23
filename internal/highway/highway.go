@@ -54,6 +54,12 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer,
 	s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)
 	s.Router.POST("/v1/registry/whois/update", s.UpdateWhoIs)
 	s.Router.POST("/v1/registry/whois/deactivate", s.DeactivateWhoIs)
+	s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)
+	s.Router.POST("/v1/registry/whois/update", s.UpdateWhoIs)
+	s.Router.POST("/v1/registry/whois/deactivate", s.DeactivateWhoIs)
+	s.Router.POST("/v1/registry/query/whois/:did", s.QueryWhoIs)
+	s.Router.POST("/v1/registry/whois/controller/:did", s.QueryWhoIsController)
+	s.Router.POST("/v1/registry/whois/alias/:name", s.QueryWhoIsAlias)
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

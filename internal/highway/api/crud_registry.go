@@ -8,6 +8,75 @@ import (
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
+// QueryWhoIs
+// @Summary
+// @Schemes
+// @Description QueryWhoIsDID
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /registry/query/whois/:did [GET]
+func (s *HighwayServer) QueryWhoIs(c *gin.Context) {
+	if did := c.Param("did"); did != "" {
+		res, err := s.Cosmos.QueryWhoIs(did)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, res)
+	}
+
+	c.JSON(http.StatusBadRequest, gin.H{"error": "did is required"})
+}
+
+// QueryWhoIsController
+// @Summary
+// @Schemes
+// @Description QueryWhoIsDID
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /registry/query/whois/controller/:did [GET]
+func (s *HighwayServer) QueryWhoIsController(c *gin.Context) {
+	if did := c.Param("did"); did != "" {
+		res, err := s.Cosmos.QueryWhoIs(did)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, res)
+	}
+
+	c.JSON(http.StatusBadRequest, gin.H{"error": "did is required"})
+}
+
+// QueryWhoIsAlias
+// @Summary
+// @Schemes
+// @Description QueryWhoIsDID
+// @Tags Registry
+// @Produce json
+// @Success      200  {string}  message
+// @Failure      500  {string}  message
+// @Router /registry/query/whois/alias/:name [GET]
+func (s *HighwayServer) QueryWhoIsAlias(c *gin.Context) {
+	if name := c.Param("name"); name != "" {
+		res, err := s.Cosmos.QueryWhoIs(name)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, res)
+	}
+
+	c.JSON(http.StatusBadRequest, gin.H{"error": "name is required"})
+}
+
 // @Summary Create WhoIs Entry
 // @Schemes
 // @Description This method takes a DIDDocument as an input along with the did of the account calling the TX, and verifies the signature. If succesful, and there is no existing WhoIs created for the user or application. Paramaters include: signature, diddocument, address, and whoIsType.
