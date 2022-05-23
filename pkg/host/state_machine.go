@@ -2,8 +2,7 @@ package host
 
 import (
 	"context"
-
-	"github.com/sonr-io/sonr/pkg/config"
+	"sync/atomic"
 )
 
 // HostStatus is the status of the host
@@ -54,9 +53,11 @@ func (sm *SFSM) GetCurrent() string {
 }
 
 type SFSM struct {
+	Current      HostStatus
+	Chn          chan bool
+	flag         uint64
 	States       *[]HostStatus
 	StateMapping *map[HostStatus][]HostStatus
-	Current      HostStatus
 }
 
 // SNRHostStatus Definitions
@@ -79,7 +80,7 @@ var (
 	}
 )
 
-func New(ctx context.Context, c *config.Config) *SFSM {
+func NewFSM(ctx context.Context) *SFSM {
 	states := []HostStatus{
 		Status_IDLE,
 		Status_READY,
@@ -94,4 +95,40 @@ func New(ctx context.Context, c *config.Config) *SFSM {
 		Current:      Status_IDLE,
 	}
 
+}
+
+// SetStatus sets the host status and emits the event
+func (fsm *SFSM) SetStatus(s HostStatus) {
+	// Check if status is changed
+	if fsm.Current == s {
+		return
+	}
+	status_bucket := STATE_MAPPINGS[fsm.Current]
+	for _, status := range status_bucket {
+		if status == s {
+			fsm.Current = s
+			break
+		}
+	}
+}
+
+// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
+func (sfm *SFSM) NeedsWait() {
+	<-sfm.Chn
+}
+
+// Resume tells all of goroutines to resume execution
+func (fsm *SFSM) ResumeOperation() {
+	if atomic.LoadUint64(&fsm.flag) == 1 {
+		close(fsm.Chn)
+		atomic.StoreUint64(&fsm.flag, 0)
+	}
+}
+
+// Pause tells all of goroutines to pause execution
+func (fsm *SFSM) PauseOperation() {
+	if atomic.LoadUint64(&fsm.flag) == 0 {
+		atomic.StoreUint64(&fsm.flag, 1)
+		fsm.Chn = make(chan bool)
+	}
 }

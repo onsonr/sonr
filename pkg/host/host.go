@@ -42,9 +42,7 @@ type hostImpl struct {
 	*ps.PubSub
 
 	// State
-	flag   uint64
-	Chn    chan bool
-	status HostStatus
+	fsm *SFSM
 }
 
 // NewDefaultHost Creates a Sonr libp2p Host with the given config
@@ -53,7 +51,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Create the host.
 	hn := &hostImpl{
 		ctx:          ctx,
-		status:       Status_IDLE,
+		fsm:          NewFSM(ctx),
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		config:       c,
 		events:       events.New(),
@@ -92,11 +90,11 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	if err != nil {
 		return nil, err
 	}
-	hn.SetStatus(Status_CONNECTING)
+	hn.fsm.SetStatus(Status_CONNECTING)
 
 	// Bootstrap DHT
 	if err := hn.Bootstrap(context.Background()); err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetStatus(Status_FAIL)
 		return nil, err
 	}
 
@@ -112,7 +110,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Initialize Discovery for DHT
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetStatus(Status_FAIL)
 		return nil, err
 	}
 
@@ -121,7 +119,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		// hn.createMdnsDiscovery(config)
 	}
 
-	hn.SetStatus(Status_READY)
+	hn.fsm.SetStatus(Status_READY)
 	go hn.Serve()
 	return hn, nil
 }
@@ -132,7 +130,7 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Create the host.
 	hn := &hostImpl{
 		ctx:          ctx,
-		status:       Status_IDLE,
+		fsm:          NewFSM(ctx),
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		config:       c,
 		events:       events.New(),
@@ -173,12 +171,12 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	if err != nil {
 		return nil, err
 	}
-	hn.SetStatus(Status_CONNECTING)
+	hn.fsm.SetStatus(Status_CONNECTING)
 
 	// Bootstrap DHT
 	if err := hn.Bootstrap(context.Background()); err != nil {
 
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetStatus(Status_FAIL)
 		return nil, err
 	}
 
@@ -194,12 +192,12 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Initialize Discovery for DHT
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetStatus(Status_FAIL)
 
 		return nil, err
 	}
 
-	hn.SetStatus(Status_READY)
+	hn.fsm.SetStatus(Status_READY)
 	go hn.Serve()
 	return hn, nil
 }
@@ -214,17 +212,18 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	// Create Pub Sub
 	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetStatus(Status_FAIL)
 		return err
 	}
 
 	// Handle DHT Peers
 	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, c.Libp2pRendezvous, c.Libp2pTTL)
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetStatus(Status_FAIL)
 		return err
 	}
-	hn.SetStatus(Status_READY)
+
+	hn.fsm.SetStatus(Status_READY)
 	return nil
 }
 
