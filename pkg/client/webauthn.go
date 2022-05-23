@@ -71,7 +71,7 @@ func (w *WebAuthn) FinishAuthenticationSession(r *http.Request, username string)
 		return nil, err
 	}
 
-	doc, err := whois.UnmarshalDidDocument()
+	doc, err := whois.GetDocument()
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 		return nil, err
 	}
 
-	doc, err := whois.UnmarshalDidDocument()
+	doc, err := whois.GetDocument()
 	if err != nil {
 		log.Errorf("error finishing registration: %s", err)
 		return nil, err
@@ -116,7 +116,7 @@ func (w *WebAuthn) FinishRegistrationSession(r *http.Request, username string) (
 func (wan *WebAuthn) SaveAuthenticationSession(r *http.Request, w http.ResponseWriter, whoIs *rtv1.WhoIs) (*protocol.CredentialAssertion, error) {
 	// generate PublicKeyCredentialRequestOptions, session data
 	wan.cache.Set(authenticationCacheKey(whoIs.Owner), whoIs, cache.DefaultExpiration)
-	doc, err := whoIs.UnmarshalDidDocument()
+	doc, err := whoIs.GetDocument()
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func (wan *WebAuthn) SaveRegistrationSession(r *http.Request, w http.ResponseWri
 	whoIs := blankWhoIs(username, creator)
 	wan.cache.Set(registerCacheKey(username), whoIs, cache.DefaultExpiration)
 
-	doc, err := whoIs.UnmarshalDidDocument()
+	doc, err := whoIs.GetDocument()
 	if err != nil {
 		log.Errorf("error finishing registration: %s", err)
 		return nil, err
@@ -225,7 +225,7 @@ func registerCacheKey(username string) string {
 // registerOptions is a helper function to create a PublicKeyCredentialCreationOptions
 func registerOptions(whois *rtv1.WhoIs) func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
 	return func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-		doc, err := whois.UnmarshalDidDocument()
+		doc, err := whois.GetDocument()
 		if err != nil {
 			return
 		}

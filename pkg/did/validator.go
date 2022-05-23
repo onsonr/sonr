@@ -215,3 +215,144 @@ func (v validationError) Is(err error) bool {
 func (v validationError) Error() string {
 	return fmt.Sprintf("DID Document validation failed: %v", v.cause)
 }
+
+// MatchesID returns true if the two DIDs are equal.
+func (d Document) MatchesID(doc *Document) bool {
+	return d.ID.String() == doc.ID.String()
+}
+
+// EqualsVerificationMethod compares doc Verification Method and given docs verification method then returns true if they are equal.
+func (d Document) EqualsVerificationMethod(doc *Document) bool {
+	if len(d.VerificationMethod) != len(doc.VerificationMethod) {
+		return false
+	}
+	for _, v := range d.VerificationMethod {
+		if doc.VerificationMethod.FindByID(v.ID) == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// EqualsAuthentication compares doc Authentication and given docs authentication then returns true if they are equal.
+func (d Document) EqualsAuthentication(doc *Document) bool {
+	if len(d.Authentication) != len(doc.Authentication) {
+		return false
+	}
+	for _, v := range d.Authentication {
+		if doc.Authentication.FindByID(v.ID) == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// EqualsAssertionMethod compares doc AssertionMethod and given docs assertion method then returns true if they are equal.
+func (d Document) EqualsAssertionMethod(doc *Document) bool {
+	if len(d.AssertionMethod) != len(doc.AssertionMethod) {
+		return false
+	}
+	for _, v := range d.AssertionMethod {
+		if doc.AssertionMethod.FindByID(v.ID) == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// EqualsKeyAgreement compares doc KeyAgreement and given docs key agreement then returns true if they are equal.
+func (d Document) EqualsKeyAgreement(doc *Document) bool {
+	if len(d.KeyAgreement) != len(doc.KeyAgreement) {
+		return false
+	}
+	for _, v := range d.KeyAgreement {
+		if doc.KeyAgreement.FindByID(v.ID) == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// EqualsCapabilityInvocation compares doc CapabilityInvocation and given docs capability invocation then returns true if they are equal.
+func (d Document) EqualsCapabilityInvocation(doc *Document) bool {
+	if len(d.CapabilityInvocation) != len(doc.CapabilityInvocation) {
+		return false
+	}
+	for _, v := range d.CapabilityInvocation {
+		if doc.CapabilityInvocation.FindByID(v.ID) == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// EqualsCapabilityDelegation compares doc CapabilityDelegation and given docs capability delegation then returns true if they are equal.
+func (d Document) EqualsCapabilityDelegation(doc *Document) bool {
+	if len(d.CapabilityDelegation) != len(doc.CapabilityDelegation) {
+		return false
+	}
+	for _, v := range d.CapabilityDelegation {
+		if doc.CapabilityDelegation.FindByID(v.ID) == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// EqualsService compares doc Service and given docs service then returns true if they are equal.
+func (d Document) EqualsService(doc *Document) bool {
+	if len(d.Service) != len(doc.Service) {
+		return false
+	}
+	for _, v := range d.Service {
+		if doc.Service.FindByID(v.ID) == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// EqualsAlsoKnownAs compares doc AlsoKnownAs and given docs also known as then returns true if they are equal.
+func (d Document) EqualsAlsoKnownAs(doc *Document) bool {
+	if len(d.AlsoKnownAs) != len(doc.AlsoKnownAs) {
+		return false
+	}
+	for _, v := range d.AlsoKnownAs {
+		if !contains(doc.AlsoKnownAs, v) {
+			return false
+		}
+	}
+	return true
+}
+
+// Equals is a helper function that compares two documents and returns true if they are equal.
+func (d *Document) copyDocument(doc *Document) error {
+	if !d.MatchesID(doc) {
+		return makeValidationError(ErrInvalidID)
+	}
+	if !d.EqualsVerificationMethod(doc) && doc.VerificationMethod != nil {
+		d.VerificationMethod = doc.VerificationMethod
+	}
+	if !d.EqualsAuthentication(doc) && doc.Authentication != nil {
+		d.Authentication = doc.Authentication
+	}
+	if !d.EqualsAssertionMethod(doc) && doc.AssertionMethod != nil {
+		d.AssertionMethod = doc.AssertionMethod
+	}
+	if !d.EqualsKeyAgreement(doc) && doc.KeyAgreement != nil {
+		d.KeyAgreement = doc.KeyAgreement
+	}
+	if !d.EqualsCapabilityInvocation(doc) && doc.CapabilityInvocation != nil {
+		d.CapabilityInvocation = doc.CapabilityInvocation
+	}
+	if !d.EqualsCapabilityDelegation(doc) && doc.CapabilityDelegation != nil {
+		d.CapabilityDelegation = doc.CapabilityDelegation
+	}
+	if !d.EqualsService(doc) && doc.Service != nil {
+		d.Service = doc.Service
+	}
+	if !d.EqualsAlsoKnownAs(doc) && doc.AlsoKnownAs != nil {
+		d.AlsoKnownAs = doc.AlsoKnownAs
+	}
+	return nil
+}

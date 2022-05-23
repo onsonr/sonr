@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -101,7 +102,8 @@ func surveyNewDid() error {
 		survey.AskOne(prompt, &saveFile)
 
 		if saveFile {
-			path := filepath.Join("testutil", "sample", "did.json")
+			rootPath, _ := os.Getwd()
+			path := filepath.Join(rootPath, "testutil", "sample", "did.json")
 			ioutil.WriteFile(path, buf, 0644)
 			fmt.Printf("Saved DID JSON Document to: %s\n", path)
 		} else {

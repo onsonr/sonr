@@ -7,10 +7,30 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	"github.com/sonr-io/sonr/app"
 	"github.com/sonr-io/sonr/cmd/sonrd/didutil"
+	"github.com/spf13/viper"
 	cmd "github.com/tendermint/spm/cosmoscmd"
 )
 
+const (
+	CONFIG_PATH_ROOT = "../../"
+)
+
+// load environment variables
+func loadEnv() error {
+	viper.AddConfigPath(CONFIG_PATH_ROOT)
+
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
+	viper.AutomaticEnv()
+
+	return viper.ReadInConfig()
+}
+
 func main() {
+	err := loadEnv()
+	if err != nil {
+
+	}
 	rootCmd, _ := cmd.NewRootCmd(
 		app.Name,
 		app.AccountAddressPrefix,

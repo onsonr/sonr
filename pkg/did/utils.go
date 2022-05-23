@@ -208,3 +208,13 @@ func ExtractQuery(didUrl string) (bool, string) {
 	}
 	return true, query[1]
 }
+
+// contains returns true if the given string is in the given slice.
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}

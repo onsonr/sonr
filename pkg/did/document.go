@@ -10,9 +10,9 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 
+	"github.com/duo-labs/webauthn/protocol"
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/shengdoushi/base58"
-	"github.com/duo-labs/webauthn/protocol"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
 )
 
@@ -27,8 +27,38 @@ type Document struct {
 	KeyAgreement         VerificationRelationships `json:"keyAgreement,omitempty"`
 	CapabilityInvocation VerificationRelationships `json:"capabilityInvocation,omitempty"`
 	CapabilityDelegation VerificationRelationships `json:"capabilityDelegation,omitempty"`
-	Service              []Service                 `json:"service,omitempty"`
+	Service              Services                  `json:"service,omitempty"`
 	AlsoKnownAs          []string                  `json:"alsoKnownAs,omitempty"`
+}
+
+// NewDocument creates a new blank DID Document and parses the given did string into it.
+func NewDocument(idStr string) (*Document, error) {
+	id, err := ParseDID(idStr)
+	if err != nil {
+		return nil, err
+	}
+	return &Document{
+		ID:                   *id,
+		Context:              make([]ssi.URI, 0),
+		VerificationMethod:   make(VerificationMethods, 0),
+		Authentication:       make(VerificationRelationships, 0),
+		AssertionMethod:      make(VerificationRelationships, 0),
+		KeyAgreement:         make(VerificationRelationships, 0),
+		CapabilityInvocation: make(VerificationRelationships, 0),
+		CapabilityDelegation: make(VerificationRelationships, 0),
+		Service:              make([]Service, 0),
+		AlsoKnownAs:          make([]string, 0),
+	}, nil
+}
+
+// CopyFromBytes unmarshals a JSON document from a byte slice and copies the data into the receiver.
+func (d *Document) CopyFromBytes(b []byte) error {
+	var newDoc Document
+	err := newDoc.UnmarshalJSON(b)
+	if err != nil {
+		return err
+	}
+	return d.copyDocument(&newDoc)
 }
 
 // AddController adds a DID as a controller
@@ -323,6 +353,19 @@ func (s Service) UnmarshalServiceEndpoint(target interface{}) error {
 	} else {
 		return json.Unmarshal(asJSON, target)
 	}
+}
+
+type Services []Service
+
+// FindByID returns the first VerificationRelationship that matches with the id.
+// For comparison both the ID of the embedded VerificationMethod and reference is used.
+func (srs Services) FindByID(id ssi.URI) *Service {
+	for _, r := range srs {
+		if r.ID == id {
+			return &r
+		}
+	}
+	return nil
 }
 
 // VerificationMethod represents a DID Verification Method as specified by the DID Core specification (https://www.w3.org/TR/did-core/#verification-methods).

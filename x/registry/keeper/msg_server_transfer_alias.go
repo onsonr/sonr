@@ -12,47 +12,61 @@ func (k msgServer) TransferAlias(goCtx context.Context, msg *types.MsgTransferAl
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if Alias exists if not return error
-	_, aliasIsFound := k.GetWhoIsFromAlias(ctx, msg.GetAlias())
-	// If a name is not found in store return error
-	if !aliasIsFound {
+	ownerWhoIs, ownerFound := k.FindWhoIsByAlias(ctx, msg.GetAlias())
+	if !ownerFound {
 		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name does not exist")
 	}
 
-	// Get whois from Owner
+	_, alias, err := ownerWhoIs.FindAliasByName(msg.GetAlias())
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name does not exist")
+	}
+
+	// Get buyerWhoIs from Owner
 	// TODO: Implement Multisig for root level owner #322
-	whois, isFound := k.GetWhoIsFromOwner(ctx, msg.Creator)
-	if !isFound {
+	buyerWhoIs, buyerFound := k.GetWhoIsFromOwner(ctx, msg.Creator)
+	if !buyerFound {
 		return nil, sdkerrors.Wrapf(types.ErrControllerNotFound, "creator %s", msg.Creator)
 	}
 
-	// Find associated Alias in whoIs
-	idx, alias, err := whois.FindAliasByName(msg.GetAlias())
+	// Convert Alias Owner address strings to sdk.AccAddress
+	ownerAddr, err := ownerWhoIs.OwnerAccAddress()
 	if err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrAliasNotFound, "alias %s", msg.GetAlias())
+		return nil, sdkerrors.Wrap(types.ErrInvalidLengthWhoIs, err.Error())
 	}
 
-	// Convert Alias Owner address strings to sdk.AccAddress
-	aliasOwner, err := sdk.AccAddressFromBech32(msg.GetRecipient())
+	// Get Buyer address from WhoIs
+	buyerAddr, err := buyerWhoIs.OwnerAccAddress()
 	if err != nil {
-		return nil, sdkerrors.Wrapf(err, "alias owner %s", msg.GetRecipient())
+		return nil, sdkerrors.Wrap(types.ErrInvalidLengthWhoIs, err.Error())
 	}
 
 	//TODO: put this in escrow to mitigate transfer/alias race condition attacks
 
 	// Send Coins to new owner
-	err = k.bankKeeper.SendCoins(ctx, aliasOwner, aliasOwner, sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(msg.GetAmount())))))
+	err = k.bankKeeper.SendCoins(ctx, buyerAddr, ownerAddr, sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(msg.GetAmount())))))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "failed to send coins to %s", msg.GetRecipient())
 	}
 
-	// Transfer Alias to new owner if transaction is successful
-	msg.Recipient = msg.Creator
-	whois.Alias[idx] = alias
+	// Update Alias Owner
+	newOwnerWhois, err := buyerWhoIs.AddAlsoKnownAs(alias.GetName(), true)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalidLengthWhoIs, err.Error())
+	}
+	k.SetWhoIs(ctx, newOwnerWhois)
+
+	// Remove Alias from old owner
+	oldOwnerWhois, err := ownerWhoIs.RemoveAlsoKnownAs(alias.GetName(), true)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalidLengthWhoIs, err.Error())
+	}
+	k.SetWhoIs(ctx, oldOwnerWhois)
 
 	// Update WhoIs in keeper store
 	return &types.MsgTransferAliasResponse{
 		Success: true,
-		WhoIs:   &whois,
+		WhoIs:   &buyerWhoIs,
 	}, nil
 
 }
