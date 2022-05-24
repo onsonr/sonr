@@ -17,6 +17,7 @@ func (k msgServer) TransferAlias(goCtx context.Context, msg *types.MsgTransferAl
 		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name does not exist")
 	}
 
+	// Query for the alias to transfer from original owner
 	_, alias, err := ownerWhoIs.FindAliasByName(msg.GetAlias())
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name does not exist")
