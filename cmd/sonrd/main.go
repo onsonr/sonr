@@ -31,11 +31,6 @@ func loadEnv() error {
 }
 
 func main() {
-	// err := loadEnv()
-	// if err != nil {
-	// 	logger.Errorf("Error while loading config for enviorment %s", err)
-	// }
-
 	rootCmd, _ := cmd.NewRootCmd(
 		app.Name,
 		app.AccountAddressPrefix,
@@ -44,7 +39,6 @@ func main() {
 		app.ModuleBasics,
 		app.New,
 		// this line is used by starport scaffolding # root/arguments
-
 	)
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
 
