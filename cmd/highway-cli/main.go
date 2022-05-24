@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/cmd/highway-cli/highwaycmd"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -12,12 +13,20 @@ const (
 
 	// PEM_KEY_FILE is the file containing the private key.
 	PEM_KEY_FILE = "key.pem"
+
+	CONFIG_PATH_LOCAL = "."
+
+	CONFIG_PATH_ROOT = "../../"
+)
+
+var (
+	logger = golog.Default.Child("highway-cli")
 )
 
 // load environment variables
 func loadEnv() error {
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("../../")
+	viper.AddConfigPath(CONFIG_PATH_LOCAL)
+	viper.AddConfigPath(CONFIG_PATH_ROOT)
 
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
@@ -27,6 +36,7 @@ func loadEnv() error {
 }
 
 func main() {
-	//cobra.CheckErr(loadEnv())
+	logger.Info("Starting highway-cli, loading env variables")
+	cobra.CheckErr(loadEnv())
 	cobra.CheckErr(highwaycmd.Execute())
 }

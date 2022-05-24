@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -33,13 +33,10 @@ jobs:
         uses: magnetikonline/action-golang-cache@v2
         with:
           go-version: ~1.17
-      - name: Install dependencies
-        run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init
-        working-directory: ${{ github.workspace }}/cmd/motor-lib
 
-
+      - name: Run coverage
+        continue-on-error: true
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -49,3 +46,5 @@ jobs:
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3

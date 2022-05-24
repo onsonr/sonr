@@ -28673,7 +28673,26 @@ paths:
                     alias:
                       type: array
                       items:
-                        type: string
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            title: Name is the string name of an Alias
+                          is_for_sale:
+                            type: boolean
+                            title: >-
+                              IsForSale is the boolean value indicating if the
+                              Alias is for sale
+                          amount:
+                            type: integer
+                            format: int32
+                            title: >-
+                              Amount is the amount listed for purchasing the
+                              Alias from the User/Application
+                        title: >-
+                          Alias is a message detailing a known "alsoKnownAs"
+                          identifier of a DIDDocument and contains properties
+                          for transfer/exchange
                       title: >-
                         Alias is the list of registered `alsoKnownAs`
                         identifiers of the User or Application
@@ -28683,11 +28702,78 @@ paths:
                         Owner is the top level DID of the User or Application
                         derived from the multisignature wallet.
                     did_document:
-                      type: string
-                      format: byte
                       description: >-
                         DIDDocument is the bytes representation of DIDDocument
                         within the WhoIs. Initially marshalled as JSON.
+                      type: object
+                      properties:
+                        context:
+                          type: array
+                          items:
+                            type: string
+                        id:
+                          type: string
+                        controller:
+                          type: array
+                          items:
+                            type: string
+                        verification_method:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              type:
+                                type: string
+                              controller:
+                                type: string
+                              public_key_jwk:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                              public_key_base58:
+                                type: string
+                        authentication:
+                          type: array
+                          items:
+                            type: string
+                        assertion_method:
+                          type: array
+                          items:
+                            type: string
+                        capability_invocation:
+                          type: array
+                          items:
+                            type: string
+                        capability_delegation:
+                          type: array
+                          items:
+                            type: string
+                        key_agreement:
+                          type: array
+                          items:
+                            type: string
+                        service:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              type:
+                                type: string
+                              service_endpoint:
+                                type: string
+                        also_known_as:
+                          type: array
+                          items:
+                            type: string
                     controllers:
                       type: array
                       items:
@@ -28704,6 +28790,9 @@ paths:
                         - USER
                         - APPLICATION
                       default: USER
+                      description: |-
+                        - USER: User is the type of the registered name
+                         - APPLICATION: Application is the type of the registered name
                     timestamp:
                       type: string
                       format: int64
@@ -28833,7 +28922,26 @@ paths:
                   alias:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
                     title: >-
                       Alias is the list of registered `alsoKnownAs` identifiers
                       of the User or Application
@@ -28843,11 +28951,78 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    type: string
-                    format: byte
                     description: >-
                       DIDDocument is the bytes representation of DIDDocument
                       within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
                   controllers:
                     type: array
                     items:
@@ -28864,6 +29039,9 @@ paths:
                       - USER
                       - APPLICATION
                     default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
                   timestamp:
                     type: string
                     format: int64
@@ -28914,7 +29092,26 @@ paths:
                   alias:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
                     title: >-
                       Alias is the list of registered `alsoKnownAs` identifiers
                       of the User or Application
@@ -28924,11 +29121,78 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    type: string
-                    format: byte
                     description: >-
                       DIDDocument is the bytes representation of DIDDocument
                       within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
                   controllers:
                     type: array
                     items:
@@ -28945,6 +29209,9 @@ paths:
                       - USER
                       - APPLICATION
                     default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
                   timestamp:
                     type: string
                     format: int64
@@ -28996,7 +29263,26 @@ paths:
                   alias:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
                     title: >-
                       Alias is the list of registered `alsoKnownAs` identifiers
                       of the User or Application
@@ -29006,11 +29292,78 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    type: string
-                    format: byte
                     description: >-
                       DIDDocument is the bytes representation of DIDDocument
                       within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
                   controllers:
                     type: array
                     items:
@@ -29027,6 +29380,9 @@ paths:
                       - USER
                       - APPLICATION
                     default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
                   timestamp:
                     type: string
                     format: int64
@@ -49851,11 +50207,106 @@ definitions:
       is_active:
         type: boolean
         title: IsActive is the status of the DID Document
-  sonrio.sonr.registry.MsgBuyAppAliasResponse:
+  sonrio.sonr.registry.Alias:
     type: object
     properties:
-      did:
+      name:
         type: string
+        title: Name is the string name of an Alias
+      is_for_sale:
+        type: boolean
+        title: IsForSale is the boolean value indicating if the Alias is for sale
+      amount:
+        type: integer
+        format: int32
+        title: >-
+          Amount is the amount listed for purchasing the Alias from the
+          User/Application
+    title: >-
+      Alias is a message detailing a known "alsoKnownAs" identifier of a
+      DIDDocument and contains properties for transfer/exchange
+  sonrio.sonr.registry.DIDDocument:
+    type: object
+    properties:
+      context:
+        type: array
+        items:
+          type: string
+      id:
+        type: string
+      controller:
+        type: array
+        items:
+          type: string
+      verification_method:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            controller:
+              type: string
+            public_key_jwk:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
+            public_key_base58:
+              type: string
+      authentication:
+        type: array
+        items:
+          type: string
+      assertion_method:
+        type: array
+        items:
+          type: string
+      capability_invocation:
+        type: array
+        items:
+          type: string
+      capability_delegation:
+        type: array
+        items:
+          type: string
+      key_agreement:
+        type: array
+        items:
+          type: string
+      service:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            service_endpoint:
+              type: string
+      also_known_as:
+        type: array
+        items:
+          type: string
+  sonrio.sonr.registry.KeyValuePair:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  sonrio.sonr.registry.MsgBuyAliasResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
         description: Did is the top level DID of the WhoIs.
       who_is:
         type: object
@@ -49863,7 +50314,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -49873,11 +50342,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -49894,6 +50430,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -49904,64 +50443,11 @@ definitions:
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
-  sonrio.sonr.registry.MsgBuyNameAliasResponse:
-    type: object
-    properties:
-      did:
-        type: string
-        description: Did is the top level DID of the WhoIs.
-      who_is:
-        type: object
-        properties:
-          alias:
-            type: array
-            items:
-              type: string
-            title: >-
-              Alias is the list of registered `alsoKnownAs` identifiers of the
-              User or Application
-          owner:
-            type: string
-            description: >-
-              Owner is the top level DID of the User or Application derived from
-              the multisignature wallet.
-          did_document:
-            type: string
-            format: byte
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
-          controllers:
-            type: array
-            items:
-              type: string
-            title: >-
-              Credentials are the biometric info of the registered name and
-              account encoded with public key
-          type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
-            type: string
-            enum:
-              - USER
-              - APPLICATION
-            default: USER
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-        description: >-
-          WhoIs is the created WhoIs, contains the DID document and associated
-          metadata.
   sonrio.sonr.registry.MsgCreateWhoIsResponse:
     type: object
     properties:
-      did:
-        type: string
+      success:
+        type: boolean
         description: Did is the top level DID of the created WhoIs.
       who_is:
         type: object
@@ -49969,7 +50455,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -49979,11 +50483,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50000,6 +50571,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50019,7 +50593,7 @@ definitions:
       did:
         type: string
         description: Did is the top level DID of the WhoIs.
-  sonrio.sonr.registry.MsgTransferAppAliasResponse:
+  sonrio.sonr.registry.MsgSellAliasResponse:
     type: object
     properties:
       success:
@@ -50031,7 +50605,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50041,11 +50633,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50062,6 +50721,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50072,7 +50734,7 @@ definitions:
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
-  sonrio.sonr.registry.MsgTransferNameAliasResponse:
+  sonrio.sonr.registry.MsgTransferAliasResponse:
     type: object
     properties:
       success:
@@ -50084,7 +50746,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50094,11 +50774,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50115,6 +50862,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50128,8 +50878,8 @@ definitions:
   sonrio.sonr.registry.MsgUpdateWhoIsResponse:
     type: object
     properties:
-      did:
-        type: string
+      success:
+        type: boolean
         description: Did is the top level DID of the WhoIs.
       who_is:
         type: object
@@ -50137,7 +50887,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50147,11 +50915,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50168,6 +51003,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50192,7 +51030,25 @@ definitions:
             alias:
               type: array
               items:
-                type: string
+                type: object
+                properties:
+                  name:
+                    type: string
+                    title: Name is the string name of an Alias
+                  is_for_sale:
+                    type: boolean
+                    title: >-
+                      IsForSale is the boolean value indicating if the Alias is
+                      for sale
+                  amount:
+                    type: integer
+                    format: int32
+                    title: >-
+                      Amount is the amount listed for purchasing the Alias from
+                      the User/Application
+                title: >-
+                  Alias is a message detailing a known "alsoKnownAs" identifier
+                  of a DIDDocument and contains properties for transfer/exchange
               title: >-
                 Alias is the list of registered `alsoKnownAs` identifiers of the
                 User or Application
@@ -50202,11 +51058,78 @@ definitions:
                 Owner is the top level DID of the User or Application derived
                 from the multisignature wallet.
             did_document:
-              type: string
-              format: byte
               description: >-
                 DIDDocument is the bytes representation of DIDDocument within
                 the WhoIs. Initially marshalled as JSON.
+              type: object
+              properties:
+                context:
+                  type: array
+                  items:
+                    type: string
+                id:
+                  type: string
+                controller:
+                  type: array
+                  items:
+                    type: string
+                verification_method:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      controller:
+                        type: string
+                      public_key_jwk:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            key:
+                              type: string
+                            value:
+                              type: string
+                      public_key_base58:
+                        type: string
+                authentication:
+                  type: array
+                  items:
+                    type: string
+                assertion_method:
+                  type: array
+                  items:
+                    type: string
+                capability_invocation:
+                  type: array
+                  items:
+                    type: string
+                capability_delegation:
+                  type: array
+                  items:
+                    type: string
+                key_agreement:
+                  type: array
+                  items:
+                    type: string
+                service:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      service_endpoint:
+                        type: string
+                also_known_as:
+                  type: array
+                  items:
+                    type: string
             controllers:
               type: array
               items:
@@ -50223,6 +51146,9 @@ definitions:
                 - USER
                 - APPLICATION
               default: USER
+              description: |-
+                - USER: User is the type of the registered name
+                 - APPLICATION: Application is the type of the registered name
             timestamp:
               type: string
               format: int64
@@ -50271,7 +51197,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50281,11 +51225,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50302,6 +51313,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50318,7 +51332,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50328,11 +51360,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50349,6 +51448,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50365,7 +51467,25 @@ definitions:
           alias:
             type: array
             items:
-              type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
             title: >-
               Alias is the list of registered `alsoKnownAs` identifiers of the
               User or Application
@@ -50375,11 +51495,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50396,6 +51583,9 @@ definitions:
               - USER
               - APPLICATION
             default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
           timestamp:
             type: string
             format: int64
@@ -50403,13 +51593,60 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.Service:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      service_endpoint:
+        type: string
+  sonrio.sonr.registry.VerificationMethod:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      controller:
+        type: string
+      public_key_jwk:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
+      public_key_base58:
+        type: string
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:
       alias:
         type: array
         items:
-          type: string
+          type: object
+          properties:
+            name:
+              type: string
+              title: Name is the string name of an Alias
+            is_for_sale:
+              type: boolean
+              title: >-
+                IsForSale is the boolean value indicating if the Alias is for
+                sale
+            amount:
+              type: integer
+              format: int32
+              title: >-
+                Amount is the amount listed for purchasing the Alias from the
+                User/Application
+          title: >-
+            Alias is a message detailing a known "alsoKnownAs" identifier of a
+            DIDDocument and contains properties for transfer/exchange
         title: >-
           Alias is the list of registered `alsoKnownAs` identifiers of the User
           or Application
@@ -50419,11 +51656,78 @@ definitions:
           Owner is the top level DID of the User or Application derived from the
           multisignature wallet.
       did_document:
-        type: string
-        format: byte
         description: >-
           DIDDocument is the bytes representation of DIDDocument within the
           WhoIs. Initially marshalled as JSON.
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+          verification_method:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                controller:
+                  type: string
+                public_key_jwk:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                public_key_base58:
+                  type: string
+          authentication:
+            type: array
+            items:
+              type: string
+          assertion_method:
+            type: array
+            items:
+              type: string
+          capability_invocation:
+            type: array
+            items:
+              type: string
+          capability_delegation:
+            type: array
+            items:
+              type: string
+          key_agreement:
+            type: array
+            items:
+              type: string
+          service:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
+                  type: string
+          also_known_as:
+            type: array
+            items:
+              type: string
       controllers:
         type: array
         items:
@@ -50440,6 +51744,9 @@ definitions:
           - USER
           - APPLICATION
         default: USER
+        description: |-
+          - USER: User is the type of the registered name
+           - APPLICATION: Application is the type of the registered name
       timestamp:
         type: string
         format: int64
@@ -50453,6 +51760,7 @@ definitions:
       - USER
       - APPLICATION
     default: USER
-    title: |-
+    description: |-
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
+    title: WhoIsType is the type of DIDDocument stored in the registry module

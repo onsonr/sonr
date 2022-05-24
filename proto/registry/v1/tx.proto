@@ -10,11 +10,10 @@ option go_package = "github.com/sonr-io/sonr/x/registry/types";
 service Msg {
   rpc CreateWhoIs(MsgCreateWhoIs) returns (MsgCreateWhoIsResponse);
   rpc UpdateWhoIs(MsgUpdateWhoIs) returns (MsgUpdateWhoIsResponse);
-  rpc DeleteWhoIs(MsgDeactivateWhoIs) returns (MsgDeactivateWhoIsResponse);
-  rpc BuyNameAlias(MsgBuyNameAlias) returns (MsgBuyNameAliasResponse);
-  rpc BuyAppAlias(MsgBuyAppAlias) returns (MsgBuyAppAliasResponse);
-  rpc TransferNameAlias(MsgTransferNameAlias) returns (MsgTransferNameAliasResponse);
-  rpc TransferAppAlias(MsgTransferAppAlias) returns (MsgTransferAppAliasResponse);
+  rpc DeactivateWhoIs(MsgDeactivateWhoIs) returns (MsgDeactivateWhoIsResponse);
+  rpc BuyAlias(MsgBuyAlias) returns (MsgBuyAliasResponse);
+  rpc SellAlias(MsgSellAlias) returns (MsgSellAliasResponse);
+  rpc TransferAlias(MsgTransferAlias) returns (MsgTransferAliasResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -32,7 +31,7 @@ message MsgCreateWhoIs {
 
 message MsgCreateWhoIsResponse {
   // Did is the top level DID of the created WhoIs.
-  string did = 1;
+  bool success = 1;
 
   // WhoIs is the created WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
@@ -42,16 +41,13 @@ message MsgUpdateWhoIs {
   // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
 
-  // Did is the top level DID of the WhoIs.
-  string did = 2;
-
   // DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).
-  bytes did_document = 3;
+  bytes did_document = 2;
 }
 
 message MsgUpdateWhoIsResponse {
   // Did is the top level DID of the WhoIs.
-  string did = 1;
+  bool success = 1;
 
   // WhoIs is the created WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
@@ -60,9 +56,6 @@ message MsgUpdateWhoIsResponse {
 message MsgDeactivateWhoIs {
   // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
-
-  // Did is the top level DID of the WhoIs.
-  string did = 2;
 }
 
 message MsgDeactivateWhoIsResponse {
@@ -73,62 +66,37 @@ message MsgDeactivateWhoIsResponse {
   string did = 2;
 }
 
-message MsgBuyNameAlias {
+message MsgBuyAlias {
   // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
-
-  // Did is the top level DID of the WhoIs.
-  string did = 2;
-
-  // Name is the name of the alias to be bought. i.e. {alias}.snr
-  string name = 3;
-}
-
-message MsgBuyNameAliasResponse {
-  // Did is the top level DID of the WhoIs.
-  string did = 1;
-
-  // WhoIs is the created WhoIs, contains the DID document and associated metadata.
-  WhoIs who_is = 2;
-}
-
-message MsgBuyAppAlias {
-  // Creator is the wallet address of the creator of the transaction.
-  string creator = 1;
-
-  // Did is the top level DID of the WhoIs.
-  string did = 2;
 
   // Name is the name of the alias app extension to be bought. i.e. example.snr/{name}
-  string name = 3;
+  string name = 2;
 }
 
-message MsgBuyAppAliasResponse {
+message MsgBuyAliasResponse {
   // Did is the top level DID of the WhoIs.
-  string did = 1;
+  bool success = 1;
 
   // WhoIs is the updated WhoIs, contains the DID document and associated metadata.
   WhoIs who_is = 2;
 }
 
-message MsgTransferNameAlias {
+message MsgTransferAlias {
   // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
 
-  // Did is the top level DID of the WhoIs.
-  string did = 2;
-
   // Alias is the name of the user domain alias to be transferred to the recipient. i.e. {alias}.snr
-  string alias = 3;
+  string alias = 2;
 
   // Recipient is the wallet address of the recipient of the alias.
-  string recipient = 4;
+  string recipient = 3;
 
   // Amount is the amount of the alias to be transferred.
-  int32 amount = 5;
+  int32 amount = 4;
 }
 
-message MsgTransferNameAliasResponse {
+message MsgTransferAliasResponse {
   // Success is true if the Alias was successfully transferred.
   bool success = 1;
 
@@ -136,24 +104,18 @@ message MsgTransferNameAliasResponse {
   WhoIs who_is = 2;
 }
 
-message MsgTransferAppAlias {
+message MsgSellAlias {
   // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
 
-  // Did is the top level DID of the WhoIs.
-  string did = 2;
-
   // Alias is the name of the app alias to be transferred to the recipient.  i.e. example.snr/{name}
-  string alias = 3;
-
-  // Recipient is the wallet address of the recipient of the alias.
-  string recipient = 4;
+  string alias = 2;
 
   // Amount is the amount of the alias to be transferred.
-  int32 amount = 5;
+  int32 amount = 3;
 }
 
-message MsgTransferAppAliasResponse {
+message MsgSellAliasResponse {
   // Success is true if the Alias was successfully transferred.
   bool success = 1;
 

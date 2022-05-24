@@ -47,12 +47,6 @@ type Config struct {
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
-	// WebAuthn
-	WebAuthNRPDisplayName string
-	WebAuthNRPID          string
-	WebAuthNRPOrigin      string
-	WebAuthNRPIcon        string
-	WebAuthNDebug         bool
 
 	// JWT
 	Secret        string
@@ -129,11 +123,6 @@ func DefaultConfig(r Role) *Config {
 		Libp2pRendezvous:         "/sonr/rendevouz/0.9.2",
 		Libp2pInterval:           time.Second * 5,
 		Libp2pTTL:                dscl.TTL(time.Minute * 2),
-		WebAuthNRPDisplayName:    "Sonr",
-		WebAuthNRPID:             "localhost",
-		WebAuthNRPOrigin:         "http://localhost:8989",
-		WebAuthNRPIcon:           "",
-		WebAuthNDebug:            true,
 		CosmosAccountName:        "alice",
 		CosmosAddressPrefix:      "snr",
 		CosmosNodeAddress:        "http://localhost:26657",

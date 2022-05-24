@@ -4,21 +4,25 @@ import (
 	"context"
 	"net/http"
 
-	core "github.com/sonr-io/sonr/internal/highway/http"
-
+	"github.com/sonr-io/sonr/internal/highway/api"
 	"github.com/sonr-io/sonr/pkg/config"
 )
 
 // NewHighwayServer creates a new Highway service stub for the node.
-func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer, error) {
+func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer, error) {
 	// Create Config
 	c := config.DefaultConfig(config.Role_HIGHWAY)
 	for _, opt := range opts {
-		opt(c)
+		if opt != nil {
+			opt(c)
+		}
 	}
 
 	// Create the Highway Server
-	s, err := core.CreateStub(ctx, c)
+	s, err := api.CreateStub(ctx, c)
+	s.ConfigureRoutes()
+	s.ConfigureMiddleware()
+
 	if err != nil {
 		return nil, err
 	}
