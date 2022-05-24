@@ -46,14 +46,6 @@ type Config struct {
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
-	// WebAuthn
-	WebAuthNAddress       string
-	WebAuthNFSDir         string
-	WebAuthNRPDisplayName string
-	WebAuthNRPID          string
-	WebAuthNRPOrigin      string
-	WebAuthNRPIcon        string
-	WebAuthNDebug         bool
 
 	// Cosmos SDK
 	CosmosAccountName        string
@@ -125,13 +117,6 @@ func DefaultConfig(r Role) *Config {
 		Libp2pRendezvous:         "/sonr/rendevouz/0.9.2",
 		Libp2pInterval:           time.Second * 5,
 		Libp2pTTL:                dscl.TTL(time.Minute * 2),
-		WebAuthNAddress:          ":8080",
-		WebAuthNFSDir:            "./templates/",
-		WebAuthNRPDisplayName:    "Sonr",
-		WebAuthNRPID:             "localhost",
-		WebAuthNRPOrigin:         "http://localhost:8080",
-		WebAuthNRPIcon:           "",
-		WebAuthNDebug:            true,
 		CosmosAccountName:        "alice",
 		CosmosAddressPrefix:      "snr",
 		CosmosNodeAddress:        "http://localhost:26657",

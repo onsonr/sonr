@@ -31,10 +31,10 @@ func loadEnv() error {
 }
 
 func main() {
-	err := loadEnv()
-	if err != nil {
-		logger.Errorf("Error while loading config for enviorment %s", err)
-	}
+	// err := loadEnv()
+	// if err != nil {
+	// 	logger.Errorf("Error while loading config for enviorment %s", err)
+	// }
 
 	rootCmd, _ := cmd.NewRootCmd(
 		app.Name,
@@ -43,7 +43,6 @@ func main() {
 		app.Name,
 		app.ModuleBasics,
 		app.New,
-		cmd.WithEnvPrefix("SONR_CHAIN"),
 		// this line is used by starport scaffolding # root/arguments
 
 	)
