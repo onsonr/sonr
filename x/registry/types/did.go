@@ -72,15 +72,12 @@ func (d *DIDDocument) UnmarshalJSON(b []byte) error {
 
 // CopyFromBytes unmarshals a JSON document from a byte slice and copies the data into the receiver.
 func (d *DIDDocument) CopyFromBytes(b []byte) error {
-	doc, err := did.NewDocument(d.Id)
+	var tmp DIDDocument
+	err := tmp.UnmarshalJSON(b)
 	if err != nil {
 		return err
 	}
-	err = doc.CopyFromBytes(b)
-	if err != nil {
-		return err
-	}
-
+	*d = tmp
 	return nil
 }
 

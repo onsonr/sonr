@@ -8,7 +8,7 @@
 // @host localhost:8080
 // @BasePath /v1
 
-package core
+package api
 
 import (
 	"context"

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	highway "github.com/sonr-io/sonr/internal/highway/http"
+	"github.com/sonr-io/sonr/internal/highway/api"
 	"github.com/spf13/cobra"
 )
 
-func BootstrapBlobCommand(ctx context.Context, highway *highway.HighwayServer) *cobra.Command {
+func BootstrapBlobCommand(ctx context.Context, highway *api.HighwayServer) *cobra.Command {
 	// serveCmd represents the serve command
 	highwayBlobCmd := &cobra.Command{
 		Use:   "blob",
@@ -21,7 +21,7 @@ func BootstrapBlobCommand(ctx context.Context, highway *highway.HighwayServer) *
 	return highwayBlobCmd
 }
 
-func BootstrapChannelCommand(ctx context.Context, highway *highway.HighwayServer) *cobra.Command {
+func BootstrapChannelCommand(ctx context.Context, highway *api.HighwayServer) *cobra.Command {
 	// serveCmd represents the serve command
 	highwayChannelCmd := &cobra.Command{
 		Use:   "channel",
@@ -35,7 +35,7 @@ func BootstrapChannelCommand(ctx context.Context, highway *highway.HighwayServer
 	return highwayChannelCmd
 }
 
-func BootstrapObjectCommand(ctx context.Context, highway *highway.HighwayServer) *cobra.Command {
+func BootstrapObjectCommand(ctx context.Context, highway *api.HighwayServer) *cobra.Command {
 	// createHwyCmd represents the serve command
 	highwayObjectCmd := &cobra.Command{
 		Use:   "object",
@@ -57,7 +57,7 @@ func BootstrapObjectCommand(ctx context.Context, highway *highway.HighwayServer)
 	return highwayObjectCmd
 }
 
-func BootstrapHighwayCommand(ctx context.Context, highway *highway.HighwayServer) *cobra.Command {
+func BootstrapHighwayCommand(ctx context.Context, highway *api.HighwayServer) *cobra.Command {
 	// HighwayCmd represents the deploy command
 	highwayCmd := &cobra.Command{
 		Use:   "highway",

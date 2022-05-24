@@ -1,7 +1,4 @@
-//go:build wasm
-// +build wasm
-
-package motor
+package main
 
 import (
 	"context"
