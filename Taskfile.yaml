@@ -3,18 +3,16 @@ version: "3"
 vars:
   VERSION: v0.0.1-test
 
+includes:
+  motor:
+    taskfile: ./bind/Taskfile.yaml
+    dir: ./bind
+
 tasks:
 
 ## ------------------------------------------------------------
 ## Node tasks
 ## ------------------------------------------------------------
-  motor:bind:
-    cmds:
-      - echo "Binding Motor Node for all platforms"
-      - sh ./scripts/bind.sh -i
-      - sh ./scripts/bind.sh -a
-      - sh ./scripts/bind.sh -w
-
   chain:build:
     summary: "Build cosmos blockchain using ignite"
     cmds:

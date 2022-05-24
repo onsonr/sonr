@@ -1,0 +1,34 @@
+version: "3"
+
+vars:
+  VERSION: v0.0.1-test
+
+tasks:
+
+## ------------------------------------------------------------
+## Node tasks
+## ------------------------------------------------------------
+  bind:
+    cmds:
+      - task: bind:android
+      - mv motor-mobile/io.sonr.motor.aar ../io.sonr.motor.aar
+      - task: bind:ios
+      - mv motor-mobile/SonrMotor.xcframework ../SonrMotor.xcframework
+      - task: bind:wasm
+      - mv motor-wasm/sonr-motor.wasm ../sonr-motor.wasm
+
+  bind:android:
+    dir: motor-mobile
+    cmds:
+      - gomobile bind -ldflags='-s -w' -target=android/arm64 -o io.sonr.motor.aar -v
+      - rm -rf io.sonr.motor-sources.jar
+
+  bind:ios:
+    dir: motor-mobile
+    cmds:
+      - gomobile bind -ldflags='-s -w' -target=ios/arm64 -o SonrMotor.xcframework -v
+
+  bind:wasm:
+    dir: motor-wasm
+    cmds:
+      - GOOS=js GOARCH=wasm go build -tags wasm -o sonr-motor.wasm -v
