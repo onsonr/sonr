@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ed25519"
 	"errors"
+
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -157,7 +158,7 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetStatus(Status_FAIL)
 		return nil, err
 	}
 
@@ -215,7 +216,7 @@ func (hn *hostImpl) Stat() (map[string]string, error) {
 	// Return Host Stat
 	return map[string]string{
 		"ID":        hn.host.ID().String(),
-		"Status":    hn.status.String(),
+		"Status":    hn.fsm.Current.String(),
 		"MultiAddr": hn.host.Addrs()[0].String(),
 	}, nil
 }

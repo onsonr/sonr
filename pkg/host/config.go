@@ -55,9 +55,6 @@ type SonrHost interface {
 	// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
 	NeedsWait()
 
-	// Pause tells all of goroutines to pause execution
-	Pause()
-
 	// Ping sends a ping to a peer to check if it is alive
 	Ping(id string) error
 
@@ -66,9 +63,6 @@ type SonrHost interface {
 
 	// Pubsub returns the pubsub of the node
 	Pubsub() *ps.PubSub
-
-	// Resume tells all of goroutines to resume execution
-	Resume()
 
 	// Role returns the role of the node
 	Role() config.Role
@@ -96,22 +90,16 @@ type SonrHost interface {
 
 	// VerifyData verifies the data signature
 	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
-}
 
-// Close closes the node
-func (n *hostImpl) Close() {
-	// Update Status
-	n.fsm.SetStatus(Status_CLOSED)
-	n.IpfsDHT.Close()
-	n.host.Close()
-}
+	Start()
 
-// Resume tells all of goroutines to resume execution
-func (c *hostImpl) Resume() {
-	c.fsm.ResumeOperation()
-}
+	Stop()
 
-// Pause tells all of goroutines to pause execution
-func (c *hostImpl) Pause() {
-	c.fsm.PauseOperation()
+	// Pauses tells all of goroutines to pause execution
+	Pause()
+
+	// Resume tells all of goroutines to resume execution
+	Resume()
+
+	Status()
 }
