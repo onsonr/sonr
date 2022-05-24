@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
+// TODO(https://github.com/sonr-io/sonr/issues/333): Make default price configurable here and elsewhere
 func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*types.MsgBuyAliasResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if err := msg.ValidateAlias(); err != nil {
@@ -36,7 +37,7 @@ func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*typ
 	// Send Coins to the Registry Module
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, ownerAddr, types.ModuleName, types.MIN_BUY_ALIAS)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Not enough snr coins to buy name")
+		return nil, sdkerrors.Wrap(err, "Not enough snr coins to buy name")
 	}
 
 	// Create an updated whois record
@@ -50,6 +51,6 @@ func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*typ
 	// Return response
 	return &types.MsgBuyAliasResponse{
 		Success: true,
-		WhoIs: &whois,
+		WhoIs:   &whois,
 	}, nil
 }
