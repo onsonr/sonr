@@ -10,25 +10,33 @@ tasks:
 ## ------------------------------------------------------------
   bind:
     cmds:
+      - mkdir -p build
       - task: bind:android
-      - mv motor-mobile/io.sonr.motor.aar ../io.sonr.motor.aar
       - task: bind:ios
-      - mv motor-mobile/SonrMotor.xcframework ../SonrMotor.xcframework
       - task: bind:wasm
-      - mv motor-wasm/sonr-motor.wasm ../sonr-motor.wasm
+      - mv motorlib-android_arm64 build/motorlib-android_arm64
+      - mv motorlib-ios_arm64 build/motorlib-ios_arm64
+      - mv motorlib-js-wasm build/motorlib-js-wasm
+      - mv build ../build
 
   bind:android:
     dir: motor-mobile
     cmds:
-      - gomobile bind -ldflags='-s -w' -target=android/arm64 -o io.sonr.motor.aar -v
-      - rm -rf io.sonr.motor-sources.jar
+      - mkdir motorlib-android_arm64
+      - gomobile bind -ldflags='-s -w' -target=android/arm64 -o motorlib-android_arm64/io.sonr.motor.aar -v
+      - rm -rf motorlib-android_arm64/io.sonr.motor-sources.jar
+      - mv motorlib-android_arm64 ../motorlib-android_arm64
 
   bind:ios:
     dir: motor-mobile
     cmds:
-      - gomobile bind -ldflags='-s -w' -target=ios/arm64 -o SonrMotor.xcframework -v
+      - mkdir motorlib-ios_arm64
+      - gomobile bind -ldflags='-s -w' -target=ios/arm64 -o motorlib-ios_arm64/SonrMotor.xcframework -v
+      - mv motorlib-ios_arm64 ../motorlib-ios_arm64
 
   bind:wasm:
     dir: motor-wasm
     cmds:
-      - GOOS=js GOARCH=wasm go build -tags wasm -o sonr-motor.wasm -v
+      - mkdir motorlib-js_wasm
+      - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-js_wasm/sonr-motor.wasm -v
+      - mv motorlib-js_wasm ../motorlib-js_wasm

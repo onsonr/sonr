@@ -22,6 +22,11 @@ func (k msgServer) TransferAlias(goCtx context.Context, msg *types.MsgTransferAl
 		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name does not exist")
 	}
 
+	// Check if Alias is available if not return error
+	if !alias.IsForSale {
+		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name is not for sale")
+	}
+
 	// Get buyerWhoIs from Owner
 	// TODO(https://github.com/sonr-io/sonr/issues/322): Implement Multisig for root level owner #322
 	buyerWhoIs, buyerFound := k.GetWhoIsFromOwner(ctx, msg.Creator)
