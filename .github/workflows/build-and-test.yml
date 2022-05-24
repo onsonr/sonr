@@ -38,7 +38,7 @@ jobs:
         continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser-pro
           version: latest
