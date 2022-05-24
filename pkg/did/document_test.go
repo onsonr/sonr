@@ -139,14 +139,6 @@ func Test_Document(t *testing.T) {
 		t.Logf("resulting json:\n%s", didJson)
 	})
 
-	t.Run("it can parse a jwk in a verification method", func(t *testing.T) {
-		keyAsJWK, err := actual.Authentication[0].JWK()
-		if !assert.NoError(t, err, "expected key to be converted to a jwk.key") {
-			return
-		}
-		assert.Equal(t, "EC", keyAsJWK.KeyType().String())
-	})
-
 	t.Run("AddAssertionMethod", func(t *testing.T) {
 		t.Run("it adds the method to assertionMethod once", func(t *testing.T) {
 			doc := DocumentImpl{ID: *id123}
