@@ -40,10 +40,10 @@ func (s *HighwayServer) QueryWhoIs(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /registry/query/whois/controller/:did [GET]
+// @Router /registry/query/whois/controller/:controller [GET]
 func (s *HighwayServer) QueryWhoIsController(c *gin.Context) {
-	if did := c.Param("did"); did != "" {
-		res, err := s.Cosmos.QueryWhoIs(did)
+	if controller := c.Param("controller"); controller != "" {
+		res, err := s.Cosmos.QueryWhoIsController(controller)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -64,10 +64,10 @@ func (s *HighwayServer) QueryWhoIsController(c *gin.Context) {
 // @Produce json
 // @Success      200  {string}  message
 // @Failure      500  {string}  message
-// @Router /registry/query/whois/alias/:name [GET]
+// @Router /registry/query/whois/alias/:alias [GET]
 func (s *HighwayServer) QueryWhoIsAlias(c *gin.Context) {
-	if name := c.Param("name"); name != "" {
-		res, err := s.Cosmos.QueryWhoIs(name)
+	if alias := c.Param("alias"); alias != "" {
+		res, err := s.Cosmos.QueryWhoIsAlias(alias)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
