@@ -21,7 +21,7 @@ import (
 // SonrHost returns the SonrHost for the Main Node
 type SonrHost interface {
 	// AuthenticateMessage authenticates a message
-	AuthenticateMessage(msg proto.Message, metadata *types.Metadata) bool
+	AuthenticateMessage(msg proto.Message, metadata *types.Metadata) error
 
 	// Close closes the node
 	Close()
@@ -32,11 +32,8 @@ type SonrHost interface {
 	// Connect to a peer
 	Connect(pi peer.AddrInfo) error
 
-	// Events returns the events manager of the node
-	Events() events.EventEmmiter
-
 	// HasRouting returns true if the node has routing
-	HasRouting() error
+	HasRouting() bool
 
 	// Host returns the Host
 	Host() host.Host
@@ -62,8 +59,15 @@ type SonrHost interface {
 	// Ping sends a ping to a peer to check if it is alive
 	Ping(id string) error
 
+	// TODO: implement
 	// Peer returns the peer of the node
 	Peer() (*types.Peer, error)
+	// Events returns the events manager of the node
+	Events() events.EventEmmiter
+	// SignData signs the data with the private key
+	SignData(data []byte) ([]byte, error)
+	// SignMessage signs a message with the node's private key
+	SignMessage(message proto.Message) ([]byte, error)
 
 	// Pubsub returns the pubsub of the node
 	Pubsub() *ps.PubSub
@@ -89,14 +93,8 @@ type SonrHost interface {
 	// SetStreamHandler sets the handler for a protocol
 	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)
 
-	// SignData signs the data with the private key
-	SignData(data []byte) ([]byte, error)
-
-	// SignMessage signs a message with the node's private key
-	SignMessage(message proto.Message) ([]byte, error)
-
 	// VerifyData verifies the data signature
-	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
+	VerifyData(data, signature, pubKeyData []byte, peerId peer.ID) error
 }
 
 // HostStatus is the status of the host

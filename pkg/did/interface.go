@@ -41,7 +41,7 @@ type Document interface {
 	// - serviceEndpoint isn't a string.
 	ResolveEndpointURL(serviceType string) (endpointID ssi.URI, endpointURL string, err error)
 
-	EncryptJWE(id DID, buf []byte) (string, error)
-	DecryptJWE(id DID, serial string) ([]byte, error)
+	// EncryptJWE(id DID, buf []byte) (string, error)
+	// DecryptJWE(id DID, serial string) ([]byte, error)
 	GetController(id DID) (DID, error)
 }

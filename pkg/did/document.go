@@ -461,45 +461,6 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	return vm, nil
 }
 
-// JWK returns the key described by the VerificationMethod as JSON Web Key.
-func (v VerificationMethod) JWK() (jwk.Key, error) {
-	if v.Credential != nil {
-		// v.Credential.
-	}
-	if v.PublicKeyJwk == nil {
-		return nil, nil
-	}
-	jwkAsJSON, _ := json.Marshal(v.PublicKeyJwk)
-	key, err := jwk.ParseKey(jwkAsJSON)
-	if err != nil {
-		return nil, fmt.Errorf("could not parse public key: %w", err)
-	}
-	return key, nil
-}
-
-func (v VerificationMethod) PublicKey() (crypto.PublicKey, error) {
-	var pubKey crypto.PublicKey
-	switch v.Type {
-	case ssi.ED25519VerificationKey2018:
-		keyBytes, err := base58.Decode(v.PublicKeyBase58, base58.BitcoinAlphabet)
-		if err != nil {
-			return nil, err
-		}
-		return ed25519.PublicKey(keyBytes), err
-	case ssi.JsonWebKey2020:
-		keyAsJWK, err := v.JWK()
-		if err != nil {
-			return nil, err
-		}
-		err = keyAsJWK.Raw(&pubKey)
-		if err != nil {
-			return nil, err
-		}
-		return pubKey, nil
-	}
-	return nil, errors.New("unsupported verification method type")
-}
-
 // VerificationRelationship represents the usage of a VerificationMethod e.g. in authentication, assertionMethod, or keyAgreement.
 type VerificationRelationship struct {
 	*VerificationMethod
@@ -571,31 +532,6 @@ func resolveVerificationRelationship(reference DID, methods []*VerificationMetho
 	return nil
 }
 
-// User ID according to the Relying Party
-func (w *DocumentImpl) WebAuthnID() []byte {
-	return []byte(w.ID.String())
-}
-
-// User Name according to the Relying Party
-func (w *DocumentImpl) WebAuthnName() string {
-	if w.AlsoKnownAs != nil {
-		if len(w.AlsoKnownAs) > 0 {
-			return w.AlsoKnownAs[0]
-		}
-	}
-	return w.ID.String()
-}
-
-// Display Name of the user
-func (w *DocumentImpl) WebAuthnDisplayName() string {
-	return w.ID.ID
-}
-
-// User's icon url
-func (w *DocumentImpl) WebAuthnIcon() string {
-	return ""
-}
-
 // Credentials owned by the user
 func (w *DocumentImpl) WebAuthnCredentials() []webauthn.Credential {
 	var credentials []webauthn.Credential
@@ -616,7 +552,7 @@ func (w *DocumentImpl) WebAuthnCredentials() []webauthn.Credential {
 	return credentials
 }
 
-// TODO: JWT verification for JWK
+// TODO(https://github.com/sonr-io/sonr/issues/332): JWT verification for JWK
 // const token = `eyJhbGciOiJSUzI1NiIsImtpZCI6Ind5TXdLNEE2Q0w5UXcxMXVvZlZleVExMTlYeVgteHlreW1ra1h5Z1o1T00ifQ.eyJzdWIiOiIwMHUxOGVlaHUzNDlhUzJ5WDFkOCIsIm5hbWUiOiJva3RhcHJveHkgb2t0YXByb3h5IiwidmVyIjoxLCJpc3MiOiJodHRwczovL2NvbXBhbnl4Lm9rdGEuY29tIiwiYXVkIjoidlpWNkNwOHJuNWx4ck45YVo2ODgiLCJpYXQiOjE0ODEzODg0NTMsImV4cCI6MTQ4MTM5MjA1MywianRpIjoiSUQuWm9QdVdIR3IxNkR6a3RUbEdXMFI4b1lRaUhnVWg0aUotTHo3Z3BGcGItUSIsImFtciI6WyJwd2QiXSwiaWRwIjoiMDBveTc0YzBnd0hOWE1SSkJGUkkiLCJub25jZSI6Im4tMFM2X1d6QTJNaiIsInByZWZlcnJlZF91c2VybmFtZSI6Im9rdGFwcm94eUBva3RhLmNvbSIsImF1dGhfdGltZSI6MTQ4MTM4ODQ0MywiYXRfaGFzaCI6Im1YWlQtZjJJczhOQklIcV9CeE1ISFEifQ.OtVyCK0sE6Cuclg9VMD2AwLhqEyq2nv3a1bfxlzeS-bdu9KtYxcPSxJ6vxMcSSbMIIq9eEz9JFMU80zqgDPHBCjlOsC5SIPz7mm1Z3gCwq4zsFJ-2NIzYxA3p161ZRsPv_3bUyg9B_DPFyBoihgwWm6yrvrb4rmHXrDkjxpxCLPp3OeIpc_kb2t8r5HEQ5UBZPrsiScvuoVW13YwWpze59qBl_84n9xdmQ5pS7DklzkAVgqJT_NWBlb5uo6eW26HtJwHzss7xOIdQtcOtC1Gj3O82a55VJSQnsEEBeqG1ESb5Haq_hJgxYQnBssKydPCIxdZiye-0Ll9L8wWwpzwig`
 
 // const jwksURL = `https://companyx.okta.com/oauth2/v1/keys`

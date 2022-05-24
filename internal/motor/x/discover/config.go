@@ -62,12 +62,13 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 	// Create Local for Motor Stub
 	if p.mode.IsMotor() {
 		// Set Peer in Exchange
-		peer, err := p.node.Peer()
-		if err != nil {
-			logger.Errorf("%s - Failed to get Profile", err)
-			return err
-		}
-		p.Put(peer)
+		// TODO: ADR-???
+		// peer, err := p.node.Peer()
+		// if err != nil {
+		// 	logger.Errorf("%s - Failed to get Profile", err)
+		// 	return err
+		// }
+		// p.Put(peer)
 
 		// Get OLC Code from location
 		code := OLC(o.location)
