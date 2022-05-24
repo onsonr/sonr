@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Sonr',
+  title: 'Sonr Docs',
   tagline: 'The Internet rebuilt for you',
   url: 'https://sonr-io.github.io',
   organizationName: 'sonr-io', // Usually your GitHub org/user name.
@@ -17,7 +17,6 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-
   plugins: [
     [
       // Search

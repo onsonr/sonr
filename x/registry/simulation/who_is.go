@@ -2,7 +2,6 @@ package simulation
 
 import (
 	"math/rand"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
@@ -13,9 +12,6 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func SimulateMsgCreateWhoIs(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
@@ -25,15 +21,22 @@ func SimulateMsgCreateWhoIs(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		i := r.Int()
-		msg := &types.MsgCreateWhoIs{
-			Creator: simAccount.Address.String(),
-			Did:     strconv.Itoa(i),
+		// Creates a mock did document for the provided simulated account
+		doc, err := CreateMockDidDocument(simAccount)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create mock did document"), nil, err
 		}
 
-		_, found := k.GetWhoIs(ctx, msg.Did)
-		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "WhoIs already exist"), nil, nil
+		// Marshal Json document
+		docBytes, err := doc.MarshalJSON()
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to marshal json document"), nil, err
+		}
+
+		msg := &types.MsgCreateWhoIs{
+			Creator:     simAccount.Address.String(),
+			DidDocument: docBytes,
+			WhoisType:   types.WhoIsType_USER,
 		}
 
 		txCtx := simulation.OperationInput{
@@ -69,18 +72,22 @@ func SimulateMsgUpdateWhoIs(
 			found      = false
 		)
 		for _, obj := range allWhoIs {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Owner)
 			if found {
 				whoIs = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs owner not found"), nil, nil
+		}
+
+		didDocBuf, err := whoIs.GetDidDocumentBuffer()
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "failed to get did document buffer"), nil, err
 		}
 		msg.Creator = simAccount.Address.String()
-
-		msg.Did = whoIs.Did
+		msg.DidDocument = didDocBuf
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -100,7 +107,7 @@ func SimulateMsgUpdateWhoIs(
 	}
 }
 
-func SimulateMsgDeleteWhoIs(
+func SimulateMsgDeactivateWhoIs(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -115,18 +122,21 @@ func SimulateMsgDeleteWhoIs(
 			found      = false
 		)
 		for _, obj := range allWhoIs {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Owner)
 			if found {
 				whoIs = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs owner not found"), nil, nil
+		}
+		didDocBuf, err := whoIs.GetDidDocumentBuffer()
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "failed to get did document buffer"), nil, err
 		}
 		msg.Creator = simAccount.Address.String()
-
-		msg.Did = whoIs.Did
+		msg.DidDocument = didDocBuf
 
 		txCtx := simulation.OperationInput{
 			R:               r,

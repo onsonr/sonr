@@ -1,44 +1,37 @@
 package keeper_test
 
 import (
-	"strconv"
+	"crypto/ed25519"
+	cryptrand "crypto/rand"
+	"fmt"
+	"strings"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	keepertest "github.com/sonr-io/sonr/testutil/keeper"
-	"github.com/sonr-io/sonr/x/registry/keeper"
+	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func TestWhoIsMsgServerCreate(t *testing.T) {
-	k, ctx := keepertest.RegistryKeeper(t)
-	srv := keeper.NewMsgServerImpl(*k)
-	wctx := sdk.WrapSDKContext(ctx)
-	creator := "A"
+	srv, ctx := setupMsgServer(t)
+	owner := "A"
+	doc, _ := CreateMockDidDocument(owner)
+	encoded_doc, _ := doc.MarshalJSON()
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateWhoIs{
-			Creator: creator,
-			Did:     strconv.Itoa(i),
-		}
-		_, err := srv.CreateWhoIs(wctx, expected)
+		resp, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{Creator: owner, DidDocument: encoded_doc})
 		require.NoError(t, err)
-		rst, found := k.GetWhoIs(ctx,
-			expected.Did,
-		)
-		require.True(t, found)
-		require.Equal(t, expected.Creator, rst.Creator)
+		whoIs := resp.GetWhoIs()
+		require.NotNil(t, whoIs)
 	}
 }
 
 func TestWhoIsMsgServerUpdate(t *testing.T) {
-	creator := "A"
-
+	owner := "A"
+	doc, _ := CreateMockDidDocument(owner)
+	encoded_doc, _ := doc.MarshalJSON()
 	for _, tc := range []struct {
 		desc    string
 		request *types.MsgUpdateWhoIs
@@ -46,98 +39,103 @@ func TestWhoIsMsgServerUpdate(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
+			request: &types.MsgUpdateWhoIs{
+				Creator:     owner,
+				DidDocument: encoded_doc,
 			},
-		},
-		{
-			desc: "Unauthorized",
-			request: &types.MsgUpdateWhoIs{Creator: "B",
-				Did: strconv.Itoa(0),
-			},
-			err: sdkerrors.ErrUnauthorized,
-		},
-		{
-			desc: "KeyNotFound",
-			request: &types.MsgUpdateWhoIs{Creator: creator,
-				Did: strconv.Itoa(100000),
-			},
-			err: sdkerrors.ErrKeyNotFound,
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
-			k, ctx := keepertest.RegistryKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
-			}
-			_, err := srv.CreateWhoIs(wctx, expected)
+			srv, ctx := setupMsgServer(t)
+			_, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{
+				Creator:     owner,
+				DidDocument: encoded_doc,
+			})
 			require.NoError(t, err)
 
-			_, err = srv.UpdateWhoIs(wctx, tc.request)
+			_, err = srv.UpdateWhoIs(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				rst, found := k.GetWhoIs(ctx,
-					expected.Did,
-				)
-				require.True(t, found)
-				require.Equal(t, expected.Creator, rst.Creator)
 			}
 		})
 	}
 }
 
 func TestWhoIsMsgServerDelete(t *testing.T) {
-	creator := "A"
-
+	owner := "A"
+	doc, _ := CreateMockDidDocument(owner)
+	encoded_doc, _ := doc.MarshalJSON()
 	for _, tc := range []struct {
 		desc    string
-		request *types.MsgDeleteWhoIs
+		request *types.MsgDeactivateWhoIs
 		err     error
 	}{
 		{
-			desc: "Completed",
-			request: &types.MsgDeleteWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
-			},
+			desc:    "Completed",
+			request: &types.MsgDeactivateWhoIs{Creator: owner},
 		},
 		{
-			desc: "Unauthorized",
-			request: &types.MsgDeleteWhoIs{Creator: "B",
-				Did: strconv.Itoa(0),
-			},
-			err: sdkerrors.ErrUnauthorized,
-		},
-		{
-			desc: "KeyNotFound",
-			request: &types.MsgDeleteWhoIs{Creator: creator,
-				Did: strconv.Itoa(100000),
-			},
-			err: sdkerrors.ErrKeyNotFound,
+			desc:    "Unauthorized",
+			request: &types.MsgDeactivateWhoIs{Creator: "B"},
+			err:     sdkerrors.ErrUnauthorized,
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
-			k, ctx := keepertest.RegistryKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
+			srv, ctx := setupMsgServer(t)
 
-			_, err := srv.CreateWhoIs(wctx, &types.MsgCreateWhoIs{Creator: creator,
-				Did: strconv.Itoa(0),
-			})
+			_, err := srv.CreateWhoIs(ctx, &types.MsgCreateWhoIs{Creator: owner, DidDocument: encoded_doc})
 			require.NoError(t, err)
-			_, err = srv.DeleteWhoIs(wctx, tc.request)
+			_, err = srv.DeactivateWhoIs(ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				require.NotNil(t, err)
 			} else {
 				require.NoError(t, err)
-				_, found := k.GetWhoIs(ctx,
-					tc.request.Did,
-				)
-				require.False(t, found)
 			}
 		})
 	}
+}
+
+// CreateMockDidDocument creates a mock did document for testing
+func CreateMockDidDocument(acct string) (did.Document, error) {
+	rawCreator := acct
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+
+	// UnmarshalJSON from DID document
+	doc, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
+	if err != nil {
+		return nil, err
+	}
+
+	//webauthncred := CreateMockCredential()
+	pubKey, _, err := ed25519.GenerateKey(cryptrand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", rawCreator))
+	if err != nil {
+		return nil, err
+	}
+	didController, err := did.ParseDID(fmt.Sprintf("did:snr:%s#test", rawCreator))
+	if err != nil {
+		return nil, err
+	}
+
+	vm, err := did.NewVerificationMethod(*didUrl, ssi.JsonWebKey2020, *didController, pubKey)
+	if err != nil {
+		return nil, err
+	}
+	doc.AddAuthenticationMethod(vm)
+	return doc, nil
 }

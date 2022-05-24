@@ -14,13 +14,8 @@ import (
 func (k msgServer) CreateObject(goCtx context.Context, msg *types.MsgCreateObject) (*types.MsgCreateObjectResponse, error) {
 	// Get Properties
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	appName, err := msg.GetSession().GetWhois().ApplicationName()
-	if err != nil {
-		return nil, err
-	}
-
-	// Generate a new Object Did
-	did, err := msg.GetSession().GenerateDID(did.WithPathSegments(appName, "object"), did.WithFragment(msg.GetLabel()))
+	// Generate a new channel Did
+	did, err := did.ParseDID(msg.Creator)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +36,7 @@ func (k msgServer) CreateObject(goCtx context.Context, msg *types.MsgCreateObjec
 	// Create a new Object record
 	newWhatIs := types.WhatIs{
 		Did:       did.ID,
-		Creator:   msg.GetSession().Creator(),
+		Creator:   msg.GetCreator(),
 		ObjectDoc: doc,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

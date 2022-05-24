@@ -2,44 +2,43 @@
 #
 #
 
-# -- Pre Build Hooks --
+# -- Pre Release Hooks --
 before:
   hooks:
     - go mod download
 
+# -- Post Release Hooks --
+# after:
+#   hooks:
+#   - rm -rf ./SonrMotor.xcframework
+#   - rm -rf ./io.sonr.motor.aar
+#   - rm -rf ./sonr-motor.wasm
+#   - rm -rf ./dist
+#   - rm -rf ./build
+
 # -- Individual Builds --
 builds:
-  # Motor libraries are prebuilt using gomobile for android
-  - id: "motor-android"
-    builder: prebuilt
-    goos:
-    - android
-    goarch:
-    - arm64
-    prebuilt:
-      path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
-    hooks:
-      pre:
-        - sh scripts/bind.sh -v {{ .Version }} -a
+  # # Motor Framework for Wasm
+  # - id: "motor-wasm"
+  #   builder: prebuilt
+  #   goos:
+  #   - js
+  #   - darwin
+  #   goarch:
+  #   - wasm
+  #   - arm64
+  #   prebuilt:
+  #     path: build/motorlib-{{.OS}}-{{.Arch}}
+  #   # UNCOMMENT THIS LINE TO DISABLE BUILD FOR WASM
+  #   # skip: true
+  #   hooks:
+  #     pre:
+  #       - task motor:bind
 
-  # Motor libraries are prebuilt using gomobile for ios
-  - id: "motor-ios"
-    builder: prebuilt
-    goos:
-    - darwin
-    goarch:
-    - arm64
-    prebuilt:
-      path: build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}/
-    hooks:
-      pre:
-        - mkdir -p build/motorlib_{{ .Os }}_{{ .Version }}_{{ .Arch }}
-        - sh scripts/bind.sh -v {{ .Version }} -i
-
-  # Highway CLI for macOS
-  - id: "highway-cli-darwin"
-    main: ./cmd/highway-cli
-    binary: highway-cli
+    # Highway Daemon for macOS
+  - id: "highwayd-darwin"
+    main: ./cmd/highwayd
+    binary: highwayd
     env:
       - CGO_ENABLED=1
       - CC=gcc
@@ -50,24 +49,25 @@ builds:
     - amd64
     - arm64
 
-  # Highway CLI for Linux
-  - id: "highway-cli-linux"
-    main: ./cmd/highway-cli
-    binary: highway-cli
+  # Highway Daemon for Linux
+  - id: "highwayd-linux"
+    main: ./cmd/highwayd
+    binary: highwayd
     env:
       - CGO_ENABLED=0
       - CC=gcc
       - CXX=g++
     goos:
       - linux
+    goarch:
+    - amd64
 
-
-  # Blockchain Daemon for Windows
-  - id: "highway-cli-windows"
-    main: ./cmd/highway-cli
-    binary: sonrd
+  # Highway Daemon for Windows
+  - id: "highwayd-windows"
+    main: ./cmd/highwayd
+    binary: highwayd
     env:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - CC=x86_64-w64-mingw32-gcc
       - CXX=x86_64-w64-mingw32-g++
     goos:
@@ -77,6 +77,7 @@ builds:
     flags:
       - -tags=cgo
       - -buildmode=exe
+
 
   # Blockchain Daemon for macOS
   - id: "sonrd-darwin"
@@ -131,11 +132,56 @@ builds:
     ldflags:
       - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
 
+  # Highway CLI for macOS
+  - id: "highway-cli-darwin"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=o64-clang++
+    goos:
+      - darwin
+    goarch:
+    - amd64
+    - arm64
+
+  # Highway CLI for Linux
+  - id: "highway-cli-linux"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=0
+      - CC=gcc
+      - CXX=g++
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+
+  # Highway CLI for Windows
+  - id: "highway-cli-windows"
+    main: ./cmd/highway-cli
+    binary: highway-cli
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
+
+
 # -- Artifacts from the build --
 archives:
 # Templating for blockchain daemons
 - id: "sonrd-archive"
-  name_template: 'sonrd_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'sonrd-{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: macos
     windows: win
@@ -148,32 +194,36 @@ archives:
   - sonrd-windows
   - sonrd-linux
 
-# Templating for Motor Android
-- id: "motor-android-archive"
-  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-  builds:
-  - motor-android
-  files:
-    - src: build/motorlib_android_**/*
-      dst: .
-      strip_parent: true
+# # Templating for Motor Wasm
+# - id: "motor-wasm-archive"
+#   name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
+#   builds:
+#   - motor-bind
+#   files:
+#     - ./sonr-motor.wasm
 
-# Templating for Motor iOS
-- id: "motor-ios-archive"
-  name_template: 'motorlib_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-  builds:
-  - motor-ios
-  replacements:
-    darwin: ios
-  files:
-    - src: build/motorlib_darwin_**/*
-      dst: .
-      strip_parent: true
 
+# # Templating for Motor Android
+# - id: "motor-android-archive"
+#   name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
+#   builds:
+#   - motor-bind
+#   files:
+#     - ./io.sonr.motor.aar
+
+# # Templating for Motor iOS
+# - id: "motor-ios-archive"
+#   name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
+#   builds:
+#   - motor-bind
+#   replacements:
+#     darwin: ios
+#   files:
+#     - ./SonrMotor.xcframework/
 
 # Templating for CLI
 - id: "highway-cli-archive"
-  name_template: 'highway-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  name_template: 'highway-cli-{{ .Os }}_{{ .Arch }}'
   replacements:
     darwin: macos
     windows: win
@@ -185,6 +235,21 @@ archives:
   - highway-cli-darwin
   - highway-cli-linux
   - highway-cli-windows
+
+  # Templating for Highway Daemon
+- id: "highwayd-archive"
+  name_template: 'highwayd-{{ .Os }}_{{ .Arch }}'
+  replacements:
+    darwin: macos
+    windows: win
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  builds:
+  - highwayd-darwin
+  - highwayd-linux
+  - highwayd-windows
 
 # -- Checksums for the archives --
 checksum:
@@ -217,7 +282,7 @@ release:
   # Header template for the release body.
   # Defaults to empty.
   header: |
-    ## Release {{ .Tag }} - {{ .Date }}
+    #### Release {{ .Tag }} - {{ .Date }}
 
     Welcome to the new {{ .Tag }} Sonr release. This release includes the following changes:
 

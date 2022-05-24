@@ -27679,6 +27679,1781 @@ paths:
           format: uint64
       tags:
         - Query
+  /sonr-io/sonr/bucket/which_is:
+    get:
+      summary: WhichIsAll
+      description: Queries a list of WhichIs items.
+      operationId: SonrioSonrBucketWhichIsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              which_is:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      description: DID is the DID of the bucket.
+                    creator:
+                      type: string
+                      description: Creator is the Account that created the bucket.
+                    bucket:
+                      description: Bucket is the document of the bucket.
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: Label is human-readable name of the bucket.
+                        description:
+                          type: string
+                          description: >-
+                            Description is a human-readable description of the
+                            bucket.
+                        type:
+                          description: >-
+                            Type is the kind of bucket for either App specific
+                            or User specific data.
+                          type: string
+                          enum:
+                            - BUCKET_TYPE_UNSPECIFIED
+                            - BUCKET_TYPE_APP
+                            - BUCKET_TYPE_USER
+                          default: BUCKET_TYPE_UNSPECIFIED
+                        did:
+                          type: string
+                          description: Did is the identifier of the bucket.
+                        object_dids:
+                          type: array
+                          items:
+                            type: string
+                          description: Objects are stored in a tree structure.
+                    timestamp:
+                      type: string
+                      format: int64
+                      title: >-
+                        Timestamp is the time of the last update of the DID
+                        Document
+                    is_active:
+                      type: boolean
+                      title: IsActive is the status of the DID Document
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/which_is/{did}':
+    get:
+      summary: WhichIs
+      description: Queries a WhichIs by did.
+      operationId: SonrioSonrBucketWhichIs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              which_is:
+                type: object
+                properties:
+                  did:
+                    type: string
+                    description: DID is the DID of the bucket.
+                  creator:
+                    type: string
+                    description: Creator is the Account that created the bucket.
+                  bucket:
+                    description: Bucket is the document of the bucket.
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                        description: Label is human-readable name of the bucket.
+                      description:
+                        type: string
+                        description: >-
+                          Description is a human-readable description of the
+                          bucket.
+                      type:
+                        description: >-
+                          Type is the kind of bucket for either App specific or
+                          User specific data.
+                        type: string
+                        enum:
+                          - BUCKET_TYPE_UNSPECIFIED
+                          - BUCKET_TYPE_APP
+                          - BUCKET_TYPE_USER
+                        default: BUCKET_TYPE_UNSPECIFIED
+                      did:
+                        type: string
+                        description: Did is the identifier of the bucket.
+                      object_dids:
+                        type: array
+                        items:
+                          type: string
+                        description: Objects are stored in a tree structure.
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonrio/sonr/bucket/params:
+    get:
+      summary: Params
+      description: Parameters queries the parameters of the module.
+      operationId: SonrioSonrBucketParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sonr-io/sonr/channel/how_is:
+    get:
+      summary: HowIsAll
+      description: Queries a list of HowIs items.
+      operationId: SonrioSonrChannelHowIsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              how_is:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      title: Did is the DID of the channel
+                    creator:
+                      type: string
+                      title: >-
+                        Document is the DID Document of the registered name and
+                        account encoded as JSON
+                    channel:
+                      title: >-
+                        ChannelDoc is the structure of the channel encoded as
+                        JSON
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: Label is human-readable name of the channel.
+                        description:
+                          type: string
+                          description: >-
+                            Description is a human-readable description of the
+                            channel.
+                        did:
+                          type: string
+                          description: Did is the identifier of the channel.
+                        registered_object:
+                          description: >-
+                            RegisterdObject is the object that is registered as
+                            the payload for the channel.
+                          type: object
+                          properties:
+                            label:
+                              type: string
+                              description: Label is human-readable name of the bucket.
+                            description:
+                              type: string
+                              description: >-
+                                Description is a human-readable description of
+                                the bucket.
+                            did:
+                              type: string
+                              description: Did is the identifier of the object.
+                            bucket_did:
+                              type: string
+                              description: >-
+                                Bucket is the did of the bucket that contains
+                                this object.
+                            fields:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                    description: Name is the name of the field.
+                                  kind:
+                                    description: Type is the type of the field.
+                                    type: string
+                                    enum:
+                                      - TypeKind_Invalid
+                                      - TypeKind_Map
+                                      - TypeKind_List
+                                      - TypeKind_Unit
+                                      - TypeKind_Bool
+                                      - TypeKind_Int
+                                      - TypeKind_Float
+                                      - TypeKind_String
+                                      - TypeKind_Bytes
+                                      - TypeKind_Link
+                                      - TypeKind_Struct
+                                      - TypeKind_Union
+                                      - TypeKind_Enum
+                                      - TypeKind_Any
+                                    default: TypeKind_Invalid
+                              description: >-
+                                Fields are the fields associated with the
+                                object.
+                    timestamp:
+                      type: string
+                      format: int64
+                      title: >-
+                        Timestamp is the time of the last update of the DID
+                        Document
+                    is_active:
+                      type: boolean
+                      title: Is Active is the status of the DID Document
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/channel/how_is/{did}':
+    get:
+      summary: HowIs
+      description: Queries a HowIs by did.
+      operationId: SonrioSonrChannelHowIs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              how_is:
+                type: object
+                properties:
+                  did:
+                    type: string
+                    title: Did is the DID of the channel
+                  creator:
+                    type: string
+                    title: >-
+                      Document is the DID Document of the registered name and
+                      account encoded as JSON
+                  channel:
+                    title: ChannelDoc is the structure of the channel encoded as JSON
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                        description: Label is human-readable name of the channel.
+                      description:
+                        type: string
+                        description: >-
+                          Description is a human-readable description of the
+                          channel.
+                      did:
+                        type: string
+                        description: Did is the identifier of the channel.
+                      registered_object:
+                        description: >-
+                          RegisterdObject is the object that is registered as
+                          the payload for the channel.
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                            description: Label is human-readable name of the bucket.
+                          description:
+                            type: string
+                            description: >-
+                              Description is a human-readable description of the
+                              bucket.
+                          did:
+                            type: string
+                            description: Did is the identifier of the object.
+                          bucket_did:
+                            type: string
+                            description: >-
+                              Bucket is the did of the bucket that contains this
+                              object.
+                          fields:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                  description: Name is the name of the field.
+                                kind:
+                                  description: Type is the type of the field.
+                                  type: string
+                                  enum:
+                                    - TypeKind_Invalid
+                                    - TypeKind_Map
+                                    - TypeKind_List
+                                    - TypeKind_Unit
+                                    - TypeKind_Bool
+                                    - TypeKind_Int
+                                    - TypeKind_Float
+                                    - TypeKind_String
+                                    - TypeKind_Bytes
+                                    - TypeKind_Link
+                                    - TypeKind_Struct
+                                    - TypeKind_Union
+                                    - TypeKind_Enum
+                                    - TypeKind_Any
+                                  default: TypeKind_Invalid
+                            description: Fields are the fields associated with the object.
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: Is Active is the status of the DID Document
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonrio/sonr/channel/params:
+    get:
+      summary: Params
+      description: Parameters queries the parameters of the module.
+      operationId: SonrioSonrChannelParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sonr-io/sonr/object/what_is:
+    get:
+      summary: WhatIsAll
+      description: Queries a list of WhatIs items.
+      operationId: SonrioSonrObjectWhatIsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              what_is:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      title: DID is the DID of the object
+                    object_doc:
+                      title: Object_doc is the object document
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: Label is human-readable name of the bucket.
+                        description:
+                          type: string
+                          description: >-
+                            Description is a human-readable description of the
+                            bucket.
+                        did:
+                          type: string
+                          description: Did is the identifier of the object.
+                        bucket_did:
+                          type: string
+                          description: >-
+                            Bucket is the did of the bucket that contains this
+                            object.
+                        fields:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: Name is the name of the field.
+                              kind:
+                                description: Type is the type of the field.
+                                type: string
+                                enum:
+                                  - TypeKind_Invalid
+                                  - TypeKind_Map
+                                  - TypeKind_List
+                                  - TypeKind_Unit
+                                  - TypeKind_Bool
+                                  - TypeKind_Int
+                                  - TypeKind_Float
+                                  - TypeKind_String
+                                  - TypeKind_Bytes
+                                  - TypeKind_Link
+                                  - TypeKind_Struct
+                                  - TypeKind_Union
+                                  - TypeKind_Enum
+                                  - TypeKind_Any
+                                default: TypeKind_Invalid
+                          description: Fields are the fields associated with the object.
+                      description: >-
+                        ObjectDoc is a document for an Object stored in the
+                        graph.
+                    creator:
+                      type: string
+                      title: Creator is the DID of the creator
+                    timestamp:
+                      type: string
+                      format: int64
+                      title: >-
+                        Timestamp is the time of the last update of the DID
+                        Document
+                    is_active:
+                      type: boolean
+                      title: IsActive is the status of the DID Document
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/object/what_is/{did}':
+    get:
+      summary: WhatIs
+      description: Queries a WhatIs by DID.
+      operationId: SonrioSonrObjectWhatIs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              what_is:
+                type: object
+                properties:
+                  did:
+                    type: string
+                    title: DID is the DID of the object
+                  object_doc:
+                    title: Object_doc is the object document
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                        description: Label is human-readable name of the bucket.
+                      description:
+                        type: string
+                        description: >-
+                          Description is a human-readable description of the
+                          bucket.
+                      did:
+                        type: string
+                        description: Did is the identifier of the object.
+                      bucket_did:
+                        type: string
+                        description: >-
+                          Bucket is the did of the bucket that contains this
+                          object.
+                      fields:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Name is the name of the field.
+                            kind:
+                              description: Type is the type of the field.
+                              type: string
+                              enum:
+                                - TypeKind_Invalid
+                                - TypeKind_Map
+                                - TypeKind_List
+                                - TypeKind_Unit
+                                - TypeKind_Bool
+                                - TypeKind_Int
+                                - TypeKind_Float
+                                - TypeKind_String
+                                - TypeKind_Bytes
+                                - TypeKind_Link
+                                - TypeKind_Struct
+                                - TypeKind_Union
+                                - TypeKind_Enum
+                                - TypeKind_Any
+                              default: TypeKind_Invalid
+                        description: Fields are the fields associated with the object.
+                    description: ObjectDoc is a document for an Object stored in the graph.
+                  creator:
+                    type: string
+                    title: Creator is the DID of the creator
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonrio/sonr/object/params:
+    get:
+      summary: Params
+      description: Parameters queries the parameters of the module.
+      operationId: SonrioSonrObjectParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sonr-io/sonr/registry/who_is:
+    get:
+      summary: Queries a list of WhoIs items.
+      operationId: SonrioSonrRegistryWhoIsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              WhoIs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    alias:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            title: Name is the string name of an Alias
+                          is_for_sale:
+                            type: boolean
+                            title: >-
+                              IsForSale is the boolean value indicating if the
+                              Alias is for sale
+                          amount:
+                            type: integer
+                            format: int32
+                            title: >-
+                              Amount is the amount listed for purchasing the
+                              Alias from the User/Application
+                        title: >-
+                          Alias is a message detailing a known "alsoKnownAs"
+                          identifier of a DIDDocument and contains properties
+                          for transfer/exchange
+                      title: >-
+                        Alias is the list of registered `alsoKnownAs`
+                        identifiers of the User or Application
+                    owner:
+                      type: string
+                      description: >-
+                        Owner is the top level DID of the User or Application
+                        derived from the multisignature wallet.
+                    did_document:
+                      description: >-
+                        DIDDocument is the bytes representation of DIDDocument
+                        within the WhoIs. Initially marshalled as JSON.
+                      type: object
+                      properties:
+                        context:
+                          type: array
+                          items:
+                            type: string
+                        id:
+                          type: string
+                        controller:
+                          type: array
+                          items:
+                            type: string
+                        verification_method:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              type:
+                                type: string
+                              controller:
+                                type: string
+                              public_key_jwk:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                              public_key_base58:
+                                type: string
+                        authentication:
+                          type: array
+                          items:
+                            type: string
+                        assertion_method:
+                          type: array
+                          items:
+                            type: string
+                        capability_invocation:
+                          type: array
+                          items:
+                            type: string
+                        capability_delegation:
+                          type: array
+                          items:
+                            type: string
+                        key_agreement:
+                          type: array
+                          items:
+                            type: string
+                        service:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              type:
+                                type: string
+                              service_endpoint:
+                                type: string
+                        also_known_as:
+                          type: array
+                          items:
+                            type: string
+                    controllers:
+                      type: array
+                      items:
+                        type: string
+                      title: >-
+                        Credentials are the biometric info of the registered
+                        name and account encoded with public key
+                    type:
+                      title: >-
+                        Type is the kind of the entity. Possible values are:
+                        "user", "application"
+                      type: string
+                      enum:
+                        - USER
+                        - APPLICATION
+                      default: USER
+                      description: |-
+                        - USER: User is the type of the registered name
+                         - APPLICATION: Application is the type of the registered name
+                    timestamp:
+                      type: string
+                      format: int64
+                      title: >-
+                        Timestamp is the time of the last update of the DID
+                        Document
+                    is_active:
+                      type: boolean
+                      title: IsActive is the status of the DID Document
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/registry/who_is/{did}':
+    get:
+      summary: Queries a WhoIs by id.
+      operationId: SonrioSonrRegistryWhoIs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              WhoIs:
+                type: object
+                properties:
+                  alias:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
+                    title: >-
+                      Alias is the list of registered `alsoKnownAs` identifiers
+                      of the User or Application
+                  owner:
+                    type: string
+                    description: >-
+                      Owner is the top level DID of the User or Application
+                      derived from the multisignature wallet.
+                  did_document:
+                    description: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
+                  controllers:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      Credentials are the biometric info of the registered name
+                      and account encoded with public key
+                  type:
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
+                    type: string
+                    enum:
+                      - USER
+                      - APPLICATION
+                    default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/sonr-io/sonr/registry/who_is_alias/{alias}':
+    get:
+      summary: Queries a list of WhoIsAlias items.
+      operationId: SonrioSonrRegistryWhoIsAlias
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              WhoIs:
+                type: object
+                properties:
+                  alias:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
+                    title: >-
+                      Alias is the list of registered `alsoKnownAs` identifiers
+                      of the User or Application
+                  owner:
+                    type: string
+                    description: >-
+                      Owner is the top level DID of the User or Application
+                      derived from the multisignature wallet.
+                  did_document:
+                    description: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
+                  controllers:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      Credentials are the biometric info of the registered name
+                      and account encoded with public key
+                  type:
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
+                    type: string
+                    enum:
+                      - USER
+                      - APPLICATION
+                    default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: alias
+          description: Alias of a WhoIs.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/sonr-io/sonr/registry/who_is_controller/{controller}':
+    get:
+      summary: Queries a list of WhoIsController items.
+      operationId: SonrioSonrRegistryWhoIsController
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              WhoIs:
+                type: object
+                properties:
+                  alias:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          title: Name is the string name of an Alias
+                        is_for_sale:
+                          type: boolean
+                          title: >-
+                            IsForSale is the boolean value indicating if the
+                            Alias is for sale
+                        amount:
+                          type: integer
+                          format: int32
+                          title: >-
+                            Amount is the amount listed for purchasing the Alias
+                            from the User/Application
+                      title: >-
+                        Alias is a message detailing a known "alsoKnownAs"
+                        identifier of a DIDDocument and contains properties for
+                        transfer/exchange
+                    title: >-
+                      Alias is the list of registered `alsoKnownAs` identifiers
+                      of the User or Application
+                  owner:
+                    type: string
+                    description: >-
+                      Owner is the top level DID of the User or Application
+                      derived from the multisignature wallet.
+                  did_document:
+                    description: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
+                  controllers:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      Credentials are the biometric info of the registered name
+                      and account encoded with public key
+                  type:
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
+                    type: string
+                    enum:
+                      - USER
+                      - APPLICATION
+                    default: USER
+                    description: |-
+                      - USER: User is the type of the registered name
+                       - APPLICATION: Application is the type of the registered name
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: controller
+          description: Controller did string
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonrio/sonr/registry/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SonrioSonrRegistryParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.Params:
     type: object
@@ -46979,3 +48754,3013 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sonrio.sonr.bucket.BucketDoc:
+    type: object
+    properties:
+      label:
+        type: string
+        description: Label is human-readable name of the bucket.
+      description:
+        type: string
+        description: Description is a human-readable description of the bucket.
+      type:
+        description: >-
+          Type is the kind of bucket for either App specific or User specific
+          data.
+        type: string
+        enum:
+          - BUCKET_TYPE_UNSPECIFIED
+          - BUCKET_TYPE_APP
+          - BUCKET_TYPE_USER
+        default: BUCKET_TYPE_UNSPECIFIED
+      did:
+        type: string
+        description: Did is the identifier of the bucket.
+      object_dids:
+        type: array
+        items:
+          type: string
+        description: Objects are stored in a tree structure.
+    description: Bucket is a collection of objects.
+  sonrio.sonr.bucket.BucketType:
+    type: string
+    enum:
+      - BUCKET_TYPE_UNSPECIFIED
+      - BUCKET_TYPE_APP
+      - BUCKET_TYPE_USER
+    default: BUCKET_TYPE_UNSPECIFIED
+    description: |-
+      BucketType is the type of a bucket.
+
+       - BUCKET_TYPE_UNSPECIFIED: BucketTypeUnspecified is the default value.
+       - BUCKET_TYPE_APP: BucketTypeApp is an App specific bucket. For Assets regarding the service.
+       - BUCKET_TYPE_USER: BucketTypeUser is a User specific bucket. For any remote user data that is required
+      to be stored in the Network.
+  sonrio.sonr.bucket.MsgCreateBucketResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+      which_is:
+        type: object
+        properties:
+          did:
+            type: string
+            description: DID is the DID of the bucket.
+          creator:
+            type: string
+            description: Creator is the Account that created the bucket.
+          bucket:
+            description: Bucket is the document of the bucket.
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the bucket.
+              description:
+                type: string
+                description: Description is a human-readable description of the bucket.
+              type:
+                description: >-
+                  Type is the kind of bucket for either App specific or User
+                  specific data.
+                type: string
+                enum:
+                  - BUCKET_TYPE_UNSPECIFIED
+                  - BUCKET_TYPE_APP
+                  - BUCKET_TYPE_USER
+                default: BUCKET_TYPE_UNSPECIFIED
+              did:
+                type: string
+                description: Did is the identifier of the bucket.
+              object_dids:
+                type: array
+                items:
+                  type: string
+                description: Objects are stored in a tree structure.
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        title: Whichis response of the ObjectDoc
+  sonrio.sonr.bucket.MsgCreateWhichIsResponse:
+    type: object
+  sonrio.sonr.bucket.MsgDeactivateBucketResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+  sonrio.sonr.bucket.MsgDeleteWhichIsResponse:
+    type: object
+  sonrio.sonr.bucket.MsgUpdateBucketResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+      which_is:
+        type: object
+        properties:
+          did:
+            type: string
+            description: DID is the DID of the bucket.
+          creator:
+            type: string
+            description: Creator is the Account that created the bucket.
+          bucket:
+            description: Bucket is the document of the bucket.
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the bucket.
+              description:
+                type: string
+                description: Description is a human-readable description of the bucket.
+              type:
+                description: >-
+                  Type is the kind of bucket for either App specific or User
+                  specific data.
+                type: string
+                enum:
+                  - BUCKET_TYPE_UNSPECIFIED
+                  - BUCKET_TYPE_APP
+                  - BUCKET_TYPE_USER
+                default: BUCKET_TYPE_UNSPECIFIED
+              did:
+                type: string
+                description: Did is the identifier of the bucket.
+              object_dids:
+                type: array
+                items:
+                  type: string
+                description: Objects are stored in a tree structure.
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        title: Whichis response of the ObjectDoc
+  sonrio.sonr.bucket.MsgUpdateWhichIsResponse:
+    type: object
+  sonrio.sonr.bucket.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sonrio.sonr.bucket.QueryAllWhichIsResponse:
+    type: object
+    properties:
+      which_is:
+        type: array
+        items:
+          type: object
+          properties:
+            did:
+              type: string
+              description: DID is the DID of the bucket.
+            creator:
+              type: string
+              description: Creator is the Account that created the bucket.
+            bucket:
+              description: Bucket is the document of the bucket.
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Label is human-readable name of the bucket.
+                description:
+                  type: string
+                  description: Description is a human-readable description of the bucket.
+                type:
+                  description: >-
+                    Type is the kind of bucket for either App specific or User
+                    specific data.
+                  type: string
+                  enum:
+                    - BUCKET_TYPE_UNSPECIFIED
+                    - BUCKET_TYPE_APP
+                    - BUCKET_TYPE_USER
+                  default: BUCKET_TYPE_UNSPECIFIED
+                did:
+                  type: string
+                  description: Did is the identifier of the bucket.
+                object_dids:
+                  type: array
+                  items:
+                    type: string
+                  description: Objects are stored in a tree structure.
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp is the time of the last update of the DID Document
+            is_active:
+              type: boolean
+              title: IsActive is the status of the DID Document
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.bucket.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sonrio.sonr.bucket.QueryWhichIsResponse:
+    type: object
+    properties:
+      which_is:
+        type: object
+        properties:
+          did:
+            type: string
+            description: DID is the DID of the bucket.
+          creator:
+            type: string
+            description: Creator is the Account that created the bucket.
+          bucket:
+            description: Bucket is the document of the bucket.
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the bucket.
+              description:
+                type: string
+                description: Description is a human-readable description of the bucket.
+              type:
+                description: >-
+                  Type is the kind of bucket for either App specific or User
+                  specific data.
+                type: string
+                enum:
+                  - BUCKET_TYPE_UNSPECIFIED
+                  - BUCKET_TYPE_APP
+                  - BUCKET_TYPE_USER
+                default: BUCKET_TYPE_UNSPECIFIED
+              did:
+                type: string
+                description: Did is the identifier of the bucket.
+              object_dids:
+                type: array
+                items:
+                  type: string
+                description: Objects are stored in a tree structure.
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+  sonrio.sonr.bucket.WhichIs:
+    type: object
+    properties:
+      did:
+        type: string
+        description: DID is the DID of the bucket.
+      creator:
+        type: string
+        description: Creator is the Account that created the bucket.
+      bucket:
+        description: Bucket is the document of the bucket.
+        type: object
+        properties:
+          label:
+            type: string
+            description: Label is human-readable name of the bucket.
+          description:
+            type: string
+            description: Description is a human-readable description of the bucket.
+          type:
+            description: >-
+              Type is the kind of bucket for either App specific or User
+              specific data.
+            type: string
+            enum:
+              - BUCKET_TYPE_UNSPECIFIED
+              - BUCKET_TYPE_APP
+              - BUCKET_TYPE_USER
+            default: BUCKET_TYPE_UNSPECIFIED
+          did:
+            type: string
+            description: Did is the identifier of the bucket.
+          object_dids:
+            type: array
+            items:
+              type: string
+            description: Objects are stored in a tree structure.
+      timestamp:
+        type: string
+        format: int64
+        title: Timestamp is the time of the last update of the DID Document
+      is_active:
+        type: boolean
+        title: IsActive is the status of the DID Document
+  sonrio.sonr.channel.ChannelDoc:
+    type: object
+    properties:
+      label:
+        type: string
+        description: Label is human-readable name of the channel.
+      description:
+        type: string
+        description: Description is a human-readable description of the channel.
+      did:
+        type: string
+        description: Did is the identifier of the channel.
+      registered_object:
+        description: >-
+          RegisterdObject is the object that is registered as the payload for
+          the channel.
+        type: object
+        properties:
+          label:
+            type: string
+            description: Label is human-readable name of the bucket.
+          description:
+            type: string
+            description: Description is a human-readable description of the bucket.
+          did:
+            type: string
+            description: Did is the identifier of the object.
+          bucket_did:
+            type: string
+            description: Bucket is the did of the bucket that contains this object.
+          fields:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name is the name of the field.
+                kind:
+                  description: Type is the type of the field.
+                  type: string
+                  enum:
+                    - TypeKind_Invalid
+                    - TypeKind_Map
+                    - TypeKind_List
+                    - TypeKind_Unit
+                    - TypeKind_Bool
+                    - TypeKind_Int
+                    - TypeKind_Float
+                    - TypeKind_String
+                    - TypeKind_Bytes
+                    - TypeKind_Link
+                    - TypeKind_Struct
+                    - TypeKind_Union
+                    - TypeKind_Enum
+                    - TypeKind_Any
+                  default: TypeKind_Invalid
+            description: Fields are the fields associated with the object.
+  sonrio.sonr.channel.HowIs:
+    type: object
+    properties:
+      did:
+        type: string
+        title: Did is the DID of the channel
+      creator:
+        type: string
+        title: >-
+          Document is the DID Document of the registered name and account
+          encoded as JSON
+      channel:
+        title: ChannelDoc is the structure of the channel encoded as JSON
+        type: object
+        properties:
+          label:
+            type: string
+            description: Label is human-readable name of the channel.
+          description:
+            type: string
+            description: Description is a human-readable description of the channel.
+          did:
+            type: string
+            description: Did is the identifier of the channel.
+          registered_object:
+            description: >-
+              RegisterdObject is the object that is registered as the payload
+              for the channel.
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the bucket.
+              description:
+                type: string
+                description: Description is a human-readable description of the bucket.
+              did:
+                type: string
+                description: Did is the identifier of the object.
+              bucket_did:
+                type: string
+                description: Bucket is the did of the bucket that contains this object.
+              fields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name is the name of the field.
+                    kind:
+                      description: Type is the type of the field.
+                      type: string
+                      enum:
+                        - TypeKind_Invalid
+                        - TypeKind_Map
+                        - TypeKind_List
+                        - TypeKind_Unit
+                        - TypeKind_Bool
+                        - TypeKind_Int
+                        - TypeKind_Float
+                        - TypeKind_String
+                        - TypeKind_Bytes
+                        - TypeKind_Link
+                        - TypeKind_Struct
+                        - TypeKind_Union
+                        - TypeKind_Enum
+                        - TypeKind_Any
+                      default: TypeKind_Invalid
+                description: Fields are the fields associated with the object.
+      timestamp:
+        type: string
+        format: int64
+        title: Timestamp is the time of the last update of the DID Document
+      is_active:
+        type: boolean
+        title: Is Active is the status of the DID Document
+  sonrio.sonr.channel.MsgCreateChannelResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+      how_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: Did is the DID of the channel
+          creator:
+            type: string
+            title: >-
+              Document is the DID Document of the registered name and account
+              encoded as JSON
+          channel:
+            title: ChannelDoc is the structure of the channel encoded as JSON
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the channel.
+              description:
+                type: string
+                description: Description is a human-readable description of the channel.
+              did:
+                type: string
+                description: Did is the identifier of the channel.
+              registered_object:
+                description: >-
+                  RegisterdObject is the object that is registered as the
+                  payload for the channel.
+                type: object
+                properties:
+                  label:
+                    type: string
+                    description: Label is human-readable name of the bucket.
+                  description:
+                    type: string
+                    description: Description is a human-readable description of the bucket.
+                  did:
+                    type: string
+                    description: Did is the identifier of the object.
+                  bucket_did:
+                    type: string
+                    description: Bucket is the did of the bucket that contains this object.
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Name is the name of the field.
+                        kind:
+                          description: Type is the type of the field.
+                          type: string
+                          enum:
+                            - TypeKind_Invalid
+                            - TypeKind_Map
+                            - TypeKind_List
+                            - TypeKind_Unit
+                            - TypeKind_Bool
+                            - TypeKind_Int
+                            - TypeKind_Float
+                            - TypeKind_String
+                            - TypeKind_Bytes
+                            - TypeKind_Link
+                            - TypeKind_Struct
+                            - TypeKind_Union
+                            - TypeKind_Enum
+                            - TypeKind_Any
+                          default: TypeKind_Invalid
+                    description: Fields are the fields associated with the object.
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: Is Active is the status of the DID Document
+        title: HowIs of the Channel
+  sonrio.sonr.channel.MsgCreateHowIsResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+      how_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: Did is the DID of the channel
+          creator:
+            type: string
+            title: >-
+              Document is the DID Document of the registered name and account
+              encoded as JSON
+          channel:
+            title: ChannelDoc is the structure of the channel encoded as JSON
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the channel.
+              description:
+                type: string
+                description: Description is a human-readable description of the channel.
+              did:
+                type: string
+                description: Did is the identifier of the channel.
+              registered_object:
+                description: >-
+                  RegisterdObject is the object that is registered as the
+                  payload for the channel.
+                type: object
+                properties:
+                  label:
+                    type: string
+                    description: Label is human-readable name of the bucket.
+                  description:
+                    type: string
+                    description: Description is a human-readable description of the bucket.
+                  did:
+                    type: string
+                    description: Did is the identifier of the object.
+                  bucket_did:
+                    type: string
+                    description: Bucket is the did of the bucket that contains this object.
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Name is the name of the field.
+                        kind:
+                          description: Type is the type of the field.
+                          type: string
+                          enum:
+                            - TypeKind_Invalid
+                            - TypeKind_Map
+                            - TypeKind_List
+                            - TypeKind_Unit
+                            - TypeKind_Bool
+                            - TypeKind_Int
+                            - TypeKind_Float
+                            - TypeKind_String
+                            - TypeKind_Bytes
+                            - TypeKind_Link
+                            - TypeKind_Struct
+                            - TypeKind_Union
+                            - TypeKind_Enum
+                            - TypeKind_Any
+                          default: TypeKind_Invalid
+                    description: Fields are the fields associated with the object.
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: Is Active is the status of the DID Document
+  sonrio.sonr.channel.MsgDeactivateChannelResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+  sonrio.sonr.channel.MsgDeleteHowIsResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+  sonrio.sonr.channel.MsgUpdateChannelResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+  sonrio.sonr.channel.MsgUpdateHowIsResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+      how_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: Did is the DID of the channel
+          creator:
+            type: string
+            title: >-
+              Document is the DID Document of the registered name and account
+              encoded as JSON
+          channel:
+            title: ChannelDoc is the structure of the channel encoded as JSON
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the channel.
+              description:
+                type: string
+                description: Description is a human-readable description of the channel.
+              did:
+                type: string
+                description: Did is the identifier of the channel.
+              registered_object:
+                description: >-
+                  RegisterdObject is the object that is registered as the
+                  payload for the channel.
+                type: object
+                properties:
+                  label:
+                    type: string
+                    description: Label is human-readable name of the bucket.
+                  description:
+                    type: string
+                    description: Description is a human-readable description of the bucket.
+                  did:
+                    type: string
+                    description: Did is the identifier of the object.
+                  bucket_did:
+                    type: string
+                    description: Bucket is the did of the bucket that contains this object.
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Name is the name of the field.
+                        kind:
+                          description: Type is the type of the field.
+                          type: string
+                          enum:
+                            - TypeKind_Invalid
+                            - TypeKind_Map
+                            - TypeKind_List
+                            - TypeKind_Unit
+                            - TypeKind_Bool
+                            - TypeKind_Int
+                            - TypeKind_Float
+                            - TypeKind_String
+                            - TypeKind_Bytes
+                            - TypeKind_Link
+                            - TypeKind_Struct
+                            - TypeKind_Union
+                            - TypeKind_Enum
+                            - TypeKind_Any
+                          default: TypeKind_Invalid
+                    description: Fields are the fields associated with the object.
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: Is Active is the status of the DID Document
+  sonrio.sonr.channel.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sonrio.sonr.channel.QueryAllHowIsResponse:
+    type: object
+    properties:
+      how_is:
+        type: array
+        items:
+          type: object
+          properties:
+            did:
+              type: string
+              title: Did is the DID of the channel
+            creator:
+              type: string
+              title: >-
+                Document is the DID Document of the registered name and account
+                encoded as JSON
+            channel:
+              title: ChannelDoc is the structure of the channel encoded as JSON
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Label is human-readable name of the channel.
+                description:
+                  type: string
+                  description: Description is a human-readable description of the channel.
+                did:
+                  type: string
+                  description: Did is the identifier of the channel.
+                registered_object:
+                  description: >-
+                    RegisterdObject is the object that is registered as the
+                    payload for the channel.
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      description: Label is human-readable name of the bucket.
+                    description:
+                      type: string
+                      description: >-
+                        Description is a human-readable description of the
+                        bucket.
+                    did:
+                      type: string
+                      description: Did is the identifier of the object.
+                    bucket_did:
+                      type: string
+                      description: >-
+                        Bucket is the did of the bucket that contains this
+                        object.
+                    fields:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name is the name of the field.
+                          kind:
+                            description: Type is the type of the field.
+                            type: string
+                            enum:
+                              - TypeKind_Invalid
+                              - TypeKind_Map
+                              - TypeKind_List
+                              - TypeKind_Unit
+                              - TypeKind_Bool
+                              - TypeKind_Int
+                              - TypeKind_Float
+                              - TypeKind_String
+                              - TypeKind_Bytes
+                              - TypeKind_Link
+                              - TypeKind_Struct
+                              - TypeKind_Union
+                              - TypeKind_Enum
+                              - TypeKind_Any
+                            default: TypeKind_Invalid
+                      description: Fields are the fields associated with the object.
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp is the time of the last update of the DID Document
+            is_active:
+              type: boolean
+              title: Is Active is the status of the DID Document
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.channel.QueryHowIsResponse:
+    type: object
+    properties:
+      how_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: Did is the DID of the channel
+          creator:
+            type: string
+            title: >-
+              Document is the DID Document of the registered name and account
+              encoded as JSON
+          channel:
+            title: ChannelDoc is the structure of the channel encoded as JSON
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the channel.
+              description:
+                type: string
+                description: Description is a human-readable description of the channel.
+              did:
+                type: string
+                description: Did is the identifier of the channel.
+              registered_object:
+                description: >-
+                  RegisterdObject is the object that is registered as the
+                  payload for the channel.
+                type: object
+                properties:
+                  label:
+                    type: string
+                    description: Label is human-readable name of the bucket.
+                  description:
+                    type: string
+                    description: Description is a human-readable description of the bucket.
+                  did:
+                    type: string
+                    description: Did is the identifier of the object.
+                  bucket_did:
+                    type: string
+                    description: Bucket is the did of the bucket that contains this object.
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Name is the name of the field.
+                        kind:
+                          description: Type is the type of the field.
+                          type: string
+                          enum:
+                            - TypeKind_Invalid
+                            - TypeKind_Map
+                            - TypeKind_List
+                            - TypeKind_Unit
+                            - TypeKind_Bool
+                            - TypeKind_Int
+                            - TypeKind_Float
+                            - TypeKind_String
+                            - TypeKind_Bytes
+                            - TypeKind_Link
+                            - TypeKind_Struct
+                            - TypeKind_Union
+                            - TypeKind_Enum
+                            - TypeKind_Any
+                          default: TypeKind_Invalid
+                    description: Fields are the fields associated with the object.
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: Is Active is the status of the DID Document
+  sonrio.sonr.channel.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sonrio.sonr.object.ObjectDoc:
+    type: object
+    properties:
+      label:
+        type: string
+        description: Label is human-readable name of the bucket.
+      description:
+        type: string
+        description: Description is a human-readable description of the bucket.
+      did:
+        type: string
+        description: Did is the identifier of the object.
+      bucket_did:
+        type: string
+        description: Bucket is the did of the bucket that contains this object.
+      fields:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name is the name of the field.
+            kind:
+              description: Type is the type of the field.
+              type: string
+              enum:
+                - TypeKind_Invalid
+                - TypeKind_Map
+                - TypeKind_List
+                - TypeKind_Unit
+                - TypeKind_Bool
+                - TypeKind_Int
+                - TypeKind_Float
+                - TypeKind_String
+                - TypeKind_Bytes
+                - TypeKind_Link
+                - TypeKind_Struct
+                - TypeKind_Union
+                - TypeKind_Enum
+                - TypeKind_Any
+              default: TypeKind_Invalid
+        description: Fields are the fields associated with the object.
+    description: ObjectDoc is a document for an Object stored in the graph.
+  sonrio.sonr.object.TypeField:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name is the name of the field.
+      kind:
+        description: Type is the type of the field.
+        type: string
+        enum:
+          - TypeKind_Invalid
+          - TypeKind_Map
+          - TypeKind_List
+          - TypeKind_Unit
+          - TypeKind_Bool
+          - TypeKind_Int
+          - TypeKind_Float
+          - TypeKind_String
+          - TypeKind_Bytes
+          - TypeKind_Link
+          - TypeKind_Struct
+          - TypeKind_Union
+          - TypeKind_Enum
+          - TypeKind_Any
+        default: TypeKind_Invalid
+  sonrio.sonr.object.TypeKind:
+    type: string
+    enum:
+      - TypeKind_Invalid
+      - TypeKind_Map
+      - TypeKind_List
+      - TypeKind_Unit
+      - TypeKind_Bool
+      - TypeKind_Int
+      - TypeKind_Float
+      - TypeKind_String
+      - TypeKind_Bytes
+      - TypeKind_Link
+      - TypeKind_Struct
+      - TypeKind_Union
+      - TypeKind_Enum
+      - TypeKind_Any
+    default: TypeKind_Invalid
+  sonrio.sonr.object.MsgCreateObjectResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+      what_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: DID is the DID of the object
+          object_doc:
+            title: Object_doc is the object document
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the bucket.
+              description:
+                type: string
+                description: Description is a human-readable description of the bucket.
+              did:
+                type: string
+                description: Did is the identifier of the object.
+              bucket_did:
+                type: string
+                description: Bucket is the did of the bucket that contains this object.
+              fields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name is the name of the field.
+                    kind:
+                      description: Type is the type of the field.
+                      type: string
+                      enum:
+                        - TypeKind_Invalid
+                        - TypeKind_Map
+                        - TypeKind_List
+                        - TypeKind_Unit
+                        - TypeKind_Bool
+                        - TypeKind_Int
+                        - TypeKind_Float
+                        - TypeKind_String
+                        - TypeKind_Bytes
+                        - TypeKind_Link
+                        - TypeKind_Struct
+                        - TypeKind_Union
+                        - TypeKind_Enum
+                        - TypeKind_Any
+                      default: TypeKind_Invalid
+                description: Fields are the fields associated with the object.
+            description: ObjectDoc is a document for an Object stored in the graph.
+          creator:
+            type: string
+            title: Creator is the DID of the creator
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        title: WhatIs of the Channel
+  sonrio.sonr.object.MsgCreateWhatIsResponse:
+    type: object
+    properties:
+      did:
+        type: string
+  sonrio.sonr.object.MsgDeactivateObjectResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+  sonrio.sonr.object.MsgDeleteWhatIsResponse:
+    type: object
+    properties:
+      did:
+        type: string
+  sonrio.sonr.object.MsgUpdateObjectResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        title: Code of the response
+      message:
+        type: string
+        title: Message of the response
+      what_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: DID is the DID of the object
+          object_doc:
+            title: Object_doc is the object document
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the bucket.
+              description:
+                type: string
+                description: Description is a human-readable description of the bucket.
+              did:
+                type: string
+                description: Did is the identifier of the object.
+              bucket_did:
+                type: string
+                description: Bucket is the did of the bucket that contains this object.
+              fields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name is the name of the field.
+                    kind:
+                      description: Type is the type of the field.
+                      type: string
+                      enum:
+                        - TypeKind_Invalid
+                        - TypeKind_Map
+                        - TypeKind_List
+                        - TypeKind_Unit
+                        - TypeKind_Bool
+                        - TypeKind_Int
+                        - TypeKind_Float
+                        - TypeKind_String
+                        - TypeKind_Bytes
+                        - TypeKind_Link
+                        - TypeKind_Struct
+                        - TypeKind_Union
+                        - TypeKind_Enum
+                        - TypeKind_Any
+                      default: TypeKind_Invalid
+                description: Fields are the fields associated with the object.
+            description: ObjectDoc is a document for an Object stored in the graph.
+          creator:
+            type: string
+            title: Creator is the DID of the creator
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        title: WhatIs of the Channel
+  sonrio.sonr.object.MsgUpdateWhatIsResponse:
+    type: object
+    properties:
+      did:
+        type: string
+  sonrio.sonr.object.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sonrio.sonr.object.QueryAllWhatIsResponse:
+    type: object
+    properties:
+      what_is:
+        type: array
+        items:
+          type: object
+          properties:
+            did:
+              type: string
+              title: DID is the DID of the object
+            object_doc:
+              title: Object_doc is the object document
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Label is human-readable name of the bucket.
+                description:
+                  type: string
+                  description: Description is a human-readable description of the bucket.
+                did:
+                  type: string
+                  description: Did is the identifier of the object.
+                bucket_did:
+                  type: string
+                  description: Bucket is the did of the bucket that contains this object.
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Name is the name of the field.
+                      kind:
+                        description: Type is the type of the field.
+                        type: string
+                        enum:
+                          - TypeKind_Invalid
+                          - TypeKind_Map
+                          - TypeKind_List
+                          - TypeKind_Unit
+                          - TypeKind_Bool
+                          - TypeKind_Int
+                          - TypeKind_Float
+                          - TypeKind_String
+                          - TypeKind_Bytes
+                          - TypeKind_Link
+                          - TypeKind_Struct
+                          - TypeKind_Union
+                          - TypeKind_Enum
+                          - TypeKind_Any
+                        default: TypeKind_Invalid
+                  description: Fields are the fields associated with the object.
+              description: ObjectDoc is a document for an Object stored in the graph.
+            creator:
+              type: string
+              title: Creator is the DID of the creator
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp is the time of the last update of the DID Document
+            is_active:
+              type: boolean
+              title: IsActive is the status of the DID Document
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.object.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sonrio.sonr.object.QueryWhatIsResponse:
+    type: object
+    properties:
+      what_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: DID is the DID of the object
+          object_doc:
+            title: Object_doc is the object document
+            type: object
+            properties:
+              label:
+                type: string
+                description: Label is human-readable name of the bucket.
+              description:
+                type: string
+                description: Description is a human-readable description of the bucket.
+              did:
+                type: string
+                description: Did is the identifier of the object.
+              bucket_did:
+                type: string
+                description: Bucket is the did of the bucket that contains this object.
+              fields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name is the name of the field.
+                    kind:
+                      description: Type is the type of the field.
+                      type: string
+                      enum:
+                        - TypeKind_Invalid
+                        - TypeKind_Map
+                        - TypeKind_List
+                        - TypeKind_Unit
+                        - TypeKind_Bool
+                        - TypeKind_Int
+                        - TypeKind_Float
+                        - TypeKind_String
+                        - TypeKind_Bytes
+                        - TypeKind_Link
+                        - TypeKind_Struct
+                        - TypeKind_Union
+                        - TypeKind_Enum
+                        - TypeKind_Any
+                      default: TypeKind_Invalid
+                description: Fields are the fields associated with the object.
+            description: ObjectDoc is a document for an Object stored in the graph.
+          creator:
+            type: string
+            title: Creator is the DID of the creator
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+  sonrio.sonr.object.WhatIs:
+    type: object
+    properties:
+      did:
+        type: string
+        title: DID is the DID of the object
+      object_doc:
+        title: Object_doc is the object document
+        type: object
+        properties:
+          label:
+            type: string
+            description: Label is human-readable name of the bucket.
+          description:
+            type: string
+            description: Description is a human-readable description of the bucket.
+          did:
+            type: string
+            description: Did is the identifier of the object.
+          bucket_did:
+            type: string
+            description: Bucket is the did of the bucket that contains this object.
+          fields:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name is the name of the field.
+                kind:
+                  description: Type is the type of the field.
+                  type: string
+                  enum:
+                    - TypeKind_Invalid
+                    - TypeKind_Map
+                    - TypeKind_List
+                    - TypeKind_Unit
+                    - TypeKind_Bool
+                    - TypeKind_Int
+                    - TypeKind_Float
+                    - TypeKind_String
+                    - TypeKind_Bytes
+                    - TypeKind_Link
+                    - TypeKind_Struct
+                    - TypeKind_Union
+                    - TypeKind_Enum
+                    - TypeKind_Any
+                  default: TypeKind_Invalid
+            description: Fields are the fields associated with the object.
+        description: ObjectDoc is a document for an Object stored in the graph.
+      creator:
+        type: string
+        title: Creator is the DID of the creator
+      timestamp:
+        type: string
+        format: int64
+        title: Timestamp is the time of the last update of the DID Document
+      is_active:
+        type: boolean
+        title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.Alias:
+    type: object
+    properties:
+      name:
+        type: string
+        title: Name is the string name of an Alias
+      is_for_sale:
+        type: boolean
+        title: IsForSale is the boolean value indicating if the Alias is for sale
+      amount:
+        type: integer
+        format: int32
+        title: >-
+          Amount is the amount listed for purchasing the Alias from the
+          User/Application
+    title: >-
+      Alias is a message detailing a known "alsoKnownAs" identifier of a
+      DIDDocument and contains properties for transfer/exchange
+  sonrio.sonr.registry.DIDDocument:
+    type: object
+    properties:
+      context:
+        type: array
+        items:
+          type: string
+      id:
+        type: string
+      controller:
+        type: array
+        items:
+          type: string
+      verification_method:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            controller:
+              type: string
+            public_key_jwk:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
+            public_key_base58:
+              type: string
+      authentication:
+        type: array
+        items:
+          type: string
+      assertion_method:
+        type: array
+        items:
+          type: string
+      capability_invocation:
+        type: array
+        items:
+          type: string
+      capability_delegation:
+        type: array
+        items:
+          type: string
+      key_agreement:
+        type: array
+        items:
+          type: string
+      service:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            service_endpoint:
+              type: string
+      also_known_as:
+        type: array
+        items:
+          type: string
+  sonrio.sonr.registry.KeyValuePair:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  sonrio.sonr.registry.MsgBuyAliasResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Did is the top level DID of the WhoIs.
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
+  sonrio.sonr.registry.MsgCreateWhoIsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Did is the top level DID of the created WhoIs.
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
+  sonrio.sonr.registry.MsgDeactivateWhoIsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Success is true if the WhoIs was successfully deactivated.
+      did:
+        type: string
+        description: Did is the top level DID of the WhoIs.
+  sonrio.sonr.registry.MsgSellAliasResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Success is true if the Alias was successfully transferred.
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
+  sonrio.sonr.registry.MsgTransferAliasResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Success is true if the Alias was successfully transferred.
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
+  sonrio.sonr.registry.MsgUpdateWhoIsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Did is the top level DID of the WhoIs.
+      who_is:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+        description: >-
+          WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
+  sonrio.sonr.registry.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sonrio.sonr.registry.QueryAllWhoIsResponse:
+    type: object
+    properties:
+      WhoIs:
+        type: array
+        items:
+          type: object
+          properties:
+            alias:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    title: Name is the string name of an Alias
+                  is_for_sale:
+                    type: boolean
+                    title: >-
+                      IsForSale is the boolean value indicating if the Alias is
+                      for sale
+                  amount:
+                    type: integer
+                    format: int32
+                    title: >-
+                      Amount is the amount listed for purchasing the Alias from
+                      the User/Application
+                title: >-
+                  Alias is a message detailing a known "alsoKnownAs" identifier
+                  of a DIDDocument and contains properties for transfer/exchange
+              title: >-
+                Alias is the list of registered `alsoKnownAs` identifiers of the
+                User or Application
+            owner:
+              type: string
+              description: >-
+                Owner is the top level DID of the User or Application derived
+                from the multisignature wallet.
+            did_document:
+              description: >-
+                DIDDocument is the bytes representation of DIDDocument within
+                the WhoIs. Initially marshalled as JSON.
+              type: object
+              properties:
+                context:
+                  type: array
+                  items:
+                    type: string
+                id:
+                  type: string
+                controller:
+                  type: array
+                  items:
+                    type: string
+                verification_method:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      controller:
+                        type: string
+                      public_key_jwk:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            key:
+                              type: string
+                            value:
+                              type: string
+                      public_key_base58:
+                        type: string
+                authentication:
+                  type: array
+                  items:
+                    type: string
+                assertion_method:
+                  type: array
+                  items:
+                    type: string
+                capability_invocation:
+                  type: array
+                  items:
+                    type: string
+                capability_delegation:
+                  type: array
+                  items:
+                    type: string
+                key_agreement:
+                  type: array
+                  items:
+                    type: string
+                service:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      service_endpoint:
+                        type: string
+                also_known_as:
+                  type: array
+                  items:
+                    type: string
+            controllers:
+              type: array
+              items:
+                type: string
+              title: >-
+                Credentials are the biometric info of the registered name and
+                account encoded with public key
+            type:
+              title: >-
+                Type is the kind of the entity. Possible values are: "user",
+                "application"
+              type: string
+              enum:
+                - USER
+                - APPLICATION
+              default: USER
+              description: |-
+                - USER: User is the type of the registered name
+                 - APPLICATION: Application is the type of the registered name
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp is the time of the last update of the DID Document
+            is_active:
+              type: boolean
+              title: IsActive is the status of the DID Document
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.registry.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sonrio.sonr.registry.QueryWhoIsAliasResponse:
+    type: object
+    properties:
+      WhoIs:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.QueryWhoIsControllerResponse:
+    type: object
+    properties:
+      WhoIs:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.QueryWhoIsResponse:
+    type: object
+    properties:
+      WhoIs:
+        type: object
+        properties:
+          alias:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  title: Name is the string name of an Alias
+                is_for_sale:
+                  type: boolean
+                  title: >-
+                    IsForSale is the boolean value indicating if the Alias is
+                    for sale
+                amount:
+                  type: integer
+                  format: int32
+                  title: >-
+                    Amount is the amount listed for purchasing the Alias from
+                    the User/Application
+              title: >-
+                Alias is a message detailing a known "alsoKnownAs" identifier of
+                a DIDDocument and contains properties for transfer/exchange
+            title: >-
+              Alias is the list of registered `alsoKnownAs` identifiers of the
+              User or Application
+          owner:
+            type: string
+            description: >-
+              Owner is the top level DID of the User or Application derived from
+              the multisignature wallet.
+          did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
+          controllers:
+            type: array
+            items:
+              type: string
+            title: >-
+              Credentials are the biometric info of the registered name and
+              account encoded with public key
+          type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
+            type: string
+            enum:
+              - USER
+              - APPLICATION
+            default: USER
+            description: |-
+              - USER: User is the type of the registered name
+               - APPLICATION: Application is the type of the registered name
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.Service:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      service_endpoint:
+        type: string
+  sonrio.sonr.registry.VerificationMethod:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      controller:
+        type: string
+      public_key_jwk:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
+      public_key_base58:
+        type: string
+  sonrio.sonr.registry.WhoIs:
+    type: object
+    properties:
+      alias:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              title: Name is the string name of an Alias
+            is_for_sale:
+              type: boolean
+              title: >-
+                IsForSale is the boolean value indicating if the Alias is for
+                sale
+            amount:
+              type: integer
+              format: int32
+              title: >-
+                Amount is the amount listed for purchasing the Alias from the
+                User/Application
+          title: >-
+            Alias is a message detailing a known "alsoKnownAs" identifier of a
+            DIDDocument and contains properties for transfer/exchange
+        title: >-
+          Alias is the list of registered `alsoKnownAs` identifiers of the User
+          or Application
+      owner:
+        type: string
+        description: >-
+          Owner is the top level DID of the User or Application derived from the
+          multisignature wallet.
+      did_document:
+        description: >-
+          DIDDocument is the bytes representation of DIDDocument within the
+          WhoIs. Initially marshalled as JSON.
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+          verification_method:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                controller:
+                  type: string
+                public_key_jwk:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                public_key_base58:
+                  type: string
+          authentication:
+            type: array
+            items:
+              type: string
+          assertion_method:
+            type: array
+            items:
+              type: string
+          capability_invocation:
+            type: array
+            items:
+              type: string
+          capability_delegation:
+            type: array
+            items:
+              type: string
+          key_agreement:
+            type: array
+            items:
+              type: string
+          service:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
+                  type: string
+          also_known_as:
+            type: array
+            items:
+              type: string
+      controllers:
+        type: array
+        items:
+          type: string
+        title: >-
+          Credentials are the biometric info of the registered name and account
+          encoded with public key
+      type:
+        title: >-
+          Type is the kind of the entity. Possible values are: "user",
+          "application"
+        type: string
+        enum:
+          - USER
+          - APPLICATION
+        default: USER
+        description: |-
+          - USER: User is the type of the registered name
+           - APPLICATION: Application is the type of the registered name
+      timestamp:
+        type: string
+        format: int64
+        title: Timestamp is the time of the last update of the DID Document
+      is_active:
+        type: boolean
+        title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.WhoIsType:
+    type: string
+    enum:
+      - USER
+      - APPLICATION
+    default: USER
+    description: |-
+      - USER: User is the type of the registered name
+       - APPLICATION: Application is the type of the registered name
+    title: WhoIsType is the type of DIDDocument stored in the registry module

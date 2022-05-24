@@ -69,14 +69,14 @@ Here is a constructed example of a `WebAuthn`** **token being stored in an accou
 ```json
 {
     "@context": "https://www.w3.org/ns/did/v1",
-    "assertionMethod": ["did:sonr:123#key-1"],
+    "assertionMethod": ["did:snr:123#key-1"],
     "alsoKnownAs": ["prad.snr"],
-    "controller": "did:sonr:123",
-    "id": "did:sonr:123",
+    "controller": "did:snr:123",
+    "id": "did:snr:123",
     "verificationMethod": [
     {
-      "controller": "did:sonr:123",
-      "id": "did:sonr:123#key-1",
+      "controller": "did:snr:123",
+      "id": "did:snr:123#key-1",
       "publicKeyJwk": {
         "crv": "P-256",
         "kty": "EC",

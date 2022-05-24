@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ot "github.com/sonr-io/sonr/x/object/types"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 )
 
@@ -27,7 +26,6 @@ func NewMsgCreateChannelFromBuf(msg *ct.MsgCreateChannel) *MsgCreateChannel {
 		Label:            msg.GetLabel(),
 		Description:      msg.GetDescription(),
 		ObjectToRegister: ot.NewObjectDocFromBuf(msg.GetObjectToRegister()),
-		Session:          rt.NewSessionFromBuf(msg.GetSession()),
 	}
 }
 

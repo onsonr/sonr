@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	nh "github.com/sonr-io/sonr/internal/host"
+	nh "github.com/sonr-io/sonr/pkg/host"
 	ot "github.com/sonr-io/sonr/x/object/types"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 )

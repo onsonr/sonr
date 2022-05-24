@@ -143,7 +143,7 @@ func IsValidDid(did string) bool {
 	return strings.HasPrefix(did, "did:snr:")
 }
 
-// ExtractBase extracts the did base (did:sonr:<network>:<address>) or (did:sonr:address)
+// ExtractBase extracts the did base (did:snr:<network>:<address>) or (did:snr:address)
 func ExtractBase(did string) (bool, string) {
 	parts := strings.Split(did, ":")
 	finalIdx := len(parts) - 1
@@ -207,4 +207,14 @@ func ExtractQuery(didUrl string) (bool, string) {
 		return false, ""
 	}
 	return true, query[1]
+}
+
+// contains returns true if the given string is in the given slice.
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
