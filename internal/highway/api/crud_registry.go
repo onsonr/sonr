@@ -26,6 +26,7 @@ func (s *HighwayServer) QueryWhoIs(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, res)
+		return
 	}
 
 	c.JSON(http.StatusBadRequest, gin.H{"error": "did is required"})
@@ -49,6 +50,7 @@ func (s *HighwayServer) QueryWhoIsController(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, res)
+		return
 	}
 
 	c.JSON(http.StatusBadRequest, gin.H{"error": "did is required"})
@@ -72,6 +74,7 @@ func (s *HighwayServer) QueryWhoIsAlias(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, res)
+		return
 	}
 
 	c.JSON(http.StatusBadRequest, gin.H{"error": "name is required"})
