@@ -28,6 +28,7 @@ const (
 )
 
 // AddGenesisAccountCmd returns add-genesis-account cobra Command.
+// TODO(https://github.com/sonr-io/sonr/issues/329): Cleanup
 // TODO(https://github.com/sonr-io/sonr/issues/329): cleanup
 func AddGenesisAccountCmd(defaultNodeHome string) *cobra.Command {
 	cmd := &cobra.Command{

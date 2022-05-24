@@ -83,11 +83,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	metrics, err := metrics.New(ctx, node)
 
 	// TODO: Enabling Matrix Protocol breaks build for Darwin
-	// Create the Matrix Protocol
-	// matrix, err := matrix.New(ctx, node)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// https://github.com/sonr-io/sonr/issues/330
 
 	// Create the RPC Service
 	stub := &HighwayServer{

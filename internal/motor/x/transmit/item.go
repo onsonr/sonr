@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
 )
 
@@ -106,7 +106,7 @@ func ProgressItem(si *v1.SessionItem, wrt int, h host.SonrHost) bool {
 
 	// Create Progress Event
 	if (si.GetWritten() % ITEM_INTERVAL) == 0 {
-		event := &types.OnTransmitProgressResponse{
+		event := &motor.OnTransmitProgressResponse{
 			Direction: si.GetDirection(),
 			Progress:  (float64(si.GetWritten()) / float64(si.GetTotalSize())),
 			Current:   int32(si.GetIndex()) + 1,
@@ -125,11 +125,11 @@ func ProgressItem(si *v1.SessionItem, wrt int, h host.SonrHost) bool {
 // ** ─── Payload Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────
 // PayloadItemFunc is the Map function for PayloadItem
-type PayloadItemFunc func(item *types.Payload_Item, index int, total int) error
+type PayloadItemFunc func(item *motor.Payload_Item, index int, total int) error
 
 // IsSingle returns true if the transfer is a single transfer. Error returned
 // if No Items present in Payload
-func IsSingle(p *types.Payload) (bool, error) {
+func IsSingle(p *motor.Payload) (bool, error) {
 	if len(p.GetItems()) == 0 {
 		return false, errors.New("No Items present in Payload")
 	}
@@ -141,7 +141,7 @@ func IsSingle(p *types.Payload) (bool, error) {
 
 // IsMultiple returns true if the transfer is a multiple transfer. Error returned
 // if No Items present in Payload
-func IsMultiple(p *types.Payload) (bool, error) {
+func IsMultiple(p *motor.Payload) (bool, error) {
 	if len(p.GetItems()) == 0 {
 		return false, errors.New("No Items present in Payload")
 	}
@@ -152,14 +152,14 @@ func IsMultiple(p *types.Payload) (bool, error) {
 }
 
 // FileCount returns the number of files in the Payload
-func FileCount(p *types.Payload) int {
+func FileCount(p *motor.Payload) int {
 	// Initialize
 	count := 0
 
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type != types.MIME_TYPE_URL {
+		if item.GetMime().Type != motor.MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}
@@ -170,14 +170,14 @@ func FileCount(p *types.Payload) int {
 }
 
 // URLCount returns the number of URLs in the Payload
-func URLCount(p *types.Payload) int {
+func URLCount(p *motor.Payload) int {
 	// Initialize
 	count := 0
 
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type == types.MIME_TYPE_URL {
+		if item.GetMime().Type == motor.MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}
@@ -188,7 +188,7 @@ func URLCount(p *types.Payload) int {
 }
 
 // SetPathFromFolder sets the path of the FileItem
-func SetPathFromFolder(f *types.FileItem, folder fs.Folder) (string, error) {
+func SetPathFromFolder(f *motor.FileItem, folder fs.Folder) (string, error) {
 	// Set Path
 	oldPath := f.GetPath()
 

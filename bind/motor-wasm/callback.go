@@ -1,4 +1,4 @@
-package main
+package motor
 
 import (
 	mv1 "go.buf.build/grpc/go/sonr-io/motor/core/v1"

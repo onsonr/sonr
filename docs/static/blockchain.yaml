@@ -28702,11 +28702,78 @@ paths:
                         Owner is the top level DID of the User or Application
                         derived from the multisignature wallet.
                     did_document:
-                      type: string
-                      format: byte
                       description: >-
                         DIDDocument is the bytes representation of DIDDocument
                         within the WhoIs. Initially marshalled as JSON.
+                      type: object
+                      properties:
+                        context:
+                          type: array
+                          items:
+                            type: string
+                        id:
+                          type: string
+                        controller:
+                          type: array
+                          items:
+                            type: string
+                        verification_method:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              type:
+                                type: string
+                              controller:
+                                type: string
+                              public_key_jwk:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                              public_key_base58:
+                                type: string
+                        authentication:
+                          type: array
+                          items:
+                            type: string
+                        assertion_method:
+                          type: array
+                          items:
+                            type: string
+                        capability_invocation:
+                          type: array
+                          items:
+                            type: string
+                        capability_delegation:
+                          type: array
+                          items:
+                            type: string
+                        key_agreement:
+                          type: array
+                          items:
+                            type: string
+                        service:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              type:
+                                type: string
+                              service_endpoint:
+                                type: string
+                        also_known_as:
+                          type: array
+                          items:
+                            type: string
                     controllers:
                       type: array
                       items:
@@ -28884,11 +28951,78 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    type: string
-                    format: byte
                     description: >-
                       DIDDocument is the bytes representation of DIDDocument
                       within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
                   controllers:
                     type: array
                     items:
@@ -28987,11 +29121,78 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    type: string
-                    format: byte
                     description: >-
                       DIDDocument is the bytes representation of DIDDocument
                       within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
                   controllers:
                     type: array
                     items:
@@ -29091,11 +29292,78 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    type: string
-                    format: byte
                     description: >-
                       DIDDocument is the bytes representation of DIDDocument
                       within the WhoIs. Initially marshalled as JSON.
+                    type: object
+                    properties:
+                      context:
+                        type: array
+                        items:
+                          type: string
+                      id:
+                        type: string
+                      controller:
+                        type: array
+                        items:
+                          type: string
+                      verification_method:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                            public_key_base58:
+                              type: string
+                      authentication:
+                        type: array
+                        items:
+                          type: string
+                      assertion_method:
+                        type: array
+                        items:
+                          type: string
+                      capability_invocation:
+                        type: array
+                        items:
+                          type: string
+                      capability_delegation:
+                        type: array
+                        items:
+                          type: string
+                      key_agreement:
+                        type: array
+                        items:
+                          type: string
+                      service:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                      also_known_as:
+                        type: array
+                        items:
+                          type: string
                   controllers:
                     type: array
                     items:
@@ -49957,6 +50225,83 @@ definitions:
     title: >-
       Alias is a message detailing a known "alsoKnownAs" identifier of a
       DIDDocument and contains properties for transfer/exchange
+  sonrio.sonr.registry.DIDDocument:
+    type: object
+    properties:
+      context:
+        type: array
+        items:
+          type: string
+      id:
+        type: string
+      controller:
+        type: array
+        items:
+          type: string
+      verification_method:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            controller:
+              type: string
+            public_key_jwk:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
+            public_key_base58:
+              type: string
+      authentication:
+        type: array
+        items:
+          type: string
+      assertion_method:
+        type: array
+        items:
+          type: string
+      capability_invocation:
+        type: array
+        items:
+          type: string
+      capability_delegation:
+        type: array
+        items:
+          type: string
+      key_agreement:
+        type: array
+        items:
+          type: string
+      service:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            service_endpoint:
+              type: string
+      also_known_as:
+        type: array
+        items:
+          type: string
+  sonrio.sonr.registry.KeyValuePair:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
   sonrio.sonr.registry.MsgBuyAliasResponse:
     type: object
     properties:
@@ -49997,11 +50342,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50071,11 +50483,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50154,11 +50633,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50228,11 +50774,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50302,11 +50915,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50378,11 +51058,78 @@ definitions:
                 Owner is the top level DID of the User or Application derived
                 from the multisignature wallet.
             did_document:
-              type: string
-              format: byte
               description: >-
                 DIDDocument is the bytes representation of DIDDocument within
                 the WhoIs. Initially marshalled as JSON.
+              type: object
+              properties:
+                context:
+                  type: array
+                  items:
+                    type: string
+                id:
+                  type: string
+                controller:
+                  type: array
+                  items:
+                    type: string
+                verification_method:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      controller:
+                        type: string
+                      public_key_jwk:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            key:
+                              type: string
+                            value:
+                              type: string
+                      public_key_base58:
+                        type: string
+                authentication:
+                  type: array
+                  items:
+                    type: string
+                assertion_method:
+                  type: array
+                  items:
+                    type: string
+                capability_invocation:
+                  type: array
+                  items:
+                    type: string
+                capability_delegation:
+                  type: array
+                  items:
+                    type: string
+                key_agreement:
+                  type: array
+                  items:
+                    type: string
+                service:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      service_endpoint:
+                        type: string
+                also_known_as:
+                  type: array
+                  items:
+                    type: string
             controllers:
               type: array
               items:
@@ -50478,11 +51225,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50546,11 +51360,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50614,11 +51495,78 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            type: string
-            format: byte
             description: >-
               DIDDocument is the bytes representation of DIDDocument within the
               WhoIs. Initially marshalled as JSON.
+            type: object
+            properties:
+              context:
+                type: array
+                items:
+                  type: string
+              id:
+                type: string
+              controller:
+                type: array
+                items:
+                  type: string
+              verification_method:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                    public_key_base58:
+                      type: string
+              authentication:
+                type: array
+                items:
+                  type: string
+              assertion_method:
+                type: array
+                items:
+                  type: string
+              capability_invocation:
+                type: array
+                items:
+                  type: string
+              capability_delegation:
+                type: array
+                items:
+                  type: string
+              key_agreement:
+                type: array
+                items:
+                  type: string
+              service:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+              also_known_as:
+                type: array
+                items:
+                  type: string
           controllers:
             type: array
             items:
@@ -50645,6 +51593,35 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+  sonrio.sonr.registry.Service:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      service_endpoint:
+        type: string
+  sonrio.sonr.registry.VerificationMethod:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      controller:
+        type: string
+      public_key_jwk:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
+      public_key_base58:
+        type: string
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:
@@ -50679,11 +51656,78 @@ definitions:
           Owner is the top level DID of the User or Application derived from the
           multisignature wallet.
       did_document:
-        type: string
-        format: byte
         description: >-
           DIDDocument is the bytes representation of DIDDocument within the
           WhoIs. Initially marshalled as JSON.
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+          verification_method:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                controller:
+                  type: string
+                public_key_jwk:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                public_key_base58:
+                  type: string
+          authentication:
+            type: array
+            items:
+              type: string
+          assertion_method:
+            type: array
+            items:
+              type: string
+          capability_invocation:
+            type: array
+            items:
+              type: string
+          capability_delegation:
+            type: array
+            items:
+              type: string
+          key_agreement:
+            type: array
+            items:
+              type: string
+          service:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
+                  type: string
+          also_known_as:
+            type: array
+            items:
+              type: string
       controllers:
         type: array
         items:

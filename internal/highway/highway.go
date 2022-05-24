@@ -48,7 +48,7 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer,
 	// Register Blob HTTP Routes
 	s.Router.POST("/v1/blob/upload", s.UploadBlob)
 	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
-	s.Router.POST("/v1/blob/remove/:cid", s.RemoveBlob)
+	s.Router.POST("/v1/blob/remove/:cid", s.UnpinBlob)
 
 	// WebAuthn Endpoints
 	s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)

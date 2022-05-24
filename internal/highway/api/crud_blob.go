@@ -96,15 +96,15 @@ func (s *HighwayServer) DownloadBlob(c *gin.Context) {
 	c.Data(http.StatusOK, "application/octet-stream", buf)
 }
 
-// @Summary Remove Blob
+// @Summary Unpin Blob
 // @Schemes
-// @Description RemoveBlob deletes a file from storage given its CID.
+// @Description UnpinBlob deletes a file from storage given its CID.
 // @Tags Blob
 // @Produce json
 // @Success      200  {boolean}  success
 // @Failure      500  {string}  message
 // @Router /v1/ipfs/remove/:cid [post]
-func (s *HighwayServer) RemoveBlob(c *gin.Context) {
+func (s *HighwayServer) UnpinBlob(c *gin.Context) {
 	cid := c.Param("cid")
 	if cid == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
