@@ -34,11 +34,11 @@ func DefaultNew() JWT {
 /*
 
  */
-func (j *JWT) Generate(doc *did.Document) (string, error) {
+func (j *JWT) Generate(doc did.Document) (string, error) {
 	if doc == nil {
 		return "", errors.New("highway/jwt Document cannot be nil")
 	}
-
+	creatorDID := doc.GetID().String()
 	time := time.Now().Unix()
 	exp := time + j.options.ttl // expiers in one hour after issue
 	// Create a new token object, specifying signing method and the claims
@@ -46,7 +46,7 @@ func (j *JWT) Generate(doc *did.Document) (string, error) {
 	token := jwt.NewWithClaims(j.options.singingMethod, jwt.StandardClaims{
 		IssuedAt:  time,
 		ExpiresAt: exp,
-		Issuer:    doc.ID.DID.String(),
+		Issuer:    creatorDID,
 	})
 
 	if token.Header["typ"] != "JWT" {
@@ -71,7 +71,7 @@ func (j *JWT) Parse(token string) (*jwt.Token, error) {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 			return nil, jwt.ErrECDSAVerification
 		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-			return nil, jwt.ErrECDSAVerification
+			return nil, jwt.ErrInvalidKey
 		} else {
 			return nil, jwt.ErrECDSAVerification
 		}
