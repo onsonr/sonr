@@ -16,7 +16,9 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer,
 	// Create Config
 	c := config.DefaultConfig(config.Role_HIGHWAY)
 	for _, opt := range opts {
-		opt(c)
+		if opt != nil {
+			opt(c)
+		}
 	}
 
 	// Create the Highway Server
