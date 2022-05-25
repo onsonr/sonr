@@ -14,13 +14,8 @@ import (
 func (k msgServer) CreateChannel(goCtx context.Context, msg *types.MsgCreateChannel) (*types.MsgCreateChannelResponse, error) {
 	// Get Properties
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	appName, err := msg.GetSession().GetWhois().ApplicationName()
-	if err != nil {
-		return nil, err
-	}
-
 	// Generate a new channel Did
-	did, err := msg.GetSession().GenerateDID(did.WithPathSegments(appName, "channel"), did.WithFragment(msg.GetLabel()))
+	did, err := did.ParseDID(msg.Creator)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +37,7 @@ func (k msgServer) CreateChannel(goCtx context.Context, msg *types.MsgCreateChan
 	// Create a new channel record
 	newHowis := types.HowIs{
 		Did:       did.ID,
-		Creator:   msg.GetSession().Creator(),
+		Creator:   msg.GetCreator(),
 		Channel:   doc,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

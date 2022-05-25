@@ -88,7 +88,7 @@ import (
 	"github.com/tendermint/spm/cosmoscmd"
 	"github.com/tendermint/spm/openapiconsole"
 
-	docs "github.com/sonr-io/sonr/docs/blockchain"
+	docs "github.com/sonr-io/sonr/docs"
 	bucketmodule "github.com/sonr-io/sonr/x/bucket"
 	bucketmodulekeeper "github.com/sonr-io/sonr/x/bucket/keeper"
 	bucketmoduletypes "github.com/sonr-io/sonr/x/bucket/types"
@@ -418,11 +418,8 @@ func New(
 		keys[registrymoduletypes.StoreKey],
 		keys[registrymoduletypes.MemStoreKey],
 		app.GetSubspace(registrymoduletypes.ModuleName),
-
-		app.AccountKeeper,
 		app.BankKeeper,
-		app.CapabilityKeeper,
-		app.MintKeeper,
+		app.AccountKeeper,
 	)
 	registryModule := registrymodule.NewAppModule(appCodec, app.RegistryKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -682,8 +679,8 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// register app's OpenAPI routes.
-	apiSvr.Router.Handle("/static/openapi.yml", http.FileServer(http.FS(docs.Docs)))
-	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yml"))
+	apiSvr.Router.Handle("/static/blockchain.yaml", http.FileServer(http.FS(docs.Docs)))
+	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/blockchain.yaml"))
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.

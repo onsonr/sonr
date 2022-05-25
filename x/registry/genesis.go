@@ -13,7 +13,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.WhoIsList {
 		k.SetWhoIs(ctx, elem)
 	}
-	// this line is used by starport scaffolding # genesis/module/init
+
+	// Set whoIs count
+	k.SetWhoIsCount(ctx, genState.WhoIsCount)
 	k.SetParams(ctx, genState.Params)
 }
 
@@ -23,6 +25,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.WhoIsList = k.GetAllWhoIs(ctx)
+	genesis.WhoIsCount = k.GetWhoIsCount(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

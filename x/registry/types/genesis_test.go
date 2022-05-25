@@ -24,10 +24,10 @@ func TestGenesisState_Validate(t *testing.T) {
 
 				WhoIsList: []types.WhoIs{
 					{
-						Name: "0",
+						Owner: "0",
 					},
 					{
-						Name: "1",
+						Owner: "1",
 					},
 				},
 				// this line is used by starport scaffolding # types/genesis/validField
@@ -39,10 +39,10 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				WhoIsList: []types.WhoIs{
 					{
-						Name: "0",
+						Owner: "0",
 					},
 					{
-						Name: "0",
+						Owner: "0",
 					},
 				},
 			},

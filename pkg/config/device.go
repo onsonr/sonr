@@ -1,10 +1,7 @@
 package config
 
 import (
-	"errors"
 	"runtime"
-
-	"github.com/denisbrodbeck/machineid"
 )
 
 func init() {
@@ -26,33 +23,6 @@ func Init(options ...MotorOption) error {
 // Arch returns the current architecture.
 func Arch() string {
 	return runtime.GOARCH
-}
-
-// HostName returns the hostname of the current machine.
-func HostName() (string, error) {
-	if hostName != "" {
-		return hostName, nil
-	}
-	return "", errors.New("HostName not set.")
-}
-
-// ID returns the device ID.
-func ID() (string, error) {
-	// Check if the device ID is empty
-	if deviceID != "" {
-		return deviceID, nil
-	}
-
-	if IsDesktop() {
-		retdeviceID, err := machineid.ID()
-		if err != nil {
-			logger.Errorf("%s - Failed to get Device ID", err)
-			return "", err
-		}
-		deviceID = retdeviceID
-		return deviceID, nil
-	}
-	return "", errors.New("Device ID not set.")
 }
 
 // IsMobile returns true if the current platform is ANY mobile platform.
@@ -107,29 +77,4 @@ func Platform() string {
 	default:
 		return "Unknown"
 	}
-}
-
-// Stat returns the device stat.
-func Stat() (map[string]string, error) {
-	// Get Device Id
-	id, err := ID()
-	if err != nil {
-		logger.Errorf("%s - Failed to get Device ID", err)
-		return nil, err
-	}
-
-	// Get HostName
-	hn, err := HostName()
-	if err != nil {
-		logger.Errorf("%s - Failed to get HostName", err)
-		return nil, err
-	}
-
-	// Return the device info for Peer
-	return map[string]string{
-		"id":       id,
-		"hostName": hn,
-		"os":       runtime.GOOS,
-		"arch":     runtime.GOARCH,
-	}, nil
 }

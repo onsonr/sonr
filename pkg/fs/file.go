@@ -18,7 +18,7 @@ import (
 
 	"github.com/gabriel-vasile/mimetype"
 
-	types "go.buf.build/grpc/go/sonr-io/core/types/v1"
+	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 var (
@@ -79,22 +79,6 @@ func Header(f *types.FileItem) textproto.MIMEHeader {
 		"Content-Length":      {strconv.FormatInt(f.GetSize(), 10)},
 		"Content-Type":        {f.GetMime().GetValue()},
 	}
-}
-
-// SetPathFromFolder sets the path of the FileItem
-func SetPathFromFolder(f *types.FileItem, folder Folder) (string, error) {
-	// Set Path
-	oldPath := f.GetPath()
-
-	// generate path
-	path, err := folder.GenPath(oldPath)
-	if err != nil {
-		return "", err
-	}
-
-	// Define Check Path Function
-	f.Path = path
-	return f.Path, nil
 }
 
 // ToTransferItem Returns Transfer for FileItem

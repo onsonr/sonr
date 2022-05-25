@@ -23,4 +23,3 @@ type ProofType string
 // JsonWebSignature2020 is a Proof type.
 // https://w3c-ccg.github.io/lds-jws2020
 const JsonWebSignature2020 = ProofType("JsonWebSignature2020")
-

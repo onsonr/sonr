@@ -13,15 +13,16 @@ import (
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
-
+		PortId: types.PortID,
 		WhoIsList: []types.WhoIs{
 			{
-				Name: "0",
+				Owner: "0",
 			},
 			{
-				Name: "1",
+				Owner: "1",
 			},
 		},
+		WhoIsCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -33,6 +34,9 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
+	require.Equal(t, genesisState.PortId, got.PortId)
+
 	require.ElementsMatch(t, genesisState.WhoIsList, got.WhoIsList)
+	require.Equal(t, genesisState.WhoIsCount, got.WhoIsCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

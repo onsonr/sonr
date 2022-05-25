@@ -14,7 +14,7 @@ RUN chmod +x /usr/local/bin/sonrd
 # Test the binary version
 RUN sonrd version
 
-RUN sonrd init $(openssl rand -base64 12) --chain-id sonr
+RUN sonrd init $(openssl rand -base64 12) --chain-id devnet
 
 ## Pull the genesis file
 RUN curl -L https://gist.githubusercontent.com/ntindle/a5e7363ddea1d921156ba8721cfe0bab/raw/0c5d48e487807600ec8b35a3f7e2876d416c2cc5/genesis.json -o genesis.json

@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrio.motor.core.v1;
+import "core/v1/core.proto";
+import "core/v1/data.proto";
+option go_package = "github.com/sonr-io/sonr/pkg/motor";
+
+// (Client) ShareResponse is response to ShareRequest
+message ShareResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+// (Client) RespondResponse is response to RespondRequest
+message DecideResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+// (Client) SearchResponse is Message for Searching for Peer
+message SearchResponse {
+  bool success = 1;        // Success
+  string error = 2;        // Error Message
+  core.v1.Peer peer = 3; // Peer Data
+  string peer_id = 4;       // Peer ID
+  string s_name = 5;        // SName
+}
+
+
+// DecisionEvent is emitted when a decision is made by Peer.
+message OnTransmitDecisionResponse {
+  bool decision = 1;       // true = accept, false = reject
+  core.v1.Peer from = 2; // Peer that made decision
+  int64 received = 3;      // Timestamp
+}
+
+// Message Sent when peer messages Lobby
+message OnLobbyRefreshResponse {
+  string olc = 1;                    // OLC Code of Topic
+  repeated core.v1.Peer peers = 2; // User Information
+  int64 received = 3;                // Invite received Timestamp
+}
+
+// InviteEvent notifies Peer that an Invite has been received
+message OnTransmitInviteResponse {
+  int64 received = 1;            // Invite received Timestamp
+  core.v1.Peer from = 2;       // Peer that sent the Invite
+  core.v1.Payload payload = 3; // Attached Data
+}
+
+// Received Mail Event
+message OnMailboxMessageResponse {
+  string id = 1;                    // ID is the Message ID
+  bytes buffer = 2;                 // Buffer is the message data
+  core.v1.Peer from = 3;       // Users Peer Data
+  core.v1.Peer to = 4;         // Receivers Peer Data
+  core.v1.Metadata metadata = 5;  // Metadata
+}
+
+// Transfer Progress Event
+message OnTransmitProgressResponse {
+  double progress = 1; // Current Transfer Progress
+  int64 received = 2;  // Timestamp
+  int32 current = 3; // Current position of item in list
+  int32 total = 4; // Total number of items in list
+  core.v1.Direction direction = 5; // Direction of Transfer
+}
+
+// Message Sent after Completed Transfer
+message OnTransmitCompleteResponse {
+  core.v1.Direction direction = 1; // Direction of Transfer
+  core.v1.Payload payload = 2;     // Transfer Data
+  core.v1.Peer from = 3; // Peer that sent the Complete Event
+  core.v1.Peer to = 4;   // Peer that received the Complete Event
+  int64 created_at = 5;     // Transfer Created Timestamp
+  int64 received_at = 6;    // Transfer Received Timestamp
+  map<int32, bool> results = 7; // Transfer Success
+}

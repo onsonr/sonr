@@ -32,11 +32,11 @@ jobs:
         uses: magnetikonline/action-golang-cache@v2
         with:
           go-version: ~1.17
-      - name: Install dependencies
-        run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init
-        working-directory: ${{ github.workspace }}/cmd/motor-lib
+      # - name: Install dependencies
+      #   run: |
+      #     go install golang.org/x/mobile/cmd/gomobile@latest
+      #     gomobile init
+      #   working-directory: ${{ github.workspace }}/bind/motor-mobile
 
 
       - name: Run GoReleaser
@@ -44,7 +44,23 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: release --rm-dist
+          args: release --rm-dist --parallelism=4
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+
+      # - name: motor-ios Repository Dispatch
+      #   uses: peter-evans/repository-dispatch@v2
+      #   with:
+      #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
+      #     repository: sonr-io/motor-ios
+      #     event-type: new-ios-framework
+      #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
+      # - name: motor-android Repository Dispatch
+      #   uses: peter-evans/repository-dispatch@v2
+      #   with:
+      #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
+      #     repository: sonr-io/motor-android
+      #     event-type: new-android-framework
+      #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

@@ -28,7 +28,6 @@ func CmdDeleteBucket() *cobra.Command {
 			msg := types.NewMsgDeactivateBucket(
 				clientCtx.GetFromAddress().String(),
 				argDid,
-				nil,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

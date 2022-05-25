@@ -28,7 +28,6 @@ func CmdDeleteObject() *cobra.Command {
 			msg := types.NewMsgDeactivateObject(
 				clientCtx.GetFromAddress().String(),
 				argDid,
-				nil,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

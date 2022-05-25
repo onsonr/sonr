@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 
-	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/config"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	ct "github.com/sonr-io/sonr/x/channel/types"
@@ -25,7 +24,7 @@ type Cosmos struct {
 // NewCosmos creates a Sonr Blockchain client with the given account and provides helper functions
 func NewCosmos(ctx context.Context, config *config.Config) (*Cosmos, error) {
 	// Create a new cosmos client
-	cosmos, err := cosmosclient.New(ctx, config.CosmosOptions()...)
+	cosmos, err := cosmosclient.New(ctx, toCosmosOptions(config)...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,77 +60,128 @@ func (cc *Cosmos) Address() string {
 // -------
 // Registry
 // -------
-// BroadcastRegisterApplication broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastRegisterApplication(msg *rt.MsgRegisterApplication) (*rt.MsgRegisterApplicationResponse, error) {
+// BroadcastBuyAppAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastBuyAlias(msg *rt.MsgBuyAlias) (*rt.MsgBuyAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting app registration transaction: %s", err.Error())
+
 		return nil, err
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgRegisterApplicationResponse{}
+	respMsg := &rt.MsgBuyAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding app register response: %s", err.Error())
+
 		return nil, err
 	}
 	return respMsg, nil
 }
 
-// BroadcastRegisterName broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastRegisterName(msg *rt.MsgRegisterName) (*rt.MsgRegisterNameResponse, error) {
+// BroadcastBuyNameAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastBuyNameAlias(msg *rt.MsgBuyAlias) (*rt.MsgBuyAliasResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting name registration transaction: %s", err.Error())
+
 		return nil, err
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgRegisterNameResponse{}
+	respMsg := &rt.MsgBuyAliasResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding name register response: %v", err.Error())
+
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastSellAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastSellAlias(msg *rt.MsgSellAlias) (*rt.MsgSellAliasResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgSellAliasResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastTransferNameAlias broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastTransferAlias(msg *rt.MsgTransferAlias) (*rt.MsgTransferAliasResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgTransferAliasResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
+
 		return nil, err
 	}
 	return respMsg, nil
 }
 
 // BroadcastUpdateApplication broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastUpdateApplication(msg *rt.MsgUpdateApplication) (*rt.MsgUpdateApplicationResponse, error) {
+func (cc *Cosmos) BroadcastCreateWhoIs(msg *rt.MsgCreateWhoIs) (*rt.MsgCreateWhoIsResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting transaction: %s", err)
 		return nil, err
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgUpdateApplicationResponse{}
+	respMsg := &rt.MsgCreateWhoIsResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding response: %v", err)
+		return nil, err
+	}
+	return respMsg, nil
+}
+
+// BroadcastUpdateApplication broadcasts a transaction to the blockchain
+func (cc *Cosmos) BroadcastUpdateWhoIs(msg *rt.MsgUpdateWhoIs) (*rt.MsgUpdateWhoIsResponse, error) {
+	// broadcast the transaction to the blockchain
+	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := &rt.MsgUpdateWhoIsResponse{}
+	err = resp.Decode(respMsg)
+	if err != nil {
 		return nil, err
 	}
 	return respMsg, nil
 }
 
 // BroadcastUpdateName broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastUpdateName(msg *rt.MsgUpdateName) (*rt.MsgUpdateNameResponse, error) {
+func (cc *Cosmos) BroadcastDeactivateWhoIs(msg *rt.MsgDeactivateWhoIs) (*rt.MsgDeactivateWhoIsResponse, error) {
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting transaction: %s", err)
 		return nil, err
 	}
 
 	// Decode the response
-	respMsg := &rt.MsgUpdateNameResponse{}
+	respMsg := &rt.MsgDeactivateWhoIsResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding response: %v", err)
 		return nil, err
 	}
 	return respMsg, nil
@@ -146,32 +196,56 @@ func (cc *Cosmos) NameExists(name string) bool {
 	}
 
 	// check if the name exists
-	return queryResp.GetWhoIs().Name == name
+	return queryResp.GetWhoIs().Alias[0].GetName() == name
 }
 
-// QueryAllNames returns all DIDDocuments registered on the blockchain
-func (cc *Cosmos) QueryAllNames() ([]rt.WhoIs, error) {
+// QueryAllWhoIs returns all DIDDocuments registered on the blockchain
+func (cc *Cosmos) QueryAllWhoIs() ([]rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.registryQuery.WhoIsAll(context.Background(), &rt.QueryAllWhoIsRequest{})
 	if err != nil {
-		golog.Errorf("Error querying all names: %s", err.Error())
 		return nil, err
 	}
 	return queryResp.GetWhoIs(), nil
 }
 
-// QueryName returns a DIDDocument for the given name registered on the blockchain
-func (cc *Cosmos) QueryName(name string) (*rt.WhoIs, error) {
+// QueryWhoIs returns a DIDDocument for the given name registered on the blockchain
+func (cc *Cosmos) QueryWhoIs(did string) (*rt.WhoIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.registryQuery.WhoIs(context.Background(), &rt.QueryWhoIsRequest{
-		Did: name,
+		Did: did,
 	})
 	if err != nil {
-		golog.Errorf("Error querying name: %s", err.Error())
 		return nil, err
 	}
 	whois := queryResp.GetWhoIs()
-	return &whois, nil
+	return whois, nil
+}
+
+// QueryWhoIsAlias returns a DIDDocument for the given alias registered on the blockchain
+func (cc *Cosmos) QueryWhoIsAlias(alias string) (*rt.WhoIs, error) {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
+	queryResp, err := cc.registryQuery.WhoIsAlias(context.Background(), &rt.QueryWhoIsAliasRequest{
+		Alias: alias,
+	})
+	if err != nil {
+		return nil, err
+	}
+	whois := queryResp.GetWhoIs()
+	return whois, nil
+}
+
+// QueryWhoIsController returns the controller for the given name registered on the blockchain
+func (cc *Cosmos) QueryWhoIsController(controller string) (*rt.WhoIs, error) {
+	// query the blockchain using the client's `WhoIsAll` method to get all names
+	queryResp, err := cc.registryQuery.WhoIsController(context.Background(), &rt.QueryWhoIsControllerRequest{
+		Controller: controller,
+	})
+	if err != nil {
+		return nil, err
+	}
+	whois := queryResp.GetWhoIs()
+	return whois, nil
 }
 
 // -------
@@ -182,7 +256,6 @@ func (cc *Cosmos) BroadcastCreateBucket(msg *bt.MsgCreateBucket) (*bt.MsgCreateB
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting create bucket transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -190,7 +263,6 @@ func (cc *Cosmos) BroadcastCreateBucket(msg *bt.MsgCreateBucket) (*bt.MsgCreateB
 	respMsg := &bt.MsgCreateBucketResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding create bucket response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -201,7 +273,6 @@ func (cc *Cosmos) BroadcastUpdateBucket(msg *bt.MsgUpdateBucket) (*bt.MsgUpdateB
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting update bucket transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -209,7 +280,6 @@ func (cc *Cosmos) BroadcastUpdateBucket(msg *bt.MsgUpdateBucket) (*bt.MsgUpdateB
 	respMsg := &bt.MsgUpdateBucketResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding update bucket response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -220,7 +290,6 @@ func (cc *Cosmos) BroadcastDeactivateBucket(msg *bt.MsgDeactivateBucket) (*bt.Ms
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting deactivate bucket transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -228,7 +297,6 @@ func (cc *Cosmos) BroadcastDeactivateBucket(msg *bt.MsgDeactivateBucket) (*bt.Ms
 	respMsg := &bt.MsgDeactivateBucketResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding deactivate bucket response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -239,7 +307,6 @@ func (cc *Cosmos) QueryAllBuckets() ([]bt.WhichIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.bucketQuery.WhichIsAll(context.Background(), &bt.QueryAllWhichIsRequest{})
 	if err != nil {
-		golog.Errorf("Error querying all buckets: %s", err.Error())
 		return nil, err
 	}
 	return queryResp.GetWhichIs(), nil
@@ -252,7 +319,6 @@ func (cc *Cosmos) QueryBucket(name string) (*bt.WhichIs, error) {
 		Did: name,
 	})
 	if err != nil {
-		golog.Errorf("Error querying bucket: %s", err.Error())
 		return nil, err
 	}
 	whichIs := queryResp.GetWhichIs()
@@ -267,7 +333,6 @@ func (cc *Cosmos) BroadcastCreateChannel(msg *ct.MsgCreateChannel) (*ct.MsgCreat
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting create channel transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -275,7 +340,6 @@ func (cc *Cosmos) BroadcastCreateChannel(msg *ct.MsgCreateChannel) (*ct.MsgCreat
 	respMsg := &ct.MsgCreateChannelResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding create channel response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -286,7 +350,6 @@ func (cc *Cosmos) BroadcastUpdateChannel(msg *ct.MsgUpdateChannel) (*ct.MsgUpdat
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting update channel transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -294,7 +357,6 @@ func (cc *Cosmos) BroadcastUpdateChannel(msg *ct.MsgUpdateChannel) (*ct.MsgUpdat
 	respMsg := &ct.MsgUpdateChannelResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding update channel response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -305,7 +367,6 @@ func (cc *Cosmos) BroadcastDeactivateChannel(msg *ct.MsgDeactivateChannel) (*ct.
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting deactivate channel transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -313,7 +374,6 @@ func (cc *Cosmos) BroadcastDeactivateChannel(msg *ct.MsgDeactivateChannel) (*ct.
 	respMsg := &ct.MsgDeactivateChannelResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding deactivate channel response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -324,7 +384,6 @@ func (cc *Cosmos) QueryAllChannels() ([]ct.HowIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.channelQuery.HowIsAll(context.Background(), &ct.QueryAllHowIsRequest{})
 	if err != nil {
-		golog.Errorf("Error querying all channels: %s", err.Error())
 		return nil, err
 	}
 	return queryResp.GetHowIs(), nil
@@ -337,7 +396,6 @@ func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
 		Did: name,
 	})
 	if err != nil {
-		golog.Errorf("Error querying channel: %s", err.Error())
 		return nil, err
 	}
 	howIs := queryResp.GetHowIs()
@@ -352,7 +410,6 @@ func (cc *Cosmos) BroadcastCreateObject(msg *ot.MsgCreateObject) (*ot.MsgCreateO
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting create object transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -360,7 +417,6 @@ func (cc *Cosmos) BroadcastCreateObject(msg *ot.MsgCreateObject) (*ot.MsgCreateO
 	respMsg := &ot.MsgCreateObjectResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding create object response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -371,7 +427,6 @@ func (cc *Cosmos) BroadcastUpdateObject(msg *ot.MsgUpdateObject) (*ot.MsgUpdateO
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting update object transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -379,7 +434,6 @@ func (cc *Cosmos) BroadcastUpdateObject(msg *ot.MsgUpdateObject) (*ot.MsgUpdateO
 	respMsg := &ot.MsgUpdateObjectResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding update object response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -390,7 +444,6 @@ func (cc *Cosmos) BroadcastDeactivateObject(msg *ot.MsgDeactivateObject) (*ot.Ms
 	// broadcast the transaction to the blockchain
 	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
 	if err != nil {
-		golog.Errorf("Error broadcasting deactivate object transaction: %s", err.Error())
 		return nil, err
 	}
 
@@ -398,7 +451,6 @@ func (cc *Cosmos) BroadcastDeactivateObject(msg *ot.MsgDeactivateObject) (*ot.Ms
 	respMsg := &ot.MsgDeactivateObjectResponse{}
 	err = resp.Decode(respMsg)
 	if err != nil {
-		golog.Errorf("Error decoding deactivate object response: %s", err.Error())
 		return nil, err
 	}
 	return respMsg, nil
@@ -409,7 +461,6 @@ func (cc *Cosmos) QueryAllObjects() ([]ot.WhatIs, error) {
 	// query the blockchain using the client's `WhoIsAll` method to get all names
 	queryResp, err := cc.objectQuery.WhatIsAll(context.Background(), &ot.QueryAllWhatIsRequest{})
 	if err != nil {
-		golog.Errorf("Error querying all objects: %s", err.Error())
 		return nil, err
 	}
 	return queryResp.GetWhatIs(), nil
@@ -422,7 +473,6 @@ func (cc *Cosmos) QueryObject(did string) (*ot.WhatIs, error) {
 		Did: did,
 	})
 	if err != nil {
-		golog.Errorf("Error querying object: %s", err.Error())
 		return nil, err
 	}
 	whatIs := queryResp.GetWhatIs()

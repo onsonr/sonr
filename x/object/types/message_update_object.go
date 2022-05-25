@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	rtv1 "github.com/sonr-io/sonr/x/registry/types"
 	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
 
@@ -17,7 +16,6 @@ func NewMsgUpdateObjectFromBuf(ot *ot.MsgUpdateObject) *MsgUpdateObject {
 		Label:         ot.GetLabel(),
 		AddedFields:   NewTypeFieldListFromBuf(ot.GetAddedFields()),
 		RemovedFields: NewTypeFieldListFromBuf(ot.GetRemovedFields()),
-		Session:       rtv1.NewSessionFromBuf(ot.GetSession()),
 	}
 }
 

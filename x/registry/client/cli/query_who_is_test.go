@@ -2,7 +2,6 @@ package cli_test
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -18,9 +17,6 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-// Prevent strconv unused error
-var _ = strconv.IntSize
-
 func networkWithWhoIsObjects(t *testing.T, n int) (*network.Network, []types.WhoIs) {
 	t.Helper()
 	cfg := network.DefaultConfig()
@@ -29,8 +25,7 @@ func networkWithWhoIsObjects(t *testing.T, n int) (*network.Network, []types.Who
 
 	for i := 0; i < n; i++ {
 		whoIs := types.WhoIs{
-			Did:      strconv.Itoa(i),
-			Metadata: map[string]string{},
+			Owner: fmt.Sprintf("%d", i),
 		}
 		nullify.Fill(&whoIs)
 		state.WhoIsList = append(state.WhoIsList, whoIs)
@@ -50,32 +45,27 @@ func TestShowWhoIs(t *testing.T) {
 	}
 	for _, tc := range []struct {
 		desc string
-		did  string
-
+		id   string
 		args []string
 		err  error
 		obj  types.WhoIs
 	}{
 		{
 			desc: "found",
-			did:  objs[0].Did,
-
+			id:   objs[0].Owner,
 			args: common,
 			obj:  objs[0],
 		},
 		{
 			desc: "not found",
-			did:  strconv.Itoa(100000),
-
+			id:   "not_found",
 			args: common,
-			err:  status.Error(codes.InvalidArgument, "not found"),
+			err:  status.Error(codes.NotFound, "not found"),
 		},
 	} {
 		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
-			args := []string{
-				tc.did,
-			}
+			args := []string{tc.id}
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowWhoIs(), args)
 			if tc.err != nil {

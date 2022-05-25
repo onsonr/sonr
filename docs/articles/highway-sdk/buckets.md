@@ -14,7 +14,7 @@ The record type utilized in the **Bucket module** is the `WhichIs` type. This ty
 
 ### Bucket Types
 
-*   **App-specific bucket** -- a bucket created by the developer containing visual assets and other media germane to the dApp.
+*   **App-specific bucket** -- a bucket created by the developer containing visual assets and other media germane to the App.
 
 *   **User-specific bucket** -- a bucket contrived through user-created data, facilitated by an **Object** or **Channel**.
 

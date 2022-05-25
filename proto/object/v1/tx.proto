@@ -1,0 +1,128 @@
+syntax = "proto3";
+package sonrio.sonr.object;
+import "object/v1/object.proto";
+import "object/v1/what_is.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/sonr-io/sonr/x/object/types";
+
+// Msg defines the Msg service.
+service Msg {
+  // CreateObject
+  //
+  // CreateObject is the transaction that creates a new object.
+  rpc CreateObject(MsgCreateObject) returns (MsgCreateObjectResponse);
+
+  // UpdateObject
+  //
+  // UpdateObject is the transaction that updates an existing object.
+  rpc UpdateObject(MsgUpdateObject) returns (MsgUpdateObjectResponse);
+
+  // DeactivateObject
+  //
+  // DeactivateObject is the transaction that deactivates an existing object.
+  rpc DeactivateObject(MsgDeactivateObject) returns (MsgDeactivateObjectResponse);
+
+  // CreateWhatIs
+  //
+  // CreateWhatIs is the method that creates a new what_is document in the Object module.
+  rpc CreateWhatIs(MsgCreateWhatIs) returns (MsgCreateWhatIsResponse);
+
+  // UpdateWhatIs
+  //
+  // UpdateWhatIs is the method that updates an existing what_is document in the Object module.
+  rpc UpdateWhatIs(MsgUpdateWhatIs) returns (MsgUpdateWhatIsResponse);
+
+  // DeleteWhatIs
+  //
+  // DeleteWhatIs is the method that deletes an existing what_is document in the Object module.
+  rpc DeleteWhatIs(MsgDeleteWhatIs) returns (MsgDeleteWhatIsResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateObject {
+  string creator = 1;
+  string label = 2;
+  string description = 3;
+  repeated TypeField initial_fields = 4;
+}
+
+message MsgCreateObjectResponse {
+// Code of the response
+  int32 code = 1;
+
+  // Message of the response
+  string message = 2;
+
+  // WhatIs of the Channel
+  WhatIs what_is = 3;
+}
+
+message MsgUpdateObject {
+  string creator = 1;
+
+  // Label of the Object
+  string label = 2;
+
+  // Added fields to the object
+  repeated TypeField added_fields = 4;
+
+  // Removed fields from the object
+  repeated TypeField removed_fields = 5;
+
+  // Contend Identifier of the object
+  string cid = 6;
+}
+
+message MsgUpdateObjectResponse {
+// Code of the response
+  int32 code = 1;
+
+  // Message of the response
+  string message = 2;
+
+  // WhatIs of the Channel
+  WhatIs what_is = 3;
+}
+
+message MsgDeactivateObject {
+  string creator = 1;
+  string did = 2;
+}
+
+message MsgDeactivateObjectResponse {
+// Code of the response
+  int32 code = 1;
+
+  // Message of the response
+  string message = 2;
+}
+
+message MsgCreateWhatIs {
+  string creator = 1;
+  string did = 2;
+  ObjectDoc object_doc = 3;
+}
+message MsgCreateWhatIsResponse {
+  string did = 1;
+}
+
+message MsgUpdateWhatIs {
+  string creator = 1;
+  string did = 2;
+  ObjectDoc object_doc = 3;
+}
+message MsgUpdateWhatIsResponse {
+  string did = 1;
+}
+
+message MsgDeleteWhatIs {
+  string creator = 1;
+  string did = 2;
+}
+
+message MsgDeleteWhatIsResponse {
+  string did = 1;
+}
+
+// this line is used by starport scaffolding # proto/tx/message

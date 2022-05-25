@@ -33,7 +33,6 @@ func CmdCreateBucket() *cobra.Command {
 				argDescription,
 				argKind,
 				nil,
-				nil,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
