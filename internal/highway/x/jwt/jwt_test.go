@@ -28,7 +28,12 @@ func Test_JWT(t *testing.T) {
 
 	priv := secp256k1.GenPrivKey()
 	pub := priv.PubKey()
-	vm, _ := did.NewVerificationMethod(*didUrl, ssi.ECDSASECP256K1VerificationKey2019, *didController, pub)
+	vm, _ := did.NewVerificationMethod(
+		*didUrl,
+		ssi.ECDSASECP256K1VerificationKey2019,
+		*didController,
+		pub,
+	)
 
 	thing := func() *did.Document {
 		doc, _ := CreateMockDidDocument(root)
