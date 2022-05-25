@@ -20,8 +20,8 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer,
 
 	// Create the Highway Server
 	s, err := api.CreateStub(ctx, c)
-	s.ConfigureRoutes()
 	s.ConfigureMiddleware()
+	s.ConfigureRoutes()
 
 	if err != nil {
 		return nil, err
