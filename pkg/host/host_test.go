@@ -23,11 +23,16 @@ func TestStateMachine(t *testing.T) {
 		fsm.SetStatus(Status_READY)
 		assert.Equal(t, fsm.Current, Status_IDLE)
 	})
-	t.Run("Operation Pause Should destroy channel", func(t *testing.T) {
+	t.Run("Operation Pause Should create channel", func(t *testing.T) {
 		fsm := NewFSM(nil)
 		fsm.PauseOperation()
 		assert.NotNil(t, fsm.Chn)
 		assert.Equal(t, fsm.flag, uint64(1))
 	})
-
+	t.Run("Operation Resume Should destroy channel", func(t *testing.T) {
+		fsm := NewFSM(nil)
+		fsm.ResumeOperation()
+		assert.Nil(t, fsm.Chn)
+		assert.Equal(t, fsm.flag, uint64(0))
+	})
 }

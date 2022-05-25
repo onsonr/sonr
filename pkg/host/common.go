@@ -216,7 +216,7 @@ func (hn *hostImpl) Stat() (map[string]string, error) {
 	// Return Host Stat
 	return map[string]string{
 		"ID":        hn.host.ID().String(),
-		"Status":    hn.fsm.Current.String(),
+		"Status":    string(hn.fsm.Current),
 		"MultiAddr": hn.host.Addrs()[0].String(),
 	}, nil
 }

@@ -14,7 +14,7 @@ func (s HostStatus) Equals(other HostStatus) bool {
 }
 
 // IsNotIdle returns true if the SNRHostStatus != Status_IDLE
-func (s HostStatus) IsNotIdle() bool {
+func (s HostStatus) IsIdle() bool {
 	return s != Status_IDLE
 }
 
@@ -41,11 +41,6 @@ func (s HostStatus) IsFail() bool {
 // IsClosed returns true if the SNRHostStatus == Status_CLOSED
 func (s HostStatus) IsClosed() bool {
 	return s == Status_CLOSED
-}
-
-// String returns the string representation of the SNRHostStatus
-func (s HostStatus) String() string {
-	return s.String()
 }
 
 func (sm *SFSM) GetCurrent() string {
@@ -77,6 +72,8 @@ var (
 		Status_STANDBY:    {Status_READY, Status_CLOSED},
 		Status_CONNECTING: {Status_READY, Status_FAIL, Status_CLOSED},
 		Status_READY:      {Status_STANDBY, Status_CLOSED},
+		Status_CLOSED:     {Status_IDLE, Status_STANDBY},
+		Status_FAIL:       {Status_CONNECTING, Status_STANDBY},
 	}
 )
 
@@ -112,7 +109,9 @@ func (fsm *SFSM) SetStatus(s HostStatus) {
 	}
 }
 
-// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
+// NeedsWait checks if state is Resumed or Paused
+// 0 -> Running
+// 1 -> Paused
 func (sfm *SFSM) NeedsWait() {
 	<-sfm.Chn
 }

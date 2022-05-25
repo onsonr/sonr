@@ -22,9 +22,6 @@ type SonrHost interface {
 	// AuthenticateMessage authenticates a message
 	AuthenticateMessage(msg proto.Message, metadata *types.Metadata) bool
 
-	// Close closes the node
-	Close()
-
 	// Config returns the configuration of the node
 	Config() *config.Config
 
@@ -91,6 +88,9 @@ type SonrHost interface {
 	// VerifyData verifies the data signature
 	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
 
+	// Close closes the node
+	Close()
+
 	Start()
 
 	Stop()
@@ -101,5 +101,5 @@ type SonrHost interface {
 	// Resume tells all of goroutines to resume execution
 	Resume()
 
-	Status()
+	Status() HostStatus
 }
