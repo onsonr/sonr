@@ -56,7 +56,6 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		config:       c,
 		events:       events.New(),
 	}
-
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
 		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
@@ -66,7 +65,6 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		}
 		return nil, err
 	}
-
 	// Fetch the private key.
 	hn.privKey, err = findPrivKey()
 	if err != nil {
@@ -88,6 +86,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
+		hn.fsm.SetStatus(Status_FAIL)
 		return nil, err
 	}
 	hn.fsm.SetStatus(Status_CONNECTING)
@@ -103,6 +102,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		if err := hn.Connect(pi); err != nil {
 			continue
 		} else {
+			hn.fsm.SetStatus(Status_FAIL)
 			break
 		}
 	}
@@ -121,6 +121,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 
 	hn.fsm.SetStatus(Status_READY)
 	go hn.Serve()
+
 	return hn, nil
 }
 
@@ -156,10 +157,12 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		return nil, err
 	}
 
+	// TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
 	transport := direct.NewTransport(
 		webrtc.Configuration{},
 		new(mplex.Transport),
 	)
+
 	// Start Host
 	hn.host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
@@ -225,6 +228,90 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 
 	hn.fsm.SetStatus(Status_READY)
 	return nil
+}
+
+func (hn *hostImpl) Close() {
+	err := hn.host.Close()
+	if err != nil {
+		hn.fsm.SetStatus(Status_FAIL)
+	}
+
+	hn.fsm.SetStatus(Status_STANDBY)
+}
+
+/*
+	Starts the libp2p host, dhcp, and sets the host status to ready
+*/
+func (hn *hostImpl) Start() {
+	// Create Connection Manager
+	c := hn.config
+	cnnmgr, err := cmgr.NewConnManager(c.Libp2pLowWater, c.Libp2pHighWater)
+	if err != nil {
+		return
+	}
+
+	// Start Host
+	hn.host, err = libp2p.New(
+		libp2p.Identity(hn.privKey),
+		libp2p.ConnectionManager(cnnmgr),
+		libp2p.DefaultListenAddrs,
+		libp2p.Routing(hn.Router),
+		libp2p.EnableAutoRelay(),
+	)
+
+	if err != nil {
+		hn.fsm.SetStatus(Status_FAIL)
+	}
+	hn.fsm.SetStatus(Status_CONNECTING)
+
+	// Connect to Bootstrap Nodes
+	for _, pi := range c.Libp2pBootstrapPeers {
+		if err := hn.Connect(pi); err != nil {
+			continue
+		} else {
+			hn.fsm.SetStatus(Status_FAIL)
+			break
+		}
+	}
+
+	// Initialize Discovery for DHT
+	if err := hn.createDHTDiscovery(c); err != nil {
+		// Check if we need to close the listener
+		hn.fsm.SetStatus(Status_FAIL)
+		return
+	}
+
+	go hn.Serve()
+	hn.fsm.SetStatus(Status_READY)
+}
+
+/*
+	Stops the libp2p host, dhcp, and sets the host status to IDLE
+*/
+func (hn *hostImpl) Stop() {
+	err := hn.host.Close()
+	if err != nil {
+		hn.fsm.SetStatus(Status_FAIL)
+		return
+	}
+	defer hn.Pause()
+}
+
+/*
+	Stops the libp2p host, dhcp, and sets the host status to ready
+*/
+func (hn *hostImpl) Pause() {
+	defer hn.fsm.PauseOperation()
+	hn.fsm.SetStatus(Status_STANDBY)
+}
+
+func (hn *hostImpl) Resume() {
+	defer hn.fsm.ResumeOperation()
+	hn.fsm.SetStatus(Status_STANDBY)
+}
+
+func (hn *hostImpl) Status() HostStatus {
+	return hn.fsm.Current
 }
 
 // TODO Migrate MDNS Service to latesat libp2p spec
