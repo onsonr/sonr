@@ -83,7 +83,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
-	tokenClient := jwt.New(ctx, node)
+	tokenClient := jwt.DefaultNew()
 	metrics, err := metrics.New(ctx, node)
 
 	// TODO: Enabling Matrix Protocol breaks build for Darwin
@@ -141,6 +141,12 @@ func (s *HighwayServer) ConfigureRoutes() {
 }
 
 func (s *HighwayServer) ConfigureMiddleware() {
+	if s.Router == nil {
+		logger.Warn("Cannot configure middleware, router is not yet created")
+		return
+	}
+
+	s.Router.Use(gin.Logger())
 	s.Router.Use(func(ctx *gin.Context) {
 		token := ctx.GetHeader("Authorization")
 		if token != "" {
