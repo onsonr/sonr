@@ -101,6 +101,28 @@ func Test_JWT(t *testing.T) {
 		// weird map that isnt a map in the struct
 		assert.Equal(t, tokenObj.Valid, true)
 	})
+
+	t.Run("Parse claims from token should include did", func(t *testing.T) {
+		doc := thing()
+		jwt := DefaultNew()
+		token, err := jwt.Generate(*doc)
+		if err != nil {
+			t.Errorf("Error while generating token %s", err)
+		}
+
+		tokenObj, error := jwt.Parse(token)
+		if error != nil {
+			t.Errorf("Error while generating token %s", err)
+		}
+		claims, ok := GetClaims(tokenObj)
+		if !ok {
+			t.Error("Unable to parse claims from token")
+		}
+
+		assert.NotNil(t, claims.Issuer)
+		assert.NotNil(t, claims.ExpiresAt)
+		assert.NotNil(t, claims.IssuedAt)
+	})
 }
 
 // CreateMockDidDocument creates a mock did document for testing
