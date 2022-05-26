@@ -17,9 +17,9 @@ type JWT struct {
 
 func New(ctx context.Context, hn host.SonrHost) JWT {
 	options = JWTOptions{}
-	options.secret = []byte(hn.Config().Secret)
-	options.singingMethod = hn.Config().SigningMethod
-	options.ttl = hn.Config().Expiration
+	options.secret = []byte(hn.Config().JWT_Secret)
+	options.singingMethod = hn.Config().JWT_SigningMethod
+	options.ttl = hn.Config().JWT_Expiration
 
 	return JWT{
 		options: options,

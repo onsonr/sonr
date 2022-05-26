@@ -47,11 +47,10 @@ type Config struct {
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
-
 	// JWT
-	Secret        string
-	SigningMethod jwt.SigningMethod
-	Expiration    int64
+	JWT_Secret        string
+	JWT_SigningMethod jwt.SigningMethod
+	JWT_Expiration    int64
 
 	// Cosmos SDK
 	CosmosAccountName        string
