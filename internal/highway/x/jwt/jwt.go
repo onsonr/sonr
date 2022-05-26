@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/marstr/guid"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/host"
 )
@@ -47,6 +48,9 @@ func (j *JWT) Generate(doc did.Document) (string, error) {
 		IssuedAt:  time,
 		ExpiresAt: exp,
 		Issuer:    creatorDID,
+		Id:        guid.NewGUID().String(),
+		Subject:   "",
+		NotBefore: time,
 	})
 
 	if token.Header["typ"] != "JWT" {
@@ -62,7 +66,7 @@ func (j *JWT) Generate(doc did.Document) (string, error) {
 
  */
 func (j *JWT) Parse(token string) (*jwt.Token, error) {
-	parsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	parsed, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.options.secret, nil
 	})
 

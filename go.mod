@@ -33,6 +33,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.6.0
 	github.com/libp2p/go-libp2p-webrtc-direct v0.0.0-20220406105718-41a3151f0a37
 	github.com/libp2p/go-msgio v0.1.0
+	github.com/marstr/guid v1.1.0
 	github.com/matrix-org/dendrite v0.8.1
 	github.com/matrix-org/gomatrixserverlib v0.0.0-20220408160933-cf558306b56f
 	github.com/matrix-org/util v0.0.0-20200807132607-55161520e1d4
@@ -62,7 +63,6 @@ require (
 	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
-	gopkg.in/square/go-jose.v2 v2.6.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
