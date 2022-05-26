@@ -147,18 +147,10 @@ func (s *HighwayServer) ConfigureMiddleware() {
 	}
 
 	s.Router.Use(gin.Logger())
-	s.Router.Use(func(ctx *gin.Context) {
-		token := ctx.GetHeader("Authorization")
-		if token != "" {
-			error := s.JwtToken.BuildJWTParseMiddleware(token)()
 
-			if error != nil {
-				logger.Errorf("Error while processing authorization header", error)
-				return
-			}
-			ctx.Next()
-		}
-	})
+	// register custom middleware defined within package
+	// see Middleware.go for definitions
+	s.RegisterMiddleWare()
 }
 
 // Serve starts the RPC Service.
