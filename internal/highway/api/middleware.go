@@ -40,7 +40,7 @@ func (s *HighwayServer) RegisterMiddleWare() {
 
 				ctx.Next()
 			},
-			disabled: false,
+			disabled: true,
 		},
 	}
 
