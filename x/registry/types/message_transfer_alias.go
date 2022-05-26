@@ -1,6 +1,9 @@
 package types
 
 import (
+	"fmt"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -12,7 +15,6 @@ var _ sdk.Msg = &MsgTransferAlias{}
 func NewMsgTransferAlias(creator string, did string, alias string, recipient string) *MsgTransferAlias {
 	return &MsgTransferAlias{
 		Creator:   creator,
-		Did:       did,
 		Alias:     alias,
 		Recipient: recipient,
 	}
@@ -24,6 +26,22 @@ func (msg *MsgTransferAlias) Route() string {
 
 func (msg *MsgTransferAlias) Type() string {
 	return TypeMsgTransferAlias
+}
+
+// GetCreatorDid returns the creator did
+func (msg *MsgTransferAlias) GetCreatorDid() string {
+	rawCreator := msg.GetCreator()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }
 
 func (msg *MsgTransferAlias) GetSigners() []sdk.AccAddress {

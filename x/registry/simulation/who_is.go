@@ -81,9 +81,13 @@ func SimulateMsgUpdateWhoIs(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs owner not found"), nil, nil
 		}
+
+		didDocBuf, err := whoIs.GetDidDocumentBuffer()
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "failed to get did document buffer"), nil, err
+		}
 		msg.Creator = simAccount.Address.String()
-		msg.DidDocument = whoIs.DidDocument
-		msg.Did = whoIs.Owner
+		msg.DidDocument = didDocBuf
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -103,7 +107,7 @@ func SimulateMsgUpdateWhoIs(
 	}
 }
 
-func SimulateMsgDeleteWhoIs(
+func SimulateMsgDeactivateWhoIs(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -127,9 +131,12 @@ func SimulateMsgDeleteWhoIs(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whoIs owner not found"), nil, nil
 		}
+		didDocBuf, err := whoIs.GetDidDocumentBuffer()
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "failed to get did document buffer"), nil, err
+		}
 		msg.Creator = simAccount.Address.String()
-		msg.Did = whoIs.Owner
-		msg.DidDocument = whoIs.DidDocument
+		msg.DidDocument = didDocBuf
 
 		txCtx := simulation.OperationInput{
 			R:               r,

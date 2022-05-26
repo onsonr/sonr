@@ -24,8 +24,7 @@ import (
 // hostImpl type - a p2p host implementing one or more p2p protocols
 type hostImpl struct {
 	// Standard Node Implementation
-	host host.Host
-	SonrHost
+	host   host.Host
 	config *config.Config
 	events events.EventEmmiter
 

@@ -1,7 +1,6 @@
 package client
 
 import (
-	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
@@ -31,16 +30,4 @@ func toCosmosOptions(c *config.Config) []cosmosclient.Option {
 		cosmosclient.WithKeyringServiceName(c.CosmosKeyringServiceName))
 
 	return opts
-}
-
-// WebauthnConfig returns the configuration for the WebAuthn module
-func toWebauthnConfig(c *config.Config) *webauthn.Config {
-	return &webauthn.Config{
-		RPDisplayName: c.WebAuthNRPDisplayName,
-		RPID:          c.WebAuthNRPID,
-		RPOrigin:      c.WebAuthNRPOrigin,
-		RPIcon:        c.WebAuthNRPIcon,
-		Debug:         c.WebAuthNDebug,
-	}
-
 }

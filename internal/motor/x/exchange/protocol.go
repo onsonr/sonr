@@ -179,9 +179,9 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	}
 
 	// Authenticate Message
-	valid := p.node.AuthenticateMessage(resp, resp.Metadata)
-	if !valid {
-		logger.Error("Invalid Invite Response")
+	err = p.node.AuthenticateMessage(resp, resp.Metadata)
+	if err != nil {
+		logger.Errorf("Invalid Invite Response: %s", err)
 		return
 	}
 

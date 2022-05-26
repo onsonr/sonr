@@ -4,6 +4,7 @@ import (
 	"github.com/kataras/go-events"
 )
 
+// TODO(https://github.com/sonr-io/sonr/issues/331): Refactor
 const (
 	ON_OBJECT_ADD    = events.EventName("object_added")
 	ON_OBJECT_REMOVE = events.EventName("object_removed")

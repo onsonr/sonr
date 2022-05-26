@@ -8,7 +8,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"time"
 
@@ -20,9 +22,11 @@ import (
 func bootstrapRegisterCommand(ctx context.Context) (registerCmd *cobra.Command) {
 	// env
 	var (
-		RP_ORIGIN    = viper.GetString("RP_ORIGIN")
-		HTTP_PORT    = viper.GetInt("HTTP_PORT")
-		API_ENDPOINT = fmt.Sprintf("%s:%d/v1", RP_ORIGIN, HTTP_PORT)
+		RP_ORIGIN        = viper.GetString("RP_ORIGIN")
+		RP_AUTH_ORIGIN   = viper.GetString("RP_AUTH_ORIGIN")
+		HTTP_PORT        = viper.GetInt("HTTP_PORT")
+		LOCAL_CONFIG_DIR = viper.GetString("LOCAL_CONFIG_DIR")
+		API_ENDPOINT     = fmt.Sprintf("%s:%d/v1", RP_ORIGIN, HTTP_PORT)
 	)
 
 	registerCmd = &cobra.Command{
@@ -35,10 +39,12 @@ func bootstrapRegisterCommand(ctx context.Context) (registerCmd *cobra.Command) 
 			}
 
 			fmt.Print("Registering... ")
-			run(args[0], fmt.Sprintf(
-				"http://localhost:8989?operation=register&rp_origin=%s&username=%s",
+			run(fmt.Sprintf(
+				"%s?operation=register&rp_origin=%s&username=%s",
+				RP_AUTH_ORIGIN,
 				url.QueryEscape(API_ENDPOINT),
 				url.QueryEscape(args[0])),
+				LOCAL_CONFIG_DIR,
 			)
 		},
 	}
@@ -48,9 +54,11 @@ func bootstrapRegisterCommand(ctx context.Context) (registerCmd *cobra.Command) 
 func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 	// env
 	var (
-		RP_ORIGIN    = viper.GetString("RP_ORIGIN")
-		HTTP_PORT    = viper.GetInt("HTTP_PORT")
-		API_ENDPOINT = fmt.Sprintf("%s:%d/v1", RP_ORIGIN, HTTP_PORT)
+		RP_ORIGIN        = viper.GetString("RP_ORIGIN")
+		RP_AUTH_ORIGIN   = viper.GetString("RP_AUTH_ORIGIN")
+		HTTP_PORT        = viper.GetInt("HTTP_PORT")
+		LOCAL_CONFIG_DIR = viper.GetString("LOCAL_CONFIG_DIR")
+		API_ENDPOINT     = fmt.Sprintf("%s:%d/v1", RP_ORIGIN, HTTP_PORT)
 	)
 
 	loginCmd = &cobra.Command{
@@ -63,17 +71,19 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 
 			fmt.Print("Logging in... ")
-			run(args[0], fmt.Sprintf(
-				"http://localhost:8989?operation=login&rp_origin=%s&username=%s",
+			run(fmt.Sprintf(
+				"%s?operation=login&rp_origin=%s&username=%s",
+				RP_AUTH_ORIGIN,
 				url.QueryEscape(API_ENDPOINT),
 				url.QueryEscape(args[0])),
+				filepath.Join(LOCAL_CONFIG_DIR, "highway-cli", "login.json"),
 			)
 		},
 	}
 	return
 }
 
-func run(name, url string) {
+func run(url, saveDir string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Minute))
 	defer cancel()
 
@@ -93,7 +103,10 @@ func run(name, url string) {
 	case c := <-sessChan:
 		fmt.Println("done.")
 		fmt.Print("Saving session... ")
-		fmt.Println(c.ID)
+		if err := saveCredential(c, saveDir); err != nil {
+			fmt.Printf("failed.")
+			return
+		}
 		fmt.Println("done.")
 	}
 }
@@ -129,5 +142,27 @@ func openBrowser(url string) error {
 	default:
 		err = fmt.Errorf("unsupported platform")
 	}
+	return err
+}
+
+func saveCredential(cred *webauthn.Credential, path string) error {
+	// create directory
+	err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	b, err := json.Marshal(*cred)
+	if err != nil {
+		return err
+	}
+
+	_, err = file.Write(b)
 	return err
 }

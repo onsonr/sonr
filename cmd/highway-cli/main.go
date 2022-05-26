@@ -37,9 +37,6 @@ func loadEnv() error {
 
 func main() {
 	logger.Info("Starting highway-cli, loading env variables")
-	err := loadEnv()
-	if err != nil {
-		logger.Errorf("Error while loading enviorment variables: %s", err)
-	}
+	cobra.CheckErr(loadEnv())
 	cobra.CheckErr(highwaycmd.Execute())
 }

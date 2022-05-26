@@ -26,7 +26,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		case *types.MsgDeactivateWhoIs:
-			res, err := msgServer.DeleteWhoIs(sdk.WrapSDKContext(ctx), msg)
+			res, err := msgServer.DeactivateWhoIs(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgBuyAlias:
 			res, err := msgServer.BuyAlias(sdk.WrapSDKContext(ctx), msg)

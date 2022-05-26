@@ -142,14 +142,14 @@ func TestMultiValidator(t *testing.T) {
 	})
 	t.Run("returns first", func(t *testing.T) {
 		v1 := W3CSpecValidator{}
-		v2 := funcValidator{fn: func(_ Document) error {
+		v2 := funcValidator{fn: func(_ DocumentImpl) error {
 			return errors.New("failed")
 		}}
 		assert.Error(t, MultiValidator{Validators: []Validator{v2, v1}}.Validate(document()))
 	})
 	t.Run("returns second", func(t *testing.T) {
 		v1 := W3CSpecValidator{}
-		v2 := funcValidator{fn: func(_ Document) error {
+		v2 := funcValidator{fn: func(_ DocumentImpl) error {
 			return errors.New("failed")
 		}}
 		assert.Error(t, MultiValidator{Validators: []Validator{v1, v2}}.Validate(document()))
@@ -162,7 +162,7 @@ func assertIsError(t *testing.T, expected error, actual error) {
 	}
 }
 
-func document() Document {
+func document() DocumentImpl {
 	did, _ := ParseDID("did:test:12345")
 
 	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
@@ -172,7 +172,7 @@ func document() Document {
 
 	serviceID := *did
 	serviceID.Fragment = "service-1"
-	doc := Document{
+	doc := DocumentImpl{
 		Context:            []ssi.URI{DIDContextV1URI()},
 		ID:                 *did,
 		Controller:         []DID{*did},
@@ -189,9 +189,9 @@ func document() Document {
 }
 
 type funcValidator struct {
-	fn func(document Document) error
+	fn func(document DocumentImpl) error
 }
 
-func (f funcValidator) Validate(document Document) error {
+func (f funcValidator) Validate(document DocumentImpl) error {
 	return f.fn(document)
 }

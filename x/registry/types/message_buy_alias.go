@@ -1,7 +1,9 @@
 package types
 
 import (
+	"fmt"
 	"regexp"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -14,8 +16,7 @@ var _ sdk.Msg = &MsgBuyAlias{}
 func NewMsgBuyAlias(creator string, did string, name string) *MsgBuyAlias {
 	return &MsgBuyAlias{
 		Creator: creator,
-		Did:     did,
-		Name:    name,
+		Name: name,
 	}
 }
 
@@ -25,6 +26,22 @@ func (msg *MsgBuyAlias) Route() string {
 
 func (msg *MsgBuyAlias) Type() string {
 	return TypeMsgBuyAlias
+}
+
+// GetCreatorDid returns the creator did
+func (msg *MsgBuyAlias) GetCreatorDid() string {
+	rawCreator := msg.GetCreator()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }
 
 func (msg *MsgBuyAlias) GetSigners() []sdk.AccAddress {
@@ -48,7 +65,8 @@ func (msg *MsgBuyAlias) ValidateBasic() error {
 	return nil
 }
 
-func ValidateAlias(name string) error {
+func (msg *MsgBuyAlias) ValidateAlias() error {
+	name := msg.GetName()
 	// Check if Alias length is valid
 	if len(name) < 3 {
 		return sdkerrors.Wrap(ErrAliasUnavailable, "Alias must be at least 3 characters long")

@@ -15,7 +15,7 @@ func (k Keeper) WhoIsAlias(goCtx context.Context, req *types.QueryWhoIsAliasRequ
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetWhoIsFromAlias(
+	val, found := k.FindWhoIsByAlias(
 		ctx,
 		req.GetAlias(),
 	)

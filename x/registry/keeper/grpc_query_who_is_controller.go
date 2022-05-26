@@ -16,7 +16,7 @@ func (k Keeper) WhoIsController(goCtx context.Context, req *types.QueryWhoIsCont
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetWhoIsFromController(
+	val, found := k.FindWhoIsByController(
 		ctx,
 		req.GetController(),
 	)

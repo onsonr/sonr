@@ -28,6 +28,10 @@ type DID struct {
 	odid.DID
 }
 
+func New(addr string) (*DID, error) {
+	return ParseDID(fmt.Sprintf("did:snr:%s", addr))
+}
+
 // Empty checks whether the DID is set or not
 func (d DID) Empty() bool {
 	return d.Method == ""
@@ -50,7 +54,7 @@ func (d DID) Equals(other DID) bool {
 }
 
 // UnmarshalJSON unmarshals a DID encoded as JSON string, e.g.:
-// "did:sonr:c0dc584345da8a0e1e7a584aa4a36c30ebdb79d907aff96fe0e90ee972f58a17"
+// "did:snr:c0dc584345da8a0e1e7a584aa4a36c30ebdb79d907aff96fe0e90ee972f58a17"
 func (d *DID) UnmarshalJSON(bytes []byte) error {
 	var didString string
 	err := json.Unmarshal(bytes, &didString)

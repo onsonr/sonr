@@ -16,7 +16,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// Set whoIs count
 	k.SetWhoIsCount(ctx, genState.WhoIsCount)
-
 	k.SetParams(ctx, genState.Params)
 }
 

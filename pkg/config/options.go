@@ -69,16 +69,6 @@ func WithLibp2pRendevouz(point string, ttl time.Duration, interval time.Duration
 	}
 }
 
-// WithWebAuthnConfig sets the webauthn server Properties
-func WithWebAuthnConfig(displayName string, rpId string, rpOrigin string, isDebug bool) Option {
-	return func(o *Config) {
-		o.WebAuthNRPDisplayName = displayName
-		o.WebAuthNRPID = rpId
-		o.WebAuthNRPOrigin = rpOrigin
-		o.WebAuthNDebug = isDebug
-	}
-}
-
 // WithLibp2pMDNS sets the non-priority of MDNS Discovery
 func WithLibp2pMDNS(isActive bool) Option {
 	return func(o *Config) {

@@ -1,6 +1,9 @@
 package types
 
 import (
+	"fmt"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -15,7 +18,7 @@ var _ sdk.Msg = &MsgCreateWhoIs{}
 
 func NewMsgCreateWhoIs(owner string, didDoc []byte, t WhoIsType) *MsgCreateWhoIs {
 	return &MsgCreateWhoIs{
-		Creator:       owner,
+		Creator:     owner,
 		DidDocument: didDoc,
 		WhoisType:   t,
 	}
@@ -50,12 +53,27 @@ func (msg *MsgCreateWhoIs) ValidateBasic() error {
 	return nil
 }
 
+// GetCreatorDid returns the creator did
+func (msg *MsgCreateWhoIs) GetCreatorDid() string {
+	rawCreator := msg.GetCreator()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
+}
+
 var _ sdk.Msg = &MsgUpdateWhoIs{}
 
 func NewMsgUpdateWhoIs(owner string, id string, doc []byte) *MsgUpdateWhoIs {
 	return &MsgUpdateWhoIs{
-		Did:   id,
-		Creator: owner,
+		Creator:     owner,
 		DidDocument: doc,
 	}
 }
@@ -66,6 +84,21 @@ func (msg *MsgUpdateWhoIs) Route() string {
 
 func (msg *MsgUpdateWhoIs) Type() string {
 	return TypeMsgUpdateWhoIs
+}
+
+func (msg *MsgUpdateWhoIs) GetCreatorDid() string {
+	rawCreator := msg.GetCreator()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }
 
 func (msg *MsgUpdateWhoIs) GetSigners() []sdk.AccAddress {
@@ -93,7 +126,6 @@ var _ sdk.Msg = &MsgDeactivateWhoIs{}
 
 func NewMsgDeactivateWhoIs(owner string, id string) *MsgDeactivateWhoIs {
 	return &MsgDeactivateWhoIs{
-		Did:   id,
 		Creator: owner,
 	}
 }
@@ -103,6 +135,21 @@ func (msg *MsgDeactivateWhoIs) Route() string {
 
 func (msg *MsgDeactivateWhoIs) Type() string {
 	return TypeMsgDeactivateWhoIs
+}
+
+func (msg *MsgDeactivateWhoIs) GetCreatorDid() string {
+	rawCreator := msg.GetCreator()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }
 
 func (msg *MsgDeactivateWhoIs) GetSigners() []sdk.AccAddress {

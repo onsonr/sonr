@@ -9,11 +9,9 @@ validator:
 client:
   openapi:
     path: "docs/static/blockchain.yaml"
-  vuex:
-    path: "web/wallet/src/store"
 faucet:
   name: bob
-  coins: ["50000snr", "100000stake"]
+  coins: ["50000000snr", "100000000stake"]
 build:
   main: "cmd/sonrd"
   binary: "sonrd"

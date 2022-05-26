@@ -19,61 +19,24 @@ func SimulateMsgBuyAlias(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
+		//Babble seems to be incompatible with WIN32
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-
-		// Creates a mock did document for the provided simulated account
-		doc, err := CreateMockDidDocument(simAccount)
-		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create mock did document"), nil, err
-		}
-
-		// Marshal Json document
-		docBytes, err := doc.MarshalJSON()
-		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to marshal json document"), nil, err
-		}
-
-		msg := &types.MsgCreateWhoIs{
-			Creator:     simAccount.Address.String(),
-			DidDocument: docBytes,
-			WhoisType:   types.WhoIsType_USER,
+		buymsg := &types.MsgBuyAlias{
+			Creator: simAccount.Address.String(),
+			Name:    simAccount.Address.String(),
 		}
 
 		txCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
-			Msg:             msg,
-			MsgType:         msg.Type(),
-			Context:         ctx,
-			SimAccount:      simAccount,
-			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      bk,
-		}
-		_, _, err = simulation.GenAndDeliverTxWithRandFees(txCtx)
-		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, "createWhoIs", "failed to create whois"), nil, err
-		}
-
-		buymsg := &types.MsgBuyAlias{
-			Creator: simAccount.Address.String(),
-			Name:    "test",
-		}
-
-		txCtx = simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
+			Cdc:             types.ModuleCdc,
 			Msg:             buymsg,
 			MsgType:         buymsg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 100)),
+			CoinsSpentInMsg: sdk.NewCoins(sdk.NewInt64Coin("snr", 10)),
 			AccountKeeper:   ak,
 			Bankkeeper:      bk,
 		}
