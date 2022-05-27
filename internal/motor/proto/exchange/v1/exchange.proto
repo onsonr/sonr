@@ -2,41 +2,55 @@ syntax = "proto3";
 
 // Package exchange defines interfaces and types for exchange between two nodes in the network.
 package sonrio.motor.exchange.v1;
-import "core/v1/core.proto";
 import "transmit/v1/transmit.proto";
+import "discover/v1/discover.proto";
 option go_package = "github.com/sonr-io/sonr/internal/motor/x/exchange/v1";
 
 message MailboxMessage {
   string id = 1; // ID is the Message ID
   sonrio.motor.transmit.v1.Payload payload = 2;    // Payload is the message data
-  sonrio.motor.core.v1.Peer from = 3;         // Users Peer Data
-  sonrio.motor.core.v1.Peer to = 4;           // Receivers Peer Data
-  sonrio.motor.core.v1.Metadata metadata = 5; // Metadata
+  sonrio.motor.discover.v1.Peer from = 3;         // Users Peer Data
+  sonrio.motor.discover.v1.Peer to = 4;           // Receivers Peer Data
+  Metadata metadata = 5; // Metadata
   int64 created_at = 6; // Timestamp
 }
 
 // Invitation Message sent on RPC
 message InviteRequest {
   sonrio.motor.transmit.v1.Payload payload = 1;   // Attached Data
-  sonrio.motor.core.v1.Peer from = 3;         // Users Peer Data
-  sonrio.motor.core.v1.Peer to = 4;           // Receivers Peer Data
-  sonrio.motor.core.v1.Metadata metadata = 5; // Metadata
+  sonrio.motor.discover.v1.Peer from = 3;         // Users Peer Data
+  sonrio.motor.discover.v1.Peer to = 4;           // Receivers Peer Data
+  Metadata metadata = 5; // Metadata
 }
 
 // Reply Message sent on RPC
 message InviteResponse {
   bool decision = 1;               // Success
-  sonrio.motor.core.v1.Peer from = 3;         // Users Peer Data
-  sonrio.motor.core.v1.Peer to = 4;           // Receivers Peer Data
-  sonrio.motor.core.v1.Metadata metadata = 5; // Metadata
+  sonrio.motor.discover.v1.Peer from = 3;         // Users Peer Data
+  sonrio.motor.discover.v1.Peer to = 4;           // Receivers Peer Data
+  Metadata metadata = 5; // Metadata
 }
-
 
 // Received Mail Event
 message OnMailboxMessageResponse {
   string id = 1;                    // ID is the Message ID
   bytes buffer = 2;                 // Buffer is the message data
-  sonrio.motor.core.v1.Peer from = 3;       // Users Peer Data
-  sonrio.motor.core.v1.Peer to = 4;         // Receivers Peer Data
-  sonrio.motor.core.v1.Metadata metadata = 5;  // Metadata
+  sonrio.motor.discover.v1.Peer from = 3;       // Users Peer Data
+  sonrio.motor.discover.v1.Peer to = 4;         // Receivers Peer Data
+  Metadata metadata = 5;  // Metadata
+}
+
+// Shared Metadata for Messages on all Protocols
+message Metadata {
+  // Unix timestamp
+  int64 timestamp = 1;
+
+  // Node ID
+  string node_id = 2;
+
+  // Signature of the message
+  bytes signature = 3;
+
+  // Public Key of the message sender
+  bytes public_key = 4;
 }

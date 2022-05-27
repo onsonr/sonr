@@ -8,6 +8,7 @@ import (
 
 	device "github.com/sonr-io/sonr/pkg/fs"
 
+	"github.com/sonr-io/sonr/internal/motor/x/core"
 	v1 "github.com/sonr-io/sonr/internal/motor/x/transmit/v1"
 )
 
@@ -32,11 +33,21 @@ type Option func(*options)
 // options for ExchangeProtocol config
 type options struct {
 	interval int
+	getPeer  core.GetPeerFunc
+}
+
+func WithGetPeerFunction(f core.GetPeerFunc) Option {
+	return func(o *options) {
+		o.getPeer = f
+	}
 }
 
 // defaultOptions for ExchangeProtocol config
 func defaultOptions() *options {
-	return &options{}
+	return &options{
+		interval: ITEM_INTERVAL,
+		getPeer:  core.DefaultGetPeerFunc(),
+	}
 }
 
 // Apply applies the options to the ExchangeProtocol

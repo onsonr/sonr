@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
-		cv1 "github.com/sonr-io/sonr/internal/motor/x/core/v1"
+		dv1 "github.com/sonr-io/sonr/internal/motor/x/discover/v1"
 	v1 "github.com/sonr-io/sonr/internal/motor/x/exchange/v1"
 	tv1 "github.com/sonr-io/sonr/internal/motor/x/transmit/v1"
 
@@ -83,7 +83,7 @@ func (p *ExchangeProtocol) Request(shareReq *tv1.ShareRequest) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *ExchangeProtocol) Respond(decs bool, to *cv1.Peer) (*tv1.Payload, error) {
+func (p *ExchangeProtocol) Respond(decs bool, to *dv1.Peer) (*tv1.Payload, error) {
 	if p.mode.IsHighway() {
 		return nil, ErrNotSupported
 	}

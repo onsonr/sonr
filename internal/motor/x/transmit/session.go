@@ -5,20 +5,18 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/sonr/pkg/host"
-		motor "github.com/sonr-io/sonr/internal/motor/x/core/v1"
-
+	dv1 "github.com/sonr-io/sonr/internal/motor/x/discover/v1"
 	v1 "github.com/sonr-io/sonr/internal/motor/x/transmit/v1"
+	"github.com/sonr-io/sonr/pkg/host"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
-func NewInSession(payload *v1.Payload, from *motor.Peer, to *motor.Peer) *v1.Session {
+func NewInSession(payload *v1.Payload, from *dv1.Peer, to *dv1.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
-		Direction:    v1.Direction_DIRECTION_INCOMING,
-		Payload:      payload,
-
+		Direction: v1.Direction_DIRECTION_INCOMING,
+		Payload:   payload,
 
 		LastUpdated:  int64(time.Now().Unix()),
 		Items:        CreatePayloadItems(sessionPayload, v1.Direction_DIRECTION_INCOMING),
@@ -28,12 +26,12 @@ func NewInSession(payload *v1.Payload, from *motor.Peer, to *motor.Peer) *v1.Ses
 }
 
 // NewOutSession creates a new Session from the given payload with Outgoing direction.
-func NewOutSession(payload *v1.Payload, to *motor.Peer, from *motor.Peer) *v1.Session {
+func NewOutSession(payload *v1.Payload, to *dv1.Peer, from *dv1.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
-		Direction:    v1.Direction_DIRECTION_OUTGOING,
-		Payload:      payload,
+		Direction: v1.Direction_DIRECTION_OUTGOING,
+		Payload:   payload,
 
 		LastUpdated:  int64(time.Now().Unix()),
 		Items:        CreatePayloadItems(sessionPayload, v1.Direction_DIRECTION_OUTGOING),
@@ -75,7 +73,7 @@ func SessionIsIn(s *v1.Session) bool {
 // Event returns the complete event for the session.
 func SessionEvent(s *v1.Session) *v1.OnTransmitCompleteResponse {
 	return &v1.OnTransmitCompleteResponse{
-		Direction:  s.GetDirection(),
+		Direction: s.GetDirection(),
 		// Payload:    s.GetPayload(),
 		CreatedAt:  s.GetPayload().GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),

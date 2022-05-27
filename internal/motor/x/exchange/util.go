@@ -6,19 +6,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	cv1 "github.com/sonr-io/sonr/internal/motor/x/core/v1"
+	dv1 "github.com/sonr-io/sonr/internal/motor/x/discover/v1"
 	v1 "github.com/sonr-io/sonr/internal/motor/x/exchange/v1"
 	tv1 "github.com/sonr-io/sonr/internal/motor/x/transmit/v1"
 )
-
-// ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func ResponseToEvent(ir *v1.InviteResponse) *cv1.OnTransmitDecisionResponse {
-	return &cv1.OnTransmitDecisionResponse{
-		From:     ir.GetFrom(),
-		Received: int64(time.Now().Unix()),
-		Decision: ir.GetDecision(),
-	}
-}
 
 // ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
 func RequestToEvent(ir *v1.InviteRequest) *tv1.OnTransmitInviteResponse {
@@ -29,7 +20,7 @@ func RequestToEvent(ir *v1.InviteRequest) *tv1.OnTransmitInviteResponse {
 }
 
 // createRequest creates a new InviteRequest
-func (p *ExchangeProtocol) createRequest(to *cv1.Peer, payload *tv1.Payload) (peer.ID, *v1.InviteRequest, error) {
+func (p *ExchangeProtocol) createRequest(to *dv1.Peer, payload *tv1.Payload) (peer.ID, *v1.InviteRequest, error) {
 	// Call Peer from Node
 	// from, err := p.node.Peer()
 	// if err != nil {
@@ -63,7 +54,7 @@ func (p *ExchangeProtocol) createRequest(to *cv1.Peer, payload *tv1.Payload) (pe
 }
 
 // createResponse creates a new InviteResponse
-func (p *ExchangeProtocol) createResponse(decs bool, to *cv1.Peer) (peer.ID, *v1.InviteResponse, error) {
+func (p *ExchangeProtocol) createResponse(decs bool, to *dv1.Peer) (peer.ID, *v1.InviteResponse, error) {
 
 	// // Call Peer from Node
 	// from, err := p.node.Peer()
@@ -98,7 +89,7 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *cv1.Peer) (peer.ID, *v1
 }
 
 // Libp2pID returns the PeerID based on PublicKey from Profile
-func Libp2pID(p *cv1.Peer) (peer.ID, error) {
+func Libp2pID(p *dv1.Peer) (peer.ID, error) {
 	pubKey, err := crypto.UnmarshalPublicKey(nil)
 	if err != nil {
 		return "", err

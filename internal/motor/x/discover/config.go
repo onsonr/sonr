@@ -3,7 +3,8 @@ package discover
 import (
 	"fmt"
 	"time"
-	// types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+
+	"github.com/sonr-io/sonr/internal/motor/x/core"
 )
 
 // Option is a function that can be applied to ExchangeProtocol config
@@ -14,14 +15,21 @@ type options struct {
 	// location        *types.Location
 	interval        time.Duration
 	autoPushEnabled bool
+	getPeer         core.GetPeerFunc
 }
 
 // defaultOptions for ExchangeProtocol config
 func defaultOptions() *options {
 	return &options{
-		//location:        api.DefaultLocation(),
+		getPeer:         core.DefaultGetPeerFunc(),
 		interval:        time.Second * 5,
 		autoPushEnabled: true,
+	}
+}
+
+func WithGetPeerFunction(f core.GetPeerFunc) Option {
+	return func(o *options) {
+		o.getPeer = f
 	}
 }
 
@@ -56,6 +64,7 @@ func WithInterval(i time.Duration) Option {
 func (o *options) Apply(p *DiscoverProtocol) error {
 	// Apply options
 	p.mode = p.node.Role()
+	p.peer = o.getPeer()
 
 	// Create Local for Motor Stub
 	if p.mode.IsMotor() {

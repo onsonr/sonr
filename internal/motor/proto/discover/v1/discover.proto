@@ -2,14 +2,12 @@ syntax = "proto3";
 
 // Package Discover is used to find other Peers in the sonr network.
 package sonrio.motor.discover.v1;
-import "core/v1/core.proto";
 option go_package = "github.com/sonr-io/sonr/internal/motor/x/discover/v1";
 
 // LobbyMessage is message passed from Peer in Lobby
 message LobbyMessage {
-  sonrio.motor.core.v1.Peer peer = 1;     // Users Peer Data
+  sonrio.motor.discover.v1.Peer peer = 1;     // Users Peer Data
   optional string message = 2; // Message to be published
-  sonrio.motor.core.v1.Metadata metadata = 3; // Metadata
 }
 
 // VisibilityRequest is Message for updating Peer Visibility in Exchange
@@ -38,4 +36,21 @@ message VisibilityResponse {
     VISIBILITY_HIDDEN = 2; // Only Linked Devices can see this peer
     VISIBILITY_FRIENDS = 3; // Only Friends can see this peer
   }
+}
+
+// Basic Info Sent to Peers to Establish Connections
+message Peer {
+    string did = 1;       // User Sonr Domain
+    string host_name = 2; // Peer Host Name
+    string os = 3;       // Peer Operating System
+    string arch = 4;     // Peer Architecture
+    string model = 5;    // Peers Device Model
+    int64 last_seen = 6; // Last Modified Timestamp
+}
+
+// Message Sent when peer messages Lobby
+message OnLobbyRefreshResponse {
+  string olc = 1;                    // OLC Code of Topic
+  repeated sonrio.motor.discover.v1.Peer peers = 2; // User Information
+  int64 received = 3;                // Invite received Timestamp
 }

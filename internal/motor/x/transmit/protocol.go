@@ -5,7 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
-	motor "github.com/sonr-io/sonr/internal/motor/x/core/v1"
+	dv1 "github.com/sonr-io/sonr/internal/motor/x/discover/v1"
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
@@ -50,7 +50,7 @@ func (p *TransmitProtocol) CurrentSession() (*v1.Session, error) {
 }
 
 // Incoming is called by the node to accept an incoming transfer
-func (p *TransmitProtocol) Incoming(payload *v1.Payload, from *motor.Peer) error {
+func (p *TransmitProtocol) Incoming(payload *v1.Payload, from *dv1.Peer) error {
 	// // Get User Peer
 	// to, err := p.node.Peer()
 	// if err != nil {
@@ -64,7 +64,7 @@ func (p *TransmitProtocol) Incoming(payload *v1.Payload, from *motor.Peer) error
 }
 
 // Outgoing is called by the node to initiate a transfer
-func (p *TransmitProtocol) Outgoing(payload *v1.Payload, to *motor.Peer) error {
+func (p *TransmitProtocol) Outgoing(payload *v1.Payload, to *dv1.Peer) error {
 	// // Get User Peer
 	// from, err := p.node.Peer()
 	// if err != nil {
@@ -149,7 +149,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 }
 
 // Libp2pID returns the PeerID based on PublicKey from Profile
-func Libp2pID(p *motor.Peer) (peer.ID, error) {
+func Libp2pID(p *dv1.Peer) (peer.ID, error) {
 	// pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	// if err != nil {
 	// 	return "", err

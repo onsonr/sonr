@@ -5,6 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/sonr-io/sonr/internal/motor/x/core"
 	device "github.com/sonr-io/sonr/pkg/fs"
 )
 
@@ -39,12 +40,20 @@ type Option func(*options)
 // options for ExchangeProtocol config
 type options struct {
 	enableMailbox bool
+	getPeer       core.GetPeerFunc
 }
 
 // defaultOptions for ExchangeProtocol config
 func defaultOptions() *options {
 	return &options{
 		enableMailbox: false,
+		getPeer:         core.DefaultGetPeerFunc(),
+	}
+}
+
+func WithGetPeerFunction(f core.GetPeerFunc) Option {
+	return func(o *options) {
+		o.getPeer = f
 	}
 }
 

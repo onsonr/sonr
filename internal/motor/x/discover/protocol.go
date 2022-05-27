@@ -8,7 +8,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	ct "github.com/sonr-io/sonr/x/channel/types"
 
-	cv1 "github.com/sonr-io/sonr/internal/motor/x/core/v1"
+	v1 "github.com/sonr-io/sonr/internal/motor/x/discover/v1"
 	host "github.com/sonr-io/sonr/pkg/host"
 )
 
@@ -26,6 +26,7 @@ type DiscoverProtocol struct {
 	global ct.Channel
 	local  *Local
 	mode   config.Role
+	peer   *v1.Peer
 }
 
 // New creates new DiscoveryProtocol
@@ -57,7 +58,7 @@ func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverP
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *DiscoverProtocol) Get(sname string) (*cv1.Peer, error) {
+func (p *DiscoverProtocol) Get(sname string) (*v1.Peer, error) {
 	// peer := &types.Peer{}
 	// Get Peer from KadDHT store
 	// if buf, err := p.global.Get(sname); err == nil {
@@ -76,7 +77,7 @@ func (p *DiscoverProtocol) Get(sname string) (*cv1.Peer, error) {
 }
 
 // Put method updates peer instance in the store
-func (p *DiscoverProtocol) Put(peer *cv1.Peer) error {
+func (p *DiscoverProtocol) Put(peer *v1.Peer) error {
 	// logger.Debug("Updating Peer in BeamStore")
 	// // Marshal Peer
 	// buf, err := proto.Marshal(peer)
@@ -97,17 +98,11 @@ func (p *DiscoverProtocol) Put(peer *cv1.Peer) error {
 // Update method publishes peer data to the topic
 func (p *DiscoverProtocol) Update() error {
 	if p.mode.IsMotor() {
-		// Verify Peer is not nil
-		// peer, err := p.node.Peer()
-		// if err != nil {
-		// 	return err
-		// }
-
-		// Publish Event
-		// err = p.local.Publish(peer)
-		// if err != nil {
-		// 	return err
-		// }
+		//		Publish Event
+		err := p.local.Publish(p.peer)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

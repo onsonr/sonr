@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
@@ -51,8 +50,10 @@ func WithHighwayAPISettings(network string, grpcHost string, grpcPort int, httpP
 	}
 }
 
+type MotorOption func(o *Config)
+
 // WithLibp2pConnOptions sets the connection manager options. Defaults are (lowWater: 15, highWater: 40, gracePeriod: 5m)
-func WithLibp2pConnOptions(low int, hi int, grace time.Duration) Option {
+func WithLibp2pConnOptions(low int, hi int, grace time.Duration) MotorOption {
 	return func(o *Config) {
 		o.Libp2pLowWater = low
 		o.Libp2pHighWater = hi
@@ -61,7 +62,7 @@ func WithLibp2pConnOptions(low int, hi int, grace time.Duration) Option {
 }
 
 // WithLibp2pRendevouz sets the interval and timeout for the DHT rendezvous strategy
-func WithLibp2pRendevouz(point string, ttl time.Duration, interval time.Duration) Option {
+func WithLibp2pRendevouz(point string, ttl time.Duration, interval time.Duration) MotorOption {
 	return func(o *Config) {
 		o.Libp2pInterval = interval
 		o.Libp2pTTL = dscl.TTL(ttl)
@@ -70,85 +71,58 @@ func WithLibp2pRendevouz(point string, ttl time.Duration, interval time.Duration
 }
 
 // WithLibp2pMDNS sets the non-priority of MDNS Discovery
-func WithLibp2pMDNS(isActive bool) Option {
+func WithLibp2pMDNS(isActive bool) MotorOption {
 	return func(o *Config) {
 		o.Libp2pMdnsDisabled = isActive
 	}
 }
 
-type MotorOption func(o *motorOptions)
-
-// SetDeviceID sets the device ID
-func SetDeviceID(id string) MotorOption {
-	return func(o *motorOptions) {
+// WithDeviceID sets the device ID
+func WithDeviceID(id string) MotorOption {
+	return func(o *Config) {
 		// Set Home Directory
 		if id != "" {
-			o.deviceID = id
+			o.DeviceID = id
+		}
+	}
+}
+
+// WithDeviceID sets the device ID
+func WithHostName(n string) MotorOption {
+	return func(o *Config) {
+		// Set Home Directory
+		if n != "" {
+			o.HostName = n
 		}
 	}
 }
 
 // WithHomePath sets the Home Directory
 func WithHomePath(p string) MotorOption {
-	return func(o *motorOptions) {
+	return func(o *Config) {
 		// Set Home Directory
 		if p != "" {
-			o.HomeDir = p
+			o.HomeDirPath = p
 		}
 	}
 }
 
 // WithTempPath sets the Temporary Directory
 func WithTempPath(p string) MotorOption {
-	return func(o *motorOptions) {
+	return func(o *Config) {
 		// Set Home Directory
 		if p != "" {
-			o.TempDir = p
+			o.TempDirPath = p
 		}
 	}
 }
 
 // WithSupportPath sets the Support Directory
 func WithSupportPath(p string) MotorOption {
-	return func(o *motorOptions) {
+	return func(o *Config) {
 		// Set Home Directory
 		if p != "" {
-			o.SupportDir = p
+			o.SupportDirPath = p
 		}
 	}
-}
-
-// motorOptions holds directory list
-type motorOptions struct {
-	HomeDir    string
-	TempDir    string
-	SupportDir string
-
-	walletDir    string
-	databaseDir  string
-	downloadsDir string
-	textileDir   string
-	deviceID     string
-}
-
-// defaultMotorOptions returns fsOptions
-func defaultMotorOptions() *motorOptions {
-	opts := &motorOptions{}
-	if IsDesktop() {
-		hp, err := os.UserHomeDir()
-		if err == nil {
-			opts.HomeDir = hp
-		}
-
-		tp, err := os.UserCacheDir()
-		if err == nil {
-			opts.TempDir = tp
-		}
-
-		sp, err := os.UserConfigDir()
-		if err == nil {
-			opts.SupportDir = sp
-		}
-	}
-	return opts
 }

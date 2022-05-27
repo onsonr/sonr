@@ -146,371 +146,6 @@ func (x *InitializeRequest) GetVariables() map[string]string {
 	return nil
 }
 
-// (Client) DecideRequest is request to respond to a share request
-type DecideRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Decision bool  `protobuf:"varint,1,opt,name=decision,proto3" json:"decision,omitempty"` // True if Supply is Active
-	Peer     *Peer `protobuf:"bytes,2,opt,name=peer,proto3" json:"peer,omitempty"`          // Peer to Share with
-}
-
-func (x *DecideRequest) Reset() {
-	*x = DecideRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DecideRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DecideRequest) ProtoMessage() {}
-
-func (x *DecideRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DecideRequest.ProtoReflect.Descriptor instead.
-func (*DecideRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *DecideRequest) GetDecision() bool {
-	if x != nil {
-		return x.Decision
-	}
-	return false
-}
-
-func (x *DecideRequest) GetPeer() *Peer {
-	if x != nil {
-		return x.Peer
-	}
-	return nil
-}
-
-// (Client) SearchRequest is Message for Searching for Peer
-type SearchRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// Types that are assignable to Query:
-	//	*SearchRequest_SName
-	//	*SearchRequest_PeerId
-	Query isSearchRequest_Query `protobuf_oneof:"query"`
-}
-
-func (x *SearchRequest) Reset() {
-	*x = SearchRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SearchRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SearchRequest) ProtoMessage() {}
-
-func (x *SearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
-func (*SearchRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{2}
-}
-
-func (m *SearchRequest) GetQuery() isSearchRequest_Query {
-	if m != nil {
-		return m.Query
-	}
-	return nil
-}
-
-func (x *SearchRequest) GetSName() string {
-	if x, ok := x.GetQuery().(*SearchRequest_SName); ok {
-		return x.SName
-	}
-	return ""
-}
-
-func (x *SearchRequest) GetPeerId() string {
-	if x, ok := x.GetQuery().(*SearchRequest_PeerId); ok {
-		return x.PeerId
-	}
-	return ""
-}
-
-type isSearchRequest_Query interface {
-	isSearchRequest_Query()
-}
-
-type SearchRequest_SName struct {
-	SName string `protobuf:"bytes,1,opt,name=s_name,json=sName,proto3,oneof"` // SName combined with Device ID and Hashed
-}
-
-type SearchRequest_PeerId struct {
-	PeerId string `protobuf:"bytes,2,opt,name=peer_id,json=peerId,proto3,oneof"` // Peer ID
-}
-
-func (*SearchRequest_SName) isSearchRequest_Query() {}
-
-func (*SearchRequest_PeerId) isSearchRequest_Query() {}
-
-type OnLobbyRefreshRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *OnLobbyRefreshRequest) Reset() {
-	*x = OnLobbyRefreshRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *OnLobbyRefreshRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OnLobbyRefreshRequest) ProtoMessage() {}
-
-func (x *OnLobbyRefreshRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OnLobbyRefreshRequest.ProtoReflect.Descriptor instead.
-func (*OnLobbyRefreshRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{3}
-}
-
-type OnMailboxMessageRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *OnMailboxMessageRequest) Reset() {
-	*x = OnMailboxMessageRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *OnMailboxMessageRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OnMailboxMessageRequest) ProtoMessage() {}
-
-func (x *OnMailboxMessageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OnMailboxMessageRequest.ProtoReflect.Descriptor instead.
-func (*OnMailboxMessageRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{4}
-}
-
-type OnTransmitDecisionRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *OnTransmitDecisionRequest) Reset() {
-	*x = OnTransmitDecisionRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *OnTransmitDecisionRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OnTransmitDecisionRequest) ProtoMessage() {}
-
-func (x *OnTransmitDecisionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OnTransmitDecisionRequest.ProtoReflect.Descriptor instead.
-func (*OnTransmitDecisionRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{5}
-}
-
-type OnTransmitInviteRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *OnTransmitInviteRequest) Reset() {
-	*x = OnTransmitInviteRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *OnTransmitInviteRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OnTransmitInviteRequest) ProtoMessage() {}
-
-func (x *OnTransmitInviteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OnTransmitInviteRequest.ProtoReflect.Descriptor instead.
-func (*OnTransmitInviteRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{6}
-}
-
-type OnTransmitProgressRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *OnTransmitProgressRequest) Reset() {
-	*x = OnTransmitProgressRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *OnTransmitProgressRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OnTransmitProgressRequest) ProtoMessage() {}
-
-func (x *OnTransmitProgressRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OnTransmitProgressRequest.ProtoReflect.Descriptor instead.
-func (*OnTransmitProgressRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{7}
-}
-
-type OnTransmitCompleteRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *OnTransmitCompleteRequest) Reset() {
-	*x = OnTransmitCompleteRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *OnTransmitCompleteRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OnTransmitCompleteRequest) ProtoMessage() {}
-
-func (x *OnTransmitCompleteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OnTransmitCompleteRequest.ProtoReflect.Descriptor instead.
-func (*OnTransmitCompleteRequest) Descriptor() ([]byte, []int) {
-	return file_core_v1_request_proto_rawDescGZIP(), []int{8}
-}
-
 // Optional Message to Initialize FileSystem
 type InitializeRequest_DeviceOptions struct {
 	state         protoimpl.MessageState
@@ -526,7 +161,7 @@ type InitializeRequest_DeviceOptions struct {
 func (x *InitializeRequest_DeviceOptions) Reset() {
 	*x = InitializeRequest_DeviceOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[10]
+		mi := &file_core_v1_request_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -539,7 +174,7 @@ func (x *InitializeRequest_DeviceOptions) String() string {
 func (*InitializeRequest_DeviceOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_DeviceOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[10]
+	mi := &file_core_v1_request_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -598,7 +233,7 @@ type InitializeRequest_HostOptions struct {
 func (x *InitializeRequest_HostOptions) Reset() {
 	*x = InitializeRequest_HostOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[11]
+		mi := &file_core_v1_request_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -611,7 +246,7 @@ func (x *InitializeRequest_HostOptions) String() string {
 func (*InitializeRequest_HostOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_HostOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[11]
+	mi := &file_core_v1_request_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -670,7 +305,7 @@ type InitializeRequest_ServiceOptions struct {
 func (x *InitializeRequest_ServiceOptions) Reset() {
 	*x = InitializeRequest_ServiceOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[12]
+		mi := &file_core_v1_request_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -683,7 +318,7 @@ func (x *InitializeRequest_ServiceOptions) String() string {
 func (*InitializeRequest_ServiceOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_ServiceOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[12]
+	mi := &file_core_v1_request_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -742,7 +377,7 @@ type InitializeRequest_IPAddress struct {
 func (x *InitializeRequest_IPAddress) Reset() {
 	*x = InitializeRequest_IPAddress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_core_v1_request_proto_msgTypes[13]
+		mi := &file_core_v1_request_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -755,7 +390,7 @@ func (x *InitializeRequest_IPAddress) String() string {
 func (*InitializeRequest_IPAddress) ProtoMessage() {}
 
 func (x *InitializeRequest_IPAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_core_v1_request_proto_msgTypes[13]
+	mi := &file_core_v1_request_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -804,10 +439,7 @@ var File_core_v1_request_proto protoreflect.FileDescriptor
 var file_core_v1_request_proto_rawDesc = []byte{
 	0x0a, 0x15, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x14, 0x73, 0x6f, 0x6e, 0x72, 0x69, 0x6f, 0x2e,
-	0x6d, 0x6f, 0x74, 0x6f, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x1a, 0x12, 0x63,
-	0x6f, 0x72, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x1a, 0x1a, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x6d, 0x69, 0x74, 0x2f, 0x76, 0x31, 0x2f, 0x74,
-	0x72, 0x61, 0x6e, 0x73, 0x6d, 0x69, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xf1, 0x08,
+	0x6d, 0x6f, 0x74, 0x6f, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x22, 0xf1, 0x08,
 	0x0a, 0x11, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x12, 0x56, 0x0a, 0x0c, 0x68, 0x6f, 0x73, 0x74, 0x5f, 0x6f, 0x70, 0x74, 0x69,
 	0x6f, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
@@ -879,31 +511,10 @@ var file_core_v1_request_proto_rawDesc = []byte{
 	0x59, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12,
 	0x0f, 0x0a, 0x0b, 0x46, 0x41, 0x4d, 0x49, 0x4c, 0x59, 0x5f, 0x49, 0x50, 0x56, 0x34, 0x10, 0x01,
 	0x12, 0x0f, 0x0a, 0x0b, 0x46, 0x41, 0x4d, 0x49, 0x4c, 0x59, 0x5f, 0x49, 0x50, 0x56, 0x36, 0x10,
-	0x02, 0x22, 0x5b, 0x0a, 0x0d, 0x44, 0x65, 0x63, 0x69, 0x64, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x2e,
-	0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x73,
-	0x6f, 0x6e, 0x72, 0x69, 0x6f, 0x2e, 0x6d, 0x6f, 0x74, 0x6f, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65,
-	0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x22, 0x4c,
-	0x0a, 0x0d, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x17, 0x0a, 0x06, 0x73, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48,
-	0x00, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x19, 0x0a, 0x07, 0x70, 0x65, 0x65, 0x72,
-	0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x06, 0x70, 0x65, 0x65,
-	0x72, 0x49, 0x64, 0x42, 0x07, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x22, 0x17, 0x0a, 0x15,
-	0x4f, 0x6e, 0x4c, 0x6f, 0x62, 0x62, 0x79, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x19, 0x0a, 0x17, 0x4f, 0x6e, 0x4d, 0x61, 0x69, 0x6c, 0x62,
-	0x6f, 0x78, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x22, 0x1b, 0x0a, 0x19, 0x4f, 0x6e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x6d, 0x69, 0x74, 0x44, 0x65,
-	0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x19, 0x0a,
-	0x17, 0x4f, 0x6e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x6d, 0x69, 0x74, 0x49, 0x6e, 0x76, 0x69, 0x74,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x1b, 0x0a, 0x19, 0x4f, 0x6e, 0x54, 0x72,
-	0x61, 0x6e, 0x73, 0x6d, 0x69, 0x74, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x1b, 0x0a, 0x19, 0x4f, 0x6e, 0x54, 0x72, 0x61, 0x6e, 0x73,
-	0x6d, 0x69, 0x74, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x42, 0x32, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x69, 0x6e,
-	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x6d, 0x6f, 0x74, 0x6f, 0x72, 0x2f, 0x78, 0x2f, 0x63,
-	0x6f, 0x72, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x02, 0x42, 0x32, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x6d, 0x6f, 0x74, 0x6f, 0x72, 0x2f, 0x78, 0x2f, 0x63, 0x6f,
+	0x72, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -919,38 +530,28 @@ func file_core_v1_request_proto_rawDescGZIP() []byte {
 }
 
 var file_core_v1_request_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_core_v1_request_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_core_v1_request_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_core_v1_request_proto_goTypes = []interface{}{
 	(InitializeRequest_IPAddress_Family)(0),  // 0: sonrio.motor.core.v1.InitializeRequest.IPAddress.Family
 	(*InitializeRequest)(nil),                // 1: sonrio.motor.core.v1.InitializeRequest
-	(*DecideRequest)(nil),                    // 2: sonrio.motor.core.v1.DecideRequest
-	(*SearchRequest)(nil),                    // 3: sonrio.motor.core.v1.SearchRequest
-	(*OnLobbyRefreshRequest)(nil),            // 4: sonrio.motor.core.v1.OnLobbyRefreshRequest
-	(*OnMailboxMessageRequest)(nil),          // 5: sonrio.motor.core.v1.OnMailboxMessageRequest
-	(*OnTransmitDecisionRequest)(nil),        // 6: sonrio.motor.core.v1.OnTransmitDecisionRequest
-	(*OnTransmitInviteRequest)(nil),          // 7: sonrio.motor.core.v1.OnTransmitInviteRequest
-	(*OnTransmitProgressRequest)(nil),        // 8: sonrio.motor.core.v1.OnTransmitProgressRequest
-	(*OnTransmitCompleteRequest)(nil),        // 9: sonrio.motor.core.v1.OnTransmitCompleteRequest
-	nil,                                      // 10: sonrio.motor.core.v1.InitializeRequest.VariablesEntry
-	(*InitializeRequest_DeviceOptions)(nil),  // 11: sonrio.motor.core.v1.InitializeRequest.DeviceOptions
-	(*InitializeRequest_HostOptions)(nil),    // 12: sonrio.motor.core.v1.InitializeRequest.HostOptions
-	(*InitializeRequest_ServiceOptions)(nil), // 13: sonrio.motor.core.v1.InitializeRequest.ServiceOptions
-	(*InitializeRequest_IPAddress)(nil),      // 14: sonrio.motor.core.v1.InitializeRequest.IPAddress
-	(*Peer)(nil),                             // 15: sonrio.motor.core.v1.Peer
+	nil,                                      // 2: sonrio.motor.core.v1.InitializeRequest.VariablesEntry
+	(*InitializeRequest_DeviceOptions)(nil),  // 3: sonrio.motor.core.v1.InitializeRequest.DeviceOptions
+	(*InitializeRequest_HostOptions)(nil),    // 4: sonrio.motor.core.v1.InitializeRequest.HostOptions
+	(*InitializeRequest_ServiceOptions)(nil), // 5: sonrio.motor.core.v1.InitializeRequest.ServiceOptions
+	(*InitializeRequest_IPAddress)(nil),      // 6: sonrio.motor.core.v1.InitializeRequest.IPAddress
 }
 var file_core_v1_request_proto_depIdxs = []int32{
-	12, // 0: sonrio.motor.core.v1.InitializeRequest.host_options:type_name -> sonrio.motor.core.v1.InitializeRequest.HostOptions
-	13, // 1: sonrio.motor.core.v1.InitializeRequest.service_options:type_name -> sonrio.motor.core.v1.InitializeRequest.ServiceOptions
-	11, // 2: sonrio.motor.core.v1.InitializeRequest.device_options:type_name -> sonrio.motor.core.v1.InitializeRequest.DeviceOptions
-	10, // 3: sonrio.motor.core.v1.InitializeRequest.variables:type_name -> sonrio.motor.core.v1.InitializeRequest.VariablesEntry
-	15, // 4: sonrio.motor.core.v1.DecideRequest.peer:type_name -> sonrio.motor.core.v1.Peer
-	14, // 5: sonrio.motor.core.v1.InitializeRequest.HostOptions.listen_addrs:type_name -> sonrio.motor.core.v1.InitializeRequest.IPAddress
-	0,  // 6: sonrio.motor.core.v1.InitializeRequest.IPAddress.family:type_name -> sonrio.motor.core.v1.InitializeRequest.IPAddress.Family
-	7,  // [7:7] is the sub-list for method output_type
-	7,  // [7:7] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	4, // 0: sonrio.motor.core.v1.InitializeRequest.host_options:type_name -> sonrio.motor.core.v1.InitializeRequest.HostOptions
+	5, // 1: sonrio.motor.core.v1.InitializeRequest.service_options:type_name -> sonrio.motor.core.v1.InitializeRequest.ServiceOptions
+	3, // 2: sonrio.motor.core.v1.InitializeRequest.device_options:type_name -> sonrio.motor.core.v1.InitializeRequest.DeviceOptions
+	2, // 3: sonrio.motor.core.v1.InitializeRequest.variables:type_name -> sonrio.motor.core.v1.InitializeRequest.VariablesEntry
+	6, // 4: sonrio.motor.core.v1.InitializeRequest.HostOptions.listen_addrs:type_name -> sonrio.motor.core.v1.InitializeRequest.IPAddress
+	0, // 5: sonrio.motor.core.v1.InitializeRequest.IPAddress.family:type_name -> sonrio.motor.core.v1.InitializeRequest.IPAddress.Family
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_core_v1_request_proto_init() }
@@ -958,7 +559,6 @@ func file_core_v1_request_proto_init() {
 	if File_core_v1_request_proto != nil {
 		return
 	}
-	file_core_v1_core_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_core_v1_request_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest); i {
@@ -972,103 +572,7 @@ func file_core_v1_request_proto_init() {
 				return nil
 			}
 		}
-		file_core_v1_request_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DecideRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 		file_core_v1_request_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_v1_request_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OnLobbyRefreshRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_v1_request_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OnMailboxMessageRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_v1_request_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OnTransmitDecisionRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_v1_request_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OnTransmitInviteRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_v1_request_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OnTransmitProgressRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_v1_request_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OnTransmitCompleteRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_v1_request_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_DeviceOptions); i {
 			case 0:
 				return &v.state
@@ -1080,7 +584,7 @@ func file_core_v1_request_proto_init() {
 				return nil
 			}
 		}
-		file_core_v1_request_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_core_v1_request_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_HostOptions); i {
 			case 0:
 				return &v.state
@@ -1092,7 +596,7 @@ func file_core_v1_request_proto_init() {
 				return nil
 			}
 		}
-		file_core_v1_request_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_core_v1_request_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_ServiceOptions); i {
 			case 0:
 				return &v.state
@@ -1104,7 +608,7 @@ func file_core_v1_request_proto_init() {
 				return nil
 			}
 		}
-		file_core_v1_request_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+		file_core_v1_request_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_IPAddress); i {
 			case 0:
 				return &v.state
@@ -1117,17 +621,13 @@ func file_core_v1_request_proto_init() {
 			}
 		}
 	}
-	file_core_v1_request_proto_msgTypes[2].OneofWrappers = []interface{}{
-		(*SearchRequest_SName)(nil),
-		(*SearchRequest_PeerId)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_v1_request_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
