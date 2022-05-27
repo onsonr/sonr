@@ -16,7 +16,13 @@ const sidebars = {
   // But you can create a sidebar manually
   basicsSidebar: [
     'introduction',
-    'fundamentals',
+    {
+      type: 'category',
+      label: 'Fundamentals',
+      items: ['fundamentals/network', 'fundamentals/concepts'],
+      collapsible: true,
+      collapsed: true,
+    },
     'why-sonr',
     'how-it-works',
     'sonr-stack',
