@@ -67,7 +67,7 @@ func (k Keeper) WhoIsAlias(goCtx context.Context, req *types.QueryWhoIsAliasRequ
 		req.Alias,
 	)
 	if !found {
-		return nil, status.Error(codes.InvalidArgument, "not found")
+		return nil, status.Error(codes.NotFound, "not found")
 	}
 
 	return &types.QueryWhoIsAliasResponse{
@@ -87,8 +87,9 @@ func (k Keeper) WhoIsController(goCtx context.Context, req *types.QueryWhoIsCont
 		req.Controller,
 	)
 	if !found {
-		return nil, status.Error(codes.InvalidArgument, "not found")
+		return nil, status.Error(codes.NotFound, "not found")
 	}
+
 	return &types.QueryWhoIsControllerResponse{
 		WhoIs: &val,
 	}, nil
