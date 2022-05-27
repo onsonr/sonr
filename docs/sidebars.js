@@ -16,6 +16,7 @@ const sidebars = {
   // But you can create a sidebar manually
   basicsSidebar: [
     'introduction',
+    'fundamentals',
     'why-sonr',
     'how-it-works',
     'sonr-stack',

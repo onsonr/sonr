@@ -10,7 +10,8 @@ The Sonr Node has two different modes: Motor and Highway. The Motor node operate
 
 ## 1. Motor
 
-When the node operates in Light Mode it becomes a Peer in the Sonr Network. It has methods and receives callbacks for Discovery and Transmission updates.
+When the node operates in Light Mode it becomes a Peer in the Sonr Network. It has methods and receives callbacks for
+Discovery and Transmission updates.
 
 Sonr enabled Apps or Wallets will have Discovery, Identity, and Transmission capabilities enabled by default - along with a full Motor Node. Motor Nodes automatically communicate with Highway Nodes when needed.
 
