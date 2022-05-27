@@ -84,7 +84,7 @@ type SonrHost interface {
 	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)
 
 	// VerifyData verifies the data signature
-	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool
+	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) error
 
 	// Close closes the node
 	Close()
