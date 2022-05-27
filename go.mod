@@ -32,7 +32,6 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.6.0
 	github.com/libp2p/go-libp2p-webrtc-direct v0.0.0-20220406105718-41a3151f0a37
 	github.com/libp2p/go-msgio v0.1.0
-	github.com/looplab/fsm v0.3.0
 	github.com/matrix-org/dendrite v0.8.1
 	github.com/matrix-org/gomatrixserverlib v0.0.0-20220408160933-cf558306b56f
 	github.com/matrix-org/util v0.0.0-20200807132607-55161520e1d4
