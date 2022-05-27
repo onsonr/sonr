@@ -6,37 +6,37 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/host"
-	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
+		motor "github.com/sonr-io/sonr/internal/motor/x/core/v1"
+
+	v1 "github.com/sonr-io/sonr/internal/motor/x/transmit/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
-func NewInSession(payload *motor.Payload, from *motor.Peer, to *motor.Peer) *v1.Session {
+func NewInSession(payload *v1.Payload, from *motor.Peer, to *motor.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
-		Direction:    motor.Direction_DIRECTION_INCOMING,
+		Direction:    v1.Direction_DIRECTION_INCOMING,
 		Payload:      payload,
-		From:         from,
-		To:           to,
+
+
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, motor.Direction_DIRECTION_INCOMING),
+		Items:        CreatePayloadItems(sessionPayload, v1.Direction_DIRECTION_INCOMING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // NewOutSession creates a new Session from the given payload with Outgoing direction.
-func NewOutSession(payload *motor.Payload, to *motor.Peer, from *motor.Peer) *v1.Session {
+func NewOutSession(payload *v1.Payload, to *motor.Peer, from *motor.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
-		Direction:    motor.Direction_DIRECTION_OUTGOING,
+		Direction:    v1.Direction_DIRECTION_OUTGOING,
 		Payload:      payload,
-		To:           to,
-		From:         from,
+
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, motor.Direction_DIRECTION_OUTGOING),
+		Items:        CreatePayloadItems(sessionPayload, v1.Direction_DIRECTION_OUTGOING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
@@ -64,21 +64,19 @@ func SessionIsDone(s *v1.Session) bool {
 
 // IsOut returns true if the session is outgoing.
 func SessionIsOut(s *v1.Session) bool {
-	return s.Direction == motor.Direction_DIRECTION_OUTGOING
+	return s.Direction == v1.Direction_DIRECTION_OUTGOING
 }
 
 // IsIn returns true if the session is incoming.
 func SessionIsIn(s *v1.Session) bool {
-	return s.Direction == motor.Direction_DIRECTION_INCOMING
+	return s.Direction == v1.Direction_DIRECTION_INCOMING
 }
 
 // Event returns the complete event for the session.
-func SessionEvent(s *v1.Session) *motor.OnTransmitCompleteResponse {
-	return &motor.OnTransmitCompleteResponse{
-		From:       s.GetFrom(),
-		To:         s.GetTo(),
+func SessionEvent(s *v1.Session) *v1.OnTransmitCompleteResponse {
+	return &v1.OnTransmitCompleteResponse{
 		Direction:  s.GetDirection(),
-		Payload:    s.GetPayload(),
+		// Payload:    s.GetPayload(),
 		CreatedAt:  s.GetPayload().GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
 		Results:    s.GetResults(),
@@ -86,7 +84,7 @@ func SessionEvent(s *v1.Session) *motor.OnTransmitCompleteResponse {
 }
 
 // RouteStream is used to route the given stream to the given peer.
-func RouteSessionStream(s *v1.Session, stream network.Stream, h host.SonrHost) (*motor.OnTransmitCompleteResponse, error) {
+func RouteSessionStream(s *v1.Session, stream network.Stream, h host.SonrHost) (*v1.OnTransmitCompleteResponse, error) {
 	// Initialize Params
 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
 	doneChan := make(chan bool)

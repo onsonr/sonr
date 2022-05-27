@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 
 const TypeMsgDeactivateBucket = "delete_bucket"
@@ -15,10 +14,6 @@ func NewMsgDeactivateBucket(creator string, did string) *MsgDeactivateBucket {
 		Creator: creator,
 		Did:     did,
 	}
-}
-
-func NewMsgDeactivateBucketFromBuf(msg *bt.MsgDeactivateBucket) *MsgDeactivateBucket {
-	return NewMsgDeactivateBucket(msg.GetCreator(), msg.GetDid())
 }
 
 func (msg *MsgDeactivateBucket) Route() string {

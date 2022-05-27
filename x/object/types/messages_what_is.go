@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	ot "go.buf.build/grpc/go/sonr-io/blockchain/object"
 )
 
 const (
@@ -24,14 +23,6 @@ func NewMsgCreateWhatIs(
 		Creator:   creator,
 		Did:       did,
 		ObjectDoc: obj,
-	}
-}
-
-func NewMsgCreateWhatIsFromBuf(msg *ot.MsgCreateWhatIs) *MsgCreateWhatIs {
-	return &MsgCreateWhatIs{
-		Creator:   msg.GetCreator(),
-		Did:       msg.GetDid(),
-		ObjectDoc: NewObjectDocFromBuf(msg.GetObjectDoc()),
 	}
 }
 

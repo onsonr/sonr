@@ -14,14 +14,13 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/sonr/pkg/config"
 
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	"google.golang.org/protobuf/proto"
+	//"google.golang.org/protobuf/proto"
 )
 
 // SonrHost returns the SonrHost for the Main Node
 type SonrHost interface {
 	// AuthenticateMessage authenticates a message
-	AuthenticateMessage(msg proto.Message, metadata *types.Metadata) error
+	// AuthenticateMessage(msg proto.Message, metadata *types.Metadata) error
 
 	// Close closes the node
 	Close()
@@ -61,13 +60,13 @@ type SonrHost interface {
 
 	// TODO: implement
 	// Peer returns the peer of the node
-	Peer() (*types.Peer, error)
+	// Peer() (*types.Peer, error)
 	// Events returns the events manager of the node
 	Events() events.EventEmmiter
 	// SignData signs the data with the private key
 	SignData(data []byte) ([]byte, error)
 	// SignMessage signs a message with the node's private key
-	SignMessage(message proto.Message) ([]byte, error)
+//	SignMessage(message proto.Message) ([]byte, error)
 
 	// Pubsub returns the pubsub of the node
 	Pubsub() *ps.PubSub
@@ -88,7 +87,7 @@ type SonrHost interface {
 	PrivateKey() (ed25519.PrivateKey, error)
 
 	// SendMessage sends a message to a peer
-	SendMessage(id peer.ID, p protocol.ID, data proto.Message) error
+	// SendMessage(id peer.ID, p protocol.ID, data proto.Message) error
 
 	// SetStreamHandler sets the handler for a protocol
 	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)

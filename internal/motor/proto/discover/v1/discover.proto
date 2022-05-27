@@ -3,13 +3,13 @@ syntax = "proto3";
 // Package Discover is used to find other Peers in the sonr network.
 package sonrio.motor.discover.v1;
 import "core/v1/core.proto";
-option go_package = "github.com/sonr-io/sonr/pkg/host/discover";
+option go_package = "github.com/sonr-io/sonr/internal/motor/x/discover/v1";
 
 // LobbyMessage is message passed from Peer in Lobby
 message LobbyMessage {
-  core.v1.Peer peer = 1;     // Users Peer Data
+  sonrio.motor.core.v1.Peer peer = 1;     // Users Peer Data
   optional string message = 2; // Message to be published
-  core.v1.Metadata metadata = 3; // Metadata
+  sonrio.motor.core.v1.Metadata metadata = 3; // Metadata
 }
 
 // VisibilityRequest is Message for updating Peer Visibility in Exchange

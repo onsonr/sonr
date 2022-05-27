@@ -18,7 +18,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pion/webrtc/v3"
 	"github.com/sonr-io/sonr/pkg/config"
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // hostImpl type - a p2p host implementing one or more p2p protocols
@@ -29,7 +28,6 @@ type hostImpl struct {
 	events events.EventEmmiter
 
 	// Host and context
-	connection   types.Connection
 	privKey      crypto.PrivKey
 	mdnsPeerChan chan peer.AddrInfo
 	dhtPeerChan  <-chan peer.AddrInfo

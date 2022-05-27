@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 
 const TypeMsgCreateBucket = "create_bucket"
@@ -20,9 +19,6 @@ func NewMsgCreateBucket(creator string, label string, description string, kind s
 	}
 }
 
-func NewMsgCreateBucketFromBuf(msg *bt.MsgCreateBucket) *MsgCreateBucket {
-	return NewMsgCreateBucket(msg.GetCreator(), msg.GetLabel(), msg.GetDescription(), msg.GetKind(), msg.GetInitialObjectDids())
-}
 
 func (msg *MsgCreateBucket) Route() string {
 	return RouterKey

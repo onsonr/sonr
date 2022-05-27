@@ -5,9 +5,10 @@ import (
 	"fmt"
 
 	"github.com/sonr-io/sonr/cmd/highway-cli/prompt"
+	"github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
+	// bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 
 /**
@@ -36,7 +37,7 @@ func bootstrapCreateBucketCommand(ctx context.Context) (createBucketCmd *cobra.C
 
 			rpcClient := newRpcClient(fmt.Sprintf("127.0.0.1:%d", viper.GetInt("PORT")))
 			var reply interface{} // bt.MsgCreateBucketResponse
-			err := rpcClient.Call(args[0], &bt.MsgCreateBucket{
+			err := rpcClient.Call(args[0], &types.MsgCreateBucket{
 				Label:       label,
 				Creator:     creator,
 				Description: description,

@@ -995,8 +995,6 @@ github.com/google/martian v2.1.1-0.20190517191504-25dcb96d9e51+incompatible/go.m
 github.com/google/martian/v3 v3.0.0/go.mod h1:y5Zk1BBys9G+gd6Jrk0W3cC1+ELVxBWuIGO+w/tUAp0=
 github.com/google/martian/v3 v3.1.0/go.mod h1:y5Zk1BBys9G+gd6Jrk0W3cC1+ELVxBWuIGO+w/tUAp0=
 github.com/google/martian/v3 v3.2.1/go.mod h1:oBOf6HBosgwRXnUGWUB05QECsc6uvmMiJ3+6W4l/CUk=
-github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c h1:kiK/0Vz+XhUoQU+PAVuP30aVHObEz0HMawJQXKiSzV4=
-github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c/go.mod h1:eJfRN6aj+kR/rnua/rw9jAgYhqoMHldQkdTi+sePRKk=
 github.com/google/orderedcode v0.0.1 h1:UzfcAexk9Vhv8+9pNOgRu41f16lHq725vPwnSeiG/Us=
 github.com/google/orderedcode v0.0.1/go.mod h1:iVyU4/qPKHY5h/wSd6rZZCDcLJNxiWO6dvsYES2Sb20=
 github.com/google/pprof v0.0.0-20181206194817-3ea8567a2e57/go.mod h1:zfwlbNMJ+OItoe0UupaVj+oy1omPYYDuagoSzA8v9mc=
@@ -2876,15 +2874,6 @@ github.com/zmap/zcrypto v0.0.0-20210511125630-18f1e0152cfc/go.mod h1:FM4U1E3NzlN
 github.com/zmap/zlint/v3 v3.1.0/go.mod h1:L7t8s3sEKkb0A2BxGy1IWrxt1ZATa1R4QfJZaQOD3zU=
 github.com/zondax/hid v0.9.0 h1:eiT3P6vNxAEVxXMw66eZUAAnU2zD33JBkfG/EnfAKl8=
 github.com/zondax/hid v0.9.0/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
-go.buf.build/grpc/go/cosmos/cosmos-proto v1.3.8/go.mod h1:NaBdTr4tS+gPK02uLRjgFY/PEQU/0jb7HjRAuaQkiPc=
-go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.52 h1:FBDOzM9Flw7DVVGhttEHPU1q9O03efsNiXlGH2kOP9s=
-go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.52/go.mod h1:xoj76Mv+glMZbbBRkbRbEu8HD2hh7igfOamQS4me8ng=
-go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 h1:movzgRYHiYXq/rd5Fo5KnMtYizbCKlvbEGafqwU2AkU=
-go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1/go.mod h1:Oacq9kdGMFBOTGB/CrAMpHc7GwkJg1P1d0gKF6X0kuU=
-go.buf.build/grpc/go/sonr-io/blockchain v1.3.7 h1:XRr0pkZG12nbsWnvWfQggECwS4UwvBK4BNoYNioJ1fA=
-go.buf.build/grpc/go/sonr-io/blockchain v1.3.7/go.mod h1:kh09boSnQtZNONulz1c/8vPaa9ae4XkiYIANi/vNVks=
-go.buf.build/grpc/go/sonr-io/motor v1.3.1 h1:3Dxod9fjT6VmVhPWmgIDELKQVAWgK5iI3FURfxN4+5Y=
-go.buf.build/grpc/go/sonr-io/motor v1.3.1/go.mod h1:o8LpED3VyN9VeejYAK5tDQ6d2C3XdkmitACeEG1IsKc=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.4/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=

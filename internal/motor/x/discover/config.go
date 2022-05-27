@@ -3,9 +3,7 @@ package discover
 import (
 	"fmt"
 	"time"
-
-	olc "github.com/google/open-location-code/go"
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	// types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // Option is a function that can be applied to ExchangeProtocol config
@@ -13,7 +11,7 @@ type Option func(*options)
 
 // options for ExchangeProtocol config
 type options struct {
-	location        *types.Location
+	// location        *types.Location
 	interval        time.Duration
 	autoPushEnabled bool
 }
@@ -34,18 +32,18 @@ func DisableAutoPush() Option {
 	}
 }
 
-// WithLocation sets the location of the Topic for Local OLC
-func WithLocation(l *types.Location) Option {
-	return func(o *options) {
-		if o.location != nil {
-			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
-				logger.Debug("Skipping Location Set")
-			} else {
-				o.location = l
-			}
-		}
-	}
-}
+// // WithLocation sets the location of the Topic for Local OLC
+// func WithLocation(l *types.Location) Option {
+// 	return func(o *options) {
+// 		if o.location != nil {
+// 			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
+// 				logger.Debug("Skipping Location Set")
+// 			} else {
+// 				o.location = l
+// 			}
+// 		}
+// 	}
+// }
 
 // WithInterval sets the interval of the Topic for Local OLC
 func WithInterval(i time.Duration) Option {
@@ -71,15 +69,15 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		// p.Put(peer)
 
 		// Get OLC Code from location
-		code := OLC(o.location)
-		if code == "" {
-			logger.Error("Failed to Determine OLC Code, set to Global")
-			code = "global"
-		}
+		// code := OLC(o.location)
+		// if code == "" {
+		// 	logger.Error("Failed to Determine OLC Code, set to Global")
+		// 	code = "global"
+		// }
 
 		// Create Topic Name
-		logger.Debug("Calculated OLC for Location: " + code)
-		topicName := fmt.Sprintf("sonr/topic/%s", code)
+		logger.Debug("Calculated OLC for Location: " + "1")
+		topicName := fmt.Sprintf("sonr/topic/%s", "1")
 
 		// Join Topic
 		topic, err := p.node.Join(topicName)
@@ -95,9 +93,4 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		}
 	}
 	return nil
-}
-
-// OLC returns Open Location code
-func OLC(l *types.Location) string {
-	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 4)
 }

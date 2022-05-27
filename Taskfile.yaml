@@ -92,7 +92,7 @@ tasks:
     cmds:
       - buf mod update
       - buf build
-      - buf push
+      - buf generate
 
   buf:blockchain:
     summary: "Build and Push Blockchain Protobuf files to buf.build"

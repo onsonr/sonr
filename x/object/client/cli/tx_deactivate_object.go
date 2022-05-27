@@ -25,14 +25,13 @@ func CmdDeleteObject() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeactivateObject(
-				clientCtx.GetFromAddress().String(),
-				argDid,
-			)
+			msg := types.MsgDeactivateObject{
+				Did: argDid,
+			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 

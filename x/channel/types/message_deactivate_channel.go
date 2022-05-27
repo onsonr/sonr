@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 )
 
 const TypeMsgDeactivateChannel = "delete_channel"
@@ -17,12 +16,7 @@ func NewMsgDeactivateChannel(creator string, did string) *MsgDeactivateChannel {
 	}
 }
 
-func NewMsgDeactivateChannelFromBuf(msg *ct.MsgDeactivateChannel) *MsgDeactivateChannel {
-	return &MsgDeactivateChannel{
-		Creator: msg.GetCreator(),
-		Did:     msg.GetDid(),
-	}
-}
+
 
 func (msg *MsgDeactivateChannel) Route() string {
 	return RouterKey

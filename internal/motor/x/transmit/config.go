@@ -8,8 +8,7 @@ import (
 
 	device "github.com/sonr-io/sonr/pkg/fs"
 
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
+	v1 "github.com/sonr-io/sonr/internal/motor/x/transmit/v1"
 )
 
 // Transfer Protocol ID's
@@ -48,14 +47,14 @@ func (o *options) Apply(p *TransmitProtocol) error {
 }
 
 // NewSessionPayload creates session payload
-func NewSessionPayload(p *types.Payload) *v1.SessionPayload {
+func NewSessionPayload(p *v1.Payload) *v1.SessionPayload {
 	return &v1.SessionPayload{
 		Payload: p,
 	}
 }
 
 // CreateItems creates list of sessionItems
-func CreatePayloadItems(sp *v1.SessionPayload, dir types.Direction) []*v1.SessionItem {
+func CreatePayloadItems(sp *v1.SessionPayload, dir v1.Direction) []*v1.SessionItem {
 	// Initialize Properties
 	count := len(sp.GetPayload().GetItems())
 	items := make([]*v1.SessionItem, 0)
@@ -67,7 +66,7 @@ func CreatePayloadItems(sp *v1.SessionPayload, dir types.Direction) []*v1.Sessio
 		path := fi.GetPath()
 
 		// Set Path for Incoming
-		if dir == types.Direction_DIRECTION_INCOMING {
+		if dir == v1.Direction_DIRECTION_INCOMING {
 			inpath, err := SetPathFromFolder(fi, device.Downloads)
 			if err == nil {
 				path = inpath

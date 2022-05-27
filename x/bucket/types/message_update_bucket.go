@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	bt "go.buf.build/grpc/go/sonr-io/blockchain/bucket"
 )
 
 const TypeMsgUpdateBucket = "update_bucket"
@@ -18,10 +17,6 @@ func NewMsgUpdateBucket(creator string, label string, description string, addObj
 		AddedObjectDids:   addObjs,
 		RemovedObjectDids: removObjs,
 	}
-}
-
-func NewMsgUpdateBucketFromBuf(msg *bt.MsgUpdateBucket) *MsgUpdateBucket {
-	return NewMsgUpdateBucket(msg.GetCreator(), msg.GetLabel(), msg.GetDescription(), msg.GetAddedObjectDids(), msg.GetRemovedObjectDids())
 }
 
 func (msg *MsgUpdateBucket) Route() string {

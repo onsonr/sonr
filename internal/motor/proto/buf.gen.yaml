@@ -1,0 +1,5 @@
+version: v1
+plugins:
+  - name: go
+    out: ../x
+    opt: paths=source_relative

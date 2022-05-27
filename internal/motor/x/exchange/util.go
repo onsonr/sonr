@@ -1,20 +1,19 @@
 package exchange
 
 import (
-	"errors"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/exchange/v1"
+	cv1 "github.com/sonr-io/sonr/internal/motor/x/core/v1"
+	v1 "github.com/sonr-io/sonr/internal/motor/x/exchange/v1"
+	tv1 "github.com/sonr-io/sonr/internal/motor/x/transmit/v1"
 )
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func ResponseToEvent(ir *v1.InviteResponse) *motor.OnTransmitDecisionResponse {
-	return &motor.OnTransmitDecisionResponse{
+func ResponseToEvent(ir *v1.InviteResponse) *cv1.OnTransmitDecisionResponse {
+	return &cv1.OnTransmitDecisionResponse{
 		From:     ir.GetFrom(),
 		Received: int64(time.Now().Unix()),
 		Decision: ir.GetDecision(),
@@ -22,22 +21,21 @@ func ResponseToEvent(ir *v1.InviteResponse) *motor.OnTransmitDecisionResponse {
 }
 
 // ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
-func RequestToEvent(ir *v1.InviteRequest) *motor.OnTransmitInviteResponse {
-	return &motor.OnTransmitInviteResponse{
+func RequestToEvent(ir *v1.InviteRequest) *tv1.OnTransmitInviteResponse {
+	return &tv1.OnTransmitInviteResponse{
 		Received: int64(time.Now().Unix()),
 		From:     ir.GetFrom(),
-		Payload:  ir.GetPayload(),
 	}
 }
 
 // createRequest creates a new InviteRequest
-func (p *ExchangeProtocol) createRequest(to *motor.Peer, payload *motor.Payload) (peer.ID, *v1.InviteRequest, error) {
+func (p *ExchangeProtocol) createRequest(to *cv1.Peer, payload *tv1.Payload) (peer.ID, *v1.InviteRequest, error) {
 	// Call Peer from Node
-	from, err := p.node.Peer()
-	if err != nil {
-		logger.Errorf("%s - Failed to Get Peer from Node", err)
-		return "", nil, err
-	}
+	// from, err := p.node.Peer()
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Get Peer from Node", err)
+	// 	return "", nil, err
+	// }
 
 	// Fetch Peer ID from Public Key
 	toId, err := Libp2pID(to)
@@ -58,21 +56,21 @@ func (p *ExchangeProtocol) createRequest(to *motor.Peer, payload *motor.Payload)
 		Payload: payload,
 		// TODO: Implement Signed Meta to Proto Method
 		// Metadata: api.SignedMetadataToProto(meta),
-		To:   to,
-		From: from,
+		To: to,
+		// From: from,
 	}
 	return toId, req, nil
 }
 
 // createResponse creates a new InviteResponse
-func (p *ExchangeProtocol) createResponse(decs bool, to *motor.Peer) (peer.ID, *v1.InviteResponse, error) {
+func (p *ExchangeProtocol) createResponse(decs bool, to *cv1.Peer) (peer.ID, *v1.InviteResponse, error) {
 
-	// Call Peer from Node
-	from, err := p.node.Peer()
-	if err != nil {
-		logger.Errorf("%s - Failed to Get Peer from Node", err)
-		return "", nil, err
-	}
+	// // Call Peer from Node
+	// from, err := p.node.Peer()
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Get Peer from Node", err)
+	// 	return "", nil, err
+	// }
 
 	// Create new Metadata
 	// meta, err := wallet.CreateMetadata(p.host.ID())
@@ -86,8 +84,8 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *motor.Peer) (peer.ID, *
 		Decision: decs,
 		// TODO: Implement Signed Meta to Proto Method
 		//Metadata: api.SignedMetadataToProto(meta),
-		From: from,
-		To:   to,
+		// From: from,
+		To: to,
 	}
 
 	// Fetch Peer ID from Public Key
@@ -100,13 +98,8 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *motor.Peer) (peer.ID, *
 }
 
 // Libp2pID returns the PeerID based on PublicKey from Profile
-func Libp2pID(p *motor.Peer) (peer.ID, error) {
-	// Check if PublicKey is empty
-	if len(p.GetPublicKey()) == 0 {
-		return "", errors.New("Peer Public Key is not set.")
-	}
-
-	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
+func Libp2pID(p *cv1.Peer) (peer.ID, error) {
+	pubKey, err := crypto.UnmarshalPublicKey(nil)
 	if err != nil {
 		return "", err
 	}

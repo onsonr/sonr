@@ -5,7 +5,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	ot "github.com/sonr-io/sonr/x/object/types"
-	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 )
 
 const TypeMsgUpdateChannel = "update_channel"
@@ -22,15 +21,6 @@ func NewMsgUpdateChannel(creator string, did string, label string, description s
 	}
 }
 
-func NewMsgUpdateChannelFromBuf(msg *ct.MsgUpdateChannel) *MsgUpdateChannel {
-	return &MsgUpdateChannel{
-		Creator:          msg.GetCreator(),
-		Did:              msg.GetDid(),
-		Label:            msg.GetLabel(),
-		Description:      msg.GetDescription(),
-		ObjectToRegister: ot.NewObjectDocFromBuf(msg.GetObjectToRegister()),
-	}
-}
 func (msg *MsgUpdateChannel) Route() string {
 	return RouterKey
 }

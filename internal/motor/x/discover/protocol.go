@@ -8,8 +8,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	ct "github.com/sonr-io/sonr/x/channel/types"
 
+	cv1 "github.com/sonr-io/sonr/internal/motor/x/core/v1"
 	host "github.com/sonr-io/sonr/pkg/host"
-	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 var (
@@ -57,7 +57,7 @@ func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverP
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *DiscoverProtocol) Get(sname string) (*motor.Peer, error) {
+func (p *DiscoverProtocol) Get(sname string) (*cv1.Peer, error) {
 	// peer := &types.Peer{}
 	// Get Peer from KadDHT store
 	// if buf, err := p.global.Get(sname); err == nil {
@@ -76,7 +76,7 @@ func (p *DiscoverProtocol) Get(sname string) (*motor.Peer, error) {
 }
 
 // Put method updates peer instance in the store
-func (p *DiscoverProtocol) Put(peer *motor.Peer) error {
+func (p *DiscoverProtocol) Put(peer *cv1.Peer) error {
 	// logger.Debug("Updating Peer in BeamStore")
 	// // Marshal Peer
 	// buf, err := proto.Marshal(peer)
@@ -98,16 +98,16 @@ func (p *DiscoverProtocol) Put(peer *motor.Peer) error {
 func (p *DiscoverProtocol) Update() error {
 	if p.mode.IsMotor() {
 		// Verify Peer is not nil
-		peer, err := p.node.Peer()
-		if err != nil {
-			return err
-		}
+		// peer, err := p.node.Peer()
+		// if err != nil {
+		// 	return err
+		// }
 
 		// Publish Event
-		err = p.local.Publish(peer)
-		if err != nil {
-			return err
-		}
+		// err = p.local.Publish(peer)
+		// if err != nil {
+		// 	return err
+		// }
 	}
 	return nil
 }

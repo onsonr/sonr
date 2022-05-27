@@ -9,8 +9,8 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/host"
 	t "github.com/sonr-io/sonr/types"
-	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/discover/v1"
+	cv1 "github.com/sonr-io/sonr/internal/motor/x/core/v1"
+	v1 "github.com/sonr-io/sonr/internal/motor/x/discover/v1"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -27,7 +27,7 @@ type Local struct {
 	subscription *ps.Subscription
 	topic        *ps.Topic
 	olc          string
-	peers        []*motor.Peer
+	peers        []*cv1.Peer
 	selfID       peer.ID
 	updateFunc   ErrFunc
 }
@@ -60,7 +60,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 		eventHandler: handler,
 		olc:          topicName,
 		messages:     make(chan *LobbyEvent),
-		peers:        make([]*motor.Peer, 0),
+		peers:        make([]*cv1.Peer, 0),
 	}
 
 	// Handle Events
@@ -72,7 +72,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 }
 
 // Publish publishes a LobbyMessage to the Local Topic
-func (p *Local) Publish(data *motor.Peer) error {
+func (p *Local) Publish(data *cv1.Peer) error {
 	// Create Message Buffer
 	buf := createLobbyMsgBuf(data)
 	err := p.topic.Publish(p.ctx, buf)
@@ -162,7 +162,7 @@ func (lp *Local) callRefresh() {
 	logger.Debug("Calling Refresh Event")
 
 	// Emit Refresh Event
-	lp.node.Events().Emit(t.ON_REFRESH, &motor.OnLobbyRefreshResponse{
+	lp.node.Events().Emit(t.ON_REFRESH, &cv1.OnLobbyRefreshResponse{
 		Olc:      lp.olc,
 		Peers:    lp.peers,
 		Received: int64(time.Now().Unix()),
@@ -182,7 +182,7 @@ func (lp *Local) callUpdate() error {
 }
 
 // createLobbyMsgBuf Creates a new Message Buffer for Local Topic
-func createLobbyMsgBuf(p *motor.Peer) []byte {
+func createLobbyMsgBuf(p *cv1.Peer) []byte {
 	// Marshal Event
 	event := &v1.LobbyMessage{Peer: p}
 	eventBuf, err := proto.Marshal(event)
@@ -194,7 +194,7 @@ func createLobbyMsgBuf(p *motor.Peer) []byte {
 }
 
 // hasPeer Checks if Peer is in Peer List
-func (lp *Local) hasPeer(data *motor.Peer) bool {
+func (lp *Local) hasPeer(data *cv1.Peer) bool {
 	hasInList := false
 	hasInTopic := false
 	// Check if Peer is in Data List
@@ -217,7 +217,7 @@ func (lp *Local) hasPeer(data *motor.Peer) bool {
 }
 
 // hasPeerData Checks if Peer Data is in Local Peer-Data List
-func (lp *Local) hasPeerData(data *motor.Peer) bool {
+func (lp *Local) hasPeerData(data *cv1.Peer) bool {
 	for _, p := range lp.peers {
 		if p.GetDid() == data.GetDid() {
 			return true
@@ -237,7 +237,7 @@ func (lp *Local) hasPeerID(id peer.ID) bool {
 }
 
 // indexOfPeer Returns Peer Index in Local Peer-Data List
-func (lp *Local) indexOfPeer(peer *motor.Peer) int {
+func (lp *Local) indexOfPeer(peer *cv1.Peer) int {
 	for i, p := range lp.peers {
 		if p.GetDid() == peer.GetDid() {
 			return i
@@ -259,7 +259,7 @@ func (lp *Local) removePeer(peerID peer.ID) bool {
 }
 
 // updatePeer Adds Peer to Local Peer List
-func (lp *Local) updatePeer(peerID peer.ID, data *motor.Peer) bool {
+func (lp *Local) updatePeer(peerID peer.ID, data *cv1.Peer) bool {
 	// Check if Peer is in Peer List and Topic already
 	if ok := lp.hasPeerID(peerID); !ok {
 		lp.removePeer(peerID)
@@ -281,12 +281,12 @@ func (lp *Local) updatePeer(peerID peer.ID, data *motor.Peer) bool {
 // LobbyEvent is either Peer Update or Exit in Topic
 type LobbyEvent struct {
 	ID     peer.ID
-	Peer   *motor.Peer
+	Peer   *cv1.Peer
 	isExit bool
 }
 
 // newLobbyEvent Creates a new LobbyEvent
-func newLobbyEvent(i peer.ID, p *motor.Peer) *LobbyEvent {
+func newLobbyEvent(i peer.ID, p *cv1.Peer) *LobbyEvent {
 	if p == nil {
 		return &LobbyEvent{
 			ID:     i,

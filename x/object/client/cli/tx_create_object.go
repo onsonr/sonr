@@ -25,12 +25,11 @@ func CmdCreateObject() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			msg := &types.MsgCreateObject{
+				Label:       argLabel,
+				Description: argDescription,
+			}
 
-			msg := types.NewMsgCreateObject(
-				clientCtx.GetFromAddress().String(),
-				argLabel,
-				argDescription,
-			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

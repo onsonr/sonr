@@ -1,24 +1,21 @@
 package motor
 
 import (
+	"context"
+
+	"github.com/sonr-io/sonr/pkg/config"
+	"github.com/sonr-io/sonr/pkg/host"
 	_ "golang.org/x/mobile/bind"
 )
 
 // Start starts the host, node, and rpc service.
-func Start(reqBuf []byte) {
-	//config := config.DefaultConfig(config.Role_MOTOR)
-	// _, err := host.NewWasmHost(context.Background(), config)
-	// if err != nil {
-	// 	//golog.Fatal(err)
-	// 	panic(err)
-	// }
-	//	node.Start(reqBuf)
-	// Unmarshal request
-	// req := &motor.InitializeRequest{}
-	// if err := proto.Unmarshal(reqBuf, req); err != nil {
-	// 	golog.Warn("%s - Failed to unmarshal InitializeRequest. Using defaults...", err)
-	// }
+func Start(reqBuf []byte) error {
 
+	_, err := host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
+	if err != nil {
+		return err
+	}
+	return nil
 	// Start the app
 	//node.NewHighway(context.Background(), node.WithLogLevel(node.DebugLevel))
 }
