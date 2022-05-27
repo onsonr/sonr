@@ -284,6 +284,11 @@ func (hn *hostImpl) Start() {
 	hn.fsm.SetStatus(Status_READY)
 }
 
+// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
+func (hn *hostImpl) NeedsWait() {
+	<-hn.fsm.Chn
+}
+
 /*
 	Stops the libp2p host, dhcp, and sets the host status to IDLE
 */
