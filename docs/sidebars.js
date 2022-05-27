@@ -27,6 +27,13 @@ const sidebars = {
       collapsible: true,
       collapsed: true,
     },
+    {
+      type: 'category',
+      label: 'Contributing',
+      items: ['contributing/getting-started', 'contributing/guidelines'],
+      collapsible: true,
+      collapsed: true,
+    },
   ],
 
   motorSidebar: [
