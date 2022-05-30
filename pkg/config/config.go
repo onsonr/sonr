@@ -6,7 +6,6 @@ import (
 
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/looplab/fsm"
 
 	ma "github.com/multiformats/go-multiaddr"
 	t "go.buf.build/grpc/go/sonr-io/motor/core/v1"
@@ -47,7 +46,6 @@ type Config struct {
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
-
 	// Cosmos SDK
 	CosmosAccountName        string
 	CosmosAddressPrefix      string
@@ -70,10 +68,6 @@ type Config struct {
 
 	// Matrix Config
 	MatrixServerName string
-
-	// State Machine
-	States         []fsm.EventDesc
-	StateCallbacks map[string]fsm.Callback
 }
 
 // DefaultConfig returns the default configuration for the Highway node
