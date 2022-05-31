@@ -86,7 +86,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 			val.AddAlsoKnownAs(a, false)
 		}
 	}
-	val.Controllers = doc.ControllersAsString()
+	val.Controllers = doc.GetController()
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
 	val.DidDocument = doc
