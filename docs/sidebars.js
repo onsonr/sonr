@@ -58,6 +58,10 @@ const sidebars = {
   resourcesSidebar: [
     'reference/adr-001',
     'reference/adr-002',
+    'reference/adr-003',
+    'reference/adr-004',
+    'reference/adr-005',
+    'reference/adr-006'
   ],
 };
 

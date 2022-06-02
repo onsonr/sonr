@@ -121,6 +121,26 @@ const config = {
                 docId: 'reference/adr-002',
                 label: 'ADR-002',
               },
+              {
+                type: 'doc',
+                docId: 'reference/adr-003',
+                label: 'ADR-003 (WIP)',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-004',
+                label: 'ADR-004 (WIP)',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-005',
+                label: 'ADR-005 (WIP)',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-006',
+                label: 'ADR-006 (WIP)',
+              },
             ],
           },
           {
