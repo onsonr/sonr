@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"errors"
 	"sync/atomic"
 )
 
@@ -15,7 +16,7 @@ func (s HostStatus) Equals(other HostStatus) bool {
 
 // IsNotIdle returns true if the SNRHostStatus != Status_IDLE
 func (s HostStatus) IsIdle() bool {
-	return s != Status_IDLE
+	return s == Status_IDLE
 }
 
 // IsStandby returns true if the SNRHostStatus == Status_STANDBY
@@ -57,6 +58,7 @@ type SFSM struct {
 
 // SNRHostStatus Definitions
 const (
+	// States
 	Status_IDLE       HostStatus = "IDLE"
 	Status_STANDBY    HostStatus = "STANDBY"    // Host is standby, waiting for connection
 	Status_CONNECTING HostStatus = "CONNECTING" // Host is connecting
@@ -75,6 +77,10 @@ var (
 		Status_CLOSED:     {Status_IDLE, Status_STANDBY},
 		Status_FAIL:       {Status_CONNECTING, Status_STANDBY},
 	}
+
+	// Errors
+	ErrTRANSITION = errors.New("Cannot transition to state")
+	ErrOPERATION  = errors.New("Cannot perform operation, already active")
 )
 
 func NewFSM(ctx context.Context) *SFSM {
@@ -95,10 +101,10 @@ func NewFSM(ctx context.Context) *SFSM {
 }
 
 // SetStatus sets the host status and emits the event
-func (fsm *SFSM) SetStatus(s HostStatus) {
+func (fsm *SFSM) SetStatus(s HostStatus) error {
 	// Check if status is changed
 	if fsm.Current == s {
-		return
+		return nil
 	}
 	status_bucket := STATE_MAPPINGS[fsm.Current]
 	for _, status := range status_bucket {
@@ -107,6 +113,8 @@ func (fsm *SFSM) SetStatus(s HostStatus) {
 			break
 		}
 	}
+
+	return ErrTRANSITION
 }
 
 // NeedsWait checks if state is Resumed or Paused
@@ -117,17 +125,23 @@ func (sfm *SFSM) NeedsWait() {
 }
 
 // Resume tells all of goroutines to resume execution
-func (fsm *SFSM) ResumeOperation() {
+func (fsm *SFSM) ResumeOperation() error {
 	if atomic.LoadUint64(&fsm.flag) == 1 {
 		close(fsm.Chn)
 		atomic.StoreUint64(&fsm.flag, 0)
+		return nil
 	}
+
+	return ErrOPERATION
 }
 
 // Pause tells all of goroutines to pause execution
-func (fsm *SFSM) PauseOperation() {
+func (fsm *SFSM) PauseOperation() error {
 	if atomic.LoadUint64(&fsm.flag) == 0 {
 		atomic.StoreUint64(&fsm.flag, 1)
 		fsm.Chn = make(chan bool)
+		return nil
 	}
+
+	return ErrOPERATION
 }
