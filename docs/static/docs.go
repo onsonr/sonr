@@ -23,114 +23,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/auth/access/finish/:username": {
-            "post": {
-                "description": "FinishAccessName finishes the authentication process and returns a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Finish Access Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/access/start/:username": {
-            "get": {
-                "description": "StartAccessName accesses the user's existing credentials and returns a PublicKeyCredentialRequestOptions. Beggining the authentication process.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Start Access Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/register/finish/:username": {
-            "post": {
-                "description": "FinishRegisterName finishes the registration process and returns a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential to a Sonr Account.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Finish Register Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/register/start/:username": {
-            "get": {
-                "description": "StartRegisterName starts the registration process and returns a PublicKeyCredentialCreationOptions. Initiating the registration process for a Sonr Account.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Start Register Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/bucket/create": {
             "post": {
                 "description": "CreateBucket creates a new bucket for a registered application via HTTP.",
@@ -390,14 +282,14 @@ const docTemplate = `{
         },
         "/v1/ipfs/remove/:cid": {
             "post": {
-                "description": "RemoveBlob deletes a file from storage given its CID.",
+                "description": "UnpinBlob deletes a file from storage given its CID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Blob"
                 ],
-                "summary": "Remove Blob",
+                "summary": "Unpin Blob",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -841,6 +733,74 @@ const docTemplate = `{
                 }
             }
         },
+        "types.DIDDocument": {
+            "type": "object",
+            "properties": {
+                "also_known_as": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "assertion_method": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "authentication": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_delegation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_invocation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "context": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "controller": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "key_agreement": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "service": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Service"
+                    }
+                },
+                "verification_method": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.VerificationMethod"
+                    }
+                }
+            }
+        },
         "types.HowIs": {
             "type": "object",
             "properties": {
@@ -866,15 +826,22 @@ const docTemplate = `{
                 }
             }
         },
+        "types.KeyValuePair": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "types.MsgBuyAlias": {
             "type": "object",
             "properties": {
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "name": {
@@ -886,9 +853,9 @@ const docTemplate = `{
         "types.MsgBuyAliasResponse": {
             "type": "object",
             "properties": {
-                "did": {
+                "success": {
                     "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "who_is": {
                     "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
@@ -1031,9 +998,9 @@ const docTemplate = `{
         "types.MsgCreateWhoIsResponse": {
             "type": "object",
             "properties": {
-                "did": {
+                "success": {
                     "description": "Did is the top level DID of the created WhoIs.",
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "who_is": {
                     "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
@@ -1119,10 +1086,6 @@ const docTemplate = `{
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
                 }
             }
         },
@@ -1153,10 +1116,6 @@ const docTemplate = `{
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
                 }
             }
         },
@@ -1186,10 +1145,6 @@ const docTemplate = `{
                 },
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "recipient": {
@@ -1345,10 +1300,6 @@ const docTemplate = `{
                     "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
                 },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
-                },
                 "did_document": {
                     "description": "DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).",
                     "type": "array",
@@ -1361,9 +1312,9 @@ const docTemplate = `{
         "types.MsgUpdateWhoIsResponse": {
             "type": "object",
             "properties": {
-                "did": {
+                "success": {
                     "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "who_is": {
                     "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
@@ -1399,6 +1350,20 @@ const docTemplate = `{
                 }
             }
         },
+        "types.Service": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "service_endpoint": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "types.TypeField": {
             "type": "object",
             "properties": {
@@ -1408,6 +1373,29 @@ const docTemplate = `{
                 },
                 "name": {
                     "description": "Name is the name of the field.",
+                    "type": "string"
+                }
+            }
+        },
+        "types.VerificationMethod": {
+            "type": "object",
+            "properties": {
+                "controller": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "public_key_base58": {
+                    "type": "string"
+                },
+                "public_key_jwk": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.KeyValuePair"
+                    }
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -1481,10 +1469,7 @@ const docTemplate = `{
                 },
                 "did_document": {
                     "description": "DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "$ref": "#/definitions/types.DIDDocument"
                 },
                 "is_active": {
                     "description": "IsActive is the status of the DID Document",
