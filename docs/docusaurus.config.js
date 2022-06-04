@@ -113,6 +113,11 @@ const config = {
             items: [
               {
                 type: 'doc',
+                docId: 'reference/adr-overview',
+                label: 'ADR Overview',
+              },
+              {
+                type: 'doc',
                 docId: 'reference/adr-001',
                 label: 'ADR-001',
               },
@@ -124,22 +129,22 @@ const config = {
               {
                 type: 'doc',
                 docId: 'reference/adr-003',
-                label: 'ADR-003 (WIP)',
+                label: 'ADR-003',
               },
               {
                 type: 'doc',
                 docId: 'reference/adr-004',
-                label: 'ADR-004 (WIP)',
+                label: 'ADR-004',
               },
               {
                 type: 'doc',
                 docId: 'reference/adr-005',
-                label: 'ADR-005 (WIP)',
+                label: 'ADR-005',
               },
               {
                 type: 'doc',
                 docId: 'reference/adr-006',
-                label: 'ADR-006 (WIP)',
+                label: 'ADR-006',
               },
             ],
           },
