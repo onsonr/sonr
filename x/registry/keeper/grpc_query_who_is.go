@@ -47,11 +47,50 @@ func (k Keeper) WhoIs(c context.Context, req *types.QueryWhoIsRequest) (*types.Q
 
 	val, found := k.GetWhoIs(
 		ctx,
-		req.GetDid(),
+		req.Did,
 	)
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")
 	}
 
 	return &types.QueryWhoIsResponse{WhoIs: &val}, nil
+}
+
+func (k Keeper) WhoIsAlias(goCtx context.Context, req *types.QueryWhoIsAliasRequest) (*types.QueryWhoIsAliasResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	val, found := k.FindWhoIsByAlias(
+		ctx,
+		req.Alias,
+	)
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &types.QueryWhoIsAliasResponse{
+		WhoIs: &val,
+	}, nil
+}
+
+func (k Keeper) WhoIsController(goCtx context.Context, req *types.QueryWhoIsControllerRequest) (*types.QueryWhoIsControllerResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	val, found := k.FindWhoIsByController(
+		ctx,
+		req.Controller,
+	)
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &types.QueryWhoIsControllerResponse{
+		WhoIs: &val,
+	}, nil
 }
