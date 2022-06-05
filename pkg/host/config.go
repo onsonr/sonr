@@ -87,17 +87,17 @@ type SonrHost interface {
 	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) error
 
 	// Close closes the node
-	Close()
+	Close() error
 
-	Start()
+	Start() error
 
-	Stop()
+	Stop() error
 
 	// Pauses tells all of goroutines to pause execution
-	Pause()
+	Pause() error
 
 	// Resume tells all of goroutines to resume execution
-	Resume()
+	Resume() error
 
 	Status() HostStatus
 }

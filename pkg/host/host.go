@@ -229,25 +229,28 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	return nil
 }
 
-func (hn *hostImpl) Close() {
+func (hn *hostImpl) Close() error {
 	err := hn.host.Close()
 	if err != nil {
 		hn.fsm.SetStatus(Status_FAIL)
+		return err
 	}
 
 	hn.fsm.SetStatus(Status_STANDBY)
+
+	return nil
 }
 
 /*
 	Starts the libp2p host, dhcp, and sets the host status to ready
 */
-func (hn *hostImpl) Start() {
+func (hn *hostImpl) Start() error {
 	// Create Connection Manager
 	c := hn.config
 	cnnmgr, err := cmgr.NewConnManager(c.Libp2pLowWater, c.Libp2pHighWater)
 	if err != nil {
 		hn.fsm.SetStatus(Status_FAIL)
-		return
+		return err
 	}
 
 	// Start Host
@@ -261,7 +264,7 @@ func (hn *hostImpl) Start() {
 
 	if err != nil {
 		hn.fsm.SetStatus(Status_FAIL)
-		return
+		return err
 	}
 
 	hn.fsm.SetStatus(Status_CONNECTING)
@@ -280,11 +283,13 @@ func (hn *hostImpl) Start() {
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
 		hn.fsm.SetStatus(Status_FAIL)
-		return
+		return err
 	}
 
 	go hn.Serve()
 	hn.fsm.SetStatus(Status_READY)
+
+	return nil
 }
 
 // NeedsWait checks if state is Resumed or Paused and blocks channel if needed
@@ -295,26 +300,31 @@ func (hn *hostImpl) NeedsWait() {
 /*
 	Stops the libp2p host, dhcp, and sets the host status to IDLE
 */
-func (hn *hostImpl) Stop() {
+func (hn *hostImpl) Stop() error {
 	err := hn.host.Close()
 	if err != nil {
 		hn.fsm.SetStatus(Status_FAIL)
-		return
+		return err
 	}
-	hn.Pause()
+	defer hn.Pause()
+
+	return nil
 }
 
 /*
 	Stops the libp2p host, dhcp, and sets the host status to ready
 */
-func (hn *hostImpl) Pause() {
+func (hn *hostImpl) Pause() error {
 	defer hn.fsm.PauseOperation()
 	hn.fsm.SetStatus(Status_STANDBY)
+	return nil
 }
 
-func (hn *hostImpl) Resume() {
+func (hn *hostImpl) Resume() error {
 	defer hn.fsm.ResumeOperation()
 	hn.fsm.SetStatus(Status_STANDBY)
+
+	return nil
 }
 
 func (hn *hostImpl) Status() HostStatus {
