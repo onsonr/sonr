@@ -14,7 +14,7 @@ func (s HostStatus) Equals(other HostStatus) bool {
 	return s == other
 }
 
-// IsNotIdle returns true if the SNRHostStatus != Status_IDLE
+// IsIdle returns true if the SNRHostStatus != Status_IDLE
 func (s HostStatus) IsIdle() bool {
 	return s == Status_IDLE
 }
@@ -45,15 +45,15 @@ func (s HostStatus) IsClosed() bool {
 }
 
 func (sm *SFSM) GetCurrent() string {
-	return string(sm.Current)
+	return string(sm.CurrentStatus)
 }
 
 type SFSM struct {
-	Current      HostStatus
-	Chn          chan bool
-	flag         uint64
-	States       *[]HostStatus
-	StateMapping *map[HostStatus][]HostStatus
+	CurrentStatus HostStatus
+	Chn           chan bool
+	flag          uint64
+	States        *[]HostStatus
+	StateMapping  *map[HostStatus][]HostStatus
 }
 
 // SNRHostStatus Definitions
@@ -79,8 +79,8 @@ var (
 	}
 
 	// Errors
-	ErrTRANSITION = errors.New("Cannot transition to state")
-	ErrOPERATION  = errors.New("Cannot perform operation, already active")
+	ErrTRANSITION = errors.New("cannot transition to state")
+	ErrOPERATION  = errors.New("cannot perform operation, already active")
 )
 
 func NewFSM(ctx context.Context) *SFSM {
@@ -90,12 +90,13 @@ func NewFSM(ctx context.Context) *SFSM {
 		Status_CONNECTING,
 		Status_FAIL,
 		Status_STANDBY,
+		Status_CLOSED,
 	}
 
 	return &SFSM{
-		States:       &states,
-		StateMapping: &STATE_MAPPINGS,
-		Current:      Status_IDLE,
+		States:        &states,
+		StateMapping:  &STATE_MAPPINGS,
+		CurrentStatus: Status_IDLE,
 	}
 
 }
@@ -103,13 +104,13 @@ func NewFSM(ctx context.Context) *SFSM {
 // SetStatus sets the host status and emits the event
 func (fsm *SFSM) SetStatus(s HostStatus) error {
 	// Check if status is changed
-	if fsm.Current == s {
+	if fsm.CurrentStatus == s {
 		return nil
 	}
-	status_bucket := STATE_MAPPINGS[fsm.Current]
+	status_bucket := STATE_MAPPINGS[fsm.CurrentStatus]
 	for _, status := range status_bucket {
 		if status == s {
-			fsm.Current = s
+			fsm.CurrentStatus = s
 			break
 		}
 	}

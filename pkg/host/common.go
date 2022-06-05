@@ -241,7 +241,7 @@ func (hn *hostImpl) Stat() HostStat {
 	// Return Host Stat
 	return HostStat{
 		ID:        hn.host.ID().String(),
-		Status:    string(hn.fsm.Current),
+		Status:    string(hn.fsm.CurrentStatus),
 		MultiAddr: hn.host.Addrs()[0].String(),
 	}
 }

@@ -318,7 +318,7 @@ func (hn *hostImpl) Resume() {
 }
 
 func (hn *hostImpl) Status() HostStatus {
-	return hn.fsm.Current
+	return hn.fsm.CurrentStatus
 }
 
 // TODO Migrate MDNS Service to latesat libp2p spec
