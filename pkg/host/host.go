@@ -246,6 +246,7 @@ func (hn *hostImpl) Start() {
 	c := hn.config
 	cnnmgr, err := cmgr.NewConnManager(c.Libp2pLowWater, c.Libp2pHighWater)
 	if err != nil {
+		hn.fsm.SetStatus(Status_FAIL)
 		return
 	}
 
@@ -260,7 +261,9 @@ func (hn *hostImpl) Start() {
 
 	if err != nil {
 		hn.fsm.SetStatus(Status_FAIL)
+		return
 	}
+
 	hn.fsm.SetStatus(Status_CONNECTING)
 
 	// Connect to Bootstrap Nodes
@@ -298,7 +301,7 @@ func (hn *hostImpl) Stop() {
 		hn.fsm.SetStatus(Status_FAIL)
 		return
 	}
-	defer hn.Pause()
+	hn.Pause()
 }
 
 /*
