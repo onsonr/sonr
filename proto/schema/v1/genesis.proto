@@ -2,7 +2,7 @@ syntax = "proto3";
 package sonrio.sonr.schema;
 
 import "gogoproto/gogo.proto";
-import "schema/params.proto";
+import "schema/v1/params.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";

@@ -1,0 +1,33 @@
+syntax = "proto3";
+package sonrio.sonr.schema;
+option go_package = "github.com/sonr-io/sonr/x/schema/types";
+
+// Schema defines the shapes of schemas on Sonr
+message Schema {
+  // the DID for this schema
+  string did = 1;
+
+  // an alternative reference point
+  string label = 2;
+
+  // the properties of this schema
+  map<string, SchemaKind> fields = 3;
+}
+
+// Represents the types of fields a schema can have
+enum SchemaKind {
+  SCHEMA_KIND_INVALID = 0;
+  SCHEMA_KIND_MAP = 1;
+  SCHEMA_KIND_LIST = 2;
+  SCHEMA_KIND_UNIT = 3;
+  SCHEMA_KIND_BOOL = 4;
+  SCHEMA_KIND_INT = 5;
+  SCHEMA_KIND_FLOAT = 6;
+  SCHEMA_KIND_STRING = 7;
+  SCHEMA_KIND_BYTES = 8;
+  SCHEMA_KIND_LINK = 9;
+  SCHEMA_KIND_STRUCT = 10;
+  SCHEMA_KIND_UNION = 11;
+  SCHEMA_KIND_ENUM = 12;
+  SCHEMA_KIND_ANY = 13;
+}
