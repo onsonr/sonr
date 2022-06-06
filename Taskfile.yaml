@@ -9,10 +9,9 @@ includes:
     dir: ./bind
 
 tasks:
-
-## ------------------------------------------------------------
-## Node tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Node tasks
+  ## ------------------------------------------------------------
   chain:build:
     summary: "Build cosmos blockchain using ignite"
     cmds:
@@ -30,9 +29,9 @@ tasks:
       - go run cmd/highwayd/main.go
     silent: true
 
-## ------------------------------------------------------------
-## Documentation tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Documentation tasks
+  ## ------------------------------------------------------------
   docs:start:
     summary: "Calls yarn start in docs directory"
     cmds:
@@ -77,9 +76,9 @@ tasks:
     silent: true
     dir: docs
 
-## ------------------------------------------------------------
-## Protobuf tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Protobuf tasks
+  ## ------------------------------------------------------------
   buf:
     summary: "Build and Push Protobuf files to buf.build"
     cmds:
@@ -111,7 +110,7 @@ tasks:
   swag:build:
     summary: "Generate swagger files for highway and blockchain using ignite"
     cmds:
-      - swag i -d ./ -g internal/highway/http/server.go -o docs/static
+      - swag i -d ./ -g internal/highway/api/server.go -o docs/static
       - mv docs/static/swagger.yaml docs/static/highway.yaml
       - rm -rf docs/static/swagger.json
 
@@ -121,10 +120,9 @@ tasks:
     cmds:
       - npm run dev
 
-
-## ------------------------------------------------------------
-## Utility tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Utility tasks
+  ## ------------------------------------------------------------
   default:
     summary: "Displays tasks and descriptions"
     cmds:
