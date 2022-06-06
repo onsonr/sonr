@@ -21,11 +21,6 @@ func (w *WhoIs) ContainsAlias(target string) bool {
 
 // ContainsController checks if the controller is in the list of controllers of the whois
 func (w *WhoIs) ContainsController(target string) bool {
-	// Validates DID String
-	if _, err := did.ParseDID(target); err != nil {
-		return false
-	}
-
 	// Checks if the controller is in the list of controllers
 	for _, c := range w.Controllers {
 		if c == target {
