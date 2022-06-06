@@ -103,15 +103,6 @@ func (d *DIDDocument) AddAlias(alias string) {
 	d.AlsoKnownAs = append(d.AlsoKnownAs, alias)
 }
 
-// ControllersAsString returns all DID controllers as a string array
-func (d *DIDDocument) ControllersAsString() []string {
-	var controllers []string
-	for _, controller := range d.Controller {
-		controllers = append(controllers, controller)
-	}
-	return controllers
-}
-
 // NormalizeDocument accepts a JSON document and applies (in order) the given normalizers to it.
 func NormalizeDocument(document []byte, normalizers ...Normalizer) ([]byte, error) {
 	tmp := make(map[string]interface{}, 0)
