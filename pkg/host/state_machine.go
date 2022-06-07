@@ -101,8 +101,8 @@ func NewFSM(ctx context.Context) *SFSM {
 
 }
 
-// SetStatus sets the host status and emits the event
-func (fsm *SFSM) SetStatus(s HostStatus) error {
+// SetState sets the host status and emits the event
+func (fsm *SFSM) SetState(s HostStatus) error {
 	// Check if status is changed
 	if fsm.CurrentStatus == s {
 		return nil

@@ -158,7 +158,7 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 

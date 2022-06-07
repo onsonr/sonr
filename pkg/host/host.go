@@ -85,14 +85,14 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
-	hn.fsm.SetStatus(Status_CONNECTING)
+	hn.fsm.SetState(Status_CONNECTING)
 
 	// Bootstrap DHT
 	if err := hn.Bootstrap(context.Background()); err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -101,7 +101,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		if err := hn.Connect(pi); err != nil {
 			continue
 		} else {
-			hn.fsm.SetStatus(Status_FAIL)
+			hn.fsm.SetState(Status_FAIL)
 			break
 		}
 	}
@@ -109,7 +109,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Initialize Discovery for DHT
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -118,7 +118,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		// hn.createMdnsDiscovery(config)
 	}
 
-	hn.fsm.SetStatus(Status_READY)
+	hn.fsm.SetState(Status_READY)
 	go hn.Serve()
 
 	return hn, nil
@@ -173,12 +173,12 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	if err != nil {
 		return nil, err
 	}
-	hn.fsm.SetStatus(Status_CONNECTING)
+	hn.fsm.SetState(Status_CONNECTING)
 
 	// Bootstrap DHT
 	if err := hn.Bootstrap(context.Background()); err != nil {
 
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -194,12 +194,12 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Initialize Discovery for DHT
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 
 		return nil, err
 	}
 
-	hn.fsm.SetStatus(Status_READY)
+	hn.fsm.SetState(Status_READY)
 	go hn.Serve()
 	return hn, nil
 }
@@ -214,29 +214,29 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	// Create Pub Sub
 	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 
 	// Handle DHT Peers
 	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, c.Libp2pRendezvous, c.Libp2pTTL)
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 
-	hn.fsm.SetStatus(Status_READY)
+	hn.fsm.SetState(Status_READY)
 	return nil
 }
 
 func (hn *hostImpl) Close() error {
 	err := hn.host.Close()
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 
-	hn.fsm.SetStatus(Status_STANDBY)
+	hn.fsm.SetState(Status_STANDBY)
 
 	return nil
 }
@@ -249,7 +249,7 @@ func (hn *hostImpl) Start() error {
 	c := hn.config
 	cnnmgr, err := cmgr.NewConnManager(c.Libp2pLowWater, c.Libp2pHighWater)
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 
@@ -263,18 +263,18 @@ func (hn *hostImpl) Start() error {
 	)
 
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 
-	hn.fsm.SetStatus(Status_CONNECTING)
+	hn.fsm.SetState(Status_CONNECTING)
 
 	// Connect to Bootstrap Nodes
 	for _, pi := range c.Libp2pBootstrapPeers {
 		if err := hn.Connect(pi); err != nil {
 			continue
 		} else {
-			hn.fsm.SetStatus(Status_FAIL)
+			hn.fsm.SetState(Status_FAIL)
 			break
 		}
 	}
@@ -282,12 +282,12 @@ func (hn *hostImpl) Start() error {
 	// Initialize Discovery for DHT
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 
 	go hn.Serve()
-	hn.fsm.SetStatus(Status_READY)
+	hn.fsm.SetState(Status_READY)
 
 	return nil
 }
@@ -303,7 +303,7 @@ func (hn *hostImpl) NeedsWait() {
 func (hn *hostImpl) Stop() error {
 	err := hn.host.Close()
 	if err != nil {
-		hn.fsm.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 	hn.Pause()
@@ -316,13 +316,13 @@ func (hn *hostImpl) Stop() error {
 */
 func (hn *hostImpl) Pause() error {
 	defer hn.fsm.PauseOperation()
-	hn.fsm.SetStatus(Status_STANDBY)
+	hn.fsm.SetState(Status_STANDBY)
 	return nil
 }
 
 func (hn *hostImpl) Resume() error {
 	defer hn.fsm.ResumeOperation()
-	hn.fsm.SetStatus(Status_STANDBY)
+	hn.fsm.SetState(Status_STANDBY)
 
 	return nil
 }

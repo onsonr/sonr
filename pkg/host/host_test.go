@@ -15,12 +15,12 @@ func TestStateMachine(t *testing.T) {
 	})
 	t.Run("Should report correct state on transition", func(t *testing.T) {
 		fsm := NewFSM(nil)
-		fsm.SetStatus(Status_STANDBY)
+		fsm.SetState(Status_STANDBY)
 		assert.Equal(t, fsm.CurrentStatus, Status_STANDBY)
 	})
 	t.Run("Should not transition on invalid state transition", func(t *testing.T) {
 		fsm := NewFSM(nil)
-		fsm.SetStatus(Status_READY)
+		fsm.SetState(Status_READY)
 		assert.Equal(t, fsm.CurrentStatus, Status_IDLE)
 	})
 	t.Run("Operation Pause Should create channel", func(t *testing.T) {
