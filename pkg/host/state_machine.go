@@ -44,7 +44,7 @@ func (s HostStatus) IsClosed() bool {
 	return s == Status_CLOSED
 }
 
-func (sm *SFSM) GetCurrent() string {
+func (sm SFSM) GetCurrent() string {
 	return string(sm.CurrentStatus)
 }
 

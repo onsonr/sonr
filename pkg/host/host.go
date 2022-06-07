@@ -306,7 +306,7 @@ func (hn *hostImpl) Stop() error {
 		hn.fsm.SetStatus(Status_FAIL)
 		return err
 	}
-	defer hn.Pause()
+	hn.Pause()
 
 	return nil
 }
