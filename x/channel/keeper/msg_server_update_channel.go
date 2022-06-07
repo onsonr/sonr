@@ -26,7 +26,7 @@ func (k msgServer) UpdateChannel(goCtx context.Context, msg *types.MsgUpdateChan
 	// Replace Channel Properties with new ones
 	howis.Channel.Description = msg.GetDescription()
 	howis.Channel.Label = msg.GetLabel()
-	howis.Channel.RegisteredObject = msg.GetObjectToRegister()
+	// howis.Channel.RegisteredObject = msg.GetObjectToRegister()
 
 	return &types.MsgUpdateChannelResponse{
 		Code:    100,
