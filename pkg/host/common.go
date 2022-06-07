@@ -81,7 +81,7 @@ func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) 
 
 	// verify the data was authored by the signing peer identified by the public key
 	// and signature included in the message
-	return n.VerifyData(buf, []byte(sign), metadata.PublicKey, peerId)
+	return n.VerifyData(buf, []byte(sign), peerId, metadata.PublicKey)
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
@@ -158,7 +158,7 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -241,7 +241,7 @@ func (hn *hostImpl) Stat() HostStat {
 	// Return Host Stat
 	return HostStat{
 		ID:        hn.host.ID().String(),
-		Status:    hn.status.String(),
+		Status:    string(hn.fsm.CurrentStatus),
 		MultiAddr: hn.host.Addrs()[0].String(),
 	}
 }
@@ -268,7 +268,7 @@ func (hn *hostImpl) Serve() {
 }
 
 // VerifyData verifies incoming p2p message data integrity
-func (n *hostImpl) VerifyData(data, signature, pubKeyData []byte, peerId peer.ID) error {
+func (n *hostImpl) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) error {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
 		return err
