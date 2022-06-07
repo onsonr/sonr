@@ -29,7 +29,7 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 
-	capabilityKeeper types.CapabilityKeeper, bankKeeper types.BankKeeper,
+	accountKeeper types.AccountKeeper, capabilityKeeper types.CapabilityKeeper, bankKeeper types.BankKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {

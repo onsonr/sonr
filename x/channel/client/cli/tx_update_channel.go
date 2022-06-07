@@ -30,7 +30,7 @@ func CmdUpdateChannel() *cobra.Command {
 				argDid,
 				"",
 				"",
-				nil,
+				// nil,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

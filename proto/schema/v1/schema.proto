@@ -16,18 +16,18 @@ message Schema {
 
 // Represents the types of fields a schema can have
 enum SchemaKind {
-  SCHEMA_KIND_INVALID = 0;
-  SCHEMA_KIND_MAP = 1;
-  SCHEMA_KIND_LIST = 2;
-  SCHEMA_KIND_UNIT = 3;
-  SCHEMA_KIND_BOOL = 4;
-  SCHEMA_KIND_INT = 5;
-  SCHEMA_KIND_FLOAT = 6;
-  SCHEMA_KIND_STRING = 7;
-  SCHEMA_KIND_BYTES = 8;
-  SCHEMA_KIND_LINK = 9;
-  SCHEMA_KIND_STRUCT = 10;
-  SCHEMA_KIND_UNION = 11;
-  SCHEMA_KIND_ENUM = 12;
-  SCHEMA_KIND_ANY = 13;
+  INVALID = 0;
+  MAP = 1;
+  LIST = 2;
+  UNIT = 3;
+  BOOL = 4;
+  INT = 5;
+  FLOAT = 6;
+  STRING = 7;
+  BYTES = 8;
+  LINK = 9;
+  STRUCT = 10;
+  UNION = 11;
+  ENUM = 12;
+  ANY = 13;
 }
