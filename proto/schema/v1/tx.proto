@@ -14,8 +14,9 @@ service Msg {
 }
 
 message MsgCreateSchema {
-  string label = 1;
-  map<string, SchemaKind> fields = 2;
+  string creator = 1;
+  string label = 2;
+  map<string, SchemaKind> fields = 3;
 }
 
 message MsgCreateSchemaResponse {
@@ -23,7 +24,8 @@ message MsgCreateSchemaResponse {
 }
 
 message MsgDeprecateSchema {
-  string did = 1;
+  string creator = 1;
+  string did = 2;
 }
 
 message MsgDeprecateSchemaResponse {}
