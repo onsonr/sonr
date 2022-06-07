@@ -50633,6 +50633,11 @@ definitions:
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
       schema:
         type: object
         properties:
@@ -50667,6 +50672,12 @@ definitions:
         title: Schema defines the shapes of schemas on Sonr
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
   sonrio.sonr.schema.Params:
     type: object
     description: Params defines the parameters for the module.

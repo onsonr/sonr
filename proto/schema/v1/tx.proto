@@ -20,7 +20,9 @@ message MsgCreateSchema {
 }
 
 message MsgCreateSchemaResponse {
-  Schema schema = 1;
+  int32 code = 1;
+  string message = 2;
+  Schema schema = 3;
 }
 
 message MsgDeprecateSchema {
@@ -28,6 +30,9 @@ message MsgDeprecateSchema {
   string did = 2;
 }
 
-message MsgDeprecateSchemaResponse {}
+message MsgDeprecateSchemaResponse {
+  int32 code = 1;
+  string message = 2;
+}
 
 // this line is used by starport scaffolding # proto/tx/message
