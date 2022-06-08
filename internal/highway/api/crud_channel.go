@@ -29,13 +29,13 @@ func (s *HighwayServer) CreateChannel(c *gin.Context) {
 	}
 
 	// Verify that channel fields are not nil
-	if req.GetObjectToRegister().GetFields() == nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": t.ErrRequestBody.Error(),
-		})
+	// if req.GetObjectToRegister().GetFields() == nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": t.ErrRequestBody.Error(),
+	// 	})
 
-		return
-	}
+	// 	return
+	// }
 
 	// Broadcast the message
 	resp, err := s.Cosmos.BroadcastCreateChannel(&req)

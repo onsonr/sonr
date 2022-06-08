@@ -28,10 +28,10 @@ func (k msgServer) CreateChannel(goCtx context.Context, msg *types.MsgCreateChan
 
 	// Create new Document for Channel
 	doc := &types.ChannelDoc{
-		Label:            msg.GetLabel(),
-		Did:              did.ID,
-		Description:      msg.GetDescription(),
-		RegisteredObject: msg.GetObjectToRegister(),
+		Label:       msg.GetLabel(),
+		Did:         did.ID,
+		Description: msg.GetDescription(),
+		// RegisteredObject: msg.GetObjectToRegister(),
 	}
 
 	// Create a new channel record

@@ -46,7 +46,6 @@ type Config struct {
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
-
 	// Cosmos SDK
 	CosmosAccountName        string
 	CosmosAddressPrefix      string

@@ -16,7 +16,7 @@ var _ sdk.Msg = &MsgBuyAlias{}
 func NewMsgBuyAlias(creator string, did string, name string) *MsgBuyAlias {
 	return &MsgBuyAlias{
 		Creator: creator,
-		Name: name,
+		Name:    name,
 	}
 }
 

@@ -1,0 +1,38 @@
+syntax = "proto3";
+package sonrio.sonr.schema;
+
+import "schema/v1/schema.proto";
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/sonr-io/sonr/x/schema/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CreateSchema(MsgCreateSchema) returns (MsgCreateSchemaResponse);
+  rpc DeprecateSchema(MsgDeprecateSchema) returns (MsgDeprecateSchemaResponse);
+}
+
+message MsgCreateSchema {
+  string creator = 1;
+  string label = 2;
+  map<string, SchemaKind> fields = 3;
+}
+
+message MsgCreateSchemaResponse {
+  int32 code = 1;
+  string message = 2;
+  Schema schema = 3;
+}
+
+message MsgDeprecateSchema {
+  string creator = 1;
+  string did = 2;
+}
+
+message MsgDeprecateSchemaResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// this line is used by starport scaffolding # proto/tx/message
