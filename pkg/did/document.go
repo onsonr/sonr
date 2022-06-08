@@ -7,9 +7,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/sonr-io/sonr/pkg/dag_jose"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 
-	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/shengdoushi/base58"
 
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
@@ -334,7 +335,7 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	}
 
 	if keyType == ssi.JsonWebKey2020 {
-		keyAsJWK, err := jwk.New(key)
+		keyAsJWK, err := dag_jose.CreateJWK(key)
 		if err != nil {
 			return nil, err
 		}
