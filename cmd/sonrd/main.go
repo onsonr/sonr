@@ -7,7 +7,6 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/app"
-	"github.com/sonr-io/sonr/cmd/sonrd/didutil"
 	"github.com/spf13/viper"
 	cmd "github.com/tendermint/spm/cosmoscmd"
 )
@@ -32,11 +31,6 @@ func loadEnv() error {
 }
 
 func main() {
-	err := loadEnv()
-	if err != nil {
-		logger.Errorf("Error while loading config for enviorment %s", err)
-	}
-
 	rootCmd, _ := cmd.NewRootCmd(
 		app.Name,
 		app.AccountAddressPrefix,
@@ -44,10 +38,7 @@ func main() {
 		app.Name,
 		app.ModuleBasics,
 		app.New,
-		cmd.WithEnvPrefix("SONR_CHAIN"),
-		cmd.AddSubCmd(didutil.DidUtilCmd()),
 		// this line is used by starport scaffolding # root/arguments
-
 	)
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
 

@@ -4,6 +4,9 @@ import (
 	"context"
 	"crypto/ed25519"
 	"errors"
+	"fmt"
+
+	"github.com/kataras/go-events"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -15,6 +18,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/config"
 	t "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -54,7 +58,7 @@ func (n *hostImpl) Role() config.Role {
 }
 
 // AuthenticateMessage Authenticates incoming p2p message
-func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) bool {
+func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) error {
 	// store a temp ref to signature and remove it from message data
 	// sign is a string to allow easy reset to zero-value (empty string)
 	sign := metadata.Signature
@@ -63,7 +67,7 @@ func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) 
 	// marshall data without the signature to protobufs3 binary format
 	buf, err := proto.Marshal(msg)
 	if err != nil {
-		return false
+		return err
 	}
 
 	// restore sig in message data (for possible future use)
@@ -72,7 +76,7 @@ func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) 
 	// restore peer id binary format from base58 encoded node id data
 	peerId, err := peer.Decode(metadata.NodeId)
 	if err != nil {
-		return false
+		return err
 	}
 
 	// verify the data was authored by the signing peer identified by the public key
@@ -83,8 +87,8 @@ func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
 func (hn *hostImpl) Connect(pi peer.AddrInfo) error {
 	// Check if host is ready
-	if err := hn.HasRouting(); err != nil {
-		return err
+	if !hn.HasRouting() {
+		return fmt.Errorf("Host does not have routing")
 	}
 
 	// Call Underlying Host to Connect
@@ -97,11 +101,8 @@ func (hn *hostImpl) HandlePeerFound(pi peer.AddrInfo) {
 }
 
 // HasRouting returns no-error if the host is ready for connect
-func (h *hostImpl) HasRouting() error {
-	if h.IpfsDHT == nil || h.host == nil {
-		return errors.New("Host is not ready")
-	}
-	return nil
+func (h *hostImpl) HasRouting() bool {
+	return h.IpfsDHT != nil && h.host != nil
 }
 
 // Join wraps around PubSub.Join and returns topic. Checks wether the host is ready before joining.
@@ -157,7 +158,7 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -185,9 +186,8 @@ func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.Stream
 
 // SendMessage writes a protobuf go data object to a network stream
 func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	err := h.HasRouting()
-	if err != nil {
-		return err
+	if !h.HasRouting() {
+		return fmt.Errorf("Host does not have routing")
 	}
 
 	s, err := h.NewStream(h.ctx, id, p)
@@ -210,14 +210,40 @@ func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) er
 	return nil
 }
 
+// TODO
+func (hn *hostImpl) Events() events.EventEmmiter {
+	return events.New()
+}
+
+// TODO
+func (hn *hostImpl) Peer() (*types.Peer, error) {
+	return nil, nil
+}
+
+// TODO
+func (hn *hostImpl) SignData(data []byte) ([]byte, error) {
+	return nil, nil
+}
+
+// TODO
+func (hn *hostImpl) SignMessage(message proto.Message) ([]byte, error) {
+	return nil, nil
+}
+
+type HostStat struct {
+	ID        string `json:"id"`
+	Status    string `json:"status"`
+	MultiAddr string `json:"multi_addr"`
+}
+
 // Stat returns the host stat info
-func (hn *hostImpl) Stat() (map[string]string, error) {
+func (hn *hostImpl) Stat() HostStat {
 	// Return Host Stat
-	return map[string]string{
-		"ID":        hn.host.ID().String(),
-		"Status":    hn.status.String(),
-		"MultiAddr": hn.host.Addrs()[0].String(),
-	}, nil
+	return HostStat{
+		ID:        hn.host.ID().String(),
+		Status:    string(hn.fsm.CurrentStatus),
+		MultiAddr: hn.host.Addrs()[0].String(),
+	}
 }
 
 // Serve handles incoming peer Addr Info
@@ -242,26 +268,26 @@ func (hn *hostImpl) Serve() {
 }
 
 // VerifyData verifies incoming p2p message data integrity
-func (n *hostImpl) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
+func (n *hostImpl) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) error {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
-		return false
+		return err
 	}
 
 	// extract node id from the provided public key
 	idFromKey, err := peer.IDFromPublicKey(key)
 	if err != nil {
-		return false
+		return err
 	}
 
 	// verify that message author node id matches the provided node public key
 	if idFromKey != peerId {
-		return false
+		return err
 	}
 
-	res, err := key.Verify(data, signature)
+	_, err = key.Verify(data, signature)
 	if err != nil {
-		return false
+		return err
 	}
-	return res
+	return nil
 }

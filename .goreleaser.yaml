@@ -8,67 +8,32 @@ before:
     - go mod download
 
 # -- Post Release Hooks --
-after:
-  hooks:
-  - rm -rf ./SonrMotor.xcframework
-  - rm -rf ./io.sonr.motor.aar
-  - rm -rf ./sonr-motor.wasm
-  - rm -rf ./dist
-  - rm -rf ./build
+# after:
+#   hooks:
+#   - rm -rf ./SonrMotor.xcframework
+#   - rm -rf ./io.sonr.motor.aar
+#   - rm -rf ./sonr-motor.wasm
+#   - rm -rf ./dist
+#   - rm -rf ./build
 
 # -- Individual Builds --
 builds:
-  # Motor Framework for Wasm
-  - id: "motor-wasm"
-    builder: prebuilt
-    goos:
-    - js
-    goarch:
-    - wasm
-    prebuilt:
-      path: build/js
-    # UNCOMMENT THIS LINE TO DISABLE BUILD FOR WASM
-    # skip: true
-    hooks:
-      pre:
-        - sh scripts/bind.sh -w
-      post:
-        - mv build/js/sonr-motor.wasm ./sonr-motor.wasm
-
-  # Motor Framework for Android
-  - id: "motor-android"
-    builder: prebuilt
-    # UNCOMMENT THIS LINE TO DISABLE BUILD FOR ANDROID
-    # skip: true
-    goos:
-    - android
-    goarch:
-    - arm64
-    prebuilt:
-      path: build/android
-    hooks:
-      pre:
-        - sh scripts/bind.sh -a
-      post:
-        - mv build/android/io.sonr.motor.aar ./io.sonr.motor.aar
-
-  # Motor Framework for iOS
-  - id: "motor-ios"
-    builder: prebuilt
-    # UNCOMMENT THIS LINE TO DISABLE BUILD FOR IOS
-    # skip: true
-    goos:
-    - darwin
-    goarch:
-    - arm64
-    prebuilt:
-      path: build/ios
-    hooks:
-      pre:
-        - sh scripts/bind.sh -i
-      post:
-        - mv build/ios/SonrMotor.xcframework ./SonrMotor.xcframework
-
+  # # Motor Framework for Wasm
+  # - id: "motor-wasm"
+  #   builder: prebuilt
+  #   goos:
+  #   - js
+  #   - darwin
+  #   goarch:
+  #   - wasm
+  #   - arm64
+  #   prebuilt:
+  #     path: build/motorlib-{{.OS}}-{{.Arch}}
+  #   # UNCOMMENT THIS LINE TO DISABLE BUILD FOR WASM
+  #   # skip: true
+  #   hooks:
+  #     pre:
+  #       - task motor:bind
 
     # Highway Daemon for macOS
   - id: "highwayd-darwin"
@@ -229,33 +194,32 @@ archives:
   - sonrd-windows
   - sonrd-linux
 
-# Templating for Motor Wasm
-- id: "motor-wasm-archive"
-  name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
-  builds:
-  - motor-wasm
-  files:
-    - ./sonr-motor.wasm
+# # Templating for Motor Wasm
+# - id: "motor-wasm-archive"
+#   name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
+#   builds:
+#   - motor-bind
+#   files:
+#     - ./sonr-motor.wasm
 
 
-# Templating for Motor Android
-- id: "motor-android-archive"
-  name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
-  builds:
-  - motor-android
-  files:
-    - ./io.sonr.motor.aar
+# # Templating for Motor Android
+# - id: "motor-android-archive"
+#   name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
+#   builds:
+#   - motor-bind
+#   files:
+#     - ./io.sonr.motor.aar
 
-# Templating for Motor iOS
-- id: "motor-ios-archive"
-  name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
-  builds:
-  - motor-ios
-  replacements:
-    darwin: ios
-  files:
-    - ./SonrMotor.xcframework/
-
+# # Templating for Motor iOS
+# - id: "motor-ios-archive"
+#   name_template: 'motorlib-{{ .Os }}_{{ .Arch }}'
+#   builds:
+#   - motor-bind
+#   replacements:
+#     darwin: ios
+#   files:
+#     - ./SonrMotor.xcframework/
 
 # Templating for CLI
 - id: "highway-cli-archive"

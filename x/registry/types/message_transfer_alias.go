@@ -31,18 +31,17 @@ func (msg *MsgTransferAlias) Type() string {
 // GetCreatorDid returns the creator did
 func (msg *MsgTransferAlias) GetCreatorDid() string {
 	rawCreator := msg.GetCreator()
-	var identifier string
 
 	// Trim snr account prefix
 	if strings.HasPrefix(rawCreator, "snr") {
-		identifier = strings.TrimLeft(rawCreator, "snr")
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
 	}
 
 	// Trim cosmos account prefix
-	if strings.HasPrefix(identifier, "cosmos") {
-		identifier = strings.TrimLeft(identifier, "cosmos")
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
 	}
-	return fmt.Sprintf("did:snr:%s", identifier)
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }
 
 func (msg *MsgTransferAlias) GetSigners() []sdk.AccAddress {

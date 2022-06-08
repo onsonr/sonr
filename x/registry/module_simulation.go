@@ -50,24 +50,20 @@ const (
 
 // GenerateGenesisState creates a randomized GenState of the module
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
+	// Define initial state for each module account
 	accs := make([]string, len(simState.Accounts))
+	whoIsList := make([]types.WhoIs, len(simState.Accounts))
+
+	// Iterate over all accounts
 	for i, acc := range simState.Accounts {
 		accs[i] = acc.Address.String()
+		whoIsList[i], _ = registrysimulation.CreateMockWhoIs(acc)
 	}
 	registryGenesis := types.GenesisState{
-		Params: types.DefaultParams(),
-		PortId: types.PortID,
-		WhoIsList: []types.WhoIs{
-			{
-				DidDocument: []byte("did:snr:1"),
-				Owner:       sample.AccAddress(),
-			},
-			{
-				DidDocument: []byte("did:snr:2"),
-				Owner:       sample.AccAddress(),
-			},
-		},
-		WhoIsCount: 2,
+		Params:     types.DefaultParams(),
+		PortId:     types.PortID,
+		WhoIsList:  whoIsList,
+		WhoIsCount: uint64(len(whoIsList)),
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&registryGenesis)
@@ -101,18 +97,19 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgCreateWhoIs,
 		registrysimulation.SimulateMsgCreateWhoIs(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
+	/*
+		var weightMsgBuyAlias int
+		simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgBuyAlias, nil,
+			func(_ *rand.Rand) {
+				weightMsgBuyAlias = defaultWeightMsgSellAlias
+			},
+		)
 
-	var weightMsgBuyAlias int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgBuyAlias, nil,
-		func(_ *rand.Rand) {
-			weightMsgBuyAlias = defaultWeightMsgSellAlias
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgBuyAlias,
-		registrysimulation.SimulateMsgBuyAlias(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
+		operations = append(operations, simulation.NewWeightedOperation(
+			weightMsgBuyAlias,
+			registrysimulation.SimulateMsgBuyAlias(am.accountKeeper, am.bankKeeper, am.keeper),
+		))
+	*/
 	var weightMsgUpdateWhoIs int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateWhoIs, &weightMsgUpdateWhoIs, nil,
 		func(_ *rand.Rand) {
@@ -124,27 +121,31 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		registrysimulation.SimulateMsgUpdateWhoIs(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgSellAlias int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgSellAlias, nil,
-		func(_ *rand.Rand) {
-			weightMsgSellAlias = defaultWeightMsgSellAlias
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgSellAlias,
-		registrysimulation.SimulateMsgSellAlias(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
+	/*
+		var weightMsgSellAlias int
+		simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgSellAlias, nil,
+			func(_ *rand.Rand) {
+				weightMsgSellAlias = defaultWeightMsgSellAlias
+			},
+		)
+		operations = append(operations, simulation.NewWeightedOperation(
+			weightMsgSellAlias,
+			registrysimulation.SimulateMsgSellAlias(am.accountKeeper, am.bankKeeper, am.keeper),
+		))
+	*/
 
-	var weightMsgTransferAlias int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgTransferAlias, &weightMsgTransferAlias, nil,
-		func(_ *rand.Rand) {
-			weightMsgTransferAlias = defaultWeightMsgTransferAlias
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgTransferAlias,
-		registrysimulation.SimulateMsgTransferAlias(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
+	/*
+		var weightMsgTransferAlias int
+		simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgTransferAlias, &weightMsgTransferAlias, nil,
+			func(_ *rand.Rand) {
+				weightMsgTransferAlias = defaultWeightMsgTransferAlias
+			},
+		)
+		operations = append(operations, simulation.NewWeightedOperation(
+			weightMsgTransferAlias,
+			registrysimulation.SimulateMsgTransferAlias(am.accountKeeper, am.bankKeeper, am.keeper),
+		))
+	*/
 
 	var weightMsgDeactivateWhoIs int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeactivateWhoIs, &weightMsgDeactivateWhoIs, nil,

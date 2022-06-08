@@ -49,7 +49,7 @@ func WebauthnToCredential(c *webauthn.Credential) Credential {
 	if c.AttestationType != "" {
 		cred.AttestationType = c.AttestationType
 	}
-	cred.Authenticator = WebauthnToAuthenticator(c.Authenticator)
+	cred.Authenticator = WebauthnAuthenticatorToAuthenticator(c.Authenticator)
 	return cred
 }
 
@@ -78,8 +78,8 @@ func SelectAuthenticator(att string, rrk *bool, uv string) p.AuthenticatorSelect
 	}
 }
 
-// WebauthnToAuthenticator will convert a webauthn authenticator to a did authenticator
-func WebauthnToAuthenticator(a webauthn.Authenticator) Authenticator {
+// WebauthnAuthenticatorToAuthenticator will convert a webauthn authenticator to a did authenticator
+func WebauthnAuthenticatorToAuthenticator(a webauthn.Authenticator) Authenticator {
 	return Authenticator{
 		AAGUID:       a.AAGUID,
 		SignCount:    a.SignCount,

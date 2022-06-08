@@ -42,7 +42,7 @@ var ErrInvalidService = errors.New("invalid service")
 // Validator defines functions for validating a DID document.
 type Validator interface {
 	// Validate validates a DID document. It returns the first validation error is finds wrapped in ErrDIDDocumentInvalid.
-	Validate(document Document) error
+	Validate(document DocumentImpl) error
 }
 
 // MultiValidator is a validator that executes zero or more validators. It returns the first validation error it encounters.
@@ -50,7 +50,7 @@ type MultiValidator struct {
 	Validators []Validator
 }
 
-func (m MultiValidator) Validate(document Document) error {
+func (m MultiValidator) Validate(document DocumentImpl) error {
 	for _, validator := range m.Validators {
 		if err := validator.Validate(document); err != nil {
 			return err
@@ -63,36 +63,36 @@ func (m MultiValidator) Validate(document Document) error {
 type W3CSpecValidator struct {
 }
 
-func (w W3CSpecValidator) Validate(document Document) error {
+func (w W3CSpecValidator) Validate(document DocumentImpl) error {
 	return MultiValidator{[]Validator{
 		baseValidator{},
 		verificationMethodValidator{},
 		verificationMethodRelationshipValidator{
-			getter: func(document Document) VerificationRelationships {
+			getter: func(document DocumentImpl) VerificationRelationships {
 				return document.Authentication
 			},
 			err: ErrInvalidAuthentication,
 		},
 		verificationMethodRelationshipValidator{
-			getter: func(document Document) VerificationRelationships {
+			getter: func(document DocumentImpl) VerificationRelationships {
 				return document.AssertionMethod
 			},
 			err: ErrInvalidAssertionMethod,
 		},
 		verificationMethodRelationshipValidator{
-			getter: func(document Document) VerificationRelationships {
+			getter: func(document DocumentImpl) VerificationRelationships {
 				return document.KeyAgreement
 			},
 			err: ErrInvalidKeyAgreement,
 		},
 		verificationMethodRelationshipValidator{
-			getter: func(document Document) VerificationRelationships {
+			getter: func(document DocumentImpl) VerificationRelationships {
 				return document.CapabilityInvocation
 			},
 			err: ErrInvalidCapabilityInvocation,
 		},
 		verificationMethodRelationshipValidator{
-			getter: func(document Document) VerificationRelationships {
+			getter: func(document DocumentImpl) VerificationRelationships {
 				return document.CapabilityDelegation
 			},
 			err: ErrInvalidCapabilityDelegation,
@@ -104,7 +104,7 @@ func (w W3CSpecValidator) Validate(document Document) error {
 // baseValidator validates simple top-level DID document properties (@context, ID, controller)
 type baseValidator struct{}
 
-func (w baseValidator) Validate(document Document) error {
+func (w baseValidator) Validate(document DocumentImpl) error {
 	// Verify `@context`
 	if !containsContext(document, DIDContextV1) {
 		return makeValidationError(ErrInvalidContext)
@@ -124,7 +124,7 @@ func (w baseValidator) Validate(document Document) error {
 
 type verificationMethodValidator struct{}
 
-func (v verificationMethodValidator) Validate(document Document) error {
+func (v verificationMethodValidator) Validate(document DocumentImpl) error {
 	for _, vm := range document.VerificationMethod {
 		if !validateVM(vm) {
 			return makeValidationError(ErrInvalidVerificationMethod)
@@ -134,11 +134,11 @@ func (v verificationMethodValidator) Validate(document Document) error {
 }
 
 type verificationMethodRelationshipValidator struct {
-	getter func(document Document) VerificationRelationships
+	getter func(document DocumentImpl) VerificationRelationships
 	err    error
 }
 
-func (v verificationMethodRelationshipValidator) Validate(document Document) error {
+func (v verificationMethodRelationshipValidator) Validate(document DocumentImpl) error {
 	for _, vm := range v.getter(document) {
 		if !validateVM(vm.VerificationMethod) {
 			return makeValidationError(v.err)
@@ -162,7 +162,7 @@ func validateVM(vm *VerificationMethod) bool {
 
 type serviceValidator struct{}
 
-func (s serviceValidator) Validate(document Document) error {
+func (s serviceValidator) Validate(document DocumentImpl) error {
 	for _, service := range document.Service {
 		if len(strings.TrimSpace(service.ID.String())) == 0 {
 			return makeValidationError(ErrInvalidService)
@@ -186,7 +186,7 @@ func (s serviceValidator) Validate(document Document) error {
 	return nil
 }
 
-func containsContext(document Document, ctx string) bool {
+func containsContext(document DocumentImpl, ctx string) bool {
 	for _, curr := range document.Context {
 		if curr.String() == ctx {
 			return true
@@ -217,12 +217,12 @@ func (v validationError) Error() string {
 }
 
 // MatchesID returns true if the two DIDs are equal.
-func (d Document) MatchesID(doc *Document) bool {
+func (d DocumentImpl) MatchesID(doc *DocumentImpl) bool {
 	return d.ID.String() == doc.ID.String()
 }
 
 // EqualsVerificationMethod compares doc Verification Method and given docs verification method then returns true if they are equal.
-func (d Document) EqualsVerificationMethod(doc *Document) bool {
+func (d DocumentImpl) EqualsVerificationMethod(doc *DocumentImpl) bool {
 	if len(d.VerificationMethod) != len(doc.VerificationMethod) {
 		return false
 	}
@@ -235,7 +235,7 @@ func (d Document) EqualsVerificationMethod(doc *Document) bool {
 }
 
 // EqualsAuthentication compares doc Authentication and given docs authentication then returns true if they are equal.
-func (d Document) EqualsAuthentication(doc *Document) bool {
+func (d DocumentImpl) EqualsAuthentication(doc *DocumentImpl) bool {
 	if len(d.Authentication) != len(doc.Authentication) {
 		return false
 	}
@@ -248,7 +248,7 @@ func (d Document) EqualsAuthentication(doc *Document) bool {
 }
 
 // EqualsAssertionMethod compares doc AssertionMethod and given docs assertion method then returns true if they are equal.
-func (d Document) EqualsAssertionMethod(doc *Document) bool {
+func (d DocumentImpl) EqualsAssertionMethod(doc *DocumentImpl) bool {
 	if len(d.AssertionMethod) != len(doc.AssertionMethod) {
 		return false
 	}
@@ -261,7 +261,7 @@ func (d Document) EqualsAssertionMethod(doc *Document) bool {
 }
 
 // EqualsKeyAgreement compares doc KeyAgreement and given docs key agreement then returns true if they are equal.
-func (d Document) EqualsKeyAgreement(doc *Document) bool {
+func (d DocumentImpl) EqualsKeyAgreement(doc *DocumentImpl) bool {
 	if len(d.KeyAgreement) != len(doc.KeyAgreement) {
 		return false
 	}
@@ -273,8 +273,8 @@ func (d Document) EqualsKeyAgreement(doc *Document) bool {
 	return true
 }
 
-// EqualsCapabilityInvocation compares doc CapabilityInvocation and given docs capability invocation then returns true if they are equal.
-func (d Document) EqualsCapabilityInvocation(doc *Document) bool {
+// DocumentImpl compares doc CapabilityInvocation and given docs capability invocation then returns true if they are equal.
+func (d DocumentImpl) EqualsCapabilityInvocation(doc *DocumentImpl) bool {
 	if len(d.CapabilityInvocation) != len(doc.CapabilityInvocation) {
 		return false
 	}
@@ -287,7 +287,7 @@ func (d Document) EqualsCapabilityInvocation(doc *Document) bool {
 }
 
 // EqualsCapabilityDelegation compares doc CapabilityDelegation and given docs capability delegation then returns true if they are equal.
-func (d Document) EqualsCapabilityDelegation(doc *Document) bool {
+func (d DocumentImpl) EqualsCapabilityDelegation(doc *DocumentImpl) bool {
 	if len(d.CapabilityDelegation) != len(doc.CapabilityDelegation) {
 		return false
 	}
@@ -300,7 +300,7 @@ func (d Document) EqualsCapabilityDelegation(doc *Document) bool {
 }
 
 // EqualsService compares doc Service and given docs service then returns true if they are equal.
-func (d Document) EqualsService(doc *Document) bool {
+func (d DocumentImpl) EqualsService(doc *DocumentImpl) bool {
 	if len(d.Service) != len(doc.Service) {
 		return false
 	}
@@ -313,7 +313,7 @@ func (d Document) EqualsService(doc *Document) bool {
 }
 
 // EqualsAlsoKnownAs compares doc AlsoKnownAs and given docs also known as then returns true if they are equal.
-func (d Document) EqualsAlsoKnownAs(doc *Document) bool {
+func (d DocumentImpl) EqualsAlsoKnownAs(doc *DocumentImpl) bool {
 	if len(d.AlsoKnownAs) != len(doc.AlsoKnownAs) {
 		return false
 	}
@@ -326,7 +326,7 @@ func (d Document) EqualsAlsoKnownAs(doc *Document) bool {
 }
 
 // Equals is a helper function that compares two documents and returns true if they are equal.
-func (d *Document) copyDocument(doc *Document) error {
+func (d *DocumentImpl) copyDocument(doc *DocumentImpl) error {
 	if !d.MatchesID(doc) && doc.ID.String() != "" {
 		d.ID = doc.ID
 	}

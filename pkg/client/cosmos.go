@@ -6,8 +6,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	ct "github.com/sonr-io/sonr/x/channel/types"
-	ot "github.com/sonr-io/sonr/x/object/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
+	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 )
 
@@ -17,7 +17,7 @@ type Cosmos struct {
 	cosmosclient.Client
 	bucketQuery   bt.QueryClient
 	channelQuery  ct.QueryClient
-	objectQuery   ot.QueryClient
+	schemaQuery   st.QueryClient
 	registryQuery rt.QueryClient
 }
 
@@ -42,7 +42,7 @@ func NewCosmos(ctx context.Context, config *config.Config) (*Cosmos, error) {
 		Client:        cosmos,
 		bucketQuery:   bt.NewQueryClient(cosmos.Context),
 		channelQuery:  ct.NewQueryClient(cosmos.Context),
-		objectQuery:   ot.NewQueryClient(cosmos.Context),
+		schemaQuery:   st.NewQueryClient(cosmos.Context),
 		registryQuery: rt.NewQueryClient(cosmos.Context),
 	}, nil
 }
@@ -400,81 +400,4 @@ func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
 	}
 	howIs := queryResp.GetHowIs()
 	return &howIs, nil
-}
-
-// -------
-// Objects
-// -------
-// BroadcastCreateObject broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastCreateObject(msg *ot.MsgCreateObject) (*ot.MsgCreateObjectResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &ot.MsgCreateObjectResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// BroadcastUpdateObject broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastUpdateObject(msg *ot.MsgUpdateObject) (*ot.MsgUpdateObjectResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &ot.MsgUpdateObjectResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// BroadcastUpdateChannel broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastDeactivateObject(msg *ot.MsgDeactivateObject) (*ot.MsgDeactivateObjectResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &ot.MsgDeactivateObjectResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// QueryAllObjects returns all names registered on the blockchain
-func (cc *Cosmos) QueryAllObjects() ([]ot.WhatIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.objectQuery.WhatIsAll(context.Background(), &ot.QueryAllWhatIsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	return queryResp.GetWhatIs(), nil
-}
-
-// QueryObject returns all names registered on the blockchain
-func (cc *Cosmos) QueryObject(did string) (*ot.WhatIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.objectQuery.WhatIs(context.Background(), &ot.QueryWhatIsRequest{
-		Did: did,
-	})
-	if err != nil {
-		return nil, err
-	}
-	whatIs := queryResp.GetWhatIs()
-	return &whatIs, nil
 }

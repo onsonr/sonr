@@ -2,7 +2,7 @@ syntax = "proto3";
 package sonrio.sonr.channel;
 import "channel/v1/how_is.proto";
 import "channel/v1/channel.proto";
-import "object/v1/object.proto";
+// import "object/v1/object.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/sonr-io/sonr/x/channel/types";
@@ -45,7 +45,7 @@ message MsgCreateChannel {
   string creator = 1;
   string label = 2;
   string description = 3;
-  sonrio.sonr.object.ObjectDoc object_to_register = 4;
+  // sonrio.sonr.object.ObjectDoc object_to_register = 4;
 }
 
 message MsgCreateChannelResponse {
@@ -78,7 +78,7 @@ message MsgUpdateChannel {
   string did = 2;
   string label = 3;
   string description = 4;
-  sonrio.sonr.object.ObjectDoc object_to_register = 5;
+  // sonrio.sonr.object.ObjectDoc object_to_register = 5;
 }
 
 message MsgUpdateChannelResponse {

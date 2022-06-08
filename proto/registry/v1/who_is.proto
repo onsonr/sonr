@@ -1,6 +1,6 @@
 syntax = "proto3";
 package sonrio.sonr.registry;
-
+import "registry/v1/did.proto";
 option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 message WhoIs {
@@ -11,7 +11,7 @@ message WhoIs {
   string owner = 2;
 
   // DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.
-  bytes did_document = 3;
+  DIDDocument did_document = 3;
 
   // Credentials are the biometric info of the registered name and account encoded with public key
   repeated string controllers = 4;

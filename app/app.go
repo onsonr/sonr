@@ -95,12 +95,12 @@ import (
 	channelmodule "github.com/sonr-io/sonr/x/channel"
 	channelmodulekeeper "github.com/sonr-io/sonr/x/channel/keeper"
 	channelmoduletypes "github.com/sonr-io/sonr/x/channel/types"
-	objectmodule "github.com/sonr-io/sonr/x/object"
-	objectmodulekeeper "github.com/sonr-io/sonr/x/object/keeper"
-	objectmoduletypes "github.com/sonr-io/sonr/x/object/types"
 	registrymodule "github.com/sonr-io/sonr/x/registry"
 	registrymodulekeeper "github.com/sonr-io/sonr/x/registry/keeper"
 	registrymoduletypes "github.com/sonr-io/sonr/x/registry/types"
+	schemamodule "github.com/sonr-io/sonr/x/schema"
+	schemamodulekeeper "github.com/sonr-io/sonr/x/schema/keeper"
+	schemamoduletypes "github.com/sonr-io/sonr/x/schema/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -152,7 +152,7 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		channelmodule.AppModuleBasic{},
-		objectmodule.AppModuleBasic{},
+		schemamodule.AppModuleBasic{},
 		bucketmodule.AppModuleBasic{},
 		registrymodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
@@ -168,7 +168,7 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		channelmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner, authtypes.Staking},
-		objectmoduletypes.ModuleName:   {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		schemamoduletypes.ModuleName:   {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		bucketmoduletypes.ModuleName:   {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		registrymoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
@@ -191,7 +191,7 @@ func init() {
 }
 
 // App extends an ABCI application, but with most of its parameters exported.
-// They are exported for convenience in creating helper functions, as object
+// They are exported for convenience in creating helper functions, as schema
 // capabilities aren't needed for testing.
 type App struct {
 	*baseapp.BaseApp
@@ -230,7 +230,7 @@ type App struct {
 
 	ChannelKeeper channelmodulekeeper.Keeper
 
-	ObjectKeeper objectmodulekeeper.Keeper
+	SchemaKeeper schemamodulekeeper.Keeper
 
 	BucketKeeper bucketmodulekeeper.Keeper
 
@@ -273,7 +273,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		channelmoduletypes.StoreKey,
-		objectmoduletypes.StoreKey,
+		schemamoduletypes.StoreKey,
 		bucketmoduletypes.StoreKey,
 		registrymoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
@@ -387,18 +387,17 @@ func New(
 	)
 	channelModule := channelmodule.NewAppModule(appCodec, app.ChannelKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.ObjectKeeper = *objectmodulekeeper.NewKeeper(
+	app.SchemaKeeper = *schemamodulekeeper.NewKeeper(
 		appCodec,
-		keys[objectmoduletypes.StoreKey],
-		keys[objectmoduletypes.MemStoreKey],
-		app.GetSubspace(objectmoduletypes.ModuleName),
+		keys[schemamoduletypes.StoreKey],
+		keys[schemamoduletypes.MemStoreKey],
+		app.GetSubspace(schemamoduletypes.ModuleName),
 
 		app.AccountKeeper,
-		app.BankKeeper,
 		app.CapabilityKeeper,
-		app.MintKeeper,
+		app.BankKeeper,
 	)
-	objectModule := objectmodule.NewAppModule(appCodec, app.ObjectKeeper, app.AccountKeeper, app.BankKeeper)
+	schemaModule := schemamodule.NewAppModule(appCodec, app.SchemaKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.BucketKeeper = *bucketmodulekeeper.NewKeeper(
 		appCodec,
@@ -462,7 +461,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		channelModule,
-		objectModule,
+		schemaModule,
 		bucketModule,
 		registryModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
@@ -500,7 +499,7 @@ func New(
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		channelmoduletypes.ModuleName,
-		objectmoduletypes.ModuleName,
+		schemamoduletypes.ModuleName,
 		bucketmoduletypes.ModuleName,
 		registrymoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
@@ -526,7 +525,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		channelModule,
-		objectModule,
+		schemaModule,
 		bucketModule,
 		registryModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
@@ -717,7 +716,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(channelmoduletypes.ModuleName)
-	paramsKeeper.Subspace(objectmoduletypes.ModuleName)
+	paramsKeeper.Subspace(schemamoduletypes.ModuleName)
 	paramsKeeper.Subspace(bucketmoduletypes.ModuleName)
 	paramsKeeper.Subspace(registrymoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace

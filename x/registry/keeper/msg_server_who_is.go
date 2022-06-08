@@ -33,10 +33,16 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
+	// Create Sonr DID Doc to store in WhoIs
+	sonrDidDoc, err := types.NewDIDDocumentFromBytes(didDocBuf)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
 	// TODO: Implement Multisig for root level owner #322
 	var whoIs = types.WhoIs{
 		Owner:       msg.Creator,
-		DidDocument: didDocBuf,
+		DidDocument: sonrDidDoc,
 		Type:        msg.WhoisType,
 		Controllers: doc.ControllersAsString(),
 		IsActive:    true,
@@ -66,16 +72,30 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	newWhoIs, err := val.UpdateDidBuffer(msg.DidDocument)
+	// Trim snr account prefix
+	doc, err := types.NewDIDDocumentFromBytes(msg.DidDocument)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
-	k.SetWhoIs(ctx, newWhoIs)
+	err = doc.CopyFromBytes(msg.GetDidDocument())
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+	for _, a := range doc.GetAlsoKnownAs() {
+		if !val.ContainsAlias(a) {
+			val.AddAlsoKnownAs(a, false)
+		}
+	}
+	val.Controllers = doc.GetController()
+	val.Timestamp = time.Now().Unix()
+	val.IsActive = true
+	val.DidDocument = doc
+	k.SetWhoIs(ctx, val)
 	return &types.MsgUpdateWhoIsResponse{}, nil
 }
 
-// DeleteWhoIs deletes a whoIs from the store
-func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeactivateWhoIs) (*types.MsgDeactivateWhoIsResponse, error) {
+// DeactivateWhoIs deletes a whoIs from the store
+func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactivateWhoIs) (*types.MsgDeactivateWhoIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
@@ -94,14 +114,16 @@ func (k msgServer) DeleteWhoIs(goCtx context.Context, msg *types.MsgDeactivateWh
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
+	sonrDidDoc, err := types.NewDIDDocumentFromPkg(doc)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
 	// Deactivates the element
 	val.IsActive = false
 	val.Timestamp = time.Now().Unix()
 	val.Alias = make([]*types.Alias, 0)
-	val.DidDocument, err = doc.MarshalJSON()
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
-	}
+	val.DidDocument = sonrDidDoc
 	k.SetWhoIs(ctx, val)
 	return &types.MsgDeactivateWhoIsResponse{}, nil
 }

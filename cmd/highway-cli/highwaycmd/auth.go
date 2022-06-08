@@ -146,14 +146,23 @@ func openBrowser(url string) error {
 }
 
 func saveCredential(cred *webauthn.Credential, path string) error {
-	file, err := os.Open(path)
+	// create directory
+	err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
 	if err != nil {
 		return err
 	}
+
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
 	b, err := json.Marshal(*cred)
 	if err != nil {
 		return err
 	}
+
 	_, err = file.Write(b)
 	return err
 }

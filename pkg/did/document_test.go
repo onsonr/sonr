@@ -27,7 +27,7 @@ func Test_Document(t *testing.T) {
 	"id": "did:web:identity.foundation",
 	"Controller": ["did:snr:123", "did:web:example.org"]
 }`
-		doc := Document{}
+		doc := DocumentImpl{}
 		err := json.Unmarshal([]byte(jsonDoc), &doc)
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
@@ -38,13 +38,13 @@ func Test_Document(t *testing.T) {
 		}
 	})
 
-	var actual Document
+	var actual DocumentImpl
 	if err := json.Unmarshal(test.ReadTestFile("test/did1.json"), &actual); err != nil {
 		t.Error(err)
 		return
 	}
 	t.Run("validate ID", func(t *testing.T) {
-		expected := "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
+		expected := "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
 		if expected != actual.ID.String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.ID.String())
 		}
@@ -64,11 +64,11 @@ func Test_Document(t *testing.T) {
 			t.Errorf("expected controller to contain 2 entries got: %d", len(actual.Controller))
 			return
 		}
-		expected := "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
+		expected := "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff"
 		if expected != actual.Controller[0].String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[0])
 		}
-		expected = "did:sonr:f03a00f1-9615-4060-bd00-bd282e150c46"
+		expected = "did:snr:f03a00f1-9615-4060-bd00-bd282e150c46"
 		if expected != actual.Controller[1].String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Controller[1])
 		}
@@ -77,14 +77,14 @@ func Test_Document(t *testing.T) {
 		if !assert.Len(t, actual.AssertionMethod, 1) {
 			return
 		}
-		assert.Equal(t, "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.AssertionMethod[0].ID.String())
+		assert.Equal(t, "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.AssertionMethod[0].ID.String())
 		assert.Equal(t, "SVqB4JcUD6lsfvqMr-OKUNUphdNn64Eay60978ZlL74", actual.AssertionMethod[0].PublicKeyJwk["x"])
 	})
 	t.Run("it can parse authentication", func(t *testing.T) {
 		if !assert.Len(t, actual.Authentication, 2) {
 			return
 		}
-		assert.Equal(t, "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.Authentication[0].ID.String())
+		assert.Equal(t, "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#key-1", actual.Authentication[0].ID.String())
 		assert.Equal(t, "SVqB4JcUD6lsfvqMr-OKUNUphdNn64Eay60978ZlL74", actual.Authentication[0].PublicKeyJwk["x"])
 	})
 	t.Run("it can parse services", func(t *testing.T) {
@@ -97,7 +97,7 @@ func Test_Document(t *testing.T) {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Service[0].Type)
 		}
 
-		expected = "did:sonr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#service-1"
+		expected = "did:snr:04cf1e20-378a-4e38-ab1b-401a5018c9ff#service-1"
 		if expected != actual.Service[0].ID.String() {
 			t.Errorf("expected:\n%s\n, got:\n%s", expected, actual.Service[0].ID.String())
 		}
@@ -139,17 +139,9 @@ func Test_Document(t *testing.T) {
 		t.Logf("resulting json:\n%s", didJson)
 	})
 
-	t.Run("it can parse a jwk in a verification method", func(t *testing.T) {
-		keyAsJWK, err := actual.Authentication[0].JWK()
-		if !assert.NoError(t, err, "expected key to be converted to a jwk.key") {
-			return
-		}
-		assert.Equal(t, "EC", keyAsJWK.KeyType().String())
-	})
-
 	t.Run("AddAssertionMethod", func(t *testing.T) {
 		t.Run("it adds the method to assertionMethod once", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddAssertionMethod(method)
 			doc.AddAssertionMethod(method)
@@ -157,7 +149,7 @@ func Test_Document(t *testing.T) {
 			assert.Equal(t, doc.AssertionMethod[0].VerificationMethod, method)
 		})
 		t.Run("it adds the method to the verificationMethods once", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddAssertionMethod(method)
 			doc.AddAssertionMethod(method)
@@ -165,13 +157,13 @@ func Test_Document(t *testing.T) {
 			assert.Equal(t, doc.VerificationMethod[0], method)
 		})
 		t.Run("it sets the controller when not set", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddAssertionMethod(method)
 			assert.Equal(t, method.Controller, *id123)
 		})
 		t.Run("it leaves the controller when already set", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method, Controller: *id456}
 			doc.AddAssertionMethod(method)
 			assert.Equal(t, method.Controller, *id456)
@@ -180,14 +172,14 @@ func Test_Document(t *testing.T) {
 
 	t.Run("AddAuthenticationMethod", func(t *testing.T) {
 		t.Run("it adds the method to AuthenticationMethod once", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddAuthenticationMethod(method)
 			doc.AddAuthenticationMethod(method)
 			assert.Len(t, doc.Authentication, 1)
 		})
 		t.Run("it adds the method to the AuthenticationMethods once", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddAuthenticationMethod(method)
 			doc.AddAuthenticationMethod(method)
@@ -195,13 +187,13 @@ func Test_Document(t *testing.T) {
 			assert.Equal(t, doc.Authentication[0].VerificationMethod, method)
 		})
 		t.Run("it sets the controller when not set", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddAuthenticationMethod(method)
 			assert.Equal(t, method.Controller, *id123)
 		})
 		t.Run("it leaves the controller when already set", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method, Controller: *id456}
 			doc.AddAuthenticationMethod(method)
 			assert.Equal(t, method.Controller, *id456)
@@ -210,7 +202,7 @@ func Test_Document(t *testing.T) {
 
 	t.Run("AddKeyAgreement", func(t *testing.T) {
 		t.Run("it adds the method to KeyAgreement once", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddKeyAgreement(method)
 			doc.AddKeyAgreement(method)
@@ -220,7 +212,7 @@ func Test_Document(t *testing.T) {
 	})
 	t.Run("AddCapabilityInvocation", func(t *testing.T) {
 		t.Run("it adds the method to CapabilityInvocation once", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddCapabilityInvocation(method)
 			doc.AddCapabilityInvocation(method)
@@ -230,7 +222,7 @@ func Test_Document(t *testing.T) {
 	})
 	t.Run("AddCapabilityDelegation", func(t *testing.T) {
 		t.Run("it adds the method to CapabilityDelegation once", func(t *testing.T) {
-			doc := Document{ID: *id123}
+			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddCapabilityDelegation(method)
 			doc.AddCapabilityDelegation(method)
@@ -245,7 +237,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 		t.Run("authentication", func(t *testing.T) {
 			t.Run("ok", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "authentication":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#abc"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.NoError(t, err)
 				assert.Equal(t, "did:example:123", doc.ID.String())
@@ -254,7 +246,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 			})
 			t.Run("error - missing verificationMethod", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "authentication":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#def"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.EqualError(t, err, "unable to resolve all 'authentication' references: unable to resolve verificationMethod: did:example:123#abc")
 			})
@@ -263,7 +255,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 		t.Run("assertionMethod", func(t *testing.T) {
 			t.Run("ok", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "assertionMethod":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#abc"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.NoError(t, err)
 				assert.Equal(t, "did:example:123", doc.ID.String())
@@ -272,7 +264,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 			})
 			t.Run("error - missing verificationMethod", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "assertionMethod":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#def"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.EqualError(t, err, "unable to resolve all 'assertionMethod' references: unable to resolve verificationMethod: did:example:123#abc")
 			})
@@ -281,7 +273,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 		t.Run("keyAgreement", func(t *testing.T) {
 			t.Run("ok", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "keyAgreement":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#abc"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.NoError(t, err)
 				assert.Equal(t, "did:example:123", doc.ID.String())
@@ -290,7 +282,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 			})
 			t.Run("error - missing verificationMethod", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "keyAgreement":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#def"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.EqualError(t, err, "unable to resolve all 'keyAgreement' references: unable to resolve verificationMethod: did:example:123#abc")
 			})
@@ -299,7 +291,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 		t.Run("capabilityInvocation", func(t *testing.T) {
 			t.Run("ok", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "capabilityInvocation":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#abc"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.NoError(t, err)
 				assert.Equal(t, "did:example:123", doc.ID.String())
@@ -308,7 +300,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 			})
 			t.Run("error - missing verificationMethod", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "capabilityInvocation":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#def"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.EqualError(t, err, "unable to resolve all 'capabilityInvocation' references: unable to resolve verificationMethod: did:example:123#abc")
 			})
@@ -317,7 +309,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 		t.Run("capabilityDelegation", func(t *testing.T) {
 			t.Run("ok", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "capabilityDelegation":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#abc"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.NoError(t, err)
 				assert.Equal(t, "did:example:123", doc.ID.String())
@@ -326,7 +318,7 @@ func TestDocument_UnmarshallJSON(t *testing.T) {
 			})
 			t.Run("error - missing verificationMethod", func(t *testing.T) {
 				docJSON := []byte(`{ "ID": "did:example:123", "capabilityDelegation":["did:example:123#abc"], "verificationMethod":[{"ID":"did:example:123#def"}]}`)
-				doc := Document{}
+				doc := DocumentImpl{}
 				err := json.Unmarshal(docJSON, &doc)
 				assert.EqualError(t, err, "unable to resolve all 'capabilityDelegation' references: unable to resolve verificationMethod: did:example:123#abc")
 			})
@@ -341,7 +333,7 @@ func TestRoundTripMarshalling(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase, func(t *testing.T) {
-			document := Document{}
+			document := DocumentImpl{}
 			err := json.Unmarshal(test.ReadTestFile("test/"+testCase+".json"), &document)
 			if !assert.NoError(t, err) {
 				return
@@ -601,7 +593,7 @@ func TestDocument_ResolveEndpointURL(t *testing.T) {
 		}
 	]
 }`
-	doc := Document{}
+	doc := DocumentImpl{}
 	json.Unmarshal([]byte(jsonDoc), &doc)
 
 	t.Run("ok", func(t *testing.T) {
@@ -615,7 +607,7 @@ func TestDocument_ResolveEndpointURL(t *testing.T) {
 	})
 
 	t.Run("no services match", func(t *testing.T) {
-		doc := Document{}
+		doc := DocumentImpl{}
 		json.Unmarshal([]byte(jsonDoc), &doc)
 		doc.Service = []Service{}
 
@@ -632,7 +624,7 @@ func TestDocument_ResolveEndpointURL(t *testing.T) {
 }`
 		s := Service{}
 		_ = json.Unmarshal([]byte(jsonService), &s)
-		doc := Document{}
+		doc := DocumentImpl{}
 		json.Unmarshal([]byte(jsonDoc), &doc)
 		doc.Service = append(doc.Service, s)
 
@@ -648,7 +640,7 @@ func TestDocument_ResolveEndpointURL(t *testing.T) {
 }`
 		s := Service{}
 		_ = json.Unmarshal([]byte(jsonService), &s)
-		doc := Document{}
+		doc := DocumentImpl{}
 		json.Unmarshal([]byte(jsonDoc), &doc)
 		doc.Service = []Service{s}
 
@@ -662,15 +654,15 @@ func TestDocument_IsController(t *testing.T) {
 	id456, _ := ParseDID("did:example:456")
 
 	t.Run("no controllers", func(t *testing.T) {
-		assert.False(t, Document{}.IsController(*id123))
+		assert.False(t, DocumentImpl{}.IsController(*id123))
 	})
 	t.Run("empty input", func(t *testing.T) {
-		assert.False(t, Document{}.IsController(DID{}))
+		assert.False(t, DocumentImpl{}.IsController(DID{}))
 	})
 	t.Run("is a controller", func(t *testing.T) {
-		assert.True(t, Document{Controller: []DID{*id123, *id456}}.IsController(*id123))
+		assert.True(t, DocumentImpl{Controller: []DID{*id123, *id456}}.IsController(*id123))
 	})
 	t.Run("is not a controller", func(t *testing.T) {
-		assert.False(t, Document{Controller: []DID{*id456}}.IsController(*id123))
+		assert.False(t, DocumentImpl{Controller: []DID{*id456}}.IsController(*id123))
 	})
 }

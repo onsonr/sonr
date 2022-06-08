@@ -1,9 +1,17 @@
 package sample
 
 import (
+	cryptrand "crypto/rand"
+	"fmt"
+	"strings"
+
+	ed "crypto/ed25519"
+
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
 
 // AccAddress returns a sample account address
@@ -24,4 +32,47 @@ func CreateMockCredential() *did.Credential {
 			SignCount: 1,
 		},
 	}
+}
+
+// CreateMockDidDocument creates a mock did document for testing
+func CreateMockDidDocument(simAccount simtypes.Account) (did.Document, error) {
+	rawCreator := simAccount.Address.String()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+
+	// UnmarshalJSON from DID document
+	doc, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
+	if err != nil {
+		return nil, err
+	}
+
+	//webauthncred := CreateMockCredential()
+	pubKey, _, err := ed.GenerateKey(cryptrand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", rawCreator))
+	if err != nil {
+		return nil, err
+	}
+	didController, err := did.ParseDID(fmt.Sprintf("did:snr:%s#test", rawCreator))
+	if err != nil {
+		return nil, err
+	}
+
+	vm, err := did.NewVerificationMethod(*didUrl, ssi.JsonWebKey2020, *didController, pubKey)
+	if err != nil {
+		return nil, err
+	}
+	doc.AddAuthenticationMethod(vm)
+	return doc, nil
 }

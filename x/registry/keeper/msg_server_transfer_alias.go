@@ -17,13 +17,19 @@ func (k msgServer) TransferAlias(goCtx context.Context, msg *types.MsgTransferAl
 		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name does not exist")
 	}
 
+	// Query for the alias to transfer from original owner
 	_, alias, err := ownerWhoIs.FindAliasByName(msg.GetAlias())
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name does not exist")
 	}
 
+	// Check if Alias is available if not return error
+	if !alias.IsForSale {
+		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name is not for sale")
+	}
+
 	// Get buyerWhoIs from Owner
-	// TODO: Implement Multisig for root level owner #322
+	// TODO(https://github.com/sonr-io/sonr/issues/322): Implement Multisig for root level owner #322
 	buyerWhoIs, buyerFound := k.GetWhoIsFromOwner(ctx, msg.Creator)
 	if !buyerFound {
 		return nil, sdkerrors.Wrapf(types.ErrControllerNotFound, "creator %s", msg.Creator)
@@ -41,7 +47,7 @@ func (k msgServer) TransferAlias(goCtx context.Context, msg *types.MsgTransferAl
 		return nil, sdkerrors.Wrap(types.ErrInvalidLengthWhoIs, err.Error())
 	}
 
-	//TODO: put this in escrow to mitigate transfer/alias race condition attacks
+	//TODO(https://github.com/sonr-io/sonr/issues/327): put this in escrow to mitigate transfer/alias race condition attacks
 
 	// Send Coins to new owner
 	err = k.bankKeeper.SendCoins(ctx, buyerAddr, ownerAddr, sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(msg.GetAmount())))))

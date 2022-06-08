@@ -5,22 +5,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	core "github.com/sonr-io/sonr/internal/highway/http"
+	"github.com/sonr-io/sonr/internal/highway/api"
 	"github.com/sonr-io/sonr/pkg/config"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // NewHighwayServer creates a new Highway service stub for the node.
-func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer, error) {
+func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer, error) {
 	// Create Config
 	c := config.DefaultConfig(config.Role_HIGHWAY)
 	for _, opt := range opts {
-		opt(c)
+		if opt != nil {
+			opt(c)
+		}
 	}
 
 	// Create the Highway Server
-	s, err := core.CreateStub(ctx, c)
+	s, err := api.CreateStub(ctx, c)
 	if err != nil {
 		return nil, err
 	}
@@ -29,11 +31,6 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 	s.Router.POST("/v1/registry/alias/buy", s.BuyAlias)
 	s.Router.POST("/v1/registry/alias/sell", s.SellAlias)
 	s.Router.POST("/v1/registry/alias/transfer", s.TransferAlias)
-
-	// Register Cosmos HTTP Routes - Object
-	s.Router.POST("/v1/object/create", s.CreateObject)
-	s.Router.POST("/v1/object/update", s.UpdateObject)
-	s.Router.POST("/v1/object/deactivate", s.DeactivateObject)
 
 	// Register Cosmos HTTP Routes - Bucket
 	s.Router.POST("/v1/bucket/create", s.CreateBucket)
@@ -48,7 +45,7 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*core.HighwayServer
 	// Register Blob HTTP Routes
 	s.Router.POST("/v1/blob/upload", s.UploadBlob)
 	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
-	s.Router.POST("/v1/blob/remove/:cid", s.RemoveBlob)
+	s.Router.POST("/v1/blob/remove/:cid", s.UnpinBlob)
 
 	// WebAuthn Endpoints
 	s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)
