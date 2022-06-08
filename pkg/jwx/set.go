@@ -1,10 +1,13 @@
 package jwx
 
-import "github.com/lestrrat-go/jwx/jwk"
+import (
+	"github.com/lestrrat-go/jwx/jwk"
+)
 
 type JWKSet struct {
-	JWK    *jwk.Key
-	signer signer
+	Key       *jwk.Key
+	Signer    signer
+	Signature map[[]byte][]byte
 }
 
 type KeyType = string
@@ -22,15 +25,15 @@ func NewKeySigSet(kt KeyType, key interface{}) (*JWKSet, error) {
 		if err != nil {
 			return nil, err
 		}
-		set.JWK = &key
-		set.signer = nil
+		set.Key = &key
+		set.Signer = nil
 	case Type_SIG:
 		key, err := CreateJWKForSig(key)
 		if err != nil {
 			return nil, err
 		}
-		set.JWK = &key
-		set.signer = CreateSigner()
+		set.Key = &key
+		set.Signer = CreateSigner()
 	}
 
 	return set, nil
