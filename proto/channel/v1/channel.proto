@@ -1,6 +1,6 @@
 syntax = "proto3";
 package sonrio.sonr.channel;
-import "object/v1/object.proto";
+// import "object/v1/object.proto";
 option go_package = "github.com/sonr-io/sonr/x/channel/types";
 
 message ChannelDoc {
@@ -14,7 +14,7 @@ message ChannelDoc {
     string did = 4;
 
     // RegisterdObject is the object that is registered as the payload for the channel.
-    sonrio.sonr.object.ObjectDoc registered_object = 5;
+    // sonrio.sonr.object.ObjectDoc registered_object = 5;
 }
 
 
@@ -27,7 +27,7 @@ message ChannelMessage {
     string did = 2;
 
     // Data is the data being sent.
-    sonrio.sonr.object.ObjectDoc object = 3; // optional
+    // sonrio.sonr.object.ObjectDoc object = 3; // optional
 
     // Metadata is the metadata associated with the message.
     map<string, string> metadata = 4;
