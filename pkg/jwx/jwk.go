@@ -22,7 +22,7 @@ func CreateJWKForEnc(key interface{}) (jwk.Key, error) {
 	}
 
 	SetUse(jwk, "enc")
-
+	SetKeyOps(jwk, "encrypt")
 	return jwk, nil
 }
 
@@ -36,13 +36,17 @@ func CreateJWKForSig(key interface{}) (jwk.Key, error) {
 
 	jwk, err := jwk.New(key)
 	if err != nil {
-		return nil, fmt.Errorf("could not parse public key: %w", err)
+		return nil, err
 	}
 
 	err = SetUse(jwk, "sig")
+	if err != nil {
+		return nil, err
+	}
+	err = SetKeyOps(jwk, "sign")
 
 	if err != nil {
-		return nil, fmt.Errorf("could not parse public key: %w", err)
+		return nil, err
 	}
 
 	return jwk, nil
@@ -55,13 +59,18 @@ func CreateJWKForSig(key interface{}) (jwk.Key, error) {
 	We can't use the Key.AsMap since the values of the map will all be internal jwk lib structs.
 	After unmarshalling all the fields will be map[string]string.
 */
-func CreateUnmarshalledKey(jwk *jwk.Key) (*map[string]interface{}, error) {
+func Marshall(jwk *jwk.Key) ([]byte, error) {
 	keyAsJSON, err := json.Marshal(jwk)
 	if err != nil {
 		return nil, err
 	}
+
+	return keyAsJSON, nil
+}
+
+func Unmarshall(key []byte) (*map[string]interface{}, error) {
 	keyAsMap := map[string]interface{}{}
-	json.Unmarshal(keyAsJSON, &keyAsMap)
+	json.Unmarshal(key, &keyAsMap)
 
 	return &keyAsMap, nil
 }
@@ -72,4 +81,8 @@ func SetKid(key jwk.Key, value string) error {
 
 func SetUse(key jwk.Key, value string) error {
 	return key.Set("use", value)
+}
+
+func SetKeyOps(key jwk.Key, value string) error {
+	return key.Set("key_ops", value)
 }
