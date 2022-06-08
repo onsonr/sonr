@@ -35,11 +35,11 @@ func Test_JWT(t *testing.T) {
 		pub,
 	)
 
-	thing := func() *did.Document {
+	createDocWithAuthMethod := func() did.Document {
 		doc, _ := CreateMockDidDocument(root)
 		doc.AddController(*didController)
 		doc.AddAuthenticationMethod(vm)
-		return &doc
+		return doc
 	}
 
 	t.Run("JWT creation should contain options", func(t *testing.T) {
@@ -49,35 +49,26 @@ func Test_JWT(t *testing.T) {
 	})
 
 	t.Run("Should generate JWT from did uri", func(t *testing.T) {
-		doc := thing()
+		doc := createDocWithAuthMethod()
 		jwt := DefaultNew()
-		token, err := jwt.Generate(*doc)
-		if err != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
+		token, err := jwt.Generate(doc)
+		assert.NoError(t, err)
 
-		tokenObj, error := jwt.Parse(token)
+		tokenObj, err := jwt.Parse(token)
 
-		if error != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
-
+		assert.NoError(t, err)
 		assert.NotNil(t, tokenObj)
 		assert.Greater(t, len(token), 0)
 	})
 
 	t.Run("Should create token from string and token should be non nil", func(t *testing.T) {
-		doc := thing()
+		doc := createDocWithAuthMethod()
 		jwt := DefaultNew()
-		token, err := jwt.Generate(*doc)
-		if err != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
+		token, err := jwt.Generate(doc)
+		assert.NoError(t, err)
 
-		tokenObj, error := jwt.Parse(token)
-		if error != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
+		tokenObj, err := jwt.Parse(token)
+		assert.NoError(t, err)
 
 		// add did check when figure out claims obj ???
 		// weird map that isnt a map in the struct
@@ -85,17 +76,13 @@ func Test_JWT(t *testing.T) {
 	})
 
 	t.Run("Should create token from string and token should be valid", func(t *testing.T) {
-		doc := thing()
+		doc := createDocWithAuthMethod()
 		jwt := DefaultNew()
-		token, err := jwt.Generate(*doc)
-		if err != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
+		token, err := jwt.Generate(doc)
+		assert.NoError(t, err)
 
-		tokenObj, error := jwt.Parse(token)
-		if error != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
+		tokenObj, err := jwt.Parse(token)
+		assert.NoError(t, err)
 
 		// add did check when figure out claims obj ???
 		// weird map that isnt a map in the struct
@@ -103,24 +90,22 @@ func Test_JWT(t *testing.T) {
 	})
 
 	t.Run("Parse claims from token should include did", func(t *testing.T) {
-		doc := thing()
+		doc := createDocWithAuthMethod()
 		jwt := DefaultNew()
-		token, err := jwt.Generate(*doc)
-		if err != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
+		token, err := jwt.Generate(doc)
+		assert.NoError(t, err)
 
-		tokenObj, error := jwt.Parse(token)
-		if error != nil {
-			t.Errorf("Error while generating token %s", err)
-		}
+		tokenObj, err := jwt.Parse(token)
+		assert.NoError(t, err)
+
 		claims, ok := GetClaims(tokenObj)
 		if !ok {
 			t.Error("Unable to parse claims from token")
 		}
 
 		assert.NotNil(t, claims.Issuer)
-		assert.NotNil(t, claims.ExpiresAt)
+		assert.Equal(t, claims.Issuer, doc.GetID().String())
+		assert.NotNil(t, claims.ExpiresAt, jwt.options.ttl)
 		assert.NotNil(t, claims.IssuedAt)
 	})
 }

@@ -49,7 +49,7 @@ type HighwayServer struct {
 	// Clients
 	Host     hn.SonrHost
 	Cosmos   *client.Cosmos
-	JwtToken *jwt.JWT
+	JWTToken *jwt.JWT
 
 	// Http Properties
 	Router     *gin.Engine
@@ -97,7 +97,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Router:       gin.Default(),
 		Config:       c,
 		ipfsProtocol: ipfs,
-		JwtToken:     &tokenClient,
+		JWTToken:     &tokenClient,
 		// matrixProtocol: matrix,
 		Telemetry: metrics,
 	}
@@ -109,11 +109,6 @@ func (s *HighwayServer) ConfigureRoutes() {
 	s.Router.POST("/v1/registry/alias/buy", s.BuyAlias)
 	s.Router.POST("/v1/registry/alias/sell", s.SellAlias)
 	s.Router.POST("/v1/registry/alias/transfer", s.TransferAlias)
-
-	// Register Cosmos HTTP Routes - Object
-	s.Router.POST("/v1/object/create", s.CreateObject)
-	s.Router.POST("/v1/object/update", s.UpdateObject)
-	s.Router.POST("/v1/object/deactivate", s.DeactivateObject)
 
 	// Register Cosmos HTTP Routes - Bucket
 	s.Router.POST("/v1/bucket/create", s.CreateBucket)
@@ -150,7 +145,6 @@ func (s *HighwayServer) ConfigureMiddleware() {
 
 	s.AddMiddlewareDefinition(HighwayMiddleware{
 		definition: func(ctx *gin.Context) {
-			ctx.r
 			token := ctx.GetHeader("Authorization")
 			if token == "" {
 				ctx.AbortWithStatusJSON(http.StatusBadRequest, UnsignedResponse{
@@ -159,7 +153,7 @@ func (s *HighwayServer) ConfigureMiddleware() {
 
 				return
 			}
-			error := s.JwtToken.BuildJWTParseMiddleware(token)()
+			error := s.JWTToken.BuildJWTParseMiddleware(token)()
 
 			if error != nil {
 				logger.Errorf("Error while processing authorization header: %s", error.Error())
