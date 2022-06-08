@@ -17,17 +17,17 @@ type JWT struct {
 
 func New(ctx context.Context, hn host.SonrHost) *JWT {
 	options = JWTOptions{}
-	options.secret = []byte(hn.Config().JWT_Secret)
-	options.singingMethod = hn.Config().JWT_SigningMethod
-	options.ttl = hn.Config().JWT_Expiration
+	options.secret = []byte(hn.Config().JWTSecret)
+	options.singingMethod = hn.Config().JWTSigningMethod
+	options.ttl = hn.Config().JWTExpiration
 
 	return &JWT{
 		options: options,
 	}
 }
 
-func DefaultNew() JWT {
-	return JWT{
+func DefaultNew() *JWT {
+	return &JWT{
 		options: options.DefaultTestConfig(),
 	}
 }

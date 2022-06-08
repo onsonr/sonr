@@ -83,7 +83,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
-	tokenClient := jwt.DefaultNew()
+	tokenClient := jwt.New(ctx, node)
 	metrics, err := metrics.New(ctx, node)
 
 	// TODO: Enabling Matrix Protocol breaks build for Darwin
@@ -97,7 +97,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Router:       gin.Default(),
 		Config:       c,
 		ipfsProtocol: ipfs,
-		JWTToken:     &tokenClient,
+		JWTToken:     tokenClient,
 		// matrixProtocol: matrix,
 		Telemetry: metrics,
 	}
@@ -143,6 +143,8 @@ func (s *HighwayServer) ConfigureMiddleware() {
 
 	s.Router.Use(gin.Logger())
 
+	// Registering middleware for authorization header parsing and creation of a `Token` object
+	// Currently disabled and will not invoke on requests
 	s.AddMiddlewareDefinition(HighwayMiddleware{
 		definition: func(ctx *gin.Context) {
 			token := ctx.GetHeader("Authorization")

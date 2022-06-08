@@ -3,6 +3,7 @@ package highwaycmd
 import (
 	"context"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/internal/highway"
 	"github.com/sonr-io/sonr/pkg/config"
@@ -16,6 +17,7 @@ func bootstrapServeCommand(ctx context.Context) (serveCmd *cobra.Command) {
 		RP_SERVER_PORT = viper.GetString("RP_SERVER_PORT")
 		GRPC_PORT      = viper.GetInt("GRPC_PORT")
 		HTTP_PORT      = viper.GetInt("HTTP_PORT")
+		JWT_SECRET     = viper.GetString("JWT_SECRET")
 	)
 
 	logger := golog.Default.Child("serve")
@@ -27,6 +29,8 @@ func bootstrapServeCommand(ctx context.Context) (serveCmd *cobra.Command) {
 
 		Run: func(cmd *cobra.Command, args []string) {
 			logger.Infof("Serving new highway instance")
+
+			config.WithJWTTokenOptions(JWT_SECRET, jwt.SigningMethodHS256, 3600)
 			node, err := highway.NewHighway(
 				ctx,
 				config.WithHighwayAPISettings("tcp", "localhost", GRPC_PORT, HTTP_PORT),
