@@ -12,7 +12,7 @@ import (
 	"github.com/ipld/go-ipld-prime/datamodel"
 	basicnode "github.com/ipld/go-ipld-prime/node/basic"
 	"github.com/sonr-io/sonr/pkg/host"
-	ot "github.com/sonr-io/sonr/x/object/types"
+	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 // IPFSProtocol leverages the IPFSLite library to provide simple file operations.
@@ -104,7 +104,7 @@ func (i *IPFSProtocol) PutData(data []byte) (*cid.Cid, error) {
 }
 
 // PutObjectSchema puts an object schema to IPFS and returns the CID.
-func (i *IPFSProtocol) PutObjectSchema(doc *ot.ObjectDoc) (*cid.Cid, error) {
+func (i *IPFSProtocol) PutObjectSchema(doc *st.Schema) (*cid.Cid, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder()                               // Create a builder.
@@ -114,20 +114,20 @@ func (i *IPFSProtocol) PutObjectSchema(doc *ot.ObjectDoc) (*cid.Cid, error) {
 	}
 
 	// Add each field to the map
-	for _, field := range doc.GetFields() {
-		ma.AssembleKey().AssignString(field.GetName())
-		switch field.GetKind() {
-		case ot.TypeKind_TypeKind_String:
+	for k, t := range doc.GetFields() {
+		ma.AssembleKey().AssignString(k)
+		switch t {
+		case st.SchemaKind_STRING:
 			ma.AssembleValue().AssignString("")
-		case ot.TypeKind_TypeKind_Int:
+		case st.SchemaKind_INT:
 			ma.AssembleValue().AssignInt(0)
-		case ot.TypeKind_TypeKind_Float:
+		case st.SchemaKind_FLOAT:
 			ma.AssembleValue().AssignFloat(0.0)
-		case ot.TypeKind_TypeKind_Bool:
+		case st.SchemaKind_BOOL:
 			ma.AssembleValue().AssignBool(false)
-		case ot.TypeKind_TypeKind_Bytes:
+		case st.SchemaKind_BYTES:
 			ma.AssembleValue().AssignBytes([]byte{})
-		case ot.TypeKind_TypeKind_Link:
+		case st.SchemaKind_LINK:
 			ma.AssembleValue().AssignLink(nil)
 		default:
 			ma.AssembleValue().AssignNull()

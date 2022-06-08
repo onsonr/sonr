@@ -1,0 +1,12 @@
+syntax = "proto3";
+package sonrio.sonr.schema;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sonr-io/sonr/x/schema/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}

@@ -1,6 +1,6 @@
 syntax = "proto3";
 package sonrio.sonr.bucket;
-import "object/v1/object.proto";
+// import "object/v1/object.proto";
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
 // Bucket is a collection of objects.
@@ -44,7 +44,7 @@ message BucketEvent {
     BucketEventType type = 2;
 
     // Object is the entry being modified in the Bucket.
-    sonrio.sonr.object.ObjectDoc object = 3;
+    // sonrio.sonr.object.ObjectDoc object = 3;
 
     // Metadata is the metadata associated with the event.
     map<string, string> metadata = 4;

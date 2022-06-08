@@ -40,7 +40,7 @@ func CmdCreateChannel() *cobra.Command {
 				clientCtx.GetFromAddress().String(),
 				argName,
 				argDescription,
-				nil,
+				// nil,
 				argTTL,
 				argMaxSize,
 			)
