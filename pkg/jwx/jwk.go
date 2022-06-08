@@ -1,4 +1,4 @@
-package dag_jose
+package jwx
 
 import (
 	"encoding/json"

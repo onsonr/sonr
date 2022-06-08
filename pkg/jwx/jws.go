@@ -1,4 +1,4 @@
-package dag_jose
+package jwx
 
 import (
 	"github.com/lestrrat-go/jwx/jwa"
