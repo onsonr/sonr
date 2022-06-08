@@ -335,7 +335,7 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	}
 
 	if keyType == ssi.JsonWebKey2020 {
-		keyAsJWK, err := dag_jose.CreateJWK(key)
+		keyAsJWK, err := dag_jose.CreateJWKForEnc(key)
 		if err != nil {
 			return nil, err
 		}

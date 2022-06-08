@@ -17,7 +17,7 @@ func Test_Document(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 		pk := key.Public()
-		jwk, err := CreateJWK(pk)
+		jwk, err := CreateJWKForEnc(pk)
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
 		}
