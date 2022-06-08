@@ -4,10 +4,10 @@ import (
 	"github.com/lestrrat-go/jwx/jwk"
 )
 
-type JWKSet struct {
-	Key       *jwk.Key
-	Signer    signer
-	Signature map[[]byte][]byte
+type JWKSignaturePair struct {
+	Key        *jwk.Key
+	Signer     signer
+	Signatures map[string][]byte // map of name to signature, name of signature must be provided
 }
 
 type KeyType = string
@@ -17,8 +17,8 @@ var (
 	Type_SIG KeyType = "sig"
 )
 
-func NewKeySigSet(kt KeyType, key interface{}) (*JWKSet, error) {
-	set := &JWKSet{}
+func NewKeySigSet(kt KeyType, key interface{}) (*JWKSignaturePair, error) {
+	set := &JWKSignaturePair{}
 	switch kt {
 	case Type_ENC:
 		key, err := CreateJWKForEnc(key)
@@ -37,4 +37,8 @@ func NewKeySigSet(kt KeyType, key interface{}) (*JWKSet, error) {
 	}
 
 	return set, nil
+}
+
+func (jsp *JWKSignaturePair) AddSignature(name string, sig []byte) {
+	jsp.Signatures[name] = sig
 }
