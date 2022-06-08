@@ -33,8 +33,8 @@ func DefaultNew() JWT {
 }
 
 /*
-
- */
+	Creates jwt from parsed with passed did as issuer
+*/
 func (j *JWT) Generate(doc did.Document) (string, error) {
 	if doc == nil {
 		return "", errors.New("highway/jwt Document cannot be nil")
@@ -63,19 +63,16 @@ func (j *JWT) Generate(doc did.Document) (string, error) {
 }
 
 /*
-
- */
+	Parses a jwt token if possible and returns as Token type.
+*/
 func (j *JWT) Parse(token string) (*jwt.Token, error) {
 	parsed, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.options.secret, nil
 	})
 
-	if parsed.Valid {
-	} else if ve, ok := err.(*jwt.ValidationError); ok {
+	if ve, ok := err.(*jwt.ValidationError); ok {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 			return nil, jwt.ErrECDSAVerification
-		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-			return nil, jwt.ErrInvalidKey
 		} else {
 			return nil, jwt.ErrECDSAVerification
 		}
