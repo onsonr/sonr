@@ -1,8 +1,6 @@
 package api
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,34 +13,19 @@ type UnsignedResponse struct {
 	Message interface{} `json:"message"`
 }
 
-var middlewareDefs []HighwayMiddleware = nil
+var (
+	middlewareDefs []HighwayMiddleware = make([]HighwayMiddleware, 0)
+)
+
+func (s *HighwayServer) AddMiddlewareDefinition(middlewareDef HighwayMiddleware) {
+	middlewareDefs = append(middlewareDefs, middlewareDef)
+}
+
+func (s *HighwayServer) AddMiddlewareDefinitions(middlewareDefs []HighwayMiddleware) {
+	middlewareDefs = append(middlewareDefs, middlewareDefs...)
+}
 
 func (s *HighwayServer) RegisterMiddleWare() {
-	// Add middleware here to be loaded into Highway's Router
-	middlewareDefs = []HighwayMiddleware{
-		{
-			definition: func(ctx *gin.Context) {
-				token := ctx.GetHeader("Authorization")
-				if token == "" {
-					ctx.AbortWithStatusJSON(http.StatusBadRequest, UnsignedResponse{
-						Message: "Authorization token not found",
-					})
-				}
-				error := s.JwtToken.BuildJWTParseMiddleware(token)()
-
-				if error != nil {
-					logger.Errorf("Error while processing authorization header: %s", error.Error())
-					ctx.AbortWithStatusJSON(http.StatusBadRequest, UnsignedResponse{
-						Message: error.Error(),
-					})
-					return
-				}
-
-				ctx.Next()
-			},
-			disabled: true,
-		},
-	}
 
 	for _, mw := range middlewareDefs {
 		if !mw.disabled {

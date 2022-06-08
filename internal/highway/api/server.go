@@ -148,6 +148,32 @@ func (s *HighwayServer) ConfigureMiddleware() {
 
 	s.Router.Use(gin.Logger())
 
+	s.AddMiddlewareDefinition(HighwayMiddleware{
+		definition: func(ctx *gin.Context) {
+			ctx.r
+			token := ctx.GetHeader("Authorization")
+			if token == "" {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, UnsignedResponse{
+					Message: "Authorization token not found",
+				})
+
+				return
+			}
+			error := s.JwtToken.BuildJWTParseMiddleware(token)()
+
+			if error != nil {
+				logger.Errorf("Error while processing authorization header: %s", error.Error())
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, UnsignedResponse{
+					Message: error.Error(),
+				})
+				return
+			}
+
+			ctx.Next()
+		},
+		disabled: true,
+	})
+
 	// register custom middleware defined within package
 	// see Middleware.go for definitions
 	s.RegisterMiddleWare()
