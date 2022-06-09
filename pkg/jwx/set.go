@@ -10,6 +10,14 @@ type JWKSignaturePair struct {
 	Signatures map[string][]byte // map of name to signature, name of signature must be provided
 }
 
+type JWX interface {
+	CreateJWK() (*jwk.Key, error)
+	CreateJWS() ([]byte, error)
+	VerifyJWS()
+	EncryptJWE()
+	DecryptJWE()
+}
+
 type KeyType = string
 
 var (
@@ -42,3 +50,7 @@ func NewKeySigSet(kt KeyType, key interface{}) (*JWKSignaturePair, error) {
 func (jsp *JWKSignaturePair) AddSignature(name string, sig []byte) {
 	jsp.Signatures[name] = sig
 }
+
+func (jsp *JWKSignaturePair) Marshal() {}
+
+func (jsp *JWKSignaturePair) Unmarshal() {}

@@ -52,13 +52,6 @@ func CreateJWKForSig(key interface{}) (jwk.Key, error) {
 	return jwk, nil
 }
 
-/*
-	Convert to JSON and back to fix encoding of key material to make sure
-	an unmarshalled and newly created VerificationMethod are equal on object level.
-	The format of PublicKeyJwk in verificationMethod is a map[string]interface{}.
-	We can't use the Key.AsMap since the values of the map will all be internal jwk lib structs.
-	After unmarshalling all the fields will be map[string]string.
-*/
 func Marshall(jwk *jwk.Key) ([]byte, error) {
 	keyAsJSON, err := json.Marshal(jwk)
 	if err != nil {
