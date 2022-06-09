@@ -15,8 +15,26 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_schema"
+
+	Version = "schema-1"
+
+	PortID = "schema"
 )
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+const (
+	SchemaCountKey  = "Schema-count-"
+	SchemaKeyPrefix = "Schema/value/"
+)
+
+func SchemaKey(creator string) []byte {
+	var key []byte
+	creatorBytes := []byte(creator)
+	key = append(key, creatorBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
 }
