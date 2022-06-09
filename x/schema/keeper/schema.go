@@ -29,7 +29,7 @@ func (k Keeper) SetSchemaCount(ctx sdk.Context, count uint64) {
 	store.Set(byteKey, bz)
 }
 
-// GetWhoIsFromController returns a WhoIs whos DIDDocument contains the given controller
+// GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
 func (k Keeper) GetSchemasFromCreator(ctx sdk.Context, creator string) (val []types.Schema, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
@@ -45,7 +45,7 @@ func (k Keeper) GetSchemasFromCreator(ctx sdk.Context, creator string) (val []ty
 	return vals, false
 }
 
-// SetHowIs set a specific howIs in the store from its did
+// SetSchema set a specific schema in the store from its did
 func (k Keeper) SetSchema(ctx sdk.Context, schema types.Schema) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	b := k.cdc.MustMarshal(&schema)
@@ -54,7 +54,7 @@ func (k Keeper) SetSchema(ctx sdk.Context, schema types.Schema) {
 	), b)
 }
 
-// GetWhoIs returns a whoIs from its id
+// GetSchema returns an instance of a schema from its id
 func (k Keeper) GetSchema(ctx sdk.Context, id string) (val types.Schema, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 

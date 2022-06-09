@@ -24,20 +24,26 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	did, err := did.ParseDID(msg.Creator)
-	types.
 
 	if err != nil {
 		return nil, err
 	}
 
 	var schema = types.Schema{
-		Label: msg.Label,
-		did.Did: did.ID,
+		Label:  msg.Label,
+		Did:    did.ID,
 		Fields: msg.Fields,
 	}
 
 	k.SetSchema(ctx, schema)
-	return schema, nil
+
+	resp := types.MsgCreateSchemaResponse{
+		Code:    200,
+		Message: "Schema Created Successfully",
+		Schema:  &schema,
+	}
+
+	return &resp, nil
 }
 
 func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecateSchema) (*types.MsgDeprecateSchemaResponse, error) {
