@@ -106,6 +106,26 @@ func (d *DocumentImpl) GetController(did DID) (DID, error) {
 	return DID{}, errors.New("did not found")
 }
 
+// GetAssertionMethods returns the list of assertion methods
+func (d *DocumentImpl) GetAssertionMethods() VerificationRelationships {
+	return d.AssertionMethod
+}
+
+// GetAuthenticationMethods returns the list of authentication methods
+func (d *DocumentImpl) GetAuthenticationMethods() VerificationRelationships {
+	return d.Authentication
+}
+
+// GetCapabilityDelegations returns the list of capability delegations
+func (d *DocumentImpl) GetCapabilityDelegations() VerificationRelationships {
+	return d.CapabilityDelegation
+}
+
+// GetCapabilityInvocations returns the list of capability invocations
+func (d *DocumentImpl) GetCapabilityInvocations() VerificationRelationships {
+	return d.CapabilityInvocation
+}
+
 func (d *DocumentImpl) GetID() DID {
 	return d.ID
 }
@@ -179,6 +199,11 @@ func (vms *VerificationMethods) Add(v *VerificationMethod) {
 }
 
 type VerificationRelationships []VerificationRelationship
+
+// Count returns the number of VerificationRelationships in the slice
+func (vmr VerificationRelationships) Count() int {
+	return len(vmr)
+}
 
 // FindByID returns the first VerificationRelationship that matches with the id.
 // For comparison both the ID of the embedded VerificationMethod and reference is used.
