@@ -10,14 +10,6 @@ type JWKSignaturePair struct {
 	Signatures map[string][]byte // map of name to signature, name of signature must be provided
 }
 
-type JWX interface {
-	CreateJWK() (*jwk.Key, error)
-	CreateJWS() ([]byte, error)
-	VerifyJWS()
-	EncryptJWE()
-	DecryptJWE()
-}
-
 type KeyType = string
 
 var (
