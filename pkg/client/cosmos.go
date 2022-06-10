@@ -401,3 +401,18 @@ func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
 	howIs := queryResp.GetHowIs()
 	return &howIs, nil
 }
+
+func (cc *Cosmos) BroadcastCreateSchema(msg *st.MsgCreateSchema) (*st.MsgCreateSchemaResponse, error) {
+	broadCastResp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := st.MsgCreateSchemaResponse{}
+	err = broadCastResp.Decode(&respMsg)
+	if err != nil {
+		return nil, err
+	}
+	return &respMsg, nil
+}
