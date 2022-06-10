@@ -7,10 +7,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 
 	"github.com/duo-labs/webauthn/protocol"
+	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/shengdoushi/base58"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
@@ -77,6 +77,26 @@ func (d *DocumentImpl) ControllerCount() int {
 	return len(d.Controller)
 }
 
+// FindAuthenticationMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAuthenticationMethod(id DID) *VerificationMethod {
+	return d.Authentication.FindByID(id)
+}
+
+// FindAssertionMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAssertionMethod(id DID) *VerificationMethod {
+	return d.AssertionMethod.FindByID(id)
+}
+
+// FindCapabilityDelegation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityDelegation(id DID) *VerificationMethod {
+	return d.CapabilityDelegation.FindByID(id)
+}
+
+// FindCapabilityInvocation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityInvocation(id DID) *VerificationMethod {
+	return d.CapabilityInvocation.FindByID(id)
+}
+
 func (d *DocumentImpl) GetController(did DID) (DID, error) {
 	for _, c := range d.Controller {
 		if c.Equals(did) {
@@ -84,6 +104,26 @@ func (d *DocumentImpl) GetController(did DID) (DID, error) {
 		}
 	}
 	return DID{}, errors.New("did not found")
+}
+
+// GetAssertionMethods returns the list of assertion methods
+func (d *DocumentImpl) GetAssertionMethods() VerificationRelationships {
+	return d.AssertionMethod
+}
+
+// GetAuthenticationMethods returns the list of authentication methods
+func (d *DocumentImpl) GetAuthenticationMethods() VerificationRelationships {
+	return d.Authentication
+}
+
+// GetCapabilityDelegations returns the list of capability delegations
+func (d *DocumentImpl) GetCapabilityDelegations() VerificationRelationships {
+	return d.CapabilityDelegation
+}
+
+// GetCapabilityInvocations returns the list of capability invocations
+func (d *DocumentImpl) GetCapabilityInvocations() VerificationRelationships {
+	return d.CapabilityInvocation
 }
 
 func (d *DocumentImpl) GetID() DID {
@@ -159,6 +199,11 @@ func (vms *VerificationMethods) Add(v *VerificationMethod) {
 }
 
 type VerificationRelationships []VerificationRelationship
+
+// Count returns the number of VerificationRelationships in the slice
+func (vmr VerificationRelationships) Count() int {
+	return len(vmr)
+}
 
 // FindByID returns the first VerificationRelationship that matches with the id.
 // For comparison both the ID of the embedded VerificationMethod and reference is used.

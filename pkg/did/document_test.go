@@ -148,6 +148,14 @@ func Test_Document(t *testing.T) {
 			assert.Len(t, doc.AssertionMethod, 1)
 			assert.Equal(t, doc.AssertionMethod[0].VerificationMethod, method)
 		})
+		t.Run("it adds the method to AssertionMethod once and Finds it", func(t *testing.T) {
+			doc := DocumentImpl{ID: *id123}
+			method := &VerificationMethod{ID: *id123Method}
+			doc.AddAssertionMethod(method)
+			vm := doc.FindAssertionMethod(*id123Method)
+			assert.NotNil(t, vm, "unable to find the method")
+			assert.Len(t, doc.AssertionMethod, 1)
+		})
 		t.Run("it adds the method to the verificationMethods once", func(t *testing.T) {
 			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
@@ -176,6 +184,14 @@ func Test_Document(t *testing.T) {
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddAuthenticationMethod(method)
 			doc.AddAuthenticationMethod(method)
+			assert.Len(t, doc.Authentication, 1)
+		})
+		t.Run("it adds the method to AuthenticationMethod once and Finds it", func(t *testing.T) {
+			doc := DocumentImpl{ID: *id123}
+			method := &VerificationMethod{ID: *id123Method}
+			doc.AddAuthenticationMethod(method)
+			vm := doc.FindAuthenticationMethod(*id123Method)
+			assert.NotNil(t, vm, "unable to find the method")
 			assert.Len(t, doc.Authentication, 1)
 		})
 		t.Run("it adds the method to the AuthenticationMethods once", func(t *testing.T) {
@@ -219,14 +235,30 @@ func Test_Document(t *testing.T) {
 			assert.Len(t, doc.CapabilityInvocation, 1)
 			assert.Len(t, doc.VerificationMethod, 1)
 		})
+		t.Run("it adds the method to CapabilityInvocation and Finds it", func(t *testing.T) {
+			doc := DocumentImpl{ID: *id123}
+			method := &VerificationMethod{ID: *id123Method}
+			doc.AddCapabilityInvocation(method)
+			vm := doc.FindCapabilityInvocation(*id123Method)
+			assert.NotNil(t, vm, "unable to find the method")
+			assert.Len(t, doc.VerificationMethod, 1)
+		})
 	})
 	t.Run("AddCapabilityDelegation", func(t *testing.T) {
 		t.Run("it adds the method to CapabilityDelegation once", func(t *testing.T) {
 			doc := DocumentImpl{ID: *id123}
 			method := &VerificationMethod{ID: *id123Method}
 			doc.AddCapabilityDelegation(method)
-			doc.AddCapabilityDelegation(method)
-			assert.Len(t, doc.CapabilityDelegation, 1)
+			vm := doc.FindCapabilityDelegation(*id123Method)
+			assert.NotNil(t, vm, "unable to find the method")
+			assert.Len(t, doc.VerificationMethod, 1)
+		})
+		t.Run("it adds the method to CapabilityInvocation and Finds it", func(t *testing.T) {
+			doc := DocumentImpl{ID: *id123}
+			method := &VerificationMethod{ID: *id123Method}
+			doc.AddCapabilityInvocation(method)
+			doc.AddCapabilityInvocation(method)
+			assert.Len(t, doc.CapabilityInvocation, 1)
 			assert.Len(t, doc.VerificationMethod, 1)
 		})
 	})
