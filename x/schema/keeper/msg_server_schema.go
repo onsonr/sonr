@@ -22,7 +22,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, sdkerrors.ErrNotFound
 	}
 
-	did, err := did.ParseDID(msg.Creator)
+	did, err := did.ParseDID(msg.GetCreatorDid())
 
 	if err != nil {
 		return nil, err
