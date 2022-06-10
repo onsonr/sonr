@@ -31,6 +31,7 @@ type Document interface {
 	// AddAlias adds a string alias to the document for a .snr domain name into the AlsoKnownAs field
 	// in the document.
 	AddAlias(alias string)
+
 	AddController(id DID)
 
 	// ResolveEndpointURL finds the endpoint with the given type and unmarshalls it as single URL.
@@ -56,4 +57,16 @@ type Document interface {
 
 	// FindCapabilityInvocation finds the first CapabilityInvocation with the given DID
 	FindCapabilityInvocation(id DID) *VerificationMethod
+
+	// GetAssertionMethods returns all AssertionMethods
+	GetAssertionMethods() VerificationRelationships
+
+	// GetAuthenticationMethods returns all AuthenticationMethods
+	GetAuthenticationMethods() VerificationRelationships
+
+	// GetCapabilityDelegations returns all CapabilityDelegations
+	GetCapabilityDelegations() VerificationRelationships
+
+	// GetCapabilityInvocations returns all CapabilityInvocations
+	GetCapabilityInvocations() VerificationRelationships
 }
