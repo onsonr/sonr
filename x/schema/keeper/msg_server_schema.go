@@ -12,7 +12,6 @@ import (
 
 func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchema) (*types.MsgCreateSchemaResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.Logger(ctx).Info("Querying for signers")
 	err := msg.ValidateBasic()
 	if err != nil {
 		return nil, err
