@@ -7,10 +7,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 
 	"github.com/duo-labs/webauthn/protocol"
+	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/shengdoushi/base58"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
@@ -75,6 +75,26 @@ func NewDocument(idStr string) (Document, error) {
 
 func (d *DocumentImpl) ControllerCount() int {
 	return len(d.Controller)
+}
+
+// FindAuthenticationMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAuthenticationMethod(id DID) *VerificationMethod {
+	return d.Authentication.FindByID(id)
+}
+
+// FindAssertionMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAssertionMethod(id DID) *VerificationMethod {
+	return d.AssertionMethod.FindByID(id)
+}
+
+// FindCapabilityDelegation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityDelegation(id DID) *VerificationMethod {
+	return d.CapabilityDelegation.FindByID(id)
+}
+
+// FindCapabilityInvocation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityInvocation(id DID) *VerificationMethod {
+	return d.CapabilityInvocation.FindByID(id)
 }
 
 func (d *DocumentImpl) GetController(did DID) (DID, error) {
