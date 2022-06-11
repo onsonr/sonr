@@ -69,7 +69,7 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 
 	// add the signature to the message
 	req.Metadata.Signature = signature
-	err = p.node.SendMessage(id, RequestPID, req)
+	err = p.node.Send(id, RequestPID, req)
 	if err != nil {
 		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return err
@@ -103,7 +103,7 @@ func (p *ExchangeProtocol) Respond(decs bool, to *motor.Peer) (*motor.Payload, e
 	resp.Metadata.Signature = signature
 
 	// Send Response
-	err = p.node.SendMessage(id, ResponsePID, resp)
+	err = p.node.Send(id, ResponsePID, resp)
 	if err != nil {
 		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return nil, err

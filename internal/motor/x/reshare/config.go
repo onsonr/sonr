@@ -19,7 +19,7 @@ import (
 
 	"github.com/getamis/sirius/log"
 	"github.com/sonr-io/alice/crypto/tss/ecdsa/gg18/reshare"
-	"github.com/sonr-io/sonr/internal/motor/x/config"
+	"github.com/sonr-io/alice/example/config"
 	"gopkg.in/yaml.v2"
 )
 
