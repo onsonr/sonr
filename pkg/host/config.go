@@ -77,8 +77,10 @@ type SonrHost interface {
 	// PrivateKey returns the ed25519 private key instance of the libp2p host
 	PrivateKey() (ed25519.PrivateKey, error)
 
+	// Send(ctx context.Context, target string, data interface{}, protocol protocol.ID) error
+
 	// SendMessage sends a message to a peer
-	SendMessage(id peer.ID, p protocol.ID, data proto.Message) error
+	Send(id peer.ID, p protocol.ID, data proto.Message) error
 
 	// SetStreamHandler sets the handler for a protocol
 	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)
