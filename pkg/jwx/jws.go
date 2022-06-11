@@ -7,7 +7,7 @@ import (
 
 type signer func(payload []byte, alg jwa.SignatureAlgorithm, key interface{}, options ...jws.SignOption) ([]byte, error)
 
-func CreateSigner() signer {
+func createSigner() signer {
 	return func(payload []byte, alg jwa.SignatureAlgorithm, key interface{}, options ...jws.SignOption) ([]byte, error) {
 		return jws.Sign(payload, alg, key)
 	}

@@ -1,7 +1,7 @@
 package jwx
 
 import (
-	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
 type JWKSignaturePair struct {
@@ -33,7 +33,7 @@ func NewKeySigSet(kt KeyType, key interface{}) (*JWKSignaturePair, error) {
 			return nil, err
 		}
 		set.Key = &key
-		set.Signer = CreateSigner()
+		set.Signer = createSigner()
 	}
 
 	return set, nil

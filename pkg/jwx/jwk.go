@@ -5,45 +5,45 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
 /*
 	JWK returns the key described by the VerificationMethod as JSON Web Key.
 */
-func CreateJWKForEnc(key interface{}) (jwk.Key, error) {
-	if key == nil {
+func (x *jwxImpl) CreateEncJWK() (jwk.Key, error) {
+	if x.key == nil {
 		return nil, errors.New("error while creating jwk: public key not provided")
 	}
 
-	jwk, err := jwk.New(key)
+	jwk, err := jwk.FromRaw(x.key)
 	if err != nil {
 		return nil, fmt.Errorf("could not parse public key: %w", err)
 	}
 
-	SetUse(jwk, "enc")
-	SetKeyOps(jwk, "encrypt")
+	setUse(jwk, "enc")
+	setKeyOps(jwk, "encrypt")
 	return jwk, nil
 }
 
 /*
 	JWK returns the key described by the VerificationMethod as JSON Web Key.
 */
-func CreateJWKForSig(key interface{}) (jwk.Key, error) {
-	if key == nil {
+func (x *jwxImpl) CreateSignJWK() (jwk.Key, error) {
+	if x.key == nil {
 		return nil, errors.New("error while creating jwk: public key not provided")
 	}
 
-	jwk, err := jwk.New(key)
+	jwk, err := jwk.FromRaw(x.key)
 	if err != nil {
 		return nil, err
 	}
 
-	err = SetUse(jwk, "sig")
+	err = setUse(jwk, "sig")
 	if err != nil {
 		return nil, err
 	}
-	err = SetKeyOps(jwk, "sign")
+	err = setKeyOps(jwk, "sign")
 
 	if err != nil {
 		return nil, err
@@ -68,14 +68,14 @@ func Unmarshall(key []byte) (*map[string]interface{}, error) {
 	return &keyAsMap, nil
 }
 
-func SetKid(key jwk.Key, value string) error {
+func setKid(key jwk.Key, value string) error {
 	return key.Set("kid", value)
 }
 
-func SetUse(key jwk.Key, value string) error {
+func setUse(key jwk.Key, value string) error {
 	return key.Set("use", value)
 }
 
-func SetKeyOps(key jwk.Key, value string) error {
+func setKeyOps(key jwk.Key, value string) error {
 	return key.Set("key_ops", value)
 }
