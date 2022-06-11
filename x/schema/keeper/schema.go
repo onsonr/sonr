@@ -45,6 +45,22 @@ func (k Keeper) GetSchemasFromID(ctx sdk.Context, creator string) (val []types.S
 	return vals, true
 }
 
+// GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
+func (k Keeper) GetSchemasFromLabel(ctx sdk.Context, label string) (val []types.Schema, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+	var vals []types.Schema = make([]types.Schema, 0)
+	for ; iterator.Valid(); iterator.Next() {
+		var instance types.Schema
+		k.cdc.MustUnmarshal(iterator.Value(), &instance)
+		if instance.Label == label {
+			vals = append(vals, instance)
+		}
+	}
+	return vals, true
+}
+
 // SetSchema set a specific schema in the store from its did
 func (k Keeper) SetSchema(ctx sdk.Context, schema types.Schema) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
