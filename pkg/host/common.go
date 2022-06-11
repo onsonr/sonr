@@ -185,7 +185,7 @@ func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.Stream
 }
 
 // SendMessage writes a protobuf go data object to a network stream
-func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+func (h *hostImpl) Send(id peer.ID, p protocol.ID, data proto.Message) error {
 	if !h.HasRouting() {
 		return fmt.Errorf("Host does not have routing")
 	}
