@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"errors"
+	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -50,7 +51,10 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := msg.ValidateBasic()
 	if err != nil {
-		return nil, err
+		return &types.MsgDeprecateSchemaResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		}, err
 	}
 
 	/*oldSchema*/
@@ -64,19 +68,19 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		if creatorErr != nil {
 
 			return &types.MsgDeprecateSchemaResponse{
-				Code:    400, //Client
+				Code:    http.StatusBadRequest,
 				Message: creatorErr.Error(),
 			}, creatorErr
 		} else if oldErr != nil {
 
 			return &types.MsgDeprecateSchemaResponse{
-				Code:    400, //Client
+				Code:    http.StatusInternalServerError,
 				Message: oldErr.Error(),
 			}, oldErr
 		} else if creatorDid != oldSchemaDid {
 
 			return &types.MsgDeprecateSchemaResponse{
-				Code:    403, //Forbidden
+				Code:    http.StatusForbidden,
 				Message: "Only the owner of a Schema may deprecate it.",
 			}, errors.New("Permission Denied: Only the owner may deprecate a schema") //TODO: Create error
 		}
@@ -89,13 +93,13 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		}
 
 		return &types.MsgDeprecateSchemaResponse{
-			Code:    200, //Success
+			Code:    http.StatusOK,
 			Message: "Schema deprecated successfully.",
 		}, nil
 	} else {
 
 		return &types.MsgDeprecateSchemaResponse{
-			Code:    404, //Not found
+			Code:    http.StatusNotFound,
 			Message: "Schema not found.",
 		}, errors.New("Schema not found") //TODO: Create error
 	}
