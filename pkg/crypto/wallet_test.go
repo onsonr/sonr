@@ -1,8 +1,10 @@
 package crypto
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 )
 
@@ -32,4 +34,16 @@ func Test_MPCCosmosAddr(t *testing.T) {
 	}
 
 	t.Log("success", pub)
+}
+
+func Test_MPCSignMessage(t *testing.T) {
+	w, err := Generate()
+	assert.NoError(t, err, "wallet generation succeeds")
+
+	// pl := pool.NewPool(0)
+	// defer pl.TearDown()
+
+	sig, err := w.Sign([]byte("sign this message"))
+	assert.NoError(t, err, "signing succeeds")
+	fmt.Printf("sig: %+v\n", sig)
 }

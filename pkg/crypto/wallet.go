@@ -17,7 +17,10 @@ import (
 )
 
 type MPCWallet struct {
-	Config    *cmp.Config
+	pool *pool.Pool
+
+	ID        party.ID
+	Configs   map[party.ID]*cmp.Config
 	Network   *Network
 	Threshold int
 }
@@ -34,22 +37,14 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
 			defer wg.Done()
-			if err := wallet.Keygen(id, opt.participants, pl); err != nil {
-				fmt.Println(err)
-				return
-			}
 
-			// TODO: Remove this method, currently this is the only time signing a TX works.
-			sig, err := wallet.Sign([]byte("test"), id, pl)
-			if err != nil {
-				fmt.Println(err)
+			if err := wallet.Keygen(id, opt.participants, pl); err != nil {
 				return
 			}
-			fmt.Println(sig)
 		}(id)
 	}
 	wg.Wait()
-	fmt.Println("Created Walllet: ", wallet.Config.ID)
+
 	return wallet, nil
 }
 
@@ -80,15 +75,15 @@ func (w *MPCWallet) Bech32Address() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(str)
+
 	return str, nil
 }
 
 // GetSigners returns the list of signers for the given message.
 func (w *MPCWallet) GetSigners() party.IDSlice {
-	signers := w.Config.PartyIDs()[:w.Threshold+1]
-	if !signers.Contains(w.Config.ID) {
-		w.Network.Quit(w.Config.ID)
+	signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
+	if !signers.Contains(w.ID) {
+		w.Network.Quit(w.ID)
 		return nil
 	}
 	return party.NewIDSlice(signers)
@@ -107,35 +102,32 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 		return err
 	}
 	conf := r.(*cmp.Config)
-	w.Config = conf
+	w.Configs[conf.ID] = conf
 	return nil
 }
 
 // Returns the ECDSA public key of the given party.
 func (w *MPCWallet) PublicKey() ([]byte, error) {
-	pub := w.Config.Public[w.Config.ID]
+	pub := w.Configs[w.ID].Public[w.ID]
 	if pub == nil {
-		fmt.Println("no public key found")
 		return nil, fmt.Errorf("no public key found")
 	}
 	buffer := bytes.NewBuffer(nil)
 	_, err := pub.WriteTo(buffer)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	buf := address.Hash("snr", buffer.Bytes())
-	fmt.Println(buf)
 	return buf, nil
 }
 
 // Refreshes all shares of an existing ECDSA private key.
 func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
-	hRefresh, err := protocol.NewMultiHandler(cmp.Refresh(w.Config, pl), nil)
+	hRefresh, err := protocol.NewMultiHandler(cmp.Refresh(w.Configs[w.ID], pl), nil)
 	if err != nil {
 		return nil, err
 	}
-	handlerLoop(w.Config.ID, hRefresh, w.Network)
+	handlerLoop(w.ID, hRefresh, w.Network)
 
 	r, err := hRefresh.Result()
 	if err != nil {
@@ -146,21 +138,47 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 }
 
 // Generates an ECDSA signature for messageHash.
-func (w *MPCWallet) Sign(m []byte, signer party.ID, pl *pool.Pool) (*ecdsa.Signature, error) {
-	signers := w.GetSigners()
-	h, err := protocol.NewMultiHandler(cmp.Sign(w.Config, signers, m, pl), nil)
+func sign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
+	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
 	if err != nil {
 		return nil, err
 	}
-	handlerLoop(signer, h, w.Network)
+	handlerLoop(c.ID, h, n)
 	signResult, err := h.Result()
 	if err != nil {
 		return nil, err
 	}
 	signature := signResult.(*ecdsa.Signature)
-	if !signature.Verify(w.Config.PublicPoint(), m) {
+	if !signature.Verify(c.PublicPoint(), m) {
 		return nil, fmt.Errorf("failed to verify cmp signature")
 	}
-	fmt.Println("cmp signature verified: ", signature)
 	return signature, nil
+}
+
+func (w *MPCWallet) Sign(m []byte /*, pl *pool.Pool*/) (*ecdsa.Signature, error) {
+	var wg sync.WaitGroup
+	signers := w.GetSigners()
+	net := NewNetwork(signers)
+
+	var (
+		sig *ecdsa.Signature
+		err error
+	)
+
+	for _, id := range signers {
+		wg.Add(1)
+		go func(id party.ID) {
+			defer wg.Done()
+
+			pl := pool.NewPool(0)
+			defer pl.TearDown()
+
+			if sig, err = sign(w.Configs[id], m, signers, net, pl); err != nil {
+				return
+			}
+		}(id)
+	}
+	wg.Wait()
+
+	return sig, err
 }

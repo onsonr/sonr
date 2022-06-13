@@ -1,9 +1,13 @@
 package crypto
 
-import "github.com/taurusgroup/multi-party-sig/pkg/party"
+import (
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
+	"github.com/taurusgroup/multi-party-sig/pkg/pool"
+	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
+)
 
 // The default shards that are added to the MPC wallet
-var defaultParticipants = party.IDSlice{"vault", "shared"}
+var defaultParticipants = party.IDSlice{"me", "vault", "shared"}
 
 // Preset options struct
 type walletConfig struct {
@@ -15,9 +19,9 @@ type walletConfig struct {
 // default configuration options
 func defaultConfig() *walletConfig {
 	return &walletConfig{
-		participants: party.IDSlice{"vault", "shared"},
+		participants: defaultParticipants,
 		threshold:    1,
-		network:      NewNetwork(party.IDSlice{"vault", "shared"}),
+		network:      NewNetwork(defaultParticipants),
 	}
 }
 
@@ -28,6 +32,10 @@ func (wc *walletConfig) Apply(opts ...WalletOption) *MPCWallet {
 	}
 
 	return &MPCWallet{
+		pool: pool.NewPool(0),
+
+		Configs:   make(map[party.ID]*cmp.Config),
+		ID:        wc.participants[0],
 		Threshold: wc.threshold,
 		Network:   wc.network,
 	}
