@@ -24,20 +24,17 @@ func (wc *walletConfig) Apply(opts ...WalletOption) *MPCWallet {
 	}
 
 	return &MPCWallet{
-		Participants: wc.participants,
-		Threshold:    wc.threshold,
-		Network:      wc.network,
+		Threshold: wc.threshold,
+		Network:   wc.network,
 	}
-
 }
 
 type WalletOption func(*walletConfig)
 
 func WithParticipants(participants ...party.ID) WalletOption {
 	return func(c *walletConfig) {
-		c.participants = defaultParticipants
 		// Update participants and network.
-		c.participants = append(c.participants, participants...)
+		c.participants = append(defaultParticipants, participants...)
 		c.network = NewNetwork(c.participants)
 	}
 }

@@ -1,16 +1,13 @@
 package crypto
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 )
 
 func Test_MPCCreate(t *testing.T) {
-	pl := pool.NewPool(0)
-	defer pl.TearDown()
-	_, err := Generate(pl, WithParticipants("bio1"))
+	_, err := Generate()
 	if err != nil {
 		t.Error(err)
 	}
@@ -18,20 +15,31 @@ func Test_MPCCreate(t *testing.T) {
 
 func Test_MPCSign(t *testing.T) {
 	pl := pool.NewPool(0)
-	w, err := Generate(pl, WithParticipants("bio1"))
+	w, err := Generate()
 	if err != nil {
 		t.Error(err)
 	}
 
-	sig, err := w.CMPSign([]byte("test"), w.GetSigners("bio1"), pl)
+	sig, err := w.Sign([]byte("test"), pl)
 	if err != nil {
-		fmt.Println(err)
+		t.Error(err)
+		return
+	}
+	t.Log("success", sig)
+}
+
+func Test_MPCCosmosAddr(t *testing.T) {
+	w, err := Generate()
+	if err != nil {
+		t.Error(err)
 		return
 	}
 
-	if !sig.Verify(w.Config.PublicPoint(), []byte("test")) {
-		fmt.Println("failed to verify cmp signature")
+	pub, err := w.AccountAddress()
+	if err != nil {
+		t.Error(err)
 		return
 	}
-	t.Log("success")
+
+	t.Log("success", pub)
 }
