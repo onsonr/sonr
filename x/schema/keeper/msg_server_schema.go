@@ -62,11 +62,23 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		creatorDid, creatorErr := did.ParseDID(msg.GetDid())
 		oldSchemaDid, oldErr := did.ParseDID(oldSchema.GetDid())
 		if creatorErr != nil {
-			return nil, creatorErr //TODO: Create response
+
+			return &types.MsgDeprecateSchemaResponse{
+				Code:    400, //Client
+				Message: creatorErr.Error(),
+			}, creatorErr
 		} else if oldErr != nil {
-			return nil, oldErr //TODO: Create response
+
+			return &types.MsgDeprecateSchemaResponse{
+				Code:    400, //Client
+				Message: oldErr.Error(),
+			}, oldErr
 		} else if creatorDid != oldSchemaDid {
-			return nil, errors.New("Permission Denied: Only the owner may deprecate a schema") //TODO: Create response, error
+
+			return &types.MsgDeprecateSchemaResponse{
+				Code:    403, //Forbidden
+				Message: "Only the owner of a Schema may deprecate it.",
+			}, errors.New("Permission Denied: Only the owner may deprecate a schema") //TODO: Create error
 		}
 
 		//If already deactivated, do nothing.
@@ -76,8 +88,15 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 			k.SetSchema(ctx, oldSchema)
 		}
 
-		return nil, nil //TODO: Create response
+		return &types.MsgDeprecateSchemaResponse{
+			Code:    200, //Success
+			Message: "Schema deprecated successfully.",
+		}, nil
 	} else {
-		return nil, errors.New("Schema not found") //TODO: Create response, error
+
+		return &types.MsgDeprecateSchemaResponse{
+			Code:    404, //Not found
+			Message: "Schema not found.",
+		}, errors.New("Schema not found") //TODO: Create error
 	}
 }
