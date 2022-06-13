@@ -3,17 +3,21 @@ package crypto
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/mr-tron/base58/base58"
+	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
+	"github.com/taurusgroup/multi-party-sig/protocols/cmp/config"
 )
 
 type MPCWallet struct {
@@ -54,10 +58,10 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 }
 
 // Returns the cosmos compatible address of the given party.
-func (w *MPCWallet) AccountAddress() (types.AccAddress, error) {
+func (w *MPCWallet) AccountAddress(id ...party.ID) (types.AccAddress, error) {
 	c := types.GetConfig()
 	c.SetBech32PrefixForAccount("snr", "pub")
-	bechAddr, err := w.Bech32Address()
+	bechAddr, err := w.Bech32Address(id...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,10 +73,10 @@ func (w *MPCWallet) AccountAddress() (types.AccAddress, error) {
 }
 
 // Returns the Bech32 representation of the given party.
-func (w *MPCWallet) Bech32Address() (string, error) {
+func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	c := types.GetConfig()
 	c.SetBech32PrefixForAccount("snr", "pub")
-	pub, err := w.PublicKey()
+	pub, err := w.PublicKey(id...)
 	if err != nil {
 		return "", err
 	}
@@ -82,6 +86,56 @@ func (w *MPCWallet) Bech32Address() (string, error) {
 	}
 	fmt.Println(str)
 	return str, nil
+}
+
+// Returns the DID Address of the Wallet
+func (w *MPCWallet) DID() (*did.DID, error) {
+	addr, err := w.AccountAddress()
+	if err != nil {
+		return nil, err
+	}
+	return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr.String(), "snr")))
+}
+
+// GetDIDByPartyID returns the DID address of the given party.
+func (w *MPCWallet) GetDIDByPartyID(id party.ID) (*did.DID, error) {
+	baseDid, err := w.DID()
+	if err != nil {
+		return nil, err
+	}
+	if !w.Config.PartyIDs().Contains(id) {
+		return nil, fmt.Errorf("party %s is not a member of the wallet", id)
+	}
+	return did.ParseDID(fmt.Sprintf("%s#%s", baseDid, id))
+}
+
+// GetVMByPartyID returns the VerificationMethod for the given party.
+func (w *MPCWallet) GetVMByPartyID(id party.ID) (*did.VerificationMethod, error) {
+	// Get the DID of the wallet
+	baseDid, err := w.DID()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the DID of the party.
+	vmdid, err := w.GetDIDByPartyID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get base58 encoded public key.
+	pub, err := w.PublicKeyBase58(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the shares VerificationMethod
+	return &did.VerificationMethod{
+		ID:              *vmdid,
+		Type:            "EcdsaVerificationKey2019",
+		Controller:      *baseDid,
+		PublicKeyBase58: pub,
+	}, nil
 }
 
 // GetSigners returns the list of signers for the given message.
@@ -112,8 +166,16 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKey() ([]byte, error) {
-	pub := w.Config.Public[w.Config.ID]
+func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
+	var pub *config.Public
+	if len(id) == 0 {
+		pub = w.Config.Public[w.Config.ID]
+	} else if len(id) == 1 {
+		pub = w.Config.Public[id[0]]
+	} else {
+		return nil, fmt.Errorf("invalid number of arguments")
+	}
+
 	if pub == nil {
 		fmt.Println("no public key found")
 		return nil, fmt.Errorf("no public key found")
@@ -127,6 +189,15 @@ func (w *MPCWallet) PublicKey() ([]byte, error) {
 	buf := address.Hash("snr", buffer.Bytes())
 	fmt.Println(buf)
 	return buf, nil
+}
+
+// Returns the ECDSA public key of the given party.
+func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
+	pub, err := w.PublicKey(id...)
+	if err != nil {
+		return "", err
+	}
+	return base58.Encode(pub), nil
 }
 
 // Refreshes all shares of an existing ECDSA private key.
