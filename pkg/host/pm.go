@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/getamis/alice/example/utils"
+	"github.com/sonr-io/alice/example/utils"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"

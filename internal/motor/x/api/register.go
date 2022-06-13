@@ -11,5 +11,5 @@ func RegisterWhoIs(registerRequest []byte) error {
 	if err := json.Unmarshal(registerRequest, &msgCreateWhoIs); err != nil {
 		return err
 	}
-
+	return nil
 }

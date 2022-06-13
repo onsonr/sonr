@@ -17,7 +17,6 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/getamis/sirius/log"
 	"github.com/sonr-io/alice/crypto/tss/ecdsa/gg18/reshare"
 	"github.com/sonr-io/alice/example/config"
 	"gopkg.in/yaml.v2"
@@ -56,7 +55,6 @@ func writeReshareResult(id string, result *reshare.Result) error {
 	}
 	err := config.WriteYamlFile(reshareResult, getFilePath(id))
 	if err != nil {
-		log.Error("Cannot write YAML file", "err", err)
 		return err
 	}
 	return nil

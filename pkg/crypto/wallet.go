@@ -1,109 +1,143 @@
 package crypto
 
 import (
-	"log"
+	"errors"
+	"fmt"
+	"sync"
 
-	"github.com/cosmos/cosmos-sdk/crypto"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	device "github.com/sonr-io/sonr/pkg/fs"
+	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
+	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
+	"github.com/taurusgroup/multi-party-sig/pkg/pool"
+	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
+	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-// WalletOption is a function that modifies the options for a Wallet.
-type WalletOption func(*options) error
+type MPCWallet struct {
+	Config       *cmp.Config
+	Network      *Network
+	Participants party.IDSlice
+	Threshold    int
+}
 
-// WithPassphrase sets the passphrase for the keyring.
-func WithPassphrase(s string) WalletOption {
-	return func(o *options) error {
-		o.passphrase = s
-		return nil
+// Generate a new ECDSA private key shared among all the given participants.
+func Generate(options ...WalletOption) (*MPCWallet, error) {
+	opt := defaultConfig()
+	wallet := opt.Apply(options...)
+	pl := pool.NewPool(0)
+	defer pl.TearDown()
+
+	var wg sync.WaitGroup
+	for _, id := range wallet.Participants {
+		wg.Add(1)
+		go func(id party.ID) {
+			pl := pool.NewPool(0)
+			defer pl.TearDown()
+			if err := wallet.CMPKeygen(id, pl, &wg); err != nil {
+				fmt.Println(err)
+			} else {
+				c, err := wallet.Config.DeriveBIP32(2)
+				if err != nil {
+					fmt.Println(err)
+				}
+				fmt.Println(c.PublicPoint())
+				fmt.Println("success")
+				fmt.Printf("%+v\n", wallet.Config)
+			}
+		}(id)
 	}
+
+	fmt.Println("done.")
+	return wallet, nil
 }
 
-// WithFolderPath sets the folder path for the keyring.
-func WithFolderPath(s string) WalletOption {
-	return func(o *options) error {
-		o.folder = device.Folder(s)
-		return nil
-	}
-}
-
-// WithWalletName sets the name of the wallet to be created.
-func WithWalletName(s string) WalletOption {
-	return func(o *options) error {
-		o.walletName = s
-		return nil
-	}
-}
-
-type options struct {
-	walletName string
-	passphrase string
-	folder     device.Folder
-}
-
-// defaultOptions returns the default options for a Wallet.
-func defaultOptions() *options {
-	return &options{
-		walletName: "sonr",
-		passphrase: "",
-		folder:     device.Support,
-	}
-}
-
-// ExportWallet returns armored private key and public key
-func ExportWallet(kr keyring.Keyring, name string, passphrase string) (string, error) {
-	armor, err := kr.ExportPrivKeyArmor(name, passphrase)
+// Generate a new ECDSA private key shared among all the given participants.
+func (w *MPCWallet) CMPKeygen(id party.ID, pl *pool.Pool, wg *sync.WaitGroup) error {
+	h, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, id, w.Participants, w.Threshold, pl), nil)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return armor, nil
+	handlerLoop(id, h, w.Network)
+	r, err := h.Result()
+	if err != nil {
+		return err
+	}
+	wg.Done()
+	conf := r.(*cmp.Config)
+	w.Config = conf
+	return nil
 }
 
-// GenerateWallet generates a new Wallet and stores it in the keyring.
-func GenerateWallet(kr keyring.Keyring, options ...WalletOption) (KeySet, string, error) {
-	g := defaultOptions()
-	for _, option := range options {
-		if err := option(g); err != nil {
-			return nil, "", err
-		}
-	}
-
-	// Add keys and see they return in alphabetical order
-	_, mnemonic, err := kr.NewMnemonic(g.walletName, keyring.English, sdk.FullFundraiserPath, g.passphrase, hd.Secp256k1)
-	if err != nil {
-		return nil, "", err
-	}
-
-	// Create default sonr key
-	ks, err := CreateKeySet(mnemonic)
-	if err != nil {
-		return nil, "", err
-	}
-
-	// Copy keys to keyring if not already there
-	_, err = ks.CopyToKeyring(kr, g.walletName)
-	if err == nil {
-		err = ks.Export(device.Support)
-		if err != nil {
-			return nil, "", err
-		}
-	}
-
-	return ks, mnemonic, nil
-}
-
-// RestoreWallet restores a private key from ASCII armored format.
-func RestoreWallet(name string, armor string, passphrase string) (keyring.Keyring, error) {
-	privKey, algo, err := crypto.UnarmorDecryptPrivKey(armor, passphrase)
+// Refreshes all shares of an existing ECDSA private key.
+func (w *MPCWallet) CMPRefresh(pl *pool.Pool) (*cmp.Config, error) {
+	hRefresh, err := protocol.NewMultiHandler(cmp.Refresh(w.Config, pl), nil)
 	if err != nil {
 		return nil, err
 	}
-	kr := keyring.NewInMemory()
-	if err := kr.ImportPrivKey(name, algo, passphrase); err != nil {
+	handlerLoop(w.Config.ID, hRefresh, w.Network)
+
+	r, err := hRefresh.Result()
+	if err != nil {
 		return nil, err
 	}
-	log.Println(privKey.PubKey())
-	return kr, nil
+
+	return r.(*cmp.Config), nil
+}
+
+// Generates an ECDSA signature for messageHash.
+func (w *MPCWallet) CMPSign(m []byte, signers party.IDSlice, pl *pool.Pool) error {
+	h, err := protocol.NewMultiHandler(cmp.Sign(w.Config, signers, m, pl), nil)
+	if err != nil {
+		return err
+	}
+	handlerLoop(w.Config.ID, h, w.Network)
+
+	signResult, err := h.Result()
+	if err != nil {
+		return err
+	}
+	signature := signResult.(*ecdsa.Signature)
+	if !signature.Verify(w.Config.PublicPoint(), m) {
+		return errors.New("failed to verify cmp signature")
+	}
+	return nil
+}
+
+// Generates a preprocessed ECDSA signature which does not depend on the message being signed.
+func (w *MPCWallet) CMPPreSign(signers party.IDSlice, pl *pool.Pool) (*ecdsa.PreSignature, error) {
+	h, err := protocol.NewMultiHandler(cmp.Presign(w.Config, signers, pl), nil)
+	if err != nil {
+		return nil, err
+	}
+	handlerLoop(w.Config.ID, h, w.Network)
+
+	signResult, err := h.Result()
+	if err != nil {
+		return nil, err
+	}
+
+	preSignature := signResult.(*ecdsa.PreSignature)
+	if err = preSignature.Validate(); err != nil {
+		return nil, errors.New("failed to verify cmp presignature")
+	}
+	return preSignature, nil
+}
+
+// Combines each party's PreSignature share to create an ECDSA signature for messageHash.
+func (w *MPCWallet) CMPPreSignOnline(preSignature *ecdsa.PreSignature, m []byte, pl *pool.Pool) error {
+	h, err := protocol.NewMultiHandler(cmp.PresignOnline(w.Config, preSignature, m, pl), nil)
+	if err != nil {
+		return err
+	}
+	handlerLoop(w.Config.ID, h, w.Network)
+
+	signResult, err := h.Result()
+	if err != nil {
+		return err
+	}
+	signature := signResult.(*ecdsa.Signature)
+	if !signature.Verify(w.Config.PublicPoint(), m) {
+		return errors.New("failed to verify cmp signature")
+	}
+	return nil
 }
