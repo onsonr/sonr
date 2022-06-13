@@ -38,15 +38,18 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 				fmt.Println(err)
 				return
 			}
-			buf, err := wallet.Sign([]byte("Test"), pl)
+
+			// TODO: Remove this method, currently this is the only time signing a TX works.
+			sig, err := wallet.Sign([]byte("test"), id, pl)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			fmt.Println(buf)
+			fmt.Println(sig)
 		}(id)
 	}
 	wg.Wait()
+	fmt.Println("Created Walllet: ", wallet.Config.ID)
 	return wallet, nil
 }
 
@@ -83,7 +86,7 @@ func (w *MPCWallet) Bech32Address() (string, error) {
 
 // GetSigners returns the list of signers for the given message.
 func (w *MPCWallet) GetSigners() party.IDSlice {
-	signers := w.Config.PartyIDs()
+	signers := w.Config.PartyIDs()[:w.Threshold+1]
 	if !signers.Contains(w.Config.ID) {
 		w.Network.Quit(w.Config.ID)
 		return nil
@@ -103,7 +106,6 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 	if err != nil {
 		return err
 	}
-
 	conf := r.(*cmp.Config)
 	w.Config = conf
 	return nil
@@ -113,6 +115,7 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 func (w *MPCWallet) PublicKey() ([]byte, error) {
 	pub := w.Config.Public[w.Config.ID]
 	if pub == nil {
+		fmt.Println("no public key found")
 		return nil, fmt.Errorf("no public key found")
 	}
 	buffer := bytes.NewBuffer(nil)
@@ -122,6 +125,7 @@ func (w *MPCWallet) PublicKey() ([]byte, error) {
 		return nil, err
 	}
 	buf := address.Hash("snr", buffer.Bytes())
+	fmt.Println(buf)
 	return buf, nil
 }
 
@@ -142,17 +146,13 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 }
 
 // Generates an ECDSA signature for messageHash.
-func (w *MPCWallet) Sign(m []byte, pl *pool.Pool) (*ecdsa.Signature, error) {
-	
+func (w *MPCWallet) Sign(m []byte, signer party.ID, pl *pool.Pool) (*ecdsa.Signature, error) {
 	signers := w.GetSigners()
-	if len(signers) == 0 {
-		return nil, fmt.Errorf("no signers found")
-	}
 	h, err := protocol.NewMultiHandler(cmp.Sign(w.Config, signers, m, pl), nil)
 	if err != nil {
 		return nil, err
 	}
-	handlerLoop(w.Config.ID, h, w.Network)
+	handlerLoop(signer, h, w.Network)
 	signResult, err := h.Result()
 	if err != nil {
 		return nil, err
