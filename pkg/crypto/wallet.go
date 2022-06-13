@@ -6,7 +6,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/mr-tron/base58/base58"
@@ -40,7 +39,6 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 			defer pl.TearDown()
 			defer wg.Done()
 			if err := wallet.Keygen(id, opt.participants, pl); err != nil {
-				fmt.Println(err)
 				return
 			}
 
@@ -57,25 +55,25 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 	return wallet, nil
 }
 
-// Returns the cosmos compatible address of the given party.
-func (w *MPCWallet) AccountAddress(id ...party.ID) (types.AccAddress, error) {
-	c := types.GetConfig()
-	c.SetBech32PrefixForAccount("snr", "pub")
-	bechAddr, err := w.Bech32Address(id...)
-	if err != nil {
-		return nil, err
-	}
-	acc, err := types.AccAddressFromBech32(bechAddr)
-	if err != nil {
-		return nil, err
-	}
-	return acc, nil
-}
+// // Returns the cosmos compatible address of the given party.
+// func (w *MPCWallet) AccountAddress(id ...party.ID) (types.AccAddress, error) {
+// 	// c := types.GetConfig()
+// 	// c.SetBech32PrefixForAccount("snr", "pub")
+// 	bechAddr, err := w.Bech32Address(id...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	acc, err := types.AccAddressFromBech32(bechAddr)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return acc, nil
+// }
 
 // Returns the Bech32 representation of the given party.
 func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
-	c := types.GetConfig()
-	c.SetBech32PrefixForAccount("snr", "pub")
+	// c := types.GetConfig()
+	// c.SetBech32PrefixForAccount("snr", "pub")
 	pub, err := w.PublicKey(id...)
 	if err != nil {
 		return "", err
@@ -91,11 +89,11 @@ func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 // DID Returns the DID Address of the Wallet. When partyId is provided, it returns the DID of the given party. Only the first party in the wallet can create a DID.
 func (w *MPCWallet) DID(party ...party.ID) (*did.DID, error) {
 	if len(party) == 0 {
-		addr, err := w.AccountAddress()
+		addr, err := w.Bech32Address()
 		if err != nil {
 			return nil, err
 		}
-		return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr.String(), "snr")))
+		return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr, "snr")))
 	} else if len(party) == 1 {
 		id := party[0]
 		if !w.Config.PartyIDs().Contains(id) {

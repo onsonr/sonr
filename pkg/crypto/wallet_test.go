@@ -24,7 +24,7 @@ func Test_MPCDID(t *testing.T) {
 		return
 	}
 
-	pub, err := w.AccountAddress()
+	pub, err := w.Bech32Address()
 	if err != nil {
 		t.Error(err)
 		return
