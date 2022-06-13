@@ -35,10 +35,7 @@ type WalletOption func(*walletConfig)
 
 func WithParticipants(participants ...party.ID) WalletOption {
 	return func(c *walletConfig) {
-		if c.participants == nil {
-			c.participants = defaultParticipants
-		}
-
+		c.participants = defaultParticipants
 		// Update participants and network.
 		c.participants = append(c.participants, participants...)
 		c.network = NewNetwork(c.participants)

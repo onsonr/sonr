@@ -1,7 +1,6 @@
 package crypto
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -83,13 +82,10 @@ func (n *Network) Quit(id party.ID) {
 // handlerLoop is a helper function that loops over all the parties and calls the given handler.
 func handlerLoop(id party.ID, h protocol.Handler, network *Network) {
 	for {
-		fmt.Println("for")
 		select {
 
 		// outgoing messages
 		case msg, ok := <-h.Listen():
-			fmt.Println("listen")
-			fmt.Println(msg)
 			if !ok {
 				<-network.Done(id)
 				// the channel was closed, indicating that the protocol is done executing.
@@ -99,8 +95,6 @@ func handlerLoop(id party.ID, h protocol.Handler, network *Network) {
 
 			// incoming messages
 		case msg := <-network.Next(id):
-			fmt.Println("next")
-			fmt.Println(msg)
 			h.Accept(msg)
 		}
 	}

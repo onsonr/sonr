@@ -1,7 +1,6 @@
 package crypto
 
 import (
-	"errors"
 	"fmt"
 	"sync"
 
@@ -21,11 +20,9 @@ type MPCWallet struct {
 }
 
 // Generate a new ECDSA private key shared among all the given participants.
-func Generate(options ...WalletOption) (*MPCWallet, error) {
+func Generate(pl *pool.Pool, options ...WalletOption) (*MPCWallet, error) {
 	opt := defaultConfig()
 	wallet := opt.Apply(options...)
-	pl := pool.NewPool(0)
-	defer pl.TearDown()
 
 	var wg sync.WaitGroup
 	for _, id := range wallet.Participants {
@@ -35,20 +32,22 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 			defer pl.TearDown()
 			if err := wallet.CMPKeygen(id, pl, &wg); err != nil {
 				fmt.Println(err)
-			} else {
-				c, err := wallet.Config.DeriveBIP32(2)
-				if err != nil {
-					fmt.Println(err)
-				}
-				fmt.Println(c.PublicPoint())
-				fmt.Println("success")
-				fmt.Printf("%+v\n", wallet.Config)
+				return
 			}
 		}(id)
 	}
-
+	wg.Wait()
 	fmt.Println("done.")
 	return wallet, nil
+}
+
+func (w *MPCWallet) GetSigners(id party.ID) party.IDSlice {
+	signers := w.Participants[:w.Threshold+1]
+	if !signers.Contains(id) {
+		w.Network.Quit(id)
+		return nil
+	}
+	return signers
 }
 
 // Generate a new ECDSA private key shared among all the given participants.
@@ -85,59 +84,19 @@ func (w *MPCWallet) CMPRefresh(pl *pool.Pool) (*cmp.Config, error) {
 }
 
 // Generates an ECDSA signature for messageHash.
-func (w *MPCWallet) CMPSign(m []byte, signers party.IDSlice, pl *pool.Pool) error {
+func (w *MPCWallet) CMPSign(m []byte, signers party.IDSlice, pl *pool.Pool) (*ecdsa.Signature, error) {
 	h, err := protocol.NewMultiHandler(cmp.Sign(w.Config, signers, m, pl), nil)
 	if err != nil {
-		return err
-	}
-	handlerLoop(w.Config.ID, h, w.Network)
-
-	signResult, err := h.Result()
-	if err != nil {
-		return err
-	}
-	signature := signResult.(*ecdsa.Signature)
-	if !signature.Verify(w.Config.PublicPoint(), m) {
-		return errors.New("failed to verify cmp signature")
-	}
-	return nil
-}
-
-// Generates a preprocessed ECDSA signature which does not depend on the message being signed.
-func (w *MPCWallet) CMPPreSign(signers party.IDSlice, pl *pool.Pool) (*ecdsa.PreSignature, error) {
-	h, err := protocol.NewMultiHandler(cmp.Presign(w.Config, signers, pl), nil)
-	if err != nil {
 		return nil, err
 	}
-	handlerLoop(w.Config.ID, h, w.Network)
-
+	handlerLoop(w.Config.ID, h, NewNetwork(signers))
 	signResult, err := h.Result()
 	if err != nil {
 		return nil, err
 	}
-
-	preSignature := signResult.(*ecdsa.PreSignature)
-	if err = preSignature.Validate(); err != nil {
-		return nil, errors.New("failed to verify cmp presignature")
-	}
-	return preSignature, nil
-}
-
-// Combines each party's PreSignature share to create an ECDSA signature for messageHash.
-func (w *MPCWallet) CMPPreSignOnline(preSignature *ecdsa.PreSignature, m []byte, pl *pool.Pool) error {
-	h, err := protocol.NewMultiHandler(cmp.PresignOnline(w.Config, preSignature, m, pl), nil)
-	if err != nil {
-		return err
-	}
-	handlerLoop(w.Config.ID, h, w.Network)
-
-	signResult, err := h.Result()
-	if err != nil {
-		return err
-	}
 	signature := signResult.(*ecdsa.Signature)
 	if !signature.Verify(w.Config.PublicPoint(), m) {
-		return errors.New("failed to verify cmp signature")
+		return nil, fmt.Errorf("failed to verify cmp signature")
 	}
-	return nil
+	return signature, nil
 }
