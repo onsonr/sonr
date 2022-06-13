@@ -17,8 +17,7 @@ func Test_MPCCreate(t *testing.T) {
 	}
 }
 
-func Test_MPCCosmosAddr(t *testing.T) {
-
+func Test_MPCDID(t *testing.T) {
 	w, err := Generate()
 	if err != nil {
 		t.Error(err)
@@ -30,6 +29,12 @@ func Test_MPCCosmosAddr(t *testing.T) {
 		t.Error(err)
 		return
 	}
-
 	t.Log("success", pub)
+
+	doc, err := w.DIDDocument()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log("success", doc)
 }

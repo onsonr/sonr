@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -43,17 +44,16 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 				return
 			}
 
-			// TODO: Remove this method, currently this is the only time signing a TX works.
-			sig, err := wallet.Sign([]byte("test"), id, pl)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			fmt.Println(sig)
+			// // TODO: Remove this method, currently this is the only time signing a TX works.
+			// sig, err := wallet.Sign([]byte("test"), id, pl)
+			// if err != nil {
+			// 	fmt.Println(err)
+			// 	return
+			// }
+			// fmt.Println(sig)
 		}(id)
 	}
 	wg.Wait()
-	fmt.Println("Created Walllet: ", wallet.Config.ID)
 	return wallet, nil
 }
 
@@ -88,29 +88,65 @@ func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	return str, nil
 }
 
-// Returns the DID Address of the Wallet
-func (w *MPCWallet) DID() (*did.DID, error) {
-	addr, err := w.AccountAddress()
-	if err != nil {
-		return nil, err
+// DID Returns the DID Address of the Wallet. When partyId is provided, it returns the DID of the given party. Only the first party in the wallet can create a DID.
+func (w *MPCWallet) DID(party ...party.ID) (*did.DID, error) {
+	if len(party) == 0 {
+		addr, err := w.AccountAddress()
+		if err != nil {
+			return nil, err
+		}
+		return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr.String(), "snr")))
+	} else if len(party) == 1 {
+		id := party[0]
+		if !w.Config.PartyIDs().Contains(id) {
+			return nil, fmt.Errorf("party %s is not a member of the wallet", id)
+		}
+
+		baseDid, err := w.DID()
+		if err != nil {
+			return nil, err
+		}
+		return did.ParseDID(fmt.Sprintf("%s#%s", baseDid, id))
 	}
-	return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr.String(), "snr")))
+	return nil, fmt.Errorf("invalid number of arguments")
 }
 
-// GetDIDByPartyID returns the DID address of the given party.
-func (w *MPCWallet) GetDIDByPartyID(id party.ID) (*did.DID, error) {
+// CreateDIDDocument creates a DID Document for the given party.
+func (w *MPCWallet) DIDDocument() (did.Document, error) {
+	// Get the DID of the wallet
 	baseDid, err := w.DID()
 	if err != nil {
 		return nil, err
 	}
-	if !w.Config.PartyIDs().Contains(id) {
-		return nil, fmt.Errorf("party %s is not a member of the wallet", id)
+
+	// Create the DID Document
+	doc, err := did.NewDocument(baseDid.String())
+	if err != nil {
+		return nil, err
 	}
-	return did.ParseDID(fmt.Sprintf("%s#%s", baseDid, id))
+
+	// Get ALL the VerificationMethods of the wallet.
+	vmsAll := make([]*did.VerificationMethod, 0)
+	for _, id := range w.Config.PartyIDs() {
+		vm, err := w.GetVerificationMethod(id)
+		if err != nil {
+			return nil, err
+		}
+		vmsAll = append(vmsAll, vm)
+	}
+
+	for _, vm := range vmsAll {
+		doc.AddAuthenticationMethod(vm)
+	}
+
+	if len(doc.GetAuthenticationMethods()) != len(vmsAll) {
+		return nil, fmt.Errorf("failed to add all verification methods to DID Document")
+	}
+	return doc, nil
 }
 
-// GetVMByPartyID returns the VerificationMethod for the given party.
-func (w *MPCWallet) GetVMByPartyID(id party.ID) (*did.VerificationMethod, error) {
+// GetVerificationMethod returns the VerificationMethod for the given party.
+func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
 	// Get the DID of the wallet
 	baseDid, err := w.DID()
 	if err != nil {
@@ -118,7 +154,7 @@ func (w *MPCWallet) GetVMByPartyID(id party.ID) (*did.VerificationMethod, error)
 	}
 
 	// Get the DID of the party.
-	vmdid, err := w.GetDIDByPartyID(id)
+	vmdid, err := w.DID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +168,7 @@ func (w *MPCWallet) GetVMByPartyID(id party.ID) (*did.VerificationMethod, error)
 	// Return the shares VerificationMethod
 	return &did.VerificationMethod{
 		ID:              *vmdid,
-		Type:            "EcdsaVerificationKey2019",
+		Type:            ssi.ECDSASECP256K1VerificationKey2019,
 		Controller:      *baseDid,
 		PublicKeyBase58: pub,
 	}, nil
