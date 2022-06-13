@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +17,7 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public(), jwa.ECDH_ES_A256KW, jwa.A128CBC_HS256)
+		x := New(key.Public())
 		jwk, err := x.CreateEncJWK()
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
@@ -34,7 +33,7 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public(), jwa.ECDH_ES_A256KW, jwa.A128CBC_HS256)
+		x := New(key.Public())
 		jwk, err := x.CreateSignJWK()
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
@@ -50,7 +49,7 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public(), jwa.ECDH_ES_A256KW, jwa.A128CBC_HS256)
+		x := New(key.Public())
 		jwk, err := x.CreateSignJWK()
 		assert.NoError(t, err)
 		data, err := Marshall(&jwk)
@@ -66,7 +65,7 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public(), jwa.ECDH_ES_A256KW, jwa.A128CBC_HS256)
+		x := New(key.Public())
 		jwk, err := x.CreateSignJWK()
 		assert.NoError(t, err)
 		data, err := Marshall(&jwk)

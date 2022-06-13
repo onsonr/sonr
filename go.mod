@@ -22,7 +22,6 @@ require (
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipld/go-ipld-prime v0.14.2
 	github.com/kataras/golog v0.1.7
-	github.com/lestrrat-go/jwx v1.2.20
 	github.com/lestrrat-go/jwx/v2 v2.0.2
 	github.com/libp2p/go-libp2p v0.17.0
 	github.com/libp2p/go-libp2p-connmgr v0.3.1
@@ -213,7 +212,6 @@ require (
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/koron/go-ssdp v0.0.2 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/lestrrat-go/backoff/v2 v2.0.8 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.1 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
 	github.com/lestrrat-go/httprc v1.0.1 // indirect
