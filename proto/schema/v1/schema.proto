@@ -7,11 +7,14 @@ message Schema {
   // the DID for this schema
   string did = 1;
 
+  // whether this schema is active
+  bool isActive = 2;
+
   // an alternative reference point
-  string label = 2;
+  string label = 3;
 
   // the properties of this schema
-  map<string, SchemaKind> fields = 3;
+  map<string, SchemaKind> fields = 4;
 }
 
 // Represents the types of fields a schema can have

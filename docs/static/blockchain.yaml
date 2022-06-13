@@ -29077,6 +29077,9 @@ paths:
                   did:
                     type: string
                     title: the DID for this schema
+                  isActive:
+                    type: boolean
+                    title: whether this schema is active
                   label:
                     type: string
                     title: an alternative reference point
@@ -50644,6 +50647,9 @@ definitions:
           did:
             type: string
             title: the DID for this schema
+          isActive:
+            type: boolean
+            title: whether this schema is active
           label:
             type: string
             title: an alternative reference point
@@ -50697,6 +50703,9 @@ definitions:
           did:
             type: string
             title: the DID for this schema
+          isActive:
+            type: boolean
+            title: whether this schema is active
           label:
             type: string
             title: an alternative reference point
@@ -50729,6 +50738,9 @@ definitions:
       did:
         type: string
         title: the DID for this schema
+      isActive:
+        type: boolean
+        title: whether this schema is active
       label:
         type: string
         title: an alternative reference point
