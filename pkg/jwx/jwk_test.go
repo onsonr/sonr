@@ -16,8 +16,9 @@ func Test_JWK(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
-		pk := key.Public()
-		jwk, err := CreateJWKForEnc(pk)
+
+		x := New(key.Public())
+		jwk, err := x.CreateEncJWK()
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
 		}
@@ -31,8 +32,9 @@ func Test_JWK(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
-		pk := key.Public()
-		jwk, err := CreateJWKForSig(pk)
+
+		x := New(key.Public())
+		jwk, err := x.CreateSignJWK()
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
 		}
@@ -46,10 +48,12 @@ func Test_JWK(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
-		pk := key.Public()
-		jwk, err := CreateJWKForSig(pk)
+
+		x := New(key.Public())
+		jwk, err := x.CreateSignJWK()
 		assert.NoError(t, err)
 		data, err := Marshall(&jwk)
+		assert.NoError(t, err, "marshall succeeds")
 
 		assert.NotNil(t, data)
 		assert.True(t, len(data) > 0)
@@ -60,8 +64,9 @@ func Test_JWK(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
-		pk := key.Public()
-		jwk, err := CreateJWKForSig(pk)
+
+		x := New(key.Public())
+		jwk, err := x.CreateSignJWK()
 		assert.NoError(t, err)
 		data, err := Marshall(&jwk)
 		assert.NoError(t, err)
