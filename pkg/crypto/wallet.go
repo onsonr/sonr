@@ -247,24 +247,7 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 }
 
 // Generates an ECDSA signature for messageHash.
-func sign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
-	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
-	if err != nil {
-		return nil, err
-	}
-	handlerLoop(c.ID, h, n)
-	signResult, err := h.Result()
-	if err != nil {
-		return nil, err
-	}
-	signature := signResult.(*ecdsa.Signature)
-	if !signature.Verify(c.PublicPoint(), m) {
-		return nil, fmt.Errorf("failed to verify cmp signature")
-	}
-	return signature, nil
-}
-
-func (w *MPCWallet) Sign(m []byte /*, pl *pool.Pool*/) (*ecdsa.Signature, error) {
+func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	var wg sync.WaitGroup
 	signers := w.GetSigners()
 	net := NewNetwork(signers)
@@ -288,6 +271,23 @@ func (w *MPCWallet) Sign(m []byte /*, pl *pool.Pool*/) (*ecdsa.Signature, error)
 		}(id)
 	}
 	wg.Wait()
-
 	return sig, err
+}
+
+// Helper function to sign a message.
+func sign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
+	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
+	if err != nil {
+		return nil, err
+	}
+	handlerLoop(c.ID, h, n)
+	signResult, err := h.Result()
+	if err != nil {
+		return nil, err
+	}
+	signature := signResult.(*ecdsa.Signature)
+	if !signature.Verify(c.PublicPoint(), m) {
+		return nil, fmt.Errorf("failed to verify cmp signature")
+	}
+	return signature, nil
 }
