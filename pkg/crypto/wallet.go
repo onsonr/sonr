@@ -2,25 +2,21 @@ package crypto
 
 import (
 	"bytes"
-	"context"
-	"crypto/sha256"
 	"fmt"
 	"strings"
 	"sync"
 
-	"github.com/cosmos/cosmos-sdk/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/tx"
+	stdtx "github.com/cosmos/cosmos-sdk/types/tx"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 
-	"google.golang.org/grpc"
-
-	btx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/mr-tron/base58/base58"
+	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -59,21 +55,6 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 	wg.Wait()
 	return wallet, nil
 }
-
-// // Returns the cosmos compatible address of the given party.
-// func (w *MPCWallet) AccountAddress(id ...party.ID) (types.AccAddress, error) {
-// 	// c := types.GetConfig()
-// 	// c.SetBech32PrefixForAccount("snr", "pub")
-// 	bechAddr, err := w.Bech32Address(id...)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	acc, err := types.AccAddressFromBech32(bechAddr)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return acc, nil
-// }
 
 // Returns the Bech32 representation of the given party.
 func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
@@ -153,6 +134,31 @@ func (w *MPCWallet) DIDDocument() (did.Document, error) {
 	return doc, nil
 }
 
+// GetBalances returns the balances of the given party.
+func (w *MPCWallet) GetBalances() sdk.Coins {
+	addr, err := w.Bech32Address()
+	if err != nil {
+		return nil
+	}
+
+	resp, err := client.CheckBalance(addr)
+	if err != nil {
+		return nil
+	}
+	fmt.Println("-- Check Balance --\n", resp)
+	return resp
+}
+
+// GetSigners returns the list of signers for the given message.
+func (w *MPCWallet) GetSigners() party.IDSlice {
+	signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
+	if !signers.Contains(w.ID) {
+		w.Network.Quit(w.ID)
+		return nil
+	}
+	return party.NewIDSlice(signers)
+}
+
 // GetVerificationMethod returns the VerificationMethod for the given party.
 func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
 	// Get the DID of the wallet
@@ -180,16 +186,6 @@ func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod,
 		Controller:      *baseDid,
 		PublicKeyBase58: pub,
 	}, nil
-}
-
-// GetSigners returns the list of signers for the given message.
-func (w *MPCWallet) GetSigners() party.IDSlice {
-	signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
-	if !signers.Contains(w.ID) {
-		w.Network.Quit(w.ID)
-		return nil
-	}
-	return party.NewIDSlice(signers)
 }
 
 // Generate a new ECDSA private key shared among all the given participants.
@@ -257,76 +253,37 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 }
 
 func (w *MPCWallet) BroadcastCreateWhoIs() error {
-	txConfig := tx.NewTxConfig(rt.ModuleCdc, tx.DefaultSignModes)
-	// Create a new TxBuilder.
-	txBuilder := txConfig.NewTxBuilder()
-
 	addr, err := w.Bech32Address()
 	if err != nil {
 		return err
 	}
-	doc, err := w.DIDDocument()
+	resp1, err := client.CheckBalance(addr)
 	if err != nil {
 		return err
 	}
-	docJSON, err := doc.MarshalJSON()
-	if err != nil {
-		return err
-	}
-	msg := rt.NewMsgCreateWhoIs(addr, docJSON, rt.WhoIsType_USER)
-	err = txBuilder.SetMsgs(msg)
-	if err != nil {
-		return err
-	}
-
-	txBuilder.SetFeeAmount(types.NewCoins(types.NewCoin("snr", types.NewInt(2))))
-	msgBuf, err := msg.Marshal()
+	fmt.Println(resp1)
+	msgBytes, err := w.getCreateWhoIsMsg()
 	if err != nil {
 		return err
 	}
 
 	// Sign the transaction.
-	sig, err := w.Sign(msgBuf)
+	tx, err := w.SignTx(msgBytes, "/sonrio.sonr.registry/MsgCreateWhoIs")
 	if err != nil {
 		return err
 	}
-
-	// Add the signature data to the transaction.
-	txBuilder.SetSignatures(signing.SignatureV2{
-		Data: &signing.SingleSignatureData{
-			Signature: ECDSASignatureToBytes(sig),
-			SignMode:  signing.SignMode_SIGN_MODE_DIRECT,
-		},
-	})
 
 	// Generate a JSON string.
-	txBytes, err := txConfig.TxEncoder()(txBuilder.GetTx())
+	txBytes, err := tx.Marshal()
 	if err != nil {
 		return err
 	}
 
-	// Create a connection to the gRPC server.
-	grpcConn, err := grpc.Dial(
-		"127.0.0.1:9090",    // Or your gRPC server address.
-		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
-	)
-	defer grpcConn.Close()
-
-	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
-	// service.
-	txClient := btx.NewServiceClient(grpcConn)
-	// We then call the BroadcastTx method on this client.
-	grpcRes, err := txClient.Simulate(
-		context.TODO(),
-		&btx.SimulateRequest{
-			// Mode:    btx.BroadcastMode_BROADCAST_MODE_SYNC,
-			TxBytes: txBytes, // Proto-binary of the signed transaction, see previous step.
-		},
-	)
+	resp, err := client.BroadcastTx(txBytes)
 	if err != nil {
 		return err
 	}
-	fmt.Println("Broadcasted transaction:", grpcRes)
+	fmt.Println("-- TX Response --\n", resp)
 	return nil
 
 }
@@ -350,14 +307,60 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
 
-			digest := sha256.Sum256(m)
-			if sig, err = cmpSign(w.Configs[id], digest[:], signers, net, pl); err != nil {
+			if sig, err = cmpSign(w.Configs[id], m, signers, net, pl); err != nil {
 				return
 			}
 		}(id)
 	}
 	wg.Wait()
 	return sig, err
+}
+
+// Generates an ECDSA signature for messageHash.
+func (w *MPCWallet) SignTx(m []byte, typeUrl string) (*stdtx.Tx, error) {
+	sig, err := w.Sign(m)
+	if err != nil {
+		return nil, err
+	}
+
+	pubKey, err := w.PublicKey()
+	if err != nil {
+		return nil, err
+	}
+
+	tx := stdtx.Tx{
+		Body: &stdtx.TxBody{
+			Messages: []*codectypes.Any{
+				{
+					TypeUrl: typeUrl,
+					Value:   m,
+				},
+			},
+		},
+		AuthInfo: w.StdTxAuthInfo(2, pubKey),
+		Signatures: [][]byte{
+			ECDSASignatureToBytes(sig),
+		},
+	}
+	return &tx, err
+}
+
+// StdTxAuthInfo returns the auth info for the given public key and fee.
+func (w *MPCWallet) StdTxAuthInfo(fee int64, pubKey []byte) *stdtx.AuthInfo {
+	return &stdtx.AuthInfo{
+		SignerInfos: []*stdtx.SignerInfo{
+			{
+				PublicKey: codectypes.UnsafePackAny(pubKey),
+				ModeInfo: &stdtx.ModeInfo{
+					Sum: &stdtx.ModeInfo_Single_{},
+				},
+				Sequence: 1,
+			},
+		},
+		Fee: &stdtx.Fee{
+			Amount: sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(fee))),
+		},
+	}
 }
 
 // Helper function to cmpSign a message.
@@ -376,4 +379,27 @@ func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *poo
 		return nil, fmt.Errorf("failed to verify cmp signature")
 	}
 	return signature, nil
+}
+
+func (w *MPCWallet) getCreateWhoIsMsg() ([]byte, error) {
+	addr, err := w.Bech32Address()
+	if err != nil {
+		return nil, err
+	}
+	doc, err := w.DIDDocument()
+	if err != nil {
+		return nil, err
+	}
+
+	docJSON, err := doc.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	msg := rt.NewMsgCreateWhoIs(addr, docJSON, rt.WhoIsType_USER)
+	msgBytes, err := msg.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	return msgBytes, nil
 }

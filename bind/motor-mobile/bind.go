@@ -42,3 +42,18 @@ func Resume() {
 func Stop() {
 	//	node.Exit(0)
 }
+
+// // Returns the cosmos compatible address of the given party.
+// func (w *MPCWallet) AccountAddress(id ...party.ID) (types.AccAddress, error) {
+// 	// c := types.GetConfig()
+// 	// c.SetBech32PrefixForAccount("snr", "pub")
+// 	bechAddr, err := w.Bech32Address(id...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	acc, err := types.AccAddressFromBech32(bechAddr)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return acc, nil
+// }

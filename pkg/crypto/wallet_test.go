@@ -37,3 +37,11 @@ func Test_MPCCreateWhoIs(t *testing.T) {
 	err = w.BroadcastCreateWhoIs()
 	assert.NoError(t, err, "broadcast succeeds")
 }
+
+func Test_GetBalances(t *testing.T) {
+	w, err := Generate()
+	assert.NoError(t, err, "wallet generation succeeds")
+
+	resp := w.GetBalances()
+	t.Logf("-- Get Balances --\n%+v\n", resp)
+}
