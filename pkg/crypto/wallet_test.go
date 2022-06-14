@@ -19,21 +19,26 @@ func Test_MPCCreate(t *testing.T) {
 	}
 }
 
-func Test_MPCCosmosAddr(t *testing.T) {
-
+func Test_MPCDID(t *testing.T) {
 	w, err := Generate()
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	pub, err := w.AccountAddress()
+	pub, err := w.Bech32Address()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
 	t.Log("success", pub)
+
+	doc, err := w.DIDDocument()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log("success", doc)
 }
 
 func Test_MPCSignMessage(t *testing.T) {

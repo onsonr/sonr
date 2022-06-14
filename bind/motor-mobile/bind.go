@@ -1,11 +1,16 @@
 package motor
 
 import (
+	"github.com/sonr-io/sonr/pkg/crypto"
 	_ "golang.org/x/mobile/bind"
 )
 
 // Start starts the host, node, and rpc service.
 func Start(reqBuf []byte) {
+	_, err := crypto.Generate()
+	if err != nil {
+		panic(err)
+	}
 	//config := config.DefaultConfig(config.Role_MOTOR)
 	// _, err := host.NewWasmHost(context.Background(), config)
 	// if err != nil {

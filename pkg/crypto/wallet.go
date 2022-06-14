@@ -3,17 +3,21 @@ package crypto
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"sync"
 
-	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/mr-tron/base58/base58"
+	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
+	"github.com/taurusgroup/multi-party-sig/protocols/cmp/config"
 )
 
 type MPCWallet struct {
@@ -44,30 +48,29 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 		}(id)
 	}
 	wg.Wait()
-
 	return wallet, nil
 }
 
-// Returns the cosmos compatible address of the given party.
-func (w *MPCWallet) AccountAddress() (types.AccAddress, error) {
-	c := types.GetConfig()
-	c.SetBech32PrefixForAccount("snr", "pub")
-	bechAddr, err := w.Bech32Address()
-	if err != nil {
-		return nil, err
-	}
-	acc, err := types.AccAddressFromBech32(bechAddr)
-	if err != nil {
-		return nil, err
-	}
-	return acc, nil
-}
+// // Returns the cosmos compatible address of the given party.
+// func (w *MPCWallet) AccountAddress(id ...party.ID) (types.AccAddress, error) {
+// 	// c := types.GetConfig()
+// 	// c.SetBech32PrefixForAccount("snr", "pub")
+// 	bechAddr, err := w.Bech32Address(id...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	acc, err := types.AccAddressFromBech32(bechAddr)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return acc, nil
+// }
 
 // Returns the Bech32 representation of the given party.
-func (w *MPCWallet) Bech32Address() (string, error) {
-	c := types.GetConfig()
-	c.SetBech32PrefixForAccount("snr", "pub")
-	pub, err := w.PublicKey()
+func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
+	// c := types.GetConfig()
+	// c.SetBech32PrefixForAccount("snr", "pub")
+	pub, err := w.PublicKey(id...)
 	if err != nil {
 		return "", err
 	}
@@ -75,8 +78,94 @@ func (w *MPCWallet) Bech32Address() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+	fmt.Println(str)
 	return str, nil
+}
+
+// DID Returns the DID Address of the Wallet. When partyId is provided, it returns the DID of the given party. Only the first party in the wallet can create a DID.
+func (w *MPCWallet) DID(party ...party.ID) (*did.DID, error) {
+	if len(party) == 0 {
+		addr, err := w.Bech32Address()
+		if err != nil {
+			return nil, err
+		}
+		return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr, "snr")))
+	} else if len(party) == 1 {
+		id := party[0]
+		if !w.Config.PartyIDs().Contains(id) {
+			return nil, fmt.Errorf("party %s is not a member of the wallet", id)
+		}
+
+		baseDid, err := w.DID()
+		if err != nil {
+			return nil, err
+		}
+		return did.ParseDID(fmt.Sprintf("%s#%s", baseDid, id))
+	}
+	return nil, fmt.Errorf("invalid number of arguments")
+}
+
+// CreateDIDDocument creates a DID Document for the given party.
+func (w *MPCWallet) DIDDocument() (did.Document, error) {
+	// Get the DID of the wallet
+	baseDid, err := w.DID()
+	if err != nil {
+		return nil, err
+	}
+
+	// Create the DID Document
+	doc, err := did.NewDocument(baseDid.String())
+	if err != nil {
+		return nil, err
+	}
+
+	// Get ALL the VerificationMethods of the wallet.
+	vmsAll := make([]*did.VerificationMethod, 0)
+	for _, id := range w.Config.PartyIDs() {
+		vm, err := w.GetVerificationMethod(id)
+		if err != nil {
+			return nil, err
+		}
+		vmsAll = append(vmsAll, vm)
+	}
+
+	for _, vm := range vmsAll {
+		doc.AddAuthenticationMethod(vm)
+	}
+
+	if len(doc.GetAuthenticationMethods()) != len(vmsAll) {
+		return nil, fmt.Errorf("failed to add all verification methods to DID Document")
+	}
+	return doc, nil
+}
+
+// GetVerificationMethod returns the VerificationMethod for the given party.
+func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
+	// Get the DID of the wallet
+	baseDid, err := w.DID()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the DID of the party.
+	vmdid, err := w.DID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get base58 encoded public key.
+	pub, err := w.PublicKeyBase58(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the shares VerificationMethod
+	return &did.VerificationMethod{
+		ID:              *vmdid,
+		Type:            ssi.ECDSASECP256K1VerificationKey2019,
+		Controller:      *baseDid,
+		PublicKeyBase58: pub,
+	}, nil
 }
 
 // GetSigners returns the list of signers for the given message.
@@ -107,8 +196,15 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKey() ([]byte, error) {
-	pub := w.Configs[w.ID].Public[w.ID]
+func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
+	var pub *config.Public
+	if len(id) == 0 {
+		pub = w.Config.Public[w.Config.ID]
+	} else if len(id) == 1 {
+		pub = w.Config.Public[id[0]]
+	} else {
+		return nil, fmt.Errorf("invalid number of arguments")
+	}
 	if pub == nil {
 		return nil, fmt.Errorf("no public key found")
 	}
@@ -119,6 +215,15 @@ func (w *MPCWallet) PublicKey() ([]byte, error) {
 	}
 	buf := address.Hash("snr", buffer.Bytes())
 	return buf, nil
+}
+
+// Returns the ECDSA public key of the given party.
+func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
+	pub, err := w.PublicKey(id...)
+	if err != nil {
+		return "", err
+	}
+	return base58.Encode(pub), nil
 }
 
 // Refreshes all shares of an existing ECDSA private key.

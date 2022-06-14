@@ -4,19 +4,18 @@ vars:
   VERSION: v0.0.1-test
 
 tasks:
-
-## ------------------------------------------------------------
-## Node tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Node tasks
+  ## ------------------------------------------------------------
   bind:
     cmds:
       - mkdir -p build
       - task: bind:android
       - task: bind:ios
-      - task: bind:wasm
+      # - task: bind:wasm
       - mv motorlib-android_arm64 build/motorlib-android_arm64
       - mv motorlib-ios_arm64 build/motorlib-ios_arm64
-      - mv motorlib-js-wasm build/motorlib-js-wasm
+      # - mv motorlib-js-wasm build/motorlib-js-wasm
       - mv build ../build
 
   bind:android:
