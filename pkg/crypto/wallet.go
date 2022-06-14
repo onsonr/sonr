@@ -21,8 +21,7 @@ import (
 )
 
 type MPCWallet struct {
-	pool *pool.Pool
-
+	pool      *pool.Pool
 	ID        party.ID
 	Configs   map[party.ID]*cmp.Config
 	Network   *Network
@@ -82,6 +81,11 @@ func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	return str, nil
 }
 
+// Config returns the configuration of this wallet.
+func (w *MPCWallet) Config() *cmp.Config {
+	return w.Configs[w.ID]
+}
+
 // DID Returns the DID Address of the Wallet. When partyId is provided, it returns the DID of the given party. Only the first party in the wallet can create a DID.
 func (w *MPCWallet) DID(party ...party.ID) (*did.DID, error) {
 	if len(party) == 0 {
@@ -92,7 +96,7 @@ func (w *MPCWallet) DID(party ...party.ID) (*did.DID, error) {
 		return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr, "snr")))
 	} else if len(party) == 1 {
 		id := party[0]
-		if !w.Config.PartyIDs().Contains(id) {
+		if !w.Config().PartyIDs().Contains(id) {
 			return nil, fmt.Errorf("party %s is not a member of the wallet", id)
 		}
 
@@ -121,7 +125,7 @@ func (w *MPCWallet) DIDDocument() (did.Document, error) {
 
 	// Get ALL the VerificationMethods of the wallet.
 	vmsAll := make([]*did.VerificationMethod, 0)
-	for _, id := range w.Config.PartyIDs() {
+	for _, id := range w.Configs[w.ID].PartyIDs() {
 		vm, err := w.GetVerificationMethod(id)
 		if err != nil {
 			return nil, err
@@ -199,9 +203,9 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
 	var pub *config.Public
 	if len(id) == 0 {
-		pub = w.Config.Public[w.Config.ID]
+		pub = w.Config().Public[w.ID]
 	} else if len(id) == 1 {
-		pub = w.Config.Public[id[0]]
+		pub = w.Config().Public[id[0]]
 	} else {
 		return nil, fmt.Errorf("invalid number of arguments")
 	}
