@@ -1,12 +1,14 @@
 syntax = "proto3";
+
 package sonrio.sonr.schema;
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "schema/v1/params.proto";
 import "schema/v1/schema.proto";
 // this line is used by starport scaffolding # 1
+
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
@@ -37,7 +39,7 @@ message QuerySchemaRequest {
 }
 
 message QuerySchemaResponse {
-  Schema schema = 1;
+  SchemaReference schema = 1;
 }
 
 // this line is used by starport scaffolding # 3
