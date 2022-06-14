@@ -19,14 +19,14 @@ import (
 type IPFSProtocol struct {
 	ctx       context.Context
 	node      host.SonrHost
-	dataStore *MemoryStore
+	dataStore *Store
 	*ipfslite.Peer
 }
 
 // New creates a new IPFSProtocol instance with Host Implementation
 func New(ctx context.Context, host host.SonrHost) (*IPFSProtocol, error) {
 	// Create IPFS Peer
-	ds := NewMemoryStore()
+	ds := NewStore()
 	ipfsLite, err := ipfslite.New(ctx, ds.Batching(), host.Host(), host.Routing(), nil)
 	if err != nil {
 		return nil, err
