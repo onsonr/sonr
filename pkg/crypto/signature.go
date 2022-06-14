@@ -3,6 +3,8 @@ package crypto
 import (
 	"crypto/elliptic"
 	"math/big"
+
+	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 )
 
 // p256Order returns the curve order for the secp256r1 curve
@@ -45,4 +47,12 @@ func signatureRaw(r *big.Int, s *big.Int) []byte {
 	copy(sigBytes[32-len(rBytes):32], rBytes)
 	copy(sigBytes[64-len(sBytes):64], sBytes)
 	return sigBytes
+}
+
+// ECDSASignatureToBytes converts an ECDSA signature to bytes
+func ECDSASignatureToBytes(sig *ecdsa.Signature) []byte {
+	// Get normalized scalar values
+	normS := NormalizeS(sig.S.Curve().Order().Big())
+	r := sig.R.Curve().Order().Big()
+	return signatureRaw(r, normS)
 }

@@ -291,16 +291,11 @@ func (w *MPCWallet) BroadcastCreateWhoIs() error {
 		return err
 	}
 
-	// Get normalized scalar values
-	normS := NormalizeS(sig.S.Curve().Order().Big())
-	r := sig.R.Curve().Order().Big()
-
 	// Add the signature data to the transaction.
 	txBuilder.SetSignatures(signing.SignatureV2{
-		Sequence: 0,
 		Data: &signing.SingleSignatureData{
-			Signature: signatureRaw(r, normS),
-			SignMode:  signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
+			Signature: ECDSASignatureToBytes(sig),
+			SignMode:  signing.SignMode_SIGN_MODE_DIRECT,
 		},
 	})
 
@@ -309,9 +304,6 @@ func (w *MPCWallet) BroadcastCreateWhoIs() error {
 	if err != nil {
 		return err
 	}
-
-	// Broadcast the transaction.
-	fmt.Println("Broadcasting transaction:", string(txBytes))
 
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
@@ -359,7 +351,7 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 			defer pl.TearDown()
 
 			digest := sha256.Sum256(m)
-			if sig, err = sign(w.Configs[id], digest[:], signers, net, pl); err != nil {
+			if sig, err = cmpSign(w.Configs[id], digest[:], signers, net, pl); err != nil {
 				return
 			}
 		}(id)
@@ -368,8 +360,8 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	return sig, err
 }
 
-// Helper function to sign a message.
-func sign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
+// Helper function to cmpSign a message.
+func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
 	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
 	if err != nil {
 		return nil, err
