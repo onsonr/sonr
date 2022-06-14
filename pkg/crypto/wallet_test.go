@@ -52,3 +52,14 @@ func Test_MPCSignMessage(t *testing.T) {
 	assert.NoError(t, err, "signing succeeds")
 	fmt.Printf("sig: %+v\n", sig)
 }
+
+func Test_MPCCreateWhoIs(t *testing.T) {
+	w, err := Generate()
+	assert.NoError(t, err, "wallet generation succeeds")
+
+	// pl := pool.NewPool(0)
+	// defer pl.TearDown()
+
+	err = w.BroadcastCreateWhoIs()
+	assert.NoError(t, err, "signing succeeds")
+}

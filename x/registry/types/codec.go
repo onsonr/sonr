@@ -14,6 +14,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgBuyAlias{}, "registry/BuyAlias", nil)
 	cdc.RegisterConcrete(&MsgSellAlias{}, "registry/SellAlias", nil)
 	cdc.RegisterConcrete(&MsgTransferAlias{}, "registry/TransferAlias", nil)
+
 	// this line is used by starport scaffolding # 2
 }
 
@@ -33,8 +34,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgTransferAlias{},
 	)
 	// this line is used by starport scaffolding # 3
-
-	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

@@ -2,15 +2,25 @@ package crypto
 
 import (
 	"bytes"
+	"context"
+	"crypto/sha256"
 	"fmt"
 	"strings"
 	"sync"
 
+	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
+
+	"google.golang.org/grpc"
+
+	btx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -246,6 +256,89 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 	return r.(*cmp.Config), nil
 }
 
+func (w *MPCWallet) BroadcastCreateWhoIs() error {
+	txConfig := tx.NewTxConfig(rt.ModuleCdc, tx.DefaultSignModes)
+	// Create a new TxBuilder.
+	txBuilder := txConfig.NewTxBuilder()
+
+	addr, err := w.Bech32Address()
+	if err != nil {
+		return err
+	}
+	doc, err := w.DIDDocument()
+	if err != nil {
+		return err
+	}
+	docJSON, err := doc.MarshalJSON()
+	if err != nil {
+		return err
+	}
+	msg := rt.NewMsgCreateWhoIs(addr, docJSON, rt.WhoIsType_USER)
+	err = txBuilder.SetMsgs(msg)
+	if err != nil {
+		return err
+	}
+
+	txBuilder.SetFeeAmount(types.NewCoins(types.NewCoin("snr", types.NewInt(2))))
+	msgBuf, err := msg.Marshal()
+	if err != nil {
+		return err
+	}
+
+	// Sign the transaction.
+	sig, err := w.Sign(msgBuf)
+	if err != nil {
+		return err
+	}
+
+	// Get normalized scalar values
+	normS := NormalizeS(sig.S.Curve().Order().Big())
+	r := sig.R.Curve().Order().Big()
+
+	// Add the signature data to the transaction.
+	txBuilder.SetSignatures(signing.SignatureV2{
+		Sequence: 0,
+		Data: &signing.SingleSignatureData{
+			Signature: signatureRaw(r, normS),
+			SignMode:  signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
+		},
+	})
+
+	// Generate a JSON string.
+	txBytes, err := txConfig.TxEncoder()(txBuilder.GetTx())
+	if err != nil {
+		return err
+	}
+
+	// Broadcast the transaction.
+	fmt.Println("Broadcasting transaction:", string(txBytes))
+
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		"127.0.0.1:9090",    // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	defer grpcConn.Close()
+
+	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
+	// service.
+	txClient := btx.NewServiceClient(grpcConn)
+	// We then call the BroadcastTx method on this client.
+	grpcRes, err := txClient.Simulate(
+		context.TODO(),
+		&btx.SimulateRequest{
+			// Mode:    btx.BroadcastMode_BROADCAST_MODE_SYNC,
+			TxBytes: txBytes, // Proto-binary of the signed transaction, see previous step.
+		},
+	)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Broadcasted transaction:", grpcRes)
+	return nil
+
+}
+
 // Generates an ECDSA signature for messageHash.
 func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	var wg sync.WaitGroup
@@ -265,7 +358,8 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
 
-			if sig, err = sign(w.Configs[id], m, signers, net, pl); err != nil {
+			digest := sha256.Sum256(m)
+			if sig, err = sign(w.Configs[id], digest[:], signers, net, pl); err != nil {
 				return
 			}
 		}(id)
