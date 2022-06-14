@@ -19,7 +19,7 @@ func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keep
 		createMsg := types.MsgCreateSchema{
 			Creator: simAccount.Address.String(),
 			Label:   "test",
-			Fields:  make(map[string]types.SchemaKind),
+			Cid:     "1",
 		}
 
 		txCtx := simulation.OperationInput{

@@ -30,13 +30,13 @@ func (k Keeper) SetSchemaCount(ctx sdk.Context, count uint64) {
 }
 
 // GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
-func (k Keeper) GetSchemasFromID(ctx sdk.Context, creator string) (val []types.Schema, found bool) {
+func (k Keeper) GetSchemasFromID(ctx sdk.Context, creator string) (val []types.SchemaReference, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals []types.Schema = make([]types.Schema, 0)
+	var vals []types.SchemaReference = make([]types.SchemaReference, 0)
 	for ; iterator.Valid(); iterator.Next() {
-		var instance types.Schema
+		var instance types.SchemaReference
 		k.cdc.MustUnmarshal(iterator.Value(), &instance)
 		if instance.Did == creator {
 			vals = append(vals, instance)
@@ -46,15 +46,15 @@ func (k Keeper) GetSchemasFromID(ctx sdk.Context, creator string) (val []types.S
 }
 
 // GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
-func (k Keeper) GetSchemasFromLabel(ctx sdk.Context, label string) (val []types.Schema, found bool) {
+func (k Keeper) GetWhatIsFromLabel(ctx sdk.Context, label string) (val []types.WhatIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals []types.Schema = make([]types.Schema, 0)
+	var vals []types.WhatIs = make([]types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
-		var instance types.Schema
+		var instance types.WhatIs
 		k.cdc.MustUnmarshal(iterator.Value(), &instance)
-		if instance.Label == label {
+		if instance.Schema.Label == label {
 			vals = append(vals, instance)
 		}
 	}
@@ -62,19 +62,19 @@ func (k Keeper) GetSchemasFromLabel(ctx sdk.Context, label string) (val []types.
 }
 
 // SetSchema set a specific schema in the store from its did
-func (k Keeper) SetSchema(ctx sdk.Context, schema types.Schema) {
+func (k Keeper) SetWhatIs(ctx sdk.Context, whatIs types.WhatIs) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
-	b := k.cdc.MustMarshal(&schema)
-	store.Set(types.SchemaKey(
-		schema.Did,
+	b := k.cdc.MustMarshal(&whatIs)
+	store.Set(types.WhatIsKey(
+		whatIs.Did,
 	), b)
 }
 
 // GetSchema returns an instance of a schema from its id
-func (k Keeper) GetSchema(ctx sdk.Context, id string) (val types.Schema, found bool) {
+func (k Keeper) GetWhatIs(ctx sdk.Context, id string) (val types.WhatIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 
-	b := store.Get(types.SchemaKey(
+	b := store.Get(types.WhatIsKey(
 		id,
 	))
 	if b == nil {

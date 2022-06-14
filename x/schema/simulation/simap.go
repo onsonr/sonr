@@ -22,18 +22,15 @@ func FindAccount(accs []simtypes.Account, address string) (simtypes.Account, boo
 	return simtypes.FindAccount(accs, creator)
 }
 
-func CreateMockSchema(simAcc simtypes.Account) (types.Schema, error) {
+func CreateMockSchema(simAcc simtypes.Account) (types.SchemaReference, error) {
 	doc, err := CreateMockDidDocument(simAcc)
 	if err != nil {
 		panic(err)
 	}
-	schema := types.Schema{
-		Did:    doc.GetID().String(),
-		Label:  "test",
-		Fields: make(map[string]types.SchemaKind),
+	schema := types.SchemaReference{
+		Did:   doc.GetID().String(),
+		Label: "test",
 	}
-	schema.Fields["test1"] = types.SchemaKind_BOOL
-	schema.Fields["test2"] = types.SchemaKind_INT
 
 	return schema, nil
 }

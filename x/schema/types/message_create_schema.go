@@ -12,11 +12,10 @@ const TypeMsgCreateSchema = "create_schema"
 
 var _ sdk.Msg = &MsgCreateSchema{}
 
-func NewMsgCreateSchema(creator, label string, fields map[string]SchemaKind) *MsgCreateSchema {
+func NewMsgCreateSchema(creator, label string) *MsgCreateSchema {
 	return &MsgCreateSchema{
 		Creator: creator,
 		Label:   label,
-		Fields:  fields,
 	}
 }
 func (msg *MsgCreateSchema) Route() string {

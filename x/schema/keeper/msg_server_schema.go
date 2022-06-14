@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"errors"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -22,24 +23,31 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, sdkerrors.ErrNotFound
 	}
 
-	did, err := did.ParseDID(msg.GetCreatorDid())
+	doc, err := did.NewDocument(msg.GetCreatorDid())
 
 	if err != nil {
 		return nil, err
 	}
 
-	var schema = types.Schema{
-		Label:  msg.Label,
-		Did:    did.ID,
-		Fields: msg.Fields,
+	var schema = types.SchemaReference{
+		Label: msg.Label,
+		Did:   doc.GetID().ID,
+		Cid:   msg.Cid,
 	}
 
-	k.SetSchema(ctx, schema)
+	var whatIs = types.WhatIs{
+		Did:       doc.GetID().ID,
+		Schema:    &schema,
+		Timestamp: time.Now().Unix(),
+		IsActive:  true,
+	}
+
+	k.SetWhatIs(ctx, whatIs)
 
 	resp := types.MsgCreateSchemaResponse{
 		Code:    200,
 		Message: "Schema Created Successfully",
-		Schema:  &schema,
+		WhatIs:  &whatIs,
 	}
 
 	return &resp, nil

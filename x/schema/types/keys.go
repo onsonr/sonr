@@ -26,11 +26,12 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	SchemaCountKey  = "Schema-count-"
-	SchemaKeyPrefix = "Schema/value/"
+	SchemaCountKey    = "Schema-count-"
+	SchemaKeyPrefix   = "Schema/value/"
+	DoucmnetKeyPrefix = "Document/value/"
 )
 
-func SchemaKey(creator string) []byte {
+func WhatIsKey(creator string) []byte {
 	var key []byte
 	creatorBytes := []byte(creator)
 	key = append(key, creatorBytes...)

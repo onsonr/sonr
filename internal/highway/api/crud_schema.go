@@ -17,15 +17,14 @@ import (
 // @Failure      500  {string}  message
 // @Router /v1/ipfs/upload [post]
 func (s *HighwayServer) CreateSchema(c *gin.Context) {
-	var req st.MsgCreateSchema
+	var req st.SchemaDefinition
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": t.ErrRequestBody.Error(),
 		})
 		return
 	}
-
-	resp, err := s.Cosmos.BroadcastCreateSchema(&req)
+	cid, err := s.ipfsProtocol.PutObjectSchema(&req)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -33,14 +32,19 @@ func (s *HighwayServer) CreateSchema(c *gin.Context) {
 		})
 		return
 	}
-
-	schemaDef := st.Schema{
-		Did:    resp.Schema.Did,
-		Label:  resp.Schema.Label,
-		Fields: resp.Schema.Fields,
+	createSchema := st.MsgCreateSchema{
+		Creator: req.Creator,
+		Label:   req.Label,
+		Cid:     cid.String(),
 	}
+	resp, err := s.Cosmos.BroadcastCreateSchema(&createSchema)
 
-	cid, err := s.ipfsProtocol.PutObjectSchema(&schemaDef)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -50,10 +54,9 @@ func (s *HighwayServer) CreateSchema(c *gin.Context) {
 	}
 
 	// Return the response
-	c.JSON(http.StatusOK, gin.H{
-		"code":    resp.Code,
-		"message": resp.Message,
-		"Schema":  resp.Schema,
-		"cid":     cid.String(),
+	c.JSON(http.StatusOK, st.MsgCreateSchemaResponse{
+		Code:    200,
+		Message: "Schema Created Sucessfully",
+		WhatIs:  resp.WhatIs,
 	})
 }
