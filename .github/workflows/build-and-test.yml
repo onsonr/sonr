@@ -2,9 +2,9 @@ name: Build and Test
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 jobs:
   run-goreleaser:
@@ -37,14 +37,9 @@ jobs:
       - name: Run coverage
         continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+      - name: Issue Release Assets
+        uses: ignite-hq/cli/actions/cli@develop
         with:
-          distribution: goreleaser-pro
-          version: latest
-          args: build --rm-dist --snapshot
-        env:
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
