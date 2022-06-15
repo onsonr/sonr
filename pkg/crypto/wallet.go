@@ -274,7 +274,7 @@ func (w *MPCWallet) BroadcastCreateWhoIs() error {
 	}
 
 	// Sign the transaction.
-	tx, err := w.SignTx(msgBytes, fmt.Sprintf("%s/%s", msg.Route(), msg.Type()))
+	tx, err := w.SignTx(msgBytes, "/sonr.registry.MsgCreateWhoIs")
 	if err != nil {
 		return err
 	}
