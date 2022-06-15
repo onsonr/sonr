@@ -64,7 +64,8 @@ func CreateWhatIsWithDID(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 		id := fmt.Sprintf("did:snr:%s", strconv.Itoa(i))
 		schemaId := fmt.Sprintf("did:snr:%s", strconv.Itoa(offset))
 		var whatIs = types.WhatIs{
-			Did: id,
+			Creator: id,
+			Did:     schemaId,
 			Schema: &types.SchemaReference{
 				Did:   schemaId,
 				Label: "test",
