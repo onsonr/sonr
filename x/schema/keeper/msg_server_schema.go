@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -69,6 +70,52 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 }
 
 func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecateSchema) (*types.MsgDeprecateSchemaResponse, error) {
-	// TODO: implement
-	return nil, errors.New("unimplemented")
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	err := msg.ValidateBasic()
+	if err != nil {
+		return &types.MsgDeprecateSchemaResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		}, err
+	}
+
+	schemas, foundSchemas := k.GetWhatIsFromCreator(ctx, msg.GetCreator())
+
+	//found any schemas guard
+	if !foundSchemas {
+		return &types.MsgDeprecateSchemaResponse{
+			Code:    http.StatusNotFound,
+			Message: "No schemas found under creator.",
+		}, errors.New("No schemas found under creator.") //TODO: more descriptive error
+	}
+
+	var schemaWI types.WhatIs = types.WhatIs{} //TODO: Better way to do this?
+	foundSchemaWI := false
+	for _, a := range schemas {
+		if a.GetDid() == msg.GetDid() {
+			schemaWI = a
+			foundSchemaWI = true
+		}
+	}
+
+	if foundSchemaWI {
+
+		//If already deactivated, do nothing.
+		//Responsibility of caller to check if isActive beforehand
+		if schemaWI.GetIsActive() {
+			schemaWI.IsActive = false
+			k.SetWhatIs(ctx, schemaWI)
+		}
+
+		return &types.MsgDeprecateSchemaResponse{
+			Code:    http.StatusOK,
+			Message: "Schema deprecated successfully.",
+		}, nil
+	} else {
+
+		return &types.MsgDeprecateSchemaResponse{
+			Code:    http.StatusNotFound,
+			Message: "Schema not found under given creator",
+		}, errors.New("Schema not found under given creator") //TODO: Create error
+	}
 }
