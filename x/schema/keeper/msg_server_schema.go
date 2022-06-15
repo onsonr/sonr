@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -73,24 +72,16 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := msg.ValidateBasic()
 	if err != nil {
-		return &types.MsgDeprecateSchemaResponse{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		}, err
+		return nil, err
 	}
 
 	schemas, foundSchemas := k.GetWhatIsFromCreator(ctx, msg.GetCreator())
-
-	//found any schemas guard
 	if !foundSchemas {
-		return &types.MsgDeprecateSchemaResponse{
-			Code:    http.StatusNotFound,
-			Message: "No schemas found under creator.",
-		}, errors.New("No schemas found under creator.") //TODO: more descriptive error
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schemas found under same creator as message creator.")
 	}
 
-	var schemaWI types.WhatIs = types.WhatIs{} //TODO: Better way to do this?
-	foundSchemaWI := false
+	var schemaWI types.WhatIs
+	var foundSchemaWI bool
 	for _, a := range schemas {
 		if a.GetDid() == msg.GetDid() {
 			schemaWI = a
@@ -98,24 +89,19 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		}
 	}
 
-	if foundSchemaWI {
-
-		//If already deactivated, do nothing.
-		//Responsibility of caller to check if isActive beforehand
-		if schemaWI.GetIsActive() {
-			schemaWI.IsActive = false
-			k.SetWhatIs(ctx, schemaWI)
-		}
-
-		return &types.MsgDeprecateSchemaResponse{
-			Code:    http.StatusOK,
-			Message: "Schema deprecated successfully.",
-		}, nil
-	} else {
-
-		return &types.MsgDeprecateSchemaResponse{
-			Code:    http.StatusNotFound,
-			Message: "Schema not found under given creator",
-		}, errors.New("Schema not found under given creator") //TODO: Create error
+	if !foundSchemaWI {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schema with same creator as message creator found.") //errors.New("Schema not found under given creator")
 	}
+
+	//If already deactivated, do nothing.
+	//Responsibility of caller to check if isActive beforehand
+	if schemaWI.GetIsActive() {
+		schemaWI.IsActive = false
+		k.SetWhatIs(ctx, schemaWI)
+	}
+
+	return &types.MsgDeprecateSchemaResponse{
+		Code:    http.StatusOK,
+		Message: "Schema deprecated successfully.",
+	}, nil
 }
