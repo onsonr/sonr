@@ -22,7 +22,7 @@ require (
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipld/go-ipld-prime v0.14.2
 	github.com/kataras/golog v0.1.7
-	github.com/lestrrat-go/jwx/v2 v2.0.2
+	github.com/lestrrat-go/jwx/v2 v2.0.3
 	github.com/libp2p/go-libp2p v0.17.0
 	github.com/libp2p/go-libp2p-connmgr v0.3.1
 	github.com/libp2p/go-libp2p-core v0.13.0
@@ -44,7 +44,7 @@ require (
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.2
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2
 	github.com/swaggo/gin-swagger v1.4.2
 	github.com/swaggo/swag v1.8.1
@@ -214,7 +214,7 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.1 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
-	github.com/lestrrat-go/httprc v1.0.1 // indirect
+	github.com/lestrrat-go/httprc v1.0.2 // indirect
 	github.com/lestrrat-go/iter v1.0.2 // indirect
 	github.com/lestrrat-go/option v1.0.0 // indirect
 	github.com/lib/pq v1.10.4 // indirect
