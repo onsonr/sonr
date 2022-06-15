@@ -16,7 +16,7 @@ service Query {
 	//
 	// Parameters queries the parameters of the module.
 	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/sonrio/sonr/bucket/params";
+		option (google.api.http).get = "/sonr-io/sonr/bucket/params";
 	}
 
 	// WhichIs

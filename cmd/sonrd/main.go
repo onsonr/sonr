@@ -5,10 +5,10 @@ import (
 	"os"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/app"
 	"github.com/spf13/viper"
-	cmd "github.com/tendermint/spm/cosmoscmd"
 )
 
 const (
@@ -31,7 +31,7 @@ func loadEnv() error {
 }
 
 func main() {
-	rootCmd, _ := cmd.NewRootCmd(
+	rootCmd, _ := cosmoscmd.NewRootCmd(
 		app.Name,
 		app.AccountAddressPrefix,
 		app.DefaultNodeHome,

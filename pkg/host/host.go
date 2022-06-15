@@ -14,11 +14,11 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	mplex "github.com/libp2p/go-libp2p-mplex"
+	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	direct "github.com/libp2p/go-libp2p-webrtc-direct"
+	/// direct "github.com/libp2p/go-libp2p-webrtc-direct"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/pion/webrtc/v3"
+	// "github.com/pion/webrtc/v3"
 	"github.com/sonr-io/sonr/pkg/config"
 	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 	"google.golang.org/protobuf/proto"
@@ -159,17 +159,17 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		return nil, err
 	}
 
-	// TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
-	transport := direct.NewTransport(
-		webrtc.Configuration{},
-		new(mplex.Transport),
-	)
+	// // TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
+	// transport := direct.NewTransport(
+	// 	webrtc.Configuration{},
+	// 	new(mplex.Transport),
+	// )
 
 	// Start Host
 	hn.host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
 		libp2p.Routing(hn.Router),
-		libp2p.Transport(transport),
+		// libp2p.Transport(transport),
 		libp2p.ListenAddrs(maddr),
 		libp2p.DisableRelay(),
 	)
