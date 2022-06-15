@@ -28,29 +28,29 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer,
 	}
 
 	// Register Cosmos HTTP Routes - Registry
-	s.Router.POST("/v1/registry/alias/buy", s.BuyAlias)
-	s.Router.POST("/v1/registry/alias/sell", s.SellAlias)
-	s.Router.POST("/v1/registry/alias/transfer", s.TransferAlias)
+	// s.Router.POST("/v1/registry/alias/buy", s.BuyAlias)
+	// s.Router.POST("/v1/registry/alias/sell", s.SellAlias)
+	// s.Router.POST("/v1/registry/alias/transfer", s.TransferAlias)
 
-	// Register Cosmos HTTP Routes - Bucket
-	s.Router.POST("/v1/bucket/create", s.CreateBucket)
-	s.Router.POST("/v1/bucket/update", s.UpdateBucket)
-	s.Router.POST("/v1/bucket/deactivate", s.DeactivateBucket)
+	// // Register Cosmos HTTP Routes - Bucket
+	// s.Router.POST("/v1/bucket/create", s.CreateBucket)
+	// s.Router.POST("/v1/bucket/update", s.UpdateBucket)
+	// s.Router.POST("/v1/bucket/deactivate", s.DeactivateBucket)
 
-	// Register Cosmos HTTP Routes - Channel
-	s.Router.POST("/v1/channel/create", s.CreateChannel)
-	s.Router.POST("/v1/channel/update", s.UpdateChannel)
-	s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
+	// // Register Cosmos HTTP Routes - Channel
+	// s.Router.POST("/v1/channel/create", s.CreateChannel)
+	// s.Router.POST("/v1/channel/update", s.UpdateChannel)
+	// s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
 
-	// Register Blob HTTP Routes
-	s.Router.POST("/v1/blob/upload", s.UploadBlob)
-	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
-	s.Router.POST("/v1/blob/remove/:cid", s.UnpinBlob)
+	// // Register Blob HTTP Routes
+	// s.Router.POST("/v1/blob/upload", s.UploadBlob)
+	// s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
+	// s.Router.POST("/v1/blob/remove/:cid", s.UnpinBlob)
 
-	// WebAuthn Endpoints
-	s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)
-	s.Router.POST("/v1/registry/whois/update", s.UpdateWhoIs)
-	s.Router.POST("/v1/registry/whois/deactivate", s.DeactivateWhoIs)
+	// // WebAuthn Endpoints
+	// s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)
+	// s.Router.POST("/v1/registry/whois/update", s.UpdateWhoIs)
+	// s.Router.POST("/v1/registry/whois/deactivate", s.DeactivateWhoIs)
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

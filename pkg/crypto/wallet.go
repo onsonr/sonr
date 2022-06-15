@@ -56,6 +56,21 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 	return wallet, nil
 }
 
+// Balances returns the balances of the given party.
+func (w *MPCWallet) Balances() sdk.Coins {
+	addr, err := w.Bech32Address()
+	if err != nil {
+		return nil
+	}
+
+	resp, err := client.CheckBalance(addr)
+	if err != nil {
+		return nil
+	}
+	fmt.Println("-- Check Balance --\n", resp)
+	return resp
+}
+
 // Returns the Bech32 representation of the given party.
 func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	// c := types.GetConfig()
@@ -132,21 +147,6 @@ func (w *MPCWallet) DIDDocument() (did.Document, error) {
 		return nil, fmt.Errorf("failed to add all verification methods to DID Document")
 	}
 	return doc, nil
-}
-
-// GetBalances returns the balances of the given party.
-func (w *MPCWallet) GetBalances() sdk.Coins {
-	addr, err := w.Bech32Address()
-	if err != nil {
-		return nil
-	}
-
-	resp, err := client.CheckBalance(addr)
-	if err != nil {
-		return nil
-	}
-	fmt.Println("-- Check Balance --\n", resp)
-	return resp
 }
 
 // GetSigners returns the list of signers for the given message.
@@ -257,18 +257,24 @@ func (w *MPCWallet) BroadcastCreateWhoIs() error {
 	if err != nil {
 		return err
 	}
-	resp1, err := client.CheckBalance(addr)
+	doc, err := w.DIDDocument()
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp1)
-	msgBytes, err := w.getCreateWhoIsMsg()
+
+	docJSON, err := doc.MarshalJSON()
+	if err != nil {
+		return err
+	}
+
+	msg := rt.NewMsgCreateWhoIs(addr, docJSON, rt.WhoIsType_USER)
+	msgBytes, err := msg.Marshal()
 	if err != nil {
 		return err
 	}
 
 	// Sign the transaction.
-	tx, err := w.SignTx(msgBytes, "/sonrio.sonr.registry/MsgCreateWhoIs")
+	tx, err := w.SignTx(msgBytes, fmt.Sprintf("%s/%s", msg.Route(), msg.Type()))
 	if err != nil {
 		return err
 	}

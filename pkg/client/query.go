@@ -20,7 +20,7 @@ func CheckBalance(address string) (types.Coins, error) {
 		return nil, err
 	}
 	resp, err := banktypes.NewQueryClient(grpcConn).AllBalances(context.Background(), &banktypes.QueryAllBalancesRequest{
-		Address: address,
+		Address: address, // "snr155huqeqlm4lh5vvgychum0sa2xw70654m3kucq7vufjkx89hzvuqx0jmqc",
 	})
 	if err != nil {
 		return nil, err

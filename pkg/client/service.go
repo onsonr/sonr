@@ -1,7 +1,10 @@
 package client
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
@@ -12,7 +15,8 @@ const (
 	// RPC Address for public node
 	SONR_RPC_ADDR_PUBLIC = "143.198.29.209:9090"
 
-	//
+	// HTTP Faucet Address
+	SONR_HTTP_FAUCET = "http://143.198.29.209:8000"
 
 	// RPC Address for local node
 	SONR_RPC_ADDR_LOCAL = "127.0.0.1:9090"
@@ -67,4 +71,28 @@ func SimulateTx(tx []byte) (*sdk.Result, error) {
 		return nil, err
 	}
 	return grpcRes.Result, nil
+}
+
+type FaucetRequest struct {
+	Address string   `json:"address"`
+	Coins   []string `json:"coins"`
+}
+
+// RequestFaucet requests a faucet from the Sonr network
+func RequestFaucet(address string) error {
+	values := FaucetRequest{
+		Address: address,
+		Coins:   []string{"12snr"},
+	}
+	json_data, err := json.Marshal(values)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.Post(SONR_HTTP_FAUCET, "application/json", bytes.NewBuffer(json_data))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return nil
 }

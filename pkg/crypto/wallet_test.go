@@ -3,6 +3,7 @@ package crypto
 import (
 	"testing"
 
+	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,6 +43,12 @@ func Test_GetBalances(t *testing.T) {
 	w, err := Generate()
 	assert.NoError(t, err, "wallet generation succeeds")
 
-	resp := w.GetBalances()
+	resp := w.Balances()
+	t.Logf("-- Get Balances --\n%+v\n", resp)
+	addr, err := w.Bech32Address()
+	assert.NoError(t, err, "Bech32Address successfully created")
+	err = client.RequestFaucet(addr)
+	assert.NoError(t, err, "faucet request succeeds")
+	resp = w.Balances()
 	t.Logf("-- Get Balances --\n%+v\n", resp)
 }

@@ -22,7 +22,6 @@ import (
 
 	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
 	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
-	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
 	ctv1 "github.com/sonr-io/sonr/x/channel/types"
@@ -45,8 +44,8 @@ type HighwayServer struct {
 	Config *config.Config
 
 	// Clients
-	Host   hn.SonrHost
-	Cosmos *client.Cosmos
+	Host hn.SonrHost
+	// Cosmos *client.Cosmos
 
 	// Http Properties
 	Router     *gin.Engine
@@ -68,11 +67,11 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
-	// Create a new Cosmos Client for Sonr Blockchain
-	cosmos, err := client.NewCosmos(ctx, c)
-	if err != nil {
-		return nil, err
-	}
+	// // Create a new Cosmos Client for Sonr Blockchain
+	// cosmos, err := client.NewCosmos(ctx, c)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Create the IPFS Protocol
 	ipfs, err := ipfs.New(ctx, node)
@@ -87,7 +86,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 
 	// Create the RPC Service
 	stub := &HighwayServer{
-		Cosmos:       cosmos,
+		// Cosmos:       cosmos,
 		Host:         node,
 		ctx:          ctx,
 		Router:       gin.Default(),
