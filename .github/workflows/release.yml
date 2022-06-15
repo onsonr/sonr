@@ -6,61 +6,98 @@ on:
       - v*
 
 jobs:
-  run-goreleaser:
-    name: "Release All Binaries and Frameworks"
-    runs-on: macos-latest
+  # run-goreleaser:
+  #   name: "Release All Binaries and Frameworks"
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: Configure Homebrew w/ cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: |
+  #           ~/Library/Caches/Homebrew/foo--*
+  #           ~/Library/Caches/Homebrew/downloads/*--foo-*
+  #         key: brew-${{ hashFiles('.github/brew-formulae') }}
+  #         restore-keys: brew-
+  #     - name: Install Homebrew dependencies
+  #       run: |
+  #         brew install FiloSottile/musl-cross/musl-cross
+  #         brew install mingw-w64
+
+  #     - name: Configure Golang w/ cache
+  #       uses: magnetikonline/action-golang-cache@v2
+  #       with:
+  #         go-version: ~1.17
+  #     # - name: Install dependencies
+  #     #   run: |
+  #     #     go install golang.org/x/mobile/cmd/gomobile@latest
+  #     #     gomobile init
+  #     #   working-directory: ${{ github.workspace }}/bind/motor-mobile
+
+  #     - name: Run GoReleaser
+  #       uses: goreleaser/goreleaser-action@v2
+  #       with:
+  #         distribution: goreleaser-pro
+  #         version: latest
+  #         args: release --rm-dist --parallelism=4
+  #       env:
+  #         GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+  #         GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+
+  #     # - name: motor-ios Repository Dispatch
+  #     #   uses: peter-evans/repository-dispatch@v2
+  #     #   with:
+  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
+  #     #     repository: sonr-io/motor-ios
+  #     #     event-type: new-ios-framework
+  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
+  #     # - name: motor-android Repository Dispatch
+  #     #   uses: peter-evans/repository-dispatch@v2
+  #     #   with:
+  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
+  #     #     repository: sonr-io/motor-android
+  #     #     event-type: new-android-framework
+  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
+  run-ignite:
+    name: "Release Latest Blockchain Daemon"
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Configure Homebrew w/ cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/Library/Caches/Homebrew/foo--*
-            ~/Library/Caches/Homebrew/downloads/*--foo-*
-          key: brew-${{ hashFiles('.github/brew-formulae') }}
-          restore-keys: brew-
-      - name: Install Homebrew dependencies
-        run: |
-          brew install FiloSottile/musl-cross/musl-cross
-          brew install mingw-w64
+      - name: Prepare Release Variables
+        id: vars
+        uses: ignite-hq/cli/actions/release/vars@develop
 
-      - name: Configure Golang w/ cache
-        uses: magnetikonline/action-golang-cache@v2
+      - name: Issue Release Assets
+        uses: ignite-hq/cli/actions/cli@develop
+        if: ${{ steps.vars.outputs.should_release == 'true' }}
         with:
-          go-version: ~1.17
-      # - name: Install dependencies
-      #   run: |
-      #     go install golang.org/x/mobile/cmd/gomobile@latest
-      #     gomobile init
-      #   working-directory: ${{ github.workspace }}/bind/motor-mobile
+          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
 
-
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+      - name: Delete the "latest" Release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        if: ${{ steps.vars.outputs.is_release_type_latest == 'true' }}
         with:
-          distribution: goreleaser-pro
-          version: latest
-          args: release --rm-dist --parallelism=4
+          tag_name: ${{ steps.vars.outputs.tag_name }}
+          delete_release: true
         env:
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: motor-ios Repository Dispatch
-      #   uses: peter-evans/repository-dispatch@v2
-      #   with:
-      #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
-      #     repository: sonr-io/motor-ios
-      #     event-type: new-ios-framework
-      #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
-
-      # - name: motor-android Repository Dispatch
-      #   uses: peter-evans/repository-dispatch@v2
-      #   with:
-      #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
-      #     repository: sonr-io/motor-android
-      #     event-type: new-android-framework
-      #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+      - name: Publish the Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ steps.vars.outputs.should_release == 'true' }}
+        with:
+          tag_name: ${{ steps.vars.outputs.tag_name }}
+          files: release/*
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
