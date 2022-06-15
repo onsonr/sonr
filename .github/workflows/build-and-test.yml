@@ -9,7 +9,7 @@ on:
 jobs:
   run-goreleaser:
     name: "Build All Binaries and Frameworks"
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
