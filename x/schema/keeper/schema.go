@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	ed "crypto/ed25519"
+	cryptrand "crypto/rand"
 	"encoding/binary"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -8,7 +10,18 @@ import (
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (k Keeper) GetSchemaCount(ctx sdk.Context) uint64 {
+func (k Keeper) GenerateKeyForAdress() (ed.PublicKey, error) {
+	//webauthncred := CreateMockCredential()
+	pubKey, _, err := ed.GenerateKey(cryptrand.Reader)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pubKey, nil
+}
+
+func (k Keeper) GetWhatIsCount(ctx sdk.Context) uint64 {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	byteKey := types.KeyPrefix(types.SchemaCountKey)
 	bz := store.Get(byteKey)
@@ -30,18 +43,19 @@ func (k Keeper) SetSchemaCount(ctx sdk.Context, count uint64) {
 }
 
 // GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
-func (k Keeper) GetSchemasFromID(ctx sdk.Context, creator string) (val []types.SchemaReference, found bool) {
+func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []types.WhatIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals []types.SchemaReference = make([]types.SchemaReference, 0)
+	var vals []types.WhatIs = make([]types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
-		var instance types.SchemaReference
+		var instance types.WhatIs
 		k.cdc.MustUnmarshal(iterator.Value(), &instance)
-		if instance.Did == creator {
+		if instance.Creator == creator {
 			vals = append(vals, instance)
 		}
 	}
+
 	return vals, true
 }
 

@@ -29076,14 +29076,32 @@ paths:
                 properties:
                   did:
                     type: string
-                    title: the DID for this schema
-                  label:
+                    title: DID is the DID of the object
+                  schema:
+                    title: Object_doc is the object document
+                    type: object
+                    properties:
+                      did:
+                        type: string
+                        title: the DID for this schema
+                      label:
+                        type: string
+                        title: an alternative reference point
+                      cid:
+                        type: string
+                        description: a reference to information stored within an IPFS node.
+                  creator:
                     type: string
-                    title: an alternative reference point
-                  cid:
+                    title: Creator is the DID of the creator
+                  timestamp:
                     type: string
-                    description: a reference to information stored within an IPFS node.
-                title: Schema defines the shapes of schemas on Sonr
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -29103,6 +29121,10 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
+        - name: creator
+          in: query
+          required: false
+          type: string
         - name: did
           in: query
           required: false
@@ -50626,6 +50648,7 @@ definitions:
             type: string
             title: DID is the DID of the object
           schema:
+            title: Object_doc is the object document
             type: object
             properties:
               did:
@@ -50637,7 +50660,6 @@ definitions:
               cid:
                 type: string
                 description: a reference to information stored within an IPFS node.
-            title: Schema defines the shapes of schemas on Sonr
           creator:
             type: string
             title: Creator is the DID of the creator
@@ -50674,14 +50696,30 @@ definitions:
         properties:
           did:
             type: string
-            title: the DID for this schema
-          label:
+            title: DID is the DID of the object
+          schema:
+            title: Object_doc is the object document
+            type: object
+            properties:
+              did:
+                type: string
+                title: the DID for this schema
+              label:
+                type: string
+                title: an alternative reference point
+              cid:
+                type: string
+                description: a reference to information stored within an IPFS node.
+          creator:
             type: string
-            title: an alternative reference point
-          cid:
+            title: Creator is the DID of the creator
+          timestamp:
             type: string
-            description: a reference to information stored within an IPFS node.
-        title: Schema defines the shapes of schemas on Sonr
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:
@@ -50702,6 +50740,7 @@ definitions:
         type: string
         title: DID is the DID of the object
       schema:
+        title: Object_doc is the object document
         type: object
         properties:
           did:
@@ -50713,7 +50752,6 @@ definitions:
           cid:
             type: string
             description: a reference to information stored within an IPFS node.
-        title: Schema defines the shapes of schemas on Sonr
       creator:
         type: string
         title: Creator is the DID of the creator

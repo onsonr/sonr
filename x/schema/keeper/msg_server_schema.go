@@ -23,20 +23,28 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, sdkerrors.ErrNotFound
 	}
 
-	doc, err := did.NewDocument(msg.GetCreatorDid())
+	creator_did, err := did.NewDocument(msg.GetCreatorDid())
 
 	if err != nil {
 		return nil, err
 	}
 
+	pk, err := k.GenerateKeyForAdress()
+
+	if err != nil {
+		return nil, err
+	}
+	addr := string(pk)
+	what_is_did, err := did.ParseDID(addr)
 	var schema = types.SchemaReference{
 		Label: msg.Label,
-		Did:   doc.GetID().ID,
+		Did:   what_is_did.String(),
 		Cid:   msg.Cid,
 	}
 
 	var whatIs = types.WhatIs{
-		Did:       doc.GetID().ID,
+		Creator:   creator_did.GetID().String(),
+		Did:       what_is_did.String(),
 		Schema:    &schema,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
