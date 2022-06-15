@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -29,13 +30,19 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 
-	pk, err := k.GenerateKeyForAdress()
+	guid := k.GenerateKeyForDID()
 
 	if err != nil {
 		return nil, err
 	}
-	addr := string(pk)
-	what_is_did, err := did.ParseDID(addr)
+
+	addr := string(guid)
+	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", addr))
+
+	if err != nil {
+		return nil, err
+	}
+
 	var schema = types.SchemaReference{
 		Label: msg.Label,
 		Did:   what_is_did.String(),

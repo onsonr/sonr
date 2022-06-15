@@ -1,24 +1,18 @@
 package keeper
 
 import (
-	ed "crypto/ed25519"
-	cryptrand "crypto/rand"
 	"encoding/binary"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/google/uuid"
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (k Keeper) GenerateKeyForAdress() (ed.PublicKey, error) {
-	//webauthncred := CreateMockCredential()
-	pubKey, _, err := ed.GenerateKey(cryptrand.Reader)
+func (k Keeper) GenerateKeyForDID() string {
+	id := uuid.New()
 
-	if err != nil {
-		return nil, err
-	}
-
-	return pubKey, nil
+	return id.String()
 }
 
 func (k Keeper) GetWhatIsCount(ctx sdk.Context) uint64 {
