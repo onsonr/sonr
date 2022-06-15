@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/lestrrat-go/jwx/v2/jwa"
+	"github.com/lestrrat-go/jwx/v2/jwe"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/lestrrat-go/jwx/v2/jws"
 )
@@ -15,9 +16,9 @@ type JWX interface {
 	CreateEncJWK() (*jwk.Key, error)
 	CreateSignJWK() (*jwk.Key, error)
 	CreateJWS() ([]byte, error)
-	VerifyJWS()  // TODO: Determine method signature
-	EncryptJWE() // TODO: Determine method signature
-	DecryptJWE() // TODO: Determine method signature
+	VerifyJWS(payload []byte, opts ...jws.VerifyOption) ([]byte, error)
+	EncryptJWE(payload []byte, options ...jwe.EncryptOption) ([]byte, error)
+	DecryptJWE(payload []byte, opts ...jwe.DecryptOption) ([]byte, error)
 	Sign([]byte, ...jws.SignOption) ([]byte, error)
 }
 
