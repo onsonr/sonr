@@ -14,7 +14,7 @@ option go_package = "github.com/sonr-io/sonr/x/registry/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sonrio/sonr/registry/params";
+    option (google.api.http).get = "/sonr-io/sonr/registry/params";
   }
   // Queries a WhoIs by id.
 	rpc WhoIs(QueryWhoIsRequest) returns (QueryWhoIsResponse) {

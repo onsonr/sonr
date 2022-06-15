@@ -22,8 +22,8 @@ func bootstrapRootCommand(ctx context.Context) (rootCmd *cobra.Command) {
 	}
 
 	rootCmd.AddCommand(bootstrapServeCommand(ctx))
-	rootCmd.AddCommand(bootstrapRegisterCommand(ctx))
-	rootCmd.AddCommand(bootstrapLoginCommand(ctx))
+	// rootCmd.AddCommand(bootstrapRegisterCommand(ctx))
+	// rootCmd.AddCommand(bootstrapLoginCommand(ctx))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx))
 	return
 }
