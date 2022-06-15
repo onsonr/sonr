@@ -9,25 +9,25 @@ on:
 jobs:
   run-goreleaser:
     name: "Build All Binaries and Frameworks"
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Configure Homebrew w/ cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/Library/Caches/Homebrew/foo--*
-            ~/Library/Caches/Homebrew/downloads/*--foo-*
-          key: brew-${{ hashFiles('.github/brew-formulae') }}
-          restore-keys: brew-
-      - name: Install Homebrew dependencies
-        run: |
-          brew install FiloSottile/musl-cross/musl-cross
-          brew install mingw-w64
+      # - name: Configure Homebrew w/ cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/Library/Caches/Homebrew/foo--*
+      #       ~/Library/Caches/Homebrew/downloads/*--foo-*
+      #     key: brew-${{ hashFiles('.github/brew-formulae') }}
+      #     restore-keys: brew-
+      # - name: Install Homebrew dependencies
+      #   run: |
+      #     brew install FiloSottile/musl-cross/musl-cross
+      #     brew install mingw-w64
 
       - name: Configure Golang w/ cache
         uses: magnetikonline/action-golang-cache@v2
