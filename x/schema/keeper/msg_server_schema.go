@@ -90,7 +90,7 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 	}
 
 	if !foundSchemaWI {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schema with same creator as message creator found.") //errors.New("Schema not found under given creator")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schema with same creator as message creator found.")
 	}
 
 	//If already deactivated, do nothing.
