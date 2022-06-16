@@ -2,43 +2,115 @@ package ipfs
 
 import (
 	"context"
-	"github.com/ipld/go-ipld-prime/storage"
-
 	"github.com/ipfs/go-datastore"
-
-	ipfslite "github.com/hsanjuan/ipfs-lite"
+	"github.com/ipfs/go-datastore/query"
+	"github.com/ipld/go-ipld-prime/storage/fsstore"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
-var _ storage.WritableStorage = &Store{}
+var (
+	_ datastore.PersistentDatastore = (*Store)(nil)
+	_ datastore.Batching            = (*Store)(nil)
+)
+
+var ObjectKeySuffix = ".dsobject"
 
 // Store is a datastore.Batching implementation that stores data in memory.
 type Store struct {
-	dataStore datastore.Batching
+	path      string
+	dataStore *fsstore.Store
 }
 
 // NewStore returns a new Store.
-func NewStore() *Store {
+func NewStore(path string) *Store {
+	store := &fsstore.Store{}
+	err := store.InitDefaults("tmp")
+	if err != nil {
+		panic(err)
+	}
+
 	return &Store{
-		dataStore: ipfslite.NewInMemoryDatastore(),
+		path:      path,
+		dataStore: store,
 	}
 }
 
-// Batching returns the Store's datastore.Batching implementation.
-func (ms *Store) Batching() datastore.Batching {
-	return ms.dataStore
+func (s *Store) Get(ctx context.Context, key datastore.Key) (value []byte, err error) {
+	return s.dataStore.Get(ctx, key.String())
 }
 
-// Has checks if the key exists in the store.
-func (ms *Store) Has(ctx context.Context, key string) (bool, error) {
-	return ms.dataStore.Has(ctx, datastore.NewKey(key))
+func (s *Store) Has(ctx context.Context, key datastore.Key) (exists bool, err error) {
+	return s.dataStore.Has(ctx, key.String())
 }
 
-// Get retrieves the value stored in the Store under the given key.
-func (ms *Store) Get(ctx context.Context, key string) ([]byte, error) {
-	return ms.dataStore.Get(ctx, datastore.NewKey(key))
+func (s *Store) GetSize(ctx context.Context, key datastore.Key) (size int, err error) {
+	//TODO implement me
+	panic("implement me")
 }
 
-// Put stores the given value, keyed by the given string, into the Store.
-func (ms *Store) Put(ctx context.Context, key string, content []byte) error {
-	return ms.dataStore.Put(ctx, datastore.NewKey(key), content)
+func (s *Store) Query(ctx context.Context, q query.Query) (query.Results, error) {
+	log.Printf("querying for %+v", q)
+
+	results := make(chan query.Result)
+
+	walkFn := func(path string, info os.FileInfo, _ error) error {
+		// remove ds path prefix
+		relPath, err := filepath.Rel(s.path, path)
+		if err == nil {
+			path = filepath.ToSlash(relPath)
+		}
+
+		if !info.IsDir() {
+			path = strings.TrimSuffix(path, ObjectKeySuffix)
+			var result query.Result
+			key := datastore.NewKey(path)
+			result.Entry.Key = key.String()
+			if !q.KeysOnly {
+				result.Entry.Value, result.Error = s.Get(ctx, key)
+			}
+			results <- result
+		}
+		return nil
+	}
+
+	go func() {
+		filepath.Walk(s.path, walkFn)
+		close(results)
+	}()
+	r := query.ResultsWithChan(q, results)
+	r = query.NaiveQueryApply(q, r)
+	return r, nil
+}
+
+func (s *Store) Put(ctx context.Context, key datastore.Key, value []byte) error {
+	return s.dataStore.Put(ctx, key.String(), value)
+
+}
+
+func (s *Store) Delete(ctx context.Context, key datastore.Key) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Store) Sync(ctx context.Context, prefix datastore.Key) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Store) Close() error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Store) DiskUsage(ctx context.Context) (uint64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Store) Batch(ctx context.Context) (datastore.Batch, error) {
+	//TODO implement me
+	panic("implement me")
 }
