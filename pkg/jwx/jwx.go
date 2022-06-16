@@ -30,6 +30,7 @@ var (
 )
 
 type jwxImpl struct {
+	jwk     jwk.Key
 	key     interface{}
 	keyAlg  jwa.KeyEncryptionAlgorithm
 	contAlg jwa.ContentEncryptionAlgorithm
@@ -38,6 +39,7 @@ type jwxImpl struct {
 
 func New(key interface{}) *jwxImpl {
 	return &jwxImpl{
+		jwk:     nil,
 		key:     key,
 		keyAlg:  jwa.ECDH_ES_A256KW,
 		contAlg: jwa.A128CBC_HS256,

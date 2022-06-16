@@ -23,6 +23,9 @@ func (x *jwxImpl) CreateEncJWK() (jwk.Key, error) {
 
 	setUse(jwk, "enc")
 	setKeyOps(jwk, "encrypt")
+
+	x.jwk = jwk
+
 	return jwk, nil
 }
 
@@ -49,11 +52,13 @@ func (x *jwxImpl) CreateSignJWK() (jwk.Key, error) {
 		return nil, err
 	}
 
+	x.jwk = jwk
+
 	return jwk, nil
 }
 
-func Marshall(jwk *jwk.Key) ([]byte, error) {
-	keyAsJSON, err := json.Marshal(jwk)
+func (x *jwxImpl) MarshallJSON() ([]byte, error) {
+	keyAsJSON, err := json.Marshal(x.jwk)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +66,7 @@ func Marshall(jwk *jwk.Key) ([]byte, error) {
 	return keyAsJSON, nil
 }
 
-func Unmarshall(key []byte) (*map[string]interface{}, error) {
+func (x *jwxImpl) UnmarshallJSON(key []byte) (*map[string]interface{}, error) {
 	keyAsMap := map[string]interface{}{}
 	json.Unmarshal(key, &keyAsMap)
 
