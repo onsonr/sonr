@@ -6,15 +6,14 @@ import (
 	"strings"
 	"sync"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	stdtx "github.com/cosmos/cosmos-sdk/types/tx"
-	rt "github.com/sonr-io/sonr/x/registry/types"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
 	"github.com/mr-tron/base58/base58"
-	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
@@ -56,26 +55,11 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 	return wallet, nil
 }
 
-// Balances returns the balances of the given party.
-func (w *MPCWallet) Balances() sdk.Coins {
-	addr, err := w.Bech32Address()
-	if err != nil {
-		return nil
-	}
-
-	resp, err := client.CheckBalance(addr)
-	if err != nil {
-		return nil
-	}
-	fmt.Println("-- Check Balance --\n", resp)
-	return resp
-}
-
 // Returns the Bech32 representation of the given party.
 func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	// c := types.GetConfig()
 	// c.SetBech32PrefixForAccount("snr", "pub")
-	pub, err := w.PublicKey(id...)
+	pub, err := w.PublicKeyBytes(id...)
 	if err != nil {
 		return "", err
 	}
@@ -206,7 +190,33 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
+func (w *MPCWallet) PublicKey(id ...party.ID) (cryptotypes.PubKey, error) {
+	var pub *config.Public
+	if len(id) == 0 {
+		pub = w.Config().Public[w.ID]
+	} else if len(id) == 1 {
+		pub = w.Config().Public[id[0]]
+	} else {
+		return nil, fmt.Errorf("invalid number of arguments")
+	}
+	if pub == nil {
+		return nil, fmt.Errorf("no public key found")
+	}
+
+	return NewPublicKey(pub), nil
+}
+
+// Returns the ECDSA public key of the given party.
+func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
+	pub, err := w.PublicKeyBytes(id...)
+	if err != nil {
+		return "", err
+	}
+	return base58.Encode(pub), nil
+}
+
+// Returns the ECDSA public key of the given party.
+func (w *MPCWallet) PublicKeyBytes(id ...party.ID) ([]byte, error) {
 	var pub *config.Public
 	if len(id) == 0 {
 		pub = w.Config().Public[w.ID]
@@ -227,15 +237,6 @@ func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
 	return buf, nil
 }
 
-// Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
-	pub, err := w.PublicKey(id...)
-	if err != nil {
-		return "", err
-	}
-	return base58.Encode(pub), nil
-}
-
 // Refreshes all shares of an existing ECDSA private key.
 func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 	hRefresh, err := protocol.NewMultiHandler(cmp.Refresh(w.Configs[w.ID], pl), nil)
@@ -250,48 +251,6 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 	}
 
 	return r.(*cmp.Config), nil
-}
-
-func (w *MPCWallet) BroadcastCreateWhoIs() error {
-	addr, err := w.Bech32Address()
-	if err != nil {
-		return err
-	}
-	doc, err := w.DIDDocument()
-	if err != nil {
-		return err
-	}
-
-	docJSON, err := doc.MarshalJSON()
-	if err != nil {
-		return err
-	}
-
-	msg := rt.NewMsgCreateWhoIs(addr, docJSON, rt.WhoIsType_USER)
-	msgBytes, err := msg.Marshal()
-	if err != nil {
-		return err
-	}
-
-	// Sign the transaction.
-	tx, err := w.SignTx(msgBytes, "/sonr.registry.MsgCreateWhoIs")
-	if err != nil {
-		return err
-	}
-
-	// Generate a JSON string.
-	txBytes, err := tx.Marshal()
-	if err != nil {
-		return err
-	}
-
-	resp, err := client.BroadcastTx(txBytes)
-	if err != nil {
-		return err
-	}
-	fmt.Println("-- TX Response --\n", resp)
-	return nil
-
 }
 
 // Generates an ECDSA signature for messageHash.
@@ -323,50 +282,39 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 }
 
 // Generates an ECDSA signature for messageHash.
-func (w *MPCWallet) SignTx(m []byte, typeUrl string) (*stdtx.Tx, error) {
+func (w *MPCWallet) SignTx(m []byte, modeInfo *stdtx.ModeInfo) (signing.SignatureData, error) {
+	// txBody := &stdtx.TxBody{
+	// 	Messages: []*codectypes.Any{
+	// 		{
+	// 			TypeUrl: typeUrl,
+	// 			Value:   m,
+	// 		},
+	// 	},
+	// }
+	// bodyBz, err := txBody.Marshal()
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// pubKey, err := w.PublicKey()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// authInfo := w.StdTxAuthInfo(2, pubKey)
+	// aiBz, err := authInfo.Marshal()
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// txBz, err := tx.DirectSignBytes(bodyBz, aiBz, "sonr", 1)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	sig, err := w.Sign(m)
 	if err != nil {
 		return nil, err
 	}
-
-	pubKey, err := w.PublicKey()
-	if err != nil {
-		return nil, err
-	}
-
-	tx := stdtx.Tx{
-		Body: &stdtx.TxBody{
-			Messages: []*codectypes.Any{
-				{
-					TypeUrl: typeUrl,
-					Value:   m,
-				},
-			},
-		},
-		AuthInfo: w.StdTxAuthInfo(2, pubKey),
-		Signatures: [][]byte{
-			ECDSASignatureToBytes(sig),
-		},
-	}
-	return &tx, err
-}
-
-// StdTxAuthInfo returns the auth info for the given public key and fee.
-func (w *MPCWallet) StdTxAuthInfo(fee int64, pubKey []byte) *stdtx.AuthInfo {
-	return &stdtx.AuthInfo{
-		SignerInfos: []*stdtx.SignerInfo{
-			{
-				PublicKey: codectypes.UnsafePackAny(pubKey),
-				ModeInfo: &stdtx.ModeInfo{
-					Sum: &stdtx.ModeInfo_Single_{},
-				},
-				Sequence: 1,
-			},
-		},
-		Fee: &stdtx.Fee{
-			Amount: sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(fee))),
-		},
-	}
+	return tx.ModeInfoAndSigToSignatureData(modeInfo, ECDSASignatureToBytes(sig))
 }
 
 // Helper function to cmpSign a message.
@@ -385,27 +333,4 @@ func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *poo
 		return nil, fmt.Errorf("failed to verify cmp signature")
 	}
 	return signature, nil
-}
-
-func (w *MPCWallet) getCreateWhoIsMsg() ([]byte, error) {
-	addr, err := w.Bech32Address()
-	if err != nil {
-		return nil, err
-	}
-	doc, err := w.DIDDocument()
-	if err != nil {
-		return nil, err
-	}
-
-	docJSON, err := doc.MarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-
-	msg := rt.NewMsgCreateWhoIs(addr, docJSON, rt.WhoIsType_USER)
-	msgBytes, err := msg.Marshal()
-	if err != nil {
-		return nil, err
-	}
-	return msgBytes, nil
 }

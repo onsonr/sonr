@@ -34,9 +34,15 @@ func Test_MPCSignMessage(t *testing.T) {
 func Test_MPCCreateWhoIs(t *testing.T) {
 	w, err := Generate()
 	assert.NoError(t, err, "wallet generation succeeds")
+	addr, err := w.Bech32Address()
+	assert.NoError(t, err, "Bech32Address successfully created")
+	err = client.RequestFaucet(addr)
+	assert.NoError(t, err, "faucet request succeeds")
+	resp := w.Balances()
+	t.Logf("-- Get Balances --\n%+v\n", resp)
 
-	err = w.BroadcastCreateWhoIs()
-	assert.NoError(t, err, "broadcast succeeds")
+	err = w.BroadcastCreateWhoIsWithEncoding()
+	assert.NoError(t, err, "broadcast with encoding succeeds")
 }
 
 func Test_GetBalances(t *testing.T) {
