@@ -13,6 +13,7 @@ package api
 import (
 	"context"
 	"errors"
+	"github.com/sonr-io/sonr/internal/highway/x/store"
 	"net/http"
 	"os"
 	"time"
@@ -57,7 +58,8 @@ type HighwayServer struct {
 
 	// Protocols
 	channels     map[string]ctv1.Channel
-	ipfsProtocol *ipfs.IPFSProtocol
+	ipfsProtocol *ipfs.Protocol
+	store        *store.Store
 	// matrixProtocol *matrix.MatrixProtocol
 
 	//Prometheus
@@ -77,8 +79,9 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
-	// Create the IPFS Protocol
-	ipfs, err := ipfs.New(ctx, node)
+	ds := store.New("tmp")
+
+	ipfs, err := ipfs.New(ctx, ds, node)
 	if err != nil {
 		return nil, err
 	}
@@ -97,6 +100,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		Router:       gin.Default(),
 		Config:       c,
 		ipfsProtocol: ipfs,
+		store:        ds,
 		JWTToken:     tokenClient,
 		// matrixProtocol: matrix,
 		Telemetry: metrics,

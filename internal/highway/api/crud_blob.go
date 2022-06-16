@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/ipfs/go-datastore"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -14,6 +15,8 @@ import (
 	"github.com/kataras/go-events"
 )
 
+// UploadBlob uploads a buffer or file to IPFS and returns its CID.
+//
 // @Summary Upload Blob
 // @Schemes
 // @Description UploadBlob uploads a buffer or file to IPFS and returns its CID.
@@ -50,19 +53,29 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 	}
 
 	// Upload the file to ipfsProtocol
-	resp, err := s.ipfsProtocol.PutData(buf)
+	cid, err := s.ipfsProtocol.PutData(buf)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to upload the file to IPFS",
 		})
 		return
 	}
+
+	// Use the CID to store the file on local fs.
+	if err := s.store.Put(c.Request.Context(), datastore.NewKey(cid.String()), buf); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "Unable to upload the file to IPFS",
+		})
+		return
+	}
+
 	defer events.Emit(metrics.ON_BLOB_ADD, "")
+
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": fmt.Sprintf("Succesfully uploaded blob of size %d to IPFS!", len(buf)),
-		"cid":     resp.String(),
+		"cid":     cid.String(),
 	})
 }
 

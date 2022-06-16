@@ -1,4 +1,4 @@
-package ipfs
+package store
 
 import (
 	"context"
@@ -24,8 +24,8 @@ type Store struct {
 	dataStore *fsstore.Store
 }
 
-// NewStore returns a new Store.
-func NewStore(path string) *Store {
+// New returns a new Store.
+func New(path string) *Store {
 	store := &fsstore.Store{}
 	err := store.InitDefaults("tmp")
 	if err != nil {

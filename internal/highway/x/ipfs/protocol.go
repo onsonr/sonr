@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/sonr-io/sonr/internal/highway/x/store"
 	"io/ioutil"
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
@@ -15,28 +16,27 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-// IPFSProtocol leverages the IPFSLite library to provide simple file operations.
-type IPFSProtocol struct {
-	ctx       context.Context
-	node      host.SonrHost
-	dataStore *Store
+// Protocol leverages the IPFSLite library to provide simple file operations.
+type Protocol struct {
+	ctx   context.Context
+	host  host.SonrHost
+	store *store.Store
 	*ipfslite.Peer
 }
 
-// New creates a new IPFSProtocol instance with Host Implementation
-func New(ctx context.Context, host host.SonrHost) (*IPFSProtocol, error) {
+// New creates a new Protocol instance with Host Implementation
+func New(ctx context.Context, ds *store.Store, host host.SonrHost) (*Protocol, error) {
 	// Create IPFS Peer
-	ds := NewStore("tmp")
-	ipfsLite, err := ipfslite.New(ctx, ds, host.Host(), host.Routing(), nil)
+	peer, err := ipfslite.New(ctx, ds, host.Host(), host.Routing(), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	p := &IPFSProtocol{
-		ctx:       ctx,
-		node:      host,
-		dataStore: ds,
-		Peer:      ipfsLite,
+	p := &Protocol{
+		ctx,
+		host,
+		ds,
+		peer,
 	}
 
 	p.Bootstrap(ipfslite.DefaultBootstrapPeers())
@@ -49,7 +49,7 @@ func DecodeCIDFromString(s string) (cid.Cid, error) {
 }
 
 // GetData returns a file from IPFS.
-func (i *IPFSProtocol) GetData(cid string) ([]byte, error) {
+func (i *Protocol) GetData(cid string) ([]byte, error) {
 	// Decode CID from String
 	c, err := DecodeCIDFromString(cid)
 	if err != nil {
@@ -67,7 +67,7 @@ func (i *IPFSProtocol) GetData(cid string) ([]byte, error) {
 }
 
 // GetObjectSchema returns an object schema from IPFS.
-func (i *IPFSProtocol) GetObjectSchema(cid *cid.Cid) (datamodel.Node, error) {
+func (i *Protocol) GetObjectSchema(cid *cid.Cid) (datamodel.Node, error) {
 	// Get the file from IPFS
 	buf, err := i.GetData(cid.String())
 	if err != nil {
@@ -83,12 +83,12 @@ func (i *IPFSProtocol) GetObjectSchema(cid *cid.Cid) (datamodel.Node, error) {
 	dagjson.Decode(nb, serial)    // Hand the builder to decoding -- decoding will fill it in!
 	n := nb.Build()               // Call 'Build' to get the resulting Node.  (It's immutable!)
 	fmt.Printf("the data decoded was a %s kind\n", n.Kind())
-	fmt.Printf("the length of the node is %d\n", n.Length())
+	fmt.Printf("the length of the host is %d\n", n.Length())
 	return n, nil
 }
 
 // PutData puts a file to IPFS and returns the CID.
-func (i *IPFSProtocol) PutData(data []byte) (*cid.Cid, error) {
+func (i *Protocol) PutData(data []byte) (*cid.Cid, error) {
 	// Create Reader for Data
 	buffer := bytes.NewBuffer(data)
 
@@ -104,7 +104,7 @@ func (i *IPFSProtocol) PutData(data []byte) (*cid.Cid, error) {
 }
 
 // PutObjectSchema puts an object schema to IPFS and returns the CID.
-func (i *IPFSProtocol) PutObjectSchema(doc *st.SchemaDefinition) (*cid.Cid, error) {
+func (i *Protocol) PutObjectSchema(doc *st.SchemaDefinition) (*cid.Cid, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder()                               // Create a builder.
@@ -153,7 +153,7 @@ func (i *IPFSProtocol) PutObjectSchema(doc *st.SchemaDefinition) (*cid.Cid, erro
 }
 
 // RemoveFile removes a file from IPFS.
-func (i *IPFSProtocol) RemoveFile(cidstr string) error {
+func (i *Protocol) RemoveFile(cidstr string) error {
 	cid, err := DecodeCIDFromString(cidstr)
 	if err != nil {
 		return err
