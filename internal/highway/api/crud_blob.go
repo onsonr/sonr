@@ -2,17 +2,16 @@ package api
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/ipfs/go-datastore"
+	"github.com/kataras/go-events"
+	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
-
-	"github.com/kataras/go-events"
 )
 
 // UploadBlob uploads a buffer or file to IPFS and returns its CID.
@@ -94,6 +93,29 @@ func (s *HighwayServer) DownloadBlob(c *gin.Context) {
 			"message": "Missing CID",
 		})
 		return
+	}
+
+	ctx := c.Request.Context()
+	key := datastore.NewKey(cid)
+
+	exists, err := s.store.Has(ctx, key)
+	if err != nil {
+		// log error and continue
+		log.Println(err)
+	}
+
+	if exists {
+		data, err := s.store.Get(ctx, key)
+		if err != nil {
+			// log error and continue
+			log.Println(err)
+		}
+
+		if data != nil {
+			// Save the file to temporary directory
+			c.Data(http.StatusOK, "application/octet-stream", data)
+			return
+		}
 	}
 
 	// Download the file from ipfsProtocol
