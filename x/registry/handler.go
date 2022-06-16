@@ -17,32 +17,25 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgRegisterApplication:
-			res, err := msgServer.RegisterApplication(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgRegisterName:
-			res, err := msgServer.RegisterName(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgAccessName:
-			res, err := msgServer.AccessName(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpdateName:
-			res, err := msgServer.UpdateName(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgAccessApplication:
-			res, err := msgServer.AccessApplication(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpdateApplication:
-			res, err := msgServer.UpdateApplication(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgCreateWhoIs:
 			res, err := msgServer.CreateWhoIs(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+
 		case *types.MsgUpdateWhoIs:
 			res, err := msgServer.UpdateWhoIs(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgDeleteWhoIs:
-			res, err := msgServer.DeleteWhoIs(sdk.WrapSDKContext(ctx), msg)
+
+		case *types.MsgDeactivateWhoIs:
+			res, err := msgServer.DeactivateWhoIs(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgBuyAlias:
+			res, err := msgServer.BuyAlias(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgSellAlias:
+			res, err := msgServer.SellAlias(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgTransferAlias:
+			res, err := msgServer.TransferAlias(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:

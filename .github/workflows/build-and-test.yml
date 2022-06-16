@@ -2,54 +2,45 @@ name: Build and Test
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 jobs:
   run-goreleaser:
     name: "Build All Binaries and Frameworks"
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Configure Homebrew w/ cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/Library/Caches/Homebrew/foo--*
-            ~/Library/Caches/Homebrew/downloads/*--foo-*
-          key: brew-${{ hashFiles('.github/brew-formulae') }}
-          restore-keys: brew-
-      - name: Install Homebrew dependencies
-        run: |
-          brew install FiloSottile/musl-cross/musl-cross
-          brew install mingw-w64
-
-      - name: Configure Golang w/ cache
-        uses: magnetikonline/action-golang-cache@v2
-        with:
-          go-version: ~1.17
-      - name: Install dependencies
-        run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init
-        working-directory: ${{ github.workspace }}/cmd/motor-lib
+      # - name: Configure Homebrew w/ cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/Library/Caches/Homebrew/foo--*
+      #       ~/Library/Caches/Homebrew/downloads/*--foo-*
+      #     key: brew-${{ hashFiles('.github/brew-formulae') }}
+      #     restore-keys: brew-
+      # - name: Install Homebrew dependencies
+      #   run: |
+      #     brew install FiloSottile/musl-cross/musl-cross
+      #     brew install mingw-w64
 
       - name: Run coverage
         continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+
+      - name: Prepare Release Variables
+        id: vars
+        uses: ignite-hq/cli/actions/release/vars@develop
+
+      - name: Issue Release Assets
+        uses: ignite-hq/cli/actions/cli@develop
         with:
-          distribution: goreleaser-pro
-          version: latest
-          args: build --rm-dist --snapshot
-        env:
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
+
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3

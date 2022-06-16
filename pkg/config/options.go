@@ -5,15 +5,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/denisbrodbeck/machineid"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
-	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
 )
 
 // Option configures your client.
 type Option func(*Config)
 
-func WithCosmosAccountSettings(accountName string, addrPrefix string, homeDir string, keyringServiceName string, keyringBackend cosmosaccount.KeyringBackend) Option {
+func WithCosmosAccountSettings(accountName string, addrPrefix string, homeDir string, keyringServiceName string, keyringBackend string) Option {
 	return func(c *Config) {
 		c.CosmosAccountName = accountName
 		c.CosmosAddressPrefix = addrPrefix
@@ -68,16 +66,6 @@ func WithLibp2pRendevouz(point string, ttl time.Duration, interval time.Duration
 		o.Libp2pInterval = interval
 		o.Libp2pTTL = dscl.TTL(ttl)
 		o.Libp2pRendezvous = point
-	}
-}
-
-// WithWebAuthnConfig sets the webauthn server Properties
-func WithWebAuthnConfig(displayName string, rpId string, rpOrigin string, isDebug bool) Option {
-	return func(o *Config) {
-		o.WebAuthNRPDisplayName = displayName
-		o.WebAuthNRPID = rpId
-		o.WebAuthNRPOrigin = rpOrigin
-		o.WebAuthNDebug = isDebug
 	}
 }
 
@@ -148,31 +136,18 @@ func defaultMotorOptions() *motorOptions {
 	opts := &motorOptions{}
 	if IsDesktop() {
 		hp, err := os.UserHomeDir()
-		if err != nil {
-			logger.Errorf("%s - Failed to get HomeDir, ", err)
-		} else {
+		if err == nil {
 			opts.HomeDir = hp
 		}
 
 		tp, err := os.UserCacheDir()
-		if err != nil {
-			logger.Errorf("%s - Failed to get TempDir, ", err)
-		} else {
+		if err == nil {
 			opts.TempDir = tp
 		}
 
 		sp, err := os.UserConfigDir()
-		if err != nil {
-			logger.Errorf("%s - Failed to get SupportDir, ", err)
-		} else {
+		if err == nil {
 			opts.SupportDir = sp
-		}
-
-		id, err := machineid.ID()
-		if err != nil {
-			logger.Errorf("%s - Failed to get Device ID", err)
-		} else {
-			opts.deviceID = id
 		}
 	}
 	return opts

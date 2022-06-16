@@ -1,6 +1,68 @@
 [![Release Workflow](https://github.com/sonr-io/sonr/actions/workflows/release.yml/badge.svg?branch=dev)](https://github.com/sonr-io/sonr/actions/workflows/release.yml)
+<h1 align="center">Sonr Core</h1>
 
-## Description
+<div align="center">
+  :trident: :dolphin: :godmode: :trident:
+</div>
+<div align="center">
+  <strong>The Official Sonr Blockchain source code</strong>
+</div>
+<div align="center">
+  A <code>easy-to-use</code> framework for building immersive decentralized applications.
+</div>
+
+<br />
+
+<div align="center">
+  <!-- Stability -->
+    <img alt="CodeFactor Grade" src="https://img.shields.io/codefactor/grade/github/sonr-io/sonr/master?style=for-the-badge">
+  <!-- NPM version -->
+  <a href="https://godoc.org/github.com/sonr-io/sonr">
+  <img src="http://img.shields.io/badge/godoc-reference-5272B4.svg?style=for-the-badge" />
+  </a>
+  <!-- Test Coverage -->
+  <a href="https://codecov.io/github/choojs/choo">
+<img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/sonr-io/sonr?label=TLOC&style=for-the-badge">
+  </a>
+  <!-- Downloads -->
+<img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/sonr_io?color=%2300ACEE&label=🐦 sonr_io&style=for-the-badge">
+</div>
+
+<div align="center">
+  <h3>
+    <a href="https://sonr.io">
+      Home
+    </a>
+    <span> | </span>
+    <a href="https://discord.gg/6Z3RmWs257">
+      Discord
+    </a>
+    <span> | </span>
+    <a href="https://github.com/sonr-io/sonr/issues">
+      Issues
+    </a>
+    <span> | </span>
+      <!-- <span> | </span> -->
+    <a href="https://docs.sonr.io">
+      Docs
+    </a>
+     <span> | </span>
+      <!-- <span> | </span> -->
+    <a href="./CHANGELOG.md">
+      Changelog
+    </a>
+  </h3>
+</div>
+
+<div align="center">
+  <sub>The quickest way to production in Web5. Built with ❤︎ by the
+  <a href="mailto:team@sonr.io">Sonr Team</a> and
+  <a href="https://github.com/sonr-io/sonr/graphs/contributors">
+    contributors
+  </a>
+</div>
+
+---
 
 Sonr is a platform for developers to build decentralized applications which put user privacy first and foremost. It weds decentralized storage technologies such as [IPFS](https://ipfs.io) and [lipp2p](https://libp2p.io) with an intuitive, firebase-like developer experience.
 
@@ -10,143 +72,39 @@ For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and 
 
 For a more in-depth look at building on the Sonr network, check out our [docs](https://docs.sonr.io).
 
-## Getting Started
-
-### Dependencies
-
-- [Golang](https://go.dev)
-- [Libp2p](https://libp2p.io)
-- [Starport](https://starport.com)
-
-<!-- TODO: create a brew install for sonrd -->
-<!-- ### Installing
-
-To install the latest version of the Sonr blockchain node's binary, execute the following command on your machine:
-
-```shell
-go get -u https://github.com/sonr-io/core
-``` -->
-
-### Configuration
+### Project Structure
 
 The `sonr` repo follows the Go project structure outlined in https://github.com/golang-standards/project-layout.
 
 The core packages (`/pkg`) is structured as follows:
 
 ```text
-/channel         ->        Real-time Key/Value Store
-/crypto          ->        Core data types and functions.
-/did             ->        Documentation.
-/highway         ->        Data Transfer related Models.
-/host            ->        Libp2p Host Configuration
-/motor           ->        Identity management models and interfaces
---/device        ->        Node Device management
-/proto           ->        Protobuf Definition Files.
+/app                ->          Main blockchain executable
+/bind               ->          Binded motor executable for ios, android, and wasm
+/cmd                ->          Executable binaries
+/docker             ->          Docker container files
+/docs               ->          Documentation with Docusaurus
+/internal           ->          Identity management models and interfaces
+/pkg                ->          Core packages for all executables
+  └─ client         ->          +   Blockchain Client utilities
+  └─ config         ->          +   Configuration settings for Motor and Highway nodes
+  └─ crypto         ->          +   Cryptographic primitives and Wallet implementation
+  └─ did            ->          +   DID management utilities
+  └─ fs             ->          +   File System utilities for Motor
+  └─ host           ->          +   Libp2p host for Motor & Highway nodes
+/proto              ->          Protobuf Definition Files
+/scripts            ->          Project specific scripts
+/testutil           ->          Testing utilities for simulations
+/vue                ->          Vue based wallet UI
+/x                  ->          Cosmos Blockchain Implementation
+  └─ bucket         ->          +   See /docs/articles/reference/ADR-003.md
+  └─ channel        ->          +   See /docs/articles/reference/ADR-004.md
+  └─ registry       ->          +   See /docs/articles/reference/ADR-001.md
+  └─ schema         ->          +   See /docs/articles/reference/ADR-002.md
 ```
 
-## Getting Started
-
-### Creating a Highway Node
-
-The highway node is a relayer node that helps motors interact with the sonr network. It is responsible for routing messages between motors and other relayers. The highway node
-also provides an interface for developers to deploy custom services on the network. To have a custom build of the highway node, execute the following command on your machine:
-
-1. `go get -u github.com/sonr-io/sonr`
-
-2. Create a simple highway node with the following:
-
-```go
-import (
-  "github.com/sonr-io/sonr/pkg/highway"
-  "github.com/sonr-io/sonr/internal/host"
-)
-
-func main() {
-	// Create the node.
-	n, err := highway.NewHighway(ctx, host.WithPort(8084), host.WithWebAuthn("Sonr", "localhost", "http://localhost:8080", true))
-	if err != nil {
-		panic(err)
-	}
-}
-```
-
-### Buf.build Type Definition
-
-We utilize the [Buf.build](https://buf.build/) service in order to have standardized protobuf types and gRPC services across our repositories. If you have permitted access to the service, you can use the following command to updated types:
-
-1. `cd proto && buf build`
-2. `buf push`
-
-### Decentralized Identifiers (DIDs) Usage:
-
-> A library to parse and generate W3C [DID Documents](https://www.w3.org/TR/did-core/) and W3C [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/).
-
-Creation of a simple DID Document which is its own controller and contains an AssertionMethod.
-
-```go
-didID, err := did.ParseDID("did:sonr:123")
-
-// Empty did document:
-doc := &did.Document{
-    Context:            []did.URI{did.DIDContextV1URI()},
-    ID:                 *didID,
-}
-
-// Add an assertionMethod
-keyID, _ =: did.ParseDIDURL("did:sonr:123#key-1")
-
-keyPair, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-verificationMethod, err := did.NewVerificationMethod(*keyID, did.JsonWebKey2020, did.DID{}, keyPair.Public())
-
-// This adds the method to the VerificationMethod list and stores a reference to the assertion list
-doc.AddAssertionMethod(verificationMethod)
-
-didJson, _ := json.MarshalIndent(doc, "", "  ")
-fmt.Println(string(didJson))
-
-// Unmarshalling of a json did document:
-parsedDIDDoc := did.Document{}
-err = json.Unmarshal(didJson, &parsedDIDDoc)
-
-// It can return the key in the convenient lestrrat-go/jwx JWK
-parsedDIDDoc.AssertionMethod[0].JWK()
-
-// Or return a native crypto.PublicKey
-parsedDIDDoc.AssertionMethod[0].PublicKey()
-
-```
-
-Outputs:
-
-```json
-{
-  "assertionMethod": ["did:sonr:123#key-1"],
-  "@context": "https://www.w3.org/ns/did/v1",
-  "controller": "did:sonr:123",
-  "id": "did:sonr:123",
-  "verificationMethod": [
-    {
-      "controller": "did:sonr:123",
-      "id": "did:sonr:123#key-1",
-      "publicKeyJwk": {
-        "crv": "P-256",
-        "kty": "EC",
-        "x": "UANQ8pgvJT33JbrnwMiu1L1JCGQFOEm1ThaNAJcFrWA=",
-        "y": "UWm6q5n1iXyeCJLMGDInN40bkkKr8KkoTWDqJBZQXRo="
-      },
-      "type": "JsonWebKey2020"
-    }
-  ]
-}
-```
-
-## State of the library
-
-Currently, the library is under development. The API can change without notice.
-Checkout the issues and PRs to be informed about any development.
-
-## Contributing
-
+### Contributing
+**State of the library** - This library is under *extremely* active development. The API can change without notice. Checkout the issues and PRs to be informed about any development.
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
@@ -155,20 +113,27 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Authors
+### Core Team
 
 Contributors names and contact info
 
-- [Prad Nukala](“https://github.com/prnk28”)
+- [Prad Nukala](https://github.com/prnk28)
+- [Nick Tindle](https://github.com/ntindle)
+- [Josh Long](https://github.com/joshLong145)
+- [Brayden Cloud](https://github.com/mcjcloud)
 
-## License
+### Acknowledgments
 
-This project facilitated under **Sonr Inc.** is distributed under the **GPLv3 License**. See `LICENSE.md` for more information.
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
+Inspiration, dependencies, compliance, or just pure appreciation!
 
 - [Libp2p](https://libp2p.io/)
-- [Textile](https://www.textile.io/)
 - [Handshake](https://handshake.org/)
+- [Ignite](https://ignite.com/)
+- [IPFS](https://ipfs.io/)
+- [W3C](https://www.w3.org/)
+- [Fido Alliance](https://fidoalliance.org/)
+
+
+### License
+
+This project facilitated under **Sonr Inc.** is distributed under the **GPLv3 License**. See `LICENSE.md` for more information.

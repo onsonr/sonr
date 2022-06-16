@@ -70,21 +70,21 @@ func TestMsgUpdateWhoIs_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgDeleteWhoIs_ValidateBasic(t *testing.T) {
+func TestMsgDeactivateWhoIs_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDeleteWhoIs
+		msg  MsgDeactivateWhoIs
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDeleteWhoIs{
+			msg: MsgDeactivateWhoIs{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDeleteWhoIs{
+			msg: MsgDeactivateWhoIs{
 				Creator: sample.AccAddress(),
 			},
 		},

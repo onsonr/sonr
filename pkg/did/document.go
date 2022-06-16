@@ -7,16 +7,17 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/lestrrat-go/jwx/v2/jwk"
-	"github.com/shengdoushi/base58"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	"github.com/sonr-io/sonr/pkg/jwx"
 
+	// "github.com/duo-labs/webauthn/protocol"
+	// "github.com/duo-labs/webauthn/webauthn"
+	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/shengdoushi/base58"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
 )
 
-// Document represents a DID Document as specified by the DID Core specification (https://www.w3.org/TR/did-core/).
-type Document struct {
+// DocumentImpl represents a DID Document as specified by the DID Core specification (https://www.w3.org/TR/did-core/).
+type DocumentImpl struct {
 	Context              []ssi.URI                 `json:"@context"`
 	ID                   DID                       `json:"id"`
 	Controller           []DID                     `json:"controller,omitempty"`
@@ -26,14 +27,127 @@ type Document struct {
 	KeyAgreement         VerificationRelationships `json:"keyAgreement,omitempty"`
 	CapabilityInvocation VerificationRelationships `json:"capabilityInvocation,omitempty"`
 	CapabilityDelegation VerificationRelationships `json:"capabilityDelegation,omitempty"`
-	Service              []Service                 `json:"service,omitempty"`
-	AlsoKnownAs          []string                  `json:"@alsoKnownAs,omitempty"`
+	Service              Services                  `json:"service,omitempty"`
+	AlsoKnownAs          []string                  `json:"alsoKnownAs,omitempty"`
+}
+
+// BlankDocument creates a Blank Default DID Document
+func BlankDocument() Document {
+	return &DocumentImpl{
+		Context:              make([]ssi.URI, 0),
+		VerificationMethod:   make(VerificationMethods, 0),
+		Authentication:       make(VerificationRelationships, 0),
+		AssertionMethod:      make(VerificationRelationships, 0),
+		KeyAgreement:         make(VerificationRelationships, 0),
+		CapabilityInvocation: make(VerificationRelationships, 0),
+		CapabilityDelegation: make(VerificationRelationships, 0),
+		Service:              make([]Service, 0),
+		AlsoKnownAs:          make([]string, 0),
+	}
+}
+
+// NewDocument generates a new DID Document for the provided ID string
+func NewDocument(idStr string) (Document, error) {
+	fmt.Println(idStr)
+	id, err := ParseDID(idStr)
+	if err != nil {
+		return nil, err
+	}
+
+	ctxUri, err := ssi.ParseURI("https://www.w3.org/ns/did/v1")
+	if err != nil {
+		return nil, err
+	}
+
+	return &DocumentImpl{
+		ID:                   *id,
+		Context:              []ssi.URI{*ctxUri},
+		VerificationMethod:   make(VerificationMethods, 0),
+		Authentication:       make(VerificationRelationships, 0),
+		AssertionMethod:      make(VerificationRelationships, 0),
+		KeyAgreement:         make(VerificationRelationships, 0),
+		CapabilityInvocation: make(VerificationRelationships, 0),
+		CapabilityDelegation: make(VerificationRelationships, 0),
+		Service:              make([]Service, 0),
+		AlsoKnownAs:          make([]string, 0),
+	}, nil
+}
+
+func (d *DocumentImpl) ControllerCount() int {
+	return len(d.Controller)
+}
+
+// FindAuthenticationMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAuthenticationMethod(id DID) *VerificationMethod {
+	return d.Authentication.FindByID(id)
+}
+
+// FindAssertionMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAssertionMethod(id DID) *VerificationMethod {
+	return d.AssertionMethod.FindByID(id)
+}
+
+// FindCapabilityDelegation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityDelegation(id DID) *VerificationMethod {
+	return d.CapabilityDelegation.FindByID(id)
+}
+
+// FindCapabilityInvocation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityInvocation(id DID) *VerificationMethod {
+	return d.CapabilityInvocation.FindByID(id)
+}
+
+func (d *DocumentImpl) GetController(did DID) (DID, error) {
+	for _, c := range d.Controller {
+		if c.Equals(did) {
+			return c, nil
+		}
+	}
+	return DID{}, errors.New("did not found")
+}
+
+// GetAssertionMethods returns the list of assertion methods
+func (d *DocumentImpl) GetAssertionMethods() VerificationRelationships {
+	return d.AssertionMethod
+}
+
+// GetAuthenticationMethods returns the list of authentication methods
+func (d *DocumentImpl) GetAuthenticationMethods() VerificationRelationships {
+	return d.Authentication
+}
+
+// GetCapabilityDelegations returns the list of capability delegations
+func (d *DocumentImpl) GetCapabilityDelegations() VerificationRelationships {
+	return d.CapabilityDelegation
+}
+
+// GetCapabilityInvocations returns the list of capability invocations
+func (d *DocumentImpl) GetCapabilityInvocations() VerificationRelationships {
+	return d.CapabilityInvocation
+}
+
+func (d *DocumentImpl) GetID() DID {
+	return d.ID
+}
+
+func (d *DocumentImpl) GetAlsoKnownAs() []string {
+	return d.AlsoKnownAs
+}
+
+// CopyFromBytes unmarshals a JSON document from a byte slice and copies the data into the receiver.
+func (d *DocumentImpl) CopyFromBytes(b []byte) error {
+	var newDoc DocumentImpl
+	err := newDoc.UnmarshalJSON(b)
+	if err != nil {
+		return err
+	}
+	return d.copyDocument(&newDoc)
 }
 
 // AddController adds a DID as a controller
-func (d *Document) AddController(id DID) {
+func (d *DocumentImpl) AddController(id DID) {
 	if d.Controller == nil {
-		d.Controller = []DID{}
+		d.Controller = make([]DID, 0)
 	}
 	d.Controller = append(d.Controller, id)
 }
@@ -86,6 +200,11 @@ func (vms *VerificationMethods) Add(v *VerificationMethod) {
 
 type VerificationRelationships []VerificationRelationship
 
+// Count returns the number of VerificationRelationships in the slice
+func (vmr VerificationRelationships) Count() int {
+	return len(vmr)
+}
+
 // FindByID returns the first VerificationRelationship that matches with the id.
 // For comparison both the ID of the embedded VerificationMethod and reference is used.
 func (vmr VerificationRelationships) FindByID(id DID) *VerificationMethod {
@@ -130,7 +249,7 @@ func (vmr *VerificationRelationships) Add(vm *VerificationMethod) {
 
 // AddAuthenticationMethod adds a VerificationMethod as AuthenticationMethod
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddAuthenticationMethod(v *VerificationMethod) {
+func (d *DocumentImpl) AddAuthenticationMethod(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -140,7 +259,7 @@ func (d *Document) AddAuthenticationMethod(v *VerificationMethod) {
 
 // AddAssertionMethod adds a VerificationMethod as AssertionMethod
 // If the controller is not set, it will be set to the documents ID
-func (d *Document) AddAssertionMethod(v *VerificationMethod) {
+func (d *DocumentImpl) AddAssertionMethod(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -150,7 +269,7 @@ func (d *Document) AddAssertionMethod(v *VerificationMethod) {
 
 // AddKeyAgreement adds a VerificationMethod as KeyAgreement
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddKeyAgreement(v *VerificationMethod) {
+func (d *DocumentImpl) AddKeyAgreement(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -160,7 +279,7 @@ func (d *Document) AddKeyAgreement(v *VerificationMethod) {
 
 // AddCapabilityInvocation adds a VerificationMethod as CapabilityInvocation
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddCapabilityInvocation(v *VerificationMethod) {
+func (d *DocumentImpl) AddCapabilityInvocation(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -170,7 +289,7 @@ func (d *Document) AddCapabilityInvocation(v *VerificationMethod) {
 
 // AddCapabilityDelegation adds a VerificationMethod as CapabilityDelegation
 // If the controller is not set, it will be set to the document's ID
-func (d *Document) AddCapabilityDelegation(v *VerificationMethod) {
+func (d *DocumentImpl) AddCapabilityDelegation(v *VerificationMethod) {
 	if v.Controller.Empty() {
 		v.Controller = d.ID
 	}
@@ -178,8 +297,8 @@ func (d *Document) AddCapabilityDelegation(v *VerificationMethod) {
 	d.CapabilityDelegation.Add(v)
 }
 
-func (d Document) MarshalJSON() ([]byte, error) {
-	type alias Document
+func (d DocumentImpl) MarshalJSON() ([]byte, error) {
+	type alias DocumentImpl
 	tmp := alias(d)
 	if data, err := json.Marshal(tmp); err != nil {
 		return nil, err
@@ -188,8 +307,8 @@ func (d Document) MarshalJSON() ([]byte, error) {
 	}
 }
 
-func (d *Document) UnmarshalJSON(b []byte) error {
-	type Alias Document
+func (d *DocumentImpl) UnmarshalJSON(b []byte) error {
+	type Alias DocumentImpl
 	normalizedDoc, err := marshal.NormalizeDocument(b, pluralContext, marshal.Plural(controllerKey))
 	if err != nil {
 		return err
@@ -199,7 +318,7 @@ func (d *Document) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	*d = (Document)(doc)
+	*d = (DocumentImpl)(doc)
 
 	const errMsg = "unable to resolve all '%s' references: %w"
 	if err = resolveVerificationRelationships(d.Authentication, d.VerificationMethod); err != nil {
@@ -221,7 +340,7 @@ func (d *Document) UnmarshalJSON(b []byte) error {
 }
 
 // IsController returns whether the given DID is a controller of the DID document.
-func (d Document) IsController(controller DID) bool {
+func (d DocumentImpl) IsController(controller DID) bool {
 	if controller.Empty() {
 		return false
 	}
@@ -236,7 +355,7 @@ func (d Document) IsController(controller DID) bool {
 
 // AddAlias adds a string alias to the document for a .snr domain name into the AlsoKnownAs field
 // in the document.
-func (d *Document) AddAlias(alias string) {
+func (d *DocumentImpl) AddAlias(alias string) {
 	if d.AlsoKnownAs == nil {
 		d.AlsoKnownAs = make([]string, 0)
 	}
@@ -249,7 +368,7 @@ func (d *Document) AddAlias(alias string) {
 // - service with given type doesn't exist,
 // - multiple services match,
 // - serviceEndpoint isn't a string.
-func (d *Document) ResolveEndpointURL(serviceType string) (endpointID ssi.URI, endpointURL string, err error) {
+func (d *DocumentImpl) ResolveEndpointURL(serviceType string) (endpointID ssi.URI, endpointURL string, err error) {
 	var services []Service
 	for _, service := range d.Service {
 		if service.Type == serviceType {
@@ -267,6 +386,15 @@ func (d *Document) ResolveEndpointURL(serviceType string) (endpointID ssi.URI, e
 		return ssi.URI{}, "", fmt.Errorf("unable to unmarshal single URL from service (id=%s): %w", services[0].ID.String(), err)
 	}
 	return services[0].ID, endpointURL, nil
+}
+
+// ControllersAsString returns all DID controllers as a string array
+func (d *DocumentImpl) ControllersAsString() []string {
+	var controllers []string
+	for _, controller := range d.Controller {
+		controllers = append(controllers, controller.String())
+	}
+	return controllers
 }
 
 // Service represents a DID Service as specified by the DID Core specification (https://www.w3.org/TR/did-core/#service-endpoints).
@@ -315,6 +443,19 @@ func (s Service) UnmarshalServiceEndpoint(target interface{}) error {
 	}
 }
 
+type Services []Service
+
+// FindByID returns the first VerificationRelationship that matches with the id.
+// For comparison both the ID of the embedded VerificationMethod and reference is used.
+func (srs Services) FindByID(id ssi.URI) *Service {
+	for _, r := range srs {
+		if r.ID == id {
+			return &r
+		}
+	}
+	return nil
+}
+
 // VerificationMethod represents a DID Verification Method as specified by the DID Core specification (https://www.w3.org/TR/did-core/#verification-methods).
 type VerificationMethod struct {
 	ID              DID                    `json:"id"`
@@ -322,6 +463,7 @@ type VerificationMethod struct {
 	Controller      DID                    `json:"controller,omitempty"`
 	PublicKeyBase58 string                 `json:"publicKeyBase58,omitempty"`
 	PublicKeyJwk    map[string]interface{} `json:"publicKeyJwk,omitempty"`
+	Credential      *Credential            `json:"credential,omitempty"`
 }
 
 // NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
@@ -362,42 +504,6 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	}
 
 	return vm, nil
-}
-
-// JWK returns the key described by the VerificationMethod as JSON Web Key.
-func (v VerificationMethod) JWK() (jwk.Key, error) {
-	if v.PublicKeyJwk == nil {
-		return nil, nil
-	}
-	jwkAsJSON, _ := json.Marshal(v.PublicKeyJwk)
-	key, err := jwk.ParseKey(jwkAsJSON)
-	if err != nil {
-		return nil, fmt.Errorf("could not parse public key: %w", err)
-	}
-	return key, nil
-}
-
-func (v VerificationMethod) PublicKey() (crypto.PublicKey, error) {
-	var pubKey crypto.PublicKey
-	switch v.Type {
-	case ssi.ED25519VerificationKey2018:
-		keyBytes, err := base58.Decode(v.PublicKeyBase58, base58.BitcoinAlphabet)
-		if err != nil {
-			return nil, err
-		}
-		return ed25519.PublicKey(keyBytes), err
-	case ssi.JsonWebKey2020:
-		keyAsJWK, err := v.JWK()
-		if err != nil {
-			return nil, err
-		}
-		err = keyAsJWK.Raw(&pubKey)
-		if err != nil {
-			return nil, err
-		}
-		return pubKey, nil
-	}
-	return nil, errors.New("unsupported verification method type")
 }
 
 // VerificationRelationship represents the usage of a VerificationMethod e.g. in authentication, assertionMethod, or keyAgreement.

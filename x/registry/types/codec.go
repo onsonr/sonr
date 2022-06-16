@@ -8,43 +8,33 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgRegisterApplication{}, "registry/RegisterApplication", nil)
-	cdc.RegisterConcrete(&MsgRegisterName{}, "registry/RegisterName", nil)
-	cdc.RegisterConcrete(&MsgAccessName{}, "registry/AccessName", nil)
-	cdc.RegisterConcrete(&MsgUpdateName{}, "registry/UpdateName", nil)
-	cdc.RegisterConcrete(&MsgAccessApplication{}, "registry/AccessApplication", nil)
-	cdc.RegisterConcrete(&MsgUpdateApplication{}, "registry/UpdateApplication", nil)
 	cdc.RegisterConcrete(&MsgCreateWhoIs{}, "registry/CreateWhoIs", nil)
 	cdc.RegisterConcrete(&MsgUpdateWhoIs{}, "registry/UpdateWhoIs", nil)
-	cdc.RegisterConcrete(&MsgDeleteWhoIs{}, "registry/DeleteWhoIs", nil)
+	cdc.RegisterConcrete(&MsgDeactivateWhoIs{}, "registry/DeactivateWhoIs", nil)
+	cdc.RegisterConcrete(&MsgBuyAlias{}, "registry/BuyAlias", nil)
+	cdc.RegisterConcrete(&MsgSellAlias{}, "registry/SellAlias", nil)
+	cdc.RegisterConcrete(&MsgTransferAlias{}, "registry/TransferAlias", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRegisterApplication{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRegisterName{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgAccessName{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateName{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgAccessApplication{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateApplication{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateWhoIs{},
 		&MsgUpdateWhoIs{},
-		&MsgDeleteWhoIs{},
+		&MsgDeactivateWhoIs{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgBuyAlias{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgSellAlias{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgTransferAlias{},
 	)
 	// this line is used by starport scaffolding # 3
+
+	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

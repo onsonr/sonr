@@ -32,7 +32,6 @@ func CmdUpdateBucket() *cobra.Command {
 				argLabel,
 				nil,
 				nil,
-				nil,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

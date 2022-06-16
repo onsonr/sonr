@@ -1,6 +1,4 @@
 version: v1
 directories:
-  - internal/blockchain/proto
-  - internal/highway/proto
-  - internal/host/proto
+  - proto
   - internal/motor/proto

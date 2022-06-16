@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Sonr',
+  title: 'Sonr Docs',
   tagline: 'The Internet rebuilt for you',
   url: 'https://sonr-io.github.io',
   organizationName: 'sonr-io', // Usually your GitHub org/user name.
@@ -17,7 +17,6 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-
   plugins: [
     [
       // Search
@@ -114,6 +113,11 @@ const config = {
             items: [
               {
                 type: 'doc',
+                docId: 'reference/adr-overview',
+                label: 'ADR Overview',
+              },
+              {
+                type: 'doc',
                 docId: 'reference/adr-001',
                 label: 'ADR-001',
               },
@@ -121,6 +125,26 @@ const config = {
                 type: 'doc',
                 docId: 'reference/adr-002',
                 label: 'ADR-002',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-003',
+                label: 'ADR-003',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-004',
+                label: 'ADR-004',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-005',
+                label: 'ADR-005',
+              },
+              {
+                type: 'doc',
+                docId: 'reference/adr-006',
+                label: 'ADR-006',
               },
             ],
           },

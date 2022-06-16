@@ -5,6 +5,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
+import Head from '@docusaurus/Head';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -29,9 +30,12 @@ function HomepageHeader() {
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <Layout
-      title={`Dev Portal`}
-      description="Description will go into a meta tag in <head />">
+    <Layout>
+      <Head>
+        <title>{siteConfig.title}</title>
+        <meta name="description" content={siteConfig.tagline} />
+        <meta property="og:image" content="img/open-graph.png" />
+      </Head>
       <HomepageHeader />
       <main>
         <HomepageFeatures />

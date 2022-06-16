@@ -1,18 +1,14 @@
 package config
 
 import (
-	"errors"
+	"os"
 	"time"
 
-	"github.com/duo-labs/webauthn/webauthn"
-	"github.com/kataras/golog"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/sonr/pkg/fs"
-	"github.com/tendermint/starport/starport/pkg/cosmosaccount"
-	"github.com/tendermint/starport/starport/pkg/cosmosclient"
 
 	ma "github.com/multiformats/go-multiaddr"
+	t "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // LogLevel is the type for the log level
@@ -34,7 +30,7 @@ const (
 // Config is the configuration for the entire Highway node
 type Config struct {
 	// Host
-	Role                 fs.Role
+	Role                 Role
 	LogLevel             string
 	Libp2pMdnsDisabled   bool
 	Libp2pBootstrapPeers []peer.AddrInfo
@@ -50,13 +46,6 @@ type Config struct {
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
-	// WebAuthn
-	WebAuthNRPDisplayName string
-	WebAuthNRPID          string
-	WebAuthNRPOrigin      string
-	WebAuthNRPIcon        string
-	WebAuthNDebug         bool
-
 	// Cosmos SDK
 	CosmosAccountName        string
 	CosmosAddressPrefix      string
@@ -66,12 +55,24 @@ type Config struct {
 	CosmosFaucetDenom        string
 	CosmosFaucetMinAmount    uint64
 	CosmosHomePath           string
-	CosmosKeyringBackend     cosmosaccount.KeyringBackend
+	CosmosKeyringBackend     string
 	CosmosKeyringServiceName string
+
+	// Device Config
+	DeviceID       string
+	HostName       string
+	Location       *t.Location
+	HomeDirPath    string
+	SupportDirPath string
+	TempDirPath    string
+
+	// Matrix Config
+	MatrixServerName string
 }
 
 // DefaultConfig returns the default configuration for the Highway node
-func DefaultConfig() *Config {
+func DefaultConfig(r Role) *Config {
+	var conf *Config
 	// Define the default bootstrappers
 	bootstrapAddrStrs := []string{
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
@@ -101,9 +102,11 @@ func DefaultConfig() *Config {
 		}
 		ds = append(ds, *info)
 	}
-	return &Config{
+
+	// Create the default configuration
+	conf = &Config{
 		LogLevel:                 string(InfoLevel),
-		Role:                     fs.Role_HIGHWAY,
+		Role:                     r,
 		Libp2pMdnsDisabled:       true,
 		HighwayGRPCNetwork:       "tcp",
 		Libp2pBootstrapPeers:     ds,
@@ -113,11 +116,6 @@ func DefaultConfig() *Config {
 		Libp2pRendezvous:         "/sonr/rendevouz/0.9.2",
 		Libp2pInterval:           time.Second * 5,
 		Libp2pTTL:                dscl.TTL(time.Minute * 2),
-		WebAuthNRPDisplayName:    "Sonr",
-		WebAuthNRPID:             "localhost",
-		WebAuthNRPOrigin:         "localhost:8080",
-		WebAuthNRPIcon:           "",
-		WebAuthNDebug:            true,
 		CosmosAccountName:        "alice",
 		CosmosAddressPrefix:      "snr",
 		CosmosNodeAddress:        "http://localhost:26657",
@@ -126,86 +124,56 @@ func DefaultConfig() *Config {
 		CosmosFaucetDenom:        "uatom",
 		CosmosFaucetMinAmount:    100,
 		CosmosHomePath:           "~/.sonr",
-		CosmosKeyringBackend:     cosmosaccount.KeyringTest,
+		CosmosKeyringBackend:     "test",
 		CosmosKeyringServiceName: "sonr",
 		HighwayGRPCEndpoint:      "localhost:26225",
 		HighwayHTTPEndpoint:      ":8081",
+		MatrixServerName:         "sonr-matrix-1",
+		DeviceID:                 "",
+		HostName:                 "",
+		Location:                 nil,
 	}
+
+	// Role specific configuration
+	if r == Role_MOTOR {
+		conf.Location = DefaultLocation()
+
+		// Check for non-mobile device
+		if !IsMobile() {
+			// Set Home Directory
+			if hdir, err := os.UserHomeDir(); err == nil {
+				conf.HomeDirPath = hdir
+			}
+
+			// Set Support Directory
+			if sdir, err := os.UserConfigDir(); err == nil {
+				conf.SupportDirPath = sdir
+			}
+
+			// Set Temp Directory
+			if tdir, err := os.UserCacheDir(); err == nil {
+				conf.TempDirPath = tdir
+			}
+		}
+	}
+	return conf
 }
 
-// CosmosOptions returns the cosmos options for the highway node
-func (c *Config) CosmosOptions() []cosmosclient.Option {
-	// Create the options
-	opts := make([]cosmosclient.Option, 0)
-	if c.CosmosUseFaucet {
-		opts = append(opts, cosmosclient.WithUseFaucet(c.CosmosFaucetAddress, c.CosmosFaucetDenom, c.CosmosFaucetMinAmount))
+// DefaultLocation returns the Sonr HQ as default location
+func DefaultLocation() *t.Location {
+	return &t.Location{
+		Latitude:  float64(40.673010),
+		Longitude: float64(-73.994450),
+		Placemark: &t.Location_Placemark{
+			Name:                  "Sonr HQ",
+			Street:                "94 9th St.",
+			IsoCountryCode:        "US",
+			Country:               "United States",
+			AdministrativeArea:    "New York",
+			SubAdministrativeArea: "Brooklyn",
+			Locality:              "Brooklyn",
+			SubLocality:           "Gowanus",
+			PostalCode:            "11215",
+		},
 	}
-
-	// Add remaining cosmos options
-	opts = append(opts, cosmosclient.WithNodeAddress(c.CosmosNodeAddress),
-		cosmosclient.WithAddressPrefix(c.CosmosAddressPrefix),
-		cosmosclient.WithHome(c.CosmosHomePath),
-		cosmosclient.WithKeyringBackend(c.CosmosKeyringBackend),
-		cosmosclient.WithKeyringServiceName(c.CosmosKeyringServiceName))
-
-	return opts
 }
-
-// WebauthnConfig returns the configuration for the WebAuthn module
-func (c *Config) WebauthnConfig() *webauthn.Config {
-	return &webauthn.Config{
-		RPDisplayName: c.WebAuthNRPDisplayName,
-		RPID:          c.WebAuthNRPID,
-		RPOrigin:      c.WebAuthNRPOrigin,
-		RPIcon:        c.WebAuthNRPIcon,
-		Debug:         c.WebAuthNDebug,
-	}
-
-}
-
-var (
-	// deviceID is the device ID. Either provided or found
-	deviceID string
-
-	// hostName is the host name. Either provided or found
-	hostName string
-)
-
-var (
-	logger = golog.Default.Child("internal/device")
-
-	// Path Manipulation Errors
-	ErrDuplicateFilePathOption    = errors.New("Duplicate file path option")
-	ErrPrefixSuffixSetWithReplace = errors.New("Prefix or Suffix set with Replace.")
-	ErrSeparatorLength            = errors.New("Separator length must be 1.")
-	ErrNoFileNameSet              = errors.New("File name was not set by options.")
-
-	// Device ID Errors
-	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
-	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
-
-	// Directory errors
-	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
-	ErrDirectoryUnset   = errors.New("Directory path has not been set")
-	ErrDirectoryJoin    = errors.New("Failed to join directory path")
-
-	// Node Errors
-	ErrEmptyQueue       = errors.New("No items in Transfer Queue.")
-	ErrInvalidQuery     = errors.New("No SName or PeerID provided.")
-	ErrMissingParam     = errors.New("Paramater is missing.")
-	ErrProtocolsNotSet  = errors.New("Node Protocol has not been initialized.")
-	ErrRoutingNotSet    = errors.New("DHT and Host have not been set by Routing Function")
-	ErrListenerRequired = errors.New("Listener was not Provided")
-	ErrMDNSInvalidConn  = errors.New("Invalid Connection, cannot begin MDNS Service")
-
-	// Default P2P Properties
-	BootstrapAddrStrs = []string{
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
-		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-	}
-	AddrStoreTTL = time.Minute * 5
-)

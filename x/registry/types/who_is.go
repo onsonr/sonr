@@ -2,214 +2,151 @@ package types
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
-	"github.com/duo-labs/webauthn/protocol"
-	"github.com/duo-labs/webauthn/webauthn"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/pkg/did"
-	rt "go.buf.build/grpc/go/sonr-io/blockchain/registry"
 )
 
-func NewWhoIsFromBuf(doc *rt.WhoIs) *WhoIs {
-	return &WhoIs{
-		Type:        WhoIs_Type(doc.GetType()),
-		Name:        doc.GetName(),
-		Did:         doc.GetDid(),
-		Document:    doc.GetDocument(),
-		Metadata:    doc.GetMetadata(),
-		Credentials: NewCredentialListFromBuf(doc.GetCredentials()),
-	}
-}
-
-func NewWhoIsToBuf(doc *WhoIs) *rt.WhoIs {
-	return &rt.WhoIs{
-		Type:        rt.WhoIs_Type(doc.GetType()),
-		Name:        doc.GetName(),
-		Did:         doc.GetDid(),
-		Document:    doc.GetDocument(),
-		Metadata:    doc.GetMetadata(),
-		Credentials: NewCredentialListToBuf(doc.GetCredentials()),
-	}
-}
-
-// AddCredential adds a webauthn credential to the whois object on the registry
-func (w *WhoIs) AddCredential(cred *Credential) {
-	if w.Credentials == nil {
-		w.Credentials = make([]*Credential, 0)
-	}
-	w.Credentials = append(w.Credentials, cred)
-}
-
-// ApplicationName returns the app name from the WhoIs metadata
-func (w *WhoIs) ApplicationName() (string, error) {
-	if w.IsUser() {
-		return "", fmt.Errorf("not an application")
-	}
-	m := w.GetMetadata()
-	if m == nil {
-		return "", fmt.Errorf("no metadata found")
-	}
-
-	if an := m["app_name"]; an != "" {
-		return an, nil
-	}
-	return "", fmt.Errorf("no app_name found")
-}
-
-// ApplicationDescription returns the description of the application
-func (w *WhoIs) ApplicationDescription() (string, error) {
-	if w.IsUser() {
-		return "", fmt.Errorf("not an application")
-	}
-	m := w.GetMetadata()
-	if m == nil {
-		return "", fmt.Errorf("no metadata found")
-	}
-
-	if an := m["app_description"]; an != "" {
-		return an, nil
-	}
-	return "", fmt.Errorf("no app_description found")
-}
-
-// ApplicationCategory returns the category of the application
-func (w *WhoIs) ApplicationCategory() (string, error) {
-	if w.IsUser() {
-		return "", fmt.Errorf("not an application")
-	}
-	m := w.GetMetadata()
-	if m == nil {
-		return "", fmt.Errorf("no metadata found")
-	}
-
-	if an := m["app_category"]; an != "" {
-		return an, nil
-	}
-	return "", fmt.Errorf("no app_category found")
-}
-
-// ApplicationUrl returns the website of the application
-func (w *WhoIs) ApplicationUrl() (string, error) {
-	if w.IsUser() {
-		return "", fmt.Errorf("not an application")
-	}
-	m := w.GetMetadata()
-	if m == nil {
-		return "", fmt.Errorf("no metadata found")
-	}
-
-	if an := m["app_url"]; an != "" {
-		return an, nil
-	}
-	return "", fmt.Errorf("no app_description found")
-}
-
-// CredentialExcludeList returns a CredentialDescriptor array filled
-// with all the user's credentials
-func (w *WhoIs) CredentialExcludeList() []protocol.CredentialDescriptor {
-	credentialExcludeList := []protocol.CredentialDescriptor{}
-	for _, cred := range w.GetCredentials() {
-		descriptor := protocol.CredentialDescriptor{
-			Type:         protocol.PublicKeyCredentialType,
-			CredentialID: cred.ID,
+// ContainsAlias checks if the alias is in the list of aliases of the whois
+func (w *WhoIs) ContainsAlias(target string) bool {
+	for _, a := range w.Alias {
+		if a.GetName() == target {
+			return true
 		}
-		credentialExcludeList = append(credentialExcludeList, descriptor)
 	}
-
-	return credentialExcludeList
+	return false
 }
 
-// DIDDocument returns the DID document of the whois object
-func (w *WhoIs) DIDDocument() (*did.Document, error) {
-	// Get the DID document from the registry
-	buf := w.GetDocument()
-	if buf == nil {
-		return nil, fmt.Errorf("no document found")
+// ContainsController checks if the controller is in the list of controllers of the whois
+func (w *WhoIs) ContainsController(target string) bool {
+	// Checks if the controller is in the list of controllers
+	for _, c := range w.Controllers {
+		if c == target {
+			return true
+		}
 	}
+	return false
+}
 
-	// Unmarshal DID document from JSON
-	doc := &did.Document{}
-	err := doc.UnmarshalJSON(buf)
+// OwnerAccAddress returns the owner address of the whois
+func (w *WhoIs) OwnerAccAddress() (addr sdk.AccAddress, err error) {
+	return sdk.AccAddressFromBech32(w.GetOwner())
+}
+
+// UpdateDidBuffer copies the DID document into the WhoIs object if the DID document has the same DID owner
+func (w *WhoIs) UpdateDidBuffer(buf []byte) (WhoIs, error) {
+	// Trim snr account prefix
+	rawCreator := strings.TrimPrefix(w.GetOwner(), "snr")
+	docI, err := did.NewDocument(fmt.Sprintf("did:snr:%s", rawCreator))
 	if err != nil {
-		return nil, err
+		return *w, err
 	}
-	return doc, nil
-}
-
-// DIDUrl returns the did.DID string of the whois object
-func (w *WhoIs) DIDUrl() (*did.DID, error) {
-	return did.ParseDID(w.GetDid())
-}
-
-// IsApplication returns true if WhoIs type is WhoIs_Application
-func (w *WhoIs) IsApplication() bool {
-	return w.Type == WhoIs_Application
-}
-
-// IsUser returns true if WhoIs type is WhoIs_User
-func (w *WhoIs) IsUser() bool {
-	return w.Type == WhoIs_User
-}
-
-// WebAuthnID returns the ID of the user's authenticator
-func (w *WhoIs) WebAuthnID() []byte {
-	// Unmarshal DID document from JSON
-	return []byte(w.GetName())
-}
-
-// WebAuthnDisplayName returns the display name of the user's authenticator
-func (w *WhoIs) WebAuthnName() string {
-	return w.GetName()
-}
-
-// WebAuthnDisplayName returns the display name of the user's authenticator
-func (w *WhoIs) WebAuthnDisplayName() string {
-	return fmt.Sprintf("%s.snr", w.GetName())
-}
-
-// WebAuthnIcon returns the icon of the user's authenticator
-func (w *WhoIs) WebAuthnIcon() string {
-	return ""
-}
-
-// WebAuthnCredentials returns credentials owned by the user
-func (w *WhoIs) WebAuthnCredentials() []webauthn.Credential {
-	credentials := []webauthn.Credential{}
-	for _, cred := range w.Credentials {
-		credentials = append(credentials, cred.ToWebAuthn())
+	err = docI.CopyFromBytes(buf)
+	if err != nil {
+		return *w, err
 	}
-	return credentials
-}
-
-// NewSessionFromBuf returns a new Session object from a registry buffer
-func NewSessionFromBuf(doc *rt.Session) *Session {
-	return &Session{
-		BaseDid:    doc.BaseDid,
-		Whois:      NewWhoIsFromBuf(doc.Whois),
-		Credential: NewCredentialFromBuf(doc.Credential),
+	for _, a := range docI.GetAlsoKnownAs() {
+		if !w.ContainsAlias(a) {
+			w.AddAlsoKnownAs(a, false)
+		}
 	}
+
+	snrDoc, err := NewDIDDocumentFromPkg(docI)
+	if err != nil {
+		return *w, err
+	}
+
+	w.Controllers = docI.ControllersAsString()
+	w.Timestamp = time.Now().Unix()
+	w.IsActive = true
+	w.DidDocument = snrDoc
+	return *w, nil
 }
 
-// BaseDID returns the DID string as a did.DID
-func (s *Session) BaseDID() (*did.DID, error) {
-	return did.ParseDID(s.GetBaseDid())
+// GetAlsoKnownAs returns the list of aliases of the whois as string array
+func (w *WhoIs) GetAlsoKnownAs() []string {
+	var aliases []string
+	for _, a := range w.Alias {
+		aliases = append(aliases, a.GetName())
+	}
+	return aliases
 }
 
-// DIDDocument returns the DID Document for the underlying WhoIs
-func (s *Session) Creator() string {
-	return s.GetWhois().GetCreator()
+// AddAlsoKnownAs adds an alias to the list of aliases of the whois and the underlying DID document
+func (w *WhoIs) AddAlsoKnownAs(as string, updateDoc bool) (WhoIs, error) {
+	// Update the WhoIs
+	aliases := w.GetAlias()
+	if !w.ContainsAlias(as) {
+		aliases = append(aliases, &Alias{
+			Name:      as,
+			IsForSale: false,
+			Amount:    -1,
+		})
+	}
+	w.Alias = aliases
+
+	if updateDoc {
+		// Update the DID document
+		doc := w.GetDidDocument()
+
+		// Add the alias to the DID document
+		doc.AlsoKnownAs = w.GetAlsoKnownAs()
+		w.DidDocument = doc
+	}
+	return *w, nil
 }
 
-// DIDDocument returns the DID Document for the underlying WhoIs
-func (s *Session) DIDDocument() (*did.Document, error) {
-	return s.GetWhois().DIDDocument()
+// RemoveAlsoKnownAs removes an alias from the list of aliases of the whois and the underlying DID document
+func (w *WhoIs) RemoveAlsoKnownAs(as string, updateDoc bool) (WhoIs, error) {
+	// Update the WhoIs
+	aliases := w.GetAlias()
+	i, _, err := w.FindAliasByName(as)
+	if err != nil {
+		return *w, err
+	}
+	aliases = append(aliases[:i], aliases[i+1:]...)
+	w.Alias = aliases
+
+	if updateDoc {
+		// Update the DID document
+		doc := w.GetDidDocument()
+
+		// Remove the alias from the DID document
+		doc.AlsoKnownAs = w.GetAlsoKnownAs()
+		w.DidDocument = doc
+	}
+	return *w, nil
 }
 
-// GenerateDID takes the input string and generates a DID URL
-func (s *Session) GenerateDID(opts ...did.Option) (*did.DID, error) {
-	return did.NewDID(s.GetBaseDid(), opts...)
+// FindAliasByName returns the alias and index with the given name or error if not found
+func (w *WhoIs) FindAliasByName(name string) (int, *Alias, error) {
+	for i, a := range w.Alias {
+		if a.GetName() == name {
+			return i, a, nil
+		}
+	}
+	return -1, nil, fmt.Errorf("alias %s not found", name)
 }
 
-// WebAuthnCredential returns the Sonr Credential as the Webauthn type
-func (s *Session) WebAuthnCredential() webauthn.Credential {
-	return s.GetCredential().ToWebAuthn()
+// UpdateAlias updates the alias properties for amount and IsForSale
+func (w *WhoIs) UpdateAlias(name string, amount int, isForSale bool) (WhoIs, error) {
+	// Update the WhoIs
+	i, a, err := w.FindAliasByName(name)
+	if err != nil {
+		return *w, err
+	}
+	a.Amount = int32(amount)
+	a.IsForSale = isForSale
+	w.Alias[i] = a
+	return *w, nil
+}
+
+// GetDidDocumentBuffer returns the DID document as bytes from JSON
+func (w *WhoIs) GetDidDocumentBuffer() ([]byte, error) {
+	if w.DidDocument == nil {
+		return nil, fmt.Errorf("no DID document found")
+	}
+	return w.DidDocument.MarshalJSON()
 }

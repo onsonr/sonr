@@ -2,33 +2,31 @@ package types
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	nh "github.com/sonr-io/sonr/internal/host"
-	ot "github.com/sonr-io/sonr/x/object/types"
+	nh "github.com/sonr-io/sonr/pkg/host"
 	ct "go.buf.build/grpc/go/sonr-io/blockchain/channel"
 )
 
 func NewChannelDocFromBuf(cd *ct.ChannelDoc) *ChannelDoc {
 	return &ChannelDoc{
-		Did:              cd.GetDid(),
-		Label:            cd.GetLabel(),
-		Description:      cd.GetDescription(),
-		RegisteredObject: ot.NewObjectDocFromBuf(cd.GetRegisteredObject()),
+		Did:         cd.GetDid(),
+		Label:       cd.GetLabel(),
+		Description: cd.GetDescription(),
+		// RegisteredObject: st.NewObjectDocFromBuf(cd.GetRegisteredObject()),
 	}
 }
 
 func NewChannelDocToBuf(cd *ChannelDoc) *ct.ChannelDoc {
 	return &ct.ChannelDoc{
-		Did:              cd.GetDid(),
-		Label:            cd.GetLabel(),
-		Description:      cd.GetDescription(),
-		RegisteredObject: ot.NewObjectDocToBuf(cd.GetRegisteredObject()),
+		Did:         cd.GetDid(),
+		Label:       cd.GetLabel(),
+		Description: cd.GetDescription(),
+		// RegisteredObject: ot.NewObjectDocToBuf(cd.GetRegisteredObject()),
 	}
 }
 
@@ -79,7 +77,7 @@ type Channel interface {
 	Read() []peer.ID
 
 	// Publish publishes the given message to the channel topic.
-	Publish(obj *ot.ObjectDoc) error
+	// Publish(obj *st.ObjectDoc) error
 
 	// Listen subscribes to the beam topic and returns a channel that will
 	// receive events.
@@ -154,33 +152,33 @@ func (b *channel) Read() []peer.ID {
 }
 
 // Publish publishes the given message to the beam topic.
-func (b *channel) Publish(obj *ot.ObjectDoc) error {
-	// Check if both text and data are empty.
-	if obj == nil {
-		return errors.New("text and data cannot be empty")
-	}
+// func (b *channel) Publish(obj *ot.ObjectDoc) error {
+// 	// Check if both text and data are empty.
+// 	if obj == nil {
+// 		return errors.New("text and data cannot be empty")
+// 	}
 
-	// Check if passed object is one registered in the channel.
-	if !strings.EqualFold(b.config.RegisteredObject.Did, obj.Did) {
-		return errors.New("object not registered in channel")
-	}
+// 	// Check if passed object is one registered in the channel.
+// 	if !strings.EqualFold(b.config.RegisteredObject.Did, obj.Did) {
+// 		return errors.New("object not registered in channel")
+// 	}
 
-	// Create the message.
-	msg := &ChannelMessage{
-		Object:  obj,
-		Did:     b.did,
-		PeerDid: b.n.HostID().String(),
-	}
+// 	// Create the message.
+// 	msg := &ChannelMessage{
+// 		Object:  obj,
+// 		Did:     b.did,
+// 		PeerDid: b.n.HostID().String(),
+// 	}
 
-	// Encode the message.
-	buf, err := msg.Marshal()
-	if err != nil {
-		return err
-	}
+// 	// Encode the message.
+// 	buf, err := msg.Marshal()
+// 	if err != nil {
+// 		return err
+// 	}
 
-	// Publish the message to the beam topic.
-	return b.messagesTopic.Publish(b.ctx, buf)
-}
+// 	// Publish the message to the beam topic.
+// 	return b.messagesTopic.Publish(b.ctx, buf)
+// }
 
 // Listen subscribes to the beam topic and returns a channel that will
 func (b *channel) Listen(opChan chan *ChannelMessage) {
