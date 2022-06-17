@@ -131,6 +131,7 @@ func (s *HighwayServer) DownloadBlob(c *gin.Context) {
 	c.Data(http.StatusOK, "application/octet-stream", buf)
 }
 
+// UnpinBlob deletes a file from storage given its CID.
 // @Summary Unpin Blob
 // @Schemes
 // @Description UnpinBlob deletes a file from storage given its CID.
@@ -148,8 +149,24 @@ func (s *HighwayServer) UnpinBlob(c *gin.Context) {
 		return
 	}
 
-	// Download the file from ipfsProtocol
-	err := s.ipfsProtocol.RemoveFile(cid)
+	ctx := c.Request.Context()
+	key := datastore.NewKey(cid)
+
+	exists, err := s.store.Has(ctx, key)
+	if err != nil {
+		// log error and continue
+		log.Println(err)
+	}
+
+	if exists {
+		if err := s.store.Delete(ctx, key); err != nil {
+			// log error and continue
+			log.Println(err)
+		}
+	}
+
+	// Remove the file from ipfsProtocol
+	err = s.ipfsProtocol.RemoveFile(cid)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to download the file from IPFS",

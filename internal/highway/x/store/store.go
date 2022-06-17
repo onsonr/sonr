@@ -91,9 +91,42 @@ func (s *Store) Put(ctx context.Context, key datastore.Key, value []byte) error 
 
 }
 
+// KeyFilename returns the filename associated with `key`
+func (s *Store) KeyFilename(key datastore.Key) string {
+	return filepath.Join(s.path, key.String(), ObjectKeySuffix)
+}
+
 func (s *Store) Delete(ctx context.Context, key datastore.Key) error {
-	//TODO implement me
-	panic("implement me")
+	fn := s.KeyFilename(key)
+	if !isFile(fn) {
+		return nil
+	}
+
+	err := os.Remove(fn)
+	if os.IsNotExist(err) {
+		err = nil
+	}
+	return err
+}
+
+// isDir returns whether given path is a directory
+func isDir(path string) bool {
+	finfo, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+
+	return finfo.IsDir()
+}
+
+// isFile returns whether given path is a file
+func isFile(path string) bool {
+	finfo, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+
+	return !finfo.IsDir()
 }
 
 func (s *Store) Sync(ctx context.Context, prefix datastore.Key) error {
