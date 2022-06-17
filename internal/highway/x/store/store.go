@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"errors"
 	"github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
 	"github.com/ipld/go-ipld-prime/storage/fsstore"
@@ -47,8 +48,7 @@ func (s *Store) Has(ctx context.Context, key datastore.Key) (exists bool, err er
 }
 
 func (s *Store) GetSize(ctx context.Context, key datastore.Key) (size int, err error) {
-	//TODO implement me
-	panic("implement me")
+	return 0, errors.New("TODO")
 }
 
 func (s *Store) Query(ctx context.Context, q query.Query) (query.Results, error) {
@@ -130,21 +130,17 @@ func isFile(path string) bool {
 }
 
 func (s *Store) Sync(ctx context.Context, prefix datastore.Key) error {
-	//TODO implement me
-	panic("implement me")
+	return errors.New("TODO")
 }
 
 func (s *Store) Close() error {
-	//TODO implement me
-	panic("implement me")
+	return errors.New("TODO")
 }
 
 func (s *Store) DiskUsage(ctx context.Context) (uint64, error) {
-	//TODO implement me
-	panic("implement me")
+	return 0, errors.New("TODO")
 }
 
 func (s *Store) Batch(ctx context.Context) (datastore.Batch, error) {
-	//TODO implement me
-	panic("implement me")
+	return nil, errors.New("TODO")
 }
