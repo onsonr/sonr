@@ -6,16 +6,14 @@ import (
 	"strings"
 	"sync"
 
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	stdtx "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/tx"
-
+	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -59,7 +57,7 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	// c := types.GetConfig()
 	// c.SetBech32PrefixForAccount("snr", "pub")
-	pub, err := w.PublicKeyBytes(id...)
+	pub, err := w.PublicKey(id...)
 	if err != nil {
 		return "", err
 	}
@@ -67,7 +65,6 @@ func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(str)
 	return str, nil
 }
 
@@ -190,33 +187,7 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKey(id ...party.ID) (cryptotypes.PubKey, error) {
-	var pub *config.Public
-	if len(id) == 0 {
-		pub = w.Config().Public[w.ID]
-	} else if len(id) == 1 {
-		pub = w.Config().Public[id[0]]
-	} else {
-		return nil, fmt.Errorf("invalid number of arguments")
-	}
-	if pub == nil {
-		return nil, fmt.Errorf("no public key found")
-	}
-
-	return NewPublicKey(pub), nil
-}
-
-// Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
-	pub, err := w.PublicKeyBytes(id...)
-	if err != nil {
-		return "", err
-	}
-	return base58.Encode(pub), nil
-}
-
-// Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKeyBytes(id ...party.ID) ([]byte, error) {
+func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
 	var pub *config.Public
 	if len(id) == 0 {
 		pub = w.Config().Public[w.ID]
@@ -235,6 +206,25 @@ func (w *MPCWallet) PublicKeyBytes(id ...party.ID) ([]byte, error) {
 	}
 	buf := address.Hash("snr", buffer.Bytes())
 	return buf, nil
+}
+
+// Returns the ECDSA public key of the given party.
+func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
+	pub, err := w.PublicKey(id...)
+	if err != nil {
+		return "", err
+	}
+	return base58.Encode(pub), nil
+}
+
+func (w *MPCWallet) PublicKeyProto(ids ...party.ID) (*rt.PubKey, error) {
+	pubBz, err := w.PublicKey(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return &rt.PubKey{
+		Key: pubBz,
+	}, nil
 }
 
 // Refreshes all shares of an existing ECDSA private key.
@@ -264,6 +254,23 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 		err error
 	)
 
+	cmpSign := func(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
+		h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
+		if err != nil {
+			return nil, err
+		}
+		handlerLoop(c.ID, h, n)
+		signResult, err := h.Result()
+		if err != nil {
+			return nil, err
+		}
+		signature := signResult.(*ecdsa.Signature)
+		if !signature.Verify(c.PublicPoint(), m) {
+			return nil, fmt.Errorf("failed to verify cmp signature")
+		}
+		return signature, nil
+	}
+
 	for _, id := range signers {
 		wg.Add(1)
 		go func(id party.ID) {
@@ -281,56 +288,31 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	return sig, err
 }
 
-// Generates an ECDSA signature for messageHash.
-func (w *MPCWallet) SignTx(m []byte, modeInfo *stdtx.ModeInfo) (signing.SignatureData, error) {
-	// txBody := &stdtx.TxBody{
-	// 	Messages: []*codectypes.Any{
-	// 		{
-	// 			TypeUrl: typeUrl,
-	// 			Value:   m,
-	// 		},
-	// 	},
-	// }
-	// bodyBz, err := txBody.Marshal()
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// pubKey, err := w.PublicKey()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// authInfo := w.StdTxAuthInfo(2, pubKey)
-	// aiBz, err := authInfo.Marshal()
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// txBz, err := tx.DirectSignBytes(bodyBz, aiBz, "sonr", 1)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	sig, err := w.Sign(m)
+func (w *MPCWallet) SignTx(account *at.BaseAccount, authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) (*ecdsa.Signature, error) {
+	// Serialize the transaction body.
+	txBodyBz, err := txBody.Marshal()
 	if err != nil {
 		return nil, err
 	}
-	return tx.ModeInfoAndSigToSignatureData(modeInfo, ECDSASignatureToBytes(sig))
-}
 
-// Helper function to cmpSign a message.
-func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
-	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
+	// Serialize the auth info.
+	authInfoBz, err := authInfo.Marshal()
 	if err != nil {
 		return nil, err
 	}
-	handlerLoop(c.ID, h, n)
-	signResult, err := h.Result()
+
+	// Create SignDoc
+	signDoc := &txtypes.SignDoc{
+		BodyBytes:     txBodyBz,
+		AuthInfoBytes: authInfoBz,
+		ChainId:       "sonr",
+		AccountNumber: account.GetAccountNumber(),
+	}
+
+	// Serialize the sign doc.
+	signDocBz, err := signDoc.Marshal()
 	if err != nil {
 		return nil, err
 	}
-	signature := signResult.(*ecdsa.Signature)
-	if !signature.Verify(c.PublicPoint(), m) {
-		return nil, fmt.Errorf("failed to verify cmp signature")
-	}
-	return signature, nil
+	return w.Sign(signDocBz)
 }

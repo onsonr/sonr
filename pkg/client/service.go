@@ -1,32 +1,26 @@
 package client
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"google.golang.org/grpc"
 )
 
-const (
-	// RPC Address for public node
-	SONR_RPC_ADDR_PUBLIC = "143.198.29.209:9090"
-
-	// HTTP Faucet Address
-	SONR_HTTP_FAUCET = "http://143.198.29.209:8000"
-
-	// RPC Address for local node
-	SONR_RPC_ADDR_LOCAL = "127.0.0.1:9090"
-)
-
 // BroadcastTx broadcasts a transaction on the Sonr blockchain network
-func BroadcastTx(tx []byte) (*sdk.TxResponse, error) {
+func (c *Client) BroadcastTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *txtypes.AuthInfo) (*sdk.TxResponse, error) {
+	// Create TXRaw and Marshal
+	txRawBytes, err := createRawTxBytes(txBody, sig, authInfo)
+	if err != nil {
+		return nil, err
+	}
+
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		SONR_RPC_ADDR_PUBLIC, // Or your gRPC server address.
+		c.GetRPCAddress(), // Or your gRPC server address.
 		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
@@ -39,7 +33,7 @@ func BroadcastTx(tx []byte) (*sdk.TxResponse, error) {
 		context.Background(),
 		&txtypes.BroadcastTxRequest{
 			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
-			TxBytes: tx, // Proto-binary of the signed transaction, see previous step.
+			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
 		},
 	)
 	if err != nil {
@@ -49,10 +43,16 @@ func BroadcastTx(tx []byte) (*sdk.TxResponse, error) {
 }
 
 // SimulateTx simulates a transaction on the Sonr blockchain network
-func SimulateTx(tx []byte) (*sdk.Result, error) {
+func (c *Client) SimulateTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *txtypes.AuthInfo) (*sdk.Result, error) {
+	// Create TXRaw and Marshal
+	txRawBytes, err := createRawTxBytes(txBody, sig, authInfo)
+	if err != nil {
+		return nil, err
+	}
+
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		SONR_RPC_ADDR_PUBLIC, // Or your gRPC server address.
+		c.GetRPCAddress(), // Or your gRPC server address.
 		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
@@ -64,7 +64,7 @@ func SimulateTx(tx []byte) (*sdk.Result, error) {
 	grpcRes, err := txClient.Simulate(
 		context.Background(),
 		&txtypes.SimulateRequest{
-			TxBytes: tx, // Proto-binary of the signed transaction, see previous step.
+			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
 		},
 	)
 	if err != nil {
@@ -73,26 +73,31 @@ func SimulateTx(tx []byte) (*sdk.Result, error) {
 	return grpcRes.Result, nil
 }
 
-type FaucetRequest struct {
-	Address string   `json:"address"`
-	Coins   []string `json:"coins"`
-}
-
-// RequestFaucet requests a faucet from the Sonr network
-func RequestFaucet(address string) error {
-	values := FaucetRequest{
-		Address: address,
-		Coins:   []string{"12snr"},
-	}
-	json_data, err := json.Marshal(values)
+// createRawTxBytes is a helper function to create a raw raw transaction and Marshal it to bytes
+func createRawTxBytes(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *txtypes.AuthInfo) ([]byte, error) {
+	// Serialize the tx body
+	txBytes, err := txBody.Marshal()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	resp, err := http.Post(SONR_HTTP_FAUCET, "application/json", bytes.NewBuffer(json_data))
+	// Serialize the authInfo
+	authInfoBytes, err := authInfo.Marshal()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer resp.Body.Close()
-	return nil
+
+	// Create a signature list and append the signature
+	sigList := make([][]byte, 1)
+	sigList[0] = crypto.SerializeECDSA(sig)
+
+	// Create Raw TX
+	txRaw := &txtypes.TxRaw{
+		BodyBytes:     txBytes,
+		AuthInfoBytes: authInfoBytes,
+		Signatures:    sigList,
+	}
+
+	// Marshal the txRaw
+	return txRaw.Marshal()
 }

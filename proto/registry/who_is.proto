@@ -1,6 +1,6 @@
 syntax = "proto3";
 package sonrio.sonr.registry;
-import "registry/v1/did.proto";
+import "registry/did.proto";
 option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 message WhoIs {

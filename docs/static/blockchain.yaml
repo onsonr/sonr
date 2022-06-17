@@ -30834,6 +30834,12 @@ paths:
                                       type: string
                               public_key_base58:
                                 type: string
+                              public_key:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                    format: byte
                         authentication:
                           type: array
                           items:
@@ -31083,6 +31089,12 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            public_key:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                  format: byte
                       authentication:
                         type: array
                         items:
@@ -31253,6 +31265,12 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            public_key:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                  format: byte
                       authentication:
                         type: array
                         items:
@@ -31424,6 +31442,12 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            public_key:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                  format: byte
                       authentication:
                         type: array
                         items:
@@ -54123,6 +54147,12 @@ definitions:
                     type: string
             public_key_base58:
               type: string
+            public_key:
+              type: object
+              properties:
+                key:
+                  type: string
+                  format: byte
       authentication:
         type: array
         items:
@@ -54242,6 +54272,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -54383,6 +54419,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -54533,6 +54575,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -54674,6 +54722,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -54815,6 +54869,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -54882,6 +54942,12 @@ definitions:
   sonrio.sonr.registry.Params:
     type: object
     description: Params defines the parameters for the module.
+  sonrio.sonr.registry.PubKey:
+    type: object
+    properties:
+      key:
+        type: string
+        format: byte
   sonrio.sonr.registry.QueryAllWhoIsResponse:
     type: object
     properties:
@@ -54958,6 +55024,12 @@ definitions:
                               type: string
                       public_key_base58:
                         type: string
+                      public_key:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                            format: byte
                 authentication:
                   type: array
                   items:
@@ -55125,6 +55197,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -55260,6 +55338,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -55395,6 +55479,12 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    public_key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
               authentication:
                 type: array
                 items:
@@ -55485,6 +55575,12 @@ definitions:
               type: string
       public_key_base58:
         type: string
+      public_key:
+        type: object
+        properties:
+          key:
+            type: string
+            format: byte
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:
@@ -55556,6 +55652,12 @@ definitions:
                         type: string
                 public_key_base58:
                   type: string
+                public_key:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                      format: byte
           authentication:
             type: array
             items:

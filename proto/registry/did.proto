@@ -28,7 +28,7 @@ message VerificationMethod {
 message Service {
   string id = 1;
   string type = 2;
-  string service_endpoint = 3; 
+  string service_endpoint = 3;
 }
 
 message KeyValuePair {

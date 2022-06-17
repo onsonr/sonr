@@ -4,8 +4,8 @@ package sonrio.sonr.registry;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "registry/v1/params.proto";
-import "registry/v1/who_is.proto";
+import "registry/params.proto";
+import "registry/who_is.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/sonr-io/sonr/x/registry/types";
