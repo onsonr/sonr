@@ -1,9 +1,6 @@
 package crypto
 
 import (
-	"crypto/elliptic"
-	"math/big"
-
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
@@ -11,17 +8,6 @@ import (
 
 // The default shards that are added to the MPC wallet
 var defaultParticipants = party.IDSlice{"me", "vault", "shared"}
-
-// p256Order returns the curve order for the secp256r1 curve
-// NOTE: this is specific to the secp256r1/P256 curve,
-// and not taken from the domain params for the key itself
-// (which would be a more generic approach for all EC).
-var p256Order = elliptic.P256().Params().N
-
-// p256HalfOrder returns half the curve order
-// a bit shift of 1 to the right (Rsh) is equivalent
-// to division by 2, only faster.
-var p256HalfOrder = new(big.Int).Rsh(p256Order, 1)
 
 // Preset options struct
 type walletConfig struct {
