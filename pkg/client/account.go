@@ -11,13 +11,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-
-
 func (c *Client) CheckBalance(address string) (types.Coins, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
 	if err != nil {
@@ -36,7 +34,7 @@ func (c *Client) CheckBalance(address string) (types.Coins, error) {
 func (c *Client) RequestFaucet(address string) error {
 	values := faucetRequest{
 		Address: address,
-		Coins:   []string{"12snr"},
+		Coins:   []string{"200snr"},
 	}
 	json_data, err := json.Marshal(values)
 	if err != nil {

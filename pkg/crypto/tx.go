@@ -5,7 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-
 )
 
 // BuildTx builds a transaction from the given inputs.
@@ -19,13 +18,13 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*types.AuthInfo, *types.TxBody, err
 		}
 		anyMsgs[i] = msg
 	}
-	pubKey, err := w.PublicKeyProto()
-	if err != nil {
-		return nil, nil, err
-	}
+	// pubKey, err := w.PublicKeyProto()
+	// if err != nil {
+	// 	return nil, nil, err
+	// }
 
 	// Build signerInfo parameters
-	anyPubKey, err := codectypes.NewAnyWithValue(pubKey)
+	//anyPubKey, err := codectypes.NewAnyWithValue(pubKey)
 	modeInfo := &types.ModeInfo_Single_{
 		Single: &types.ModeInfo_Single{
 			Mode: signing.SignMode_SIGN_MODE_DIRECT,
@@ -34,7 +33,7 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*types.AuthInfo, *types.TxBody, err
 
 	// Create SignerInfos
 	signerInfo := &types.SignerInfo{
-		PublicKey: anyPubKey,
+		// PublicKey: anyPubKey,
 		ModeInfo: &types.ModeInfo{
 			Sum: modeInfo,
 		},
@@ -49,7 +48,7 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*types.AuthInfo, *types.TxBody, err
 	authInfo := types.AuthInfo{
 		SignerInfos: []*types.SignerInfo{signerInfo},
 		Fee: &types.Fee{
-			Amount: sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(2))),
+			Amount: sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(10))),
 		},
 	}
 	return &authInfo, &txBody, nil
