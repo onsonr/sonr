@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"sync"
 	"time"
-
-	"github.com/sonr-io/alice/example/utils"
+  
+	// "github.com/sonr-io/alice/example/utils"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -63,18 +63,18 @@ func (p *PeerManager) EnsureAllConnected() {
 	wg.Wait()
 }
 
-// AddPeers adds peers to peer list.
-func (p *PeerManager) AddPeers(peerPorts []int64) error {
-	for _, peerPort := range peerPorts {
-		peerID := utils.GetPeerIDFromPort(peerPort)
-		peerAddr, err := getPeerAddr(peerPort)
-		if err != nil {
-			return err
-		}
-		p.peers[peerID] = peerAddr
-	}
-	return nil
-}
+// // AddPeers adds peers to peer list.
+// func (p *PeerManager) AddPeers(peerPorts []int64) error {
+// 	for _, peerPort := range peerPorts {
+// 		peerID := utils.GetPeerIDFromPort(peerPort)
+// 		peerAddr, err := getPeerAddr(peerPort)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		p.peers[peerID] = peerAddr
+// 	}
+// 	return nil
+// }
 
 // generateIdentity generates a fixed key pair by using port as random source.
 func generateIdentity(port int64) (crypto.PrivKey, error) {

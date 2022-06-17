@@ -8,9 +8,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -50,21 +53,6 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 	return wallet, nil
 }
 
-// // Returns the cosmos compatible address of the given party.
-// func (w *MPCWallet) AccountAddress(id ...party.ID) (types.AccAddress, error) {
-// 	// c := types.GetConfig()
-// 	// c.SetBech32PrefixForAccount("snr", "pub")
-// 	bechAddr, err := w.Bech32Address(id...)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	acc, err := types.AccAddressFromBech32(bechAddr)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return acc, nil
-// }
-
 // Returns the Bech32 representation of the given party.
 func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	// c := types.GetConfig()
@@ -77,7 +65,6 @@ func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(str)
 	return str, nil
 }
 
@@ -143,6 +130,15 @@ func (w *MPCWallet) DIDDocument() (did.Document, error) {
 	return doc, nil
 }
 
+// GetSigners returns the list of signers for the given message.
+func (w *MPCWallet) GetSigners() party.IDSlice {
+	signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
+	if !signers.Contains(w.ID) {
+		w.Network.Quit(w.ID)
+		return nil
+	}
+	return party.NewIDSlice(signers)
+}
 // GetVerificationMethod returns the VerificationMethod for the given party.
 func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
 	// Get the DID of the wallet
@@ -170,16 +166,6 @@ func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod,
 		Controller:      *baseDid,
 		PublicKeyBase58: pub,
 	}, nil
-}
-
-// GetSigners returns the list of signers for the given message.
-func (w *MPCWallet) GetSigners() party.IDSlice {
-	signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
-	if !signers.Contains(w.ID) {
-		w.Network.Quit(w.ID)
-		return nil
-	}
-	return party.NewIDSlice(signers)
 }
 
 // Generate a new ECDSA private key shared among all the given participants.
@@ -225,9 +211,19 @@ func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
 func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
 	pub, err := w.PublicKey(id...)
 	if err != nil {
-		return "", err
+		return err
 	}
 	return base58.Encode(pub), nil
+}
+
+func (w *MPCWallet) PublicKeyProto(ids ...party.ID) (*rt.PubKey, error) {
+	pubBz, err := w.PublicKey(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return &rt.PubKey{
+		Key: pubBz,
+	}, nil
 }
 
 // Refreshes all shares of an existing ECDSA private key.
@@ -242,7 +238,7 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	handlerLoop(w.ID, hRefresh, w.Network)
 	return r.(*cmp.Config), nil
 }
 
@@ -257,6 +253,23 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 		err error
 	)
 
+	cmpSign := func(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
+		h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
+		if err != nil {
+			return nil, err
+		}
+		handlerLoop(c.ID, h, n)
+		signResult, err := h.Result()
+		if err != nil {
+			return nil, err
+		}
+		signature := signResult.(*ecdsa.Signature)
+		if !signature.Verify(c.PublicPoint(), m) {
+			return nil, fmt.Errorf("failed to verify cmp signature")
+		}
+		return signature, nil
+	}
+
 	for _, id := range signers {
 		wg.Add(1)
 		go func(id party.ID) {
@@ -265,7 +278,7 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
 
-			if sig, err = sign(w.Configs[id], m, signers, net, pl); err != nil {
+			if sig, err = cmpSign(w.Configs[id], m, signers, net, pl); err != nil {
 				return
 			}
 		}(id)
@@ -274,20 +287,31 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	return sig, err
 }
 
-// Helper function to sign a message.
-func sign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
-	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
+func (w *MPCWallet) SignTx(account *at.BaseAccount, authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) (*ecdsa.Signature, error) {
+	// Serialize the transaction body.
+	txBodyBz, err := txBody.Marshal()
 	if err != nil {
 		return nil, err
 	}
-	handlerLoop(c.ID, h, n)
-	signResult, err := h.Result()
+
+	// Serialize the auth info.
+	authInfoBz, err := authInfo.Marshal()
 	if err != nil {
 		return nil, err
 	}
-	signature := signResult.(*ecdsa.Signature)
-	if !signature.Verify(c.PublicPoint(), m) {
-		return nil, fmt.Errorf("failed to verify cmp signature")
+
+	// Create SignDoc
+	signDoc := &txtypes.SignDoc{
+		BodyBytes:     txBodyBz,
+		AuthInfoBytes: authInfoBz,
+		ChainId:       "sonr",
+		AccountNumber: account.GetAccountNumber(),
 	}
-	return signature, nil
+
+	// Serialize the sign doc.
+	signDocBz, err := signDoc.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	return w.Sign(signDocBz)
 }

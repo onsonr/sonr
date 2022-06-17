@@ -1,7 +1,7 @@
 syntax = "proto3";
 package sonrio.sonr.registry;
 
-import "registry/v1/who_is.proto";
+import "registry/who_is.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/sonr-io/sonr/x/registry/types";
