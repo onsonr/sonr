@@ -139,6 +139,7 @@ func (w *MPCWallet) GetSigners() party.IDSlice {
 	}
 	return party.NewIDSlice(signers)
 }
+
 // GetVerificationMethod returns the VerificationMethod for the given party.
 func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
 	// Get the DID of the wallet
@@ -211,7 +212,7 @@ func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
 func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
 	pub, err := w.PublicKey(id...)
 	if err != nil {
-		return err
+		return "", err
 	}
 	return base58.Encode(pub), nil
 }
