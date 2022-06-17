@@ -76,10 +76,11 @@ func (s *Store) Query(ctx context.Context, q query.Query) (query.Results, error)
 		return nil
 	}
 
-	go func() {
+	defer func() {
 		filepath.Walk(s.path, walkFn)
 		close(results)
 	}()
+
 	r := query.ResultsWithChan(q, results)
 	r = query.NaiveQueryApply(q, r)
 	return r, nil
