@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -101,7 +100,7 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 	}
 
 	return &types.MsgDeprecateSchemaResponse{
-		Code:    http.StatusOK,
+		Code:    200,
 		Message: "Schema deprecated successfully.",
 	}, nil
 }
