@@ -1,17 +1,19 @@
 package crypto
 
 import (
+	"encoding/hex"
 	"fmt"
+	"log"
 	"strings"
 	"sync"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -58,7 +60,13 @@ func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	str, err := bech32.ConvertAndEncode("snr", pub)
+
+	decodeString, err := hex.DecodeString(fmt.Sprintf("04%x", pub))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	str, err := bech32.ConvertAndEncode("snr", decodeString)
 	if err != nil {
 		return "", err
 	}
@@ -186,7 +194,15 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 // Returns the ECDSA public key of the given party.
 func (w *MPCWallet) PublicKey() ([]byte, error) {
 	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
-	return p.MarshalBinary()
+	buf, err := p.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	// Check length of the public key.
+	if len(buf) != 33 {
+		return nil, fmt.Errorf("invalid public key length")
+	}
+	return buf, nil
 }
 
 // Returns the ECDSA public key of the given party.
@@ -198,12 +214,12 @@ func (w *MPCWallet) PublicKeyBase58() (string, error) {
 	return base58.Encode(pub), nil
 }
 
-func (w *MPCWallet) PublicKeyProto() (*rt.PubKey, error) {
+func (w *MPCWallet) PublicKeyProto() (*secp256k1.PubKey, error) {
 	pubBz, err := w.PublicKey()
 	if err != nil {
 		return nil, err
 	}
-	return &rt.PubKey{
+	return &secp256k1.PubKey{
 		Key: pubBz,
 	}, nil
 }

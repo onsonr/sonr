@@ -11,8 +11,8 @@ import (
 func (c *Client) QueryAccount(address string) (*at.BaseAccount, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
 	if err != nil {
@@ -33,28 +33,39 @@ func (c *Client) QueryAccount(address string) (*at.BaseAccount, error) {
 	return acc, nil
 }
 
-func (c *Client)  QueryWhoIs(did string) (*rt.WhoIs, error) {
+func (c *Client) QueryWhoIs(did string, options ...QueryWhoIsOption) (*rt.WhoIs, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
 	if err != nil {
 		return nil, err
 	}
-	res, err := rt.NewQueryClient(grpcConn).WhoIs(context.Background(), &rt.QueryWhoIsRequest{Did: did})
+
+	// Create a new request.
+	req := &rt.QueryWhoIsRequest{Did: did}
+	for _, option := range options {
+		option(req)
+	}
+
+	// We then call the QueryWhoIs method on this client.
+	res, err := rt.NewQueryClient(grpcConn).WhoIs(context.Background(), req)
 	if err != nil {
 		return nil, err
+	}
+	if res == nil {
+		return nil, nil
 	}
 	return res.GetWhoIs(), nil
 }
 
-func (c *Client)  QueryWhoIsByAlias(alias string) (*rt.WhoIs, error) {
+func (c *Client) QueryWhoIsByAlias(alias string) (*rt.WhoIs, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
 	if err != nil {
@@ -69,11 +80,11 @@ func (c *Client)  QueryWhoIsByAlias(alias string) (*rt.WhoIs, error) {
 	return res.GetWhoIs(), nil
 }
 
-func (c *Client)  QueryWhoIsByController(controller string) (*rt.WhoIs, error) {
+func (c *Client) QueryWhoIsByController(controller string) (*rt.WhoIs, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
 	if err != nil {

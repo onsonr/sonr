@@ -31169,6 +31169,15 @@ paths:
           in: path
           required: true
           type: string
+        - name: bech32
+          in: query
+          required: false
+          type: string
+        - name: pubkey.key
+          in: query
+          required: false
+          type: string
+          format: byte
       tags:
         - Query
   '/sonr-io/sonr/registry/who_is_alias/{alias}':
@@ -54070,6 +54079,24 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  cosmos.crypto.secp256k1.PubKey:
+    type: object
+    properties:
+      key:
+        type: string
+        format: byte
+    description: >-
+      PubKey defines a secp256k1 public key
+
+      Key is the compressed form of the pubkey. The first byte depends is a 0x02
+      byte
+
+      if the y-coordinate is the lexicographically largest of the two associated
+      with
+
+      the x-coordinate. Otherwise the first byte is a 0x03.
+
+      This prefix is followed with the x-coordinate.
   sonrio.sonr.registry.Alias:
     type: object
     properties:

@@ -23,12 +23,22 @@ func CreateAccount() error {
 		return err
 	}
 
-	acc, err := c.QueryAccount(bechAddr)
+	pk, err := w.PublicKeyProto()
 	if err != nil {
 		return err
 	}
 
 	doc, err := w.DIDDocument()
+	if err != nil {
+		return err
+	}
+
+	err = c.CreateAccount(doc.GetID().String(), client.WithPubKey(pk), client.WithBech32Address(bechAddr))
+	if err != nil {
+		return err
+	}
+
+	acc, err := c.QueryAccount(bechAddr)
 	if err != nil {
 		return err
 	}

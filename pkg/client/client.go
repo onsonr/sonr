@@ -12,6 +12,9 @@ const (
 
 	// RPC Address for local node
 	SONR_RPC_ADDR_LOCAL = "127.0.0.1:9090"
+
+	// Sonr REST API Address - LOCAL ONLY
+	SONR_REST_API_ADDR_LOCAL = "http://0.0.0.0:26657"
 )
 
 type Client struct {
@@ -36,4 +39,11 @@ func (c *Client) GetRPCAddress() string {
 		return SONR_RPC_ADDR_LOCAL
 	}
 	return SONR_RPC_ADDR_PUBLIC
+}
+
+func (c *Client) GetAPIAddress() string {
+	if c.IsLocal {
+		return SONR_REST_API_ADDR_LOCAL
+	}
+	return ""
 }

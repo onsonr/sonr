@@ -4,6 +4,7 @@ package sonrio.sonr.registry;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/crypto/secp256k1/keys.proto";
 import "registry/params.proto";
 import "registry/who_is.proto";
 // this line is used by starport scaffolding # 1
@@ -50,6 +51,8 @@ message QueryParamsResponse {
 
 message QueryWhoIsRequest {
 	string did = 1;
+	string bech32 = 2; // optional
+	cosmos.crypto.secp256k1.PubKey pubkey = 3; // optional
 }
 
 message QueryWhoIsResponse {

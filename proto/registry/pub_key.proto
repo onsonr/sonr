@@ -1,8 +1,0 @@
-syntax = "proto3";
-package sonrio.sonr.registry;
-
-option go_package = "github.com/sonr-io/sonr/x/registry/types";
-
-message PubKey {
-    bytes key = 1;
-}

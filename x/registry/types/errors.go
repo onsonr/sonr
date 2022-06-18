@@ -30,4 +30,8 @@ var (
 	ErrDidNotFound        = sdkerrors.Register(ModuleName, 1409, "did not found")
 	ErrDidDeactivated     = sdkerrors.Register(ModuleName, 1410, "did deactivated")
 	ErrDidDocumentInvalid = sdkerrors.Register(ModuleName, 1411, "did document invalid")
+
+	// Query Account Creation
+	ErrQueryFailedBech32    = sdkerrors.Register(ModuleName, 2001, "DID not found. Failed to create new account, invalid bech32 address")
+	ErrQueryFailedAccCreate = sdkerrors.Register(ModuleName, 2002, "DID not found. Failed to create new account, invalid bech32 address")
 )

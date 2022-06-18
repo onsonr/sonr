@@ -37,10 +37,10 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*types.AuthInfo, *types.TxBody, err
 		},
 	}
 
-	addr, err := w.Bech32Address()
-	if err != nil {
-		return nil, nil, err
-	}
+	// addr, err := w.Bech32Address()
+	// if err != nil {
+	// 	return nil, nil, err
+	// }
 
 	// Create SignerInfos
 	signerInfo := &types.SignerInfo{
@@ -62,7 +62,6 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*types.AuthInfo, *types.TxBody, err
 		Fee: &types.Fee{
 			Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(2))),
 			GasLimit: uint64(100000),
-			Payer:    addr,
 		},
 	}
 	return &authInfo, &txBody, nil

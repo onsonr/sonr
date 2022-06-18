@@ -50,7 +50,28 @@ func (k Keeper) WhoIs(c context.Context, req *types.QueryWhoIsRequest) (*types.Q
 		req.Did,
 	)
 	if !found {
-		return nil, status.Error(codes.InvalidArgument, "not found")
+		// Check for Bech32 address
+		if req.Bech32 != "" {
+			// Create Account address from Bech32
+			addr, err := sdk.AccAddressFromBech32(req.Bech32)
+			if err != nil {
+				return nil, types.ErrQueryFailedBech32
+			}
+
+			// Create new account from account address
+			acc := k.accountKeeper.NewAccountWithAddress(ctx, addr)
+			if acc == nil {
+				return nil, types.ErrQueryFailedAccCreate
+			}
+
+			// Check and Add PublicKey to account
+			if req.Pubkey != nil {
+				acc.SetPubKey(req.Pubkey)
+			}
+			k.accountKeeper.SetAccount(ctx, acc)
+			return nil, nil
+		}
+		return nil, status.Error(codes.NotFound, "DID not found")
 	}
 
 	return &types.QueryWhoIsResponse{WhoIs: &val}, nil
