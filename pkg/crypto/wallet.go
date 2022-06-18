@@ -1,9 +1,7 @@
 package crypto
 
 import (
-	"encoding/hex"
 	"fmt"
-	"log"
 	"strings"
 	"sync"
 
@@ -53,19 +51,12 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 
 // Returns the Bech32 representation of the given party.
 func (w *MPCWallet) Address(id ...party.ID) (string, error) {
-	// c := types.GetConfig()
-	// c.SetBech32PrefixForAccount("snr", "pub")
-	pub, err := w.PublicKey()
+	pub, err := w.PublicKeyProto()
 	if err != nil {
 		return "", err
 	}
 
-	decodeString, err := hex.DecodeString(fmt.Sprintf("04%x", pub))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	str, err := bech32.ConvertAndEncode("snr", decodeString)
+	str, err := bech32.ConvertAndEncode("snr", pub.Address().Bytes())
 	if err != nil {
 		return "", err
 	}
@@ -255,5 +246,6 @@ func (w *MPCWallet) Verify(m []byte, sig []byte) bool {
 	if err != nil {
 		return false
 	}
-	return edsig.Verify(w.Config().PublicPoint(), m)
+	mpcVerif := edsig.Verify(w.Config().PublicPoint(), m)
+	return mpcVerif
 }

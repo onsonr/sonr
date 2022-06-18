@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/sonr-io/sonr/pkg/crypto"
 
 	// "github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
@@ -91,7 +92,11 @@ func createRawTxBytes(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *tx
 
 	// Create a signature list and append the signature
 	sigList := make([][]byte, 1)
-	// sigList[0] = crypto.SerializeSignature(sig)
+	sigbz, err := crypto.SerializeSignature(sig)
+	if err != nil {
+		return nil, err
+	}
+	sigList[0] = sigbz
 
 	// Create Raw TX
 	txRaw := &txtypes.TxRaw{

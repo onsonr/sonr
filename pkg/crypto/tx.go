@@ -63,7 +63,7 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*txtypes.AuthInfo, *txtypes.TxBody,
 		Fee: &txtypes.Fee{
 			Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(2))),
 			GasLimit: uint64(100000),
-			Payer:    addr,
+			Granter:  addr,
 		},
 	}
 	return &authInfo, &txBody, nil
