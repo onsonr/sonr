@@ -1,12 +1,10 @@
 package crypto
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 	"sync"
 
-	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	at "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -20,7 +18,6 @@ import (
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
-	"github.com/taurusgroup/multi-party-sig/protocols/cmp/config"
 )
 
 type MPCWallet struct {
@@ -57,7 +54,7 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
 	// c := types.GetConfig()
 	// c.SetBech32PrefixForAccount("snr", "pub")
-	pub, err := w.PublicKey(id...)
+	pub, err := w.PublicKey()
 	if err != nil {
 		return "", err
 	}
@@ -155,7 +152,7 @@ func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod,
 	}
 
 	// Get base58 encoded public key.
-	pub, err := w.PublicKeyBase58(id)
+	pub, err := w.PublicKeyBase58()
 	if err != nil {
 		return nil, err
 	}
@@ -187,38 +184,22 @@ func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error 
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKey(id ...party.ID) ([]byte, error) {
-	var pub *config.Public
-	if len(id) == 0 {
-		pub = w.Config().Public[w.ID]
-	} else if len(id) == 1 {
-		pub = w.Config().Public[id[0]]
-	} else {
-		return nil, fmt.Errorf("invalid number of arguments")
-	}
-	if pub == nil {
-		return nil, fmt.Errorf("no public key found")
-	}
-	buffer := bytes.NewBuffer(nil)
-	_, err := pub.WriteTo(buffer)
-	if err != nil {
-		return nil, err
-	}
-	buf := address.Hash("snr", buffer.Bytes())
-	return buf, nil
+func (w *MPCWallet) PublicKey() ([]byte, error) {
+	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
+	return p.MarshalBinary()
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKeyBase58(id ...party.ID) (string, error) {
-	pub, err := w.PublicKey(id...)
+func (w *MPCWallet) PublicKeyBase58() (string, error) {
+	pub, err := w.PublicKey()
 	if err != nil {
 		return "", err
 	}
 	return base58.Encode(pub), nil
 }
 
-func (w *MPCWallet) PublicKeyProto(ids ...party.ID) (*rt.PubKey, error) {
-	pubBz, err := w.PublicKey(ids...)
+func (w *MPCWallet) PublicKeyProto() (*rt.PubKey, error) {
+	pubBz, err := w.PublicKey()
 	if err != nil {
 		return nil, err
 	}

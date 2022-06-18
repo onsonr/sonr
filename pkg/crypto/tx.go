@@ -2,6 +2,7 @@ package crypto
 
 import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -18,25 +19,36 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*types.AuthInfo, *types.TxBody, err
 		}
 		anyMsgs[i] = msg
 	}
-	// pubKey, err := w.PublicKeyProto()
-	// if err != nil {
-	// 	return nil, nil, err
-	// }
-
+	pubBuf, err := w.PublicKey()
+	if err != nil {
+		return nil, nil, err
+	}
+	pubKey := &secp256k1.PubKey{
+		Key: pubBuf,
+	}
 	// Build signerInfo parameters
-	//anyPubKey, err := codectypes.NewAnyWithValue(pubKey)
+	anyPubKey, err := codectypes.NewAnyWithValue(pubKey)
+	if err != nil {
+		return nil, nil, err
+	}
 	modeInfo := &types.ModeInfo_Single_{
 		Single: &types.ModeInfo_Single{
 			Mode: signing.SignMode_SIGN_MODE_DIRECT,
 		},
 	}
 
+	addr, err := w.Bech32Address()
+	if err != nil {
+		return nil, nil, err
+	}
+
 	// Create SignerInfos
 	signerInfo := &types.SignerInfo{
-		// PublicKey: anyPubKey,
+		PublicKey: anyPubKey,
 		ModeInfo: &types.ModeInfo{
 			Sum: modeInfo,
 		},
+		Sequence: 0,
 	}
 
 	// Create TXRaw and Marshal
@@ -48,7 +60,9 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*types.AuthInfo, *types.TxBody, err
 	authInfo := types.AuthInfo{
 		SignerInfos: []*types.SignerInfo{signerInfo},
 		Fee: &types.Fee{
-			Amount: sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(10))),
+			Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(2))),
+			GasLimit: uint64(100000),
+			Payer:    addr,
 		},
 	}
 	return &authInfo, &txBody, nil

@@ -7,8 +7,10 @@ import (
 )
 
 func Test_MPCCreate(t *testing.T) {
-	_, err := Generate()
+	w, err := Generate()
 	assert.NoError(t, err, "wallet generation succeeds")
+	_, err = w.PublicKey()
+	assert.NoError(t, err, "public key creation succeeds")
 }
 
 func Test_MPCDID(t *testing.T) {
