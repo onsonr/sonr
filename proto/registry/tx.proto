@@ -1,6 +1,7 @@
 syntax = "proto3";
 package sonrio.sonr.registry;
 
+import "cosmos/crypto/secp256k1/keys.proto";
 import "registry/who_is.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
@@ -22,11 +23,14 @@ message MsgCreateWhoIs {
   // Creator is the wallet address of the creator of the transaction.
   string creator = 1;
 
+  // Secp256k1PublicKey is the public key of the creator.
+  cosmos.crypto.secp256k1.PubKey pubkey = 2;
+
   // DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).
-  bytes did_document = 2;
+  bytes did_document = 3;
 
   // WhoIsType is the type of the WhoIs to be created. Possible values are: "USER", "APPLICATION".
-  WhoIsType whois_type = 3;
+  WhoIsType whois_type = 4;
 }
 
 message MsgCreateWhoIsResponse {

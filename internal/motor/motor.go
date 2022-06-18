@@ -33,11 +33,6 @@ func CreateAccount() error {
 		return err
 	}
 
-	err = c.CreateAccount(doc.GetID().String(), client.WithPubKey(pk), client.WithBech32Address(bechAddr))
-	if err != nil {
-		return err
-	}
-
 	acc, err := c.QueryAccount(bechAddr)
 	if err != nil {
 		return err
@@ -47,7 +42,7 @@ func CreateAccount() error {
 	if err != nil {
 		return err
 	}
-	msg1 := types.NewMsgCreateWhoIs(bechAddr, docBz, types.WhoIsType_USER)
+	msg1 := types.NewMsgCreateWhoIs(bechAddr, pk, docBz, types.WhoIsType_USER)
 	ai, txb, err := crypto.BuildTx(w, msg1)
 	if err != nil {
 		return err

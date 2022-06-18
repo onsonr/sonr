@@ -33,7 +33,7 @@ func (c *Client) QueryAccount(address string) (*at.BaseAccount, error) {
 	return acc, nil
 }
 
-func (c *Client) QueryWhoIs(did string, options ...QueryWhoIsOption) (*rt.WhoIs, error) {
+func (c *Client) QueryWhoIs(did string) (*rt.WhoIs, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
 		c.GetRPCAddress(),   // Or your gRPC server address.
@@ -46,10 +46,6 @@ func (c *Client) QueryWhoIs(did string, options ...QueryWhoIsOption) (*rt.WhoIs,
 
 	// Create a new request.
 	req := &rt.QueryWhoIsRequest{Did: did}
-	for _, option := range options {
-		option(req)
-	}
-
 	// We then call the QueryWhoIs method on this client.
 	res, err := rt.NewQueryClient(grpcConn).WhoIs(context.Background(), req)
 	if err != nil {

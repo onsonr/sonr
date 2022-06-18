@@ -31169,15 +31169,6 @@ paths:
           in: path
           required: true
           type: string
-        - name: bech32
-          in: query
-          required: false
-          type: string
-        - name: pubkey.key
-          in: query
-          required: false
-          type: string
-          format: byte
       tags:
         - Query
   '/sonr-io/sonr/registry/who_is_alias/{alias}':

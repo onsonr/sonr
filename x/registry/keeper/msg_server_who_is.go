@@ -15,6 +15,22 @@ import (
 func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs) (*types.MsgCreateWhoIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// Create Account address from Bech32
+	addr, err := sdk.AccAddressFromBech32(msg.GetCreator())
+	if err != nil {
+		return nil, types.ErrInvalidBech32
+	}
+
+	// Create new account from account address
+	acc := k.accountKeeper.NewAccountWithAddress(ctx, addr)
+	if acc == nil {
+		return nil, types.ErrFailedNewAccount
+	}
+
+	// Check and Add PublicKey to account
+	acc.SetPubKey(msg.Pubkey)
+	k.accountKeeper.SetAccount(ctx, acc)
+
 	// UnmarshalJSON from DID document
 	doc, err := did.NewDocument(msg.GetCreatorDid())
 	if err != nil {

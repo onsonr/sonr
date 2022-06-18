@@ -4,12 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	"google.golang.org/grpc"
 )
 
@@ -30,25 +28,6 @@ func (c *Client) CheckBalance(address string) (types.Coins, error) {
 		return nil, err
 	}
 	return resp.GetBalances(), nil
-}
-
-// CreateAccount creates a new account on the Sonr network
-func (c *Client) CreateAccount(did string, options ...QueryWhoIsOption) error {
-	// Create a new request.
-	req := &rt.QueryWhoIsRequest{Did: did}
-	for _, option := range options {
-		option(req)
-	}
-
-	endpoint := fmt.Sprintf("/sonr-io/sonr/registry/who_is/%s&bech32=%s&pubkey.key=%s", req.Did, req.Bech32, req.Pubkey.Key)
-	resp, err := http.Get(c.GetAPIAddress() + endpoint)
-	if err != nil {
-		return err
-	}
-	if resp == nil {
-		return nil
-	}
-	return nil
 }
 
 // RequestFaucet requests a faucet from the Sonr network

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -16,10 +17,11 @@ const (
 
 var _ sdk.Msg = &MsgCreateWhoIs{}
 
-func NewMsgCreateWhoIs(owner string, didDoc []byte, t WhoIsType) *MsgCreateWhoIs {
+func NewMsgCreateWhoIs(owner string, pubkey *secp256k1.PubKey, didDoc []byte, t WhoIsType) *MsgCreateWhoIs {
 	return &MsgCreateWhoIs{
 		Creator:     owner,
 		DidDocument: didDoc,
+		Pubkey:      pubkey,
 		WhoisType:   t,
 	}
 }

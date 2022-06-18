@@ -51,8 +51,6 @@ message QueryParamsResponse {
 
 message QueryWhoIsRequest {
 	string did = 1;
-	string bech32 = 2; // optional
-	cosmos.crypto.secp256k1.PubKey pubkey = 3; // optional
 }
 
 message QueryWhoIsResponse {
