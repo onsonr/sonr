@@ -7,7 +7,7 @@ import (
 )
 
 func Test_CreateAccount(t *testing.T) {
-	err := CreateAccount()
+	_, err := CreateAccount()
 	assert.NoError(t, err, "wallet generation succeeds")
 
 }

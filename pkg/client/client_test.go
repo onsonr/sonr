@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_GetBalances(t *testing.T) {
+func Test_FaucetCheckBalance(t *testing.T) {
 	client := NewClient(true)
 	w, err := crypto.Generate()
 	assert.NoError(t, err, "wallet generation succeeds")
-	addr, err := w.Bech32Address()
+	addr, err := w.Address()
 	assert.NoError(t, err, "Bech32Address successfully created")
 	fmt.Println("Address:", addr)
 	resp, err := client.CheckBalance(addr)

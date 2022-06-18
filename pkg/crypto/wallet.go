@@ -9,8 +9,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
@@ -42,10 +40,11 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
 			defer wg.Done()
-
-			if err := wallet.Keygen(id, opt.participants, pl); err != nil {
+			conf, err := cmpKeygen(id, opt.participants, wallet.Network, opt.threshold, pl)
+			if err != nil {
 				return
 			}
+			wallet.Configs[conf.ID] = conf
 		}(id)
 	}
 	wg.Wait()
@@ -53,7 +52,7 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 }
 
 // Returns the Bech32 representation of the given party.
-func (w *MPCWallet) Bech32Address(id ...party.ID) (string, error) {
+func (w *MPCWallet) Address(id ...party.ID) (string, error) {
 	// c := types.GetConfig()
 	// c.SetBech32PrefixForAccount("snr", "pub")
 	pub, err := w.PublicKey()
@@ -81,7 +80,7 @@ func (w *MPCWallet) Config() *cmp.Config {
 // DID Returns the DID Address of the Wallet. When partyId is provided, it returns the DID of the given party. Only the first party in the wallet can create a DID.
 func (w *MPCWallet) DID(party ...party.ID) (*did.DID, error) {
 	if len(party) == 0 {
-		addr, err := w.Bech32Address()
+		addr, err := w.Address()
 		if err != nil {
 			return nil, err
 		}
@@ -174,23 +173,6 @@ func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod,
 	}, nil
 }
 
-// Generate a new ECDSA private key shared among all the given participants.
-func (w *MPCWallet) Keygen(id party.ID, ids party.IDSlice, pl *pool.Pool) error {
-	h, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, id, ids, w.Threshold, pl), nil)
-	if err != nil {
-		return err
-	}
-
-	handlerLoop(id, h, w.Network)
-	r, err := h.Result()
-	if err != nil {
-		return err
-	}
-	conf := r.(*cmp.Config)
-	w.Configs[conf.ID] = conf
-	return nil
-}
-
 // Returns the ECDSA public key of the given party.
 func (w *MPCWallet) PublicKey() ([]byte, error) {
 	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
@@ -251,23 +233,6 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 		err error
 	)
 
-	cmpSign := func(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
-		h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
-		if err != nil {
-			return nil, err
-		}
-		handlerLoop(c.ID, h, n)
-		signResult, err := h.Result()
-		if err != nil {
-			return nil, err
-		}
-		signature := signResult.(*ecdsa.Signature)
-		if !signature.Verify(c.PublicPoint(), m) {
-			return nil, fmt.Errorf("failed to verify cmp signature")
-		}
-		return signature, nil
-	}
-
 	for _, id := range signers {
 		wg.Add(1)
 		go func(id party.ID) {
@@ -275,7 +240,6 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
-
 			if sig, err = cmpSign(w.Configs[id], m, signers, net, pl); err != nil {
 				return
 			}
@@ -285,31 +249,11 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	return sig, err
 }
 
-func (w *MPCWallet) SignTx(account *at.BaseAccount, authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) (*ecdsa.Signature, error) {
-	// Serialize the transaction body.
-	txBodyBz, err := txBody.Marshal()
+// Verifies an ECDSA signature for messageHash.
+func (w *MPCWallet) Verify(m []byte, sig []byte) bool {
+	edsig, err := SignatureFromBytes(sig)
 	if err != nil {
-		return nil, err
+		return false
 	}
-
-	// Serialize the auth info.
-	authInfoBz, err := authInfo.Marshal()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create SignDoc
-	signDoc := &txtypes.SignDoc{
-		BodyBytes:     txBodyBz,
-		AuthInfoBytes: authInfoBz,
-		ChainId:       "sonr",
-		AccountNumber: account.GetAccountNumber(),
-	}
-
-	// Serialize the sign doc.
-	signDocBz, err := signDoc.Marshal()
-	if err != nil {
-		return nil, err
-	}
-	return w.Sign(signDocBz)
+	return edsig.Verify(w.Config().PublicPoint(), m)
 }

@@ -17,7 +17,7 @@ func Test_MPCDID(t *testing.T) {
 	w, err := Generate()
 	assert.NoError(t, err, "wallet generation succeeds")
 
-	_, err = w.Bech32Address()
+	_, err = w.Address()
 	assert.NoError(t, err, "Bech32Address successfully created")
 
 	_, err = w.DIDDocument()
@@ -25,30 +25,21 @@ func Test_MPCDID(t *testing.T) {
 }
 
 func Test_MPCSignMessage(t *testing.T) {
+	m := []byte("sign this message")
 	w, err := Generate()
 	assert.NoError(t, err, "wallet generation succeeds")
 
-	sig, err := w.Sign([]byte("sign this message"))
+	sig, err := w.Sign(m)
 	assert.NoError(t, err, "signing succeeds")
 
-	buf := SerializeECDSA(sig)
-	assert.NotNil(t, buf, "serialization succeeds")
+	sigRaw, err := SerializeSignature(sig)
+	assert.NoError(t, err, "signature serialization succeeds")
 
-	sig2, err := ParseDERSignature(buf)
+	rawIsVerified := w.Verify(m, sigRaw)
+	assert.True(t, rawIsVerified, "raw signature is verified")
+
+	sig2, err := SignatureFromBytes(sigRaw)
 	assert.NoError(t, err, "deserialization succeeds")
-	assert.Equal(t, sig, sig2, "valid signature deserialization")
+	deserializedSigVerified := sig2.Verify(w.Config().PublicPoint(), m)
+	assert.True(t, deserializedSigVerified, "deserialized signature is verified")
 }
-
-// func Test_MPCCreateWhoIs(t *testing.T) {
-// 	w, err := Generate()
-// 	assert.NoError(t, err, "wallet generation succeeds")
-// 	addr, err := w.Bech32Address()
-// 	assert.NoError(t, err, "Bech32Address successfully created")
-// 	err = client.RequestFaucet(addr)
-// 	assert.NoError(t, err, "faucet request succeeds")
-// 	resp := w.Balances()
-// 	t.Logf("-- Get Balances --\n%+v\n", resp)
-
-// 	err = w.BroadcastCreateWhoIsWithEncoding()
-// 	assert.NoError(t, err, "broadcast with encoding succeeds")
-// }

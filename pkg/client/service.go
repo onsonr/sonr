@@ -5,7 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/sonr-io/sonr/pkg/crypto"
+
+	// "github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"google.golang.org/grpc"
 )
@@ -20,13 +21,14 @@ func (c *Client) BroadcastTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authI
 
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
 
 	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
 	// service.
+
 	txClient := txtypes.NewServiceClient(grpcConn)
 	// We then call the BroadcastTx method on this client.
 	grpcRes, err := txClient.BroadcastTx(
@@ -52,8 +54,8 @@ func (c *Client) SimulateTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authIn
 
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),  // The Cosmos SDK doesn't support any transport security mechanism.
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
 
@@ -89,7 +91,7 @@ func createRawTxBytes(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *tx
 
 	// Create a signature list and append the signature
 	sigList := make([][]byte, 1)
-	sigList[0] = crypto.SerializeECDSA(sig)
+	// sigList[0] = crypto.SerializeSignature(sig)
 
 	// Create Raw TX
 	txRaw := &txtypes.TxRaw{
