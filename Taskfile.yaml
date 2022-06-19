@@ -136,6 +136,9 @@ tasks:
   clean:
     summary: "Clean all binaries and generated files and directories"
     cmds:
+      - find ./bind -type d -name "motorlib-ios_arm64" -exec rm -rf {} +
+      - find ./bind -type d -name "motorlib-android_arm64" -exec rm -rf {} +
+      - find ./bind -type d -name "build" -exec rm -rf {} +
       - rm -rf ./build
       - rm -rf ./dist
       - rm -rf ./io.sonr.motor.aar

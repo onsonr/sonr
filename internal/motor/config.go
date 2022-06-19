@@ -10,7 +10,7 @@ func setupDefault() (*MotorNode, error) {
 	c := client.NewClient(client.ConnEndpointType_BETA)
 
 	// Generate wallet
-	w, err := crypto.Generate()
+	w, err := crypto.GenerateWallet()
 	if err != nil {
 		return nil, err
 	}

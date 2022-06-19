@@ -5,14 +5,26 @@ import (
 	_ "golang.org/x/mobile/bind"
 )
 
-var instance *motor.MotorNode
-
 // Start starts the host, node, and rpc service.
-func New() error {
-	m, err := motor.CreateAccount()
+func Start() error {
+	_, err := motor.CreateAccount()
 	if err != nil {
 		return err
 	}
-	instance = m
 	return nil
+}
+
+// Pause pauses the host, node, and rpc service.
+func Pause() {
+	//	node.Pause()
+}
+
+// Resume resumes the host, node, and rpc service.
+func Resume() {
+	//	node.Resume()
+}
+
+// Stop closes the host, node, and rpc service.
+func Stop() {
+	//	node.Exit(0)
 }

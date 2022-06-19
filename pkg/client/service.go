@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/sonr-io/sonr/pkg/crypto"
 
@@ -13,7 +12,7 @@ import (
 )
 
 // BroadcastTx broadcasts a transaction on the Sonr blockchain network
-func (c *Client) BroadcastTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *txtypes.AuthInfo) (*sdk.TxResponse, error) {
+func (c *Client) BroadcastTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *txtypes.AuthInfo) (*txtypes.BroadcastTxResponse, error) {
 	// Create TXRaw and Marshal
 	txRawBytes, err := createRawTxBytes(txBody, sig, authInfo)
 	if err != nil {
@@ -42,11 +41,11 @@ func (c *Client) BroadcastTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authI
 	if err != nil {
 		return nil, err
 	}
-	return grpcRes.TxResponse, nil
+	return grpcRes, nil
 }
 
 // SimulateTx simulates a transaction on the Sonr blockchain network
-func (c *Client) SimulateTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *txtypes.AuthInfo) (*sdk.Result, error) {
+func (c *Client) SimulateTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authInfo *txtypes.AuthInfo) (*txtypes.SimulateResponse, error) {
 	// Create TXRaw and Marshal
 	txRawBytes, err := createRawTxBytes(txBody, sig, authInfo)
 	if err != nil {
@@ -73,7 +72,7 @@ func (c *Client) SimulateTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authIn
 	if err != nil {
 		return nil, err
 	}
-	return grpcRes.Result, nil
+	return grpcRes, nil
 }
 
 // createRawTxBytes is a helper function to create a raw raw transaction and Marshal it to bytes

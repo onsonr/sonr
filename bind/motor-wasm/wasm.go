@@ -12,7 +12,7 @@ func main() {
 	config := config.DefaultConfig(config.Role_MOTOR)
 	_, err := host.NewWasmHost(context.Background(), config)
 	check(err)
-	_, err = crypto.Generate()
+	_, err = crypto.GenerateWallet()
 	check(err)
 }
 

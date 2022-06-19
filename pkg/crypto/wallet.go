@@ -26,8 +26,8 @@ type MPCWallet struct {
 	Threshold int
 }
 
-// Generate a new ECDSA private key shared among all the given participants.
-func Generate(options ...WalletOption) (*MPCWallet, error) {
+// GenerateWallet a new ECDSA private key shared among all the given participants.
+func GenerateWallet(options ...WalletOption) (*MPCWallet, error) {
 	opt := defaultConfig()
 	wallet := opt.Apply(options...)
 
@@ -164,6 +164,11 @@ func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod,
 	}, nil
 }
 
+// Marshal returns the JSON representation of the entire wallet.
+func (w *MPCWallet) Marshal() ([]byte, error) {
+	return w.Config().MarshalBinary()
+}
+
 // Returns the ECDSA public key of the given party.
 func (w *MPCWallet) PublicKey() ([]byte, error) {
 	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
@@ -238,6 +243,18 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	}
 	wg.Wait()
 	return sig, err
+}
+
+// Unmarshal unmarshals the given JSON into the wallet.
+func (w *MPCWallet) Unmarshal(buf []byte) error {
+	c := &cmp.Config{}
+	if err := c.UnmarshalBinary(buf); err != nil {
+		return err
+	}
+	w.Configs[c.ID] = c
+	w.ID = c.ID
+	w.Threshold = c.Threshold
+	return nil
 }
 
 // Verifies an ECDSA signature for messageHash.

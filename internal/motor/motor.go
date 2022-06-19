@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	txt "github.com/cosmos/cosmos-sdk/types/tx"
 
-	// at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -66,8 +65,4 @@ func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, 
 		return nil, err
 	}
 	return m.Wallet.Sign(signDocBz)
-}
-
-func (m *MotorNode) broadcastTx(txb *txt.TxBody, sig *ecdsa.Signature, ai *tx.AuthInfo) (*sdk.TxResponse, error) {
-	return m.Cosmos.BroadcastTx(txb, sig, ai)
 }
