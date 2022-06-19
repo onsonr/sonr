@@ -7,7 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	txt "github.com/cosmos/cosmos-sdk/types/tx"
-	at "github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	// at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -21,7 +22,7 @@ type MotorNode struct {
 	Address string
 	PubKey  *secp256k1.PubKey
 	DIDDoc  did.Document
-	Account *at.BaseAccount
+	// Account *at.BaseAccount
 }
 
 func CreateAccount() (*MotorNode, error) {
@@ -60,7 +61,7 @@ func (m *MotorNode) newTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
 }
 
 func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, error) {
-	signDocBz, err := crypto.GetSignDocBytes(m.Account, ai, txb)
+	signDocBz, err := crypto.GetSignDocBytes(ai, txb)
 	if err != nil {
 		return nil, err
 	}

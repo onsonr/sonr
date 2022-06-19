@@ -33,17 +33,11 @@ func setupDefault() (*MotorNode, error) {
 		return nil, err
 	}
 
-	acc, err := c.QueryAccount(bechAddr)
-	if err != nil {
-		return nil, err
-	}
-
 	return &MotorNode{
 		Cosmos:  c,
 		Wallet:  w,
 		Address: bechAddr,
 		PubKey:  pk,
 		DIDDoc:  doc,
-		Account: acc,
 	}, nil
 }

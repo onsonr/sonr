@@ -5,8 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-
-	at "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 // BuildTx builds a transaction from the given inputs.
@@ -69,7 +67,7 @@ func BuildTx(w *MPCWallet, msgs ...sdk.Msg) (*txtypes.AuthInfo, *txtypes.TxBody,
 	return &authInfo, &txBody, nil
 }
 
-func GetSignDocBytes(account *at.BaseAccount, authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) ([]byte, error) {
+func GetSignDocBytes(authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) ([]byte, error) {
 	// Serialize the transaction body.
 	txBodyBz, err := txBody.Marshal()
 	if err != nil {
@@ -87,7 +85,6 @@ func GetSignDocBytes(account *at.BaseAccount, authInfo *txtypes.AuthInfo, txBody
 		BodyBytes:     txBodyBz,
 		AuthInfoBytes: authInfoBz,
 		ChainId:       "sonr",
-		AccountNumber: account.GetAccountNumber(),
 	}
 	return signDoc.Marshal()
 }
