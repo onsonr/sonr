@@ -4,56 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 )
-
-// GetAuthInfoSingle returns the authentication information for the given message.
-func (w *MPCWallet) GetAuthInfoSingle(gas int) (*txtypes.AuthInfo, error) {
-	addr, err := w.Address()
-	if err != nil {
-		return nil, err
-	}
-
-	// Get PublicKey
-	pubKey, err := w.PublicKeyProto()
-	if err != nil {
-		return nil, err
-	}
-
-	// Build signerInfo parameters
-	anyPubKey, err := codectypes.NewAnyWithValue(pubKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create AuthInfo
-	authInfo := txtypes.AuthInfo{
-		SignerInfos: []*txtypes.SignerInfo{
-			{
-				PublicKey: anyPubKey,
-				ModeInfo: &txtypes.ModeInfo{
-					Sum: &txtypes.ModeInfo_Single_{
-						Single: &txtypes.ModeInfo_Single{
-							Mode: signing.SignMode_SIGN_MODE_DIRECT,
-						},
-					},
-				},
-				Sequence: 0,
-			},
-		},
-		Fee: &txtypes.Fee{
-			Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(gas)))),
-			GasLimit: uint64(100000),
-			Granter:  addr,
-		},
-	}
-	return &authInfo, nil
-}
 
 // SerializeSignature marshals an ECDSA signature to DER format for use with the CMP protocol
 func SerializeSignature(sig *ecdsa.Signature) ([]byte, error) {
