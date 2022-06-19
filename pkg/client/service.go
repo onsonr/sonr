@@ -2,6 +2,8 @@ package client
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/sonr-io/sonr/pkg/crypto"
@@ -40,6 +42,9 @@ func (c *Client) BroadcastTx(txBody *txtypes.TxBody, sig *ecdsa.Signature, authI
 	)
 	if err != nil {
 		return nil, err
+	}
+	if grpcRes.GetTxResponse().Code != 0 {
+		return nil, errors.New(fmt.Sprintf("Failed to broadcast transaction: %s", grpcRes.GetTxResponse().RawLog))
 	}
 	return grpcRes, nil
 }

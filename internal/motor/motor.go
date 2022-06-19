@@ -36,7 +36,12 @@ func CreateAccount() (*MotorNode, error) {
 	}
 
 	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
-	ai, txb, err := m.newTx(msg1)
+	txb, err := m.newTx(msg1)
+	if err != nil {
+		return nil, err
+	}
+
+	ai, err := m.Wallet.GetAuthInfoSingle(2)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +60,7 @@ func CreateAccount() (*MotorNode, error) {
 	return m, nil
 }
 
-func (m *MotorNode) newTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
+func (m *MotorNode) newTx(msg ...sdk.Msg) (*txt.TxBody, error) {
 	return crypto.BuildTx(m.Wallet, msg...)
 }
 

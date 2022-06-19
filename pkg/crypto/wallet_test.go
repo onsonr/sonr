@@ -19,9 +19,6 @@ func Test_MPCDID(t *testing.T) {
 
 	_, err = w.Address()
 	assert.NoError(t, err, "Bech32Address successfully created")
-
-	_, err = w.DIDDocument()
-	assert.NoError(t, err, "DID Document creation succeeds")
 }
 
 func Test_MPCSignMessage(t *testing.T) {

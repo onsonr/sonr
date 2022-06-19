@@ -1,30 +1,142 @@
 package motor
 
 import (
-	"github.com/sonr-io/sonr/internal/motor"
+	"encoding/json"
+	"errors"
+	"fmt"
+
+	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )
 
-// Start starts the host, node, and rpc service.
-func Start() error {
-	_, err := motor.CreateAccount()
+var (
+	errWalletExists    = errors.New("mpc wallet already exists")
+	errWalletNotExists = errors.New("mpc wallet does not exist")
+)
+
+type motor struct {
+	//	node *host.SonrHost
+	wallet *crypto.MPCWallet
+}
+
+var instance *motor
+
+// NewWallet creates a new mpc based wallet.
+func NewWallet() error {
+	if instance != nil {
+		return errWalletExists
+	}
+	w, err := crypto.GenerateWallet()
 	if err != nil {
 		return err
+	}
+	instance = &motor{
+		wallet: w,
 	}
 	return nil
 }
 
-// Pause pauses the host, node, and rpc service.
-func Pause() {
-	//	node.Pause()
+// LoadWallet unmarshals the given JSON into the wallet.
+func LoadWallet(buf []byte) error {
+	if instance != nil {
+		return errWalletExists
+	}
+	w := &crypto.MPCWallet{}
+	err := w.Unmarshal(buf)
+	if err != nil {
+		return err
+	}
+	instance = &motor{
+		wallet: w,
+	}
+	return nil
 }
 
-// Resume resumes the host, node, and rpc service.
-func Resume() {
-	//	node.Resume()
+// Address returns the address of the wallet.
+func Address() string {
+	if instance == nil {
+		return ""
+	}
+	addr, err := instance.wallet.Address()
+	if err != nil {
+		return ""
+	}
+	return addr
 }
 
-// Stop closes the host, node, and rpc service.
-func Stop() {
-	//	node.Exit(0)
+// DidDoc returns the DID document as JSON
+func DidDoc() string {
+	if instance == nil {
+		return ""
+	}
+	buf, err := instance.wallet.DIDDocument.MarshalJSON()
+	if err != nil {
+		return ""
+	}
+	return string(buf)
+}
+
+// ImportCredentials imports the given credentials into the wallet.
+func ImportCredential(buf []byte) error {
+	if instance == nil {
+		return errWalletNotExists
+	}
+	var cred did.Credential
+	err := json.Unmarshal(buf, &cred)
+	if err != nil {
+		return err
+	}
+	vmdid, err := did.ParseDID(fmt.Sprintf("%s#%s", instance.wallet.DID, cred.ID))
+	if err != nil {
+		return err
+	}
+	vm := &did.VerificationMethod{
+		ID:         *vmdid,
+		Type:       ssi.ECDSASECP256K1VerificationKey2019,
+		Controller: instance.wallet.DID,
+		Credential: &cred,
+	}
+	instance.wallet.DIDDocument.AddAssertionMethod(vm)
+	return nil
+}
+
+// MarshalWallet returns the JSON representation of the wallet.
+func MarshalWallet() []byte {
+	if instance == nil {
+		return nil
+	}
+	buf, err := instance.wallet.Marshal()
+	if err != nil {
+		return nil
+	}
+	return buf
+}
+
+// Sign returns the signature of the given message.
+func Sign(typeUrl string, msg []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	tx, err := rt.UnmarshalTxMsg(typeUrl, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	sig, err := instance.wallet.SignTx(tx)
+	if err != nil {
+		return nil, err
+	}
+	return sig, nil
+}
+
+// Verify returns true if the given signature is valid for the given message.
+func Verify(msg []byte, sig []byte) bool {
+	if instance == nil {
+		return false
+	}
+	return instance.wallet.Verify(msg, sig)
 }

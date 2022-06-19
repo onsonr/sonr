@@ -28,16 +28,11 @@ func setupDefault() (*MotorNode, error) {
 		return nil, err
 	}
 
-	doc, err := w.DIDDocument()
-	if err != nil {
-		return nil, err
-	}
-
 	return &MotorNode{
 		Cosmos:  c,
 		Wallet:  w,
 		Address: bechAddr,
 		PubKey:  pk,
-		DIDDoc:  doc,
+		DIDDoc:  w.DIDDocument,
 	}, nil
 }
