@@ -39,3 +39,9 @@ tasks:
       - mkdir motorlib-js_wasm
       - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-js_wasm/sonr-motor.wasm -v
       - mv motorlib-js_wasm ../motorlib-js_wasm
+
+  clean:
+    cmds:
+      - find ./ -type d -name "motorlib-ios_arm64" -exec rm -rf {} +
+      - find ./ -type d -name "motorlib-android_arm64" -exec rm -rf {} +
+      - find ./ -type d -name "build" -exec rm -rf {} +

@@ -8,7 +8,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -121,16 +120,16 @@ func Sign(typeUrl string, msg []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 
-	tx, err := rt.UnmarshalTxMsg(typeUrl, msg)
-	if err != nil {
-		return nil, err
-	}
+	// tx, err := rt.UnmarshalTxMsg(typeUrl, msg)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	sig, err := instance.wallet.SignTx(tx)
+	sig, err := instance.wallet.Sign(msg)
 	if err != nil {
 		return nil, err
 	}
-	return sig, nil
+	return crypto.SerializeSignature(sig)
 }
 
 // Verify returns true if the given signature is valid for the given message.

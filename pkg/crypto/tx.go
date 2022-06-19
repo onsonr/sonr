@@ -4,7 +4,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 )
 
 // BuildTx builds a transaction from the given inputs.
@@ -83,7 +82,7 @@ func getAuthInfoSingle(w *MPCWallet, gas int) (*txtypes.AuthInfo, error) {
 				ModeInfo: &txtypes.ModeInfo{
 					Sum: &txtypes.ModeInfo_Single_{
 						Single: &txtypes.ModeInfo_Single{
-							Mode: signing.SignMode_SIGN_MODE_DIRECT,
+							Mode: 1,
 						},
 					},
 				},
