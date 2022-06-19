@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/sonr/pkg/host"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -19,6 +20,7 @@ var (
 type motor struct {
 	//	node *host.SonrHost
 	wallet *crypto.MPCWallet
+	host   host.SonrHost
 }
 
 var instance *motor
@@ -65,6 +67,18 @@ func Address() string {
 	}
 	return addr
 }
+
+// func Connect() error {
+// 	if instance == nil {
+// 		return errWalletNotExists
+// 	}
+// 	h, err := host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
+// 	if err != nil {
+// 		return err
+// 	}
+// 	instance.host = h
+// 	return nil
+// }
 
 // DidDoc returns the DID document as JSON
 func DidDoc() string {
