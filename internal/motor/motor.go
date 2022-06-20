@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -89,7 +90,15 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	return m.Cosmos.BroadcastTx(txb, sig, ai)
+	txRes, err := m.Cosmos.BroadcastTx(txb, sig, ai)
+	if err != nil {
+		return nil, err
+	}
+
+	if txRes.RawLog != "[]" {
+		return nil, errors.New(txRes.RawLog)
+	}
+	return txRes, nil
 }
 
 func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
@@ -109,7 +118,15 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	return m.Cosmos.BroadcastTx(txb, sig, ai)
+	txRes, err := m.Cosmos.BroadcastTx(txb, sig, ai)
+	if err != nil {
+		return nil, err
+	}
+
+	if txRes.RawLog != "[]" {
+		return nil, errors.New(txRes.RawLog)
+	}
+	return txRes, nil
 }
 
 func (m *MotorNode) newCreateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
