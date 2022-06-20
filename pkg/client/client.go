@@ -1,49 +1,72 @@
 package client
 
 const (
-	// HTTP Faucet Address - Public
-	SONR_HTTP_FAUCET_PUBLIC = "http://143.198.29.209:8000"
+	// -- Local Blockchain --
+	BLOCKCHAIN_REST_LOCAL   = "http://0.0.0.0:26657"
+	BLOCKCHAIN_FAUCET_LOCAL = "http://0.0.0.0:4500"
+	BLOCKCHAIN_RPC_LOCAL    = "127.0.0.1:9090"
 
-	// HTTP Faucet Address - Local
-	SONR_HTTP_FAUCET_LOCAL = "http://0.0.0.0:4500"
+	// -- Dev Blockchain --
+	BLOCKCHAIN_FAUCET_DEV = "http://143.198.29.209:8000"
+	BLOCKCHAIN_RPC_DEV    = "143.198.29.209:9090"
 
-	// RPC Address for public node
-	SONR_RPC_ADDR_PUBLIC = "143.198.29.209:9090"
+	// -- Beta Blockchain --
+	BLOCKCHAIN_FAUCET_BETA = "http://137.184.190.146:8000"
+	BLOCKCHAIN_RPC_BETA    = "137.184.190.146:9090"
 
-	// RPC Address for local node
-	SONR_RPC_ADDR_LOCAL = "127.0.0.1:9090"
+	// -- Services --
+	IPFS_API_ADDRESS  = "http://164.92.99.233"
+	VAULT_API_ADDRESS = "http://164.92.99.233"
+)
 
-	// Sonr REST API Address - LOCAL ONLY
-	SONR_REST_API_ADDR_LOCAL = "http://0.0.0.0:26657"
+type ConnEndpointType int
+
+const (
+	ConnEndpointType_NONE ConnEndpointType = iota
+	ConnEndpointType_LOCAL
+	ConnEndpointType_DEV
+	ConnEndpointType_BETA
 )
 
 type Client struct {
-	IsLocal bool
+	connType ConnEndpointType
 }
 
-func NewClient(isLocal bool) *Client {
+func NewClient(t ConnEndpointType) *Client {
 	return &Client{
-		IsLocal: isLocal,
+		connType: t,
 	}
 }
 
 func (c *Client) GetFaucetAddress() string {
-	if c.IsLocal {
-		return SONR_HTTP_FAUCET_LOCAL
+	switch c.connType {
+	case ConnEndpointType_LOCAL:
+		return BLOCKCHAIN_FAUCET_LOCAL
+	case ConnEndpointType_DEV:
+		return BLOCKCHAIN_FAUCET_DEV
+	case ConnEndpointType_BETA:
+		return BLOCKCHAIN_FAUCET_BETA
+	default:
+		return BLOCKCHAIN_FAUCET_LOCAL
 	}
-	return SONR_HTTP_FAUCET_PUBLIC
 }
 
 func (c *Client) GetRPCAddress() string {
-	if c.IsLocal {
-		return SONR_RPC_ADDR_LOCAL
+	switch c.connType {
+	case ConnEndpointType_LOCAL:
+		return BLOCKCHAIN_RPC_LOCAL
+	case ConnEndpointType_DEV:
+		return BLOCKCHAIN_RPC_DEV
+	case ConnEndpointType_BETA:
+		return BLOCKCHAIN_RPC_BETA
+	default:
+		return BLOCKCHAIN_RPC_LOCAL
 	}
-	return SONR_RPC_ADDR_PUBLIC
 }
 
 func (c *Client) GetAPIAddress() string {
-	if c.IsLocal {
-		return SONR_REST_API_ADDR_LOCAL
+	if c.connType == ConnEndpointType_LOCAL {
+		return BLOCKCHAIN_REST_LOCAL
 	}
 	return ""
 }
