@@ -8,7 +8,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	"github.com/sonr-io/sonr/pkg/host"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -20,7 +19,7 @@ var (
 type motor struct {
 	//	node *host.SonrHost
 	wallet *crypto.MPCWallet
-	host   host.SonrHost
+	// host   host.SonrHost
 }
 
 var instance *motor
