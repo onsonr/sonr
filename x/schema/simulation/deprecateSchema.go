@@ -1,6 +1,7 @@
 package simulation
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -15,10 +16,17 @@ import (
 func SimulateMsgDeprecateSchema(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs) //TODO: Create schemas first
+		simAccount, _ := simtypes.RandomAcc(r, accs)
+
+		//Need to ensure WhatIs exists
+		wi, foundWi := k.GetWhatIsFromCreator(ctx, simAccount.Address.String())
+		if !foundWi || len(wi) < 1 {
+			fmt.Println("Wi not found") //testing only
+		}
+
 		deprMsg := types.MsgDeprecateSchema{
-			Creator: simAccount.Address.String(), //TODO: find
-			Did:     "",                          //TODO: add
+			Creator: simAccount.Address.String(),
+			Did:     wi[0].GetDid(),
 		}
 
 		txCtx := simulation.OperationInput{
