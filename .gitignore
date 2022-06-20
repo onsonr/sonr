@@ -161,3 +161,6 @@ dist
 .pnp.*
 
 dist/
+node_modules
+.temp
+.cache

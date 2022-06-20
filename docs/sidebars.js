@@ -15,54 +15,80 @@
 const sidebars = {
   // But you can create a sidebar manually
   basicsSidebar: [
-    'introduction',
-    'why-sonr',
-    'how-it-works',
-    'sonr-stack',
+    'guide/introduction',
+
+    'guide/how-it-works',
+
     {
       type: 'category',
       label: 'Advanced',
-      items: ['advanced/identifiers', 'advanced/privacy', 'advanced/security', 'advanced/token'],
+      items: ['guide/advanced/identifiers', 'guide/advanced/privacy', 'guide/advanced/security', 'guide/advanced/token'],
       collapsible: true,
       collapsed: true,
     },
   ],
 
-  motorSidebar: [
-    'motor-node/access-authentication', 'motor-node/discovery', 'motor-node/transmission',
+  modulesSidebar: [
+    'build-apps/why-sonr',
+    'build-apps/sonr-stack',
+    'build-apps/installation',
     {
       type: 'category',
-      label: 'Getting Started',
-      items: ['motor-node/installation'],
+      label: 'Introducing the Motor',
+      items: ['build-apps/motor/interface', 'build-apps/motor/access-authentication', 'build-apps/motor/discovery', 'build-apps/motor/transmission'],
       collapsible: true,
       collapsed: false,
     },
-  ],
+    {
+      type: 'category',
+      label: 'List of Modules',
+      items: [{
+        type: 'category',
+        label: 'Registry',
+        items: ['build-apps/modules/registry/overview', 'build-apps/modules/registry/state', 'build-apps/modules/registry/keepers', 'build-apps/modules/registry/messages', 'build-apps/modules/registry/events', 'build-apps/modules/registry/client'],
+        collapsible: true,
+        collapsed: true,
+      },
+      {
+        type: 'category',
+        label: 'Schema',
+        items: ['build-apps/modules/schema/overview', 'build-apps/modules/schema/state', 'build-apps/modules/schema/keepers', 'build-apps/modules/schema/messages', 'build-apps/modules/schema/events', 'build-apps/modules/schema/client'],
+        collapsible: true,
+        collapsed: true,
+      },
+      {
+        type: 'category',
+        label: 'Buckets',
+        items: ['build-apps/modules/buckets/overview', 'build-apps/modules/buckets/state', 'build-apps/modules/buckets/keepers', 'build-apps/modules/buckets/messages', 'build-apps/modules/buckets/events', 'build-apps/modules/buckets/client'],
+        collapsible: true,
+        collapsed: true,
+      },
+      {
+        type: 'category',
+        label: 'Channel',
+        items: ['build-apps/modules/channel/overview', 'build-apps/modules/channel/state', 'build-apps/modules/channel/keepers', 'build-apps/modules/channel/messages', 'build-apps/modules/channel/events', 'build-apps/modules/channel/client'],
+        collapsible: true,
+        collapsed: true,
+      },],
+      collapsible: true,
+      collapsed: true,
+    },
 
-  highwaySidebar: [
-    'highway-sdk/using-cli',
-    {
-      type: 'category',
-      label: 'Modules',
-      items: ['highway-sdk/registry', 'highway-sdk/objects', 'highway-sdk/channels', 'highway-sdk/buckets'],
-      collapsible: true,
-      collapsed: false,
-    },
   ],
   // But you can create a sidebar manually
   runSidebar: [
-    'run-nodes/setup-validator',
+    'run-nodes/blockchain/setup-validator',
   ],
 
   // But you can create a sidebar manually
   resourcesSidebar: [
-    'reference/adr-overview',
-    'reference/adr-001',
-    'reference/adr-002',
-    'reference/adr-003',
-    'reference/adr-004',
-    'reference/adr-005',
-    'reference/adr-006'
+    'architecture/adr-overview',
+    'architecture/adr-001',
+    'architecture/adr-002',
+    'architecture/adr-003',
+    'architecture/adr-004',
+    'architecture/adr-005',
+    'architecture/adr-006'
   ],
 };
 
