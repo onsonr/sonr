@@ -27,7 +27,7 @@ type MotorNode struct {
 	// Account *at.BaseAccount
 }
 
-func CreateAccount() (*MotorNode, error) {
+func CreateAccount(password, dscPubKey, psKey []byte) (*MotorNode, error) {
 	m, err := setupDefault()
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func CreateAccount() (*MotorNode, error) {
 	vaultService, err := vc.CreateVault(
 		m.Address,
 		unusedShards,
-		m.PubKey.String(),
+		string(dscPubKey),
 		dscShard,
 		pskShard,
 		recShard,
