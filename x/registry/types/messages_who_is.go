@@ -73,7 +73,7 @@ func (msg *MsgCreateWhoIs) GetCreatorDid() string {
 
 var _ sdk.Msg = &MsgUpdateWhoIs{}
 
-func NewMsgUpdateWhoIs(owner string, id string, doc []byte) *MsgUpdateWhoIs {
+func NewMsgUpdateWhoIs(owner string, doc []byte) *MsgUpdateWhoIs {
 	return &MsgUpdateWhoIs{
 		Creator:     owner,
 		DidDocument: doc,

@@ -12,6 +12,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 )
@@ -31,13 +32,54 @@ func CreateAccount() (*MotorNode, error) {
 		return nil, err
 	}
 
+	// create Vault shards to make sure this works before creating WhoIs
+	vc := vault.New()
+	dscShard, pskShard, recShard, unusedShards, err := m.Wallet.CreateInitialShards()
+	if err != nil {
+		return nil, err
+	}
+
+	// create WhoIs
+	resp, err := createWhoIs(m)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(resp.String())
+
+	// create vault
+	vaultService, err := vc.CreateVault(
+		m.Address,
+		unusedShards,
+		m.PubKey.String(),
+		dscShard,
+		pskShard,
+		recShard,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// update DID Document
+	m.DIDDoc.AddService(vaultService)
+
+	// update whois
+	resp, err = updateWhoIs(m)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(resp.String())
+
+	return m, err
+}
+
+func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	docBz, err := m.DIDDoc.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
 
 	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
-	ai, txb, err := m.newTx(msg1)
+	ai, txb, err := m.newCreateTx(msg1)
 	if err != nil {
 		return nil, err
 	}
@@ -47,17 +89,35 @@ func CreateAccount() (*MotorNode, error) {
 		return nil, err
 	}
 
-	resp, err := m.Cosmos.BroadcastTx(txb, sig, ai)
+	return m.Cosmos.BroadcastTx(txb, sig, ai)
+}
+
+func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
+	docBz, err := m.DIDDoc.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(resp.String())
-	return m, nil
+	msg1 := rt.NewMsgUpdateWhoIs(m.Address, docBz)
+	ai, txb, err := m.newUpdateTx(msg1)
+	if err != nil {
+		return nil, err
+	}
+
+	sig, err := m.signTx(ai, txb)
+	if err != nil {
+		return nil, err
+	}
+
+	return m.Cosmos.BroadcastTx(txb, sig, ai)
 }
 
-func (m *MotorNode) newTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
-	return crypto.BuildTx(m.Wallet, msg...)
+func (m *MotorNode) newCreateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
+	return crypto.BuildCreateWhoIsTx(m.Wallet, msg...)
+}
+
+func (m *MotorNode) newUpdateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
+	return crypto.BuildUpdateWhoIsTx(m.Wallet, msg...)
 }
 
 func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, error) {
@@ -68,6 +128,6 @@ func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, 
 	return m.Wallet.Sign(signDocBz)
 }
 
-func (m *MotorNode) broadcastTx(txb *txt.TxBody, sig *ecdsa.Signature, ai *tx.AuthInfo) (*sdk.TxResponse, error) {
-	return m.Cosmos.BroadcastTx(txb, sig, ai)
-}
+// func (m *MotorNode) broadcastTx(txb *txt.TxBody, sig *ecdsa.Signature, ai *tx.AuthInfo) (*sdk.TxResponse, error) {
+// 	return m.Cosmos.BroadcastTx(txb, sig, ai)
+// }

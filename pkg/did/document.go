@@ -126,6 +126,10 @@ func (d *DocumentImpl) GetCapabilityInvocations() VerificationRelationships {
 	return d.CapabilityInvocation
 }
 
+func (d *DocumentImpl) GetServices() Services {
+	return d.Service
+}
+
 func (d *DocumentImpl) GetID() DID {
 	return d.ID
 }
@@ -295,6 +299,10 @@ func (d *DocumentImpl) AddCapabilityDelegation(v *VerificationMethod) {
 	}
 	d.VerificationMethod.Add(v)
 	d.CapabilityDelegation.Add(v)
+}
+
+func (d *DocumentImpl) AddService(s Service) {
+	d.Service = append(d.Service, s)
 }
 
 func (d DocumentImpl) MarshalJSON() ([]byte, error) {

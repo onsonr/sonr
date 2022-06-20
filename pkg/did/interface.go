@@ -13,6 +13,8 @@ type Document interface {
 	// AddCapabilityInvocation adds a VerificationMethod as CapabilityInvocation
 	// If the controller is not set, it will be set to the document's ID
 	AddCapabilityInvocation(v *VerificationMethod)
+	// AddService adds a Service
+	AddService(s Service)
 
 	CopyFromBytes(b []byte) error
 
@@ -69,4 +71,7 @@ type Document interface {
 
 	// GetCapabilityInvocations returns all CapabilityInvocations
 	GetCapabilityInvocations() VerificationRelationships
+
+	// GetServices gets all services on the DID Document
+	GetServices() Services
 }
