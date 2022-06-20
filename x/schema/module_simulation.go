@@ -32,11 +32,16 @@ const (
 // GenerateGenesisState creates a randomized GenState of the module
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	accs := make([]string, len(simState.Accounts))
+	whatIsList := make([]types.WhatIs, len(simState.Accounts))
+
 	for i, acc := range simState.Accounts {
 		accs[i] = acc.Address.String()
+		whatIsList[i], _ = schemasimulation.CreatMockWhatIs(acc)
 	}
 	schemaGenesis := types.GenesisState{
-		Params: types.DefaultParams(),
+		Params:      types.DefaultParams(),
+		WhatIsList:  whatIsList,
+		WhatIsCount: uint64(len(whatIsList)),
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&schemaGenesis)
