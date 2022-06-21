@@ -10,9 +10,7 @@ import (
 )
 
 func (k Keeper) GenerateKeyForDID() string {
-	id := uuid.New()
-
-	return id.String()
+	return uuid.New().String()
 }
 
 func (k Keeper) GetWhatIsCount(ctx sdk.Context) uint64 {
