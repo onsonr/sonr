@@ -31,6 +31,7 @@ type Document interface {
 	// AddAlias adds a string alias to the document for a .snr domain name into the AlsoKnownAs field
 	// in the document.
 	AddAlias(alias string)
+
 	AddController(id DID)
 
 	// ResolveEndpointURL finds the endpoint with the given type and unmarshalls it as single URL.
@@ -44,4 +45,28 @@ type Document interface {
 	// EncryptJWE(id DID, buf []byte) (string, error)
 	// DecryptJWE(id DID, serial string) ([]byte, error)
 	GetController(id DID) (DID, error)
+
+	// FindAssertionMethod finds the first AssertionMethod with the given DID
+	FindAssertionMethod(id DID) *VerificationMethod
+
+	// FindAuthenticationMethod finds the first AuthenticationMethod with the given DID
+	FindAuthenticationMethod(id DID) *VerificationMethod
+
+	// FindCapabilityDelegation finds the first CapabilityDelegation with the given DID
+	FindCapabilityDelegation(id DID) *VerificationMethod
+
+	// FindCapabilityInvocation finds the first CapabilityInvocation with the given DID
+	FindCapabilityInvocation(id DID) *VerificationMethod
+
+	// GetAssertionMethods returns all AssertionMethods
+	GetAssertionMethods() VerificationRelationships
+
+	// GetAuthenticationMethods returns all AuthenticationMethods
+	GetAuthenticationMethods() VerificationRelationships
+
+	// GetCapabilityDelegations returns all CapabilityDelegations
+	GetCapabilityDelegations() VerificationRelationships
+
+	// GetCapabilityInvocations returns all CapabilityInvocations
+	GetCapabilityInvocations() VerificationRelationships
 }
