@@ -25,7 +25,9 @@ type Protocol struct {
 }
 
 // New creates a new Protocol instance with Host Implementation
-func New(ctx context.Context, ds *store.Store, host host.SonrHost) (*Protocol, error) {
+func New(ctx context.Context, host host.SonrHost) (*Protocol, error) {
+	ds := store.New("tmp")
+
 	// Create IPFS Peer
 	peer, err := ipfslite.New(ctx, ds, host.Host(), host.Routing(), nil)
 	if err != nil {
