@@ -24,11 +24,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, sdkerrors.ErrNotFound
 	}
 
-	creator_did, err := did.NewDocument(msg.GetCreatorDid())
-
-	if err != nil {
-		return nil, err
-	}
+	creator_did := msg.GetCreatorDid()
 
 	guid := k.GenerateKeyForDID()
 
@@ -50,7 +46,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	var whatIs = types.WhatIs{
-		Creator:   creator_did.GetID().String(),
+		Creator:   creator_did,
 		Did:       what_is_did.String(),
 		Schema:    &schema,
 		Timestamp: time.Now().Unix(),
