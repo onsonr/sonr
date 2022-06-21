@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/sonr-io/sonr/internal/highway/x/store"
-	"io/ioutil"
-
 	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
+	"github.com/ipfs/go-datastore"
 	"github.com/ipld/go-ipld-prime/codec/dagjson"
 	"github.com/ipld/go-ipld-prime/datamodel"
 	basicnode "github.com/ipld/go-ipld-prime/node/basic"
+	"github.com/sonr-io/sonr/internal/highway/x/store"
 	"github.com/sonr-io/sonr/pkg/host"
 	st "github.com/sonr-io/sonr/x/schema/types"
+	"io/ioutil"
+	"log"
 )
 
 // Protocol leverages the IPFSLite library to provide simple file operations.
@@ -56,6 +57,25 @@ func (i *Protocol) GetData(cid string) ([]byte, error) {
 	c, err := DecodeCIDFromString(cid)
 	if err != nil {
 		return nil, err
+	}
+
+	ctx := context.TODO()
+	key := datastore.NewKey(cid)
+
+	exists, err := i.store.Has(ctx, key)
+	if err != nil {
+		// log error and continue
+		log.Println(err)
+	}
+
+	if exists {
+		data, err := i.store.Get(ctx, key)
+		if err != nil {
+			// log error and continue
+			log.Println(err)
+		}
+
+		return data, nil
 	}
 
 	// Get the file from IPFS
@@ -102,6 +122,12 @@ func (i *Protocol) PutData(data []byte) (*cid.Cid, error) {
 
 	// Get Back the CID
 	c := nd.Cid()
+
+	// Use the CID to store the file on local fs.
+	if err := i.store.Put(context.TODO(), datastore.NewKey(c.String()), data); err != nil {
+		return nil, err
+	}
+
 	return &c, nil
 }
 
@@ -160,5 +186,22 @@ func (i *Protocol) RemoveFile(cidstr string) error {
 	if err != nil {
 		return err
 	}
+
+	ctx := context.TODO()
+	key := datastore.NewKey(cid.String())
+
+	exists, err := i.store.Has(ctx, key)
+	if err != nil {
+		// log error and continue
+		log.Println(err)
+	}
+
+	if exists {
+		if err := i.store.Delete(ctx, key); err != nil {
+			// log error and continue
+			log.Println(err)
+		}
+	}
+
 	return i.Peer.Remove(i.ctx, cid)
 }

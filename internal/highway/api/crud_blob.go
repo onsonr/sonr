@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/ipfs/go-datastore"
 	"github.com/kataras/go-events"
 	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -60,14 +58,6 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 		return
 	}
 
-	// Use the CID to store the file on local fs.
-	if err := s.store.Put(c.Request.Context(), datastore.NewKey(cid.String()), buf); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "Unable to upload the file to IPFS",
-		})
-		return
-	}
-
 	defer events.Emit(metrics.ON_BLOB_ADD, "")
 
 	// Return the response
@@ -78,6 +68,7 @@ func (s *HighwayServer) UploadBlob(c *gin.Context) {
 	})
 }
 
+// DownloadBlob downloads a file from storage given its CID.
 // @Summary Download File
 // @Schemes
 // @Description DownloadBlob downloads a file from storage given its CID.
@@ -93,29 +84,6 @@ func (s *HighwayServer) DownloadBlob(c *gin.Context) {
 			"message": "Missing CID",
 		})
 		return
-	}
-
-	ctx := c.Request.Context()
-	key := datastore.NewKey(cid)
-
-	exists, err := s.store.Has(ctx, key)
-	if err != nil {
-		// log error and continue
-		log.Println(err)
-	}
-
-	if exists {
-		data, err := s.store.Get(ctx, key)
-		if err != nil {
-			// log error and continue
-			log.Println(err)
-		}
-
-		if data != nil {
-			// Save the file to temporary directory
-			c.Data(http.StatusOK, "application/octet-stream", data)
-			return
-		}
 	}
 
 	// Download the file from ipfsProtocol
@@ -149,24 +117,8 @@ func (s *HighwayServer) UnpinBlob(c *gin.Context) {
 		return
 	}
 
-	ctx := c.Request.Context()
-	key := datastore.NewKey(cid)
-
-	exists, err := s.store.Has(ctx, key)
-	if err != nil {
-		// log error and continue
-		log.Println(err)
-	}
-
-	if exists {
-		if err := s.store.Delete(ctx, key); err != nil {
-			// log error and continue
-			log.Println(err)
-		}
-	}
-
 	// Remove the file from ipfsProtocol
-	err = s.ipfsProtocol.RemoveFile(cid)
+	err := s.ipfsProtocol.RemoveFile(cid)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Unable to download the file from IPFS",
