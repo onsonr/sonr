@@ -10,9 +10,7 @@ import (
 )
 
 func (k Keeper) GenerateKeyForDID() string {
-	id := uuid.New()
-
-	return id.String()
+	return uuid.New().String()
 }
 
 func (k Keeper) GetWhatIsCount(ctx sdk.Context) uint64 {
@@ -44,10 +42,17 @@ func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []typ
 	var vals []types.WhatIs = make([]types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
 		var instance types.WhatIs
-		k.cdc.MustUnmarshal(iterator.Value(), &instance)
+		error := k.cdc.Unmarshal(iterator.Value(), &instance)
+		if error != nil {
+			return vals, false
+		}
 		if instance.Creator == creator {
 			vals = append(vals, instance)
 		}
+	}
+
+	if len(vals) < 1 {
+		return vals, false
 	}
 
 	return vals, true
