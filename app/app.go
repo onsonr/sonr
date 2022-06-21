@@ -290,6 +290,10 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
+		channelmoduletypes.StoreKey,
+		schemamoduletypes.StoreKey,
+		bucketmoduletypes.StoreKey,
+		registrymoduletypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -500,6 +504,10 @@ func New(
 		transferModule,
 		monitoringModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
+		channelModule,
+		schemaModule,
+		bucketModule,
+		registryModule,
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -527,6 +535,10 @@ func New(
 		paramstypes.ModuleName,
 		monitoringptypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
+		channelmoduletypes.ModuleName,
+		schemamoduletypes.ModuleName,
+		bucketmoduletypes.ModuleName,
+		registrymoduletypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -550,6 +562,10 @@ func New(
 		ibctransfertypes.ModuleName,
 		monitoringptypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
+		channelmoduletypes.ModuleName,
+		schemamoduletypes.ModuleName,
+		bucketmoduletypes.ModuleName,
+		registrymoduletypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -578,6 +594,10 @@ func New(
 		feegrant.ModuleName,
 		monitoringptypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
+		channelmoduletypes.ModuleName,
+		schemamoduletypes.ModuleName,
+		bucketmoduletypes.ModuleName,
+		registrymoduletypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -795,7 +815,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(monitoringptypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
-
+	paramsKeeper.Subspace(channelmoduletypes.ModuleName)
+	paramsKeeper.Subspace(schemamoduletypes.ModuleName)
+	paramsKeeper.Subspace(bucketmoduletypes.ModuleName)
+	paramsKeeper.Subspace(registrymoduletypes.ModuleName)
 	return paramsKeeper
 }
 
