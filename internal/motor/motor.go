@@ -4,16 +4,11 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
-	txt "github.com/cosmos/cosmos-sdk/types/tx"
 
-	// at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 )
 
 type MotorNode struct {
@@ -37,37 +32,16 @@ func CreateAccount() (*MotorNode, error) {
 	}
 
 	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
-	ai, txb, err := m.newTx(msg1)
+	txRaw, err := m.Wallet.SignTx(msg1)
 	if err != nil {
 		return nil, err
 	}
 
-	sig, err := m.signTx(ai, txb)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Cosmos.BroadcastTx(txb, sig, ai)
+	resp, err := m.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
 		return nil, err
 	}
 
 	fmt.Println(resp.String())
 	return m, nil
-}
-
-func (m *MotorNode) newTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
-	return crypto.BuildTx(m.Wallet, msg...)
-}
-
-func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, error) {
-	signDocBz, err := crypto.GetSignDocBytes(ai, txb)
-	if err != nil {
-		return nil, err
-	}
-	return m.Wallet.Sign(signDocBz)
-}
-
-func (m *MotorNode) broadcastTx(txb *txt.TxBody, sig *ecdsa.Signature, ai *tx.AuthInfo) (*sdk.TxResponse, error) {
-	return m.Cosmos.BroadcastTx(txb, sig, ai)
 }

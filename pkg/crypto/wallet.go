@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -19,17 +20,19 @@ import (
 )
 
 type MPCWallet struct {
-	pool      *pool.Pool
-	ID        party.ID
-	Configs   map[party.ID]*cmp.Config
-	Network   *Network
-	Threshold int
+	pool        *pool.Pool
+	ID          party.ID
+	DID         did.DID
+	DIDDocument did.Document
+	Configs     map[party.ID]*cmp.Config
+	Network     *Network
+	Threshold   int
 }
 
-// Generate a new ECDSA private key shared among all the given participants.
-func Generate(options ...WalletOption) (*MPCWallet, error) {
+// GenerateWallet a new ECDSA private key shared among all the given participants.
+func GenerateWallet(options ...WalletOption) (*MPCWallet, error) {
 	opt := defaultConfig()
-	wallet := opt.Apply(options...)
+	w := opt.Apply(options...)
 
 	var wg sync.WaitGroup
 	for _, id := range opt.participants {
@@ -38,63 +41,21 @@ func Generate(options ...WalletOption) (*MPCWallet, error) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
 			defer wg.Done()
-			conf, err := cmpKeygen(id, opt.participants, wallet.Network, opt.threshold, pl)
+			conf, err := cmpKeygen(id, opt.participants, w.Network, opt.threshold, pl)
 			if err != nil {
 				return
 			}
-			wallet.Configs[conf.ID] = conf
+			w.Configs[conf.ID] = conf
 		}(id)
 	}
 	wg.Wait()
-	return wallet, nil
-}
 
-// Returns the Bech32 representation of the given party.
-func (w *MPCWallet) Address(id ...party.ID) (string, error) {
-	pub, err := w.PublicKeyProto()
+	addr, err := w.Address()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	str, err := bech32.ConvertAndEncode("snr", pub.Address().Bytes())
-	if err != nil {
-		return "", err
-	}
-	return str, nil
-}
-
-// Config returns the configuration of this wallet.
-func (w *MPCWallet) Config() *cmp.Config {
-	return w.Configs[w.ID]
-}
-
-// DID Returns the DID Address of the Wallet. When partyId is provided, it returns the DID of the given party. Only the first party in the wallet can create a DID.
-func (w *MPCWallet) DID(party ...party.ID) (*did.DID, error) {
-	if len(party) == 0 {
-		addr, err := w.Address()
-		if err != nil {
-			return nil, err
-		}
-		return did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr, "snr")))
-	} else if len(party) == 1 {
-		id := party[0]
-		if !w.Config().PartyIDs().Contains(id) {
-			return nil, fmt.Errorf("party %s is not a member of the wallet", id)
-		}
-
-		baseDid, err := w.DID()
-		if err != nil {
-			return nil, err
-		}
-		return did.ParseDID(fmt.Sprintf("%s#%s", baseDid, id))
-	}
-	return nil, fmt.Errorf("invalid number of arguments")
-}
-
-// CreateDIDDocument creates a DID Document for the given party.
-func (w *MPCWallet) DIDDocument() (did.Document, error) {
-	// Get the DID of the wallet
-	baseDid, err := w.DID()
+	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr, "snr")))
 	if err != nil {
 		return nil, err
 	}
@@ -118,11 +79,33 @@ func (w *MPCWallet) DIDDocument() (did.Document, error) {
 	for _, vm := range vmsAll {
 		doc.AddAuthenticationMethod(vm)
 	}
-
 	if len(doc.GetAuthenticationMethods()) != len(vmsAll) {
 		return nil, fmt.Errorf("failed to add all verification methods to DID Document")
 	}
-	return doc, nil
+
+	// Add the DID Document to the wallet.
+	w.DID = *baseDid
+	w.DIDDocument = doc
+	return w, nil
+}
+
+// Returns the Bech32 representation of the given party.
+func (w *MPCWallet) Address(id ...party.ID) (string, error) {
+	pub, err := w.PublicKeyProto()
+	if err != nil {
+		return "", err
+	}
+
+	str, err := bech32.ConvertAndEncode("snr", pub.Address().Bytes())
+	if err != nil {
+		return "", err
+	}
+	return str, nil
+}
+
+// Config returns the configuration of this wallet.
+func (w *MPCWallet) Config() *cmp.Config {
+	return w.Configs[w.ID]
 }
 
 // GetSigners returns the list of signers for the given message.
@@ -138,13 +121,11 @@ func (w *MPCWallet) GetSigners() party.IDSlice {
 // GetVerificationMethod returns the VerificationMethod for the given party.
 func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
 	// Get the DID of the wallet
-	baseDid, err := w.DID()
+	addr, err := w.Address()
 	if err != nil {
 		return nil, err
 	}
-
-	// Get the DID of the party.
-	vmdid, err := w.DID(id)
+	vmdid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s", strings.TrimPrefix(addr, "snr"), id))
 	if err != nil {
 		return nil, err
 	}
@@ -159,9 +140,14 @@ func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod,
 	return &did.VerificationMethod{
 		ID:              *vmdid,
 		Type:            ssi.ECDSASECP256K1VerificationKey2019,
-		Controller:      *baseDid,
+		Controller:      w.DID,
 		PublicKeyBase58: pub,
 	}, nil
+}
+
+// Marshal returns the JSON representation of the entire wallet.
+func (w *MPCWallet) Marshal() ([]byte, error) {
+	return w.Config().MarshalBinary()
 }
 
 // Returns the ECDSA public key of the given party.
@@ -238,6 +224,46 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	}
 	wg.Wait()
 	return sig, err
+}
+
+// SignTx constructs a TxRaw from the given message and signs it.
+func (w *MPCWallet) SignTx(msgs ...sdk.Msg) ([]byte, error) {
+	txb, err := buildTx(w, msgs...)
+	if err != nil {
+		return nil, err
+	}
+
+	ai, err := getAuthInfoSingle(w, 2)
+	if err != nil {
+		return nil, err
+	}
+
+	sigDocBz, err := getSignDocBytes(ai, txb)
+	if err != nil {
+		return nil, err
+	}
+
+	sig, err := w.Sign(sigDocBz)
+	if err != nil {
+		return nil, err
+	}
+	sigBz, err := SerializeSignature(sig)
+	if err != nil {
+		return nil, err
+	}
+	return createRawTxBytes(txb, sigBz, ai)
+}
+
+// Unmarshal unmarshals the given JSON into the wallet.
+func (w *MPCWallet) Unmarshal(buf []byte) error {
+	c := &cmp.Config{}
+	if err := c.UnmarshalBinary(buf); err != nil {
+		return err
+	}
+	w.Configs[c.ID] = c
+	w.ID = c.ID
+	w.Threshold = c.Threshold
+	return nil
 }
 
 // Verifies an ECDSA signature for messageHash.

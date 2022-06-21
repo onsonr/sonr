@@ -3,35 +3,34 @@ package client
 import (
 	"context"
 
-	at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"google.golang.org/grpc"
 )
 
-func (c *Client) QueryAccount(address string) (*at.BaseAccount, error) {
-	// Create a connection to the gRPC server.
-	grpcConn, err := grpc.Dial(
-		c.GetRPCAddress(),   // Or your gRPC server address.
-		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
-	)
-	defer grpcConn.Close()
-	if err != nil {
-		return nil, err
-	}
+// func (c *Client) QueryAccount(address string) (*at.BaseAccount, error) {
+// 	// Create a connection to the gRPC server.
+// 	grpcConn, err := grpc.Dial(
+// 		c.GetRPCAddress(),   // Or your gRPC server address.
+// 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+// 	)
+// 	defer grpcConn.Close()
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	// We then call the QueryAccount method on this client.
-	res, err := at.NewQueryClient(grpcConn).Account(context.Background(), &at.QueryAccountRequest{Address: address})
-	if err != nil {
-		return nil, err
-	}
+// 	// We then call the QueryAccount method on this client.
+// 	res, err := at.NewQueryClient(grpcConn).Account(context.Background(), &at.QueryAccountRequest{Address: address})
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	acc := &at.BaseAccount{}
-	err = acc.Unmarshal(res.GetAccount().GetValue())
-	if err != nil {
-		return nil, err
-	}
-	return acc, nil
-}
+// 	acc := &at.BaseAccount{}
+// 	err = acc.Unmarshal(res.GetAccount().GetValue())
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return acc, nil
+// }
 
 func (c *Client) QueryWhoIs(did string) (*rt.WhoIs, error) {
 	// Create a connection to the gRPC server.
