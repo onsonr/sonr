@@ -85,6 +85,7 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		if a.GetDid() == msg.GetDid() {
 			schemaWI = a
 			foundSchemaWI = true
+			break
 		}
 	}
 

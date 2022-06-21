@@ -7,11 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// func ToString(w types.WhatIs) string {
-// 	return fmt.Sprintf("WhatIs: (Schema '%s')\nDID:\t%s\nCID:\t%s\nIsActive:\t%d\nCreator:\t%s\nTimestamp:\t%d\n",
-// 		w.Schema.Label, w.Did, w.Schema.Cid, w.IsActive, w.Creator, w.Timestamp)
-// }
-
 func TestGetWhatIsFromCreator(t *testing.T) {
 	k, ctx := keepertest.SchemaKeeper(t)
 	items := keepertest.CreateWhatIsWithDID(k, ctx, 2)
