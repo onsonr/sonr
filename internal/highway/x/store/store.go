@@ -28,7 +28,7 @@ type Store struct {
 // New returns a new Store.
 func New(path string) *Store {
 	store := &fsstore.Store{}
-	err := store.InitDefaults("tmp")
+	err := store.InitDefaults(path)
 	if err != nil {
 		panic(err)
 	}
