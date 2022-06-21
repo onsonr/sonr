@@ -1,9 +1,12 @@
 package motor
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
+	"net/http"
 
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -151,4 +154,15 @@ func Verify(msg []byte, sig []byte) bool {
 		return false
 	}
 	return instance.wallet.Verify(msg, sig)
+}
+
+// Broadcast broadcasts rawTx to the specified address
+func Broadcast(addr string, tx []byte) error {
+	apiEndpoint := "v1-beta.sonr.ws:1317/cosmos/tx/v1beta/txs"
+	res, err := http.Post(apiEndpoint, "application/json", bytes.NewBuffer(tx))
+	if err != nil {
+		return err
+	}
+	log.Println(res)
+	return nil
 }

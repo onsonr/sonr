@@ -14,7 +14,7 @@ tasks:
       - task: bind:ios
       # - task: bind:wasm
       - mv motorlib-android_arm64 build/motorlib-android_arm64
-      - mv motorlib-ios_arm64 build/motorlib-ios_arm64
+      - mv motorlib-ios build/motorlib-ios
       # - mv motorlib-js-wasm build/motorlib-js-wasm
       - mv build ../build
 
@@ -29,9 +29,9 @@ tasks:
   bind:ios:
     dir: motor-mobile
     cmds:
-      - mkdir motorlib-ios_arm64
-      - gomobile bind -ldflags='-s -w' -target=ios/arm64 -o motorlib-ios_arm64/SonrMotor.xcframework -v
-      - mv motorlib-ios_arm64 ../motorlib-ios_arm64
+      - mkdir motorlib-ios
+      - gomobile bind -ldflags='-s -w' -target=ios -o motorlib-ios/SonrMotor.xcframework -v
+      - mv motorlib-ios ../motorlib-ios
 
   bind:wasm:
     dir: motor-wasm
