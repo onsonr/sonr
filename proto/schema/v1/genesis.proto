@@ -11,7 +11,7 @@ option go_package = "github.com/sonr-io/sonr/x/schema/types";
 // GenesisState defines the schema module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated WhatIs whatIsList = 2 [(gogoproto.nullable) = false];
-  uint64 whatIsCount = 3;
+  repeated WhatIs what_is_list = 2 [(gogoproto.nullable) = false];
+  uint64 what_is_count = 3;
   // this line is used by starport scaffolding # genesis/proto/state
 }
