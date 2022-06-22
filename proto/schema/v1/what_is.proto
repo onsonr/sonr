@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package sonrio.sonr.schema;
+
+import "registry/v1/did.proto";
+import "schema/v1/schema.proto";
+
+option go_package = "github.com/sonr-io/sonr/x/schema/types";
+
+message WhatIs {
+  // DID is the DID of the object
+  string did = 1;
+
+  // Object_doc is the object document
+  SchemaReference schema = 2;
+
+  // Creator is the DID of the creator
+  string creator = 3;
+
+  // Timestamp is the time of the last update of the DID Document
+  int64 timestamp = 4;
+
+  // IsActive is the status of the DID Document
+  bool is_active = 5;
+}
