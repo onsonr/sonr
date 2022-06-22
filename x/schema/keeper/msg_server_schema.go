@@ -70,16 +70,16 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		return nil, err
 	}
 
-	schemas, foundSchemas := k.GetWhatIsFromCreator(ctx, msg.GetCreator())
-	if !foundSchemas {
+	schemas, found := k.GetWhatIsFromCreator(ctx, msg.GetCreator())
+	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schemas found under same creator as message creator.")
 	}
 
-	var schemaWI types.WhatIs
+	var what_is types.WhatIs
 	var foundSchemaWI bool
 	for _, a := range schemas {
 		if a.GetDid() == msg.GetDid() {
-			schemaWI = a
+			what_is = a
 			foundSchemaWI = true
 			break
 		}
@@ -91,9 +91,9 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 
 	//If already deactivated, do nothing.
 	//Responsibility of caller to check if isActive beforehand
-	if schemaWI.GetIsActive() {
-		schemaWI.IsActive = false
-		k.SetWhatIs(ctx, schemaWI)
+	if what_is.GetIsActive() {
+		what_is.IsActive = false
+		k.SetWhatIs(ctx, what_is)
 	}
 
 	return &types.MsgDeprecateSchemaResponse{
