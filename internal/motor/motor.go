@@ -3,6 +3,7 @@ package motor
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -41,6 +42,8 @@ func CreateAccount(password, dscPubKey, psKey []byte) (*MotorNode, error) {
 		return nil, err
 	}
 	fmt.Println(resp.String())
+
+	time.Sleep(5 * time.Second)
 
 	// create vault
 	vaultService, err := vc.CreateVault(
@@ -97,7 +100,7 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
+	msg1 := rt.NewMsgUpdateWhoIs(m.Address, docBz)
 	txRaw, err := m.Wallet.SignTx("/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
 	if err != nil {
 		return nil, err
@@ -113,23 +116,3 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	}
 	return resp.TxResponse, nil
 }
-
-// func (m *MotorNode) newCreateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
-// 	return crypto.BuildCreateWhoIsTx(m.Wallet, msg...)
-// }
-
-// func (m *MotorNode) newUpdateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
-// 	return crypto.BuildUpdateWhoIsTx(m.Wallet, msg...)
-// }
-
-// func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, error) {
-// 	signDocBz, err := crypto.GetSignDocBytes(ai, txb)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return m.Wallet.Sign(signDocBz)
-// }
-
-// func (m *MotorNode) broadcastTx(txb *txt.TxBody, sig *ecdsa.Signature, ai *tx.AuthInfo) (*sdk.TxResponse, error) {
-// 	return m.Cosmos.BroadcastTx(txb, sig, ai)
-// }
