@@ -17,7 +17,13 @@ func SimulateMsgDeprecateSchema(ak types.AccountKeeper, bk types.BankKeeper, k k
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
+		what_is, err := CreatMockWhatIs(simAccount)
 
+		if err != nil {
+			k.Logger(ctx).Error("Could not create what is for simulation")
+		}
+
+		k.SetWhatIs(ctx, what_is)
 		//Need to ensure WhatIs exists
 		wi, foundWi := k.GetWhatIsFromCreator(ctx, simAccount.Address.String())
 		if !foundWi || len(wi) < 1 {

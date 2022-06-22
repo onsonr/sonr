@@ -25,8 +25,10 @@ var (
 
 const (
 	// this line is used by starport scaffolding # simapp/module/const
-	opWeightMsgCreateSchema          = "op_weight_msg_create_schema"
-	defaultWeightMsgCreateSchema int = 100
+	opWeightMsgCreateSchema             = "op_weight_msg_create_schema"
+	defaultWeightMsgCreateSchema    int = 100
+	opWeightMsgDepricateSchema          = "op_weight_msg_depricate_schema"
+	defaultWeightMsgDepricateSchema int = 100
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
