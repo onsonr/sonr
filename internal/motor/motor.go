@@ -6,13 +6,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 )
 
 type MotorNode struct {
@@ -77,7 +75,7 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	}
 
 	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
-	txRaw, err := m.Wallet.SignTx(msg1)
+	txRaw, err := m.Wallet.SignTx("/sonrio.sonr.registry.MsgCreateWhoIs", msg1)
 	if err != nil {
 		return nil, err
 	}
@@ -99,43 +97,38 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	msg1 := rt.NewMsgUpdateWhoIs(m.Address, docBz)
-	ai, txb, err := m.newUpdateTx(msg1)
+	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
+	txRaw, err := m.Wallet.SignTx("/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
 	if err != nil {
 		return nil, err
 	}
 
-	sig, err := m.signTx(ai, txb)
+	resp, err := m.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
 		return nil, err
 	}
 
-	txRes, err := m.Cosmos.BroadcastTx(txb, sig, ai)
-	if err != nil {
-		return nil, err
+	if resp.TxResponse.RawLog != "[]" {
+		return nil, errors.New(resp.TxResponse.RawLog)
 	}
-
-	if txRes.TxResponse.RawLog != "[]" {
-		return nil, errors.New(txRes.TxResponse.RawLog)
-	}
-	return txRes.TxResponse, nil
+	return resp.TxResponse, nil
 }
 
-func (m *MotorNode) newCreateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
-	return crypto.BuildCreateWhoIsTx(m.Wallet, msg...)
-}
+// func (m *MotorNode) newCreateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
+// 	return crypto.BuildCreateWhoIsTx(m.Wallet, msg...)
+// }
 
-func (m *MotorNode) newUpdateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
-	return crypto.BuildUpdateWhoIsTx(m.Wallet, msg...)
-}
+// func (m *MotorNode) newUpdateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {
+// 	return crypto.BuildUpdateWhoIsTx(m.Wallet, msg...)
+// }
 
-func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, error) {
-	signDocBz, err := crypto.GetSignDocBytes(ai, txb)
-	if err != nil {
-		return nil, err
-	}
-	return m.Wallet.Sign(signDocBz)
-}
+// func (m *MotorNode) signTx(ai *tx.AuthInfo, txb *txt.TxBody) (*ecdsa.Signature, error) {
+// 	signDocBz, err := crypto.GetSignDocBytes(ai, txb)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return m.Wallet.Sign(signDocBz)
+// }
 
 // func (m *MotorNode) broadcastTx(txb *txt.TxBody, sig *ecdsa.Signature, ai *tx.AuthInfo) (*sdk.TxResponse, error) {
 // 	return m.Cosmos.BroadcastTx(txb, sig, ai)

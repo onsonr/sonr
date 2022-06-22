@@ -231,8 +231,8 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 }
 
 // SignTx constructs a TxRaw from the given message and signs it.
-func (w *MPCWallet) SignTx(msgs ...sdk.Msg) ([]byte, error) {
-	txb, err := buildTx(w, msgs...)
+func (w *MPCWallet) SignTx(msgTypeUrl string, msgs ...sdk.Msg) ([]byte, error) {
+	txb, err := buildTx(w, msgTypeUrl, msgs...)
 	if err != nil {
 		return nil, err
 	}
