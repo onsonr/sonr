@@ -12,7 +12,7 @@ import (
 func Test_FaucetCheckBalance(t *testing.T) {
 	// Create Client instance and Generate wallet
 	client := NewClient(ConnEndpointType_BETA)
-	w, err := crypto.Generate()
+	w, err := crypto.GenerateWallet()
 	assert.NoError(t, err, "wallet generation succeeds")
 
 	// Get Wallet Address

@@ -60,20 +60,20 @@ func (p *ExchangeProtocol) Request(shareReq *motor.ShareRequest) error {
 		return err
 	}
 
-	// sign the data
-	signature, err := p.node.SignMessage(req)
-	if err != nil {
-		logger.Errorf("%s - Failed to Sign Response Message", err)
-		return err
-	}
+	// // sign the data
+	// signature, err := p.node.SignMessage(req)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Sign Response Message", err)
+	// 	return err
+	// }
 
-	// add the signature to the message
-	req.Metadata.Signature = signature
-	err = p.node.Send(id, RequestPID, req)
-	if err != nil {
-		logger.Errorf("%s - Failed to Send Message to Peer", err)
-		return err
-	}
+	// // add the signature to the message
+	// req.Metadata.Signature = signature
+	// err = p.node.Send(id, RequestPID, req)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Send Message to Peer", err)
+	// 	return err
+	// }
 
 	// Store Request
 	p.invites.Set(id.String(), req, cache.DefaultExpiration)
@@ -85,32 +85,32 @@ func (p *ExchangeProtocol) Respond(decs bool, to *motor.Peer) (*motor.Payload, e
 	if p.mode.IsHighway() {
 		return nil, ErrNotSupported
 	}
-	// Create Response
-	id, resp, err := p.createResponse(decs, to)
-	if err != nil {
-		logger.Errorf("%s - Failed to Create Request", err)
-		return nil, err
-	}
+	// // Create Response
+	// id, resp, err := p.createResponse(decs, to)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Create Request", err)
+	// 	return nil, err
+	// }
 
 	// sign the data
-	signature, err := p.node.SignMessage(resp)
-	if err != nil {
-		logger.Errorf("%s - Failed to Sign Response Message", err)
-		return nil, err
-	}
+	// signature, err := p.node.SignMessage(resp)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Sign Response Message", err)
+	// 	return nil, err
+	// }
 
-	// add the signature to the message
-	resp.Metadata.Signature = signature
+	// // add the signature to the message
+	// resp.Metadata.Signature = signature
 
-	// Send Response
-	err = p.node.Send(id, ResponsePID, resp)
-	if err != nil {
-		logger.Errorf("%s - Failed to Send Message to Peer", err)
-		return nil, err
-	}
+	// // Send Response
+	// err = p.node.Send(id, ResponsePID, resp)
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Send Message to Peer", err)
+	// 	return nil, err
+	// }
 
 	// Find Request and get Payload
-	if x, found := p.invites.Get(id.String()); found {
+	if x, found := p.invites.Get(""); found {
 		req := x.(*v1.InviteRequest)
 		return req.Payload, nil
 	}
@@ -178,12 +178,12 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 		return
 	}
 
-	// Authenticate Message
-	err = p.node.AuthenticateMessage(resp, resp.Metadata)
-	if err != nil {
-		logger.Errorf("Invalid Invite Response: %s", err)
-		return
-	}
+	// // Authenticate Message
+	// err = p.node.AuthenticateMessage(resp, resp.Metadata)
+	// if err != nil {
+	// 	logger.Errorf("Invalid Invite Response: %s", err)
+	// 	return
+	// }
 
 	// Get Next Entry
 	if x, found := p.invites.Get(remotePeer.String()); found {

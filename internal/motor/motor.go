@@ -7,9 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
-	txt "github.com/cosmos/cosmos-sdk/types/tx"
-
-	// at "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -80,25 +77,20 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	}
 
 	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
-	ai, txb, err := m.newCreateTx(msg1)
+	txRaw, err := m.Wallet.SignTx(msg1)
 	if err != nil {
 		return nil, err
 	}
 
-	sig, err := m.signTx(ai, txb)
+	resp, err := m.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
 		return nil, err
 	}
 
-	txRes, err := m.Cosmos.BroadcastTx(txb, sig, ai)
-	if err != nil {
-		return nil, err
+	if resp.TxResponse.RawLog != "[]" {
+		return nil, errors.New(resp.TxResponse.RawLog)
 	}
-
-	if txRes.RawLog != "[]" {
-		return nil, errors.New(txRes.RawLog)
-	}
-	return txRes, nil
+	return resp.TxResponse, nil
 }
 
 func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
@@ -123,10 +115,10 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	if txRes.RawLog != "[]" {
-		return nil, errors.New(txRes.RawLog)
+	if txRes.TxResponse.RawLog != "[]" {
+		return nil, errors.New(txRes.TxResponse.RawLog)
 	}
-	return txRes, nil
+	return txRes.TxResponse, nil
 }
 
 func (m *MotorNode) newCreateTx(msg ...sdk.Msg) (*tx.AuthInfo, *txt.TxBody, error) {

@@ -52,26 +52,26 @@ func (p *TransmitProtocol) CurrentSession() (*v1.Session, error) {
 
 // Incoming is called by the node to accept an incoming transfer
 func (p *TransmitProtocol) Incoming(payload *motor.Payload, from *motor.Peer) error {
-	// Get User Peer
-	to, err := p.node.Peer()
-	if err != nil {
-		logger.Errorf("%s - Failed to Get User Peer", err)
-		return err
-	}
+	// // Get User Peer
+	// to, err := p.node.Peer()
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Get User Peer", err)
+	// 	return err
+	// }
 
 	// Create New TransferEntry
-	p.current = NewInSession(payload, from, to)
+	p.current = NewInSession(payload, from, nil)
 	return nil
 }
 
 // Outgoing is called by the node to initiate a transfer
 func (p *TransmitProtocol) Outgoing(payload *motor.Payload, to *motor.Peer) error {
-	// Get User Peer
-	from, err := p.node.Peer()
-	if err != nil {
-		logger.Errorf("%s - Failed to Get Peer", err)
-		return err
-	}
+	// // Get User Peer
+	// from, err := p.node.Peer()
+	// if err != nil {
+	// 	logger.Errorf("%s - Failed to Get Peer", err)
+	// 	return err
+	// }
 
 	// Get Id
 	toId, err := Libp2pID(to)
@@ -81,7 +81,7 @@ func (p *TransmitProtocol) Outgoing(payload *motor.Payload, to *motor.Peer) erro
 	}
 
 	// Create New TransferEntry
-	p.current = NewOutSession(payload, from, to)
+	p.current = NewOutSession(payload, nil, to)
 
 	// Send Files
 	if p.current.Payload.GetItems()[0].GetMime().Type != motor.MIME_TYPE_URL {

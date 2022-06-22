@@ -10,7 +10,7 @@ func setupDefault() (*MotorNode, error) {
 	c := client.NewClient(client.ConnEndpointType_BETA)
 
 	// Generate wallet
-	w, err := crypto.Generate()
+	w, err := crypto.GenerateWallet()
 	if err != nil {
 		return nil, err
 	}
@@ -28,16 +28,11 @@ func setupDefault() (*MotorNode, error) {
 		return nil, err
 	}
 
-	doc, err := w.DIDDocument()
-	if err != nil {
-		return nil, err
-	}
-
 	return &MotorNode{
 		Cosmos:  c,
 		Wallet:  w,
 		Address: bechAddr,
 		PubKey:  pk,
-		DIDDoc:  doc,
+		DIDDoc:  w.DIDDocument,
 	}, nil
 }

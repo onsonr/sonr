@@ -98,13 +98,13 @@ func (p *DiscoverProtocol) Put(peer *motor.Peer) error {
 func (p *DiscoverProtocol) Update() error {
 	if p.mode.IsMotor() {
 		// Verify Peer is not nil
-		peer, err := p.node.Peer()
-		if err != nil {
-			return err
-		}
+		// peer, err := p.node.Peer()
+		// if err != nil {
+		// 	return err
+		// }
 
 		// Publish Event
-		err = p.local.Publish(peer)
+		err := p.local.Publish(nil)
 		if err != nil {
 			return err
 		}

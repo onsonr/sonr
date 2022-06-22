@@ -11,6 +11,7 @@ var (
 	ErrInvalidPacketTimeout = sdkerrors.Register(ModuleName, 1500, "invalid packet timeout")
 	ErrInvalidVersion       = sdkerrors.Register(ModuleName, 1501, "invalid version")
 	ErrInsufficientFunds    = sdkerrors.Register(ModuleName, 1502, "insufficient funds")
+	ErrUnknownTxMsgType     = sdkerrors.Register(ModuleName, 1503, "unknown tx msg type")
 
 	// Alias
 	ErrAliasNotFound    = sdkerrors.Register(ModuleName, 1301, "alias not found")

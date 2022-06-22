@@ -136,6 +136,7 @@ tasks:
   clean:
     summary: "Clean all binaries and generated files and directories"
     cmds:
+      - task: motor:clean
       - rm -rf ./build
       - rm -rf ./dist
       - rm -rf ./io.sonr.motor.aar

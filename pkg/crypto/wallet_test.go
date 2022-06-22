@@ -7,26 +7,23 @@ import (
 )
 
 func Test_MPCCreate(t *testing.T) {
-	w, err := Generate()
+	w, err := GenerateWallet()
 	assert.NoError(t, err, "wallet generation succeeds")
 	_, err = w.PublicKey()
 	assert.NoError(t, err, "public key creation succeeds")
 }
 
 func Test_MPCDID(t *testing.T) {
-	w, err := Generate()
+	w, err := GenerateWallet()
 	assert.NoError(t, err, "wallet generation succeeds")
 
 	_, err = w.Address()
 	assert.NoError(t, err, "Bech32Address successfully created")
-
-	_, err = w.DIDDocument()
-	assert.NoError(t, err, "DID Document creation succeeds")
 }
 
 func Test_MPCSignMessage(t *testing.T) {
 	m := []byte("sign this message")
-	w, err := Generate()
+	w, err := GenerateWallet()
 	assert.NoError(t, err, "wallet generation succeeds")
 
 	sig, err := w.Sign(m)
