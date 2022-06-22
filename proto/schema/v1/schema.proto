@@ -1,11 +1,24 @@
 syntax = "proto3";
+
 package sonrio.sonr.schema;
+
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
 // Schema defines the shapes of schemas on Sonr
-message Schema {
+message SchemaReference {
   // the DID for this schema
   string did = 1;
+
+  // an alternative reference point
+  string label = 2;
+
+  // a reference to information stored within an IPFS node.
+  string cid = 3;
+}
+
+message SchemaDefinition {
+  // the DID for this schema
+  string creator = 1;
 
   // an alternative reference point
   string label = 2;

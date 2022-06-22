@@ -401,3 +401,35 @@ func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
 	howIs := queryResp.GetHowIs()
 	return &howIs, nil
 }
+
+// -------
+// Schemas
+// -------
+func (cc *Cosmos) BroadcastCreateSchema(msg *st.MsgCreateSchema) (*st.MsgCreateSchemaResponse, error) {
+	broadCastResp, err := cc.Client.BroadcastTx(cc.accName, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode the response
+	respMsg := st.MsgCreateSchemaResponse{}
+	err = broadCastResp.Decode(&respMsg)
+	if err != nil {
+		return nil, err
+	}
+	return &respMsg, nil
+}
+
+func (cc *Cosmos) QuerySchema(creator string, schemaDID string) (*st.WhatIs, error) {
+	queryReq := st.QuerySchemaRequest{
+		Creator: creator,
+		Did:     schemaDID,
+	}
+	queryResp, err := cc.schemaQuery.QuerySchema(context.Background(), &queryReq)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return queryResp.Schema, nil
+}

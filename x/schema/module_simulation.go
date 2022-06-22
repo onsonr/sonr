@@ -24,7 +24,9 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateSchema          = "op_weight_msg_create_schema"
+	defaultWeightMsgCreateSchema int = 100
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -59,6 +61,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	// this line is used by starport scaffolding # simapp/module/operation
+	var weightMsgCreateSchema int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateSchema, &weightMsgCreateSchema, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateSchema = defaultWeightMsgCreateSchema
+		})
+
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateSchema,
+		schemasimulation.SimulateMsgCreateScehma(am.accountKeeper, am.bankKeeper, am.keeper)))
 
 	return operations
 }

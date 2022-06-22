@@ -42,6 +42,9 @@ func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer,
 	s.Router.POST("/v1/channel/update", s.UpdateChannel)
 	s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
 
+	//Register Cosmos HTTP Routes - Schema
+	s.Router.POST("/v1/schema/create", s.CreateSchema)
+
 	// Register Blob HTTP Routes
 	s.Router.POST("/v1/blob/upload", s.UploadBlob)
 	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
