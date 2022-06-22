@@ -5,7 +5,6 @@ import (
 	cryptrand "crypto/rand"
 	"fmt"
 	"strings"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
@@ -21,21 +20,6 @@ func FindAccount(accs []simtypes.Account, address string) (simtypes.Account, boo
 		panic(err)
 	}
 	return simtypes.FindAccount(accs, creator)
-}
-
-func CreatMockWhatIs(simmAcc simtypes.Account) (types.WhatIs, error) {
-	schema, err := CreateMockSchema(simmAcc)
-	if err != nil {
-		return types.WhatIs{}, err
-	}
-
-	return types.WhatIs{
-		Did:       schema.GetDid(),
-		Schema:    &schema,
-		Creator:   simmAcc.Address.String(),
-		Timestamp: time.Now().Unix(),
-		IsActive:  true,
-	}, nil
 }
 
 func CreateMockSchema(simAcc simtypes.Account) (types.SchemaReference, error) {
