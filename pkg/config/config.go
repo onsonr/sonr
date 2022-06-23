@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 
@@ -45,6 +46,11 @@ type Config struct {
 	HighwayGRPCNetwork  string
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
+
+	// JWT
+	JWTSecret        string
+	JWTSigningMethod jwt.SigningMethod
+	JWTExpiration    int64
 
 	// Cosmos SDK
 	CosmosAccountName        string

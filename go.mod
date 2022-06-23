@@ -11,6 +11,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/gogo/protobuf v1.3.3
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20220120191843-cafb35c0d74d
 	github.com/google/uuid v1.3.0
@@ -34,6 +35,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.7.0
 	// github.com/libp2p/go-libp2p-webrtc-direct v0.0.0-20220406105718-41a3151f0a37
 	github.com/libp2p/go-msgio v0.2.0
+	github.com/marstr/guid v1.1.0
 	github.com/miekg/dns v1.1.49 // indirect
 	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.5.0
