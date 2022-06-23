@@ -31,7 +31,6 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.16.0
 	github.com/libp2p/go-libp2p-mplex v0.8.0 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.7.0
-	// github.com/libp2p/go-libp2p-webrtc-direct v0.0.0-20220406105718-41a3151f0a37
 	github.com/libp2p/go-msgio v0.2.0
 	github.com/miekg/dns v1.1.49 // indirect
 	github.com/mr-tron/base58 v1.2.0
@@ -67,7 +66,6 @@ require (
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/yaml.v2 v2.4.0
-	nhooyr.io/websocket v1.8.7 // indirect
 )
 
 replace (

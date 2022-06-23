@@ -1,4 +1,6 @@
-package motmainor
+// +build wasm
+
+package main
 
 import (
 	"github.com/sonr-io/sonr/pkg/crypto"
