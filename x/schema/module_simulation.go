@@ -25,18 +25,25 @@ var (
 
 const (
 	// this line is used by starport scaffolding # simapp/module/const
-	opWeightMsgCreateSchema          = "op_weight_msg_create_schema"
-	defaultWeightMsgCreateSchema int = 100
+	opWeightMsgCreateSchema             = "op_weight_msg_create_schema"
+	defaultWeightMsgCreateSchema    int = 100
+	opWeightMsgDepricateSchema          = "op_weight_msg_depricate_schema"
+	defaultWeightMsgDepricateSchema int = 100
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	accs := make([]string, len(simState.Accounts))
+	whatIsList := make([]types.WhatIs, len(simState.Accounts))
+
 	for i, acc := range simState.Accounts {
 		accs[i] = acc.Address.String()
+		whatIsList[i], _ = schemasimulation.CreatMockWhatIs(acc)
 	}
 	schemaGenesis := types.GenesisState{
-		Params: types.DefaultParams(),
+		Params:      types.DefaultParams(),
+		WhatIsList:  whatIsList,
+		WhatIsCount: uint64(len(whatIsList)),
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&schemaGenesis)

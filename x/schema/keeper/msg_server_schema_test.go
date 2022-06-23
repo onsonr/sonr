@@ -24,3 +24,12 @@ func TestWhatIsGetFromLabel(t *testing.T) {
 		require.True(t, found)
 	}
 }
+
+func TestWhatIsGetFromCreator(t *testing.T) {
+	keeper, ctx := keepertest.SchemaKeeper(t)
+	items := keepertest.CreateWhatIsWithDID(keeper, ctx, 1)
+	for _, item := range items {
+		_, found := keeper.GetWhatIsFromLabel(ctx, item.Schema.Label)
+		require.True(t, found)
+	}
+}

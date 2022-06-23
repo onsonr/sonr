@@ -55759,25 +55759,6 @@ definitions:
       is_active:
         type: boolean
         title: IsActive is the status of the DID Document
-  sonrio.sonr.schema.SchemaKind:
-    type: string
-    enum:
-      - INVALID
-      - MAP
-      - LIST
-      - UNIT
-      - BOOL
-      - INT
-      - FLOAT
-      - STRING
-      - BYTES
-      - LINK
-      - STRUCT
-      - UNION
-      - ENUM
-      - ANY
-    default: INVALID
-    title: Represents the types of fields a schema can have
   tendermint.spn.claim.ClaimRecord:
     type: object
     properties:

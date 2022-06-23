@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -65,6 +64,40 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 }
 
 func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecateSchema) (*types.MsgDeprecateSchemaResponse, error) {
-	// TODO: implement
-	return nil, errors.New("unimplemented")
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	err := msg.ValidateBasic()
+	if err != nil {
+		return nil, err
+	}
+
+	schemas, found := k.GetWhatIsFromCreator(ctx, msg.GetCreator())
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schemas found under same creator as message creator.")
+	}
+
+	var what_is types.WhatIs
+	var foundSchemaWI bool
+	for _, a := range schemas {
+		if a.GetDid() == msg.GetDid() {
+			what_is = a
+			foundSchemaWI = true
+			break
+		}
+	}
+
+	if !foundSchemaWI {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schema with same creator as message creator found.")
+	}
+
+	//If already deactivated, do nothing.
+	//Responsibility of caller to check if isActive beforehand
+	if what_is.GetIsActive() {
+		what_is.IsActive = false
+		k.SetWhatIs(ctx, what_is)
+	}
+
+	return &types.MsgDeprecateSchemaResponse{
+		Code:    200,
+		Message: "Schema deprecated successfully.",
+	}, nil
 }
