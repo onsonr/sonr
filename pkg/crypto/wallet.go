@@ -9,14 +9,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/mr-tron/base58/base58"
+	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
+	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
+	"github.com/sonr-io/multi-party-sig/pkg/party"
+	"github.com/sonr-io/multi-party-sig/pkg/pool"
+	"github.com/sonr-io/multi-party-sig/pkg/protocol"
+	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
-	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
-	"github.com/taurusgroup/multi-party-sig/pkg/party"
-	"github.com/taurusgroup/multi-party-sig/pkg/pool"
-	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
-	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
 type MPCWallet struct {

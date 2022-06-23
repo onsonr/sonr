@@ -3,12 +3,12 @@ package crypto
 import (
 	"errors"
 
-	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
-	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
-	"github.com/taurusgroup/multi-party-sig/pkg/party"
-	"github.com/taurusgroup/multi-party-sig/pkg/pool"
-	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
-	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
+	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
+	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
+	"github.com/sonr-io/multi-party-sig/pkg/party"
+	"github.com/sonr-io/multi-party-sig/pkg/pool"
+	"github.com/sonr-io/multi-party-sig/pkg/protocol"
+	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 )
 
 func cmpKeygen(id party.ID, ids party.IDSlice, n *Network, threshold int, pl *pool.Pool) (*cmp.Config, error) {

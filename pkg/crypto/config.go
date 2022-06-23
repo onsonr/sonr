@@ -1,9 +1,9 @@
 package crypto
 
 import (
-	"github.com/taurusgroup/multi-party-sig/pkg/party"
-	"github.com/taurusgroup/multi-party-sig/pkg/pool"
-	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
+	"github.com/sonr-io/multi-party-sig/pkg/party"
+	"github.com/sonr-io/multi-party-sig/pkg/pool"
+	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 )
 
 // The default shards that are added to the MPC wallet
