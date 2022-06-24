@@ -110,6 +110,22 @@ func ParseDID(input string) (*DID, error) {
 	return &DID{DID: *ockDid}, nil
 }
 
+// GetCreatorDid returns the creator did
+func CreateDIDFromAccount(creator string) string {
+	rawCreator := creator
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
+}
+
 // must accepts a function like Parse and returns the value without error or panics otherwise.
 func must(fn func(string) (*DID, error), input string) DID {
 	v, err := fn(input)
