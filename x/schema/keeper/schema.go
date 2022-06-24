@@ -2,12 +2,47 @@ package keeper
 
 import (
 	"encoding/binary"
+	"encoding/json"
+	"os"
+	"path/filepath"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/google/uuid"
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
 )
+
+const (
+	URL_PERSISTENCE_READ = "ipfs.Sonr.ws"
+)
+
+var (
+	ipfs_inter = shell.NewShell(URL_PERSISTENCE_READ)
+)
+
+func (k Keeper) LookUpContent(cid string, content interface{}) error {
+	out_path := filepath.Join(os.TempDir(), cid+".txt")
+	err := ipfs_inter.Get(cid, out_path)
+
+	if err != nil {
+		return err
+	}
+
+	resp, err := os.ReadFile(out_path)
+
+	if err = json.Unmarshal(resp, &content); err != nil {
+		return err
+	}
+
+	if err != nil {
+		return err
+	}
+
+	defer os.Remove(out_path)
+
+	return nil
+}
 
 func (k Keeper) GenerateKeyForDID() string {
 	return uuid.New().String()
