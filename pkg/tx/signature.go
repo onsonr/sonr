@@ -1,11 +1,11 @@
-package crypto
+package tx
 
 import (
 	"errors"
 	"fmt"
 
-	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
-	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
+	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
+	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 )
 
 // SerializeSignature marshals an ECDSA signature to DER format for use with the CMP protocol

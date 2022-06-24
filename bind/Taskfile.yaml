@@ -12,10 +12,10 @@ tasks:
       - mkdir -p build
       - task: bind:android
       - task: bind:ios
-      # - task: bind:wasm
+      - task: bind:wasm
       - mv motorlib-android_arm64 build/motorlib-android_arm64
       - mv motorlib-ios build/motorlib-ios
-      # - mv motorlib-js-wasm build/motorlib-js-wasm
+      - mv motorlib-web build/motorlib-web
       - mv build ../build
 
   bind:android:
@@ -36,9 +36,9 @@ tasks:
   bind:wasm:
     dir: motor-wasm
     cmds:
-      - mkdir motorlib-js_wasm
-      - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-js_wasm/sonr-motor.wasm -v
-      - mv motorlib-js_wasm ../motorlib-js_wasm
+      - mkdir motorlib-web
+      - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-web/sonr-motor.wasm -v
+      - mv motorlib-web ../motorlib-web
 
   clean:
     cmds:

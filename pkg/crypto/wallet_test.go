@@ -28,15 +28,6 @@ func Test_MPCSignMessage(t *testing.T) {
 
 	sig, err := w.Sign(m)
 	assert.NoError(t, err, "signing succeeds")
-
-	sigRaw, err := SerializeSignature(sig)
-	assert.NoError(t, err, "signature serialization succeeds")
-
-	rawIsVerified := w.Verify(m, sigRaw)
-	assert.True(t, rawIsVerified, "raw signature is verified")
-
-	sig2, err := SignatureFromBytes(sigRaw)
-	assert.NoError(t, err, "deserialization succeeds")
-	deserializedSigVerified := sig2.Verify(w.Config().PublicPoint(), m)
+	deserializedSigVerified := sig.Verify(w.Config().PublicPoint(), m)
 	assert.True(t, deserializedSigVerified, "deserialized signature is verified")
 }

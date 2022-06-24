@@ -33,7 +33,6 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.16.0
 	github.com/libp2p/go-libp2p-mplex v0.8.0 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.7.0
-	// github.com/libp2p/go-libp2p-webrtc-direct v0.0.0-20220406105718-41a3151f0a37
 	github.com/libp2p/go-msgio v0.2.0
 	github.com/marstr/guid v1.1.0
 	github.com/miekg/dns v1.1.49 // indirect
@@ -47,6 +46,7 @@ require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/shengdoushi/base58 v1.0.0
+	github.com/sonr-io/multi-party-sig v0.7.0
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
@@ -54,7 +54,6 @@ require (
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.0
 	github.com/swaggo/swag v1.8.1
-	github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21
 	github.com/tendermint/spn v0.2.1-0.20220609194312-7833ecf4454a
 	github.com/tendermint/starport v0.19.5
 	github.com/tendermint/tendermint v0.34.19
@@ -71,7 +70,6 @@ require (
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/yaml.v2 v2.4.0
-	nhooyr.io/websocket v1.8.7 // indirect
 )
 
 replace (
