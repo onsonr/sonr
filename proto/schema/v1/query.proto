@@ -41,8 +41,10 @@ message QuerySchemaRequest {
 }
 
 message QuerySchemaResponse {
-  WhatIs schema = 1;
+  // Schema Repersentation
+  WhatIs whatIs = 1;
 
+  // Definition of schema
   SchemaDefinition definition = 2;
 }
 
