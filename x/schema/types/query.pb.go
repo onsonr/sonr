@@ -168,7 +168,7 @@ func (m *QuerySchemaRequest) GetDid() string {
 type QuerySchemaResponse struct {
 	// Schema Repersentation
 	WhatIs *WhatIs `protobuf:"bytes,1,opt,name=whatIs,proto3" json:"whatIs,omitempty"`
-	// Schema Definition
+	// Definition of schema
 	Definition *SchemaDefinition `protobuf:"bytes,2,opt,name=definition,proto3" json:"definition,omitempty"`
 }
 
