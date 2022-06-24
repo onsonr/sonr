@@ -231,17 +231,17 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 
 // // SignTx constructs a TxRaw from the given message and signs it.
 // func (w *MPCWallet) SignTx(msgTypeUrl string, msgs ...sdk.Msg) ([]byte, error) {
-// 	txb, err := buildTx(w, msgTypeUrl, msgs...)
+// 	txb, err := BuildTxWithWallet(w, msgTypeUrl, msgs...)
 // 	if err != nil {
 // 		return nil, err
 // 	}
 
-// 	ai, err := getAuthInfoSingle(w, 2)
+// 	ai, err := tx.GetAuthInfoSingle(w, 2)
 // 	if err != nil {
 // 		return nil, err
 // 	}
 
-// 	sigDocBz, err := getSignDocBytes(ai, txb)
+// 	sigDocBz, err := tx.GetSignDocBytes(ai, txb)
 // 	if err != nil {
 // 		return nil, err
 // 	}
@@ -254,7 +254,7 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 // 	if err != nil {
 // 		return nil, err
 // 	}
-// 	return createRawTxBytes(txb, sigBz, ai)
+// 	return tx.CreateRawTxBytes(txb, sigBz, ai)
 // }
 
 // Unmarshal unmarshals the given JSON into the wallet.

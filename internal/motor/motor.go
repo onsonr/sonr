@@ -7,12 +7,10 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	// at "github.com/cosmos/cosmos-sdk/x/auth/types"
-
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
@@ -81,7 +79,7 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	}
 
 	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
-	txRaw, err := m.Wallet.SignTx("/sonrio.sonr.registry.MsgCreateWhoIs", msg1)
+	txRaw, err := tx.SignTxWithWallet(m.Wallet, "/sonrio.sonr.registry.MsgCreateWhoIs", msg1)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +102,7 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	}
 
 	msg1 := rt.NewMsgUpdateWhoIs(m.Address, docBz)
-	txRaw, err := m.Wallet.SignTx("/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
+	txRaw, err := tx.SignTxWithWallet(m.Wallet, "/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
 	if err != nil {
 		return nil, err
 	}
