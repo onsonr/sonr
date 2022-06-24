@@ -31558,7 +31558,8 @@ paths:
           schema:
             type: object
             properties:
-              schema:
+              whatIs:
+                title: Schema Repersentation
                 type: object
                 properties:
                   did:
@@ -31589,6 +31590,38 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+              definition:
+                title: Schema Definition
+                type: object
+                properties:
+                  creator:
+                    type: string
+                    title: the DID for this schema
+                  label:
+                    type: string
+                    title: an alternative reference point
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      enum:
+                        - INVALID
+                        - MAP
+                        - LIST
+                        - UNIT
+                        - BOOL
+                        - INT
+                        - FLOAT
+                        - STRING
+                        - BYTES
+                        - LINK
+                        - STRUCT
+                        - UNION
+                        - ENUM
+                        - ANY
+                      default: INVALID
+                      title: Represents the types of fields a schema can have
+                    title: the properties of this schema
         default:
           description: An unexpected error response.
           schema:
@@ -55688,7 +55721,8 @@ definitions:
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
-      schema:
+      whatIs:
+        title: Schema Repersentation
         type: object
         properties:
           did:
@@ -55717,6 +55751,88 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+      definition:
+        title: Schema Definition
+        type: object
+        properties:
+          creator:
+            type: string
+            title: the DID for this schema
+          label:
+            type: string
+            title: an alternative reference point
+          fields:
+            type: object
+            additionalProperties:
+              type: string
+              enum:
+                - INVALID
+                - MAP
+                - LIST
+                - UNIT
+                - BOOL
+                - INT
+                - FLOAT
+                - STRING
+                - BYTES
+                - LINK
+                - STRUCT
+                - UNION
+                - ENUM
+                - ANY
+              default: INVALID
+              title: Represents the types of fields a schema can have
+            title: the properties of this schema
+  sonrio.sonr.schema.SchemaDefinition:
+    type: object
+    properties:
+      creator:
+        type: string
+        title: the DID for this schema
+      label:
+        type: string
+        title: an alternative reference point
+      fields:
+        type: object
+        additionalProperties:
+          type: string
+          enum:
+            - INVALID
+            - MAP
+            - LIST
+            - UNIT
+            - BOOL
+            - INT
+            - FLOAT
+            - STRING
+            - BYTES
+            - LINK
+            - STRUCT
+            - UNION
+            - ENUM
+            - ANY
+          default: INVALID
+          title: Represents the types of fields a schema can have
+        title: the properties of this schema
+  sonrio.sonr.schema.SchemaKind:
+    type: string
+    enum:
+      - INVALID
+      - MAP
+      - LIST
+      - UNIT
+      - BOOL
+      - INT
+      - FLOAT
+      - STRING
+      - BYTES
+      - LINK
+      - STRUCT
+      - UNION
+      - ENUM
+      - ANY
+    default: INVALID
+    title: Represents the types of fields a schema can have
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:
