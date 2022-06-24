@@ -1,8 +1,14 @@
 package did
 
-import "github.com/sonr-io/sonr/pkg/did/ssi"
+import (
+	"encoding/json"
+
+	"github.com/sonr-io/sonr/pkg/did/ssi"
+)
 
 type Document interface {
+	json.Marshaler
+
 	// AddCapabilityDelegation adds a VerificationMethod as CapabilityDelegation
 	// If the controller is not set, it will be set to the document's ID
 	AddCapabilityDelegation(v *VerificationMethod)
