@@ -23,12 +23,13 @@ message VerificationMethod {
   string controller = 3;
   repeated KeyValuePair public_key_jwk = 4; // optional
   string public_key_base58 = 5; // optional
+  bytes credential_json = 6; // optional
 }
 
 message Service {
   string id = 1;
   string type = 2;
-  string service_endpoint = 3; 
+  repeated KeyValuePair service_endpoint = 3;
 }
 
 message KeyValuePair {
