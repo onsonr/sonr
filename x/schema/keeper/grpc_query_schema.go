@@ -33,13 +33,14 @@ func (k Keeper) QuerySchema(goCtx context.Context, req *st.QuerySchemaRequest) (
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Error while accessing schema content")
 	}
+
 	var definition *st.SchemaDefinition = &st.SchemaDefinition{
 		Creator: what_is.Creator,
 		Label:   what_is.Schema.Label,
 		Fields:  *schemaJson,
 	}
 	return &st.QuerySchemaResponse{
-		Schema:     what_is,
+		WhatIs:     what_is,
 		Definition: definition,
 	}, nil
 }
