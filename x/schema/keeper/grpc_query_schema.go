@@ -39,6 +39,7 @@ func (k Keeper) QuerySchema(goCtx context.Context, req *st.QuerySchemaRequest) (
 		Label:   what_is.Schema.Label,
 		Fields:  *schemaJson,
 	}
+
 	return &st.QuerySchemaResponse{
 		WhatIs:     what_is,
 		Definition: definition,
