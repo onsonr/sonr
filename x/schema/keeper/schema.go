@@ -31,6 +31,10 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 
 	resp, err := os.ReadFile(out_path)
 
+	if err != nil {
+		return err
+	}
+
 	if err = json.Unmarshal(resp, &content); err != nil {
 		return err
 	}
