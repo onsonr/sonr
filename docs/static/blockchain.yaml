@@ -30834,6 +30834,9 @@ paths:
                                       type: string
                               public_key_base58:
                                 type: string
+                              credential_json:
+                                type: string
+                                format: byte
                         authentication:
                           type: array
                           items:
@@ -30864,7 +30867,14 @@ paths:
                               type:
                                 type: string
                               service_endpoint:
-                                type: string
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
                         also_known_as:
                           type: array
                           items:
@@ -31083,6 +31093,9 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            credential_json:
+                              type: string
+                              format: byte
                       authentication:
                         type: array
                         items:
@@ -31113,7 +31126,14 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: string
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
                       also_known_as:
                         type: array
                         items:
@@ -31253,6 +31273,9 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            credential_json:
+                              type: string
+                              format: byte
                       authentication:
                         type: array
                         items:
@@ -31283,7 +31306,14 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: string
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
                       also_known_as:
                         type: array
                         items:
@@ -31424,6 +31454,9 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            credential_json:
+                              type: string
+                              format: byte
                       authentication:
                         type: array
                         items:
@@ -31454,7 +31487,14 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: string
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
                       also_known_as:
                         type: array
                         items:
@@ -54144,6 +54184,9 @@ definitions:
                     type: string
             public_key_base58:
               type: string
+            credential_json:
+              type: string
+              format: byte
       authentication:
         type: array
         items:
@@ -54174,7 +54217,14 @@ definitions:
             type:
               type: string
             service_endpoint:
-              type: string
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
       also_known_as:
         type: array
         items:
@@ -54263,6 +54313,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54293,7 +54346,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54404,6 +54464,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54434,7 +54497,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54554,6 +54624,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54584,7 +54657,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54695,6 +54775,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54725,7 +54808,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54836,6 +54926,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54866,7 +54959,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54979,6 +55079,9 @@ definitions:
                               type: string
                       public_key_base58:
                         type: string
+                      credential_json:
+                        type: string
+                        format: byte
                 authentication:
                   type: array
                   items:
@@ -55009,7 +55112,14 @@ definitions:
                       type:
                         type: string
                       service_endpoint:
-                        type: string
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            key:
+                              type: string
+                            value:
+                              type: string
                 also_known_as:
                   type: array
                   items:
@@ -55146,6 +55256,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -55176,7 +55289,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -55281,6 +55401,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -55311,7 +55434,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -55416,6 +55546,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -55446,7 +55579,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -55485,7 +55625,14 @@ definitions:
       type:
         type: string
       service_endpoint:
-        type: string
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
   sonrio.sonr.registry.VerificationMethod:
     type: object
     properties:
@@ -55506,6 +55653,9 @@ definitions:
               type: string
       public_key_base58:
         type: string
+      credential_json:
+        type: string
+        format: byte
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:
@@ -55577,6 +55727,9 @@ definitions:
                         type: string
                 public_key_base58:
                   type: string
+                credential_json:
+                  type: string
+                  format: byte
           authentication:
             type: array
             items:
@@ -55607,7 +55760,14 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: string
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
           also_known_as:
             type: array
             items:

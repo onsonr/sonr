@@ -14,9 +14,9 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20220120191843-cafb35c0d74d
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.3 // indirect
 	github.com/hsanjuan/ipfs-lite v1.4.0
 	github.com/ignite-hq/cli v0.22.0
 	github.com/ipfs/go-cid v0.2.0
@@ -45,7 +45,6 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.2
-	github.com/regen-network/cosmos-proto v0.3.1 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/spf13/cast v1.4.1
@@ -57,6 +56,7 @@ require (
 	github.com/swaggo/swag v1.8.1
 	github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21
 	github.com/tendermint/spn v0.2.1-0.20220609194312-7833ecf4454a
+	github.com/tendermint/starport v0.19.5
 	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.7
 	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7

@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 
-	"github.com/sonr-io/sonr/pkg/config"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	ct "github.com/sonr-io/sonr/x/channel/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -22,30 +21,30 @@ type Cosmos struct {
 }
 
 // NewCosmos creates a Sonr Blockchain client with the given account and provides helper functions
-func NewCosmos(ctx context.Context, config *config.Config) (*Cosmos, error) {
-	// Create a new cosmos client
-	cosmos, err := cosmosclient.New(ctx, toCosmosOptions(config)...)
-	if err != nil {
-		return nil, err
-	}
+// func NewCosmos(ctx context.Context, config *config.Config) (*Cosmos, error) {
+// 	// Create a new cosmos client
+// 	cosmos, err := cosmosclient.New(ctx, toCosmosOptions(config)...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	// get account from the keyring by account name and return a bech32 address
-	account, err := cosmos.Account(config.CosmosAccountName)
-	if err != nil {
-		return nil, err
-	}
+// 	// get account from the keyring by account name and return a bech32 address
+// 	account, err := cosmos.Account(config.CosmosAccountName)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	// create a new client instance
-	return &Cosmos{
-		accName:       config.CosmosAccountName,
-		address:       account.Address("snr"),
-		Client:        cosmos,
-		bucketQuery:   bt.NewQueryClient(cosmos.Context),
-		channelQuery:  ct.NewQueryClient(cosmos.Context),
-		schemaQuery:   st.NewQueryClient(cosmos.Context),
-		registryQuery: rt.NewQueryClient(cosmos.Context),
-	}, nil
-}
+// 	// create a new client instance
+// 	return &Cosmos{
+// 		accName:       config.CosmosAccountName,
+// 		address:       account.Address("snr"),
+// 		Client:        cosmos,
+// 		bucketQuery:   bt.NewQueryClient(cosmos.Context),
+// 		channelQuery:  ct.NewQueryClient(cosmos.Context),
+// 		schemaQuery:   st.NewQueryClient(cosmos.Context),
+// 		registryQuery: rt.NewQueryClient(cosmos.Context),
+// 	}, nil
+// }
 
 // AccountName returns the account name as string
 func (cc *Cosmos) AccountName() string {

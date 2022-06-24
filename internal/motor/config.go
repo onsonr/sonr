@@ -7,7 +7,7 @@ import (
 
 func setupDefault() (*MotorNode, error) {
 	// Create Client instance
-	c := client.NewClient(client.ConnEndpointType_BETA)
+	c := client.NewClient(client.ConnEndpointType_LOCAL)
 
 	// Generate wallet
 	w, err := crypto.GenerateWallet()

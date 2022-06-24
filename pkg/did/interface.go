@@ -29,6 +29,8 @@ type Document interface {
 	ControllersAsString() []string
 	ControllerCount() int
 
+	GetContext() []ssi.URI
+
 	GetID() DID
 
 	GetAlsoKnownAs() []string
@@ -69,6 +71,8 @@ type Document interface {
 	// GetAssertionMethods returns all AssertionMethods
 	GetAssertionMethods() VerificationRelationships
 
+	GetVerificationMethods() VerificationMethods
+
 	// GetAuthenticationMethods returns all AuthenticationMethods
 	GetAuthenticationMethods() VerificationRelationships
 
@@ -77,6 +81,8 @@ type Document interface {
 
 	// GetCapabilityInvocations returns all CapabilityInvocations
 	GetCapabilityInvocations() VerificationRelationships
+
+	GetKeyAgreements() VerificationRelationships
 
 	// GetServices gets all services on the DID Document
 	GetServices() Services

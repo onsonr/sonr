@@ -106,6 +106,10 @@ func (d *DocumentImpl) GetController(did DID) (DID, error) {
 	return DID{}, errors.New("did not found")
 }
 
+func (d *DocumentImpl) GetContext() []ssi.URI {
+	return d.Context
+}
+
 // GetAssertionMethods returns the list of assertion methods
 func (d *DocumentImpl) GetAssertionMethods() VerificationRelationships {
 	return d.AssertionMethod
@@ -157,6 +161,10 @@ func (d *DocumentImpl) AddController(id DID) {
 }
 
 type VerificationMethods []*VerificationMethod
+
+func (d *DocumentImpl) GetVerificationMethods() VerificationMethods {
+	return d.VerificationMethod
+}
 
 // FindByID find the first VerificationMethod which matches the provided DID.
 // Returns nil when not found
@@ -269,6 +277,10 @@ func (d *DocumentImpl) AddAssertionMethod(v *VerificationMethod) {
 	}
 	d.VerificationMethod.Add(v)
 	d.AssertionMethod.Add(v)
+}
+
+func (d *DocumentImpl) GetKeyAgreements() VerificationRelationships {
+	return d.KeyAgreement
 }
 
 // AddKeyAgreement adds a VerificationMethod as KeyAgreement
@@ -407,9 +419,9 @@ func (d *DocumentImpl) ControllersAsString() []string {
 
 // Service represents a DID Service as specified by the DID Core specification (https://www.w3.org/TR/did-core/#service-endpoints).
 type Service struct {
-	ID              ssi.URI     `json:"id"`
-	Type            string      `json:"type,omitempty"`
-	ServiceEndpoint interface{} `json:"serviceEndpoint,omitempty"`
+	ID              ssi.URI           `json:"id"`
+	Type            string            `json:"type,omitempty"`
+	ServiceEndpoint map[string]string `json:"serviceEndpoint,omitempty"`
 }
 
 func (s Service) MarshalJSON() ([]byte, error) {
@@ -438,13 +450,7 @@ func (s *Service) UnmarshalJSON(data []byte) error {
 
 // Unmarshal unmarshalls the service endpoint into a domain-specific type.
 func (s Service) UnmarshalServiceEndpoint(target interface{}) error {
-	var valueToMarshal interface{}
-	if asSlice, ok := s.ServiceEndpoint.([]interface{}); ok && len(asSlice) == 1 {
-		valueToMarshal = asSlice[0]
-	} else {
-		valueToMarshal = s.ServiceEndpoint
-	}
-	if asJSON, err := json.Marshal(valueToMarshal); err != nil {
+	if asJSON, err := json.Marshal(s.ServiceEndpoint); err != nil {
 		return err
 	} else {
 		return json.Unmarshal(asJSON, target)
