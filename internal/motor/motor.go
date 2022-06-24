@@ -3,7 +3,6 @@ package motor
 import (
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,8 +42,6 @@ func CreateAccount(password, dscPubKey, psKey []byte) (*MotorNode, error) {
 		return nil, err
 	}
 	fmt.Println(resp.String())
-
-	time.Sleep(5 * time.Second)
 
 	// create vault
 	vaultService, err := vc.CreateVault(

@@ -106,27 +106,27 @@ func TestW3CSpecValidator(t *testing.T) {
 		})
 		t.Run("endpoint is bool", func(t *testing.T) {
 			input := document()
-			input.Service[0].ServiceEndpoint = false
+			//		input.Service[0].ServiceEndpoint = false
 			assertIsError(t, ErrInvalidService, W3CSpecValidator{}.Validate(input))
 		})
 		t.Run("endpoint is numeric", func(t *testing.T) {
 			input := document()
-			input.Service[0].ServiceEndpoint = 5
+			//	input.Service[0].ServiceEndpoint = 5
 			assertIsError(t, ErrInvalidService, W3CSpecValidator{}.Validate(input))
 		})
 		t.Run("ok - endpoint is slice", func(t *testing.T) {
 			input := document()
-			input.Service[0].ServiceEndpoint = []interface{}{"a", "b"}
+			//	input.Service[0].ServiceEndpoint = []interface{}{"a", "b"}
 			assert.NoError(t, W3CSpecValidator{}.Validate(input))
 		})
 		t.Run("ok - endpoint is slice", func(t *testing.T) {
 			input := document()
-			input.Service[0].ServiceEndpoint = []interface{}{"a", "b"}
+			//	input.Service[0].ServiceEndpoint = []interface{}{"a", "b"}
 			assert.NoError(t, W3CSpecValidator{}.Validate(input))
 		})
 		t.Run("ok - endpoint is map (string/interface)", func(t *testing.T) {
 			input := document()
-			input.Service[0].ServiceEndpoint = map[string]interface{}{}
+			//	input.Service[0].ServiceEndpoint = map[string]interface{}{}
 			assert.NoError(t, W3CSpecValidator{}.Validate(input))
 		})
 	})
@@ -178,9 +178,9 @@ func document() DocumentImpl {
 		Controller:         []DID{*did},
 		VerificationMethod: []*VerificationMethod{vm},
 		Service: []Service{{
-			ID:              serviceID.URI(),
-			Type:            "awesome-service",
-			ServiceEndpoint: "tcp://awesome-service",
+			ID:   serviceID.URI(),
+			Type: "awesome-service",
+			// ServiceEndpoint: "tcp://awesome-service",
 		}},
 	}
 	doc.AddAuthenticationMethod(vm)

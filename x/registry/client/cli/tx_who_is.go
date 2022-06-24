@@ -55,7 +55,7 @@ func CmdUpdateWhoIs() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateWhoIs(clientCtx.GetFromAddress().String(), args[0], []byte(args[1]))
+			msg := types.NewMsgUpdateWhoIs(clientCtx.GetFromAddress().String(), []byte(args[0]))
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
