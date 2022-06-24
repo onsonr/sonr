@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/sonr-io/sonr/pkg/did"
 )
@@ -28,16 +29,102 @@ func NewDIDDocumentFromBytes(buf []byte) (*DIDDocument, error) {
 }
 
 func NewDIDDocumentFromPkg(doc did.Document) (*DIDDocument, error) {
-	buf, err := doc.MarshalJSON()
+	// buf, err := doc.MarshalJSON()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// var snrdoc DIDDocument
+	// err = snrdoc.UnmarshalJSON(buf)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// return &snrdoc, nil
+	var err error
+	res := &DIDDocument{}
+
+	res.Context = make([]string, 0)
+	for _, c := range doc.GetContext() {
+		res.Context = append(res.Context, c.String())
+	}
+
+	res.VerificationMethod = verificationMethodsFromPkg(doc.GetVerificationMethods())
+
+	res.Authentication, err = stringifyVerificationRelationships(doc.GetAuthenticationMethods())
 	if err != nil {
 		return nil, err
 	}
-	var snrdoc DIDDocument
-	err = snrdoc.UnmarshalJSON(buf)
+
+	res.AssertionMethod, err = stringifyVerificationRelationships(doc.GetAssertionMethods())
 	if err != nil {
 		return nil, err
 	}
-	return &snrdoc, nil
+
+	res.CapabilityInvocation, err = stringifyVerificationRelationships(doc.GetCapabilityInvocations())
+	if err != nil {
+		return nil, err
+	}
+
+	res.CapabilityDelegation, err = stringifyVerificationRelationships(doc.GetCapabilityDelegations())
+	if err != nil {
+		return nil, err
+	}
+
+	res.KeyAgreement, err = stringifyVerificationRelationships(doc.GetKeyAgreements())
+	if err != nil {
+		return nil, err
+	}
+
+	res.Service = servicesFromPkg(doc.GetServices())
+
+	res.AlsoKnownAs = doc.GetAlsoKnownAs()
+
+	return res, nil
+}
+
+func verificationMethodsFromPkg(methods did.VerificationMethods) []*VerificationMethod {
+	res := make([]*VerificationMethod, len(methods))
+	for i, m := range methods {
+		res[i] = &VerificationMethod{
+			Id:              m.ID.ID,
+			Type:            string(m.Type),
+			Controller:      m.Controller.ID,
+			PublicKeyJwk:    make([]*KeyValuePair, 0),
+			PublicKeyBase58: m.PublicKeyBase58,
+		}
+
+		for k, pubk := range m.PublicKeyJwk {
+			res[i].PublicKeyJwk = append(res[i].PublicKeyJwk, &KeyValuePair{
+				Key:   k,
+				Value: fmt.Sprintf("%v", pubk),
+			})
+		}
+	}
+	return res
+}
+
+func servicesFromPkg(srvs did.Services) []*Service {
+	res := make([]*Service, 0)
+	for _, s := range srvs {
+		res = append(res, &Service{
+			Id:              s.ID.String(),
+			Type:            s.Type,
+			ServiceEndpoint: mapToKVPair(s.ServiceEndpoint),
+		})
+	}
+
+	return res
+}
+
+func stringifyVerificationRelationships(auth did.VerificationRelationships) ([]string, error) {
+	res := make([]string, len(auth))
+	for i, a := range auth {
+		ab, err := json.Marshal(a)
+		if err != nil {
+			return nil, err
+		}
+		res[i] = string(ab)
+	}
+	return res, nil
 }
 
 func (d *DIDDocument) DID() did.DID {
@@ -170,4 +257,16 @@ func PluralValueOrMap(key string) Normalizer {
 			m[key] = []interface{}{m[key]}
 		}
 	}
+}
+
+func mapToKVPair(m map[string]string) []*KeyValuePair {
+	res := make([]*KeyValuePair, 0)
+	for k, v := range m {
+		res = append(res, &KeyValuePair{
+			Key:   k,
+			Value: v,
+		})
+	}
+
+	return res
 }

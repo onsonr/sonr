@@ -28,7 +28,6 @@ var (
 
 // load environment variables
 func loadEnv() error {
-	viper.AddConfigPath(CONFIG_PATH_LOCAL)
 	viper.AddConfigPath(CONFIG_PATH_ROOT)
 
 	viper.SetConfigName("app")

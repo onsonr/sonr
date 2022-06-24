@@ -88,25 +88,22 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	// Trim snr account prefix
-	doc, err := types.NewDIDDocumentFromBytes(msg.DidDocument)
+	// unmarshall DID Document from request using did package
+	doc := did.BlankDocument()
+	err := doc.UnmarshalJSON(msg.DidDocument)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	err = doc.CopyFromBytes(msg.GetDidDocument())
+
+	val.DidDocument, err = types.NewDIDDocumentFromPkg(doc)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidType, err.Error())
 	}
-	for _, a := range doc.GetAlsoKnownAs() {
-		if !val.ContainsAlias(a) {
-			val.AddAlsoKnownAs(a, false)
-		}
-	}
-	val.Controllers = doc.GetController()
+	val.Controllers = val.DidDocument.Controller
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
-	val.DidDocument = doc
 	k.SetWhoIs(ctx, val)
+
 	return &types.MsgUpdateWhoIsResponse{}, nil
 }
 

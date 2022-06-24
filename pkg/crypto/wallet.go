@@ -1,6 +1,8 @@
 package crypto
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -110,7 +112,8 @@ func (w *MPCWallet) Config() *cmp.Config {
 
 // GetSigners returns the list of signers for the given message.
 func (w *MPCWallet) GetSigners() party.IDSlice {
-	signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
+	signers := party.IDSlice([]party.ID{"dsc", "psk"})
+	// signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
 	if !signers.Contains(w.ID) {
 		w.Network.Quit(w.ID)
 		return nil
@@ -226,6 +229,34 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	return sig, err
 }
 
+// // SignTx constructs a TxRaw from the given message and signs it.
+// func (w *MPCWallet) SignTx(msgTypeUrl string, msgs ...sdk.Msg) ([]byte, error) {
+// 	txb, err := BuildTxWithWallet(w, msgTypeUrl, msgs...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	ai, err := tx.GetAuthInfoSingle(w, 2)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	sigDocBz, err := tx.GetSignDocBytes(ai, txb)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	sig, err := w.Sign(sigDocBz)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	sigBz, err := SerializeSignature(sig)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return tx.CreateRawTxBytes(txb, sigBz, ai)
+// }
+
 // Unmarshal unmarshals the given JSON into the wallet.
 func (w *MPCWallet) Unmarshal(buf []byte) error {
 	c := &cmp.Config{}
@@ -246,6 +277,78 @@ func (w *MPCWallet) Verify(m []byte, sig []byte) bool {
 	}
 	mpcVerif := edsig.Verify(w.Config().PublicPoint(), m)
 	return mpcVerif
+}
+
+func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, unused []string, err error) {
+	ss, e := w.serializedShards()
+	if e != nil {
+		err = e
+		return
+	}
+	if len(ss) < 6 {
+		err = errors.New("not enough shards")
+		return
+	}
+
+	var ok bool
+	// assign dscShard
+	// TODO: encrypt with dsc (i.e. webauthn)
+	dscShard, ok = ss["dsc"]
+	if !ok {
+		err = errors.New("could not find dsc shard")
+		return
+	}
+
+	// assign pskShard
+	// TODO: This should be encrypted with PSK
+	pskShard, ok = ss["psk"]
+	if !ok {
+		err = errors.New("could not find psk shard")
+		return
+	}
+
+	// assign recshard
+	// TODO: this should be password encrypted
+	recShard, ok = ss["recovery"]
+	if !ok {
+		err = errors.New("could not find recovery shard")
+		return
+	}
+
+	// sign unused shards
+	for i := 0; i < len(ss); i++ {
+		u, ok := ss[fmt.Sprintf("bank%d", i+1)]
+		if !ok {
+			continue
+		}
+		sig, e := w.Sign([]byte(u))
+		if e != nil {
+			err = e
+			return
+		}
+		sSig, e := SerializeSignature(sig)
+		if e != nil {
+			err = e
+			return
+		}
+		unused = append(unused, string(sSig))
+	}
+	if len(unused) == 0 {
+		err = errors.New("no backup shards")
+	}
+	return
+}
+
+func (w *MPCWallet) serializedShards() (map[string]string, error) {
+	deviceShards := make(map[string]string)
+	for k, c := range w.Configs {
+		b, err := json.Marshal(c)
+		if err != nil {
+			return nil, err
+		}
+		deviceShards[string(k)] = base64.StdEncoding.EncodeToString([]byte(b))
+	}
+	return deviceShards, nil
 }
 
 // - The R and S values must be in the valid range for secp256k1 scalars:

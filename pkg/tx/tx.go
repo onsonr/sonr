@@ -7,10 +7,9 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto"
 )
 
-
 // SignTx constructs a TxRaw from the given message and signs it.
-func SignTxWithWallet(w *crypto.MPCWallet, msgs ...sdk.Msg) ([]byte, error) {
-	txb, err := BuildTx(w, msgs...)
+func SignTxWithWallet(w *crypto.MPCWallet, typeUrl string, msgs ...sdk.Msg) ([]byte, error) {
+	txb, err := BuildTx(w, typeUrl, msgs...)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +36,8 @@ func SignTxWithWallet(w *crypto.MPCWallet, msgs ...sdk.Msg) ([]byte, error) {
 }
 
 // BuildTx builds a transaction from the given inputs.
-func BuildTx(w *crypto.MPCWallet, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
+func BuildTx(w *crypto.MPCWallet, typeUrl string, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
+	// func BuildTx(w *crypto.MPCWallet, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
 	// Create Any for each message
 	anyMsgs := make([]*codectypes.Any, len(msgs))
 	for i, m := range msgs {
@@ -45,7 +45,7 @@ func BuildTx(w *crypto.MPCWallet, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
 		if err != nil {
 			return nil, err
 		}
-		msg.TypeUrl = "/sonrio.sonr.registry.MsgCreateWhoIs"
+		msg.TypeUrl = typeUrl
 		anyMsgs[i] = msg
 	}
 

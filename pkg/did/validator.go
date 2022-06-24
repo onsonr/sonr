@@ -173,15 +173,6 @@ func (s serviceValidator) Validate(document DocumentImpl) error {
 		if service.ServiceEndpoint == nil {
 			return makeValidationError(ErrInvalidService)
 		}
-		switch x := service.ServiceEndpoint.(type) {
-		case string:
-		case map[string]interface{}:
-		case []interface{}:
-			_ = x // We need to 'do' something with 'x'
-			break
-		default:
-			return makeValidationError(ErrInvalidService)
-		}
 	}
 	return nil
 }
