@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"os"
@@ -46,6 +47,14 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	defer os.Remove(out_path)
 
 	return nil
+}
+
+func (k Keeper) PinContent(payload interface{}) (string, error) {
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return "", err
+	}
+	return ipfs_inter.Add(bytes.NewReader(b))
 }
 
 func (k Keeper) GenerateKeyForDID() string {
