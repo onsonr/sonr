@@ -6,9 +6,10 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "schema/v1/params.proto";
-import "schema/v1/what_is.proto";
+import "schema/v1/schema.proto";
 // this line is used by starport scaffolding # 1
 
+import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
@@ -41,6 +42,8 @@ message QuerySchemaRequest {
 
 message QuerySchemaResponse {
   WhatIs schema = 1;
+
+  SchemaDefinition definition = 2;
 }
 
 // this line is used by starport scaffolding # 3
