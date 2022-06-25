@@ -30,7 +30,7 @@ tasks:
     dir: motor-mobile
     cmds:
       - mkdir motorlib-ios_arm64
-      - gomobile bind -ldflags='-s -w' -target=ios,iossimulator,macos -o motorlib-ios_arm64/SonrMotor.xcframework -v
+      - gomobile bind -ldflags='-s -w' -target=ios,iossimulator,macos -prefix MTR -o motorlib-ios_arm64/SonrMotor.xcframework -v
       - mv motorlib-ios_arm64 ../motorlib-ios_arm64
 
   bind:wasm:
