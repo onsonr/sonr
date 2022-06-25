@@ -4,26 +4,29 @@ import "registry/did.proto";
 option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
 message WhoIs {
-  // Alias is the list of registered `alsoKnownAs` identifiers of the User or Application
-  repeated Alias alias = 1;
+// Owner is the top level DID of the User or Application derived from the multisignature wallet.
+  string owner = 1;
 
-  // Owner is the top level DID of the User or Application derived from the multisignature wallet.
-  string owner = 2;
+  // IsActive is the status of the DID Document
+  bool is_active = 2;
 
   // DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.
   DIDDocument did_document = 3;
 
-  // Credentials are the biometric info of the registered name and account encoded with public key
-  repeated string controllers = 4;
+  // Alias is the list of registered `alsoKnownAs` identifiers of the User or Application
+  repeated Alias alias = 4;
+
+  // Controllers is the list of controllers of the User or Application.
+  repeated string controllers = 5;
 
   // Type is the kind of the entity. Possible values are: "user", "application"
-  WhoIsType type = 5;
+  WhoIsType type = 6;
+
+  // Metadata is a map of key-value pairs that can be used to store additional information about the DID.
+  map<string, string> metadata = 7;
 
   // Timestamp is the time of the last update of the DID Document
-  int64 timestamp = 6;
-
-  // IsActive is the status of the DID Document
-  bool is_active = 7;
+  int64 timestamp = 8;
 }
 
 // WhoIsType is the type of DIDDocument stored in the registry module

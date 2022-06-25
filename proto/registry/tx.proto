@@ -47,6 +47,9 @@ message MsgUpdateWhoIs {
 
   // DidDocument is the DID document to be stored, in JSON format (see https://w3c-ccg.github.io/did-spec/#did-json-ld).
   bytes did_document = 2;
+
+  // Metadata is the metadata to be stored with the DID document.
+  map<string,string> metadata = 3; // optional
 }
 
 message MsgUpdateWhoIsResponse {

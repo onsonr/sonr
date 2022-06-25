@@ -51,20 +51,22 @@ func (WhoIsType) EnumDescriptor() ([]byte, []int) {
 }
 
 type WhoIs struct {
-	// Alias is the list of registered `alsoKnownAs` identifiers of the User or Application
-	Alias []*Alias `protobuf:"bytes,1,rep,name=alias,proto3" json:"alias,omitempty"`
 	// Owner is the top level DID of the User or Application derived from the multisignature wallet.
-	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	// IsActive is the status of the DID Document
+	IsActive bool `protobuf:"varint,2,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
 	// DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.
 	DidDocument *DIDDocument `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
-	// Credentials are the biometric info of the registered name and account encoded with public key
-	Controllers []string `protobuf:"bytes,4,rep,name=controllers,proto3" json:"controllers,omitempty"`
+	// Alias is the list of registered `alsoKnownAs` identifiers of the User or Application
+	Alias []*Alias `protobuf:"bytes,4,rep,name=alias,proto3" json:"alias,omitempty"`
+	// Controllers is the list of controllers of the User or Application.
+	Controllers []string `protobuf:"bytes,5,rep,name=controllers,proto3" json:"controllers,omitempty"`
 	// Type is the kind of the entity. Possible values are: "user", "application"
-	Type WhoIsType `protobuf:"varint,5,opt,name=type,proto3,enum=sonrio.sonr.registry.WhoIsType" json:"type,omitempty"`
+	Type WhoIsType `protobuf:"varint,6,opt,name=type,proto3,enum=sonrio.sonr.registry.WhoIsType" json:"type,omitempty"`
+	// Metadata is a map of key-value pairs that can be used to store additional information about the DID.
+	Metadata map[string]string `protobuf:"bytes,7,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Timestamp is the time of the last update of the DID Document
-	Timestamp int64 `protobuf:"varint,6,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	// IsActive is the status of the DID Document
-	IsActive bool `protobuf:"varint,7,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	Timestamp int64 `protobuf:"varint,8,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 }
 
 func (m *WhoIs) Reset()         { *m = WhoIs{} }
@@ -100,13 +102,6 @@ func (m *WhoIs) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_WhoIs proto.InternalMessageInfo
 
-func (m *WhoIs) GetAlias() []*Alias {
-	if m != nil {
-		return m.Alias
-	}
-	return nil
-}
-
 func (m *WhoIs) GetOwner() string {
 	if m != nil {
 		return m.Owner
@@ -114,9 +109,23 @@ func (m *WhoIs) GetOwner() string {
 	return ""
 }
 
+func (m *WhoIs) GetIsActive() bool {
+	if m != nil {
+		return m.IsActive
+	}
+	return false
+}
+
 func (m *WhoIs) GetDidDocument() *DIDDocument {
 	if m != nil {
 		return m.DidDocument
+	}
+	return nil
+}
+
+func (m *WhoIs) GetAlias() []*Alias {
+	if m != nil {
+		return m.Alias
 	}
 	return nil
 }
@@ -135,18 +144,18 @@ func (m *WhoIs) GetType() WhoIsType {
 	return WhoIsType_USER
 }
 
+func (m *WhoIs) GetMetadata() map[string]string {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
 func (m *WhoIs) GetTimestamp() int64 {
 	if m != nil {
 		return m.Timestamp
 	}
 	return 0
-}
-
-func (m *WhoIs) GetIsActive() bool {
-	if m != nil {
-		return m.IsActive
-	}
-	return false
 }
 
 // Alias is a message detailing a known "alsoKnownAs" identifier of a DIDDocument and contains properties for transfer/exchange
@@ -216,39 +225,43 @@ func (m *Alias) GetAmount() int32 {
 func init() {
 	proto.RegisterEnum("sonrio.sonr.registry.WhoIsType", WhoIsType_name, WhoIsType_value)
 	proto.RegisterType((*WhoIs)(nil), "sonrio.sonr.registry.WhoIs")
+	proto.RegisterMapType((map[string]string)(nil), "sonrio.sonr.registry.WhoIs.MetadataEntry")
 	proto.RegisterType((*Alias)(nil), "sonrio.sonr.registry.Alias")
 }
 
 func init() { proto.RegisterFile("registry/who_is.proto", fileDescriptor_9d9bdfc8d37d9424) }
 
 var fileDescriptor_9d9bdfc8d37d9424 = []byte{
-	// 401 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x91, 0xdf, 0x8a, 0x13, 0x31,
-	0x14, 0x87, 0x9b, 0x6d, 0xa7, 0x76, 0xce, 0x88, 0x2e, 0x61, 0x95, 0xe0, 0xca, 0x18, 0xf7, 0x42,
-	0x82, 0xe0, 0x14, 0xbb, 0x4f, 0xd0, 0x75, 0x14, 0x06, 0x44, 0x97, 0x74, 0x45, 0xf0, 0x66, 0xc8,
-	0xce, 0xc4, 0x6d, 0x60, 0x66, 0x32, 0x24, 0xa9, 0x6b, 0xdf, 0xc2, 0xc7, 0xf0, 0x51, 0xbc, 0xdc,
-	0x4b, 0x2f, 0xa5, 0x7d, 0x11, 0x99, 0xf4, 0x8f, 0x5e, 0xf4, 0xea, 0xe4, 0x77, 0xf8, 0x38, 0xe4,
-	0x3b, 0x07, 0x1e, 0x19, 0x79, 0xa3, 0xac, 0x33, 0xcb, 0xf1, 0xed, 0x5c, 0xe7, 0xca, 0x26, 0xad,
-	0xd1, 0x4e, 0xe3, 0x13, 0xab, 0x1b, 0xa3, 0x74, 0xd2, 0x95, 0x64, 0x87, 0x3c, 0xc1, 0x7b, 0xb8,
-	0x54, 0xe5, 0x86, 0x3c, 0xfb, 0x79, 0x04, 0xc1, 0xe7, 0xb9, 0xce, 0x2c, 0x7e, 0x0d, 0x81, 0xa8,
-	0x94, 0xb0, 0x04, 0xd1, 0x3e, 0x8b, 0x26, 0xa7, 0xc9, 0xa1, 0x19, 0xc9, 0xb4, 0x43, 0xf8, 0x86,
-	0xc4, 0x27, 0x10, 0xe8, 0xdb, 0x46, 0x1a, 0x72, 0x44, 0x11, 0x0b, 0xf9, 0x26, 0xe0, 0x14, 0xee,
-	0x97, 0xaa, 0xcc, 0x4b, 0x5d, 0x2c, 0x6a, 0xd9, 0x38, 0xd2, 0xa7, 0x88, 0x45, 0x93, 0xe7, 0x87,
-	0xe7, 0xa5, 0x59, 0x9a, 0x6e, 0x41, 0x1e, 0x95, 0xaa, 0xdc, 0x05, 0x4c, 0x21, 0x2a, 0x74, 0xe3,
-	0x8c, 0xae, 0x2a, 0x69, 0x2c, 0x19, 0xd0, 0x3e, 0x0b, 0xf9, 0xff, 0x2d, 0x7c, 0x0e, 0x03, 0xb7,
-	0x6c, 0x25, 0x09, 0x28, 0x62, 0x0f, 0x26, 0xcf, 0x0e, 0xcf, 0xf7, 0x6e, 0x57, 0xcb, 0x56, 0x72,
-	0x0f, 0xe3, 0xa7, 0x10, 0x3a, 0x55, 0x4b, 0xeb, 0x44, 0xdd, 0x92, 0x21, 0x45, 0xac, 0xcf, 0xff,
-	0x35, 0xf0, 0x29, 0x84, 0xca, 0xe6, 0xa2, 0x70, 0xea, 0x9b, 0x24, 0xf7, 0x28, 0x62, 0x23, 0x3e,
-	0x52, 0x76, 0xea, 0xf3, 0xd9, 0x0c, 0x02, 0x6f, 0x8f, 0x31, 0x0c, 0x1a, 0x51, 0x4b, 0x82, 0xbc,
-	0xb5, 0x7f, 0xe3, 0x18, 0x22, 0x65, 0xf3, 0xaf, 0xda, 0xe4, 0x56, 0x54, 0xd2, 0x2f, 0x64, 0xc4,
-	0x43, 0x65, 0xdf, 0x69, 0x33, 0x13, 0x95, 0xc4, 0x8f, 0x61, 0x28, 0x6a, 0xbd, 0xd8, 0xae, 0x23,
-	0xe0, 0xdb, 0xf4, 0xf2, 0x05, 0x84, 0xfb, 0x2f, 0xe2, 0x11, 0x0c, 0x3e, 0xcd, 0xde, 0xf2, 0xe3,
-	0x1e, 0x7e, 0x08, 0xd1, 0xf4, 0xf2, 0xf2, 0x7d, 0xf6, 0x66, 0x7a, 0x95, 0x7d, 0xfc, 0x70, 0x8c,
-	0x2e, 0x2e, 0x7e, 0xad, 0x62, 0x74, 0xb7, 0x8a, 0xd1, 0x9f, 0x55, 0x8c, 0x7e, 0xac, 0xe3, 0xde,
-	0xdd, 0x3a, 0xee, 0xfd, 0x5e, 0xc7, 0xbd, 0x2f, 0xec, 0x46, 0xb9, 0xf9, 0xe2, 0x3a, 0x29, 0x74,
-	0x3d, 0xee, 0xdc, 0x5f, 0x29, 0xed, 0xeb, 0xf8, 0xfb, 0x78, 0x7f, 0xef, 0x4e, 0xdd, 0x5e, 0x0f,
-	0xfd, 0xc9, 0xcf, 0xff, 0x06, 0x00, 0x00, 0xff, 0xff, 0xde, 0x91, 0xd0, 0x62, 0x35, 0x02, 0x00,
-	0x00,
+	// 457 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xcb, 0x6e, 0xd3, 0x40,
+	0x14, 0x86, 0x33, 0x75, 0x1c, 0xe2, 0x63, 0x2e, 0xd1, 0x51, 0x41, 0x56, 0x8b, 0x8c, 0xe9, 0x02,
+	0x19, 0x24, 0x1c, 0x91, 0x6e, 0x10, 0xac, 0x52, 0x12, 0xa4, 0x48, 0x5c, 0xaa, 0x49, 0x11, 0x12,
+	0x1b, 0x6b, 0x1a, 0x0f, 0xcd, 0x08, 0xdb, 0x13, 0xcd, 0x4c, 0x5a, 0xfc, 0x16, 0x3c, 0x08, 0x0f,
+	0xc2, 0xb2, 0x4b, 0x96, 0x28, 0x79, 0x11, 0xe4, 0x4b, 0x02, 0x48, 0x11, 0xab, 0x73, 0xfe, 0xa3,
+	0xef, 0xf7, 0xe5, 0x3f, 0x07, 0xee, 0x2a, 0x7e, 0x21, 0xb4, 0x51, 0x45, 0xff, 0x6a, 0x2e, 0x63,
+	0xa1, 0xa3, 0x85, 0x92, 0x46, 0xe2, 0xbe, 0x96, 0xb9, 0x12, 0x32, 0x2a, 0x4b, 0xb4, 0x41, 0x0e,
+	0x70, 0x0b, 0x27, 0x22, 0xa9, 0xc9, 0xa3, 0xef, 0x16, 0xd8, 0x1f, 0xe7, 0x72, 0xa2, 0x71, 0x1f,
+	0x6c, 0x79, 0x95, 0x73, 0xe5, 0x91, 0x80, 0x84, 0x0e, 0xad, 0x05, 0x1e, 0x82, 0x23, 0x74, 0xcc,
+	0x66, 0x46, 0x5c, 0x72, 0x6f, 0x2f, 0x20, 0x61, 0x97, 0x76, 0x85, 0x1e, 0x56, 0x1a, 0x47, 0x70,
+	0x33, 0x11, 0x49, 0x9c, 0xc8, 0xd9, 0x32, 0xe3, 0xb9, 0xf1, 0xac, 0x80, 0x84, 0xee, 0xe0, 0x61,
+	0xb4, 0xeb, 0xed, 0xd1, 0x68, 0x32, 0x1a, 0x35, 0x20, 0x75, 0x13, 0x91, 0x6c, 0x04, 0x3e, 0x03,
+	0x9b, 0xa5, 0x82, 0x69, 0xaf, 0x1d, 0x58, 0xa1, 0x3b, 0x38, 0xdc, 0x6d, 0x1f, 0x96, 0x08, 0xad,
+	0x49, 0x0c, 0xc0, 0x9d, 0xc9, 0xdc, 0x28, 0x99, 0xa6, 0x5c, 0x69, 0xcf, 0x0e, 0xac, 0xd0, 0xa1,
+	0x7f, 0x8f, 0xf0, 0x18, 0xda, 0xa6, 0x58, 0x70, 0xaf, 0x13, 0x90, 0xf0, 0xf6, 0xe0, 0xc1, 0xee,
+	0x67, 0x56, 0x3f, 0x7e, 0x56, 0x2c, 0x38, 0xad, 0x60, 0x1c, 0x43, 0x37, 0xe3, 0x86, 0x25, 0xcc,
+	0x30, 0xef, 0x46, 0xf5, 0x31, 0x8f, 0xff, 0x63, 0x8c, 0xde, 0x36, 0xec, 0x38, 0x37, 0xaa, 0xa0,
+	0x5b, 0x2b, 0xde, 0x07, 0xc7, 0x88, 0x8c, 0x6b, 0xc3, 0xb2, 0x85, 0xd7, 0x0d, 0x48, 0x68, 0xd1,
+	0x3f, 0x83, 0x83, 0x97, 0x70, 0xeb, 0x1f, 0x23, 0xf6, 0xc0, 0xfa, 0xc2, 0x8b, 0x26, 0xf6, 0xb2,
+	0x2d, 0x57, 0x71, 0xc9, 0xd2, 0x65, 0x1d, 0xb8, 0x43, 0x6b, 0xf1, 0x62, 0xef, 0x39, 0x39, 0x9a,
+	0x82, 0x5d, 0x05, 0x81, 0x08, 0xed, 0x9c, 0x65, 0xbc, 0x71, 0x55, 0x3d, 0xfa, 0xe0, 0x0a, 0x1d,
+	0x7f, 0x96, 0x2a, 0xd6, 0x2c, 0xdd, 0x6c, 0xcb, 0x11, 0xfa, 0xb5, 0x54, 0x53, 0x96, 0x72, 0xbc,
+	0x07, 0x1d, 0x96, 0xc9, 0x65, 0xb3, 0x28, 0x9b, 0x36, 0xea, 0xc9, 0x23, 0x70, 0xb6, 0x49, 0x60,
+	0x17, 0xda, 0x1f, 0xa6, 0x63, 0xda, 0x6b, 0xe1, 0x1d, 0x70, 0x87, 0xa7, 0xa7, 0x6f, 0x26, 0xaf,
+	0x86, 0x67, 0x93, 0xf7, 0xef, 0x7a, 0xe4, 0xe4, 0xe4, 0xc7, 0xca, 0x27, 0xd7, 0x2b, 0x9f, 0xfc,
+	0x5a, 0xf9, 0xe4, 0xdb, 0xda, 0x6f, 0x5d, 0xaf, 0xfd, 0xd6, 0xcf, 0xb5, 0xdf, 0xfa, 0x14, 0x5e,
+	0x08, 0x33, 0x5f, 0x9e, 0x47, 0x33, 0x99, 0xf5, 0xcb, 0xa4, 0x9e, 0x0a, 0x59, 0xd5, 0xfe, 0xd7,
+	0xfe, 0xf6, 0xe6, 0xca, 0x84, 0xf5, 0x79, 0xa7, 0x3a, 0xbb, 0xe3, 0xdf, 0x01, 0x00, 0x00, 0xff,
+	0xff, 0x00, 0xfb, 0xb0, 0x64, 0xb9, 0x02, 0x00, 0x00,
 }
 
 func (m *WhoIs) Marshal() (dAtA []byte, err error) {
@@ -271,31 +284,54 @@ func (m *WhoIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.IsActive {
-		i--
-		if m.IsActive {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x38
-	}
 	if m.Timestamp != 0 {
 		i = encodeVarintWhoIs(dAtA, i, uint64(m.Timestamp))
 		i--
-		dAtA[i] = 0x30
+		dAtA[i] = 0x40
+	}
+	if len(m.Metadata) > 0 {
+		for k := range m.Metadata {
+			v := m.Metadata[k]
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
+			i = encodeVarintWhoIs(dAtA, i, uint64(len(v)))
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintWhoIs(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintWhoIs(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x3a
+		}
 	}
 	if m.Type != 0 {
 		i = encodeVarintWhoIs(dAtA, i, uint64(m.Type))
 		i--
-		dAtA[i] = 0x28
+		dAtA[i] = 0x30
 	}
 	if len(m.Controllers) > 0 {
 		for iNdEx := len(m.Controllers) - 1; iNdEx >= 0; iNdEx-- {
 			i -= len(m.Controllers[iNdEx])
 			copy(dAtA[i:], m.Controllers[iNdEx])
 			i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Controllers[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.Alias) > 0 {
+		for iNdEx := len(m.Alias) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Alias[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintWhoIs(dAtA, i, uint64(size))
+			}
 			i--
 			dAtA[i] = 0x22
 		}
@@ -312,26 +348,22 @@ func (m *WhoIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
+	if m.IsActive {
+		i--
+		if m.IsActive {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
 	if len(m.Owner) > 0 {
 		i -= len(m.Owner)
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintWhoIs(dAtA, i, uint64(len(m.Owner)))
 		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Alias) > 0 {
-		for iNdEx := len(m.Alias) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Alias[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintWhoIs(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
-		}
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -398,19 +430,22 @@ func (m *WhoIs) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovWhoIs(uint64(l))
+	}
+	if m.IsActive {
+		n += 2
+	}
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
+		n += 1 + l + sovWhoIs(uint64(l))
+	}
 	if len(m.Alias) > 0 {
 		for _, e := range m.Alias {
 			l = e.Size()
 			n += 1 + l + sovWhoIs(uint64(l))
 		}
-	}
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovWhoIs(uint64(l))
-	}
-	if m.DidDocument != nil {
-		l = m.DidDocument.Size()
-		n += 1 + l + sovWhoIs(uint64(l))
 	}
 	if len(m.Controllers) > 0 {
 		for _, s := range m.Controllers {
@@ -421,11 +456,16 @@ func (m *WhoIs) Size() (n int) {
 	if m.Type != 0 {
 		n += 1 + sovWhoIs(uint64(m.Type))
 	}
+	if len(m.Metadata) > 0 {
+		for k, v := range m.Metadata {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovWhoIs(uint64(len(k))) + 1 + len(v) + sovWhoIs(uint64(len(v)))
+			n += mapEntrySize + 1 + sovWhoIs(uint64(mapEntrySize))
+		}
+	}
 	if m.Timestamp != 0 {
 		n += 1 + sovWhoIs(uint64(m.Timestamp))
-	}
-	if m.IsActive {
-		n += 2
 	}
 	return n
 }
@@ -486,40 +526,6 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthWhoIs
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Alias = append(m.Alias, &Alias{})
-			if err := m.Alias[len(m.Alias)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
 			var stringLen uint64
@@ -550,6 +556,26 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 			}
 			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsActive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWhoIs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsActive = bool(v != 0)
 		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
@@ -588,6 +614,40 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWhoIs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthWhoIs
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthWhoIs
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = append(m.Alias, &Alias{})
+			if err := m.Alias[len(m.Alias)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Controllers", wireType)
 			}
 			var stringLen uint64
@@ -618,7 +678,7 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 			}
 			m.Controllers = append(m.Controllers, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
-		case 5:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
 			}
@@ -637,7 +697,134 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 6:
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWhoIs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthWhoIs
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthWhoIs
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = make(map[string]string)
+			}
+			var mapkey string
+			var mapvalue string
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowWhoIs
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowWhoIs
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthWhoIs
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthWhoIs
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var stringLenmapvalue uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowWhoIs
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapvalue |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapvalue := int(stringLenmapvalue)
+					if intStringLenmapvalue < 0 {
+						return ErrInvalidLengthWhoIs
+					}
+					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+					if postStringIndexmapvalue < 0 {
+						return ErrInvalidLengthWhoIs
+					}
+					if postStringIndexmapvalue > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+					iNdEx = postStringIndexmapvalue
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipWhoIs(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthWhoIs
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Metadata[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
 			}
@@ -656,26 +843,6 @@ func (m *WhoIs) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IsActive", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowWhoIs
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.IsActive = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipWhoIs(dAtA[iNdEx:])
