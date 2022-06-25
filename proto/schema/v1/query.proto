@@ -1,12 +1,15 @@
 syntax = "proto3";
+
 package sonrio.sonr.schema;
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "schema/v1/params.proto";
 import "schema/v1/schema.proto";
 // this line is used by starport scaffolding # 1
+
+import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
@@ -33,11 +36,14 @@ message QueryParamsResponse {
 }
 
 message QuerySchemaRequest {
-  string did = 1;
+  string creator = 1;
+  string did = 2;
 }
 
 message QuerySchemaResponse {
-  Schema schema = 1;
+  WhatIs schema = 1;
+
+  SchemaDefinition definition = 2;
 }
 
 // this line is used by starport scaffolding # 3
