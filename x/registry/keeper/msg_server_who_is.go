@@ -99,6 +99,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidType, err.Error())
 	}
+	val.Metadata = msg.GetMetadata()
 	val.Controllers = val.DidDocument.Controller
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
