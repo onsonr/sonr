@@ -81,11 +81,20 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
+
+	// Add all the aliases to the whois
 	for _, a := range doc.GetAlsoKnownAs() {
 		if !val.ContainsAlias(a) {
 			val.AddAlsoKnownAs(a, false)
 		}
 	}
+
+	// Add all the metadata to the whois
+	for k, v := range msg.GetMetadata() {
+		val.Metadata[k] = v
+	}
+
+	// Add remaining entries to update the whois
 	val.Controllers = doc.GetController()
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
