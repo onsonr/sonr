@@ -14,8 +14,8 @@ tasks:
       - task: bind:ios
       - task: bind:wasm
       - mv motorlib-android_arm64 build/motorlib-android_arm64
-      - mv motorlib-ios build/motorlib-ios
-      - mv motorlib-web build/motorlib-web
+      - mv motorlib-ios_arm64 build/motorlib-ios_arm64
+      - mv motorlib-js_wasm build/motorlib-js_wasm
       - mv build ../build
 
   bind:android:
@@ -29,19 +29,20 @@ tasks:
   bind:ios:
     dir: motor-mobile
     cmds:
-      - mkdir motorlib-ios
-      - gomobile bind -ldflags='-s -w' -target=ios -o motorlib-ios/SonrMotor.xcframework -v
-      - mv motorlib-ios ../motorlib-ios
+      - mkdir motorlib-ios_arm64
+      - gomobile bind -ldflags='-s -w' -target=ios -o motorlib-ios_arm64/SonrMotor.xcframework -v
+      - mv motorlib-ios_arm64 ../motorlib-ios_arm64
 
   bind:wasm:
     dir: motor-wasm
     cmds:
-      - mkdir motorlib-web
-      - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-web/sonr-motor.wasm -v
-      - mv motorlib-web ../motorlib-web
+      - mkdir motorlib-js_wasm
+      - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-js_wasm/sonr-motor.wasm -v
+      - mv motorlib-js_wasm ../motorlib-js_wasm
 
   clean:
     cmds:
       - find ./ -type d -name "motorlib-ios_arm64" -exec rm -rf {} +
+      - find ./ -type d -name "motorlib-js_wasm" -exec rm -rf {} +
       - find ./ -type d -name "motorlib-android_arm64" -exec rm -rf {} +
       - find ./ -type d -name "build" -exec rm -rf {} +
