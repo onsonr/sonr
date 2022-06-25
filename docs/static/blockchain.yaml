@@ -31591,7 +31591,7 @@ paths:
                     type: boolean
                     title: IsActive is the status of the DID Document
               definition:
-                title: Schema Definition
+                title: Definition of schema
                 type: object
                 properties:
                   creator:
@@ -55669,9 +55669,11 @@ definitions:
       code:
         type: integer
         format: int32
+        title: Status code of the response
       message:
         type: string
       what_is:
+        title: WhatIs object created on chain
         type: object
         properties:
           did:
@@ -55752,7 +55754,7 @@ definitions:
             type: boolean
             title: IsActive is the status of the DID Document
       definition:
-        title: Schema Definition
+        title: Definition of schema
         type: object
         properties:
           creator:

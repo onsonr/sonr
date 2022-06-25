@@ -15,16 +15,18 @@ import (
 )
 
 const (
-	URL_PERSISTENCE_READ = "ipfs.Sonr.ws"
+	URL_PERSISTENCE_READ  = "ipfs.Sonr.ws"
+	URL_PERSISTENCE_WRITE = "api.ipfs.Sonr.ws"
 )
 
 var (
-	ipfs_inter = shell.NewShell(URL_PERSISTENCE_READ)
+	ipfs_inter_read  = shell.NewShell(URL_PERSISTENCE_READ)
+	ipfs_inter_write = shell.NewShell(URL_PERSISTENCE_WRITE)
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	out_path := filepath.Join(os.TempDir(), cid+".txt")
-	err := ipfs_inter.Get(cid, out_path)
+	err := ipfs_inter_read.Get(cid, out_path)
 
 	if err != nil {
 		return err
@@ -54,7 +56,7 @@ func (k Keeper) PinContent(payload interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return ipfs_inter.Add(bytes.NewReader(b))
+	return ipfs_inter_write.Add(bytes.NewReader(b))
 }
 
 func (k Keeper) GenerateKeyForDID() string {
