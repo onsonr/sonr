@@ -23,7 +23,8 @@ A `Schema Definition` is used to describe an application Schema that will be sto
 - (`Map`) Fields        : Map of the initial property names to `SchemaKinds`
 ```
 ---
-Fields contained within the `SchemaDefinition` are desribed below:
+Fields contained within the `SchemaDefinition` are described below:
+Each field reperesents an `ipld` see [here](https://ipld.io/docs/schemas/features/typekinds/)
 ```go
 // Represents the types of fields a schema can have
 enum SchemaKind {
