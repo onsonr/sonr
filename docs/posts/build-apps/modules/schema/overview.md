@@ -6,21 +6,25 @@ displayed_sidebar: highwaySidebar
 
 # Schemas
 ## Introduction
-The Sonr Schema module is used to store the records of verifiable objects for a specific application powered by the Sonr Network. Schemas are used to create custom application protcols which can be asserted on in order to verify your application data.
+The Sonr Schema module is used to store the records of verifiable objects for a specific application powered by the Sonr Network. Schemas are used to create custom application protcols which can be asserted on in order to verify your application data. Application data uploaded through `motors` can verify their data model through `Schema` repersentation.
 
 ## Overview
-Schemas are implemented on the `IPLD Object Model` which allows developers to register specific application data schemas.
+Schemas are implemented on the `IPLD Object Model` which allows developers to register specific application data schemas. see [here](https://ipld.io/docs/schemas)
 
 ## Concepts
 
 ### Schema Definition
 A `Schema Definition` is used to describe an application Schema that will be stored for later assertion against. the provided `Schema Definition` is then used to Derive both the `WhatIs` and `Schema Reference` that will be recorded on chain. Schemas comply to the `IPLD Object` specification. 
 
-
-```Text
-- (`string`) Creator    : The Account Address signing this message
-- (`string`) Label      : Identifier or description of the schema
-- (`Map`) Fields        : Map of the initial property names to `SchemaKinds`
+```go
+message SchemaDefinition{
+  // The Account Address signing this message
+  creator string
+  // Identifier or description of the schema
+  string label
+  // Map of the initial property names to `SchemaKinds`
+  map<string, SchemaKinds> fields
+}
 ```
 ---
 Fields contained within the `SchemaDefinition` are described below:
@@ -66,7 +70,6 @@ message WhatIs {
   // IsActive is the status of the DID Document
   bool is_active = 5;
 }
-
 ```
 
 ### Schema Reference

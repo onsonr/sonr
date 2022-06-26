@@ -9,7 +9,7 @@ displayed_sidebar: modulesSidebar
 # Introduction
 A Keeper is an abstraction whose role is to manage access to the subset of the state defined by various modules.
 
-The `x/Schema` `Keeper` holds functionality for accessing and persisting `Schemas` on chain. These Schemas can also be queried for by functionality present with this `Keeper`
+The `x/Schema` `Keeper` holds functionality for accessing and persisting `Schemas` on chain. These Schemas can also be queried for by functionality present with this `Keeper`.
 
 
 Both `message` endpoints and `Query` endpoints are accessible through `grpc` and the `cli`
@@ -20,24 +20,25 @@ The following endpoints are both accessible through `GRPC` and the `sonrd` cli s
 ### `CreateSchema(SchemaDefinition)` 
 Register's a new type definition for a given application. this type defention is then asserted against when uploading content
 
-```Text
- (`string`) Creator 
- (`string`) Label
- (`Map`) Fields
+```go
+{
+ creator string 
+ label string
+ fields map<string, SchemaKind>
+}
 ```
 
 - `Creator` The identifier of the application the schema is registering for
 - `Label` The human readable description of the schema
-- `fIelds` The data `Schema` being persisted see [here]() for schema data types
+- `Fields` The data `Schema` being persisted
 
 Returns a `WhatIs`
 
 ---
-
 ### `DeprecateSchema(MsgDeprecateSchema)`
 Allows for Schemas to be depricated. Depricated schemas are still accessible but will allow schemas developers to indicate it is no longer supported.
 
-```gp
+```go
 {
   Creator string 
   Did string 

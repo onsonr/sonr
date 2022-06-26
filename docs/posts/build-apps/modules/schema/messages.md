@@ -10,10 +10,12 @@ displayed_sidebar: modulesSidebar
 ### `CreateSchema(SchemaDefinition)` 
 Register's a new type definition for a given application. this type defention is then asserted against when uploading content
 
-```Text
- (`string`) Creator 
- (`string`) Label
- (`Map`) Fields
+```go
+{
+    Creator string
+    Label   string
+    fields  map<string, SchemaKind>
+}
 ```
 
 - `Creator` The identifier of the application the schema is registering for
@@ -27,7 +29,7 @@ Returns a `WhatIs`
 ### `DeprecateSchema(MsgDeprecateSchema)`
 Allows for Schemas to be depricated. Depricated schemas are still accessible but will allow schemas developers to indicate it is no longer supported.
 
-```gp
+```go
 {
   Creator string 
   Did string 
