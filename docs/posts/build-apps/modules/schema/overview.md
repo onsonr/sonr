@@ -19,9 +19,11 @@ A `Schema Definition` is used to describe an application Schema that will be sto
 ```go
 message SchemaDefinition{
   // The Account Address signing this message
-  creator string
+  string creator
+
   // Identifier or description of the schema
   string label
+
   // Map of the initial property names to `SchemaKinds`
   map<string, SchemaKinds> fields
 }
@@ -56,19 +58,19 @@ A `ScehamReference` is used to store information about a `ScehmaDefinition` on o
 ```go
 message WhatIs {
   // DID is the DID of the object
-  string did = 1;
+  string did
 
   // Object_doc is the object document
-  SchemaReference schema = 2;
+  SchemaReference schema
 
   // Creator is the DID of the creator
-  string creator = 3;
+  string creator
 
   // Timestamp is the time of the last update of the DID Document
-  int64 timestamp = 4;
+  int64 timestamp
 
   // IsActive is the status of the DID Document
-  bool is_active = 5;
+  bool is_active
 }
 ```
 
@@ -76,14 +78,14 @@ message WhatIs {
 A `Schema Reference` is used to repersent off chain information related to the `Schema` being registered. This is held within the `WhatIs` record that is written to the chain. A `Schema Reference` helps in retrieving a `Schema` Which is held within other storage.
 
 ```go
-{
+message SchemaReference{
     // the DID for this schema
-    did string
+    string did
 
     // an alternative reference point
-    label string
+    string label
 
     // a reference to information stored within an IPFS node.
-    cid string
+    string cid
 }
 ```
