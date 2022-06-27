@@ -96,6 +96,7 @@ html[data-theme='dark'] {
   --ifm-color-primary-light: #0083FF;
   --ifm-color-primary-lighter: #0083FF;
   --ifm-color-primary-lightest: #0083FF;
+  --ifm-background-color: #1d1a27;
 }
 
 .navbar .navbar__items {
@@ -118,7 +119,7 @@ html[data-theme='dark'] {
 
 html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
-}
+} 
 
 .features {
   display: flex;
