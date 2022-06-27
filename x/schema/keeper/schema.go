@@ -18,10 +18,10 @@ import (
 )
 
 var (
-	URL_PERSISTENCE_READ  = viper.GetString("IPFS_API_READ")
-	URL_PERSISTENCE_WRITE = viper.GetString("IPFS_API_WRITE")
-	ipfs_inter_read       = shell.NewShell(URL_PERSISTENCE_READ)
-	ipfs_inter_write      = shell.NewShell(URL_PERSISTENCE_WRITE)
+	url_persistence_read  = viper.GetString("IPFS_API_READ")
+	url_persistence_write = viper.GetString("IPFS_API_WRITE")
+	ipfs_inter_read       = shell.NewShell(url_persistence_read)
+	ipfs_inter_write      = shell.NewShell(url_persistence_write)
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
