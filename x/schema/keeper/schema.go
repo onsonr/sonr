@@ -18,10 +18,8 @@ import (
 )
 
 var (
-	url_persistence_read  = viper.GetString("IPFS_API_READ")
-	url_persistence_write = viper.GetString("IPFS_API_WRITE")
-	ipfs_inter_read       = shell.NewShell(url_persistence_read)
-	ipfs_inter_write      = shell.NewShell(url_persistence_write)
+	url_persistence = viper.GetString("IPFS_API_READ")
+	ipfs_inter      = shell.NewShell(url_persistence)
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
@@ -30,7 +28,7 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
 	defer os.Remove(out_path)
 
-	err := ipfs_inter_read.Get(cid, out_path)
+	err := ipfs_inter.Get(cid, out_path)
 
 	if err != nil {
 		return err
@@ -43,6 +41,7 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	}
 
 	resp := bufio.NewScanner(file)
+
 	buf := resp.Bytes()
 
 	if err = json.Unmarshal(buf, &content); err != nil {
@@ -61,7 +60,7 @@ func (k Keeper) PinContent(payload interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return ipfs_inter_write.Add(bytes.NewReader(b))
+	return ipfs_inter.Add(bytes.NewReader(b))
 }
 
 func (k Keeper) GenerateKeyForDID() string {
