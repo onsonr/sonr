@@ -15,14 +15,17 @@ service Msg {
 }
 
 message MsgCreateSchema {
-  string creator = 1;
-  string label = 2;
-  string cid = 3;
+  // definition of schema to be persisted
+  SchemaDefinition definition = 1;
 }
 
 message MsgCreateSchemaResponse {
+  // Status code of the response
   int32 code = 1;
+
   string message = 2;
+
+  // WhatIs object created on chain
   WhatIs what_is = 3;
 }
 
