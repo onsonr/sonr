@@ -9,7 +9,7 @@ displayed_sidebar: modulesSidebar
 # Introduction
 A Keeper is an abstraction whose role is to manage access to the subset of the state defined by various modules.
 
-The `x/Schema` `Keeper` holds functionality for accessing and persisting `Schemas` on chain. These Schemas can also be queried for by functionality present with this `Keeper`.
+The `Keeper` holds functionality for accessing and persisting `Schemas` on chain. These Schemas can also be queried for by functionality present with this `Keeper`.
 
 
 Both `message` endpoints and `Query` endpoints are accessible through `grpc` and the `cli`
