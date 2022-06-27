@@ -161,3 +161,4 @@ dist
 .pnp.*
 
 dist/
+docs/package-lock.json

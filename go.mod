@@ -15,6 +15,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/gogo/protobuf v1.3.3
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.2
 	github.com/google/open-location-code/go v0.0.0-20220120191843-cafb35c0d74d
 	github.com/google/uuid v1.3.0
@@ -27,7 +28,6 @@ require (
 	github.com/ipld/go-ipld-prime v0.16.0
 	github.com/kataras/go-events v0.0.3
 	github.com/kataras/golog v0.1.7
-	github.com/lestrrat-go/jwx v1.2.25
 	github.com/libp2p/go-libp2p v0.19.1
 	github.com/libp2p/go-libp2p-connmgr v0.3.1
 	github.com/libp2p/go-libp2p-core v0.15.1
@@ -36,6 +36,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.6.0
 	// github.com/libp2p/go-libp2p-webrtc-direct v0.0.0-20220406105718-41a3151f0a37
 	github.com/libp2p/go-msgio v0.2.0
+	github.com/marstr/guid v1.1.0
 	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.5.0
 	github.com/ockam-network/did v0.1.3
@@ -45,7 +46,7 @@ require (
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.2
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.0
 	github.com/swaggo/swag v1.8.1
@@ -64,7 +65,7 @@ require (
 
 require (
 	github.com/btcsuite/btcd v0.22.1 // indirect
-	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
+	github.com/lestrrat-go/jwx/v2 v2.0.3
 	github.com/libp2p/go-libp2p-asn-util v0.2.0 // indirect
 	github.com/libp2p/go-libp2p-resource-manager v0.3.0 // indirect
 	github.com/libp2p/go-reuseport v0.2.0 // indirect

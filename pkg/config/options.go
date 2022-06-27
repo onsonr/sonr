@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 )
 
@@ -48,6 +49,14 @@ func WithHighwayAPISettings(network string, grpcHost string, grpcPort int, httpP
 		o.HighwayGRPCNetwork = network
 		o.HighwayGRPCEndpoint = fmt.Sprintf("%s:%d", grpcHost, grpcPort)
 		o.HighwayHTTPEndpoint = fmt.Sprintf(":%d", httpPort)
+	}
+}
+
+func WithJWTTokenOptions(secret string, signingMethod jwt.SigningMethod, exp int64) Option {
+	return func(o *Config) {
+		o.JWTSecret = secret
+		o.JWTSigningMethod = signingMethod
+		o.JWTExpiration = exp
 	}
 }
 
