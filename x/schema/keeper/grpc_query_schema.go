@@ -65,13 +65,6 @@ func (k Keeper) QueryWhatIs(goCtx context.Context, req *st.QueryWhatIsRequest) (
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "Schema was not found for id: %s", req.Did)
 	}
 
-	var schemaJson *map[string]st.SchemaKind
-	err := k.LookUpContent(what_is.Schema.Cid, &schemaJson)
-
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "Error while accessing schema content")
-	}
-
 	return &st.QueryWhatIsResponse{
 		WhatIs: what_is,
 	}, nil

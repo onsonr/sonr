@@ -1,10 +1,11 @@
 package keeper
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -18,8 +19,8 @@ import (
 )
 
 var (
-	url_persistence = viper.GetString("IPFS_API_READ")
-	ipfs_inter      = shell.NewShell(url_persistence)
+	url        = viper.GetString("IPFS_API_READ")
+	ipfs_inter = shell.NewShell(url)
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
@@ -28,21 +29,17 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
 	defer os.Remove(out_path)
 
-	err := ipfs_inter.Get(cid, out_path)
+	resp, err := http.Get(url)
 
 	if err != nil {
 		return err
 	}
 
-	file, err := os.Open(out_path)
+	buf, err := io.ReadAll(resp.Body)
 
 	if err != nil {
 		return err
 	}
-
-	resp := bufio.NewScanner(file)
-
-	buf := resp.Bytes()
 
 	if err = json.Unmarshal(buf, &content); err != nil {
 		return err
