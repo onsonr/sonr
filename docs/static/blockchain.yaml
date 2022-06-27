@@ -31551,7 +31551,7 @@ paths:
         - Query
   /sonr-io/sonr/schema/query:
     get:
-      operationId: SonrioSonrSchemaQuerySchema
+      operationId: SonrioSonrSchemaQueryWhatIs
       responses:
         '200':
           description: A successful response.
@@ -55721,6 +55721,71 @@ definitions:
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrio.sonr.schema.QuerySchemaResponse:
+    type: object
+    properties:
+      whatIs:
+        title: Schema Repersentation
+        type: object
+        properties:
+          did:
+            type: string
+            title: DID is the DID of the object
+          schema:
+            title: Object_doc is the object document
+            type: object
+            properties:
+              did:
+                type: string
+                title: the DID for this schema
+              label:
+                type: string
+                title: an alternative reference point
+              cid:
+                type: string
+                description: a reference to information stored within an IPFS node.
+          creator:
+            type: string
+            title: Creator is the DID of the creator
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+      definition:
+        title: Definition of schema
+        type: object
+        properties:
+          creator:
+            type: string
+            title: the DID for this schema
+          label:
+            type: string
+            title: an alternative reference point
+          fields:
+            type: object
+            additionalProperties:
+              type: string
+              enum:
+                - INVALID
+                - MAP
+                - LIST
+                - UNIT
+                - BOOL
+                - INT
+                - FLOAT
+                - STRING
+                - BYTES
+                - LINK
+                - STRUCT
+                - UNION
+                - ENUM
+                - ANY
+              default: INVALID
+              title: Represents the types of fields a schema can have
+            title: the properties of this schema
+  sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       whatIs:

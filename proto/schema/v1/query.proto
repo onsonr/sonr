@@ -23,6 +23,10 @@ service Query {
   rpc QuerySchema(QuerySchemaRequest) returns (QuerySchemaResponse) {
     option (google.api.http).get = "/sonr-io/sonr/schema/query";
   }
+
+  rpc QueryWhatIs(QueryWhatIsRequest) returns (QueryWhatIsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query";
+  }
   // this line is used by starport scaffolding # 2
 }
 
@@ -40,7 +44,20 @@ message QuerySchemaRequest {
   string did = 2;
 }
 
+message QueryWhatIsRequest {
+  string creator = 1;
+  string did = 2;
+}
+
 message QuerySchemaResponse {
+  // Schema Repersentation
+  WhatIs whatIs = 1;
+
+  // Definition of schema
+  SchemaDefinition definition = 2;
+}
+
+message QueryWhatIsResponse {
   // Schema Repersentation
   WhatIs whatIs = 1;
 

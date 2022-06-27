@@ -45,3 +45,34 @@ func (k Keeper) QuerySchema(goCtx context.Context, req *st.QuerySchemaRequest) (
 		Definition: definition,
 	}, nil
 }
+
+func (k Keeper) QueryWhatIs(goCtx context.Context, req *st.QueryWhatIsRequest) (*st.QueryWhatIsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	ref, found := k.GetWhatIsFromCreator(ctx, req.Creator)
+	if !found || len(ref) < 1 {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "Schema was not found")
+	}
+
+	var what_is *st.WhatIs
+	for _, item := range ref {
+		if item.Did == req.Did {
+			what_is = &item
+			break
+		}
+	}
+
+	if what_is == nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "Schema was not found for id: %s", req.Did)
+	}
+
+	var schemaJson *map[string]st.SchemaKind
+	err := k.LookUpContent(what_is.Schema.Cid, &schemaJson)
+
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "Error while accessing schema content")
+	}
+
+	return &st.QueryWhatIsResponse{
+		WhatIs: what_is,
+	}, nil
+}

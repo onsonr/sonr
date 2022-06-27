@@ -1,52 +1,57 @@
 package keeper
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
-)
-
-const (
-	URL_PERSISTENCE_READ  = "ipfs.Sonr.ws"
-	URL_PERSISTENCE_WRITE = "api.ipfs.Sonr.ws"
+	"github.com/spf13/viper"
 )
 
 var (
-	ipfs_inter_read  = shell.NewShell(URL_PERSISTENCE_READ)
-	ipfs_inter_write = shell.NewShell(URL_PERSISTENCE_WRITE)
+	URL_PERSISTENCE_READ  = viper.GetString("IPFS_API_READ")
+	URL_PERSISTENCE_WRITE = viper.GetString("IPFS_API_WRITE")
+	ipfs_inter_read       = shell.NewShell(URL_PERSISTENCE_READ)
+	ipfs_inter_write      = shell.NewShell(URL_PERSISTENCE_WRITE)
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
-	out_path := filepath.Join(os.TempDir(), cid+".txt")
+	time_stamp := string(rune(time.Now().Unix()))
+
+	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
+	defer os.Remove(out_path)
+
 	err := ipfs_inter_read.Get(cid, out_path)
 
 	if err != nil {
 		return err
 	}
 
-	resp, err := os.ReadFile(out_path)
+	file, err := os.Open(out_path)
 
 	if err != nil {
 		return err
 	}
 
-	if err = json.Unmarshal(resp, &content); err != nil {
+	resp := bufio.NewScanner(file)
+	buf := resp.Bytes()
+
+	if err = json.Unmarshal(buf, &content); err != nil {
 		return err
 	}
 
 	if err != nil {
 		return err
 	}
-
-	defer os.Remove(out_path)
 
 	return nil
 }
