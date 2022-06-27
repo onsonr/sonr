@@ -419,7 +419,7 @@ func (cc *Cosmos) BroadcastCreateSchema(msg *st.MsgCreateSchema) (*st.MsgCreateS
 	return &respMsg, nil
 }
 
-func (cc *Cosmos) QuerySchema(creator string, schemaDID string) (*st.WhatIs, error) {
+func (cc *Cosmos) QuerySchema(creator string, schemaDID string) (*st.QuerySchemaResponse, error) {
 	queryReq := st.QuerySchemaRequest{
 		Creator: creator,
 		Did:     schemaDID,
@@ -430,5 +430,5 @@ func (cc *Cosmos) QuerySchema(creator string, schemaDID string) (*st.WhatIs, err
 		return nil, err
 	}
 
-	return queryResp.Schema, nil
+	return queryResp, nil
 }

@@ -30907,6 +30907,13 @@ paths:
                     is_active:
                       type: boolean
                       title: IsActive is the status of the DID Document
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      title: >-
+                        Metadata is a map of key-value pairs that can be used to
+                        store additional information about the DID Document
               pagination:
                 type: object
                 properties:
@@ -31166,6 +31173,13 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -31346,6 +31360,13 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -31527,6 +31548,13 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -31591,14 +31619,15 @@ paths:
         - Query
   /sonr-io/sonr/schema/query:
     get:
-      operationId: SonrioSonrSchemaQuerySchema
+      operationId: SonrioSonrSchemaQueryWhatIs
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              schema:
+              whatIs:
+                title: Schema Repersentation
                 type: object
                 properties:
                   did:
@@ -31629,6 +31658,38 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+              definition:
+                title: Definition of schema
+                type: object
+                properties:
+                  creator:
+                    type: string
+                    title: the DID for this schema
+                  label:
+                    type: string
+                    title: an alternative reference point
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      enum:
+                        - INVALID
+                        - MAP
+                        - LIST
+                        - UNIT
+                        - BOOL
+                        - INT
+                        - FLOAT
+                        - STRING
+                        - BYTES
+                        - LINK
+                        - STRUCT
+                        - UNION
+                        - ENUM
+                        - ANY
+                      default: INVALID
+                      title: Represents the types of fields a schema can have
+                    title: the properties of this schema
         default:
           description: An unexpected error response.
           schema:
@@ -54384,6 +54445,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
@@ -54535,6 +54603,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the created WhoIs, contains the DID document and associated
           metadata.
@@ -54695,6 +54770,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
@@ -54846,6 +54928,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
@@ -54997,6 +55086,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the created WhoIs, contains the DID document and associated
           metadata.
@@ -55150,6 +55246,13 @@ definitions:
             is_active:
               type: boolean
               title: IsActive is the status of the DID Document
+            metadata:
+              type: object
+              additionalProperties:
+                type: string
+              title: >-
+                Metadata is a map of key-value pairs that can be used to store
+                additional information about the DID Document
       pagination:
         type: object
         properties:
@@ -55327,6 +55430,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
   sonrio.sonr.registry.QueryWhoIsControllerResponse:
     type: object
     properties:
@@ -55472,6 +55582,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
   sonrio.sonr.registry.QueryWhoIsResponse:
     type: object
     properties:
@@ -55617,6 +55734,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
   sonrio.sonr.registry.Service:
     type: object
     properties:
@@ -55798,6 +55922,13 @@ definitions:
       is_active:
         type: boolean
         title: IsActive is the status of the DID Document
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+        title: >-
+          Metadata is a map of key-value pairs that can be used to store
+          additional information about the DID Document
   sonrio.sonr.registry.WhoIsType:
     type: string
     enum:
@@ -55814,9 +55945,11 @@ definitions:
       code:
         type: integer
         format: int32
+        title: Status code of the response
       message:
         type: string
       what_is:
+        title: WhatIs object created on chain
         type: object
         properties:
           did:
@@ -55866,7 +55999,8 @@ definitions:
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
-      schema:
+      whatIs:
+        title: Schema Repersentation
         type: object
         properties:
           did:
@@ -55895,6 +56029,153 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+      definition:
+        title: Definition of schema
+        type: object
+        properties:
+          creator:
+            type: string
+            title: the DID for this schema
+          label:
+            type: string
+            title: an alternative reference point
+          fields:
+            type: object
+            additionalProperties:
+              type: string
+              enum:
+                - INVALID
+                - MAP
+                - LIST
+                - UNIT
+                - BOOL
+                - INT
+                - FLOAT
+                - STRING
+                - BYTES
+                - LINK
+                - STRUCT
+                - UNION
+                - ENUM
+                - ANY
+              default: INVALID
+              title: Represents the types of fields a schema can have
+            title: the properties of this schema
+  sonrio.sonr.schema.QueryWhatIsResponse:
+    type: object
+    properties:
+      whatIs:
+        title: Schema Repersentation
+        type: object
+        properties:
+          did:
+            type: string
+            title: DID is the DID of the object
+          schema:
+            title: Object_doc is the object document
+            type: object
+            properties:
+              did:
+                type: string
+                title: the DID for this schema
+              label:
+                type: string
+                title: an alternative reference point
+              cid:
+                type: string
+                description: a reference to information stored within an IPFS node.
+          creator:
+            type: string
+            title: Creator is the DID of the creator
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+      definition:
+        title: Definition of schema
+        type: object
+        properties:
+          creator:
+            type: string
+            title: the DID for this schema
+          label:
+            type: string
+            title: an alternative reference point
+          fields:
+            type: object
+            additionalProperties:
+              type: string
+              enum:
+                - INVALID
+                - MAP
+                - LIST
+                - UNIT
+                - BOOL
+                - INT
+                - FLOAT
+                - STRING
+                - BYTES
+                - LINK
+                - STRUCT
+                - UNION
+                - ENUM
+                - ANY
+              default: INVALID
+              title: Represents the types of fields a schema can have
+            title: the properties of this schema
+  sonrio.sonr.schema.SchemaDefinition:
+    type: object
+    properties:
+      creator:
+        type: string
+        title: the DID for this schema
+      label:
+        type: string
+        title: an alternative reference point
+      fields:
+        type: object
+        additionalProperties:
+          type: string
+          enum:
+            - INVALID
+            - MAP
+            - LIST
+            - UNIT
+            - BOOL
+            - INT
+            - FLOAT
+            - STRING
+            - BYTES
+            - LINK
+            - STRUCT
+            - UNION
+            - ENUM
+            - ANY
+          default: INVALID
+          title: Represents the types of fields a schema can have
+        title: the properties of this schema
+  sonrio.sonr.schema.SchemaKind:
+    type: string
+    enum:
+      - INVALID
+      - MAP
+      - LIST
+      - UNIT
+      - BOOL
+      - INT
+      - FLOAT
+      - STRING
+      - BYTES
+      - LINK
+      - STRUCT
+      - UNION
+      - ENUM
+      - ANY
+    default: INVALID
+    title: Represents the types of fields a schema can have
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:
