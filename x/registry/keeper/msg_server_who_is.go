@@ -113,7 +113,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	}
 
 	// Add remaining entries to update the whois
-	val.Controllers = doc.GetController()
+	val.Controllers = doc.ControllersAsString()
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
 	k.SetWhoIs(ctx, val)
