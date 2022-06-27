@@ -30897,6 +30897,13 @@ paths:
                     is_active:
                       type: boolean
                       title: IsActive is the status of the DID Document
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      title: >-
+                        Metadata is a map of key-value pairs that can be used to
+                        store additional information about the DID Document
               pagination:
                 type: object
                 properties:
@@ -31146,6 +31153,13 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -31316,6 +31330,13 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -31487,6 +31508,13 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the DID Document
         default:
           description: An unexpected error response.
           schema:
@@ -54339,6 +54367,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
@@ -54480,6 +54515,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the created WhoIs, contains the DID document and associated
           metadata.
@@ -54630,6 +54672,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
@@ -54771,6 +54820,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the updated WhoIs, contains the DID document and associated
           metadata.
@@ -54912,6 +54968,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
         description: >-
           WhoIs is the created WhoIs, contains the DID document and associated
           metadata.
@@ -55055,6 +55118,13 @@ definitions:
             is_active:
               type: boolean
               title: IsActive is the status of the DID Document
+            metadata:
+              type: object
+              additionalProperties:
+                type: string
+              title: >-
+                Metadata is a map of key-value pairs that can be used to store
+                additional information about the DID Document
       pagination:
         type: object
         properties:
@@ -55222,6 +55292,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
   sonrio.sonr.registry.QueryWhoIsControllerResponse:
     type: object
     properties:
@@ -55357,6 +55434,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
   sonrio.sonr.registry.QueryWhoIsResponse:
     type: object
     properties:
@@ -55492,6 +55576,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the DID Document
   sonrio.sonr.registry.Service:
     type: object
     properties:
@@ -55653,6 +55744,13 @@ definitions:
       is_active:
         type: boolean
         title: IsActive is the status of the DID Document
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+        title: >-
+          Metadata is a map of key-value pairs that can be used to store
+          additional information about the DID Document
   sonrio.sonr.registry.WhoIsType:
     type: string
     enum:

@@ -24,6 +24,9 @@ message WhoIs {
 
   // IsActive is the status of the DID Document
   bool is_active = 7;
+
+  // Metadata is a map of key-value pairs that can be used to store additional information about the DID Document
+  map<string, string> metadata = 8;
 }
 
 // WhoIsType is the type of DIDDocument stored in the registry module
