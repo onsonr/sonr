@@ -38,10 +38,16 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 
+	cid_str, err := k.PinContent(msg.Definition.GetFields())
+
+	if err != nil {
+		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
+	}
+
 	var schema = types.SchemaReference{
-		Label: msg.Label,
+		Label: msg.Definition.Label,
 		Did:   what_is_did.String(),
-		Cid:   msg.Cid,
+		Cid:   cid_str,
 	}
 
 	var whatIs = types.WhatIs{
@@ -56,7 +62,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 
 	resp := types.MsgCreateSchemaResponse{
 		Code:    200,
-		Message: "Schema Created Successfully",
+		Message: "Schema Registered Sucessfully",
 		WhatIs:  &whatIs,
 	}
 

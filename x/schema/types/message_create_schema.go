@@ -12,10 +12,9 @@ const TypeMsgCreateSchema = "create_schema"
 
 var _ sdk.Msg = &MsgCreateSchema{}
 
-func NewMsgCreateSchema(creator, label string) *MsgCreateSchema {
+func NewMsgCreateSchema(defintion *SchemaDefinition) *MsgCreateSchema {
 	return &MsgCreateSchema{
-		Creator: creator,
-		Label:   label,
+		Definition: defintion,
 	}
 }
 func (msg *MsgCreateSchema) Route() string {
@@ -31,7 +30,7 @@ func (msg *MsgCreateSchema) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateSchema) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Definition.GetCreator())
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +38,7 @@ func (msg *MsgCreateSchema) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgCreateSchema) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Definition.GetCreator())
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
@@ -48,7 +47,7 @@ func (msg *MsgCreateSchema) ValidateBasic() error {
 
 // GetCreatorDid returns the creator did
 func (msg *MsgCreateSchema) GetCreatorDid() string {
-	rawCreator := msg.GetCreator()
+	rawCreator := msg.Definition.GetCreator()
 
 	// Trim snr account prefix
 	if strings.HasPrefix(rawCreator, "snr") {
