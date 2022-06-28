@@ -29,36 +29,6 @@ tasks:
       - go run cmd/highwayd/main.go
     silent: true
 
-  motor:bind:
-    cmds:
-      - task: clean
-      - task: bind:wasm
-      - task: bind:ios
-      - task: bind:android
-
-  bind:android:
-    dir: bind
-    cmds:
-      - mkdir motorbind-android
-      - gomobile bind -tags bind -ldflags='-s -w' -target=android/arm64 -o motorbind-android/io.sonr.motor.aar -v
-      - rm -rf motorbind-android/io.sonr.motor-sources.jar
-      - mv motorbind-android ../build/motorbind-android
-
-  bind:ios:
-    dir: bind
-    cmds:
-      - gomobile init
-      - mkdir motorbind-ios
-      - gomobile bind -tags bind -target=ios,iossimulator,macos -prefix=SNR -o motorbind-ios/Motor.xcframework -v
-      - mv motorbind-ios ../build/motorbind-ios
-
-  bind:wasm:
-    dir: bind
-    cmds:
-      - mkdir motorbind-wasm
-      - GOOS=js GOARCH=wasm go build -tags wasm -o motorbind-wasm/motor.wasm -v
-      - mv motorbind-wasm ../build/motorbind-wasm
-
   ## ------------------------------------------------------------
   ## Documentation tasks
   ## ------------------------------------------------------------
