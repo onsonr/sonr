@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
-func EncryptWithPassword(password, plaintext []byte) (string, error) {
+func EncryptWithPassword(password string, plaintext []byte) (string, error) {
 	key, err := deriveKey(password)
 	if err != nil {
 		return "", err
@@ -34,7 +34,7 @@ func EncryptWithPassword(password, plaintext []byte) (string, error) {
 	return string(ciphertext), nil
 }
 
-func DecryptWithPassword(password, ciphertext []byte) (string, error) {
+func DecryptWithPassword(password string, ciphertext []byte) (string, error) {
 	key, err := deriveKey(password)
 	if err != nil {
 		return "", err
@@ -60,9 +60,9 @@ func DecryptWithPassword(password, ciphertext []byte) (string, error) {
 	return string(plaintext), nil
 }
 
-func deriveKey(password []byte) ([]byte, error) {
+func deriveKey(password string) ([]byte, error) {
 	// including a salt would make it impossible to reliably login from other devices
-	key, err := scrypt.Key(password, []byte(""), 1<<20, 8, 1, 32)
+	key, err := scrypt.Key([]byte(password), []byte(""), 1<<20, 8, 1, 32)
 	if err != nil {
 		return nil, err
 	}
