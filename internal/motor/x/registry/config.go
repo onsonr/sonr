@@ -1,4 +1,4 @@
-package motor
+package registry
 
 import (
 	"github.com/sonr-io/sonr/pkg/client"
