@@ -41,7 +41,7 @@ export default function Home() {
       <main>
         <HomepageFeatures />
       
-        <Widget id="<https://demo.typeform.com/to/njdbt5>" style={{textAlign :'center',  width: '200%' }} className="my-form" /> 
+        <Widget id="<https://demo.typeform.com/to/njdbt5>" className="my-form" /> 
       </main>
     </Layout>
 
