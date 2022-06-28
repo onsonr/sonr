@@ -23,7 +23,7 @@ type MotorNode struct {
 	// Account *at.BaseAccount
 }
 
-func CreateAccount(password, dscPubKey, psKey []byte) (*MotorNode, error) {
+func CreateAccount(password, dscPubKey []byte) (*MotorNode, error) {
 	m, err := setupDefault()
 	if err != nil {
 		return nil, err
@@ -31,7 +31,19 @@ func CreateAccount(password, dscPubKey, psKey []byte) (*MotorNode, error) {
 
 	// create Vault shards to make sure this works before creating WhoIs
 	vc := vault.New()
-	dscShard, pskShard, recShard, unusedShards, err := m.Wallet.CreateInitialShards()
+	deviceShard, sharedShard, recShard, unusedShards, err := m.Wallet.CreateInitialShards()
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: encrypt dscShard with dsc (i.e. webauthn)
+	dscShard := string(deviceShard)
+
+	// TODO: ecnrypt pskShard with psk (must be generated)
+	pskShard := string(sharedShard)
+
+	// password protect the recovery shard
+	pwShard, err := crypto.EncryptWithPassword(password, []byte(recShard))
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +62,7 @@ func CreateAccount(password, dscPubKey, psKey []byte) (*MotorNode, error) {
 		string(dscPubKey),
 		dscShard,
 		pskShard,
-		recShard,
+		pwShard,
 	)
 	if err != nil {
 		return nil, err
