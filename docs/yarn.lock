@@ -2446,6 +2446,19 @@
   resolved "https://registry.npmjs.org/@trysound/sax/-/sax-0.2.0.tgz"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
+"@typeform/embed-react@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@typeform/embed-react/-/embed-react-1.17.0.tgz#f42f2918c8103927238caf930dd6aa5ef42a651c"
+  integrity sha512-KWLlyISmapKZk5tkOQ3MmEagZ3cOd4y2AOaQbtmwCX565KJX0PbMA4YZbhVoe119LT+K72fU45X+8VjbNCPegQ==
+  dependencies:
+    "@typeform/embed" "1.36.0"
+    fast-deep-equal "^3.1.3"
+
+"@typeform/embed@1.36.0", "@typeform/embed@^1.28.2":
+  version "1.36.0"
+  resolved "https://registry.yarnpkg.com/@typeform/embed/-/embed-1.36.0.tgz#609351546ac41856584112b0992f00aeb85e8103"
+  integrity sha512-7T+xbbGw7/o6bOOuMHrD7scwvl+YiJmYIiUP7YOGlyzA5BPSGt3wQx9M+J8D/X12MhgFNX4kgkwhPNyiALXxIg==
+
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.19"
   resolved "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.1.19.tgz"
@@ -12736,6 +12749,13 @@ react-textarea-autosize@^8.3.2:
     "@babel/runtime" "^7.10.2"
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
+
+react-typeform-embed@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-typeform-embed/-/react-typeform-embed-1.0.8.tgz#69392eda09118abd99d442c9acd0af4b453d9584"
+  integrity sha512-ftW03ddp6r7+1CS6kzhWleFuqo7Hr0vZES3nfljkmFp4LqQfW53xwRWOdEhDMuWL7S/sjvVLggwEq6Av2ODV/A==
+  dependencies:
+    "@typeform/embed" "^1.28.2"
 
 react@^17.0.1:
   version "17.0.2"

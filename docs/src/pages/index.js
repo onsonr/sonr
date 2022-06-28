@@ -6,7 +6,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
 import Head from '@docusaurus/Head';
-import  ReactTypeformEmbed from 'react-typeform-embed';
+import ReactTypeformEmbed, { Widget } from '@typeform/embed-react'
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -40,14 +40,12 @@ export default function Home() {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
-    
-      <ReactTypeformEmbed url="https://rvhfyn9wf6h.typeform.com/to/xe8LXfoi#hubspot_utk=xxxxx&hubspot_page_name=xxxxx&hubspot_page_url=xxxxx"/> 
-    
-    
+      
+        <Widget id="<https://demo.typeform.com/to/njdbt5>" style={{textAlign :'center',  width: '200%' }} className="my-form" /> 
       </main>
     </Layout>
 
-    
+
   );
 }
 
