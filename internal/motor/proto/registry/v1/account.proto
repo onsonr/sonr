@@ -7,7 +7,6 @@ option go_package = "github.com/sonr-io/sonr/motor/types/registry";
 message CreateAccountRequest {
   string password = 1;
   bytes ecdsa_dsc_key = 2;
-  bytes ecdsa_preshared_key = 3;
 }
 
 message CreateAccountResponse {

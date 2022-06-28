@@ -24,35 +24,38 @@ type MotorNode struct {
 	// Account *at.BaseAccount
 }
 
-func CreateAccount(request registry.CreateAccountRequest) (*MotorNode, error) {
+func CreateAccount(request registry.CreateAccountRequest) (*MotorNode, []byte, error) {
 	m, err := setupDefault()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// create Vault shards to make sure this works before creating WhoIs
 	vc := vault.New()
 	deviceShard, sharedShard, recShard, unusedShards, err := m.Wallet.CreateInitialShards()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// TODO: encrypt dscShard with dsc (i.e. webauthn)
 	dscShard := string(deviceShard)
 
 	// TODO: ecnrypt pskShard with psk (must be generated)
-	pskShard := string(sharedShard)
+	pskShard, psk, err := pskEncrypt(sharedShard)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// password protect the recovery shard
 	pwShard, err := crypto.EncryptWithPassword(request.Password, []byte(recShard))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// create WhoIs
 	resp, err := createWhoIs(m)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	fmt.Println(resp.String())
 
@@ -66,7 +69,7 @@ func CreateAccount(request registry.CreateAccountRequest) (*MotorNode, error) {
 		pwShard,
 	)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// update DID Document
@@ -75,11 +78,11 @@ func CreateAccount(request registry.CreateAccountRequest) (*MotorNode, error) {
 	// update whois
 	resp, err = updateWhoIs(m)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	fmt.Println(resp.String())
 
-	return m, err
+	return m, psk, err
 }
 
 func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
@@ -126,4 +129,8 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, errors.New(resp.TxResponse.RawLog)
 	}
 	return resp.TxResponse, nil
+}
+
+func pskEncrypt(shard string) (string, []byte, error) {
+	return "", nil, nil
 }
