@@ -110,15 +110,15 @@ func ImportCredential(buf []byte) error {
 }
 
 // MarshalWallet returns the JSON representation of the wallet.
-func MarshalWallet() []byte {
+func MarshalWallet() ([]byte, error) {
 	if instance == nil {
-		return nil
+		return nil, errWalletExists
 	}
 	buf, err := instance.wallet.Marshal()
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return buf
+	return buf, nil
 }
 
 // Sign returns the signature of the given message.
@@ -204,7 +204,13 @@ func ImportCredentialWrapper() js.Func {
 
 func MarshalWalletWrapper() js.Func {
 	js_func := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		return MarshalWallet()
+		buf := []byte(args[0].String())
+		data, err := MarshalWallet(buf)
+		if err != nil {
+			return err
+		}
+
+		return data
 	})
 
 	return js_func
