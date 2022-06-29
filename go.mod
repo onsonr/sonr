@@ -3,7 +3,9 @@ module github.com/sonr-io/sonr
 go 1.16
 
 replace (
+	github.com/99designs/keyring => ../keyring // github.com/sonr-io/keyring v1.2.2-0.20220629193734-d35363de0ac5
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+	// github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
 
@@ -52,6 +54,7 @@ require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/shengdoushi/base58 v1.0.0
+	github.com/sonr-io/keyring v1.2.2-0.20220629193734-d35363de0ac5 // indirect
 	github.com/sonr-io/multi-party-sig v0.7.0
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.4.0
