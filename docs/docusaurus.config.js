@@ -187,7 +187,6 @@ const config = {
                 href: 'https://sonr.buzz',
               },
               {
-                //TO DO : Update Twitter 
                 label: 'Twitter',
                 href: 'https://twitter.com/sonr_io',
               },
