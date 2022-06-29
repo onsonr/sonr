@@ -19,6 +19,7 @@ import (
 var (
 	errWalletExists    = errors.New("mpc wallet already exists")
 	errWalletNotExists = errors.New("mpc wallet does not exist")
+	txBetaAddress      = "v1-beta.sonr.ws:1317/cosmos/tx/v1beta/txs"
 )
 
 type motor struct {
@@ -45,15 +46,15 @@ func NewWallet() error {
 }
 
 // Address returns the address of the wallet.
-func Address() string {
+func Address() (string, error) {
 	if instance == nil {
-		return ""
+		return "", nil
 	}
 	addr, err := instance.wallet.Address()
 	if err != nil {
-		return ""
+		return "", err
 	}
-	return addr
+	return addr, nil
 }
 
 // LoadWallet unmarshals the given JSON into the wallet.
@@ -148,8 +149,7 @@ func Verify(msg []byte, sig []byte) bool {
 
 // Broadcast broadcasts rawTx to the specified address
 func Broadcast(addr string, tx []byte) error {
-	apiEndpoint := "v1-beta.sonr.ws:1317/cosmos/tx/v1beta/txs"
-	res, err := http.Post(apiEndpoint, "application/json", bytes.NewBuffer(tx))
+	res, err := http.Post(txBetaAddress, "application/json", bytes.NewBuffer(tx))
 	if err != nil {
 		return err
 	}
@@ -173,7 +173,13 @@ func NewWalletExport() js.Func {
 
 func AddressExporter() js.Func {
 	js_func := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		return Address()
+		addr, err := Address()
+
+		if err != nil {
+			return err
+		}
+
+		return addr
 	})
 
 	return js_func
