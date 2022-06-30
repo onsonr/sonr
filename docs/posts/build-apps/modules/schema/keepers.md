@@ -14,7 +14,8 @@ The `Keeper` holds functionality for accessing and persisting `Schemas` on chain
 
 Both `message` endpoints and `Query` endpoints are accessible through `grpc` and the `cli`
 
-The following endpoints are both accessible through `GRPC` and the `sonrd` cli see [here]() for information on running an instance of the `sonrd` block chain locally
+<!-- Here is where the dev server error was. The link "here" has no url in the parenthesis. -->
+<!-- The following endpoints are both accessible through `GRPC` and the `sonrd` cli see [here]() for information on running an instance of the `sonrd` block chain locally -->
 
 ## Keeper Message Enpoints
 ### `CreateSchema(SchemaDefinition)` 

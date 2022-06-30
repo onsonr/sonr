@@ -20,7 +20,8 @@ Register's a new type definition for a given application. this type defention is
 
 - `Creator` The identifier of the application the schema is registering for
 - `Label` The human readable description of the schema
-- `fIelds` The data `Schema` being persisted see [here]() for schema data types
+<!-- Here is where the dev server error was. The link "here" has no url in the parenthesis. -->
+<!-- - `fIelds` The data `Schema` being persisted see [here]() for schema data types -->
 
 Returns a `WhatIs`
 
