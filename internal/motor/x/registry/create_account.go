@@ -24,38 +24,41 @@ type MotorNode struct {
 	// Account *at.BaseAccount
 }
 
-func CreateAccount(request registry.CreateAccountRequest) (*MotorNode, []byte, error) {
+func CreateAccount(request registry.CreateAccountRequest) (registry.CreateAccountResponse, error) {
 	m, err := setupDefault()
 	if err != nil {
-		return nil, nil, err
+		return registry.CreateAccountResponse{}, err
 	}
 
 	// create Vault shards to make sure this works before creating WhoIs
 	vc := vault.New()
 	deviceShard, sharedShard, recShard, unusedShards, err := m.Wallet.CreateInitialShards()
 	if err != nil {
-		return nil, nil, err
+		return registry.CreateAccountResponse{}, err
 	}
 
-	// TODO: encrypt dscShard with dsc (i.e. webauthn)
-	dscShard := string(deviceShard)
+	// encrypt dscShard with dsc (i.e. webauthn)
+	dscShard, err := dscEncrypt(deviceShard, request.AesDscKey)
+	if err != nil {
+		return registry.CreateAccountResponse{}, err
+	}
 
-	// TODO: ecnrypt pskShard with psk (must be generated)
+	// ecnrypt pskShard with psk (must be generated)
 	pskShard, psk, err := pskEncrypt(sharedShard)
 	if err != nil {
-		return nil, nil, err
+		return registry.CreateAccountResponse{}, err
 	}
 
 	// password protect the recovery shard
-	pwShard, err := crypto.EncryptWithPassword(request.Password, []byte(recShard))
+	pwShard, err := crypto.AesEncryptWithPassword(request.Password, []byte(recShard))
 	if err != nil {
-		return nil, nil, err
+		return registry.CreateAccountResponse{}, err
 	}
 
 	// create WhoIs
 	resp, err := createWhoIs(m)
 	if err != nil {
-		return nil, nil, err
+		return registry.CreateAccountResponse{}, err
 	}
 	fmt.Println(resp.String())
 
@@ -63,13 +66,13 @@ func CreateAccount(request registry.CreateAccountRequest) (*MotorNode, []byte, e
 	vaultService, err := vc.CreateVault(
 		m.Address,
 		unusedShards,
-		string(request.EcdsaDscKey),
+		string(request.AesDscKey),
 		dscShard,
 		pskShard,
 		pwShard,
 	)
 	if err != nil {
-		return nil, nil, err
+		return registry.CreateAccountResponse{}, err
 	}
 
 	// update DID Document
@@ -78,11 +81,14 @@ func CreateAccount(request registry.CreateAccountRequest) (*MotorNode, []byte, e
 	// update whois
 	resp, err = updateWhoIs(m)
 	if err != nil {
-		return nil, nil, err
+		return registry.CreateAccountResponse{}, err
 	}
 	fmt.Println(resp.String())
 
-	return m, psk, err
+	return registry.CreateAccountResponse{
+		Address: m.Address,
+		AesPsk:  psk,
+	}, err
 }
 
 func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
@@ -132,5 +138,22 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 }
 
 func pskEncrypt(shard string) (string, []byte, error) {
-	return "", nil, nil
+	key, err := crypto.NewAesKey()
+	if err != nil {
+		return "", nil, err
+	}
+
+	cipherShard, err := crypto.AesEncryptWithKey(key, []byte(shard))
+	if err != nil {
+		return "", key, err
+	}
+
+	return cipherShard, key, nil
+}
+
+func dscEncrypt(shard string, dsc []byte) (string, error) {
+	if len(dsc) != 32 {
+		return "", errors.New("dsc must be 32 bytes")
+	}
+	return crypto.AesEncryptWithKey(dsc, []byte(shard))
 }
