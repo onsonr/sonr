@@ -52,7 +52,11 @@ const sidebars = {
       {
         type: 'category',
         label: 'Schema',
-        items: ['build-apps/modules/schema/overview', 'build-apps/modules/schema/state', 'build-apps/modules/schema/keepers', 'build-apps/modules/schema/messages', 'build-apps/modules/schema/events', 'build-apps/modules/schema/client'],
+        items: [
+          'build-apps/modules/schema/overview',
+          'build-apps/modules/schema/protocol',
+          'build-apps/modules/schema/usage',
+        ],
         collapsible: true,
         collapsed: true,
       },

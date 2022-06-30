@@ -1,6 +1,6 @@
 ---
 title: Messages
-id: messages
+id: protocol
 displayed_sidebar: modulesSidebar
 ---
 

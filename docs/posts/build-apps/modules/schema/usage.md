@@ -1,21 +1,14 @@
 ---
-title: Keepers
-id: keepers
+title: Usage
+id: usage
 displayed_sidebar: modulesSidebar
 ---
 
-# Keepers
+# Usage
 
 # Introduction
-A Keeper is an abstraction whose role is to manage access to the subset of the state defined by various modules.
-
-The `Keeper` holds functionality for accessing and persisting `Schemas` on chain. These Schemas can also be queried for by functionality present with this `Keeper`.
-
 
 Both `message` endpoints and `Query` endpoints are accessible through `grpc` and the `cli`
-
-<!-- Here is where the dev server error was. The link "here" has no url in the parenthesis. -->
-<!-- The following endpoints are both accessible through `GRPC` and the `sonrd` cli see [here]() for information on running an instance of the `sonrd` block chain locally -->
 
 ## Keeper Message Enpoints
 ### `CreateSchema(SchemaDefinition)` 
@@ -58,7 +51,7 @@ Returns a `status code` and `message` detailing the operation.
 `GRPC`
 
 ```bash
-$ grpcurl -d '{"creator": snr1234, "Label": "Message schema v1" "fields": {"message": 0, "icon": 2}}'  \ 
+$ grpcurl -d '{"creator": <address>, "Label": "Message schema v1" "fields": {"message": 0, "icon": 2}}'  \ 
 sonrio.sonr.schema.Msg/MsgCreateSchema
 ```
 
@@ -67,7 +60,7 @@ sonrio.sonr.schema.Msg/MsgCreateSchema
 `GRPC`
 
 ```bash
-$ grpcurl -d '{"creator": snr1234, "did": "did:snr:123"}}'  \ 
+$ grpcurl -d '{"creator": <address>, "did": "did:snr:123"}}'  \ 
 sonrio.sonr.schema.Msg/MsgCreateSchema
 ```
 
@@ -108,22 +101,3 @@ Returns a `WhatIs`
 
 ---
 
-## Usage
-
-### `QuerySchema`
-
-`GRPC`
-
-```bash
-$ grpcurl -d '{"creator": snr1234, "did": "did:snr:123"}}'  \ 
-sonrio.sonr.schema.Query/QuerySchema
-```
-
-### `QueryWhatIs`
-
-`GRPC`
-
-```bash
-$ grpcurl -d '{"creator": snr1234, "did": "did:snr:123"}}'  \ 
-sonrio.sonr.schema.Query/QueryWhatIs
-```
