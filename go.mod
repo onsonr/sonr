@@ -65,7 +65,7 @@ require (
 	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.7
 	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7
-	go.buf.build/grpc/go/sonr-io/motor v1.3.6
+	go.buf.build/grpc/go/sonr-io/motor v1.3.8
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd
 	golang.org/x/net v0.0.0-20220524220425-1d687d428aca // indirect
