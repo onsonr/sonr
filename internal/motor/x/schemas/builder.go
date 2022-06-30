@@ -10,7 +10,7 @@ import (
 	Takes an DID of the schema and the definition to create a Basic Node definition
 	maps the id of the schema to the top level node in `nodes`
 */
-func (as *appSchemaInternalImpl) BuildNodesFromDefinition(id string, def *st.SchemaDefinition) (*datamodel.Node, error) {
+func (as *appSchemaInternalImpl) BuildNodesFromDefinition(id string, def *st.SchemaDefinition) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
@@ -30,7 +30,7 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(id string, def *st.Sch
 	}
 	node := nb.Build()
 
-	as.nodes[id] = &node
+	as.nodes[id] = node
 
-	return &node, nil
+	return node, nil
 }

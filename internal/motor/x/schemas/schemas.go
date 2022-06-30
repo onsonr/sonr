@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/sonr-io/sonr/pkg/did"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
@@ -14,7 +15,6 @@ var (
 	errSchemaFieldsInvalid       = errors.New("supplied Schema is invalid")
 	errVerficationMethodNotFound = errors.New("supplied Schema is invalid")
 	errIdNotFound                = errors.New("Id not found")
-	endpointVaultLive            = "https://vault.sonr.ws"
 )
 
 /*
@@ -39,7 +39,7 @@ type AppSchemaInternal interface {
 		Builds a linkage of IPLD nodes from the provided schema definition
 		returns the `Node` and assigns it to the given id internally.
 	*/
-	BuildNodesFromDefinition(id string, def *st.SchemaDefinition) (*datamodel.Node, error)
+	BuildNodesFromDefinition(id string, def *st.SchemaDefinition) (datamodel.Node, error)
 
 	/*
 		Returns an error if any of the keys within provided data dont match the given schema definition
@@ -51,16 +51,6 @@ type AppSchemaInternal interface {
 		Adds an account to be used for operations, once defined will raise `errAccountAlreadyDefined`
 	*/
 	WithAcct(whoIs rt.WhoIs) error
-
-	/*
-		Returns the did Document relating to the `whoIs` instance
-	*/
-	GetDocFromAcct() (*rt.DIDDocument, error)
-
-	/*
-		Returns a verification method defined within the `whoIs` did document
-	*/
-	GetVerificationFromAccount(id string) (*rt.VerificationMethod, error)
 
 	/*
 		Encodes a given IPLD Node as JSON
@@ -75,20 +65,31 @@ type AppSchemaInternal interface {
 	/*
 		Get a top level IPLD node by the associated WhatIs did
 	*/
-	GetNodeById(id string) (datamodel.Node, error)
+	GetTopLevelNodeById(id string) (datamodel.Node, error)
+
+	/*
+		Get an IPLD object as a flat path of nodes.
+	*/
+	GetPath(id string) (datamodel.ListIterator, error)
+}
+
+/*
+	Creates a relationship between a schema definition and the 'whatIs' definition
+*/
+type SchemaRelationShip struct {
+	definition *st.SchemaDefinition
+	did        did.DID
 }
 
 type appSchemaInternalImpl struct {
-	vaultEndpoint     string
 	schemaDefinitions map[string]*st.SchemaDefinition
 	WhatIs            map[string]*st.WhatIs
 	Acct              *rt.WhoIs
-	nodes             map[string]*datamodel.Node
+	nodes             map[string]datamodel.Node
 }
 
 func New() AppSchemaInternal {
 	return &appSchemaInternalImpl{
-		vaultEndpoint:     endpointVaultLive,
 		schemaDefinitions: make(map[string]*st.SchemaDefinition),
 		WhatIs:            make(map[string]*st.WhatIs),
 		Acct:              nil,
@@ -97,7 +98,6 @@ func New() AppSchemaInternal {
 
 func NewWithAcct(whoIs *rt.WhoIs) AppSchemaInternal {
 	return &appSchemaInternalImpl{
-		vaultEndpoint:     endpointVaultLive,
 		schemaDefinitions: make(map[string]*st.SchemaDefinition),
 		WhatIs:            make(map[string]*st.WhatIs, 0),
 		Acct:              whoIs,
