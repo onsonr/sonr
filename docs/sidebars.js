@@ -34,8 +34,8 @@ const sidebars = {
     'build-apps/installation',
     {
       type: 'category',
-      label: 'Introducing the Motor',
-      items: ['build-apps/motor/interface', 'build-apps/motor/access-authentication', 'build-apps/motor/discovery', 'build-apps/motor/transmission'],
+      label: 'Peer to Peer',
+      items: ['build-apps/motor/access-authentication', 'build-apps/motor/discovery', 'build-apps/motor/transmission'],
       collapsible: true,
       collapsed: false,
     },
