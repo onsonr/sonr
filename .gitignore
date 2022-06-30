@@ -161,6 +161,4 @@ dist
 .pnp.*
 
 dist/
-node_modules
-.temp
-.cache
+docs/package-lock.json

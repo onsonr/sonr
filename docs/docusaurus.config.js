@@ -166,6 +166,10 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/sonr-io/sonr',
               },
+              {
+                label: 'Discord',
+                href: 'https://discord.gg/fCsyz59h5s',
+              }
             ],
           },
         ],

@@ -1,47 +1,63 @@
 package keeper
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
-)
-
-const (
-	URL_PERSISTENCE_READ = "ipfs.Sonr.ws"
+	"github.com/spf13/viper"
 )
 
 var (
-	ipfs_inter = shell.NewShell(URL_PERSISTENCE_READ)
+	url        = viper.GetString("IPFS_API_READ")
+	ipfs_inter = shell.NewShell(url)
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
-	out_path := filepath.Join(os.TempDir(), cid+".txt")
-	err := ipfs_inter.Get(cid, out_path)
+	time_stamp := string(rune(time.Now().Unix()))
 
-	if err != nil {
-		return err
-	}
-
-	resp, err := os.ReadFile(out_path)
-
-	if err = json.Unmarshal(resp, &content); err != nil {
-		return err
-	}
-
-	if err != nil {
-		return err
-	}
-
+	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
 	defer os.Remove(out_path)
 
+	resp, err := http.Get(url)
+
+	if err != nil {
+		return err
+	}
+
+	buf, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		return err
+	}
+
+	if err = json.Unmarshal(buf, &content); err != nil {
+		return err
+	}
+
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func (k Keeper) PinContent(payload interface{}) (string, error) {
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return "", err
+	}
+	return ipfs_inter.Add(bytes.NewReader(b))
 }
 
 func (k Keeper) GenerateKeyForDID() string {
