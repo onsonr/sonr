@@ -1,5 +1,5 @@
 ---
-title: Registry Overview
+title: Overview
 id: overview
 displayed_sidebar: modulesSidebar
 ---

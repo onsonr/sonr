@@ -34,18 +34,22 @@ const sidebars = {
     'build-apps/installation',
     {
       type: 'category',
-      label: 'Peer to Peer',
+      label: 'Concepts',
       items: ['build-apps/motor/access-authentication', 'build-apps/motor/discovery', 'build-apps/motor/transmission'],
       collapsible: true,
       collapsed: false,
     },
     {
       type: 'category',
-      label: 'List of Modules',
+      label: 'Modules',
       items: [{
         type: 'category',
         label: 'Registry',
-        items: ['build-apps/modules/registry/overview', 'build-apps/modules/registry/state', 'build-apps/modules/registry/keepers', 'build-apps/modules/registry/messages', 'build-apps/modules/registry/events', 'build-apps/modules/registry/client'],
+        items: [
+          'build-apps/modules/registry/overview',
+          'build-apps/modules/registry/protocol',
+          'build-apps/modules/registry/usage',
+        ],
         collapsible: true,
         collapsed: true,
       },
@@ -63,14 +67,14 @@ const sidebars = {
       {
         type: 'category',
         label: 'Buckets',
-        items: ['build-apps/modules/buckets/overview', 'build-apps/modules/buckets/state', 'build-apps/modules/buckets/keepers', 'build-apps/modules/buckets/messages', 'build-apps/modules/buckets/events', 'build-apps/modules/buckets/client'],
+        items: ['build-apps/modules/buckets/overview'],
         collapsible: true,
         collapsed: true,
       },
       {
         type: 'category',
         label: 'Channel',
-        items: ['build-apps/modules/channel/overview', 'build-apps/modules/channel/state', 'build-apps/modules/channel/keepers', 'build-apps/modules/channel/messages', 'build-apps/modules/channel/events', 'build-apps/modules/channel/client'],
+        items: ['build-apps/modules/channel/overview'],
         collapsible: true,
         collapsed: true,
       },],

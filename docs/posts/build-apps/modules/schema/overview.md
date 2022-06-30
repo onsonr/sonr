@@ -6,7 +6,7 @@ displayed_sidebar: modulesSidebar
 
 # Application Schemas
 ## Introduction
-The Sonr Schema module is used to store the records of verifiable objects for a specific application powered by the Sonr Network. Schemas are used to create custom application protcols which can be asserted on in order to verify your application data. Application data uploaded through `motors` can verify their data model through `Schema` repersentation.
+The Sonr Schema module is used to store the records of verifiable objects for a specific application powered by the Sonr Network. Schemas are used to create custom application protcols which can be asserted on in order to verify your application data. Application data uploaded through `motors` can verify their data model through `Schemas`.
 
 ## Overview
 Schemas are implemented on the `IPLD Object Model` which allows developers to register specific application data schemas. see [here](https://ipld.io/docs/schemas)
