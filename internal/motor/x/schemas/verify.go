@@ -1,8 +1,6 @@
 package schemas
 
 import (
-	"fmt"
-
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -36,6 +34,6 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 	case interface{}:
 		return fieldType == st.SchemaKind_ANY
 	default:
-		fmt.Println("unknown")
+		return false
 	}
 }

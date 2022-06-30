@@ -1,9 +1,9 @@
 package schemas
 
-func (as *appSchemaInternalImpl) GetAllWhatIs() {
+func (as *appSchemaInternalImpl) GetAllWhatIs() error {
 
 }
 
-func (as *appSchemaInternalImpl) GetAllSchemaDefinitions() {
+func (as *appSchemaInternalImpl) GetAllSchemaDefinitions() error {
 
 }

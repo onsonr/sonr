@@ -4,10 +4,14 @@ import (
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (as *appSchemaInternalImpl) WithAcct(whoIs rt.WhoIs) {
+func (as *appSchemaInternalImpl) WithAcct(whoIs rt.WhoIs) error {
 	if as.Acct != nil {
-		as.Acct = &whoIs
+		return errAccountAlreadyDefined
 	}
+
+	as.Acct = &whoIs
+
+	return nil
 }
 
 func (as *appSchemaInternalImpl) GetDocFromAcct() (*rt.DIDDocument, error) {

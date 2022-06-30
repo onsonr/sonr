@@ -6,7 +6,11 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *appSchemaInternalImpl) BuildSchemaFromDefinition(def *st.SchemaDefinition) (datamodel.NodeBuilder, error) {
+/*
+	Takes an DID of the schema and the definition to create a Basic Node definition
+	maps the id of the schema to the top level node in `nodes`
+*/
+func (as *appSchemaInternalImpl) BuildNodesFromDefinition(id string, def *st.SchemaDefinition) (*datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
@@ -15,5 +19,18 @@ func (as *appSchemaInternalImpl) BuildSchemaFromDefinition(def *st.SchemaDefinit
 	if err != nil {
 		return nil, err
 	}
+	for k, _ := range def.GetFields() {
+		ma.AssembleKey().AssignString(k)
+	}
 
+	buildErr := ma.Finish()
+
+	if buildErr != nil {
+		return nil, buildErr
+	}
+	node := nb.Build()
+
+	as.nodes[id] = &node
+
+	return &node, nil
 }
