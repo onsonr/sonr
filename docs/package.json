@@ -2,9 +2,9 @@
   "name": "sonr-docs",
   "version": "0.0.1",
   "private": true,
-   "engines" : {
-    "npm" : ">=7.0.0",
-    "node" : ">=16.0.0"
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
   },
   "scripts": {
     "docusaurus": "docusaurus",
@@ -49,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "vuepress": "^2.0.0-beta.48"
   }
 }

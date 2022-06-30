@@ -46,10 +46,6 @@ definitions:
       label:
         description: Label is human-readable name of the channel.
         type: string
-      registered_object:
-        $ref: '#/definitions/types.ObjectDoc'
-        description: RegisterdObject is the object that is registered as the payload
-          for the channel.
     type: object
   types.DIDDocument:
     properties:
@@ -178,8 +174,6 @@ definitions:
         type: string
       label:
         type: string
-      object_to_register:
-        $ref: '#/definitions/types.ObjectDoc'
     type: object
   types.MsgCreateChannelResponse:
     properties:
@@ -192,31 +186,6 @@ definitions:
       message:
         description: Message of the response
         type: string
-    type: object
-  types.MsgCreateObject:
-    properties:
-      creator:
-        type: string
-      description:
-        type: string
-      initial_fields:
-        items:
-          $ref: '#/definitions/types.TypeField'
-        type: array
-      label:
-        type: string
-    type: object
-  types.MsgCreateObjectResponse:
-    properties:
-      code:
-        description: Code of the response
-        type: integer
-      message:
-        description: Message of the response
-        type: string
-      what_is:
-        $ref: '#/definitions/types.WhatIs'
-        description: WhatIs of the Channel
     type: object
   types.MsgCreateWhoIs:
     properties:
@@ -268,22 +237,6 @@ definitions:
         type: string
     type: object
   types.MsgDeactivateChannelResponse:
-    properties:
-      code:
-        description: Code of the response
-        type: integer
-      message:
-        description: Message of the response
-        type: string
-    type: object
-  types.MsgDeactivateObject:
-    properties:
-      creator:
-        type: string
-      did:
-        type: string
-    type: object
-  types.MsgDeactivateObjectResponse:
     properties:
       code:
         description: Code of the response
@@ -399,8 +352,6 @@ definitions:
         type: string
       label:
         type: string
-      object_to_register:
-        $ref: '#/definitions/types.ObjectDoc'
     type: object
   types.MsgUpdateChannelResponse:
     properties:
@@ -410,39 +361,6 @@ definitions:
       message:
         description: Message of the response
         type: string
-    type: object
-  types.MsgUpdateObject:
-    properties:
-      added_fields:
-        description: Added fields to the object
-        items:
-          $ref: '#/definitions/types.TypeField'
-        type: array
-      cid:
-        description: Contend Identifier of the object
-        type: string
-      creator:
-        type: string
-      label:
-        description: Label of the Object
-        type: string
-      removed_fields:
-        description: Removed fields from the object
-        items:
-          $ref: '#/definitions/types.TypeField'
-        type: array
-    type: object
-  types.MsgUpdateObjectResponse:
-    properties:
-      code:
-        description: Code of the response
-        type: integer
-      message:
-        description: Message of the response
-        type: string
-      what_is:
-        $ref: '#/definitions/types.WhatIs'
-        description: WhatIs of the Channel
     type: object
   types.MsgUpdateWhoIs:
     properties:
@@ -466,26 +384,6 @@ definitions:
         description: WhoIs is the created WhoIs, contains the DID document and associated
           metadata.
     type: object
-  types.ObjectDoc:
-    properties:
-      bucket_did:
-        description: Bucket is the did of the bucket that contains this object.
-        type: string
-      description:
-        description: Description is a human-readable description of the bucket.
-        type: string
-      did:
-        description: Did is the identifier of the object.
-        type: string
-      fields:
-        description: Fields are the fields associated with the object.
-        items:
-          $ref: '#/definitions/types.TypeField'
-        type: array
-      label:
-        description: Label is human-readable name of the bucket.
-        type: string
-    type: object
   types.Service:
     properties:
       id:
@@ -493,15 +391,6 @@ definitions:
       service_endpoint:
         type: string
       type:
-        type: string
-    type: object
-  types.TypeField:
-    properties:
-      kind:
-        description: Type is the type of the field.
-        type: integer
-      name:
-        description: Name is the name of the field.
         type: string
     type: object
   types.VerificationMethod:
@@ -518,24 +407,6 @@ definitions:
         type: array
       type:
         type: string
-    type: object
-  types.WhatIs:
-    properties:
-      creator:
-        description: Creator is the DID of the creator
-        type: string
-      did:
-        description: DID is the DID of the object
-        type: string
-      is_active:
-        description: IsActive is the status of the DID Document
-        type: boolean
-      object_doc:
-        $ref: '#/definitions/types.ObjectDoc'
-        description: Object_doc is the object document
-      timestamp:
-        description: Timestamp is the time of the last update of the DID Document
-        type: integer
     type: object
   types.WhichIs:
     properties:
@@ -806,78 +677,6 @@ paths:
       summary: Upload Blob
       tags:
       - Blob
-  /v1/object/create:
-    post:
-      description: CreateObject creates a Object for a registered application
-      parameters:
-      - description: Parameters
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.MsgCreateObject'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.MsgCreateObjectResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Create Object
-      tags:
-      - Object
-  /v1/object/deactivate:
-    post:
-      description: DeactivateObject disables a Object for a registered application
-      parameters:
-      - description: Parameters
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.MsgDeactivateObject'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.MsgDeactivateObjectResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Deactivate Object
-      tags:
-      - Object
-  /v1/object/update:
-    post:
-      description: UpdateObject updates and object reference for a registered application
-      parameters:
-      - description: Parameters
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.MsgUpdateObject'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.MsgUpdateObjectResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Update Object
-      tags:
-      - Object
   /v1/registry/buy/alias/app:
     post:
       description: This method Sets a particular owned alias by a User or Application
