@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package sonrio.motor.registry.v1;
+option go_package = "github.com/sonr-io/sonr/motor/types/registry";
+
+// CreateAccount Request contains the three keys needed to create an account on Sonr
+message CreateAccountRequest {
+  string password = 1;
+  bytes aes_dsc_key = 2;
+}
+
+message CreateAccountResponse {
+  bytes aes_psk = 1;
+  string address = 2;
+}

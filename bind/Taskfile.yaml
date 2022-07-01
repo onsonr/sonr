@@ -9,40 +9,38 @@ tasks:
   ## ------------------------------------------------------------
   bind:
     cmds:
-      - mkdir -p build
-      - task: bind:android
+      - task: clean
+      #- task: bind:wasm
       - task: bind:ios
-      - task: bind:wasm
-      - mv motorlib-android_arm64 build/motorlib-android_arm64
-      - mv motorlib-ios_arm64 build/motorlib-ios_arm64
-      - mv motorlib-js_wasm build/motorlib-js_wasm
+      - task: bind:android
       - mv build ../build
 
   bind:android:
     dir: motor-mobile
     cmds:
-      - mkdir motorlib-android_arm64
-      - gomobile bind -ldflags='-s -w' -target=android/arm64 -o motorlib-android_arm64/io.sonr.motor.aar -v
-      - rm -rf motorlib-android_arm64/io.sonr.motor-sources.jar
-      - mv motorlib-android_arm64 ../motorlib-android_arm64
+      - mkdir motorlib-android
+      - gomobile bind -ldflags='-s -w' -target=android/arm64 -o motorlib-android/io.sonr.motor.aar -v
+      - rm -rf motorlib-android/io.sonr.motor-sources.jar
+      - mv motorlib-android ../build/motorlib-android
 
   bind:ios:
     dir: motor-mobile
     cmds:
-      - mkdir motorlib-ios_arm64
-      - gomobile bind -ldflags='-s -w' -target=ios -o motorlib-ios_arm64/SonrMotor.xcframework -v
-      - mv motorlib-ios_arm64 ../motorlib-ios_arm64
+      - mkdir motorlib-ios
+      - gomobile bind -ldflags='-s -w' -target=ios -o motorlib-ios/SonrMotor.xcframework -v
+      - mv motorlib-ios ../build/motorlib-ios
 
   bind:wasm:
     dir: motor-wasm
     cmds:
-      - mkdir motorlib-js_wasm
-      - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-js_wasm/sonr-motor.wasm -v
-      - mv motorlib-js_wasm ../motorlib-js_wasm
+      - mkdir motorlib-wasm
+      - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-wasm/sonr-motor.wasm -v
+      - mv motorlib-wasm ../build/motorlib-wasm
 
   clean:
     cmds:
-      - find ./ -type d -name "motorlib-ios_arm64" -exec rm -rf {} +
-      - find ./ -type d -name "motorlib-js_wasm" -exec rm -rf {} +
-      - find ./ -type d -name "motorlib-android_arm64" -exec rm -rf {} +
+      - find ./ -type d -name "motorlib-ios" -exec rm -rf {} +
+      - find ./ -type d -name "motorlib-wasm" -exec rm -rf {} +
+      - find ./ -type d -name "motorlib-android" -exec rm -rf {} +
       - find ./ -type d -name "build" -exec rm -rf {} +
+      - mkdir -p build

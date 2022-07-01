@@ -1,43 +1,24 @@
 package motor
 
 import (
+	"encoding/json"
 	"testing"
 
-	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
-	"github.com/sonr-io/sonr/x/registry/types"
+	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/stretchr/testify/assert"
+	prt "go.buf.build/grpc/go/sonr-io/motor/registry/v1"
 )
 
 func Test_CreateAccount(t *testing.T) {
-	_, err := CreateAccount(
-		[]byte("mystrongpassword"),
-		[]byte("somerandomdscpubkey"),
-		[]byte("somerandompsk"),
-	)
-	assert.NoError(t, err, "wallet generation succeeds")
-}
+	aesKey, err := crypto.NewAesKey()
+	assert.NoError(t, err, "generates aes key")
 
-func Test_DocumentSerialization(t *testing.T) {
-	m, err := setupDefault()
-	assert.NoError(t, err, "setup succeeds")
-
-	m.DIDDoc.AddService(did.Service{
-		ID:   ssi.MustParseURI("https://vault.sonr.ws"),
-		Type: "vault",
-		ServiceEndpoint: map[string]string{
-			"cid": "asdfoasdfklasdjfashfk",
-		},
+	req, err := json.Marshal(prt.CreateAccountRequest{
+		Password:  "password123",
+		AesDscKey: aesKey,
 	})
-	marshalled, err := m.DIDDoc.MarshalJSON()
-	assert.NoError(t, err, "marshals")
+	assert.NoError(t, err, "create account request marshals")
 
-	des := did.BlankDocument()
-	err = des.UnmarshalJSON(marshalled)
-	assert.NoError(t, err, "unmarshals")
-
-	regDes, err := types.NewDIDDocumentFromPkg(des)
-	assert.NoError(t, err, "converts")
-
-	assert.Equal(t, len(m.DIDDoc.GetServices()), len(regDes.Service))
+	_, err = CreateAccount(req)
+	assert.NoError(t, err, "wallet generation succeeds")
 }
