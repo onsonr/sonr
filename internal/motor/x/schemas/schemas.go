@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/ipld/go-ipld-prime/datamodel"
+	dmt "github.com/ipld/go-ipld-prime/schema/dmt"
 	"github.com/sonr-io/sonr/pkg/did"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -35,11 +36,20 @@ type AppSchemaInternal interface {
 	*/
 	GetAllSchemaDefinitions() error
 
+	GetNodeMap() map[string]datamodel.Node
+
+	GetWhatIsMap() map[string]*st.WhatIs
+
 	/*
 		Builds a linkage of IPLD nodes from the provided schema definition
 		returns the `Node` and assigns it to the given id internally.
 	*/
 	BuildNodesFromDefinition(id string, def *st.SchemaDefinition) (datamodel.Node, error)
+
+	/*
+
+	 */
+	BuildSchemaFromNodes(id string) (*dmt.Schema, error)
 
 	/*
 		Returns an error if any of the keys within provided data dont match the given schema definition
@@ -88,11 +98,20 @@ type appSchemaInternalImpl struct {
 	nodes             map[string]datamodel.Node
 }
 
+func (as *appSchemaInternalImpl) GetNodeMap() map[string]datamodel.Node {
+	return as.nodes
+}
+
+func (as *appSchemaInternalImpl) GetWhatIsMap() map[string]*st.WhatIs {
+	return as.WhatIs
+}
+
 func New() AppSchemaInternal {
 	return &appSchemaInternalImpl{
 		schemaDefinitions: make(map[string]*st.SchemaDefinition),
 		WhatIs:            make(map[string]*st.WhatIs),
 		Acct:              nil,
+		nodes:             make(map[string]datamodel.Node),
 	}
 }
 
