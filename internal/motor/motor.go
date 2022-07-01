@@ -13,5 +13,12 @@ func CreateAccount(requestBytes []byte) (prt.CreateAccountResponse, error) {
 		return prt.CreateAccountResponse{}, err
 	}
 
-	return registry.CreateAccount(request)
+	m, err := registry.CreateAccount(request)
+	if err != nil {
+		return prt.CreateAccountResponse{}, err
+	}
+	return prt.CreateAccountResponse{
+		Address: m.Address,
+		Psk:     []byte(""),
+	}, nil
 }

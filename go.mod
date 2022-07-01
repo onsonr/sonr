@@ -3,6 +3,8 @@ module github.com/sonr-io/sonr
 go 1.16
 
 replace (
+	github.com/99designs/keyring => github.com/sonr-io/keyring v1.2.2-0.20220701001003-9f5deb6c197a
+	github.com/elastic/gosigar => github.com/sonr-io/gosigar v0.14.3-0.20220630215707-0c344b060447
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
@@ -10,8 +12,6 @@ replace (
 require (
 	github.com/cosmos/cosmos-sdk v0.45.5
 	github.com/cosmos/ibc-go/v3 v3.0.0
-	github.com/docker/docker v20.10.16+incompatible // indirect
-	github.com/frankban/quicktest v1.14.3 // indirect
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
@@ -31,27 +31,22 @@ require (
 	github.com/kataras/go-events v0.0.3
 	github.com/kataras/golog v0.1.7
 	github.com/lestrrat-go/jwx/v2 v2.0.3
-	github.com/lib/pq v1.10.5 // indirect
 	github.com/libp2p/go-libp2p v0.20.1
 	github.com/libp2p/go-libp2p-connmgr v0.4.0
 	github.com/libp2p/go-libp2p-core v0.16.1
 	github.com/libp2p/go-libp2p-discovery v0.7.0
 	github.com/libp2p/go-libp2p-kad-dht v0.16.0
-	github.com/libp2p/go-libp2p-mplex v0.8.0 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.7.0
 	github.com/libp2p/go-msgio v0.2.0
 	github.com/marstr/guid v1.1.0
-	github.com/miekg/dns v1.1.49 // indirect
 	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.5.0
 	github.com/ockam-network/did v0.1.3
-	github.com/onsi/gomega v1.17.0 // indirect
-	github.com/opencontainers/image-spec v1.0.3-0.20211202183452-c5a74bcca799 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.2
-	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/shengdoushi/base58 v1.0.0
+	github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16 // indirect
 	github.com/sonr-io/multi-party-sig v0.7.0
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.4.0
@@ -68,10 +63,8 @@ require (
 	go.buf.build/grpc/go/sonr-io/motor v1.3.8
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd
-	golang.org/x/net v0.0.0-20220524220425-1d687d428aca // indirect
-	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
+	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b // indirect
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467 // indirect
-	golang.org/x/text v0.3.8-0.20211004125949-5bd84dd9b33b // indirect
 	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0

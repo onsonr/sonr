@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 
+	mtr "github.com/sonr-io/sonr/internal/motor"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
@@ -26,6 +27,14 @@ type motor struct {
 }
 
 var instance *motor
+
+func CreateAccount(buf []byte) ([]byte, error) {
+	if res, err := mtr.CreateAccount(buf); err == nil {
+		return json.Marshal(res)
+	} else {
+		return nil, err
+	}
+}
 
 // NewWallet creates a new mpc based wallet.
 func NewWallet() error {

@@ -37,7 +37,7 @@ tasks:
       - GOOS=js GOARCH=wasm go build -tags wasm -o motorlib-wasm/sonr-motor.wasm -v
       - mv motorlib-wasm ../build/motorlib-wasm
 
-  clean:
+  bind:clean:
     cmds:
       - find ./ -type d -name "motorlib-ios" -exec rm -rf {} +
       - find ./ -type d -name "motorlib-wasm" -exec rm -rf {} +
