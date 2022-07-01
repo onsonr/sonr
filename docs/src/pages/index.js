@@ -26,7 +26,7 @@ function HomepageHeader() {
           </Link>
           <Link 
             className="button button--secondary button--lg typographyRichTextHeading"
-            to="https://rvhfyn9wf6h.typeform.com/to/xe8LXfoi#hubspot_utk=xxxxx&hubspot_page_name=xxxxx&hubspot_page_url=xxxxx"> 
+            to="https://rvhfyn9wf6h.typeform.com/to/xe8LXfoi#hubspot_utk=xxxxx&hubspot_page_name=xxxxx&hubspot_page_url=xxxxx">
             Get Early Access 🎉
           </Link>
         </div>
