@@ -19,6 +19,6 @@ func CreateAccount(requestBytes []byte) (prt.CreateAccountResponse, error) {
 	}
 	return prt.CreateAccountResponse{
 		Address: m.Address,
-		Psk:     []byte(""),
+		AesPsk:  []byte(""),
 	}, nil
 }
