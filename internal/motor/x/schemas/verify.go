@@ -4,7 +4,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}, def st.SchemaDefinition) error {
+func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}, def *st.SchemaDefinition) error {
 	fields := def.GetFields()
 	for key, value := range doc {
 		if _, ok := fields[key]; !ok {

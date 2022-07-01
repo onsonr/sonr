@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/ipld/go-ipld-prime/datamodel"
-	dmt "github.com/ipld/go-ipld-prime/schema/dmt"
 	"github.com/sonr-io/sonr/pkg/did"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -36,26 +35,27 @@ type AppSchemaInternal interface {
 	*/
 	GetAllSchemaDefinitions() error
 
+	/*
+		Acessor method for node map related by definition did
+	*/
 	GetNodeMap() map[string]datamodel.Node
 
+	/*
+		Acessor method for node map related by did
+	*/
 	GetWhatIsMap() map[string]*st.WhatIs
 
 	/*
 		Builds a linkage of IPLD nodes from the provided schema definition
 		returns the `Node` and assigns it to the given id internally.
 	*/
-	BuildNodesFromDefinition(id string, def *st.SchemaDefinition) (datamodel.Node, error)
-
-	/*
-
-	 */
-	BuildSchemaFromNodes(id string) (*dmt.Schema, error)
+	BuildNodesFromDefinition(id string, def *st.SchemaDefinition, object map[string]interface{}) (datamodel.Node, error)
 
 	/*
 		Returns an error if any of the keys within provided data dont match the given schema definition
 		useful for verifying
 	*/
-	VerifyObject(doc map[string]interface{}, def st.SchemaDefinition) error
+	VerifyObject(doc map[string]interface{}, def *st.SchemaDefinition) error
 
 	/*
 		Adds an account to be used for operations, once defined will raise `errAccountAlreadyDefined`
@@ -96,14 +96,6 @@ type appSchemaInternalImpl struct {
 	WhatIs            map[string]*st.WhatIs
 	Acct              *rt.WhoIs
 	nodes             map[string]datamodel.Node
-}
-
-func (as *appSchemaInternalImpl) GetNodeMap() map[string]datamodel.Node {
-	return as.nodes
-}
-
-func (as *appSchemaInternalImpl) GetWhatIsMap() map[string]*st.WhatIs {
-	return as.WhatIs
 }
 
 func New() AppSchemaInternal {
