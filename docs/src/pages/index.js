@@ -6,7 +6,10 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
 import Head from '@docusaurus/Head';
-import ReactTypeformEmbed, { Widget } from '@typeform/embed-react'
+
+// To Do 
+// Change the buttonGap class's margin-right property to 20px to make it look more centered
+// Rename the buttonGap class to mRight20 
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -14,19 +17,24 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <h1 className="typographySpecialTextDisplay2">Sonr Developer Portal</h1>
-        <p className=".typographyRichTextParagraphDefault
-">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
+        <p className=".typographysRichTextParagraphDefault">{siteConfig.tagline}</p>
+        <div className="container">
+          <Link 
+            className="button button--secondary button--lg typographyRichTextHeading buttonGap"
+            to="/articles/introduction"> 
+              Get Started
+          </Link>
+          <Link 
             className="button button--secondary button--lg typographyRichTextHeading"
-            to="/articles/introduction">
-            Get Started 🎉
+            to="https://rvhfyn9wf6h.typeform.com/to/xe8LXfoi#hubspot_utk=xxxxx&hubspot_page_name=xxxxx&hubspot_page_url=xxxxx"> 
+            Get Early Access 🎉
           </Link>
         </div>
-      </div>
+      </div> 
     </header>
   );
 }
+
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
@@ -41,7 +49,6 @@ export default function Home() {
       <main>
         <HomepageFeatures />
       
-        <Widget id="<https://demo.typeform.com/to/njdbt5>" className="my-form" /> 
       </main>
     </Layout>
 
