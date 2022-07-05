@@ -9,7 +9,7 @@ import (
 	ct "github.com/sonr-io/sonr/x/channel/types"
 
 	host "github.com/sonr-io/sonr/pkg/host"
-	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
 )
 
 var (

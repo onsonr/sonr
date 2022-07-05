@@ -6,7 +6,7 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/stretchr/testify/assert"
-	prt "go.buf.build/grpc/go/sonr-io/motor/registry/v1"
+	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func Test_CreateAccount(t *testing.T) {

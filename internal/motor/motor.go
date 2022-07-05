@@ -13,7 +13,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/registry/v1"
+	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type MotorNode struct {

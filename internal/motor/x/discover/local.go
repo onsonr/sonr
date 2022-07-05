@@ -8,9 +8,8 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
 	"github.com/sonr-io/sonr/pkg/host"
-	t "github.com/sonr-io/sonr/types"
-	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/discover/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -135,7 +134,7 @@ func (p *Local) handleTopic() {
 				logger.Errorf("%s - Failed to Unmarshal Message", err)
 				continue
 			}
-			p.messages <- newLobbyEvent(msg.ReceivedFrom, data.GetPeer())
+			// p.messages <- newLobbyEvent(msg.ReceivedFrom, data.GetPeer())
 		}
 	}
 }
@@ -162,11 +161,11 @@ func (lp *Local) callRefresh() {
 	logger.Debug("Calling Refresh Event")
 
 	// Emit Refresh Event
-	lp.node.Events().Emit(t.ON_REFRESH, &motor.OnLobbyRefreshResponse{
-		Olc:      lp.olc,
-		Peers:    lp.peers,
-		Received: int64(time.Now().Unix()),
-	})
+	// lp.node.Events().Emit(t.ON_REFRESH, &motor.OnLobbyRefreshResponse{
+	// 	Olc:      lp.olc,
+	// 	Peers:    lp.peers,
+	// 	Received: int64(time.Now().Unix()),
+	// })
 }
 
 // callUpdate publishes a LobbyMessage to the Local Topic
@@ -184,13 +183,14 @@ func (lp *Local) callUpdate() error {
 // createLobbyMsgBuf Creates a new Message Buffer for Local Topic
 func createLobbyMsgBuf(p *motor.Peer) []byte {
 	// Marshal Event
-	event := &v1.LobbyMessage{Peer: p}
-	eventBuf, err := proto.Marshal(event)
+	//event := &v1.LobbyMessage{Peer: p}
+	_, err := proto.Marshal(nil)
 	if err != nil {
 		logger.Errorf("%s - Failed to Marshal Event", err)
 		return nil
 	}
-	return eventBuf
+	// return eventBuf
+	return nil
 }
 
 // hasPeer Checks if Peer is in Peer List
