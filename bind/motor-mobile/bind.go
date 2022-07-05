@@ -1,12 +1,9 @@
 package motor
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
-	"net/http"
 
 	mtr "github.com/sonr-io/sonr/internal/motor"
 	"github.com/sonr-io/sonr/pkg/crypto"
@@ -137,41 +134,4 @@ func MarshalWallet() []byte {
 		return nil
 	}
 	return buf
-}
-
-// Sign returns the signature of the given message.
-func Sign(typeUrl string, msg []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, errWalletNotExists
-	}
-
-	// tx, err := rt.UnmarshalTxMsg(typeUrl, msg)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	sig, err := instance.wallet.Sign(msg)
-	if err != nil {
-		return nil, err
-	}
-	return crypto.SerializeSignature(sig)
-}
-
-// Verify returns true if the given signature is valid for the given message.
-func Verify(msg []byte, sig []byte) bool {
-	if instance == nil {
-		return false
-	}
-	return instance.wallet.Verify(msg, sig)
-}
-
-// Broadcast broadcasts rawTx to the specified address
-func Broadcast(addr string, tx []byte) error {
-	apiEndpoint := "v1-beta.sonr.ws:1317/cosmos/tx/v1beta/txs"
-	res, err := http.Post(apiEndpoint, "application/json", bytes.NewBuffer(tx))
-	if err != nil {
-		return err
-	}
-	log.Println(res)
-	return nil
 }

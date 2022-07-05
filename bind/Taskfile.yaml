@@ -27,7 +27,7 @@ tasks:
     dir: motor-mobile
     cmds:
       - mkdir motorlib-ios
-      - gomobile bind -ldflags='-s -w' -target=ios -o motorlib-ios/SonrMotor.xcframework -v
+      - gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR -o motorlib-ios/Motor.xcframework -v
       - mv motorlib-ios ../build/motorlib-ios
 
   bind:wasm:

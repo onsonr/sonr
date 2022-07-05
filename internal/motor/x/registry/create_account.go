@@ -55,12 +55,7 @@ func CreateAccount(request registry.CreateAccountRequest) (registry.CreateAccoun
 		return registry.CreateAccountResponse{}, err
 	}
 
-	// create WhoIs
-	resp, err := createWhoIs(m)
-	if err != nil {
-		return registry.CreateAccountResponse{}, err
-	}
-	fmt.Println(resp.String())
+
 
 	// create vault
 	vaultService, err := vc.CreateVault(
@@ -78,8 +73,8 @@ func CreateAccount(request registry.CreateAccountRequest) (registry.CreateAccoun
 	// update DID Document
 	m.DIDDoc.AddService(vaultService)
 
-	// update whois
-	resp, err = updateWhoIs(m)
+	// create WhoIs
+	resp, err := createWhoIs(m)
 	if err != nil {
 		return registry.CreateAccountResponse{}, err
 	}
@@ -106,10 +101,6 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	resp, err := m.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
 		return nil, err
-	}
-
-	if resp.TxResponse.RawLog != "[]" {
-		return nil, errors.New(resp.TxResponse.RawLog)
 	}
 	return resp.TxResponse, nil
 }
