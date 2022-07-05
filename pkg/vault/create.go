@@ -5,10 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+)
+
+var (
+	DefaultVaultService = did.Service{
+		ID:   ssi.MustParseURI("https://vault.sonr.ws"),
+		Type: "vault",
+	}
 )
 
 type createVaultRequest struct {
@@ -36,36 +45,39 @@ func (v *vaultImpl) CreateVault(d string, deviceShards []string, dscPub, encDscS
 		RecoveryShard:     recShard,
 	})
 	if err != nil {
-		return did.Service{}, err
+		return DefaultVaultService, err
 	}
 
-	res, err := http.Post(
-		fmt.Sprintf("%s/did/%s/create", v.vaultEndpoint, d),
-		"application/json",
-		bytes.NewBuffer(reqBody),
-	)
-	if err != nil {
-		return did.Service{}, err
+	createVaultFunc := func() ([]byte, error) {
+		res, err := http.Post(
+			fmt.Sprintf("%s/did/%s/create", v.vaultEndpoint, d),
+			"application/json",
+			bytes.NewBuffer(reqBody),
+		)
+		if err != nil {
+			return nil, err
+		}
+		defer res.Body.Close()
+		return ioutil.ReadAll(res.Body)
 	}
-	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := retryBuf(3, time.Second*3, createVaultFunc)
 	if err != nil {
-		return did.Service{}, err
+		return DefaultVaultService, err
 	}
 
 	var cvr createVaultResponse
 	err = json.Unmarshal(body, &cvr)
 	if err != nil {
-		return did.Service{}, err
+		return DefaultVaultService, err
 	}
 	if cvr.VaultCid == "" {
 		var errRes errorResponse
 		err = json.Unmarshal(body, &errRes)
 		if err != nil {
-			return did.Service{}, err
+			return DefaultVaultService, err
 		}
-		return did.Service{}, fmt.Errorf("error creating vault: %s", errRes.Message)
+		return DefaultVaultService, fmt.Errorf("error creating vault: %s", errRes.Message)
 	}
 
 	return did.Service{
@@ -75,4 +87,19 @@ func (v *vaultImpl) CreateVault(d string, deviceShards []string, dscPub, encDscS
 			"cid": cvr.VaultCid,
 		},
 	}, nil
+}
+
+func retryBuf(attempts int, sleep time.Duration, f func() ([]byte, error)) (buf []byte, err error) {
+	for i := 0; i < attempts; i++ {
+		if i > 0 {
+			log.Println("retrying after error:", err)
+			time.Sleep(sleep)
+			sleep *= 2
+		}
+		buf, err = f()
+		if err == nil {
+			return buf, nil
+		}
+	}
+	return nil, fmt.Errorf("after %d attempts, last error: %s", attempts, err)
 }

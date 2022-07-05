@@ -18,7 +18,9 @@ func Test_CreateAccount(t *testing.T) {
 		AesDscKey: aesKey,
 	})
 	assert.NoError(t, err, "create account request marshals")
+	m, err := New()
+	assert.NoError(t, err, "creates motor node")
 
-	_, err = CreateAccount(req)
+	_, err = m.CreateAccount(req)
 	assert.NoError(t, err, "wallet generation succeeds")
 }
