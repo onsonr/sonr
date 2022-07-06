@@ -2753,6 +2753,8 @@ go.buf.build/grpc/go/sonr-io/blockchain v1.3.7 h1:XRr0pkZG12nbsWnvWfQggECwS4UwvB
 go.buf.build/grpc/go/sonr-io/blockchain v1.3.7/go.mod h1:kh09boSnQtZNONulz1c/8vPaa9ae4XkiYIANi/vNVks=
 go.buf.build/grpc/go/sonr-io/motor v1.3.10 h1:mWtGTDGl32RnOJMWq5FXMGDCcSFIGjXQDR5BvGjMmMM=
 go.buf.build/grpc/go/sonr-io/motor v1.3.10/go.mod h1:o8LpED3VyN9VeejYAK5tDQ6d2C3XdkmitACeEG1IsKc=
+go.buf.build/grpc/go/sonr-io/motor v1.3.11 h1:2mZ4Ds9aHT8Hhe6OnIBj9M4Z45ihT5gUgN+VkwkONIg=
+go.buf.build/grpc/go/sonr-io/motor v1.3.11/go.mod h1:o8LpED3VyN9VeejYAK5tDQ6d2C3XdkmitACeEG1IsKc=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.4/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=

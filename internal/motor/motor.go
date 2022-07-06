@@ -34,44 +34,44 @@ type MotorNode struct {
 	unusedShards  []string
 }
 
-func New() (*MotorNode, error) {
+func New() (*MotorNode, string, error) {
 	// Create Client instance
 	c := client.NewClient(client.ConnEndpointType_BETA)
 
 	// Generate wallet
 	w, err := crypto.GenerateWallet()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	bechAddr, err := w.Address()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	err = c.RequestFaucet(bechAddr)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	pk, err := w.PublicKeyProto()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(bechAddr, "snr")))
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Create the DID Document
 	doc, err := did.NewDocument(baseDid.String())
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	deviceShard, sharedShard, recShard, unusedShards, err := w.CreateInitialShards()
 	if err != nil {
 		//return rtmv1.CreateAccountResponse{}, err
-		return nil, err
+		return nil, "", err
 	}
 
 	return &MotorNode{
@@ -85,7 +85,7 @@ func New() (*MotorNode, error) {
 		sharedShard:   sharedShard,
 		recoveryShard: recShard,
 		unusedShards:  unusedShards,
-	}, nil
+	}, deviceShard, nil
 }
 
 func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountResponse, error) {
@@ -120,8 +120,8 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	vaultService, err := vc.CreateVault(
 		m.Address,
 		m.unusedShards,
-		string(request.AesDscKey),
-		string(request.GetAesDscKey()),
+		string(request.GetSignedDscShard()),
+		m.deviceShard,
 		pskShard,
 		pwShard,
 	)

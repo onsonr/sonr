@@ -6,6 +6,7 @@ import (
 	"log"
 
 	mtr "github.com/sonr-io/sonr/internal/motor"
+	apiv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -17,16 +18,27 @@ var (
 var instance *mtr.MotorNode
 
 func Init(buf []byte) ([]byte, error) {
-	if buf == nil {
-		log.Println("no dsc shard provided")
+	// Unmarshal the request
+	var req apiv1.InitializeRequest
+	if err := json.Unmarshal(buf, &req); err != nil {
+		return nil, err
 	}
-	n, err := mtr.New()
+
+	// Create Motor instance
+	n, dsc, err := mtr.New()
 	if err != nil {
 		log.Println("[FATAL] motor:", err)
-		return err
+		return nil, err
 	}
 	instance = n
-	return nil
+
+	// Return Initialization Response
+	resp := apiv1.InitializeResponse{
+		DscShardRaw: []byte(dsc),
+		IsExisting:  false,
+		Address:     n.Address,
+	}
+	return json.Marshal(resp)
 }
 
 func CreateAccount(buf []byte) ([]byte, error) {
@@ -69,7 +81,7 @@ func DidDoc() string {
 	if instance == nil {
 		return ""
 	}
-	buf, err := instance.DIDDoc.MarshalJSON()
+	buf, err := instance.DIDDocument.MarshalJSON()
 	if err != nil {
 		return ""
 	}
