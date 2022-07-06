@@ -16,9 +16,10 @@ var (
 
 var instance *mtr.MotorNode
 
-
-
-func Init() error {
+func Init(buf []byte) ([]byte, error) {
+	if buf == nil {
+		log.Println("no dsc shard provided")
+	}
 	n, err := mtr.New()
 	if err != nil {
 		log.Println("[FATAL] motor:", err)

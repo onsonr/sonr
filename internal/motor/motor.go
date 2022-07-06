@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -17,12 +20,18 @@ import (
 )
 
 type MotorNode struct {
-	Cosmos  *client.Client
-	Wallet  *crypto.MPCWallet
-	Address string
-	PubKey  *secp256k1.PubKey
-	DIDDoc  did.Document
-	// Account *at.BaseAccount
+	Cosmos      *client.Client
+	Wallet      *crypto.MPCWallet
+	Address     string
+	PubKey      *secp256k1.PubKey
+	DID         did.DID
+	DIDDocument did.Document
+
+	// Sharding
+	deviceShard   string
+	sharedShard   string
+	recoveryShard string
+	unusedShards  []string
 }
 
 func New() (*MotorNode, error) {
@@ -48,12 +57,34 @@ func New() (*MotorNode, error) {
 		return nil, err
 	}
 
+	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(bechAddr, "snr")))
+	if err != nil {
+		return nil, err
+	}
+
+	// Create the DID Document
+	doc, err := did.NewDocument(baseDid.String())
+	if err != nil {
+		return nil, err
+	}
+
+	deviceShard, sharedShard, recShard, unusedShards, err := w.CreateInitialShards()
+	if err != nil {
+		//return rtmv1.CreateAccountResponse{}, err
+		return nil, err
+	}
+
 	return &MotorNode{
-		Cosmos:  c,
-		Wallet:  w,
-		Address: bechAddr,
-		PubKey:  pk,
-		DIDDoc:  w.DIDDocument,
+		Cosmos:        c,
+		Wallet:        w,
+		Address:       bechAddr,
+		PubKey:        pk,
+		DID:           *baseDid,
+		DIDDocument:   doc,
+		deviceShard:   deviceShard,
+		sharedShard:   sharedShard,
+		recoveryShard: recShard,
+		unusedShards:  unusedShards,
 	}, nil
 }
 
@@ -65,25 +96,15 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 
 	// create Vault shards to make sure this works before creating WhoIs
 	vc := vault.New()
-	deviceShard, sharedShard, recShard, unusedShards, err := m.Wallet.CreateInitialShards()
-	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
-
-	// encrypt dscShard with dsc (i.e. webauthn)
-	dscShard, err := dscEncrypt(deviceShard, request.AesDscKey)
-	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
 
 	// ecnrypt pskShard with psk (must be generated)
-	pskShard, psk, err := pskEncrypt(sharedShard)
+	pskShard, psk, err := pskEncrypt(m.sharedShard)
 	if err != nil {
 		return rtmv1.CreateAccountResponse{}, err
 	}
 
 	// password protect the recovery shard
-	pwShard, err := crypto.AesEncryptWithPassword(request.Password, []byte(recShard))
+	pwShard, err := crypto.AesEncryptWithPassword(request.Password, []byte(m.recoveryShard))
 	if err != nil {
 		return rtmv1.CreateAccountResponse{}, err
 	}
@@ -98,9 +119,9 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	// create vault
 	vaultService, err := vc.CreateVault(
 		m.Address,
-		unusedShards,
+		m.unusedShards,
 		string(request.AesDscKey),
-		dscShard,
+		string(request.GetAesDscKey()),
 		pskShard,
 		pwShard,
 	)
@@ -109,7 +130,7 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	}
 
 	// update DID Document
-	m.DIDDoc.AddService(vaultService)
+	m.DIDDocument.AddService(vaultService)
 
 	// update whois
 	resp, err = updateWhoIs(m)
@@ -125,7 +146,7 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 }
 
 func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
-	docBz, err := m.DIDDoc.MarshalJSON()
+	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +169,7 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 }
 
 func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
-	docBz, err := m.DIDDoc.MarshalJSON()
+	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
@@ -189,4 +210,26 @@ func dscEncrypt(shard string, dsc []byte) (string, error) {
 		return "", errors.New("dsc must be 32 bytes")
 	}
 	return crypto.AesEncryptWithKey(dsc, []byte(shard))
+}
+
+// GetVerificationMethod returns the VerificationMethod for the given party.
+func (w *MotorNode) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
+	vmdid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s", strings.TrimPrefix(w.Address, "snr"), id))
+	if err != nil {
+		return nil, err
+	}
+
+	// Get base58 encoded public key.
+	pub, err := w.Wallet.PublicKeyBase58()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the shares VerificationMethod
+	return &did.VerificationMethod{
+		ID:              *vmdid,
+		Type:            ssi.ECDSASECP256K1VerificationKey2019,
+		Controller:      w.DID,
+		PublicKeyBase58: pub,
+	}, nil
 }

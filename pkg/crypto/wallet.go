@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 	"sync"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -17,18 +16,15 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/pool"
 	"github.com/sonr-io/multi-party-sig/pkg/protocol"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
-	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
 
 type MPCWallet struct {
-	pool        *pool.Pool
-	ID          party.ID
-	DID         did.DID
-	DIDDocument did.Document
-	Configs     map[party.ID]*cmp.Config
-	Network     *Network
-	Threshold   int
+	pool *pool.Pool
+	ID   party.ID
+
+	Configs   map[party.ID]*cmp.Config
+	Network   *Network
+	Threshold int
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
@@ -51,43 +47,7 @@ func GenerateWallet(options ...WalletOption) (*MPCWallet, error) {
 		}(id)
 	}
 	wg.Wait()
-
-	addr, err := w.Address()
-	if err != nil {
-		return nil, err
-	}
-
-	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr, "snr")))
-	if err != nil {
-		return nil, err
-	}
-
-	// Create the DID Document
-	doc, err := did.NewDocument(baseDid.String())
-	if err != nil {
-		return nil, err
-	}
-
-	// Get ALL the VerificationMethods of the wallet.
-	vmsAll := make([]*did.VerificationMethod, 0)
-	for _, id := range w.Configs[w.ID].PartyIDs() {
-		vm, err := w.GetVerificationMethod(id)
-		if err != nil {
-			return nil, err
-		}
-		vmsAll = append(vmsAll, vm)
-	}
-
-	for _, vm := range vmsAll {
-		doc.AddAuthenticationMethod(vm)
-	}
-	if len(doc.GetAuthenticationMethods()) != len(vmsAll) {
-		return nil, fmt.Errorf("failed to add all verification methods to DID Document")
-	}
-
 	// Add the DID Document to the wallet.
-	w.DID = *baseDid
-	w.DIDDocument = doc
 	return w, nil
 }
 
@@ -119,33 +79,6 @@ func (w *MPCWallet) GetSigners() party.IDSlice {
 		return nil
 	}
 	return party.NewIDSlice(signers)
-}
-
-// GetVerificationMethod returns the VerificationMethod for the given party.
-func (w *MPCWallet) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
-	// Get the DID of the wallet
-	addr, err := w.Address()
-	if err != nil {
-		return nil, err
-	}
-	vmdid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s", strings.TrimPrefix(addr, "snr"), id))
-	if err != nil {
-		return nil, err
-	}
-
-	// Get base58 encoded public key.
-	pub, err := w.PublicKeyBase58()
-	if err != nil {
-		return nil, err
-	}
-
-	// Return the shares VerificationMethod
-	return &did.VerificationMethod{
-		ID:              *vmdid,
-		Type:            ssi.ECDSASECP256K1VerificationKey2019,
-		Controller:      w.DID,
-		PublicKeyBase58: pub,
-	}, nil
 }
 
 // Marshal returns the JSON representation of the entire wallet.
@@ -381,12 +314,11 @@ func SerializeSignature(sig *ecdsa.Signature) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("R Length:", len(rBytes))
+
 	sBytes, err := sig.S.MarshalBinary()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("S Length:", len(sBytes))
 
 	sigBytes := make([]byte, 65)
 	// 0 pad the byte arrays from the left if they aren't big enough.

@@ -8,11 +8,23 @@ package sonrio.motor.api.v1;
 // -----------------------------------------------------------------------------
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
+  // Identifier of this Device
   string device_id = 1;
+
+  // Device Home Directory
   string home_dir = 2;
+
+  // Device Library Support Directory
   string support_dir = 3;
+
+  // Device Temporary Storage Directory
   string temp_dir = 4;
-  HostOptions host_options = 5;         // Libp2p Host config
+
+  // Libp2p Host config
+  HostOptions host_options = 5;
+
+  // Public Key used for Device Authentication as DID Controller
+  bytes device_keyprint_pub = 6; // optional
 
   // Libp2p Host Options
   message HostOptions {
@@ -41,5 +53,5 @@ message InitializeRequest {
 // CreateAccount Request contains the three keys needed to create an account on Sonr
 message CreateAccountRequest {
   string password = 1;
-  bytes aes_dsc_key = 2;
+  bytes signed_dsc_shard = 2;
 }

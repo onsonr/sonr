@@ -86,6 +86,7 @@ tasks:
       - buf mod update
       - buf build
       - buf push {{.CLI_ARGS}}
+      - task: clean
 
   proto:go:
     summary: "Generate cosmos-sdk protobuf files using ignite"
