@@ -24,21 +24,25 @@ func Init(buf []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	// Create Motor instance
-	n, dsc, err := mtr.New()
-	if err != nil {
-		log.Println("[FATAL] motor:", err)
-		return nil, err
-	}
-	instance = n
+	// Check if public key provided
+	if req.DeviceKeyprintPub == nil {
+		// Create Motor instance
+		n, dsc, err := mtr.New()
+		if err != nil {
+			log.Println("[FATAL] motor:", err)
+			return nil, err
+		}
+		instance = n
 
-	// Return Initialization Response
-	resp := apiv1.InitializeResponse{
-		DscShardRaw: []byte(dsc),
-		IsExisting:  false,
-		Address:     n.Address,
+		// Return Initialization Response
+		resp := apiv1.InitializeResponse{
+			DscShardRaw: dsc,
+			IsExisting:  false,
+			Address:     n.Address,
+		}
+		return json.Marshal(resp)
 	}
-	return json.Marshal(resp)
+	return nil, errors.New("Loading existing account not implemented")
 }
 
 func CreateAccount(buf []byte) ([]byte, error) {

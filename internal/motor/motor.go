@@ -43,20 +43,26 @@ func New() (*MotorNode, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
+
+	// Get address
 	bechAddr, err := w.Address()
 	if err != nil {
 		return nil, "", err
 	}
+
+	// Request from Faucet
 	err = c.RequestFaucet(bechAddr)
 	if err != nil {
 		return nil, "", err
 	}
 
+	// Get public key
 	pk, err := w.PublicKeyProto()
 	if err != nil {
 		return nil, "", err
 	}
 
+	// Set Base DID
 	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(bechAddr, "snr")))
 	if err != nil {
 		return nil, "", err
@@ -68,13 +74,14 @@ func New() (*MotorNode, string, error) {
 		return nil, "", err
 	}
 
+	// Create Initial Shards
 	deviceShard, sharedShard, recShard, unusedShards, err := w.CreateInitialShards()
 	if err != nil {
-		//return rtmv1.CreateAccountResponse{}, err
 		return nil, "", err
 	}
 
-	return &MotorNode{
+	// Create MotorNode
+	m := &MotorNode{
 		Cosmos:        c,
 		Wallet:        w,
 		Address:       bechAddr,
@@ -85,7 +92,15 @@ func New() (*MotorNode, string, error) {
 		sharedShard:   sharedShard,
 		recoveryShard: recShard,
 		unusedShards:  unusedShards,
-	}, deviceShard, nil
+	}
+
+	// create WhoIs
+	resp, err := createWhoIs(m)
+	if err != nil {
+		return m, "", err
+	}
+	fmt.Println(resp.String())
+	return m, deviceShard, nil
 }
 
 func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountResponse, error) {
@@ -109,13 +124,6 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 		return rtmv1.CreateAccountResponse{}, err
 	}
 
-	// create WhoIs
-	resp, err := createWhoIs(m)
-	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
-	fmt.Println(resp.String())
-
 	// create vault
 	vaultService, err := vc.CreateVault(
 		m.Address,
@@ -133,7 +141,7 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	m.DIDDocument.AddService(vaultService)
 
 	// update whois
-	resp, err = updateWhoIs(m)
+	resp, err := updateWhoIs(m)
 	if err != nil {
 		return rtmv1.CreateAccountResponse{}, err
 	}

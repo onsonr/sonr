@@ -6,7 +6,7 @@ package sonrio.motor.api.v1;
 message InitializeResponse {
   bool is_existing = 1;
   string address = 2;
-  bytes dsc_shard_raw = 3;
+  string dsc_shard_raw = 3;
 }
 
 message CreateAccountResponse {
