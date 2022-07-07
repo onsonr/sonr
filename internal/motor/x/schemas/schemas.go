@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -60,7 +60,7 @@ type AppSchemaInternal interface {
 	/*
 		Adds an account to be used for operations, once defined will raise `errAccountAlreadyDefined`
 	*/
-	WithAcct(whoIs rt.WhoIs) error
+	WithAcct(wallet *crypto.MPCWallet) error
 
 	/*
 		Encodes a given IPLD Node as JSON
@@ -94,23 +94,28 @@ type SchemaRelationShip struct {
 type appSchemaInternalImpl struct {
 	schemaDefinitions map[string]*st.SchemaDefinition
 	WhatIs            map[string]*st.WhatIs
-	Acct              *rt.WhoIs
+	Acct              *crypto.MPCWallet
 	nodes             map[string]datamodel.Node
 }
 
 func New() AppSchemaInternal {
-	return &appSchemaInternalImpl{
+	asi := &appSchemaInternalImpl{
 		schemaDefinitions: make(map[string]*st.SchemaDefinition),
 		WhatIs:            make(map[string]*st.WhatIs),
 		Acct:              nil,
 		nodes:             make(map[string]datamodel.Node),
 	}
+
+	return asi
 }
 
-func NewWithAcct(whoIs *rt.WhoIs) AppSchemaInternal {
-	return &appSchemaInternalImpl{
+func NewWithAcct(wallet *crypto.MPCWallet) AppSchemaInternal {
+	asi := &appSchemaInternalImpl{
 		schemaDefinitions: make(map[string]*st.SchemaDefinition),
 		WhatIs:            make(map[string]*st.WhatIs, 0),
-		Acct:              whoIs,
+		Acct:              wallet,
+		nodes:             make(map[string]datamodel.Node),
 	}
+
+	return asi
 }
