@@ -68,6 +68,11 @@ func Address() string {
 	return addr
 }
 
+// Balance returns the balance of the wallet.
+func Balance() int {
+	return int(instance.Balance())
+}
+
 // func Connect() error {
 // 	if instance == nil {
 // 		return errWalletNotExists

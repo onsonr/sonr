@@ -103,6 +103,14 @@ func New() (*MotorNode, string, error) {
 	return m, deviceShard, nil
 }
 
+func (m *MotorNode) Balance() int64 {
+	cs, err := m.Cosmos.CheckBalance(m.Address)
+	if err != nil {
+		return 0
+	}
+	return cs[0].Amount.Int64()
+}
+
 func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountResponse, error) {
 	var request rtmv1.CreateAccountRequest
 	if err := json.Unmarshal(requestBytes, &request); err != nil {
