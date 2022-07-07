@@ -14,8 +14,8 @@ func Test_CreateAccount(t *testing.T) {
 	assert.NoError(t, err, "generates aes key")
 
 	req, err := json.Marshal(prt.CreateAccountRequest{
-		Password:       "password123",
-		SignedDscShard: aesKey,
+		Password:  "password123",
+		AesDscKey: aesKey,
 	})
 	assert.NoError(t, err, "create account request marshals")
 	m, _, err := New()

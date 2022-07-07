@@ -53,5 +53,5 @@ message InitializeRequest {
 // CreateAccount Request contains the three keys needed to create an account on Sonr
 message CreateAccountRequest {
   string password = 1;
-  bytes signed_dsc_shard = 2;
+  bytes aes_dsc_key = 2;
 }

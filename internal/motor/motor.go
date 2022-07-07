@@ -111,6 +111,10 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 
 	// create Vault shards to make sure this works before creating WhoIs
 	vc := vault.New()
+	dscShard, err := dscEncrypt(m.deviceShard, request.AesDscKey)
+	if err != nil {
+		return rtmv1.CreateAccountResponse{}, err
+	}
 
 	// ecnrypt pskShard with psk (must be generated)
 	pskShard, psk, err := pskEncrypt(m.sharedShard)
@@ -128,8 +132,8 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	vaultService, err := vc.CreateVault(
 		m.Address,
 		m.unusedShards,
-		string(request.GetSignedDscShard()),
-		m.deviceShard,
+		string(request.AesDscKey),
+		dscShard,
 		pskShard,
 		pwShard,
 	)

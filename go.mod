@@ -2,13 +2,6 @@ module github.com/sonr-io/sonr
 
 go 1.16
 
-replace (
-	github.com/99designs/keyring => github.com/sonr-io/keyring v1.2.2-0.20220701001003-9f5deb6c197a
-	github.com/elastic/gosigar => github.com/sonr-io/gosigar v0.14.3-0.20220630215707-0c344b060447
-	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	google.golang.org/grpc => google.golang.org/grpc v1.33.2
-)
-
 require (
 	github.com/cosmos/cosmos-sdk v0.45.5
 	github.com/cosmos/ibc-go/v3 v3.0.0
@@ -60,7 +53,7 @@ require (
 	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.7
 	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7
-	go.buf.build/grpc/go/sonr-io/motor v1.3.12
+	go.buf.build/grpc/go/sonr-io/motor v1.3.13
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd
 	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b // indirect
@@ -69,4 +62,11 @@ require (
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/yaml.v2 v2.4.0
+)
+
+replace (
+	github.com/99designs/keyring => github.com/sonr-io/keyring v1.2.2-0.20220701001003-9f5deb6c197a
+	github.com/elastic/gosigar => github.com/sonr-io/gosigar v0.14.3-0.20220630215707-0c344b060447
+	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

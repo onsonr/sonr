@@ -7,11 +7,22 @@ includes:
   motor:
     taskfile: ./bind/Taskfile.yaml
     dir: ./bind
+  motorkit:
+    taskfile: ../Motorkit/Taskfile.yaml
+    dir: ../MotorKit
 
 tasks:
   ## ------------------------------------------------------------
   ## Node tasks
   ## ------------------------------------------------------------
+  motorkit:
+    summary: Binding motor to iOS and updating motorkit
+    cmds:
+      - task: clean
+      - task: motor:bind:ios
+      - mv ./bind/build ./build
+      - task: motorkit:update:local
+
   chain:build:
     summary: "Build cosmos blockchain using ignite"
     cmds:
