@@ -72,6 +72,10 @@ type AppSchemaInternal interface {
 	*/
 	EncodeDagCbor(node datamodel.Node) ([]byte, error)
 
+	DecodeDagJson(buffer []byte) (datamodel.Node, error)
+
+	DecodeDagCbor(buffer []byte) (datamodel.Node, error)
+
 	/*
 		Get a top level IPLD node by the associated WhatIs did
 	*/

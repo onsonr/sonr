@@ -46,6 +46,8 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 			ma.AssembleValue().AssignBytes(val)
 		case st.SchemaKind_LINK:
 			ma.AssembleValue().AssignLink(nil)
+		case st.SchemaKind_MAP:
+			ma.AssembleValue().AssignNode(nil)
 		default:
 			ma.AssembleValue().AssignNull()
 		}

@@ -2,10 +2,12 @@ package schemas
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/codec/dagjson"
 	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
 func (as *appSchemaInternalImpl) EncodeDagJson(node datamodel.Node) ([]byte, error) {
@@ -22,15 +24,23 @@ func (as *appSchemaInternalImpl) EncodeDagCbor(node datamodel.Node) ([]byte, err
 }
 
 func (as *appSchemaInternalImpl) DecodeDagJson(buffer []byte) (datamodel.Node, error) {
-	var asmblr datamodel.NodeAssembler
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder()
+
 	reader := bytes.NewReader(buffer)
-	err := dagjson.Decode(asmblr, reader)
+	err := dagjson.Decode(nb, reader)
 	if err != nil {
 		return nil, err
 	}
-	builder := asmblr.Prototype().NewBuilder()
-	node := builder.Build()
 
+	if err != nil {
+		return nil, err
+	}
+
+	node := nb.Build()
+
+	mn := node.MapIterator()
+	fmt.Print(mn)
 	return node, nil
 }
 
