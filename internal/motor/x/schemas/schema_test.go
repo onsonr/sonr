@@ -60,6 +60,28 @@ func Test_IPLD_Nodes(t *testing.T) {
 		assert.NotNil(t, node)
 	})
 
+	t.Run("Should build Nodes from definition, should encode and decode correctly (JSON)", func(t *testing.T) {
+		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
+		def.Fields["field-1"] = st.SchemaKind_INT
+		def.Fields["field-2"] = st.SchemaKind_FLOAT
+		obj := map[string]interface{}{
+			"field-1": 1,
+			"field-2": 2.0,
+		}
+		node, err := schema.BuildNodesFromDefinition(whatIs.Did, &def, obj)
+		assert.NoError(t, err)
+		assert.NotNil(t, node)
+
+		enc, err := schema.EncodeDagJson(node)
+		assert.NoError(t, err)
+		assert.NotNil(t, enc)
+		dec, err := schema.DecodeDagJson(enc)
+		assert.NoError(t, err)
+		found, err := dec.LookupByString("field-1")
+		assert.NoError(t, err)
+		assert.NotNil(t, found)
+	})
+
 	t.Run("Should throw invalid error with mismatching definitions", func(t *testing.T) {
 		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
 
