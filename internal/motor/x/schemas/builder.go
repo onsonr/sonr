@@ -1,13 +1,14 @@
 package schemas
 
 import (
+	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-ipld-prime/datamodel"
+	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
-	id string,
 	def *st.SchemaDefinition,
 	object map[string]interface{}) (datamodel.Node, error) {
 
@@ -45,7 +46,12 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 			val := object[k].([]byte)
 			ma.AssembleValue().AssignBytes(val)
 		case st.SchemaKind_LINK:
-			ma.AssembleValue().AssignLink(nil)
+			val := object[k].(string)
+			link, err := as.LoadLink(val)
+			if err != nil {
+				return nil, err
+			}
+			ma.AssembleValue().AssignLink(link)
 		case st.SchemaKind_MAP:
 			ma.AssembleValue().AssignNode(nil)
 		default:
@@ -60,6 +66,33 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	}
 	node := nb.Build()
 
-	as.nodes[id] = node
 	return node, nil
+}
+
+func (as *appSchemaInternalImpl) LoadLink(val interface{}) (cidlink.Link, error) {
+	value := val.(string)
+	cid, err := cid.Decode(value)
+	if err != nil {
+		return cidlink.Link{}, err
+	}
+
+	lnk := cidlink.Link{Cid: cid}
+	/*
+		lsys := cidlink.DefaultLinkSystem()
+		lsys.SetReadStorage(store)
+
+		np := basicnode.Prototype.Any
+
+		// Apply the LinkSystem loader for the given cid
+		node, err := lsys.Load(
+			linking.LinkContext{},
+			lnk,
+			np,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+	*/
+	return lnk, nil
 }
