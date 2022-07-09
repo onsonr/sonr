@@ -2,6 +2,7 @@ package motor
 
 import (
 	"encoding/json"
+	"log"
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/crypto"
@@ -23,4 +24,10 @@ func Test_CreateAccount(t *testing.T) {
 
 	_, err = m.CreateAccount(req)
 	assert.NoError(t, err, "wallet generation succeeds")
+
+	b := m.Balance()
+	log.Println("balance:", b)
+
+	// Print the address of the wallet
+	log.Println("address:", m.Address)
 }

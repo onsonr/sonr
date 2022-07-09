@@ -2,6 +2,7 @@ package crypto
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
@@ -11,7 +12,8 @@ import (
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 )
 
-func cmpKeygen(id party.ID, ids party.IDSlice, n *Network, threshold int, pl *pool.Pool) (*cmp.Config, error) {
+func cmpKeygen(id party.ID, ids party.IDSlice, n *Network, threshold int, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
+	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, id, ids, threshold, pl), nil)
 	if err != nil {
 		return nil, err
@@ -26,7 +28,8 @@ func cmpKeygen(id party.ID, ids party.IDSlice, n *Network, threshold int, pl *po
 	return conf, nil
 }
 
-func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
+func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
+	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
 	if err != nil {
 		return nil, err

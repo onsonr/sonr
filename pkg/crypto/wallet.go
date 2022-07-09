@@ -38,8 +38,7 @@ func GenerateWallet(options ...WalletOption) (*MPCWallet, error) {
 		go func(id party.ID) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
-			defer wg.Done()
-			conf, err := cmpKeygen(id, opt.participants, w.Network, opt.threshold, pl)
+			conf, err := cmpKeygen(id, opt.participants, w.Network, opt.threshold, &wg, pl)
 			if err != nil {
 				return
 			}
@@ -149,11 +148,9 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	for _, id := range signers {
 		wg.Add(1)
 		go func(id party.ID) {
-			defer wg.Done()
-
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
-			if sig, err = cmpSign(w.Configs[id], m, signers, net, pl); err != nil {
+			if sig, err = cmpSign(w.Configs[id], m, signers, net, &wg, pl); err != nil {
 				return
 			}
 		}(id)
