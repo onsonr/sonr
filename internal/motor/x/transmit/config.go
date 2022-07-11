@@ -8,8 +8,8 @@ import (
 
 	device "github.com/sonr-io/sonr/pkg/fs"
 
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
+	types "go.buf.build/grpc/go/sonr-io/motor/common/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
 )
 
 // Transfer Protocol ID's
@@ -48,7 +48,7 @@ func (o *options) Apply(p *TransmitProtocol) error {
 }
 
 // NewSessionPayload creates session payload
-func NewSessionPayload(p *types.Payload) *v1.SessionPayload {
+func NewSessionPayload(p *v1.Payload) *v1.SessionPayload {
 	return &v1.SessionPayload{
 		Payload: p,
 	}

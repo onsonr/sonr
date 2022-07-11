@@ -5,15 +5,12 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"syscall/js"
 
 	"github.com/sonr-io/sonr/pkg/crypto"
-	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
 
 var (
@@ -70,42 +67,6 @@ func LoadWallet(buf []byte) error {
 	instance = &motor{
 		wallet: w,
 	}
-	return nil
-}
-
-// DidDoc returns the DID document as JSON
-func DidDoc() string {
-	if instance == nil {
-		return ""
-	}
-	buf, err := instance.wallet.DIDDocument.MarshalJSON()
-	if err != nil {
-		return ""
-	}
-	return string(buf)
-}
-
-// ImportCredentials imports the given credentials into the wallet.
-func ImportCredential(buf []byte) error {
-	if instance == nil {
-		return errWalletNotExists
-	}
-	var cred did.Credential
-	err := json.Unmarshal(buf, &cred)
-	if err != nil {
-		return err
-	}
-	vmdid, err := did.ParseDID(fmt.Sprintf("%s#%s", instance.wallet.DID, cred.ID))
-	if err != nil {
-		return err
-	}
-	vm := &did.VerificationMethod{
-		ID:         *vmdid,
-		Type:       ssi.ECDSASECP256K1VerificationKey2019,
-		Controller: instance.wallet.DID,
-		Credential: &cred,
-	}
-	instance.wallet.DIDDocument.AddAssertionMethod(vm)
 	return nil
 }
 
@@ -185,27 +146,9 @@ func AddressExporter() js.Func {
 	return js_func
 }
 
-func DidDocExporter() js.Func {
-	js_func := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		return DidDoc()
-	})
-
-	return js_func
-}
-
-func ImportCredentialWrapper() js.Func {
-	js_func := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		buf := []byte(args[0].String())
-		return ImportCredential(buf)
-	})
-
-	return js_func
-}
-
 func MarshalWalletWrapper() js.Func {
 	js_func := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		buf := []byte(args[0].String())
-		data, err := MarshalWallet(buf)
+		data, err := MarshalWallet()
 		if err != nil {
 			return err
 		}
@@ -261,8 +204,6 @@ func main() {
 
 	js.Global().Set("createWallet", NewWalletExport())
 	js.Global().Set("getAddress", AddressExporter())
-	js.Global().Set("getDidDoc", DidDocExporter())
-	js.Global().Set("importCredential", ImportCredentialWrapper())
 	js.Global().Set("marshalWallet", MarshalWalletWrapper())
 	js.Global().Set("signTx", SignWrapper())
 	js.Global().Set("verifyTx", VerifyWrapper())
