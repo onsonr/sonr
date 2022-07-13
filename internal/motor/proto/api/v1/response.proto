@@ -14,3 +14,7 @@ message CreateAccountResponse {
   string address = 2;
   bytes did_document = 3;
 }
+
+message LoginResponse {
+  bool success = 1;
+}

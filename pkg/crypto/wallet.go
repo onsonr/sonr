@@ -1,8 +1,6 @@
 package crypto
 
 import (
-	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
@@ -194,7 +192,6 @@ func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, 
 
 	var ok bool
 	// assign dscShard
-	// TODO: encrypt with dsc (i.e. webauthn)
 	dscShard, ok = ss["dsc"]
 	if !ok {
 		err = errors.New("could not find dsc shard")
@@ -202,7 +199,6 @@ func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, 
 	}
 
 	// assign pskShard
-	// TODO: This should be encrypted with PSK
 	pskShard, ok = ss["psk"]
 	if !ok {
 		err = errors.New("could not find psk shard")
@@ -210,14 +206,15 @@ func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, 
 	}
 
 	// assign recshard
-	// TODO: this should be password encrypted
 	recShard, ok = ss["recovery"]
 	if !ok {
 		err = errors.New("could not find recovery shard")
 		return
 	}
 
-	// sign unused shards
+	// sign unused shards using MPC
+	// TODO: this is insecure! We're signing but should be encrypting.
+	// Can't encrypt with ECDSA. Is that the only encryption supported by mpc?
 	for i := 0; i < len(ss); i++ {
 		u, ok := ss[fmt.Sprintf("bank%d", i+1)]
 		if !ok {
@@ -244,11 +241,11 @@ func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, 
 func (w *MPCWallet) serializedShards() (map[string]string, error) {
 	deviceShards := make(map[string]string)
 	for k, c := range w.Configs {
-		b, err := json.Marshal(c)
+		b, err := c.MarshalBinary()
 		if err != nil {
 			return nil, err
 		}
-		deviceShards[string(k)] = base64.StdEncoding.EncodeToString([]byte(b))
+		deviceShards[string(k)] = string(b)
 	}
 	return deviceShards, nil
 }

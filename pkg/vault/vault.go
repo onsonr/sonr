@@ -4,6 +4,7 @@ import "github.com/sonr-io/sonr/pkg/did"
 
 type VaultClient interface {
 	CreateVault(d string, deviceShards []string, dscPub, encDscShard, pskShard, recShard string) (did.Service, error)
+	GetVaultShards(d string) (vault, error)
 	PopShard() (string, error)
 	IssueShard(shardPrefix, dscPub, dscShard string) (did.Service, error)
 }

@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -14,12 +13,11 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/tx"
-	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type MotorNode struct {
+	DeviceID    string
 	Cosmos      *client.Client
 	Wallet      *crypto.MPCWallet
 	Address     string
@@ -34,7 +32,7 @@ type MotorNode struct {
 	unusedShards  []string
 }
 
-func New() (*MotorNode, string, error) {
+func New(id string) (*MotorNode, string, error) {
 	// Create Client instance
 	c := client.NewClient(client.ConnEndpointType_BETA)
 
@@ -82,6 +80,7 @@ func New() (*MotorNode, string, error) {
 
 	// Create MotorNode
 	m := &MotorNode{
+		DeviceID:      id,
 		Cosmos:        c,
 		Wallet:        w,
 		Address:       bechAddr,
@@ -101,68 +100,6 @@ func New() (*MotorNode, string, error) {
 	}
 	fmt.Println(resp.String())
 	return m, deviceShard, nil
-}
-
-func (m *MotorNode) Balance() int64 {
-	cs, err := m.Cosmos.CheckBalance(m.Address)
-	if err != nil {
-		return 0
-	}
-	return cs[0].Amount.Int64()
-}
-
-func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountResponse, error) {
-	var request rtmv1.CreateAccountRequest
-	if err := json.Unmarshal(requestBytes, &request); err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
-
-	// create Vault shards to make sure this works before creating WhoIs
-	vc := vault.New()
-	dscShard, err := dscEncrypt(m.deviceShard, request.AesDscKey)
-	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
-
-	// ecnrypt pskShard with psk (must be generated)
-	pskShard, psk, err := pskEncrypt(m.sharedShard)
-	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
-
-	// password protect the recovery shard
-	pwShard, err := crypto.AesEncryptWithPassword(request.Password, []byte(m.recoveryShard))
-	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
-
-	// create vault
-	vaultService, err := vc.CreateVault(
-		m.Address,
-		m.unusedShards,
-		string(request.AesDscKey),
-		dscShard,
-		pskShard,
-		pwShard,
-	)
-	if err != nil {
-		fmt.Println("[WARN] failed to create vault:", err)
-	}
-
-	// update DID Document
-	m.DIDDocument.AddService(vaultService)
-
-	// update whois
-	resp, err := updateWhoIs(m)
-	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
-	}
-	fmt.Println(resp.String())
-
-	return rtmv1.CreateAccountResponse{
-		Address: m.Address,
-		AesPsk:  psk,
-	}, err
 }
 
 func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
@@ -188,48 +125,12 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	return resp.TxResponse, nil
 }
 
-func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
-	docBz, err := m.DIDDocument.MarshalJSON()
+func (m *MotorNode) Balance() int64 {
+	cs, err := m.Cosmos.CheckBalance(m.Address)
 	if err != nil {
-		return nil, err
+		return 0
 	}
-
-	msg1 := rt.NewMsgUpdateWhoIs(m.Address, docBz)
-	txRaw, err := tx.SignTxWithWallet(m.Wallet, "/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Cosmos.BroadcastTx(txRaw)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.TxResponse.RawLog != "[]" {
-		return nil, errors.New(resp.TxResponse.RawLog)
-	}
-	return resp.TxResponse, nil
-}
-
-func pskEncrypt(shard string) (string, []byte, error) {
-	key, err := crypto.NewAesKey()
-	if err != nil {
-		return "", nil, err
-	}
-
-	cipherShard, err := crypto.AesEncryptWithKey(key, []byte(shard))
-	if err != nil {
-		return "", key, err
-	}
-
-	return cipherShard, key, nil
-}
-
-func dscEncrypt(shard string, dsc []byte) (string, error) {
-	if len(dsc) != 32 {
-		return "", errors.New("dsc must be 32 bytes")
-	}
-	return crypto.AesEncryptWithKey(dsc, []byte(shard))
+	return cs[0].Amount.Int64()
 }
 
 // GetVerificationMethod returns the VerificationMethod for the given party.
