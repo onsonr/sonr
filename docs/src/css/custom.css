@@ -214,5 +214,9 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   letter-spacing:
   0em;
   text-indent: 0px;
+}
 
+.buttonGap {
+  /* Change to 20px */
+  margin-right: 1rem;
 }

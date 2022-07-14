@@ -142,7 +142,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/SonrProtocol',
+                href: 'https://twitter.com/sonr_io',
               },
             ],
           },
