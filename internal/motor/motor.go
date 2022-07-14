@@ -36,15 +36,11 @@ type MotorNode struct {
 	sharedShard   string
 	recoveryShard string
 	unusedShards  []string
-
-	// Properties
-	ctx context.Context
 }
 
 // Create a new wallet, request funds from the faucet, create the DID Document, create the initial
 // shards, and create the WhoIs
 func New() (*MotorNode, string, error) {
-	ctx := context.Background()
 	// Create Client instance
 	c := client.NewClient(client.ConnEndpointType_BETA)
 
@@ -91,14 +87,13 @@ func New() (*MotorNode, string, error) {
 	}
 
 	// It creates a new host.
-	host, err := host.NewDefaultHost(ctx, config.DefaultConfig(config.Role_MOTOR))
+	host, err := host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
 	if err != nil {
 		return nil, "", err
 	}
 
 	// Create MotorNode
 	m := &MotorNode{
-		ctx:           ctx,
 		SonrHost:      host,
 		Cosmos:        c,
 		Wallet:        w,
