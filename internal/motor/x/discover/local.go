@@ -31,7 +31,8 @@ type Local struct {
 	updateFunc   ErrFunc
 }
 
-// newLobby creates a new local instance.
+
+// Initializing the local struct.
 func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 
 	// Subscribe to Room

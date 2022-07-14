@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/ed25519"
 
-	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -12,8 +11,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/sonr/pkg/config"
-
-	"google.golang.org/protobuf/proto"
 )
 
 // SonrHost returns the SonrHost for the Main Node
@@ -54,8 +51,7 @@ type SonrHost interface {
 	// TODO: implement
 	// Peer returns the peer of the node
 	// Peer() (*types.Peer, error)
-	// Events returns the events manager of the node
-	Events() events.EventEmmiter
+
 	// SignData signs the data with the private key
 	SignData(data []byte) ([]byte, error)
 	// SignMessage signs a message with the node's private key
@@ -79,7 +75,7 @@ type SonrHost interface {
 	// Send(ctx context.Context, target string, data interface{}, protocol protocol.ID) error
 
 	// SendMessage sends a message to a peer
-	Send(id peer.ID, p protocol.ID, data proto.Message) error
+	Send(id peer.ID, p protocol.ID, data []byte) error
 
 	// SetStreamHandler sets the handler for a protocol
 	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)

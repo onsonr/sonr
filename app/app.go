@@ -196,6 +196,7 @@ var (
 	_ simapp.App              = (*App)(nil)
 )
 
+// It sets the default node home directory to `/.<name>` where `<name>` is the name of the node
 func init() {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -263,7 +264,7 @@ type App struct {
 	sm *module.SimulationManager
 }
 
-// New returns a reference to an initialized blockchain app
+// It creates a new app, initializes it, and returns it
 func New(
 	logger log.Logger,
 	db dbm.DB,

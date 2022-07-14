@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,9 +11,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -26,15 +29,22 @@ type MotorNode struct {
 	PubKey      *secp256k1.PubKey
 	DID         did.DID
 	DIDDocument did.Document
+	SonrHost    host.SonrHost
 
 	// Sharding
 	deviceShard   string
 	sharedShard   string
 	recoveryShard string
 	unusedShards  []string
+
+	// Properties
+	ctx context.Context
 }
 
+// Create a new wallet, request funds from the faucet, create the DID Document, create the initial
+// shards, and create the WhoIs
 func New() (*MotorNode, string, error) {
+	ctx := context.Background()
 	// Create Client instance
 	c := client.NewClient(client.ConnEndpointType_BETA)
 
@@ -80,8 +90,16 @@ func New() (*MotorNode, string, error) {
 		return nil, "", err
 	}
 
+	// It creates a new host.
+	host, err := host.NewDefaultHost(ctx, config.DefaultConfig(config.Role_MOTOR))
+	if err != nil {
+		return nil, "", err
+	}
+
 	// Create MotorNode
 	m := &MotorNode{
+		ctx:           ctx,
+		SonrHost:      host,
 		Cosmos:        c,
 		Wallet:        w,
 		Address:       bechAddr,
@@ -103,6 +121,7 @@ func New() (*MotorNode, string, error) {
 	return m, deviceShard, nil
 }
 
+// Checking the balance of the wallet.
 func (m *MotorNode) Balance() int64 {
 	cs, err := m.Cosmos.CheckBalance(m.Address)
 	if err != nil {
@@ -111,6 +130,7 @@ func (m *MotorNode) Balance() int64 {
 	return cs[0].Amount.Int64()
 }
 
+// Creating a new account.
 func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountResponse, error) {
 	var request rtmv1.CreateAccountRequest
 	if err := json.Unmarshal(requestBytes, &request); err != nil {
@@ -165,6 +185,7 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	}, err
 }
 
+// It creates a new transaction that creates a new `WhoIs` record on the blockchain
 func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
@@ -188,6 +209,9 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	return resp.TxResponse, nil
 }
 
+// It takes a MotorNode, marshals the DIDDocument into JSON, creates a MsgUpdateWhoIs message, signs
+// the message with the MotorNode's wallet, broadcasts the transaction, and returns the transaction
+// response
 func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
@@ -211,6 +235,8 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	return resp.TxResponse, nil
 }
 
+// It generates a random AES key, encrypts the shard with that key, and returns the encrypted shard and
+// the key
 func pskEncrypt(shard string) (string, []byte, error) {
 	key, err := crypto.NewAesKey()
 	if err != nil {

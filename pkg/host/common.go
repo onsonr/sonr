@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kataras/go-events"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -17,7 +16,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/config"
-	"google.golang.org/protobuf/proto"
 )
 
 // Config returns the configuration of the node
@@ -183,7 +181,7 @@ func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.Stream
 }
 
 // SendMessage writes a protobuf go data object to a network stream
-func (h *hostImpl) Send(id peer.ID, p protocol.ID, data proto.Message) error {
+func (h *hostImpl) Send(id peer.ID, p protocol.ID, data []byte) error {
 	if !h.HasRouting() {
 		return fmt.Errorf("Host does not have routing")
 	}
@@ -194,24 +192,18 @@ func (h *hostImpl) Send(id peer.ID, p protocol.ID, data proto.Message) error {
 	}
 	defer s.Close()
 
-	// marshall data to protobufs3 binary format
-	bin, err := proto.Marshal(data)
-	if err != nil {
-		return err
-	}
-
 	// Create Writer and write data to stream
 	w := msgio.NewWriter(s)
-	if err := w.WriteMsg(bin); err != nil {
+	if err := w.WriteMsg(data); err != nil {
 		return err
 	}
 	return nil
 }
 
 // TODO
-func (hn *hostImpl) Events() events.EventEmmiter {
-	return events.New()
-}
+// func (hn *hostImpl) Events() events.EventEmmiter {
+// 	return events.New()
+// }
 
 // // TODO
 // func (hn *hostImpl) Peer() (*types.Peer, error) {

@@ -13,6 +13,7 @@ const (
 	ON_BLOB_REMOVE = events.EventName("blob_removed")
 )
 
+// > RegisterEvents() registers event listeners for the events defined in the events package
 func RegisterEvents() {
 	logger.Infof("Registering telemtry events")
 	events.AddListener(ON_OBJECT_ADD, func(params ...interface{}) {
