@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,7 +10,28 @@ import (
 )
 
 type Shard struct {
-	Value string `json:"value"`
+	Value []byte `json:"value"`
+}
+
+type jsonShard struct {
+	Base64Value string `json:"value"`
+}
+
+func (s *Shard) UnmarshalJSON(b []byte) error {
+	var js jsonShard
+	if err := json.Unmarshal(b, &js); err != nil {
+		return err
+	}
+
+	// decode base64
+	rawText, err := base64.StdEncoding.DecodeString(js.Base64Value)
+	if err != nil {
+		return err
+	}
+	*s = Shard{
+		Value: []byte(rawText),
+	}
+	return nil
 }
 
 type vault struct {
@@ -18,6 +40,7 @@ type vault struct {
 	PskShard      Shard            `json:"psk_shard"`
 	RecoveryShard Shard            `json:"recovery_shard"`
 }
+
 
 type getVaultResponse struct {
 	Vault vault `json:"vault"`

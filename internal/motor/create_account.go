@@ -33,7 +33,7 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	}
 
 	// password protect the recovery shard
-	pwShard, err := crypto.AesEncryptWithPassword(request.Password, []byte(m.recoveryShard))
+	pwShard, err := crypto.AesEncryptWithPassword(request.Password, m.recoveryShard)
 	if err != nil {
 		return rtmv1.CreateAccountResponse{}, err
 	}
@@ -42,13 +42,14 @@ func (m *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRespo
 	vaultService, err := vc.CreateVault(
 		m.Address,
 		m.unusedShards,
-		string(m.DeviceID),
+		m.DeviceID,
 		dscShard,
 		pskShard,
 		pwShard,
 	)
 	if err != nil {
 		fmt.Println("[WARN] failed to create vault:", err)
+    return rtmv1.CreateAccountResponse{}, err
 	}
 
 	// update DID Document
@@ -90,23 +91,23 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	return resp.TxResponse, nil
 }
 
-func pskEncrypt(shard string) (string, []byte, error) {
+func pskEncrypt(shard []byte) ([]byte, []byte, error) {
 	key, err := crypto.NewAesKey()
 	if err != nil {
-		return "", nil, err
+		return nil, nil, err
 	}
 
-	cipherShard, err := crypto.AesEncryptWithKey(key, []byte(shard))
+	cipherShard, err := crypto.AesEncryptWithKey(key, shard)
 	if err != nil {
-		return "", key, err
+		return nil, key, err
 	}
 
 	return cipherShard, key, nil
 }
 
-func dscEncrypt(shard string, dsc []byte) (string, error) {
+func dscEncrypt(shard, dsc []byte) ([]byte, error) {
 	if len(dsc) != 32 {
-		return "", errors.New("dsc must be 32 bytes")
+		return nil, errors.New("dsc must be 32 bytes")
 	}
-	return crypto.AesEncryptWithKey(dsc, []byte(shard))
+	return crypto.AesEncryptWithKey(dsc, shard)
 }

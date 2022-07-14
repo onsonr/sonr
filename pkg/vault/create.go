@@ -21,11 +21,11 @@ var (
 )
 
 type createVaultRequest struct {
-	DeviceShards      []string `json:"device_shards"`       // a list of shards encrypted with the MPC
+	DeviceShards      [][]byte `json:"device_shards"`       // a list of shards encrypted with the MPC
 	DscPub            string   `json:"dsc_pub"`             // the dsc public key of the creator
-	EncryptedDscShard string   `json:"encrypted_dsc_shard"` // the shard for the creator, encrypted with DscPub
-	PskShard          string   `json:"psk_shard"`           // the shard encrypted with PSK
-	RecoveryShard     string   `json:"recovery_shard"`      // shard encrypted with password
+	EncryptedDscShard []byte   `json:"encrypted_dsc_shard"` // the shard for the creator, encrypted with DscPub
+	PskShard          []byte   `json:"psk_shard"`           // the shard encrypted with PSK
+	RecoveryShard     []byte   `json:"recovery_shard"`      // shard encrypted with password
 }
 
 type createVaultResponse struct {
@@ -36,7 +36,7 @@ type errorResponse struct {
 	Message string `json:"message"`
 }
 
-func (v *vaultImpl) CreateVault(d string, deviceShards []string, dscPub, encDscShard, pskShard, recShard string) (did.Service, error) {
+func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, encDscShard, pskShard, recShard []byte) (did.Service, error) {
 	reqBody, err := json.Marshal(createVaultRequest{
 		DeviceShards:      deviceShards,
 		DscPub:            dscPub,

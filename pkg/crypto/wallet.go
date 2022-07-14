@@ -179,7 +179,7 @@ func (w *MPCWallet) Verify(m []byte, sig []byte) bool {
 	return mpcVerif
 }
 
-func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, unused []string, err error) {
+func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, unused [][]byte, err error) {
 	ss, e := w.serializedShards()
 	if e != nil {
 		err = e
@@ -230,7 +230,7 @@ func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, 
 			err = e
 			return
 		}
-		unused = append(unused, string(sSig))
+		unused = append(unused, sSig)
 	}
 	if len(unused) == 0 {
 		err = errors.New("no backup shards")
@@ -238,14 +238,14 @@ func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard string, 
 	return
 }
 
-func (w *MPCWallet) serializedShards() (map[string]string, error) {
-	deviceShards := make(map[string]string)
+func (w *MPCWallet) serializedShards() (map[string][]byte, error) {
+	deviceShards := make(map[string][]byte)
 	for k, c := range w.Configs {
 		b, err := c.MarshalBinary()
 		if err != nil {
 			return nil, err
 		}
-		deviceShards[string(k)] = string(b)
+		deviceShards[string(k)] = b
 	}
 	return deviceShards, nil
 }

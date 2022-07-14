@@ -9,64 +9,64 @@ import (
 )
 
 // AesEncryptWithKey uses the give 32-bit key to encrypt plaintext.
-func AesEncryptWithKey(aesKey, plaintext []byte) (string, error) {
+func AesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
 	blockCipher, err := aes.NewCipher(aesKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	gcm, err := cipher.NewGCM(blockCipher)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	nonce := make([]byte, gcm.NonceSize())
 	if _, err = rand.Read(nonce); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	ciphertext := gcm.Seal(nonce, nonce, []byte(plaintext), nil)
 
-	return string(ciphertext), nil
+	return ciphertext, nil
 }
 
 // AesDecryptWithKey uses the give 32-bit key to decrypt plaintext.
-func AesDecryptWithKey(aesKey, ciphertext []byte) (string, error) {
+func AesDecryptWithKey(aesKey, ciphertext []byte) ([]byte, error) {
 	blockCipher, err := aes.NewCipher(aesKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	gcm, err := cipher.NewGCM(blockCipher)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	nonce, ct := ciphertext[:gcm.NonceSize()], ciphertext[gcm.NonceSize():]
 
 	plaintext, err := gcm.Open(nil, nonce, ct, nil)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(plaintext), nil
+	return plaintext, nil
 }
 
-// AesDecryptWithPassword uses the give password to generate an aes key and decrypt plaintext.
-func AesEncryptWithPassword(password string, plaintext []byte) (string, error) {
+// AesEncryptWithPassword uses the give password to generate an aes key and decrypt plaintext.
+func AesEncryptWithPassword(password string, plaintext []byte) ([]byte, error) {
 	key, err := deriveKey(password)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return AesEncryptWithKey(key, plaintext)
 }
 
-// AesEncryptWithPassword uses the give password to generate an aes key and encrypt plaintext.
-func AesDecryptWithPassword(password string, ciphertext []byte) (string, error) {
+// AesDecryptWithPassword uses the give password to generate an aes key and encrypt plaintext.
+func AesDecryptWithPassword(password string, ciphertext []byte) ([]byte, error) {
 	key, err := deriveKey(password)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return AesDecryptWithKey(key, ciphertext)

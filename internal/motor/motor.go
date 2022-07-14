@@ -26,56 +26,56 @@ type MotorNode struct {
 	DIDDocument did.Document
 
 	// Sharding
-	deviceShard   string
-	sharedShard   string
-	recoveryShard string
-	unusedShards  []string
+	deviceShard   []byte
+	sharedShard   []byte
+	recoveryShard []byte
+	unusedShards  [][]byte
 }
 
-func New(id string) (*MotorNode, string, error) {
+func New(id string) (*MotorNode, []byte, error) {
 	// Create Client instance
 	c := client.NewClient(client.ConnEndpointType_BETA)
 
 	// Generate wallet
 	w, err := crypto.GenerateWallet()
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	// Get address
 	bechAddr, err := w.Address()
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	// Request from Faucet
 	err = c.RequestFaucet(bechAddr)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	// Get public key
 	pk, err := w.PublicKeyProto()
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	// Set Base DID
 	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(bechAddr, "snr")))
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	// Create the DID Document
 	doc, err := did.NewDocument(baseDid.String())
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	// Create Initial Shards
 	deviceShard, sharedShard, recShard, unusedShards, err := w.CreateInitialShards()
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	// Create MotorNode
@@ -87,6 +87,7 @@ func New(id string) (*MotorNode, string, error) {
 		PubKey:        pk,
 		DID:           *baseDid,
 		DIDDocument:   doc,
+
 		deviceShard:   deviceShard,
 		sharedShard:   sharedShard,
 		recoveryShard: recShard,
@@ -96,7 +97,7 @@ func New(id string) (*MotorNode, string, error) {
 	// create WhoIs
 	resp, err := createWhoIs(m)
 	if err != nil {
-		return m, "", err
+		return m, nil, err
 	}
 	fmt.Println(resp.String())
 	return m, deviceShard, nil
@@ -130,6 +131,9 @@ func (m *MotorNode) Balance() int64 {
 	if err != nil {
 		return 0
 	}
+  if len(cs) <= 0 {
+    return 0
+  }
 	return cs[0].Amount.Int64()
 }
 
