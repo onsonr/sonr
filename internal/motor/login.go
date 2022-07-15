@@ -8,7 +8,6 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
-	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
@@ -56,7 +55,7 @@ func Login(id string, requestBytes []byte) (*MotorNode, error) {
 	}
 
 	// generate wallet
-	w, err := crypto.GenerateWallet(crypto.WithConfigs(map[party.ID]*cmp.Config{
+	m, err := newMotor(id, crypto.WithConfigs(map[party.ID]*cmp.Config{
 		"dsc":      cnfDsc,
 		"recovery": cnfPw,
 	}))
@@ -64,43 +63,17 @@ func Login(id string, requestBytes []byte) (*MotorNode, error) {
 		return nil, fmt.Errorf("error generating wallet: %s", err)
 	}
 
-	// get address
-	bechAddr, err := w.Address()
-	if err != nil {
-		return nil, fmt.Errorf("error getting bech address: %s", err)
-	}
-
-	// get public key
-	pk, err := w.PublicKeyProto()
-	if err != nil {
-		return nil, fmt.Errorf("error getting public key: %s", err)
-	}
-
 	// TODO: fetch DID document from chain
 	var didDoc did.Document
+	m.DIDDocument = didDoc
 
-  
-  d, err := did.ParseDID(did.CreateDIDFromAccount(request.Did))
-  if err != nil {
-    return nil, fmt.Errorf("error parsing did: %s", err)
-  }
+	// assign shards
+	m.deviceShard = []byte(deviceShard.Value)
+	m.sharedShard = []byte(shards.PskShard.Value)
+	m.recoveryShard = []byte(shards.RecoveryShard.Value)
+	m.unusedShards = destructureShards(shards.ShardBank)
 
-	return &MotorNode{
-		DeviceID:    id,
-		Cosmos:      client.NewClient(client.ConnEndpointType_BETA),
-		Wallet:      w,
-		Address:     bechAddr,
-		PubKey:      pk,
-		DID:         *d,
-		DIDDocument: didDoc,
-
-		// TODO: some state should exist to say if these are encrypted or not
-		// (in this case they are, but during create they aren't)
-		deviceShard:   []byte(deviceShard.Value),
-		sharedShard:   []byte(shards.PskShard.Value),
-		recoveryShard: []byte(shards.RecoveryShard.Value),
-		unusedShards:  destructureShards(shards.ShardBank),
-	}, nil
+	return m, nil
 }
 
 func dscDecrypt(ciphershard, dsc []byte) ([]byte, error) {
