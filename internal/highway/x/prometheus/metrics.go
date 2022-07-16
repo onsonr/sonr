@@ -39,11 +39,14 @@ var (
 	})
 )
 
+// `New` is a function that takes a context and a host, and returns a HighwayTelemetry struct and an
+// error
 func New(ctx context.Context, hn host.SonrHost) (*HighwayTelemetry, error) {
 	defer RegisterEvents()
 	return &HighwayTelemetry{endpoint: "/metrics"}, nil
 }
 
+// It's incrementing the `opsProcessed` counter every 2 seconds.
 func (ht *HighwayTelemetry) RecordMetrics() {
 	go func() {
 		for {
@@ -53,6 +56,7 @@ func (ht *HighwayTelemetry) RecordMetrics() {
 	}()
 }
 
+// It's returning a handler that will be used to serve the metrics.
 func (ht *HighwayTelemetry) GetMetricsHandler() http.Handler {
 	defer ht.RecordMetrics()
 	return promhttp.Handler()

@@ -1,15 +1,18 @@
 package motor
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/sonr/pkg/host"
 )
 
 type MotorNode struct {
@@ -20,6 +23,7 @@ type MotorNode struct {
 	PubKey      *secp256k1.PubKey
 	DID         did.DID
 	DIDDocument did.Document
+	SonrHost    host.SonrHost
 
 	// Sharding
 	deviceShard   []byte
@@ -56,9 +60,16 @@ func newMotor(id string, options ...crypto.WalletOption) (*MotorNode, error) {
 		return nil, err
 	}
 
+	// It creates a new host.
+	host, err := host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
+	if err != nil {
+		return nil, err
+	}
+
 	// Create MotorNode
 	m := &MotorNode{
 		DeviceID: id,
+		SonrHost: host,
 		Cosmos:   c,
 		Wallet:   w,
 		Address:  bechAddr,
@@ -69,6 +80,7 @@ func newMotor(id string, options ...crypto.WalletOption) (*MotorNode, error) {
 	return m, nil
 }
 
+// Checking the balance of the wallet.
 func (m *MotorNode) Balance() int64 {
 	cs, err := m.Cosmos.CheckBalance(m.Address)
 	if err != nil {
