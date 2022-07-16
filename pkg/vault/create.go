@@ -61,7 +61,7 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 		return ioutil.ReadAll(res.Body)
 	}
 
-	body, err := retryBuf(3, time.Second*3, createVaultFunc)
+	body, err := retryBuf(3, time.Second*4, createVaultFunc)
 	if err != nil {
 		return DefaultVaultService, err
 	}

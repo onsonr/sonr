@@ -4,12 +4,18 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"errors"
+	"fmt"
 
 	"golang.org/x/crypto/scrypt"
 )
 
 // AesEncryptWithKey uses the give 32-bit key to encrypt plaintext.
 func AesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
+	if len(aesKey) != 32 {
+		return nil, errors.New("AES key must be 32 bytes")
+	}
+
 	blockCipher, err := aes.NewCipher(aesKey)
 	if err != nil {
 		return nil, err
@@ -32,6 +38,11 @@ func AesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
 
 // AesDecryptWithKey uses the give 32-bit key to decrypt plaintext.
 func AesDecryptWithKey(aesKey, ciphertext []byte) ([]byte, error) {
+	if len(aesKey) != 32 {
+		fmt.Printf("aesKey len: %d\n", len(aesKey))
+		return nil, errors.New("AES key must be 32 bytes")
+	}
+
 	blockCipher, err := aes.NewCipher(aesKey)
 	if err != nil {
 		return nil, err

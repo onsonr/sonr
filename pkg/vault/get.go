@@ -1,7 +1,6 @@
 package vault
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,44 +8,20 @@ import (
 	"time"
 )
 
-type Shard struct {
-	Value []byte `json:"value"`
-}
+type Shard []byte
 
-type jsonShard struct {
-	Base64Value string `json:"value"`
-}
-
-func (s *Shard) UnmarshalJSON(b []byte) error {
-	var js jsonShard
-	if err := json.Unmarshal(b, &js); err != nil {
-		return err
-	}
-
-	// decode base64
-	rawText, err := base64.StdEncoding.DecodeString(js.Base64Value)
-	if err != nil {
-		return err
-	}
-	*s = Shard{
-		Value: []byte(rawText),
-	}
-	return nil
-}
-
-type vault struct {
+type Vault struct {
 	ShardBank     []Shard          `json:"shard_bank"`
 	IssuedShards  map[string]Shard `json:"issued_shards"`
 	PskShard      Shard            `json:"psk_shard"`
 	RecoveryShard Shard            `json:"recovery_shard"`
 }
 
-
 type getVaultResponse struct {
-	Vault vault `json:"vault"`
+	Vault Vault `json:"vault"`
 }
 
-func (v *vaultImpl) GetVaultShards(did string) (vault, error) {
+func (v *vaultImpl) GetVaultShards(did string) (Vault, error) {
 	getVaultFunc := func() ([]byte, error) {
 		res, err := http.Get(fmt.Sprintf("%s/did/%s/get", v.vaultEndpoint, did))
 		if err != nil {
@@ -69,14 +44,14 @@ func (v *vaultImpl) GetVaultShards(did string) (vault, error) {
 		return body, nil
 	}
 
-	body, err := retryBuf(3, time.Second*3, getVaultFunc)
+	body, err := retryBuf(3, time.Second*4, getVaultFunc)
 	if err != nil {
-		return vault{}, err
+		return Vault{}, err
 	}
 
 	var gvr getVaultResponse
 	if err := json.Unmarshal(body, &gvr); err != nil {
-		return vault{}, err
+		return Vault{}, err
 	}
 
 	return gvr.Vault, nil

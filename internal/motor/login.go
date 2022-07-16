@@ -2,7 +2,6 @@ package motor
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
@@ -24,69 +23,98 @@ func Login(id string, requestBytes []byte) (*MotorNode, error) {
 	}
 
 	// fetch vault shards
+	fmt.Printf("fetching shards from vault... ")
 	shards, err := vault.New().GetVaultShards(request.Did)
 	if err != nil {
 		return nil, fmt.Errorf("error getting vault shards: %s", err)
 	}
+	fmt.Println("done.")
 
-	// build recovery Config
-	cnfPw := cmp.EmptyConfig(curve.Secp256k1{})
-	recShard, err := crypto.AesDecryptWithPassword(request.Password, []byte(shards.RecoveryShard.Value))
+	fmt.Printf("reconstructing wallet... ")
+	cnfgs, err := createWalletConfigs(id, request, shards)
 	if err != nil {
-		return nil, fmt.Errorf("error decrypting recovery shard (%s): %s", recShard, err)
-	}
-	if err := cnfPw.UnmarshalBinary([]byte(recShard)); err != nil {
-		return nil, fmt.Errorf("error unmarshalling recovery shard: %s", err)
-	}
-
-	// build DSC Config
-	// TODO: get the actual dsc key from keychain
-	cnfDsc := cmp.EmptyConfig(curve.Secp256k1{})
-	deviceShard, ok := shards.IssuedShards[id]
-	if !ok {
-		return nil, fmt.Errorf("could not find device shard with key '%s'", id)
-	}
-	dscShard, err := dscDecrypt([]byte(deviceShard.Value), request.AesDscKey)
-	if err != nil {
-		return nil, fmt.Errorf("error decrypting DSC shard: %s", err)
-	}
-	if err := cnfDsc.UnmarshalBinary([]byte(dscShard)); err != nil {
-		return nil, fmt.Errorf("error unmarshalling DSC shard: %s", err)
+		return nil, fmt.Errorf("error creating preferred config: %s", err)
 	}
 
 	// generate wallet
-	m, err := newMotor(id, crypto.WithConfigs(map[party.ID]*cmp.Config{
-		"dsc":      cnfDsc,
-		"recovery": cnfPw,
-	}))
+	m, err := newMotor(id, crypto.WithConfigs(cnfgs))
 	if err != nil {
 		return nil, fmt.Errorf("error generating wallet: %s", err)
 	}
+	fmt.Println("done.")
 
 	// TODO: fetch DID document from chain
 	var didDoc did.Document
 	m.DIDDocument = didDoc
 
 	// assign shards
-	m.deviceShard = []byte(deviceShard.Value)
-	m.sharedShard = []byte(shards.PskShard.Value)
-	m.recoveryShard = []byte(shards.RecoveryShard.Value)
+	m.deviceShard = shards.IssuedShards[m.DeviceID]
+	m.sharedShard = shards.PskShard
+	m.recoveryShard = shards.RecoveryShard
 	m.unusedShards = destructureShards(shards.ShardBank)
 
 	return m, nil
 }
 
-func dscDecrypt(ciphershard, dsc []byte) ([]byte, error) {
-	if len(dsc) != 32 {
-		return nil, errors.New("dsc must be 32 bytes")
+func createWalletConfigs(id string, req rtmv1.LoginRequest, shards vault.Vault) (map[party.ID]*cmp.Config, error) {
+	configs := make(map[party.ID]*cmp.Config)
+
+	// if a password is provided, prefer that over the DSC
+	if req.Password != "" {
+		// build recovery Config
+		fmt.Println(req.Password)
+		recShard, err := crypto.AesDecryptWithPassword(req.Password, shards.RecoveryShard)
+		if err != nil {
+			return nil, fmt.Errorf("error decrypting recovery shard (%s): %s", recShard, err)
+		}
+
+		configs["recovery"], err = hydrateConfig(recShard)
+		if err != nil {
+			return nil, fmt.Errorf("recovery shard: %s", err)
+		}
+	} else {
+		// build DSC Config if password is not provided
+		deviceShard, ok := shards.IssuedShards[id]
+		if !ok {
+			return nil, fmt.Errorf("could not find device shard with key '%s'", id)
+		}
+		dscShard, err := crypto.AesDecryptWithKey(req.AesDscKey, deviceShard)
+		if err != nil {
+			return nil, fmt.Errorf("error decrypting DSC shard: %s", err)
+		}
+
+		configs["dsc"], err = hydrateConfig(dscShard)
+		if err != nil {
+			return nil, fmt.Errorf("dsc shard: %s", err)
+		}
 	}
-	return crypto.AesDecryptWithKey(dsc, ciphershard)
+
+	// in all cases, use the PSK
+	pskShard, err := crypto.AesDecryptWithKey(req.AesPskKey, shards.PskShard)
+	if err != nil {
+		return nil, fmt.Errorf("error decrypting PSK shard: %s", err)
+	}
+
+	configs["psk"], err = hydrateConfig(pskShard)
+	if err != nil {
+		return nil, fmt.Errorf("psk shard: %s", err)
+	}
+
+	return configs, nil
+}
+
+func hydrateConfig(c []byte) (*cmp.Config, error) {
+	cnf := cmp.EmptyConfig(curve.Secp256k1{})
+	if err := cnf.UnmarshalBinary(c); err != nil {
+		return nil, fmt.Errorf("error unmarshalling shard: %s", err)
+	}
+	return cnf, nil
 }
 
 func destructureShards(s []vault.Shard) [][]byte {
 	result := make([][]byte, len(s))
 	for i, v := range s {
-		result[i] = v.Value
+		result[i] = v
 	}
 	return result
 }

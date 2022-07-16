@@ -14,14 +14,14 @@ import (
 )
 
 func Test_CreateAccount(t *testing.T) {
-	aesKey := loadKey()
+	aesKey := loadKey("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {
 		key, err := crypto.NewAesKey()
 		assert.NoError(t, err, "generates aes key")
 		aesKey = key
 
 		// store the key
-		fmt.Printf("stored key? %v\n", storeKey(key))
+		fmt.Printf("stored key? %v\n", storeKey("aes.key", key))
 	} else {
 		fmt.Println("loaded key")
 	}
@@ -32,8 +32,13 @@ func Test_CreateAccount(t *testing.T) {
 	})
 	assert.NoError(t, err, "create account request marshals")
 
-  m, _, err := CreateAccount("test_device", req)
+	m, psk, err := CreateAccount("test_device", req)
 	assert.NoError(t, err, "wallet generation succeeds")
+
+	// write the PSK to local file system for later use
+	if err == nil {
+		fmt.Printf("stored psk? %v\n", storeKey(fmt.Sprintf("psk%s", m.Address), psk))
+	}
 
 	b := m.Balance()
 	log.Println("balance:", b)
@@ -43,29 +48,62 @@ func Test_CreateAccount(t *testing.T) {
 }
 
 func Test_Login(t *testing.T) {
-  aesKey := loadKey()
-  if aesKey == nil || len(aesKey) != 32 {
-    t.Errorf("could not load key.")
-    return
-  }
+	did := "snr1k97t92pntjnzyxlplyaxs432tgnf32e7mm5ga8"
+	t.Run("with password", func(t *testing.T) {
+		pskKey := loadKey(fmt.Sprintf("psk%s", did))
+		if pskKey == nil || len(pskKey) != 32 {
+			t.Errorf("could not load psk key")
+			return
+		}
 
-  req, err := json.Marshal(prt.LoginRequest{
-    Did: "snr1ary8qqfwrjw8d696qge0chc9azpzyhf2g26j4f",
-    Password: "password123",
-    AesDscKey: aesKey,
-  })
-  assert.NoError(t, err, "request marshals")
+		req, err := json.Marshal(prt.LoginRequest{
+			Did:       did,
+			Password:  "password123",
+			AesPskKey: pskKey,
+		})
+		assert.NoError(t, err, "request marshals")
 
-  m, err := Login("test_device", req)
-  assert.NoError(t, err, "login succeeds")
+		m, err := Login("test_device", req)
+		assert.NoError(t, err, "login succeeds")
 
-  fmt.Println("logged in")
-  fmt.Println("balance: ", m.Balance())
-  fmt.Println("address: ", m.Address)
+		if err == nil {
+			fmt.Println("balance: ", m.Balance())
+			fmt.Println("address: ", m.Address)
+		}
+	})
+
+	t.Run("with DSC", func(t *testing.T) {
+		aesKey := loadKey("aes.key")
+		if aesKey == nil || len(aesKey) != 32 {
+			t.Errorf("could not load key.")
+			return
+		}
+
+		pskKey := loadKey(fmt.Sprintf("psk%s", did))
+		if pskKey == nil || len(pskKey) != 32 {
+			t.Errorf("could not load psk key")
+			return
+		}
+
+		req, err := json.Marshal(prt.LoginRequest{
+			Did:       did,
+			AesDscKey: aesKey,
+			AesPskKey: pskKey,
+		})
+		assert.NoError(t, err, "request marshals")
+
+		m, err := Login("test_device", req)
+		assert.NoError(t, err, "login succeeds")
+
+		if err == nil {
+			fmt.Println("balance: ", m.Balance())
+			fmt.Println("address: ", m.Address)
+		}
+	})
 }
 
-func storeKey(aesKey []byte) bool {
-	file, err := os.Create("aes.key")
+func storeKey(name string, aesKey []byte) bool {
+	file, err := os.Create(name)
 	if err != nil {
 		return false
 	}
@@ -75,12 +113,12 @@ func storeKey(aesKey []byte) bool {
 	return err == nil
 }
 
-func loadKey() []byte {
+func loadKey(name string) []byte {
 	var file *os.File
-	if _, err := os.Stat("aes.key"); os.IsNotExist(err) {
-		file, err = os.Create("aes.key")
+	if _, err := os.Stat(name); os.IsNotExist(err) {
+		file, err = os.Create(name)
 	} else {
-		file, err = os.Open("aes.key")
+		file, err = os.Open(name)
 		if err != nil {
 			return nil
 		}

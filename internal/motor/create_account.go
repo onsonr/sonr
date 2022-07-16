@@ -97,8 +97,10 @@ func CreateAccount(id string, requestBytes []byte) (*MotorNode, []byte, error) {
 	if err != nil {
 		return nil, psk, err
 	}
+	fmt.Println("done.")
 
 	// update DID Document
+  fmt.Printf("updating WhoIs... ")
 	m.DIDDocument.AddService(vaultService)
 
 	// update whois
