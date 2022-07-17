@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/ipld/go-ipld-prime/datamodel"
-	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
@@ -88,16 +87,9 @@ type SchemaRelationShip struct {
 	did        did.DID
 }
 
-type appSchemaInternalImpl struct {
-}
+type appSchemaInternalImpl struct{}
 
 func New() AppSchemaInternal {
-	asi := &appSchemaInternalImpl{}
-
-	return asi
-}
-
-func NewWithAcct(wallet *crypto.MPCWallet) AppSchemaInternal {
 	asi := &appSchemaInternalImpl{}
 
 	return asi
