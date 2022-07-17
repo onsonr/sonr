@@ -51,6 +51,17 @@ func (mtr *MotorNode) Login(requestBytes []byte) (rtmv1.LoginResponse, error) {
 	// TODO: fetch DID document from chain
 	var didDoc did.Document
 	mtr.DIDDocument = didDoc
+	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)
+	if err != nil {
+		return rtmv1.LoginResponse{}, fmt.Errorf("error fetching whois: %s", err)
+	}
+
+	// TODO: this is a hacky workaround for the Id not being populated in the DID document
+	whoIs.DidDocument.Id = did.CreateDIDFromAccount(whoIs.Owner)
+	mtr.DIDDocument, err = whoIs.DidDocument.ToPkgDoc()
+	if err != nil {
+		return rtmv1.LoginResponse{}, fmt.Errorf("error getting DID Document: %s", err)
+	}
 
 	// assign shards
 	mtr.deviceShard = shards.IssuedShards[mtr.DeviceID]
@@ -69,7 +80,6 @@ func createWalletConfigs(id string, req rtmv1.LoginRequest, shards vault.Vault) 
 	// if a password is provided, prefer that over the DSC
 	if req.Password != "" {
 		// build recovery Config
-		fmt.Println(req.Password)
 		recShard, err := crypto.AesDecryptWithPassword(req.Password, shards.RecoveryShard)
 		if err != nil {
 			return nil, fmt.Errorf("error decrypting recovery shard (%s): %s", recShard, err)

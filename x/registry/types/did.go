@@ -29,16 +29,6 @@ func NewDIDDocumentFromBytes(buf []byte) (*DIDDocument, error) {
 }
 
 func NewDIDDocumentFromPkg(doc did.Document) (*DIDDocument, error) {
-	// buf, err := doc.MarshalJSON()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// var snrdoc DIDDocument
-	// err = snrdoc.UnmarshalJSON(buf)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// return &snrdoc, nil
 	var err error
 	res := &DIDDocument{}
 
