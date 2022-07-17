@@ -48,9 +48,7 @@ func (mtr *MotorNode) Login(requestBytes []byte) (rtmv1.LoginResponse, error) {
 	}
 	fmt.Println("done.")
 
-	// TODO: fetch DID document from chain
-	var didDoc did.Document
-	mtr.DIDDocument = didDoc
+	// fetch DID document from chain
 	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)
 	if err != nil {
 		return rtmv1.LoginResponse{}, fmt.Errorf("error fetching whois: %s", err)
