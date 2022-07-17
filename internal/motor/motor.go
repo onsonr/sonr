@@ -49,9 +49,11 @@ func initMotor(mtr *MotorNode, options ...crypto.WalletOption) (err error) {
 	}
 
 	// Get address
-	mtr.Address, err = mtr.Wallet.Address()
-	if err != nil {
-		return err
+	if mtr.Address == "" {
+		mtr.Address, err = mtr.Wallet.Address()
+		if err != nil {
+			return err
+		}
 	}
 
 	// Get public key

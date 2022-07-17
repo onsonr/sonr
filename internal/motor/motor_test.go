@@ -50,7 +50,7 @@ func Test_CreateAccount(t *testing.T) {
 }
 
 func Test_Login(t *testing.T) {
-	did := "snr1c28xfwu8urc30zwf0rw98qrdr9g66ljn643e4g"
+	did := "snr14e5as544pk86c2vxkarm7fw24lvcjnpx9gfd5m"
 	t.Run("with password", func(t *testing.T) {
 		pskKey := loadKey(fmt.Sprintf("psk%s", did))
 		if pskKey == nil || len(pskKey) != 32 {

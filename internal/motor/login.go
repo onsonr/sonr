@@ -22,6 +22,12 @@ func (mtr *MotorNode) Login(requestBytes []byte) (rtmv1.LoginResponse, error) {
 		return rtmv1.LoginResponse{}, fmt.Errorf("error unmarshalling request: %s", err)
 	}
 
+	if request.Did == "" {
+		return rtmv1.LoginResponse{}, fmt.Errorf("did must be provided")
+	}
+
+	mtr.Address = request.Did
+
 	// fetch vault shards
 	fmt.Printf("fetching shards from vault... ")
 	shards, err := vault.New().GetVaultShards(request.Did)
