@@ -15,45 +15,46 @@ import (
 
 // Login creates a motor node from a LoginRequest
 // TODO: calling balance does not seem to work after login
-func Login(id string, requestBytes []byte) (*MotorNode, error) {
+func (mtr *MotorNode) Login(requestBytes []byte) (rtmv1.LoginResponse, error) {
 	// decode request
 	var request rtmv1.LoginRequest
 	if err := json.Unmarshal(requestBytes, &request); err != nil {
-		return nil, fmt.Errorf("error unmarshalling request: %s", err)
+		return rtmv1.LoginResponse{}, fmt.Errorf("error unmarshalling request: %s", err)
 	}
 
 	// fetch vault shards
 	fmt.Printf("fetching shards from vault... ")
 	shards, err := vault.New().GetVaultShards(request.Did)
 	if err != nil {
-		return nil, fmt.Errorf("error getting vault shards: %s", err)
+		return rtmv1.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}
 	fmt.Println("done.")
 
 	fmt.Printf("reconstructing wallet... ")
-	cnfgs, err := createWalletConfigs(id, request, shards)
+	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
 	if err != nil {
-		return nil, fmt.Errorf("error creating preferred config: %s", err)
+		return rtmv1.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
 	}
 
 	// generate wallet
-	m, err := newMotor(id, crypto.WithConfigs(cnfgs))
-	if err != nil {
-		return nil, fmt.Errorf("error generating wallet: %s", err)
+	if err = initMotor(mtr, crypto.WithConfigs(cnfgs)); err != nil {
+		return rtmv1.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
 	fmt.Println("done.")
 
 	// TODO: fetch DID document from chain
 	var didDoc did.Document
-	m.DIDDocument = didDoc
+	mtr.DIDDocument = didDoc
 
 	// assign shards
-	m.deviceShard = shards.IssuedShards[m.DeviceID]
-	m.sharedShard = shards.PskShard
-	m.recoveryShard = shards.RecoveryShard
-	m.unusedShards = destructureShards(shards.ShardBank)
+	mtr.deviceShard = shards.IssuedShards[mtr.DeviceID]
+	mtr.sharedShard = shards.PskShard
+	mtr.recoveryShard = shards.RecoveryShard
+	mtr.unusedShards = destructureShards(shards.ShardBank)
 
-	return m, nil
+	return rtmv1.LoginResponse{
+		Success: true,
+	}, nil
 }
 
 func createWalletConfigs(id string, req rtmv1.LoginRequest, shards vault.Vault) (map[party.ID]*cmp.Config, error) {

@@ -32,14 +32,16 @@ func Test_CreateAccount(t *testing.T) {
 	})
 	assert.NoError(t, err, "create account request marshals")
 
-	m, psk, err := CreateAccount("test_device", req)
+  m := EmptyMotor("test_device")
+	res, err := m.CreateAccount(req)
 	assert.NoError(t, err, "wallet generation succeeds")
 
 	// write the PSK to local file system for later use
 	if err == nil {
-		fmt.Printf("stored psk? %v\n", storeKey(fmt.Sprintf("psk%s", m.Address), psk))
+		fmt.Printf("stored psk? %v\n", storeKey(fmt.Sprintf("psk%s", m.Address), res.AesPsk))
 	}
 
+  fmt.Printf("cos: %v\n", m.Cosmos)
 	b := m.Balance()
 	log.Println("balance:", b)
 
@@ -48,7 +50,7 @@ func Test_CreateAccount(t *testing.T) {
 }
 
 func Test_Login(t *testing.T) {
-	did := "snr1k97t92pntjnzyxlplyaxs432tgnf32e7mm5ga8"
+	did := "snr1c28xfwu8urc30zwf0rw98qrdr9g66ljn643e4g"
 	t.Run("with password", func(t *testing.T) {
 		pskKey := loadKey(fmt.Sprintf("psk%s", did))
 		if pskKey == nil || len(pskKey) != 32 {
@@ -63,7 +65,8 @@ func Test_Login(t *testing.T) {
 		})
 		assert.NoError(t, err, "request marshals")
 
-		m, err := Login("test_device", req)
+    m := EmptyMotor("test_device")
+		_, err = m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
@@ -92,7 +95,8 @@ func Test_Login(t *testing.T) {
 		})
 		assert.NoError(t, err, "request marshals")
 
-		m, err := Login("test_device", req)
+    m := EmptyMotor("test_device")
+		_, err = m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {

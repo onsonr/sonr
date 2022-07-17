@@ -4,9 +4,7 @@ syntax = "proto3";
 package sonrio.motor.api.v1;
 
 message InitializeResponse {
-  bool is_existing = 1;
-  string address = 2;
-  string dsc_shard_raw = 3;
+  bool success = 1;
 }
 
 message CreateAccountResponse {

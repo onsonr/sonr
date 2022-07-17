@@ -32,52 +32,49 @@ type MotorNode struct {
 	unusedShards  [][]byte
 }
 
-func newMotor(id string, options ...crypto.WalletOption) (*MotorNode, error) {
+func EmptyMotor(id string) *MotorNode {
+	return &MotorNode{
+		DeviceID: id,
+	}
+}
+
+func initMotor(mtr *MotorNode, options ...crypto.WalletOption) (err error) {
 	// Create Client instance
-	c := client.NewClient(client.ConnEndpointType_BETA)
+	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 
 	// Generate wallet
-	w, err := crypto.GenerateWallet(options...)
+	mtr.Wallet, err = crypto.GenerateWallet(options...)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Get address
-	bechAddr, err := w.Address()
+	mtr.Address, err = mtr.Wallet.Address()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Get public key
-	pk, err := w.PublicKeyProto()
+	mtr.PubKey, err = mtr.Wallet.PublicKeyProto()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Set Base DID
-	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(bechAddr, "snr")))
+	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(mtr.Address, "snr")))
 	if err != nil {
-		return nil, err
+		return err
 	}
+	mtr.DID = *baseDid
 
 	// It creates a new host.
-	host, err := host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
+	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Create MotorNode
-	m := &MotorNode{
-		DeviceID: id,
-		SonrHost: host,
-		Cosmos:   c,
-		Wallet:   w,
-		Address:  bechAddr,
-		PubKey:   pk,
-		DID:      *baseDid,
-	}
-
-	return m, nil
+	return nil
 }
 
 // Checking the balance of the wallet.
