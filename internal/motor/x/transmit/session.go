@@ -3,15 +3,12 @@ package transmit
 import (
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/sonr/pkg/host"
-	motor "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/transmit/v1"
+	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
-func NewInSession(payload *motor.Payload, from *motor.Peer, to *motor.Peer) *v1.Session {
+func NewInSession(payload *v1.Payload, from *motor.Peer, to *motor.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
@@ -27,7 +24,7 @@ func NewInSession(payload *motor.Payload, from *motor.Peer, to *motor.Peer) *v1.
 }
 
 // NewOutSession creates a new Session from the given payload with Outgoing direction.
-func NewOutSession(payload *motor.Payload, to *motor.Peer, from *motor.Peer) *v1.Session {
+func NewOutSession(payload *v1.Payload, to *motor.Peer, from *motor.Peer) *v1.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
 	return &v1.Session{
@@ -72,81 +69,81 @@ func SessionIsIn(s *v1.Session) bool {
 	return s.Direction == motor.Direction_DIRECTION_INCOMING
 }
 
-// Event returns the complete event for the session.
-func SessionEvent(s *v1.Session) *motor.OnTransmitCompleteResponse {
-	return &motor.OnTransmitCompleteResponse{
-		From:       s.GetFrom(),
-		To:         s.GetTo(),
-		Direction:  s.GetDirection(),
-		Payload:    s.GetPayload(),
-		CreatedAt:  s.GetPayload().GetCreatedAt(),
-		ReceivedAt: int64(time.Now().Unix()),
-		Results:    s.GetResults(),
-	}
-}
+// // Event returns the complete event for the session.
+// func SessionEvent(s *v1.Session) *motor.OnTransmitCompleteResponse {
+// 	return &motor.OnTransmitCompleteResponse{
+// 		From:       s.GetFrom(),
+// 		To:         s.GetTo(),
+// 		Direction:  s.GetDirection(),
+// 		Payload:    s.GetPayload(),
+// 		CreatedAt:  s.GetPayload().GetCreatedAt(),
+// 		ReceivedAt: int64(time.Now().Unix()),
+// 		Results:    s.GetResults(),
+// 	}
+// }
 
-// RouteStream is used to route the given stream to the given peer.
-func RouteSessionStream(s *v1.Session, stream network.Stream, h host.SonrHost) (*motor.OnTransmitCompleteResponse, error) {
-	// Initialize Params
-	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
-	doneChan := make(chan bool)
+// // RouteStream is used to route the given stream to the given peer.
+// func RouteSessionStream(s *v1.Session, stream network.Stream, h host.SonrHost) (*motor.OnTransmitCompleteResponse, error) {
+// 	// Initialize Params
+// 	logger.Debugf("Beginning %s Transmit Stream", s.Direction.String())
+// 	doneChan := make(chan bool)
 
-	// Check for Incoming
-	if SessionIsIn(s) {
-		// Handle incoming stream
-		go func(stream network.Stream, dchan chan bool) {
-			// Create reader
-			rs := msgio.NewReader(stream)
+// 	// Check for Incoming
+// 	if SessionIsIn(s) {
+// 		// Handle incoming stream
+// 		go func(stream network.Stream, dchan chan bool) {
+// 			// Create reader
+// 			rs := msgio.NewReader(stream)
 
-			// Read all items
-			for _, v := range s.GetItems() {
-				// Read Stream to File
-				if err := ReadItemFromStream(v, h, rs); err != nil {
-					logger.Errorf("Error reading stream: %v", err)
-					dchan <- false
-				} else {
-					dchan <- true
-				}
-			}
+// 			// Read all items
+// 			for _, v := range s.GetItems() {
+// 				// Read Stream to File
+// 				if err := ReadItemFromStream(v, h, rs); err != nil {
+// 					logger.Errorf("Error reading stream: %v", err)
+// 					dchan <- false
+// 				} else {
+// 					dchan <- true
+// 				}
+// 			}
 
-			// Close Stream on Done Reading
-			stream.Close()
-		}(stream, doneChan)
-	}
+// 			// Close Stream on Done Reading
+// 			stream.Close()
+// 		}(stream, doneChan)
+// 	}
 
-	// Check for Outgoing
-	if SessionIsOut(s) {
-		// Handle outgoing stream
-		go func(stream network.Stream, dchan chan bool) {
-			// Create writer
-			wc := msgio.NewWriter(stream)
+// 	// Check for Outgoing
+// 	if SessionIsOut(s) {
+// 		// Handle outgoing stream
+// 		go func(stream network.Stream, dchan chan bool) {
+// 			// Create writer
+// 			wc := msgio.NewWriter(stream)
 
-			// Write all items
-			for _, v := range s.GetItems() {
-				// Write File to Stream
-				if err := WriteItemToStream(v, h, wc); err != nil {
-					logger.Errorf("Error writing file: %v", err)
-					dchan <- false
-				} else {
-					dchan <- true
-				}
-			}
-		}(stream, doneChan)
-	}
+// 			// Write all items
+// 			for _, v := range s.GetItems() {
+// 				// Write File to Stream
+// 				if err := WriteItemToStream(v, h, wc); err != nil {
+// 					logger.Errorf("Error writing file: %v", err)
+// 					dchan <- false
+// 				} else {
+// 					dchan <- true
+// 				}
+// 			}
+// 		}(stream, doneChan)
+// 	}
 
-	// Wait for all files to be written
-	for {
-		select {
-		case r := <-doneChan:
-			// Set Result
-			if complete := UpdateCurrent(s, r); !complete {
-				continue
-			} else {
-				return SessionEvent(s), nil
-			}
-		}
-	}
-}
+// 	// Wait for all files to be written
+// 	for {
+// 		select {
+// 		case r := <-doneChan:
+// 			// Set Result
+// 			if complete := UpdateCurrent(s, r); !complete {
+// 				continue
+// 			} else {
+// 				return SessionEvent(s), nil
+// 			}
+// 		}
+// 	}
+// }
 
 // UpdateCurrent updates the current index of the session.
 func UpdateCurrent(s *v1.Session, result bool) bool {

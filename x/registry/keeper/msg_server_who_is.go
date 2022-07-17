@@ -15,22 +15,6 @@ import (
 func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs) (*types.MsgCreateWhoIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Create Account address from Bech32
-	addr, err := sdk.AccAddressFromBech32(msg.GetCreator())
-	if err != nil {
-		return nil, types.ErrInvalidBech32
-	}
-
-	// Create new account from account address
-	acc := k.accountKeeper.NewAccountWithAddress(ctx, addr)
-	if acc == nil {
-		return nil, types.ErrFailedNewAccount
-	}
-
-	// Check and Add PublicKey to account
-	acc.SetPubKey(msg.Pubkey)
-	k.accountKeeper.SetAccount(ctx, acc)
-
 	// UnmarshalJSON from DID document
 	doc, err := did.NewDocument(msg.GetCreatorDid())
 	if err != nil {
@@ -78,7 +62,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetWhoIsFromOwner(ctx, msg.GetCreator())
+	val, found := k.GetWhoIs(ctx, msg.GetCreator())
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.GetCreator()))
 	}
@@ -131,7 +115,7 @@ func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactiva
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetWhoIsFromOwner(ctx, msg.GetCreator())
+	val, found := k.GetWhoIs(ctx, msg.GetCreator())
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.GetCreator()))
 	}

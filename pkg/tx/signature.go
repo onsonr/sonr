@@ -2,7 +2,6 @@ package tx
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
@@ -14,12 +13,10 @@ func SerializeSignature(sig *ecdsa.Signature) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("R Length:", len(rBytes))
 	sBytes, err := sig.S.MarshalBinary()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("S Length:", len(sBytes))
 
 	sigBytes := make([]byte, 65)
 	// 0 pad the byte arrays from the left if they aren't big enough.

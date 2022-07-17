@@ -1,4 +1,4 @@
-package fs
+package transmit
 
 import (
 	"bytes"
@@ -17,8 +17,8 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	cv1 "go.buf.build/grpc/go/sonr-io/motor/common/v1"
+	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
 )
 
 var (
@@ -27,7 +27,7 @@ var (
 )
 
 // NewFileItem creates a new transfer file item
-func NewFileItem(path string, tbuf []byte) (*types.Payload_Item, error) {
+func NewFileItem(path string, tbuf []byte) (*v1.Payload_Item, error) {
 	// Extracts File Infrom from path
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -41,14 +41,14 @@ func NewFileItem(path string, tbuf []byte) (*types.Payload_Item, error) {
 	}
 
 	// Create Thumbnail on goroutine
-	thumbCh := make(chan *types.Thumbnail)
+	thumbCh := make(chan *v1.Thumbnail)
 	go NewThumbnail(path, tbuf, mime, thumbCh)
 
 	// Await Thumbnail
 	thumb := <-thumbCh
 
 	// Create File Item
-	fileItem := &types.FileItem{
+	fileItem := &v1.FileItem{
 		Mime:         mime,
 		Path:         path,
 		Size:         fi.Size(),
@@ -58,17 +58,17 @@ func NewFileItem(path string, tbuf []byte) (*types.Payload_Item, error) {
 	}
 
 	// Returns transfer item
-	return &types.Payload_Item{
+	return &v1.Payload_Item{
 		Size: fi.Size(),
 		Mime: mime,
-		Data: &types.Payload_Item_File{
+		Data: &v1.Payload_Item_File{
 			File: fileItem,
 		},
 	}, nil
 }
 
 // Header returns the header of the FileItem
-func Header(f *types.FileItem) textproto.MIMEHeader {
+func Header(f *v1.FileItem) textproto.MIMEHeader {
 	cd := mime.FormatMediaType("item-data", map[string]string{
 		"type":         f.GetMime().GetType().String(),
 		"filename":     f.GetName(),
@@ -82,12 +82,12 @@ func Header(f *types.FileItem) textproto.MIMEHeader {
 }
 
 // ToTransferItem Returns Transfer for FileItem
-func ToTransferItem(f *types.FileItem) *types.Payload_Item {
-	return &types.Payload_Item{
+func ToTransferItem(f *v1.FileItem) *v1.Payload_Item {
+	return &v1.Payload_Item{
 		Size:      f.GetSize(),
 		Thumbnail: f.GetThumbnail(),
 		Mime:      f.GetMime(),
-		Data: &types.Payload_Item_File{
+		Data: &v1.Payload_Item_File{
 			File: f,
 		},
 	}
@@ -97,16 +97,16 @@ func ToTransferItem(f *types.FileItem) *types.Payload_Item {
 // ** ─── MIME Management ───────────────────────────────────
 // ** ───────────────────────────────────────────────────────
 // DefaultUrlMIME is the standard MIME type for URLs
-func DefaultUrlMIME() *types.MIME {
-	return &types.MIME{
-		Type:    types.MIME_TYPE_URL,
+func DefaultUrlMIME() *cv1.MIME {
+	return &cv1.MIME{
+		Type:    cv1.MIME_TYPE_URL,
 		Subtype: ".html",
 		Value:   "url/html",
 	}
 }
 
 // NewMime creates a new MIME type from Path
-func NewMime(path string) (*types.MIME, error) {
+func NewMime(path string) (*cv1.MIME, error) {
 	// Check if path to file exists
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return nil, err
@@ -119,15 +119,15 @@ func NewMime(path string) (*types.MIME, error) {
 	}
 
 	// Return MIME Type
-	return &types.MIME{
-		Type:    types.MIME_Type(types.MIME_Type_value[strings.ToUpper(mtype.Parent().String())]),
+	return &cv1.MIME{
+		Type:    cv1.MIME_Type(cv1.MIME_Type_value[strings.ToUpper(mtype.Parent().String())]),
 		Value:   mtype.String(),
 		Subtype: mtype.Extension(),
 	}, nil
 }
 
 // Ext Method adjusts extension for JPEG
-func Ext(m *types.MIME) string {
+func Ext(m *cv1.MIME) string {
 	if m.Subtype == "jpg" || m.Subtype == "jpeg" {
 		return "jpeg"
 	}
@@ -135,48 +135,48 @@ func Ext(m *types.MIME) string {
 }
 
 // IsAudio Checks if Mime is Audio
-func IsAudio(m *types.MIME) bool {
-	return m.Type == types.MIME_TYPE_AUDIO
+func IsAudio(m *cv1.MIME) bool {
+	return m.Type == cv1.MIME_TYPE_AUDIO
 }
 
 // IsImage Checks if Mime is Image
-func IsImage(m *types.MIME) bool {
-	return m.Type == types.MIME_TYPE_IMAGE
+func IsImage(m *cv1.MIME) bool {
+	return m.Type == cv1.MIME_TYPE_IMAGE
 }
 
 // IsMedia Checks if Mime is any media
-func IsMedia(m *types.MIME) bool {
+func IsMedia(m *cv1.MIME) bool {
 	return IsAudio(m) || IsImage(m) || IsVideo(m)
 }
 
 // IsPDF Checks if Mime is PDF
-func IsPDF(m *types.MIME) bool {
+func IsPDF(m *cv1.MIME) bool {
 	return strings.Contains(m.GetSubtype(), "pdf")
 }
 
 // IsVideo Checks if Mime is Video
-func IsVideo(m *types.MIME) bool {
-	return m.Type == types.MIME_TYPE_VIDEO
+func IsVideo(m *cv1.MIME) bool {
+	return m.Type == cv1.MIME_TYPE_VIDEO
 }
 
 // IsUrl Checks if Path is a URL
-func IsUrl(m *types.MIME) bool {
-	return m.Type == types.MIME_TYPE_URL
+func IsUrl(m *cv1.MIME) bool {
+	return m.Type == cv1.MIME_TYPE_URL
 }
 
 // PermitsThumbnail Checks if Mime Type Allows Thumbnail Generation.
 // Image, Video, Audio, and PDF are allowed.
-func PermitsThumbnail(m *types.MIME) bool {
+func PermitsThumbnail(m *cv1.MIME) bool {
 	return IsImage(m) || IsVideo(m) || IsAudio(m) || IsPDF(m)
 }
 
 // NewThumbnail creates a new thumbnail for the given file
-func NewThumbnail(path string, tbuf []byte, mime *types.MIME, ch chan *types.Thumbnail) {
+func NewThumbnail(path string, tbuf []byte, mime *cv1.MIME, ch chan *v1.Thumbnail) {
 	if IsImage(mime) {
 
 		data, err := genImageThumbnail(path)
 		if err == nil {
-			ch <- &types.Thumbnail{
+			ch <- &v1.Thumbnail{
 				Buffer: data,
 				Mime:   mime,
 			}
@@ -185,7 +185,7 @@ func NewThumbnail(path string, tbuf []byte, mime *types.MIME, ch chan *types.Thu
 	} else {
 		if tbuf != nil {
 
-			ch <- &types.Thumbnail{
+			ch <- &v1.Thumbnail{
 				Buffer: tbuf,
 				Mime:   mime,
 			}

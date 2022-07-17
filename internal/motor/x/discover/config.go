@@ -5,7 +5,6 @@ import (
 	"time"
 
 	olc "github.com/google/open-location-code/go"
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // Option is a function that can be applied to ExchangeProtocol config
@@ -13,7 +12,7 @@ type Option func(*options)
 
 // options for ExchangeProtocol config
 type options struct {
-	location        *types.Location
+	// location        *types.Location
 	interval        time.Duration
 	autoPushEnabled bool
 }
@@ -34,18 +33,18 @@ func DisableAutoPush() Option {
 	}
 }
 
-// WithLocation sets the location of the Topic for Local OLC
-func WithLocation(l *types.Location) Option {
-	return func(o *options) {
-		if o.location != nil {
-			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
-				logger.Debug("Skipping Location Set")
-			} else {
-				o.location = l
-			}
-		}
-	}
-}
+// // WithLocation sets the location of the Topic for Local OLC
+// func WithLocation(l *types.Location) Option {
+// 	return func(o *options) {
+// 		if o.location != nil {
+// 			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
+// 				logger.Debug("Skipping Location Set")
+// 			} else {
+// 				o.location = l
+// 			}
+// 		}
+// 	}
+// }
 
 // WithInterval sets the interval of the Topic for Local OLC
 func WithInterval(i time.Duration) Option {
@@ -71,7 +70,7 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		// p.Put(peer)
 
 		// Get OLC Code from location
-		code := OLC(o.location)
+		code := OLC(20, 20)
 		if code == "" {
 			logger.Error("Failed to Determine OLC Code, set to Global")
 			code = "global"
@@ -98,6 +97,6 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 }
 
 // OLC returns Open Location code
-func OLC(l *types.Location) string {
-	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 4)
+func OLC(lat float64, lng float64) string {
+	return olc.Encode(lat, lng, 4)
 }

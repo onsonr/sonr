@@ -1,25 +1,12 @@
 syntax = "proto3";
 
-// Package types defines typesly used types agnostic to the node role on the Sonr network.
-package sonrio.motor.core.v1;
-import "core/v1/core.proto";
-option go_package = "github.com/sonr-io/sonr/pkg/types";
-
-// Direction is the direction of a stream.
-enum Direction {
-  // Unspecified is the default value.
-  DIRECTION_UNSPECIFIED = 0;
-
-  // Incoming is the direction of an incoming stream.
-  DIRECTION_INCOMING = 1;
-
-  // Outgoing is the direction of an outgoing stream.
-  DIRECTION_OUTGOING = 2;
-}
+// Package Transmit is utilized for direct data transmission between two peers.
+package sonrio.motor.service.v1;
+import "common/v1/info.proto";
 
 // For Transfer File Payload
 message FileItem {
-  core.v1.MIME mime = 1; // Standard Mime Type
+  common.v1.MIME mime = 1; // Standard Mime Type
   string name = 2;         // File Name without Path
   string path = 3;         // File Location
   int64 size = 4;          // File Size in Bytes
@@ -30,13 +17,13 @@ message FileItem {
 // Payload is Data thats being Passed
 message Payload {
   repeated Item items = 1; // Payload Items
-  Peer owner = 2;       // PROFILE: General Sender Info
+  common.v1.Peer owner = 2;       // PROFILE: General Sender Info
   int64 size = 3;          // Payload Size in Bytes
   int64 created_at = 4;     // Payload Creation Time in Seconds
 
   // Item in Payload
   message Item {
-    MIME mime = 1;  // MIME of the Item
+    common.v1.MIME mime = 1;  // MIME of the Item
     int64 size = 2; // Size of the Item in Bytes
 
     // Attached Data
@@ -60,5 +47,33 @@ message SupplyItem {
 // Thumbnail of File
 message Thumbnail {
   bytes buffer = 1; // Thumbnail Buffer
-  MIME mime = 2;    // Mime Type
+  common.v1.MIME mime = 2;    // Mime Type
+}
+
+
+message Session {
+  common.v1.Direction direction = 1;
+  common.v1.Peer from = 2;
+  common.v1.Peer to = 3;
+  Payload payload = 4;
+  int64 last_updated = 5;
+  repeated SessionItem items = 6;
+  int32 current_index = 7;
+  map<int32, bool> results = 8;
+}
+
+message SessionItem {
+  int32 index = 1;
+  int32 count = 2;
+  FileItem item = 3;
+  int64 written = 4;
+  int64 size = 5;
+  int64 total_size = 6;
+  common.v1.Direction direction = 7;
+  string path = 8;
+}
+
+message SessionPayload {
+  Payload payload = 1;
+  common.v1.Direction direction = 2;
 }
