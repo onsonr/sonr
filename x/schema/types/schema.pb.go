@@ -22,7 +22,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Represents the types of fields a schema can have
 type SchemaKind int32
 
 const (
@@ -84,6 +83,59 @@ func (SchemaKind) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_a184c368e8c5a046, []int{0}
 }
 
+type SchemaKindDefinition struct {
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Type of a single schema property
+	Field SchemaKind `protobuf:"varint,2,opt,name=field,proto3,enum=sonrio.sonr.schema.SchemaKind" json:"field,omitempty"`
+}
+
+func (m *SchemaKindDefinition) Reset()         { *m = SchemaKindDefinition{} }
+func (m *SchemaKindDefinition) String() string { return proto.CompactTextString(m) }
+func (*SchemaKindDefinition) ProtoMessage()    {}
+func (*SchemaKindDefinition) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a184c368e8c5a046, []int{0}
+}
+func (m *SchemaKindDefinition) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SchemaKindDefinition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SchemaKindDefinition.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SchemaKindDefinition) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SchemaKindDefinition.Merge(m, src)
+}
+func (m *SchemaKindDefinition) XXX_Size() int {
+	return m.Size()
+}
+func (m *SchemaKindDefinition) XXX_DiscardUnknown() {
+	xxx_messageInfo_SchemaKindDefinition.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SchemaKindDefinition proto.InternalMessageInfo
+
+func (m *SchemaKindDefinition) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *SchemaKindDefinition) GetField() SchemaKind {
+	if m != nil {
+		return m.Field
+	}
+	return SchemaKind_INVALID
+}
+
 // Schema defines the shapes of schemas on Sonr
 type SchemaReference struct {
 	// the DID for this schema
@@ -98,7 +150,7 @@ func (m *SchemaReference) Reset()         { *m = SchemaReference{} }
 func (m *SchemaReference) String() string { return proto.CompactTextString(m) }
 func (*SchemaReference) ProtoMessage()    {}
 func (*SchemaReference) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a184c368e8c5a046, []int{0}
+	return fileDescriptor_a184c368e8c5a046, []int{1}
 }
 func (m *SchemaReference) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -149,19 +201,20 @@ func (m *SchemaReference) GetCid() string {
 }
 
 type SchemaDefinition struct {
+	// Represents the types of fields a schema can have
 	// the DID for this schema
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// an alternative reference point
 	Label string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
 	// the properties of this schema
-	Fields map[string]SchemaKind `protobuf:"bytes,3,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=sonrio.sonr.schema.SchemaKind"`
+	Field []*SchemaKindDefinition `protobuf:"bytes,3,rep,name=field,proto3" json:"field,omitempty"`
 }
 
 func (m *SchemaDefinition) Reset()         { *m = SchemaDefinition{} }
 func (m *SchemaDefinition) String() string { return proto.CompactTextString(m) }
 func (*SchemaDefinition) ProtoMessage()    {}
 func (*SchemaDefinition) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a184c368e8c5a046, []int{1}
+	return fileDescriptor_a184c368e8c5a046, []int{2}
 }
 func (m *SchemaDefinition) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -204,50 +257,84 @@ func (m *SchemaDefinition) GetLabel() string {
 	return ""
 }
 
-func (m *SchemaDefinition) GetFields() map[string]SchemaKind {
+func (m *SchemaDefinition) GetField() []*SchemaKindDefinition {
 	if m != nil {
-		return m.Fields
+		return m.Field
 	}
 	return nil
 }
 
 func init() {
 	proto.RegisterEnum("sonrio.sonr.schema.SchemaKind", SchemaKind_name, SchemaKind_value)
+	proto.RegisterType((*SchemaKindDefinition)(nil), "sonrio.sonr.schema.SchemaKindDefinition")
 	proto.RegisterType((*SchemaReference)(nil), "sonrio.sonr.schema.SchemaReference")
 	proto.RegisterType((*SchemaDefinition)(nil), "sonrio.sonr.schema.SchemaDefinition")
-	proto.RegisterMapType((map[string]SchemaKind)(nil), "sonrio.sonr.schema.SchemaDefinition.FieldsEntry")
 }
 
 func init() { proto.RegisterFile("schema/v1/schema.proto", fileDescriptor_a184c368e8c5a046) }
 
 var fileDescriptor_a184c368e8c5a046 = []byte{
-	// 415 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x92, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0xc7, 0xb3, 0x71, 0x93, 0x34, 0x63, 0x3e, 0x46, 0x2b, 0x84, 0x2c, 0x0e, 0x56, 0xd5, 0x03,
-	0xaa, 0x90, 0xb0, 0xa1, 0x70, 0x40, 0x9c, 0x70, 0x68, 0x0a, 0x56, 0xdc, 0x35, 0xf2, 0x07, 0x52,
-	0xb8, 0x39, 0xf6, 0x86, 0xae, 0xea, 0x7a, 0x2b, 0xdb, 0xad, 0xf0, 0x5b, 0xf0, 0x06, 0xbc, 0x0e,
-	0xc7, 0x1e, 0x39, 0xa2, 0xe4, 0xc0, 0x6b, 0xa0, 0xb5, 0x5d, 0x81, 0x40, 0x3d, 0xed, 0x7f, 0x67,
-	0x7e, 0xf3, 0x9f, 0x19, 0x69, 0xe0, 0x61, 0x95, 0x9e, 0xf2, 0xf3, 0xc4, 0xbe, 0x7a, 0x6e, 0x77,
-	0xca, 0xba, 0x28, 0x65, 0x2d, 0x29, 0xad, 0x64, 0x51, 0x0a, 0x69, 0xa9, 0xc7, 0xea, 0x32, 0xfb,
-	0x0b, 0xb8, 0x1f, 0xb6, 0x2a, 0xe0, 0x6b, 0x5e, 0xf2, 0x22, 0xe5, 0x14, 0x41, 0xcb, 0x44, 0x66,
-	0x90, 0x3d, 0x72, 0x30, 0x0d, 0x94, 0xa4, 0x0f, 0x60, 0x94, 0x27, 0x2b, 0x9e, 0x1b, 0xc3, 0x36,
-	0xd6, 0x7d, 0x14, 0x97, 0x8a, 0xcc, 0xd0, 0x3a, 0x2e, 0x15, 0xd9, 0xfe, 0x2f, 0x02, 0xd8, 0xb9,
-	0x1d, 0xf1, 0xb5, 0x28, 0x44, 0x2d, 0x64, 0x41, 0x0d, 0x98, 0xa4, 0x25, 0x4f, 0x6a, 0x59, 0xf6,
-	0x96, 0x37, 0xdf, 0x5b, 0x6c, 0xdf, 0xc3, 0x78, 0x2d, 0x78, 0x9e, 0x55, 0x86, 0xb6, 0xa7, 0x1d,
-	0xe8, 0x87, 0xcf, 0xac, 0xff, 0xc7, 0xb6, 0xfe, 0xed, 0x62, 0x1d, 0xb7, 0x25, 0xf3, 0xa2, 0x2e,
-	0x9b, 0xa0, 0xaf, 0x7f, 0xb4, 0x04, 0xfd, 0xaf, 0xb0, 0x9a, 0xf7, 0x8c, 0x37, 0x37, 0x7b, 0x9d,
-	0xf1, 0x86, 0xbe, 0x84, 0xd1, 0x55, 0x92, 0x5f, 0xf2, 0x76, 0x80, 0x7b, 0x87, 0xe6, 0xed, 0x9d,
-	0x16, 0xa2, 0xc8, 0x82, 0x0e, 0x7e, 0x3d, 0x7c, 0x45, 0x9e, 0x7c, 0x23, 0x00, 0x7f, 0x32, 0x54,
-	0x87, 0x89, 0xcb, 0x3e, 0x3a, 0x9e, 0x7b, 0x84, 0x03, 0x3a, 0x01, 0xed, 0xc4, 0xf9, 0x80, 0x84,
-	0xee, 0xc2, 0x8e, 0xe7, 0x86, 0x11, 0x0e, 0x95, 0x8a, 0x99, 0x1b, 0xa1, 0xa6, 0xd4, 0xcc, 0xf7,
-	0x3d, 0xdc, 0x51, 0x98, 0xcb, 0x22, 0x1c, 0xd1, 0x29, 0x8c, 0x8e, 0x3d, 0xdf, 0x89, 0x70, 0x4c,
-	0x01, 0xc6, 0x61, 0x14, 0xb8, 0xec, 0x1d, 0x4e, 0x54, 0x78, 0xb6, 0x8c, 0xe6, 0x21, 0xee, 0x76,
-	0x46, 0x6c, 0x81, 0xd3, 0x1e, 0x88, 0xdf, 0x46, 0x08, 0x0a, 0x88, 0x99, 0xeb, 0x33, 0xd4, 0x15,
-	0x30, 0x67, 0xf1, 0x09, 0xde, 0x51, 0xae, 0x0e, 0x5b, 0xe2, 0xdd, 0xd9, 0x9b, 0xef, 0x1b, 0x93,
-	0x5c, 0x6f, 0x4c, 0xf2, 0x73, 0x63, 0x92, 0xaf, 0x5b, 0x73, 0x70, 0xbd, 0x35, 0x07, 0x3f, 0xb6,
-	0xe6, 0xe0, 0xd3, 0xe3, 0xcf, 0xa2, 0x3e, 0xbd, 0x5c, 0x59, 0xa9, 0x3c, 0xb7, 0xd5, 0xa6, 0x4f,
-	0x85, 0x6c, 0x5f, 0xfb, 0x4b, 0x7f, 0x2e, 0x76, 0xdd, 0x5c, 0xf0, 0x6a, 0x35, 0x6e, 0xaf, 0xe6,
-	0xc5, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0x08, 0x1c, 0x8b, 0xc8, 0x4f, 0x02, 0x00, 0x00,
+	// 400 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xdf, 0x8a, 0xd3, 0x40,
+	0x14, 0xc6, 0x3b, 0x9b, 0xb6, 0xd9, 0x9c, 0xfa, 0xe7, 0x30, 0x2c, 0x92, 0xab, 0x50, 0x7a, 0x21,
+	0x41, 0x30, 0xc1, 0xd5, 0x6b, 0x31, 0x75, 0x57, 0x09, 0xcd, 0x4e, 0x24, 0x7f, 0x84, 0xf5, 0xca,
+	0x34, 0x99, 0xba, 0x03, 0x6d, 0x66, 0x49, 0xa3, 0xe8, 0xad, 0x4f, 0xe0, 0x1b, 0xf8, 0x3a, 0x5e,
+	0xee, 0xa5, 0x97, 0xd2, 0xbe, 0x88, 0x4c, 0x26, 0x4b, 0x05, 0xd1, 0xab, 0xf3, 0x9d, 0x73, 0x3e,
+	0x7e, 0x33, 0x1f, 0x1c, 0x78, 0xb0, 0x2d, 0xaf, 0xf8, 0xa6, 0xf0, 0x3f, 0x3d, 0xf1, 0xb5, 0xf2,
+	0xae, 0x1b, 0xd9, 0x4a, 0x4a, 0xb7, 0xb2, 0x6e, 0x84, 0xf4, 0x54, 0xf1, 0xf4, 0x66, 0xf6, 0x1e,
+	0x4e, 0xd2, 0x4e, 0x2d, 0x44, 0x5d, 0x9d, 0xf1, 0x95, 0xa8, 0x45, 0x2b, 0x64, 0x4d, 0x29, 0x0c,
+	0xeb, 0x62, 0xc3, 0x6d, 0x32, 0x25, 0xae, 0x95, 0x74, 0x9a, 0x3e, 0x83, 0xd1, 0x4a, 0xf0, 0x75,
+	0x65, 0x1f, 0x4d, 0x89, 0x7b, 0xef, 0xd4, 0xf1, 0xfe, 0xe6, 0x79, 0x07, 0x58, 0xa2, 0xcd, 0xb3,
+	0x05, 0xdc, 0xd7, 0xc3, 0x84, 0xaf, 0x78, 0xc3, 0xeb, 0x92, 0x53, 0x04, 0xa3, 0x12, 0x55, 0xcf,
+	0x56, 0x92, 0x9e, 0xc0, 0x68, 0x5d, 0x2c, 0xf9, 0xba, 0x43, 0x5b, 0x89, 0x6e, 0x94, 0xaf, 0x14,
+	0x95, 0x6d, 0x68, 0x5f, 0x29, 0xaa, 0xd9, 0x57, 0x02, 0xa8, 0x69, 0x7f, 0xfc, 0xd5, 0x06, 0xb3,
+	0x6c, 0x78, 0xd1, 0xca, 0xa6, 0x47, 0xde, 0xb6, 0xff, 0xc0, 0x3e, 0xbf, 0xcd, 0x61, 0x4c, 0x0d,
+	0x77, 0x72, 0xea, 0xfe, 0x3f, 0xc7, 0xe1, 0xa1, 0x3e, 0xd1, 0xa3, 0xef, 0x04, 0xe0, 0xb0, 0xa7,
+	0x13, 0x30, 0x43, 0xf6, 0x36, 0x88, 0xc2, 0x33, 0x1c, 0x50, 0x13, 0x8c, 0x8b, 0xe0, 0x0d, 0x12,
+	0x7a, 0x0c, 0xc3, 0x28, 0x4c, 0x33, 0x3c, 0x52, 0x2a, 0x67, 0x61, 0x86, 0x86, 0x52, 0xf3, 0x38,
+	0x8e, 0x70, 0xa8, 0x6c, 0x21, 0xcb, 0x70, 0x44, 0x2d, 0x18, 0xbd, 0x8a, 0xe2, 0x20, 0xc3, 0x31,
+	0x05, 0x18, 0xa7, 0x59, 0x12, 0xb2, 0xd7, 0x68, 0xaa, 0xf1, 0xfc, 0x32, 0x3b, 0x4f, 0xf1, 0x58,
+	0x83, 0xd8, 0x02, 0xad, 0xde, 0x90, 0xbf, 0xcc, 0x10, 0x94, 0x21, 0x67, 0x61, 0xcc, 0x70, 0xa2,
+	0x0c, 0xe7, 0x2c, 0xbf, 0xc0, 0x3b, 0x8a, 0x1a, 0xb0, 0x4b, 0xbc, 0x3b, 0x7f, 0xf1, 0x63, 0xe7,
+	0x90, 0x9b, 0x9d, 0x43, 0x7e, 0xed, 0x1c, 0xf2, 0x6d, 0xef, 0x0c, 0x6e, 0xf6, 0xce, 0xe0, 0xe7,
+	0xde, 0x19, 0xbc, 0x7b, 0xf8, 0x41, 0xb4, 0x57, 0x1f, 0x97, 0x5e, 0x29, 0x37, 0xbe, 0xca, 0xfb,
+	0x58, 0xc8, 0xae, 0xfa, 0x9f, 0xfb, 0x5b, 0xf1, 0xdb, 0x2f, 0xd7, 0x7c, 0xbb, 0x1c, 0x77, 0x27,
+	0xf3, 0xf4, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0xbd, 0x40, 0x85, 0x07, 0x4c, 0x02, 0x00, 0x00,
+}
+
+func (m *SchemaKindDefinition) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SchemaKindDefinition) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SchemaKindDefinition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Field != 0 {
+		i = encodeVarintSchema(dAtA, i, uint64(m.Field))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *SchemaReference) Marshal() (dAtA []byte, err error) {
@@ -314,19 +401,16 @@ func (m *SchemaDefinition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Fields) > 0 {
-		for k := range m.Fields {
-			v := m.Fields[k]
-			baseI := i
-			i = encodeVarintSchema(dAtA, i, uint64(v))
-			i--
-			dAtA[i] = 0x10
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintSchema(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintSchema(dAtA, i, uint64(baseI-i))
+	if len(m.Field) > 0 {
+		for iNdEx := len(m.Field) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Field[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintSchema(dAtA, i, uint64(size))
+			}
 			i--
 			dAtA[i] = 0x1a
 		}
@@ -359,6 +443,22 @@ func encodeVarintSchema(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *SchemaKindDefinition) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if m.Field != 0 {
+		n += 1 + sovSchema(uint64(m.Field))
+	}
+	return n
+}
+
 func (m *SchemaReference) Size() (n int) {
 	if m == nil {
 		return 0
@@ -394,12 +494,10 @@ func (m *SchemaDefinition) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovSchema(uint64(l))
 	}
-	if len(m.Fields) > 0 {
-		for k, v := range m.Fields {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovSchema(uint64(len(k))) + 1 + sovSchema(uint64(v))
-			n += mapEntrySize + 1 + sovSchema(uint64(mapEntrySize))
+	if len(m.Field) > 0 {
+		for _, e := range m.Field {
+			l = e.Size()
+			n += 1 + l + sovSchema(uint64(l))
 		}
 	}
 	return n
@@ -410,6 +508,107 @@ func sovSchema(x uint64) (n int) {
 }
 func sozSchema(x uint64) (n int) {
 	return sovSchema(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *SchemaKindDefinition) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SchemaKindDefinition: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SchemaKindDefinition: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Field", wireType)
+			}
+			m.Field = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Field |= SchemaKind(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *SchemaReference) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -652,7 +851,7 @@ func (m *SchemaDefinition) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Fields", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Field", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -679,89 +878,10 @@ func (m *SchemaDefinition) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Fields == nil {
-				m.Fields = make(map[string]SchemaKind)
+			m.Field = append(m.Field, &SchemaKindDefinition{})
+			if err := m.Field[len(m.Field)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
 			}
-			var mapkey string
-			var mapvalue SchemaKind
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowSchema
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowSchema
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthSchema
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthSchema
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowSchema
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= SchemaKind(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipSchema(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthSchema
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Fields[mapkey] = mapvalue
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

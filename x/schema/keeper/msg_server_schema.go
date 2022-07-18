@@ -38,7 +38,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 
-	cid_str, err := k.PinContent(msg.Definition.GetFields())
+	cid_str, err := k.PinContent(msg.Definition.GetField())
 
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")

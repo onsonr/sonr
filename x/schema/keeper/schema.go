@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"io"
@@ -15,11 +14,10 @@ import (
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/spf13/viper"
 )
 
 var (
-	url        = viper.GetString("IPFS_API_READ")
+	url        = "127.0.0.1:5001"
 	ipfs_inter = shell.NewShell(url)
 )
 
@@ -57,7 +55,12 @@ func (k Keeper) PinContent(payload interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return ipfs_inter.Add(bytes.NewReader(b))
+
+	obj := shell.IpfsObject{
+		Data: string(b),
+	}
+
+	return ipfs_inter.ObjectPut(&obj)
 }
 
 func (k Keeper) GenerateKeyForDID() string {
