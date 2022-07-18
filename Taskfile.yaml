@@ -7,9 +7,9 @@ includes:
   motor:
     taskfile: ./bind/Taskfile.yaml
     dir: ./bind
-  motorkit:
-    taskfile: ../Motorkit/Taskfile.yaml
-    dir: ../MotorKit
+  # motorkit:
+  #   taskfile: ../Motorkit/Taskfile.yaml
+  #   dir: ../MotorKit
 
 tasks:
   ## ------------------------------------------------------------

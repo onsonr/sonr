@@ -7,12 +7,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/sonr-io/sonr/pkg/did/ssi"
-
-	// "github.com/duo-labs/webauthn/protocol"
-	// "github.com/duo-labs/webauthn/webauthn"
 	"github.com/shengdoushi/base58"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/jwx"
 )
 

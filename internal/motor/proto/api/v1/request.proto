@@ -55,3 +55,13 @@ message CreateAccountRequest {
   string password = 1;
   bytes aes_dsc_key = 2;
 }
+
+// Login requires the DID of the account being logged into,
+// and optionally a password if the vault pw is being used
+// The PSK and DSC will be fetched from the keychain
+message LoginRequest {
+  string did = 1;
+  string password = 2;
+  bytes aes_dsc_key = 3;
+  bytes aes_psk_key = 4;
+}
