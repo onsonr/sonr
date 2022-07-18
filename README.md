@@ -64,7 +64,7 @@
 
 ---
 
-Sonr is a platform for developers to build decentralized applications which put user privacy first and foremost. It weds decentralized storage technologies such as [IPFS](https://ipfs.io) and [lipp2p](https://libp2p.io) with an intuitive, firebase-like developer experience.
+Sonr is a platform for developers to build decentralized applications which put user privacy first and foremost. It weds decentralized storage technologies such as [IPFS](https://ipfs.io) and [libp2p](https://libp2p.io) with an intuitive, firebase-like developer experience.
 
 Sonr's platform aims to be the most immersive and powerful DWeb experience for both Users and Developers alike. We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols.
 
