@@ -6,7 +6,6 @@ import (
 	"github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
 	"github.com/ipld/go-ipld-prime/storage/fsstore"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -52,8 +51,6 @@ func (s *Store) GetSize(ctx context.Context, key datastore.Key) (size int, err e
 }
 
 func (s *Store) Query(ctx context.Context, q query.Query) (query.Results, error) {
-	log.Printf("querying for %+v", q)
-
 	results := make(chan query.Result)
 
 	walkFn := func(path string, info os.FileInfo, _ error) error {

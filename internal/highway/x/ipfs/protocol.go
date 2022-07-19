@@ -65,15 +65,13 @@ func (i *Protocol) GetData(cid string) ([]byte, error) {
 
 	exists, err := i.store.Has(ctx, key)
 	if err != nil {
-		// log error and continue
-		log.Println(err)
+		return nil, err
 	}
 
 	if exists {
 		data, err := i.store.Get(ctx, key)
 		if err != nil {
-			// log error and continue
-			log.Println(err)
+			return nil, err
 		}
 
 		return data, nil
