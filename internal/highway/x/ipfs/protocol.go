@@ -15,6 +15,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 // Protocol leverages the IPFSLite library to provide simple file operations.
@@ -27,7 +28,7 @@ type Protocol struct {
 
 // New creates a new Protocol instance with Host Implementation
 func New(ctx context.Context, host host.SonrHost) (*Protocol, error) {
-	ds := store.New("tmp")
+	ds := store.New(os.TempDir())
 
 	// Create IPFS Peer
 	peer, err := ipfslite.New(ctx, ds, host.Host(), host.Routing(), nil)
