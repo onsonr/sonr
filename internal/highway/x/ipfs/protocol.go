@@ -60,7 +60,7 @@ func (i *Protocol) GetData(cid string) ([]byte, error) {
 		return nil, err
 	}
 
-	ctx := context.TODO()
+	ctx := context.Background()
 	key := datastore.NewKey(cid)
 
 	exists, err := i.store.Has(ctx, key)
@@ -125,7 +125,7 @@ func (i *Protocol) PutData(data []byte) (*cid.Cid, error) {
 	c := nd.Cid()
 
 	// Use the CID to store the file on local fs.
-	if err := i.store.Put(context.TODO(), datastore.NewKey(c.String()), data); err != nil {
+	if err := i.store.Put(context.Background(), datastore.NewKey(c.String()), data); err != nil {
 		return nil, err
 	}
 
@@ -188,7 +188,7 @@ func (i *Protocol) RemoveFile(cidstr string) error {
 		return err
 	}
 
-	ctx := context.TODO()
+	ctx := context.Background()
 	key := datastore.NewKey(cid.String())
 
 	exists, err := i.store.Has(ctx, key)
