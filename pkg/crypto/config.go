@@ -14,6 +14,7 @@ type walletConfig struct {
 	participants party.IDSlice
 	threshold    int
 	network      *Network
+	configs      map[party.ID]*cmp.Config
 }
 
 // default configuration options
@@ -22,6 +23,7 @@ func defaultConfig() *walletConfig {
 		participants: defaultParticipants,
 		threshold:    1,
 		network:      NewNetwork(defaultParticipants),
+		configs:      make(map[party.ID]*cmp.Config),
 	}
 }
 
@@ -34,7 +36,7 @@ func (wc *walletConfig) Apply(opts ...WalletOption) *MPCWallet {
 	return &MPCWallet{
 		pool: pool.NewPool(0),
 
-		Configs:   make(map[party.ID]*cmp.Config),
+		Configs:   wc.configs,
 		ID:        wc.participants[0],
 		Threshold: wc.threshold,
 		Network:   wc.network,
@@ -60,5 +62,12 @@ func WithThreshold(threshold int) WalletOption {
 		if c.threshold == 0 {
 			c.threshold = 1
 		}
+	}
+}
+
+// WithConfigs sets the configs used for the MPC wallet
+func WithConfigs(cnfs map[party.ID]*cmp.Config) WalletOption {
+	return func(c *walletConfig) {
+		c.configs = cnfs
 	}
 }

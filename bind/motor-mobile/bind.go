@@ -3,7 +3,6 @@ package motor
 import (
 	"encoding/json"
 	"errors"
-	"log"
 
 	mtr "github.com/sonr-io/sonr/internal/motor"
 	apiv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -27,18 +26,11 @@ func Init(buf []byte) ([]byte, error) {
 	// Check if public key provided
 	if req.DeviceKeyprintPub == nil {
 		// Create Motor instance
-		n, dsc, err := mtr.New()
-		if err != nil {
-			log.Println("[FATAL] motor:", err)
-			return nil, err
-		}
-		instance = n
+		instance = mtr.EmptyMotor(req.DeviceId)
 
 		// Return Initialization Response
 		resp := apiv1.InitializeResponse{
-			DscShardRaw: dsc,
-			IsExisting:  false,
-			Address:     n.Address,
+			Success: true,
 		}
 		return json.Marshal(resp)
 	}
@@ -54,6 +46,18 @@ func CreateAccount(buf []byte) ([]byte, error) {
 	} else {
 		return nil, err
 	}
+}
+
+func Login(buf []byte) ([]byte, error) {
+  if instance == nil {
+    return nil, errWalletNotExists
+  }
+
+  if res, err := instance.Login(buf); err == nil {
+    return json.Marshal(res)
+  } else {
+    return nil, err
+  }
 }
 
 // Address returns the address of the wallet.
