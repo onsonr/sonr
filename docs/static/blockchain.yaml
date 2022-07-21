@@ -31664,31 +31664,38 @@ paths:
                 properties:
                   creator:
                     type: string
-                    title: the DID for this schema
+                    title: |-
+                      Represents the types of fields a schema can have
+                      the DID for this schema
                   label:
                     type: string
                     title: an alternative reference point
-                  fields:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      enum:
-                        - INVALID
-                        - MAP
-                        - LIST
-                        - UNIT
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - STRUCT
-                        - UNION
-                        - ENUM
-                        - ANY
-                      default: INVALID
-                      title: Represents the types of fields a schema can have
+                  field:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        field:
+                          title: Type of a single schema property
+                          type: string
+                          enum:
+                            - INVALID
+                            - MAP
+                            - LIST
+                            - UNIT
+                            - BOOL
+                            - INT
+                            - FLOAT
+                            - STRING
+                            - BYTES
+                            - LINK
+                            - STRUCT
+                            - UNION
+                            - ENUM
+                            - ANY
+                          default: INVALID
                     title: the properties of this schema
         default:
           description: An unexpected error response.
@@ -56035,31 +56042,38 @@ definitions:
         properties:
           creator:
             type: string
-            title: the DID for this schema
+            title: |-
+              Represents the types of fields a schema can have
+              the DID for this schema
           label:
             type: string
             title: an alternative reference point
-          fields:
-            type: object
-            additionalProperties:
-              type: string
-              enum:
-                - INVALID
-                - MAP
-                - LIST
-                - UNIT
-                - BOOL
-                - INT
-                - FLOAT
-                - STRING
-                - BYTES
-                - LINK
-                - STRUCT
-                - UNION
-                - ENUM
-                - ANY
-              default: INVALID
-              title: Represents the types of fields a schema can have
+          field:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                field:
+                  title: Type of a single schema property
+                  type: string
+                  enum:
+                    - INVALID
+                    - MAP
+                    - LIST
+                    - UNIT
+                    - BOOL
+                    - INT
+                    - FLOAT
+                    - STRING
+                    - BYTES
+                    - LINK
+                    - STRUCT
+                    - UNION
+                    - ENUM
+                    - ANY
+                  default: INVALID
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
@@ -56100,13 +56114,59 @@ definitions:
         properties:
           creator:
             type: string
-            title: the DID for this schema
+            title: |-
+              Represents the types of fields a schema can have
+              the DID for this schema
           label:
             type: string
             title: an alternative reference point
-          fields:
-            type: object
-            additionalProperties:
+          field:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                field:
+                  title: Type of a single schema property
+                  type: string
+                  enum:
+                    - INVALID
+                    - MAP
+                    - LIST
+                    - UNIT
+                    - BOOL
+                    - INT
+                    - FLOAT
+                    - STRING
+                    - BYTES
+                    - LINK
+                    - STRUCT
+                    - UNION
+                    - ENUM
+                    - ANY
+                  default: INVALID
+            title: the properties of this schema
+  sonrio.sonr.schema.SchemaDefinition:
+    type: object
+    properties:
+      creator:
+        type: string
+        title: |-
+          Represents the types of fields a schema can have
+          the DID for this schema
+      label:
+        type: string
+        title: an alternative reference point
+      field:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            field:
+              title: Type of a single schema property
               type: string
               enum:
                 - INVALID
@@ -56124,38 +56184,6 @@ definitions:
                 - ENUM
                 - ANY
               default: INVALID
-              title: Represents the types of fields a schema can have
-            title: the properties of this schema
-  sonrio.sonr.schema.SchemaDefinition:
-    type: object
-    properties:
-      creator:
-        type: string
-        title: the DID for this schema
-      label:
-        type: string
-        title: an alternative reference point
-      fields:
-        type: object
-        additionalProperties:
-          type: string
-          enum:
-            - INVALID
-            - MAP
-            - LIST
-            - UNIT
-            - BOOL
-            - INT
-            - FLOAT
-            - STRING
-            - BYTES
-            - LINK
-            - STRUCT
-            - UNION
-            - ENUM
-            - ANY
-          default: INVALID
-          title: Represents the types of fields a schema can have
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
@@ -56175,7 +56203,30 @@ definitions:
       - ENUM
       - ANY
     default: INVALID
-    title: Represents the types of fields a schema can have
+  sonrio.sonr.schema.SchemaKindDefinition:
+    type: object
+    properties:
+      name:
+        type: string
+      field:
+        title: Type of a single schema property
+        type: string
+        enum:
+          - INVALID
+          - MAP
+          - LIST
+          - UNIT
+          - BOOL
+          - INT
+          - FLOAT
+          - STRING
+          - BYTES
+          - LINK
+          - STRUCT
+          - UNION
+          - ENUM
+          - ANY
+        default: INVALID
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:

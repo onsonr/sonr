@@ -4,30 +4,6 @@ package sonrio.sonr.schema;
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
-// Schema defines the shapes of schemas on Sonr
-message SchemaReference {
-  // the DID for this schema
-  string did = 1;
-
-  // an alternative reference point
-  string label = 2;
-
-  // a reference to information stored within an IPFS node.
-  string cid = 3;
-}
-
-message SchemaDefinition {
-  // the DID for this schema
-  string creator = 1;
-
-  // an alternative reference point
-  string label = 2;
-
-  // the properties of this schema
-  map<string, SchemaKind> fields = 3;
-}
-
-// Represents the types of fields a schema can have
 enum SchemaKind {
   INVALID = 0;
   MAP = 1;
@@ -43,4 +19,34 @@ enum SchemaKind {
   UNION = 11;
   ENUM = 12;
   ANY = 13;
+}
+
+message SchemaKindDefinition {
+  string name = 1;
+  // Type of a single schema property
+  SchemaKind field = 2;
+}
+
+// Schema defines the shapes of schemas on Sonr
+message SchemaReference {
+  // the DID for this schema
+  string did = 1;
+
+  // an alternative reference point
+  string label = 2;
+
+  // a reference to information stored within an IPFS node.
+  string cid = 3;
+}
+
+message SchemaDefinition {
+  // Represents the types of fields a schema can have
+  // the DID for this schema
+  string creator = 1;
+
+  // an alternative reference point
+  string label = 2;
+
+  // the properties of this schema
+  repeated SchemaKindDefinition fields = 3;
 }

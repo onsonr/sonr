@@ -15,11 +15,10 @@ import (
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/spf13/viper"
 )
 
 var (
-	url        = viper.GetString("IPFS_API_READ")
+	url        = "127.0.0.1:5001"
 	ipfs_inter = shell.NewShell(url)
 )
 
@@ -27,6 +26,7 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	time_stamp := string(rune(time.Now().Unix()))
 
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
+
 	defer os.Remove(out_path)
 
 	resp, err := http.Get(url)
@@ -57,7 +57,8 @@ func (k Keeper) PinContent(payload interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return ipfs_inter.Add(bytes.NewReader(b))
+
+	return ipfs_inter.Add(bytes.NewBuffer(b))
 }
 
 func (k Keeper) GenerateKeyForDID() string {
