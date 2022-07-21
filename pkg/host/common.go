@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -202,7 +202,7 @@ func (h *hostImpl) Send(id peer.ID, p protocol.ID, data []byte) error {
 
 // TODO
 // func (hn *hostImpl) Events() events.EventEmmiter {
-// 	return events.New()
+// 	return events.NewIPFSLite()
 // }
 
 // // TODO

@@ -19,8 +19,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
 	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
+	"github.com/sonr-io/sonr/internal/highway/x/protocol"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
@@ -57,14 +57,14 @@ type HighwayServer struct {
 
 	// Protocols
 	channels     map[string]ctv1.Channel
-	ipfsProtocol *ipfs.IPFSProtocol
+	ipfsProtocol *protocol.IPFSLite
 	// matrixProtocol *matrix.MatrixProtocol
 
 	//Prometheus
 	Telemetry *metrics.HighwayTelemetry
 }
 
-// setupBaseStub creates the base Highway Server.
+// CreateStub creates the base Highway Server.
 func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	node, err := hn.NewDefaultHost(ctx, c)
 	if err != nil {
@@ -78,7 +78,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	// }
 
 	// Create the IPFS Protocol
-	ipfs, err := ipfs.New(ctx, node)
+	ipfs, err := protocol.NewIPFSLite(ctx, node)
 	if err != nil {
 		return nil, err
 	}

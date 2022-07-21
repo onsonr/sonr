@@ -71,7 +71,7 @@ func (o *options) Apply(p *ExchangeProtocol) error {
 				return err
 			}
 		} else {
-			// Create New Mailbox
+			// Create NewIPFSLite Mailbox
 			if err := p.newMailbox(); err != nil {
 				return err
 			}
