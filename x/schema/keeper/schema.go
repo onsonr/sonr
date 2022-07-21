@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"io"
@@ -25,6 +26,7 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	time_stamp := string(rune(time.Now().Unix()))
 
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
+
 	defer os.Remove(out_path)
 
 	resp, err := http.Get(url)
@@ -56,11 +58,7 @@ func (k Keeper) PinContent(payload interface{}) (string, error) {
 		return "", err
 	}
 
-	obj := shell.IpfsObject{
-		Data: string(b),
-	}
-
-	return ipfs_inter.ObjectPut(&obj)
+	return ipfs_inter.Add(bytes.NewBuffer(b))
 }
 
 func (k Keeper) GenerateKeyForDID() string {
