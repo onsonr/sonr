@@ -38,7 +38,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 	schemaDef := make(map[string]types.SchemaKind)
-	for _, c := range msg.Definition.GetField() {
+	for _, c := range msg.Definition.GetFields() {
 		schemaDef[c.Name] = c.Field
 	}
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -23,7 +24,7 @@ var (
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
-	time_stamp := string(rune(time.Now().Unix()))
+	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
 
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
 
@@ -148,4 +149,18 @@ func (k Keeper) GetWhatIs(ctx sdk.Context, id string) (val types.WhatIs, found b
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// Returns all what_is definitions within the keeper.
+func (k Keeper) GetAllWhatIs(ctx sdk.Context) (list []types.WhatIs) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.WhatIs
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+	return
 }

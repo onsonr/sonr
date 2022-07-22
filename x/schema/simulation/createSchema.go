@@ -20,19 +20,19 @@ func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keep
 			Definition: &types.SchemaDefinition{
 				Creator: simAccount.Address.String(),
 				Label:   "test schema",
-				Field:   make([]*types.SchemaKindDefinition, 0),
+				Fields:  make([]*types.SchemaKindDefinition, 0),
 			},
 		}
 
-		createMsg.Definition.Field = append(createMsg.Definition.Field, &types.SchemaKindDefinition{
+		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
 			Name:  "message",
 			Field: types.SchemaKind_STRING,
 		})
-		createMsg.Definition.Field = append(createMsg.Definition.Field, &types.SchemaKindDefinition{
+		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
 			Name:  "Icon",
 			Field: types.SchemaKind_INT,
 		})
-		createMsg.Definition.Field = append(createMsg.Definition.Field, &types.SchemaKindDefinition{
+		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
 			Name:  "type",
 			Field: types.SchemaKind_STRING,
 		})

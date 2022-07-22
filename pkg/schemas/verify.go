@@ -5,7 +5,7 @@ import (
 )
 
 func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}, def *st.SchemaDefinition) error {
-	lst := def.GetField()
+	lst := def.GetFields()
 	fields := make(map[string]st.SchemaKind)
 	for _, c := range lst {
 		fields[c.Name] = c.Field
