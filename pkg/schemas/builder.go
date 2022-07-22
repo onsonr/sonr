@@ -29,33 +29,8 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	for _, t := range def.GetField() {
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
-		switch t.Field {
-		case st.SchemaKind_STRING:
-			val := object[k].(string)
-			ma.AssembleValue().AssignString(val)
-		case st.SchemaKind_INT:
-			val := int64(object[k].(int))
-			ma.AssembleValue().AssignInt(val)
-		case st.SchemaKind_FLOAT:
-			val := object[k].(float64)
-			ma.AssembleValue().AssignFloat(val)
-		case st.SchemaKind_BOOL:
-			val := object[k].(bool)
-			ma.AssembleValue().AssignBool(val)
-		case st.SchemaKind_BYTES:
-			val := object[k].([]byte)
-			ma.AssembleValue().AssignBytes(val)
-		case st.SchemaKind_LINK:
-			// val := object[k].(string)
-
-			if err != nil {
-				return nil, err
-			}
-			ma.AssembleValue().AssignLink(nil)
-		case st.SchemaKind_MAP:
-			ma.AssembleValue().AssignNode(nil)
-		default:
-			ma.AssembleValue().AssignNull()
+		if t.Field != st.SchemaKind_STRUCT && t.Field != st.SchemaKind_MAP {
+			AssignValueToNode(t.Field, ma, object[k])
 		}
 	}
 
@@ -67,4 +42,28 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	node := nb.Build()
 
 	return node, nil
+}
+
+func AssignValueToNode(field st.SchemaKind, ma datamodel.MapAssembler, value interface{}) error {
+	switch field {
+	case st.SchemaKind_STRING:
+		val := value.(string)
+		ma.AssembleValue().AssignString(val)
+	case st.SchemaKind_INT:
+		val := int64(value.(int))
+		ma.AssembleValue().AssignInt(val)
+	case st.SchemaKind_FLOAT:
+		val := value.(float64)
+		ma.AssembleValue().AssignFloat(val)
+	case st.SchemaKind_BOOL:
+		val := value.(bool)
+		ma.AssembleValue().AssignBool(val)
+	case st.SchemaKind_BYTES:
+		val := value.([]byte)
+		ma.AssembleValue().AssignBytes(val)
+	default:
+		return errSchemaFieldsInvalid
+	}
+
+	return nil
 }

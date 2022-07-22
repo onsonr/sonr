@@ -23,6 +23,7 @@ func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}, def *s
 	return nil
 }
 
+// Current supported IPLD types, will be adding more once supporting of Links and Complex types (Object)
 func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 	switch value.(type) {
 	case int:
