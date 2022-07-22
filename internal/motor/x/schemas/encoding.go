@@ -45,14 +45,15 @@ func (as *appSchemaInternalImpl) DecodeDagJson(buffer []byte) (datamodel.Node, e
 }
 
 func (as *appSchemaInternalImpl) DecodeDagCbor(buffer []byte) (datamodel.Node, error) {
-	var asmblr datamodel.NodeAssembler
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder()
+
 	reader := bytes.NewReader(buffer)
-	err := dagcbor.Decode(asmblr, reader)
+	err := dagcbor.Decode(nb, reader)
 	if err != nil {
 		return nil, err
 	}
-	builder := asmblr.Prototype().NewBuilder()
-	node := builder.Build()
+	node := nb.Build()
 
 	return node, nil
 }

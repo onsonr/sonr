@@ -24,7 +24,7 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 	def := st.SchemaDefinition{
 		Creator: "snr123456",
 		Label:   "testing schema",
-		Fields:  make(map[string]st.SchemaKind),
+		Field:   make([]*st.SchemaKindDefinition, 0),
 	}
 
 	return mockWhatIs, def
@@ -34,8 +34,14 @@ func Test_IPLD_Nodes(t *testing.T) {
 	schema := schemas.New()
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		_, def := CreateMocks("snr12345", "did:snr:1234")
-		def.Fields["field-1"] = st.SchemaKind_INT
-		def.Fields["field-2"] = st.SchemaKind_FLOAT
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_INT,
+		})
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_FLOAT,
+		})
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -48,8 +54,14 @@ func Test_IPLD_Nodes(t *testing.T) {
 
 	t.Run("Should build Nodes from definition", func(t *testing.T) {
 		_, def := CreateMocks("snr12345", "did:snr:1234")
-		def.Fields["field-1"] = st.SchemaKind_INT
-		def.Fields["field-2"] = st.SchemaKind_FLOAT
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_INT,
+		})
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_FLOAT,
+		})
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -61,8 +73,14 @@ func Test_IPLD_Nodes(t *testing.T) {
 
 	t.Run("Should build Nodes from definition, should encode and decode correctly (JSON)", func(t *testing.T) {
 		_, def := CreateMocks("snr12345", "did:snr:1234")
-		def.Fields["field-1"] = st.SchemaKind_INT
-		def.Fields["field-2"] = st.SchemaKind_FLOAT
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_INT,
+		})
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_FLOAT,
+		})
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -81,11 +99,72 @@ func Test_IPLD_Nodes(t *testing.T) {
 		assert.NotNil(t, found)
 	})
 
+	t.Run("Should build Nodes from definition, should encode and decode correctly (JSON)", func(t *testing.T) {
+		_, def := CreateMocks("snr12345", "did:snr:1234")
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_INT,
+		})
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_FLOAT,
+		})
+		obj := map[string]interface{}{
+			"field-1": 1,
+			"field-2": 2.0,
+		}
+		node, err := schema.BuildNodesFromDefinition(&def, obj)
+		assert.NoError(t, err)
+		assert.NotNil(t, node)
+
+		enc, err := schema.EncodeDagJson(node)
+		assert.NoError(t, err)
+		assert.NotNil(t, enc)
+		dec, err := schema.DecodeDagJson(enc)
+		assert.NoError(t, err)
+		found, err := dec.LookupByString("field-1")
+		assert.NoError(t, err)
+		assert.NotNil(t, found)
+	})
+
+	t.Run("Should build Nodes from definition, should encode and decode correctly (CBOR)", func(t *testing.T) {
+		_, def := CreateMocks("snr12345", "did:snr:1234")
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_INT,
+		})
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_FLOAT,
+		})
+		obj := map[string]interface{}{
+			"field-1": 1,
+			"field-2": 2.0,
+		}
+		node, err := schema.BuildNodesFromDefinition(&def, obj)
+		assert.NoError(t, err)
+		assert.NotNil(t, node)
+
+		enc, err := schema.EncodeDagCbor(node)
+		assert.NoError(t, err)
+		assert.NotNil(t, enc)
+		dec, err := schema.DecodeDagCbor(enc)
+		assert.NoError(t, err)
+		found, err := dec.LookupByString("field-1")
+		assert.NoError(t, err)
+		assert.NotNil(t, found)
+	})
+
 	t.Run("Should throw invalid error with mismatching definitions", func(t *testing.T) {
 		_, def := CreateMocks("snr12345", "did:snr:1234")
-
-		def.Fields["field-1"] = st.SchemaKind_INT
-		def.Fields["field-2"] = st.SchemaKind_FLOAT
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_INT,
+		})
+		def.Field = append(def.Field, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_STRING,
+		})
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-4": 2.0,

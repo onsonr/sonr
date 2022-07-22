@@ -5,12 +5,16 @@ import (
 )
 
 func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}, def *st.SchemaDefinition) error {
-	fields := def.GetFields()
+	lst := def.GetField()
+	fields := make(map[string]st.SchemaKind)
+	for _, c := range lst {
+		fields[c.Name] = c.Field
+	}
+
 	for key, value := range doc {
 		if _, ok := fields[key]; !ok {
 			return errSchemaFieldsInvalid
 		}
-
 		if !CheckValueOfField(value, fields[key]) {
 			return errSchemaFieldsInvalid
 		}

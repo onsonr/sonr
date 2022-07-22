@@ -9,12 +9,9 @@ import (
 )
 
 var (
-	errAccountNotProvided        = errors.New("no Acct active")
-	errAccountAlreadyDefined     = errors.New("cannot reassign account once assigned")
-	errCidInvalid                = errors.New("attempted to load a non CID link")
-	errSchemaFieldsInvalid       = errors.New("supplied Schema is invalid")
-	errVerficationMethodNotFound = errors.New("supplied Schema is invalid")
-	errIdNotFound                = errors.New("Id not found")
+	errCidInvalid          = errors.New("attempted to load a non CID link")
+	errSchemaFieldsInvalid = errors.New("supplied Schema is invalid")
+	errIdNotFound          = errors.New("Id not found")
 )
 
 /*
@@ -47,8 +44,14 @@ type AppSchemaInternal interface {
 	*/
 	EncodeDagCbor(node datamodel.Node) ([]byte, error)
 
+	/*
+		Encodes a given IPLD Node as CBOR
+	*/
 	DecodeDagJson(buffer []byte) (datamodel.Node, error)
 
+	/*
+		Decodes a given IPLD Node as CBOR
+	*/
 	DecodeDagCbor(buffer []byte) (datamodel.Node, error)
 
 	/*
@@ -57,26 +60,19 @@ type AppSchemaInternal interface {
 	GetPath(node datamodel.Node) (datamodel.ListIterator, error)
 }
 
+/*
+	Interface for implementing querying logic for chain interactions
+*/
 type SchemaDataResolver interface {
 	/*
 		Gets all `whatIs` objects for the account `whoIs` an error if the query fails
 	*/
-	GetAllWhatIs() error
+	GetAllWhatIs(req *st.QueryWhatIsRequest) (*st.QueryWhatIsResponse, error)
 
 	/*
 		Gets all `whatIs` objects for the account `whoIs` an error if the query fails
 	*/
 	GetAllSchemaDefinitions() error
-
-	/*
-		Acessor method for node map related by definition did
-	*/
-	GetNodeMap() map[string]datamodel.Node
-
-	/*
-		Acessor method for node map related by did
-	*/
-	GetWhatIsMap() map[string]*st.WhatIs
 }
 
 /*

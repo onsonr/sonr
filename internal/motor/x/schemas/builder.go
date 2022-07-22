@@ -22,14 +22,16 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
-	ma, err := nb.BeginMap(int64(len(def.GetFields())))
+	ma, err := nb.BeginMap(int64(len(def.GetField())))
 
 	if err != nil {
 		return nil, err
 	}
-	for k, t := range def.GetFields() {
+
+	for _, t := range def.GetField() {
+		k := t.Name
 		ma.AssembleKey().AssignString(k)
-		switch t {
+		switch t.Field {
 		case st.SchemaKind_STRING:
 			val := object[k].(string)
 			ma.AssembleValue().AssignString(val)
