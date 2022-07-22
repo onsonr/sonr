@@ -3,6 +3,7 @@ module github.com/sonr-io/sonr
 go 1.16
 
 require (
+	github.com/alexjg/go-dag-jose v0.0.5
 	github.com/cosmos/cosmos-sdk v0.45.5
 	github.com/cosmos/ibc-go/v3 v3.0.0
 	github.com/fxamacker/cbor/v2 v2.4.0
