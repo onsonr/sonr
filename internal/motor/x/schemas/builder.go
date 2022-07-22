@@ -1,7 +1,6 @@
 package schemas
 
 import (
-	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-ipld-prime/datamodel"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
@@ -71,30 +70,14 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	return node, nil
 }
 
+func (as *appSchemaInternalImpl) LoadJOSE() {
+
+}
+
+func (as *appSchemaInternalImpl) BuildJoseLink() {
+
+}
+
 func (as *appSchemaInternalImpl) LoadLink(val interface{}) (cidlink.Link, error) {
-	value := val.(string)
-	cid, err := cid.Decode(value)
-	if err != nil {
-		return cidlink.Link{}, err
-	}
-
-	lnk := cidlink.Link{Cid: cid}
-	/*
-		lsys := cidlink.DefaultLinkSystem()
-		lsys.SetReadStorage(store)
-
-		np := basicnode.Prototype.Any
-
-		// Apply the LinkSystem loader for the given cid
-		node, err := lsys.Load(
-			linking.LinkContext{},
-			lnk,
-			np,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-	*/
-	return lnk, nil
+	return cidlink.Link{}, nil
 }
