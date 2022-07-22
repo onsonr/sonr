@@ -424,7 +424,17 @@ func (cc *Cosmos) QuerySchema(creator string, schemaDID string) (*st.QuerySchema
 		Creator: creator,
 		Did:     schemaDID,
 	}
-	queryResp, err := cc.schemaQuery.QuerySchema(context.Background(), &queryReq)
+	queryResp, err := cc.schemaQuery.Schema(context.Background(), &queryReq)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return queryResp, nil
+}
+
+func (cc *Cosmos) QueryWhatIsAll(queryReq *st.QueryAllWhatIsRequest) (*st.QueryAllWhatIsResponse, error) {
+	queryResp, err := cc.schemaQuery.WhatIsAll(context.Background(), queryReq)
 
 	if err != nil {
 		return nil, err

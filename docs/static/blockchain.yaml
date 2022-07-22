@@ -31617,9 +31617,234 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sonr-io/sonr/schema/query:
+  /sonr-io/sonr/schema/query/all_schemas:
     get:
-      operationId: SonrioSonrSchemaQueryWhatIs
+      operationId: SonrioSonrSchemaWhatIsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              what_is:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      title: DID is the DID of the object
+                    schema:
+                      title: Object_doc is the object document
+                      type: object
+                      properties:
+                        did:
+                          type: string
+                          title: the DID for this schema
+                        label:
+                          type: string
+                          title: an alternative reference point
+                        cid:
+                          type: string
+                          description: >-
+                            a reference to information stored within an IPFS
+                            node.
+                    creator:
+                      type: string
+                      title: Creator is the DID of the creator
+                    timestamp:
+                      type: string
+                      format: int64
+                      title: >-
+                        Timestamp is the time of the last update of the DID
+                        Document
+                    is_active:
+                      type: boolean
+                      title: IsActive is the status of the DID Document
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonr-io/sonr/schema/query/schema:
+    get:
+      operationId: SonrioSonrSchemaSchema
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              definition:
+                title: Definition of schema
+                type: object
+                properties:
+                  creator:
+                    type: string
+                    title: |-
+                      Represents the types of fields a schema can have
+                      the DID for this schema
+                  label:
+                    type: string
+                    title: an alternative reference point
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        field:
+                          title: Type of a single schema property
+                          type: string
+                          enum:
+                            - INVALID
+                            - MAP
+                            - LIST
+                            - UNIT
+                            - BOOL
+                            - INT
+                            - FLOAT
+                            - STRING
+                            - BYTES
+                            - LINK
+                            - STRUCT
+                            - UNION
+                            - ENUM
+                            - ANY
+                          default: INVALID
+                    title: the properties of this schema
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: query
+          required: false
+          type: string
+        - name: did
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /sonr-io/sonr/schema/query/what_is:
+    get:
+      operationId: SonrioSonrSchemaWhatIs
       responses:
         '200':
           description: A successful response.
@@ -31627,7 +31852,6 @@ paths:
             type: object
             properties:
               whatIs:
-                title: Schema Repersentation
                 type: object
                 properties:
                   did:
@@ -31658,38 +31882,7 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
-              definition:
-                title: Definition of schema
-                type: object
-                properties:
-                  creator:
-                    type: string
-                    title: the DID for this schema
-                  label:
-                    type: string
-                    title: an alternative reference point
-                  fields:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      enum:
-                        - INVALID
-                        - MAP
-                        - LIST
-                        - UNIT
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - STRUCT
-                        - UNION
-                        - ENUM
-                        - ANY
-                      default: INVALID
-                      title: Represents the types of fields a schema can have
-                    title: the properties of this schema
+                title: Schema Repersentation
         default:
           description: An unexpected error response.
           schema:
@@ -55949,7 +56142,6 @@ definitions:
       message:
         type: string
       what_is:
-        title: WhatIs object created on chain
         type: object
         properties:
           did:
@@ -55978,6 +56170,7 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
     properties:
@@ -55989,6 +56182,65 @@ definitions:
   sonrio.sonr.schema.Params:
     type: object
     description: Params defines the parameters for the module.
+  sonrio.sonr.schema.QueryAllWhatIsResponse:
+    type: object
+    properties:
+      what_is:
+        type: array
+        items:
+          type: object
+          properties:
+            did:
+              type: string
+              title: DID is the DID of the object
+            schema:
+              title: Object_doc is the object document
+              type: object
+              properties:
+                did:
+                  type: string
+                  title: the DID for this schema
+                label:
+                  type: string
+                  title: an alternative reference point
+                cid:
+                  type: string
+                  description: a reference to information stored within an IPFS node.
+            creator:
+              type: string
+              title: Creator is the DID of the creator
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp is the time of the last update of the DID Document
+            is_active:
+              type: boolean
+              title: IsActive is the status of the DID Document
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
   sonrio.sonr.schema.QueryParamsResponse:
     type: object
     properties:
@@ -55999,73 +56251,49 @@ definitions:
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
-      whatIs:
-        title: Schema Repersentation
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema
-              label:
-                type: string
-                title: an alternative reference point
-              cid:
-                type: string
-                description: a reference to information stored within an IPFS node.
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
       definition:
         title: Definition of schema
         type: object
         properties:
           creator:
             type: string
-            title: the DID for this schema
+            title: |-
+              Represents the types of fields a schema can have
+              the DID for this schema
           label:
             type: string
             title: an alternative reference point
           fields:
-            type: object
-            additionalProperties:
-              type: string
-              enum:
-                - INVALID
-                - MAP
-                - LIST
-                - UNIT
-                - BOOL
-                - INT
-                - FLOAT
-                - STRING
-                - BYTES
-                - LINK
-                - STRUCT
-                - UNION
-                - ENUM
-                - ANY
-              default: INVALID
-              title: Represents the types of fields a schema can have
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                field:
+                  title: Type of a single schema property
+                  type: string
+                  enum:
+                    - INVALID
+                    - MAP
+                    - LIST
+                    - UNIT
+                    - BOOL
+                    - INT
+                    - FLOAT
+                    - STRING
+                    - BYTES
+                    - LINK
+                    - STRUCT
+                    - UNION
+                    - ENUM
+                    - ANY
+                  default: INVALID
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       whatIs:
-        title: Schema Repersentation
         type: object
         properties:
           did:
@@ -56094,19 +56322,27 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
-      definition:
-        title: Definition of schema
-        type: object
-        properties:
-          creator:
-            type: string
-            title: the DID for this schema
-          label:
-            type: string
-            title: an alternative reference point
-          fields:
-            type: object
-            additionalProperties:
+        title: Schema Repersentation
+  sonrio.sonr.schema.SchemaDefinition:
+    type: object
+    properties:
+      creator:
+        type: string
+        title: |-
+          Represents the types of fields a schema can have
+          the DID for this schema
+      label:
+        type: string
+        title: an alternative reference point
+      fields:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            field:
+              title: Type of a single schema property
               type: string
               enum:
                 - INVALID
@@ -56124,38 +56360,6 @@ definitions:
                 - ENUM
                 - ANY
               default: INVALID
-              title: Represents the types of fields a schema can have
-            title: the properties of this schema
-  sonrio.sonr.schema.SchemaDefinition:
-    type: object
-    properties:
-      creator:
-        type: string
-        title: the DID for this schema
-      label:
-        type: string
-        title: an alternative reference point
-      fields:
-        type: object
-        additionalProperties:
-          type: string
-          enum:
-            - INVALID
-            - MAP
-            - LIST
-            - UNIT
-            - BOOL
-            - INT
-            - FLOAT
-            - STRING
-            - BYTES
-            - LINK
-            - STRUCT
-            - UNION
-            - ENUM
-            - ANY
-          default: INVALID
-          title: Represents the types of fields a schema can have
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
@@ -56175,7 +56379,30 @@ definitions:
       - ENUM
       - ANY
     default: INVALID
-    title: Represents the types of fields a schema can have
+  sonrio.sonr.schema.SchemaKindDefinition:
+    type: object
+    properties:
+      name:
+        type: string
+      field:
+        title: Type of a single schema property
+        type: string
+        enum:
+          - INVALID
+          - MAP
+          - LIST
+          - UNIT
+          - BOOL
+          - INT
+          - FLOAT
+          - STRING
+          - BYTES
+          - LINK
+          - STRUCT
+          - UNION
+          - ENUM
+          - ANY
+        default: INVALID
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:
