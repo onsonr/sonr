@@ -27,8 +27,15 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "Schema was not found for id: %s", req.Did)
 	}
 
-	var schemaJson []*st.SchemaKindDefinition
+	var schemaJson map[string]interface{}
 	err := k.LookUpContent(what_is.Schema.Cid, &schemaJson)
+	fields := make([]*st.SchemaKindDefinition, len(schemaJson))
+	for k, v := range schemaJson {
+		fields = append(fields, &st.SchemaKindDefinition{
+			Name:  k,
+			Field: v.(st.SchemaKind),
+		})
+	}
 
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Error while accessing schema content")
@@ -37,7 +44,7 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 	var definition *st.SchemaDefinition = &st.SchemaDefinition{
 		Creator: what_is.Creator,
 		Label:   what_is.Schema.Label,
-		Fields:  schemaJson,
+		Fields:  fields,
 	}
 
 	return &st.QuerySchemaResponse{
