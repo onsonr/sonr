@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/ipld/go-ipld-prime/datamodel"
-	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
@@ -47,12 +46,12 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 			val := object[k].([]byte)
 			ma.AssembleValue().AssignBytes(val)
 		case st.SchemaKind_LINK:
-			val := object[k].(string)
-			link, err := as.LoadLink(val)
+			// val := object[k].(string)
+
 			if err != nil {
 				return nil, err
 			}
-			ma.AssembleValue().AssignLink(link)
+			ma.AssembleValue().AssignLink(nil)
 		case st.SchemaKind_MAP:
 			ma.AssembleValue().AssignNode(nil)
 		default:
@@ -68,16 +67,4 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	node := nb.Build()
 
 	return node, nil
-}
-
-func (as *appSchemaInternalImpl) LoadJOSE() {
-
-}
-
-func (as *appSchemaInternalImpl) BuildJoseLink() {
-
-}
-
-func (as *appSchemaInternalImpl) LoadLink(val interface{}) (cidlink.Link, error) {
-	return cidlink.Link{}, nil
 }
