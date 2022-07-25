@@ -1,6 +1,7 @@
 package object
 
 import (
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/pkg/schemas"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
@@ -16,26 +17,29 @@ type ObjectDefinition struct {
 }
 
 type ObjectUploadResult struct {
-	Code    int32
-	Cid     string
-	Message string
+	Code       int32
+	Definition *ObjectDefinition
+	Message    string
 }
 
 type AppObjectInternal interface {
-	UploadObject(schemaDefinition *st.SchemaDefinition) error
+	UploadObject(schemaDefinition *st.SchemaDefinition, object map[string]interface{}) (*ObjectUploadResult, error)
 	GetObject(cid string) ([]byte, error)
 }
 
-type AppObjectSchemaInternal struct {
+type AppObjectInternalImpl struct {
 	schemaInternal schemas.AppSchemaInternal
 	rpcClient      *grpc.ClientConn
+	shell          *shell.Shell
 }
 
-func New(config ObjectConfiguration) *AppObjectInternal {
+func New(config ObjectConfiguration) AppObjectInternal {
 	c := Config{}
 	config(&c)
 
-	return AppObjectSchemaInternal{
+	return &AppObjectInternalImpl{
 		schemaInternal: c.schemaImpl,
+		rpcClient:      c.rpcClient,
+		shell:          shell.NewShell(c.storageEndpoint),
 	}
 }
