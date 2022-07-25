@@ -13,6 +13,8 @@ package api
 import (
 	"context"
 	"errors"
+	protocol "github.com/sonr-io/sonr/internal/highway/x/store"
+	ipfs "github.com/sonr-io/sonr/pkg/protocol"
 	"net/http"
 	"os"
 	"time"
@@ -20,7 +22,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
 	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
-	"github.com/sonr-io/sonr/internal/highway/x/protocol"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
@@ -57,7 +58,7 @@ type HighwayServer struct {
 
 	// Protocols
 	channels     map[string]ctv1.Channel
-	ipfsProtocol *protocol.IPFSLite
+	ipfsProtocol ipfs.Protocol
 	// matrixProtocol *matrix.MatrixProtocol
 
 	//Prometheus
