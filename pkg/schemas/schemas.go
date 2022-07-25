@@ -72,7 +72,7 @@ type SchemaDataResolver interface {
 	/*
 		Gets all `whatIs` objects for the account `whoIs` an error if the query fails
 	*/
-	GetAllSchemaDefinitions() error
+	GetAllSchemaDefinitions(creator string, did string) error
 }
 
 /*
