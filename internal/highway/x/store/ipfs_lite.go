@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/sonr-io/sonr/pkg/store"
 	"io/ioutil"
+
+	"github.com/sonr-io/sonr/pkg/protocol"
+	"github.com/sonr-io/sonr/pkg/store"
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
@@ -15,6 +17,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
+
+var _ protocol.IPFS = (*IPFSLite)(nil)
 
 // IPFSLite is an IPFS Lite implementation of ipfs.Protocol.
 type IPFSLite struct {
