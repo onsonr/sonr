@@ -3,9 +3,11 @@ package protocol_test
 import (
 	"context"
 	"encoding/json"
+	"github.com/ipfs/go-datastore/query"
 	"github.com/sonr-io/sonr/pkg/protocol"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"testing"
 
 	"github.com/ipfs/go-datastore"
@@ -14,9 +16,47 @@ import (
 
 const IPFSShellUrl = "localhost:5001"
 
-var cacheStore datastore.Datastore
+type mockCache struct {
+	mock.Mock
+}
+
+func (m *mockCache) Get(ctx context.Context, key datastore.Key) (value []byte, err error) {
+	args := m.Called(ctx, key)
+	return []byte(args.String(0)), args.Error(1)
+}
+
+func (m *mockCache) Has(ctx context.Context, key datastore.Key) (exists bool, err error) {
+	panic("implement me")
+}
+
+func (m *mockCache) GetSize(ctx context.Context, key datastore.Key) (size int, err error) {
+	panic("implement me")
+}
+
+func (m *mockCache) Query(ctx context.Context, q query.Query) (query.Results, error) {
+	panic("implement me")
+}
+
+func (m *mockCache) Put(ctx context.Context, key datastore.Key, value []byte) error {
+	args := m.Called(ctx, key, value)
+	return args.Error(0)
+}
+
+func (m *mockCache) Delete(ctx context.Context, key datastore.Key) error {
+	panic("implement me")
+}
+
+func (m *mockCache) Sync(ctx context.Context, prefix datastore.Key) error {
+	panic("implement me")
+}
+
+func (m *mockCache) Close() error {
+	panic("implement me")
+}
 
 func TestIPFSShell_PutData(t *testing.T) {
+	cacheStore := new(mockCache)
+
 	type fields struct {
 		Shell *shell.Shell
 		cache datastore.Datastore
@@ -50,6 +90,10 @@ func TestIPFSShell_PutData(t *testing.T) {
 
 			data, err := json.Marshal(tt.args.schema)
 			assert.NoError(t, err)
+
+			cacheStore.
+				On("Put", nil, datastore.NewKey("QmW4Ghk82fyq4LsoBKwH5o66Zb1sEpZ735Tmn1yA7o1uGu"), data).
+				Return(tt.wantErr)
 
 			got, err := i.PutData(tt.args.ctx, data)
 

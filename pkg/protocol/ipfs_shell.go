@@ -30,6 +30,11 @@ func (i *IPFSShell) PutData(ctx context.Context, data []byte) (string, error) {
 		return "", err
 	}
 
+	err = i.cache.Put(ctx, datastore.NewKey(cidStr), data)
+	if err != nil {
+		return "", err
+	}
+
 	return cidStr, nil
 }
 
