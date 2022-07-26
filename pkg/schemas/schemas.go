@@ -3,8 +3,9 @@ package schemas
 import (
 	"errors"
 
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/ipld/go-ipld-prime/datamodel"
-	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/client"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -26,13 +27,13 @@ type AppSchemaInternal interface {
 		Builds a linkage of IPLD nodes from the provided schema definition
 		returns the `Node` and assigns it to the given id internally.
 	*/
-	BuildNodesFromDefinition(def *st.SchemaDefinition, object map[string]interface{}) (datamodel.Node, error)
+	BuildNodesFromDefinition(fields []*st.SchemaKindDefinition, object map[string]interface{}) (datamodel.Node, error)
 
 	/*
 		Returns an error if any of the keys within provided data dont match the given schema definition
 		useful for verifying
 	*/
-	VerifyObject(doc map[string]interface{}, def *st.SchemaDefinition) error
+	VerifyObject(doc map[string]interface{}, fields []*st.SchemaKindDefinition) error
 
 	/*
 		Encodes a given IPLD Node as JSON
@@ -67,12 +68,12 @@ type SchemaDataResolver interface {
 	/*
 		Gets all `whatIs` objects for the account `whoIs` an error if the query fails
 	*/
-	GetAllWhatIs(req *st.QueryWhatIsRequest) (*st.QueryWhatIsResponse, error)
+	GetWhatIs(creator string, did string) (*st.WhatIs, error)
 
 	/*
 		Gets all `whatIs` objects for the account `whoIs` an error if the query fails
 	*/
-	GetAllSchemaDefinitions(creator string, did string) error
+	GetSchemaByCid(cid string) ([]*st.SchemaKindDefinition, error)
 }
 
 /*
@@ -80,13 +81,25 @@ type SchemaDataResolver interface {
 */
 type SchemaRelationShip struct {
 	definition *st.SchemaDefinition
-	did        did.DID
+	cid        string
 }
 
-type appSchemaInternalImpl struct{}
+type appSchemaInternalImpl struct {
+	schemas map[string][]*st.SchemaKindDefinition
+	whatIs  map[string]*st.WhatIs
+	client  *client.Client
+	shell   shell.Shell
+}
 
-func New() AppSchemaInternal {
-	asi := &appSchemaInternalImpl{}
+func New(persistenceUri string, endpointType client.ConnEndpointType) AppSchemaInternal {
+	asi := &appSchemaInternalImpl{
+		// Holds relation of schema's to CID
+		schemas: make(map[string][]*st.SchemaKindDefinition),
+		// Holds relation of WhatIs's to DID
+		whatIs: make(map[string]*st.WhatIs),
+		client: client.NewClient(endpointType),
+		shell:  *shell.NewShell(persistenceUri),
+	}
 
 	return asi
 }
