@@ -1140,8 +1140,6 @@ github.com/ignite-hq/cli v0.21.2/go.mod h1:UU+knzdlKyj3nKN3WADh6HUjIKPqFBj9htDmI
 github.com/ignite-hq/cli v0.22.1-0.20220610070456-1b33c09fceb7 h1:2HUkG2SzDJ8K7//JNFwtx4D3V1HxGRtHaEku5gdstts=
 github.com/ignite-hq/cli v0.22.1-0.20220610070456-1b33c09fceb7/go.mod h1:KpUW5KOrkZpfYF/1wPC3wVAj1An1d2nX7SKbcEM/1ds=
 github.com/ignite/cli v0.22.2/go.mod h1:Dk1yaJtzWLA0CsPs1XynHSN6wAHz3yTpJWEk/GF7rDI=
-github.com/ignite/cli v0.23.0 h1:k8jDwG+hMd54KDvSrnEbo76ANM4NT9B9ReuuK/3md20=
-github.com/ignite/cli v0.23.0/go.mod h1:8HH/rwaLsPis2M7wAyAQOG8j4MhpdWmtWC4lR8MoV5s=
 github.com/imdario/mergo v0.3.4/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=
 github.com/imdario/mergo v0.3.5/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=
 github.com/imdario/mergo v0.3.8/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=

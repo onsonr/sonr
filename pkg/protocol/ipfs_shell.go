@@ -25,7 +25,6 @@ func (i *IPFSShell) GetData(ctx context.Context, cid string) ([]byte, error) {
 }
 
 func (i *IPFSShell) PutData(ctx context.Context, data []byte) (string, error) {
-
 	cidStr, err := i.Add(bytes.NewBuffer(data))
 	if err != nil {
 		return "", err

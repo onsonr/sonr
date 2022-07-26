@@ -17,7 +17,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hsanjuan/ipfs-lite v1.4.0
 	github.com/ignite-hq/cli v0.22.1-0.20220610070456-1b33c09fceb7
-	github.com/ignite/cli v0.23.0
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipfs/go-ipfs-api v0.3.0
 	github.com/ipld/go-ipld-prime v0.16.0

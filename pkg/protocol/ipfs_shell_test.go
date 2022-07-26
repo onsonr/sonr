@@ -2,73 +2,19 @@ package protocol_test
 
 import (
 	"context"
-	"reflect"
+	"encoding/json"
+	"github.com/sonr-io/sonr/pkg/protocol"
+	"github.com/sonr-io/sonr/x/schema/types"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/ipfs/go-datastore"
 	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/pkg/protocol"
 )
 
-const IPFSShellUrl = ""
+const IPFSShellUrl = "localhost:5001"
 
 var cacheStore datastore.Datastore
-
-func TestIPFSShell_GetData(t *testing.T) {
-	type fields struct {
-		Shell *shell.Shell
-		cache datastore.Datastore
-	}
-	type args struct {
-		ctx context.Context
-		cid string
-	}
-	var tests []struct {
-		name    string
-		fields  fields
-		args    args
-		want    []byte
-		wantErr bool
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
-			got, err := i.GetData(tt.args.ctx, tt.args.cid)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("GetData() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetData() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestIPFSShell_PinFile(t *testing.T) {
-	type fields struct {
-		Shell *shell.Shell
-		cache datastore.Datastore
-	}
-	type args struct {
-		ctx    context.Context
-		cidstr string
-	}
-	var tests []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
-			if err := i.PinFile(tt.args.ctx, tt.args.cidstr); (err != nil) != tt.wantErr {
-				t.Errorf("PinFile() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
 
 func TestIPFSShell_PutData(t *testing.T) {
 	type fields struct {
@@ -76,71 +22,41 @@ func TestIPFSShell_PutData(t *testing.T) {
 		cache datastore.Datastore
 	}
 	type args struct {
-		ctx  context.Context
-		data []byte
+		ctx    context.Context
+		schema *types.SchemaDefinition
 	}
-	var tests []struct {
+	var tests = []struct {
 		name    string
 		fields  fields
 		args    args
 		want    string
-		wantErr bool
+		wantErr error
+	}{
+		{name: "test#1", fields: fields{
+			Shell: nil,
+			cache: nil,
+		}, args: args{
+			ctx: nil,
+			schema: &types.SchemaDefinition{
+				Creator: "did:snr:7Prd74ry1Uct87nZqL3ny7aR7Cg46JamVbJgk8azVgUm",
+				Label:   "test-label",
+			},
+		}, want: "QmW4Ghk82fyq4LsoBKwH5o66Zb1sEpZ735Tmn1yA7o1uGu", wantErr: nil},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
 
-			got, err := i.PutData(tt.args.ctx, tt.args.data)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("PutData() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("PutData() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+			data, err := json.Marshal(tt.args.schema)
+			assert.NoError(t, err)
 
-func TestIPFSShell_RemoveFile(t *testing.T) {
-	type fields struct {
-		Shell *shell.Shell
-		cache datastore.Datastore
-	}
-	type args struct {
-		ctx    context.Context
-		cidstr string
-	}
-	var tests []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
-			if err := i.RemoveFile(tt.args.ctx, tt.args.cidstr); (err != nil) != tt.wantErr {
-				t.Errorf("RemoveFile() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
+			got, err := i.PutData(tt.args.ctx, data)
 
-func TestNewIPFSShell(t *testing.T) {
-	type args struct {
-		url        string
-		cacheStore datastore.Datastore
-	}
-	var tests []struct {
-		name string
-		args args
-		want protocol.IPFS
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := protocol.NewIPFSShell(tt.args.url, tt.args.cacheStore); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewIPFSShell() = %v, want %v", got, tt.want)
+			if tt.wantErr != nil {
+				assert.Equal(t, tt.wantErr, err)
+			} else {
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
