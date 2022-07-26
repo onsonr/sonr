@@ -7,5 +7,6 @@ import (
 type IPFS interface {
 	GetData(cid string) ([]byte, error)
 	PutData(data []byte) (*cid.Cid, error)
+	PinFile(cidstr string) error
 	RemoveFile(cidstr string) error
 }

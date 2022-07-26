@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -41,8 +42,19 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	for _, c := range msg.Definition.GetFields() {
 		schemaDef[c.Name] = c.Field
 	}
+	b, err := json.Marshal(schemaDef)
+	if err != nil {
+		return nil, err
+	}
 
-	cid_str, err := k.PinContent(schemaDef)
+	cid, err := k.ipfs.PutData(b)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = k.ipfs.PinFile(cid.String()); err != nil {
+		return nil, err
+	}
 
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
@@ -51,7 +63,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	var schema = types.SchemaReference{
 		Label: msg.Definition.Label,
 		Did:   what_is_did.String(),
-		Cid:   cid_str,
+		Cid:   cid.String(),
 	}
 
 	var whatIs = types.WhatIs{

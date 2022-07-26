@@ -25,7 +25,7 @@ type IPFSLite struct {
 	ctx       context.Context
 	node      host.SonrHost
 	dataStore *store.Memory
-	*ipfslite.Peer
+	peer      *ipfslite.Peer
 }
 
 // NewIPFSLite creates a new IPFSLite instance with Host Implementation
@@ -41,10 +41,10 @@ func NewIPFSLite(ctx context.Context, host host.SonrHost) (*IPFSLite, error) {
 		ctx:       ctx,
 		node:      host,
 		dataStore: ds,
-		Peer:      ipfsLite,
+		peer:      ipfsLite,
 	}
 
-	p.Bootstrap(ipfslite.DefaultBootstrapPeers())
+	p.peer.Bootstrap(ipfslite.DefaultBootstrapPeers())
 	return p, nil
 }
 
@@ -62,7 +62,7 @@ func (i *IPFSLite) GetData(cid string) ([]byte, error) {
 	}
 
 	// Get the file from IPFS
-	rsc, err := i.Peer.GetFile(i.ctx, c)
+	rsc, err := i.peer.GetFile(i.ctx, c)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (i *IPFSLite) PutData(data []byte) (*cid.Cid, error) {
 	buffer := bytes.NewBuffer(data)
 
 	// Adds file to IPFS
-	nd, err := i.Peer.AddFile(i.ctx, buffer, nil)
+	nd, err := i.peer.AddFile(i.ctx, buffer, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -106,6 +106,10 @@ func (i *IPFSLite) PutData(data []byte) (*cid.Cid, error) {
 	// Get Back the CID
 	c := nd.Cid()
 	return &c, nil
+}
+
+func (i *IPFSLite) PinFile(cidstr string) error {
+	panic("implement me")
 }
 
 // PutObjectSchema puts an object schema to IPFS and returns the CID.
@@ -163,5 +167,5 @@ func (i *IPFSLite) RemoveFile(cidstr string) error {
 	if err != nil {
 		return err
 	}
-	return i.Peer.Remove(i.ctx, cid)
+	return i.peer.Remove(i.ctx, cid)
 }
