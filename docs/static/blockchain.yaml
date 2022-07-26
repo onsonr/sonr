@@ -31627,6 +31627,7 @@ paths:
         - Query
   /sonr-io/sonr/schema/query/all_schemas:
     get:
+      summary: Queries all whatIs definitions supports pagination
       operationId: SonrioSonrSchemaWhatIsAll
       responses:
         '200':
@@ -31775,6 +31776,7 @@ paths:
         - Query
   /sonr-io/sonr/schema/query/schema:
     get:
+      summary: Queries a Schema by creator and did
       operationId: SonrioSonrSchemaSchema
       responses:
         '200':
@@ -31852,6 +31854,7 @@ paths:
         - Query
   /sonr-io/sonr/schema/query/what_is:
     get:
+      summary: Queries a whatis by creator and did
       operationId: SonrioSonrSchemaWhatIs
       responses:
         '200':
