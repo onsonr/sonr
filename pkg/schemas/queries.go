@@ -39,6 +39,12 @@ func (as *appSchemaInternalImpl) GetSchemaByCid(cid string) ([]*st.SchemaKindDef
 	return fieldsList, nil
 }
 
-func (as *appSchemaInternalImpl) GetWhatIs(creator string, did string) (*st.QueryWhatIsResponse, error) {
-	return nil, nil
+func (as *appSchemaInternalImpl) GetWhatIs(creator string, did string) (*st.WhatIs, error) {
+	res, err := as.client.QueryWhatIsByController(creator, did)
+	if err != nil {
+		return nil, err
+	}
+	as.whatIs[did] = res
+
+	return res, nil
 }

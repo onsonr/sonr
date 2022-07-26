@@ -95,7 +95,7 @@ func (c *Client) QueryWhoIsByController(controller string) (*rt.WhoIs, error) {
 	return res.GetWhoIs(), nil
 }
 
-func (c *Client) QueryWhatIsByController(controller string) (*st.WhatIs, error) {
+func (c *Client) QueryWhatIsByController(creator string, did string) (*st.WhatIs, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
 		c.GetRPCAddress(),   // Or your gRPC server address.
@@ -108,7 +108,10 @@ func (c *Client) QueryWhatIsByController(controller string) (*st.WhatIs, error) 
 	qc := st.NewQueryClient(grpcConn)
 
 	// We then call the QueryWhoIs method on this client.
-	res, err := qc.WhatIs(context.Background(), &st.QueryWhatIsRequest{})
+	res, err := qc.WhatIs(context.Background(), &st.QueryWhatIsRequest{
+		Creator: creator,
+		Did:     creator,
+	})
 
 	if err != nil {
 		return nil, err

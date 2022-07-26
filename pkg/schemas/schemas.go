@@ -68,7 +68,7 @@ type SchemaDataResolver interface {
 	/*
 		Gets all `whatIs` objects for the account `whoIs` an error if the query fails
 	*/
-	GetWhatIs(req *st.QueryWhatIsRequest) (*st.QueryWhatIsResponse, error)
+	GetWhatIs(creator string, did string) (*st.WhatIs, error)
 
 	/*
 		Gets all `whatIs` objects for the account `whoIs` an error if the query fails
@@ -91,12 +91,14 @@ type appSchemaInternalImpl struct {
 	shell   shell.Shell
 }
 
-func New() AppSchemaInternal {
+func New(persistenceUri string, endpointType client.ConnEndpointType) AppSchemaInternal {
 	asi := &appSchemaInternalImpl{
+		// Holds relation of schema's to CID
 		schemas: make(map[string][]*st.SchemaKindDefinition),
-		whatIs:  make(map[string]*st.WhatIs),
-		client:  client.NewClient(client.ConnEndpointType_LOCAL),
-		shell:   *shell.NewShell("http://localhost:5001"),
+		// Holds relation of WhatIs's to DID
+		whatIs: make(map[string]*st.WhatIs),
+		client: client.NewClient(endpointType),
+		shell:  *shell.NewShell(persistenceUri),
 	}
 
 	return asi
