@@ -32,6 +32,7 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 
 func Test_IPLD_Nodes(t *testing.T) {
 	schema := schemas.New()
+
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		_, def := CreateMocks("snr12345", "did:snr:1234")
 		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
@@ -46,7 +47,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		node, err := schema.BuildNodesFromDefinition(&def, obj)
+		node, err := schema.BuildNodesFromDefinition(def.Fields, obj)
 		assert.NoError(t, err)
 
 		assert.NotNil(t, node)
@@ -66,7 +67,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		node, err := schema.BuildNodesFromDefinition(&def, obj)
+		node, err := schema.BuildNodesFromDefinition(def.Fields, obj)
 		assert.NoError(t, err)
 		assert.NotNil(t, node)
 	})
@@ -85,7 +86,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		node, err := schema.BuildNodesFromDefinition(&def, obj)
+		node, err := schema.BuildNodesFromDefinition(def.Fields, obj)
 		assert.NoError(t, err)
 		assert.NotNil(t, node)
 
@@ -113,7 +114,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		node, err := schema.BuildNodesFromDefinition(&def, obj)
+		node, err := schema.BuildNodesFromDefinition(def.Fields, obj)
 		assert.NoError(t, err)
 		assert.NotNil(t, node)
 
@@ -141,7 +142,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		node, err := schema.BuildNodesFromDefinition(&def, obj)
+		node, err := schema.BuildNodesFromDefinition(def.Fields, obj)
 		assert.NoError(t, err)
 		assert.NotNil(t, node)
 
@@ -169,7 +170,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			"field-1": 1,
 			"field-4": 2.0,
 		}
-		_, err := schema.BuildNodesFromDefinition(&def, obj)
+		_, err := schema.BuildNodesFromDefinition(def.Fields, obj)
 		assert.Error(t, err)
 	})
 }
