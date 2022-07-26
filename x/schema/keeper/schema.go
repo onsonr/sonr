@@ -16,11 +16,10 @@ import (
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/spf13/viper"
 )
 
 var (
-	url        = viper.GetString("IPFS_API_READ")
+	url        = "https://api.ipfs.sonr.ws"
 	ipfs_inter = shell.NewShell(url)
 )
 
