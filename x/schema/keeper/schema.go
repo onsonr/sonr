@@ -5,8 +5,6 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -16,10 +14,11 @@ import (
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
+	"github.com/spf13/viper"
 )
 
 var (
-	url        = "127.0.0.1:5001"
+	url        = viper.GetString("IPFS_API")
 	ipfs_inter = shell.NewShell(url)
 )
 
@@ -30,13 +29,13 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 
 	defer os.Remove(out_path)
 
-	resp, err := http.Get(url)
+	err := ipfs_inter.Get(cid, out_path)
 
 	if err != nil {
 		return err
 	}
 
-	buf, err := io.ReadAll(resp.Body)
+	buf, err := os.ReadFile(out_path)
 
 	if err != nil {
 		return err
