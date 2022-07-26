@@ -17,8 +17,6 @@ import (
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 
-var url = os.Getenv("IPFS_API_READ")
-
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
 
@@ -26,7 +24,7 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 
 	defer os.Remove(out_path)
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(IPFSShellURL)
 
 	if err != nil {
 		return err

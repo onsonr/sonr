@@ -3,9 +3,8 @@ package store
 import (
 	"context"
 
-	"github.com/ipfs/go-datastore"
-
 	ipfslite "github.com/hsanjuan/ipfs-lite"
+	"github.com/ipfs/go-datastore"
 	"github.com/ipld/go-ipld-prime/storage"
 )
 
@@ -22,17 +21,21 @@ func NewMemoryStore() *Memory {
 	}
 }
 
+func (m *Memory) Datastore() datastore.Datastore {
+	return m.dataStore
+}
+
 // Batching returns the Memory's datastore.Batching implementation.
-func (ms *Memory) Batching() datastore.Batching {
-	return ms.dataStore
+func (m *Memory) Batching() datastore.Batching {
+	return m.dataStore
 }
 
 // Get retrieves the value stored in the Memory under the given key.
-func (ms *Memory) Get(ctx context.Context, key string) ([]byte, error) {
-	return ms.dataStore.Get(ctx, datastore.NewKey(key))
+func (m *Memory) Get(ctx context.Context, key string) ([]byte, error) {
+	return m.dataStore.Get(ctx, datastore.NewKey(key))
 }
 
 // Put stores the given value, keyed by the given string, into the Memory.
-func (ms *Memory) Put(ctx context.Context, key string, content []byte) error {
-	return ms.dataStore.Put(ctx, datastore.NewKey(key), content)
+func (m *Memory) Put(ctx context.Context, key string, content []byte) error {
+	return m.dataStore.Put(ctx, datastore.NewKey(key), content)
 }

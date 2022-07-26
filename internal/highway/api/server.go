@@ -13,19 +13,17 @@ package api
 import (
 	"context"
 	"errors"
-	protocol "github.com/sonr-io/sonr/internal/highway/x/store"
-	ipfs "github.com/sonr-io/sonr/pkg/protocol"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
-	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/jwt"
+	"github.com/sonr-io/sonr/pkg/protocol"
 	ctv1 "github.com/sonr-io/sonr/x/channel/types"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -58,11 +56,11 @@ type HighwayServer struct {
 
 	// Protocols
 	channels     map[string]ctv1.Channel
-	ipfsProtocol ipfs.Protocol
+	ipfsProtocol protocol.IPFS
 	// matrixProtocol *matrix.MatrixProtocol
 
 	//Prometheus
-	Telemetry *metrics.HighwayTelemetry
+	//Telemetry *metrics.HighwayTelemetry
 }
 
 // CreateStub creates the base Highway Server.
@@ -79,13 +77,13 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	// }
 
 	// Create the IPFS Protocol
-	ipfs, err := protocol.NewIPFSLite(ctx, node)
+	//ipfs, err := NewIPFSLite(ctx, node)
 	if err != nil {
 		return nil, err
 	}
 
 	tokenClient := jwt.New(ctx, node)
-	metrics, err := metrics.New(ctx, node)
+	//metrics, err := metrics.New(ctx, node)
 
 	// TODO: Enabling Matrix Protocol breaks build for Darwin
 	// https://github.com/sonr-io/sonr/issues/330
@@ -93,14 +91,14 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	// Create the RPC Service
 	stub := &HighwayServer{
 		// Cosmos:       cosmos,
-		Host:         node,
-		ctx:          ctx,
-		Router:       gin.Default(),
-		Config:       c,
-		ipfsProtocol: ipfs,
-		JWTToken:     tokenClient,
+		Host:   node,
+		ctx:    ctx,
+		Router: gin.Default(),
+		Config: c,
+		//ipfsProtocol: ipfs,
+		JWTToken: tokenClient,
 		// matrixProtocol: matrix,
-		Telemetry: metrics,
+		//Telemetry: metrics,
 	}
 	return stub, nil
 }
@@ -133,7 +131,7 @@ func (s *HighwayServer) ConfigureRoutes() {
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	s.Router.GET("/metrics", gin.WrapH(s.Telemetry.GetMetricsHandler()))
+	//s.Router.GET("/metrics", gin.WrapH(s.Telemetry.GetMetricsHandler()))
 }
 
 func (s *HighwayServer) ConfigureMiddleware() {

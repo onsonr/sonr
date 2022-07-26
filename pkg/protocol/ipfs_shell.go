@@ -1,7 +1,10 @@
 package protocol
 
 import (
-	"github.com/ipfs/go-cid"
+	"bytes"
+	"context"
+
+	"github.com/ipfs/go-datastore"
 	shell "github.com/ipfs/go-ipfs-api"
 )
 
@@ -10,28 +13,31 @@ import (
 //	- In-memory cache mechanism
 type IPFSShell struct {
 	*shell.Shell
+	cache datastore.Datastore
 }
 
-func NewIPFSShell(url string) *IPFSShell {
-	return &IPFSShell{shell.NewShell(url)}
+func NewIPFSShell(url string, cacheStore datastore.Datastore) *IPFSShell {
+	return &IPFSShell{Shell: shell.NewShell(url), cache: cacheStore}
 }
 
-func (I IPFSShell) GetData(cid string) ([]byte, error) {
-	//TODO implement me
+func (i *IPFSShell) GetData(ctx context.Context, cid string) ([]byte, error) {
 	panic("implement me")
 }
 
-func (I IPFSShell) PutData(data []byte) (*cid.Cid, error) {
-	//TODO implement me
+func (i *IPFSShell) PutData(ctx context.Context, data []byte) (string, error) {
+
+	cidStr, err := i.Add(bytes.NewBuffer(data))
+	if err != nil {
+		return "", err
+	}
+
+	return cidStr, nil
+}
+
+func (i *IPFSShell) PinFile(ctx context.Context, cidstr string) error {
 	panic("implement me")
 }
 
-func (I IPFSShell) PinFile(cidstr string) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (I IPFSShell) RemoveFile(cidstr string) error {
-	//TODO implement me
+func (i *IPFSShell) RemoveFile(ctx context.Context, cidstr string) error {
 	panic("implement me")
 }

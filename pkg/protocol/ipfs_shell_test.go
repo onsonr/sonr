@@ -1,19 +1,26 @@
 package protocol_test
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
-	"github.com/ipfs/go-cid"
+	"github.com/ipfs/go-datastore"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/pkg/protocol"
 )
 
+const IPFSShellUrl = ""
+
+var cacheStore datastore.Datastore
+
 func TestIPFSShell_GetData(t *testing.T) {
 	type fields struct {
 		Shell *shell.Shell
+		cache datastore.Datastore
 	}
 	type args struct {
+		ctx context.Context
 		cid string
 	}
 	var tests []struct {
@@ -25,10 +32,8 @@ func TestIPFSShell_GetData(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			I := protocol.IPFSShell{
-				Shell: tt.fields.Shell,
-			}
-			got, err := I.GetData(tt.args.cid)
+			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
+			got, err := i.GetData(tt.args.ctx, tt.args.cid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetData() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -43,8 +48,10 @@ func TestIPFSShell_GetData(t *testing.T) {
 func TestIPFSShell_PinFile(t *testing.T) {
 	type fields struct {
 		Shell *shell.Shell
+		cache datastore.Datastore
 	}
 	type args struct {
+		ctx    context.Context
 		cidstr string
 	}
 	var tests []struct {
@@ -55,10 +62,8 @@ func TestIPFSShell_PinFile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			I := protocol.IPFSShell{
-				Shell: tt.fields.Shell,
-			}
-			if err := I.PinFile(tt.args.cidstr); (err != nil) != tt.wantErr {
+			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
+			if err := i.PinFile(tt.args.ctx, tt.args.cidstr); (err != nil) != tt.wantErr {
 				t.Errorf("PinFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -68,28 +73,29 @@ func TestIPFSShell_PinFile(t *testing.T) {
 func TestIPFSShell_PutData(t *testing.T) {
 	type fields struct {
 		Shell *shell.Shell
+		cache datastore.Datastore
 	}
 	type args struct {
+		ctx  context.Context
 		data []byte
 	}
 	var tests []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *cid.Cid
+		want    string
 		wantErr bool
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			I := protocol.IPFSShell{
-				Shell: tt.fields.Shell,
-			}
-			got, err := I.PutData(tt.args.data)
+			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
+
+			got, err := i.PutData(tt.args.ctx, tt.args.data)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PutData() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if got != tt.want {
 				t.Errorf("PutData() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -99,8 +105,10 @@ func TestIPFSShell_PutData(t *testing.T) {
 func TestIPFSShell_RemoveFile(t *testing.T) {
 	type fields struct {
 		Shell *shell.Shell
+		cache datastore.Datastore
 	}
 	type args struct {
+		ctx    context.Context
 		cidstr string
 	}
 	var tests []struct {
@@ -111,10 +119,8 @@ func TestIPFSShell_RemoveFile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			I := protocol.IPFSShell{
-				Shell: tt.fields.Shell,
-			}
-			if err := I.RemoveFile(tt.args.cidstr); (err != nil) != tt.wantErr {
+			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
+			if err := i.RemoveFile(tt.args.ctx, tt.args.cidstr); (err != nil) != tt.wantErr {
 				t.Errorf("RemoveFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -123,7 +129,8 @@ func TestIPFSShell_RemoveFile(t *testing.T) {
 
 func TestNewIPFSShell(t *testing.T) {
 	type args struct {
-		url string
+		url        string
+		cacheStore datastore.Datastore
 	}
 	var tests []struct {
 		name string
@@ -132,7 +139,7 @@ func TestNewIPFSShell(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := protocol.NewIPFSShell(tt.args.url); !reflect.DeepEqual(got, tt.want) {
+			if got := protocol.NewIPFSShell(tt.args.url, tt.args.cacheStore); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewIPFSShell() = %v, want %v", got, tt.want)
 			}
 		})

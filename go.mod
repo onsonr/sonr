@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/cosmos/cosmos-sdk v0.45.5
-	github.com/cosmos/ibc-go/v3 v3.0.0
+	github.com/cosmos/ibc-go/v3 v3.0.1
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.7.7
@@ -16,8 +16,8 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hsanjuan/ipfs-lite v1.4.0
-	github.com/ignite-hq/cli v0.22.0
-	github.com/ipfs/go-cid v0.2.0
+	github.com/ignite-hq/cli v0.22.1-0.20220610070456-1b33c09fceb7
+	github.com/ignite/cli v0.23.0
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipfs/go-ipfs-api v0.3.0
 	github.com/ipld/go-ipld-prime v0.16.0
@@ -37,7 +37,7 @@ require (
 	github.com/ockam-network/did v0.1.3
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.12.2
+	github.com/prometheus/client_golang v1.12.2 // indirect
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16 // indirect
 	github.com/sonr-io/multi-party-sig v0.7.0
@@ -48,7 +48,7 @@ require (
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.0
 	github.com/swaggo/swag v1.8.1
-	github.com/tendermint/spn v0.2.1-0.20220609194312-7833ecf4454a
+	github.com/tendermint/spn v0.2.1-0.20220708132853-26a17f03c072
 	github.com/tendermint/starport v0.19.5
 	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.7

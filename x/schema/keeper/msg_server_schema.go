@@ -47,12 +47,12 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 
-	cid, err := k.ipfs.PutData(b)
+	cidStr, err := k.ipfs.PutData(ctx.Context(), b)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = k.ipfs.PinFile(cid.String()); err != nil {
+	if err = k.ipfs.PinFile(ctx.Context(), cidStr); err != nil {
 		return nil, err
 	}
 
@@ -63,7 +63,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	var schema = types.SchemaReference{
 		Label: msg.Definition.Label,
 		Did:   what_is_did.String(),
-		Cid:   cid.String(),
+		Cid:   cidStr,
 	}
 
 	var whatIs = types.WhatIs{
