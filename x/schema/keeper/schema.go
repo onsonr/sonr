@@ -13,14 +13,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/google/uuid"
-	shell "github.com/ipfs/go-ipfs-api"
+
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 
-var (
-	url        = "https://api.ipfs.sonr.ws"
-	ipfs_inter = shell.NewShell(url)
-)
+var url = os.Getenv("IPFS_API_READ")
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
