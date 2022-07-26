@@ -23,7 +23,7 @@ type ObjectUploadResult struct {
 }
 
 type AppObjectInternal interface {
-	UploadObject(schemaDefinition *st.SchemaDefinition, object map[string]interface{}) (*ObjectUploadResult, error)
+	UploadObject(fields []*st.SchemaKindDefinition, object map[string]interface{}) (*ObjectUploadResult, error)
 	GetObject(cid string) ([]byte, error)
 }
 

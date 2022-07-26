@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/schemas"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
@@ -31,7 +32,7 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 }
 
 func Test_IPLD_Nodes(t *testing.T) {
-	schema := schemas.New()
+	schema := schemas.New("", client.ConnEndpointType_LOCAL)
 
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		_, def := CreateMocks("snr12345", "did:snr:1234")

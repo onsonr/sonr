@@ -3,25 +3,19 @@ package object
 import (
 	"bytes"
 	"fmt"
-	"os"
-	"time"
 
 	"github.com/google/uuid"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (ao *AppObjectInternalImpl) UploadObject(schemaReference *st.SchemaReference, object map[string]interface{}) (*ObjectUploadResult, error) {
-	schemaCid := schemaReference.Cid
-	tmpPath := fmt.Sprintf("%s%s%s", os.TempDir(), schemaCid, time.Now().Unix())
-	ao.shell.Get(schemaCid, tmpPath)
-
-	err := ao.schemaInternal.VerifyObject(object, schemaDefinition)
+func (ao *AppObjectInternalImpl) UploadObject(fields []*st.SchemaKindDefinition, object map[string]interface{}) (*ObjectUploadResult, error) {
+	err := ao.schemaInternal.VerifyObject(object, fields)
 
 	if err != nil {
 		return nil, err
 	}
 
-	n, err := ao.schemaInternal.BuildNodesFromDefinition(schemaDefinition, object)
+	n, err := ao.schemaInternal.BuildNodesFromDefinition(fields, object)
 	if err != nil {
 		return nil, err
 	}
