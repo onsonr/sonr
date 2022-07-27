@@ -65,3 +65,25 @@ message LoginRequest {
   bytes aes_dsc_key = 3;
   bytes aes_psk_key = 4;
 }
+
+message CreateSchemaRequest {
+  string label = 1;
+
+  enum SchemaKind {
+    SCHEMA_KIND_UNRECOGNIZED = 0;
+    SCHEMA_KIND_MAP = 1;
+	  SCHEMA_KIND_LIST = 2;
+	  SCHEMA_KIND_UNIT = 3;
+	  SCHEMA_KIND_BOOL = 4;
+	  SCHEMA_KIND_INT = 5;
+	  SCHEMA_KIND_FLOAT = 6;
+	  SCHEMA_KIND_STRING = 7;
+	  SCHEMA_KIND_BYTES = 8;
+	  SCHEMA_KIND_LINK = 9;
+	  SCHEMA_KIND_STRUCT = 10;
+	  SCHEMA_KIND_UNION = 11;
+	  SCHEMA_KIND_ENUM = 12;
+	  SCHEMA_KIND_ANY = 13;
+  }
+  map<string, SchemaKind> fields = 2;
+}

@@ -130,6 +130,39 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 	assert.NoError(t, err, "updates successfully")
 }
 
+func Test_CreateSchema(t *testing.T) {
+	did := "snr1862dnv4m7ecskn94vzryn8hcsdz7zw73h00dmx"
+	pskKey := loadKey(fmt.Sprintf("psk%s", did))
+	if pskKey == nil || len(pskKey) != 32 {
+		t.Errorf("could not load psk key")
+		return
+	}
+
+	req, err := json.Marshal(prt.LoginRequest{
+		Did:       did,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	})
+	assert.NoError(t, err, "request marshals")
+
+	m := EmptyMotor("test_device")
+	_, err = m.Login(req)
+	assert.NoError(t, err, "login succeeds")
+
+	// LOGIN DONE, TRY TO CREATE SCHEMA
+	createSchemaRequest, err := json.Marshal(prt.CreateSchemaRequest{
+		Label: "TestUser",
+		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
+			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
+			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
+			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
+		},
+	})
+	assert.NoError(t, err, "request marshals")
+	_, err = m.CreateSchema(createSchemaRequest)
+	assert.NoError(t, err, "schema created successfully")
+}
+
 func storeKey(name string, aesKey []byte) bool {
 	file, err := os.Create(name)
 	if err != nil {
