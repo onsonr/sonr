@@ -27,11 +27,22 @@ func NewIPFSShell(url string, cacheStore datastore.Datastore) *IPFSShell {
 	return &IPFSShell{shell: shell.NewShell(url), cache: cacheStore}
 }
 
-func (i *IPFSShell) DagGet(ref string, out interface{}) error {
-	panic("TODO")
+func (i *IPFSShell) DagGet(ctx context.Context, ref string, out interface{}) error {
+	key := datastore.NewKey(ref)
+	cached, err := i.cache.Get(ctx, key)
+
+	if err != nil {
+		return err
+	}
+
+	if cached != nil {
+		out = cached
+	}
+
+	return i.shell.DagGet(ref, out)
 }
 
-func (i *IPFSShell) DagPut(data interface{}, inputCodec, storeCodec string) (string, error) {
+func (i *IPFSShell) DagPut(ctx context.Context, data interface{}, inputCodec, storeCodec string) (string, error) {
 	panic("TODO")
 }
 

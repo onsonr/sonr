@@ -184,11 +184,30 @@ func TestIPFSShell_PinFile(t *testing.T) {
 	assert.NoError(t, i.PinFile(ctx, got))
 }
 
-func TestIPFSShell_DagGet(t *testing.T) {
-}
-
 func TestIPFSShell_DagPut(t *testing.T) {
 }
 
 func TestIPFSShell_RemoveFile(t *testing.T) {
+}
+
+func TestIPFSShell_DagGet(t *testing.T) {
+	ctx := context.Background()
+	cacheStore := new(mockCache)
+
+	i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
+
+	data, err := json.Marshal(&types.SchemaDefinition{
+		Creator: "snr1h48jyesl50ahruft5p350nmnycaegdej2pzkdx",
+		Label:   "test-label",
+	})
+	assert.NoError(t, err)
+
+	cid := "QmcHujytrGJ7LqiG38pr83WhZqgM2vLWGqsERVVVyqHLmS"
+	cacheStore.
+		On("Get", ctx, datastore.NewKey(cid)).
+		Return(data, nil)
+
+	var out []byte
+	err = i.DagGet(ctx, cid, out)
+	assert.NoError(t, err)
 }
