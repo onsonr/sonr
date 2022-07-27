@@ -18,10 +18,8 @@ require (
 	github.com/hsanjuan/ipfs-lite v1.4.0
 	github.com/ignite-hq/cli v0.22.1-0.20220610070456-1b33c09fceb7
 	github.com/ignite/cli v0.22.2
-	github.com/ipfs/go-cid v0.2.0
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipfs/go-ipfs-api v0.3.0
-	github.com/ipfs/go-ipfs-util v0.0.2
 	github.com/ipld/go-ipld-prime v0.16.0
 	github.com/kataras/go-events v0.0.3
 	github.com/kataras/golog v0.1.7
@@ -60,7 +58,7 @@ require (
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b // indirect
+	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/genproto v0.0.0-20220719170305-83ca9fad585f

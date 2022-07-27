@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"os"
 	"path"
 	"path/filepath"
@@ -107,10 +108,10 @@ func (i *IPFSShell) PutData(ctx context.Context, data []byte) (string, error) {
 	return cidStr, nil
 }
 
-func (i *IPFSShell) PinFile(ctx context.Context, cidstr string) error {
-	panic("TODO")
+func (i *IPFSShell) PinFile(ctx context.Context, cidStr string) error {
+	return i.shell.Pin(cidStr)
 }
 
 func (i *IPFSShell) RemoveFile(ctx context.Context, cidstr string) error {
-	panic("TODO")
+	return errors.New("not implemented yet")
 }

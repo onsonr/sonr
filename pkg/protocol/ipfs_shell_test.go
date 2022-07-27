@@ -66,12 +66,12 @@ func TestIPFSShell_PutData(t *testing.T) {
 	i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
 
 	data, err := json.Marshal(&types.SchemaDefinition{
-		Creator: "snr1h48jyesl50ahruft5p350nmnycaegdej2pzkdx",
+		Creator: "did:snr:7Prd74ry1Uct87nZqL3ny7aR7Cg46JamVbJgk8azVgUm",
 		Label:   "test-label",
 	})
 	assert.NoError(t, err)
 
-	cid := "QmcHujytrGJ7LqiG38pr83WhZqgM2vLWGqsERVVVyqHLmS"
+	cid := "QmW4Ghk82fyq4LsoBKwH5o66Zb1sEpZ735Tmn1yA7o1uGu"
 	cacheStore.
 		On(
 			"Put",
@@ -108,10 +108,10 @@ func TestIPFSShell_LookUpData(t *testing.T) {
 			name: "look-up-data-ok",
 			args: args{
 				ctx:         context.Background(),
-				cid:         "QmcHujytrGJ7LqiG38pr83WhZqgM2vLWGqsERVVVyqHLmS",
+				cid:         "QmW4Ghk82fyq4LsoBKwH5o66Zb1sEpZ735Tmn1yA7o1uGu",
 				cacheExists: false,
 				data: &types.SchemaDefinition{
-					Creator: "snr1h48jyesl50ahruft5p350nmnycaegdej2pzkdx",
+					Creator: "did:snr:7Prd74ry1Uct87nZqL3ny7aR7Cg46JamVbJgk8azVgUm",
 					Label:   "test-label",
 				},
 			},
@@ -153,4 +153,42 @@ func TestIPFSShell_LookUpData(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestIPFSShell_PinFile(t *testing.T) {
+	ctx := context.Background()
+	cacheStore := new(mockCache)
+
+	i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
+
+	data, err := json.Marshal(&types.SchemaDefinition{
+		Creator: "snr1h48jyesl50ahruft5p350nmnycaegdej2pzkdx",
+		Label:   "test-label",
+	})
+	assert.NoError(t, err)
+
+	cid := "QmcHujytrGJ7LqiG38pr83WhZqgM2vLWGqsERVVVyqHLmS"
+	cacheStore.
+		On(
+			"Put",
+			ctx,
+			datastore.NewKey(cid),
+			data,
+		).
+		Return(nil)
+
+	got, err := i.PutData(ctx, data)
+	assert.NoError(t, err)
+	assert.Equal(t, cid, got)
+
+	assert.NoError(t, i.PinFile(ctx, got))
+}
+
+func TestIPFSShell_DagGet(t *testing.T) {
+}
+
+func TestIPFSShell_DagPut(t *testing.T) {
+}
+
+func TestIPFSShell_RemoveFile(t *testing.T) {
 }
