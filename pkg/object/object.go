@@ -3,17 +3,22 @@ package object
 import (
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/pkg/schemas"
-	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
 )
 
 // Defines and object and relates it to a given Schema Definition
 // Does not yet support encryption keys
+type ObjectEncoding int
+
+var (
+	cbor ObjectEncoding = 1
+	json ObjectEncoding = 2
+)
+
 type ObjectDefinition struct {
-	Did       string
-	Cid       string
-	Creator   string
-	SchemaCid string
+	Did   string
+	Label string
+	Cid   string
 }
 
 type ObjectUploadResult struct {
@@ -22,20 +27,13 @@ type ObjectUploadResult struct {
 	Message    string
 }
 
-type AppObjectInternal interface {
-	UploadObject(fields []*st.SchemaKindDefinition, object map[string]interface{}) (*ObjectUploadResult, error)
-	GetObject(cid string) ([]byte, error)
-}
-
 type AppObjectInternalImpl struct {
 	schemaInternal schemas.AppSchemaInternal
 	rpcClient      *grpc.ClientConn
 	shell          *shell.Shell
 }
 
-func New(config ObjectConfiguration) AppObjectInternal {
-	c := Config{}
-	config(&c)
+func New(c *Config) AppObjectInternal {
 
 	return &AppObjectInternalImpl{
 		schemaInternal: c.schemaImpl,
