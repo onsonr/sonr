@@ -1,18 +1,15 @@
 package object
 
 import (
+	"errors"
+
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/pkg/schemas"
-	"google.golang.org/grpc"
 )
 
-// Defines and object and relates it to a given Schema Definition
-// Does not yet support encryption keys
-type ObjectEncoding int
-
 var (
-	cbor ObjectEncoding = 1
-	json ObjectEncoding = 2
+	ErrObjectNotUploaded = errors.New("error while uploading object")
+	ErrObjectEmpty       = errors.New("object cannot be empty")
 )
 
 type ObjectDefinition struct {
@@ -29,15 +26,20 @@ type ObjectUploadResult struct {
 
 type AppObjectInternalImpl struct {
 	schemaInternal schemas.AppSchemaInternal
-	rpcClient      *grpc.ClientConn
 	shell          *shell.Shell
 }
 
-func New(c *Config) AppObjectInternal {
+func New(schemaImpl schemas.AppSchemaInternal, storageEndpoint string) AppObjectInternal {
+	return &AppObjectInternalImpl{
+		schemaInternal: schemaImpl,
+		shell:          shell.NewShell(storageEndpoint),
+	}
+}
+
+func NewWithConfig(c *Config) AppObjectInternal {
 
 	return &AppObjectInternalImpl{
 		schemaInternal: c.schemaImpl,
-		rpcClient:      c.rpcClient,
 		shell:          shell.NewShell(c.storageEndpoint),
 	}
 }
