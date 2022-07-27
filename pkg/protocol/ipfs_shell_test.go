@@ -3,15 +3,16 @@ package protocol_test
 import (
 	"context"
 	"encoding/json"
-	"github.com/ipfs/go-datastore/query"
-	"github.com/sonr-io/sonr/pkg/protocol"
-	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"testing"
 
+	"github.com/ipfs/go-datastore/query"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
+	"github.com/sonr-io/sonr/pkg/protocol"
+	"github.com/sonr-io/sonr/x/schema/types"
+
 	"github.com/ipfs/go-datastore"
-	shell "github.com/ipfs/go-ipfs-api"
 )
 
 const IPFSShellUrl = "localhost:5001"
@@ -55,53 +56,28 @@ func (m *mockCache) Close() error {
 }
 
 func TestIPFSShell_PutData(t *testing.T) {
+	ctx := context.Background()
 	cacheStore := new(mockCache)
 
-	type fields struct {
-		Shell *shell.Shell
-		cache datastore.Datastore
-	}
-	type args struct {
-		ctx    context.Context
-		schema *types.SchemaDefinition
-	}
-	var tests = []struct {
-		name    string
-		fields  fields
-		args    args
-		want    string
-		wantErr error
-	}{
-		{name: "test#1", fields: fields{
-			Shell: nil,
-			cache: nil,
-		}, args: args{
-			ctx: nil,
-			schema: &types.SchemaDefinition{
-				Creator: "did:snr:7Prd74ry1Uct87nZqL3ny7aR7Cg46JamVbJgk8azVgUm",
-				Label:   "test-label",
-			},
-		}, want: "QmW4Ghk82fyq4LsoBKwH5o66Zb1sEpZ735Tmn1yA7o1uGu", wantErr: nil},
-	}
+	i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
+	data, err := json.Marshal(&types.SchemaDefinition{
+		Creator: "snr1h48jyesl50ahruft5p350nmnycaegdej2pzkdx",
+		Label:   "test-label",
+	})
+	assert.NoError(t, err)
 
-			data, err := json.Marshal(tt.args.schema)
-			assert.NoError(t, err)
+	cid := "QmcHujytrGJ7LqiG38pr83WhZqgM2vLWGqsERVVVyqHLmS"
+	cacheStore.
+		On(
+			"Put",
+			ctx,
+			datastore.NewKey(cid),
+			data,
+		).
+		Return(nil)
 
-			cacheStore.
-				On("Put", nil, datastore.NewKey("QmW4Ghk82fyq4LsoBKwH5o66Zb1sEpZ735Tmn1yA7o1uGu"), data).
-				Return(tt.wantErr)
-
-			got, err := i.PutData(tt.args.ctx, data)
-
-			if tt.wantErr != nil {
-				assert.Equal(t, tt.wantErr, err)
-			} else {
-				assert.Equal(t, tt.want, got)
-			}
-		})
-	}
+	got, err := i.PutData(ctx, data)
+	assert.NoError(t, err)
+	assert.Equal(t, cid, got)
 }
