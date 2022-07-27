@@ -1,77 +1,88 @@
 package protocol
 
-//
-//import (
-//	"bytes"
-//	"context"
-//	"fmt"
-//	"io/ioutil"
-//
-//	"github.com/sonr-io/sonr/pkg/protocol"
-//	"github.com/sonr-io/sonr/pkg/store"
-//
-//	ipfslite "github.com/hsanjuan/ipfs-lite"
-//	"github.com/ipfs/go-cid"
-//	"github.com/ipld/go-ipld-prime/codec/dagjson"
-//	"github.com/ipld/go-ipld-prime/datamodel"
-//	basicnode "github.com/ipld/go-ipld-prime/node/basic"
-//	"github.com/sonr-io/sonr/pkg/host"
-//	st "github.com/sonr-io/sonr/x/schema/types"
-//)
-//
-//var _ protocol.IPFS = (*IPFSLite)(nil)
-//
-//// IPFSLite is an IPFS Lite implementation of ipfs.Protocol.
-//type IPFSLite struct {
-//	ctx       context.Context
-//	node      host.SonrHost
-//	dataStore *store.Memory
-//	peer      *ipfslite.Peer
-//}
-//
-//// NewIPFSLite creates a new IPFSLite instance with Host Implementation
-//func NewIPFSLite(ctx context.Context, host host.SonrHost) (*IPFSLite, error) {
-//	// Create IPFS Peer
-//	ds := store.NewMemoryStore()
-//	ipfsLite, err := ipfslite.New(ctx, ds.Batching(), host.Host(), host.Routing(), nil)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	p := &IPFSLite{
-//		ctx:       ctx,
-//		node:      host,
-//		dataStore: ds,
-//		peer:      ipfsLite,
-//	}
-//
-//	p.peer.Bootstrap(ipfslite.DefaultBootstrapPeers())
-//	return p, nil
-//}
-//
-//// DecodeCIDFromString decodes a CID string to a CID.
-//func DecodeCIDFromString(s string) (cid.Cid, error) {
-//	return cid.Decode(s)
-//}
-//
-//// GetData returns a file
-//func (i *IPFSLite) GetData(cid string) ([]byte, error) {
-//	// Decode CID from String
-//	c, err := DecodeCIDFromString(cid)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	// Get the file from IPFS
-//	rsc, err := i.peer.GetFile(i.ctx, c)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	defer rsc.Close()
-//	return ioutil.ReadAll(rsc)
-//}
-//
+import (
+	"bytes"
+	"context"
+	"errors"
+	"io/ioutil"
+
+	"github.com/sonr-io/sonr/pkg/protocol"
+	"github.com/sonr-io/sonr/pkg/store"
+
+	ipfslite "github.com/hsanjuan/ipfs-lite"
+	"github.com/ipfs/go-cid"
+
+	"github.com/sonr-io/sonr/pkg/host"
+)
+
+var _ protocol.IPFS = (*IPFSLite)(nil)
+
+// NewIPFSLite creates a new IPFSLite instance with Host Implementation
+func NewIPFSLite(ctx context.Context, host host.SonrHost) (*IPFSLite, error) {
+	// Create IPFS Peer
+	ds := store.NewMemoryStore()
+	ipfsLite, err := ipfslite.New(ctx, ds.Batching(), host.Host(), host.Routing(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	p := &IPFSLite{
+		ctx:       ctx,
+		node:      host,
+		dataStore: ds,
+		peer:      ipfsLite,
+	}
+
+	p.peer.Bootstrap(ipfslite.DefaultBootstrapPeers())
+	return p, nil
+}
+
+// IPFSLite is an IPFS Lite implementation of ipfs.Protocol.
+type IPFSLite struct {
+	ctx       context.Context
+	node      host.SonrHost
+	dataStore *store.Memory
+	peer      *ipfslite.Peer
+}
+
+func (i *IPFSLite) PinFile(ctx context.Context, cidstr string) error {
+	return errors.New("not implemented")
+}
+
+func (i *IPFSLite) RemoveFile(ctx context.Context, cidstr string) error {
+	return errors.New("not implemented")
+}
+
+func (i *IPFSLite) DagGet(ctx context.Context, ref string, out interface{}) error {
+	return errors.New("not implemented")
+}
+
+func (i *IPFSLite) DagPut(ctx context.Context, data interface{}, inputCodec, storeCodec string) (string, error) {
+	return "", errors.New("not implemented")
+}
+
+func (i *IPFSLite) GetData(ctx context.Context, cid string) ([]byte, error) {
+	// Decode CID from String
+	c, err := DecodeCIDFromString(cid)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the file from IPFS
+	rsc, err := i.peer.GetFile(i.ctx, c)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rsc.Close()
+	return ioutil.ReadAll(rsc)
+}
+
+// DecodeCIDFromString decodes a CID string to a CID.
+func DecodeCIDFromString(s string) (cid.Cid, error) {
+	return cid.Decode(s)
+}
+
 //// GetObjectSchema returns an object schema.
 //func (i *IPFSLite) GetObjectSchema(cid *cid.Cid) (datamodel.Node, error) {
 //	// Get the file from IPFS
@@ -92,27 +103,23 @@ package protocol
 //	fmt.Printf("the length of the node is %d\n", n.Length())
 //	return n, nil
 //}
-//
-//// PutData puts a file to IPFS and returns the CID.
-//func (i *IPFSLite) PutData(data []byte) (*cid.Cid, error) {
-//	// Create Reader for Data
-//	buffer := bytes.NewBuffer(data)
-//
-//	// Adds file to IPFS
-//	nd, err := i.peer.AddFile(i.ctx, buffer, nil)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	// Get Back the CID
-//	c := nd.Cid()
-//	return &c, nil
-//}
-//
-//func (i *IPFSLite) PinFile(cidstr string) error {
-//	panic("implement me")
-//}
-//
+
+// PutData puts a file to IPFS and returns the CID.
+func (i *IPFSLite) PutData(ctx context.Context, data []byte) (string, error) {
+	// Create Reader for Data
+	buffer := bytes.NewBuffer(data)
+
+	// Adds file to IPFS
+	nd, err := i.peer.AddFile(i.ctx, buffer, nil)
+	if err != nil {
+		return "", err
+	}
+
+	// Get Back the CID
+	c := nd.Cid()
+	return c.String(), nil
+}
+
 //// PutObjectSchema puts an object schema to IPFS and returns the CID.
 //func (i *IPFSLite) PutObjectSchema(doc *st.SchemaDefinition) (*cid.Cid, error) {
 //	// Create IPLD Node
@@ -160,13 +167,4 @@ package protocol
 //
 //	// Adds file to IPFS
 //	return i.PutData(buffer.Bytes())
-//}
-//
-//// RemoveFile removes a file from IPFS.
-//func (i *IPFSLite) RemoveFile(cidstr string) error {
-//	cid, err := DecodeCIDFromString(cidstr)
-//	if err != nil {
-//		return err
-//	}
-//	return i.peer.Remove(i.ctx, cid)
 //}
