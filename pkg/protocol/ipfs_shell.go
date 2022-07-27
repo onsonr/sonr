@@ -25,25 +25,34 @@ func NewIPFSShell(url string, cacheStore datastore.Datastore) *IPFSShell {
 }
 
 func (i *IPFSShell) LookUpData(ctx context.Context, cid string, data interface{}) error {
-	//timestamp := fmt.Sprintf("%d", time.Now().Unix())
-	outPath := filepath.Join(os.TempDir(), cid+".txt")
-
-	defer os.Remove(outPath)
-
-	if err := i.Get(cid, outPath); err != nil {
-		return err
-	}
-
-	buf, err := os.ReadFile(outPath)
+	exists, err := i.cache.Has(ctx, datastore.NewKey(cid))
 	if err != nil {
 		return err
 	}
 
-	if err = json.Unmarshal(buf, &data); err != nil {
+	if exists {
+		return nil
+	} else {
+		//timestamp := fmt.Sprintf("%d", time.Now().Unix())
+		outPath := filepath.Join(os.TempDir(), cid+".txt")
+
+		defer os.Remove(outPath)
+
+		if err := i.Get(cid, outPath); err != nil {
+			return err
+		}
+
+		buf, err := os.ReadFile(outPath)
+		if err != nil {
+			return err
+		}
+
+		if err = json.Unmarshal(buf, &data); err != nil {
+			return err
+		}
+
 		return err
 	}
-
-	return err
 }
 
 func (i *IPFSShell) GetData(ctx context.Context, cid string) ([]byte, error) {

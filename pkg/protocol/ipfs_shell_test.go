@@ -30,7 +30,8 @@ func (m *mockCache) Get(ctx context.Context, key datastore.Key) (value []byte, e
 }
 
 func (m *mockCache) Has(ctx context.Context, key datastore.Key) (exists bool, err error) {
-	panic("implement me")
+	args := m.Called(ctx, key)
+	return args.Bool(0), args.Error(1)
 }
 
 func (m *mockCache) GetSize(ctx context.Context, key datastore.Key) (size int, err error) {
@@ -91,9 +92,11 @@ func TestIPFSShell_LookUpData(t *testing.T) {
 		cache datastore.Datastore
 	}
 	type args struct {
-		ctx  context.Context
-		cid  string
-		data interface{}
+		ctx         context.Context
+		cid         string
+		data        interface{}
+		cacheExists interface{}
+		cacheError  error
 	}
 	var tests = []struct {
 		name    string
@@ -104,7 +107,9 @@ func TestIPFSShell_LookUpData(t *testing.T) {
 		{
 			name: "look-up-data-ok",
 			args: args{
-				cid: "QmcHujytrGJ7LqiG38pr83WhZqgM2vLWGqsERVVVyqHLmS",
+				ctx:         context.Background(),
+				cid:         "QmcHujytrGJ7LqiG38pr83WhZqgM2vLWGqsERVVVyqHLmS",
+				cacheExists: false,
 				data: &types.SchemaDefinition{
 					Creator: "snr1h48jyesl50ahruft5p350nmnycaegdej2pzkdx",
 					Label:   "test-label",
@@ -115,7 +120,9 @@ func TestIPFSShell_LookUpData(t *testing.T) {
 		{
 			name: "look-up-data-fail",
 			args: args{
-				cid: "QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv",
+				ctx:         context.Background(),
+				cid:         "QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv",
+				cacheExists: false,
 			},
 			wantErr: &fs.PathError{
 				Op:   "read",
@@ -131,19 +138,13 @@ func TestIPFSShell_LookUpData(t *testing.T) {
 			cacheStore := new(mockCache)
 
 			i := protocol.NewIPFSShell(IPFSShellUrl, cacheStore)
-			data, err := json.Marshal(tt.args.data)
-			assert.NoError(t, err)
 
 			cacheStore.
-				On(
-					"Get",
-					ctx,
-					datastore.NewKey(tt.args.cid),
-					data,
-				).
-				Return(nil)
+				On("Has", ctx, datastore.NewKey(tt.args.cid)).
+				Return(tt.args.cacheExists, tt.args.cacheError)
 
-			err = i.LookUpData(tt.args.ctx, tt.args.cid, tt.args.data)
+			err := i.LookUpData(tt.args.ctx, tt.args.cid, tt.args.data)
+			cacheStore.AssertExpectations(t)
 
 			if tt.wantErr != nil {
 				assert.Equal(t, tt.wantErr, err)
