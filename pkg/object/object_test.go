@@ -18,7 +18,7 @@ func CreateMockSchemaDefinition() (st.SchemaDefinition, map[string]interface{}) 
 		Label:   "testing schema",
 		Fields:  make([]*st.SchemaKindDefinition, 0),
 	}
-	for i := 1; i < 100; i++ {
+	for i := 1; i < 10000; i++ {
 		name := fmt.Sprintf("field-%d", i)
 		if i%2 == 0 {
 			def.Fields = append(def.Fields, &st.SchemaKindDefinition{
@@ -57,9 +57,8 @@ func CreateMockSchemaDefinition() (st.SchemaDefinition, map[string]interface{}) 
 }
 func Test_Object(t *testing.T) {
 	config := object.Config{}
-	config.WithSchemaImplementation(schemas.New("localhost", client.ConnEndpointType_LOCAL))
-	config.WithStorageEndpoint("localhost:5001")
-
+	config.WithSchemaImplementation(schemas.New("https://api.ipfs.sonr.ws", client.ConnEndpointType_LOCAL))
+	config.WithStorageEndpoint("https://api.ipfs.sonr.ws")
 	obj := object.New(&config)
 
 	t.Run("Should upload object", func(t *testing.T) {
@@ -69,7 +68,6 @@ func Test_Object(t *testing.T) {
 		fmt.Print(res)
 
 		data, err := obj.GetObject(res.Definition.Cid)
-
 		fmt.Print(data)
 	})
 }

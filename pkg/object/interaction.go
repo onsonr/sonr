@@ -55,5 +55,5 @@ func (ao *AppObjectInternalImpl) GetObject(cid string) (map[string]interface{}, 
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return dag, err
 }
