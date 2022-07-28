@@ -4,9 +4,13 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}, list []*st.SchemaKindDefinition) error {
+func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}) error {
+	if as.fields == nil {
+		return errSchemaFieldsNotFound
+	}
+
 	fields := make(map[string]st.SchemaKind)
-	for _, c := range list {
+	for _, c := range as.fields {
 		fields[c.Name] = c.Field
 	}
 

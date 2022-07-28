@@ -7,26 +7,28 @@ import (
 )
 
 func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
-	fields []*st.SchemaKindDefinition,
-	object map[string]interface{}) (datamodel.Node, error) {
+	object map[string]interface{}) error {
+	if as.fields == nil {
+		return errSchemaFieldsInvalid
+	}
 
-	err := as.VerifyObject(object, fields)
+	err := as.VerifyObject(object)
 
 	if err != nil {
 
-		return nil, errSchemaFieldsInvalid
+		return errSchemaFieldsInvalid
 	}
 
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
-	ma, err := nb.BeginMap(int64(len(fields)))
+	ma, err := nb.BeginMap(int64(len(as.fields)))
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	for _, t := range fields {
+	for _, t := range as.fields {
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
 		if t.Field != st.SchemaKind_STRUCT && t.Field != st.SchemaKind_MAP {
@@ -37,11 +39,13 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	buildErr := ma.Finish()
 
 	if buildErr != nil {
-		return nil, buildErr
+		return buildErr
 	}
 	node := nb.Build()
 
-	return node, nil
+	as.nodes = node
+
+	return nil
 }
 
 func AssignValueToNode(field st.SchemaKind, ma datamodel.MapAssembler, value interface{}) error {
