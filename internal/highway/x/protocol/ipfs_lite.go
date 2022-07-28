@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"github.com/ipfs/go-cid"
 	"io/ioutil"
 	"sync"
 
@@ -11,8 +12,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/store"
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
-	"github.com/ipfs/go-cid"
-
 	"github.com/sonr-io/sonr/pkg/host"
 )
 
@@ -60,12 +59,12 @@ func (i *IPFSLite) RemoveFile(ctx context.Context, cidstr string) error {
 	defer i.lock.Unlock()
 
 	// Decode CID from String
-	cid, err := DecodeCIDFromString(cidstr)
+	c, err := cid.Decode(cidstr)
 	if err != nil {
 		return err
 	}
 
-	return i.peer.Remove(ctx, cid)
+	return i.peer.Remove(ctx, c)
 }
 
 func (i *IPFSLite) DagGet(ctx context.Context, cidstr string, out interface{}) error {
@@ -73,12 +72,12 @@ func (i *IPFSLite) DagGet(ctx context.Context, cidstr string, out interface{}) e
 	defer i.lock.Unlock()
 
 	// Decode CID from String
-	cid, err := DecodeCIDFromString(cidstr)
+	c, err := cid.Decode(cidstr)
 	if err != nil {
 		return err
 	}
 
-	v, _ := i.peer.DAGService.Get(ctx, cid)
+	v, _ := i.peer.DAGService.Get(ctx, c)
 	if err != nil {
 		return err
 	}
@@ -94,29 +93,24 @@ func (i *IPFSLite) DagPut(ctx context.Context, data interface{}, inputCodec, sto
 	return "", errors.New("not implemented")
 }
 
-func (i *IPFSLite) GetData(ctx context.Context, cid string) ([]byte, error) {
+func (i *IPFSLite) GetData(ctx context.Context, cidstr string) ([]byte, error) {
 	i.lock.Lock()
 	defer i.lock.Unlock()
 
 	// Decode CID from String
-	c, err := DecodeCIDFromString(cid)
+	c, err := cid.Decode(cidstr)
 	if err != nil {
 		return nil, err
 	}
 
 	// Get the file from IPFS
-	rsc, err := i.peer.GetFile(i.ctx, c)
+	rsc, err := i.peer.GetFile(ctx, c)
 	if err != nil {
 		return nil, err
 	}
 
 	defer rsc.Close()
 	return ioutil.ReadAll(rsc)
-}
-
-// DecodeCIDFromString decodes a CID string to a CID.
-func DecodeCIDFromString(s string) (cid.Cid, error) {
-	return cid.Decode(s)
 }
 
 //// GetObjectSchema returns an object schema.
@@ -149,7 +143,7 @@ func (i *IPFSLite) PutData(ctx context.Context, data []byte) (string, error) {
 	buffer := bytes.NewBuffer(data)
 
 	// Adds file to IPFS
-	nd, err := i.peer.AddFile(i.ctx, buffer, nil)
+	nd, err := i.peer.AddFile(ctx, buffer, nil)
 	if err != nil {
 		return "", err
 	}
