@@ -52,14 +52,20 @@ func (i *IPFSLite) PinFile(ctx context.Context, cidstr string) error {
 	i.lock.Lock()
 	defer i.lock.Unlock()
 
-	return errors.New("not implemented")
+	return errors.New("not supported")
 }
 
 func (i *IPFSLite) RemoveFile(ctx context.Context, cidstr string) error {
 	i.lock.Lock()
 	defer i.lock.Unlock()
 
-	return errors.New("not implemented")
+	// Decode CID from String
+	cid, err := DecodeCIDFromString(cidstr)
+	if err != nil {
+		return err
+	}
+
+	return i.peer.Remove(ctx, cid)
 }
 
 func (i *IPFSLite) DagGet(ctx context.Context, ref string, out interface{}) error {
@@ -126,7 +132,7 @@ func DecodeCIDFromString(s string) (cid.Cid, error) {
 func (i *IPFSLite) PutData(ctx context.Context, data []byte) (string, error) {
 	i.lock.Lock()
 	defer i.lock.Unlock()
-	
+
 	// Create Reader for Data
 	buffer := bytes.NewBuffer(data)
 
