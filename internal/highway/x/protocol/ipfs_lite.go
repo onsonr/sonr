@@ -68,11 +68,23 @@ func (i *IPFSLite) RemoveFile(ctx context.Context, cidstr string) error {
 	return i.peer.Remove(ctx, cid)
 }
 
-func (i *IPFSLite) DagGet(ctx context.Context, ref string, out interface{}) error {
+func (i *IPFSLite) DagGet(ctx context.Context, cidstr string, out interface{}) error {
 	i.lock.Lock()
 	defer i.lock.Unlock()
 
-	return errors.New("not implemented")
+	// Decode CID from String
+	cid, err := DecodeCIDFromString(cidstr)
+	if err != nil {
+		return err
+	}
+
+	v, _ := i.peer.DAGService.Get(ctx, cid)
+	if err != nil {
+		return err
+	}
+
+	out = v
+	return nil
 }
 
 func (i *IPFSLite) DagPut(ctx context.Context, data interface{}, inputCodec, storeCodec string) (string, error) {
