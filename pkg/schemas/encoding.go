@@ -2,58 +2,64 @@ package schemas
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/codec/dagjson"
-	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-func (as *appSchemaInternalImpl) EncodeDagJson(node datamodel.Node) ([]byte, error) {
-	buffer := &bytes.Buffer{}
-	err := dagjson.Encode(node, buffer)
+func (as *appSchemaInternalImpl) EncodeDagJson() ([]byte, error) {
+	if as.nodes == nil {
+		return nil, errNodeNotFound
+	}
+
+	buffer := bytes.Buffer{}
+	err := dagjson.Encode(as.nodes, &buffer)
 
 	return buffer.Bytes(), err
 }
 
-func (as *appSchemaInternalImpl) EncodeDagCbor(node datamodel.Node) ([]byte, error) {
+func (as *appSchemaInternalImpl) EncodeDagCbor() ([]byte, error) {
+	if as.nodes == nil {
+		return nil, nil
+	}
+
 	buffer := &bytes.Buffer{}
-	err := dagcbor.Encode(node, buffer)
+	err := dagcbor.Encode(as.nodes, buffer)
 	return buffer.Bytes(), err
 }
 
-func (as *appSchemaInternalImpl) DecodeDagJson(buffer []byte) (datamodel.Node, error) {
+func (as *appSchemaInternalImpl) DecodeDagJson(buffer []byte) error {
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder()
 
 	reader := bytes.NewReader(buffer)
 	err := dagjson.Decode(nb, reader)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	node := nb.Build()
 
-	mn := node.MapIterator()
-	fmt.Print(mn)
-	return node, nil
+	as.nodes = node
+
+	return nil
 }
 
-func (as *appSchemaInternalImpl) DecodeDagCbor(buffer []byte) (datamodel.Node, error) {
+func (as *appSchemaInternalImpl) DecodeDagCbor(buffer []byte) error {
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder()
 
 	reader := bytes.NewReader(buffer)
 	err := dagcbor.Decode(nb, reader)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	node := nb.Build()
+	as.nodes = nb.Build()
 
-	return node, nil
+	return nil
 }
