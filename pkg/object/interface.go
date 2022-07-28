@@ -1,7 +1,5 @@
 package object
 
-import st "github.com/sonr-io/sonr/x/schema/types"
-
 /*
 	Underlying api definition of internal implementation of Objects
 	Higher level APIs implementing Object features
@@ -12,7 +10,7 @@ type AppObjectInternal interface {
 	/*
 		Persists an object definition to the storage configured within the module.
 	*/
-	CreateObject(label string, fields []*st.SchemaKindDefinition, object map[string]interface{}) (*ObjectUploadResult, error)
+	CreateObject(label string, object map[string]interface{}) (*ObjectUploadResult, error)
 
 	/*
 		Retrieves an
