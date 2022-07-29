@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"github.com/ipfs/go-cid"
 	"io/ioutil"
-	"sync"
+
+	"github.com/ipfs/go-cid"
 
 	"github.com/sonr-io/sonr/pkg/protocol"
 	"github.com/sonr-io/sonr/pkg/store"
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
+
 	"github.com/sonr-io/sonr/pkg/host"
 )
 
@@ -31,7 +32,6 @@ func NewIPFSLite(ctx context.Context, host host.SonrHost) (*IPFSLite, error) {
 		node:      host,
 		dataStore: ds,
 		peer:      ipfsLite,
-		lock:      sync.Mutex{},
 	}
 
 	p.peer.Bootstrap(ipfslite.DefaultBootstrapPeers())
@@ -44,20 +44,13 @@ type IPFSLite struct {
 	node      host.SonrHost
 	dataStore *store.Memory
 	peer      *ipfslite.Peer
-	lock      sync.Mutex
 }
 
 func (i *IPFSLite) PinFile(ctx context.Context, cidstr string) error {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-
 	return errors.New("not supported")
 }
 
 func (i *IPFSLite) RemoveFile(ctx context.Context, cidstr string) error {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-
 	// Decode CID from String
 	c, err := cid.Decode(cidstr)
 	if err != nil {
@@ -68,9 +61,6 @@ func (i *IPFSLite) RemoveFile(ctx context.Context, cidstr string) error {
 }
 
 func (i *IPFSLite) DagGet(ctx context.Context, cidstr string, out interface{}) error {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-
 	// Decode CID from String
 	c, err := cid.Decode(cidstr)
 	if err != nil {
@@ -87,16 +77,10 @@ func (i *IPFSLite) DagGet(ctx context.Context, cidstr string, out interface{}) e
 }
 
 func (i *IPFSLite) DagPut(ctx context.Context, data interface{}, inputCodec, storeCodec string) (string, error) {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-
 	return "", errors.New("not implemented")
 }
 
 func (i *IPFSLite) GetData(ctx context.Context, cidstr string) ([]byte, error) {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-
 	// Decode CID from String
 	c, err := cid.Decode(cidstr)
 	if err != nil {
@@ -136,9 +120,6 @@ func (i *IPFSLite) GetData(ctx context.Context, cidstr string) ([]byte, error) {
 
 // PutData puts a file to IPFS and returns the CID.
 func (i *IPFSLite) PutData(ctx context.Context, data []byte) (string, error) {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-
 	// Create Reader for Data
 	buffer := bytes.NewBuffer(data)
 
