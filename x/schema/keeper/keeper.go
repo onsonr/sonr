@@ -42,7 +42,8 @@ func NewKeeper(
 		storeKey:         storeKey,
 		memKey:           memKey,
 		paramstore:       ps,
-		capabilityKeeper: capabilityKeeper, bankKeeper: bankKeeper,
+		capabilityKeeper: capabilityKeeper,
+		bankKeeper:       bankKeeper,
 	}
 }
 

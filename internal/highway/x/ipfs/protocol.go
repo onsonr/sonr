@@ -114,9 +114,9 @@ func (i *IPFSProtocol) PutObjectSchema(doc *st.SchemaDefinition) (*cid.Cid, erro
 	}
 
 	// Add each field to the map
-	for k, t := range doc.GetFields() {
-		ma.AssembleKey().AssignString(k)
-		switch t {
+	for _, t := range doc.GetFields() {
+		ma.AssembleKey().AssignString(t.Name)
+		switch t.Field {
 		case st.SchemaKind_STRING:
 			ma.AssembleValue().AssignString("")
 		case st.SchemaKind_INT:
