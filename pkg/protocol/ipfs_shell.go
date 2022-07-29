@@ -7,7 +7,6 @@ import (
 	"errors"
 	"os"
 	"path"
-	"path/filepath"
 
 	"github.com/ipfs/go-datastore"
 	shell "github.com/ipfs/go-ipfs-api"
@@ -44,36 +43,6 @@ func (i *IPFSShell) DagGet(ctx context.Context, ref string, out interface{}) err
 
 func (i *IPFSShell) DagPut(ctx context.Context, data interface{}, inputCodec, storeCodec string) (string, error) {
 	panic("TODO")
-}
-
-func (i *IPFSShell) LookUpData(ctx context.Context, cid string, data interface{}) error {
-	exists, err := i.cache.Has(ctx, datastore.NewKey(cid))
-	if err != nil {
-		return err
-	}
-
-	if exists {
-		return nil
-	}
-
-	outPath := filepath.Join(os.TempDir(), cid+".txt")
-
-	defer os.Remove(outPath)
-
-	if err := i.shell.Get(cid, outPath); err != nil {
-		return err
-	}
-
-	buf, err := os.ReadFile(outPath)
-	if err != nil {
-		return err
-	}
-
-	if err = json.Unmarshal(buf, &data); err != nil {
-		return err
-	}
-
-	return err
 }
 
 func (i *IPFSShell) GetData(ctx context.Context, cid string) ([]byte, error) {
