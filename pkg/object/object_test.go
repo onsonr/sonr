@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/pkg/object"
 	"github.com/sonr-io/sonr/pkg/schemas"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -57,12 +58,11 @@ func CreateMockSchemaDefinition() (st.SchemaDefinition, map[string]interface{}) 
 func Test_Object(t *testing.T) {
 	config := object.Config{}
 	def, jsonData := CreateMockSchemaDefinition()
-	config.WithSchemaImplementation(schemas.New(def.Fields, nil))
-	config.WithStorageEndpoint("https://api.ipfs.sonr.ws")
+	config.WithStorage(shell.NewShell("localhost:5001"))
 	obj := object.NewWithConfig(&config)
 
 	t.Run("Should upload object", func(t *testing.T) {
-		res, err := obj.CreateObject("testing", jsonData)
+		res, err := obj.CreateObject(schemas.New(def.Fields, nil), "testing", jsonData)
 		t.Error(err)
 		fmt.Print(res)
 

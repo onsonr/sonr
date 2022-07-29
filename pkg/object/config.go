@@ -1,20 +1,15 @@
 package object
 
 import (
-	"github.com/sonr-io/sonr/pkg/schemas"
+	shell "github.com/ipfs/go-ipfs-api"
 )
 
 type Config struct {
-	schemaImpl      schemas.AppSchemaInternal
-	storageEndpoint string
+	storeImpl *shell.Shell
 }
 
-func (c *Config) WithSchemaImplementation(schema schemas.AppSchemaInternal) {
-	c.schemaImpl = schema
-}
-
-func (c *Config) WithStorageEndpoint(uri string) {
-	c.storageEndpoint = uri
+func (c *Config) WithStorage(store *shell.Shell) {
+	c.storeImpl = store
 }
 
 type ObjectConfiguration = func(config *Config)

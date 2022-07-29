@@ -4,23 +4,25 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/sonr-io/sonr/pkg/schemas"
 )
 
 func (ao *AppObjectInternalImpl) CreateObject(
+	schema schemas.AppSchemaInternal,
 	label string,
 	object map[string]interface{}) (*ObjectUploadResult, error) {
-	err := ao.schemaInternal.VerifyObject(object)
+	err := schema.VerifyObject(object)
 
 	if err != nil {
 		return nil, err
 	}
 
-	err = ao.schemaInternal.BuildNodesFromDefinition(object)
+	err = schema.BuildNodesFromDefinition(object)
 	if err != nil {
 		return nil, err
 	}
 
-	enc, err := ao.schemaInternal.EncodeDagJson()
+	enc, err := schema.EncodeDagJson()
 
 	if err != nil {
 		return nil, err

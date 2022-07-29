@@ -18,6 +18,9 @@ type ObjectDefinition struct {
 	Cid   string
 }
 
+/*
+	Object definition to be returned after object creation
+*/
 type ObjectUploadResult struct {
 	Code       int32
 	Definition *ObjectDefinition
@@ -25,21 +28,18 @@ type ObjectUploadResult struct {
 }
 
 type AppObjectInternalImpl struct {
-	schemaInternal schemas.AppSchemaInternal
-	shell          *shell.Shell
+	shell *shell.Shell
 }
 
-func New(schemaImpl schemas.AppSchemaInternal, storageEndpoint string) AppObjectInternal {
+func New(schemaImpl schemas.AppSchemaInternal, shell *shell.Shell) AppObjectInternal {
 	return &AppObjectInternalImpl{
-		schemaInternal: schemaImpl,
-		shell:          shell.NewShell(storageEndpoint),
+		shell: shell,
 	}
 }
 
 func NewWithConfig(c *Config) AppObjectInternal {
 
 	return &AppObjectInternalImpl{
-		schemaInternal: c.schemaImpl,
-		shell:          shell.NewShell(c.storageEndpoint),
+		shell: c.storeImpl,
 	}
 }
