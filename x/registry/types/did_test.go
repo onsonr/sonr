@@ -1,3 +1,3 @@
 package types
 
-func Testing()
+func Testing() {}
