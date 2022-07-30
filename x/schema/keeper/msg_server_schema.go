@@ -17,6 +17,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if err != nil {
 		return nil, err
 	}
+	k.Logger(ctx).Info("msg validation successful")
 
 	accts := msg.GetSigners()
 	if len(accts) < 1 {
@@ -24,7 +25,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	creator_did := msg.GetCreatorDid()
-
+	k.Logger(ctx).Info(fmt.Sprintf("Creating schema for creator did %s", creator_did))
 	guid := k.GenerateKeyForDID()
 
 	if err != nil {
@@ -33,7 +34,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 
 	addr := string(guid)
 	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", addr))
-
+	k.Logger(ctx).Info(fmt.Sprintf("Creating schema with did %s", what_is_did))
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +44,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	cid_str, err := k.PinContent(schemaDef)
-
+	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
 	}
