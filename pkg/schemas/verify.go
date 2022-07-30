@@ -1,6 +1,9 @@
 package schemas
 
 import (
+	"errors"
+	"reflect"
+
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -26,6 +29,16 @@ func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}) error 
 	return nil
 }
 
+func (as *appSchemaInternalImpl) VerifyList(lst []interface{}) error {
+	for val := range lst {
+		if reflect.TypeOf(val) != reflect.TypeOf(lst[0]) {
+			return errors.New("array type is not of uniform values")
+		}
+	}
+
+	return nil
+}
+
 // Current supported IPLD types, will be adding more once supporting of Links and Complex types (Object)
 func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 	switch value.(type) {
@@ -39,6 +52,14 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_STRING
 	case []byte:
 		return fieldType == st.SchemaKind_BYTES
+	case []int:
+		return fieldType == st.SchemaKind_LIST
+	case []bool:
+		return fieldType == st.SchemaKind_LIST
+	case []float64:
+		return fieldType == st.SchemaKind_LIST
+	case []string:
+		return fieldType == st.SchemaKind_LIST
 	case interface{}:
 		return fieldType == st.SchemaKind_ANY
 	default:
