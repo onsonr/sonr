@@ -113,6 +113,12 @@ func (as *appSchemaInternalImpl) BuildNodeFromList(lst []interface{}) (datamodel
 		case int:
 			lstItem := interface{}(val).(int)
 			la.AssembleValue().AssignInt(int64(lstItem))
+		case int32:
+			lstItem := interface{}(val).(int)
+			la.AssembleValue().AssignInt(int64(lstItem))
+		case int64:
+			lstItem := interface{}(val).(int)
+			la.AssembleValue().AssignInt(int64(lstItem))
 		case float64:
 			lstItem := interface{}(val).(float64)
 			la.AssembleValue().AssignFloat(lstItem)
