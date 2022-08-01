@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -13,23 +13,18 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/google/uuid"
-	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/spf13/viper"
-)
 
-var (
-	url        = viper.GetString("IPFS_API_READ")
-	ipfs_inter = shell.NewShell(url)
+	"github.com/sonr-io/sonr/x/schema/types"
 )
 
 func (k Keeper) LookUpContent(cid string, content interface{}) error {
-	time_stamp := string(rune(time.Now().Unix()))
+	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
 
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
+
 	defer os.Remove(out_path)
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(IPFSShellURL)
 
 	if err != nil {
 		return err
@@ -50,14 +45,6 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	}
 
 	return nil
-}
-
-func (k Keeper) PinContent(payload interface{}) (string, error) {
-	b, err := json.Marshal(payload)
-	if err != nil {
-		return "", err
-	}
-	return ipfs_inter.Add(bytes.NewReader(b))
 }
 
 func (k Keeper) GenerateKeyForDID() string {
@@ -90,7 +77,7 @@ func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []typ
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals []types.WhatIs = make([]types.WhatIs, 0)
+	var vals = make([]types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
 		var instance types.WhatIs
 		error := k.cdc.Unmarshal(iterator.Value(), &instance)
@@ -114,7 +101,7 @@ func (k Keeper) GetWhatIsFromLabel(ctx sdk.Context, label string) (val []types.W
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals []types.WhatIs = make([]types.WhatIs, 0)
+	var vals = make([]types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
 		var instance types.WhatIs
 		k.cdc.MustUnmarshal(iterator.Value(), &instance)
@@ -147,4 +134,18 @@ func (k Keeper) GetWhatIs(ctx sdk.Context, id string) (val types.WhatIs, found b
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// Returns all what_is definitions within the keeper.
+func (k Keeper) GetAllWhatIs(ctx sdk.Context) (list []types.WhatIs) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.WhatIs
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+	return
 }
