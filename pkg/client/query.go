@@ -4,6 +4,7 @@ import (
 	"context"
 
 	rt "github.com/sonr-io/sonr/x/registry/types"
+	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
 )
 
@@ -92,4 +93,29 @@ func (c *Client) QueryWhoIsByController(controller string) (*rt.WhoIs, error) {
 		return nil, err
 	}
 	return res.GetWhoIs(), nil
+}
+
+func (c *Client) QueryWhatIsByController(creator string, did string) (*st.WhatIs, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	defer grpcConn.Close()
+	if err != nil {
+		return nil, err
+	}
+	qc := st.NewQueryClient(grpcConn)
+
+	// We then call the QueryWhoIs method on this client.
+	res, err := qc.WhatIs(context.Background(), &st.QueryWhatIsRequest{
+		Creator: creator,
+		Did:     creator,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.WhatIs, nil
 }

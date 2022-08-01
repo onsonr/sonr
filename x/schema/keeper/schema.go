@@ -5,8 +5,6 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -30,13 +28,13 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 
 	defer os.Remove(out_path)
 
-	resp, err := http.Get(url)
+	err := ipfs_inter.Get(cid, out_path)
 
 	if err != nil {
 		return err
 	}
 
-	buf, err := io.ReadAll(resp.Body)
+	buf, err := os.ReadFile(out_path)
 
 	if err != nil {
 		return err
