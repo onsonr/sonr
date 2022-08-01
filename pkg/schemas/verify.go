@@ -30,7 +30,7 @@ func (as *appSchemaInternalImpl) VerifyObject(doc map[string]interface{}) error 
 }
 
 func (as *appSchemaInternalImpl) VerifyList(lst []interface{}) error {
-	for val := range lst {
+	for _, val := range lst {
 		if reflect.TypeOf(val) != reflect.TypeOf(lst[0]) {
 			return errors.New("array type is not of uniform values")
 		}

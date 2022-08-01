@@ -34,7 +34,10 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
 		if t.Field != st.SchemaKind_STRUCT && t.Field != st.SchemaKind_MAP {
-			as.AssignValueToNode(t.Field, ma, object[k])
+			err = as.AssignValueToNode(t.Field, ma, object[k])
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -105,7 +108,7 @@ func (as *appSchemaInternalImpl) BuildNodeFromList(lst []interface{}) (datamodel
 		return nil, err
 	}
 
-	for val := range lst {
+	for _, val := range lst {
 		switch lst[0].(type) {
 		case int:
 			lstItem := interface{}(val).(int)

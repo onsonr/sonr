@@ -74,6 +74,15 @@ func Test_IPLD_Nodes(t *testing.T) {
 			Field: st.SchemaKind_LIST,
 		})
 
+		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+			Name:  "field-4",
+			Field: st.SchemaKind_STRING,
+		})
+		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+			Name:  "field-5",
+			Field: st.SchemaKind_LIST,
+		})
+
 		schema := schemas.New(def.Fields, &whatIs)
 
 		obj := map[string]interface{}{
@@ -81,6 +90,11 @@ func Test_IPLD_Nodes(t *testing.T) {
 			"field-2": 2.0,
 			"field-3": []int{
 				1, 2, 3, 4,
+			},
+			"field-4": "hey there",
+			"field-5": []string{
+				"hey",
+				"there",
 			},
 		}
 		err := schema.BuildNodesFromDefinition(obj)
