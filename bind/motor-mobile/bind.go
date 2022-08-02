@@ -15,7 +15,7 @@ var (
 	errWalletNotExists = errors.New("mpc wallet does not exist")
 )
 
-var instance *mtr.MotorNode
+var instance mtr.MotorNode
 
 func Init(buf []byte) ([]byte, error) {
 	// Unmarshal the request
@@ -73,12 +73,29 @@ func Login(buf []byte) ([]byte, error) {
 	}
 }
 
+func CreateSchema(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request apiv1.CreateSchemaRequest
+	if err := json.Unmarshal(buf, &request); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.CreateSchema(request); err == nil {
+		return json.Marshal(res)
+	} else {
+		return nil, err
+	}
+}
+
 // Address returns the address of the wallet.
 func Address() string {
 	if instance == nil {
 		return ""
 	}
-	addr, err := instance.Wallet.Address()
+	addr, err := instance.GetWallet().Address()
 	if err != nil {
 		return ""
 	}
@@ -87,7 +104,7 @@ func Address() string {
 
 // Balance returns the balance of the wallet.
 func Balance() int {
-	return int(instance.Balance())
+	return int(instance.GetBalance())
 }
 
 // func Connect() error {
@@ -107,7 +124,7 @@ func DidDoc() string {
 	if instance == nil {
 		return ""
 	}
-	buf, err := instance.DIDDocument.MarshalJSON()
+	buf, err := instance.GetDIDDocument().MarshalJSON()
 	if err != nil {
 		return ""
 	}

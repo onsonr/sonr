@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -42,7 +41,7 @@ func Test_CreateAccount(t *testing.T) {
 		fmt.Printf("stored psk? %v\n", storeKey(fmt.Sprintf("psk%s", m.Address), res.AesPsk))
 	}
 
-	b := m.Balance()
+	b := m.GetBalance()
 	log.Println("balance:", b)
 
 	// Print the address of the wallet
@@ -69,7 +68,7 @@ func Test_Login(t *testing.T) {
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", m.Balance())
+			fmt.Println("balance: ", m.GetBalance())
 			fmt.Println("address: ", m.Address)
 		}
 	})
@@ -99,7 +98,7 @@ func Test_Login(t *testing.T) {
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", m.Balance())
+			fmt.Println("balance: ", m.GetBalance())
 			fmt.Println("address: ", m.Address)
 		}
 	})
@@ -149,15 +148,14 @@ func Test_CreateSchema(t *testing.T) {
 	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO CREATE SCHEMA
-	createSchemaRequest, err := json.Marshal(prt.CreateSchemaRequest{
+	createSchemaRequest := prt.CreateSchemaRequest{
 		Label: "TestUser",
 		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
 			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
 			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
 			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
 		},
-	})
-	assert.NoError(t, err, "request marshals")
+	}
 	resp, err := m.CreateSchema(createSchemaRequest)
 	assert.NoError(t, err, "schema created successfully")
 

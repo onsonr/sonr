@@ -14,7 +14,7 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func (mtr *MotorNode) CreateAccount(request rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
+func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
 	// create motor
 	fmt.Printf("initializing motor... ")
 	if err := initMotor(mtr); err != nil {
@@ -109,7 +109,7 @@ func (mtr *MotorNode) CreateAccount(request rtmv1.CreateAccountRequest) (rtmv1.C
 	}, err
 }
 
-func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
+func createWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
@@ -134,7 +134,7 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 	return resp.TxResponse, nil
 }
 
-func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
+func updateWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err

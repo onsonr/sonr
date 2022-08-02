@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/sonr-io/sonr/pkg/client"
@@ -10,11 +9,7 @@ import (
 	mt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func (mtr *MotorNode) CreateSchema(requestBytes []byte) (mt.CreateSchemaResponse, error) {
-	var request mt.CreateSchemaRequest
-	if err := json.Unmarshal(requestBytes, &request); err != nil {
-		return mt.CreateSchemaResponse{}, fmt.Errorf("unmarshal request: %s", err)
-	}
+func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error) {
 
 	listFields, err := convertFields(request.Fields)
 	if err != nil {

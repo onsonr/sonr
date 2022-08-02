@@ -13,7 +13,7 @@ import (
 )
 
 // Login creates a motor node from a LoginRequest
-func (mtr *MotorNode) Login(request rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
+func (mtr *motorNodeImpl) Login(request rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
 	if request.Did == "" {
 		return rtmv1.LoginResponse{}, fmt.Errorf("did must be provided")
 	}

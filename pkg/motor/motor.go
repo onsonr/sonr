@@ -13,9 +13,28 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
+	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-type MotorNode struct {
+type MotorNode interface {
+	GetDeviceID() string
+
+	GetAddress() string
+	GetBalance() int64
+
+	GetClient() *client.Client
+	GetWallet() *crypto.MPCWallet
+	GetPubKey() *secp256k1.PubKey
+	GetDID() did.DID
+	GetDIDDocument() did.Document
+	GetHost() host.SonrHost
+
+	CreateAccount(rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error)
+	Login(rtmv1.LoginRequest) (rtmv1.LoginResponse, error)
+
+	CreateSchema(rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error)
+}
+type motorNodeImpl struct {
 	DeviceID    string
 	Cosmos      *client.Client
 	Wallet      *crypto.MPCWallet
@@ -32,13 +51,13 @@ type MotorNode struct {
 	unusedShards  [][]byte
 }
 
-func EmptyMotor(id string) *MotorNode {
-	return &MotorNode{
+func EmptyMotor(id string) *motorNodeImpl {
+	return &motorNodeImpl{
 		DeviceID: id,
 	}
 }
 
-func initMotor(mtr *MotorNode, options ...crypto.WalletOption) (err error) {
+func initMotor(mtr *motorNodeImpl, options ...crypto.WalletOption) (err error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 
@@ -75,12 +94,36 @@ func initMotor(mtr *MotorNode, options ...crypto.WalletOption) (err error) {
 		return err
 	}
 
-	// Create MotorNode
+	// Create motorNodeImpl
 	return nil
 }
 
+func (m *motorNodeImpl) GetDeviceID() string {
+	return m.DeviceID
+}
+
+func (m *motorNodeImpl) GetAddress() string {
+	return m.Address
+}
+
+func (m *motorNodeImpl) GetWallet() *crypto.MPCWallet {
+	return m.Wallet
+}
+func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
+	return m.PubKey
+}
+func (m *motorNodeImpl) GetDID() did.DID {
+	return m.DID
+}
+func (m *motorNodeImpl) GetDIDDocument() did.Document {
+	return m.DIDDocument
+}
+func (m *motorNodeImpl) GetHost() host.SonrHost {
+	return m.SonrHost
+}
+
 // Checking the balance of the wallet.
-func (m *MotorNode) Balance() int64 {
+func (m *motorNodeImpl) GetBalance() int64 {
 	cs, err := m.Cosmos.CheckBalance(m.Address)
 	if err != nil {
 		return 0
@@ -91,8 +134,12 @@ func (m *MotorNode) Balance() int64 {
 	return cs[0].Amount.Int64()
 }
 
+func (m *motorNodeImpl) GetClient() *client.Client {
+	return m.Cosmos
+}
+
 // GetVerificationMethod returns the VerificationMethod for the given party.
-func (w *MotorNode) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
+func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
 	vmdid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s", strings.TrimPrefix(w.Address, "snr"), id))
 	if err != nil {
 		return nil, err
