@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/tx"
@@ -18,13 +19,13 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 	// decode request
 	var request rtmv1.CreateAccountRequest
 	if err := json.Unmarshal(requestBytes, &request); err != nil {
-		return rtmv1.CreateAccountResponse{}, err
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	// create motor
 	fmt.Printf("initializing motor... ")
 	if err := initMotor(mtr); err != nil {
-		return rtmv1.CreateAccountResponse{}, nil
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -32,7 +33,7 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 	fmt.Printf("requesting initial balance... ")
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, nil
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -40,7 +41,7 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 	fmt.Printf("creating shards... ")
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, nil
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("create shards: %s", err)
 	}
 	mtr.deviceShard = deviceShard
 	mtr.sharedShard = sharedShard
@@ -51,7 +52,7 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 	// Create the DID Document
 	doc, err := did.NewDocument(mtr.DID.String())
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, nil
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("create DID document: %s", err)
 	}
 	mtr.DIDDocument = doc
 
@@ -59,7 +60,7 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 	fmt.Printf("creating account... ")
 	vc := vault.New()
 	if _, err := createWhoIs(mtr); err != nil {
-		return rtmv1.CreateAccountResponse{}, nil
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -67,19 +68,19 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 	fmt.Printf("encrypting shards... ")
 	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, nil
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
 	}
 
 	// encrypt pskShard with psk (must be generated)
 	pskShard, psk, err := pskEncrypt(mtr.sharedShard)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("encrypt psk shards: %s", err)
 	}
 
 	// password protect the recovery shard
 	pwShard, err := crypto.AesEncryptWithPassword(request.Password, mtr.recoveryShard)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -94,7 +95,7 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 		pwShard,
 	)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -104,7 +105,7 @@ func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountRes
 
 	// update whois
 	if _, err = updateWhoIs(mtr); err != nil {
-		return rtmv1.CreateAccountResponse{}, err
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -132,9 +133,11 @@ func createWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	if resp.TxResponse.RawLog != "[]" {
-		return nil, errors.New(resp.TxResponse.RawLog)
+	cwir := &rt.MsgCreateWhoIsResponse{}
+	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cwir); err != nil {
+		return nil, err
 	}
+
 	return resp.TxResponse, nil
 }
 
@@ -155,9 +158,11 @@ func updateWhoIs(m *MotorNode) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	if resp.TxResponse.RawLog != "[]" {
-		return nil, errors.New(resp.TxResponse.RawLog)
+	cwir := &rt.MsgUpdateWhoIsResponse{}
+	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cwir); err != nil {
+		return nil, err
 	}
+
 	return resp.TxResponse, nil
 }
 
