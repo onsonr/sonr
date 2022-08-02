@@ -1,0 +1,94 @@
+package schemas
+
+import (
+	"errors"
+
+	"github.com/ipld/go-ipld-prime/datamodel"
+	st "github.com/sonr-io/sonr/x/schema/types"
+)
+
+var (
+	errSchemaFieldsInvalid  = errors.New("supplied Schema is invalid")
+	errSchemaFieldsNotFound = errors.New("No Schema Fields found")
+	errNodeNotFound         = errors.New("No object definition built from schema")
+)
+
+/*
+	Underyling api definition of internal implementation of Schemas.
+	Higher level APIs implementing schema features
+
+	Version: 0.1.0
+*/
+type AppSchemaInternal interface {
+
+	/*
+		Builds a linkage of IPLD nodes from the provided schema definition
+		returns the `Node` and assigns it to the given id internally.
+	*/
+	BuildNodesFromDefinition(object map[string]interface{}) error
+
+	/*
+		Returns an error if any of the keys within provided data dont match the given schema definition
+		useful for verifying
+	*/
+	VerifyObject(doc map[string]interface{}) error
+
+	/*
+		Encodes a given IPLD Node as JSON
+	*/
+	EncodeDagJson() ([]byte, error)
+
+	/*
+		Encodes a given IPLD Node as CBOR
+	*/
+	EncodeDagCbor() ([]byte, error)
+
+	/*
+		Encodes a given IPLD Node as CBOR
+	*/
+	DecodeDagJson(buffer []byte) error
+
+	/*
+		Decodes a given IPLD Node as CBOR
+	*/
+	DecodeDagCbor(buffer []byte) error
+
+	/*
+		Returns a list of SchemaKindDefinitions, composing the schema
+	*/
+	GetSchema() ([]*st.SchemaKindDefinition, error)
+
+	/*
+		Returns top level node of a hydrated schema
+	*/
+	GetNode() (datamodel.Node, error)
+
+	/*
+		Get an IPLD object as an iterator
+	*/
+	GetPath() (datamodel.ListIterator, error)
+}
+
+type Encoding int
+
+const (
+	EncType_DAG_CBOR Encoding = iota
+	EncType_DAG_JSON
+)
+
+type appSchemaInternalImpl struct {
+	fields []*st.SchemaKindDefinition
+	whatIs *st.WhatIs
+	nodes  datamodel.Node
+	next   *appSchemaInternalImpl
+}
+
+func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) AppSchemaInternal {
+	asi := &appSchemaInternalImpl{
+		fields: fields,
+		whatIs: whatIs,
+		nodes:  nil,
+	}
+
+	return asi
+}

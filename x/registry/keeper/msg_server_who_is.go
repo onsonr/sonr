@@ -95,9 +95,14 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	for k, v := range msg.GetMetadata() {
 		val.Metadata[k] = v
 	}
+	controllerId, err := doc.GetController(val.DidDocument.DID())
+
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, err.Error())
+	}
 
 	// Add remaining entries to update the whois
-	val.Controllers = doc.ControllersAsString()
+	val.Controllers = append(val.Controllers, controllerId.String())
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
 	k.SetWhoIs(ctx, val)

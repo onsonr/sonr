@@ -471,8 +471,11 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Queries a Schema by creator and did
 	Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error)
+	// Queries a whatis by creator and did
 	WhatIs(ctx context.Context, in *QueryWhatIsRequest, opts ...grpc.CallOption) (*QueryWhatIsResponse, error)
+	// Queries all whatIs definitions supports pagination
 	WhatIsAll(ctx context.Context, in *QueryAllWhatIsRequest, opts ...grpc.CallOption) (*QueryAllWhatIsResponse, error)
 }
 
@@ -524,8 +527,11 @@ func (c *queryClient) WhatIsAll(ctx context.Context, in *QueryAllWhatIsRequest, 
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Queries a Schema by creator and did
 	Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error)
+	// Queries a whatis by creator and did
 	WhatIs(context.Context, *QueryWhatIsRequest) (*QueryWhatIsResponse, error)
+	// Queries all whatIs definitions supports pagination
 	WhatIsAll(context.Context, *QueryAllWhatIsRequest) (*QueryAllWhatIsResponse, error)
 }
 
