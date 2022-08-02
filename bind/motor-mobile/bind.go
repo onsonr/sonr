@@ -95,7 +95,11 @@ func Address() string {
 	if instance == nil {
 		return ""
 	}
-	addr, err := instance.GetWallet().Address()
+	wallet := instance.GetWallet()
+	if wallet == nil {
+		return ""
+	}
+	addr, err := wallet.Address()
 	if err != nil {
 		return ""
 	}
@@ -124,7 +128,11 @@ func DidDoc() string {
 	if instance == nil {
 		return ""
 	}
-	buf, err := instance.GetDIDDocument().MarshalJSON()
+	doc := instance.GetDIDDocument()
+	if doc == nil {
+		return ""
+	}
+	buf, err := doc.MarshalJSON()
 	if err != nil {
 		return ""
 	}
