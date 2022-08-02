@@ -2,9 +2,9 @@ package motor
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
+	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/tx"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	mt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -13,12 +13,12 @@ import (
 func (mtr *MotorNode) CreateSchema(requestBytes []byte) (mt.CreateSchemaResponse, error) {
 	var request mt.CreateSchemaRequest
 	if err := json.Unmarshal(requestBytes, &request); err != nil {
-		return mt.CreateSchemaResponse{}, fmt.Errorf("error unmarshalling request: %s", err)
+		return mt.CreateSchemaResponse{}, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	listFields, err := convertFields(request.Fields)
 	if err != nil {
-		return mt.CreateSchemaResponse{}, fmt.Errorf("error processing fields: %s", err)
+		return mt.CreateSchemaResponse{}, fmt.Errorf("process fields: %s", err)
 	}
 	createSchemaMsg := st.NewMsgCreateSchema(&st.SchemaDefinition{
 		Creator: mtr.Address,
@@ -28,23 +28,22 @@ func (mtr *MotorNode) CreateSchema(requestBytes []byte) (mt.CreateSchemaResponse
 
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.schema.MsgCreateSchema", createSchemaMsg)
 	if err != nil {
-		return mt.CreateSchemaResponse{}, err
+		return mt.CreateSchemaResponse{}, fmt.Errorf("sign tx with wallet: %s", err)
 	}
 
 	resp, err := mtr.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
-		return mt.CreateSchemaResponse{}, err
+		return mt.CreateSchemaResponse{}, fmt.Errorf("broadcast tx: %s", err)
 	}
 
-	if resp.TxResponse.RawLog != "[]" {
-		return mt.CreateSchemaResponse{}, errors.New(resp.TxResponse.RawLog)
+	csresp := &st.MsgCreateSchemaResponse{}
+	if err := client.DecodeTxResponseData(resp.TxResponse.Data, csresp); err != nil {
+		return mt.CreateSchemaResponse{}, fmt.Errorf("decode MsgCreateSchemaResponse: %s", err)
 	}
 
-	fmt.Print("done: ")
-	fmt.Println(resp)
-
-	// TODO
-	return mt.CreateSchemaResponse{}, nil
+	return mt.CreateSchemaResponse{
+		Did: csresp.WhatIs.Did,
+	}, nil
 }
 
 func convertFields(fields map[string]mt.CreateSchemaRequest_SchemaKind) ([]*st.SchemaKindDefinition, error) {

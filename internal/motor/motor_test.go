@@ -8,7 +8,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/stretchr/testify/assert"
 	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -131,8 +133,9 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 }
 
 func Test_CreateSchema(t *testing.T) {
-	did := "snr1862dnv4m7ecskn94vzryn8hcsdz7zw73h00dmx"
+	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
 	pskKey := loadKey(fmt.Sprintf("psk%s", did))
+	fmt.Printf("psk: %x\n", pskKey)
 	if pskKey == nil || len(pskKey) != 32 {
 		t.Errorf("could not load psk key")
 		return
@@ -159,8 +162,19 @@ func Test_CreateSchema(t *testing.T) {
 		},
 	})
 	assert.NoError(t, err, "request marshals")
-	_, err = m.CreateSchema(createSchemaRequest)
+	resp, err := m.CreateSchema(createSchemaRequest)
 	assert.NoError(t, err, "schema created successfully")
+
+	fmt.Printf("success: %s\n", resp.Did)
+}
+
+func Test_DecodeTxData(t *testing.T) {
+	data := "0A91010A242F736F6E72696F2E736F6E722E72656769737472792E4D736743726561746557686F497312691267122A736E723134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A35371A31122F6469643A736E723A3134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A353730BC8FA197063801"
+
+	mcr := &rt.MsgCreateWhoIsResponse{}
+	err := client.DecodeTxResponseData(data, mcr)
+	assert.NoError(t, err, "decodes tx data successfully")
+	assert.Equal(t, "snr1470q6m4vwme74j7m5s2cdw995z5ynktzrm7z57", mcr.WhoIs.Owner)
 }
 
 func storeKey(name string, aesKey []byte) bool {
