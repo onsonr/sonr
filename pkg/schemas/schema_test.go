@@ -31,7 +31,6 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 }
 
 func Test_IPLD_Nodes(t *testing.T) {
-
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
 		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
