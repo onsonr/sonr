@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package sonrio.sonr.schema;
 
+import "common/link.proto";
+
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
 enum SchemaKind {
@@ -25,6 +27,9 @@ message SchemaKindDefinition {
   string name = 1;
   // Type of a single schema property
   SchemaKind field = 2;
+
+  // Optional field for a link context if `SchemaKind` is of type `Link`
+  common.LinkKind link_kind = 3;
 }
 
 // Schema defines the shapes of schemas on Sonr
