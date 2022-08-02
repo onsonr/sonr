@@ -2,13 +2,12 @@ package client
 
 import (
 	"context"
-	"errors"
+	"encoding/hex"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-
-	// "github.com/sonr-io/sonr/pkg/crypto"
-
+	"github.com/gogo/protobuf/proto"
 	"google.golang.org/grpc"
 )
 
@@ -19,6 +18,9 @@ func (c *Client) BroadcastTx(txRawBytes []byte) (*txtypes.BroadcastTxResponse, e
 		c.GetRPCAddress(),   // Or your gRPC server address.
 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
+	if err != nil {
+		return nil, err
+	}
 	defer grpcConn.Close()
 
 	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
@@ -29,7 +31,7 @@ func (c *Client) BroadcastTx(txRawBytes []byte) (*txtypes.BroadcastTxResponse, e
 	grpcRes, err := txClient.BroadcastTx(
 		context.Background(),
 		&txtypes.BroadcastTxRequest{
-			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
+			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_BLOCK,
 			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
 		},
 	)
@@ -37,7 +39,7 @@ func (c *Client) BroadcastTx(txRawBytes []byte) (*txtypes.BroadcastTxResponse, e
 		return nil, err
 	}
 	if grpcRes.GetTxResponse().Code != 0 {
-		return nil, errors.New(fmt.Sprintf("Failed to broadcast transaction: %s", grpcRes.GetTxResponse().RawLog))
+		return nil, fmt.Errorf("failed to broadcast transaction: %s", grpcRes.GetTxResponse().RawLog)
 	}
 	return grpcRes, nil
 }
@@ -49,6 +51,9 @@ func (c *Client) SimulateTx(txRawBytes []byte) (*txtypes.SimulateResponse, error
 		c.GetRPCAddress(),   // Or your gRPC server address.
 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
+	if err != nil {
+		return nil, err
+	}
 	defer grpcConn.Close()
 
 	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
@@ -65,4 +70,26 @@ func (c *Client) SimulateTx(txRawBytes []byte) (*txtypes.SimulateResponse, error
 		return nil, err
 	}
 	return grpcRes, nil
+}
+
+func DecodeTxResponseData(d string, v proto.Unmarshaler) error {
+	data, err := hex.DecodeString(d)
+	if err != nil {
+		return err
+	}
+
+	anyWrapper := new(types.Any)
+	if err := proto.Unmarshal(data, anyWrapper); err != nil {
+		return err
+	}
+
+	// TODO: figure out if there's a better 'cosmos' way of doing this
+	// you have to unwrap the Any twice, and the first time the bytes get decoded
+	// in the 'TypeUrl' field instead of 'Value' field
+	any := new(types.Any)
+	if err := proto.Unmarshal([]byte(anyWrapper.TypeUrl), any); err != nil {
+		return err
+	}
+
+	return v.Unmarshal(any.Value)
 }

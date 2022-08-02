@@ -16,3 +16,7 @@ message CreateAccountResponse {
 message LoginResponse {
   bool success = 1;
 }
+
+message CreateSchemaResponse {
+  bytes what_is = 1;
+}
