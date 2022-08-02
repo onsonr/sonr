@@ -28,18 +28,21 @@ type ObjectUploadResult struct {
 }
 
 type AppObjectInternalImpl struct {
-	shell *shell.Shell
+	shell  *shell.Shell
+	schema schemas.AppSchemaInternal
 }
 
 func New(schemaImpl schemas.AppSchemaInternal, shell *shell.Shell) AppObjectInternal {
 	return &AppObjectInternalImpl{
-		shell: shell,
+		shell:  shell,
+		schema: schemaImpl,
 	}
 }
 
 func NewWithConfig(c *Config) AppObjectInternal {
 
 	return &AppObjectInternalImpl{
-		shell: c.storeImpl,
+		shell:  c.storeImpl,
+		schema: c.schema,
 	}
 }

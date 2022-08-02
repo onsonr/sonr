@@ -1,7 +1,5 @@
 package object_test
 
-// Commented out due to ipfs shell dependency
-/*
 import (
 	"fmt"
 	"testing"
@@ -59,13 +57,18 @@ func CreateMockSchemaDefinition() (st.SchemaDefinition, map[string]interface{}) 
 	return def, obj
 }
 func Test_Object(t *testing.T) {
+	t.Skip("Skipping test in CI")
+
 	config := object.Config{}
 	def, jsonData := CreateMockSchemaDefinition()
+	schema := schemas.New(def.Fields, nil)
 	config.WithStorage(shell.NewShell("localhost:5001"))
+	config.WithSchemaImpl(schema)
+
 	obj := object.NewWithConfig(&config)
 
 	t.Run("Should upload object", func(t *testing.T) {
-		res, err := obj.CreateObject(schemas.New(def.Fields, nil), "testing", jsonData)
+		res, err := obj.CreateObject("testing", jsonData)
 		assert.NoError(t, err)
 		fmt.Print(res)
 
@@ -74,4 +77,3 @@ func Test_Object(t *testing.T) {
 		assert.NotNil(t, data)
 	})
 }
-*/
