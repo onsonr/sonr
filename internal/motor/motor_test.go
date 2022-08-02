@@ -51,7 +51,7 @@ func Test_CreateAccount(t *testing.T) {
 }
 
 func Test_Login(t *testing.T) {
-	did := "snr14e5as544pk86c2vxkarm7fw24lvcjnpx9gfd5m"
+	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
 	t.Run("with password", func(t *testing.T) {
 		pskKey := loadKey(fmt.Sprintf("psk%s", did))
 		if pskKey == nil || len(pskKey) != 32 {
@@ -78,6 +78,7 @@ func Test_Login(t *testing.T) {
 
 	t.Run("with DSC", func(t *testing.T) {
 		aesKey := loadKey("aes.key")
+		fmt.Printf("aes: %x\n", aesKey)
 		if aesKey == nil || len(aesKey) != 32 {
 			t.Errorf("could not load key.")
 			return
@@ -108,7 +109,7 @@ func Test_Login(t *testing.T) {
 }
 
 func Test_LoginAndMakeRequest(t *testing.T) {
-	did := "snr167w49qsuzdem9s56prtv5a6pc26fm054lkjn74"
+	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
 	pskKey := loadKey(fmt.Sprintf("psk%s", did))
 	if pskKey == nil || len(pskKey) != 32 {
 		t.Errorf("could not load psk key")
@@ -177,7 +178,8 @@ func Test_DecodeTxData(t *testing.T) {
 	assert.Equal(t, "snr1470q6m4vwme74j7m5s2cdw995z5ynktzrm7z57", mcr.WhoIs.Owner)
 }
 
-func storeKey(name string, aesKey []byte) bool {
+func storeKey(n string, aesKey []byte) bool {
+	name := fmt.Sprintf("./test_keys/%s", n)
 	file, err := os.Create(name)
 	if err != nil {
 		return false
@@ -188,13 +190,16 @@ func storeKey(name string, aesKey []byte) bool {
 	return err == nil
 }
 
-func loadKey(name string) []byte {
+func loadKey(n string) []byte {
+	name := fmt.Sprintf("./test_keys/%s", n)
 	var file *os.File
 	if _, err := os.Stat(name); os.IsNotExist(err) {
 		file, err = os.Create(name)
 		if err != nil {
 			return nil
 		}
+	} else if err != nil {
+		fmt.Printf("load err: %s\n", err)
 	} else {
 		file, err = os.Open(name)
 		if err != nil {
