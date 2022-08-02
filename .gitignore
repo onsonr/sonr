@@ -27,6 +27,8 @@ bind/dist
 # Generated files
 .docusaurus
 .cache-loader
+cmd/speedway-cli/AES.key
+cmd/speedway-cli/PSK.key
 
 # Misc
 .DS_Store
