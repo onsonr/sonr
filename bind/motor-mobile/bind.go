@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	mtr "github.com/sonr-io/sonr/internal/motor"
+	mtr "github.com/sonr-io/sonr/pkg/motor"
 	apiv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 	_ "golang.org/x/mobile/bind"
 )
@@ -49,15 +49,15 @@ func CreateAccount(buf []byte) ([]byte, error) {
 }
 
 func Login(buf []byte) ([]byte, error) {
-  if instance == nil {
-    return nil, errWalletNotExists
-  }
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
 
-  if res, err := instance.Login(buf); err == nil {
-    return json.Marshal(res)
-  } else {
-    return nil, err
-  }
+	if res, err := instance.Login(buf); err == nil {
+		return json.Marshal(res)
+	} else {
+		return nil, err
+	}
 }
 
 // Address returns the address of the wallet.
