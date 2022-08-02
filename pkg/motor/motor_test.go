@@ -28,11 +28,10 @@ func Test_CreateAccount(t *testing.T) {
 		fmt.Println("loaded key")
 	}
 
-	req, err := json.Marshal(prt.CreateAccountRequest{
+	req := prt.CreateAccountRequest{
 		Password:  "password123",
 		AesDscKey: aesKey,
-	})
-	assert.NoError(t, err, "create account request marshals")
+	}
 
 	m := EmptyMotor("test_device")
 	res, err := m.CreateAccount(req)
@@ -59,15 +58,14 @@ func Test_Login(t *testing.T) {
 			return
 		}
 
-		req, err := json.Marshal(prt.LoginRequest{
+		req := prt.LoginRequest{
 			Did:       did,
 			Password:  "password123",
 			AesPskKey: pskKey,
-		})
-		assert.NoError(t, err, "request marshals")
+		}
 
 		m := EmptyMotor("test_device")
-		_, err = m.Login(req)
+		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
@@ -90,15 +88,14 @@ func Test_Login(t *testing.T) {
 			return
 		}
 
-		req, err := json.Marshal(prt.LoginRequest{
+		req := prt.LoginRequest{
 			Did:       did,
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
-		})
-		assert.NoError(t, err, "request marshals")
+		}
 
 		m := EmptyMotor("test_device")
-		_, err = m.Login(req)
+		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
@@ -116,15 +113,14 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 		return
 	}
 
-	req, err := json.Marshal(prt.LoginRequest{
+	req := prt.LoginRequest{
 		Did:       did,
 		Password:  "password123",
 		AesPskKey: pskKey,
-	})
-	assert.NoError(t, err, "request marshals")
+	}
 
 	m := EmptyMotor("test_device")
-	_, err = m.Login(req)
+	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
 	// do something with the logged in account
@@ -142,15 +138,14 @@ func Test_CreateSchema(t *testing.T) {
 		return
 	}
 
-	req, err := json.Marshal(prt.LoginRequest{
+	req := prt.LoginRequest{
 		Did:       did,
 		Password:  "password123",
 		AesPskKey: pskKey,
-	})
-	assert.NoError(t, err, "request marshals")
+	}
 
 	m := EmptyMotor("test_device")
-	_, err = m.Login(req)
+	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO CREATE SCHEMA

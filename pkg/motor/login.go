@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
@@ -14,14 +13,7 @@ import (
 )
 
 // Login creates a motor node from a LoginRequest
-// TODO: calling balance does not seem to work after login
-func (mtr *MotorNode) Login(requestBytes []byte) (rtmv1.LoginResponse, error) {
-	// decode request
-	var request rtmv1.LoginRequest
-	if err := json.Unmarshal(requestBytes, &request); err != nil {
-		return rtmv1.LoginResponse{}, fmt.Errorf("error unmarshalling request: %s", err)
-	}
-
+func (mtr *MotorNode) Login(request rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
 	if request.Did == "" {
 		return rtmv1.LoginResponse{}, fmt.Errorf("did must be provided")
 	}

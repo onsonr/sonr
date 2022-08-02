@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -15,13 +14,7 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func (mtr *MotorNode) CreateAccount(requestBytes []byte) (rtmv1.CreateAccountResponse, error) {
-	// decode request
-	var request rtmv1.CreateAccountRequest
-	if err := json.Unmarshal(requestBytes, &request); err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("unmarshal request: %s", err)
-	}
-
+func (mtr *MotorNode) CreateAccount(request rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
 	// create motor
 	fmt.Printf("initializing motor... ")
 	if err := initMotor(mtr); err != nil {

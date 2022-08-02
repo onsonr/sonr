@@ -3,6 +3,7 @@ package motor
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	apiv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -34,14 +35,20 @@ func Init(buf []byte) ([]byte, error) {
 		}
 		return json.Marshal(resp)
 	}
-	return nil, errors.New("Loading existing account not implemented")
+	return nil, errors.New("loading existing account not implemented")
 }
 
 func CreateAccount(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, errWalletNotExists
 	}
-	if res, err := instance.CreateAccount(buf); err == nil {
+	// decode request
+	var request apiv1.CreateAccountRequest
+	if err := json.Unmarshal(buf, &request); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.CreateAccount(request); err == nil {
 		return json.Marshal(res)
 	} else {
 		return nil, err
@@ -53,7 +60,13 @@ func Login(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 
-	if res, err := instance.Login(buf); err == nil {
+	// decode request
+	var request apiv1.LoginRequest
+	if err := json.Unmarshal(buf, &request); err != nil {
+		return nil, fmt.Errorf("error unmarshalling request: %s", err)
+	}
+
+	if res, err := instance.Login(request); err == nil {
 		return json.Marshal(res)
 	} else {
 		return nil, err
