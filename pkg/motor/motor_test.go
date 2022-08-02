@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -29,11 +28,10 @@ func Test_CreateAccount(t *testing.T) {
 		fmt.Println("loaded key")
 	}
 
-	req, err := json.Marshal(prt.CreateAccountRequest{
+	req := prt.CreateAccountRequest{
 		Password:  "password123",
 		AesDscKey: aesKey,
-	})
-	assert.NoError(t, err, "create account request marshals")
+	}
 
 	m := EmptyMotor("test_device")
 	res, err := m.CreateAccount(req)
@@ -44,7 +42,7 @@ func Test_CreateAccount(t *testing.T) {
 		fmt.Printf("stored psk? %v\n", storeKey(fmt.Sprintf("psk%s", m.Address), res.AesPsk))
 	}
 
-	b := m.Balance()
+	b := m.GetBalance()
 	log.Println("balance:", b)
 
 	// Print the address of the wallet
@@ -60,19 +58,18 @@ func Test_Login(t *testing.T) {
 			return
 		}
 
-		req, err := json.Marshal(prt.LoginRequest{
+		req := prt.LoginRequest{
 			Did:       did,
 			Password:  "password123",
 			AesPskKey: pskKey,
-		})
-		assert.NoError(t, err, "request marshals")
+		}
 
 		m := EmptyMotor("test_device")
-		_, err = m.Login(req)
+		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", m.Balance())
+			fmt.Println("balance: ", m.GetBalance())
 			fmt.Println("address: ", m.Address)
 		}
 	})
@@ -91,19 +88,18 @@ func Test_Login(t *testing.T) {
 			return
 		}
 
-		req, err := json.Marshal(prt.LoginRequest{
+		req := prt.LoginRequest{
 			Did:       did,
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
-		})
-		assert.NoError(t, err, "request marshals")
+		}
 
 		m := EmptyMotor("test_device")
-		_, err = m.Login(req)
+		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", m.Balance())
+			fmt.Println("balance: ", m.GetBalance())
 			fmt.Println("address: ", m.Address)
 		}
 	})
@@ -117,15 +113,14 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 		return
 	}
 
-	req, err := json.Marshal(prt.LoginRequest{
+	req := prt.LoginRequest{
 		Did:       did,
 		Password:  "password123",
 		AesPskKey: pskKey,
-	})
-	assert.NoError(t, err, "request marshals")
+	}
 
 	m := EmptyMotor("test_device")
-	_, err = m.Login(req)
+	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
 	// do something with the logged in account
@@ -143,27 +138,25 @@ func Test_CreateSchema(t *testing.T) {
 		return
 	}
 
-	req, err := json.Marshal(prt.LoginRequest{
+	req := prt.LoginRequest{
 		Did:       did,
 		Password:  "password123",
 		AesPskKey: pskKey,
-	})
-	assert.NoError(t, err, "request marshals")
+	}
 
 	m := EmptyMotor("test_device")
-	_, err = m.Login(req)
+	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO CREATE SCHEMA
-	createSchemaRequest, err := json.Marshal(prt.CreateSchemaRequest{
+	createSchemaRequest := prt.CreateSchemaRequest{
 		Label: "TestUser",
 		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
 			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
 			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
 			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
 		},
-	})
-	assert.NoError(t, err, "request marshals")
+	}
 	resp, err := m.CreateSchema(createSchemaRequest)
 	assert.NoError(t, err, "schema created successfully")
 
