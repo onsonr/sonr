@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	rt "github.com/sonr-io/sonr/x/registry/types"
+	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -166,7 +167,10 @@ func Test_CreateSchema(t *testing.T) {
 	resp, err := m.CreateSchema(createSchemaRequest)
 	assert.NoError(t, err, "schema created successfully")
 
-	fmt.Printf("success: %s\n", resp.Did)
+	whatIs := &st.WhatIs{}
+	err = whatIs.Unmarshal(resp.WhatIs)
+	assert.NoError(t, err, "unmarshal WhatIs")
+	fmt.Printf("success: %s\n", whatIs)
 }
 
 func Test_DecodeTxData(t *testing.T) {

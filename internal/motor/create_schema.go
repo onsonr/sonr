@@ -41,8 +41,12 @@ func (mtr *MotorNode) CreateSchema(requestBytes []byte) (mt.CreateSchemaResponse
 		return mt.CreateSchemaResponse{}, fmt.Errorf("decode MsgCreateSchemaResponse: %s", err)
 	}
 
+	whatIsBytes, err := csresp.WhatIs.Marshal()
+	if err != nil {
+		return mt.CreateSchemaResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
+	}
 	return mt.CreateSchemaResponse{
-		Did: csresp.WhatIs.Did,
+		WhatIs: whatIsBytes,
 	}, nil
 }
 

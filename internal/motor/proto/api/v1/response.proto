@@ -18,5 +18,5 @@ message LoginResponse {
 }
 
 message CreateSchemaResponse {
-  string did = 1;
+  bytes what_is = 1;
 }
