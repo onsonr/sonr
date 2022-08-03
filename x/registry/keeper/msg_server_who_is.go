@@ -95,7 +95,12 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	for k, v := range msg.GetMetadata() {
 		val.Metadata[k] = v
 	}
-	controllerId, err := doc.GetController(val.DidDocument.DID())
+
+	d := val.DidDocument.DID()
+	if d == nil {
+		return nil, fmt.Errorf("error getting did from did document for creator '%s'", msg.Creator)
+	}
+	controllerId, err := doc.GetController(*d)
 
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, err.Error())
