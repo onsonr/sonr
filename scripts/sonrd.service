@@ -1,0 +1,12 @@
+Description=sonrd daemon
+After=network-online.target
+[Service]
+User=root
+ExecStart=/usr/bin/sonrd start --rpc.laddr tcp://0.0.0.0:26657
+StandardOutput=file:/var/log/sonrd/sonrd.log
+StandardError=file:/var/log/sonrd/sonrd_error.log
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=4096
+[Install]
+WantedBy=multi-user.target
