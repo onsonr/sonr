@@ -87,3 +87,8 @@ message CreateSchemaRequest {
   }
   map<string, SchemaKind> fields = 2;
 }
+
+message QueryWhatIsRequest {
+  string creator = 1;
+  string did = 2;
+}
