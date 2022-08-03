@@ -12,33 +12,6 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func loginAccount(did string, password string, pskKey []byte) {
-	req, err := json.Marshal(rtmv1.LoginRequest{
-		Did:       did,
-		Password:  password,
-		AesPskKey: pskKey,
-	})
-	if err != nil {
-		fmt.Println("err", err)
-	}
-	fmt.Println("request", req)
-	m := mtr.EmptyMotor("Speedway Node")
-	res, err := m.Login(req)
-	if err != nil {
-		fmt.Println("err", err)
-	}
-	// if res returns false then the login failed
-	fmt.Println("res", res)
-	if res.Success {
-		fmt.Println("Result", res)
-		fmt.Println("DIDDocument", m.DIDDocument)
-		fmt.Println("Address", m.Address)
-		fmt.Println("Balance", m.Balance())
-	} else {
-		fmt.Println("Login failed")
-	}
-}
-
 func loadKey(path string) ([]byte, error) {
 	var file *os.File
 	if _, err := os.Stat(path); err != nil {
@@ -69,13 +42,40 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				fmt.Println("Please provide a did, password and pskKey")
 				return
 			}
-			pskKey, err := loadKey("./PSK.key")
+			did := args[0]
+			password := args[1]
+			pskKey, err := loadKey("PSK.key")
 			if err != nil {
 				fmt.Println("err", err)
 			}
-			did := args[0]
-			password := args[1]
-			loginAccount(did, password, pskKey)
+			if pskKey == nil || len(pskKey) != 32 {
+				fmt.Println("Please provide a valid pskKey")
+				return
+			}
+			fmt.Println("pskKey", pskKey)
+			req, err := json.Marshal(rtmv1.LoginRequest{
+				Did:       did,
+				Password:  password,
+				AesPskKey: pskKey,
+			})
+			if err != nil {
+				fmt.Println("reqBytes err", err)
+			}
+			fmt.Println("request", req)
+			m := mtr.EmptyMotor("Speedway Node")
+			res, err := m.Login(req)
+			if err != nil {
+				fmt.Println("err", err)
+			}
+			fmt.Println("res", res)
+			if res.Success {
+				fmt.Println("Result", res)
+				fmt.Println("DIDDocument", m.DIDDocument)
+				fmt.Println("Address", m.Address)
+				fmt.Println("Balance", m.Balance())
+			} else {
+				fmt.Println("Login failed")
+			}
 		},
 	}
 	return
