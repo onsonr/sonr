@@ -37,7 +37,7 @@ func NewDIDDocumentFromPkg(doc did.Document) (*DIDDocument, error) {
 		res.Context = append(res.Context, c.String())
 	}
 
-	res.Id = doc.GetID().ID
+	res.Id = doc.GetID().String()
 
 	res.Controller = doc.ControllersAsString()
 
