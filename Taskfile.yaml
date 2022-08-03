@@ -21,7 +21,6 @@ tasks:
       - task: clean
       - task: motor:bind:ios
       - mv ./bind/build ./build
-      - task: motorkit:update:local
 
   chain:build:
     summary: "Build cosmos blockchain using ignite"
