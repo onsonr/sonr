@@ -37,6 +37,10 @@ func NewDIDDocumentFromPkg(doc did.Document) (*DIDDocument, error) {
 		res.Context = append(res.Context, c.String())
 	}
 
+	res.Id = doc.GetID().String()
+
+	res.Controller = doc.ControllersAsString()
+
 	res.VerificationMethod = verificationMethodsFromPkg(doc.GetVerificationMethods())
 
 	res.Authentication, err = stringifyVerificationRelationships(doc.GetAuthenticationMethods())
@@ -117,9 +121,9 @@ func stringifyVerificationRelationships(auth did.VerificationRelationships) ([]s
 	return res, nil
 }
 
-func (d *DIDDocument) DID() did.DID {
+func (d *DIDDocument) DID() *did.DID {
 	id, _ := did.ParseDID(d.Id)
-	return *id
+	return id
 }
 
 func (d DIDDocument) MarshalJSON() ([]byte, error) {
