@@ -105,7 +105,10 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	val.IsActive = true
 	k.SetWhoIs(ctx, val)
 
-	return &types.MsgUpdateWhoIsResponse{}, nil
+	return &types.MsgUpdateWhoIsResponse{
+		Success: true,
+		WhoIs:   &val,
+	}, nil
 }
 
 // DeactivateWhoIs deletes a whoIs from the store
