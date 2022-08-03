@@ -100,14 +100,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	if d == nil {
 		return nil, fmt.Errorf("error getting did from did document for creator '%s'", msg.Creator)
 	}
-	controllerId, err := doc.GetController(*d)
 
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, err.Error())
-	}
-
-	// Add remaining entries to update the whois
-	val.Controllers = append(val.Controllers, controllerId.String())
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
 	k.SetWhoIs(ctx, val)
