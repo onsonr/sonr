@@ -92,3 +92,9 @@ message QueryWhatIsRequest {
   string creator = 1;
   string did = 2;
 }
+
+message QuerySchemaRequest {
+  string creator = 1;
+  string did = 2;
+}
+

@@ -166,6 +166,56 @@ func Test_CreateSchema(t *testing.T) {
 	fmt.Printf("success: %s\n", whatIs)
 }
 
+func Test_QuerySchema(t *testing.T) {
+	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
+	pskKey := loadKey(fmt.Sprintf("psk%s", did))
+	fmt.Printf("psk: %x\n", pskKey)
+	if pskKey == nil || len(pskKey) != 32 {
+		t.Errorf("could not load psk key")
+		return
+	}
+
+	req := prt.LoginRequest{
+		Did:       did,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	m := EmptyMotor("test_device")
+	_, err := m.Login(req)
+	assert.NoError(t, err, "login succeeds")
+
+	// LOGIN DONE, TRY TO QUERY SCHEMA
+	createSchemaRequest := prt.CreateSchemaRequest{
+		Label: "TestUser",
+		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
+			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
+			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
+			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
+		},
+	}
+	resp, err := m.CreateSchema(createSchemaRequest)
+	assert.NoError(t, err, "schema created successfully")
+
+	whatIs := &st.WhatIs{}
+	err = whatIs.Unmarshal(resp.WhatIs)
+	assert.NoError(t, err, "unmarshal WhatIs")
+
+	// CREATE DONE, TRY QUERY
+	queryWhatIsRequest := prt.QueryWhatIsRequest{
+		Creator: whatIs.Creator,
+		Did:     whatIs.Did,
+	}
+
+	qresp, err := m.QueryWhatIs(queryWhatIsRequest)
+	assert.NoError(t, err, "query response succeeds")
+
+	qwhatIs := &st.WhatIs{}
+	err = qwhatIs.Unmarshal(qresp.WhatIs)
+	assert.NoError(t, err, "unmarshal WhatIs")
+	assert.Equal(t, whatIs.Did, qwhatIs.Did)
+}
+
 func Test_DecodeTxData(t *testing.T) {
 	data := "0A91010A242F736F6E72696F2E736F6E722E72656769737472792E4D736743726561746557686F497312691267122A736E723134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A35371A31122F6469643A736E723A3134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A353730BC8FA197063801"
 
