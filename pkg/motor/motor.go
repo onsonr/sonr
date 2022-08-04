@@ -35,7 +35,7 @@ type MotorNode interface {
 	Login(rtmv1.LoginRequest) (rtmv1.LoginResponse, error)
 
 	CreateSchema(rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error)
-	QueryWhatIs(rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error)
+	QueryWhatIs(context.Context, rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error)
 }
 
 type motorNodeImpl struct {

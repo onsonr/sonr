@@ -8,8 +8,8 @@ import (
 	mt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func (mtr *motorNodeImpl) QueryWhatIs(request mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error) {
-	resp, err := mtr.schemaQueryClient.WhatIs(context.Background(), &st.QueryWhatIsRequest{
+func (mtr *motorNodeImpl) QueryWhatIs(ctx context.Context, request mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error) {
+	resp, err := mtr.schemaQueryClient.WhatIs(ctx, &st.QueryWhatIsRequest{
 		Creator: request.Creator,
 		Did:     request.Did,
 	})

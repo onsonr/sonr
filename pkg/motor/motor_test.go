@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -205,7 +206,7 @@ func Test_QuerySchema(t *testing.T) {
 		Did:     whatIs.Did,
 	}
 
-	qresp, err := m.QueryWhatIs(queryWhatIsRequest)
+	qresp, err := m.QueryWhatIs(context.Background(), queryWhatIsRequest)
 	assert.NoError(t, err, "query response succeeds")
 
 	qwhatIs := &st.WhatIs{}
