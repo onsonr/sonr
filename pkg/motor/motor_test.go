@@ -15,6 +15,8 @@ import (
 	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
+const ADDR = "snr14pwfr9kt2584jt4h6kapygznkely2z8mefy4nq"
+
 func Test_CreateAccount(t *testing.T) {
 	aesKey := loadKey("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {
@@ -50,16 +52,15 @@ func Test_CreateAccount(t *testing.T) {
 }
 
 func Test_Login(t *testing.T) {
-	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
 	t.Run("with password", func(t *testing.T) {
-		pskKey := loadKey(fmt.Sprintf("psk%s", did))
+		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 		if pskKey == nil || len(pskKey) != 32 {
 			t.Errorf("could not load psk key")
 			return
 		}
 
 		req := prt.LoginRequest{
-			Did:       did,
+			Did:       ADDR,
 			Password:  "password123",
 			AesPskKey: pskKey,
 		}
@@ -82,14 +83,14 @@ func Test_Login(t *testing.T) {
 			return
 		}
 
-		pskKey := loadKey(fmt.Sprintf("psk%s", did))
+		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 		if pskKey == nil || len(pskKey) != 32 {
 			t.Errorf("could not load psk key")
 			return
 		}
 
 		req := prt.LoginRequest{
-			Did:       did,
+			Did:       ADDR,
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
 		}
@@ -106,15 +107,14 @@ func Test_Login(t *testing.T) {
 }
 
 func Test_LoginAndMakeRequest(t *testing.T) {
-	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
-	pskKey := loadKey(fmt.Sprintf("psk%s", did))
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 	if pskKey == nil || len(pskKey) != 32 {
 		t.Errorf("could not load psk key")
 		return
 	}
 
 	req := prt.LoginRequest{
-		Did:       did,
+		Did:       ADDR,
 		Password:  "password123",
 		AesPskKey: pskKey,
 	}
@@ -130,8 +130,7 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 }
 
 func Test_CreateSchema(t *testing.T) {
-	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
-	pskKey := loadKey(fmt.Sprintf("psk%s", did))
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 	fmt.Printf("psk: %x\n", pskKey)
 	if pskKey == nil || len(pskKey) != 32 {
 		t.Errorf("could not load psk key")
@@ -139,7 +138,7 @@ func Test_CreateSchema(t *testing.T) {
 	}
 
 	req := prt.LoginRequest{
-		Did:       did,
+		Did:       ADDR,
 		Password:  "password123",
 		AesPskKey: pskKey,
 	}
@@ -167,8 +166,7 @@ func Test_CreateSchema(t *testing.T) {
 }
 
 func Test_QuerySchema(t *testing.T) {
-	did := "snr1q34xcsdj9hp04akdvyz427w0eytxps7xy4gtkt"
-	pskKey := loadKey(fmt.Sprintf("psk%s", did))
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 	fmt.Printf("psk: %x\n", pskKey)
 	if pskKey == nil || len(pskKey) != 32 {
 		t.Errorf("could not load psk key")
@@ -176,7 +174,7 @@ func Test_QuerySchema(t *testing.T) {
 	}
 
 	req := prt.LoginRequest{
-		Did:       did,
+		Did:       ADDR,
 		Password:  "password123",
 		AesPskKey: pskKey,
 	}
