@@ -7,20 +7,14 @@ import "common/link.proto";
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
 enum SchemaKind {
-  INVALID = 0;
-  MAP = 1;
-  LIST = 2;
-  UNIT = 3;
-  BOOL = 4;
-  INT = 5;
-  FLOAT = 6;
-  STRING = 7;
-  BYTES = 8;
-  LINK = 9;
-  STRUCT = 10;
-  UNION = 11;
-  ENUM = 12;
-  ANY = 13;
+  LIST = 0;
+  BOOL = 1;
+  INT = 2;
+  FLOAT = 3;
+  STRING = 4;
+  BYTES = 5;
+  LINK = 6;
+  ANY = 7;
 }
 
 message SchemaKindDefinition {

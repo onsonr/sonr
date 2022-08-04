@@ -33,7 +33,7 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 	for _, t := range as.fields {
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
-		if t.Field != st.SchemaKind_STRUCT && t.Field != st.SchemaKind_MAP && t.Field != st.SchemaKind_LINK {
+		if t.Field != st.SchemaKind_LINK {
 			err = as.AssignValueToNode(t.Field, ma, object[k])
 			if err != nil {
 				return err
@@ -117,7 +117,7 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 
 	for _, f := range sd.Fields {
 		lma.AssembleKey().AssignString(f.Name)
-		if f.Field != st.SchemaKind_STRUCT && f.Field != st.SchemaKind_MAP && f.Field != st.SchemaKind_LINK {
+		if f.Field != st.SchemaKind_LINK {
 			err := as.AssignValueToNode(f.Field, lma, value[f.Name])
 			if err != nil {
 				return err
