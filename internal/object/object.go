@@ -40,7 +40,7 @@ func New(schemaImpl schemas.Schema, shell *shell.Shell) *objectImpl {
 	}
 }
 
-func NewWithConfig(c *Config) Object {
+func NewWithConfig(c *Config) *objectImpl {
 	return &objectImpl{
 		shell:  c.storeImpl,
 		schema: c.schema,
