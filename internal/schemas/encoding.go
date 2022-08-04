@@ -8,7 +8,7 @@ import (
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-func (as *appSchemaInternalImpl) EncodeDagJson() ([]byte, error) {
+func (as *schemaImpl) EncodeDagJson() ([]byte, error) {
 	if as.nodes == nil {
 		return nil, errNodeNotFound
 	}
@@ -19,7 +19,7 @@ func (as *appSchemaInternalImpl) EncodeDagJson() ([]byte, error) {
 	return buffer.Bytes(), err
 }
 
-func (as *appSchemaInternalImpl) EncodeDagCbor() ([]byte, error) {
+func (as *schemaImpl) EncodeDagCbor() ([]byte, error) {
 	if as.nodes == nil {
 		return nil, nil
 	}
@@ -29,7 +29,7 @@ func (as *appSchemaInternalImpl) EncodeDagCbor() ([]byte, error) {
 	return buffer.Bytes(), err
 }
 
-func (as *appSchemaInternalImpl) DecodeDagJson(buffer []byte) error {
+func (as *schemaImpl) DecodeDagJson(buffer []byte) error {
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder()
 
@@ -50,7 +50,7 @@ func (as *appSchemaInternalImpl) DecodeDagJson(buffer []byte) error {
 	return nil
 }
 
-func (as *appSchemaInternalImpl) DecodeDagCbor(buffer []byte) error {
+func (as *schemaImpl) DecodeDagCbor(buffer []byte) error {
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder()
 

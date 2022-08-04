@@ -6,7 +6,7 @@ package object
 
 	Version 0.1.0
 */
-type AppObjectInternal interface {
+type Object interface {
 	/*
 		Persists an object definition to the storage configured within the module.
 	*/
