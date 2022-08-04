@@ -2751,8 +2751,10 @@ go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 h1:movzgRYHiYXq/rd5Fo5KnMtYizbCKlv
 go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1/go.mod h1:Oacq9kdGMFBOTGB/CrAMpHc7GwkJg1P1d0gKF6X0kuU=
 go.buf.build/grpc/go/sonr-io/blockchain v1.3.7 h1:XRr0pkZG12nbsWnvWfQggECwS4UwvBK4BNoYNioJ1fA=
 go.buf.build/grpc/go/sonr-io/blockchain v1.3.7/go.mod h1:kh09boSnQtZNONulz1c/8vPaa9ae4XkiYIANi/vNVks=
-go.buf.build/grpc/go/sonr-io/motor v1.4.24 h1:ml0zYLVvndmrRWDmRr4+F4Sk2qdpUdxJkJlKOCl1zzQ=
-go.buf.build/grpc/go/sonr-io/motor v1.4.24/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
+go.buf.build/grpc/go/sonr-io/motor v1.4.26 h1:bKhzk4GeXXqChyfLIUoRLPnAX1lBR/LI8J8eJkBCtwg=
+go.buf.build/grpc/go/sonr-io/motor v1.4.26/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
+go.buf.build/grpc/go/sonr-io/motor v1.4.27 h1:RYDTMxj4Zv0sA4BJVx27ZumiA4bcZvcfxMvzNV1VuCs=
+go.buf.build/grpc/go/sonr-io/motor v1.4.27/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.4/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=

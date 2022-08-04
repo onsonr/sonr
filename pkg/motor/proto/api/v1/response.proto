@@ -20,3 +20,7 @@ message LoginResponse {
 message CreateSchemaResponse {
   bytes what_is = 1;
 }
+
+message QueryWhatIsResponse {
+  bytes what_is = 1;
+}

@@ -38,7 +38,10 @@ func (c *Client) BroadcastTx(txRawBytes []byte) (*txtypes.BroadcastTxResponse, e
 	if err != nil {
 		return nil, err
 	}
-	if grpcRes.GetTxResponse().Code != 0 {
+	if grpcRes == nil {
+		return nil, fmt.Errorf("no response from broadcast tx")
+	}
+	if grpcRes.GetTxResponse() != nil && grpcRes.GetTxResponse().Code != 0 {
 		return nil, fmt.Errorf("failed to broadcast transaction: %s", grpcRes.GetTxResponse().RawLog)
 	}
 	return grpcRes, nil

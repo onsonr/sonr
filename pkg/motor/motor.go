@@ -13,7 +13,9 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
+	st "github.com/sonr-io/sonr/x/schema/types"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
+	"google.golang.org/grpc"
 )
 
 type MotorNode interface {
@@ -33,7 +35,9 @@ type MotorNode interface {
 	Login(rtmv1.LoginRequest) (rtmv1.LoginResponse, error)
 
 	CreateSchema(rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error)
+	QueryWhatIs(context.Context, rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error)
 }
+
 type motorNodeImpl struct {
 	DeviceID    string
 	Cosmos      *client.Client
@@ -49,6 +53,9 @@ type motorNodeImpl struct {
 	sharedShard   []byte
 	recoveryShard []byte
 	unusedShards  [][]byte
+
+	// query clients
+	schemaQueryClient st.QueryClient
 }
 
 func EmptyMotor(id string) *motorNodeImpl {
@@ -60,6 +67,16 @@ func EmptyMotor(id string) *motorNodeImpl {
 func initMotor(mtr *motorNodeImpl, options ...crypto.WalletOption) (err error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
+
+	grpcConn, err := grpc.Dial(
+		mtr.Cosmos.GetRPCAddress(),
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		return err
+	}
+
+	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
 
 	// Generate wallet
 	mtr.Wallet, err = crypto.GenerateWallet(options...)
