@@ -2,11 +2,11 @@ package object
 
 /*
 	Underlying api definition of internal implementation of Objects
-	Higher level APIs implementing Object features
+	Higher level APIs implementing ObjectClient features
 
 	Version 0.1.0
 */
-type Object interface {
+type ObjectClient interface {
 	/*
 		Persists an object definition to the storage configured within the module.
 	*/
