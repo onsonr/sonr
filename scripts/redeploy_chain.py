@@ -9,10 +9,10 @@ from os.path import exists
 
 PORT = 26656
 NODE_ENDPOINTS = [
-    'v1-beta.sonr.ws',
-    'v2-beta.sonr.ws',
-    'v3-beta.sonr.ws',
-    'v4-beta.sonr.ws'
+    'v1.sonr.ws',
+    'v2.sonr.ws',
+    'v3.sonr.ws',
+    'v4.sonr.ws'
 ]
 
 TEMP_DIR="./temp"
@@ -107,6 +107,9 @@ def reload_daemon(node):
 def upload_sonrd_service(node):
     return upload_file(node, '/etc/systemd/system/sonrd.service', f'{SCRIPT_DIR}/sonrd.service')
 
+def upload_setup_chain_dev_script(node):
+    return upload_file(node, f'~/setup_chain_dev.sh', f'{SCRIPT_DIR}/setup_chain_dev.sh')
+
 def init_node(node):
     print(f"Initializing node {node}")
     send_command(node, f'sonrd init {node}')
@@ -136,8 +139,7 @@ def enable_api(node):
 
 if __name__ == "__main__":
     print("Hello World!")
-    # Get the genesis file from the first node
-    genesis = download_genesis(NODE_ENDPOINTS[0])
+
 
     # Get the ssh keys from all the nodes, generate them if there isn't one
     for node in NODE_ENDPOINTS:
@@ -184,24 +186,34 @@ if __name__ == "__main__":
         # Reload the daemon
         reload_daemon(node)
         
-        # This stops commands from running on the primary node TODO: do this better
-        if i==0:
-            continue
-
         # Kill the sonrd folder
         send_command(node, 'rm -rf /root/.sonr')
 
-        # init the node
-        init_node(node)
+        # Run certain commands on the primary node only
+        if i == 0:
+            # upload the setup chain dev script
+            upload_setup_chain_dev_script(node)
 
-        # delete the genesis file
-        send_command(node, 'rm -rf /root/.sonr/config/genesis.json')
+            #mark setup chain dev as executable
+            send_command(node, 'chmod +x setup_chain_dev.sh')
 
-        # Upload the genesis file
-        upload_genesis(node)
+            # init the primary node
+            send_command(node, './setup_chain_dev.sh')
 
-        # Enable the api
-        enable_api(node)
+            # Get the genesis file from the first node
+            genesis = download_genesis(NODE_ENDPOINTS[0])
+        else:
+            # init the node
+            init_node(node)
+
+            # delete the genesis file
+            send_command(node, 'rm -rf /root/.sonr/config/genesis.json')
+
+            # Upload the genesis file
+            upload_genesis(node)
+
+            # Enable the api
+            enable_api(node)
 
 
 
