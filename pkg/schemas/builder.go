@@ -33,8 +33,13 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	for _, t := range as.fields {
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
-		if t.Field != st.SchemaKind_STRUCT && t.Field != st.SchemaKind_MAP {
+		if t.Field != st.SchemaKind_STRUCT && t.Field != st.SchemaKind_MAP && t.Field != st.SchemaKind_LINK {
 			err = as.AssignValueToNode(t.Field, ma, object[k])
+			if err != nil {
+				return err
+			}
+		} else if t.Field == st.SchemaKind_LINK {
+			err := as.BuildSchemaFromLink(t.Link, ma, object[t.Name].(map[string]interface{}))
 			if err != nil {
 				return err
 			}
@@ -84,6 +89,51 @@ func (as *appSchemaInternalImpl) AssignValueToNode(field st.SchemaKind, ma datam
 	default:
 		return errSchemaFieldsInvalid
 	}
+
+	return nil
+}
+
+func (as *appSchemaInternalImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler, value map[string]interface{}) error {
+	if as.subSchemas[key] == nil {
+		return errNodeNotFound
+	}
+
+	sd := as.subSchemas[key]
+
+	err := as.VerifySubObject(sd.Fields, value)
+
+	if err != nil {
+		return err
+	}
+
+	// Create IPLD Node
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder() // Create a builder.
+	lma, err := nb.BeginMap(int64(len(value)))
+
+	if err != nil {
+		return err
+	}
+
+	for _, f := range sd.Fields {
+		lma.AssembleKey().AssignString(f.Name)
+		if f.Field != st.SchemaKind_STRUCT && f.Field != st.SchemaKind_MAP && f.Field != st.SchemaKind_LINK {
+			err := as.AssignValueToNode(f.Field, lma, value[f.Name])
+			if err != nil {
+				return err
+			}
+		} else if f.Field == st.SchemaKind_LINK {
+			err = as.BuildSchemaFromLink(f.Link, lma, value[f.Name].(map[string]interface{}))
+			if err != nil {
+				return err
+			}
+		}
+
+	}
+
+	lma.Finish()
+	n := nb.Build()
+	ma.AssembleValue().AssignNode(n)
 
 	return nil
 }

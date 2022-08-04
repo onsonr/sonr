@@ -1,26 +1,51 @@
 package schemas
 
 import (
-	"github.com/ipfs/go-cid"
-	"github.com/ipld/go-ipld-prime/datamodel"
-	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
+	"context"
+
+	"github.com/sonr-io/sonr/x/common/types"
+	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *appSchemaInternalImpl) CreateLinkPrototype() cidlink.LinkPrototype {
-	return cidlink.LinkPrototype{Prefix: cid.Prefix{
-		Version:  1,    // Usually '1'.
-		Codec:    0x71, // 0x71 means "dag-cbor" -- See the multicodecs table: https://github.com/multiformats/multicodec/
-		MhType:   0x13, // 0x20 means "sha2-512" -- See the multicodecs table: https://github.com/multiformats/multicodec/
-		MhLength: 64,   // sha2-512 hash has a 64-byte sum.
-	}}
-}
+/*
+	Preprocessor for the top level schema to cache node paths for all sub schemas,
+	bypassing link loader implementation due to lack of compatibilitty with our arch. Once support for json schemas are added we will no longer need to parse in this structure.
+	but will loose the ability to reuse sub schemas in this fashion.
+*/
+func (as *appSchemaInternalImpl) loadSubSchemas(fields []*st.SchemaKindDefinition) error {
+	var links []string = make([]string, 0)
+	for _, f := range fields {
+		if f.LinkKind == types.LinkKind_Schema {
+			if f.Link == "" {
+				return errSchemaFieldsInvalid
+			}
+			links = append(links, f.Link)
+		}
+	}
 
-func (as *appSchemaInternalImpl) LoadLink(key string) (datamodel.Node, error) {
-	/*
-		lnk := cidlink.Link{Cid: cid.Cid{
-			str: key,
-		}}
+	for len(links) > 0 {
+		key := links[len(links)-1]
+		links = links[:len(links)-1]
+		buf, err := as.store.Get(context.Background(), key)
 
-		// as.linkSys.Load(linking.LinkContext{}, lnk, datamodel.Node)
-	*/
+		var def st.SchemaDefinition
+		err = def.Unmarshal(buf)
+
+		if err != nil {
+			return err
+		}
+
+		as.subSchemas[key] = &def
+
+		for _, sf := range def.Fields {
+			if sf.LinkKind == types.LinkKind_Schema {
+				if sf.Link == "" {
+					return errSchemaFieldsInvalid
+				}
+				links = append(links, sf.Link)
+			}
+		}
+	}
+
+	return nil
 }

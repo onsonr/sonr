@@ -6,9 +6,6 @@ import (
 	"github.com/ipfs/go-cid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/ipld/go-ipld-prime/datamodel"
-	"github.com/ipld/go-ipld-prime/linking"
-	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
-	"github.com/ipld/go-ipld-prime/storage/memstore"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -31,30 +28,44 @@ const (
 )
 
 type appSchemaInternalImpl struct {
-	fields    []*st.SchemaKindDefinition
-	whatIs    *st.WhatIs
-	nodes     datamodel.Node
-	linkProto cidlink.LinkPrototype
-	linkSys   linking.LinkSystem
-	store     *memstore.Store
-	next      *appSchemaInternalImpl
+	fields     []*st.SchemaKindDefinition
+	subSchemas map[string]*st.SchemaDefinition
+	whatIs     *st.WhatIs
+	nodes      datamodel.Node
+	store      *readStoreImpl
+	next       *appSchemaInternalImpl
 }
 
+/*
+	Default initialization with a local shell for persistence
+*/
 func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) AppSchemaInternal {
 	asi := &appSchemaInternalImpl{
-		fields:  fields,
-		whatIs:  whatIs,
-		nodes:   nil,
-		store:   &memstore.Store{},
-		linkSys: cidlink.DefaultLinkSystem(),
+		fields:     fields,
+		subSchemas: make(map[string]*st.SchemaDefinition),
+		whatIs:     whatIs,
+		nodes:      nil,
+		store: &readStoreImpl{
+			shell: shell.NewLocalShell(),
+		},
 	}
+	asi.loadSubSchemas(fields)
+	return asi
+}
 
-	asi.linkSys.SetWriteStorage(asi.store)
-	asi.linkSys.SetReadStorage(readStoreImpl{
-		shell: shell.NewLocalShell(),
-	})
-
-	asi.linkProto = asi.CreateLinkPrototype()
-
+/*
+	Initialize with a ipfs shell instance
+*/
+func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) AppSchemaInternal {
+	asi := &appSchemaInternalImpl{
+		fields:     fields,
+		subSchemas: make(map[string]*st.SchemaDefinition),
+		whatIs:     whatIs,
+		nodes:      nil,
+		store: &readStoreImpl{
+			shell: shell,
+		},
+	}
+	asi.loadSubSchemas(fields)
 	return asi
 }
