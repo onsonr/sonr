@@ -6,7 +6,7 @@ import (
 	"time"
 
 	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/pkg/schemas"
+	"github.com/sonr-io/sonr/internal/schemas"
 	"github.com/sonr-io/sonr/x/common/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"

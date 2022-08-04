@@ -27,20 +27,20 @@ const (
 	EncType_DAG_JSON
 )
 
-type appSchemaInternalImpl struct {
+type schemaImpl struct {
 	fields     []*st.SchemaKindDefinition
 	subSchemas map[string]*st.SchemaDefinition
 	whatIs     *st.WhatIs
 	nodes      datamodel.Node
 	store      *readStoreImpl
-	next       *appSchemaInternalImpl
+	next       *schemaImpl
 }
 
 /*
 	Default initialization with a local shell for persistence
 */
-func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) AppSchemaInternal {
-	asi := &appSchemaInternalImpl{
+func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) Schema {
+	asi := &schemaImpl{
 		fields:     fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
 		whatIs:     whatIs,
@@ -56,8 +56,8 @@ func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) AppSchemaInternal
 /*
 	Initialize with a ipfs shell instance
 */
-func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) AppSchemaInternal {
-	asi := &appSchemaInternalImpl{
+func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) Schema {
+	asi := &schemaImpl{
 		fields:     fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
 		whatIs:     whatIs,

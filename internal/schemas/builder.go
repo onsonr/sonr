@@ -93,6 +93,51 @@ func (as *schemaImpl) AssignValueToNode(field st.SchemaKind, ma datamodel.MapAss
 	return nil
 }
 
+func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler, value map[string]interface{}) error {
+	if as.subSchemas[key] == nil {
+		return errNodeNotFound
+	}
+
+	sd := as.subSchemas[key]
+
+	err := as.VerifySubObject(sd.Fields, value)
+
+	if err != nil {
+		return err
+	}
+
+	// Create IPLD Node
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder() // Create a builder.
+	lma, err := nb.BeginMap(int64(len(value)))
+
+	if err != nil {
+		return err
+	}
+
+	for _, f := range sd.Fields {
+		lma.AssembleKey().AssignString(f.Name)
+		if f.Field != st.SchemaKind_STRUCT && f.Field != st.SchemaKind_MAP && f.Field != st.SchemaKind_LINK {
+			err := as.AssignValueToNode(f.Field, lma, value[f.Name])
+			if err != nil {
+				return err
+			}
+		} else if f.Field == st.SchemaKind_LINK {
+			err = as.BuildSchemaFromLink(f.Link, lma, value[f.Name].(map[string]interface{}))
+			if err != nil {
+				return err
+			}
+		}
+
+	}
+
+	lma.Finish()
+	n := nb.Build()
+	ma.AssembleValue().AssignNode(n)
+
+	return nil
+}
+
 func (as *schemaImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
