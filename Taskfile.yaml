@@ -21,7 +21,6 @@ tasks:
       - task: clean
       - task: motor:bind:ios
       - mv ./bind/build ./build
-      - task: motorkit:update:local
 
   chain:build:
     summary: "Build cosmos blockchain using ignite"
@@ -92,7 +91,7 @@ tasks:
   ## ------------------------------------------------------------
   buf:
     summary: "Build and Push Protobuf files to buf.build"
-    dir: internal/motor/proto
+    dir: pkg/motor/proto
     cmds:
       - buf mod update
       - buf build
@@ -108,7 +107,7 @@ tasks:
   swag:build:
     summary: "Generate swagger files for highway and blockchain using ignite"
     cmds:
-      - swag i -d ./ -g internal/highway/api/server.go -o docs/static
+      - swag i -d ./ -g pkg/highway/api/server.go -o docs/static
       - mv docs/static/swagger.yaml docs/static/highway.yaml
       - rm -rf docs/static/swagger.json
 

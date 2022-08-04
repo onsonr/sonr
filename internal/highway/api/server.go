@@ -25,7 +25,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/jwt"
-	ctv1 "github.com/sonr-io/sonr/x/channel/types"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -56,7 +55,6 @@ type HighwayServer struct {
 	HTTPServer *http.Server
 
 	// Protocols
-	channels     map[string]ctv1.Channel
 	ipfsProtocol *ipfs.IPFSProtocol
 	// matrixProtocol *matrix.MatrixProtocol
 

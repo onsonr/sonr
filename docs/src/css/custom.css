@@ -3,77 +3,7 @@
  * bundles Infima by default. Infima is a CSS framework designed to
  * work well for content-centric websites.
  */
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-Light.woff2') format('woff2');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
-}
 
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-ThicccAF.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-Thin.woff2') format('woff2');
-    font-weight: 100;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-SemiBold.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'THICCCBOI Semi';
-    src: url('/fonts/THICCCBOI-Black.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-ExtraBold.woff2') format('woff2');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-Bold.woff2') format('woff2');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'THICCCBOI';
-    src: url('/fonts/THICCCBOI-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #00BFFF;
@@ -284,5 +214,9 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   letter-spacing:
   0em;
   text-indent: 0px;
+}
 
+.buttonGap {
+  /* Change to 20px */
+  margin-right: 1rem;
 }

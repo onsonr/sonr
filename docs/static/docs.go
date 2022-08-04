@@ -332,117 +332,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/object/create": {
-            "post": {
-                "description": "CreateObject creates a Object for a registered application",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Create Object",
-                "parameters": [
-                    {
-                        "description": "Parameters",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgCreateObject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgCreateObjectResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/object/deactivate": {
-            "post": {
-                "description": "DeactivateObject disables a Object for a registered application",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Deactivate Object",
-                "parameters": [
-                    {
-                        "description": "Parameters",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgDeactivateObject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgDeactivateObjectResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/object/update": {
-            "post": {
-                "description": "UpdateObject updates and object reference for a registered application",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Update Object",
-                "parameters": [
-                    {
-                        "description": "Parameters",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgUpdateObject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgUpdateObjectResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/registry/buy/alias/app": {
             "post": {
                 "description": "This method Sets a particular owned alias by a User or Application to ` + "`" + `true` + "`" + ` for the IsForSale property. It also takes the amount parameter in order to define how much the user owned alias is for sale.",
@@ -726,10 +615,6 @@ const docTemplate = `{
                 "label": {
                     "description": "Label is human-readable name of the channel.",
                     "type": "string"
-                },
-                "registered_object": {
-                    "description": "RegisterdObject is the object that is registered as the payload for the channel.",
-                    "$ref": "#/definitions/types.ObjectDoc"
                 }
             }
         },
@@ -915,9 +800,6 @@ const docTemplate = `{
                 },
                 "label": {
                     "type": "string"
-                },
-                "object_to_register": {
-                    "$ref": "#/definitions/types.ObjectDoc"
                 }
             }
         },
@@ -935,43 +817,6 @@ const docTemplate = `{
                 "message": {
                     "description": "Message of the response",
                     "type": "string"
-                }
-            }
-        },
-        "types.MsgCreateObject": {
-            "type": "object",
-            "properties": {
-                "creator": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "initial_fields": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.TypeField"
-                    }
-                },
-                "label": {
-                    "type": "string"
-                }
-            }
-        },
-        "types.MsgCreateObjectResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "Code of the response",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Message of the response",
-                    "type": "string"
-                },
-                "what_is": {
-                    "description": "WhatIs of the Channel",
-                    "$ref": "#/definitions/types.WhatIs"
                 }
             }
         },
@@ -1044,30 +889,6 @@ const docTemplate = `{
             }
         },
         "types.MsgDeactivateChannelResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "Code of the response",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Message of the response",
-                    "type": "string"
-                }
-            }
-        },
-        "types.MsgDeactivateObject": {
-            "type": "object",
-            "properties": {
-                "creator": {
-                    "type": "string"
-                },
-                "did": {
-                    "type": "string"
-                }
-            }
-        },
-        "types.MsgDeactivateObjectResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1227,9 +1048,6 @@ const docTemplate = `{
                 },
                 "label": {
                     "type": "string"
-                },
-                "object_to_register": {
-                    "$ref": "#/definitions/types.ObjectDoc"
                 }
             }
         },
@@ -1243,53 +1061,6 @@ const docTemplate = `{
                 "message": {
                     "description": "Message of the response",
                     "type": "string"
-                }
-            }
-        },
-        "types.MsgUpdateObject": {
-            "type": "object",
-            "properties": {
-                "added_fields": {
-                    "description": "Added fields to the object",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.TypeField"
-                    }
-                },
-                "cid": {
-                    "description": "Contend Identifier of the object",
-                    "type": "string"
-                },
-                "creator": {
-                    "type": "string"
-                },
-                "label": {
-                    "description": "Label of the Object",
-                    "type": "string"
-                },
-                "removed_fields": {
-                    "description": "Removed fields from the object",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.TypeField"
-                    }
-                }
-            }
-        },
-        "types.MsgUpdateObjectResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "Code of the response",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Message of the response",
-                    "type": "string"
-                },
-                "what_is": {
-                    "description": "WhatIs of the Channel",
-                    "$ref": "#/definitions/types.WhatIs"
                 }
             }
         },
@@ -1322,34 +1093,6 @@ const docTemplate = `{
                 }
             }
         },
-        "types.ObjectDoc": {
-            "type": "object",
-            "properties": {
-                "bucket_did": {
-                    "description": "Bucket is the did of the bucket that contains this object.",
-                    "type": "string"
-                },
-                "description": {
-                    "description": "Description is a human-readable description of the bucket.",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "Did is the identifier of the object.",
-                    "type": "string"
-                },
-                "fields": {
-                    "description": "Fields are the fields associated with the object.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.TypeField"
-                    }
-                },
-                "label": {
-                    "description": "Label is human-readable name of the bucket.",
-                    "type": "string"
-                }
-            }
-        },
         "types.Service": {
             "type": "object",
             "properties": {
@@ -1360,19 +1103,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "types.TypeField": {
-            "type": "object",
-            "properties": {
-                "kind": {
-                    "description": "Type is the type of the field.",
-                    "type": "integer"
-                },
-                "name": {
-                    "description": "Name is the name of the field.",
                     "type": "string"
                 }
             }
@@ -1397,31 +1127,6 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
-                }
-            }
-        },
-        "types.WhatIs": {
-            "type": "object",
-            "properties": {
-                "creator": {
-                    "description": "Creator is the DID of the creator",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "DID is the DID of the object",
-                    "type": "string"
-                },
-                "is_active": {
-                    "description": "IsActive is the status of the DID Document",
-                    "type": "boolean"
-                },
-                "object_doc": {
-                    "description": "Object_doc is the object document",
-                    "$ref": "#/definitions/types.ObjectDoc"
-                },
-                "timestamp": {
-                    "description": "Timestamp is the time of the last update of the DID Document",
-                    "type": "integer"
                 }
             }
         },
