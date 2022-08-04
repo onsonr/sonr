@@ -31822,6 +31822,25 @@ paths:
                             - ENUM
                             - ANY
                           default: INVALID
+                        link_kind:
+                          title: >-
+                            Optional field for a link context if `SchemaKind` is
+                            of type `Link`
+                          type: string
+                          enum:
+                            - None
+                            - Object
+                            - Schema
+                            - Bucket
+                          default: None
+                        link:
+                          type: string
+                          title: >-
+                            Optional field if Kind is of type `link` should not
+                            be defined if of another Kind i.e. "bytes"
+
+                            link should be left as an empty value if `LinkKind`
+                            is set to `None`
                     title: the properties of this schema
         default:
           description: An unexpected error response.
@@ -56143,6 +56162,17 @@ definitions:
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
     title: WhoIsType is the type of DIDDocument stored in the registry module
+  sonrio.sonr.common.LinkKind:
+    type: string
+    enum:
+      - None
+      - Object
+      - Schema
+      - Bucket
+    default: None
+    title: >-
+      - None: None should be specified when no link is provided for the given
+      schema type
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -56300,6 +56330,25 @@ definitions:
                     - ENUM
                     - ANY
                   default: INVALID
+                link_kind:
+                  title: >-
+                    Optional field for a link context if `SchemaKind` is of type
+                    `Link`
+                  type: string
+                  enum:
+                    - None
+                    - Object
+                    - Schema
+                    - Bucket
+                  default: None
+                link:
+                  type: string
+                  title: >-
+                    Optional field if Kind is of type `link` should not be
+                    defined if of another Kind i.e. "bytes"
+
+                    link should be left as an empty value if `LinkKind` is set
+                    to `None`
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
@@ -56371,6 +56420,25 @@ definitions:
                 - ENUM
                 - ANY
               default: INVALID
+            link_kind:
+              title: >-
+                Optional field for a link context if `SchemaKind` is of type
+                `Link`
+              type: string
+              enum:
+                - None
+                - Object
+                - Schema
+                - Bucket
+              default: None
+            link:
+              type: string
+              title: >-
+                Optional field if Kind is of type `link` should not be defined
+                if of another Kind i.e. "bytes"
+
+                link should be left as an empty value if `LinkKind` is set to
+                `None`
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
@@ -56414,6 +56482,22 @@ definitions:
           - ENUM
           - ANY
         default: INVALID
+      link_kind:
+        title: Optional field for a link context if `SchemaKind` is of type `Link`
+        type: string
+        enum:
+          - None
+          - Object
+          - Schema
+          - Bucket
+        default: None
+      link:
+        type: string
+        title: >-
+          Optional field if Kind is of type `link` should not be defined if of
+          another Kind i.e. "bytes"
+
+          link should be left as an empty value if `LinkKind` is set to `None`
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:

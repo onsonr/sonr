@@ -30,6 +30,10 @@ message SchemaKindDefinition {
 
   // Optional field for a link context if `SchemaKind` is of type `Link`
   common.LinkKind link_kind = 3;
+
+  // Optional field if Kind is of type `link` should not be defined if of another Kind i.e. "bytes"
+  // link should be left as an empty value if `LinkKind` is set to `None`
+  string link = 4;
 }
 
 // Schema defines the shapes of schemas on Sonr
