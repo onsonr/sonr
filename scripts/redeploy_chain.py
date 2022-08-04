@@ -138,8 +138,6 @@ def enable_api(node):
     return send_command(node, 'toml-cli set /root/.sonr/config/app.toml api.enable true')
 
 if __name__ == "__main__":
-    print("Hello World!")
-
 
     # Get the ssh keys from all the nodes, generate them if there isn't one
     for node in NODE_ENDPOINTS:
