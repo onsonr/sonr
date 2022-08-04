@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package sonrio.sonr.common;
+
+option go_package = "github.com/sonr-io/sonr/x/common/types";
+
+enum LinkKind {
+  Object = 0;
+  Schema = 1;
+  Bucket = 2;
+}

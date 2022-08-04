@@ -20,7 +20,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+
+	// "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -195,6 +196,7 @@ var (
 	_ simapp.App              = (*App)(nil)
 )
 
+// It sets the default node home directory to `/.<name>` where `<name>` is the name of the node
 func init() {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -262,7 +264,7 @@ type App struct {
 	sm *module.SimulationManager
 }
 
-// New returns a reference to an initialized blockchain app
+// It creates a new app, initializes it, and returns it
 func New(
 	logger log.Logger,
 	db dbm.DB,
@@ -638,20 +640,20 @@ func New(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
-		},
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	app.SetAnteHandler(anteHandler)
+	// TODO: WARNING THIS IS THE TX VALIDATOR FOR THE BLOCKCHAIN. UNTIL WE CAN GET THE MPC PUBLIC KEY REGISTERED AS A THIRD PARTY PROTO TYPE, ENABLING THIS WILL CAUSE ALL TXS TO BE REJECTED.
+	// anteHandler, err := ante.NewAnteHandler(
+	// 	ante.HandlerOptions{
+	// 		AccountKeeper:   app.AccountKeeper,
+	// 		BankKeeper:      app.BankKeeper,
+	// 		SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+	// 		FeegrantKeeper:  app.FeeGrantKeeper,
+	// 		SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+	// 	},
+	// )
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {

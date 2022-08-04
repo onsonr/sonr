@@ -1,4 +1,10 @@
 #!/bin/bash
+
+sudo mkdir -p /var/log/sonrd 
+sudo touch /var/log/sonrd/digitaloceand.log 
+sudo touch /var/log/sonrd/sonrd_error.log 
+
+
 sonrd init my-node --chain-id sonr
 # ## Setup an alice account
 export ALICE_TEXT=$(sonrd keys add --keyring-backend test alice --home /root/.sonr)
@@ -20,3 +26,12 @@ sonrd collect-gentxs
 # Echo the account addresses
 echo "ALICE_ACCOUNT:"; echo $(sonrd keys show -a alice --keyring-backend test)
 echo "BOB_ACCOUNT:"; echo $(sonrd keys show -a bob --keyring-backend test)
+
+# Enable the ssh API in /root/.sonr/config/app.toml using https://github.com/MinseokOh/toml-cli
+toml-cli set /root/.sonr/config/app.toml api.enable true
+toml-cli set /root/.sonr/config/app.toml api.swagger true
+toml-cli set /root/.sonr/config/app.toml grpc-web true
+
+toml-cli set /root/.sonr/config/client.toml chain-id sonr
+
+toml-cli set /root/.sonr/config/config.toml rpc.laddr tcp://0.0.0.0:26657

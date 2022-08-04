@@ -18,39 +18,6 @@ type Credential struct {
 	Authenticator Authenticator `json:"authenticator"`
 }
 
-// // MakeNewCredential will return a credential pointer on successful validation of a registration response
-// func MakeNewCredential(c *p.ParsedCredentialCreationData) (*Credential, error) {
-// 	newCredential := &Credential{
-// 		ID:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
-// 		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
-// 		AttestationType: c.Response.AttestationObject.Format,
-// 		Authenticator: Authenticator{
-// 			AAGUID:    c.Response.AttestationObject.AuthData.AttData.AAGUID,
-// 			SignCount: c.Response.AttestationObject.AuthData.Counter,
-// 		},
-// 	}
-
-// 	return newCredential, nil
-// }
-
-// // Convert Credential from Webauthn Type
-// func WebauthnToCredential(c *webauthn.Credential) Credential {
-// 	var cred Credential
-// 	if c.ID != nil {
-// 		cred.ID = c.ID
-// 	}
-
-// 	if c.PublicKey != nil {
-// 		cred.PublicKey = c.PublicKey
-// 	}
-
-// 	if c.AttestationType != "" {
-// 		cred.AttestationType = c.AttestationType
-// 	}
-// 	cred.Authenticator = WebauthnAuthenticatorToAuthenticator(c.Authenticator)
-// 	return cred
-// }
-
 type Authenticator struct {
 	// The AAGUID of the authenticator. An AAGUID is defined as an array containing the globally unique
 	// identifier of the authenticator model being sought.
@@ -66,24 +33,6 @@ type Authenticator struct {
 	// counter value in this case, or not, or fails the authentication ceremony or not, is Relying Party-specific.
 	CloneWarning bool `json:"cloneWarning"`
 }
-
-// // Allow for easy marhsalling of authenticator options that are provided to the user
-// func SelectAuthenticator(att string, rrk *bool, uv string) p.AuthenticatorSelection {
-// 	return p.AuthenticatorSelection{
-// 		AuthenticatorAttachment: p.AuthenticatorAttachment(att),
-// 		RequireResidentKey:      rrk,
-// 		UserVerification:        p.UserVerificationRequirement(uv),
-// 	}
-// }
-
-// // WebauthnAuthenticatorToAuthenticator will convert a webauthn authenticator to a did authenticator
-// func WebauthnAuthenticatorToAuthenticator(a webauthn.Authenticator) Authenticator {
-// 	return Authenticator{
-// 		AAGUID:       a.AAGUID,
-// 		SignCount:    a.SignCount,
-// 		CloneWarning: a.CloneWarning,
-// 	}
-// }
 
 // VerifyCounter
 // Step 17 of §7.2. about verifying attestation. If the signature counter value authData.signCount
