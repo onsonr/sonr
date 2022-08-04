@@ -121,6 +121,7 @@ Contributors names and contact info
 - [Nick Tindle](https://github.com/ntindle)
 - [Josh Long](https://github.com/joshLong145)
 - [Brayden Cloud](https://github.com/mcjcloud)
+- [Ian Perez](https://github.com/brokecollegekidwithaclothingobsession)
 
 ### Acknowledgments
 
