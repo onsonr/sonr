@@ -1,5 +1,5 @@
 package object
 
-func (ao *AppObjectInternalImpl) assert(object map[string]interface{}) error {
+func (ao *objectImpl) assert(object map[string]interface{}) error {
 	return ao.schema.VerifyObject(object)
 }

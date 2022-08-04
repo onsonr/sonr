@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sonr-io/sonr/pkg/schemas"
+	"github.com/sonr-io/sonr/internal/schemas"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )

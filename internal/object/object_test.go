@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/pkg/object"
-	"github.com/sonr-io/sonr/pkg/schemas"
+	"github.com/sonr-io/sonr/internal/object"
+	"github.com/sonr-io/sonr/internal/schemas"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -72,7 +72,7 @@ func Test_Object(t *testing.T) {
 		assert.NoError(t, err)
 		fmt.Print(res)
 
-		data, err := obj.GetObject(res.Definition.Cid)
+		data, err := obj.GetObject(res.Reference.Cid)
 		assert.NoError(t, err)
 		assert.NotNil(t, data)
 	})

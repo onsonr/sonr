@@ -11,7 +11,7 @@ import (
 
 	Version: 0.1.0
 */
-type AppSchemaInternal interface {
+type Schema interface {
 
 	/*
 		Builds a linkage of IPLD nodes from the provided schema definition

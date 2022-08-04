@@ -12,7 +12,7 @@ var (
 	ErrObjectEmpty       = errors.New("object cannot be empty")
 )
 
-type ObjectDefinition struct {
+type ObjectReference struct {
 	Did   string
 	Label string
 	Cid   string
@@ -22,26 +22,26 @@ type ObjectDefinition struct {
 	Object definition to be returned after object creation
 */
 type ObjectUploadResult struct {
-	Code       int32
-	Definition *ObjectDefinition
-	Message    string
+	Code      int32
+	Reference *ObjectReference
+	Message   string
 }
 
-type AppObjectInternalImpl struct {
+type objectImpl struct {
 	shell  *shell.Shell
-	schema schemas.AppSchemaInternal
+	schema schemas.Schema
 }
 
-func New(schemaImpl schemas.AppSchemaInternal, shell *shell.Shell) AppObjectInternal {
-	return &AppObjectInternalImpl{
+func New(schemaImpl schemas.Schema, shell *shell.Shell) *objectImpl {
+	return &objectImpl{
+		// TODO: replace with store interface that Daniel made
 		shell:  shell,
 		schema: schemaImpl,
 	}
 }
 
-func NewWithConfig(c *Config) AppObjectInternal {
-
-	return &AppObjectInternalImpl{
+func NewWithConfig(c *Config) Object {
+	return &objectImpl{
 		shell:  c.storeImpl,
 		schema: c.schema,
 	}

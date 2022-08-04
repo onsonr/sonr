@@ -8,7 +8,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
+func (as *schemaImpl) BuildNodesFromDefinition(
 	object map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsInvalid
@@ -53,7 +53,7 @@ func (as *appSchemaInternalImpl) BuildNodesFromDefinition(
 	return nil
 }
 
-func (as *appSchemaInternalImpl) AssignValueToNode(field st.SchemaKind, ma datamodel.MapAssembler, value interface{}) error {
+func (as *schemaImpl) AssignValueToNode(field st.SchemaKind, ma datamodel.MapAssembler, value interface{}) error {
 	switch field {
 	case st.SchemaKind_STRING:
 		val := value.(string)
@@ -88,7 +88,7 @@ func (as *appSchemaInternalImpl) AssignValueToNode(field st.SchemaKind, ma datam
 	return nil
 }
 
-func (as *appSchemaInternalImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, error) {
+func (as *schemaImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.

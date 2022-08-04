@@ -14,8 +14,8 @@ import (
 
 var (
 	errSchemaFieldsInvalid  = errors.New("supplied Schema is invalid")
-	errSchemaFieldsNotFound = errors.New("No Schema Fields found")
-	errNodeNotFound         = errors.New("No object definition built from schema")
+	errSchemaFieldsNotFound = errors.New("no Schema Fields found")
+	errNodeNotFound         = errors.New("no object definition built from schema")
 )
 
 type Encoding int
@@ -30,21 +30,22 @@ const (
 	EncType_DAG_JSON
 )
 
-type appSchemaInternalImpl struct {
+type schemaImpl struct {
 	fields    []*st.SchemaKindDefinition
 	whatIs    *st.WhatIs
 	nodes     datamodel.Node
 	linkProto cidlink.LinkPrototype
 	linkSys   linking.LinkSystem
 	store     *memstore.Store
-	next      *appSchemaInternalImpl
+	next      *schemaImpl
 }
 
-func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) AppSchemaInternal {
-	asi := &appSchemaInternalImpl{
-		fields:  fields,
-		whatIs:  whatIs,
-		nodes:   nil,
+func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
+	asi := &schemaImpl{
+		fields: fields,
+		whatIs: whatIs,
+		nodes:  nil,
+		// TODO: replace this with the interface Daniel made
 		store:   &memstore.Store{},
 		linkSys: cidlink.DefaultLinkSystem(),
 	}

@@ -7,14 +7,14 @@ import (
 
 type Config struct {
 	storeImpl *shell.Shell
-	schema    schemas.AppSchemaInternal
+	schema    schemas.Schema
 }
 
 func (c *Config) WithStorage(store *shell.Shell) {
 	c.storeImpl = store
 }
 
-func (c *Config) WithSchemaImpl(schema schemas.AppSchemaInternal) {
+func (c *Config) WithSchemaImpl(schema schemas.Schema) {
 	c.schema = schema
 }
 

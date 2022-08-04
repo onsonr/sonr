@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (ao *AppObjectInternalImpl) CreateObject(
+func (ao *objectImpl) CreateObject(
 	label string,
 	object map[string]interface{}) (*ObjectUploadResult, error) {
 	err := ao.schema.VerifyObject(object)
@@ -34,7 +34,7 @@ func (ao *AppObjectInternalImpl) CreateObject(
 
 	return &ObjectUploadResult{
 		Code: 200,
-		Definition: &ObjectDefinition{
+		Reference: &ObjectReference{
 			Did:   did,
 			Cid:   cid,
 			Label: label,
@@ -43,7 +43,7 @@ func (ao *AppObjectInternalImpl) CreateObject(
 	}, nil
 }
 
-func (ao *AppObjectInternalImpl) GetObject(cid string) (map[string]interface{}, error) {
+func (ao *objectImpl) GetObject(cid string) (map[string]interface{}, error) {
 	var dag map[string]interface{}
 	err := ao.shell.DagGet(cid, &dag)
 	if err != nil {
