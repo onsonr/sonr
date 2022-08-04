@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/pkg/schemas"
+	"github.com/sonr-io/sonr/internal/schemas"
 )
 
 var (
