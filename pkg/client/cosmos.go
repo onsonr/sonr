@@ -3,8 +3,6 @@ package client
 import (
 	"context"
 
-	bt "github.com/sonr-io/sonr/x/bucket/types"
-	ct "github.com/sonr-io/sonr/x/channel/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/tendermint/starport/starport/pkg/cosmosclient"
@@ -14,8 +12,6 @@ type Cosmos struct {
 	accName string
 	address string
 	cosmosclient.Client
-	bucketQuery   bt.QueryClient
-	channelQuery  ct.QueryClient
 	schemaQuery   st.QueryClient
 	registryQuery rt.QueryClient
 }
@@ -245,160 +241,6 @@ func (cc *Cosmos) QueryWhoIsController(controller string) (*rt.WhoIs, error) {
 	}
 	whois := queryResp.GetWhoIs()
 	return whois, nil
-}
-
-// -------
-// Buckets
-// -------
-// BroadcastCreateBucket broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastCreateBucket(msg *bt.MsgCreateBucket) (*bt.MsgCreateBucketResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &bt.MsgCreateBucketResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// BroadcastUpdateBucket broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastUpdateBucket(msg *bt.MsgUpdateBucket) (*bt.MsgUpdateBucketResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &bt.MsgUpdateBucketResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// BroadcastDeactivateBucket broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastDeactivateBucket(msg *bt.MsgDeactivateBucket) (*bt.MsgDeactivateBucketResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &bt.MsgDeactivateBucketResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// QueryAllBuckets returns all names registered on the blockchain
-func (cc *Cosmos) QueryAllBuckets() ([]bt.WhichIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.bucketQuery.WhichIsAll(context.Background(), &bt.QueryAllWhichIsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	return queryResp.GetWhichIs(), nil
-}
-
-// QueryBucket returns all names registered on the blockchain
-func (cc *Cosmos) QueryBucket(name string) (*bt.WhichIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.bucketQuery.WhichIs(context.Background(), &bt.QueryWhichIsRequest{
-		Did: name,
-	})
-	if err != nil {
-		return nil, err
-	}
-	whichIs := queryResp.GetWhichIs()
-	return &whichIs, nil
-}
-
-// -------
-// Channels
-// -------
-// BroadcastDeactivateChannel broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastCreateChannel(msg *ct.MsgCreateChannel) (*ct.MsgCreateChannelResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &ct.MsgCreateChannelResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// BroadcastUpdateChannel broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastUpdateChannel(msg *ct.MsgUpdateChannel) (*ct.MsgUpdateChannelResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &ct.MsgUpdateChannelResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// BroadcastUpdateChannel broadcasts a transaction to the blockchain
-func (cc *Cosmos) BroadcastDeactivateChannel(msg *ct.MsgDeactivateChannel) (*ct.MsgDeactivateChannelResponse, error) {
-	// broadcast the transaction to the blockchain
-	resp, err := cc.Client.BroadcastTx(cc.accName, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the response
-	respMsg := &ct.MsgDeactivateChannelResponse{}
-	err = resp.Decode(respMsg)
-	if err != nil {
-		return nil, err
-	}
-	return respMsg, nil
-}
-
-// QueryAllChannels returns all names registered on the blockchain
-func (cc *Cosmos) QueryAllChannels() ([]ct.HowIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.channelQuery.HowIsAll(context.Background(), &ct.QueryAllHowIsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	return queryResp.GetHowIs(), nil
-}
-
-// QueryChannel returns all names registered on the blockchain
-func (cc *Cosmos) QueryChannel(name string) (*ct.HowIs, error) {
-	// query the blockchain using the client's `WhoIsAll` method to get all names
-	queryResp, err := cc.channelQuery.HowIs(context.Background(), &ct.QueryHowIsRequest{
-		Did: name,
-	})
-	if err != nil {
-		return nil, err
-	}
-	howIs := queryResp.GetHowIs()
-	return &howIs, nil
 }
 
 // -------
