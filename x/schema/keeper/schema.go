@@ -1,10 +1,10 @@
 package keeper
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -24,13 +24,11 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 
 	defer os.Remove(out_path)
 	resp, err := http.Get(IPFSShellURL)
-
 	if err != nil {
 		return err
 	}
 
 	buf, err := os.ReadFile(out_path)
-
 	if err != nil {
 		return err
 	}
