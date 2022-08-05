@@ -22,7 +22,9 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	WhereIsCountKey = "WhereIs-count-"
+	WhereIsCountKey   = "WhereIs-count-"
+	WhereIsKeyPrefix  = "Bucket/value/"
+	DoucmnetKeyPrefix = "Document/value/"
 )
 
 func WhereIsKey(creator string) []byte {

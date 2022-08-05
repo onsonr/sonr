@@ -40,7 +40,7 @@ func (k Keeper) AppendWhereIs(
 	// Create the whereIs
 	count := k.GetWhereIsCount(ctx)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.MemStoreKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
 	appendedValue := k.cdc.MustMarshal(&whereIs)
 	store.Set(types.WhereIsKey(whereIs.Did), appendedValue)
 
@@ -52,14 +52,14 @@ func (k Keeper) AppendWhereIs(
 
 // SetWhereIs set a specific whereIs in the store
 func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.WhereIs) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.MemStoreKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
 	b := k.cdc.MustMarshal(&whereIs)
 	store.Set(types.WhereIsKey(whereIs.Did), b)
 }
 
 // GetWhereIs returns a whereIs from its id
 func (k Keeper) GetWhereIs(ctx sdk.Context, id string) (val types.WhereIs, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.MemStoreKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
 	b := store.Get(types.WhereIsKey(id))
 	if b == nil {
 		return val, false
@@ -70,13 +70,13 @@ func (k Keeper) GetWhereIs(ctx sdk.Context, id string) (val types.WhereIs, found
 
 // RemoveWhereIs removes a whereIs from the store
 func (k Keeper) RemoveWhereIs(ctx sdk.Context, id string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.MemStoreKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
 	store.Delete(types.WhereIsKey(id))
 }
 
 // GetAllWhereIs returns all whereIs
 func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.MemStoreKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
@@ -88,16 +88,4 @@ func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
 	}
 
 	return
-}
-
-// GetWhereIsIDBytes returns the byte representation of the ID
-func GetWhereIsIDBytes(id uint64) []byte {
-	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, id)
-	return bz
-}
-
-// GetWhereIsIDFromBytes returns ID in uint64 format from a byte array
-func GetWhereIsIDFromBytes(bz []byte) uint64 {
-	return binary.BigEndian.Uint64(bz)
 }

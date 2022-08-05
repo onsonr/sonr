@@ -258,8 +258,7 @@ type App struct {
 	// sonr module keepers
 	RegistryKeeper registrymodulekeeper.Keeper
 	SchemaKeeper   schemamodulekeeper.Keeper
-
-	BucketKeeper bucketmodulekeeper.Keeper
+	BucketKeeper   bucketmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager

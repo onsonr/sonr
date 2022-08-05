@@ -31,13 +31,13 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 
 	var whereIs = types.WhereIs{
 		Creator: msg.Creator,
-		Did:      msg.Did,
+		Did:     msg.Did,
 	}
 
 	// Checks that the element exists
 	val, found := k.GetWhereIs(ctx, msg.Did)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Did))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
 	}
 
 	// Checks if the msg creator is the same as the current owner
@@ -56,7 +56,7 @@ func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWher
 	// Checks that the element exists
 	val, found := k.GetWhereIs(ctx, msg.Did)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Did))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
 	}
 
 	// Checks if the msg creator is the same as the current owner

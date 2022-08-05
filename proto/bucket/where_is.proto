@@ -14,38 +14,41 @@ message WhereIs {
   string label = 3;
 
   // Visibility of the new bucket.
-  WhereIsVisibility visibility = 4;
+  BucketVisibility visibility = 4;
 
   // Role of the creator of the new bucket.
-  WhereIsRole role = 5;
+  BucketRole role = 5;
 
   // IsActive flag of the new bucket.
   bool is_active = 6;
 
-  // Content of the new bucket map of DIDs to CIDs.
-  map<string, string> content = 7;
-
   // JWKs of the new bucket.
-  map<string, bytes> jwks = 8;
+  map<string, bytes> jwks = 7;
+
+  // Content of the new bucket map of DIDs to CIDs.
+  repeated BucketItem content = 8;
 
   // Timestamp of the new bucket.
   int64 timestamp = 9;
 }
 
-// WhereIsVisibility is the visibility of the bucket to authorized users of an application
-enum WhereIsVisibility {
-  // Bucket does not have visibility set.
-  UNSPECIFIED = 0;
+// BucketItem is a pointer to a single piece of content in a bucket.
+message BucketItem {
+  // Name of the bucket item.
+  string name = 1;
 
-  // Bucket is visible to anyone.
-  PUBLIC = 1;
+  // DID of the item. If applicable // optional
+  string item_did = 2;
 
-  // Bucket is visible to anyone who has access token.
-  PRIVATE = 2;
+  // CID of the item. If applicable // optional
+  string item_cid = 3;
+
+  // Timestamp of the last update. // optional
+  int64 timestamp = 4;
 }
 
-// WhereIsRole is the role of the creator of the bucket.
-enum WhereIsRole {
+// BucketRole is the role of the creator of the bucket.
+enum BucketRole {
   // Bucket does not have role set.
   NONE = 0;
 
@@ -54,4 +57,16 @@ enum WhereIsRole {
 
   // Bucket is visible to anyone who has access token.
   USER = 2;
+}
+
+// BucketVisibility is the visibility of the bucket to authorized users of an application
+enum BucketVisibility {
+  // Bucket does not have visibility set.
+  UNSPECIFIED = 0;
+
+  // Bucket is visible to anyone.
+  PUBLIC = 1;
+
+  // Bucket is visible to anyone who has access token.
+  PRIVATE = 2;
 }

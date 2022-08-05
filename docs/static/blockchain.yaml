@@ -17721,6 +17721,9 @@ paths:
                         }
       parameters:
         - name: body
+          description: |-
+            SimulateRequest is the request type for the Service.Simulate
+            RPC method.
           in: body
           required: true
           schema:
@@ -18520,6 +18523,11 @@ paths:
                         }
       parameters:
         - name: body
+          description: >-
+            BroadcastTxRequest is the request type for the
+            Service.BroadcastTxRequest
+
+            RPC method.
           in: body
           required: true
           schema:
@@ -30235,7 +30243,7 @@ paths:
                         - PRIVATE
                       default: UNSPECIFIED
                       title: >-
-                        WhereIsVisibility is the visibility of the bucket to
+                        BucketVisibility is the visibility of the bucket to
                         authorized users of an application
                     role:
                       description: Role of the creator of the new bucket.
@@ -30248,17 +30256,34 @@ paths:
                     is_active:
                       type: boolean
                       description: IsActive flag of the new bucket.
-                    content:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      description: Content of the new bucket map of DIDs to CIDs.
                     jwks:
                       type: object
                       additionalProperties:
                         type: string
                         format: byte
                       description: JWKs of the new bucket.
+                    content:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name of the bucket item.
+                          item_did:
+                            type: string
+                            title: DID of the item. If applicable // optional
+                          item_cid:
+                            type: string
+                            title: CID of the item. If applicable // optional
+                          timestamp:
+                            type: string
+                            format: int64
+                            title: Timestamp of the last update. // optional
+                        description: >-
+                          BucketItem is a pointer to a single piece of content
+                          in a bucket.
+                      description: Content of the new bucket map of DIDs to CIDs.
                     timestamp:
                       type: string
                       format: int64
@@ -30388,7 +30413,7 @@ paths:
                       - PRIVATE
                     default: UNSPECIFIED
                     title: >-
-                      WhereIsVisibility is the visibility of the bucket to
+                      BucketVisibility is the visibility of the bucket to
                       authorized users of an application
                   role:
                     description: Role of the creator of the new bucket.
@@ -30401,17 +30426,34 @@ paths:
                   is_active:
                     type: boolean
                     description: IsActive flag of the new bucket.
-                  content:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    description: Content of the new bucket map of DIDs to CIDs.
                   jwks:
                     type: object
                     additionalProperties:
                       type: string
                       format: byte
                     description: JWKs of the new bucket.
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Name of the bucket item.
+                        item_did:
+                          type: string
+                          title: DID of the item. If applicable // optional
+                        item_cid:
+                          type: string
+                          title: CID of the item. If applicable // optional
+                        timestamp:
+                          type: string
+                          format: int64
+                          title: Timestamp of the last update. // optional
+                      description: >-
+                        BucketItem is a pointer to a single piece of content in
+                        a bucket.
+                    description: Content of the new bucket map of DIDs to CIDs.
                   timestamp:
                     type: string
                     format: int64
@@ -31481,16 +31523,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -31813,16 +31845,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/tendermint/spn/claim/claim_record/{address}':
@@ -31983,16 +32005,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -53462,6 +53474,50 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sonrio.sonr.bucket.BucketItem:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the bucket item.
+      item_did:
+        type: string
+        title: DID of the item. If applicable // optional
+      item_cid:
+        type: string
+        title: CID of the item. If applicable // optional
+      timestamp:
+        type: string
+        format: int64
+        title: Timestamp of the last update. // optional
+    description: BucketItem is a pointer to a single piece of content in a bucket.
+  sonrio.sonr.bucket.BucketRole:
+    type: string
+    enum:
+      - NONE
+      - APPLICATION
+      - USER
+    default: NONE
+    description: |-
+      BucketRole is the role of the creator of the bucket.
+
+       - NONE: Bucket does not have role set.
+       - APPLICATION: Bucket is visible to anyone.
+       - USER: Bucket is visible to anyone who has access token.
+  sonrio.sonr.bucket.BucketVisibility:
+    type: string
+    enum:
+      - UNSPECIFIED
+      - PUBLIC
+      - PRIVATE
+    default: UNSPECIFIED
+    description: |-
+      - UNSPECIFIED: Bucket does not have visibility set.
+       - PUBLIC: Bucket is visible to anyone.
+       - PRIVATE: Bucket is visible to anyone who has access token.
+    title: >-
+      BucketVisibility is the visibility of the bucket to authorized users of an
+      application
   sonrio.sonr.bucket.MsgCreateWhereIsResponse:
     type: object
     properties:
@@ -53500,7 +53556,7 @@ definitions:
                 - PRIVATE
               default: UNSPECIFIED
               title: >-
-                WhereIsVisibility is the visibility of the bucket to authorized
+                BucketVisibility is the visibility of the bucket to authorized
                 users of an application
             role:
               description: Role of the creator of the new bucket.
@@ -53513,17 +53569,34 @@ definitions:
             is_active:
               type: boolean
               description: IsActive flag of the new bucket.
-            content:
-              type: object
-              additionalProperties:
-                type: string
-              description: Content of the new bucket map of DIDs to CIDs.
             jwks:
               type: object
               additionalProperties:
                 type: string
                 format: byte
               description: JWKs of the new bucket.
+            content:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the bucket item.
+                  item_did:
+                    type: string
+                    title: DID of the item. If applicable // optional
+                  item_cid:
+                    type: string
+                    title: CID of the item. If applicable // optional
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: Timestamp of the last update. // optional
+                description: >-
+                  BucketItem is a pointer to a single piece of content in a
+                  bucket.
+              description: Content of the new bucket map of DIDs to CIDs.
             timestamp:
               type: string
               format: int64
@@ -53577,7 +53650,7 @@ definitions:
               - PRIVATE
             default: UNSPECIFIED
             title: >-
-              WhereIsVisibility is the visibility of the bucket to authorized
+              BucketVisibility is the visibility of the bucket to authorized
               users of an application
           role:
             description: Role of the creator of the new bucket.
@@ -53590,17 +53663,34 @@ definitions:
           is_active:
             type: boolean
             description: IsActive flag of the new bucket.
-          content:
-            type: object
-            additionalProperties:
-              type: string
-            description: Content of the new bucket map of DIDs to CIDs.
           jwks:
             type: object
             additionalProperties:
               type: string
               format: byte
             description: JWKs of the new bucket.
+          content:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the bucket item.
+                item_did:
+                  type: string
+                  title: DID of the item. If applicable // optional
+                item_cid:
+                  type: string
+                  title: CID of the item. If applicable // optional
+                timestamp:
+                  type: string
+                  format: int64
+                  title: Timestamp of the last update. // optional
+              description: >-
+                BucketItem is a pointer to a single piece of content in a
+                bucket.
+            description: Content of the new bucket map of DIDs to CIDs.
           timestamp:
             type: string
             format: int64
@@ -53633,7 +53723,7 @@ definitions:
           - PRIVATE
         default: UNSPECIFIED
         title: >-
-          WhereIsVisibility is the visibility of the bucket to authorized users
+          BucketVisibility is the visibility of the bucket to authorized users
           of an application
       role:
         description: Role of the creator of the new bucket.
@@ -53646,48 +53736,36 @@ definitions:
       is_active:
         type: boolean
         description: IsActive flag of the new bucket.
-      content:
-        type: object
-        additionalProperties:
-          type: string
-        description: Content of the new bucket map of DIDs to CIDs.
       jwks:
         type: object
         additionalProperties:
           type: string
           format: byte
         description: JWKs of the new bucket.
+      content:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the bucket item.
+            item_did:
+              type: string
+              title: DID of the item. If applicable // optional
+            item_cid:
+              type: string
+              title: CID of the item. If applicable // optional
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp of the last update. // optional
+          description: BucketItem is a pointer to a single piece of content in a bucket.
+        description: Content of the new bucket map of DIDs to CIDs.
       timestamp:
         type: string
         format: int64
         description: Timestamp of the new bucket.
-  sonrio.sonr.bucket.WhereIsRole:
-    type: string
-    enum:
-      - NONE
-      - APPLICATION
-      - USER
-    default: NONE
-    description: |-
-      WhereIsRole is the role of the creator of the bucket.
-
-       - NONE: Bucket does not have role set.
-       - APPLICATION: Bucket is visible to anyone.
-       - USER: Bucket is visible to anyone who has access token.
-  sonrio.sonr.bucket.WhereIsVisibility:
-    type: string
-    enum:
-      - UNSPECIFIED
-      - PUBLIC
-      - PRIVATE
-    default: UNSPECIFIED
-    description: |-
-      - UNSPECIFIED: Bucket does not have visibility set.
-       - PUBLIC: Bucket is visible to anyone.
-       - PRIVATE: Bucket is visible to anyone who has access token.
-    title: >-
-      WhereIsVisibility is the visibility of the bucket to authorized users of
-      an application
   cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:
