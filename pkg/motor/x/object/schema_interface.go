@@ -1,15 +1,10 @@
 package object
 
-import "fmt"
-
-type SchemaKind interface {
-	fmt.Stringer
-	GetValue() int32
-}
+import "github.com/sonr-io/sonr/x/schema/types"
 
 type SchemaField interface {
 	GetName() string
-	GetKind() SchemaKind
+	GetKind() types.SchemaKind
 	TryValue(interface{}) bool
 }
 

@@ -4,18 +4,19 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 )
 
 func (ao *objectImpl) CreateObject(
 	label string,
-	object map[string]interface{}) (*ObjectUploadResult, error) {
-	err := ao.schema.VerifyObject(object)
+	obj map[string]interface{}) (*object.ObjectUploadResult, error) {
+	err := ao.schema.VerifyObject(obj)
 
 	if err != nil {
 		return nil, err
 	}
 
-	err = ao.schema.BuildNodesFromDefinition(object)
+	err = ao.schema.BuildNodesFromDefinition(obj)
 	if err != nil {
 		return nil, err
 	}
@@ -32,9 +33,9 @@ func (ao *objectImpl) CreateObject(
 		return nil, err
 	}
 
-	return &ObjectUploadResult{
+	return &object.ObjectUploadResult{
 		Code: 200,
-		Reference: &ObjectReference{
+		Reference: &object.ObjectReference{
 			Did:   did,
 			Cid:   cid,
 			Label: label,

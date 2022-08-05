@@ -40,6 +40,10 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
 	}
+
+	// store reference to newly created WhatIs
+	go mtr.resources.StoreWhatIs(csresp.WhatIs)
+
 	return mt.CreateSchemaResponse{
 		WhatIs: whatIsBytes,
 	}, nil
