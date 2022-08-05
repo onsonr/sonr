@@ -25,7 +25,7 @@ type MotorNode interface {
 	GetBalance() int64
 
 	GetClient() *client.Client
-	GetWallet() *mpc.MPCWallet
+	GetWallet() *mpc.Wallet
 	GetPubKey() *secp256k1.PubKey
 	GetDID() did.DID
 	GetDIDDocument() did.Document
@@ -41,7 +41,7 @@ type MotorNode interface {
 type motorNodeImpl struct {
 	DeviceID    string
 	Cosmos      *client.Client
-	Wallet      *mpc.MPCWallet
+	Wallet      *mpc.Wallet
 	Address     string
 	PubKey      *secp256k1.PubKey
 	DID         did.DID
@@ -123,7 +123,7 @@ func (m *motorNodeImpl) GetAddress() string {
 	return m.Address
 }
 
-func (m *motorNodeImpl) GetWallet() *mpc.MPCWallet {
+func (m *motorNodeImpl) GetWallet() *mpc.Wallet {
 	return m.Wallet
 }
 func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
