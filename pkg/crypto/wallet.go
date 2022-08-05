@@ -1,109 +1,294 @@
 package crypto
 
 import (
-	"log"
+	"errors"
+	"fmt"
+	"sync"
 
-	"github.com/cosmos/cosmos-sdk/crypto"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	device "github.com/sonr-io/sonr/pkg/fs"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/mr-tron/base58/base58"
+	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
+	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
+	"github.com/sonr-io/multi-party-sig/pkg/party"
+	"github.com/sonr-io/multi-party-sig/pkg/pool"
+	"github.com/sonr-io/multi-party-sig/pkg/protocol"
+	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 )
 
-// WalletOption is a function that modifies the options for a Wallet.
-type WalletOption func(*options) error
+type MPCWallet struct {
+	pool *pool.Pool
+	ID   party.ID
 
-// WithPassphrase sets the passphrase for the keyring.
-func WithPassphrase(s string) WalletOption {
-	return func(o *options) error {
-		o.passphrase = s
-		return nil
+	Configs   map[party.ID]*cmp.Config
+	Network   *Network
+	Threshold int
+}
+
+// GenerateWallet a new ECDSA private key shared among all the given participants.
+func GenerateWallet(options ...WalletOption) (*MPCWallet, error) {
+	opt := defaultConfig()
+	w := opt.Apply(options...)
+
+	var wg sync.WaitGroup
+	for _, id := range opt.participants {
+		wg.Add(1)
+		go func(id party.ID) {
+			pl := pool.NewPool(0)
+			defer pl.TearDown()
+			conf, err := cmpKeygen(id, opt.participants, w.Network, opt.threshold, &wg, pl)
+			if err != nil {
+				return
+			}
+			w.Configs[conf.ID] = conf
+		}(id)
 	}
+	wg.Wait()
+	// Add the DID Document to the wallet.
+	return w, nil
 }
 
-// WithFolderPath sets the folder path for the keyring.
-func WithFolderPath(s string) WalletOption {
-	return func(o *options) error {
-		o.folder = device.Folder(s)
-		return nil
-	}
-}
-
-// WithWalletName sets the name of the wallet to be created.
-func WithWalletName(s string) WalletOption {
-	return func(o *options) error {
-		o.walletName = s
-		return nil
-	}
-}
-
-type options struct {
-	walletName string
-	passphrase string
-	folder     device.Folder
-}
-
-// defaultOptions returns the default options for a Wallet.
-func defaultOptions() *options {
-	return &options{
-		walletName: "sonr",
-		passphrase: "",
-		folder:     device.Support,
-	}
-}
-
-// ExportWallet returns armored private key and public key
-func ExportWallet(kr keyring.Keyring, name string, passphrase string) (string, error) {
-	armor, err := kr.ExportPrivKeyArmor(name, passphrase)
+// Returns the Bech32 representation of the given party.
+func (w *MPCWallet) Address(id ...party.ID) (string, error) {
+	pub, err := w.PublicKeyProto()
 	if err != nil {
 		return "", err
 	}
-	return armor, nil
+
+	str, err := bech32.ConvertAndEncode("snr", pub.Address().Bytes())
+	if err != nil {
+		return "", err
+	}
+	return str, nil
 }
 
-// GenerateWallet generates a new Wallet and stores it in the keyring.
-func GenerateWallet(kr keyring.Keyring, options ...WalletOption) (KeySet, string, error) {
-	g := defaultOptions()
-	for _, option := range options {
-		if err := option(g); err != nil {
-			return nil, "", err
+// Config returns the configuration of this wallet.
+func (w *MPCWallet) Config() *cmp.Config {
+	return w.Configs[w.ID]
+}
+
+// GetSigners returns the list of signers for the given message.
+func (w *MPCWallet) GetSigners() party.IDSlice {
+	signers := party.IDSlice([]party.ID{"dsc", "psk"})
+	// signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
+	if !signers.Contains(w.ID) {
+		w.Network.Quit(w.ID)
+		return nil
+	}
+	return party.NewIDSlice(signers)
+}
+
+// Marshal returns the JSON representation of the entire wallet.
+func (w *MPCWallet) Marshal() ([]byte, error) {
+	return w.Config().MarshalBinary()
+}
+
+// Returns the ECDSA public key of the given party.
+func (w *MPCWallet) PublicKey() ([]byte, error) {
+	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
+	buf, err := p.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	// Check length of the public key.
+	if len(buf) != 33 {
+		return nil, fmt.Errorf("invalid public key length")
+	}
+	return buf, nil
+}
+
+// Returns the ECDSA public key of the given party.
+func (w *MPCWallet) PublicKeyBase58() (string, error) {
+	pub, err := w.PublicKey()
+	if err != nil {
+		return "", err
+	}
+	return base58.Encode(pub), nil
+}
+
+func (w *MPCWallet) PublicKeyProto() (*secp256k1.PubKey, error) {
+	pubBz, err := w.PublicKey()
+	if err != nil {
+		return nil, err
+	}
+	return &secp256k1.PubKey{
+		Key: pubBz,
+	}, nil
+}
+
+// Refreshes all shares of an existing ECDSA private key.
+func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
+	hRefresh, err := protocol.NewMultiHandler(cmp.Refresh(w.Configs[w.ID], pl), nil)
+	if err != nil {
+		return nil, err
+	}
+	handlerLoop(w.ID, hRefresh, w.Network)
+
+	r, err := hRefresh.Result()
+	if err != nil {
+		return nil, err
+	}
+	handlerLoop(w.ID, hRefresh, w.Network)
+	return r.(*cmp.Config), nil
+}
+
+// Generates an ECDSA signature for messageHash.
+func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
+	var wg sync.WaitGroup
+	signers := w.GetSigners()
+	net := NewNetwork(signers)
+
+	var (
+		sig *ecdsa.Signature
+		err error
+	)
+
+	for _, id := range signers {
+		wg.Add(1)
+		go func(id party.ID) {
+			pl := pool.NewPool(0)
+			defer pl.TearDown()
+			if sig, err = cmpSign(w.Configs[id], m, signers, net, &wg, pl); err != nil {
+				return
+			}
+		}(id)
+	}
+	wg.Wait()
+	return sig, err
+}
+
+// Unmarshal unmarshals the given JSON into the wallet.
+func (w *MPCWallet) Unmarshal(buf []byte) error {
+	c := &cmp.Config{}
+	if err := c.UnmarshalBinary(buf); err != nil {
+		return err
+	}
+	w.Configs[c.ID] = c
+	w.ID = c.ID
+	w.Threshold = c.Threshold
+	return nil
+}
+
+// Verifies an ECDSA signature for messageHash.
+func (w *MPCWallet) Verify(m []byte, sig []byte) bool {
+	edsig, err := SignatureFromBytes(sig)
+	if err != nil {
+		return false
+	}
+	mpcVerif := edsig.Verify(w.Config().PublicPoint(), m)
+	return mpcVerif
+}
+
+func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, unused [][]byte, err error) {
+	ss, e := w.serializedShards()
+	if e != nil {
+		err = e
+		return
+	}
+	if len(ss) < 6 {
+		err = errors.New("not enough shards")
+		return
+	}
+
+	var ok bool
+	// assign dscShard
+	dscShard, ok = ss["dsc"]
+	if !ok {
+		err = errors.New("could not find dsc shard")
+		return
+	}
+
+	// assign pskShard
+	pskShard, ok = ss["psk"]
+	if !ok {
+		err = errors.New("could not find psk shard")
+		return
+	}
+
+	// assign recshard
+	recShard, ok = ss["recovery"]
+	if !ok {
+		err = errors.New("could not find recovery shard")
+		return
+	}
+
+	// sign unused shards using MPC
+	// TODO: this is insecure! We're signing but should be encrypting.
+	// Can't encrypt with ECDSA. Is that the only encryption supported by mpc?
+	for i := 0; i < len(ss); i++ {
+		u, ok := ss[fmt.Sprintf("bank%d", i+1)]
+		if !ok {
+			continue
 		}
+		sig, e := w.Sign([]byte(u))
+		if e != nil {
+			err = e
+			return
+		}
+		sSig, e := SerializeSignature(sig)
+		if e != nil {
+			err = e
+			return
+		}
+		unused = append(unused, sSig)
 	}
-
-	// Add keys and see they return in alphabetical order
-	_, mnemonic, err := kr.NewMnemonic(g.walletName, keyring.English, sdk.FullFundraiserPath, g.passphrase, hd.Secp256k1)
-	if err != nil {
-		return nil, "", err
+	if len(unused) == 0 {
+		err = errors.New("no backup shards")
 	}
+	return
+}
 
-	// Create default sonr key
-	ks, err := CreateKeySet(mnemonic)
-	if err != nil {
-		return nil, "", err
-	}
-
-	// Copy keys to keyring if not already there
-	_, err = ks.CopyToKeyring(kr, g.walletName)
-	if err == nil {
-		err = ks.Export(device.Support)
+func (w *MPCWallet) serializedShards() (map[string][]byte, error) {
+	deviceShards := make(map[string][]byte)
+	for k, c := range w.Configs {
+		b, err := c.MarshalBinary()
 		if err != nil {
-			return nil, "", err
+			return nil, err
 		}
+		deviceShards[string(k)] = b
 	}
-
-	return ks, mnemonic, nil
+	return deviceShards, nil
 }
 
-// RestoreWallet restores a private key from ASCII armored format.
-func RestoreWallet(name string, armor string, passphrase string) (keyring.Keyring, error) {
-	privKey, algo, err := crypto.UnarmorDecryptPrivKey(armor, passphrase)
+// - The R and S values must be in the valid range for secp256k1 scalars:
+//   - Negative values are rejected
+//   - Zero is rejected
+//   - Values greater than or equal to the secp256k1 group order are rejected
+func SignatureFromBytes(sigStr []byte) (*ecdsa.Signature, error) {
+	rBytes := sigStr[:33]
+	sBytes := sigStr[33:65]
+
+	sig := ecdsa.EmptySignature(curve.Secp256k1{})
+	if err := sig.R.UnmarshalBinary(rBytes); err != nil {
+		return nil, errors.New("malformed signature: R is not in the range [1, N-1]")
+	}
+
+	// S must be in the range [1, N-1].  Notice the check for the maximum number
+	// of bytes is required because SetByteSlice truncates as noted in its
+	// comment so it could otherwise fail to detect the overflow.
+	if err := sig.S.UnmarshalBinary(sBytes); err != nil {
+		return nil, errors.New("malformed signature: S is not in the range [1, N-1]")
+	}
+
+	// Create and return the signature.
+	return &sig, nil
+}
+
+// SerializeSignature marshals an ECDSA signature to DER format for use with the CMP protocol
+func SerializeSignature(sig *ecdsa.Signature) ([]byte, error) {
+	rBytes, err := sig.R.MarshalBinary()
 	if err != nil {
 		return nil, err
 	}
-	kr := keyring.NewInMemory()
-	if err := kr.ImportPrivKey(name, algo, passphrase); err != nil {
+
+	sBytes, err := sig.S.MarshalBinary()
+	if err != nil {
 		return nil, err
 	}
-	log.Println(privKey.PubKey())
-	return kr, nil
+
+	sigBytes := make([]byte, 65)
+	// 0 pad the byte arrays from the left if they aren't big enough.
+	copy(sigBytes[33-len(rBytes):33], rBytes)
+	copy(sigBytes[65-len(sBytes):65], sBytes)
+	return sigBytes, nil
 }

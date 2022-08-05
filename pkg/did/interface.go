@@ -1,8 +1,14 @@
 package did
 
-import "github.com/sonr-io/sonr/pkg/did/ssi"
+import (
+	"encoding/json"
+
+	"github.com/sonr-io/sonr/pkg/did/ssi"
+)
 
 type Document interface {
+	json.Marshaler
+
 	// AddCapabilityDelegation adds a VerificationMethod as CapabilityDelegation
 	// If the controller is not set, it will be set to the document's ID
 	AddCapabilityDelegation(v *VerificationMethod)
@@ -13,6 +19,8 @@ type Document interface {
 	// AddCapabilityInvocation adds a VerificationMethod as CapabilityInvocation
 	// If the controller is not set, it will be set to the document's ID
 	AddCapabilityInvocation(v *VerificationMethod)
+	// AddService adds a Service
+	AddService(s Service)
 
 	CopyFromBytes(b []byte) error
 
@@ -20,6 +28,8 @@ type Document interface {
 	IsController(controller DID) bool
 	ControllersAsString() []string
 	ControllerCount() int
+
+	GetContext() []ssi.URI
 
 	GetID() DID
 
@@ -61,6 +71,8 @@ type Document interface {
 	// GetAssertionMethods returns all AssertionMethods
 	GetAssertionMethods() VerificationRelationships
 
+	GetVerificationMethods() VerificationMethods
+
 	// GetAuthenticationMethods returns all AuthenticationMethods
 	GetAuthenticationMethods() VerificationRelationships
 
@@ -69,4 +81,9 @@ type Document interface {
 
 	// GetCapabilityInvocations returns all CapabilityInvocations
 	GetCapabilityInvocations() VerificationRelationships
+
+	GetKeyAgreements() VerificationRelationships
+
+	// GetServices gets all services on the DID Document
+	GetServices() Services
 }

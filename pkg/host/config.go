@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/ed25519"
 
-	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -12,15 +11,12 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/sonr/pkg/config"
-
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	"google.golang.org/protobuf/proto"
 )
 
 // SonrHost returns the SonrHost for the Main Node
 type SonrHost interface {
 	// AuthenticateMessage authenticates a message
-	AuthenticateMessage(msg proto.Message, metadata *types.Metadata) error
+	// AuthenticateMessage(msg proto.Message, metadata *types.Metadata) error
 
 	// Config returns the configuration of the node
 	Config() *config.Config
@@ -54,13 +50,12 @@ type SonrHost interface {
 
 	// TODO: implement
 	// Peer returns the peer of the node
-	Peer() (*types.Peer, error)
-	// Events returns the events manager of the node
-	Events() events.EventEmmiter
+	// Peer() (*types.Peer, error)
+
 	// SignData signs the data with the private key
 	SignData(data []byte) ([]byte, error)
 	// SignMessage signs a message with the node's private key
-	SignMessage(message proto.Message) ([]byte, error)
+	// SignMessage(message proto.Message) ([]byte, error)
 
 	// Pubsub returns the pubsub of the node
 	Pubsub() *ps.PubSub
@@ -77,8 +72,10 @@ type SonrHost interface {
 	// PrivateKey returns the ed25519 private key instance of the libp2p host
 	PrivateKey() (ed25519.PrivateKey, error)
 
+	// Send(ctx context.Context, target string, data interface{}, protocol protocol.ID) error
+
 	// SendMessage sends a message to a peer
-	SendMessage(id peer.ID, p protocol.ID, data proto.Message) error
+	Send(id peer.ID, p protocol.ID, data []byte) error
 
 	// SetStreamHandler sets the handler for a protocol
 	SetStreamHandler(protocol protocol.ID, handler network.StreamHandler)

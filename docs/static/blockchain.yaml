@@ -30174,554 +30174,6 @@ paths:
           format: uint64
       tags:
         - Query
-  /sonr-io/sonr/bucket/params:
-    get:
-      summary: Params
-      description: Parameters queries the parameters of the module.
-      operationId: SonrioSonrBucketParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /sonr-io/sonr/bucket/which_is:
-    get:
-      summary: WhichIsAll
-      description: Queries a list of WhichIs items.
-      operationId: SonrioSonrBucketWhichIsAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              which_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      description: DID is the DID of the bucket.
-                    creator:
-                      type: string
-                      description: Creator is the Account that created the bucket.
-                    bucket:
-                      description: Bucket is the document of the bucket.
-                      type: object
-                      properties:
-                        label:
-                          type: string
-                          description: Label is human-readable name of the bucket.
-                        description:
-                          type: string
-                          description: >-
-                            Description is a human-readable description of the
-                            bucket.
-                        type:
-                          description: >-
-                            Type is the kind of bucket for either App specific
-                            or User specific data.
-                          type: string
-                          enum:
-                            - BUCKET_TYPE_UNSPECIFIED
-                            - BUCKET_TYPE_APP
-                            - BUCKET_TYPE_USER
-                          default: BUCKET_TYPE_UNSPECIFIED
-                        did:
-                          type: string
-                          description: Did is the identifier of the bucket.
-                        object_dids:
-                          type: array
-                          items:
-                            type: string
-                          description: Objects are stored in a tree structure.
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: IsActive is the status of the DID Document
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  '/sonr-io/sonr/bucket/which_is/{did}':
-    get:
-      summary: WhichIs
-      description: Queries a WhichIs by did.
-      operationId: SonrioSonrBucketWhichIs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              which_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    description: DID is the DID of the bucket.
-                  creator:
-                    type: string
-                    description: Creator is the Account that created the bucket.
-                  bucket:
-                    description: Bucket is the document of the bucket.
-                    type: object
-                    properties:
-                      label:
-                        type: string
-                        description: Label is human-readable name of the bucket.
-                      description:
-                        type: string
-                        description: >-
-                          Description is a human-readable description of the
-                          bucket.
-                      type:
-                        description: >-
-                          Type is the kind of bucket for either App specific or
-                          User specific data.
-                        type: string
-                        enum:
-                          - BUCKET_TYPE_UNSPECIFIED
-                          - BUCKET_TYPE_APP
-                          - BUCKET_TYPE_USER
-                        default: BUCKET_TYPE_UNSPECIFIED
-                      did:
-                        type: string
-                        description: Did is the identifier of the bucket.
-                      object_dids:
-                        type: array
-                        items:
-                          type: string
-                        description: Objects are stored in a tree structure.
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: >-
-                      Timestamp is the time of the last update of the DID
-                      Document
-                  is_active:
-                    type: boolean
-                    title: IsActive is the status of the DID Document
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: did
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonr-io/sonr/channel/how_is:
-    get:
-      summary: HowIsAll
-      description: Queries a list of HowIs items.
-      operationId: SonrioSonrChannelHowIsAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              how_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      title: Did is the DID of the channel
-                    creator:
-                      type: string
-                      title: >-
-                        Document is the DID Document of the registered name and
-                        account encoded as JSON
-                    channel:
-                      title: >-
-                        ChannelDoc is the structure of the channel encoded as
-                        JSON
-                      type: object
-                      properties:
-                        label:
-                          type: string
-                          description: Label is human-readable name of the channel.
-                        description:
-                          type: string
-                          description: >-
-                            Description is a human-readable description of the
-                            channel.
-                        did:
-                          type: string
-                          description: Did is the identifier of the channel.
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: Is Active is the status of the DID Document
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  '/sonr-io/sonr/channel/how_is/{did}':
-    get:
-      summary: HowIs
-      description: Queries a HowIs by did.
-      operationId: SonrioSonrChannelHowIs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              how_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: Did is the DID of the channel
-                  creator:
-                    type: string
-                    title: >-
-                      Document is the DID Document of the registered name and
-                      account encoded as JSON
-                  channel:
-                    title: ChannelDoc is the structure of the channel encoded as JSON
-                    type: object
-                    properties:
-                      label:
-                        type: string
-                        description: Label is human-readable name of the channel.
-                      description:
-                        type: string
-                        description: >-
-                          Description is a human-readable description of the
-                          channel.
-                      did:
-                        type: string
-                        description: Did is the identifier of the channel.
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: >-
-                      Timestamp is the time of the last update of the DID
-                      Document
-                  is_active:
-                    type: boolean
-                    title: Is Active is the status of the DID Document
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: did
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonr-io/sonr/channel/params:
-    get:
-      summary: Params
-      description: Parameters queries the parameters of the module.
-      operationId: SonrioSonrChannelParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
   /sonr-io/sonr/registry/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -30842,6 +30294,9 @@ paths:
                                       type: string
                               public_key_base58:
                                 type: string
+                              credential_json:
+                                type: string
+                                format: byte
                         authentication:
                           type: array
                           items:
@@ -30872,7 +30327,14 @@ paths:
                               type:
                                 type: string
                               service_endpoint:
-                                type: string
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
                         also_known_as:
                           type: array
                           items:
@@ -31004,16 +30466,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/registry/who_is/{did}':
@@ -31098,6 +30550,9 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            credential_json:
+                              type: string
+                              format: byte
                       authentication:
                         type: array
                         items:
@@ -31128,7 +30583,14 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: string
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
                       also_known_as:
                         type: array
                         items:
@@ -31275,6 +30737,9 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            credential_json:
+                              type: string
+                              format: byte
                       authentication:
                         type: array
                         items:
@@ -31305,7 +30770,14 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: string
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
                       also_known_as:
                         type: array
                         items:
@@ -31453,6 +30925,9 @@ paths:
                                     type: string
                             public_key_base58:
                               type: string
+                            credential_json:
+                              type: string
+                              format: byte
                       authentication:
                         type: array
                         items:
@@ -31483,7 +30958,14 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: string
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
                       also_known_as:
                         type: array
                         items:
@@ -31585,9 +31067,237 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sonr-io/sonr/schema/query:
+  /sonr-io/sonr/schema/query/all_schemas:
     get:
-      operationId: SonrioSonrSchemaQueryWhatIs
+      summary: Queries all whatIs definitions supports pagination
+      operationId: SonrioSonrSchemaWhatIsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              what_is:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      title: DID is the DID of the object
+                    schema:
+                      title: Object_doc is the object document
+                      type: object
+                      properties:
+                        did:
+                          type: string
+                          title: the DID for this schema
+                        label:
+                          type: string
+                          title: an alternative reference point
+                        cid:
+                          type: string
+                          description: >-
+                            a reference to information stored within an IPFS
+                            node.
+                    creator:
+                      type: string
+                      title: Creator is the DID of the creator
+                    timestamp:
+                      type: string
+                      format: int64
+                      title: >-
+                        Timestamp is the time of the last update of the DID
+                        Document
+                    is_active:
+                      type: boolean
+                      title: IsActive is the status of the DID Document
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonr-io/sonr/schema/query/schema:
+    get:
+      summary: Queries a Schema by creator and did
+      operationId: SonrioSonrSchemaSchema
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              definition:
+                title: Definition of schema
+                type: object
+                properties:
+                  creator:
+                    type: string
+                    title: |-
+                      Represents the types of fields a schema can have
+                      the DID for this schema
+                  label:
+                    type: string
+                    title: an alternative reference point
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        field:
+                          title: Type of a single schema property
+                          type: string
+                          enum:
+                            - INVALID
+                            - MAP
+                            - LIST
+                            - UNIT
+                            - BOOL
+                            - INT
+                            - FLOAT
+                            - STRING
+                            - BYTES
+                            - LINK
+                            - STRUCT
+                            - UNION
+                            - ENUM
+                            - ANY
+                          default: INVALID
+                        link_kind:
+                          title: >-
+                            Optional field for a link context if `SchemaKind` is
+                            of type `Link`
+                          type: string
+                          enum:
+                            - Object
+                            - Schema
+                            - Bucket
+                          default: Object
+                    title: the properties of this schema
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: query
+          required: false
+          type: string
+        - name: did
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /sonr-io/sonr/schema/query/what_is:
+    get:
+      summary: Queries a whatis by creator and did
+      operationId: SonrioSonrSchemaWhatIs
       responses:
         '200':
           description: A successful response.
@@ -31595,7 +31305,6 @@ paths:
             type: object
             properties:
               whatIs:
-                title: Schema Repersentation
                 type: object
                 properties:
                   did:
@@ -31626,38 +31335,7 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
-              definition:
-                title: Definition of schema
-                type: object
-                properties:
-                  creator:
-                    type: string
-                    title: the DID for this schema
-                  label:
-                    type: string
-                    title: an alternative reference point
-                  fields:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      enum:
-                        - INVALID
-                        - MAP
-                        - LIST
-                        - UNIT
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - STRUCT
-                        - UNION
-                        - ENUM
-                        - ANY
-                      default: INVALID
-                      title: Represents the types of fields a schema can have
-                    title: the properties of this schema
+                title: Schema Repersentation
         default:
           description: An unexpected error response.
           schema:
@@ -31848,16 +31526,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/tendermint/spn/claim/claim_record/{address}':
@@ -32018,16 +31686,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -53497,651 +53155,24 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
-  sonrio.sonr.bucket.BucketDoc:
+  cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:
-      label:
+      key:
         type: string
-        description: Label is human-readable name of the bucket.
-      description:
-        type: string
-        description: Description is a human-readable description of the bucket.
-      type:
-        description: >-
-          Type is the kind of bucket for either App specific or User specific
-          data.
-        type: string
-        enum:
-          - BUCKET_TYPE_UNSPECIFIED
-          - BUCKET_TYPE_APP
-          - BUCKET_TYPE_USER
-        default: BUCKET_TYPE_UNSPECIFIED
-      did:
-        type: string
-        description: Did is the identifier of the bucket.
-      object_dids:
-        type: array
-        items:
-          type: string
-        description: Objects are stored in a tree structure.
-    description: Bucket is a collection of objects.
-  sonrio.sonr.bucket.BucketType:
-    type: string
-    enum:
-      - BUCKET_TYPE_UNSPECIFIED
-      - BUCKET_TYPE_APP
-      - BUCKET_TYPE_USER
-    default: BUCKET_TYPE_UNSPECIFIED
-    description: |-
-      BucketType is the type of a bucket.
+        format: byte
+    description: >-
+      PubKey defines a secp256k1 public key
 
-       - BUCKET_TYPE_UNSPECIFIED: BucketTypeUnspecified is the default value.
-       - BUCKET_TYPE_APP: BucketTypeApp is an App specific bucket. For Assets regarding the service.
-       - BUCKET_TYPE_USER: BucketTypeUser is a User specific bucket. For any remote user data that is required
-      to be stored in the Network.
-  sonrio.sonr.bucket.MsgCreateBucketResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-      which_is:
-        type: object
-        properties:
-          did:
-            type: string
-            description: DID is the DID of the bucket.
-          creator:
-            type: string
-            description: Creator is the Account that created the bucket.
-          bucket:
-            description: Bucket is the document of the bucket.
-            type: object
-            properties:
-              label:
-                type: string
-                description: Label is human-readable name of the bucket.
-              description:
-                type: string
-                description: Description is a human-readable description of the bucket.
-              type:
-                description: >-
-                  Type is the kind of bucket for either App specific or User
-                  specific data.
-                type: string
-                enum:
-                  - BUCKET_TYPE_UNSPECIFIED
-                  - BUCKET_TYPE_APP
-                  - BUCKET_TYPE_USER
-                default: BUCKET_TYPE_UNSPECIFIED
-              did:
-                type: string
-                description: Did is the identifier of the bucket.
-              object_dids:
-                type: array
-                items:
-                  type: string
-                description: Objects are stored in a tree structure.
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-        title: Whichis response of the ObjectDoc
-  sonrio.sonr.bucket.MsgCreateWhichIsResponse:
-    type: object
-  sonrio.sonr.bucket.MsgDeactivateBucketResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-  sonrio.sonr.bucket.MsgDeleteWhichIsResponse:
-    type: object
-  sonrio.sonr.bucket.MsgUpdateBucketResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-      which_is:
-        type: object
-        properties:
-          did:
-            type: string
-            description: DID is the DID of the bucket.
-          creator:
-            type: string
-            description: Creator is the Account that created the bucket.
-          bucket:
-            description: Bucket is the document of the bucket.
-            type: object
-            properties:
-              label:
-                type: string
-                description: Label is human-readable name of the bucket.
-              description:
-                type: string
-                description: Description is a human-readable description of the bucket.
-              type:
-                description: >-
-                  Type is the kind of bucket for either App specific or User
-                  specific data.
-                type: string
-                enum:
-                  - BUCKET_TYPE_UNSPECIFIED
-                  - BUCKET_TYPE_APP
-                  - BUCKET_TYPE_USER
-                default: BUCKET_TYPE_UNSPECIFIED
-              did:
-                type: string
-                description: Did is the identifier of the bucket.
-              object_dids:
-                type: array
-                items:
-                  type: string
-                description: Objects are stored in a tree structure.
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-        title: Whichis response of the ObjectDoc
-  sonrio.sonr.bucket.MsgUpdateWhichIsResponse:
-    type: object
-  sonrio.sonr.bucket.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  sonrio.sonr.bucket.QueryAllWhichIsResponse:
-    type: object
-    properties:
-      which_is:
-        type: array
-        items:
-          type: object
-          properties:
-            did:
-              type: string
-              description: DID is the DID of the bucket.
-            creator:
-              type: string
-              description: Creator is the Account that created the bucket.
-            bucket:
-              description: Bucket is the document of the bucket.
-              type: object
-              properties:
-                label:
-                  type: string
-                  description: Label is human-readable name of the bucket.
-                description:
-                  type: string
-                  description: Description is a human-readable description of the bucket.
-                type:
-                  description: >-
-                    Type is the kind of bucket for either App specific or User
-                    specific data.
-                  type: string
-                  enum:
-                    - BUCKET_TYPE_UNSPECIFIED
-                    - BUCKET_TYPE_APP
-                    - BUCKET_TYPE_USER
-                  default: BUCKET_TYPE_UNSPECIFIED
-                did:
-                  type: string
-                  description: Did is the identifier of the bucket.
-                object_dids:
-                  type: array
-                  items:
-                    type: string
-                  description: Objects are stored in a tree structure.
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: IsActive is the status of the DID Document
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
+      Key is the compressed form of the pubkey. The first byte depends is a 0x02
+      byte
 
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
+      if the y-coordinate is the lexicographically largest of the two associated
+      with
 
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  sonrio.sonr.bucket.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
-  sonrio.sonr.bucket.QueryWhichIsResponse:
-    type: object
-    properties:
-      which_is:
-        type: object
-        properties:
-          did:
-            type: string
-            description: DID is the DID of the bucket.
-          creator:
-            type: string
-            description: Creator is the Account that created the bucket.
-          bucket:
-            description: Bucket is the document of the bucket.
-            type: object
-            properties:
-              label:
-                type: string
-                description: Label is human-readable name of the bucket.
-              description:
-                type: string
-                description: Description is a human-readable description of the bucket.
-              type:
-                description: >-
-                  Type is the kind of bucket for either App specific or User
-                  specific data.
-                type: string
-                enum:
-                  - BUCKET_TYPE_UNSPECIFIED
-                  - BUCKET_TYPE_APP
-                  - BUCKET_TYPE_USER
-                default: BUCKET_TYPE_UNSPECIFIED
-              did:
-                type: string
-                description: Did is the identifier of the bucket.
-              object_dids:
-                type: array
-                items:
-                  type: string
-                description: Objects are stored in a tree structure.
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-  sonrio.sonr.bucket.WhichIs:
-    type: object
-    properties:
-      did:
-        type: string
-        description: DID is the DID of the bucket.
-      creator:
-        type: string
-        description: Creator is the Account that created the bucket.
-      bucket:
-        description: Bucket is the document of the bucket.
-        type: object
-        properties:
-          label:
-            type: string
-            description: Label is human-readable name of the bucket.
-          description:
-            type: string
-            description: Description is a human-readable description of the bucket.
-          type:
-            description: >-
-              Type is the kind of bucket for either App specific or User
-              specific data.
-            type: string
-            enum:
-              - BUCKET_TYPE_UNSPECIFIED
-              - BUCKET_TYPE_APP
-              - BUCKET_TYPE_USER
-            default: BUCKET_TYPE_UNSPECIFIED
-          did:
-            type: string
-            description: Did is the identifier of the bucket.
-          object_dids:
-            type: array
-            items:
-              type: string
-            description: Objects are stored in a tree structure.
-      timestamp:
-        type: string
-        format: int64
-        title: Timestamp is the time of the last update of the DID Document
-      is_active:
-        type: boolean
-        title: IsActive is the status of the DID Document
-  sonrio.sonr.channel.ChannelDoc:
-    type: object
-    properties:
-      label:
-        type: string
-        description: Label is human-readable name of the channel.
-      description:
-        type: string
-        description: Description is a human-readable description of the channel.
-      did:
-        type: string
-        description: Did is the identifier of the channel.
-  sonrio.sonr.channel.HowIs:
-    type: object
-    properties:
-      did:
-        type: string
-        title: Did is the DID of the channel
-      creator:
-        type: string
-        title: >-
-          Document is the DID Document of the registered name and account
-          encoded as JSON
-      channel:
-        title: ChannelDoc is the structure of the channel encoded as JSON
-        type: object
-        properties:
-          label:
-            type: string
-            description: Label is human-readable name of the channel.
-          description:
-            type: string
-            description: Description is a human-readable description of the channel.
-          did:
-            type: string
-            description: Did is the identifier of the channel.
-      timestamp:
-        type: string
-        format: int64
-        title: Timestamp is the time of the last update of the DID Document
-      is_active:
-        type: boolean
-        title: Is Active is the status of the DID Document
-  sonrio.sonr.channel.MsgCreateChannelResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-      how_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: Did is the DID of the channel
-          creator:
-            type: string
-            title: >-
-              Document is the DID Document of the registered name and account
-              encoded as JSON
-          channel:
-            title: ChannelDoc is the structure of the channel encoded as JSON
-            type: object
-            properties:
-              label:
-                type: string
-                description: Label is human-readable name of the channel.
-              description:
-                type: string
-                description: Description is a human-readable description of the channel.
-              did:
-                type: string
-                description: Did is the identifier of the channel.
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: Is Active is the status of the DID Document
-        title: HowIs of the Channel
-  sonrio.sonr.channel.MsgCreateHowIsResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-      how_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: Did is the DID of the channel
-          creator:
-            type: string
-            title: >-
-              Document is the DID Document of the registered name and account
-              encoded as JSON
-          channel:
-            title: ChannelDoc is the structure of the channel encoded as JSON
-            type: object
-            properties:
-              label:
-                type: string
-                description: Label is human-readable name of the channel.
-              description:
-                type: string
-                description: Description is a human-readable description of the channel.
-              did:
-                type: string
-                description: Did is the identifier of the channel.
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: Is Active is the status of the DID Document
-  sonrio.sonr.channel.MsgDeactivateChannelResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-  sonrio.sonr.channel.MsgDeleteHowIsResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-  sonrio.sonr.channel.MsgUpdateChannelResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-  sonrio.sonr.channel.MsgUpdateHowIsResponse:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-        title: Code of the response
-      message:
-        type: string
-        title: Message of the response
-      how_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: Did is the DID of the channel
-          creator:
-            type: string
-            title: >-
-              Document is the DID Document of the registered name and account
-              encoded as JSON
-          channel:
-            title: ChannelDoc is the structure of the channel encoded as JSON
-            type: object
-            properties:
-              label:
-                type: string
-                description: Label is human-readable name of the channel.
-              description:
-                type: string
-                description: Description is a human-readable description of the channel.
-              did:
-                type: string
-                description: Did is the identifier of the channel.
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: Is Active is the status of the DID Document
-  sonrio.sonr.channel.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  sonrio.sonr.channel.QueryAllHowIsResponse:
-    type: object
-    properties:
-      how_is:
-        type: array
-        items:
-          type: object
-          properties:
-            did:
-              type: string
-              title: Did is the DID of the channel
-            creator:
-              type: string
-              title: >-
-                Document is the DID Document of the registered name and account
-                encoded as JSON
-            channel:
-              title: ChannelDoc is the structure of the channel encoded as JSON
-              type: object
-              properties:
-                label:
-                  type: string
-                  description: Label is human-readable name of the channel.
-                description:
-                  type: string
-                  description: Description is a human-readable description of the channel.
-                did:
-                  type: string
-                  description: Did is the identifier of the channel.
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: Is Active is the status of the DID Document
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
+      the x-coordinate. Otherwise the first byte is a 0x03.
 
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  sonrio.sonr.channel.QueryHowIsResponse:
-    type: object
-    properties:
-      how_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: Did is the DID of the channel
-          creator:
-            type: string
-            title: >-
-              Document is the DID Document of the registered name and account
-              encoded as JSON
-          channel:
-            title: ChannelDoc is the structure of the channel encoded as JSON
-            type: object
-            properties:
-              label:
-                type: string
-                description: Label is human-readable name of the channel.
-              description:
-                type: string
-                description: Description is a human-readable description of the channel.
-              did:
-                type: string
-                description: Did is the identifier of the channel.
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: Is Active is the status of the DID Document
-  sonrio.sonr.channel.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
+      This prefix is followed with the x-coordinate.
   sonrio.sonr.registry.Alias:
     type: object
     properties:
@@ -54195,6 +53226,9 @@ definitions:
                     type: string
             public_key_base58:
               type: string
+            credential_json:
+              type: string
+              format: byte
       authentication:
         type: array
         items:
@@ -54225,7 +53259,14 @@ definitions:
             type:
               type: string
             service_endpoint:
-              type: string
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
       also_known_as:
         type: array
         items:
@@ -54314,6 +53355,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54344,7 +53388,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54462,6 +53513,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54492,7 +53546,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54619,6 +53680,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54649,7 +53713,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54767,6 +53838,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54797,7 +53871,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -54915,6 +53996,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -54945,7 +54029,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -55065,6 +54156,9 @@ definitions:
                               type: string
                       public_key_base58:
                         type: string
+                      credential_json:
+                        type: string
+                        format: byte
                 authentication:
                   type: array
                   items:
@@ -55095,7 +54189,14 @@ definitions:
                       type:
                         type: string
                       service_endpoint:
-                        type: string
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            key:
+                              type: string
+                            value:
+                              type: string
                 also_known_as:
                   type: array
                   items:
@@ -55239,6 +54340,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -55269,7 +54373,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -55381,6 +54492,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -55411,7 +54525,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -55523,6 +54644,9 @@ definitions:
                             type: string
                     public_key_base58:
                       type: string
+                    credential_json:
+                      type: string
+                      format: byte
               authentication:
                 type: array
                 items:
@@ -55553,7 +54677,14 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
               also_known_as:
                 type: array
                 items:
@@ -55599,7 +54730,14 @@ definitions:
       type:
         type: string
       service_endpoint:
-        type: string
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
   sonrio.sonr.registry.VerificationMethod:
     type: object
     properties:
@@ -55620,6 +54758,9 @@ definitions:
               type: string
       public_key_base58:
         type: string
+      credential_json:
+        type: string
+        format: byte
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:
@@ -55691,6 +54832,9 @@ definitions:
                         type: string
                 public_key_base58:
                   type: string
+                credential_json:
+                  type: string
+                  format: byte
           authentication:
             type: array
             items:
@@ -55721,7 +54865,14 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: string
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
           also_known_as:
             type: array
             items:
@@ -55769,6 +54920,13 @@ definitions:
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
     title: WhoIsType is the type of DIDDocument stored in the registry module
+  sonrio.sonr.common.LinkKind:
+    type: string
+    enum:
+      - Object
+      - Schema
+      - Bucket
+    default: Object
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -55779,7 +54937,6 @@ definitions:
       message:
         type: string
       what_is:
-        title: WhatIs object created on chain
         type: object
         properties:
           did:
@@ -55808,6 +54965,7 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+        title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
     properties:
@@ -55819,6 +54977,65 @@ definitions:
   sonrio.sonr.schema.Params:
     type: object
     description: Params defines the parameters for the module.
+  sonrio.sonr.schema.QueryAllWhatIsResponse:
+    type: object
+    properties:
+      what_is:
+        type: array
+        items:
+          type: object
+          properties:
+            did:
+              type: string
+              title: DID is the DID of the object
+            schema:
+              title: Object_doc is the object document
+              type: object
+              properties:
+                did:
+                  type: string
+                  title: the DID for this schema
+                label:
+                  type: string
+                  title: an alternative reference point
+                cid:
+                  type: string
+                  description: a reference to information stored within an IPFS node.
+            creator:
+              type: string
+              title: Creator is the DID of the creator
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp is the time of the last update of the DID Document
+            is_active:
+              type: boolean
+              title: IsActive is the status of the DID Document
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
   sonrio.sonr.schema.QueryParamsResponse:
     type: object
     properties:
@@ -55829,73 +55046,59 @@ definitions:
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
-      whatIs:
-        title: Schema Repersentation
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema
-              label:
-                type: string
-                title: an alternative reference point
-              cid:
-                type: string
-                description: a reference to information stored within an IPFS node.
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
       definition:
         title: Definition of schema
         type: object
         properties:
           creator:
             type: string
-            title: the DID for this schema
+            title: |-
+              Represents the types of fields a schema can have
+              the DID for this schema
           label:
             type: string
             title: an alternative reference point
           fields:
-            type: object
-            additionalProperties:
-              type: string
-              enum:
-                - INVALID
-                - MAP
-                - LIST
-                - UNIT
-                - BOOL
-                - INT
-                - FLOAT
-                - STRING
-                - BYTES
-                - LINK
-                - STRUCT
-                - UNION
-                - ENUM
-                - ANY
-              default: INVALID
-              title: Represents the types of fields a schema can have
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                field:
+                  title: Type of a single schema property
+                  type: string
+                  enum:
+                    - INVALID
+                    - MAP
+                    - LIST
+                    - UNIT
+                    - BOOL
+                    - INT
+                    - FLOAT
+                    - STRING
+                    - BYTES
+                    - LINK
+                    - STRUCT
+                    - UNION
+                    - ENUM
+                    - ANY
+                  default: INVALID
+                link_kind:
+                  title: >-
+                    Optional field for a link context if `SchemaKind` is of type
+                    `Link`
+                  type: string
+                  enum:
+                    - Object
+                    - Schema
+                    - Bucket
+                  default: Object
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       whatIs:
-        title: Schema Repersentation
         type: object
         properties:
           did:
@@ -55924,19 +55127,27 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
-      definition:
-        title: Definition of schema
-        type: object
-        properties:
-          creator:
-            type: string
-            title: the DID for this schema
-          label:
-            type: string
-            title: an alternative reference point
-          fields:
-            type: object
-            additionalProperties:
+        title: Schema Repersentation
+  sonrio.sonr.schema.SchemaDefinition:
+    type: object
+    properties:
+      creator:
+        type: string
+        title: |-
+          Represents the types of fields a schema can have
+          the DID for this schema
+      label:
+        type: string
+        title: an alternative reference point
+      fields:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            field:
+              title: Type of a single schema property
               type: string
               enum:
                 - INVALID
@@ -55954,38 +55165,16 @@ definitions:
                 - ENUM
                 - ANY
               default: INVALID
-              title: Represents the types of fields a schema can have
-            title: the properties of this schema
-  sonrio.sonr.schema.SchemaDefinition:
-    type: object
-    properties:
-      creator:
-        type: string
-        title: the DID for this schema
-      label:
-        type: string
-        title: an alternative reference point
-      fields:
-        type: object
-        additionalProperties:
-          type: string
-          enum:
-            - INVALID
-            - MAP
-            - LIST
-            - UNIT
-            - BOOL
-            - INT
-            - FLOAT
-            - STRING
-            - BYTES
-            - LINK
-            - STRUCT
-            - UNION
-            - ENUM
-            - ANY
-          default: INVALID
-          title: Represents the types of fields a schema can have
+            link_kind:
+              title: >-
+                Optional field for a link context if `SchemaKind` is of type
+                `Link`
+              type: string
+              enum:
+                - Object
+                - Schema
+                - Bucket
+              default: Object
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
@@ -56005,7 +55194,38 @@ definitions:
       - ENUM
       - ANY
     default: INVALID
-    title: Represents the types of fields a schema can have
+  sonrio.sonr.schema.SchemaKindDefinition:
+    type: object
+    properties:
+      name:
+        type: string
+      field:
+        title: Type of a single schema property
+        type: string
+        enum:
+          - INVALID
+          - MAP
+          - LIST
+          - UNIT
+          - BOOL
+          - INT
+          - FLOAT
+          - STRING
+          - BYTES
+          - LINK
+          - STRUCT
+          - UNION
+          - ENUM
+          - ANY
+        default: INVALID
+      link_kind:
+        title: Optional field for a link context if `SchemaKind` is of type `Link`
+        type: string
+        enum:
+          - Object
+          - Schema
+          - Bucket
+        default: Object
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:

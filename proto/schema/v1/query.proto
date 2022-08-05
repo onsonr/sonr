@@ -20,12 +20,19 @@ service Query {
     option (google.api.http).get = "/sonr-io/sonr/schema/params";
   }
 
-  rpc QuerySchema(QuerySchemaRequest) returns (QuerySchemaResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/schema/query";
+  // Queries a Schema by creator and did
+  rpc Schema(QuerySchemaRequest) returns (QuerySchemaResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/schema";
   }
 
-  rpc QueryWhatIs(QueryWhatIsRequest) returns (QueryWhatIsResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/schema/query";
+  // Queries a whatis by creator and did
+  rpc WhatIs(QueryWhatIsRequest) returns (QueryWhatIsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is";
+  }
+
+  // Queries all whatIs definitions supports pagination
+  rpc WhatIsAll(QueryAllWhatIsRequest) returns (QueryAllWhatIsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/all_schemas";
   }
   // this line is used by starport scaffolding # 2
 }
@@ -39,6 +46,15 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
+message QueryAllWhatIsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllWhatIsResponse {
+  repeated WhatIs what_is = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
 message QuerySchemaRequest {
   string creator = 1;
   string did = 2;
@@ -50,9 +66,6 @@ message QueryWhatIsRequest {
 }
 
 message QuerySchemaResponse {
-  // Schema Repersentation
-  WhatIs whatIs = 1;
-
   // Definition of schema
   SchemaDefinition definition = 2;
 }
@@ -60,9 +73,6 @@ message QuerySchemaResponse {
 message QueryWhatIsResponse {
   // Schema Repersentation
   WhatIs whatIs = 1;
-
-  // Definition of schema
-  SchemaDefinition definition = 2;
 }
 
 // this line is used by starport scaffolding # 3

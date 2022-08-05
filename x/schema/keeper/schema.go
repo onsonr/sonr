@@ -23,14 +23,13 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
 
 	defer os.Remove(out_path)
-
 	resp, err := http.Get(IPFSShellURL)
 
 	if err != nil {
 		return err
 	}
 
-	buf, err := io.ReadAll(resp.Body)
+	buf, err := os.ReadFile(out_path)
 
 	if err != nil {
 		return err
@@ -47,6 +46,14 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	return nil
 }
 
+func (k Keeper) PinContent(payload interface{}) (string, error) {
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return "", err
+	}
+
+	return ipfs_inter.Add(bytes.NewBuffer(b))
+}
 func (k Keeper) GenerateKeyForDID() string {
 	return uuid.New().String()
 }

@@ -25,7 +25,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/jwt"
-	ctv1 "github.com/sonr-io/sonr/x/channel/types"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -56,7 +55,6 @@ type HighwayServer struct {
 	HTTPServer *http.Server
 
 	// Protocols
-	channels     map[string]ctv1.Channel
 	ipfsProtocol *ipfs.IPFSProtocol
 	// matrixProtocol *matrix.MatrixProtocol
 
@@ -71,11 +69,11 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 		return nil, err
 	}
 
-	// Create a new Cosmos Client for Sonr Blockchain
-	cosmos, err := client.NewCosmos(ctx, c)
-	if err != nil {
-		return nil, err
-	}
+	// // Create a new Cosmos Client for Sonr Blockchain
+	// cosmos, err := client.NewCosmos(ctx, c)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Create the IPFS Protocol
 	ipfs, err := ipfs.New(ctx, node)
@@ -91,7 +89,7 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 
 	// Create the RPC Service
 	stub := &HighwayServer{
-		Cosmos:       cosmos,
+		// Cosmos:       cosmos,
 		Host:         node,
 		ctx:          ctx,
 		Router:       gin.Default(),
@@ -106,29 +104,29 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 
 func (s *HighwayServer) ConfigureRoutes() {
 	// Register Cosmos HTTP Routes - Registry
-	s.Router.POST("/v1/registry/alias/buy", s.BuyAlias)
-	s.Router.POST("/v1/registry/alias/sell", s.SellAlias)
-	s.Router.POST("/v1/registry/alias/transfer", s.TransferAlias)
+	// s.Router.POST("/v1/registry/alias/buy", s.BuyAlias)
+	// s.Router.POST("/v1/registry/alias/sell", s.SellAlias)
+	// s.Router.POST("/v1/registry/alias/transfer", s.TransferAlias)
 
-	// Register Cosmos HTTP Routes - Bucket
-	s.Router.POST("/v1/bucket/create", s.CreateBucket)
-	s.Router.POST("/v1/bucket/update", s.UpdateBucket)
-	s.Router.POST("/v1/bucket/deactivate", s.DeactivateBucket)
+	// // Register Cosmos HTTP Routes - Bucket
+	// s.Router.POST("/v1/bucket/create", s.CreateBucket)
+	// s.Router.POST("/v1/bucket/update", s.UpdateBucket)
+	// s.Router.POST("/v1/bucket/deactivate", s.DeactivateBucket)
 
-	// Register Cosmos HTTP Routes - Channel
-	s.Router.POST("/v1/channel/create", s.CreateChannel)
-	s.Router.POST("/v1/channel/update", s.UpdateChannel)
-	s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
+	// // Register Cosmos HTTP Routes - Channel
+	// s.Router.POST("/v1/channel/create", s.CreateChannel)
+	// s.Router.POST("/v1/channel/update", s.UpdateChannel)
+	// s.Router.POST("/v1/channel/deactivate", s.DeactivateChannel)
 
-	// Register Blob HTTP Routes
-	s.Router.POST("/v1/blob/upload", s.UploadBlob)
-	s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
-	s.Router.POST("/v1/blob/remove/:cid", s.UnpinBlob)
+	// // Register Blob HTTP Routes
+	// s.Router.POST("/v1/blob/upload", s.UploadBlob)
+	// s.Router.GET("/v1/blob/download/:cid", s.DownloadBlob)
+	// s.Router.POST("/v1/blob/remove/:cid", s.UnpinBlob)
 
-	// WebAuthn Endpoints
-	s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)
-	s.Router.POST("/v1/registry/whois/update", s.UpdateWhoIs)
-	s.Router.POST("/v1/registry/whois/deactivate", s.DeactivateWhoIs)
+	// // WebAuthn Endpoints
+	// s.Router.POST("/v1/registry/whois/create", s.CreateWhoIs)
+	// s.Router.POST("/v1/registry/whois/update", s.UpdateWhoIs)
+	// s.Router.POST("/v1/registry/whois/deactivate", s.DeactivateWhoIs)
 
 	// Setup Swagger UI
 	s.Router.GET("v1/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
