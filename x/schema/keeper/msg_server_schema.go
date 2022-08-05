@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/crypto/did"
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 

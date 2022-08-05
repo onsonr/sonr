@@ -5,9 +5,9 @@ import (
 	"net/url"
 	"time"
 
-	ssi "github.com/sonr-io/sonr/pkg/did/ssi"
+	ssi "github.com/sonr-io/sonr/pkg/crypto/did/ssi"
 
-	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
+	"github.com/sonr-io/sonr/pkg/crypto/did/internal/marshal"
 )
 
 // VerifiableCredentialType is the default credential type required for every credential

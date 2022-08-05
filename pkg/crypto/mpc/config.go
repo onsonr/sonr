@@ -1,4 +1,4 @@
-package crypto
+package mpc
 
 import (
 	"github.com/sonr-io/multi-party-sig/pkg/party"

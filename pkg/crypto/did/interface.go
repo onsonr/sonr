@@ -3,7 +3,7 @@ package did
 import (
 	"encoding/json"
 
-	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/sonr/pkg/crypto/did/ssi"
 )
 
 type Document interface {

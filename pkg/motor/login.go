@@ -6,8 +6,8 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
-	"github.com/sonr-io/sonr/pkg/crypto"
-	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/crypto/did"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -35,7 +35,7 @@ func (mtr *motorNodeImpl) Login(request rtmv1.LoginRequest) (rtmv1.LoginResponse
 	}
 
 	// generate wallet
-	if err = initMotor(mtr, crypto.WithConfigs(cnfgs)); err != nil {
+	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
 		return rtmv1.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
 	fmt.Println("done.")
@@ -70,7 +70,7 @@ func createWalletConfigs(id string, req rtmv1.LoginRequest, shards vault.Vault) 
 	// if a password is provided, prefer that over the DSC
 	if req.Password != "" {
 		// build recovery Config
-		recShard, err := crypto.AesDecryptWithPassword(req.Password, shards.RecoveryShard)
+		recShard, err := mpc.AesDecryptWithPassword(req.Password, shards.RecoveryShard)
 		if err != nil {
 			return nil, fmt.Errorf("error decrypting recovery shard (%s): %s", recShard, err)
 		}
@@ -85,7 +85,7 @@ func createWalletConfigs(id string, req rtmv1.LoginRequest, shards vault.Vault) 
 		if !ok {
 			return nil, fmt.Errorf("could not find device shard with key '%s'", id)
 		}
-		dscShard, err := crypto.AesDecryptWithKey(req.AesDscKey, deviceShard)
+		dscShard, err := mpc.AesDecryptWithKey(req.AesDscKey, deviceShard)
 		if err != nil {
 			return nil, fmt.Errorf("error decrypting DSC shard: %s", err)
 		}
@@ -97,7 +97,7 @@ func createWalletConfigs(id string, req rtmv1.LoginRequest, shards vault.Vault) 
 	}
 
 	// in all cases, use the PSK
-	pskShard, err := crypto.AesDecryptWithKey(req.AesPskKey, shards.PskShard)
+	pskShard, err := mpc.AesDecryptWithKey(req.AesPskKey, shards.PskShard)
 	if err != nil {
 		return nil, fmt.Errorf("error decrypting PSK shard: %s", err)
 	}

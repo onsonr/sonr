@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/sonr/pkg/crypto/did"
+	"github.com/sonr-io/sonr/pkg/crypto/did/ssi"
 )
 
 func (d *DIDDocument) ToPkgDoc() (did.Document, error) {

@@ -23,8 +23,8 @@ import (
 	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
+	"github.com/sonr-io/sonr/pkg/crypto/jwt"
 	hn "github.com/sonr-io/sonr/pkg/host"
-	"github.com/sonr-io/sonr/pkg/jwt"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

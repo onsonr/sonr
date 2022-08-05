@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/marstr/guid"
-	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/crypto/did"
 	"github.com/sonr-io/sonr/pkg/host"
 )
 

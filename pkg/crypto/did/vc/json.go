@@ -1,7 +1,7 @@
 package vc
 
 import (
-	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
+	"github.com/sonr-io/sonr/pkg/crypto/did/internal/marshal"
 )
 
 const (

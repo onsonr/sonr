@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/sonr/pkg/crypto/did"
+	"github.com/sonr-io/sonr/pkg/crypto/did/ssi"
 )
 
 // AccAddress returns a sample account address

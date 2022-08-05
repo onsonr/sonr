@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/crypto/did"
 )
 
 // ContainsAlias checks if the alias is in the list of aliases of the whois

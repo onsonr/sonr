@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +21,7 @@ const ADDR = "snr14pwfr9kt2584jt4h6kapygznkely2z8mefy4nq"
 func Test_CreateAccount(t *testing.T) {
 	aesKey := loadKey("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {
-		key, err := crypto.NewAesKey()
+		key, err := mpc.NewAesKey()
 		assert.NoError(t, err, "generates aes key")
 		aesKey = key
 
