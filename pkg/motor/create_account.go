@@ -6,8 +6,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/crypto/did"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"

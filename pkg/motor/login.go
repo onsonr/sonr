@@ -6,8 +6,8 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
-	"github.com/sonr-io/sonr/pkg/crypto/did"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )

@@ -1,7 +1,7 @@
 package vault
 
 import (
-	"github.com/sonr-io/sonr/pkg/crypto/did"
+	"github.com/sonr-io/sonr/pkg/did"
 )
 
 type VaultClient interface {
