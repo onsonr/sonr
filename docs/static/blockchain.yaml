@@ -30380,6 +30380,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/where_is/{did}':
@@ -31523,6 +31533,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -31579,10 +31599,11 @@ paths:
                             of type `Link`
                           type: string
                           enum:
-                            - Object
-                            - Schema
-                            - Bucket
-                          default: Object
+                            - UNKNOWN
+                            - OBJECT
+                            - SCHEMA
+                            - BUCKET
+                          default: UNKNOWN
                     title: the properties of this schema
         default:
           description: An unexpected error response.
@@ -31845,6 +31866,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/tendermint/spn/claim/claim_record/{address}':
@@ -32005,6 +32036,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -55531,13 +55572,14 @@ definitions:
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
     title: WhoIsType is the type of DIDDocument stored in the registry module
-  sonrio.sonr.common.LinkKind:
+  sonrio.sonr.schema.LinkKind:
     type: string
     enum:
-      - Object
-      - Schema
-      - Bucket
-    default: Object
+      - UNKNOWN
+      - OBJECT
+      - SCHEMA
+      - BUCKET
+    default: UNKNOWN
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -55701,10 +55743,11 @@ definitions:
                     `Link`
                   type: string
                   enum:
-                    - Object
-                    - Schema
-                    - Bucket
-                  default: Object
+                    - UNKNOWN
+                    - OBJECT
+                    - SCHEMA
+                    - BUCKET
+                  default: UNKNOWN
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
@@ -55782,10 +55825,11 @@ definitions:
                 `Link`
               type: string
               enum:
-                - Object
-                - Schema
-                - Bucket
-              default: Object
+                - UNKNOWN
+                - OBJECT
+                - SCHEMA
+                - BUCKET
+              default: UNKNOWN
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
@@ -55833,10 +55877,11 @@ definitions:
         title: Optional field for a link context if `SchemaKind` is of type `Link`
         type: string
         enum:
-          - Object
-          - Schema
-          - Bucket
-        default: Object
+          - UNKNOWN
+          - OBJECT
+          - SCHEMA
+          - BUCKET
+        default: UNKNOWN
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:
