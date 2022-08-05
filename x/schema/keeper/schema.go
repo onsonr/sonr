@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -37,6 +39,10 @@ func (k Keeper) LookUpContent(cid string, content *types.SchemaDefinition) error
 
 	if err != nil {
 		return err
+	}
+
+	if content == nil {
+		return sdkerrors.Wrap(errors.New("content cannot be nil"), "grpc schema query")
 	}
 
 	if err = content.Unmarshal(buf); err != nil {

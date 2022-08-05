@@ -27,14 +27,14 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "Schema was not found for id: %s", req.Did)
 	}
 
-	var schemaJson *st.SchemaDefinition
+	var schemaJson *st.SchemaDefinition = &st.SchemaDefinition{}
 	err := k.LookUpContent(what_is.Schema.Cid, schemaJson)
+
 	fields := make([]*st.SchemaKindDefinition, len(schemaJson.Fields))
 	for _, v := range schemaJson.Fields {
 		fields = append(fields, &st.SchemaKindDefinition{
-			Name: v.Name,
-			// here we need to downcast the
-			Field: interface{}(v.Field).(st.SchemaKind),
+			Name:  v.Name,
+			Field: v.Field,
 		})
 	}
 
