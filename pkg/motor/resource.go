@@ -2,6 +2,7 @@ package motor
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -39,6 +40,10 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs, cb SchemaCallback) {
 
 		r.whatIsStore[whatIs.Did] = whatIs
 
+		if whatIs.Schema == nil {
+			callback(nil, fmt.Errorf("WhatIs '%s' has no schema", whatIs.Did))
+			return
+		}
 		if schema, ok := r.schemaStore[whatIs.Schema.Cid]; ok {
 			callback(schema, nil)
 			return
