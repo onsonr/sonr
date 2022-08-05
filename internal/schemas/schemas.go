@@ -1,6 +1,7 @@
 package schemas
 
 import (
+	"context"
 	"errors"
 
 	"github.com/ipfs/go-cid"
@@ -49,7 +50,8 @@ func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) Schema {
 			shell: shell.NewLocalShell(),
 		},
 	}
-	asi.loadSubSchemas(fields)
+
+	asi.loadSubSchemas(context.Background(), fields)
 	return asi
 }
 
@@ -66,6 +68,7 @@ func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs 
 			shell: shell,
 		},
 	}
-	asi.loadSubSchemas(fields)
+
+	asi.loadSubSchemas(context.Background(), fields)
 	return asi
 }
