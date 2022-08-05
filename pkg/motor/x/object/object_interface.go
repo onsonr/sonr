@@ -1,5 +1,20 @@
 package object
 
+type ObjectReference struct {
+	Did   string
+	Label string
+	Cid   string
+}
+
+/*
+	Object definition to be returned after object creation
+*/
+type ObjectUploadResult struct {
+	Code      int32
+	Reference *ObjectReference
+	Message   string
+}
+
 /*
 	Underlying api definition of internal implementation of Objects
 	Higher level APIs implementing ObjectClient features
@@ -18,11 +33,4 @@ type ObjectClient interface {
 		Retrieves an object for the data store
 	*/
 	GetObject(cid string) (map[string]interface{}, error)
-
-	/*
-		Builds Object with schema definition,
-		Returns an error if the object is invalid with the given Schema
-		Calling assert will not perform persistence operations
-	*/
-	assert(object map[string]interface{}) error
 }

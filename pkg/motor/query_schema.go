@@ -21,6 +21,10 @@ func (mtr *motorNodeImpl) QueryWhatIs(ctx context.Context, request mt.QueryWhatI
 	if err != nil {
 		return mt.QueryWhatIsResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
 	}
+
+	// store reference to schema
+	go mtr.resources.StoreWhatIs(resp.WhatIs)
+
 	return mt.QueryWhatIsResponse{
 		WhatIs: whatIsBytes,
 	}, nil
