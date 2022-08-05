@@ -5,7 +5,9 @@ package sonrio.sonr.common;
 option go_package = "github.com/sonr-io/sonr/x/common/types";
 
 enum LinkKind {
-  Object = 0;
-  Schema = 1;
-  Bucket = 2;
+  // None should be specified when no link is provided for the given schema type
+  None = 0;
+  Object = 1;
+  Schema = 2;
+  Bucket = 3;
 }

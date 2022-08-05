@@ -7,6 +7,9 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
+/*
+	Top level verification of the given schema def
+*/
 func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsNotFound
@@ -14,6 +17,31 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 
 	fields := make(map[string]st.SchemaKind)
 	for _, c := range as.fields {
+		fields[c.Name] = c.Field
+	}
+
+	for key, value := range doc {
+		if _, ok := fields[key]; !ok {
+			return errSchemaFieldsInvalid
+		}
+		if !CheckValueOfField(value, fields[key]) {
+			return errSchemaFieldsInvalid
+		}
+	}
+
+	return nil
+}
+
+/*
+	Sub level verification of the given schema def
+*/
+func (as *schemaImpl) VerifySubObject(lst []*st.SchemaKindDefinition, doc map[string]interface{}) error {
+	if as.fields == nil {
+		return errSchemaFieldsNotFound
+	}
+
+	fields := make(map[string]st.SchemaKind)
+	for _, c := range lst {
 		fields[c.Name] = c.Field
 	}
 
@@ -60,6 +88,8 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_LIST
 	case []string:
 		return fieldType == st.SchemaKind_LIST
+	case map[string]interface{}:
+		return fieldType == st.SchemaKind_LINK
 	case interface{}:
 		return fieldType == st.SchemaKind_ANY
 	default:
