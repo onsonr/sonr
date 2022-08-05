@@ -17721,9 +17721,6 @@ paths:
                         }
       parameters:
         - name: body
-          description: |-
-            SimulateRequest is the request type for the Service.Simulate
-            RPC method.
           in: body
           required: true
           schema:
@@ -18523,11 +18520,6 @@ paths:
                         }
       parameters:
         - name: body
-          description: >-
-            BroadcastTxRequest is the request type for the
-            Service.BroadcastTxRequest
-
-            RPC method.
           in: body
           required: true
           schema:
@@ -30174,6 +30166,42 @@ paths:
           format: uint64
       tags:
         - Query
+  /sonr-io/sonr/bucket/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SonrioSonrBucketParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /sonr-io/sonr/registry/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -30463,6 +30491,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -31204,6 +31242,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -31526,6 +31574,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/tendermint/spn/claim/claim_record/{address}':
@@ -31686,6 +31744,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -53155,6 +53223,16 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sonrio.sonr.bucket.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sonrio.sonr.bucket.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:

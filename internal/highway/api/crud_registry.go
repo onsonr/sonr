@@ -1,11 +1,11 @@
 package api
 
 import (
-	// "net/http"
+// "net/http"
 
-	// "github.com/gin-gonic/gin"
-	// t "github.com/sonr-io/sonr/types"
-	// rt "github.com/sonr-io/sonr/x/registry/types"
+// "github.com/gin-gonic/gin"
+// t "github.com/sonr-io/sonr/types"
+// rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 // // @Summary Create WhoIs Entry

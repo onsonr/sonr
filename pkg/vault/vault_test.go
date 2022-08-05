@@ -24,18 +24,18 @@ func Test_CreateVault(t *testing.T) {
 }
 
 func Test_GetVault(t *testing.T) {
-  res, err := http.Get("http://127.0.0.1:1234/cid/QmPocYs5qTF7YCri5YH9eAe7DJ84CgZaz4wogNGWKmpVBv/get")
-  assert.NoError(t, err, "GET succeeds")
-  defer res.Body.Close()
+	res, err := http.Get("http://127.0.0.1:1234/cid/QmPocYs5qTF7YCri5YH9eAe7DJ84CgZaz4wogNGWKmpVBv/get")
+	assert.NoError(t, err, "GET succeeds")
+	defer res.Body.Close()
 
-  var gvr getVaultResponse
-  // err = json.NewDecoder(res.Body).Decode(&v)
-  body, err := ioutil.ReadAll(res.Body)
-  assert.NoError(t, err, "read body")
+	var gvr getVaultResponse
+	// err = json.NewDecoder(res.Body).Decode(&v)
+	body, err := ioutil.ReadAll(res.Body)
+	assert.NoError(t, err, "read body")
 
-  json.Unmarshal(body, &gvr)
-  assert.NoError(t, err, "decode json succeeds")
+	json.Unmarshal(body, &gvr)
+	assert.NoError(t, err, "decode json succeeds")
 
-  fmt.Printf("%+v\n", gvr)
-  fmt.Printf("%+v\n", gvr.Vault.IssuedShards["test_device"])
+	fmt.Printf("%+v\n", gvr)
+	fmt.Printf("%+v\n", gvr.Vault.IssuedShards["test_device"])
 }

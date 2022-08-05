@@ -6,11 +6,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/sonr-io/sonr/testutil/keeper"
-	"github.com/sonr-io/sonr/x/registry/keeper"
-	"github.com/sonr-io/sonr/x/registry/types"
+	"github.com/sonr-io/sonr/x/bucket/keeper"
+	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
-	k, ctx := keepertest.RegistryKeeper(t)
+	k, ctx := keepertest.BucketKeeper(t)
 	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
 }
