@@ -16,6 +16,6 @@ func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, e
 	}
 
 	schemaImpl := schemas.New(schema.Fields, whatIs)
-	objCli := objectcli.New(schemaImpl, shell.NewLocalShell())
+	objCli := objectcli.New(schemaImpl, shell.NewShell("https://api.ipfs.sonr.ws"))
 	return object.NewBuilder(schemaImpl, objCli), nil
 }

@@ -42,7 +42,7 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	}
 
 	// store reference to newly created WhatIs
-	go mtr.resources.StoreWhatIs(csresp.WhatIs)
+	mtr.resources.StoreWhatIs(csresp.WhatIs, noSchemaCallback)
 
 	return mt.CreateSchemaResponse{
 		WhatIs: whatIsBytes,

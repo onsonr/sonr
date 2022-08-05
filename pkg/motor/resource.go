@@ -7,6 +7,8 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
+// SchemaCallback is a callback used when a schema CID is fetched
+type SchemaCallback func(*st.SchemaDefinition, error)
 type motorResources struct {
 	mu sync.Mutex
 
@@ -26,39 +28,55 @@ func newMotorResources(schemaQueryClient st.QueryClient) *motorResources {
 }
 
 /// StoreWhatIs fetches
-func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, error) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	r.whatIsStore[whatIs.Did] = whatIs
-
-	if schema, ok := r.schemaStore[whatIs.Schema.Cid]; ok {
-		return schema, nil
+func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs, cb SchemaCallback) {
+	callback := func(s *st.SchemaDefinition, e error) {
+		r.mu.Unlock()
+		cb(s, e)
 	}
 
-	// send QuerySchemaRequest to get fields
-	resp, err := r.schemaQueryClient.Schema(context.Background(), &st.QuerySchemaRequest{
-		Creator: whatIs.Creator,
-		Did:     whatIs.Did,
-	})
-	if err != nil {
-		return nil, err
-	}
+	go func() {
+		r.mu.Lock()
 
-	r.schemaStore[whatIs.Schema.Cid] = resp.Definition
-	return resp.Definition, nil
+		r.whatIsStore[whatIs.Did] = whatIs
+
+		if schema, ok := r.schemaStore[whatIs.Schema.Cid]; ok {
+			callback(schema, nil)
+			return
+		}
+
+		// send QuerySchemaRequest to get fields
+		resp, err := r.schemaQueryClient.Schema(context.Background(), &st.QuerySchemaRequest{
+			Creator: whatIs.Creator,
+			Did:     whatIs.Did,
+		})
+		if err != nil {
+			callback(nil, err)
+			return
+		}
+
+		r.schemaStore[whatIs.Schema.Cid] = resp.Definition
+		callback(resp.Definition, nil)
+	}()
 }
 
 func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition, bool) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	if _, ok := r.whatIsStore[did]; !ok {
+	var whatIs *st.WhatIs
+	if w, ok := r.whatIsStore[did]; !ok {
 		return nil, nil, false
+	} else if w.Schema == nil {
+		return nil, nil, false
+	} else {
+		whatIs = w
 	}
-	if def, ok := r.schemaStore[r.whatIsStore[did].Schema.Cid]; ok {
+
+	if def, ok := r.schemaStore[whatIs.Schema.Cid]; ok {
 		return r.whatIsStore[did], def, true
 	}
 
 	return nil, nil, false
 }
+
+func noSchemaCallback(_ *st.SchemaDefinition, _ error) {}
