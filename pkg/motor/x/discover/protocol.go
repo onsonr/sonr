@@ -6,7 +6,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/sonr/pkg/config"
-	ct "github.com/sonr-io/sonr/x/channel/types"
 
 	host "github.com/sonr-io/sonr/pkg/host"
 	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
@@ -21,40 +20,39 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node   host.SonrHost
-	ctx    context.Context
-	global ct.Channel
-	local  *Local
-	mode   config.Role
+	node  host.SonrHost
+	ctx   context.Context
+	local *Local
+	mode  config.Role
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverProtocol, error) {
-	// Create BeamStore
-	b, err := ct.NewChannel(ctx, host, &ct.ChannelDoc{
-		Label: "_discover",
-		Did:   "did:snr:discover",
-	})
-	if err != nil {
-		return nil, err
-	}
+// func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverProtocol, error) {
+// 	// Create BeamStore
+// 	b, err := ct.NewChannel(ctx, host, &ct.ChannelDoc{
+// 		Label: "_discover",
+// 		Did:   "did:snr:discover",
+// 	})
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	// Create Exchange Protocol
-	protocol := &DiscoverProtocol{
-		ctx:    ctx,
-		global: b,
-		node:   host,
-	}
+// 	// Create Exchange Protocol
+// 	protocol := &DiscoverProtocol{
+// 		ctx:    ctx,
+// 		global: b,
+// 		node:   host,
+// 	}
 
-	// Set options
-	opts := defaultOptions()
-	for _, opt := range options {
-		opt(opts)
-	}
-	opts.Apply(protocol)
-	logger.Debug("✅  ExchangeProtocol is Activated \n")
-	return protocol, nil
-}
+// 	// Set options
+// 	opts := defaultOptions()
+// 	for _, opt := range options {
+// 		opt(opts)
+// 	}
+// 	opts.Apply(protocol)
+// 	logger.Debug("✅  ExchangeProtocol is Activated \n")
+// 	return protocol, nil
+// }
 
 // FindPeerId method returns PeerID by SName
 func (p *DiscoverProtocol) Get(sname string) (*motor.Peer, error) {
