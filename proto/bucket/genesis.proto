@@ -3,6 +3,7 @@ package sonrio.sonr.bucket;
 
 import "gogoproto/gogo.proto";
 import "bucket/params.proto";
+import "bucket/where_is.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
@@ -10,5 +11,7 @@ option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 // GenesisState defines the bucket module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated WhereIs whereIsList = 2 [(gogoproto.nullable) = false];
+  uint64 whereIsCount = 3;
   // this line is used by starport scaffolding # genesis/proto/state
 }

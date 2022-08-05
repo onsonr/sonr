@@ -14,6 +14,15 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
+		WhereIsList: []types.WhereIs{
+			{
+				Did: "did:sonr:1",
+			},
+			{
+				Did: "did:sonr:2",
+			},
+		},
+		WhereIsCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -25,5 +34,7 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
+	require.ElementsMatch(t, genesisState.WhereIsList, got.WhereIsList)
+	require.Equal(t, genesisState.WhereIsCount, got.WhereIsCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

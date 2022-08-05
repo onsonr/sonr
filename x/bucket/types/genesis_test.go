@@ -19,12 +19,47 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
+				WhereIsList: []types.WhereIs{
+					{
+						Did:     "did:sonr:1",
+					},
+					{
+						Did:     "did:sonr:2",
+					},
+				},
+				WhereIsCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated whereIs",
+			genState: &types.GenesisState{
+				WhereIsList: []types.WhereIs{
+					{
+						Did:     "did:sonr:1",
+					},
+					{
+						Did:     "did:sonr:1",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid whereIs count",
+			genState: &types.GenesisState{
+				WhereIsList: []types.WhereIs{
+					{
+						Did:     "did:sonr:1",
+					},
+				},
+				WhereIsCount: 0,
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	} {

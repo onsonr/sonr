@@ -1,17 +1,17 @@
 accounts:
   - name: alice
-    coins: ["20000snr", "200000000stake"]
+    coins: ["20000snr", "200000000usnr"]
   - name: bob
-    coins: ["10000snr", "100000000stake"]
+    coins: ["10000snr", "100000000usnr"]
 validator:
   name: alice
-  staked: "100000000stake"
+  staked: "100000000usnr"
 client:
   openapi:
     path: "docs/static/blockchain.yaml"
 faucet:
   name: bob
-  coins: ["50000000snr", "100000000stake"]
+  coins: ["50000000snr", "100000000usnr"]
 build:
   main: "cmd/sonrd"
   binary: "sonrd"

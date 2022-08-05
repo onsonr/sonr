@@ -1,0 +1,57 @@
+syntax = "proto3";
+package sonrio.sonr.bucket;
+
+option go_package = "github.com/sonr-io/sonr/x/bucket/types";
+
+message WhereIs {
+  // DID of the created bucket.
+  string did = 1;
+
+  // Creator of the new bucket
+  string creator = 2;
+
+  // Label of the new bucket.
+  string label = 3;
+
+  // Visibility of the new bucket.
+  WhereIsVisibility visibility = 4;
+
+  // Role of the creator of the new bucket.
+  WhereIsRole role = 5;
+
+  // IsActive flag of the new bucket.
+  bool is_active = 6;
+
+  // Content of the new bucket map of DIDs to CIDs.
+  map<string, string> content = 7;
+
+  // JWKs of the new bucket.
+  map<string, bytes> jwks = 8;
+
+  // Timestamp of the new bucket.
+  int64 timestamp = 9;
+}
+
+// WhereIsVisibility is the visibility of the bucket to authorized users of an application
+enum WhereIsVisibility {
+  // Bucket does not have visibility set.
+  UNSPECIFIED = 0;
+
+  // Bucket is visible to anyone.
+  PUBLIC = 1;
+
+  // Bucket is visible to anyone who has access token.
+  PRIVATE = 2;
+}
+
+// WhereIsRole is the role of the creator of the bucket.
+enum WhereIsRole {
+  // Bucket does not have role set.
+  NONE = 0;
+
+  // Bucket is visible to anyone.
+  APPLICATION = 1;
+
+  // Bucket is visible to anyone who has access token.
+  USER = 2;
+}
