@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	shell "github.com/ipfs/go-ipfs-api"
@@ -17,27 +18,31 @@ type ReadableStore interface {
 
 // Store implementation to abstract store operations
 type readStoreImpl struct {
+	mu    sync.Mutex
 	cache map[string][]byte
 	shell *shell.Shell
 }
 
-func (rs readStoreImpl) Has(ctx context.Context, key string) (bool, error) {
-	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
+func (rs *readStoreImpl) Has(ctx context.Context, key string) (bool, error) {
+	rs.mu.Lock()
+	defer rs.mu.Unlock()
 
-	out_path := filepath.Join(os.TempDir(), key+time_stamp+".txt")
-
-	defer os.Remove(out_path)
-
-	err := rs.shell.Get(key, out_path)
-
-	if err != nil {
-		return false, err
+	if rs.cache == nil {
+		rs.cache = make(map[string][]byte)
+		return false, nil
 	}
 
-	return true, nil
+	if rs.cache[key] != nil {
+		return true, nil
+	}
+
+	return false, nil
 }
 
-func (rs readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
+func (rs *readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
+	rs.mu.Lock()
+	defer rs.mu.Unlock()
+
 	if rs.cache == nil {
 		rs.cache = make(map[string][]byte)
 	}
