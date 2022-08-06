@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -14,7 +13,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/google/uuid"
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
+)
+
+var (
+	url        = "https://api.ipfs.sonr.ws"
+	ipfs_inter = shell.NewShell(url)
 )
 
 func (k Keeper) LookUpContent(cid string, content *types.SchemaDefinition) error {
@@ -23,12 +28,15 @@ func (k Keeper) LookUpContent(cid string, content *types.SchemaDefinition) error
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
 
 	defer os.Remove(out_path)
-	resp, err := http.Get(IPFSShellURL)
+
+	err := ipfs_inter.Get(cid, out_path)
+
 	if err != nil {
 		return err
 	}
 
 	buf, err := os.ReadFile(out_path)
+
 	if err != nil {
 		return err
 	}
@@ -51,6 +59,7 @@ func (k Keeper) LookUpContent(cid string, content *types.SchemaDefinition) error
 func (k Keeper) PinContent(data []byte) (string, error) {
 	return ipfs_inter.Add(bytes.NewBuffer(data))
 }
+
 func (k Keeper) GenerateKeyForDID() string {
 	return uuid.New().String()
 }
@@ -81,7 +90,7 @@ func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []typ
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals = make([]types.WhatIs, 0)
+	var vals []types.WhatIs = make([]types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
 		var instance types.WhatIs
 		error := k.cdc.Unmarshal(iterator.Value(), &instance)
@@ -105,7 +114,7 @@ func (k Keeper) GetWhatIsFromLabel(ctx sdk.Context, label string) (val []types.W
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals = make([]types.WhatIs, 0)
+	var vals []types.WhatIs = make([]types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
 		var instance types.WhatIs
 		k.cdc.MustUnmarshal(iterator.Value(), &instance)

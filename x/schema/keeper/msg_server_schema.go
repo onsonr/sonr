@@ -2,13 +2,11 @@ package keeper
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/x/schema/types"
 )
@@ -41,23 +39,14 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 
-	schemaDef := make(map[string]types.SchemaKind)
-	for _, c := range msg.Definition.GetFields() {
-		schemaDef[c.String()] = c
-	}
-	b, err := json.Marshal(schemaDef)
+	b, err := msg.Definition.Marshal()
+
 	if err != nil {
-		return nil, err
+		return nil, sdkerrors.Wrapf(err, "Error while pinning schema definition to storage")
 	}
 
-	cidStr, err := k.ipfs.PutData(ctx.Context(), b)
-	if err != nil {
-		return nil, err
-	}
-
-	if err = k.ipfs.PinFile(ctx.Context(), cidStr); err != nil {
-		return nil, err
-	}
+	cid_str, err := k.PinContent(b)
+	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
 	}
@@ -65,7 +54,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	var schema = types.SchemaReference{
 		Label: msg.Definition.Label,
 		Did:   what_is_did.String(),
-		Cid:   cidStr,
+		Cid:   cid_str,
 	}
 
 	var whatIs = types.WhatIs{
