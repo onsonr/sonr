@@ -25,6 +25,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	hn "github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/jwt"
+	"github.com/sonr-io/sonr/pkg/protocol"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -55,7 +56,7 @@ type HighwayServer struct {
 	HTTPServer *http.Server
 
 	// Protocols
-	ipfsProtocol *ipfs.IPFSProtocol
+	ipfsProtocol protocol.IPFS
 	// matrixProtocol *matrix.MatrixProtocol
 
 	//Prometheus
