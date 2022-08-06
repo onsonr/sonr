@@ -45,7 +45,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, sdkerrors.Wrapf(err, "Error while pinning schema definition to storage")
 	}
 
-	cid_str, err := k.PinContent(b)
+	cid_str, err := k.ipfs.PutData(goCtx, b)
 	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")

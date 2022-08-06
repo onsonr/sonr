@@ -28,7 +28,8 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 	}
 
 	var schemaJson *st.SchemaDefinition = &st.SchemaDefinition{}
-	err := k.LookUpContent(what_is.Schema.Cid, schemaJson)
+	b, err := k.ipfsStore.GetData(goCtx, what_is.Schema.Cid)
+	schemaJson.Unmarshal(b)
 
 	fields := make([]*st.SchemaKindDefinition, len(schemaJson.Fields))
 	for _, v := range schemaJson.Fields {

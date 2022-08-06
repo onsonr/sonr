@@ -12,6 +12,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/sonr-io/sonr/pkg/protocol"
 	"github.com/sonr-io/sonr/x/schema/keeper"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/require"
@@ -44,6 +45,7 @@ func SchemaKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
+		protocol.NewIPFSShell("localhost:5001", nil),
 		nil,
 		nil,
 		nil,

@@ -100,6 +100,8 @@ import (
 	monitoringptypes "github.com/tendermint/spn/x/monitoringp/types"
 
 	docs "github.com/sonr-io/sonr/docs"
+	"github.com/sonr-io/sonr/pkg/protocol"
+	"github.com/sonr-io/sonr/pkg/store"
 	registrymodule "github.com/sonr-io/sonr/x/registry"
 	registrymodulekeeper "github.com/sonr-io/sonr/x/registry/keeper"
 	registrymoduletypes "github.com/sonr-io/sonr/x/registry/types"
@@ -136,7 +138,7 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
-
+	ipfs_inter      protocol.IPFS = protocol.NewIPFSShell("https://api.ipfs.sonr.ws", store.NewMemoryStore().Datastore())
 	// ModuleBasics defines the module BasicManager is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration
 	// and genesis verification.
@@ -405,7 +407,7 @@ func New(
 		keys[schemamoduletypes.StoreKey],
 		keys[schemamoduletypes.MemStoreKey],
 		app.GetSubspace(schemamoduletypes.ModuleName),
-
+		ipfs_inter,
 		app.AccountKeeper,
 		app.CapabilityKeeper,
 		app.BankKeeper,
