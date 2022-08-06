@@ -40,6 +40,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if err != nil {
 		return nil, err
 	}
+
 	schemaDef := make(map[string]types.SchemaKind)
 	for _, c := range msg.Definition.GetFields() {
 		schemaDef[c.String()] = c
@@ -57,7 +58,6 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if err = k.ipfs.PinFile(ctx.Context(), cidStr); err != nil {
 		return nil, err
 	}
-
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
 	}

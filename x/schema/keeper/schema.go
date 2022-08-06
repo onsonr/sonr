@@ -3,7 +3,7 @@ package keeper
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -12,12 +12,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/google/uuid"
-
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (k Keeper) LookUpContent(cid string, content interface{}) error {
+func (k Keeper) LookUpContent(cid string, content *types.SchemaDefinition) error {
 	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
 
 	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
@@ -33,7 +33,11 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 		return err
 	}
 
-	if err = json.Unmarshal(buf, &content); err != nil {
+	if content == nil {
+		return sdkerrors.Wrap(errors.New("content cannot be nil"), "grpc schema query")
+	}
+
+	if err = content.Unmarshal(buf); err != nil {
 		return err
 	}
 
@@ -44,13 +48,8 @@ func (k Keeper) LookUpContent(cid string, content interface{}) error {
 	return nil
 }
 
-func (k Keeper) PinContent(payload interface{}) (string, error) {
-	b, err := json.Marshal(payload)
-	if err != nil {
-		return "", err
-	}
-
-	return ipfs_inter.Add(bytes.NewBuffer(b))
+func (k Keeper) PinContent(data []byte) (string, error) {
+	return ipfs_inter.Add(bytes.NewBuffer(data))
 }
 func (k Keeper) GenerateKeyForDID() string {
 	return uuid.New().String()
