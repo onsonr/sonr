@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TODO: improve test suite (make more robust for CI/CID)
 const ADDR = "snr1m85smndhxhhyjfnt90csd5tpfvw0843hwqtqnu"
 
 func Test_DecodeTxData(t *testing.T) {

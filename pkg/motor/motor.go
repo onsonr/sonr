@@ -37,7 +37,6 @@ type MotorNode interface {
 
 	CreateSchema(rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error)
 	QueryWhatIs(context.Context, rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error)
-	UploadObject(object.Object) (rtmv1.UploadObjectResponse, error)
 
 	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
 }

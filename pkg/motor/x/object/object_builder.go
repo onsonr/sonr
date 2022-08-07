@@ -73,3 +73,16 @@ func (ob *ObjectBuilder) Build() (Object, error) {
 
 	return ob.values, nil
 }
+
+func (ob *ObjectBuilder) Upload() (*ObjectUploadResult, error) {
+	toUpload, err := ob.Build()
+	if err != nil {
+		return nil, err
+	}
+
+	return ob.objectClient.CreateObject(ob.label, toUpload)
+}
+
+func (ob *ObjectBuilder) GetByCID(cid string) (Object, error) {
+	return ob.objectClient.GetObject(cid)
+}
