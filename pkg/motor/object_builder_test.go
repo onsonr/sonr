@@ -21,7 +21,7 @@ prt.CreateSchemaRequest{
 	},
 }
 */
-const SCHEMA_DID string = "did:snr:cf07aa15-93c6-4d3c-8ad8-9d3342aee83a"
+const SCHEMA_DID string = "did:snr:64ab70e9-0d4e-466a-aad4-55520b93b617"
 
 func Test_ObjectBuilder(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
