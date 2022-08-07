@@ -8,30 +8,17 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateBucket{}, "bucket/CreateBucket", nil)
-	cdc.RegisterConcrete(&MsgUpdateBucket{}, "bucket/UpdateBucket", nil)
-	cdc.RegisterConcrete(&MsgDeactivateBucket{}, "bucket/DeactivateBucket", nil)
-	cdc.RegisterConcrete(&MsgCreateWhichIs{}, "bucket/CreateWhichIs", nil)
-	cdc.RegisterConcrete(&MsgUpdateWhichIs{}, "bucket/UpdateWhichIs", nil)
-	cdc.RegisterConcrete(&MsgDeleteWhichIs{}, "bucket/DeleteWhichIs", nil)
+	cdc.RegisterConcrete(&MsgCreateWhereIs{}, "bucket/CreateWhereIs", nil)
+	cdc.RegisterConcrete(&MsgUpdateWhereIs{}, "bucket/UpdateWhereIs", nil)
+	cdc.RegisterConcrete(&MsgDeleteWhereIs{}, "bucket/DeleteWhereIs", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateBucket{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateBucket{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgDeactivateBucket{},
-	)
-
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateWhichIs{},
-		&MsgUpdateWhichIs{},
-		&MsgDeleteWhichIs{},
+		&MsgCreateWhereIs{},
+		&MsgUpdateWhereIs{},
+		&MsgDeleteWhereIs{},
 	)
 	// this line is used by starport scaffolding # 3
 

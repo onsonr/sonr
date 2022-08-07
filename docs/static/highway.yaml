@@ -46,10 +46,51 @@ definitions:
       label:
         description: Label is human-readable name of the channel.
         type: string
-      registered_object:
-        $ref: '#/definitions/types.ObjectDoc'
-        description: RegisterdObject is the object that is registered as the payload
-          for the channel.
+    type: object
+  types.DIDDocument:
+    properties:
+      also_known_as:
+        items:
+          type: string
+        type: array
+      assertion_method:
+        items:
+          type: string
+        type: array
+      authentication:
+        items:
+          type: string
+        type: array
+      capability_delegation:
+        items:
+          type: string
+        type: array
+      capability_invocation:
+        items:
+          type: string
+        type: array
+      context:
+        items:
+          type: string
+        type: array
+      controller:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      key_agreement:
+        items:
+          type: string
+        type: array
+      service:
+        items:
+          $ref: '#/definitions/types.Service'
+        type: array
+      verification_method:
+        items:
+          $ref: '#/definitions/types.VerificationMethod'
+        type: array
     type: object
   types.HowIs:
     properties:
@@ -70,13 +111,17 @@ definitions:
         description: Timestamp is the time of the last update of the DID Document
         type: integer
     type: object
+  types.KeyValuePair:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+    type: object
   types.MsgBuyAlias:
     properties:
       creator:
         description: Creator is the wallet address of the creator of the transaction.
-        type: string
-      did:
-        description: Did is the top level DID of the WhoIs.
         type: string
       name:
         description: Name is the name of the alias app extension to be bought. i.e.
@@ -85,9 +130,9 @@ definitions:
     type: object
   types.MsgBuyAliasResponse:
     properties:
-      did:
+      success:
         description: Did is the top level DID of the WhoIs.
-        type: string
+        type: boolean
       who_is:
         $ref: '#/definitions/types.WhoIs'
         description: WhoIs is the updated WhoIs, contains the DID document and associated
@@ -129,8 +174,6 @@ definitions:
         type: string
       label:
         type: string
-      object_to_register:
-        $ref: '#/definitions/types.ObjectDoc'
     type: object
   types.MsgCreateChannelResponse:
     properties:
@@ -143,31 +186,6 @@ definitions:
       message:
         description: Message of the response
         type: string
-    type: object
-  types.MsgCreateObject:
-    properties:
-      creator:
-        type: string
-      description:
-        type: string
-      initial_fields:
-        items:
-          $ref: '#/definitions/types.TypeField'
-        type: array
-      label:
-        type: string
-    type: object
-  types.MsgCreateObjectResponse:
-    properties:
-      code:
-        description: Code of the response
-        type: integer
-      message:
-        description: Message of the response
-        type: string
-      what_is:
-        $ref: '#/definitions/types.WhatIs'
-        description: WhatIs of the Channel
     type: object
   types.MsgCreateWhoIs:
     properties:
@@ -187,9 +205,9 @@ definitions:
     type: object
   types.MsgCreateWhoIsResponse:
     properties:
-      did:
+      success:
         description: Did is the top level DID of the created WhoIs.
-        type: string
+        type: boolean
       who_is:
         $ref: '#/definitions/types.WhoIs'
         description: WhoIs is the created WhoIs, contains the DID document and associated
@@ -227,29 +245,10 @@ definitions:
         description: Message of the response
         type: string
     type: object
-  types.MsgDeactivateObject:
-    properties:
-      creator:
-        type: string
-      did:
-        type: string
-    type: object
-  types.MsgDeactivateObjectResponse:
-    properties:
-      code:
-        description: Code of the response
-        type: integer
-      message:
-        description: Message of the response
-        type: string
-    type: object
   types.MsgDeactivateWhoIs:
     properties:
       creator:
         description: Creator is the wallet address of the creator of the transaction.
-        type: string
-      did:
-        description: Did is the top level DID of the WhoIs.
         type: string
     type: object
   types.MsgDeactivateWhoIsResponse:
@@ -273,9 +272,6 @@ definitions:
       creator:
         description: Creator is the wallet address of the creator of the transaction.
         type: string
-      did:
-        description: Did is the top level DID of the WhoIs.
-        type: string
     type: object
   types.MsgSellAliasResponse:
     properties:
@@ -298,9 +294,6 @@ definitions:
         type: integer
       creator:
         description: Creator is the wallet address of the creator of the transaction.
-        type: string
-      did:
-        description: Did is the top level DID of the WhoIs.
         type: string
       recipient:
         description: Recipient is the wallet address of the recipient of the alias.
@@ -359,8 +352,6 @@ definitions:
         type: string
       label:
         type: string
-      object_to_register:
-        $ref: '#/definitions/types.ObjectDoc'
     type: object
   types.MsgUpdateChannelResponse:
     properties:
@@ -371,46 +362,10 @@ definitions:
         description: Message of the response
         type: string
     type: object
-  types.MsgUpdateObject:
-    properties:
-      added_fields:
-        description: Added fields to the object
-        items:
-          $ref: '#/definitions/types.TypeField'
-        type: array
-      cid:
-        description: Contend Identifier of the object
-        type: string
-      creator:
-        type: string
-      label:
-        description: Label of the Object
-        type: string
-      removed_fields:
-        description: Removed fields from the object
-        items:
-          $ref: '#/definitions/types.TypeField'
-        type: array
-    type: object
-  types.MsgUpdateObjectResponse:
-    properties:
-      code:
-        description: Code of the response
-        type: integer
-      message:
-        description: Message of the response
-        type: string
-      what_is:
-        $ref: '#/definitions/types.WhatIs'
-        description: WhatIs of the Channel
-    type: object
   types.MsgUpdateWhoIs:
     properties:
       creator:
         description: Creator is the wallet address of the creator of the transaction.
-        type: string
-      did:
-        description: Did is the top level DID of the WhoIs.
         type: string
       did_document:
         description: DidDocument is the DID document to be stored, in JSON format
@@ -421,60 +376,37 @@ definitions:
     type: object
   types.MsgUpdateWhoIsResponse:
     properties:
-      did:
+      success:
         description: Did is the top level DID of the WhoIs.
-        type: string
+        type: boolean
       who_is:
         $ref: '#/definitions/types.WhoIs'
         description: WhoIs is the created WhoIs, contains the DID document and associated
           metadata.
     type: object
-  types.ObjectDoc:
+  types.Service:
     properties:
-      bucket_did:
-        description: Bucket is the did of the bucket that contains this object.
+      id:
         type: string
-      description:
-        description: Description is a human-readable description of the bucket.
+      service_endpoint:
         type: string
-      did:
-        description: Did is the identifier of the object.
+      type:
         type: string
-      fields:
-        description: Fields are the fields associated with the object.
+    type: object
+  types.VerificationMethod:
+    properties:
+      controller:
+        type: string
+      id:
+        type: string
+      public_key_base58:
+        type: string
+      public_key_jwk:
         items:
-          $ref: '#/definitions/types.TypeField'
+          $ref: '#/definitions/types.KeyValuePair'
         type: array
-      label:
-        description: Label is human-readable name of the bucket.
+      type:
         type: string
-    type: object
-  types.TypeField:
-    properties:
-      kind:
-        description: Type is the type of the field.
-        type: integer
-      name:
-        description: Name is the name of the field.
-        type: string
-    type: object
-  types.WhatIs:
-    properties:
-      creator:
-        description: Creator is the DID of the creator
-        type: string
-      did:
-        description: DID is the DID of the object
-        type: string
-      is_active:
-        description: IsActive is the status of the DID Document
-        type: boolean
-      object_doc:
-        $ref: '#/definitions/types.ObjectDoc'
-        description: Object_doc is the object document
-      timestamp:
-        description: Timestamp is the time of the last update of the DID Document
-        type: integer
     type: object
   types.WhichIs:
     properties:
@@ -509,11 +441,9 @@ definitions:
           type: string
         type: array
       did_document:
+        $ref: '#/definitions/types.DIDDocument'
         description: DIDDocument is the bytes representation of DIDDocument within
           the WhoIs. Initially marshalled as JSON.
-        items:
-          type: integer
-        type: array
       is_active:
         description: IsActive is the status of the DID Document
         type: boolean
@@ -542,84 +472,6 @@ info:
   title: Highway API
   version: v0.23.0
 paths:
-  /v1/auth/access/finish/:username:
-    post:
-      description: FinishAccessName finishes the authentication process and returns
-        a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Finish Access Name
-      tags:
-      - WebAuthn
-  /v1/auth/access/start/:username:
-    get:
-      description: StartAccessName accesses the user's existing credentials and returns
-        a PublicKeyCredentialRequestOptions. Beggining the authentication process.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Start Access Name
-      tags:
-      - WebAuthn
-  /v1/auth/register/finish/:username:
-    post:
-      description: FinishRegisterName finishes the registration process and returns
-        a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential
-        to a Sonr Account.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Finish Register Name
-      tags:
-      - WebAuthn
-  /v1/auth/register/start/:username:
-    get:
-      description: StartRegisterName starts the registration process and returns a
-        PublicKeyCredentialCreationOptions. Initiating the registration process for
-        a Sonr Account.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Start Register Name
-      tags:
-      - WebAuthn
   /v1/bucket/create:
     post:
       description: CreateBucket creates a new bucket for a registered application
@@ -793,7 +645,7 @@ paths:
       - Blob
   /v1/ipfs/remove/:cid:
     post:
-      description: RemoveBlob deletes a file from storage given its CID.
+      description: UnpinBlob deletes a file from storage given its CID.
       produces:
       - application/json
       responses:
@@ -805,7 +657,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Remove Blob
+      summary: Unpin Blob
       tags:
       - Blob
   /v1/ipfs/upload:
@@ -825,78 +677,6 @@ paths:
       summary: Upload Blob
       tags:
       - Blob
-  /v1/object/create:
-    post:
-      description: CreateObject creates a Object for a registered application
-      parameters:
-      - description: Parameters
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.MsgCreateObject'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.MsgCreateObjectResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Create Object
-      tags:
-      - Object
-  /v1/object/deactivate:
-    post:
-      description: DeactivateObject disables a Object for a registered application
-      parameters:
-      - description: Parameters
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.MsgDeactivateObject'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.MsgDeactivateObjectResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Deactivate Object
-      tags:
-      - Object
-  /v1/object/update:
-    post:
-      description: UpdateObject updates and object reference for a registered application
-      parameters:
-      - description: Parameters
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.MsgUpdateObject'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.MsgUpdateObjectResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Update Object
-      tags:
-      - Object
   /v1/registry/buy/alias/app:
     post:
       description: This method Sets a particular owned alias by a User or Application

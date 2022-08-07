@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kataras/go-events"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -17,9 +16,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/config"
-	t "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
-	"google.golang.org/protobuf/proto"
 )
 
 // Config returns the configuration of the node
@@ -57,32 +53,32 @@ func (n *hostImpl) Role() config.Role {
 	return n.config.Role
 }
 
-// AuthenticateMessage Authenticates incoming p2p message
-func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) error {
-	// store a temp ref to signature and remove it from message data
-	// sign is a string to allow easy reset to zero-value (empty string)
-	sign := metadata.Signature
-	metadata.Signature = nil
+// // AuthenticateMessage Authenticates incoming p2p message
+// func (n *hostImpl) AuthenticateMessage(msg proto.Message, metadata *t.Metadata) error {
+// 	// store a temp ref to signature and remove it from message data
+// 	// sign is a string to allow easy reset to zero-value (empty string)
+// 	sign := metadata.Signature
+// 	metadata.Signature = nil
 
-	// marshall data without the signature to protobufs3 binary format
-	buf, err := proto.Marshal(msg)
-	if err != nil {
-		return err
-	}
+// 	// marshall data without the signature to protobufs3 binary format
+// 	buf, err := proto.Marshal(msg)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	// restore sig in message data (for possible future use)
-	metadata.Signature = sign
+// 	// restore sig in message data (for possible future use)
+// 	metadata.Signature = sign
 
-	// restore peer id binary format from base58 encoded node id data
-	peerId, err := peer.Decode(metadata.NodeId)
-	if err != nil {
-		return err
-	}
+// 	// restore peer id binary format from base58 encoded node id data
+// 	peerId, err := peer.Decode(metadata.NodeId)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	// verify the data was authored by the signing peer identified by the public key
-	// and signature included in the message
-	return n.VerifyData(buf, []byte(sign), metadata.PublicKey, peerId)
-}
+// 	// verify the data was authored by the signing peer identified by the public key
+// 	// and signature included in the message
+// 	return n.VerifyData(buf, []byte(sign), peerId, metadata.PublicKey)
+// }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
 func (hn *hostImpl) Connect(pi peer.AddrInfo) error {
@@ -158,7 +154,7 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -185,7 +181,7 @@ func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.Stream
 }
 
 // SendMessage writes a protobuf go data object to a network stream
-func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+func (h *hostImpl) Send(id peer.ID, p protocol.ID, data []byte) error {
 	if !h.HasRouting() {
 		return fmt.Errorf("Host does not have routing")
 	}
@@ -196,39 +192,33 @@ func (h *hostImpl) SendMessage(id peer.ID, p protocol.ID, data proto.Message) er
 	}
 	defer s.Close()
 
-	// marshall data to protobufs3 binary format
-	bin, err := proto.Marshal(data)
-	if err != nil {
-		return err
-	}
-
 	// Create Writer and write data to stream
 	w := msgio.NewWriter(s)
-	if err := w.WriteMsg(bin); err != nil {
+	if err := w.WriteMsg(data); err != nil {
 		return err
 	}
 	return nil
 }
 
 // TODO
-func (hn *hostImpl) Events() events.EventEmmiter {
-	return events.New()
-}
+// func (hn *hostImpl) Events() events.EventEmmiter {
+// 	return events.New()
+// }
 
-// TODO
-func (hn *hostImpl) Peer() (*types.Peer, error) {
-	return nil, nil
-}
+// // TODO
+// func (hn *hostImpl) Peer() (*types.Peer, error) {
+// 	return nil, nil
+// }
 
 // TODO
 func (hn *hostImpl) SignData(data []byte) ([]byte, error) {
 	return nil, nil
 }
 
-// TODO
-func (hn *hostImpl) SignMessage(message proto.Message) ([]byte, error) {
-	return nil, nil
-}
+// // TODO
+// func (hn *hostImpl) SignMessage(message proto.Message) ([]byte, error) {
+// 	return nil, nil
+// }
 
 type HostStat struct {
 	ID        string `json:"id"`
@@ -241,7 +231,7 @@ func (hn *hostImpl) Stat() HostStat {
 	// Return Host Stat
 	return HostStat{
 		ID:        hn.host.ID().String(),
-		Status:    hn.status.String(),
+		Status:    string(hn.fsm.CurrentStatus),
 		MultiAddr: hn.host.Addrs()[0].String(),
 	}
 }
@@ -268,7 +258,7 @@ func (hn *hostImpl) Serve() {
 }
 
 // VerifyData verifies incoming p2p message data integrity
-func (n *hostImpl) VerifyData(data, signature, pubKeyData []byte, peerId peer.ID) error {
+func (n *hostImpl) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) error {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
 		return err

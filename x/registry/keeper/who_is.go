@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -129,4 +130,10 @@ func GetWhoIsIDBytes(id uint64) []byte {
 // GetWhoIsIDFromBytes returns ID in uint64 format from a byte array
 func GetWhoIsIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
+}
+
+func AccAddressFromDid(did string) sdk.AccAddress {
+	parts := strings.Split(did, ":")
+	addrString := strings.Join(parts[1:], "")
+	return sdk.AccAddress(addrString)
 }

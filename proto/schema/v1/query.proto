@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package sonrio.sonr.schema;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "schema/v1/params.proto";
+import "schema/v1/schema.proto";
+// this line is used by starport scaffolding # 1
+
+import "schema/v1/what_is.proto";
+
+option go_package = "github.com/sonr-io/sonr/x/schema/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/params";
+  }
+
+  // Queries a Schema by creator and did
+  rpc Schema(QuerySchemaRequest) returns (QuerySchemaResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/schema";
+  }
+
+  // Queries a whatis by creator and did
+  rpc WhatIs(QueryWhatIsRequest) returns (QueryWhatIsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is";
+  }
+
+  // Queries all whatIs definitions supports pagination
+  rpc WhatIsAll(QueryAllWhatIsRequest) returns (QueryAllWhatIsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/all_schemas";
+  }
+  // this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllWhatIsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllWhatIsResponse {
+  repeated WhatIs what_is = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySchemaRequest {
+  string creator = 1;
+  string did = 2;
+}
+
+message QueryWhatIsRequest {
+  string creator = 1;
+  string did = 2;
+}
+
+message QuerySchemaResponse {
+  // Definition of schema
+  SchemaDefinition definition = 2;
+}
+
+message QueryWhatIsResponse {
+  // Schema Repersentation
+  WhatIs whatIs = 1;
+}
+
+// this line is used by starport scaffolding # 3

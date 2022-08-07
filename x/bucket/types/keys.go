@@ -20,3 +20,18 @@ const (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+const (
+	WhereIsCountKey   = "WhereIs-count-"
+	WhereIsKeyPrefix  = "Bucket/value/"
+	DoucmnetKeyPrefix = "Document/value/"
+)
+
+func WhereIsKey(creator string) []byte {
+	var key []byte
+	creatorBytes := []byte(creator)
+	key = append(key, creatorBytes...)
+	key = append(key, []byte("/")...)
+
+	return key
+}

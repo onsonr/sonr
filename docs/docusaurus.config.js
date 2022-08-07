@@ -25,7 +25,7 @@ const config = {
         language: ["en"],
         hashed: true,
         indexBlog: false,
-        docsRouteBasePath: ["/articles"]
+        docsRouteBasePath: ["/posts"]
       },
     ],
   ],
@@ -34,8 +34,8 @@ const config = {
       "@docusaurus/preset-classic",
       {
         docs: {
-          path: 'articles',
-          routeBasePath: 'articles',
+          path: 'posts',
+          routeBasePath: 'posts',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
@@ -79,49 +79,28 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'introduction',
+            docId: 'guide/introduction',
             position: 'left',
             label: 'Learn the Basics',
           },
+
           {
             type: 'doc',
-            docId: 'run-nodes/setup-validator',
+            docId: 'run-nodes/blockchain/setup-validator',
             position: 'left',
             label: 'Run Nodes',
           },
           {
+            type: 'doc',
             position: 'left',
             label: 'Build Apps',
-            type: 'dropdown',
-            items: [
-              {
-                type: 'doc',
-                docId: 'highway-sdk/using-cli',
-                label: 'Highway SDK',
-              },
-              {
-                type: 'doc',
-                docId: 'motor-node/installation',
-                label: 'Motor Library',
-              },
-            ],
+            docId: 'build-apps/why-sonr',
           },
           {
             position: 'left',
-            label: 'Resources',
-            type: 'dropdown',
-            items: [
-              {
-                type: 'doc',
-                docId: 'reference/adr-001',
-                label: 'ADR-001',
-              },
-              {
-                type: 'doc',
-                docId: 'reference/adr-002',
-                label: 'ADR-002',
-              },
-            ],
+            label: 'Architecture',
+            type: 'doc',
+            docId: 'architecture/adr-overview',
           },
           {
             position: 'right',
@@ -163,7 +142,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/SonrProtocol',
+                href: 'https://twitter.com/sonr_io',
               },
             ],
           },
@@ -187,6 +166,10 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/sonr-io/sonr',
               },
+              {
+                label: 'Discord',
+                href: 'https://discord.gg/fCsyz59h5s',
+              }
             ],
           },
         ],

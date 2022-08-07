@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"crypto/rand"
+	"errors"
 
 	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p"
@@ -10,15 +11,17 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	mplex "github.com/libp2p/go-libp2p-mplex"
+
+	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	direct "github.com/libp2p/go-libp2p-webrtc-direct"
+	/// direct "github.com/libp2p/go-libp2p-webrtc-direct"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/pion/webrtc/v3"
+	// "github.com/pion/webrtc/v3"
 	"github.com/sonr-io/sonr/pkg/config"
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 // hostImpl type - a p2p host implementing one or more p2p protocols
@@ -29,7 +32,6 @@ type hostImpl struct {
 	events events.EventEmmiter
 
 	// Host and context
-	connection   types.Connection
 	privKey      crypto.PrivKey
 	mdnsPeerChan chan peer.AddrInfo
 	dhtPeerChan  <-chan peer.AddrInfo
@@ -41,9 +43,7 @@ type hostImpl struct {
 	*ps.PubSub
 
 	// State
-	flag   uint64
-	Chn    chan bool
-	status HostStatus
+	fsm *SFSM
 }
 
 // NewDefaultHost Creates a Sonr libp2p Host with the given config
@@ -52,12 +52,11 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Create the host.
 	hn := &hostImpl{
 		ctx:          ctx,
-		status:       Status_IDLE,
+		fsm:          NewFSM(ctx),
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		config:       c,
 		events:       events.New(),
 	}
-
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
 		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
@@ -67,7 +66,6 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		}
 		return nil, err
 	}
-
 	// Fetch the private key.
 	hn.privKey, err = findPrivKey()
 	if err != nil {
@@ -89,13 +87,14 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
-	hn.SetStatus(Status_CONNECTING)
+	hn.fsm.SetState(Status_CONNECTING)
 
 	// Bootstrap DHT
 	if err := hn.Bootstrap(context.Background()); err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -104,6 +103,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		if err := hn.Connect(pi); err != nil {
 			continue
 		} else {
+			hn.fsm.SetState(Status_FAIL)
 			break
 		}
 	}
@@ -111,7 +111,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Initialize Discovery for DHT
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -120,8 +120,9 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		// hn.createMdnsDiscovery(config)
 	}
 
-	hn.SetStatus(Status_READY)
+	hn.fsm.SetState(Status_READY)
 	go hn.Serve()
+
 	return hn, nil
 }
 
@@ -131,7 +132,7 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Create the host.
 	hn := &hostImpl{
 		ctx:          ctx,
-		status:       Status_IDLE,
+		fsm:          NewFSM(ctx),
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		config:       c,
 		events:       events.New(),
@@ -157,27 +158,29 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		return nil, err
 	}
 
-	transport := direct.NewTransport(
-		webrtc.Configuration{},
-		new(mplex.Transport),
-	)
+	// // TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
+	// transport := direct.NewTransport(
+	// 	webrtc.Configuration{},
+	// 	new(mplex.Transport),
+	// )
+
 	// Start Host
 	hn.host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
 		libp2p.Routing(hn.Router),
-		libp2p.Transport(transport),
+		// libp2p.Transport(transport),
 		libp2p.ListenAddrs(maddr),
 		libp2p.DisableRelay(),
 	)
 	if err != nil {
 		return nil, err
 	}
-	hn.SetStatus(Status_CONNECTING)
+	hn.fsm.SetState(Status_CONNECTING)
 
 	// Bootstrap DHT
 	if err := hn.Bootstrap(context.Background()); err != nil {
 
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return nil, err
 	}
 
@@ -193,12 +196,12 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	// Initialize Discovery for DHT
 	if err := hn.createDHTDiscovery(c); err != nil {
 		// Check if we need to close the listener
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 
 		return nil, err
 	}
 
-	hn.SetStatus(Status_READY)
+	hn.fsm.SetState(Status_READY)
 	go hn.Serve()
 	return hn, nil
 }
@@ -213,18 +216,121 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	// Create Pub Sub
 	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
 
 	// Handle DHT Peers
 	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, c.Libp2pRendezvous, c.Libp2pTTL)
 	if err != nil {
-		hn.SetStatus(Status_FAIL)
+		hn.fsm.SetState(Status_FAIL)
 		return err
 	}
-	hn.SetStatus(Status_READY)
+
+	hn.fsm.SetState(Status_READY)
 	return nil
+}
+
+func (hn *hostImpl) Close() error {
+	err := hn.host.Close()
+	if err != nil {
+		hn.fsm.SetState(Status_FAIL)
+		return err
+	}
+
+	hn.fsm.SetState(Status_STANDBY)
+
+	return nil
+}
+
+/*
+	Starts the libp2p host, dhcp, and sets the host status to ready
+*/
+func (hn *hostImpl) Start() error {
+	// Create Connection Manager
+	c := hn.config
+	cnnmgr, err := cmgr.NewConnManager(c.Libp2pLowWater, c.Libp2pHighWater)
+	if err != nil {
+		hn.fsm.SetState(Status_FAIL)
+		return err
+	}
+
+	// Start Host
+	hn.host, err = libp2p.New(
+		libp2p.Identity(hn.privKey),
+		libp2p.ConnectionManager(cnnmgr),
+		libp2p.DefaultListenAddrs,
+		libp2p.Routing(hn.Router),
+		libp2p.EnableAutoRelay(),
+	)
+
+	if err != nil {
+		hn.fsm.SetState(Status_FAIL)
+		return err
+	}
+
+	hn.fsm.SetState(Status_CONNECTING)
+
+	// Connect to Bootstrap Nodes
+	for _, pi := range c.Libp2pBootstrapPeers {
+		if err := hn.Connect(pi); err != nil {
+			continue
+		} else {
+			hn.fsm.SetState(Status_FAIL)
+			break
+		}
+	}
+
+	// Initialize Discovery for DHT
+	if err := hn.createDHTDiscovery(c); err != nil {
+		// Check if we need to close the listener
+		hn.fsm.SetState(Status_FAIL)
+		return err
+	}
+
+	go hn.Serve()
+	hn.fsm.SetState(Status_READY)
+
+	return nil
+}
+
+// NeedsWait checks if state is Resumed or Paused and blocks channel if needed
+func (hn *hostImpl) NeedsWait() {
+	<-hn.fsm.Chn
+}
+
+/*
+	Stops the libp2p host, dhcp, and sets the host status to IDLE
+*/
+func (hn *hostImpl) Stop() error {
+	err := hn.host.Close()
+	if err != nil {
+		hn.fsm.SetState(Status_FAIL)
+		return err
+	}
+	hn.Pause()
+
+	return nil
+}
+
+/*
+	Stops the libp2p host, dhcp, and sets the host status to ready
+*/
+func (hn *hostImpl) Pause() error {
+	defer hn.fsm.PauseOperation()
+	hn.fsm.SetState(Status_STANDBY)
+	return nil
+}
+
+func (hn *hostImpl) Resume() error {
+	defer hn.fsm.ResumeOperation()
+	hn.fsm.SetState(Status_STANDBY)
+
+	return nil
+}
+
+func (hn *hostImpl) Status() HostStatus {
+	return hn.fsm.CurrentStatus
 }
 
 // TODO Migrate MDNS Service to latesat libp2p spec
@@ -238,3 +344,42 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 // 		ser.RegisterNotifee(hn)
 // 	}
 // }
+
+// send sends the proto message to specified peer.
+func (h *hostImpl) SendMSG(ctx context.Context, target string, data interface{}, protocol protocol.ID) error {
+	msg, ok := data.(proto.Message)
+	if !ok {
+		return errors.New("invalid proto message")
+	}
+	// Turn the destination into a multiaddr.
+	maddr, err := ma.NewMultiaddr(target)
+	if err != nil {
+		return err
+	}
+
+	// Extract the peer ID from the multiaddr.
+	info, err := peer.AddrInfoFromP2pAddr(maddr)
+	if err != nil {
+		return err
+	}
+
+	s, err := h.NewStream(ctx, info.ID, protocol)
+	if err != nil {
+		return err
+	}
+
+	bs, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.Write(bs)
+	if err != nil {
+		return err
+	}
+	err = s.Close()
+	if err != nil {
+		return err
+	}
+	return nil
+}

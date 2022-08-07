@@ -23,114 +23,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/auth/access/finish/:username": {
-            "post": {
-                "description": "FinishAccessName finishes the authentication process and returns a PublicKeyCredentialResponse. Succesfully logging in a Sonr Account.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Finish Access Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/access/start/:username": {
-            "get": {
-                "description": "StartAccessName accesses the user's existing credentials and returns a PublicKeyCredentialRequestOptions. Beggining the authentication process.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Start Access Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/register/finish/:username": {
-            "post": {
-                "description": "FinishRegisterName finishes the registration process and returns a PublicKeyCredentialResponse. Succesfully registering a WebAuthn credential to a Sonr Account.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Finish Register Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/register/start/:username": {
-            "get": {
-                "description": "StartRegisterName starts the registration process and returns a PublicKeyCredentialCreationOptions. Initiating the registration process for a Sonr Account.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAuthn"
-                ],
-                "summary": "Start Register Name",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/bucket/create": {
             "post": {
                 "description": "CreateBucket creates a new bucket for a registered application via HTTP.",
@@ -390,14 +282,14 @@ const docTemplate = `{
         },
         "/v1/ipfs/remove/:cid": {
             "post": {
-                "description": "RemoveBlob deletes a file from storage given its CID.",
+                "description": "UnpinBlob deletes a file from storage given its CID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Blob"
                 ],
-                "summary": "Remove Blob",
+                "summary": "Unpin Blob",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -429,117 +321,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/object/create": {
-            "post": {
-                "description": "CreateObject creates a Object for a registered application",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Create Object",
-                "parameters": [
-                    {
-                        "description": "Parameters",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgCreateObject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgCreateObjectResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/object/deactivate": {
-            "post": {
-                "description": "DeactivateObject disables a Object for a registered application",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Deactivate Object",
-                "parameters": [
-                    {
-                        "description": "Parameters",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgDeactivateObject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgDeactivateObjectResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/object/update": {
-            "post": {
-                "description": "UpdateObject updates and object reference for a registered application",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Object"
-                ],
-                "summary": "Update Object",
-                "parameters": [
-                    {
-                        "description": "Parameters",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgUpdateObject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.MsgUpdateObjectResponse"
                         }
                     },
                     "500": {
@@ -834,10 +615,74 @@ const docTemplate = `{
                 "label": {
                     "description": "Label is human-readable name of the channel.",
                     "type": "string"
+                }
+            }
+        },
+        "types.DIDDocument": {
+            "type": "object",
+            "properties": {
+                "also_known_as": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
-                "registered_object": {
-                    "description": "RegisterdObject is the object that is registered as the payload for the channel.",
-                    "$ref": "#/definitions/types.ObjectDoc"
+                "assertion_method": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "authentication": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_delegation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_invocation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "context": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "controller": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "key_agreement": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "service": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Service"
+                    }
+                },
+                "verification_method": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.VerificationMethod"
+                    }
                 }
             }
         },
@@ -866,15 +711,22 @@ const docTemplate = `{
                 }
             }
         },
+        "types.KeyValuePair": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "types.MsgBuyAlias": {
             "type": "object",
             "properties": {
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "name": {
@@ -886,9 +738,9 @@ const docTemplate = `{
         "types.MsgBuyAliasResponse": {
             "type": "object",
             "properties": {
-                "did": {
+                "success": {
                     "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "who_is": {
                     "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
@@ -948,9 +800,6 @@ const docTemplate = `{
                 },
                 "label": {
                     "type": "string"
-                },
-                "object_to_register": {
-                    "$ref": "#/definitions/types.ObjectDoc"
                 }
             }
         },
@@ -968,43 +817,6 @@ const docTemplate = `{
                 "message": {
                     "description": "Message of the response",
                     "type": "string"
-                }
-            }
-        },
-        "types.MsgCreateObject": {
-            "type": "object",
-            "properties": {
-                "creator": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "initial_fields": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.TypeField"
-                    }
-                },
-                "label": {
-                    "type": "string"
-                }
-            }
-        },
-        "types.MsgCreateObjectResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "Code of the response",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Message of the response",
-                    "type": "string"
-                },
-                "what_is": {
-                    "description": "WhatIs of the Channel",
-                    "$ref": "#/definitions/types.WhatIs"
                 }
             }
         },
@@ -1031,9 +843,9 @@ const docTemplate = `{
         "types.MsgCreateWhoIsResponse": {
             "type": "object",
             "properties": {
-                "did": {
+                "success": {
                     "description": "Did is the top level DID of the created WhoIs.",
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "who_is": {
                     "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
@@ -1089,39 +901,11 @@ const docTemplate = `{
                 }
             }
         },
-        "types.MsgDeactivateObject": {
-            "type": "object",
-            "properties": {
-                "creator": {
-                    "type": "string"
-                },
-                "did": {
-                    "type": "string"
-                }
-            }
-        },
-        "types.MsgDeactivateObjectResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "Code of the response",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Message of the response",
-                    "type": "string"
-                }
-            }
-        },
         "types.MsgDeactivateWhoIs": {
             "type": "object",
             "properties": {
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 }
             }
@@ -1153,10 +937,6 @@ const docTemplate = `{
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
                     "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
                 }
             }
         },
@@ -1186,10 +966,6 @@ const docTemplate = `{
                 },
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "recipient": {
@@ -1272,9 +1048,6 @@ const docTemplate = `{
                 },
                 "label": {
                     "type": "string"
-                },
-                "object_to_register": {
-                    "$ref": "#/definitions/types.ObjectDoc"
                 }
             }
         },
@@ -1291,62 +1064,11 @@ const docTemplate = `{
                 }
             }
         },
-        "types.MsgUpdateObject": {
-            "type": "object",
-            "properties": {
-                "added_fields": {
-                    "description": "Added fields to the object",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.TypeField"
-                    }
-                },
-                "cid": {
-                    "description": "Contend Identifier of the object",
-                    "type": "string"
-                },
-                "creator": {
-                    "type": "string"
-                },
-                "label": {
-                    "description": "Label of the Object",
-                    "type": "string"
-                },
-                "removed_fields": {
-                    "description": "Removed fields from the object",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.TypeField"
-                    }
-                }
-            }
-        },
-        "types.MsgUpdateObjectResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "Code of the response",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Message of the response",
-                    "type": "string"
-                },
-                "what_is": {
-                    "description": "WhatIs of the Channel",
-                    "$ref": "#/definitions/types.WhatIs"
-                }
-            }
-        },
         "types.MsgUpdateWhoIs": {
             "type": "object",
             "properties": {
                 "creator": {
                     "description": "Creator is the wallet address of the creator of the transaction.",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "Did is the top level DID of the WhoIs.",
                     "type": "string"
                 },
                 "did_document": {
@@ -1361,9 +1083,9 @@ const docTemplate = `{
         "types.MsgUpdateWhoIsResponse": {
             "type": "object",
             "properties": {
-                "did": {
+                "success": {
                     "description": "Did is the top level DID of the WhoIs.",
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "who_is": {
                     "description": "WhoIs is the created WhoIs, contains the DID document and associated metadata.",
@@ -1371,69 +1093,40 @@ const docTemplate = `{
                 }
             }
         },
-        "types.ObjectDoc": {
+        "types.Service": {
             "type": "object",
             "properties": {
-                "bucket_did": {
-                    "description": "Bucket is the did of the bucket that contains this object.",
+                "id": {
                     "type": "string"
                 },
-                "description": {
-                    "description": "Description is a human-readable description of the bucket.",
+                "service_endpoint": {
                     "type": "string"
                 },
-                "did": {
-                    "description": "Did is the identifier of the object.",
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.VerificationMethod": {
+            "type": "object",
+            "properties": {
+                "controller": {
                     "type": "string"
                 },
-                "fields": {
-                    "description": "Fields are the fields associated with the object.",
+                "id": {
+                    "type": "string"
+                },
+                "public_key_base58": {
+                    "type": "string"
+                },
+                "public_key_jwk": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/types.TypeField"
+                        "$ref": "#/definitions/types.KeyValuePair"
                     }
                 },
-                "label": {
-                    "description": "Label is human-readable name of the bucket.",
+                "type": {
                     "type": "string"
-                }
-            }
-        },
-        "types.TypeField": {
-            "type": "object",
-            "properties": {
-                "kind": {
-                    "description": "Type is the type of the field.",
-                    "type": "integer"
-                },
-                "name": {
-                    "description": "Name is the name of the field.",
-                    "type": "string"
-                }
-            }
-        },
-        "types.WhatIs": {
-            "type": "object",
-            "properties": {
-                "creator": {
-                    "description": "Creator is the DID of the creator",
-                    "type": "string"
-                },
-                "did": {
-                    "description": "DID is the DID of the object",
-                    "type": "string"
-                },
-                "is_active": {
-                    "description": "IsActive is the status of the DID Document",
-                    "type": "boolean"
-                },
-                "object_doc": {
-                    "description": "Object_doc is the object document",
-                    "$ref": "#/definitions/types.ObjectDoc"
-                },
-                "timestamp": {
-                    "description": "Timestamp is the time of the last update of the DID Document",
-                    "type": "integer"
                 }
             }
         },
@@ -1481,10 +1174,7 @@ const docTemplate = `{
                 },
                 "did_document": {
                     "description": "DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "$ref": "#/definitions/types.DIDDocument"
                 },
                 "is_active": {
                     "description": "IsActive is the status of the DID Document",

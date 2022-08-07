@@ -7,12 +7,21 @@ includes:
   motor:
     taskfile: ./bind/Taskfile.yaml
     dir: ./bind
+  # motorkit:
+  #   taskfile: ../Motorkit/Taskfile.yaml
+  #   dir: ../MotorKit
 
 tasks:
+  ## ------------------------------------------------------------
+  ## Node tasks
+  ## ------------------------------------------------------------
+  motorkit:
+    summary: Binding motor to iOS and updating motorkit
+    cmds:
+      - task: clean
+      - task: motor:bind:ios
+      - mv ./bind/build ./build
 
-## ------------------------------------------------------------
-## Node tasks
-## ------------------------------------------------------------
   chain:build:
     summary: "Build cosmos blockchain using ignite"
     cmds:
@@ -30,9 +39,9 @@ tasks:
       - go run cmd/highwayd/main.go
     silent: true
 
-## ------------------------------------------------------------
-## Documentation tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Documentation tasks
+  ## ------------------------------------------------------------
   docs:start:
     summary: "Calls yarn start in docs directory"
     cmds:
@@ -77,30 +86,17 @@ tasks:
     silent: true
     dir: docs
 
-## ------------------------------------------------------------
-## Protobuf tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Protobuf tasks
+  ## ------------------------------------------------------------
   buf:
     summary: "Build and Push Protobuf files to buf.build"
-    cmds:
-      - task: buf:blockchain
-      - task: buf:motor
-
-  buf:motor:
-    summary: "Build and Push Motor Protobuf files to buf.build"
-    dir: internal/motor/proto
+    dir: pkg/motor/proto
     cmds:
       - buf mod update
       - buf build
-      - buf push
-
-  buf:blockchain:
-    summary: "Build and Push Blockchain Protobuf files to buf.build"
-    dir: proto
-    cmds:
-      - buf mod update
-      - buf build
-      - buf push
+      - buf push {{.CLI_ARGS}}
+      - task: clean
 
   proto:go:
     summary: "Generate cosmos-sdk protobuf files using ignite"
@@ -111,7 +107,7 @@ tasks:
   swag:build:
     summary: "Generate swagger files for highway and blockchain using ignite"
     cmds:
-      - swag i -d ./ -g internal/highway/http/server.go -o docs/static
+      - swag i -d ./ -g pkg/highway/api/server.go -o docs/static
       - mv docs/static/swagger.yaml docs/static/highway.yaml
       - rm -rf docs/static/swagger.json
 
@@ -121,10 +117,9 @@ tasks:
     cmds:
       - npm run dev
 
-
-## ------------------------------------------------------------
-## Utility tasks
-## ------------------------------------------------------------
+  ## ------------------------------------------------------------
+  ## Utility tasks
+  ## ------------------------------------------------------------
   default:
     summary: "Displays tasks and descriptions"
     cmds:
@@ -138,6 +133,7 @@ tasks:
   clean:
     summary: "Clean all binaries and generated files and directories"
     cmds:
+      - task: motor:clean
       - rm -rf ./build
       - rm -rf ./dist
       - rm -rf ./io.sonr.motor.aar
@@ -146,3 +142,4 @@ tasks:
       - rm -rf ./docs/.docusaurus/
       - rm -rf ./docs/build
       - go mod tidy
+      - go get -u go.buf.build/grpc/go/sonr-io/motor

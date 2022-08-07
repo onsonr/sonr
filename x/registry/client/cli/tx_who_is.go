@@ -4,6 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/mr-tron/base58/base58"
 
 	"github.com/sonr-io/sonr/x/registry/types"
 	"github.com/spf13/cobra"
@@ -15,14 +17,22 @@ func CmdCreateWhoIs() *cobra.Command {
 		Short: "Create a new WhoIs",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			pubkeyStr := cmd.Flag("pubkey").Value.String()
+			pubBuf, err := base58.Decode(pubkeyStr)
+			if err != nil {
+				return err
+			}
 
+			pub := &secp256k1.PubKey{
+				Key: pubBuf,
+			}
 			whoIsType := types.WhoIsType(1)
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgCreateWhoIs(clientCtx.GetFromAddress().String(), []byte(args[0]), whoIsType)
+			msg := types.NewMsgCreateWhoIs(clientCtx.GetFromAddress().String(), pub, []byte(args[0]), whoIsType)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -45,7 +55,7 @@ func CmdUpdateWhoIs() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateWhoIs(clientCtx.GetFromAddress().String(), args[0], []byte(args[1]))
+			msg := types.NewMsgUpdateWhoIs(clientCtx.GetFromAddress().String(), []byte(args[0]))
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
