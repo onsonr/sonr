@@ -2,9 +2,9 @@
   "name": "sonr-docs",
   "version": "0.0.1",
   "private": true,
-   "engines" : {
-    "npm" : ">=7.0.0",
-    "node" : ">=16.0.0"
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
   },
   "scripts": {
     "docusaurus": "docusaurus",
@@ -24,6 +24,7 @@
     "@easyops-cn/docusaurus-search-local": "^0.21.4",
     "@mdx-js/react": "^1.6.21",
     "@saucelabs/theme-github-codeblock": "^0.1.1",
+    "@typeform/embed-react": "^1.17.0",
     "@types/node": "^17.0.11",
     "@types/react": "^17.0.11",
     "@types/react-dom": "^16.9.0",
@@ -32,6 +33,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.3",
+    "react-typeform-embed": "^1.0.8",
     "redoc": "^2.0.0-rc.63",
     "redocusaurus": "^0.6.0",
     "remark-math": "^5.1.1",
@@ -49,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "vuepress": "^2.0.0-beta.48"
   }
 }

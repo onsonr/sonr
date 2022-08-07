@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"crypto/rand"
+	"errors"
 
 	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p"
@@ -10,15 +11,17 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	mplex "github.com/libp2p/go-libp2p-mplex"
+
+	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	direct "github.com/libp2p/go-libp2p-webrtc-direct"
+	/// direct "github.com/libp2p/go-libp2p-webrtc-direct"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/pion/webrtc/v3"
+	// "github.com/pion/webrtc/v3"
 	"github.com/sonr-io/sonr/pkg/config"
-	types "go.buf.build/grpc/go/sonr-io/motor/core/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 // hostImpl type - a p2p host implementing one or more p2p protocols
@@ -29,7 +32,6 @@ type hostImpl struct {
 	events events.EventEmmiter
 
 	// Host and context
-	connection   types.Connection
 	privKey      crypto.PrivKey
 	mdnsPeerChan chan peer.AddrInfo
 	dhtPeerChan  <-chan peer.AddrInfo
@@ -156,17 +158,17 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		return nil, err
 	}
 
-	// TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
-	transport := direct.NewTransport(
-		webrtc.Configuration{},
-		new(mplex.Transport),
-	)
+	// // TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
+	// transport := direct.NewTransport(
+	// 	webrtc.Configuration{},
+	// 	new(mplex.Transport),
+	// )
 
 	// Start Host
 	hn.host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
 		libp2p.Routing(hn.Router),
-		libp2p.Transport(transport),
+		// libp2p.Transport(transport),
 		libp2p.ListenAddrs(maddr),
 		libp2p.DisableRelay(),
 	)
@@ -342,3 +344,42 @@ func (hn *hostImpl) Status() HostStatus {
 // 		ser.RegisterNotifee(hn)
 // 	}
 // }
+
+// send sends the proto message to specified peer.
+func (h *hostImpl) SendMSG(ctx context.Context, target string, data interface{}, protocol protocol.ID) error {
+	msg, ok := data.(proto.Message)
+	if !ok {
+		return errors.New("invalid proto message")
+	}
+	// Turn the destination into a multiaddr.
+	maddr, err := ma.NewMultiaddr(target)
+	if err != nil {
+		return err
+	}
+
+	// Extract the peer ID from the multiaddr.
+	info, err := peer.AddrInfoFromP2pAddr(maddr)
+	if err != nil {
+		return err
+	}
+
+	s, err := h.NewStream(ctx, info.ID, protocol)
+	if err != nil {
+		return err
+	}
+
+	bs, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.Write(bs)
+	if err != nil {
+		return err
+	}
+	err = s.Close()
+	if err != nil {
+		return err
+	}
+	return nil
+}

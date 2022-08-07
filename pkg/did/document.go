@@ -7,13 +7,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/duo-labs/webauthn/webauthn"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
-
-	"github.com/duo-labs/webauthn/protocol"
-	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/shengdoushi/base58"
+	"github.com/sonr-io/sonr/pkg/crypto/jwx"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
 
 // DocumentImpl represents a DID Document as specified by the DID Core specification (https://www.w3.org/TR/did-core/).
@@ -77,6 +74,26 @@ func (d *DocumentImpl) ControllerCount() int {
 	return len(d.Controller)
 }
 
+// FindAuthenticationMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAuthenticationMethod(id DID) *VerificationMethod {
+	return d.Authentication.FindByID(id)
+}
+
+// FindAssertionMethod finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindAssertionMethod(id DID) *VerificationMethod {
+	return d.AssertionMethod.FindByID(id)
+}
+
+// FindCapabilityDelegation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityDelegation(id DID) *VerificationMethod {
+	return d.CapabilityDelegation.FindByID(id)
+}
+
+// FindCapabilityInvocation finds a VerificationMethod by its ID
+func (d *DocumentImpl) FindCapabilityInvocation(id DID) *VerificationMethod {
+	return d.CapabilityInvocation.FindByID(id)
+}
+
 func (d *DocumentImpl) GetController(did DID) (DID, error) {
 	for _, c := range d.Controller {
 		if c.Equals(did) {
@@ -84,6 +101,34 @@ func (d *DocumentImpl) GetController(did DID) (DID, error) {
 		}
 	}
 	return DID{}, errors.New("did not found")
+}
+
+func (d *DocumentImpl) GetContext() []ssi.URI {
+	return d.Context
+}
+
+// GetAssertionMethods returns the list of assertion methods
+func (d *DocumentImpl) GetAssertionMethods() VerificationRelationships {
+	return d.AssertionMethod
+}
+
+// GetAuthenticationMethods returns the list of authentication methods
+func (d *DocumentImpl) GetAuthenticationMethods() VerificationRelationships {
+	return d.Authentication
+}
+
+// GetCapabilityDelegations returns the list of capability delegations
+func (d *DocumentImpl) GetCapabilityDelegations() VerificationRelationships {
+	return d.CapabilityDelegation
+}
+
+// GetCapabilityInvocations returns the list of capability invocations
+func (d *DocumentImpl) GetCapabilityInvocations() VerificationRelationships {
+	return d.CapabilityInvocation
+}
+
+func (d *DocumentImpl) GetServices() Services {
+	return d.Service
 }
 
 func (d *DocumentImpl) GetID() DID {
@@ -113,6 +158,10 @@ func (d *DocumentImpl) AddController(id DID) {
 }
 
 type VerificationMethods []*VerificationMethod
+
+func (d *DocumentImpl) GetVerificationMethods() VerificationMethods {
+	return d.VerificationMethod
+}
 
 // FindByID find the first VerificationMethod which matches the provided DID.
 // Returns nil when not found
@@ -159,6 +208,11 @@ func (vms *VerificationMethods) Add(v *VerificationMethod) {
 }
 
 type VerificationRelationships []VerificationRelationship
+
+// Count returns the number of VerificationRelationships in the slice
+func (vmr VerificationRelationships) Count() int {
+	return len(vmr)
+}
 
 // FindByID returns the first VerificationRelationship that matches with the id.
 // For comparison both the ID of the embedded VerificationMethod and reference is used.
@@ -222,6 +276,10 @@ func (d *DocumentImpl) AddAssertionMethod(v *VerificationMethod) {
 	d.AssertionMethod.Add(v)
 }
 
+func (d *DocumentImpl) GetKeyAgreements() VerificationRelationships {
+	return d.KeyAgreement
+}
+
 // AddKeyAgreement adds a VerificationMethod as KeyAgreement
 // If the controller is not set, it will be set to the document's ID
 func (d *DocumentImpl) AddKeyAgreement(v *VerificationMethod) {
@@ -250,6 +308,10 @@ func (d *DocumentImpl) AddCapabilityDelegation(v *VerificationMethod) {
 	}
 	d.VerificationMethod.Add(v)
 	d.CapabilityDelegation.Add(v)
+}
+
+func (d *DocumentImpl) AddService(s Service) {
+	d.Service = append(d.Service, s)
 }
 
 func (d DocumentImpl) MarshalJSON() ([]byte, error) {
@@ -354,9 +416,9 @@ func (d *DocumentImpl) ControllersAsString() []string {
 
 // Service represents a DID Service as specified by the DID Core specification (https://www.w3.org/TR/did-core/#service-endpoints).
 type Service struct {
-	ID              ssi.URI     `json:"id"`
-	Type            string      `json:"type,omitempty"`
-	ServiceEndpoint interface{} `json:"serviceEndpoint,omitempty"`
+	ID              ssi.URI           `json:"id"`
+	Type            string            `json:"type,omitempty"`
+	ServiceEndpoint map[string]string `json:"serviceEndpoint,omitempty"`
 }
 
 func (s Service) MarshalJSON() ([]byte, error) {
@@ -385,13 +447,7 @@ func (s *Service) UnmarshalJSON(data []byte) error {
 
 // Unmarshal unmarshalls the service endpoint into a domain-specific type.
 func (s Service) UnmarshalServiceEndpoint(target interface{}) error {
-	var valueToMarshal interface{}
-	if asSlice, ok := s.ServiceEndpoint.([]interface{}); ok && len(asSlice) == 1 {
-		valueToMarshal = asSlice[0]
-	} else {
-		valueToMarshal = s.ServiceEndpoint
-	}
-	if asJSON, err := json.Marshal(valueToMarshal); err != nil {
+	if asJSON, err := json.Marshal(s.ServiceEndpoint); err != nil {
 		return err
 	} else {
 		return json.Unmarshal(asJSON, target)
@@ -431,7 +487,7 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	}
 
 	if keyType == ssi.JsonWebKey2020 {
-		keyAsJWK, err := jwk.New(key)
+		keyAsJWK, err := jwx.New(key).CreateEncJWK()
 		if err != nil {
 			return nil, err
 		}
@@ -530,76 +586,4 @@ func resolveVerificationRelationship(reference DID, methods []*VerificationMetho
 		}
 	}
 	return nil
-}
-
-// Credentials owned by the user
-func (w *DocumentImpl) WebAuthnCredentials() []webauthn.Credential {
-	var credentials []webauthn.Credential
-	for _, vm := range w.Authentication {
-		if vm.Credential != nil {
-			credentials = append(credentials, webauthn.Credential{
-				ID:              vm.Credential.ID,
-				PublicKey:       vm.Credential.PublicKey,
-				AttestationType: vm.Credential.AttestationType,
-				Authenticator: webauthn.Authenticator{
-					AAGUID:       vm.Credential.Authenticator.AAGUID,
-					SignCount:    vm.Credential.Authenticator.SignCount,
-					CloneWarning: vm.Credential.Authenticator.CloneWarning,
-				},
-			})
-		}
-	}
-	return credentials
-}
-
-// TODO(https://github.com/sonr-io/sonr/issues/332): JWT verification for JWK
-// const token = `eyJhbGciOiJSUzI1NiIsImtpZCI6Ind5TXdLNEE2Q0w5UXcxMXVvZlZleVExMTlYeVgteHlreW1ra1h5Z1o1T00ifQ.eyJzdWIiOiIwMHUxOGVlaHUzNDlhUzJ5WDFkOCIsIm5hbWUiOiJva3RhcHJveHkgb2t0YXByb3h5IiwidmVyIjoxLCJpc3MiOiJodHRwczovL2NvbXBhbnl4Lm9rdGEuY29tIiwiYXVkIjoidlpWNkNwOHJuNWx4ck45YVo2ODgiLCJpYXQiOjE0ODEzODg0NTMsImV4cCI6MTQ4MTM5MjA1MywianRpIjoiSUQuWm9QdVdIR3IxNkR6a3RUbEdXMFI4b1lRaUhnVWg0aUotTHo3Z3BGcGItUSIsImFtciI6WyJwd2QiXSwiaWRwIjoiMDBveTc0YzBnd0hOWE1SSkJGUkkiLCJub25jZSI6Im4tMFM2X1d6QTJNaiIsInByZWZlcnJlZF91c2VybmFtZSI6Im9rdGFwcm94eUBva3RhLmNvbSIsImF1dGhfdGltZSI6MTQ4MTM4ODQ0MywiYXRfaGFzaCI6Im1YWlQtZjJJczhOQklIcV9CeE1ISFEifQ.OtVyCK0sE6Cuclg9VMD2AwLhqEyq2nv3a1bfxlzeS-bdu9KtYxcPSxJ6vxMcSSbMIIq9eEz9JFMU80zqgDPHBCjlOsC5SIPz7mm1Z3gCwq4zsFJ-2NIzYxA3p161ZRsPv_3bUyg9B_DPFyBoihgwWm6yrvrb4rmHXrDkjxpxCLPp3OeIpc_kb2t8r5HEQ5UBZPrsiScvuoVW13YwWpze59qBl_84n9xdmQ5pS7DklzkAVgqJT_NWBlb5uo6eW26HtJwHzss7xOIdQtcOtC1Gj3O82a55VJSQnsEEBeqG1ESb5Haq_hJgxYQnBssKydPCIxdZiye-0Ll9L8wWwpzwig`
-
-// const jwksURL = `https://companyx.okta.com/oauth2/v1/keys`
-
-// func getKey(token *jwt.Token) (interface{}, error) {
-
-//     // TODO: cache response so we don't have to make a request every time
-//     // we want to verify a JWT
-//     set, err := jwk.FetchHTTP(jwksURL)
-//     if err != nil {
-//         return nil, err
-//     }
-
-//     keyID, ok := token.Header["kid"].(string)
-//     if !ok {
-//         return nil, errors.New("expecting JWT header to have string kid")
-//     }
-
-//     if key := set.LookupKeyID(keyID); len(key) == 1 {
-//         return key[0].Materialize()
-//     }
-
-//     return nil, fmt.Errorf("unable to find key %q", keyID)
-// }
-
-// func main() {
-//     token, err := jwt.Parse(token, getKey)
-//     if err != nil {
-//         panic(err)
-//     }
-//     claims := token.Claims.(jwt.MapClaims)
-//     for key, value := range claims {
-//         fmt.Printf("%s\t%v\n", key, value)
-//     }
-// }
-
-// CredentialExcludeList returns a CredentialDescriptor array filled
-// with all the user's credentials
-func (w *DocumentImpl) WebAuthnCredentialExcludeList() []protocol.CredentialDescriptor {
-	credentialExcludeList := []protocol.CredentialDescriptor{}
-	for _, cred := range w.WebAuthnCredentials() {
-		descriptor := protocol.CredentialDescriptor{
-			Type:         protocol.PublicKeyCredentialType,
-			CredentialID: cred.ID,
-		}
-		credentialExcludeList = append(credentialExcludeList, descriptor)
-	}
-
-	return credentialExcludeList
 }

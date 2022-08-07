@@ -4,11 +4,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 
 	ma "github.com/multiformats/go-multiaddr"
-	t "go.buf.build/grpc/go/sonr-io/motor/core/v1"
 )
 
 // LogLevel is the type for the log level
@@ -46,6 +46,11 @@ type Config struct {
 	HighwayGRPCEndpoint string
 	HighwayHTTPEndpoint string
 
+	// JWT
+	JWTSecret        string
+	JWTSigningMethod jwt.SigningMethod
+	JWTExpiration    int64
+
 	// Cosmos SDK
 	CosmosAccountName        string
 	CosmosAddressPrefix      string
@@ -61,7 +66,6 @@ type Config struct {
 	// Device Config
 	DeviceID       string
 	HostName       string
-	Location       *t.Location
 	HomeDirPath    string
 	SupportDirPath string
 	TempDirPath    string
@@ -131,13 +135,10 @@ func DefaultConfig(r Role) *Config {
 		MatrixServerName:         "sonr-matrix-1",
 		DeviceID:                 "",
 		HostName:                 "",
-		Location:                 nil,
 	}
 
 	// Role specific configuration
 	if r == Role_MOTOR {
-		conf.Location = DefaultLocation()
-
 		// Check for non-mobile device
 		if !IsMobile() {
 			// Set Home Directory
@@ -157,23 +158,4 @@ func DefaultConfig(r Role) *Config {
 		}
 	}
 	return conf
-}
-
-// DefaultLocation returns the Sonr HQ as default location
-func DefaultLocation() *t.Location {
-	return &t.Location{
-		Latitude:  float64(40.673010),
-		Longitude: float64(-73.994450),
-		Placemark: &t.Location_Placemark{
-			Name:                  "Sonr HQ",
-			Street:                "94 9th St.",
-			IsoCountryCode:        "US",
-			Country:               "United States",
-			AdministrativeArea:    "New York",
-			SubAdministrativeArea: "Brooklyn",
-			Locality:              "Brooklyn",
-			SubLocality:           "Gowanus",
-			PostalCode:            "11215",
-		},
-	}
 }

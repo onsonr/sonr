@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrio.motor.api.v1;
+
+// -----------------------------------------------------------------------------
+// Motor Node API
+// -----------------------------------------------------------------------------
+// (Client) InitializeRequest Message to Establish Sonr Host/API/Room
+message InitializeRequest {
+  // Identifier of this Device
+  string device_id = 1;
+
+  // Device Home Directory
+  string home_dir = 2;
+
+  // Device Library Support Directory
+  string support_dir = 3;
+
+  // Device Temporary Storage Directory
+  string temp_dir = 4;
+
+  // Libp2p Host config
+  HostOptions host_options = 5;
+
+  // Public Key used for Device Authentication as DID Controller
+  bytes device_keyprint_pub = 6; // optional
+
+  // Libp2p Host Options
+  message HostOptions {
+    bool quic_transport = 1;             // Enable QUIC Transport
+    bool http_transport = 2;             // Enable HTTP Transport
+    bool ipv4_only = 3;                  // Enable IPv4 Only
+    repeated IPAddress listen_addrs = 4; // List of Listen Addresses (optional)
+  }
+
+  // IP Address Interface
+  message IPAddress {
+    string name = 1;   // Name of Interface
+    string address = 2;  // IP Address of Interface
+    bool internal = 3; // Wether it is a Loopback Interface
+    Family family = 4; // Address Family
+
+    // Type of IP Interface
+    enum Family {
+      FAMILY_UNSPECIFIED = 0;
+      FAMILY_IPV4 = 1; // IPv4 Address
+      FAMILY_IPV6 = 2; // IPv6 Address
+    }
+  }
+}
+
+// CreateAccount Request contains the three keys needed to create an account on Sonr
+message CreateAccountRequest {
+  string password = 1;
+  bytes aes_dsc_key = 2;
+}
+
+// Login requires the DID of the account being logged into,
+// and optionally a password if the vault pw is being used
+// The PSK and DSC will be fetched from the keychain
+message LoginRequest {
+  string did = 1;
+  string password = 2;
+  bytes aes_dsc_key = 3;
+  bytes aes_psk_key = 4;
+}
+
+message CreateSchemaRequest {
+  string label = 1;
+
+  enum SchemaKind {
+    SCHEMA_KIND_UNRECOGNIZED = 0;
+    SCHEMA_KIND_MAP = 1;
+	  SCHEMA_KIND_LIST = 2;
+	  SCHEMA_KIND_UNIT = 3;
+	  SCHEMA_KIND_BOOL = 4;
+	  SCHEMA_KIND_INT = 5;
+	  SCHEMA_KIND_FLOAT = 6;
+	  SCHEMA_KIND_STRING = 7;
+	  SCHEMA_KIND_BYTES = 8;
+	  SCHEMA_KIND_LINK = 9;
+	  SCHEMA_KIND_STRUCT = 10;
+	  SCHEMA_KIND_UNION = 11;
+	  SCHEMA_KIND_ENUM = 12;
+	  SCHEMA_KIND_ANY = 13;
+  }
+  map<string, SchemaKind> fields = 2;
+}
+
+message QueryWhatIsRequest {
+  string creator = 1;
+  string did = 2;
+}
+
+message QuerySchemaRequest {
+  string creator = 1;
+  string did = 2;
+}
+

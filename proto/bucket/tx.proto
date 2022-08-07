@@ -1,0 +1,38 @@
+syntax = "proto3";
+package sonrio.sonr.bucket;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/sonr-io/sonr/x/bucket/types";
+
+// Msg defines the Msg service.
+service Msg {
+    rpc CreateWhereIs(MsgCreateWhereIs) returns (MsgCreateWhereIsResponse);
+  rpc UpdateWhereIs(MsgUpdateWhereIs) returns (MsgUpdateWhereIsResponse);
+  rpc DeleteWhereIs(MsgDeleteWhereIs) returns (MsgDeleteWhereIsResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateWhereIs {
+  string creator = 1;
+}
+
+message MsgCreateWhereIsResponse {
+  string did = 1;
+}
+
+message MsgUpdateWhereIs {
+  string creator = 1;
+  string did = 2;
+}
+
+message MsgUpdateWhereIsResponse {}
+
+message MsgDeleteWhereIs {
+  string creator = 1;
+  string did = 2;
+}
+
+message MsgDeleteWhereIsResponse {}
+
+// this line is used by starport scaffolding # proto/tx/message

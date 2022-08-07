@@ -50,7 +50,7 @@ func (k Keeper) WhoIs(c context.Context, req *types.QueryWhoIsRequest) (*types.Q
 		req.Did,
 	)
 	if !found {
-		return nil, status.Error(codes.InvalidArgument, "not found")
+		return nil, status.Error(codes.NotFound, "DID not found")
 	}
 
 	return &types.QueryWhoIsResponse{WhoIs: &val}, nil

@@ -86,7 +86,6 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
-
 	var weightMsgCreateWhoIs int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateWhoIs, &weightMsgCreateWhoIs, nil,
 		func(_ *rand.Rand) {
@@ -97,19 +96,19 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgCreateWhoIs,
 		registrysimulation.SimulateMsgCreateWhoIs(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
-	/*
-		var weightMsgBuyAlias int
-		simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgBuyAlias, nil,
-			func(_ *rand.Rand) {
-				weightMsgBuyAlias = defaultWeightMsgSellAlias
-			},
-		)
 
-		operations = append(operations, simulation.NewWeightedOperation(
-			weightMsgBuyAlias,
-			registrysimulation.SimulateMsgBuyAlias(am.accountKeeper, am.bankKeeper, am.keeper),
-		))
-	*/
+	var weightMsgBuyAlias int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgBuyAlias, nil,
+		func(_ *rand.Rand) {
+			weightMsgBuyAlias = defaultWeightMsgSellAlias
+		},
+	)
+
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgBuyAlias,
+		registrysimulation.SimulateMsgBuyAlias(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	var weightMsgUpdateWhoIs int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateWhoIs, &weightMsgUpdateWhoIs, nil,
 		func(_ *rand.Rand) {
@@ -121,31 +120,27 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		registrysimulation.SimulateMsgUpdateWhoIs(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	/*
-		var weightMsgSellAlias int
-		simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgSellAlias, nil,
-			func(_ *rand.Rand) {
-				weightMsgSellAlias = defaultWeightMsgSellAlias
-			},
-		)
-		operations = append(operations, simulation.NewWeightedOperation(
-			weightMsgSellAlias,
-			registrysimulation.SimulateMsgSellAlias(am.accountKeeper, am.bankKeeper, am.keeper),
-		))
-	*/
+	var weightMsgSellAlias int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSellAlias, &weightMsgSellAlias, nil,
+		func(_ *rand.Rand) {
+			weightMsgSellAlias = defaultWeightMsgSellAlias
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSellAlias,
+		registrysimulation.SimulateMsgSellAlias(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
-	/*
-		var weightMsgTransferAlias int
-		simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgTransferAlias, &weightMsgTransferAlias, nil,
-			func(_ *rand.Rand) {
-				weightMsgTransferAlias = defaultWeightMsgTransferAlias
-			},
-		)
-		operations = append(operations, simulation.NewWeightedOperation(
-			weightMsgTransferAlias,
-			registrysimulation.SimulateMsgTransferAlias(am.accountKeeper, am.bankKeeper, am.keeper),
-		))
-	*/
+	var weightMsgTransferAlias int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgTransferAlias, &weightMsgTransferAlias, nil,
+		func(_ *rand.Rand) {
+			weightMsgTransferAlias = defaultWeightMsgTransferAlias
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgTransferAlias,
+		registrysimulation.SimulateMsgTransferAlias(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	var weightMsgDeactivateWhoIs int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeactivateWhoIs, &weightMsgDeactivateWhoIs, nil,
@@ -157,7 +152,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgDeactivateWhoIs,
 		registrysimulation.SimulateMsgDeactivateWhoIs(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
-
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations

@@ -8,6 +8,5 @@ import (
 
 // x/bucket module sentinel errors
 var (
-	ErrSample         = sdkerrors.Register(ModuleName, 1100, "sample error")
-	ErrInactiveBucket = sdkerrors.Register(ModuleName, 1104, "Requested bucket has been deactivated")
+	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
 )

@@ -62,7 +62,7 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetWhoIsFromOwner(ctx, msg.GetCreator())
+	val, found := k.GetWhoIs(ctx, msg.GetCreator())
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.GetCreator()))
 	}
@@ -72,26 +72,43 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	// Trim snr account prefix
-	doc, err := types.NewDIDDocumentFromBytes(msg.DidDocument)
+	// unmarshall DID Document from request using did package
+	doc := did.BlankDocument()
+	err := doc.UnmarshalJSON(msg.DidDocument)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	err = doc.CopyFromBytes(msg.GetDidDocument())
+
+	val.DidDocument, err = types.NewDIDDocumentFromPkg(doc)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidType, err.Error())
 	}
+
+	// Add all the aliases to the whois
 	for _, a := range doc.GetAlsoKnownAs() {
 		if !val.ContainsAlias(a) {
 			val.AddAlsoKnownAs(a, false)
 		}
 	}
-	val.Controllers = doc.GetController()
+
+	// Add all the metadata to the whois
+	for k, v := range msg.GetMetadata() {
+		val.Metadata[k] = v
+	}
+
+	d := val.DidDocument.DID()
+	if d == nil {
+		return nil, fmt.Errorf("error getting did from did document for creator '%s'", msg.Creator)
+	}
+
 	val.Timestamp = time.Now().Unix()
 	val.IsActive = true
-	val.DidDocument = doc
 	k.SetWhoIs(ctx, val)
-	return &types.MsgUpdateWhoIsResponse{}, nil
+
+	return &types.MsgUpdateWhoIsResponse{
+		Success: true,
+		WhoIs:   &val,
+	}, nil
 }
 
 // DeactivateWhoIs deletes a whoIs from the store
@@ -99,7 +116,7 @@ func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactiva
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetWhoIsFromOwner(ctx, msg.GetCreator())
+	val, found := k.GetWhoIs(ctx, msg.GetCreator())
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.GetCreator()))
 	}
