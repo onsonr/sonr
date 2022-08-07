@@ -1,11 +1,11 @@
 package api
 
 import (
-	// "net/http"
+// "net/http"
 
-	// "github.com/gin-gonic/gin"
-	// t "github.com/sonr-io/sonr/types"
-	// ct "github.com/sonr-io/sonr/x/channel/types"
+// "github.com/gin-gonic/gin"
+// t "github.com/sonr-io/sonr/types"
+// ct "github.com/sonr-io/sonr/x/channel/types"
 )
 
 // // @Summary Create Channel

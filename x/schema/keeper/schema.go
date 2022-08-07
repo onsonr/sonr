@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	url        = "localhost:5001"
+	url        = "https://api.ipfs.sonr.ws"
 	ipfs_inter = shell.NewShell(url)
 )
 

@@ -8,9 +8,9 @@ import (
 	"fmt"
 
 	"github.com/shengdoushi/base58"
+	"github.com/sonr-io/sonr/pkg/crypto/jwx"
 	"github.com/sonr-io/sonr/pkg/did/internal/marshal"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	"github.com/sonr-io/sonr/pkg/jwx"
 )
 
 // DocumentImpl represents a DID Document as specified by the DID Core specification (https://www.w3.org/TR/did-core/).

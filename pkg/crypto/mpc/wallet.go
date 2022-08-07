@@ -1,4 +1,4 @@
-package crypto
+package mpc
 
 import (
 	"errors"
@@ -16,7 +16,7 @@ import (
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 )
 
-type MPCWallet struct {
+type Wallet struct {
 	pool *pool.Pool
 	ID   party.ID
 
@@ -26,7 +26,7 @@ type MPCWallet struct {
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
-func GenerateWallet(options ...WalletOption) (*MPCWallet, error) {
+func GenerateWallet(options ...WalletOption) (*Wallet, error) {
 	opt := defaultConfig()
 	w := opt.Apply(options...)
 
@@ -49,7 +49,7 @@ func GenerateWallet(options ...WalletOption) (*MPCWallet, error) {
 }
 
 // Returns the Bech32 representation of the given party.
-func (w *MPCWallet) Address(id ...party.ID) (string, error) {
+func (w *Wallet) Address(id ...party.ID) (string, error) {
 	pub, err := w.PublicKeyProto()
 	if err != nil {
 		return "", err
@@ -63,12 +63,12 @@ func (w *MPCWallet) Address(id ...party.ID) (string, error) {
 }
 
 // Config returns the configuration of this wallet.
-func (w *MPCWallet) Config() *cmp.Config {
+func (w *Wallet) Config() *cmp.Config {
 	return w.Configs[w.ID]
 }
 
 // GetSigners returns the list of signers for the given message.
-func (w *MPCWallet) GetSigners() party.IDSlice {
+func (w *Wallet) GetSigners() party.IDSlice {
 	signers := party.IDSlice([]party.ID{"dsc", "psk"})
 	// signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
 	if !signers.Contains(w.ID) {
@@ -79,12 +79,12 @@ func (w *MPCWallet) GetSigners() party.IDSlice {
 }
 
 // Marshal returns the JSON representation of the entire wallet.
-func (w *MPCWallet) Marshal() ([]byte, error) {
+func (w *Wallet) Marshal() ([]byte, error) {
 	return w.Config().MarshalBinary()
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKey() ([]byte, error) {
+func (w *Wallet) PublicKey() ([]byte, error) {
 	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
 	buf, err := p.MarshalBinary()
 	if err != nil {
@@ -98,7 +98,7 @@ func (w *MPCWallet) PublicKey() ([]byte, error) {
 }
 
 // Returns the ECDSA public key of the given party.
-func (w *MPCWallet) PublicKeyBase58() (string, error) {
+func (w *Wallet) PublicKeyBase58() (string, error) {
 	pub, err := w.PublicKey()
 	if err != nil {
 		return "", err
@@ -106,7 +106,7 @@ func (w *MPCWallet) PublicKeyBase58() (string, error) {
 	return base58.Encode(pub), nil
 }
 
-func (w *MPCWallet) PublicKeyProto() (*secp256k1.PubKey, error) {
+func (w *Wallet) PublicKeyProto() (*secp256k1.PubKey, error) {
 	pubBz, err := w.PublicKey()
 	if err != nil {
 		return nil, err
@@ -117,7 +117,7 @@ func (w *MPCWallet) PublicKeyProto() (*secp256k1.PubKey, error) {
 }
 
 // Refreshes all shares of an existing ECDSA private key.
-func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
+func (w *Wallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 	hRefresh, err := protocol.NewMultiHandler(cmp.Refresh(w.Configs[w.ID], pl), nil)
 	if err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ func (w *MPCWallet) Refresh(pl *pool.Pool) (*cmp.Config, error) {
 }
 
 // Generates an ECDSA signature for messageHash.
-func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
+func (w *Wallet) Sign(m []byte) (*ecdsa.Signature, error) {
 	var wg sync.WaitGroup
 	signers := w.GetSigners()
 	net := NewNetwork(signers)
@@ -158,7 +158,7 @@ func (w *MPCWallet) Sign(m []byte) (*ecdsa.Signature, error) {
 }
 
 // Unmarshal unmarshals the given JSON into the wallet.
-func (w *MPCWallet) Unmarshal(buf []byte) error {
+func (w *Wallet) Unmarshal(buf []byte) error {
 	c := &cmp.Config{}
 	if err := c.UnmarshalBinary(buf); err != nil {
 		return err
@@ -170,7 +170,7 @@ func (w *MPCWallet) Unmarshal(buf []byte) error {
 }
 
 // Verifies an ECDSA signature for messageHash.
-func (w *MPCWallet) Verify(m []byte, sig []byte) bool {
+func (w *Wallet) Verify(m []byte, sig []byte) bool {
 	edsig, err := SignatureFromBytes(sig)
 	if err != nil {
 		return false
@@ -179,7 +179,7 @@ func (w *MPCWallet) Verify(m []byte, sig []byte) bool {
 	return mpcVerif
 }
 
-func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, unused [][]byte, err error) {
+func (w *Wallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, unused [][]byte, err error) {
 	ss, e := w.serializedShards()
 	if e != nil {
 		err = e
@@ -238,7 +238,7 @@ func (w *MPCWallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, 
 	return
 }
 
-func (w *MPCWallet) serializedShards() (map[string][]byte, error) {
+func (w *Wallet) serializedShards() (map[string][]byte, error) {
 	deviceShards := make(map[string][]byte)
 	for k, c := range w.Configs {
 		b, err := c.MarshalBinary()

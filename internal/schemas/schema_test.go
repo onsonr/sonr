@@ -7,7 +7,7 @@ import (
 
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/internal/schemas"
-	"github.com/sonr-io/sonr/x/common/types"
+
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -88,7 +88,7 @@ func CreateMockHeirachyThreeLevel(creator string, did string) (st.WhatIs, st.Sch
 	commentDef.Fields = append(commentDef.Fields, &st.SchemaKindDefinition{
 		Name:     "sub",
 		Field:    st.SchemaKind_LINK,
-		LinkKind: types.LinkKind_Schema,
+		LinkKind: st.LinkKind_SCHEMA,
 		Link:     cid,
 	})
 
@@ -122,7 +122,7 @@ func CreateMockHeirachyThreeLevel(creator string, did string) (st.WhatIs, st.Sch
 	topDef.Fields = append(topDef.Fields, &st.SchemaKindDefinition{
 		Name:     "data",
 		Field:    st.SchemaKind_LINK,
-		LinkKind: types.LinkKind_Schema,
+		LinkKind: st.LinkKind_SCHEMA,
 		Link:     commentCid,
 	})
 

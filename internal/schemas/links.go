@@ -3,7 +3,6 @@ package schemas
 import (
 	"context"
 
-	"github.com/sonr-io/sonr/x/common/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -15,7 +14,7 @@ import (
 func (as *schemaImpl) loadSubSchemas(ctx context.Context, fields []*st.SchemaKindDefinition) error {
 	var links []string = make([]string, 0)
 	for _, f := range fields {
-		if f.LinkKind == types.LinkKind_Schema {
+		if f.LinkKind == st.LinkKind_SCHEMA {
 			if f.Link == "" {
 				return errSchemaFieldsInvalid
 			}
@@ -42,7 +41,7 @@ func (as *schemaImpl) loadSubSchemas(ctx context.Context, fields []*st.SchemaKin
 		as.subSchemas[key] = &def
 
 		for _, sf := range def.Fields {
-			if sf.LinkKind == types.LinkKind_Schema {
+			if sf.LinkKind == st.LinkKind_SCHEMA {
 				if sf.Link == "" {
 					return errSchemaFieldsInvalid
 				}
