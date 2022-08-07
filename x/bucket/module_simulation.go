@@ -57,7 +57,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Creator: sample.AccAddress(),
 			},
 		},
-		WhereIsCount: 2,
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&bucketGenesis)

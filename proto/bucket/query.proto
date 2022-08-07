@@ -43,7 +43,7 @@ message QueryGetWhereIsRequest {
 }
 
 message QueryGetWhereIsResponse {
-	WhereIs WhereIs = 1 [(gogoproto.nullable) = false];
+	WhereIs where_is = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllWhereIsRequest {
@@ -51,7 +51,7 @@ message QueryAllWhereIsRequest {
 }
 
 message QueryAllWhereIsResponse {
-	repeated WhereIs WhereIs = 1 [(gogoproto.nullable) = false];
+	repeated WhereIs where_is = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

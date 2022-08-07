@@ -22,14 +22,20 @@ message WhereIs {
   // IsActive flag of the new bucket.
   bool is_active = 6;
 
-  // JWKs of the new bucket.
-  map<string, bytes> jwks = 7;
-
   // Content of the new bucket map of DIDs to CIDs.
-  repeated BucketItem content = 8;
+  repeated BucketItem content = 7;
+
+  // JWKs of the new bucket.
+  map<string, AclJwks> content_acl = 8;
+
 
   // Timestamp of the new bucket.
   int64 timestamp = 9;
+}
+
+// AclJwks is a map of JWKs for a given Schema
+message AclJwks {
+  map<string, bytes> encrypted_jwks = 1;
 }
 
 // BucketItem is a pointer to a single piece of content in a bucket.

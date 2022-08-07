@@ -14,8 +14,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetWhereIs(ctx, elem)
 	}
 
-	// Set whereIs count
-	k.SetWhereIsCount(ctx, genState.WhereIsCount)
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -26,7 +24,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.WhereIsList = k.GetAllWhereIs(ctx)
-	genesis.WhereIsCount = k.GetWhereIsCount(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

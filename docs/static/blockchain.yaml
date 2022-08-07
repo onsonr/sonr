@@ -30220,7 +30220,7 @@ paths:
           schema:
             type: object
             properties:
-              WhereIs:
+              where_is:
                 type: array
                 items:
                   type: object
@@ -30256,12 +30256,6 @@ paths:
                     is_active:
                       type: boolean
                       description: IsActive flag of the new bucket.
-                    jwks:
-                      type: object
-                      additionalProperties:
-                        type: string
-                        format: byte
-                      description: JWKs of the new bucket.
                     content:
                       type: array
                       items:
@@ -30284,6 +30278,18 @@ paths:
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
                       description: Content of the new bucket map of DIDs to CIDs.
+                    content_acl:
+                      type: object
+                      additionalProperties:
+                        type: object
+                        properties:
+                          encrypted_jwks:
+                            type: object
+                            additionalProperties:
+                              type: string
+                              format: byte
+                        title: AclJwks is a map of JWKs for a given Schema
+                      description: JWKs of the new bucket.
                     timestamp:
                       type: string
                       format: int64
@@ -30402,7 +30408,7 @@ paths:
           schema:
             type: object
             properties:
-              WhereIs:
+              where_is:
                 type: object
                 properties:
                   did:
@@ -30436,12 +30442,6 @@ paths:
                   is_active:
                     type: boolean
                     description: IsActive flag of the new bucket.
-                  jwks:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      format: byte
-                    description: JWKs of the new bucket.
                   content:
                     type: array
                     items:
@@ -30464,6 +30464,18 @@ paths:
                         BucketItem is a pointer to a single piece of content in
                         a bucket.
                     description: Content of the new bucket map of DIDs to CIDs.
+                  content_acl:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        encrypted_jwks:
+                          type: object
+                          additionalProperties:
+                            type: string
+                            format: byte
+                      title: AclJwks is a map of JWKs for a given Schema
+                    description: JWKs of the new bucket.
                   timestamp:
                     type: string
                     format: int64
@@ -31578,21 +31590,15 @@ paths:
                           title: Type of a single schema property
                           type: string
                           enum:
-                            - INVALID
-                            - MAP
                             - LIST
-                            - UNIT
                             - BOOL
                             - INT
                             - FLOAT
                             - STRING
                             - BYTES
                             - LINK
-                            - STRUCT
-                            - UNION
-                            - ENUM
                             - ANY
-                          default: INVALID
+                          default: LIST
                         link_kind:
                           title: >-
                             Optional field for a link context if `SchemaKind` is
@@ -31604,6 +31610,8 @@ paths:
                             - SCHEMA
                             - BUCKET
                           default: UNKNOWN
+                        link:
+                          type: string
                     title: the properties of this schema
         default:
           description: An unexpected error response.
@@ -53515,6 +53523,15 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sonrio.sonr.bucket.AclJwks:
+    type: object
+    properties:
+      encrypted_jwks:
+        type: object
+        additionalProperties:
+          type: string
+          format: byte
+    title: AclJwks is a map of JWKs for a given Schema
   sonrio.sonr.bucket.BucketItem:
     type: object
     properties:
@@ -53574,7 +53591,7 @@ definitions:
   sonrio.sonr.bucket.QueryAllWhereIsResponse:
     type: object
     properties:
-      WhereIs:
+      where_is:
         type: array
         items:
           type: object
@@ -53610,12 +53627,6 @@ definitions:
             is_active:
               type: boolean
               description: IsActive flag of the new bucket.
-            jwks:
-              type: object
-              additionalProperties:
-                type: string
-                format: byte
-              description: JWKs of the new bucket.
             content:
               type: array
               items:
@@ -53638,6 +53649,18 @@ definitions:
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
               description: Content of the new bucket map of DIDs to CIDs.
+            content_acl:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  encrypted_jwks:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      format: byte
+                title: AclJwks is a map of JWKs for a given Schema
+              description: JWKs of the new bucket.
             timestamp:
               type: string
               format: int64
@@ -53670,7 +53693,7 @@ definitions:
   sonrio.sonr.bucket.QueryGetWhereIsResponse:
     type: object
     properties:
-      WhereIs:
+      where_is:
         type: object
         properties:
           did:
@@ -53704,12 +53727,6 @@ definitions:
           is_active:
             type: boolean
             description: IsActive flag of the new bucket.
-          jwks:
-            type: object
-            additionalProperties:
-              type: string
-              format: byte
-            description: JWKs of the new bucket.
           content:
             type: array
             items:
@@ -53732,6 +53749,18 @@ definitions:
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
             description: Content of the new bucket map of DIDs to CIDs.
+          content_acl:
+            type: object
+            additionalProperties:
+              type: object
+              properties:
+                encrypted_jwks:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    format: byte
+              title: AclJwks is a map of JWKs for a given Schema
+            description: JWKs of the new bucket.
           timestamp:
             type: string
             format: int64
@@ -53777,12 +53806,6 @@ definitions:
       is_active:
         type: boolean
         description: IsActive flag of the new bucket.
-      jwks:
-        type: object
-        additionalProperties:
-          type: string
-          format: byte
-        description: JWKs of the new bucket.
       content:
         type: array
         items:
@@ -53803,6 +53826,18 @@ definitions:
               title: Timestamp of the last update. // optional
           description: BucketItem is a pointer to a single piece of content in a bucket.
         description: Content of the new bucket map of DIDs to CIDs.
+      content_acl:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
+            encrypted_jwks:
+              type: object
+              additionalProperties:
+                type: string
+                format: byte
+          title: AclJwks is a map of JWKs for a given Schema
+        description: JWKs of the new bucket.
       timestamp:
         type: string
         format: int64
@@ -55722,21 +55757,15 @@ definitions:
                   title: Type of a single schema property
                   type: string
                   enum:
-                    - INVALID
-                    - MAP
                     - LIST
-                    - UNIT
                     - BOOL
                     - INT
                     - FLOAT
                     - STRING
                     - BYTES
                     - LINK
-                    - STRUCT
-                    - UNION
-                    - ENUM
                     - ANY
-                  default: INVALID
+                  default: LIST
                 link_kind:
                   title: >-
                     Optional field for a link context if `SchemaKind` is of type
@@ -55748,6 +55777,8 @@ definitions:
                     - SCHEMA
                     - BUCKET
                   default: UNKNOWN
+                link:
+                  type: string
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
@@ -55804,21 +55835,15 @@ definitions:
               title: Type of a single schema property
               type: string
               enum:
-                - INVALID
-                - MAP
                 - LIST
-                - UNIT
                 - BOOL
                 - INT
                 - FLOAT
                 - STRING
                 - BYTES
                 - LINK
-                - STRUCT
-                - UNION
-                - ENUM
                 - ANY
-              default: INVALID
+              default: LIST
             link_kind:
               title: >-
                 Optional field for a link context if `SchemaKind` is of type
@@ -55830,25 +55855,21 @@ definitions:
                 - SCHEMA
                 - BUCKET
               default: UNKNOWN
+            link:
+              type: string
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
     enum:
-      - INVALID
-      - MAP
       - LIST
-      - UNIT
       - BOOL
       - INT
       - FLOAT
       - STRING
       - BYTES
       - LINK
-      - STRUCT
-      - UNION
-      - ENUM
       - ANY
-    default: INVALID
+    default: LIST
   sonrio.sonr.schema.SchemaKindDefinition:
     type: object
     properties:
@@ -55858,21 +55879,15 @@ definitions:
         title: Type of a single schema property
         type: string
         enum:
-          - INVALID
-          - MAP
           - LIST
-          - UNIT
           - BOOL
           - INT
           - FLOAT
           - STRING
           - BYTES
           - LINK
-          - STRUCT
-          - UNION
-          - ENUM
           - ANY
-        default: INVALID
+        default: LIST
       link_kind:
         title: Optional field for a link context if `SchemaKind` is of type `Link`
         type: string
@@ -55882,6 +55897,8 @@ definitions:
           - SCHEMA
           - BUCKET
         default: UNKNOWN
+      link:
+        type: string
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:

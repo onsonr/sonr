@@ -24,13 +24,12 @@ func TestGenesisState_Validate(t *testing.T) {
 
 				WhereIsList: []types.WhereIs{
 					{
-						Did:     "did:sonr:1",
+						Did: "did:sonr:1",
 					},
 					{
-						Did:     "did:sonr:2",
+						Did: "did:sonr:2",
 					},
 				},
-				WhereIsCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -40,10 +39,10 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				WhereIsList: []types.WhereIs{
 					{
-						Did:     "did:sonr:1",
+						Did: "did:sonr:1",
 					},
 					{
-						Did:     "did:sonr:1",
+						Did: "did:sonr:1",
 					},
 				},
 			},
@@ -54,10 +53,9 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				WhereIsList: []types.WhereIs{
 					{
-						Did:     "did:sonr:1",
+						Did: "did:sonr:1",
 					},
 				},
-				WhereIsCount: 0,
 			},
 			valid: false,
 		},
