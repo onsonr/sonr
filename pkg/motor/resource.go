@@ -1,10 +1,12 @@
 package motor
 
 import (
-	"context"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"sync"
 
+	"github.com/sonr-io/sonr/pkg/client"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -13,14 +15,16 @@ type SchemaCallback func(*st.SchemaDefinition, error)
 type motorResources struct {
 	mu sync.Mutex
 
+	config            *client.Client
 	schemaQueryClient st.QueryClient
 
 	whatIsStore map[string]*st.WhatIs
 	schemaStore map[string]*st.SchemaDefinition
 }
 
-func newMotorResources(schemaQueryClient st.QueryClient) *motorResources {
+func newMotorResources(config *client.Client, schemaQueryClient st.QueryClient) *motorResources {
 	return &motorResources{
+		config:            config,
 		schemaQueryClient: schemaQueryClient,
 
 		whatIsStore: make(map[string]*st.WhatIs),
@@ -49,18 +53,38 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs, cb SchemaCallback) {
 			return
 		}
 
+		// TODO: figure out why QuerySchema doesn't work on chain
 		// send QuerySchemaRequest to get fields
-		resp, err := r.schemaQueryClient.Schema(context.Background(), &st.QuerySchemaRequest{
-			Creator: whatIs.Creator,
-			Did:     whatIs.Did,
-		})
+		// resp, err := r.schemaQueryClient.Schema(context.Background(), &st.QuerySchemaRequest{
+		// 	Creator: whatIs.Creator,
+		// 	Did:     whatIs.Did,
+		// })
+		// if err != nil {
+		// 	callback(nil, err)
+		// 	return
+		// }
+
+		resp, err := http.Get(fmt.Sprintf("%s/ipfs/%s", r.config.GetIPFSAddress(), whatIs.Schema.Cid))
 		if err != nil {
-			callback(nil, err)
+			callback(nil, fmt.Errorf("error getting cid '%s': %s", whatIs.Schema.Cid, err))
 			return
 		}
 
-		r.schemaStore[whatIs.Schema.Cid] = resp.Definition
-		callback(resp.Definition, nil)
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			callback(nil, fmt.Errorf("error reading body: %s", err))
+			return
+		}
+
+		definition := &st.SchemaDefinition{}
+		if err = definition.Unmarshal(body); err != nil {
+			callback(nil, fmt.Errorf("error unmarshalling body: %s", err))
+			return
+		}
+
+		fmt.Printf("SchemaDefinition: %+v\n", definition)
+		r.schemaStore[whatIs.Schema.Cid] = definition
+		callback(definition, nil)
 	}()
 }
 
