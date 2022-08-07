@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
@@ -71,7 +71,7 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 	}
 
 	// password protect the recovery shard
-	pwShard, err := crypto.AesEncryptWithPassword(request.Password, mtr.recoveryShard)
+	pwShard, err := mpc.AesEncryptWithPassword(request.Password, mtr.recoveryShard)
 	if err != nil {
 		return rtmv1.CreateAccountResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
@@ -160,12 +160,12 @@ func updateWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
 }
 
 func pskEncrypt(shard []byte) ([]byte, []byte, error) {
-	key, err := crypto.NewAesKey()
+	key, err := mpc.NewAesKey()
 	if err != nil {
 		return nil, nil, err
 	}
 
-	cipherShard, err := crypto.AesEncryptWithKey(key, shard)
+	cipherShard, err := mpc.AesEncryptWithKey(key, shard)
 	if err != nil {
 		return nil, key, err
 	}
@@ -177,5 +177,5 @@ func dscEncrypt(shard, dsc []byte) ([]byte, error) {
 	if len(dsc) != 32 {
 		return nil, errors.New("dsc must be 32 bytes")
 	}
-	return crypto.AesEncryptWithKey(dsc, shard)
+	return mpc.AesEncryptWithKey(dsc, shard)
 }

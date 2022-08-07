@@ -1,4 +1,4 @@
-package crypto
+package mpc
 
 import (
 	"github.com/sonr-io/multi-party-sig/pkg/party"
@@ -28,12 +28,12 @@ func defaultConfig() *walletConfig {
 }
 
 // Applies the options and returns a new walletConfig
-func (wc *walletConfig) Apply(opts ...WalletOption) *MPCWallet {
+func (wc *walletConfig) Apply(opts ...WalletOption) *Wallet {
 	for _, opt := range opts {
 		opt(wc)
 	}
 
-	return &MPCWallet{
+	return &Wallet{
 		pool: pool.NewPool(0),
 
 		Configs:   wc.configs,

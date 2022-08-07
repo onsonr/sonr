@@ -1,10 +1,10 @@
 package api
 
 import (
-	// "net/http"
+// "net/http"
 
-	// "github.com/gin-gonic/gin"
-	// rt "github.com/sonr-io/sonr/x/registry/types"
+// "github.com/gin-gonic/gin"
+// rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 // // @Summary Buy an Alias for a User

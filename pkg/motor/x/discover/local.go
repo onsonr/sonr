@@ -31,7 +31,6 @@ type Local struct {
 	updateFunc   ErrFunc
 }
 
-
 // Initializing the local struct.
 func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 

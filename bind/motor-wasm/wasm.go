@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"syscall/js"
 
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 )
 
 var (
@@ -21,7 +21,7 @@ var (
 
 type motor struct {
 	//	node *host.SonrHost
-	wallet *crypto.MPCWallet
+	wallet *mpc.Wallet
 	// host   host.SonrHost
 }
 
@@ -32,7 +32,7 @@ func NewWallet() error {
 	if instance != nil {
 		return errWalletExists
 	}
-	w, err := crypto.GenerateWallet()
+	w, err := mpc.GenerateWallet()
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func LoadWallet(buf []byte) error {
 	if instance != nil {
 		return errWalletExists
 	}
-	w := &crypto.MPCWallet{}
+	w := &mpc.MPCWallet{}
 	err := w.Unmarshal(buf)
 	if err != nil {
 		return err
@@ -97,7 +97,7 @@ func Sign(typeUrl string, msg []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return crypto.SerializeSignature(sig)
+	return mpc.SerializeSignature(sig)
 }
 
 // Verify returns true if the given signature is valid for the given message.

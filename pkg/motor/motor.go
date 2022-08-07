@@ -9,7 +9,7 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
@@ -25,7 +25,7 @@ type MotorNode interface {
 	GetBalance() int64
 
 	GetClient() *client.Client
-	GetWallet() *crypto.MPCWallet
+	GetWallet() *mpc.Wallet
 	GetPubKey() *secp256k1.PubKey
 	GetDID() did.DID
 	GetDIDDocument() did.Document
@@ -41,7 +41,7 @@ type MotorNode interface {
 type motorNodeImpl struct {
 	DeviceID    string
 	Cosmos      *client.Client
-	Wallet      *crypto.MPCWallet
+	Wallet      *mpc.Wallet
 	Address     string
 	PubKey      *secp256k1.PubKey
 	DID         did.DID
@@ -64,7 +64,7 @@ func EmptyMotor(id string) *motorNodeImpl {
 	}
 }
 
-func initMotor(mtr *motorNodeImpl, options ...crypto.WalletOption) (err error) {
+func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 
@@ -79,7 +79,7 @@ func initMotor(mtr *motorNodeImpl, options ...crypto.WalletOption) (err error) {
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
 
 	// Generate wallet
-	mtr.Wallet, err = crypto.GenerateWallet(options...)
+	mtr.Wallet, err = mpc.GenerateWallet(options...)
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func (m *motorNodeImpl) GetAddress() string {
 	return m.Address
 }
 
-func (m *motorNodeImpl) GetWallet() *crypto.MPCWallet {
+func (m *motorNodeImpl) GetWallet() *mpc.Wallet {
 	return m.Wallet
 }
 func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {

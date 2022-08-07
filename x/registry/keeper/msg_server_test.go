@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/sonr-io/sonr/x/registry/types"
-    "github.com/sonr-io/sonr/x/registry/keeper"
-    keepertest "github.com/sonr-io/sonr/testutil/keeper"
+	keepertest "github.com/sonr-io/sonr/testutil/keeper"
+	"github.com/sonr-io/sonr/x/registry/keeper"
+	"github.com/sonr-io/sonr/x/registry/types"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {

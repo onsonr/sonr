@@ -2,9 +2,14 @@ syntax = "proto3";
 
 package sonrio.sonr.schema;
 
-import "common/link.proto";
-
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
+
+enum LinkKind {
+  UNKNOWN = 0;
+  OBJECT = 1;
+  SCHEMA = 2;
+  BUCKET = 3;
+}
 
 enum SchemaKind {
   LIST = 0;
@@ -23,10 +28,8 @@ message SchemaKindDefinition {
   SchemaKind field = 2;
 
   // Optional field for a link context if `SchemaKind` is of type `Link`
-  common.LinkKind link_kind = 3;
+  LinkKind link_kind = 3;
 
-  // Optional field if Kind is of type `link` should not be defined if of another Kind i.e. "bytes"
-  // link should be left as an empty value if `LinkKind` is set to `None`
   string link = 4;
 }
 

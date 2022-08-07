@@ -30174,6 +30174,337 @@ paths:
           format: uint64
       tags:
         - Query
+  /sonr-io/sonr/bucket/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SonrioSonrBucketParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sonr-io/sonr/bucket/where_is:
+    get:
+      summary: Queries a list of WhereIs items.
+      operationId: SonrioSonrBucketWhereIsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              where_is:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      description: DID of the created bucket.
+                    creator:
+                      type: string
+                      title: Creator of the new bucket
+                    label:
+                      type: string
+                      description: Label of the new bucket.
+                    visibility:
+                      description: Visibility of the new bucket.
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - PUBLIC
+                        - PRIVATE
+                      default: UNSPECIFIED
+                      title: >-
+                        BucketVisibility is the visibility of the bucket to
+                        authorized users of an application
+                    role:
+                      description: Role of the creator of the new bucket.
+                      type: string
+                      enum:
+                        - NONE
+                        - APPLICATION
+                        - USER
+                      default: NONE
+                    is_active:
+                      type: boolean
+                      description: IsActive flag of the new bucket.
+                    content:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name of the bucket item.
+                          item_did:
+                            type: string
+                            title: DID of the item. If applicable // optional
+                          item_cid:
+                            type: string
+                            title: CID of the item. If applicable // optional
+                          timestamp:
+                            type: string
+                            format: int64
+                            title: Timestamp of the last update. // optional
+                        description: >-
+                          BucketItem is a pointer to a single piece of content
+                          in a bucket.
+                      description: Content of the new bucket map of DIDs to CIDs.
+                    content_acl:
+                      type: object
+                      additionalProperties:
+                        type: object
+                        properties:
+                          encrypted_jwks:
+                            type: object
+                            additionalProperties:
+                              type: string
+                              format: byte
+                        title: AclJwks is a map of JWKs for a given Schema
+                      description: JWKs of the new bucket.
+                    timestamp:
+                      type: string
+                      format: int64
+                      description: Timestamp of the new bucket.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/where_is/{did}':
+    get:
+      summary: Queries a WhereIs by id.
+      operationId: SonrioSonrBucketWhereIs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              where_is:
+                type: object
+                properties:
+                  did:
+                    type: string
+                    description: DID of the created bucket.
+                  creator:
+                    type: string
+                    title: Creator of the new bucket
+                  label:
+                    type: string
+                    description: Label of the new bucket.
+                  visibility:
+                    description: Visibility of the new bucket.
+                    type: string
+                    enum:
+                      - UNSPECIFIED
+                      - PUBLIC
+                      - PRIVATE
+                    default: UNSPECIFIED
+                    title: >-
+                      BucketVisibility is the visibility of the bucket to
+                      authorized users of an application
+                  role:
+                    description: Role of the creator of the new bucket.
+                    type: string
+                    enum:
+                      - NONE
+                      - APPLICATION
+                      - USER
+                    default: NONE
+                  is_active:
+                    type: boolean
+                    description: IsActive flag of the new bucket.
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Name of the bucket item.
+                        item_did:
+                          type: string
+                          title: DID of the item. If applicable // optional
+                        item_cid:
+                          type: string
+                          title: CID of the item. If applicable // optional
+                        timestamp:
+                          type: string
+                          format: int64
+                          title: Timestamp of the last update. // optional
+                      description: >-
+                        BucketItem is a pointer to a single piece of content in
+                        a bucket.
+                    description: Content of the new bucket map of DIDs to CIDs.
+                  content_acl:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        encrypted_jwks:
+                          type: object
+                          additionalProperties:
+                            type: string
+                            format: byte
+                      title: AclJwks is a map of JWKs for a given Schema
+                    description: JWKs of the new bucket.
+                  timestamp:
+                    type: string
+                    format: int64
+                    description: Timestamp of the new bucket.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /sonr-io/sonr/registry/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -31274,19 +31605,13 @@ paths:
                             of type `Link`
                           type: string
                           enum:
-                            - None
-                            - Object
-                            - Schema
-                            - Bucket
-                          default: None
+                            - UNKNOWN
+                            - OBJECT
+                            - SCHEMA
+                            - BUCKET
+                          default: UNKNOWN
                         link:
                           type: string
-                          title: >-
-                            Optional field if Kind is of type `link` should not
-                            be defined if of another Kind i.e. "bytes"
-
-                            link should be left as an empty value if `LinkKind`
-                            is set to `None`
                     title: the properties of this schema
         default:
           description: An unexpected error response.
@@ -53198,6 +53523,325 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  sonrio.sonr.bucket.AclJwks:
+    type: object
+    properties:
+      encrypted_jwks:
+        type: object
+        additionalProperties:
+          type: string
+          format: byte
+    title: AclJwks is a map of JWKs for a given Schema
+  sonrio.sonr.bucket.BucketItem:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the bucket item.
+      item_did:
+        type: string
+        title: DID of the item. If applicable // optional
+      item_cid:
+        type: string
+        title: CID of the item. If applicable // optional
+      timestamp:
+        type: string
+        format: int64
+        title: Timestamp of the last update. // optional
+    description: BucketItem is a pointer to a single piece of content in a bucket.
+  sonrio.sonr.bucket.BucketRole:
+    type: string
+    enum:
+      - NONE
+      - APPLICATION
+      - USER
+    default: NONE
+    description: |-
+      BucketRole is the role of the creator of the bucket.
+
+       - NONE: Bucket does not have role set.
+       - APPLICATION: Bucket is visible to anyone.
+       - USER: Bucket is visible to anyone who has access token.
+  sonrio.sonr.bucket.BucketVisibility:
+    type: string
+    enum:
+      - UNSPECIFIED
+      - PUBLIC
+      - PRIVATE
+    default: UNSPECIFIED
+    description: |-
+      - UNSPECIFIED: Bucket does not have visibility set.
+       - PUBLIC: Bucket is visible to anyone.
+       - PRIVATE: Bucket is visible to anyone who has access token.
+    title: >-
+      BucketVisibility is the visibility of the bucket to authorized users of an
+      application
+  sonrio.sonr.bucket.MsgCreateWhereIsResponse:
+    type: object
+    properties:
+      did:
+        type: string
+  sonrio.sonr.bucket.MsgDeleteWhereIsResponse:
+    type: object
+  sonrio.sonr.bucket.MsgUpdateWhereIsResponse:
+    type: object
+  sonrio.sonr.bucket.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sonrio.sonr.bucket.QueryAllWhereIsResponse:
+    type: object
+    properties:
+      where_is:
+        type: array
+        items:
+          type: object
+          properties:
+            did:
+              type: string
+              description: DID of the created bucket.
+            creator:
+              type: string
+              title: Creator of the new bucket
+            label:
+              type: string
+              description: Label of the new bucket.
+            visibility:
+              description: Visibility of the new bucket.
+              type: string
+              enum:
+                - UNSPECIFIED
+                - PUBLIC
+                - PRIVATE
+              default: UNSPECIFIED
+              title: >-
+                BucketVisibility is the visibility of the bucket to authorized
+                users of an application
+            role:
+              description: Role of the creator of the new bucket.
+              type: string
+              enum:
+                - NONE
+                - APPLICATION
+                - USER
+              default: NONE
+            is_active:
+              type: boolean
+              description: IsActive flag of the new bucket.
+            content:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the bucket item.
+                  item_did:
+                    type: string
+                    title: DID of the item. If applicable // optional
+                  item_cid:
+                    type: string
+                    title: CID of the item. If applicable // optional
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: Timestamp of the last update. // optional
+                description: >-
+                  BucketItem is a pointer to a single piece of content in a
+                  bucket.
+              description: Content of the new bucket map of DIDs to CIDs.
+            content_acl:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  encrypted_jwks:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      format: byte
+                title: AclJwks is a map of JWKs for a given Schema
+              description: JWKs of the new bucket.
+            timestamp:
+              type: string
+              format: int64
+              description: Timestamp of the new bucket.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.bucket.QueryGetWhereIsResponse:
+    type: object
+    properties:
+      where_is:
+        type: object
+        properties:
+          did:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          label:
+            type: string
+            description: Label of the new bucket.
+          visibility:
+            description: Visibility of the new bucket.
+            type: string
+            enum:
+              - UNSPECIFIED
+              - PUBLIC
+              - PRIVATE
+            default: UNSPECIFIED
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          role:
+            description: Role of the creator of the new bucket.
+            type: string
+            enum:
+              - NONE
+              - APPLICATION
+              - USER
+            default: NONE
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          content:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the bucket item.
+                item_did:
+                  type: string
+                  title: DID of the item. If applicable // optional
+                item_cid:
+                  type: string
+                  title: CID of the item. If applicable // optional
+                timestamp:
+                  type: string
+                  format: int64
+                  title: Timestamp of the last update. // optional
+              description: >-
+                BucketItem is a pointer to a single piece of content in a
+                bucket.
+            description: Content of the new bucket map of DIDs to CIDs.
+          content_acl:
+            type: object
+            additionalProperties:
+              type: object
+              properties:
+                encrypted_jwks:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    format: byte
+              title: AclJwks is a map of JWKs for a given Schema
+            description: JWKs of the new bucket.
+          timestamp:
+            type: string
+            format: int64
+            description: Timestamp of the new bucket.
+  sonrio.sonr.bucket.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sonrio.sonr.bucket.WhereIs:
+    type: object
+    properties:
+      did:
+        type: string
+        description: DID of the created bucket.
+      creator:
+        type: string
+        title: Creator of the new bucket
+      label:
+        type: string
+        description: Label of the new bucket.
+      visibility:
+        description: Visibility of the new bucket.
+        type: string
+        enum:
+          - UNSPECIFIED
+          - PUBLIC
+          - PRIVATE
+        default: UNSPECIFIED
+        title: >-
+          BucketVisibility is the visibility of the bucket to authorized users
+          of an application
+      role:
+        description: Role of the creator of the new bucket.
+        type: string
+        enum:
+          - NONE
+          - APPLICATION
+          - USER
+        default: NONE
+      is_active:
+        type: boolean
+        description: IsActive flag of the new bucket.
+      content:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the bucket item.
+            item_did:
+              type: string
+              title: DID of the item. If applicable // optional
+            item_cid:
+              type: string
+              title: CID of the item. If applicable // optional
+            timestamp:
+              type: string
+              format: int64
+              title: Timestamp of the last update. // optional
+          description: BucketItem is a pointer to a single piece of content in a bucket.
+        description: Content of the new bucket map of DIDs to CIDs.
+      content_acl:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
+            encrypted_jwks:
+              type: object
+              additionalProperties:
+                type: string
+                format: byte
+          title: AclJwks is a map of JWKs for a given Schema
+        description: JWKs of the new bucket.
+      timestamp:
+        type: string
+        format: int64
+        description: Timestamp of the new bucket.
   cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:
@@ -54963,17 +55607,14 @@ definitions:
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
     title: WhoIsType is the type of DIDDocument stored in the registry module
-  sonrio.sonr.common.LinkKind:
+  sonrio.sonr.schema.LinkKind:
     type: string
     enum:
-      - None
-      - Object
-      - Schema
-      - Bucket
-    default: None
-    title: >-
-      - None: None should be specified when no link is provided for the given
-      schema type
+      - UNKNOWN
+      - OBJECT
+      - SCHEMA
+      - BUCKET
+    default: UNKNOWN
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -55131,19 +55772,13 @@ definitions:
                     `Link`
                   type: string
                   enum:
-                    - None
-                    - Object
-                    - Schema
-                    - Bucket
-                  default: None
+                    - UNKNOWN
+                    - OBJECT
+                    - SCHEMA
+                    - BUCKET
+                  default: UNKNOWN
                 link:
                   type: string
-                  title: >-
-                    Optional field if Kind is of type `link` should not be
-                    defined if of another Kind i.e. "bytes"
-
-                    link should be left as an empty value if `LinkKind` is set
-                    to `None`
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
@@ -55215,19 +55850,13 @@ definitions:
                 `Link`
               type: string
               enum:
-                - None
-                - Object
-                - Schema
-                - Bucket
-              default: None
+                - UNKNOWN
+                - OBJECT
+                - SCHEMA
+                - BUCKET
+              default: UNKNOWN
             link:
               type: string
-              title: >-
-                Optional field if Kind is of type `link` should not be defined
-                if of another Kind i.e. "bytes"
-
-                link should be left as an empty value if `LinkKind` is set to
-                `None`
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
@@ -55263,18 +55892,13 @@ definitions:
         title: Optional field for a link context if `SchemaKind` is of type `Link`
         type: string
         enum:
-          - None
-          - Object
-          - Schema
-          - Bucket
-        default: None
+          - UNKNOWN
+          - OBJECT
+          - SCHEMA
+          - BUCKET
+        default: UNKNOWN
       link:
         type: string
-        title: >-
-          Optional field if Kind is of type `link` should not be defined if of
-          another Kind i.e. "bytes"
-
-          link should be left as an empty value if `LinkKind` is set to `None`
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:
