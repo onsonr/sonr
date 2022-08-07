@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
+	ct "github.com/sonr-io/sonr/x/common/types"
 	"github.com/sonr-io/sonr/x/schema/keeper"
 	"github.com/sonr-io/sonr/x/schema/types"
 )
@@ -35,6 +36,13 @@ func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keep
 		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
 			Name:  "type",
 			Field: types.SchemaKind_STRING,
+		})
+
+		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
+			Name:     "comment",
+			Field:    types.SchemaKind_LINK,
+			LinkKind: ct.LinkKind_Schema,
+			Link:     "QmZcGZYuoff9BQSqhzR9aqWfQBHU6bCMzKH7u25xZAijZB",
 		})
 
 		txCtx := simulation.OperationInput{

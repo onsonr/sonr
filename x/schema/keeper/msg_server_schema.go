@@ -38,12 +38,14 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if err != nil {
 		return nil, err
 	}
-	schemaDef := make(map[string]types.SchemaKind)
-	for _, c := range msg.Definition.GetFields() {
-		schemaDef[c.Name] = c.Field
+
+	b, err := msg.Definition.Marshal()
+
+	if err != nil {
+		return nil, sdkerrors.Wrapf(err, "Error while pinning schema definition to storage")
 	}
 
-	cid_str, err := k.PinContent(schemaDef)
+	cid_str, err := k.PinContent(b)
 	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")

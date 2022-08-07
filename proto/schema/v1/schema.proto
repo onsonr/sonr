@@ -7,20 +7,14 @@ import "common/link.proto";
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
 enum SchemaKind {
-  INVALID = 0;
-  MAP = 1;
-  LIST = 2;
-  UNIT = 3;
-  BOOL = 4;
-  INT = 5;
-  FLOAT = 6;
-  STRING = 7;
-  BYTES = 8;
-  LINK = 9;
-  STRUCT = 10;
-  UNION = 11;
-  ENUM = 12;
-  ANY = 13;
+  LIST = 0;
+  BOOL = 1;
+  INT = 2;
+  FLOAT = 3;
+  STRING = 4;
+  BYTES = 5;
+  LINK = 6;
+  ANY = 7;
 }
 
 message SchemaKindDefinition {
@@ -30,6 +24,10 @@ message SchemaKindDefinition {
 
   // Optional field for a link context if `SchemaKind` is of type `Link`
   common.LinkKind link_kind = 3;
+
+  // Optional field if Kind is of type `link` should not be defined if of another Kind i.e. "bytes"
+  // link should be left as an empty value if `LinkKind` is set to `None`
+  string link = 4;
 }
 
 // Schema defines the shapes of schemas on Sonr

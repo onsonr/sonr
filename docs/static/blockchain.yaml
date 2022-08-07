@@ -30466,6 +30466,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/registry/who_is/{did}':
@@ -31204,6 +31214,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -31239,31 +31259,34 @@ paths:
                           title: Type of a single schema property
                           type: string
                           enum:
-                            - INVALID
-                            - MAP
                             - LIST
-                            - UNIT
                             - BOOL
                             - INT
                             - FLOAT
                             - STRING
                             - BYTES
                             - LINK
-                            - STRUCT
-                            - UNION
-                            - ENUM
                             - ANY
-                          default: INVALID
+                          default: LIST
                         link_kind:
                           title: >-
                             Optional field for a link context if `SchemaKind` is
                             of type `Link`
                           type: string
                           enum:
+                            - None
                             - Object
                             - Schema
                             - Bucket
-                          default: Object
+                          default: None
+                        link:
+                          type: string
+                          title: >-
+                            Optional field if Kind is of type `link` should not
+                            be defined if of another Kind i.e. "bytes"
+
+                            link should be left as an empty value if `LinkKind`
+                            is set to `None`
                     title: the properties of this schema
         default:
           description: An unexpected error response.
@@ -31526,6 +31549,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/tendermint/spn/claim/claim_record/{address}':
@@ -31686,6 +31719,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -54923,10 +54966,14 @@ definitions:
   sonrio.sonr.common.LinkKind:
     type: string
     enum:
+      - None
       - Object
       - Schema
       - Bucket
-    default: Object
+    default: None
+    title: >-
+      - None: None should be specified when no link is provided for the given
+      schema type
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -55069,31 +55116,34 @@ definitions:
                   title: Type of a single schema property
                   type: string
                   enum:
-                    - INVALID
-                    - MAP
                     - LIST
-                    - UNIT
                     - BOOL
                     - INT
                     - FLOAT
                     - STRING
                     - BYTES
                     - LINK
-                    - STRUCT
-                    - UNION
-                    - ENUM
                     - ANY
-                  default: INVALID
+                  default: LIST
                 link_kind:
                   title: >-
                     Optional field for a link context if `SchemaKind` is of type
                     `Link`
                   type: string
                   enum:
+                    - None
                     - Object
                     - Schema
                     - Bucket
-                  default: Object
+                  default: None
+                link:
+                  type: string
+                  title: >-
+                    Optional field if Kind is of type `link` should not be
+                    defined if of another Kind i.e. "bytes"
+
+                    link should be left as an empty value if `LinkKind` is set
+                    to `None`
             title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
@@ -55150,50 +55200,47 @@ definitions:
               title: Type of a single schema property
               type: string
               enum:
-                - INVALID
-                - MAP
                 - LIST
-                - UNIT
                 - BOOL
                 - INT
                 - FLOAT
                 - STRING
                 - BYTES
                 - LINK
-                - STRUCT
-                - UNION
-                - ENUM
                 - ANY
-              default: INVALID
+              default: LIST
             link_kind:
               title: >-
                 Optional field for a link context if `SchemaKind` is of type
                 `Link`
               type: string
               enum:
+                - None
                 - Object
                 - Schema
                 - Bucket
-              default: Object
+              default: None
+            link:
+              type: string
+              title: >-
+                Optional field if Kind is of type `link` should not be defined
+                if of another Kind i.e. "bytes"
+
+                link should be left as an empty value if `LinkKind` is set to
+                `None`
         title: the properties of this schema
   sonrio.sonr.schema.SchemaKind:
     type: string
     enum:
-      - INVALID
-      - MAP
       - LIST
-      - UNIT
       - BOOL
       - INT
       - FLOAT
       - STRING
       - BYTES
       - LINK
-      - STRUCT
-      - UNION
-      - ENUM
       - ANY
-    default: INVALID
+    default: LIST
   sonrio.sonr.schema.SchemaKindDefinition:
     type: object
     properties:
@@ -55203,29 +55250,31 @@ definitions:
         title: Type of a single schema property
         type: string
         enum:
-          - INVALID
-          - MAP
           - LIST
-          - UNIT
           - BOOL
           - INT
           - FLOAT
           - STRING
           - BYTES
           - LINK
-          - STRUCT
-          - UNION
-          - ENUM
           - ANY
-        default: INVALID
+        default: LIST
       link_kind:
         title: Optional field for a link context if `SchemaKind` is of type `Link`
         type: string
         enum:
+          - None
           - Object
           - Schema
           - Bucket
-        default: Object
+        default: None
+      link:
+        type: string
+        title: >-
+          Optional field if Kind is of type `link` should not be defined if of
+          another Kind i.e. "bytes"
+
+          link should be left as an empty value if `LinkKind` is set to `None`
   sonrio.sonr.schema.SchemaReference:
     type: object
     properties:
