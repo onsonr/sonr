@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/stretchr/testify/assert"
 	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -13,7 +13,7 @@ import (
 func Test_CreateAccount(t *testing.T) {
 	aesKey := loadKey("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {
-		key, err := crypto.NewAesKey()
+		key, err := mpc.NewAesKey()
 		assert.NoError(t, err, "generates aes key")
 		aesKey = key
 
