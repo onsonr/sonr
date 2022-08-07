@@ -19,7 +19,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/sonr/internal/highway/x/ipfs"
 	metrics "github.com/sonr-io/sonr/internal/highway/x/prometheus"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
@@ -77,10 +76,10 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	// }
 
 	// Create the IPFS Protocol
-	ipfs, err := ipfs.New(ctx, node)
-	if err != nil {
-		return nil, err
-	}
+	// ipfs, err := ipfs.New(ctx, node)
+	// if err != nil {
+	//	return nil, err
+	// }
 
 	tokenClient := jwt.New(ctx, node)
 	metrics, err := metrics.New(ctx, node)
@@ -91,12 +90,11 @@ func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
 	// Create the RPC Service
 	stub := &HighwayServer{
 		// Cosmos:       cosmos,
-		Host:         node,
-		ctx:          ctx,
-		Router:       gin.Default(),
-		Config:       c,
-		ipfsProtocol: ipfs,
-		JWTToken:     tokenClient,
+		Host:     node,
+		ctx:      ctx,
+		Router:   gin.Default(),
+		Config:   c,
+		JWTToken: tokenClient,
 		// matrixProtocol: matrix,
 		Telemetry: metrics,
 	}

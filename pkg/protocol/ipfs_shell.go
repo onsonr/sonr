@@ -5,8 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path"
+	"time"
 
 	"github.com/ipfs/go-datastore"
 	shell "github.com/ipfs/go-ipfs-api"
@@ -56,7 +58,7 @@ func (i *IPFSShell) GetData(ctx context.Context, cid string) ([]byte, error) {
 		return data, nil
 	}
 
-	outPath := path.Join("..", "..", "data")
+	outPath := path.Join(os.TempDir(), "data", fmt.Sprintf("%s-%d", cid, time.Now().Unix()))
 	if err = i.shell.Get(cid, outPath); err != nil {
 		return nil, err
 	}

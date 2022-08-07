@@ -154,5 +154,5 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 	// this line is used by starport scaffolding # simapp/module/operation
 
-	return operations
+	return make([]simtypes.WeightedOperation, 0)
 }

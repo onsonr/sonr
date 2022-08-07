@@ -1,5 +1,6 @@
 package ipfs
 
+/*
 import (
 	"bytes"
 	"context"
@@ -8,22 +9,25 @@ import (
 
 	ipfslite "github.com/hsanjuan/ipfs-lite"
 	"github.com/ipfs/go-cid"
+	format "github.com/ipfs/go-ipld-format"
+	basicnode "github.com/ipld/go-ipld-prime/node/basic"
 	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/protocol"
+	"github.com/sonr-io/sonr/pkg/store"
 )
 
 // IPFSProtocol leverages the IPFSLite library to provide simple file operations.
 type IPFSProtocol struct {
 	ctx       context.Context
 	node      host.SonrHost
-	dataStore *MemoryStore
+	dataStore *store.Memory
 	*ipfslite.Peer
 }
 
 // New creates a new IPFSProtocol instance with Host Implementation
 func New(ctx context.Context, host host.SonrHost) (protocol.IPFS, error) {
 	// Create IPFS Peer
-	ds := NewMemoryStore()
+	ds := store.NewMemoryStore()
 	ipfsLite, err := ipfslite.New(ctx, ds.Batching(), host.Host(), host.Routing(), nil)
 	if err != nil {
 		return nil, err
@@ -101,7 +105,17 @@ func (i *IPFSProtocol) DagGet(ctx context.Context, ref string, out interface{}) 
 }
 
 func (i *IPFSProtocol) DagPut(ctx context.Context, data interface{}, inputCodec, storeCodec string) (string, error) {
-	return "", nil
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder() // Create a builder.
+	ma, err := nb.BeginMap(0)
+	if err != nil {
+		return "", err
+	}
+
+	ma.Finish()
+	node := nb.Build()
+
+	return "", i.Peer.DAGService.Add(ctx, node.(format.Node))
 }
 
 // RemoveFile removes a file from IPFS.
@@ -112,3 +126,4 @@ func (i *IPFSProtocol) RemoveFile(ctx context.Context, cidstr string) error {
 	}
 	return i.Peer.Remove(i.ctx, cid)
 }
+*/

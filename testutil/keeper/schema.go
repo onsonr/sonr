@@ -12,7 +12,8 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/sonr-io/sonr/pkg/protocol"
+	"github.com/sonr-io/sonr/testutil/ipfs"
+	ipfsstore "github.com/sonr-io/sonr/testutil/store"
 	"github.com/sonr-io/sonr/x/schema/keeper"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/require"
@@ -33,7 +34,7 @@ func SchemaKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
-
+	contentstore := new(ipfsstore.MockCache)
 	paramsSubspace := typesparams.NewSubspace(cdc,
 		types.Amino,
 		storeKey,
@@ -45,7 +46,7 @@ func SchemaKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
-		protocol.NewIPFSShell("localhost:5001", nil),
+		ipfs.NewMockShell(contentstore),
 		nil,
 		nil,
 		nil,
