@@ -14,7 +14,7 @@ We believe application development should be as straight forward as possible. So
 
 ### Verifiable Identity
 
-Each domain registered is backed by a Decentralized Identifier (DID) which is unique on our network for your domain name.  This identifier is paired with a public key credential which creates your unique profile. Your \`did\` is written on our block chains ledger. This ledger is open to all and fully auditable.
+Each domain registered is backed by a Decentralized Identifier (DID) which is unique on our network for your domain name.  This identifier is paired with a public key credential which creates your unique profile. Your \`did\` is written on our blockchain's ledger. This ledger is open to all and fully auditable.
 
 ### Composable by Design
 
