@@ -17,6 +17,9 @@ service Msg {
 message MsgCreateSchema {
   // definition of schema to be persisted
   SchemaDefinition definition = 1;
+
+  // Metadata is a map of key-value pairs that can be used to store additional information about the WhatIs (Schema)
+  map<string, string> metadata = 2;
 }
 
 message MsgCreateSchemaResponse {

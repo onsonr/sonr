@@ -63,6 +63,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		Schema:    &schema,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
+		Metadata:  make(map[string]string),
 	}
 
 	k.SetWhatIs(ctx, whatIs)
