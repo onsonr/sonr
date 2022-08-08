@@ -33,5 +33,8 @@ func (iub *IPNSURIBuilder) BuildService() did.Service {
 	return did.Service{
 		ID:   url,
 		Type: "ipns",
+		ServiceEndpoint: map[string]string{
+			"cid": iub.cid,
+		},
 	}
 }

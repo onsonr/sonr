@@ -4,13 +4,16 @@ import (
 	"time"
 
 	"github.com/ipfs/go-ipns"
+	pb "github.com/ipfs/go-ipns/pb"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type IPNSRecord struct {
-	pubKey  crypto.PubKey
-	privKey crypto.PrivKey
-	builder *IPNSURIBuilder
+	PubKey  crypto.PubKey
+	PrivKey crypto.PrivKey
+	Builder *IPNSURIBuilder
+	Ttl     time.Duration
+	Record  *pb.IpnsEntry
 }
 
 func New() (*IPNSRecord, error) {
@@ -20,12 +23,25 @@ func New() (*IPNSRecord, error) {
 	}
 	builder := NewBuilder()
 	return &IPNSRecord{
-		pubKey:  pubKey,
-		privKey: privKey,
-		builder: builder,
+		PubKey:  pubKey,
+		PrivKey: privKey,
+		Builder: builder,
 	}, nil
 }
 
-func (ir *IPNSRecord) CreateRecord() {
-	ipns.Create(ir.privKey, []byte(ir.builder.BuildString()), 0, time.Now(), time.Hour)
+func (ir *IPNSRecord) CreateRecord() error {
+	record, err := ipns.Create(ir.PrivKey, []byte(ir.Builder.BuildString()), 0, time.Now(), ir.Ttl)
+	if err != nil {
+		return err
+	}
+
+	ir.Record = record
+
+	err = ipns.EmbedPublicKey(ir.PubKey, ir.Record)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
