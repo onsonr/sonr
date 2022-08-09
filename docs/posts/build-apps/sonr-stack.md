@@ -28,12 +28,12 @@ When the node operates in Highway Mode it works as a custodian in the Network to
 
 The Sonr Highway SDK is a cross-stack framework for developers to easily build decentralized applications (”Apps” for shorthand) on the Sonr platform. Modeled after Amazon Web Services and Google Firebase, the goal is to enable developers to build the future of applications on Web3 with ease and elegance.
 
-The Highway SDK consists of five unique modules:
+The Highway SDK consists of several modules which faciliate easy application development:
+
+*   Registry
+
+*   Schemas
+
+*   Buckets
 
 *   Channels
-
-*   Objects
-
-*   Channels
-
-*   Storage
