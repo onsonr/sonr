@@ -30,6 +30,11 @@ service Query {
     option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is";
   }
 
+  // Queries a whatis by creator
+  rpc WhatIsByCreator(QueryWhatIsCreatorRequest) returns (QueryWhatIsCreatorResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is";
+  }
+
   // Queries all whatIs definitions supports pagination
   rpc WhatIsAll(QueryAllWhatIsRequest) returns (QueryAllWhatIsResponse) {
     option (google.api.http).get = "/sonr-io/sonr/schema/query/all_schemas";
@@ -65,6 +70,13 @@ message QueryWhatIsRequest {
   string did = 2;
 }
 
+message QueryWhatIsCreatorRequest {
+  // address of the schema creator
+  string creator = 1;
+  // pageination values
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
 message QuerySchemaResponse {
   // Definition of schema
   SchemaDefinition definition = 2;
@@ -73,6 +85,11 @@ message QuerySchemaResponse {
 message QueryWhatIsResponse {
   // Schema Repersentation
   WhatIs whatIs = 1;
+}
+
+message QueryWhatIsCreatorResponse {
+  // Schema Repersentation
+  repeated WhatIs whatIs = 1;
 }
 
 // this line is used by starport scaffolding # 3
