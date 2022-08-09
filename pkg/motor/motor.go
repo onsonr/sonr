@@ -13,6 +13,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 	"google.golang.org/grpc"
@@ -36,6 +37,8 @@ type MotorNode interface {
 
 	CreateSchema(rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error)
 	QueryWhatIs(context.Context, rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error)
+
+	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
 }
 
 type motorNodeImpl struct {
@@ -56,6 +59,9 @@ type motorNodeImpl struct {
 
 	// query clients
 	schemaQueryClient st.QueryClient
+
+	// resource management
+	resources *motorResources
 }
 
 func EmptyMotor(id string) *motorNodeImpl {
@@ -77,6 +83,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	}
 
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
+	mtr.resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
 
 	// Generate wallet
 	mtr.Wallet, err = mpc.GenerateWallet(options...)

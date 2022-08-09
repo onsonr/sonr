@@ -59,7 +59,7 @@ func LoadWallet(buf []byte) error {
 	if instance != nil {
 		return errWalletExists
 	}
-	w := &mpc.MPCWallet{}
+	w := &mpc.Wallet{}
 	err := w.Unmarshal(buf)
 	if err != nil {
 		return err
