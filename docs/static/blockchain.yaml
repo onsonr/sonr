@@ -55629,6 +55629,15 @@ definitions:
       - SCHEMA
       - BUCKET
     default: UNKNOWN
+  sonrio.sonr.schema.MetadataDefintion:
+    type: object
+    properties:
+      key:
+        type: string
+        title: key of the metadata
+      value:
+        type: string
+        title: metadata
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
