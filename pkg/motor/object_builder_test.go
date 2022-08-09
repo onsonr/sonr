@@ -3,10 +3,8 @@ package motor
 import (
 	"context"
 	"fmt"
-	"sync"
 	"testing"
 
-	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -21,7 +19,7 @@ prt.CreateSchemaRequest{
 	},
 }
 */
-const SCHEMA_DID string = "did:snr:f2604d3b-4a30-4223-ba63-070a075b7db8"
+const SCHEMA_DID string = "did:snr:8a7c357c-f0c1-4f77-b8e3-f1f374d19951"
 
 func Test_ObjectBuilder(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
@@ -42,19 +40,11 @@ func Test_ObjectBuilder(t *testing.T) {
 		assert.NoError(t, err, "login succeeds")
 
 		// query WhatIs so it's cached
-		// this needs to be awaited here for race conditions
-		// not always necessary since you may not use the schema right away
-		var wg sync.WaitGroup
-		wg.Add(1)
-		_, err = m.QueryWhatIsWithSchemaCallback(context.Background(), prt.QueryWhatIsRequest{
+		_, err = m.QueryWhatIs(context.Background(), prt.QueryWhatIsRequest{
 			Creator: m.GetDID().String(),
 			Did:     SCHEMA_DID,
-		}, func(_ *st.SchemaDefinition, err error) {
-			assert.NoError(t, err, "stored schema")
-			wg.Done()
 		})
 		assert.NoError(t, err, "query whatis")
-		wg.Wait()
 
 		// upload object
 		builder, err := m.NewObjectBuilder(SCHEMA_DID)

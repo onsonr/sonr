@@ -54,7 +54,6 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 		return nil, fmt.Errorf("error unmarshalling body: %s", err)
 	}
 
-	fmt.Printf("SchemaDefinition: %+v\n", definition)
 	r.schemaStore[whatIs.Schema.Cid] = definition
 	return definition, nil
 }
