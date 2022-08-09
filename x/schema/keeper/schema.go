@@ -96,11 +96,11 @@ func (k Keeper) SetSchemaCount(ctx sdk.Context, count uint64) {
 }
 
 // GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
-func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []types.WhatIs, found bool) {
+func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []*types.WhatIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals []types.WhatIs = make([]types.WhatIs, 0)
+	var vals []*types.WhatIs = make([]*types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
 		var instance types.WhatIs
 		error := k.cdc.Unmarshal(iterator.Value(), &instance)
@@ -108,7 +108,7 @@ func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []typ
 			return vals, false
 		}
 		if instance.Creator == creator {
-			vals = append(vals, instance)
+			vals = append(vals, &instance)
 		}
 	}
 
