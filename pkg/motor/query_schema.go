@@ -9,10 +9,6 @@ import (
 )
 
 func (mtr *motorNodeImpl) QueryWhatIs(ctx context.Context, request mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error) {
-	return mtr.QueryWhatIsWithSchemaCallback(ctx, request, noSchemaCallback)
-}
-
-func (mtr *motorNodeImpl) QueryWhatIsWithSchemaCallback(ctx context.Context, request mt.QueryWhatIsRequest, callback SchemaCallback) (mt.QueryWhatIsResponse, error) {
 	resp, err := mtr.schemaQueryClient.WhatIs(ctx, &st.QueryWhatIsRequest{
 		Creator: request.Creator,
 		Did:     request.Did,
@@ -27,7 +23,10 @@ func (mtr *motorNodeImpl) QueryWhatIsWithSchemaCallback(ctx context.Context, req
 	}
 
 	// store reference to schema
-	mtr.resources.StoreWhatIs(resp.WhatIs, callback)
+	_, err = mtr.resources.StoreWhatIs(resp.WhatIs)
+	if err != nil {
+		return mt.QueryWhatIsResponse{}, fmt.Errorf("store WhatIs: %s", err)
+	}
 
 	return mt.QueryWhatIsResponse{
 		WhatIs: whatIsBytes,
