@@ -55,13 +55,19 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		Cid:   cid_str,
 	}
 
+	metadata := make(map[string]string)
+
+	for _, m := range msg.Metadata {
+		metadata[m.Key] = m.Value
+	}
+
 	var whatIs = types.WhatIs{
 		Creator:   creator_did,
 		Did:       what_is_did.String(),
 		Schema:    &schema,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
-		Metadata:  make(map[string]string),
+		Metadata:  metadata,
 	}
 
 	k.SetWhatIs(ctx, whatIs)
