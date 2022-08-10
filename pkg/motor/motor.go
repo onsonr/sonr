@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
@@ -32,6 +33,7 @@ type MotorNode interface {
 	GetDIDDocument() did.Document
 	GetHost() host.SonrHost
 
+	AddCredentialVerificationMethod(id string, cred *did.Credential)
 	CreateAccount(rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error)
 	Login(rtmv1.LoginRequest) (rtmv1.LoginResponse, error)
 
@@ -182,4 +184,32 @@ func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMet
 		Controller:      w.DID,
 		PublicKeyBase58: pub,
 	}, nil
+}
+
+/*
+	Adds a Credential to the DidDocument of the account
+*/
+func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Credential) error {
+	if w.DIDDocument == nil {
+		return fmt.Errorf("cannot create verification method did document not found")
+	}
+
+	vmdid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s", strings.TrimPrefix(w.Address, "snr"), id))
+	if err != nil {
+		return err
+	}
+
+	enc := base58.Encode(cred.PublicKey)
+
+	// Return the shares VerificationMethod
+	vm := &did.VerificationMethod{
+		ID:              *vmdid,
+		Type:            ssi.ECDSASECP256K1VerificationKey2019,
+		Controller:      w.DID,
+		PublicKeyBase58: enc,
+		Credential:      cred,
+	}
+	w.DIDDocument.AddAssertionMethod(vm)
+
+	return nil
 }
