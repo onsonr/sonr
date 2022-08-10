@@ -17,6 +17,15 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if err != nil {
 		return nil, err
 	}
+	if len(msg.Definition.Fields) < 1 {
+		k.Logger(ctx).Info("Create schema request empty, must have defined fields. aborting operation")
+		return &types.MsgCreateSchemaResponse{
+			Code:    400,
+			Message: "Schema Fields must non nil",
+			WhatIs:  nil,
+		}, nil
+	}
+
 	k.Logger(ctx).Info("msg validation successful")
 
 	accts := msg.GetSigners()
