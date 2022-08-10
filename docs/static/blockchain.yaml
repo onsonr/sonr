@@ -31644,6 +31644,77 @@ paths:
         - Query
   /sonr-io/sonr/schema/query/what_is:
     get:
+      summary: Queries a whatis by creator and did
+      operationId: SonrioSonrSchemaWhatIs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              whatIs:
+                type: object
+                properties:
+                  did:
+                    type: string
+                    title: DID is the DID of the object
+                  schema:
+                    title: Object_doc is the object document
+                    type: object
+                    properties:
+                      did:
+                        type: string
+                        title: the DID for this schema
+                      label:
+                        type: string
+                        title: an alternative reference point
+                      cid:
+                        type: string
+                        description: a reference to information stored within an IPFS node.
+                  creator:
+                    type: string
+                    title: Creator is the DID of the creator
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
+                title: Schema Repersentation
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: query
+          required: false
+          type: string
+        - name: did
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  '/sonr-io/sonr/schema/query/what_is/{creator}':
+    get:
       summary: Queries a whatis by creator
       operationId: SonrioSonrSchemaWhatIsByCreator
       responses:
@@ -31709,8 +31780,8 @@ paths:
       parameters:
         - name: creator
           description: address of the schema creator
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
         - name: pagination.key
           description: |-
