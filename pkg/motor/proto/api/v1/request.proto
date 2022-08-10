@@ -54,6 +54,7 @@ message InitializeRequest {
 message CreateAccountRequest {
   string password = 1;
   bytes aes_dsc_key = 2;
+  map<string, string> metadata = 3;
 }
 
 // Login requires the DID of the account being logged into,
@@ -80,6 +81,8 @@ message CreateSchemaRequest {
 	  SCHEMA_KIND_ANY = 7;
   }
   map<string, SchemaKind> fields = 2;
+
+  map<string, string> metadata = 3;
 }
 
 message QueryWhatIsRequest {
