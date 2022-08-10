@@ -24,3 +24,15 @@ message CreateSchemaResponse {
 message QueryWhatIsResponse {
   bytes what_is = 1;
 }
+
+message ObjectReference {
+  string did = 1;
+  string label = 2;
+  string cid = 3;
+}
+
+message UploadObjectResponse {
+  int32 code = 1;
+  ObjectReference reference = 2;
+  string message = 3;
+}
