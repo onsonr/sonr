@@ -15,7 +15,7 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("process fields: %s", err)
 	}
-	createSchemaMsg := st.NewMsgCreateSchema(&st.SchemaDefinition{
+	createSchemaMsg := st.NewMsgCreateSchema(convertMetadata(request.Metadata), &st.SchemaDefinition{
 		Creator: mtr.Address,
 		Label:   request.Label,
 		Fields:  listFields,
@@ -70,4 +70,15 @@ func convertFields(fields map[string]mt.CreateSchemaRequest_SchemaKind) ([]*st.S
 	}
 
 	return result, nil
+}
+
+func convertMetadata(m map[string]string) []*st.MetadataDefintion {
+	result := make([]*st.MetadataDefintion, 0)
+	for k, v := range m {
+		result = append(result, &st.MetadataDefintion{
+			Key:   k,
+			Value: v,
+		})
+	}
+	return result
 }
