@@ -89,14 +89,29 @@ tasks:
   ## ------------------------------------------------------------
   ## Protobuf tasks
   ## ------------------------------------------------------------
-  buf:
-    summary: "Build and Push Protobuf files to buf.build"
+  buf:motor:
+    summary: "Build and Push Protobuf files to buf.build for motor"
     dir: pkg/motor/proto
     cmds:
       - buf mod update
       - buf build
       - buf push {{.CLI_ARGS}}
       - task: clean
+  
+  buf:chain:
+    summary: "Build and push protobuf files to buf.build for blockchain"
+    dir: proto
+    cmds:
+      - buf mod update
+      - buf build
+      - buf push {{.CLI_ARGS}}
+      - task: clean
+  
+  buf:
+    summary: "Build and push all protobufs"
+    cmds:
+      - task: buf:chain
+      - task: buf:motor
 
   proto:go:
     summary: "Generate cosmos-sdk protobuf files using ignite"
@@ -142,4 +157,5 @@ tasks:
       - rm -rf ./docs/.docusaurus/
       - rm -rf ./docs/build
       - go mod tidy
+      - go get -u go.buf.build/grpc/go/sonr-io/blockchain
       - go get -u go.buf.build/grpc/go/sonr-io/motor
