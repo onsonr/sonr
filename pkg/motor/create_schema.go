@@ -36,10 +36,10 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 		return mt.CreateSchemaResponse{}, fmt.Errorf("decode MsgCreateSchemaResponse: %s", err)
 	}
 
-	whatIsBytes, err := csresp.WhatIs.Marshal()
-	if err != nil {
-		return mt.CreateSchemaResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
-	}
+	// whatIsBytes, err := csresp.WhatIs.Marshal()
+	// if err != nil {
+	// 	return mt.CreateSchemaResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
+	// }
 
 	// store reference to newly created WhatIs
 	_, err = mtr.resources.StoreWhatIs(csresp.WhatIs)
@@ -48,7 +48,7 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	}
 
 	return mt.CreateSchemaResponse{
-		WhatIs: whatIsBytes,
+		WhatIs: csresp.WhatIs,
 	}, nil
 }
 

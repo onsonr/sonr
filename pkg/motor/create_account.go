@@ -101,11 +101,17 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 		return rtmv1.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
 	fmt.Println("done.")
-
 	fmt.Println("account created successfully.")
+
+	docBytes, err := mtr.DIDDocument.MarshalJSON()
+	if err != nil {
+		return rtmv1.CreateAccountResponse{}, fmt.Errorf("serialize DID Document: %s", err)
+	}
+
 	return rtmv1.CreateAccountResponse{
-		AesPsk:  psk,
-		Address: mtr.Address,
+		AesPsk:      psk,
+		Address:     mtr.Address,
+		DidDocument: docBytes,
 	}, err
 }
 
