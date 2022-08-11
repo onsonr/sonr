@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package sonrio.sonr.bucket;
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
@@ -27,7 +28,6 @@ message WhereIs {
 
   // JWKs of the new bucket.
   map<string, AclJwks> content_acl = 8;
-
 
   // Timestamp of the new bucket.
   int64 timestamp = 9;
@@ -75,4 +75,28 @@ enum BucketVisibility {
 
   // Bucket is visible to anyone who has access token.
   PRIVATE = 2;
+}
+
+message IpnsEntry {
+  enum ValidityType {
+    // setting an EOL says "this record is valid until..."
+    EOL = 0;
+  }
+
+  bytes value = 1;
+  bytes signature = 2;
+
+  ValidityType validityType = 3;
+
+  // optional
+  bytes validity = 4;
+
+  // optional
+  uint64 sequence = 5;
+
+  // optional
+  uint64 ttl = 6;
+
+  // optional
+  bytes pubKey = 7;
 }
