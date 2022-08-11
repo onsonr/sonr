@@ -211,5 +211,12 @@ func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Cre
 	}
 	w.DIDDocument.AddAssertionMethod(vm)
 
+	// does not seem to be needed to check on the response if there is no err present.
+	_, err = updateWhoIs(w)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
