@@ -52,19 +52,13 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	}, nil
 }
 
-func convertFields(fields map[string]mt.CreateSchemaRequest_SchemaKind) ([]*st.SchemaKindDefinition, error) {
+func convertFields(fields map[string]st.SchemaKind) ([]*st.SchemaKindDefinition, error) {
 	result := make([]*st.SchemaKindDefinition, len(fields))
 	var i int32
 	for k, v := range fields {
-		// Note: This will work while mt and st schema types stay in sync.
-		// This should be refactored such that there is only one proto for these types
-		sk, ok := mt.CreateSchemaRequest_SchemaKind_value[v.String()]
-		if !ok {
-			return nil, fmt.Errorf("invalid schema kind: %s", v)
-		}
 		result[i] = &st.SchemaKindDefinition{
 			Name:  k,
-			Field: st.SchemaKind(sk),
+			Field: v,
 		}
 		i += 1
 	}

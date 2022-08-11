@@ -17,3 +17,7 @@ deps:
     owner: googleapis
     repository: googleapis
     commit: 80720a488c9a414bb8d4a9f811084989
+  - remote: buf.build
+    owner: sonr-io
+    repository: blockchain
+    commit: 636713b5e87048ee99d45c707b3c97f7

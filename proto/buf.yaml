@@ -1,9 +1,8 @@
 version: v1
-name: buf.build/sonr-io/motor
+name: buf.build/sonr-io/blockchain
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/cosmos/cosmos-sdk
-  - buf.build/sonr-io/blockchain
 
 lint:
   allow_comment_ignores: true
