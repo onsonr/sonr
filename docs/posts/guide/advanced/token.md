@@ -25,72 +25,22 @@ This token allocation is a 🚧 WIP, based on a Token Supply of 500,000,000.
 
 ### Airdrops & Rewards
 
-*   🚧 Work in Progress
+🚧 Work in Progress
+
+Sonr's tokenomics will include airdrops and rewards for network contributors. 
 
 ***
 
 # Tokenomics
 
-Market Price of Tokens and Platform User Base are the two key endogenous variables. The Equilibrium token pricing formula exhibits three desirable features.
+🚧 Work in Progress
 
-1.  Token Value depends on the Sonr Platforms productivity
+The Sonr team is currently working with [Prysm Group](https://www.prysmgroup.io/) to design a robust tokenomics model to foster and reward activity on the Sonr network. This model will include mechanisms around: 
 
-2.  User base enters positively into the pricing formula
+1. Governance 
+2. Staking 
+3. Exchange
+4. Swapping
+5. Validator rewards 
 
-3.  User exchange type randomness matters for both platform adoption and token pricing.
-
-> Tokens in our model facilitate transactions. They should be distinguished from security tokens that represent claims on issuers' cashflows or rights to redeem products/services.
-
-### Platform and Agents
-
-The platform is characterized by the productivity that evolves according to a geometric Brownian motion:
-
-> The platform allows agents to conduct transactions that are settled via a medium of exchange. We consider two cases for the medium: the generic good, which is the numeraire, and the local platform currency (token).
-
-### User Utility value
-
-Conditioning on participating on the platform, a platform user $i$ derives a utility flow from her holdings of the medium of exchange,  essentially the number of tokens a user holds.
-
-```html
-```
-
-**The first term is the transactional benefits of**&#x20;
-
-```html
-```
-
-*
-
-*
-
-*
-
-*
-
-**Let**  **equal the number of Sonr users with more than a 0 balance, so formally,  is the measure of **
-
-We choose this specification of utility flow with the following considerations.
-
-1.  the utility flow increases in . It captures the positive user network effect, as it is easier to find a transaction counter-party in a larger community
-
-2.  the marginal utility decreases with , captured by . The exponents of  and  sum up to one for analytical convenience.
-
-3.  agents' transaction needs (or types), , are heterogeneous.
-
-> 🚧 Work in Progress
-
-***
-
-# Structure
-
-> 🚧 Work in Progress
-
-### Governance
-
-### Staking
-
-### Exchange
-
-### Swapping
-
-### IBC
+Contact the Sonr team for more details on our tokenomics design. 

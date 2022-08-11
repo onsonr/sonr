@@ -54,6 +54,7 @@ message InitializeRequest {
 message CreateAccountRequest {
   string password = 1;
   bytes aes_dsc_key = 2;
+  map<string, string> metadata = 3;
 }
 
 // Login requires the DID of the account being logged into,
@@ -70,22 +71,18 @@ message CreateSchemaRequest {
   string label = 1;
 
   enum SchemaKind {
-    SCHEMA_KIND_UNRECOGNIZED = 0;
-    SCHEMA_KIND_MAP = 1;
-	  SCHEMA_KIND_LIST = 2;
-	  SCHEMA_KIND_UNIT = 3;
-	  SCHEMA_KIND_BOOL = 4;
-	  SCHEMA_KIND_INT = 5;
-	  SCHEMA_KIND_FLOAT = 6;
-	  SCHEMA_KIND_STRING = 7;
-	  SCHEMA_KIND_BYTES = 8;
-	  SCHEMA_KIND_LINK = 9;
-	  SCHEMA_KIND_STRUCT = 10;
-	  SCHEMA_KIND_UNION = 11;
-	  SCHEMA_KIND_ENUM = 12;
-	  SCHEMA_KIND_ANY = 13;
+	  SCHEMA_KIND_LIST = 0;
+	  SCHEMA_KIND_BOOL = 1;
+	  SCHEMA_KIND_INT = 2;
+	  SCHEMA_KIND_FLOAT = 3;
+	  SCHEMA_KIND_STRING = 4;
+	  SCHEMA_KIND_BYTES = 5;
+	  SCHEMA_KIND_LINK = 6;
+	  SCHEMA_KIND_ANY = 7;
   }
   map<string, SchemaKind> fields = 2;
+
+  map<string, string> metadata = 3;
 }
 
 message QueryWhatIsRequest {

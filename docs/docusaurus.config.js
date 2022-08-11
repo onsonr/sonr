@@ -86,15 +86,15 @@ const config = {
 
           {
             type: 'doc',
-            docId: 'run-nodes/blockchain/setup-validator',
-            position: 'left',
-            label: 'Run Nodes',
-          },
-          {
-            type: 'doc',
             position: 'left',
             label: 'Build Apps',
             docId: 'build-apps/why-sonr',
+          },
+          {
+            type: 'doc',
+            docId: 'run-nodes/blockchain/setup-validator',
+            position: 'left',
+            label: 'Run Nodes',
           },
           {
             position: 'left',

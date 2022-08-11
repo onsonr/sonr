@@ -26,15 +26,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 
 	creator_did := msg.GetCreatorDid()
 	k.Logger(ctx).Info(fmt.Sprintf("Creating schema for creator did %s", creator_did))
-	guid := k.GenerateKeyForDID()
 
-	if err != nil {
-		return nil, err
-	}
-
-	addr := string(guid)
-	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", addr))
-	k.Logger(ctx).Info(fmt.Sprintf("Creating schema with did %s", what_is_did))
 	if err != nil {
 		return nil, err
 	}
@@ -51,10 +43,22 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
 	}
 
+	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", cid_str))
+	k.Logger(ctx).Info(fmt.Sprintf("Creating schema with did %s", what_is_did))
+	if err != nil {
+		return nil, err
+	}
+
 	var schema = types.SchemaReference{
 		Label: msg.Definition.Label,
 		Did:   what_is_did.String(),
 		Cid:   cid_str,
+	}
+
+	metadata := make(map[string]string)
+
+	for _, m := range msg.Metadata {
+		metadata[m.Key] = m.Value
 	}
 
 	var whatIs = types.WhatIs{
@@ -63,6 +67,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		Schema:    &schema,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
+		Metadata:  metadata,
 	}
 
 	k.SetWhatIs(ctx, whatIs)

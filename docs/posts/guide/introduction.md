@@ -29,4 +29,4 @@ Soon you won’t even have to imagine it!🚀
 
 *   Watch the [**Youtube channel**](https://sonr.io/youtube) for videos and presentations
 
-*   Work on the Sonr Project through visiting our [open roles](https://sonr.io/jobs)
+*   Work on the Sonr Project through visiting our [open roles](https://jobs.polymer.co/sonr)

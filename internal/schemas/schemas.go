@@ -40,7 +40,7 @@ type schemaImpl struct {
 /*
 	Default initialization with a local shell for persistence
 */
-func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) Schema {
+func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
 		fields:     fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
@@ -58,7 +58,7 @@ func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) Schema {
 /*
 	Initialize with a ipfs shell instance
 */
-func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) Schema {
+func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
 		fields:     fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
