@@ -1,7 +1,14 @@
 version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/sonr-io/sonr/gen/proto/go
 plugins:
-  - name: js
-    out: gen/js
-    opt: import_style=es6
-  - name: ts
-    out: gen/ts
+  # - name: js
+  #   out: gen/js
+  #   opt: import_style=es6
+  # - name: ts
+  #   out: gen/ts
+  - name: go
+    out: gen/proto/go
+    opt: paths=source_relative
