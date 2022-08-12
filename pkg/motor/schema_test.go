@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
-	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func Test_CreateSchema(t *testing.T) {
@@ -18,7 +18,7 @@ func Test_CreateSchema(t *testing.T) {
 		return
 	}
 
-	req := prt.LoginRequest{
+	req := mt.LoginRequest{
 		Did:       ADDR,
 		Password:  "password123",
 		AesPskKey: pskKey,
@@ -29,12 +29,12 @@ func Test_CreateSchema(t *testing.T) {
 	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO CREATE SCHEMA
-	createSchemaRequest := prt.CreateSchemaRequest{
+	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
-		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
-			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
+		Fields: map[string]st.SchemaKind{
+			"email":     st.SchemaKind_STRING,
+			"firstName": st.SchemaKind_STRING,
+			"age":       st.SchemaKind_INT,
 		},
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
@@ -54,7 +54,7 @@ func Test_QuerySchema(t *testing.T) {
 		return
 	}
 
-	req := prt.LoginRequest{
+	req := mt.LoginRequest{
 		Did:       ADDR,
 		Password:  "password123",
 		AesPskKey: pskKey,
@@ -65,12 +65,12 @@ func Test_QuerySchema(t *testing.T) {
 	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO QUERY SCHEMA
-	createSchemaRequest := prt.CreateSchemaRequest{
+	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
-		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
-			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
+		Fields: map[string]st.SchemaKind{
+			"email":     st.SchemaKind_STRING,
+			"firstName": st.SchemaKind_STRING,
+			"age":       st.SchemaKind_INT,
 		},
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
@@ -81,7 +81,7 @@ func Test_QuerySchema(t *testing.T) {
 	assert.NoError(t, err, "unmarshal WhatIs")
 
 	// CREATE DONE, TRY QUERY
-	queryWhatIsRequest := prt.QueryWhatIsRequest{
+	queryWhatIsRequest := mt.QueryWhatIsRequest{
 		Creator: whatIs.Creator,
 		Did:     whatIs.Did,
 	}
