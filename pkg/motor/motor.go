@@ -14,9 +14,9 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 	"google.golang.org/grpc"
 )
 
@@ -32,13 +32,12 @@ type MotorNode interface {
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	GetHost() host.SonrHost
-
 	AddCredentialVerificationMethod(id string, cred *did.Credential)
 	CreateAccount(rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error)
 	Login(rtmv1.LoginRequest) (rtmv1.LoginResponse, error)
 
-	CreateSchema(rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error)
-	QueryWhatIs(context.Context, rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error)
+	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
+	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
 
 	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
 }

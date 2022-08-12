@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/stretchr/testify/assert"
-	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func Test_CreateAccount(t *testing.T) {
@@ -23,7 +23,7 @@ func Test_CreateAccount(t *testing.T) {
 		fmt.Println("loaded key")
 	}
 
-	req := prt.CreateAccountRequest{
+	req := mt.CreateAccountRequest{
 		Password:  "password123",
 		AesDscKey: aesKey,
 	}
@@ -52,7 +52,7 @@ func Test_Login(t *testing.T) {
 			return
 		}
 
-		req := prt.LoginRequest{
+		req := mt.LoginRequest{
 			Did:       ADDR,
 			Password:  "password123",
 			AesPskKey: pskKey,
@@ -82,7 +82,7 @@ func Test_Login(t *testing.T) {
 			return
 		}
 
-		req := prt.LoginRequest{
+		req := mt.LoginRequest{
 			Did:       ADDR,
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
@@ -106,7 +106,7 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 		return
 	}
 
-	req := prt.LoginRequest{
+	req := mt.LoginRequest{
 		Did:       ADDR,
 		Password:  "password123",
 		AesPskKey: pskKey,
