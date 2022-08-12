@@ -1,6 +1,9 @@
 package types
 
 import (
+	fmt "fmt"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -52,7 +55,7 @@ var _ sdk.Msg = &MsgUpdateWhereIs{}
 
 func NewMsgUpdateWhereIs(creator string, id string) *MsgUpdateWhereIs {
 	return &MsgUpdateWhereIs{
-		Did:      id,
+		Did:     id,
 		Creator: creator,
 	}
 }
@@ -90,7 +93,7 @@ var _ sdk.Msg = &MsgDeleteWhereIs{}
 
 func NewMsgDeleteWhereIs(creator string, id string) *MsgDeleteWhereIs {
 	return &MsgDeleteWhereIs{
-		Did:      id,
+		Did:     id,
 		Creator: creator,
 	}
 }
@@ -121,4 +124,20 @@ func (msg *MsgDeleteWhereIs) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	return nil
+}
+
+// GetCreatorDid returns the creator did
+func (msg *MsgCreateWhereIs) GetCreatorDid() string {
+	rawCreator := msg.GetCreator()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }
