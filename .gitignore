@@ -27,6 +27,7 @@ bind/dist
 # Generated files
 .docusaurus
 .cache-loader
+psksnr*
 
 # Misc
 .DS_Store

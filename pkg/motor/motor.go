@@ -62,7 +62,7 @@ type motorNodeImpl struct {
 	schemaQueryClient st.QueryClient
 
 	// resource management
-	resources *motorResources
+	Resources *motorResources
 }
 
 func EmptyMotor(id string) *motorNodeImpl {
@@ -84,7 +84,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	}
 
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
-	mtr.resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
+	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
 
 	// Generate wallet
 	mtr.Wallet, err = mpc.GenerateWallet(options...)
@@ -134,9 +134,11 @@ func (m *motorNodeImpl) GetAddress() string {
 func (m *motorNodeImpl) GetWallet() *mpc.Wallet {
 	return m.Wallet
 }
+
 func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
 	return m.PubKey
 }
+
 func (m *motorNodeImpl) GetDID() did.DID {
 	return m.DID
 }
