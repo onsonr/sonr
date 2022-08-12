@@ -19,7 +19,7 @@ prt.CreateSchemaRequest{
 	},
 }
 */
-const SCHEMA_DID string = "did:snr:QmZMGLggcNpbDZ456ktvLk8ycfE8iY52SgNqzDCeeTQ787"
+const SCHEMA_DID string = "did:snr:QmQe3P2BE8xr83sK7fqRTMXQkQSBAgDy3at93zYkLVFwWY"
 
 func Test_ObjectBuilder(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
