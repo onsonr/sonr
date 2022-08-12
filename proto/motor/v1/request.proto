@@ -3,6 +3,10 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
+import "schema/v1/schema.proto";
+
+option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
+
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
@@ -69,19 +73,7 @@ message LoginRequest {
 
 message CreateSchemaRequest {
   string label = 1;
-
-  enum SchemaKind {
-	  SCHEMA_KIND_LIST = 0;
-	  SCHEMA_KIND_BOOL = 1;
-	  SCHEMA_KIND_INT = 2;
-	  SCHEMA_KIND_FLOAT = 3;
-	  SCHEMA_KIND_STRING = 4;
-	  SCHEMA_KIND_BYTES = 5;
-	  SCHEMA_KIND_LINK = 6;
-	  SCHEMA_KIND_ANY = 7;
-  }
-  map<string, SchemaKind> fields = 2;
-
+  map<string, sonrio.sonr.schema.SchemaKind> fields = 2;
   map<string, string> metadata = 3;
 }
 
