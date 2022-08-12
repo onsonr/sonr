@@ -54,6 +54,18 @@ func (ob *ObjectBuilder) Remove(field string) bool {
 	return false
 }
 
+func (ob *ObjectBuilder) Get(field string) interface{} {
+	if v, ok := ob.values[field]; ok {
+		return v
+	}
+	return nil
+}
+
+func (ob *ObjectBuilder) Has(field string) bool {
+	_, ok := ob.values[field]
+	return ok
+}
+
 // Build checks that the object is properly built and returns the map
 func (ob *ObjectBuilder) Build() (Object, error) {
 	if ob.label == "" {
