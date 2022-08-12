@@ -5,6 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/google/uuid"
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -88,4 +89,8 @@ func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
 	}
 
 	return
+}
+
+func (k Keeper) GenerateKeyForDID() string {
+	return uuid.New().String()
 }

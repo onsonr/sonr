@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -11,9 +12,32 @@ import (
 
 func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWhereIs) (*types.MsgCreateWhereIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	err := msg.ValidateBasic()
+	k.Logger(ctx).Info("basic request validation finished")
+
+	if err != nil {
+		return nil, err
+	}
+
+	accts := msg.GetSigners()
+	if len(accts) < 1 {
+		k.Logger(ctx).Error("Error while querying account: not found")
+		return nil, sdkerrors.ErrNotFound
+	}
+
+	creator_did := msg.GetCreatorDid()
+	uuid := k.GenerateKeyForDID()
+
+	did := fmt.Sprintf("did:snr:%s", uuid)
 
 	var whereIs = types.WhereIs{
-		Creator: msg.Creator,
+		Creator:    creator_did,
+		Did:        did,
+		Visibility: msg.Visibility,
+		Role:       msg.Role,
+		IsActive:   true,
+		Content:    msg.Content,
+		Timestamp:  time.Now().Unix(),
 	}
 
 	id := k.AppendWhereIs(
