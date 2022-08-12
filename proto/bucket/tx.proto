@@ -20,6 +20,7 @@ message MsgCreateWhereIs {
   string label = 2;
   BucketVisibility visibility = 3;
   BucketRole role = 4;
+  repeated BucketItem content = 5;
 }
 
 message MsgCreateWhereIsResponse {
@@ -29,6 +30,9 @@ message MsgCreateWhereIsResponse {
 message MsgUpdateWhereIs {
   string creator = 1;
   string did = 2;
+  string label = 3;
+  BucketVisibility visibility = 4;
+  BucketRole role = 5;
 }
 
 message MsgUpdateWhereIsResponse {}
