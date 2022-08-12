@@ -166,6 +166,31 @@ func AddListBytes(n, f *C.char, v []byte) error {
 	return builder.Set(fieldName, list)
 }
 
+func RemoveListItem(n, f *C.char, i C.int) error {
+	if instance == nil {
+		return errWalletNotExists
+	}
+
+	builder, fieldName, err := findBuilder(n, f)
+	if err != nil {
+		return err
+	}
+
+	var list []interface{}
+	var ok bool
+	if list, ok = builder.Get(fieldName).([]interface{}); !ok || list == nil {
+		return fmt.Errorf("no list field with name '%s'", fieldName)
+	}
+
+	index := int(i)
+	if index < 0 || index >= len(list) {
+		return fmt.Errorf("index %d of of range %d", index, len(list))
+	}
+
+	list = append(list[:index], list[index+1:])
+	return builder.Set(fieldName, list)
+}
+
 func findBuilder(n, f *C.char) (*object.ObjectBuilder, string, error) {
 	if n == nil {
 		return nil, "", errors.New("name cannot be nil")
