@@ -5,8 +5,6 @@ package sonrio.motor.api.v1;
 
 option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
 
-// import "schema/v1/what_is.proto";
-
 message InitializeResponse {
   bool success = 1;
 }
@@ -23,12 +21,10 @@ message LoginResponse {
 
 message CreateSchemaResponse {
   bytes what_is = 1;
-  // sonrio.sonr.schema.WhatIs what_is = 1;
 }
 
 message QueryWhatIsResponse {
   bytes what_is = 1;
-  // sonrio.sonr.schema.WhatIs what_is = 1;
 }
 
 message ObjectReference {
