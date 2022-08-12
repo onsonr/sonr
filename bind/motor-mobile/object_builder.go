@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"errors"
 	"fmt"
 
 	_ "golang.org/x/mobile/bind"
@@ -14,6 +15,12 @@ import "C"
 func NewObjectBuilder(n, d *C.char) error {
 	if instance == nil {
 		return errWalletNotExists
+	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if d == nil {
+		return errors.New("schema did cannot be nil")
 	}
 
 	name := C.GoString(n)
@@ -35,6 +42,12 @@ func SetObjectLabel(n, l *C.char) error {
 	if instance == nil {
 		return errWalletNotExists
 	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if l == nil {
+		return errors.New("label cannot be nil")
+	}
 
 	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
@@ -46,13 +59,19 @@ func SetObjectLabel(n, l *C.char) error {
 	return nil
 }
 
-// TODO: think about how lists must be done
+// TODO: think about how LIST and ANY must be implemented
 // note that a method must be included for each data type
 // because passing an interface{} doesn't work across Cgo
 
 func SetBool(n, f *C.char, v C.int) error {
 	if instance == nil {
 		return errWalletNotExists
+	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if f == nil {
+		return errors.New("field name cannot be nil")
 	}
 
 	name := C.GoString(n)
@@ -74,6 +93,12 @@ func SetInt(n, f *C.char, v C.int) error {
 	if instance == nil {
 		return errWalletNotExists
 	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if f == nil {
+		return errors.New("field name cannot be nil")
+	}
 
 	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
@@ -89,6 +114,12 @@ func SetFloat(n, f *C.char, v C.float) error {
 	if instance == nil {
 		return errWalletNotExists
 	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if f == nil {
+		return errors.New("field name cannot be nil")
+	}
 
 	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
@@ -103,6 +134,62 @@ func SetFloat(n, f *C.char, v C.float) error {
 func SetString(n, f, v *C.char) error {
 	if instance == nil {
 		return errWalletNotExists
+	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if f == nil {
+		return errors.New("field name cannot be nil")
+	}
+	if v == nil {
+		return errors.New("value cannot be nil")
+	}
+
+	name := C.GoString(n)
+	if _, ok := objectBuilders[name]; !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
+	}
+
+	fieldName := C.GoString(f)
+	value := C.GoString(v)
+	return objectBuilders[name].Set(fieldName, value)
+}
+
+func SetBytes(n, f *C.char, v []byte) error {
+	if instance == nil {
+		return errWalletNotExists
+	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if f == nil {
+		return errors.New("field name cannot be nil")
+	}
+	if v == nil {
+		return errors.New("value cannot be nil")
+	}
+
+	name := C.GoString(n)
+	if _, ok := objectBuilders[name]; !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
+	}
+
+	fieldName := C.GoString(f)
+	return objectBuilders[name].Set(fieldName, v)
+}
+
+func SetLink(n, f, v *C.char) error {
+	if instance == nil {
+		return errWalletNotExists
+	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if f == nil {
+		return errors.New("field name cannot be nil")
+	}
+	if v == nil {
+		return errors.New("value cannot be nil")
 	}
 
 	name := C.GoString(n)
