@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/sonr-io/sonr/pkg/client"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/tx"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	mt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error) {
@@ -36,10 +36,10 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 		return mt.CreateSchemaResponse{}, fmt.Errorf("decode MsgCreateSchemaResponse: %s", err)
 	}
 
-	// whatIsBytes, err := csresp.WhatIs.Marshal()
-	// if err != nil {
-	// 	return mt.CreateSchemaResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
-	// }
+	whatIsBytes, err := csresp.WhatIs.Marshal()
+	if err != nil {
+		return mt.CreateSchemaResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
+	}
 
 	// store reference to newly created WhatIs
 	_, err = mtr.resources.StoreWhatIs(csresp.WhatIs)
@@ -48,7 +48,7 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	}
 
 	return mt.CreateSchemaResponse{
-		WhatIs: csresp.WhatIs,
+		WhatIs: whatIsBytes,
 	}, nil
 }
 
