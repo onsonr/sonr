@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/stretchr/testify/assert"
-	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 /*
@@ -29,7 +29,7 @@ func Test_ObjectBuilder(t *testing.T) {
 			return
 		}
 
-		req := prt.LoginRequest{
+		req := mt.LoginRequest{
 			Did:       ADDR,
 			Password:  "password123",
 			AesPskKey: pskKey,
@@ -40,7 +40,7 @@ func Test_ObjectBuilder(t *testing.T) {
 		assert.NoError(t, err, "login succeeds")
 
 		// query WhatIs so it's cached
-		_, err = m.QueryWhatIs(context.Background(), prt.QueryWhatIsRequest{
+		_, err = m.QueryWhatIs(context.Background(), mt.QueryWhatIsRequest{
 			Creator: m.GetDID().String(),
 			Did:     SCHEMA_DID,
 		})

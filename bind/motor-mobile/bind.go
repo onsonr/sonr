@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	apiv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -24,7 +24,7 @@ var (
 
 func Init(buf []byte) ([]byte, error) {
 	// Unmarshal the request
-	var req apiv1.InitializeRequest
+	var req mt.InitializeRequest
 	if err := json.Unmarshal(buf, &req); err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func Init(buf []byte) ([]byte, error) {
 		objectBuilders = make(map[string]*object.ObjectBuilder)
 
 		// Return Initialization Response
-		resp := apiv1.InitializeResponse{
+		resp := mt.InitializeResponse{
 			Success: true,
 		}
 		return json.Marshal(resp)
@@ -51,7 +51,7 @@ func CreateAccount(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 	// decode request
-	var request apiv1.CreateAccountRequest
+	var request mt.CreateAccountRequest
 	if err := json.Unmarshal(buf, &request); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
@@ -69,7 +69,7 @@ func Login(buf []byte) ([]byte, error) {
 	}
 
 	// decode request
-	var request apiv1.LoginRequest
+	var request mt.LoginRequest
 	if err := json.Unmarshal(buf, &request); err != nil {
 		return nil, fmt.Errorf("error unmarshalling request: %s", err)
 	}
@@ -86,7 +86,7 @@ func CreateSchema(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 
-	var request apiv1.CreateSchemaRequest
+	var request mt.CreateSchemaRequest
 	if err := json.Unmarshal(buf, &request); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
@@ -103,7 +103,7 @@ func QueryWhatIs(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 
-	var request apiv1.QueryWhatIsRequest
+	var request mt.QueryWhatIsRequest
 	if err := json.Unmarshal(buf, &request); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}

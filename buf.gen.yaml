@@ -1,8 +1,8 @@
 version: v1
-managed:
-  enabled: true
-  go_package_prefix:
-    default: github.com/sonr-io/sonr/gen/proto/go
+# managed:
+#   enabled: true
+#   go_package_prefix:
+#     default: github.com/sonr-io/sonr/gen/proto/go
 plugins:
   # - name: js
   #   out: gen/js

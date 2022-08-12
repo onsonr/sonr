@@ -8,14 +8,14 @@ import (
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/vault"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 // Login creates a motor node from a LoginRequest
-func (mtr *motorNodeImpl) Login(request rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
+func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, error) {
 	if request.Did == "" {
-		return rtmv1.LoginResponse{}, fmt.Errorf("did must be provided")
+		return mt.LoginResponse{}, fmt.Errorf("did must be provided")
 	}
 
 	mtr.Address = request.Did
@@ -24,33 +24,33 @@ func (mtr *motorNodeImpl) Login(request rtmv1.LoginRequest) (rtmv1.LoginResponse
 	fmt.Printf("fetching shards from vault... ")
 	shards, err := vault.New().GetVaultShards(request.Did)
 	if err != nil {
-		return rtmv1.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
+		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}
 	fmt.Println("done.")
 
 	fmt.Printf("reconstructing wallet... ")
 	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
 	if err != nil {
-		return rtmv1.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
+		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
 	}
 
 	// generate wallet
 	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
-		return rtmv1.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
+		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
 	fmt.Println("done.")
 
 	// fetch DID document from chain
 	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)
 	if err != nil {
-		return rtmv1.LoginResponse{}, fmt.Errorf("error fetching whois: %s", err)
+		return mt.LoginResponse{}, fmt.Errorf("error fetching whois: %s", err)
 	}
 
 	// TODO: this is a hacky workaround for the Id not being populated in the DID document
 	whoIs.DidDocument.Id = did.CreateDIDFromAccount(whoIs.Owner)
 	mtr.DIDDocument, err = whoIs.DidDocument.ToPkgDoc()
 	if err != nil {
-		return rtmv1.LoginResponse{}, fmt.Errorf("error getting DID Document: %s", err)
+		return mt.LoginResponse{}, fmt.Errorf("error getting DID Document: %s", err)
 	}
 
 	// assign shards
@@ -59,12 +59,12 @@ func (mtr *motorNodeImpl) Login(request rtmv1.LoginRequest) (rtmv1.LoginResponse
 	mtr.recoveryShard = shards.RecoveryShard
 	mtr.unusedShards = destructureShards(shards.ShardBank)
 
-	return rtmv1.LoginResponse{
+	return mt.LoginResponse{
 		Success: true,
 	}, nil
 }
 
-func createWalletConfigs(id string, req rtmv1.LoginRequest, shards vault.Vault) (map[party.ID]*cmp.Config, error) {
+func createWalletConfigs(id string, req mt.LoginRequest, shards vault.Vault) (map[party.ID]*cmp.Config, error) {
 	configs := make(map[party.ID]*cmp.Config)
 
 	// if a password is provided, prefer that over the DSC

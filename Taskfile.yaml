@@ -157,5 +157,3 @@ tasks:
       - rm -rf ./docs/.docusaurus/
       - rm -rf ./docs/build
       - go mod tidy
-      - go get -u go.buf.build/grpc/go/sonr-io/blockchain
-      - go get -u go.buf.build/grpc/go/sonr-io/motor

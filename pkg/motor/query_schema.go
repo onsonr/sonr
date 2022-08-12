@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	mt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func (mtr *motorNodeImpl) QueryWhatIs(ctx context.Context, request mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error) {
