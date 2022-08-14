@@ -30264,16 +30264,21 @@ paths:
                           name:
                             type: string
                             description: Name of the bucket item.
-                          item_did:
+                          uri:
                             type: string
                             title: DID of the item. If applicable // optional
-                          item_cid:
-                            type: string
-                            title: CID of the item. If applicable // optional
                           timestamp:
                             type: string
                             format: int64
                             title: Timestamp of the last update. // optional
+                          type:
+                            title: Type of the resource
+                            type: string
+                            enum:
+                              - None
+                              - DID
+                              - CID
+                            default: None
                         description: >-
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
@@ -30450,16 +30455,21 @@ paths:
                         name:
                           type: string
                           description: Name of the bucket item.
-                        item_did:
+                        uri:
                           type: string
                           title: DID of the item. If applicable // optional
-                        item_cid:
-                          type: string
-                          title: CID of the item. If applicable // optional
                         timestamp:
                           type: string
                           format: int64
                           title: Timestamp of the last update. // optional
+                        type:
+                          title: Type of the resource
+                          type: string
+                          enum:
+                            - None
+                            - DID
+                            - CID
+                          default: None
                       description: >-
                         BucketItem is a pointer to a single piece of content in
                         a bucket.
@@ -53552,16 +53562,21 @@ definitions:
       name:
         type: string
         description: Name of the bucket item.
-      item_did:
+      uri:
         type: string
         title: DID of the item. If applicable // optional
-      item_cid:
-        type: string
-        title: CID of the item. If applicable // optional
       timestamp:
         type: string
         format: int64
         title: Timestamp of the last update. // optional
+      type:
+        title: Type of the resource
+        type: string
+        enum:
+          - None
+          - DID
+          - CID
+        default: None
     description: BucketItem is a pointer to a single piece of content in a bucket.
   sonrio.sonr.bucket.BucketRole:
     type: string
@@ -53649,16 +53664,21 @@ definitions:
                   name:
                     type: string
                     description: Name of the bucket item.
-                  item_did:
+                  uri:
                     type: string
                     title: DID of the item. If applicable // optional
-                  item_cid:
-                    type: string
-                    title: CID of the item. If applicable // optional
                   timestamp:
                     type: string
                     format: int64
                     title: Timestamp of the last update. // optional
+                  type:
+                    title: Type of the resource
+                    type: string
+                    enum:
+                      - None
+                      - DID
+                      - CID
+                    default: None
                 description: >-
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
@@ -53749,16 +53769,21 @@ definitions:
                 name:
                   type: string
                   description: Name of the bucket item.
-                item_did:
+                uri:
                   type: string
                   title: DID of the item. If applicable // optional
-                item_cid:
-                  type: string
-                  title: CID of the item. If applicable // optional
                 timestamp:
                   type: string
                   format: int64
                   title: Timestamp of the last update. // optional
+                type:
+                  title: Type of the resource
+                  type: string
+                  enum:
+                    - None
+                    - DID
+                    - CID
+                  default: None
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -53786,6 +53811,13 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sonrio.sonr.bucket.ResourceIdentifier:
+    type: string
+    enum:
+      - None
+      - DID
+      - CID
+    default: None
   sonrio.sonr.bucket.WhereIs:
     type: object
     properties:
@@ -53828,16 +53860,21 @@ definitions:
             name:
               type: string
               description: Name of the bucket item.
-            item_did:
+            uri:
               type: string
               title: DID of the item. If applicable // optional
-            item_cid:
-              type: string
-              title: CID of the item. If applicable // optional
             timestamp:
               type: string
               format: int64
               title: Timestamp of the last update. // optional
+            type:
+              title: Type of the resource
+              type: string
+              enum:
+                - None
+                - DID
+                - CID
+              default: None
           description: BucketItem is a pointer to a single piece of content in a bucket.
         description: Content of the new bucket map of DIDs to CIDs.
       content_acl:

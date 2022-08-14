@@ -28,11 +28,12 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgCreateWhereIs struct {
-	Creator    string           `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Label      string           `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
-	Visibility BucketVisibility `protobuf:"varint,3,opt,name=visibility,proto3,enum=sonrio.sonr.bucket.BucketVisibility" json:"visibility,omitempty"`
-	Role       BucketRole       `protobuf:"varint,4,opt,name=role,proto3,enum=sonrio.sonr.bucket.BucketRole" json:"role,omitempty"`
-	Content    []*BucketItem    `protobuf:"bytes,5,rep,name=content,proto3" json:"content,omitempty"`
+	Creator    string              `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Label      string              `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	Visibility BucketVisibility    `protobuf:"varint,3,opt,name=visibility,proto3,enum=sonrio.sonr.bucket.BucketVisibility" json:"visibility,omitempty"`
+	Role       BucketRole          `protobuf:"varint,4,opt,name=role,proto3,enum=sonrio.sonr.bucket.BucketRole" json:"role,omitempty"`
+	Content    []*BucketItem       `protobuf:"bytes,5,rep,name=content,proto3" json:"content,omitempty"`
+	ContentAcl map[string]*AclJwks `protobuf:"bytes,6,rep,name=content_acl,json=contentAcl,proto3" json:"content_acl,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *MsgCreateWhereIs) Reset()         { *m = MsgCreateWhereIs{} }
@@ -103,6 +104,13 @@ func (m *MsgCreateWhereIs) GetContent() []*BucketItem {
 	return nil
 }
 
+func (m *MsgCreateWhereIs) GetContentAcl() map[string]*AclJwks {
+	if m != nil {
+		return m.ContentAcl
+	}
+	return nil
+}
+
 type MsgCreateWhereIsResponse struct {
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
 }
@@ -148,11 +156,13 @@ func (m *MsgCreateWhereIsResponse) GetDid() string {
 }
 
 type MsgUpdateWhereIs struct {
-	Creator    string           `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Did        string           `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
-	Label      string           `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
-	Visibility BucketVisibility `protobuf:"varint,4,opt,name=visibility,proto3,enum=sonrio.sonr.bucket.BucketVisibility" json:"visibility,omitempty"`
-	Role       BucketRole       `protobuf:"varint,5,opt,name=role,proto3,enum=sonrio.sonr.bucket.BucketRole" json:"role,omitempty"`
+	Creator    string              `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Did        string              `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+	Label      string              `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
+	Visibility BucketVisibility    `protobuf:"varint,4,opt,name=visibility,proto3,enum=sonrio.sonr.bucket.BucketVisibility" json:"visibility,omitempty"`
+	Role       BucketRole          `protobuf:"varint,5,opt,name=role,proto3,enum=sonrio.sonr.bucket.BucketRole" json:"role,omitempty"`
+	Content    []*BucketItem       `protobuf:"bytes,6,rep,name=content,proto3" json:"content,omitempty"`
+	ContentAcl map[string]*AclJwks `protobuf:"bytes,7,rep,name=content_acl,json=contentAcl,proto3" json:"content_acl,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *MsgUpdateWhereIs) Reset()         { *m = MsgUpdateWhereIs{} }
@@ -221,6 +231,20 @@ func (m *MsgUpdateWhereIs) GetRole() BucketRole {
 		return m.Role
 	}
 	return BucketRole_NONE
+}
+
+func (m *MsgUpdateWhereIs) GetContent() []*BucketItem {
+	if m != nil {
+		return m.Content
+	}
+	return nil
+}
+
+func (m *MsgUpdateWhereIs) GetContentAcl() map[string]*AclJwks {
+	if m != nil {
+		return m.ContentAcl
+	}
+	return nil
 }
 
 type MsgUpdateWhereIsResponse struct {
@@ -349,8 +373,10 @@ var xxx_messageInfo_MsgDeleteWhereIsResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*MsgCreateWhereIs)(nil), "sonrio.sonr.bucket.MsgCreateWhereIs")
+	proto.RegisterMapType((map[string]*AclJwks)(nil), "sonrio.sonr.bucket.MsgCreateWhereIs.ContentAclEntry")
 	proto.RegisterType((*MsgCreateWhereIsResponse)(nil), "sonrio.sonr.bucket.MsgCreateWhereIsResponse")
 	proto.RegisterType((*MsgUpdateWhereIs)(nil), "sonrio.sonr.bucket.MsgUpdateWhereIs")
+	proto.RegisterMapType((map[string]*AclJwks)(nil), "sonrio.sonr.bucket.MsgUpdateWhereIs.ContentAclEntry")
 	proto.RegisterType((*MsgUpdateWhereIsResponse)(nil), "sonrio.sonr.bucket.MsgUpdateWhereIsResponse")
 	proto.RegisterType((*MsgDeleteWhereIs)(nil), "sonrio.sonr.bucket.MsgDeleteWhereIs")
 	proto.RegisterType((*MsgDeleteWhereIsResponse)(nil), "sonrio.sonr.bucket.MsgDeleteWhereIsResponse")
@@ -359,33 +385,38 @@ func init() {
 func init() { proto.RegisterFile("bucket/tx.proto", fileDescriptor_3479ee73a3c611d5) }
 
 var fileDescriptor_3479ee73a3c611d5 = []byte{
-	// 401 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0xc1, 0x4e, 0xea, 0x40,
-	0x14, 0xa5, 0x14, 0x1e, 0x79, 0xf3, 0xc2, 0x7b, 0x64, 0xf2, 0x4c, 0x1a, 0x16, 0x13, 0xd2, 0x18,
-	0xc3, 0x02, 0xdb, 0x04, 0x37, 0xae, 0x8c, 0x41, 0x36, 0x2c, 0xd8, 0x34, 0x51, 0x13, 0x37, 0x86,
-	0x96, 0x1b, 0x98, 0x58, 0x3a, 0x4d, 0x67, 0x50, 0xf8, 0x0b, 0x3f, 0xc6, 0x8f, 0x70, 0x65, 0x58,
-	0xba, 0x34, 0xf0, 0x0f, 0xae, 0x4d, 0xa7, 0x2d, 0x3a, 0x48, 0x0d, 0xd1, 0xd5, 0xed, 0xcc, 0x9c,
-	0x7b, 0x4e, 0xcf, 0xb9, 0xed, 0xa0, 0x7f, 0xee, 0xd4, 0xbb, 0x01, 0x61, 0x8b, 0x99, 0x15, 0x46,
-	0x4c, 0x30, 0x8c, 0x39, 0x0b, 0x22, 0xca, 0xac, 0xb8, 0x58, 0xc9, 0x61, 0x7d, 0x2f, 0x05, 0xdd,
-	0x8d, 0x21, 0x82, 0x6b, 0xca, 0x13, 0xa8, 0xf9, 0xaa, 0xa1, 0x5a, 0x9f, 0x8f, 0xce, 0x22, 0x18,
-	0x08, 0xb8, 0x8c, 0xcf, 0x7a, 0x1c, 0x1b, 0xa8, 0xe2, 0xc5, 0x1b, 0x2c, 0x32, 0xb4, 0x86, 0xd6,
-	0xfc, 0xed, 0x64, 0x4b, 0xfc, 0x1f, 0x95, 0xfd, 0x81, 0x0b, 0xbe, 0x51, 0x94, 0xfb, 0xc9, 0x02,
-	0x77, 0x11, 0xba, 0xa5, 0x9c, 0xba, 0xd4, 0xa7, 0x62, 0x6e, 0xe8, 0x0d, 0xad, 0xf9, 0xb7, 0xbd,
-	0x6f, 0x7d, 0x7e, 0x09, 0xab, 0x23, 0xcb, 0xc5, 0x1a, 0xeb, 0x7c, 0xe8, 0xc3, 0x6d, 0x54, 0x8a,
-	0x98, 0x0f, 0x46, 0x49, 0xf6, 0x93, 0xfc, 0x7e, 0x87, 0xf9, 0xe0, 0x48, 0x2c, 0x3e, 0x46, 0x15,
-	0x8f, 0x05, 0x02, 0x02, 0x61, 0x94, 0x1b, 0x7a, 0xf3, 0xcf, 0x57, 0x6d, 0x3d, 0x01, 0x13, 0x27,
-	0x83, 0x9b, 0x2d, 0x64, 0x6c, 0xfa, 0x76, 0x80, 0x87, 0x2c, 0xe0, 0x80, 0x6b, 0x48, 0x1f, 0xd2,
-	0x61, 0xea, 0x3d, 0x7e, 0x34, 0x9f, 0x92, 0x98, 0xce, 0xc3, 0xe1, 0x4e, 0x31, 0xa5, 0x04, 0xc5,
-	0x35, 0xc1, 0x7b, 0x70, 0x7a, 0x7e, 0x70, 0xa5, 0x1f, 0x06, 0x57, 0xde, 0x3d, 0x38, 0xb3, 0x2e,
-	0xed, 0x2b, 0x7e, 0x32, 0xfb, 0xe6, 0x89, 0xf4, 0xda, 0x05, 0x1f, 0xbe, 0xe5, 0x35, 0xe5, 0x56,
-	0xfa, 0x33, 0xee, 0xf6, 0x43, 0x11, 0xe9, 0x7d, 0x3e, 0xc2, 0x1e, 0xaa, 0xaa, 0xdf, 0xdc, 0x56,
-	0xdb, 0x9b, 0x13, 0xaa, 0xb7, 0x76, 0x41, 0xad, 0xe7, 0xe8, 0xa1, 0xaa, 0x3a, 0xb1, 0x3c, 0x11,
-	0x05, 0x95, 0x2b, 0xb2, 0x35, 0xad, 0x58, 0x44, 0x8d, 0x2a, 0x4f, 0x44, 0x41, 0xe5, 0x8a, 0x6c,
-	0x8d, 0xad, 0x73, 0xfa, 0xb8, 0x24, 0xda, 0x62, 0x49, 0xb4, 0x97, 0x25, 0xd1, 0xee, 0x57, 0xa4,
-	0xb0, 0x58, 0x91, 0xc2, 0xf3, 0x8a, 0x14, 0xae, 0x0e, 0x46, 0x54, 0x8c, 0xa7, 0xae, 0xe5, 0xb1,
-	0x89, 0x1d, 0x53, 0x1d, 0x52, 0x26, 0xab, 0x3d, 0xb3, 0xb3, 0x6b, 0x61, 0x1e, 0x02, 0x77, 0x7f,
-	0xc9, 0xff, 0xfd, 0xe8, 0x2d, 0x00, 0x00, 0xff, 0xff, 0x52, 0xa7, 0x09, 0x57, 0x2d, 0x04, 0x00,
-	0x00,
+	// 490 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x94, 0x4f, 0x6b, 0xdb, 0x30,
+	0x18, 0xc6, 0xe3, 0x38, 0x7f, 0xd8, 0x1b, 0xba, 0x16, 0xb1, 0x81, 0xc9, 0xc0, 0x84, 0x10, 0x46,
+	0x0e, 0x9d, 0xc3, 0xb2, 0x1d, 0xca, 0x0e, 0x63, 0xfd, 0xb3, 0x43, 0x07, 0xbd, 0x08, 0xba, 0x41,
+	0x2f, 0x25, 0x96, 0x5f, 0x52, 0x11, 0xd5, 0x0a, 0x96, 0xd2, 0x36, 0xdf, 0x62, 0x5f, 0x63, 0xf7,
+	0xdd, 0xf6, 0x05, 0x76, 0xec, 0x71, 0xc7, 0x91, 0x7c, 0x91, 0x61, 0xd9, 0xce, 0xe6, 0x2c, 0x2e,
+	0xa6, 0x3d, 0xf4, 0x24, 0x4b, 0x7a, 0x9e, 0xf7, 0x15, 0xcf, 0x4f, 0x16, 0x6c, 0xfb, 0x33, 0x36,
+	0x41, 0x3d, 0xd0, 0x37, 0xde, 0x34, 0x92, 0x5a, 0x12, 0xa2, 0x64, 0x18, 0x71, 0xe9, 0xc5, 0x83,
+	0x97, 0x6c, 0xb6, 0x9f, 0xa7, 0xa2, 0xeb, 0x0b, 0x8c, 0xf0, 0x9c, 0xab, 0x44, 0xda, 0xfd, 0x66,
+	0xc3, 0xce, 0x89, 0x1a, 0x1f, 0x46, 0x38, 0xd2, 0xf8, 0x25, 0xde, 0x3b, 0x56, 0xc4, 0x81, 0x26,
+	0x8b, 0x17, 0x64, 0xe4, 0x58, 0x1d, 0xab, 0xff, 0x84, 0x66, 0x53, 0xf2, 0x0c, 0xea, 0x62, 0xe4,
+	0xa3, 0x70, 0xaa, 0x66, 0x3d, 0x99, 0x90, 0x23, 0x80, 0x2b, 0xae, 0xb8, 0xcf, 0x05, 0xd7, 0x73,
+	0xc7, 0xee, 0x58, 0xfd, 0xa7, 0xc3, 0x9e, 0xf7, 0xff, 0x21, 0xbc, 0x03, 0x33, 0x7c, 0x5e, 0x69,
+	0xe9, 0x3f, 0x3e, 0x32, 0x84, 0x5a, 0x24, 0x05, 0x3a, 0x35, 0xe3, 0x77, 0x8b, 0xfd, 0x54, 0x0a,
+	0xa4, 0x46, 0x4b, 0xf6, 0xa0, 0xc9, 0x64, 0xa8, 0x31, 0xd4, 0x4e, 0xbd, 0x63, 0xf7, 0x5b, 0x77,
+	0xd9, 0x8e, 0x35, 0x5e, 0xd2, 0x4c, 0x4e, 0x4e, 0xa1, 0x95, 0x7e, 0x9e, 0x8f, 0x98, 0x70, 0x1a,
+	0xc6, 0xfd, 0x76, 0x93, 0x7b, 0x3d, 0x1e, 0xef, 0x30, 0xf1, 0xed, 0x33, 0xf1, 0x31, 0xd4, 0xd1,
+	0x9c, 0x02, 0x5b, 0x2d, 0xb4, 0xcf, 0x60, 0x7b, 0x6d, 0x9b, 0xec, 0x80, 0x3d, 0xc1, 0x79, 0x9a,
+	0x64, 0xfc, 0x49, 0x5e, 0x43, 0xfd, 0x6a, 0x24, 0x66, 0x68, 0x52, 0x6c, 0x0d, 0x5f, 0x6c, 0xea,
+	0xba, 0xcf, 0xc4, 0xa7, 0xeb, 0x89, 0xa2, 0x89, 0xf2, 0x5d, 0x75, 0xcf, 0xea, 0xee, 0x82, 0xb3,
+	0x7e, 0x16, 0x8a, 0x6a, 0x2a, 0x43, 0x85, 0x71, 0x93, 0x80, 0x07, 0x59, 0x93, 0x80, 0x07, 0xdd,
+	0x1f, 0x09, 0xd9, 0xd3, 0x69, 0x50, 0x8a, 0x6c, 0x5a, 0xa0, 0xba, 0x2a, 0xf0, 0x97, 0xb5, 0x5d,
+	0xcc, 0xba, 0xf6, 0x40, 0xd6, 0xf5, 0xfb, 0xb1, 0x6e, 0x3c, 0x88, 0x75, 0xf3, 0x4e, 0xd6, 0xb9,
+	0xc0, 0x1e, 0x8d, 0x75, 0xdb, 0xb0, 0xce, 0x9d, 0x25, 0x63, 0xdd, 0x7d, 0x6f, 0xc0, 0x1e, 0xa1,
+	0xc0, 0x7b, 0x81, 0x4d, 0x6b, 0xe7, 0xfc, 0x59, 0xed, 0xe1, 0xf7, 0x2a, 0xd8, 0x27, 0x6a, 0x4c,
+	0x18, 0x6c, 0xe5, 0xdf, 0x84, 0x5e, 0x99, 0x5f, 0xa3, 0xbd, 0x5b, 0x46, 0xb5, 0xba, 0xb4, 0x0c,
+	0xb6, 0xf2, 0xd7, 0xb3, 0x57, 0x86, 0x49, 0x61, 0x93, 0x8d, 0x69, 0xc5, 0x4d, 0xf2, 0x51, 0x15,
+	0x35, 0xc9, 0xa9, 0x0a, 0x9b, 0x6c, 0x8c, 0xed, 0xe0, 0xc3, 0xcf, 0x85, 0x6b, 0xdd, 0x2e, 0x5c,
+	0xeb, 0xf7, 0xc2, 0xb5, 0xbe, 0x2e, 0xdd, 0xca, 0xed, 0xd2, 0xad, 0xfc, 0x5a, 0xba, 0x95, 0xb3,
+	0x97, 0x63, 0xae, 0x2f, 0x66, 0xbe, 0xc7, 0xe4, 0xe5, 0x20, 0x2e, 0xf5, 0x8a, 0x4b, 0x33, 0x0e,
+	0x6e, 0x06, 0xd9, 0xb3, 0x3d, 0x9f, 0xa2, 0xf2, 0x1b, 0xe6, 0x3d, 0x7e, 0xf3, 0x27, 0x00, 0x00,
+	0xff, 0xff, 0x8a, 0x72, 0x2f, 0x88, 0xcd, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -560,6 +591,32 @@ func (m *MsgCreateWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.ContentAcl) > 0 {
+		for k := range m.ContentAcl {
+			v := m.ContentAcl[k]
+			baseI := i
+			if v != nil {
+				{
+					size, err := v.MarshalToSizedBuffer(dAtA[:i])
+					if err != nil {
+						return 0, err
+					}
+					i -= size
+					i = encodeVarintTx(dAtA, i, uint64(size))
+				}
+				i--
+				dAtA[i] = 0x12
+			}
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintTx(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintTx(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x32
+		}
+	}
 	if len(m.Content) > 0 {
 		for iNdEx := len(m.Content) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -651,6 +708,46 @@ func (m *MsgUpdateWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.ContentAcl) > 0 {
+		for k := range m.ContentAcl {
+			v := m.ContentAcl[k]
+			baseI := i
+			if v != nil {
+				{
+					size, err := v.MarshalToSizedBuffer(dAtA[:i])
+					if err != nil {
+						return 0, err
+					}
+					i -= size
+					i = encodeVarintTx(dAtA, i, uint64(size))
+				}
+				i--
+				dAtA[i] = 0x12
+			}
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintTx(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintTx(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x3a
+		}
+	}
+	if len(m.Content) > 0 {
+		for iNdEx := len(m.Content) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Content[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
+	}
 	if m.Role != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.Role))
 		i--
@@ -805,6 +902,19 @@ func (m *MsgCreateWhereIs) Size() (n int) {
 			n += 1 + l + sovTx(uint64(l))
 		}
 	}
+	if len(m.ContentAcl) > 0 {
+		for k, v := range m.ContentAcl {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovTx(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovTx(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovTx(uint64(mapEntrySize))
+		}
+	}
 	return n
 }
 
@@ -844,6 +954,25 @@ func (m *MsgUpdateWhereIs) Size() (n int) {
 	}
 	if m.Role != 0 {
 		n += 1 + sovTx(uint64(m.Role))
+	}
+	if len(m.Content) > 0 {
+		for _, e := range m.Content {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if len(m.ContentAcl) > 0 {
+		for k, v := range m.ContentAcl {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovTx(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovTx(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovTx(uint64(mapEntrySize))
+		}
 	}
 	return n
 }
@@ -1053,6 +1182,135 @@ func (m *MsgCreateWhereIs) Unmarshal(dAtA []byte) error {
 			if err := m.Content[len(m.Content)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContentAcl", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ContentAcl == nil {
+				m.ContentAcl = make(map[string]*AclJwks)
+			}
+			var mapkey string
+			var mapvalue *AclJwks
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthTx
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthTx
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthTx
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return ErrInvalidLengthTx
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &AclJwks{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipTx(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthTx
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.ContentAcl[mapkey] = mapvalue
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1320,6 +1578,169 @@ func (m *MsgUpdateWhereIs) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Content = append(m.Content, &BucketItem{})
+			if err := m.Content[len(m.Content)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContentAcl", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ContentAcl == nil {
+				m.ContentAcl = make(map[string]*AclJwks)
+			}
+			var mapkey string
+			var mapvalue *AclJwks
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthTx
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthTx
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthTx
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return ErrInvalidLengthTx
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &AclJwks{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipTx(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthTx
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.ContentAcl[mapkey] = mapvalue
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

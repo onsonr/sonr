@@ -21,6 +21,7 @@ message MsgCreateWhereIs {
   BucketVisibility visibility = 3;
   BucketRole role = 4;
   repeated BucketItem content = 5;
+  map<string, AclJwks> content_acl = 6;
 }
 
 message MsgCreateWhereIsResponse {
@@ -33,6 +34,8 @@ message MsgUpdateWhereIs {
   string label = 3;
   BucketVisibility visibility = 4;
   BucketRole role = 5;
+  repeated BucketItem content = 6;
+  map<string, AclJwks> content_acl = 7;
 }
 
 message MsgUpdateWhereIsResponse {}
