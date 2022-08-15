@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if len(msg.Definition.Fields) < 1 {
 		k.Logger(ctx).Info("Create schema request empty, must have defined fields. aborting operation")
 		return &types.MsgCreateSchemaResponse{
-			Code:    400,
+			Code:    http.StatusBadRequest,
 			Message: "Schema Fields must non nil",
 			WhatIs:  nil,
 		}, nil
@@ -79,7 +80,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	k.SetWhatIs(ctx, whatIs)
 
 	resp := types.MsgCreateSchemaResponse{
-		Code:    200,
+		Code:    http.StatusAccepted,
 		Message: "Schema Registered Sucessfully",
 		WhatIs:  &whatIs,
 	}
