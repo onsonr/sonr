@@ -32,9 +32,9 @@ type MotorNode interface {
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	GetHost() host.SonrHost
-	AddCredentialVerificationMethod(id string, cred *did.Credential)
-	CreateAccount(rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error)
-	Login(rtmv1.LoginRequest) (rtmv1.LoginResponse, error)
+	AddCredentialVerificationMethod(id string, cred *did.Credential) error
+	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
+	Login(mt.LoginRequest) (mt.LoginResponse, error)
 
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
 	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)

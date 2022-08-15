@@ -59,10 +59,6 @@ func SetObjectLabel(n, l *C.char) error {
 	return nil
 }
 
-// TODO: think about how LIST and ANY must be implemented
-// note that a method must be included for each data type
-// because passing an interface{} doesn't work across Cgo
-
 func SetBool(n, f *C.char, v C.int) error {
 	if instance == nil {
 		return errWalletNotExists
@@ -200,4 +196,25 @@ func SetLink(n, f, v *C.char) error {
 	fieldName := C.GoString(f)
 	value := C.GoString(v)
 	return objectBuilders[name].Set(fieldName, value)
+}
+
+func RemoveObjectField(n, f *C.char) error {
+	if instance == nil {
+		return errWalletNotExists
+	}
+	if n == nil {
+		return errors.New("name cannot be nil")
+	}
+	if f == nil {
+		return errors.New("field name cannot be nil")
+	}
+
+	name := C.GoString(n)
+	fieldName := C.GoString(f)
+	if builder, ok := objectBuilders[name]; !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
+	} else {
+		builder.Remove(fieldName)
+	}
+	return nil
 }
