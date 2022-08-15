@@ -41,10 +41,6 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
 	b, err := msg.Definition.Marshal()
 
 	if err != nil {
@@ -52,10 +48,10 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	cid_str, err := k.PinContent(b)
-	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
 	}
+	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 
 	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", cid_str))
 	if err != nil {
@@ -69,12 +65,19 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		Cid:   cid_str,
 	}
 
+	metadata := make(map[string]string)
+
+	for _, m := range msg.Metadata {
+		metadata[m.Key] = m.Value
+	}
+
 	var whatIs = types.WhatIs{
 		Creator:   creator_did,
 		Did:       what_is_did.String(),
 		Schema:    &schema,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
+		Metadata:  metadata,
 	}
 
 	k.SetWhatIs(ctx, whatIs)

@@ -22,4 +22,7 @@ message WhatIs {
 
   // IsActive is the status of the DID Document
   bool is_active = 5;
+
+  // Metadata is a map of key-value pairs that can be used to store additional information about the WhatIs (Schema)
+  map<string, string> metadata = 6;
 }

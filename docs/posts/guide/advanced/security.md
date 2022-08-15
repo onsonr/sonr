@@ -16,4 +16,4 @@ The device key is an `ED25519` key stored locally on the device's Keychain that 
 
 ### Authorize Key
 
-The authorize key is a `multisignature` key that is compiled of all the Device Public Keys pointing to the user's ".snr" name. The public key of this pair will be the address pointing to the Account's mailbox. Sonr powered services leverage this key when verifying and authenticating users on their Applications.
+The authorize key is a `multisignature` key that is compiled of all the Device Public Keys pointing to the user's ".snr" name. The public key of this pair will be the address pointing to the Account's mailbox. Sonr powered services leverage this key when verifying and authenticating users on their applications.

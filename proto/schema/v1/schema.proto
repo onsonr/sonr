@@ -22,6 +22,14 @@ enum SchemaKind {
   ANY = 7;
 }
 
+message MetadataDefintion {
+  // key of the metadata
+  string key = 1;
+
+  // metadata
+  string value = 2;
+}
+
 message SchemaKindDefinition {
   string name = 1;
   // Type of a single schema property

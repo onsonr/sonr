@@ -31453,6 +31453,13 @@ paths:
                     is_active:
                       type: boolean
                       title: IsActive is the status of the DID Document
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      title: >-
+                        Metadata is a map of key-value pairs that can be used to
+                        store additional information about the WhatIs (Schema)
               pagination:
                 type: object
                 properties:
@@ -31683,6 +31690,13 @@ paths:
                   is_active:
                     type: boolean
                     title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the WhatIs (Schema)
                 title: Schema Repersentation
         default:
           description: An unexpected error response.
@@ -55743,6 +55757,15 @@ definitions:
       - SCHEMA
       - BUCKET
     default: UNKNOWN
+  sonrio.sonr.schema.MetadataDefintion:
+    type: object
+    properties:
+      key:
+        type: string
+        title: key of the metadata
+      value:
+        type: string
+        title: metadata
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -55781,6 +55804,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the WhatIs (Schema)
         title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
@@ -55827,6 +55857,13 @@ definitions:
             is_active:
               type: boolean
               title: IsActive is the status of the DID Document
+            metadata:
+              type: object
+              additionalProperties:
+                type: string
+              title: >-
+                Metadata is a map of key-value pairs that can be used to store
+                additional information about the WhatIs (Schema)
       pagination:
         type: object
         properties:
@@ -55975,6 +56012,13 @@ definitions:
           is_active:
             type: boolean
             title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the WhatIs (Schema)
         title: Schema Repersentation
   sonrio.sonr.schema.SchemaDefinition:
     type: object
@@ -56104,6 +56148,13 @@ definitions:
       is_active:
         type: boolean
         title: IsActive is the status of the DID Document
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+        title: >-
+          Metadata is a map of key-value pairs that can be used to store
+          additional information about the WhatIs (Schema)
   tendermint.spn.claim.ClaimRecord:
     type: object
     properties:

@@ -15,7 +15,8 @@ const (
 	BLOCKCHAIN_RPC_BETA    = "137.184.190.146:9090"
 
 	// -- Services --
-	IPFS_API_ADDRESS  = "https://ipfs.sonr.ws"
+	IPFS_ADDRESS      = "https://ipfs.sonr.ws"
+	IPFS_API_ADDRESS  = "https://api.ipfs.sonr.ws"
 	VAULT_API_ADDRESS = "http://164.92.99.233"
 )
 
@@ -72,5 +73,9 @@ func (c *Client) GetAPIAddress() string {
 }
 
 func (c *Client) GetIPFSAddress() string {
+	return IPFS_ADDRESS
+}
+
+func (c *Client) GetIPFSApiAddress() string {
 	return IPFS_API_ADDRESS
 }

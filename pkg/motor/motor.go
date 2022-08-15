@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
@@ -13,9 +14,9 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 	"google.golang.org/grpc"
 )
 
@@ -31,12 +32,12 @@ type MotorNode interface {
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	GetHost() host.SonrHost
-
+	AddCredentialVerificationMethod(id string, cred *did.Credential)
 	CreateAccount(rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error)
 	Login(rtmv1.LoginRequest) (rtmv1.LoginResponse, error)
 
-	CreateSchema(rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error)
-	QueryWhatIs(context.Context, rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error)
+	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
+	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
 
 	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
 }
@@ -61,7 +62,7 @@ type motorNodeImpl struct {
 	schemaQueryClient st.QueryClient
 
 	// resource management
-	resources *motorResources
+	Resources *motorResources
 }
 
 func EmptyMotor(id string) *motorNodeImpl {
@@ -83,7 +84,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	}
 
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
-	mtr.resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
+	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
 
 	// Generate wallet
 	mtr.Wallet, err = mpc.GenerateWallet(options...)
@@ -133,9 +134,11 @@ func (m *motorNodeImpl) GetAddress() string {
 func (m *motorNodeImpl) GetWallet() *mpc.Wallet {
 	return m.Wallet
 }
+
 func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
 	return m.PubKey
 }
+
 func (m *motorNodeImpl) GetDID() did.DID {
 	return m.DID
 }
@@ -182,4 +185,39 @@ func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMet
 		Controller:      w.DID,
 		PublicKeyBase58: pub,
 	}, nil
+}
+
+/*
+	Adds a Credential to the DidDocument of the account
+*/
+func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Credential) error {
+	if w.DIDDocument == nil {
+		return fmt.Errorf("cannot create verification method did document not found")
+	}
+
+	vmdid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s", strings.TrimPrefix(w.Address, "snr"), id))
+	if err != nil {
+		return err
+	}
+
+	enc := base58.Encode(cred.PublicKey)
+
+	// Return the shares VerificationMethod
+	vm := &did.VerificationMethod{
+		ID:              *vmdid,
+		Type:            ssi.ECDSASECP256K1VerificationKey2019,
+		Controller:      w.DID,
+		PublicKeyBase58: enc,
+		Credential:      cred,
+	}
+	w.DIDDocument.AddAssertionMethod(vm)
+
+	// does not seem to be needed to check on the response if there is no err present.
+	_, err = updateWhoIs(w)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

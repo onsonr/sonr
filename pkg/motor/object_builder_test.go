@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/stretchr/testify/assert"
-	prt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 /*
@@ -19,7 +19,7 @@ prt.CreateSchemaRequest{
 	},
 }
 */
-const SCHEMA_DID string = "did:snr:8a7c357c-f0c1-4f77-b8e3-f1f374d19951"
+const SCHEMA_DID string = "did:snr:QmQe3P2BE8xr83sK7fqRTMXQkQSBAgDy3at93zYkLVFwWY"
 
 func Test_ObjectBuilder(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
@@ -29,7 +29,7 @@ func Test_ObjectBuilder(t *testing.T) {
 			return
 		}
 
-		req := prt.LoginRequest{
+		req := mt.LoginRequest{
 			Did:       ADDR,
 			Password:  "password123",
 			AesPskKey: pskKey,
@@ -40,7 +40,7 @@ func Test_ObjectBuilder(t *testing.T) {
 		assert.NoError(t, err, "login succeeds")
 
 		// query WhatIs so it's cached
-		_, err = m.QueryWhatIs(context.Background(), prt.QueryWhatIsRequest{
+		_, err = m.QueryWhatIs(context.Background(), mt.QueryWhatIsRequest{
 			Creator: m.GetDID().String(),
 			Did:     SCHEMA_DID,
 		})
@@ -58,10 +58,12 @@ func Test_ObjectBuilder(t *testing.T) {
 		err = builder.Set("age", 24)
 		assert.NoError(t, err, "set age property")
 
-		toUpload, err := builder.Build()
+		_, err = builder.Build()
 		assert.NoError(t, err, "builds successfully")
 
-		fmt.Println("toUpload")
-		fmt.Println(toUpload)
+		result, err := builder.Upload()
+		assert.NoError(t, err, "upload succeeds")
+
+		assert.Equal(t, "Player 1", result.Reference.Label)
 	})
 }

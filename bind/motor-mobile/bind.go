@@ -1,12 +1,14 @@
 package motor
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	apiv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -15,11 +17,14 @@ var (
 	errWalletNotExists = errors.New("mpc wallet does not exist")
 )
 
-var instance mtr.MotorNode
+var (
+	instance       mtr.MotorNode
+	objectBuilders map[string]*object.ObjectBuilder
+)
 
 func Init(buf []byte) ([]byte, error) {
 	// Unmarshal the request
-	var req apiv1.InitializeRequest
+	var req mt.InitializeRequest
 	if err := json.Unmarshal(buf, &req); err != nil {
 		return nil, err
 	}
@@ -29,8 +34,11 @@ func Init(buf []byte) ([]byte, error) {
 		// Create Motor instance
 		instance = mtr.EmptyMotor(req.DeviceId)
 
+		// init objectBuilders
+		objectBuilders = make(map[string]*object.ObjectBuilder)
+
 		// Return Initialization Response
-		resp := apiv1.InitializeResponse{
+		resp := mt.InitializeResponse{
 			Success: true,
 		}
 		return json.Marshal(resp)
@@ -43,7 +51,7 @@ func CreateAccount(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 	// decode request
-	var request apiv1.CreateAccountRequest
+	var request mt.CreateAccountRequest
 	if err := json.Unmarshal(buf, &request); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
@@ -61,7 +69,7 @@ func Login(buf []byte) ([]byte, error) {
 	}
 
 	// decode request
-	var request apiv1.LoginRequest
+	var request mt.LoginRequest
 	if err := json.Unmarshal(buf, &request); err != nil {
 		return nil, fmt.Errorf("error unmarshalling request: %s", err)
 	}
@@ -78,12 +86,29 @@ func CreateSchema(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 
-	var request apiv1.CreateSchemaRequest
+	var request mt.CreateSchemaRequest
 	if err := json.Unmarshal(buf, &request); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	if res, err := instance.CreateSchema(request); err == nil {
+		return json.Marshal(res)
+	} else {
+		return nil, err
+	}
+}
+
+func QueryWhatIs(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhatIsRequest
+	if err := json.Unmarshal(buf, &request); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.QueryWhatIs(context.Background(), request); err == nil {
 		return json.Marshal(res)
 	} else {
 		return nil, err

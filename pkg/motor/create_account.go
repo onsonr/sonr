@@ -8,17 +8,17 @@ import (
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
+func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create motor
 	fmt.Printf("initializing motor... ")
 	if err := initMotor(mtr); err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("initialize motor: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -26,7 +26,7 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 	fmt.Printf("requesting initial balance... ")
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -34,7 +34,7 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 	fmt.Printf("creating shards... ")
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("create shards: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("create shards: %s", err)
 	}
 	mtr.deviceShard = deviceShard
 	mtr.sharedShard = sharedShard
@@ -45,7 +45,7 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 	// Create the DID Document
 	doc, err := did.NewDocument(mtr.DID.String())
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("create DID document: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("create DID document: %s", err)
 	}
 	mtr.DIDDocument = doc
 
@@ -53,7 +53,7 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 	fmt.Printf("creating account... ")
 	vc := vault.New()
 	if _, err := createWhoIs(mtr); err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -61,19 +61,19 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 	fmt.Printf("encrypting shards... ")
 	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
 	}
 
 	// encrypt pskShard with psk (must be generated)
 	pskShard, psk, err := pskEncrypt(mtr.sharedShard)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("encrypt psk shards: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt psk shards: %s", err)
 	}
 
 	// password protect the recovery shard
 	pwShard, err := mpc.AesEncryptWithPassword(request.Password, mtr.recoveryShard)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("encrypt password shard: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -88,7 +88,7 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 		pwShard,
 	)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("setup vault: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
 	fmt.Println("done.")
 
@@ -98,14 +98,20 @@ func (mtr *motorNodeImpl) CreateAccount(request rtmv1.CreateAccountRequest) (rtm
 
 	// update whois
 	if _, err = updateWhoIs(mtr); err != nil {
-		return rtmv1.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
 	fmt.Println("done.")
-
 	fmt.Println("account created successfully.")
-	return rtmv1.CreateAccountResponse{
-		AesPsk:  psk,
-		Address: mtr.Address,
+
+	docBytes, err := mtr.DIDDocument.MarshalJSON()
+	if err != nil {
+		return mt.CreateAccountResponse{}, fmt.Errorf("serialize DID Document: %s", err)
+	}
+
+	return mt.CreateAccountResponse{
+		AesPsk:      psk,
+		Address:     mtr.Address,
+		DidDocument: docBytes,
 	}, err
 }
 
