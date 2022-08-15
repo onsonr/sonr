@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,6 +18,15 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if err != nil {
 		return nil, err
 	}
+	if len(msg.Definition.Fields) < 1 {
+		k.Logger(ctx).Info("Create schema request empty, must have defined fields. aborting operation")
+		return &types.MsgCreateSchemaResponse{
+			Code:    http.StatusBadRequest,
+			Message: "Schema Fields must non nil",
+			WhatIs:  nil,
+		}, nil
+	}
+
 	k.Logger(ctx).Info("msg validation successful")
 
 	accts := msg.GetSigners()
@@ -38,16 +48,16 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	cid_str, err := k.PinContent(b)
-	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
 	}
+	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 
 	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", cid_str))
-	k.Logger(ctx).Info(fmt.Sprintf("Creating schema with did %s", what_is_did))
 	if err != nil {
-		return nil, err
+		return nil, sdkerrors.Wrap(err, "error while creating did from cid")
 	}
+	k.Logger(ctx).Info(fmt.Sprintf("Creating schema with did %s", what_is_did))
 
 	var schema = types.SchemaReference{
 		Label: msg.Definition.Label,
@@ -73,7 +83,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	k.SetWhatIs(ctx, whatIs)
 
 	resp := types.MsgCreateSchemaResponse{
-		Code:    200,
+		Code:    http.StatusAccepted,
 		Message: "Schema Registered Sucessfully",
 		WhatIs:  &whatIs,
 	}
@@ -93,7 +103,7 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schemas found under same creator as message creator.")
 	}
 
-	var what_is types.WhatIs
+	var what_is *types.WhatIs
 	var foundSchemaWI bool
 	for _, a := range schemas {
 		if a.GetDid() == msg.GetDid() {
@@ -111,7 +121,7 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 	//Responsibility of caller to check if isActive beforehand
 	if what_is.GetIsActive() {
 		what_is.IsActive = false
-		k.SetWhatIs(ctx, what_is)
+		k.SetWhatIs(ctx, *what_is)
 	}
 
 	return &types.MsgDeprecateSchemaResponse{
