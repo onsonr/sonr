@@ -31652,7 +31652,7 @@ paths:
           schema:
             type: object
             properties:
-              whatIs:
+              what_is:
                 type: object
                 properties:
                   did:
@@ -31723,7 +31723,7 @@ paths:
           schema:
             type: object
             properties:
-              whatIs:
+              what_is:
                 type: array
                 items:
                   type: object
@@ -55911,7 +55911,7 @@ definitions:
   sonrio.sonr.schema.QueryWhatIsCreatorResponse:
     type: object
     properties:
-      whatIs:
+      what_is:
         type: array
         items:
           type: object
@@ -55946,7 +55946,7 @@ definitions:
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
-      whatIs:
+      what_is:
         type: object
         properties:
           did:

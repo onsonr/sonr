@@ -84,12 +84,12 @@ message QuerySchemaResponse {
 
 message QueryWhatIsResponse {
   // Schema Repersentation
-  WhatIs whatIs = 1;
+  WhatIs what_is = 1;
 }
 
 message QueryWhatIsCreatorResponse {
   // Schema Repersentation
-  repeated WhatIs whatIs = 1;
+  repeated WhatIs what_is = 1;
 }
 
 // this line is used by starport scaffolding # 3
