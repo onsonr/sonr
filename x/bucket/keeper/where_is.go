@@ -5,6 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/google/uuid"
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -58,14 +59,57 @@ func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.WhereIs) {
 }
 
 // GetWhereIs returns a whereIs from its id
-func (k Keeper) GetWhereIs(ctx sdk.Context, id string) (val types.WhereIs, found bool) {
+func (k Keeper) GetWhereIs(ctx sdk.Context, creator, id string) (val types.WhereIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
-	b := store.Get(types.WhereIsKey(id))
-	if b == nil {
-		return val, false
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.WhereIs
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.Did == id && val.Creator == creator {
+			return val, true
+		}
 	}
-	k.cdc.MustUnmarshal(b, &val)
-	return val, true
+
+	return types.WhereIs{}, false
+}
+
+// GetWhereIs returns a whereIs from its id
+func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []types.WhereIs) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.WhereIs
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.Creator == creator {
+			list = append(list, val)
+		}
+	}
+
+	return
+}
+
+// GetWhereIs returns a whereIs from its id
+func (k Keeper) GetWhereIsAll(ctx sdk.Context, creator, id string) (val types.WhereIs, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.WhereIs
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.Did == id && val.Creator == creator {
+			return val, true
+		}
+	}
+
+	return types.WhereIs{}, false
 }
 
 // RemoveWhereIs removes a whereIs from the store
@@ -88,4 +132,8 @@ func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
 	}
 
 	return
+}
+
+func (k Keeper) GenerateKeyForDID() string {
+	return uuid.New().String()
 }

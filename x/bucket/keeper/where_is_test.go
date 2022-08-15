@@ -23,7 +23,7 @@ func TestWhereIsGet(t *testing.T) {
 	keeper, ctx := keepertest.BucketKeeper(t)
 	items := createNWhereIs(keeper, ctx, 10)
 	for _, item := range items {
-		got, found := keeper.GetWhereIs(ctx, item.Did)
+		got, found := keeper.GetWhereIs(ctx, item.Creator, item.Did)
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
@@ -37,7 +37,7 @@ func TestWhereIsRemove(t *testing.T) {
 	items := createNWhereIs(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveWhereIs(ctx, item.Did)
-		_, found := keeper.GetWhereIs(ctx, item.Did)
+		_, found := keeper.GetWhereIs(ctx, item.Creator, item.Did)
 		require.False(t, found)
 	}
 }
