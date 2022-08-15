@@ -19,7 +19,7 @@ prt.CreateSchemaRequest{
 	},
 }
 */
-const SCHEMA_DID string = "did:snr:QmQe3P2BE8xr83sK7fqRTMXQkQSBAgDy3at93zYkLVFwWY"
+const SCHEMA_DID string = "did:snr:QmZLKGrTcUAKsUVUZ5e72rAWRg1Y1SzRJqWqcXaDqjFUqm"
 
 func Test_ObjectBuilder(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
@@ -58,10 +58,12 @@ func Test_ObjectBuilder(t *testing.T) {
 		err = builder.Set("age", 24)
 		assert.NoError(t, err, "set age property")
 
-		toUpload, err := builder.Build()
+		_, err = builder.Build()
 		assert.NoError(t, err, "builds successfully")
 
-		fmt.Println("toUpload")
-		fmt.Println(toUpload)
+		result, err := builder.Upload()
+		assert.NoError(t, err, "upload succeeds")
+
+		assert.Equal(t, "Player 1", result.Reference.Label)
 	})
 }

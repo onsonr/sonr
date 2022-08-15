@@ -39,11 +39,7 @@ func Test_CreateSchema(t *testing.T) {
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
 	assert.NoError(t, err, "schema created successfully")
-
-	whatIs := &st.WhatIs{}
-	err = whatIs.Unmarshal(resp.WhatIs)
-	assert.NoError(t, err, "unmarshal WhatIs")
-	fmt.Printf("success: %s\n", whatIs)
+	fmt.Printf("success: %s\n", resp.WhatIs)
 }
 
 func Test_QuerySchema(t *testing.T) {
@@ -76,21 +72,14 @@ func Test_QuerySchema(t *testing.T) {
 	resp, err := m.CreateSchema(createSchemaRequest)
 	assert.NoError(t, err, "schema created successfully")
 
-	whatIs := &st.WhatIs{}
-	err = whatIs.Unmarshal(resp.WhatIs)
-	assert.NoError(t, err, "unmarshal WhatIs")
-
 	// CREATE DONE, TRY QUERY
 	queryWhatIsRequest := mt.QueryWhatIsRequest{
-		Creator: whatIs.Creator,
-		Did:     whatIs.Did,
+		Creator: resp.WhatIs.Creator,
+		Did:     resp.WhatIs.Did,
 	}
 
 	qresp, err := m.QueryWhatIs(context.Background(), queryWhatIsRequest)
 	assert.NoError(t, err, "query response succeeds")
 
-	qwhatIs := &st.WhatIs{}
-	err = qwhatIs.Unmarshal(qresp.WhatIs)
-	assert.NoError(t, err, "unmarshal WhatIs")
-	assert.Equal(t, whatIs.Did, qwhatIs.Did)
+	assert.Equal(t, resp.WhatIs.Did, qresp.WhatIs.Did)
 }

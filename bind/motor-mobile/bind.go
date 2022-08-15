@@ -1,12 +1,14 @@
 package motor
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -15,7 +17,10 @@ var (
 	errWalletNotExists = errors.New("mpc wallet does not exist")
 )
 
-var instance mtr.MotorNode
+var (
+	instance       mtr.MotorNode
+	objectBuilders map[string]*object.ObjectBuilder
+)
 
 func Init(buf []byte) ([]byte, error) {
 	// Unmarshal the request
@@ -28,6 +33,9 @@ func Init(buf []byte) ([]byte, error) {
 	if req.DeviceKeyprintPub == nil {
 		// Create Motor instance
 		instance = mtr.EmptyMotor(req.DeviceId)
+
+		// init objectBuilders
+		objectBuilders = make(map[string]*object.ObjectBuilder)
 
 		// Return Initialization Response
 		resp := mt.InitializeResponse{
@@ -84,6 +92,23 @@ func CreateSchema(buf []byte) ([]byte, error) {
 	}
 
 	if res, err := instance.CreateSchema(request); err == nil {
+		return json.Marshal(res)
+	} else {
+		return nil, err
+	}
+}
+
+func QueryWhatIs(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhatIsRequest
+	if err := json.Unmarshal(buf, &request); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.QueryWhatIs(context.Background(), request); err == nil {
 		return json.Marshal(res)
 	} else {
 		return nil, err
