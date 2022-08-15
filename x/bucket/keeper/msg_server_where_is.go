@@ -85,7 +85,7 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 	}
 
 	// Checks that the element exists
-	val, found := k.GetWhereIs(ctx, msg.Did)
+	val, found := k.GetWhereIs(ctx, msg.Creator, msg.Did)
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
 	}
@@ -104,7 +104,7 @@ func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWher
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetWhereIs(ctx, msg.Did)
+	val, found := k.GetWhereIs(ctx, msg.Creator, msg.Did)
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
 	}
