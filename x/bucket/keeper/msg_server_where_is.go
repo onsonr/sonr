@@ -114,7 +114,8 @@ func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWher
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.RemoveWhereIs(ctx, msg.Did)
+	val.IsActive = false
+	k.SetWhereIs(ctx, val)
 
 	return &types.MsgDeleteWhereIsResponse{}, nil
 }
