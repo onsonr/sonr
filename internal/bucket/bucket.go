@@ -18,13 +18,6 @@ var (
 	}
 )
 
-type Bucket interface {
-	GetContent(id string) (*BucketContent, error)
-	ContentExists(id string) bool
-	IsBucket(id string) bool
-	IsContent(id string) bool
-}
-
 type BucketContent struct {
 	Item        interface{}
 	Id          string
@@ -38,7 +31,12 @@ type bucketImpl struct {
 	queryClient  bt.QueryClient
 }
 
-func New(address string, whereIs *bt.WhereIs, shell *shell.Shell, client bt.QueryClient) Bucket {
+func New(
+	address string,
+	whereIs *bt.WhereIs,
+	shell *shell.Shell,
+	client bt.QueryClient) Bucket {
+
 	return &bucketImpl{
 		adress:       address,
 		whereIs:      whereIs,
