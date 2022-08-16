@@ -1,12 +1,14 @@
 syntax = "proto3";
+
 package sonrio.sonr.bucket;
 
-import "gogoproto/gogo.proto";
-import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "bucket/params.proto";
 import "bucket/where_is.proto";
 // this line is used by starport scaffolding # 1
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
@@ -16,15 +18,19 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/sonr-io/sonr/bucket/params";
   }
-  // Queries a WhereIs by id.
-	rpc WhereIs(QueryGetWhereIsRequest) returns (QueryGetWhereIsResponse) {
-		option (google.api.http).get = "/sonr-io/sonr/bucket/where_is/{did}";
-	}
+  // Queries a WhereIs by did and creator.
+  rpc WhereIs(QueryGetWhereIsRequest) returns (QueryGetWhereIsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/where_is/{creator}/{did}";
+  }
+  // Queries all WhereIs by creator.
+  rpc WhereIsByCreator(QueryGetWhereIsByCreatorRequest) returns (QueryGetWhereIsByCreatorResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/where_is/{creator}";
+  }
 
-	// Queries a list of WhereIs items.
-	rpc WhereIsAll(QueryAllWhereIsRequest) returns (QueryAllWhereIsResponse) {
-		option (google.api.http).get = "/sonr-io/sonr/bucket/where_is";
-	}
+  // Queries a list of WhereIs items.
+  rpc WhereIsAll(QueryAllWhereIsRequest) returns (QueryAllWhereIsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/where_is";
+  }
 
 // this line is used by starport scaffolding # 2
 }
@@ -39,20 +45,31 @@ message QueryParamsResponse {
 }
 
 message QueryGetWhereIsRequest {
-	string did = 1;
+  string creator = 1;
+  string did = 2;
 }
 
 message QueryGetWhereIsResponse {
-	WhereIs where_is = 1 [(gogoproto.nullable) = false];
+  WhereIs where_is = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetWhereIsByCreatorRequest {
+  string creator = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetWhereIsByCreatorResponse {
+  repeated WhereIs where_is = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryAllWhereIsRequest {
-	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryAllWhereIsResponse {
-	repeated WhereIs where_is = 1 [(gogoproto.nullable) = false];
-	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated WhereIs where_is = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3
