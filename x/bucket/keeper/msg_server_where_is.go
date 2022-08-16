@@ -13,11 +13,11 @@ import (
 func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWhereIs) (*types.MsgCreateWhereIsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := msg.ValidateBasic()
-	k.Logger(ctx).Info("basic request validation finished")
 
 	if err != nil {
 		return nil, err
 	}
+	k.Logger(ctx).Info("basic request validation finished")
 
 	accts := msg.GetSigners()
 	if len(accts) < 1 {
