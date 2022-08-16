@@ -2,15 +2,15 @@ syntax = "proto3";
 
 package sonrio.sonr.thirdparty.ipns;
 
-option go_package = "github.com/sonr-io/sonr/thirdparty/proto/v1/ipns";
+option go_package = "github.com/sonr-io/sonr/third_party/proto/v1/ipns";
 
 message IpnsEntry {
   enum ValidityType {
     // setting an EOL says "this record is valid until..."
     EOL = 0;
   }
-  required bytes value = 1;
-  required bytes signature = 2;
+  bytes value = 1;
+  bytes signature = 2;
 
   optional ValidityType validityType = 3;
   optional bytes validity = 4;
