@@ -2,19 +2,25 @@ package bucket
 
 import (
 	"errors"
+	"fmt"
 
 	shell "github.com/ipfs/go-ipfs-api"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
-	"google.golang.org/grpc"
 )
 
 var (
-	errContentNotFound = errors.New("content with id not found")
+	errContentNotFound = func(id string) error {
+		if id != "" {
+			return fmt.Errorf("could not find content with id: %s", id)
+		}
+
+		return errors.New("could not find content")
+	}
 )
 
 type Bucket interface {
-	GetContent(id string) (interface{}, error)
-	ContentExists(id string) error
+	GetContent(id string) (*BucketContent, error)
+	ContentExists(id string) bool
 	IsBucket(id string) bool
 	IsContent(id string) bool
 }
@@ -32,13 +38,12 @@ type bucketImpl struct {
 	queryClient  bt.QueryClient
 }
 
-func New(address string, whereIs *bt.WhereIs, shell *shell.Shell, grpc *grpc.ClientConn) Bucket {
-	queryClient := bt.NewQueryClient(grpc)
+func New(address string, whereIs *bt.WhereIs, shell *shell.Shell, client bt.QueryClient) Bucket {
 	return &bucketImpl{
 		adress:       address,
 		whereIs:      whereIs,
 		shell:        shell,
 		contentCache: make(map[string]*BucketContent),
-		queryClient:  queryClient,
+		queryClient:  client,
 	}
 }
