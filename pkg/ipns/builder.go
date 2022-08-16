@@ -20,16 +20,16 @@ func NewBuilder() *IPNSURIBuilder {
 	}
 }
 
-func (iub *IPNSURIBuilder) WithCid(cid string) {
+func (iub *IPNSURIBuilder) SetCid(cid string) {
 	iub.cid = cid
 }
 
-func (iub *IPNSURIBuilder) BuildString() string {
+func (iub *IPNSURIBuilder) String() string {
 	return fmt.Sprintf("%s%s%s%s", iub.delim, iub.prefix, iub.delim, iub.cid)
 }
 
 func (iub *IPNSURIBuilder) BuildService() did.Service {
-	url := ssi.MustParseURI(fmt.Sprintf("%s%s%s%s", iub.delim, iub.prefix, iub.delim, iub.cid))
+	url := ssi.MustParseURI(iub.String())
 	return did.Service{
 		ID:   url,
 		Type: "ipns",

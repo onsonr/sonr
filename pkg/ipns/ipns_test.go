@@ -23,7 +23,7 @@ func Test_IPNS(t *testing.T) {
 
 		rec, err := ipns.New()
 		assert.NoError(t, err)
-		rec.Builder.WithCid("bafyreihnj3feeesb6wmd46lmsvtwalvuckns647ghy44xn63lfsfed3ydm")
+		rec.Builder.SetCid("bafyreihnj3feeesb6wmd46lmsvtwalvuckns647ghy44xn63lfsfed3ydm")
 		err = rec.CreateRecord()
 		assert.NoError(t, err)
 		srv := rec.Builder.BuildService()

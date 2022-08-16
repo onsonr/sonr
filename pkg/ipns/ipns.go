@@ -1,7 +1,6 @@
 package ipns
 
 import (
-	"fmt"
 	"time"
 
 	shell "github.com/ipfs/go-ipfs-api"
@@ -17,8 +16,6 @@ func Publish(shell *shell.Shell, rec *IPNSRecord) (string, error) {
 		return "", err
 	}
 
-	fmt.Print(resp.Name)
-
 	return resp.Name, nil
 }
 
@@ -28,6 +25,5 @@ func Resolve(shell *shell.Shell, id string) (string, error) {
 		return "", err
 	}
 
-	fmt.Print(resp)
 	return resp, err
 }

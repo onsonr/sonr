@@ -30,7 +30,7 @@ func New() (*IPNSRecord, error) {
 }
 
 func (ir *IPNSRecord) CreateRecord() error {
-	record, err := ipns.Create(ir.PrivKey, []byte(ir.Builder.BuildString()), 0, time.Now(), ir.Ttl)
+	record, err := ipns.Create(ir.PrivKey, []byte(ir.Builder.String()), 0, time.Now(), ir.Ttl)
 	if err != nil {
 		return err
 	}
