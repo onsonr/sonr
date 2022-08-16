@@ -45,7 +45,7 @@ func (b *bucketImpl) ResolveContent() error {
 	}
 	var cids []string = make([]string, 0)
 	for _, b := range b.whereIs.Content {
-		if b.Type == types.ResourceIdentifier_DID {
+		if b.Type == types.ResourceIdentifier_CID {
 			cids = append(cids, b.Uri)
 		}
 	}
