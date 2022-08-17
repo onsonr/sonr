@@ -18,6 +18,11 @@ var (
 	}
 )
 
+/*
+	Wraps items within a bucket. Items will be one of the following
+	DID -> reference to another bucket (WhereIs)
+	CID -> reference to content (map[string]interface{})
+*/
 type BucketContent struct {
 	Item        interface{}
 	Id          string
