@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
+	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
@@ -16,6 +17,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
 )
@@ -38,8 +40,11 @@ type MotorNode interface {
 
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
 	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
-
 	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
+
+	CreateBucket(context.Context, mt.CreateBucketRequest) (mt.CreateBucketResponse, error)
+	QueryWhereIs(context.Context, mt.QueryWhereIsRequest)
+	NewBucketResolver(creator string, whereIs bt.WhereIs) (bucket.Bucket, error)
 }
 
 type motorNodeImpl struct {
