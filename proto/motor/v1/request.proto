@@ -3,6 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
+import "bucket/where_is.proto";
 import "schema/v1/schema.proto";
 
 option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
@@ -32,16 +33,16 @@ message InitializeRequest {
 
   // Libp2p Host Options
   message HostOptions {
-    bool quic_transport = 1;             // Enable QUIC Transport
-    bool http_transport = 2;             // Enable HTTP Transport
-    bool ipv4_only = 3;                  // Enable IPv4 Only
+    bool quic_transport = 1; // Enable QUIC Transport
+    bool http_transport = 2; // Enable HTTP Transport
+    bool ipv4_only = 3; // Enable IPv4 Only
     repeated IPAddress listen_addrs = 4; // List of Listen Addresses (optional)
   }
 
   // IP Address Interface
   message IPAddress {
-    string name = 1;   // Name of Interface
-    string address = 2;  // IP Address of Interface
+    string name = 1; // Name of Interface
+    string address = 2; // IP Address of Interface
     bool internal = 3; // Wether it is a Loopback Interface
     Family family = 4; // Address Family
 
@@ -87,3 +88,25 @@ message QuerySchemaRequest {
   string did = 2;
 }
 
+// -----------------------------------------------------------------------------
+// Bucket Models
+// -----------------------------------------------------------------------------
+message CreateBucketRequest {
+  string creator = 1;
+  string label = 2;
+  sonrio.sonr.bucket.BucketVisibility visibility = 3;
+  sonrio.sonr.bucket.BucketRole role = 4;
+  repeated sonrio.sonr.bucket.BucketItem content = 5;
+}
+
+message MsgCreateBucketResponse {
+  string did = 1;
+}
+
+message MsgUpdateBucketRequest {
+  string creator = 1;
+  string label = 3;
+  sonrio.sonr.bucket.BucketVisibility visibility = 4;
+  sonrio.sonr.bucket.BucketRole role = 5;
+  repeated sonrio.sonr.bucket.BucketItem content = 6;
+}
