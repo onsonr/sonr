@@ -83,6 +83,11 @@ message QueryWhatIsRequest {
   string did = 2;
 }
 
+message QueryWhereIsRequest {
+  string creator = 1;
+  string did = 2;
+}
+
 message QuerySchemaRequest {
   string creator = 1;
   string did = 2;
@@ -99,11 +104,7 @@ message CreateBucketRequest {
   repeated sonrio.sonr.bucket.BucketItem content = 5;
 }
 
-message MsgCreateBucketResponse {
-  string did = 1;
-}
-
-message MsgUpdateBucketRequest {
+message UpdateBucketRequest {
   string creator = 1;
   string label = 3;
   sonrio.sonr.bucket.BucketVisibility visibility = 4;

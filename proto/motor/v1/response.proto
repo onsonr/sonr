@@ -40,3 +40,11 @@ message UploadObjectResponse {
   ObjectReference reference = 2;
   string message = 3;
 }
+
+message CreateBucketResponse {
+  string did = 1;
+}
+
+message QueryWhereIsResponse {
+  sonrio.sonr.schema.WhatIs where_is = 1;
+}
