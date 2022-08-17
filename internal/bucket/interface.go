@@ -29,7 +29,13 @@ type Bucket interface {
 	*/
 	IsContent(id string) bool
 
+	/*
+		Resolves all buckets defined within the current WhereIs by `did`
+	*/
 	ResolveBuckets(address string) error
 
+	/*
+		Resolves all content within the bucket by `cid`
+	*/
 	ResolveContent() error
 }
