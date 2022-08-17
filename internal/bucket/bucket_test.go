@@ -7,6 +7,7 @@ import (
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/internal/bucket"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
 
@@ -22,6 +23,7 @@ func CreateMockWhereIs(creator string, content []*bt.BucketItem) *bt.WhereIs {
 }
 
 func Test_Bucket(t *testing.T) {
+	t.Skip("Skipping in CI")
 	creator := ""
 	s := shell.NewLocalShell()
 	grpcClient, err := grpc.Dial(
@@ -44,7 +46,9 @@ func Test_Bucket(t *testing.T) {
 				Type:      bt.ResourceIdentifier_CID,
 			},
 		}
+
 		instance := bucket.New(creator, CreateMockWhereIs(creator, content), s, queryClient)
-		instance.ResolveContent()
+		err := instance.ResolveContent()
+		assert.NoError(t, err)
 	})
 }
