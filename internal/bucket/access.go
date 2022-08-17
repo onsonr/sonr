@@ -1,5 +1,9 @@
 package bucket
 
+import (
+	bt "github.com/sonr-io/sonr/x/bucket/types"
+)
+
 func (b *bucketImpl) GetContentById(id string) (*BucketContent, error) {
 	if b.contentCache[id] == nil {
 		return nil, errContentNotFound(id)
@@ -10,14 +14,12 @@ func (b *bucketImpl) GetContentById(id string) (*BucketContent, error) {
 	return cnt, nil
 }
 
-func (b *bucketImpl) GetContent() []*BucketContent {
-	content := make([]*BucketContent, len(b.contentCache))
-
-	for _, v := range b.contentCache {
-		content = append(content, v)
+func (b *bucketImpl) GetBucketItems() []*bt.BucketItem {
+	if b.whereIs == nil {
+		return make([]*bt.BucketItem, 0)
 	}
 
-	return content
+	return b.whereIs.Content
 }
 
 func (b *bucketImpl) ContentExists(id string) bool {

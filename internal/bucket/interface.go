@@ -1,5 +1,7 @@
 package bucket
 
+import bt "github.com/sonr-io/sonr/x/bucket/types"
+
 /*
 	Underlying api definition of Buckets
 	Higher level APIs implementing bucket features
@@ -12,7 +14,7 @@ type Bucket interface {
 	*/
 	GetContentById(id string) (*BucketContent, error)
 
-	GetContent() []*BucketContent
+	GetBucketItems() []*bt.BucketItem
 
 	/*
 		Checks if a given uri for existence in the given bucket
