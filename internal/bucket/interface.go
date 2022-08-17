@@ -10,7 +10,9 @@ type Bucket interface {
 	/*
 		Retrieves a piece of content by the given uri
 	*/
-	GetContent(id string) (*BucketContent, error)
+	GetContentById(id string) (*BucketContent, error)
+
+	GetContent() []*BucketContent
 
 	/*
 		Checks if a given uri for existence in the given bucket
