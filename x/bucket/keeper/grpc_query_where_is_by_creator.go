@@ -4,12 +4,12 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/x/bucket/types"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsByCreatorRequest) (*types.QueryGetWhereIsByCreatorResponse, error) {
+func (k Keeper) WhereIsByCreator(c context.Context, req *bt.QueryGetWhereIsByCreatorRequest) (*bt.QueryGetWhereIsByCreatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -21,7 +21,7 @@ func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsBy
 	ctx := sdk.UnwrapSDKContext(c)
 	whereIss := k.GetWhereIsByCreator(ctx, req.Creator)
 
-	return &types.QueryGetWhereIsByCreatorResponse{
+	return &bt.QueryGetWhereIsByCreatorResponse{
 		WhereIs: whereIss,
 	}, nil
 }

@@ -1,6 +1,8 @@
 package ipns_test
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -20,10 +22,11 @@ func Test_IPNS(t *testing.T) {
 		out_path := filepath.Join(os.TempDir(), time_stamp+".txt")
 
 		defer os.Remove(out_path)
-
-		rec, err := ipns.New()
+		priv, err := rsa.GenerateKey(rand.Reader, 2048)
 		assert.NoError(t, err)
-		rec.Builder.WithCid("bafyreihnj3feeesb6wmd46lmsvtwalvuckns647ghy44xn63lfsfed3ydm")
+		rec, err := ipns.New(priv)
+		assert.NoError(t, err)
+		rec.Builder.SetCid("bafyreihnj3feeesb6wmd46lmsvtwalvuckns647ghy44xn63lfsfed3ydm")
 		err = rec.CreateRecord()
 		assert.NoError(t, err)
 		srv := rec.Builder.BuildService()
