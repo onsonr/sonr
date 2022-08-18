@@ -11,20 +11,23 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - uses: actions/setup-go@v3
       - run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
           cd $GITHUB_WORKSPACE
           mkdir -p build
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ~1.18
+      - run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
-          cd bind
           gomobile init
+        working-directory: ${{ github.workspace }}/bind/motor-mobile
+
+      - name: Build and Package iOS
+        run: |
           gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR -o Motor.xcframework -v
-          mv Motor.xcframework ../build/Motor.xcframework
-          cd ../build
-          tar -czf motor-${{ env.RELEASE_VERSION }}-ios.tar.gz Motor.xcframework
-          rm -rf Motor.xcframework
+          tar -czf ../build/motor-${{ env.RELEASE_VERSION }}-ios.tar.gz Motor.xcframework
+        working-directory: ${{ github.workspace }}/bind/motor-mobile
 
       - name: Upload to Github Release
         uses: meeDamian/github-release@2.0
@@ -45,20 +48,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - uses: actions/setup-go@v3
-      - run: |
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
           cd $GITHUB_WORKSPACE
           mkdir -p build
+
+      - name: Configure Golang w/ cache
+        uses: actions/setup-go@v3
+        with:
+          go-version: ~1.18
+
+      - name: Install dependencies
+        run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
-          cd bind
           gomobile init
+        working-directory: ${{ github.workspace }}/bind/motor-mobile
+
+      - name: Build and Package Android Library
+        run: |
           gomobile bind -ldflags='-s -w' -target=android/arm64 -o io.sonr.motor.aar -v
-          rm -rf io.sonr.motor-sources.jar
-          mv io.sonr.motor.aar ../build/io.sonr.motor.aar
-          cd ../build
-          tar -czf motor-${{ env.RELEASE_VERSION }}-android.tar.gz io.sonr.motor.aar
-          rm -rf io.sonr.motor.aar
+          tar -czf ../build/motor-${{ env.RELEASE_VERSION }}-android.tar.gz io.sonr.motor.aar
+        working-directory: ${{ github.workspace }}/bind/motor-mobile
+
       - name: Upload to Github Release
         uses: meeDamian/github-release@2.0
         with:
