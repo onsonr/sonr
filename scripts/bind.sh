@@ -6,6 +6,7 @@ PROJECT_DIR=$(pwd);
 MOTOR_LIB_DIR=${PROJECT_DIR}/bind/motor-mobile
 MOTOR_WASM_DIR=${PROJECT_DIR}/bind/motor-wasm
 
+
 while getopts "iaw" opt; do
   echo "🔷 Setting up build Environment..."
   VERSION=$(git describe --tags --abbrev=0)
