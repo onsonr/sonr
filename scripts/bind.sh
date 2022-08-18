@@ -18,6 +18,7 @@ while getopts "iaw" opt; do
       echo "🔷 Binding Android Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
       gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -v
+      rm -rf io.sonr.motor-sources.jar
       tar -czvf ${BUILDDIR}/motor-${VERSION}-android.tar.gz ${ANDROID_ARTIFACT}
       rm -rf ${ANDROID_ARTIFACT}
       ;;
@@ -34,6 +35,8 @@ while getopts "iaw" opt; do
       echo "🔷 Binding WebAssembly Artifact Version ${VERSION}..."
       cd ${MOTOR_WASM_DIR}
       GOOS=js GOARCH=wasm go build -tags wasm -o ${WASM_ARTIFACT} -v
+      tar -czvf ${BUILDDIR}/motor-${VERSION}-wasm.tar.gz ${WASM_ARTIFACT}
+      rm -rf ${WASM_ARTIFACT}
       ;;
     ?)
       echo "Invalid option: -$OPTARG" >&2

@@ -51,7 +51,6 @@ jobs:
           draft: false
           prerelease: false
 
-
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for iOS
   ## ------------------------------------------------------------
@@ -81,9 +80,7 @@ jobs:
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
-          gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR -o Motor.xcframework -v
-          tar -czf ${{ github.workspace }}/build/motor-${{steps.tag.outputs.tag}}-ios.tar.gz Motor.xcframework
-        working-directory: ${{ github.workspace }}/bind/motor-mobile
+          sh scripts/bind.sh -i
 
       # ---
       # 3. Upload to Github Release and Repository Dispatch
@@ -100,7 +97,6 @@ jobs:
   #     #     repository: sonr-io/motor-ios
   #     #     event-type: new-ios-framework
   #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
-
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Android
@@ -139,9 +135,7 @@ jobs:
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
-          gomobile bind -ldflags='-s -w' -target=android -o io.sonr.motor.aar -v
-          tar -czf ${{ github.workspace }}/build/motor-${{steps.tag.outputs.tag}}-android.tar.gz io.sonr.motor.aar
-        working-directory: ${{ github.workspace }}/bind/motor-mobile
+          sh scripts/bind.sh -aw
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
@@ -160,7 +154,6 @@ jobs:
   #     #     repository: sonr-io/motor-android
   #     #     event-type: new-android-framework
   #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
-
 
   ## ------------------------------------------------------------
   ## [HIGHWAY] Build and release for linux, macos
