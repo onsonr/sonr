@@ -259,6 +259,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }} ${{ github.workspace }}/tmp/cover.png
+        env:
+          PLACID_APP_BEARER: ${{ secrets.PLACID_APP_BEARER }}
 
       - name: Publish Tweet
         uses: snow-actions/tweet@v1.3.0
@@ -276,4 +278,3 @@ jobs:
           CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
           ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-          PLACID_APP_BEARER: ${{ secrets.PLACID_APP_BEARER }}
