@@ -276,3 +276,4 @@ jobs:
           CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
           ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          PLACID_APP_BEARER: ${{ secrets.PLACID_APP_BEARER }}
