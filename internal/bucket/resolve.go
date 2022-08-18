@@ -23,7 +23,7 @@ func (b *bucketImpl) ResolveBuckets(address string) error {
 				return err
 			}
 			b.contentCache[bi.Uri] = &BucketContent{
-				Item:        New(b.adress, &resp.WhereIs, b.shell, b.queryClient),
+				Item:        New(b.address, &resp.WhereIs, b.shell, b.queryClient),
 				Id:          bi.Uri,
 				ContentType: types.ResourceIdentifier_DID,
 			}

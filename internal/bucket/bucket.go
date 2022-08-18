@@ -29,7 +29,7 @@ type BucketContent struct {
 	ContentType bt.ResourceIdentifier
 }
 type bucketImpl struct {
-	adress       string
+	address      string
 	whereIs      *bt.WhereIs
 	contentCache map[string]*BucketContent
 	shell        *shell.Shell
@@ -43,7 +43,7 @@ func New(
 	client bt.QueryClient) Bucket {
 
 	return &bucketImpl{
-		adress:       address,
+		address:      address,
 		whereIs:      whereIs,
 		shell:        shell,
 		contentCache: make(map[string]*BucketContent),
