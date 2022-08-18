@@ -270,7 +270,7 @@ jobs:
             ${{ steps.info.outputs.html_url }}
 
             #release #sonr #motor #highway
-          media_paths: ${{ github.workspace }}/tmp/cover.png
+          media_paths: tmp/cover.png
         env:
           CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
           CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
