@@ -3,6 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
+import "bucket/where_is.proto";
 import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
@@ -46,5 +47,5 @@ message CreateBucketResponse {
 }
 
 message QueryWhereIsResponse {
-  sonrio.sonr.schema.WhatIs where_is = 1;
+  sonrio.sonr.bucket.WhereIs where_is = 1;
 }
