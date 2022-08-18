@@ -259,29 +259,21 @@ jobs:
         uses: jossef/action-latest-release-info@v1.1.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: HTTP Request Action
-        uses: fjogeleit/http-request-action@v1.11.0
-        with:
-          url: "https://api.placid.app/api/rest/5ijokwc0v"
-          method: "POST"
-          bearerToken: ${{ secrets.PLACID_APP_BEARER }}
-          data: '{"layers": {"changelog": {"text": "Full Changelog Available at: ${{ steps.info.outputs.html_url }}"}, "tag": {"text": "version - ${{ steps.info.outputs.tag_name }}"}}}'
 
       - name: Generate Image
-        id: image
-        run: |
-          version - 0.3.2-beta.0
-      - name: Tweet
+        run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }}
+
+      - name: Publish Tweet
         uses: snow-actions/tweet@v1.3.0
         with:
           status: |
-            💫 Woo-hoo! We have published a new release - ${{ steps.info.outputs.tag_name }}
+            💫 Woo-hoo! We just published a new release - ${{ steps.info.outputs.tag_name }}
 
             Find out more and view the changelog at:
             ${{ steps.info.outputs.html_url }}
-            #release #sonr
-          media_paths:
-            - ${{ steps.info.outputs.assets[0].browser_download_url }}
+
+            #release #sonr #motor #highway
+          media_paths: ${{ github.workspace }}/tmp/cover.png
         env:
           CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
           CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}

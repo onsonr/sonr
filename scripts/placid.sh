@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VERSION=$1
-URL=$1
+URL=$2
 JSON_FMT='{ "layers": { "tag": { "text": "version - %s" }, "changelog": { "text": "Full Release notes: %s" } } }'
 JSON=$(printf "$JSON_FMT" "$VERSION" "$URL")
 
