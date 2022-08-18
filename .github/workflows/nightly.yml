@@ -7,6 +7,20 @@ on:
 
 jobs:
   ## ------------------------------------------------------------
+  ## [PRE-RUN] Deletes old github actions runs
+  ## ------------------------------------------------------------
+  clean-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 2
+          keep_minimum_runs: 4
+
+  ## ------------------------------------------------------------
   ## [PRE-RUN] Drafts release & Bumps version
   ## ------------------------------------------------------------
   prepare-release:
