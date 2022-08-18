@@ -46,7 +46,9 @@ type MotorNode interface {
 	QueryWhereIs(context.Context, mt.QueryWhereIsRequest) (mt.QueryWhereIsResponse, error)
 	NewBucketResolver(context context.Context, creator string, did string) (bucket.Bucket, error)
 	GetBucketItems(did string) ([]*bt.BucketItem, error)
-	ResolveBucketItem(did string, item *bt.BucketItem) (*bucket.BucketContent, error)
+	GetBucketContent(did string, item *bt.BucketItem) (*bucket.BucketContent, error)
+	ResolveBucketsForBucket(did string) error
+	ResolveContentForBucket(did string) error
 }
 
 type motorNodeImpl struct {
