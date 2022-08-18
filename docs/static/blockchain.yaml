@@ -53944,12 +53944,175 @@ definitions:
   sonrio.sonr.bucket.MsgCreateWhereIsResponse:
     type: object
     properties:
-      did:
-        type: string
+      status:
+        type: integer
+        format: int32
+      where_is:
+        type: object
+        properties:
+          did:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          label:
+            type: string
+            description: Label of the new bucket.
+          visibility:
+            description: Visibility of the new bucket.
+            type: string
+            enum:
+              - UNSPECIFIED
+              - PUBLIC
+              - PRIVATE
+            default: UNSPECIFIED
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          role:
+            description: Role of the creator of the new bucket.
+            type: string
+            enum:
+              - NONE
+              - APPLICATION
+              - USER
+            default: NONE
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          content:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the bucket item.
+                uri:
+                  type: string
+                  title: DID of the item. If applicable // optional
+                timestamp:
+                  type: string
+                  format: int64
+                  title: Timestamp of the last update. // optional
+                type:
+                  title: Type of the resource
+                  type: string
+                  enum:
+                    - None
+                    - DID
+                    - CID
+                  default: None
+              description: >-
+                BucketItem is a pointer to a single piece of content in a
+                bucket.
+            description: Content of the new bucket map of DIDs to CIDs.
+          content_acl:
+            type: object
+            additionalProperties:
+              type: object
+              properties:
+                encrypted_jwks:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    format: byte
+              title: AclJwks is a map of JWKs for a given Schema
+            description: JWKs of the new bucket.
+          timestamp:
+            type: string
+            format: int64
+            description: Timestamp of the new bucket.
   sonrio.sonr.bucket.MsgDeleteWhereIsResponse:
     type: object
+    properties:
+      status:
+        type: integer
+        format: int32
   sonrio.sonr.bucket.MsgUpdateWhereIsResponse:
     type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      where_is:
+        type: object
+        properties:
+          did:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          label:
+            type: string
+            description: Label of the new bucket.
+          visibility:
+            description: Visibility of the new bucket.
+            type: string
+            enum:
+              - UNSPECIFIED
+              - PUBLIC
+              - PRIVATE
+            default: UNSPECIFIED
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          role:
+            description: Role of the creator of the new bucket.
+            type: string
+            enum:
+              - NONE
+              - APPLICATION
+              - USER
+            default: NONE
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          content:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the bucket item.
+                uri:
+                  type: string
+                  title: DID of the item. If applicable // optional
+                timestamp:
+                  type: string
+                  format: int64
+                  title: Timestamp of the last update. // optional
+                type:
+                  title: Type of the resource
+                  type: string
+                  enum:
+                    - None
+                    - DID
+                    - CID
+                  default: None
+              description: >-
+                BucketItem is a pointer to a single piece of content in a
+                bucket.
+            description: Content of the new bucket map of DIDs to CIDs.
+          content_acl:
+            type: object
+            additionalProperties:
+              type: object
+              properties:
+                encrypted_jwks:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    format: byte
+              title: AclJwks is a map of JWKs for a given Schema
+            description: JWKs of the new bucket.
+          timestamp:
+            type: string
+            format: int64
+            description: Timestamp of the new bucket.
   sonrio.sonr.bucket.Params:
     type: object
     description: Params defines the parameters for the module.
