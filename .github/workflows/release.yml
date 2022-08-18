@@ -245,6 +245,7 @@ jobs:
   ## ------------------------------------------------------------
   announce:
     name: 🔔 Announce to the World
+    if: 1 == 0 # Disabled for now, Error with Twitter publish which returns a 403
     runs-on: ubuntu-latest
     needs:
       - bind-motor-android
