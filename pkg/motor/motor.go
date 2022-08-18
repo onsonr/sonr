@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/internal/bucket"
@@ -47,6 +48,7 @@ type MotorNode interface {
 	NewBucketResolver(context context.Context, creator string, did string) (bucket.Bucket, error)
 	GetBucketItems(did string) ([]*bt.BucketItem, error)
 	GetBucketContent(did string, item *bt.BucketItem) (*bucket.BucketContent, error)
+	GetAllBucketContent(did string) ([]*bucket.BucketContent, error)
 	ResolveBucketsForBucket(did string) error
 	ResolveContentForBucket(did string) error
 }
@@ -69,6 +71,7 @@ type motorNodeImpl struct {
 
 	// query clients
 	schemaQueryClient st.QueryClient
+	bucketQueryClient bt.QueryClient
 
 	// resource management
 	Resources *motorResources
@@ -82,7 +85,7 @@ func EmptyMotor(id string) *motorNodeImpl {
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
-	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
+	mtr.Cosmos = client.NewClient(client.ConnEndpointType_LOCAL)
 
 	grpcConn, err := grpc.Dial(
 		mtr.Cosmos.GetRPCAddress(),
@@ -92,8 +95,11 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 
+	shell := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
-	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
+	mtr.bucketQueryClient = bt.NewQueryClient(grpcConn)
+
+	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.bucketQueryClient, mtr.schemaQueryClient, shell)
 
 	// Generate wallet
 	mtr.Wallet, err = mpc.GenerateWallet(options...)

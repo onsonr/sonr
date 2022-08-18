@@ -6,6 +6,7 @@ import (
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/motor/types"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
 func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, creator string, did string) (bucket.Bucket, error) {
@@ -38,4 +39,76 @@ func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, creator str
 	mtr.Resources.bucketStore[did] = b
 
 	return b, nil
+}
+
+func (mtr *motorNodeImpl) ResolveBucketsForBucket(did string) error {
+	addr, err := mtr.Wallet.Address()
+
+	if err != nil {
+		return err
+	}
+
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return errors.New("Cannot resolve content for bucket, not found")
+	}
+
+	bucket := mtr.Resources.bucketStore[did]
+	err = bucket.ResolveBuckets(addr)
+
+	return err
+}
+
+func (mtr *motorNodeImpl) ResolveContentForBucket(did string) error {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return errors.New("Cannot resolve content for bucket, not found")
+	}
+
+	bucket := mtr.Resources.bucketStore[did]
+	err := bucket.ResolveContent()
+
+	return err
+}
+
+func (mtr *motorNodeImpl) GetBucketItems(did string) ([]*bt.BucketItem, error) {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return nil, errors.New("Cannot resolve content for bucket, not found")
+	}
+
+	bucket := mtr.Resources.bucketStore[did]
+	items := bucket.GetBucketItems()
+
+	return items, nil
+}
+
+func (mtr *motorNodeImpl) GetBucketContent(did string, item *bt.BucketItem) (*bucket.BucketContent, error) {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return nil, errors.New("Cannot resolve content for bucket, not found")
+	}
+	bucket := mtr.Resources.bucketStore[did]
+	content, err := bucket.GetContentById(item.Uri)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return content, nil
+}
+
+func (mtr *motorNodeImpl) GetAllBucketContent(did string) ([]*bucket.BucketContent, error) {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return nil, errors.New("Cannot resolve content for bucket, not found")
+	}
+	b := mtr.Resources.bucketStore[did]
+	var bc []*bucket.BucketContent
+	items := b.GetBucketItems()
+	for _, item := range items {
+		content, err := b.GetContentById(item.Uri)
+		if err != nil {
+			return nil, err
+		}
+
+		bc = append(bc, content)
+	}
+
+	return bc, nil
 }

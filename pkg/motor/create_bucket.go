@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) CreateBucket(request mt.CreateBucketRequest) (bucket.Bucket, error) {
+func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBucketRequest) (bucket.Bucket, error) {
 
 	if request.Creator == "" {
 		return nil, errors.New("Invalid Address")
