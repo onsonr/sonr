@@ -268,14 +268,18 @@ jobs:
         id: tweet
         uses: snow-actions/tweet@v1.3.0
         with:
+          status: 💫 Woo-hoo - We just published a new release ${{ steps.info.outputs.tag_name }}!
+          media_paths: tmp/cover.png
+      - id: reply
+        uses: snow-actions/tweet@v1.3.0
+        with:
           status: |
-            💫 Woo-hoo! We just published a new release: ${{ steps.info.outputs.tag_name }}
-
             Find out more and view the changelog at:
             ${{ steps.info.outputs.html_url }}
 
             #release #sonr #motor #highway
-          media_paths: |
-            tmp/cover.png
-      - run: |
-          echo "${{ steps.tweet.outputs.response }}"
+          in_reply_to_status_id: ${{ fromJSON(steps.tweet.outputs.response).id_str }}
+      - name: Log Tweet Response
+        run: |
+          echo "Announcement Response: ${{ steps.tweet.outputs.response }}"
+          echo "Reply Response: ${{ steps.reply.outputs.response }}"
