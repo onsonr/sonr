@@ -9,11 +9,62 @@ on:
       - closed
 
 jobs:
+  ## ------------------------------------------------------------
+  ## [CHECK] Drafts release & Bumps version
+  ## ------------------------------------------------------------
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag_upload_url: ${{ steps.new_tag_release.outputs.upload_url }}
+      tag_upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Bump version and push tag
+        if: github.event.pull_request.merged == true
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        if: github.event.pull_request.merged == false
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Create a GitHub from New Tag
+        id: new_tag_release
+        if: github.event.pull_request.merged == true
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          draft: false
+          prerelease: false
+
+  ## ------------------------------------------------------------
+  ## [MOTOR] Build and release for iOS
+  ## ------------------------------------------------------------
   motor-bind-ios:
     name: Run Motor Bind iOS
     runs-on: macos-latest
+    needs:
+      - prepare-release
     steps:
-      - uses: actions/checkout@v3
+      # ---
+      # 1. Setup Environment
+      # ---
+      - name: Setup Environment
+        uses: actions/checkout@v3
       - run: mkdir -p build
         working-directory: ${{ github.workspace}}
       - id: tag
@@ -22,15 +73,16 @@ jobs:
         with:
           go-version: ~1.18
 
-      - name: Build Framework
+      # ---
+      # 2. Build Motor AAR Library
+      # ---
+      - name: Build iOS XCFramework for Motor
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR -o Motor.xcframework -v
         working-directory: ${{ github.workspace }}/bind/motor-mobile
-
-      - name: Compress Library
-        uses: a7ul/tar-action@v1.1.0
+      - uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
           command: c
@@ -39,6 +91,9 @@ jobs:
             ./Motor.xcframework
           outPath: build/motor-${{steps.tag.outputs.tag}}-ios.tar.gz
 
+      # ---
+      # 3. Upload to Github Release and Repository Dispatch
+      # ---
       - name: Upload to Github Release
         uses: meeDamian/github-release@2.0
         with:
@@ -52,36 +107,46 @@ jobs:
   #     #     event-type: new-ios-framework
   #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
+  ## ------------------------------------------------------------
+  ## [MOTOR] Build and release for Android
+  ## ------------------------------------------------------------
   motor-bind-android:
     name: Run Motor Bind Android
     runs-on: ubuntu-latest
+    needs:
+      - prepare-release
     steps:
-      - uses: actions/checkout@v3
+      # ---
+      # 1. Setup Environment
+      # ---
+      - name: Setup Environment
+        uses: actions/checkout@v3
       - run: mkdir -p build
         working-directory: ${{ github.workspace }}
-
       - id: tag
         uses: dawidd6/action-get-tag@v1
-
+      - uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r23c
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin" # See 'Supported distributions' for available options
           java-version: "17"
-
-      - name: Configure Golang w/ cache
-        uses: actions/setup-go@v3
+      - uses: actions/setup-go@v3
         with:
           go-version: ~1.18
 
-      - name: Build Framework
+      # ---
+      # 2. Build Motor AAR Library
+      # ---
+      - name: Build Motor AAR Library
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           gomobile bind -ldflags='-s -w' -target=android/arm64 -o io.sonr.motor.aar -v
         working-directory: ${{ github.workspace }}/bind/motor-mobile
 
-      - name: Compress Library
-        uses: a7ul/tar-action@v1.1.0
+      - uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
           command: c
@@ -90,6 +155,9 @@ jobs:
             ./io.sonr.motor.aar
           outPath: build/motor-${{steps.tag.outputs.tag}}-android.tar.gz
 
+      # ---
+      # 3. Upload to Github Release and Repository Dispatch
+      # ---
       - name: Upload to Github Release
         uses: meeDamian/github-release@2.0
         with:
@@ -103,27 +171,35 @@ jobs:
   #     #     event-type: new-android-framework
   #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
+  ## ------------------------------------------------------------
+  ## [HIGHWAY] Build and release for linux, macos
+  ## ------------------------------------------------------------
   blockchain-build:
     name: "Release Latest Blockchain Daemon"
     runs-on: ubuntu-latest
+    needs:
+      - prepare-release
     steps:
-      - name: Checkout
+      # ---
+      # 1. Setup Environment
+      # ---
+      - name: Setup Environment
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Prepare Release Variables
-        id: vars
+      - id: vars
         uses: ignite-hq/cli/actions/release/vars@develop
 
-      - name: Issue Release Assets
+      # ---
+      # 2. Build Blockchain Daemon
+      # ---
+      - name: Build Blockchain Daemon
         uses: ignite-hq/cli/actions/cli@develop
         if: ${{ steps.vars.outputs.should_release == 'true' }}
         with:
           args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
-
-      - name: Delete the "latest" Release
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         if: ${{ steps.vars.outputs.is_release_type_latest == 'true' }}
         with:
           tag_name: ${{ steps.vars.outputs.tag_name }}
@@ -131,6 +207,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # ---
+      # 3. Upload to Github Release and Send Tweet
+      # ---
       - name: Publish the Release
         uses: softprops/action-gh-release@v1
         if: ${{ steps.vars.outputs.should_release == 'true' }}
