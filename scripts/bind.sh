@@ -20,7 +20,7 @@ while getopts "iaw" opt; do
       echo "🔷 Binding Android Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
       gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -v
-      rm -rf io.sonr.motor-sources.jar
+      rm -rf ${BUILDDIR}/io.sonr.motor-sources.jar
       tar -czvf ${ANDROID_TAR_BALL} ${ANDROID_ARTIFACT}
       rm -rf ${ANDROID_ARTIFACT}
       echo "✅ Android Tarball written to: ${ANDROID_TAR_BALL}"

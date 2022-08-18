@@ -1,4 +1,4 @@
-name: Release Workflow
+name: Official Release Workflow
 
 on:
   push:
@@ -10,10 +10,10 @@ on:
 
 jobs:
   ## ------------------------------------------------------------
-  ## [CHECK] Drafts release & Bumps version
+  ## [PRE-RUN] Drafts release & Bumps version
   ## ------------------------------------------------------------
   prepare-release:
-    name: Prepare Release
+    name: ⏰ Prepare Official Release
     runs-on: ubuntu-latest
     outputs:
       new_tag_upload_url: ${{ steps.new_tag_release.outputs.upload_url }}
@@ -39,7 +39,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag: ${{ github.ref }}
-          name: Official Release - ${{steps.tag.outputs.tag}}
+          name: ${{steps.tag.outputs.tag}}
           draft: false
           prerelease: false
 
@@ -51,15 +51,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Official Release - ${{ steps.tag_version.outputs.new_tag }}
+          name: ${{ steps.tag_version.outputs.new_tag }}
           draft: false
           prerelease: false
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for iOS
   ## ------------------------------------------------------------
-  motor-bind-ios:
-    name: Run Motor Bind iOS
+  bind-motor-ios:
+    name: 🍎 Bind Motor Node for iOS
     runs-on: macos-latest
     needs:
       - prepare-release
@@ -78,22 +78,16 @@ jobs:
           go-version: ~1.18
 
       # ---
-      # 2. Build Motor AAR Library
+      # 2. Build Motor xcFramework and Upload to GitHub Release
       # ---
       - name: Build iOS XCFramework for Motor
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           sh scripts/bind.sh -i
-
-      # ---
-      # 3. Upload to Github Release and Repository Dispatch
-      # ---
-      - name: Upload to Github Release
-        uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: build/
+          gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #     # - name: motor-ios Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:
@@ -105,8 +99,8 @@ jobs:
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Android
   ## ------------------------------------------------------------
-  motor-bind-android:
-    name: Run Motor Bind Android
+  bind-motor-android:
+    name: 🤖 Bind Motor Node for Android
     runs-on: ubuntu-latest
     needs:
       - prepare-release
@@ -133,25 +127,17 @@ jobs:
           go-version: ~1.18
 
       # ---
-      # 2. Build Motor AAR Library
+      # 2. Build Motor AAR Library and Upload to GitHub Release
       # ---
       - name: Build Motor AAR Library
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           sh scripts/bind.sh -a
+          gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-
-      # ---
-      # 3. Upload to Github Release and Repository Dispatch
-      # ---
-      - name: Upload to Github Release
-        uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: build/
-          allow_override: true
   #     # - name: motor-android Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:
@@ -163,8 +149,8 @@ jobs:
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Wasm
   ## ------------------------------------------------------------
-  motor-bind-wasm:
-    name: Run Motor Bind Wasm
+  bind-motor-wasm:
+    name: 🌏 Bind Motor Node for Web
     runs-on: ubuntu-latest
     needs:
       - prepare-release
@@ -191,20 +177,14 @@ jobs:
           go-version: ~1.18
 
       # ---
-      # 2. Build Motor JS Library
+      # 2. Build Motor JS Library and Upload to GitHub Release
       # ---
       - name: Build Motor JS Library
-        run: sh scripts/bind.sh -w
-
-      # ---
-      # 3. Upload to Github Release and Repository Dispatch
-      # ---
-      - name: Upload to Github Release
-        uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: build/
-          allow_override: true
+        run: |
+          sh scripts/bind.sh -w
+          gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #     # - name: motor-android Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:
@@ -216,8 +196,8 @@ jobs:
   ## ------------------------------------------------------------
   ## [HIGHWAY] Build and release for linux, macos
   ## ------------------------------------------------------------
-  blockchain-build:
-    name: "Release Latest Blockchain Daemon"
+  build-highway:
+    name: ⛓️ Build Highway Node for Linux, MacOS
     runs-on: ubuntu-latest
     needs:
       - prepare-release
@@ -261,3 +241,37 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ## ------------------------------------------------------------
+  ## [POST-RUN] Announce to Social Media and Post Release Notes
+  ## ------------------------------------------------------------
+  announce:
+    name: 🔔 Announce to the World
+    runs-on: ubuntu-latest
+    needs:
+      - bind-motor-android
+      - bind-motor-wasm
+      - bind-motor-ios
+      - build-highway
+    steps:
+      - name: Gets latest created release info
+        id: info
+        uses: jossef/action-latest-release-info@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Tweet
+        uses: snow-actions/tweet@v1.3.0
+        with:
+          status: |
+            💫 Woo-hoo! We have published a new release - ${{ steps.info.outputs.tag_name }}
+
+            Find out more and view the changelog at:
+            ${{ steps.info.outputs.html_url }}
+            #release #sonr
+          media:
+            - ${{ steps.info.outputs.assets[0].browser_download_url }}
+        env:
+          CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
+          CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
