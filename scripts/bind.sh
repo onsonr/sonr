@@ -7,34 +7,31 @@ MOTOR_LIB_DIR=${PROJECT_DIR}/bind/motor-mobile
 MOTOR_WASM_DIR=${PROJECT_DIR}/bind/motor-wasm
 
 while getopts "iaw" opt; do
+  echo "🔷 Setting up build Environment..."
+  VERSION=$(git describe --tags --abbrev=0)
+  BUILDDIR=${PROJECT_DIR}/build
+  mkdir -p ${BUILDDIR}
+
   case $opt in
     a)
-      echo "🔷 Setting up build Environment..."
-      ANDROID_OUT=${PROJECT_DIR}/build/android
-      ANDROID_ARTIFACT=${ANDROID_OUT}/io.sonr.motor.aar
-      mkdir -p ${ANDROID_OUT}
-
-      echo "🔷 Binding Android..."
+      ANDROID_ARTIFACT=${BUILDDIR}/io.sonr.motor.aar
+      echo "🔷 Binding Android Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
       gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -v
+      tar -czvf ${BUILDDIR}/motor-${VERSION}-android.tar.gz ${ANDROID_ARTIFACT}
+      rm -rf ${ANDROID_ARTIFACT}
       ;;
     i)
-      echo "🔷 Setting up build Environment..."
-      IOS_OUT=${PROJECT_DIR}/build/ios
-      IOS_ARTIFACT=${IOS_OUT}/SonrMotor.xcframework
-      mkdir -p ${IOS_OUT}
-
-      echo "🔷 Binding iOS..."
+      IOS_ARTIFACT=${BUILDDIR}/Motor.xcframework
+      echo "🔷 Binding iOS Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
-      gomobile bind -ldflags='-s -w' -target=ios/arm64 -o ${IOS_ARTIFACT} -v
+      gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR  -o ${IOS_ARTIFACT} -v
+      tar -czvf ${BUILDDIR}/motor-${VERSION}-ios.tar.gz ${IOS_ARTIFACT}
+      rm -rf ${IOS_ARTIFACT}
       ;;
     w)
-      echo "🔷 Setting up build Environment..."
-      WASM_OUT=${PROJECT_DIR}/build/js
-      WASM_ARTIFACT=${WASM_OUT}/sonr-motor.wasm
-      mkdir -p ${WASM_OUT}
-
-      echo "🔷 Binding Web..."
+      WASM_ARTIFACT=${BUILDDIR}/sonr-motor.wasm
+      echo "🔷 Binding WebAssembly Artifact Version ${VERSION}..."
       cd ${MOTOR_WASM_DIR}
       GOOS=js GOARCH=wasm go build -tags wasm -o ${WASM_ARTIFACT} -v
       ;;

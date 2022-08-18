@@ -51,6 +51,7 @@ jobs:
           draft: false
           prerelease: false
 
+
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for iOS
   ## ------------------------------------------------------------
@@ -99,6 +100,7 @@ jobs:
   #     #     repository: sonr-io/motor-ios
   #     #     event-type: new-ios-framework
   #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Android
@@ -158,6 +160,7 @@ jobs:
   #     #     repository: sonr-io/motor-android
   #     #     event-type: new-android-framework
   #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
 
   ## ------------------------------------------------------------
   ## [HIGHWAY] Build and release for linux, macos
