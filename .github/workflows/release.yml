@@ -27,6 +27,10 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - id: tag
+        if: github.event.pull_request.merged == false
+        uses: dawidd6/action-get-tag@v1
+
       - name: Create Release
         id: create_release
         if: github.event.pull_request.merged == false
@@ -35,7 +39,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          name: Official Release - ${{steps.tag.outputs.tag}}
           draft: false
           prerelease: false
 
@@ -47,7 +51,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          name: Official Release - ${{ steps.tag_version.outputs.new_tag }}
           draft: false
           prerelease: false
 
@@ -135,7 +139,7 @@ jobs:
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
-          sh scripts/bind.sh -aw
+          sh scripts/bind.sh -a
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
@@ -147,6 +151,60 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: build/
+          allow_override: true
+  #     # - name: motor-android Repository Dispatch
+  #     #   uses: peter-evans/repository-dispatch@v2
+  #     #   with:
+  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
+  #     #     repository: sonr-io/motor-android
+  #     #     event-type: new-android-framework
+  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
+  ## ------------------------------------------------------------
+  ## [MOTOR] Build and release for Wasm
+  ## ------------------------------------------------------------
+  motor-bind-wasm:
+    name: Run Motor Bind Wasm
+    runs-on: ubuntu-latest
+    needs:
+      - prepare-release
+    steps:
+      # ---
+      # 1. Setup Environment
+      # ---
+      - name: Setup Environment
+        uses: actions/checkout@v3
+      - run: mkdir -p build
+        working-directory: ${{ github.workspace }}
+      - id: tag
+        uses: dawidd6/action-get-tag@v1
+      - id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r23c
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "17"
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ~1.18
+
+      # ---
+      # 2. Build Motor JS Library
+      # ---
+      - name: Build Motor JS Library
+        run: sh scripts/bind.sh -w
+
+      # ---
+      # 3. Upload to Github Release and Repository Dispatch
+      # ---
+      - name: Upload to Github Release
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: build/
+          allow_override: true
   #     # - name: motor-android Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:
