@@ -40,6 +40,7 @@ type MotorNode interface {
 	GetBucketItems(did string) ([]*bt.BucketItem, error)
 	GetBucketContent(did string, item *bt.BucketItem) (*bucket.BucketContent, error)
 	GetAllBucketContent(did string) ([]*bucket.BucketContent, error)
+	AddBucketServiceEndpoint(did string) error
 	ResolveBucketsForBucket(did string) error
 	ResolveContentForBucket(did string) error
 }
