@@ -2,6 +2,7 @@
 
 VERSION=$1
 URL=$2
+OUT_PATH=$3
 JSON_FMT='{ "layers": { "tag": { "text": "version - %s" }, "changelog": { "text": "Full Release notes: %s" } } }'
 JSON=$(printf "$JSON_FMT" "$VERSION" "$URL")
 
@@ -17,5 +18,5 @@ sleep 5
 GET_IMAGE_RSP=$(curl -X GET -H "Authorization: ${PLACID_APP_BEARER}" https://api.placid.app/api/rest/images/${IMAGE_ID})
 echo $GET_IMAGE_RSP
 IMAGE_URL=$(echo $GET_IMAGE_RSP | jq -r '.image_url')
-curl $IMAGE_URL -o tmp/cover.png
-echo "✅ Downloaded image to tmp/cover.png"
+curl $IMAGE_URL -o $OUT_PATH
+echo "✅ Downloaded image to $OUT_PATH"

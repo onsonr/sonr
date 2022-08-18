@@ -258,7 +258,7 @@ jobs:
         uses: jossef/action-latest-release-info@v1.1.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }}
+      - run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }} ${{ github.workspace }}/tmp/cover.png
 
       - name: Publish Tweet
         uses: snow-actions/tweet@v1.3.0
@@ -270,7 +270,7 @@ jobs:
             ${{ steps.info.outputs.html_url }}
 
             #release #sonr #motor #highway
-          media_paths: tmp/cover.png
+          media_paths: ${{ github.workspace }}/tmp/cover.png
         env:
           CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
           CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
