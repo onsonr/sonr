@@ -53,6 +53,11 @@ jobs:
           cd $GITHUB_WORKSPACE
           mkdir -p build
 
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "17"
+
       - name: Configure Golang w/ cache
         uses: actions/setup-go@v3
         with:
