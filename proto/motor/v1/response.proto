@@ -7,6 +7,9 @@ import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
 
+option java_package = "io.sonr.types";
+option java_multiple_files = true;
+
 message InitializeResponse {
   bool success = 1;
 }

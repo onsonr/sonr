@@ -23,6 +23,7 @@ chain
 # Production
 /build
 bind/dist
+gen/
 
 # Generated files
 .docusaurus
