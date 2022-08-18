@@ -8,6 +8,9 @@ import "bucket/where_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
+option java_package = "io.sonr.types";
+option java_multiple_files = true;
+
 // GenesisState defines the bucket module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];

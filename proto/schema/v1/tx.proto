@@ -8,6 +8,9 @@ import "schema/v1/what_is.proto";
 // this line is used by starport scaffolding # proto/tx/import
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
+option java_package = "io.sonr.types";
+option java_multiple_files = true;
+
 // Msg defines the Msg service.
 service Msg {
   rpc CreateSchema(MsgCreateSchema) returns (MsgCreateSchemaResponse);
