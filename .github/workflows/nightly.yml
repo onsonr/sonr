@@ -175,7 +175,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
+      - id: tag
+        uses: dawidd6/action-get-tag@v1
       - id: vars
         uses: ignite-hq/cli/actions/release/vars@develop
 
@@ -191,10 +192,8 @@ jobs:
       # 3. Upload to Github Release and Send Tweet
       # ---
       - name: Publish the Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.vars.outputs.tag_name }}
-          files: release/*
-          prerelease: false
+        if: ${{ steps.vars.outputs.should_release == 'true' }}
+        run: |
+          gh release upload ${{ steps.tag.outputs.tag }} release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
