@@ -5,25 +5,38 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	shell "github.com/ipfs/go-ipfs-api"
+	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 type motorResources struct {
 	config            *client.Client
 	schemaQueryClient st.QueryClient
-
-	whatIsStore map[string]*st.WhatIs
-	schemaStore map[string]*st.SchemaDefinition
+	bucketQueryClient bt.QueryClient
+	shell             *shell.Shell
+	whatIsStore       map[string]*st.WhatIs
+	whereIsStore      map[string]*bt.WhereIs
+	schemaStore       map[string]*st.SchemaDefinition
+	bucketStore       map[string]bucket.Bucket
 }
 
-func newMotorResources(config *client.Client, schemaQueryClient st.QueryClient) *motorResources {
+func newMotorResources(
+	config *client.Client,
+	bucketQueryClient bt.QueryClient,
+	schemaQueryClient st.QueryClient,
+	shell *shell.Shell) *motorResources {
 	return &motorResources{
 		config:            config,
 		schemaQueryClient: schemaQueryClient,
-
-		whatIsStore: make(map[string]*st.WhatIs),
-		schemaStore: make(map[string]*st.SchemaDefinition),
+		bucketQueryClient: bucketQueryClient,
+		shell:             shell,
+		bucketStore:       make(map[string]bucket.Bucket),
+		whatIsStore:       make(map[string]*st.WhatIs),
+		whereIsStore:      make(map[string]*bt.WhereIs),
+		schemaStore:       make(map[string]*st.SchemaDefinition),
 	}
 }
 

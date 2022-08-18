@@ -14,6 +14,9 @@ type Bucket interface {
 	*/
 	GetContentById(id string) (*BucketContent, error)
 
+	/*
+		Access the `items` of the `WhereIs`
+	*/
 	GetBucketItems() []*bt.BucketItem
 
 	/*
