@@ -9,11 +9,9 @@ import (
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	"github.com/sonr-io/sonr/pkg/host"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -31,7 +29,7 @@ type MotorNode interface {
 	GetPubKey() *secp256k1.PubKey
 	GetDID() did.DID
 	GetDIDDocument() did.Document
-	GetHost() host.SonrHost
+	// GetHost() host.SonrHost
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
 	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
@@ -50,7 +48,9 @@ type motorNodeImpl struct {
 	PubKey      *secp256k1.PubKey
 	DID         did.DID
 	DIDDocument did.Document
-	SonrHost    host.SonrHost
+
+	// Disable for now as per https://github.com/golang/go/issues/40569
+	// SonrHost    host.SonrHost
 
 	// Sharding
 	deviceShard   []byte
@@ -114,10 +114,10 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.DID = *baseDid
 
 	// It creates a new host.
-	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
-	if err != nil {
-		return err
-	}
+	// mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
+	// if err != nil {
+	// 	return err
+	// }
 
 	// Create motorNodeImpl
 	return nil
@@ -142,12 +142,14 @@ func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
 func (m *motorNodeImpl) GetDID() did.DID {
 	return m.DID
 }
+
 func (m *motorNodeImpl) GetDIDDocument() did.Document {
 	return m.DIDDocument
 }
-func (m *motorNodeImpl) GetHost() host.SonrHost {
-	return m.SonrHost
-}
+
+// func (m *motorNodeImpl) GetHost() host.SonrHost {
+// 	return m.SonrHost
+// }
 
 // Checking the balance of the wallet.
 func (m *motorNodeImpl) GetBalance() int64 {
