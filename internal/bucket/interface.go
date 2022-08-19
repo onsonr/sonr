@@ -22,6 +22,10 @@ type Bucket interface {
 	*/
 	GetBucketItems() []*bt.BucketItem
 
+	GetBuckets() []*BucketContent
+
+	GetContent() []*BucketContent
+
 	/*
 		Checks if a given uri for existence in the given bucket
 	*/

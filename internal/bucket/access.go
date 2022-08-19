@@ -25,3 +25,25 @@ func (b *bucketImpl) GetBucketItems() []*bt.BucketItem {
 func (b *bucketImpl) ContentExists(id string) bool {
 	return b.contentCache[id] == nil
 }
+
+func (b *bucketImpl) GetContent() []*BucketContent {
+	var content []*BucketContent = make([]*BucketContent, len(b.contentCache))
+	for _, v := range b.contentCache {
+		if v.ContentType == bt.ResourceIdentifier_CID {
+			content = append(content, v)
+		}
+	}
+
+	return content
+}
+
+func (b *bucketImpl) GetBuckets() []*BucketContent {
+	var content []*BucketContent = make([]*BucketContent, len(b.contentCache))
+	for _, v := range b.contentCache {
+		if v.ContentType == bt.ResourceIdentifier_DID {
+			content = append(content, v)
+		}
+	}
+
+	return content
+}
