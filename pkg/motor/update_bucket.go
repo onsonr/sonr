@@ -1,12 +1,14 @@
 package motor
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/pkg/motor/types"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/tx"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
@@ -63,6 +65,31 @@ func (mtr *motorNodeImpl) UpdateBucket(request mt.UpdateBucketRequest) (bucket.B
 		mtr.Resources.bucketQueryClient)
 
 	mtr.Resources.bucketStore[request.Did] = b
+
+	return b, nil
+}
+
+func (mtr *motorNodeImpl) UpdateBucketItems(context context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error) {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return nil, errors.New("Cannot resolve content for bucket, not found")
+	}
+
+	wi := mtr.Resources.whereIsStore[did]
+
+	req := types.UpdateBucketRequest{
+		Creator:    wi.Creator,
+		Did:        wi.Did,
+		Label:      wi.Label,
+		Role:       wi.Role,
+		Visibility: wi.Visibility,
+		Content:    items,
+	}
+
+	b, err := mtr.UpdateBucket(req)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return b, nil
 }

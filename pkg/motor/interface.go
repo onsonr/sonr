@@ -36,12 +36,8 @@ type MotorNode interface {
 
 	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
 	QueryWhereIs(context.Context, mt.QueryWhereIsRequest) (mt.QueryWhereIsResponse, error)
-	NewBucketResolver(context context.Context, creator string, did string) (bucket.Bucket, error)
-	AddBucketServiceEndpoint(did string) error
-	UpdateBucketItems(context context.Context, did string) (bucket.Bucket, error)
-	GetBucketItems(did string) ([]*bt.BucketItem, error)
-	GetBucketContent(did string, item *bt.BucketItem) (*bucket.BucketContent, error)
-	GetAllBucketContent(did string) ([]*bucket.BucketContent, error)
-	ResolveBucketsForBucket(did string) error
-	ResolveContentForBucket(did string) error
+
+	UpdateBucketItems(context context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
+	GetBucket(context context.Context, did string) (bucket.Bucket, error)
+	GetBuckets(creator string) ([]bucket.Bucket, error)
 }
