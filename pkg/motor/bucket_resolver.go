@@ -23,11 +23,11 @@ func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, did string)
 		}
 	}
 
-	wi := mtr.Resources.whereIsStore[did]
-	s := mtr.Resources.shell
-	bq := mtr.Resources.bucketQueryClient
-
-	b := bucket.New(addr, wi, s, bq)
+	b := bucket.New(
+		addr,
+		mtr.Resources.whereIsStore[did],
+		mtr.Resources.shell,
+		mtr.Resources.bucketQueryClient)
 
 	mtr.Resources.bucketStore[did] = b
 
