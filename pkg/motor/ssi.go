@@ -4,7 +4,12 @@ import (
 	"errors"
 )
 
+/*
+	Adds a reference to the bucket as a service endpoint on the registered did document
+	Such functionality might be better on chain and not going through
+*/
 func (mtr *motorNodeImpl) AddBucketServiceEndpoint(id string) error {
+
 	if mtr.DIDDocument == nil {
 		return errors.New("Document is not defined")
 	}
@@ -15,7 +20,13 @@ func (mtr *motorNodeImpl) AddBucketServiceEndpoint(id string) error {
 	bucket := mtr.Resources.bucketStore[id]
 	se := bucket.CreateBucketServiceEndpoint()
 
-	mtr.DIDDocument.AddService(se)
+	if mtr.DIDDocument.GetServices().FindByID(se.ID) == nil {
+		mtr.DIDDocument.AddService(se)
+	}
 
+	_, err := updateWhoIs(mtr)
+	if err != nil {
+		return err
+	}
 	return nil
 }
