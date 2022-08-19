@@ -71,6 +71,20 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 	return definition, nil
 }
 
+func (r *motorResources) StoreWhereIs(whereis *bt.WhereIs) bool {
+	_, ok := r.whatIsStore[whereis.Did]
+	r.whereIsStore[whereis.Did] = whereis
+
+	return ok
+}
+
+func (r *motorResources) StoreBucket(did string, b bucket.Bucket) bool {
+	_, ok := r.whatIsStore[did]
+	r.bucketStore[did] = b
+
+	return ok
+}
+
 func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition, bool) {
 	var whatIs *st.WhatIs
 	if w, ok := r.whatIsStore[did]; !ok {
