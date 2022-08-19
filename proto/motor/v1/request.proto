@@ -106,6 +106,7 @@ message CreateBucketRequest {
 
 message UpdateBucketRequest {
   string creator = 1;
+  string did = 2;
   string label = 3;
   sonrio.sonr.bucket.BucketVisibility visibility = 4;
   sonrio.sonr.bucket.BucketRole role = 5;
