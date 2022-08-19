@@ -45,7 +45,7 @@ func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBuc
 	}
 
 	if cbresp.Status != http.StatusAccepted {
-		return nil, errors.New("Non success status from Create bucket Request")
+		return nil, fmt.Errorf("non success status from Create bucket Reques: %d", cbresp.Status)
 	}
 
 	mtr.Resources.whereIsStore[cbresp.WhereIs.Did] = cbresp.WhereIs
@@ -60,6 +60,8 @@ func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBuc
 		mtr.Resources.bucketQueryClient)
 
 	mtr.Resources.bucketStore[cbresp.WhereIs.Did] = b
+
+	mtr.AddBucketServiceEndpoint(cbresp.WhereIs.Did)
 
 	return b, nil
 }
