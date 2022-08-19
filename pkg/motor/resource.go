@@ -1,6 +1,8 @@
 package motor
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -8,6 +10,7 @@ import (
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/pkg/motor/types"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
@@ -100,4 +103,44 @@ func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition
 	}
 
 	return nil, nil, false
+}
+
+func (r *motorResources) GetWhereIs(ctx context.Context, did string, address string) error {
+	if did == "" {
+		return errors.New("did invalid for Get WhereIs by Creator request")
+	}
+
+	resp, err := r.bucketQueryClient.WhereIs(ctx, &bt.QueryGetWhereIsRequest{
+		Creator: address,
+		Did:     did,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	res := types.QueryWhereIsResponse{
+		WhereIs: &resp.WhereIs,
+	}
+
+	r.whereIsStore[res.WhereIs.Did] = res.WhereIs
+
+	return nil
+}
+
+func (r *motorResources) GetWhereIsByCreator(ctx context.Context, address string) error {
+	res, err := r.bucketQueryClient.WhereIsByCreator(context.Background(), &bt.QueryGetWhereIsByCreatorRequest{
+		Creator:    address,
+		Pagination: nil,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	for _, wi := range res.WhereIs {
+		r.whereIsStore[wi.Did] = &wi
+	}
+
+	return nil
 }

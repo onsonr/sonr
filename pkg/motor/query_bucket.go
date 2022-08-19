@@ -2,26 +2,22 @@ package motor
 
 import (
 	"context"
-
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
-	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) QueryWhereIs(ctx context.Context, req mt.QueryWhereIsRequest) (mt.QueryWhereIsResponse, error) {
-	resp, err := mtr.Resources.bucketQueryClient.WhereIs(ctx, &bt.QueryGetWhereIsRequest{
-		Creator: req.Creator,
-		Did:     req.Did,
-	})
-
+func (mtr *motorNodeImpl) QueryWhereIs(ctx context.Context, did string) error {
+	err := mtr.Resources.GetWhereIs(ctx, did, mtr.Address)
 	if err != nil {
-		return mt.QueryWhereIsResponse{}, err
+		return err
 	}
 
-	res := mt.QueryWhereIsResponse{
-		WhereIs: &resp.WhereIs,
+	return nil
+}
+
+func (mtr *motorNodeImpl) QueryWhereIsByCreator(ctx context.Context) error {
+	err := mtr.Resources.GetWhereIsByCreator(ctx, mtr.Address)
+	if err != nil {
+		return err
 	}
 
-	mtr.Resources.whereIsStore[res.WhereIs.Did] = res.WhereIs
-
-	return res, nil
+	return nil
 }

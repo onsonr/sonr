@@ -5,8 +5,6 @@ import (
 	"errors"
 
 	"github.com/sonr-io/sonr/internal/bucket"
-	"github.com/sonr-io/sonr/pkg/motor/types"
-	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
 func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, did string) (bucket.Bucket, error) {
@@ -19,17 +17,12 @@ func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, did string)
 	}
 
 	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
-		wiReq, err := mtr.QueryWhereIs(context, types.QueryWhereIsRequest{
-			Creator: addr,
-			Did:     did,
-		})
-
+		err := mtr.QueryWhereIs(context, did)
 		if err != nil {
 			return nil, err
 		}
-
-		mtr.Resources.whereIsStore[did] = wiReq.WhereIs
 	}
+
 	wi := mtr.Resources.whereIsStore[did]
 	s := mtr.Resources.shell
 	bq := mtr.Resources.bucketQueryClient
@@ -43,16 +36,14 @@ func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, did string)
 
 func (mtr *motorNodeImpl) GetBucket(context context.Context, did string) (bucket.Bucket, error) {
 	addr := mtr.GetAddress()
-	if _, ok := mtr.Resources.bucketStore[did]; !ok {
-		wi, err := mtr.QueryWhereIs(context, types.QueryWhereIsRequest{
-			Creator: addr,
-			Did:     did,
-		})
+	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
+		err := mtr.QueryWhereIs(context, did)
+		wi := mtr.Resources.whereIsStore[did]
 
 		if err != nil {
 			return nil, err
 		}
-		b := bucket.New(addr, wi.WhereIs, mtr.Resources.shell, mtr.bucketQueryClient)
+		b := bucket.New(addr, wi, mtr.Resources.shell, mtr.bucketQueryClient)
 
 		err = b.ResolveBuckets(addr)
 		if err != nil {
@@ -72,32 +63,20 @@ func (mtr *motorNodeImpl) GetBucket(context context.Context, did string) (bucket
 	return mtr.Resources.bucketStore[did], nil
 }
 
+/*
+	Takes the whereIs store and checks for a matching bucket in the cache, if its not present it will create it and get its sub buckets
+	Does not query for new buckets, only respects what is currently present in the store
+*/
 func (mtr *motorNodeImpl) GetBuckets(context context.Context) ([]bucket.Bucket, error) {
-
 	addr := mtr.GetAddress()
-	res, err := mtr.Resources.bucketQueryClient.WhereIsByCreator(context, &bt.QueryGetWhereIsByCreatorRequest{
-		Creator:    addr,
-		Pagination: nil,
-	})
 
-	if err != nil {
-		return nil, err
-	}
-	var buckets []bucket.Bucket = make([]bucket.Bucket, len(res.WhereIs))
-	for _, wi := range res.WhereIs {
+	var buckets []bucket.Bucket = make([]bucket.Bucket, len(mtr.Resources.whereIsStore))
+	for _, wi := range mtr.Resources.whereIsStore {
 		did := wi.Did
 		if _, ok := mtr.Resources.bucketStore[did]; !ok {
-			wi, err := mtr.QueryWhereIs(context, types.QueryWhereIsRequest{
-				Creator: addr,
-				Did:     did,
-			})
+			b := bucket.New(addr, wi, mtr.Resources.shell, mtr.bucketQueryClient)
 
-			if err != nil {
-				return nil, err
-			}
-			b := bucket.New(addr, wi.WhereIs, mtr.Resources.shell, mtr.bucketQueryClient)
-
-			err = b.ResolveBuckets(addr)
+			err := b.ResolveBuckets(addr)
 			if err != nil {
 				return nil, err
 			}
