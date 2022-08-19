@@ -8,26 +8,24 @@ import (
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/motor/types"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/tx"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) UpdateBucket(request mt.UpdateBucketRequest) (bucket.Bucket, error) {
-	if request.Creator == "" {
-		return nil, errors.New("Invalid Address")
+func (mtr *motorNodeImpl) UpdateBucket(label string, did string, role bt.BucketRole, visibility bt.BucketVisibility, content []*bt.BucketItem) (bucket.Bucket, error) {
+	if mtr.Address == "" {
+		return nil, errors.New("invalid Address")
 	}
 
-	if request.Label == "" {
-		return nil, errors.New("Label nust be defined")
+	if label == "" {
+		return nil, errors.New("label nust be defined")
 	}
 
-	createWhereIsRequest := bt.NewMsgUpdateWhereIs(request.Creator, request.Did)
-	createWhereIsRequest.Label = request.Label
-	createWhereIsRequest.Role = request.Role
-	createWhereIsRequest.Visibility = request.Visibility
-	createWhereIsRequest.Content = request.Content
+	createWhereIsRequest := bt.NewMsgUpdateWhereIs(mtr.Address, did)
+	createWhereIsRequest.Label = label
+	createWhereIsRequest.Role = role
+	createWhereIsRequest.Visibility = visibility
+	createWhereIsRequest.Content = content
 
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.UpdateWhereIs", createWhereIsRequest)
 	if err != nil {
@@ -57,35 +55,58 @@ func (mtr *motorNodeImpl) UpdateBucket(request mt.UpdateBucketRequest) (bucket.B
 	if cbresp.Status != http.StatusAccepted {
 		return nil, errors.New("Non success status from Update bucket Request")
 	}
-	mtr.Resources.bucketStore[request.Did] = nil
+	mtr.Resources.bucketStore[did] = nil
 
 	b := bucket.New(addr,
 		mtr.Resources.whereIsStore[cbresp.WhereIs.Did],
 		mtr.Resources.shell,
 		mtr.Resources.bucketQueryClient)
 
-	mtr.Resources.bucketStore[request.Did] = b
+	mtr.Resources.bucketStore[did] = b
 
 	return b, nil
 }
 
 func (mtr *motorNodeImpl) UpdateBucketItems(context context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error) {
 	if _, ok := mtr.Resources.bucketStore[did]; !ok {
-		return nil, errors.New("Cannot resolve content for bucket, not found")
+		return nil, errors.New("cannot resolve content for bucket, not found")
 	}
 
 	wi := mtr.Resources.whereIsStore[did]
 
-	req := types.UpdateBucketRequest{
-		Creator:    wi.Creator,
-		Did:        wi.Did,
-		Label:      wi.Label,
-		Role:       wi.Role,
-		Visibility: wi.Visibility,
-		Content:    items,
+	b, err := mtr.UpdateBucket(wi.Label, did, wi.Role, wi.Visibility, items)
+
+	if err != nil {
+		return nil, err
 	}
 
-	b, err := mtr.UpdateBucket(req)
+	return b, nil
+}
+
+func (mtr *motorNodeImpl) UpdateBucketLabel(context context.Context, did string, label string) (bucket.Bucket, error) {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return nil, errors.New("cannot resolve content for bucket, not found")
+	}
+
+	wi := mtr.Resources.whereIsStore[did]
+
+	b, err := mtr.UpdateBucket(label, did, wi.Role, wi.Visibility, wi.Content)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func (mtr *motorNodeImpl) UpdateBucketVisibility(context context.Context, did string, visibility bt.BucketVisibility) (bucket.Bucket, error) {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return nil, errors.New("cannot resolve content for bucket, not found")
+	}
+
+	wi := mtr.Resources.whereIsStore[did]
+
+	b, err := mtr.UpdateBucket(wi.Label, did, wi.Role, visibility, wi.Content)
 
 	if err != nil {
 		return nil, err
