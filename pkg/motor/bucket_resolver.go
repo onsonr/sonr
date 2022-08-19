@@ -122,7 +122,7 @@ func (mtr *motorNodeImpl) UpdateBucketItems(context context.Context, did string,
 
 	bi := make([]*bt.BucketItem, len(wi.Content))
 
-	copy(wi.Content, bi)
+	bi = append(wi.Content)
 
 	bi = append(bi, items...)
 
