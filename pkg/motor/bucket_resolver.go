@@ -112,3 +112,33 @@ func (mtr *motorNodeImpl) GetAllBucketContent(did string) ([]*bucket.BucketConte
 
 	return bc, nil
 }
+
+func (mtr *motorNodeImpl) UpdateBucketItems(context context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error) {
+	if _, ok := mtr.Resources.bucketStore[did]; !ok {
+		return nil, errors.New("Cannot resolve content for bucket, not found")
+	}
+
+	wi := mtr.Resources.whereIsStore[did]
+
+	bi := make([]*bt.BucketItem, len(wi.Content))
+
+	copy(wi.Content, bi)
+
+	bi = append(bi, items...)
+
+	req := types.UpdateBucketRequest{
+		Creator:    wi.Creator,
+		Did:        wi.Did,
+		Label:      wi.Label,
+		Role:       wi.Role,
+		Visibility: wi.Visibility,
+		Content:    bi,
+	}
+	b, err := mtr.UpdateBucket(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
