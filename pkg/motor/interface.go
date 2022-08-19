@@ -39,5 +39,5 @@ type MotorNode interface {
 
 	UpdateBucketItems(context context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
 	GetBucket(context context.Context, did string) (bucket.Bucket, error)
-	GetBuckets(creator string) ([]bucket.Bucket, error)
+	GetBuckets(context context.Context) ([]bucket.Bucket, error)
 }
