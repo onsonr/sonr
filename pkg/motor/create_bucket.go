@@ -16,18 +16,14 @@ import (
 func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBucketRequest) (bucket.Bucket, error) {
 
 	if request.Creator == "" {
-		return nil, errors.New("Invalid Address")
+		return nil, errors.New("invalid Address")
 	}
 
 	if request.Label == "" {
-		return nil, errors.New("Label nust be defined")
+		return nil, errors.New("label nust be defined")
 	}
 
-	createWhereIsRequest := bt.NewMsgCreateWhereIs(request.Creator)
-	createWhereIsRequest.Label = request.Label
-	createWhereIsRequest.Role = request.Role
-	createWhereIsRequest.Visibility = request.Visibility
-	createWhereIsRequest.Content = request.Content
+	createWhereIsRequest := bt.NewMsgCreateWhereIs(request.Creator, request.Label, request.Role, request.Visibility, request.Content)
 
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgCreateWhereIs", createWhereIsRequest)
 	if err != nil {
