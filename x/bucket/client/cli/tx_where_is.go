@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -12,15 +14,21 @@ func CmdCreateWhereIs() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-where-is",
 		Short: "Create a new WhereIs",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
+			roleConv, err := strconv.Atoi(args[1])
+			role := types.BucketRole(roleConv)
 
-			msg := types.NewMsgCreateWhereIs(clientCtx.GetFromAddress().String())
+			visiblityConv, err := strconv.Atoi(args[2])
+			visilbity := types.BucketVisibility(visiblityConv)
+
+			msg := types.NewMsgCreateWhereIs(clientCtx.GetFromAddress().String(), args[0], role, visilbity, nil)
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
