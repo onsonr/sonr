@@ -13,7 +13,6 @@ tasks:
       #- task: bind:wasm
       - task: bind:ios
       - task: bind:android
-      - rsync -av --delete build ../build
 
   bind:android:
     dir: motor-mobile
