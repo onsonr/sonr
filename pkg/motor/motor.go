@@ -17,6 +17,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/pkg/tx"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -66,6 +67,9 @@ type motorNodeImpl struct {
 
 	// resource management
 	Resources *motorResources
+
+	// internal protocols
+	discovery *dp.DiscoverProtocol
 }
 
 func EmptyMotor(id string) *motorNodeImpl {
@@ -117,7 +121,12 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.DID = *baseDid
 
 	// It creates a new host.
-	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
+	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address))
+	if err != nil {
+		return err
+	}
+
+	mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost)
 	if err != nil {
 		return err
 	}

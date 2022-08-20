@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"errors"
+	"fmt"
 
 	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p"
@@ -14,12 +15,14 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 
 	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	/// direct "github.com/libp2p/go-libp2p-webrtc-direct"
 	ma "github.com/multiformats/go-multiaddr"
 	// "github.com/pion/webrtc/v3"
+
 	"github.com/sonr-io/sonr/pkg/config"
 	"google.golang.org/protobuf/proto"
 )
@@ -27,9 +30,10 @@ import (
 // hostImpl type - a p2p host implementing one or more p2p protocols
 type hostImpl struct {
 	// Standard Node Implementation
-	host   host.Host
-	config *config.Config
-	events events.EventEmmiter
+	host    host.Host
+	config  *config.Config
+	events  events.EventEmmiter
+	accAddr string
 
 	// Host and context
 	privKey      crypto.PrivKey
@@ -56,6 +60,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		config:       c,
 		events:       events.New(),
+		accAddr:      c.AccountAddress,
 	}
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
@@ -117,7 +122,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 
 	// Initialize Discovery for MDNS
 	if !c.Libp2pMdnsDisabled && hn.Role() != config.Role_HIGHWAY {
-		// hn.createMdnsDiscovery(config)
+		hn.createMdnsDiscovery(c)
 	}
 
 	hn.fsm.SetState(Status_READY)
@@ -333,17 +338,18 @@ func (hn *hostImpl) Status() HostStatus {
 	return hn.fsm.CurrentStatus
 }
 
-// TODO Migrate MDNS Service to latesat libp2p spec
-// // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
-// func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
-// 	if hn.Role() == device.Role_MOTOR {
-// 		// Create MDNS Service
-// 		ser := mdns.NewMdnsService(hn.host, c.Libp2pRendezvous)
-
-// 		// Handle Events
-// 		ser.RegisterNotifee(hn)
-// 	}
-// }
+// createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
+func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
+	if hn.Role() == config.Role_MOTOR {
+		fmt.Println("Starting MDNS Discovery...")
+		// Create MDNS Service
+		ser := mdns.NewMdnsService(hn.host, c.Libp2pRendezvous, hn)
+		if err := ser.Start(); err != nil {
+			fmt.Println("Error starting MDNS Service: ", err)
+			return
+		}
+	}
+}
 
 // send sends the proto message to specified peer.
 func (h *hostImpl) SendMSG(ctx context.Context, target string, data interface{}, protocol protocol.ID) error {
