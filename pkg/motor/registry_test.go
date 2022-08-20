@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	"github.com/stretchr/testify/assert"
 )
 

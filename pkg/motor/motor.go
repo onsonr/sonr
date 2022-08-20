@@ -16,7 +16,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/pkg/tx"

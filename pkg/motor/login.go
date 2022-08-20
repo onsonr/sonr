@@ -8,7 +8,7 @@ import (
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	"github.com/sonr-io/sonr/pkg/vault"
 )
 

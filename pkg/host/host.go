@@ -16,6 +16,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
+	ct "github.com/sonr-io/sonr/thirdparty/types/common"
 
 	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
@@ -211,6 +212,11 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	return hn, nil
 }
 
+// Address returns the address of the underlying wallet
+func (h *hostImpl) Address() string {
+	return h.accAddr
+}
+
 // createDHTDiscovery is a Helper Method to initialize the DHT Discovery
 func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	// Set Routing Discovery, Find Peers
@@ -349,6 +355,14 @@ func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
 			return
 		}
 	}
+}
+
+// Peer is a Helper Method to get the peer from the host
+func (hn *hostImpl) Peer() (*ct.Peer, error) {
+	return &ct.Peer{
+		PeerId: hn.host.ID().String(),
+		Did:    addrToDidUrl(hn.accAddr),
+	}, nil
 }
 
 // send sends the proto message to specified peer.

@@ -8,7 +8,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	rt "github.com/sonr-io/sonr/x/registry/types"

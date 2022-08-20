@@ -4,6 +4,8 @@ syntax = "proto3";
 package sonrio.motor.service.v1;
 import "common/v1/info.proto";
 
+option go_package = "github.com/sonr-io/sonr/thirdparty/types/service";
+
 // For Transfer File Payload
 message FileItem {
   common.v1.MIME mime = 1; // Standard Mime Type

@@ -5,7 +5,7 @@ package sonrio.motor.api.v1;
 import "registry/did.proto";
 import "schema/v1/what_is.proto";
 
-option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
+option go_package = "github.com/sonr-io/sonr/thirdparty/types/motor";
 
 message InitializeResponse {
   bool success = 1;
@@ -53,3 +53,4 @@ message SendTokenResponse {
   string message = 2;
   string tx_hash = 3;
 }
+

@@ -4,9 +4,11 @@ syntax = "proto3";
 package sonrio.motor.service.v1;
 import "common/v1/info.proto";
 
-// DiscoverEvent is message passed from Peer in Lobby
-message DiscoverEvent {
-  string did = 1;     // Users Peer Data
+option go_package = "github.com/sonr-io/sonr/thirdparty/types/service";
+
+// LobbyMessage is message passed from Peer in Lobby
+message LobbyMessage {
+  common.v1.Peer from = 1;     // Users Peer Data
   bytes body = 2;    // Payload is the message data
   bytes signature = 3;             // Signature of the Attached Data
   int64 created_at = 4; // Timestamp

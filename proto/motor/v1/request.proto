@@ -5,7 +5,7 @@ package sonrio.motor.api.v1;
 
 import "schema/v1/schema.proto";
 
-option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
+option go_package = "github.com/sonr-io/sonr/thirdparty/types/motor";
 
 // -----------------------------------------------------------------------------
 // Motor Node API

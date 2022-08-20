@@ -3,6 +3,8 @@ syntax = "proto3";
 // Package common defines commonly used types agnostic to the node role on the Sonr network.
 package sonrio.motor.common.v1;
 
+option go_package = "github.com/sonr-io/sonr/thirdparty/types/common";
+
 // Direction is the direction of a stream.
 enum Direction {
   // Unspecified is the default value.

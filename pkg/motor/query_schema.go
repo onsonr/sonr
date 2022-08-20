@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
