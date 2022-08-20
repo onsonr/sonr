@@ -47,3 +47,9 @@ message StatResponse {
   int32 balance = 3;
   int32 stake = 4;
 }
+
+message SendTokenResponse {
+  int32 code = 1;
+  string message = 2;
+  string tx_hash = 3;
+}

@@ -6,6 +6,7 @@
 package types
 
 import (
+	encoding_binary "encoding/binary"
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
 	types "github.com/sonr-io/sonr/x/schema/types"
@@ -25,35 +26,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Type of IP Interface
-type InitializeRequest_IPAddress_Family int32
-
-const (
-	InitializeRequest_IPAddress_FAMILY_UNSPECIFIED InitializeRequest_IPAddress_Family = 0
-	InitializeRequest_IPAddress_FAMILY_IPV4        InitializeRequest_IPAddress_Family = 1
-	InitializeRequest_IPAddress_FAMILY_IPV6        InitializeRequest_IPAddress_Family = 2
-)
-
-var InitializeRequest_IPAddress_Family_name = map[int32]string{
-	0: "FAMILY_UNSPECIFIED",
-	1: "FAMILY_IPV4",
-	2: "FAMILY_IPV6",
-}
-
-var InitializeRequest_IPAddress_Family_value = map[string]int32{
-	"FAMILY_UNSPECIFIED": 0,
-	"FAMILY_IPV4":        1,
-	"FAMILY_IPV6":        2,
-}
-
-func (x InitializeRequest_IPAddress_Family) String() string {
-	return proto.EnumName(InitializeRequest_IPAddress_Family_name, int32(x))
-}
-
-func (InitializeRequest_IPAddress_Family) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{0, 1, 0}
-}
-
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
@@ -67,10 +39,16 @@ type InitializeRequest struct {
 	SupportDir string `protobuf:"bytes,3,opt,name=support_dir,json=supportDir,proto3" json:"support_dir,omitempty"`
 	// Device Temporary Storage Directory
 	TempDir string `protobuf:"bytes,4,opt,name=temp_dir,json=tempDir,proto3" json:"temp_dir,omitempty"`
-	// Libp2p Host config
-	HostOptions *InitializeRequest_HostOptions `protobuf:"bytes,5,opt,name=host_options,json=hostOptions,proto3" json:"host_options,omitempty"`
+	// Enable Libp2p Host
+	EnableHost bool `protobuf:"varint,5,opt,name=enable_host,json=enableHost,proto3" json:"enable_host,omitempty"`
+	// Enable Discovery Service
+	EnableDiscovery bool `protobuf:"varint,6,opt,name=enable_discovery,json=enableDiscovery,proto3" json:"enable_discovery,omitempty"`
+	// Discovery Latitude
+	DiscoveryLatitude float64 `protobuf:"fixed64,7,opt,name=discovery_latitude,json=discoveryLatitude,proto3" json:"discovery_latitude,omitempty"`
+	// Discovery Longitude
+	DiscoveryLongitude float64 `protobuf:"fixed64,8,opt,name=discovery_longitude,json=discoveryLongitude,proto3" json:"discovery_longitude,omitempty"`
 	// Public Key used for Device Authentication as DID Controller
-	DeviceKeyprintPub []byte `protobuf:"bytes,6,opt,name=device_keyprint_pub,json=deviceKeyprintPub,proto3" json:"device_keyprint_pub,omitempty"`
+	DeviceKeyprintPub []byte `protobuf:"bytes,9,opt,name=device_keyprint_pub,json=deviceKeyprintPub,proto3" json:"device_keyprint_pub,omitempty"`
 }
 
 func (m *InitializeRequest) Reset()         { *m = InitializeRequest{} }
@@ -134,11 +112,32 @@ func (m *InitializeRequest) GetTempDir() string {
 	return ""
 }
 
-func (m *InitializeRequest) GetHostOptions() *InitializeRequest_HostOptions {
+func (m *InitializeRequest) GetEnableHost() bool {
 	if m != nil {
-		return m.HostOptions
+		return m.EnableHost
 	}
-	return nil
+	return false
+}
+
+func (m *InitializeRequest) GetEnableDiscovery() bool {
+	if m != nil {
+		return m.EnableDiscovery
+	}
+	return false
+}
+
+func (m *InitializeRequest) GetDiscoveryLatitude() float64 {
+	if m != nil {
+		return m.DiscoveryLatitude
+	}
+	return 0
+}
+
+func (m *InitializeRequest) GetDiscoveryLongitude() float64 {
+	if m != nil {
+		return m.DiscoveryLongitude
+	}
+	return 0
 }
 
 func (m *InitializeRequest) GetDeviceKeyprintPub() []byte {
@@ -146,144 +145,6 @@ func (m *InitializeRequest) GetDeviceKeyprintPub() []byte {
 		return m.DeviceKeyprintPub
 	}
 	return nil
-}
-
-// Libp2p Host Options
-type InitializeRequest_HostOptions struct {
-	QuicTransport bool                           `protobuf:"varint,1,opt,name=quic_transport,json=quicTransport,proto3" json:"quic_transport,omitempty"`
-	HttpTransport bool                           `protobuf:"varint,2,opt,name=http_transport,json=httpTransport,proto3" json:"http_transport,omitempty"`
-	Ipv4Only      bool                           `protobuf:"varint,3,opt,name=ipv4_only,json=ipv4Only,proto3" json:"ipv4_only,omitempty"`
-	ListenAddrs   []*InitializeRequest_IPAddress `protobuf:"bytes,4,rep,name=listen_addrs,json=listenAddrs,proto3" json:"listen_addrs,omitempty"`
-}
-
-func (m *InitializeRequest_HostOptions) Reset()         { *m = InitializeRequest_HostOptions{} }
-func (m *InitializeRequest_HostOptions) String() string { return proto.CompactTextString(m) }
-func (*InitializeRequest_HostOptions) ProtoMessage()    {}
-func (*InitializeRequest_HostOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{0, 0}
-}
-func (m *InitializeRequest_HostOptions) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *InitializeRequest_HostOptions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_InitializeRequest_HostOptions.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *InitializeRequest_HostOptions) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_InitializeRequest_HostOptions.Merge(m, src)
-}
-func (m *InitializeRequest_HostOptions) XXX_Size() int {
-	return m.Size()
-}
-func (m *InitializeRequest_HostOptions) XXX_DiscardUnknown() {
-	xxx_messageInfo_InitializeRequest_HostOptions.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_InitializeRequest_HostOptions proto.InternalMessageInfo
-
-func (m *InitializeRequest_HostOptions) GetQuicTransport() bool {
-	if m != nil {
-		return m.QuicTransport
-	}
-	return false
-}
-
-func (m *InitializeRequest_HostOptions) GetHttpTransport() bool {
-	if m != nil {
-		return m.HttpTransport
-	}
-	return false
-}
-
-func (m *InitializeRequest_HostOptions) GetIpv4Only() bool {
-	if m != nil {
-		return m.Ipv4Only
-	}
-	return false
-}
-
-func (m *InitializeRequest_HostOptions) GetListenAddrs() []*InitializeRequest_IPAddress {
-	if m != nil {
-		return m.ListenAddrs
-	}
-	return nil
-}
-
-// IP Address Interface
-type InitializeRequest_IPAddress struct {
-	Name     string                             `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Address  string                             `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Internal bool                               `protobuf:"varint,3,opt,name=internal,proto3" json:"internal,omitempty"`
-	Family   InitializeRequest_IPAddress_Family `protobuf:"varint,4,opt,name=family,proto3,enum=sonrio.motor.api.v1.InitializeRequest_IPAddress_Family" json:"family,omitempty"`
-}
-
-func (m *InitializeRequest_IPAddress) Reset()         { *m = InitializeRequest_IPAddress{} }
-func (m *InitializeRequest_IPAddress) String() string { return proto.CompactTextString(m) }
-func (*InitializeRequest_IPAddress) ProtoMessage()    {}
-func (*InitializeRequest_IPAddress) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{0, 1}
-}
-func (m *InitializeRequest_IPAddress) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *InitializeRequest_IPAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_InitializeRequest_IPAddress.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *InitializeRequest_IPAddress) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_InitializeRequest_IPAddress.Merge(m, src)
-}
-func (m *InitializeRequest_IPAddress) XXX_Size() int {
-	return m.Size()
-}
-func (m *InitializeRequest_IPAddress) XXX_DiscardUnknown() {
-	xxx_messageInfo_InitializeRequest_IPAddress.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_InitializeRequest_IPAddress proto.InternalMessageInfo
-
-func (m *InitializeRequest_IPAddress) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *InitializeRequest_IPAddress) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-func (m *InitializeRequest_IPAddress) GetInternal() bool {
-	if m != nil {
-		return m.Internal
-	}
-	return false
-}
-
-func (m *InitializeRequest_IPAddress) GetFamily() InitializeRequest_IPAddress_Family {
-	if m != nil {
-		return m.Family
-	}
-	return InitializeRequest_IPAddress_FAMILY_UNSPECIFIED
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -582,11 +443,76 @@ func (m *QuerySchemaRequest) GetDid() string {
 	return ""
 }
 
+type SendTokenRequest struct {
+	To     string `protobuf:"bytes,1,opt,name=to,proto3" json:"to,omitempty"`
+	From   string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	Amount int64  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Memo   string `protobuf:"bytes,4,opt,name=memo,proto3" json:"memo,omitempty"`
+}
+
+func (m *SendTokenRequest) Reset()         { *m = SendTokenRequest{} }
+func (m *SendTokenRequest) String() string { return proto.CompactTextString(m) }
+func (*SendTokenRequest) ProtoMessage()    {}
+func (*SendTokenRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{6}
+}
+func (m *SendTokenRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SendTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SendTokenRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SendTokenRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendTokenRequest.Merge(m, src)
+}
+func (m *SendTokenRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *SendTokenRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendTokenRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendTokenRequest proto.InternalMessageInfo
+
+func (m *SendTokenRequest) GetTo() string {
+	if m != nil {
+		return m.To
+	}
+	return ""
+}
+
+func (m *SendTokenRequest) GetFrom() string {
+	if m != nil {
+		return m.From
+	}
+	return ""
+}
+
+func (m *SendTokenRequest) GetAmount() int64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+func (m *SendTokenRequest) GetMemo() string {
+	if m != nil {
+		return m.Memo
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterEnum("sonrio.motor.api.v1.InitializeRequest_IPAddress_Family", InitializeRequest_IPAddress_Family_name, InitializeRequest_IPAddress_Family_value)
 	proto.RegisterType((*InitializeRequest)(nil), "sonrio.motor.api.v1.InitializeRequest")
-	proto.RegisterType((*InitializeRequest_HostOptions)(nil), "sonrio.motor.api.v1.InitializeRequest.HostOptions")
-	proto.RegisterType((*InitializeRequest_IPAddress)(nil), "sonrio.motor.api.v1.InitializeRequest.IPAddress")
 	proto.RegisterType((*CreateAccountRequest)(nil), "sonrio.motor.api.v1.CreateAccountRequest")
 	proto.RegisterMapType((map[string]string)(nil), "sonrio.motor.api.v1.CreateAccountRequest.MetadataEntry")
 	proto.RegisterType((*LoginRequest)(nil), "sonrio.motor.api.v1.LoginRequest")
@@ -595,62 +521,57 @@ func init() {
 	proto.RegisterMapType((map[string]string)(nil), "sonrio.motor.api.v1.CreateSchemaRequest.MetadataEntry")
 	proto.RegisterType((*QueryWhatIsRequest)(nil), "sonrio.motor.api.v1.QueryWhatIsRequest")
 	proto.RegisterType((*QuerySchemaRequest)(nil), "sonrio.motor.api.v1.QuerySchemaRequest")
+	proto.RegisterType((*SendTokenRequest)(nil), "sonrio.motor.api.v1.SendTokenRequest")
 }
 
 func init() { proto.RegisterFile("motor/v1/request.proto", fileDescriptor_df014f183f77a01a) }
 
 var fileDescriptor_df014f183f77a01a = []byte{
-	// 798 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x55, 0x4f, 0x6f, 0xdc, 0x44,
-	0x14, 0x8f, 0x77, 0x93, 0x8d, 0xf7, 0x79, 0x1b, 0xb6, 0x93, 0x28, 0xda, 0x6e, 0xa5, 0x25, 0x5a,
-	0x09, 0x91, 0x0b, 0x5e, 0xba, 0x44, 0x05, 0xc1, 0x85, 0xb4, 0x49, 0x84, 0x95, 0x94, 0x2c, 0x0e,
-	0x05, 0x95, 0x8b, 0x35, 0x6b, 0x4f, 0xb3, 0xa3, 0xd8, 0x1e, 0x77, 0x66, 0xbc, 0xc8, 0x88, 0x0f,
-	0xc1, 0xc7, 0x42, 0x42, 0x48, 0x3d, 0x72, 0x44, 0x09, 0x5c, 0xf8, 0x14, 0x68, 0x66, 0x6c, 0x77,
-	0x97, 0x2e, 0x55, 0xa3, 0x9e, 0x3c, 0xef, 0xfd, 0xde, 0xfc, 0xde, 0x9f, 0xdf, 0xb3, 0x0d, 0xbb,
-	0x09, 0x93, 0x8c, 0x8f, 0xe6, 0x0f, 0x46, 0x9c, 0xbc, 0xc8, 0x89, 0x90, 0x6e, 0xc6, 0x99, 0x64,
-	0x68, 0x5b, 0xb0, 0x94, 0x53, 0xe6, 0x6a, 0xd8, 0xc5, 0x19, 0x75, 0xe7, 0x0f, 0xfa, 0xbb, 0x22,
-	0x9c, 0x91, 0x04, 0xab, 0x68, 0x73, 0x32, 0xc1, 0xc3, 0xdf, 0x36, 0xe0, 0xae, 0x97, 0x52, 0x49,
-	0x71, 0x4c, 0x7f, 0x22, 0xbe, 0x21, 0x42, 0xf7, 0xa1, 0x1d, 0x91, 0x39, 0x0d, 0x49, 0x40, 0xa3,
-	0x9e, 0xb5, 0x67, 0xed, 0xb7, 0x7d, 0xdb, 0x38, 0xbc, 0x08, 0xdd, 0x03, 0x7b, 0xc6, 0x12, 0x12,
-	0x44, 0x94, 0xf7, 0x1a, 0x1a, 0xdb, 0x54, 0xf6, 0x11, 0xe5, 0xe8, 0x7d, 0x70, 0x44, 0x9e, 0x65,
-	0x8c, 0x4b, 0x8d, 0x36, 0x35, 0x0a, 0xa5, 0x4b, 0x05, 0xdc, 0x03, 0x5b, 0x92, 0x24, 0xd3, 0xe8,
-	0xba, 0xb9, 0xab, 0x6c, 0x05, 0x3d, 0x85, 0xce, 0x8c, 0x09, 0x19, 0xb0, 0x4c, 0x52, 0x96, 0x8a,
-	0xde, 0xc6, 0x9e, 0xb5, 0xef, 0x8c, 0xc7, 0xee, 0x8a, 0x6e, 0xdc, 0xd7, 0x2a, 0x76, 0xbf, 0x62,
-	0x42, 0x9e, 0x9b, 0x9b, 0xbe, 0x33, 0x7b, 0x65, 0x20, 0x17, 0xb6, 0xcb, 0x56, 0xae, 0x48, 0x91,
-	0x71, 0x9a, 0xca, 0x20, 0xcb, 0xa7, 0xbd, 0xd6, 0x9e, 0xb5, 0xdf, 0xf1, 0xef, 0x1a, 0xe8, 0xb4,
-	0x44, 0x26, 0xf9, 0xb4, 0xff, 0xbb, 0x05, 0xce, 0x02, 0x19, 0xfa, 0x00, 0xb6, 0x5e, 0xe4, 0x34,
-	0x0c, 0x24, 0xc7, 0xa9, 0x50, 0x6d, 0xe8, 0x79, 0xd8, 0xfe, 0x1d, 0xe5, 0xfd, 0xb6, 0x72, 0xaa,
-	0xb0, 0x99, 0x94, 0xd9, 0x42, 0x58, 0xc3, 0x84, 0x29, 0xef, 0xab, 0xb0, 0xfb, 0xd0, 0xa6, 0xd9,
-	0xfc, 0x20, 0x60, 0x69, 0x5c, 0xe8, 0xf1, 0xd8, 0xbe, 0xad, 0x1c, 0xe7, 0x69, 0x5c, 0xa0, 0x0b,
-	0xe8, 0xc4, 0x54, 0x48, 0x92, 0x06, 0x38, 0x8a, 0xb8, 0xe8, 0xad, 0xef, 0x35, 0xf7, 0x9d, 0xf1,
-	0xc7, 0x6f, 0x39, 0x01, 0x6f, 0x72, 0x18, 0x45, 0x9c, 0x08, 0xe1, 0x3b, 0x86, 0x45, 0x99, 0xa2,
-	0xff, 0x8f, 0x05, 0xed, 0x1a, 0x42, 0x08, 0xd6, 0x53, 0x9c, 0x90, 0x52, 0x53, 0x7d, 0x46, 0x3d,
-	0xd8, 0xc4, 0x06, 0xae, 0xe4, 0x2c, 0x4d, 0xd4, 0x07, 0x9b, 0xa6, 0x92, 0xf0, 0x14, 0xc7, 0x75,
-	0xb1, 0xa5, 0x8d, 0xce, 0xa1, 0xf5, 0x1c, 0x27, 0x34, 0x2e, 0xb4, 0x8e, 0x5b, 0xe3, 0x4f, 0x6f,
-	0x5b, 0xa6, 0x7b, 0xa2, 0xaf, 0xfb, 0x25, 0xcd, 0xf0, 0x11, 0xb4, 0x8c, 0x07, 0xed, 0x02, 0x3a,
-	0x39, 0x7c, 0xe2, 0x9d, 0x3d, 0x0b, 0x9e, 0x7e, 0x7d, 0x31, 0x39, 0x7e, 0xec, 0x9d, 0x78, 0xc7,
-	0x47, 0xdd, 0x35, 0xf4, 0x1e, 0x38, 0xa5, 0xdf, 0x9b, 0x7c, 0x77, 0xd0, 0xb5, 0x96, 0x1d, 0x0f,
-	0xbb, 0x8d, 0xe1, 0x5f, 0x16, 0xec, 0x3c, 0xe6, 0x04, 0x4b, 0x72, 0x18, 0x86, 0x2c, 0x4f, 0x65,
-	0xb5, 0xd0, 0x7d, 0xb0, 0x33, 0x2c, 0xc4, 0x8f, 0x8c, 0xd7, 0xfb, 0x5c, 0xd9, 0x68, 0x00, 0x0e,
-	0x26, 0x22, 0x88, 0x44, 0xa8, 0x56, 0x44, 0xcf, 0xa0, 0xe3, 0xb7, 0x31, 0x11, 0x47, 0x22, 0x3c,
-	0x25, 0x4a, 0x16, 0x3b, 0x21, 0x12, 0x47, 0x58, 0xe2, 0x5e, 0x53, 0x4b, 0xb2, 0xba, 0xd7, 0x55,
-	0x89, 0xdd, 0x27, 0xe5, 0xcd, 0xe3, 0x54, 0xf2, 0xc2, 0xaf, 0x89, 0xfa, 0x5f, 0xc0, 0x9d, 0x25,
-	0x08, 0x75, 0xa1, 0xa9, 0xb2, 0x9b, 0xe2, 0xd4, 0x11, 0xed, 0xc0, 0xc6, 0x1c, 0xc7, 0x39, 0x29,
-	0x55, 0x31, 0xc6, 0xe7, 0x8d, 0xcf, 0xac, 0xe1, 0xcf, 0xd0, 0x39, 0x63, 0x97, 0x34, 0xad, 0xba,
-	0xeb, 0x42, 0x33, 0xaa, 0x5f, 0x54, 0x75, 0x5c, 0xea, 0xb7, 0xf1, 0xe6, 0x7e, 0x9b, 0xff, 0xed,
-	0xb7, 0xc4, 0x33, 0x71, 0xa5, 0xf1, 0xf5, 0x1a, 0x9f, 0x88, 0xab, 0x53, 0x52, 0x0c, 0xff, 0x6e,
-	0xc0, 0xb6, 0xe9, 0xf5, 0x42, 0x7f, 0x49, 0xaa, 0x2a, 0x76, 0x60, 0x23, 0xc6, 0x53, 0x12, 0x97,
-	0x75, 0x18, 0x03, 0x9d, 0x41, 0xeb, 0x39, 0x25, 0x71, 0xa4, 0x96, 0x4b, 0xcd, 0xee, 0xe0, 0x0d,
-	0xb3, 0x5b, 0xe2, 0x73, 0x4f, 0xf4, 0x35, 0x33, 0xb8, 0x92, 0x03, 0xf9, 0xaf, 0x69, 0xf1, 0xf0,
-	0xad, 0xf9, 0xfe, 0x4f, 0x8a, 0x67, 0xe0, 0x2c, 0xa4, 0x5a, 0x21, 0xc4, 0xc1, 0xa2, 0x10, 0x5b,
-	0xe3, 0x41, 0x95, 0x51, 0x3d, 0xdc, 0xf2, 0x6b, 0x6a, 0x52, 0x9d, 0xd2, 0x34, 0x5a, 0x10, 0xea,
-	0xdd, 0x54, 0xfe, 0x12, 0xd0, 0x37, 0x39, 0xe1, 0xc5, 0xf7, 0x33, 0x2c, 0x3d, 0x51, 0x4d, 0xb9,
-	0x07, 0x9b, 0xa1, 0x6a, 0x8e, 0xf1, 0x92, 0xa5, 0x32, 0xab, 0x2d, 0x68, 0xd4, 0x5b, 0x50, 0x33,
-	0x2c, 0xeb, 0x74, 0x0b, 0x86, 0x47, 0x87, 0xbf, 0x5e, 0x0f, 0xac, 0x97, 0xd7, 0x03, 0xeb, 0xcf,
-	0xeb, 0x81, 0xf5, 0xcb, 0xcd, 0x60, 0xed, 0xe5, 0xcd, 0x60, 0xed, 0x8f, 0x9b, 0xc1, 0xda, 0x0f,
-	0x1f, 0x5e, 0x52, 0x39, 0xcb, 0xa7, 0x6e, 0xc8, 0x92, 0x91, 0x1a, 0xc4, 0x47, 0x94, 0xe9, 0xe7,
-	0x28, 0xbb, 0xba, 0x1c, 0x99, 0x3f, 0x93, 0x2c, 0x32, 0x22, 0xa6, 0x2d, 0xfd, 0xa3, 0xf9, 0xe4,
-	0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb9, 0x2d, 0x77, 0xa5, 0xaf, 0x06, 0x00, 0x00,
+	// 692 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0x41, 0x6f, 0xd3, 0x4a,
+	0x10, 0xae, 0x9d, 0x36, 0x4d, 0x26, 0x7d, 0x7d, 0xe9, 0xa6, 0xaa, 0xdc, 0x3e, 0xc9, 0x2f, 0xca,
+	0xe5, 0xe5, 0x1d, 0xea, 0xa8, 0x7d, 0xd5, 0x03, 0xc1, 0x85, 0x42, 0x41, 0x54, 0x09, 0x52, 0x71,
+	0x91, 0x10, 0x5c, 0xa2, 0x8d, 0xbd, 0x4d, 0x56, 0x89, 0xbd, 0x66, 0x77, 0x1d, 0x14, 0xc4, 0x8f,
+	0xe0, 0x67, 0x71, 0xec, 0x91, 0x23, 0x6a, 0xe0, 0x7f, 0x20, 0xef, 0xae, 0x4d, 0x02, 0xa5, 0x02,
+	0x71, 0xf2, 0xce, 0x7c, 0xdf, 0xcc, 0xec, 0xcc, 0x37, 0x5e, 0xd8, 0x89, 0x98, 0x64, 0xbc, 0x33,
+	0x3d, 0xe8, 0x70, 0xf2, 0x2a, 0x25, 0x42, 0x7a, 0x09, 0x67, 0x92, 0xa1, 0x86, 0x60, 0x31, 0xa7,
+	0xcc, 0x53, 0xb0, 0x87, 0x13, 0xea, 0x4d, 0x0f, 0xf6, 0x76, 0x44, 0x30, 0x22, 0x11, 0xce, 0xd8,
+	0xfa, 0xa4, 0xc9, 0xad, 0xb9, 0x0d, 0x5b, 0xa7, 0x31, 0x95, 0x14, 0x4f, 0xe8, 0x1b, 0xe2, 0xeb,
+	0x44, 0xe8, 0x2f, 0xa8, 0x86, 0x64, 0x4a, 0x03, 0xd2, 0xa7, 0xa1, 0x63, 0x35, 0xad, 0x76, 0xd5,
+	0xaf, 0x68, 0xc7, 0x69, 0x88, 0x76, 0xa1, 0x32, 0x62, 0x11, 0xe9, 0x87, 0x94, 0x3b, 0xb6, 0xc2,
+	0xd6, 0x33, 0xfb, 0x84, 0x72, 0xf4, 0x37, 0xd4, 0x44, 0x9a, 0x24, 0x8c, 0x4b, 0x85, 0x96, 0x14,
+	0x0a, 0xc6, 0x95, 0x11, 0x76, 0xa1, 0x22, 0x49, 0x94, 0x28, 0x74, 0x55, 0xc7, 0x66, 0xb6, 0x89,
+	0x25, 0x31, 0x1e, 0x4c, 0x48, 0x7f, 0xc4, 0x84, 0x74, 0xd6, 0x9a, 0x56, 0xbb, 0xe2, 0x83, 0x76,
+	0x3d, 0x66, 0x42, 0xa2, 0x7f, 0xa1, 0x6e, 0x08, 0x21, 0x15, 0x01, 0x9b, 0x12, 0x3e, 0x73, 0xca,
+	0x8a, 0xf5, 0xa7, 0xf6, 0x9f, 0xe4, 0x6e, 0xb4, 0x0f, 0xa8, 0xe0, 0xf4, 0x27, 0x58, 0x52, 0x99,
+	0x86, 0xc4, 0x59, 0x6f, 0x5a, 0x6d, 0xcb, 0xdf, 0x2a, 0x90, 0x9e, 0x01, 0x50, 0x07, 0x1a, 0x0b,
+	0x74, 0x16, 0x0f, 0x35, 0xbf, 0xa2, 0xf8, 0x5f, 0x33, 0xf5, 0x72, 0x04, 0x79, 0xd0, 0x30, 0xf3,
+	0x19, 0x93, 0x59, 0xc2, 0x69, 0x2c, 0xfb, 0x49, 0x3a, 0x70, 0xaa, 0x4d, 0xab, 0xbd, 0xe1, 0x6f,
+	0x69, 0xa8, 0x6b, 0x90, 0xb3, 0x74, 0xd0, 0xfa, 0x64, 0xc1, 0xf6, 0x03, 0x4e, 0xb0, 0x24, 0xc7,
+	0x41, 0xc0, 0xd2, 0x58, 0xe6, 0x83, 0xde, 0x83, 0x4a, 0x82, 0x85, 0x78, 0xcd, 0x78, 0x31, 0xe7,
+	0xdc, 0x46, 0x2e, 0xd4, 0x30, 0x11, 0xfd, 0x50, 0x04, 0x59, 0x15, 0x35, 0xea, 0x0d, 0xbf, 0x8a,
+	0x89, 0x38, 0x11, 0x41, 0x97, 0xcc, 0xd0, 0x39, 0x54, 0x22, 0x22, 0x71, 0x88, 0x25, 0x76, 0x4a,
+	0xcd, 0x52, 0xbb, 0x76, 0x78, 0xcb, 0xbb, 0x46, 0x7a, 0xef, 0xba, 0xc2, 0xde, 0x13, 0x13, 0xf9,
+	0x30, 0x96, 0x7c, 0xe6, 0x17, 0x89, 0xf6, 0xee, 0xc2, 0x1f, 0x4b, 0x10, 0xaa, 0x43, 0x29, 0xab,
+	0xae, 0x2f, 0x97, 0x1d, 0xd1, 0x36, 0xac, 0x4d, 0xf1, 0x24, 0x25, 0x46, 0x7c, 0x6d, 0xdc, 0xb1,
+	0x6f, 0x5b, 0xad, 0xb7, 0xb0, 0xd1, 0x63, 0x43, 0x1a, 0xe7, 0xdd, 0xd5, 0xa1, 0x14, 0x16, 0x0b,
+	0x94, 0x1d, 0x97, 0xfa, 0xb5, 0x6f, 0xee, 0xb7, 0xf4, 0x6d, 0xbf, 0x06, 0x4f, 0xc4, 0x58, 0xe1,
+	0xab, 0x05, 0x7e, 0x26, 0xc6, 0x5d, 0x32, 0x6b, 0x7d, 0xb6, 0xa1, 0xa1, 0x7b, 0x3d, 0x57, 0x1b,
+	0x9e, 0xdf, 0x62, 0x1b, 0xd6, 0x26, 0x78, 0x40, 0x26, 0xe6, 0x1e, 0xda, 0x40, 0x3d, 0x28, 0x5f,
+	0x50, 0x32, 0x09, 0x85, 0x63, 0xab, 0xd9, 0x1d, 0xdd, 0x30, 0xbb, 0xa5, 0x7c, 0xde, 0x23, 0x15,
+	0xa6, 0x07, 0x67, 0x72, 0x20, 0xff, 0x3b, 0x2d, 0xfe, 0xff, 0xe9, 0x7c, 0x3f, 0x92, 0xe2, 0x05,
+	0xd4, 0x16, 0x4a, 0x5d, 0x23, 0xc4, 0xd1, 0xa2, 0x10, 0x9b, 0x87, 0x6e, 0x5e, 0x31, 0xfb, 0x78,
+	0xe6, 0x2f, 0xd7, 0xa5, 0xba, 0x34, 0x0e, 0x17, 0x84, 0xfa, 0x3d, 0x95, 0xef, 0x01, 0x7a, 0x9a,
+	0x12, 0x3e, 0x7b, 0x3e, 0xc2, 0xf2, 0x54, 0xe4, 0x53, 0x76, 0x60, 0x3d, 0xc8, 0x9a, 0x63, 0xdc,
+	0x64, 0xc9, 0xcd, 0x7c, 0x0b, 0xec, 0x62, 0x0b, 0x8a, 0x0c, 0xcb, 0x3a, 0xfd, 0x4a, 0x86, 0x01,
+	0xd4, 0xcf, 0x49, 0x1c, 0x3e, 0x63, 0x63, 0x52, 0x6c, 0xdb, 0x26, 0xd8, 0x92, 0x99, 0x50, 0x5b,
+	0x32, 0x84, 0x60, 0xf5, 0x82, 0xb3, 0xc8, 0x84, 0xa9, 0x33, 0xda, 0x81, 0x32, 0x8e, 0xb2, 0xff,
+	0x40, 0xad, 0x57, 0xc9, 0x37, 0x56, 0xc6, 0x8d, 0x48, 0xc4, 0xcc, 0x9b, 0xa4, 0xce, 0xf7, 0x8f,
+	0xdf, 0x5f, 0xb9, 0xd6, 0xe5, 0x95, 0x6b, 0x7d, 0xbc, 0x72, 0xad, 0x77, 0x73, 0x77, 0xe5, 0x72,
+	0xee, 0xae, 0x7c, 0x98, 0xbb, 0x2b, 0x2f, 0xff, 0x19, 0x52, 0x39, 0x4a, 0x07, 0x5e, 0xc0, 0xa2,
+	0x4e, 0x36, 0xec, 0x7d, 0xca, 0xd4, 0xb7, 0x93, 0x8c, 0x87, 0x1d, 0xfd, 0x2a, 0xcb, 0x59, 0x42,
+	0xc4, 0xa0, 0xac, 0x1e, 0xd9, 0xff, 0xbe, 0x04, 0x00, 0x00, 0xff, 0xff, 0xde, 0x94, 0xc0, 0xd4,
+	0xab, 0x05, 0x00, 0x00,
 }
 
 func (m *InitializeRequest) Marshal() (dAtA []byte, err error) {
@@ -678,19 +599,39 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.DeviceKeyprintPub)
 		i = encodeVarintRequest(dAtA, i, uint64(len(m.DeviceKeyprintPub)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x4a
 	}
-	if m.HostOptions != nil {
-		{
-			size, err := m.HostOptions.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintRequest(dAtA, i, uint64(size))
+	if m.DiscoveryLongitude != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DiscoveryLongitude))))
+		i--
+		dAtA[i] = 0x41
+	}
+	if m.DiscoveryLatitude != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DiscoveryLatitude))))
+		i--
+		dAtA[i] = 0x39
+	}
+	if m.EnableDiscovery {
+		i--
+		if m.EnableDiscovery {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x30
+	}
+	if m.EnableHost {
+		i--
+		if m.EnableHost {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x28
 	}
 	if len(m.TempDir) > 0 {
 		i -= len(m.TempDir)
@@ -717,125 +658,6 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.DeviceId)
 		copy(dAtA[i:], m.DeviceId)
 		i = encodeVarintRequest(dAtA, i, uint64(len(m.DeviceId)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *InitializeRequest_HostOptions) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *InitializeRequest_HostOptions) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *InitializeRequest_HostOptions) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ListenAddrs) > 0 {
-		for iNdEx := len(m.ListenAddrs) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.ListenAddrs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintRequest(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x22
-		}
-	}
-	if m.Ipv4Only {
-		i--
-		if m.Ipv4Only {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.HttpTransport {
-		i--
-		if m.HttpTransport {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.QuicTransport {
-		i--
-		if m.QuicTransport {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *InitializeRequest_IPAddress) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *InitializeRequest_IPAddress) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *InitializeRequest_IPAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Family != 0 {
-		i = encodeVarintRequest(dAtA, i, uint64(m.Family))
-		i--
-		dAtA[i] = 0x20
-	}
-	if m.Internal {
-		i--
-		if m.Internal {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x18
-	}
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1089,6 +911,55 @@ func (m *QuerySchemaRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *SendTokenRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SendTokenRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SendTokenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Memo) > 0 {
+		i -= len(m.Memo)
+		copy(dAtA[i:], m.Memo)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.Memo)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Amount != 0 {
+		i = encodeVarintRequest(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.From)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.To) > 0 {
+		i -= len(m.To)
+		copy(dAtA[i:], m.To)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.To)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintRequest(dAtA []byte, offset int, v uint64) int {
 	offset -= sovRequest(v)
 	base := offset
@@ -1122,60 +993,21 @@ func (m *InitializeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
-	if m.HostOptions != nil {
-		l = m.HostOptions.Size()
-		n += 1 + l + sovRequest(uint64(l))
+	if m.EnableHost {
+		n += 2
+	}
+	if m.EnableDiscovery {
+		n += 2
+	}
+	if m.DiscoveryLatitude != 0 {
+		n += 9
+	}
+	if m.DiscoveryLongitude != 0 {
+		n += 9
 	}
 	l = len(m.DeviceKeyprintPub)
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
-	}
-	return n
-}
-
-func (m *InitializeRequest_HostOptions) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.QuicTransport {
-		n += 2
-	}
-	if m.HttpTransport {
-		n += 2
-	}
-	if m.Ipv4Only {
-		n += 2
-	}
-	if len(m.ListenAddrs) > 0 {
-		for _, e := range m.ListenAddrs {
-			l = e.Size()
-			n += 1 + l + sovRequest(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *InitializeRequest_IPAddress) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
-	l = len(m.Address)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
-	if m.Internal {
-		n += 2
-	}
-	if m.Family != 0 {
-		n += 1 + sovRequest(uint64(m.Family))
 	}
 	return n
 }
@@ -1287,6 +1119,30 @@ func (m *QuerySchemaRequest) Size() (n int) {
 		n += 1 + l + sovRequest(uint64(l))
 	}
 	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	return n
+}
+
+func (m *SendTokenRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.To)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	l = len(m.From)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovRequest(uint64(m.Amount))
+	}
+	l = len(m.Memo)
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
@@ -1457,10 +1313,10 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 			m.TempDir = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field HostOptions", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableHost", wireType)
 			}
-			var msglen int
+			var v int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRequest
@@ -1470,29 +1326,55 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
-				return ErrInvalidLengthRequest
+			m.EnableHost = bool(v != 0)
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableDiscovery", wireType)
 			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
 			}
-			if postIndex > l {
+			m.EnableDiscovery = bool(v != 0)
+		case 7:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DiscoveryLatitude", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.HostOptions == nil {
-				m.HostOptions = &InitializeRequest_HostOptions{}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.DiscoveryLatitude = float64(math.Float64frombits(v))
+		case 8:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DiscoveryLongitude", wireType)
 			}
-			if err := m.HostOptions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
 			}
-			iNdEx = postIndex
-		case 6:
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.DiscoveryLongitude = float64(math.Float64frombits(v))
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DeviceKeyprintPub", wireType)
 			}
@@ -1526,303 +1408,6 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 				m.DeviceKeyprintPub = []byte{}
 			}
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipRequest(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *InitializeRequest_HostOptions) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowRequest
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: HostOptions: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HostOptions: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field QuicTransport", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.QuicTransport = bool(v != 0)
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field HttpTransport", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.HttpTransport = bool(v != 0)
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ipv4Only", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ipv4Only = bool(v != 0)
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ListenAddrs", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ListenAddrs = append(m.ListenAddrs, &InitializeRequest_IPAddress{})
-			if err := m.ListenAddrs[len(m.ListenAddrs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipRequest(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *InitializeRequest_IPAddress) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowRequest
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: IPAddress: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: IPAddress: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Internal", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Internal = bool(v != 0)
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Family", wireType)
-			}
-			m.Family = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Family |= InitializeRequest_IPAddress_Family(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRequest(dAtA[iNdEx:])
@@ -2797,6 +2382,171 @@ func (m *QuerySchemaRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SendTokenRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SendTokenRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SendTokenRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.To = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.From = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Memo", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Memo = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

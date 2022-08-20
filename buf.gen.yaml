@@ -1,7 +1,0 @@
-version: v1
-plugins:
-  - name: js
-    out: gen/js
-    opt: import_style=es6
-  - name: ts
-    out: gen/ts

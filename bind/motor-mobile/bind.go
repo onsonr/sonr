@@ -98,6 +98,7 @@ func CreateSchema(buf []byte) ([]byte, error) {
 	}
 }
 
+// QueryWhatIs returns the Document of the specified Schema.
 func QueryWhatIs(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, errWalletNotExists
@@ -109,6 +110,24 @@ func QueryWhatIs(buf []byte) ([]byte, error) {
 	}
 
 	if res, err := instance.QueryWhatIs(context.Background(), request); err == nil {
+		return res.Marshal()
+	} else {
+		return nil, err
+	}
+}
+
+// SendTokens sends tokens to the specified address.
+func SendTokens(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.SendTokenRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.SendTokens(request); err == nil {
 		return res.Marshal()
 	} else {
 		return nil, err

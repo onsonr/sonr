@@ -44,7 +44,7 @@ tasks:
   ## ------------------------------------------------------------
   buf:
     summary: "Build and Push Protobuf files to buf.build"
-    dir: pkg/motor/proto
+    dir: proto
     cmds:
       - buf mod update
       - buf build

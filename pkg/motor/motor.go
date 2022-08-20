@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/types"
+	bt "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
@@ -16,6 +18,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/pkg/tx"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
 )
@@ -35,7 +38,7 @@ type MotorNode interface {
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
 	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
-
+	SendTokens(req mt.SendTokenRequest) (*mt.SendTokenResponse, error)
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
 	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
 
@@ -220,4 +223,40 @@ func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Cre
 	}
 
 	return nil
+}
+
+func (m *motorNodeImpl) SendTokens(req mt.SendTokenRequest) (*mt.SendTokenResponse, error) {
+	// Build Message
+	fromAddr, err := types.AccAddressFromBech32(req.GetFrom())
+	if err != nil {
+		return nil, err
+	}
+
+	toAddr, err := types.AccAddressFromBech32(req.GetTo())
+	if err != nil {
+		return nil, err
+	}
+
+	amount := types.NewCoins(types.NewCoin("snr", types.NewInt(req.GetAmount())))
+	msg1 := bt.NewMsgSend(fromAddr, toAddr, amount)
+	txRaw, err := tx.SignTxWithWallet(m.Wallet, "/cosmos.bank.v1beta1.MsgSend", msg1)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Cosmos.BroadcastTx(txRaw)
+	if err != nil {
+		return nil, err
+	}
+
+	cwir := &bt.MsgSendResponse{}
+	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cwir); err != nil {
+		return nil, err
+	}
+
+	return &mt.SendTokenResponse{
+		Code:    int32(resp.TxResponse.Code),
+		Message: resp.TxResponse.Info,
+		TxHash:  resp.TxResponse.TxHash,
+	}, nil
 }

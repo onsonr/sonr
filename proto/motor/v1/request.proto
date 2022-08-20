@@ -24,34 +24,20 @@ message InitializeRequest {
   // Device Temporary Storage Directory
   string temp_dir = 4;
 
-  // Libp2p Host config
-  HostOptions host_options = 5;
+  // Enable Libp2p Host
+  bool enable_host = 5;
+
+  // Enable Discovery Service
+  bool enable_discovery = 6;
+
+  // Discovery Latitude
+  double discovery_latitude = 7; //optional - Default: 40.673010
+
+  // Discovery Longitude
+  double discovery_longitude = 8; //optional - Default: -73.994450
 
   // Public Key used for Device Authentication as DID Controller
-  bytes device_keyprint_pub = 6; // optional
-
-  // Libp2p Host Options
-  message HostOptions {
-    bool quic_transport = 1;             // Enable QUIC Transport
-    bool http_transport = 2;             // Enable HTTP Transport
-    bool ipv4_only = 3;                  // Enable IPv4 Only
-    repeated IPAddress listen_addrs = 4; // List of Listen Addresses (optional)
-  }
-
-  // IP Address Interface
-  message IPAddress {
-    string name = 1;   // Name of Interface
-    string address = 2;  // IP Address of Interface
-    bool internal = 3; // Wether it is a Loopback Interface
-    Family family = 4; // Address Family
-
-    // Type of IP Interface
-    enum Family {
-      FAMILY_UNSPECIFIED = 0;
-      FAMILY_IPV4 = 1; // IPv4 Address
-      FAMILY_IPV6 = 2; // IPv6 Address
-    }
-  }
+  bytes device_keyprint_pub = 9; // optional
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -87,3 +73,9 @@ message QuerySchemaRequest {
   string did = 2;
 }
 
+message SendTokenRequest {
+  string to = 1;
+  string from = 2;
+  int64 amount = 3;
+  string memo = 4;
+}

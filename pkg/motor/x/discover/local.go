@@ -32,7 +32,7 @@ type Local struct {
 }
 
 // Initializing the local struct.
-func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
+func (e *DiscoverProtocol) initLocal(topic *ps.Topic) error {
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
@@ -57,7 +57,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, topicName string) error {
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
-		olc:          topicName,
+		olc:          sub.Topic(),
 		messages:     make(chan *LobbyEvent),
 		peers:        make([]*motor.Peer, 0),
 	}
@@ -161,6 +161,7 @@ func (lp *Local) callRefresh() {
 	logger.Debug("Calling Refresh Event")
 
 	// Emit Refresh Event
+	
 	// lp.node.Events().Emit(t.ON_REFRESH, &motor.OnLobbyRefreshResponse{
 	// 	Olc:      lp.olc,
 	// 	Peers:    lp.peers,
