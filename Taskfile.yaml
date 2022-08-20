@@ -40,53 +40,6 @@ tasks:
     silent: true
 
   ## ------------------------------------------------------------
-  ## Documentation tasks
-  ## ------------------------------------------------------------
-  docs:start:
-    summary: "Calls yarn start in docs directory"
-    cmds:
-      - task: swag:build
-      - yarn start
-    silent: true
-    dir: docs
-
-  docs:build:
-    summary: "Calls yarn build in docs directory"
-    cmds:
-      - task: swag:build
-      - yarn build
-    silent: true
-    dir: docs
-
-  docs:swizzle:
-    summary: "Calls yarn swizzle in docs directory"
-    cmds:
-      - yarn swizzle
-    silent: true
-    dir: docs
-
-  docs:deploy:
-    summary: "Calls yarn deploy in docs directory"
-    cmds:
-      - USE_SSH=true yarn deploy
-    silent: true
-    dir: docs
-
-  docs:clear:
-    summary: "Calls yarn clear in docs directory"
-    cmds:
-      - yarn clear
-    silent: true
-    dir: docs
-
-  docs:serve:
-    summary: "Calls yarn serve in docs directory"
-    cmds:
-      - yarn serve
-    silent: true
-    dir: docs
-
-  ## ------------------------------------------------------------
   ## Protobuf tasks
   ## ------------------------------------------------------------
   buf:

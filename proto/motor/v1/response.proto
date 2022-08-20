@@ -2,7 +2,7 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
-
+import "registry/did.proto";
 import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
@@ -39,4 +39,11 @@ message UploadObjectResponse {
   int32 code = 1;
   ObjectReference reference = 2;
   string message = 3;
+}
+
+message StatResponse {
+  string address = 1;
+  sonrio.sonr.registry.DIDDocument did_document = 2;
+  int32 balance = 3;
+  int32 stake = 4;
 }

@@ -8,6 +8,7 @@ import (
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -114,51 +115,39 @@ func QueryWhatIs(buf []byte) ([]byte, error) {
 	}
 }
 
-// Address returns the address of the wallet.
-func Address() string {
+// Stat returns general information about the Motor node its wallet and accompanying Account.
+func Stat() ([]byte, error) {
+	// Check if instance is initialized
 	if instance == nil {
-		return ""
+		return nil, errWalletNotExists
 	}
+
+	// Get Wallet Address
+	bal := int32(instance.GetBalance())
 	wallet := instance.GetWallet()
 	if wallet == nil {
-		return ""
+		return nil, errWalletNotExists
 	}
 	addr, err := wallet.Address()
 	if err != nil {
-		return ""
+		return nil, err
 	}
-	return addr
-}
 
-// Balance returns the balance of the wallet.
-func Balance() int {
-	return int(instance.GetBalance())
-}
-
-// func Connect() error {
-// 	if instance == nil {
-// 		return errWalletNotExists
-// 	}
-// 	h, err := host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
-// 	if err != nil {
-// 		return err
-// 	}
-// 	instance.host = h
-// 	return nil
-// }
-
-// DidDoc returns the DID document as JSON
-func DidDoc() string {
-	if instance == nil {
-		return ""
-	}
+	// Get Account DID Document
 	doc := instance.GetDIDDocument()
 	if doc == nil {
-		return ""
+		return nil, errWalletNotExists
 	}
-	buf, err := doc.MarshalJSON()
+	diddoc, err := types.NewDIDDocumentFromPkg(doc)
 	if err != nil {
-		return ""
+		return nil, err
 	}
-	return string(buf)
+
+	// Return response
+	resp := mt.StatResponse{
+		Address:     addr,
+		Balance:     bal,
+		DidDocument: diddoc,
+	}
+	return resp.Marshal()
 }
