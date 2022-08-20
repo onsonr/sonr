@@ -2,7 +2,6 @@ package motor
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -25,7 +24,7 @@ var (
 func Init(buf []byte) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
-	if err := json.Unmarshal(buf, &req); err != nil {
+	if err := req.Unmarshal(buf); err != nil {
 		return nil, err
 	}
 
@@ -41,7 +40,7 @@ func Init(buf []byte) ([]byte, error) {
 		resp := mt.InitializeResponse{
 			Success: true,
 		}
-		return json.Marshal(resp)
+		return resp.Marshal()
 	}
 	return nil, errors.New("loading existing account not implemented")
 }
@@ -51,13 +50,13 @@ func CreateAccount(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 	// decode request
-	var request mt.CreateAccountRequest
-	if err := json.Unmarshal(buf, &request); err != nil {
+	request := mt.CreateAccountRequest{}
+	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	if res, err := instance.CreateAccount(request); err == nil {
-		return json.Marshal(res)
+		return res.Marshal()
 	} else {
 		return nil, err
 	}
@@ -70,12 +69,12 @@ func Login(buf []byte) ([]byte, error) {
 
 	// decode request
 	var request mt.LoginRequest
-	if err := json.Unmarshal(buf, &request); err != nil {
+	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("error unmarshalling request: %s", err)
 	}
 
 	if res, err := instance.Login(request); err == nil {
-		return json.Marshal(res)
+		return res.Marshal()
 	} else {
 		return nil, err
 	}
@@ -87,12 +86,12 @@ func CreateSchema(buf []byte) ([]byte, error) {
 	}
 
 	var request mt.CreateSchemaRequest
-	if err := json.Unmarshal(buf, &request); err != nil {
+	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	if res, err := instance.CreateSchema(request); err == nil {
-		return json.Marshal(res)
+		return res.Marshal()
 	} else {
 		return nil, err
 	}
@@ -104,12 +103,12 @@ func QueryWhatIs(buf []byte) ([]byte, error) {
 	}
 
 	var request mt.QueryWhatIsRequest
-	if err := json.Unmarshal(buf, &request); err != nil {
+	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	if res, err := instance.QueryWhatIs(context.Background(), request); err == nil {
-		return json.Marshal(res)
+		return res.Marshal()
 	} else {
 		return nil, err
 	}
