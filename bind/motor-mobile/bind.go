@@ -25,8 +25,6 @@ var (
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
-	OnSuccess(data interface{})
-	OnError(err error)
 }
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {

@@ -4,8 +4,6 @@ import "log"
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
-	OnSuccess(data interface{})
-	OnError(err error)
 }
 
 type defaultCallback struct {
