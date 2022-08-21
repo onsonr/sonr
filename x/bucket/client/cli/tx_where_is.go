@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -21,6 +22,11 @@ func CmdCreateWhereIs() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			if len(args[0]) < 1 {
+				return errors.New("label must be defined")
+			}
+
 			roleConv, err := strconv.Atoi(args[1])
 			role := types.BucketRole(roleConv)
 
