@@ -2,10 +2,12 @@ package discover
 
 import (
 	"context"
+	"log"
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/sonr/pkg/config"
+	"github.com/sonr-io/sonr/thirdparty/types/common"
 
 	host "github.com/sonr-io/sonr/pkg/host"
 )
@@ -19,19 +21,20 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node  host.SonrHost
-	ctx   context.Context
-	local *Local
-	mode  config.Role
+	node     host.SonrHost
+	ctx      context.Context
+	local    *Local
+	mode     config.Role
+	callback common.MotorCallback
 }
 
 // New creates new DiscoveryProtocol
-func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverProtocol, error) {
+func New(ctx context.Context, host host.SonrHost, cb common.MotorCallback, options ...Option) (*DiscoverProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &DiscoverProtocol{
-		ctx: ctx,
-
-		node: host,
+		ctx:      ctx,
+		callback: cb,
+		node:     host,
 	}
 
 	// Set options
@@ -40,7 +43,7 @@ func New(ctx context.Context, host host.SonrHost, options ...Option) (*DiscoverP
 		opt(opts)
 	}
 	opts.Apply(protocol)
-	logger.Debug("✅  ExchangeProtocol is Activated \n")
+	log.Println("✅  ExchangeProtocol is Activated")
 	return protocol, nil
 }
 

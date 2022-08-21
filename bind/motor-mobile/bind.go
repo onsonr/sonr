@@ -20,9 +20,17 @@ var (
 var (
 	instance       mtr.MotorNode
 	objectBuilders map[string]*object.ObjectBuilder
+	callback       MotorCallback
 )
 
-func Init(buf []byte) ([]byte, error) {
+type MotorCallback interface {
+	OnDiscover(data []byte)
+	OnEvent(event string, data interface{})
+	OnSuccess(data interface{})
+	OnError(err error)
+}
+
+func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
@@ -32,7 +40,8 @@ func Init(buf []byte) ([]byte, error) {
 	// Check if public key provided
 	if req.DeviceKeyprintPub == nil {
 		// Create Motor instance
-		instance = mtr.EmptyMotor(req.DeviceId)
+		instance = mtr.EmptyMotor(&req, cb)
+		callback = cb
 
 		// init objectBuilders
 		objectBuilders = make(map[string]*object.ObjectBuilder)

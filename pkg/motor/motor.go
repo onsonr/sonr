@@ -3,6 +3,7 @@ package motor
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -16,10 +17,11 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
-	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/pkg/tx"
+	"github.com/sonr-io/sonr/thirdparty/types/common"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
 )
@@ -56,6 +58,15 @@ type motorNodeImpl struct {
 	DIDDocument did.Document
 	SonrHost    host.SonrHost
 
+	// internal protocols
+	callback  common.MotorCallback
+	discovery *dp.DiscoverProtocol
+
+	// configuration
+	homeDir    string
+	supportDir string
+	tempDir    string
+
 	// Sharding
 	deviceShard   []byte
 	sharedShard   []byte
@@ -67,21 +78,22 @@ type motorNodeImpl struct {
 
 	// resource management
 	Resources *motorResources
-
-	// internal protocols
-	discovery *dp.DiscoverProtocol
 }
 
-func EmptyMotor(id string) *motorNodeImpl {
+func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) *motorNodeImpl {
 	return &motorNodeImpl{
-		DeviceID: id,
+		DeviceID:   r.GetDeviceId(),
+		homeDir:    r.GetHomeDir(),
+		supportDir: r.GetSupportDir(),
+		tempDir:    r.GetTempDir(),
+		callback:   cb,
 	}
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
+	log.Println("Initializing Query clients...")
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
-
 	grpcConn, err := grpc.Dial(
 		mtr.Cosmos.GetRPCAddress(),
 		grpc.WithInsecure(),
@@ -94,6 +106,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
 
 	// Generate wallet
+	log.Println("Generating wallet...")
 	mtr.Wallet, err = mpc.GenerateWallet(options...)
 	if err != nil {
 		return err
@@ -120,18 +133,19 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	}
 	mtr.DID = *baseDid
 
-	// It creates a new host.
+	// Create new host
+	log.Println("Creating host...")
 	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address))
 	if err != nil {
 		return err
 	}
 
-	mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost)
+	// Utilize discovery protocol
+	log.Println("Enabling Discovery...")
+	mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
 	if err != nil {
 		return err
 	}
-
-	// Create motorNodeImpl
 	return nil
 }
 

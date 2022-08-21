@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/sonr/thirdparty/types/common"
 	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	"github.com/stretchr/testify/assert"
 )
@@ -28,7 +29,9 @@ func Test_CreateAccount(t *testing.T) {
 		AesDscKey: aesKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
 	res, err := m.CreateAccount(req)
 	assert.NoError(t, err, "wallet generation succeeds")
 
@@ -58,7 +61,9 @@ func Test_Login(t *testing.T) {
 			AesPskKey: pskKey,
 		}
 
-		m := EmptyMotor("test_device")
+		m := EmptyMotor(&mt.InitializeRequest{
+			DeviceId: "test_device",
+		}, common.DefaultCallback())
 		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
@@ -88,7 +93,9 @@ func Test_Login(t *testing.T) {
 			AesPskKey: pskKey,
 		}
 
-		m := EmptyMotor("test_device")
+		m := EmptyMotor(&mt.InitializeRequest{
+			DeviceId: "test_device",
+		}, common.DefaultCallback())
 		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
@@ -112,7 +119,9 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 

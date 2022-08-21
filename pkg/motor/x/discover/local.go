@@ -10,6 +10,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	// motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
 	// v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
+	"github.com/sonr-io/sonr/thirdparty/types/common"
 	ct "github.com/sonr-io/sonr/thirdparty/types/common"
 	st "github.com/sonr-io/sonr/thirdparty/types/service"
 	"google.golang.org/protobuf/proto"
@@ -20,6 +21,7 @@ type ErrFunc func() error
 
 // Local is the protocol for managing local peers.
 type Local struct {
+	callback     common.MotorCallback
 	node         host.SonrHost
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
@@ -33,7 +35,7 @@ type Local struct {
 }
 
 // Initializing the local struct.
-func (e *DiscoverProtocol) initLocal(topic *ps.Topic) error {
+func (e *DiscoverProtocol) initLocal(topic *ps.Topic, cb common.MotorCallback) error {
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
@@ -135,7 +137,7 @@ func (p *Local) handleTopic() {
 				logger.Errorf("%s - Failed to Unmarshal Message", err)
 				continue
 			}
-			// p.messages <- newLobbyEvent(msg.ReceivedFrom, data.GetPeer())
+			p.messages <- newLobbyEvent(msg.ReceivedFrom, data.GetFrom())
 		}
 	}
 }
@@ -160,14 +162,19 @@ func (p *Local) handleEvents() {
 func (lp *Local) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
+	ev := &st.RefreshEvent{
+		Peers:      lp.peers,
+		TopicName:  lp.olc,
+		ReceivedAt: int64(time.Now().Unix()),
+	}
 
 	// Emit Refresh Event
-
-	// lp.node.Events().Emit(t.ON_REFRESH, &motor.OnLobbyRefreshResponse{
-	// 	Olc:      lp.olc,
-	// 	Peers:    lp.peers,
-	// 	Received: int64(time.Now().Unix()),
-	// })
+	buf, err := ev.Marshal()
+	if err != nil {
+		logger.Errorf("%s - Failed to Marshal Refresh Event", err)
+		return
+	}
+	lp.callback.OnDiscover(buf)
 }
 
 // callUpdate publishes a LobbyMessage to the Local Topic

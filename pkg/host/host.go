@@ -122,13 +122,12 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	}
 
 	// Initialize Discovery for MDNS
-	if !c.Libp2pMdnsDisabled && hn.Role() != config.Role_HIGHWAY {
+	if !c.Libp2pMdnsDisabled {
 		hn.createMdnsDiscovery(c)
 	}
 
 	hn.fsm.SetState(Status_READY)
 	go hn.Serve()
-
 	return hn, nil
 }
 
@@ -164,17 +163,10 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		return nil, err
 	}
 
-	// // TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
-	// transport := direct.NewTransport(
-	// 	webrtc.Configuration{},
-	// 	new(mplex.Transport),
-	// )
-
 	// Start Host
 	hn.host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
 		libp2p.Routing(hn.Router),
-		// libp2p.Transport(transport),
 		libp2p.ListenAddrs(maddr),
 		libp2p.DisableRelay(),
 	)

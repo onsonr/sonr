@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/sonr-io/sonr/thirdparty/types/common"
 	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,9 @@ func Test_CreateSchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
@@ -56,7 +59,9 @@ func Test_QuerySchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 

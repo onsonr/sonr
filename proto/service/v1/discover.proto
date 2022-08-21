@@ -13,3 +13,9 @@ message LobbyMessage {
   bytes signature = 3;             // Signature of the Attached Data
   int64 created_at = 4; // Timestamp
 }
+
+message RefreshEvent {
+  string topic_name = 1;
+  repeated common.v1.Peer peers = 2;
+  int64 received_at = 3;
+}

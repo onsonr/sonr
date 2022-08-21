@@ -69,7 +69,7 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		}
 
 		// Create Lobby
-		if err := p.initLocal(topic); err != nil {
+		if err := p.initLocal(topic, p.callback); err != nil {
 			logger.Errorf("%s - Failed to initialize Lobby", err)
 			return err
 		}
