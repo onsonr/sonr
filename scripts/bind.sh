@@ -16,24 +16,22 @@ while getopts "iaw" opt; do
   case $opt in
     a)
       ANDROID_ARTIFACT=${BUILDDIR}/io.sonr.motor.aar
-      ANDROID_TAR_BALL=${BUILDDIR}/motor-${VERSION}-android.tar.gz
-
       echo "🔷 Binding Android Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
       gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -v
       rm -rf ${BUILDDIR}/io.sonr.motor-sources.jar
-      tar -czvf ${ANDROID_TAR_BALL} ${ANDROID_ARTIFACT}
+      cd ${BUILDDIR}
+      tar -czvf motor-${VERSION}-android.tar.gz ${ANDROID_ARTIFACT}
       rm -rf ${ANDROID_ARTIFACT}
       echo "✅ Android Tarball written to: ${ANDROID_TAR_BALL}"
       ;;
     i)
       IOS_ARTIFACT=${BUILDDIR}/Motor.xcframework
-      IOS_TAR_BALL=${BUILDDIR}/motor-${VERSION}-ios.tar.gz
-
       echo "🔷 Binding iOS Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
       gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR  -o ${IOS_ARTIFACT} -v
-      tar -czvf ${IOS_TAR_BALL} ${IOS_ARTIFACT}
+      cd ${BUILDDIR}
+      tar -czvf motor-${VERSION}-ios.tar.gz ${IOS_ARTIFACT}
       rm -rf ${IOS_ARTIFACT}
       echo "✅ iOS Tarball written to: ${IOS_TAR_BALL}"
       ;;
