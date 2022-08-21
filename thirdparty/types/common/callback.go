@@ -4,7 +4,6 @@ import "log"
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
-	OnEvent(event string, data interface{})
 	OnSuccess(data interface{})
 	OnError(err error)
 }
