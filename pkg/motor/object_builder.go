@@ -10,8 +10,10 @@ import (
 )
 
 func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, error) {
+	mtr.Logger.Info("Building object with schema: %s", did)
 	whatIs, schema, found := mtr.Resources.GetSchema(did)
 	if !found {
+		mtr.Logger.Error("Error while querying WhatIs: %s", did)
 		return nil, fmt.Errorf("could not find WhatIs with did '%s'", did)
 	}
 

@@ -91,7 +91,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	}
 	mtr.Logger.Info("Done creating grpc client")
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
-	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
+	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.Logger, mtr.schemaQueryClient)
 	mtr.Logger.Info("Done creating query cleints")
 	mtr.Logger.Info("Start generating user wallet")
 

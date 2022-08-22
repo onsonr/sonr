@@ -10,9 +10,10 @@ import (
 )
 
 func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error) {
-
+	mtr.Logger.Debug("Creating schema definition from array: %#v\n", request.Fields)
 	listFields, err := convertFields(request.Fields)
 	if err != nil {
+		mtr.Logger.Error("proccessing fields failed with error: %s", err)
 		return mt.CreateSchemaResponse{}, fmt.Errorf("process fields: %s", err)
 	}
 	createSchemaMsg := st.NewMsgCreateSchema(convertMetadata(request.Metadata), &st.SchemaDefinition{
@@ -25,20 +26,22 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("sign tx with wallet: %s", err)
 	}
-
+	mtr.Logger.Info("Broadcasting create schema request")
 	resp, err := mtr.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("broadcast tx: %s", err)
 	}
-
+	mtr.Logger.Info("Broadcasting create schema request returned wtih: %d", resp.TxResponse.Code)
 	csresp := &st.MsgCreateSchemaResponse{}
 	if err := client.DecodeTxResponseData(resp.TxResponse.Data, csresp); err != nil {
+		mtr.Logger.Error("Error while unmarshalling Create Schema response: %s", err)
 		return mt.CreateSchemaResponse{}, fmt.Errorf("decode MsgCreateSchemaResponse: %s", err)
 	}
 
 	// store reference to newly created WhatIs
 	_, err = mtr.Resources.StoreWhatIs(csresp.WhatIs)
 	if err != nil {
+		mtr.Logger.Error("Error while storing WhatIs %s", err)
 		return mt.CreateSchemaResponse{}, fmt.Errorf("store WhatIs: %s", err)
 	}
 

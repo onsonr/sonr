@@ -32,7 +32,7 @@ func Init(buf []byte) ([]byte, error) {
 	// Check if public key provided
 	if req.DeviceKeyprintPub == nil {
 		// Create Motor instance
-		instance = mtr.EmptyMotor(req.DeviceId)
+		instance = mtr.EmptyMotor(req.DeviceId, "debug")
 
 		// init objectBuilders
 		objectBuilders = make(map[string]*object.ObjectBuilder)
