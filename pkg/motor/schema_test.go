@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -78,13 +77,8 @@ func Test_QuerySchema(t *testing.T) {
 	assert.NoError(t, err, "schema created successfully")
 
 	// CREATE DONE, TRY QUERY
-	queryWhatIsRequest := mt.QueryWhatIsRequest{
-		Creator: resp.WhatIs.Creator,
-		Did:     resp.WhatIs.Did,
-	}
-
-	qresp, err := m.QueryWhatIs(context.Background(), queryWhatIsRequest)
+	qresp, err := m.GetClient().QueryWhatIs(resp.WhatIs.Creator, resp.WhatIs.Did)
 	assert.NoError(t, err, "query response succeeds")
 
-	assert.Equal(t, resp.WhatIs.Did, qresp.WhatIs.Did)
+	assert.Equal(t, resp.WhatIs.Did, qresp.Did)
 }

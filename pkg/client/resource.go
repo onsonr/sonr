@@ -1,34 +1,15 @@
-package motor
+package client
 
 import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/sonr-io/sonr/pkg/client"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-type motorResources struct {
-	config            *client.Client
-	schemaQueryClient st.QueryClient
-
-	whatIsStore map[string]*st.WhatIs
-	schemaStore map[string]*st.SchemaDefinition
-}
-
-func newMotorResources(config *client.Client, schemaQueryClient st.QueryClient) *motorResources {
-	return &motorResources{
-		config:            config,
-		schemaQueryClient: schemaQueryClient,
-
-		whatIsStore: make(map[string]*st.WhatIs),
-		schemaStore: make(map[string]*st.SchemaDefinition),
-	}
-}
-
 // StoreWhatIs fetches the schema definition from IPFS and caches it
-func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, error) {
+func (r *Client) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, error) {
 
 	r.whatIsStore[whatIs.Did] = whatIs
 
@@ -39,7 +20,7 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 		return schema, nil
 	}
 
-	resp, err := http.Get(fmt.Sprintf("%s/ipfs/%s", r.config.GetIPFSAddress(), whatIs.Schema.Cid))
+	resp, err := http.Get(fmt.Sprintf("%s/ipfs/%s", r.GetIPFSAddress(), whatIs.Schema.Cid))
 	if err != nil {
 		return nil, fmt.Errorf("error getting cid '%s': %s", whatIs.Schema.Cid, err)
 	}
@@ -58,7 +39,7 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 	return definition, nil
 }
 
-func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition, bool) {
+func (r *Client) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition, bool) {
 	var whatIs *st.WhatIs
 	if w, ok := r.whatIsStore[did]; !ok {
 		return nil, nil, false

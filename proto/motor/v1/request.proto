@@ -30,14 +30,17 @@ message InitializeRequest {
   // Enable Discovery Service
   bool enable_discovery = 6;
 
+  // Enable Query Clients
+  bool enable_query = 7;
+
   // Discovery Latitude
-  double discovery_latitude = 7; //optional - Default: 40.673010
+  double discovery_latitude = 8; //optional - Default: 40.673010 (Sonr HQ)
 
   // Discovery Longitude
-  double discovery_longitude = 8; //optional - Default: -73.994450
+  double discovery_longitude = 9; //optional - Default: -73.994450 (Sonr HQ)
 
   // Public Key used for Device Authentication as DID Controller
-  bytes device_keyprint_pub = 9; // optional
+  bytes device_keyprint_pub = 10; // optional
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr

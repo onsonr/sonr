@@ -22,8 +22,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/thirdparty/types/common"
 	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
-	st "github.com/sonr-io/sonr/x/schema/types"
-	"google.golang.org/grpc"
 )
 
 type MotorNode interface {
@@ -74,12 +72,6 @@ type motorNodeImpl struct {
 	sharedShard   []byte
 	recoveryShard []byte
 	unusedShards  [][]byte
-
-	// query clients
-	schemaQueryClient st.QueryClient
-
-	// resource management
-	Resources *motorResources
 }
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) *motorNodeImpl {
@@ -98,16 +90,6 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
 	log.Println("Initializing Query clients...")
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
-	grpcConn, err := grpc.Dial(
-		mtr.Cosmos.GetRPCAddress(),
-		grpc.WithInsecure(),
-	)
-	if err != nil {
-		return err
-	}
-
-	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
-	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
 
 	// Generate wallet
 	log.Println("Generating wallet...")

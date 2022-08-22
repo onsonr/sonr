@@ -1,5 +1,7 @@
 package client
 
+import st "github.com/sonr-io/sonr/x/schema/types"
+
 const (
 	// -- Local Blockchain --
 	BLOCKCHAIN_REST_LOCAL   = "http://0.0.0.0:26657"
@@ -30,12 +32,18 @@ const (
 )
 
 type Client struct {
-	connType ConnEndpointType
+	connType          ConnEndpointType
+	
+
+	whatIsStore map[string]*st.WhatIs
+	schemaStore map[string]*st.SchemaDefinition
 }
 
 func NewClient(t ConnEndpointType) *Client {
 	return &Client{
-		connType: t,
+		connType:    t,
+		whatIsStore: make(map[string]*st.WhatIs),
+		schemaStore: make(map[string]*st.SchemaDefinition),
 	}
 }
 
