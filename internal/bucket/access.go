@@ -27,7 +27,7 @@ func (b *bucketImpl) ContentExists(id string) bool {
 }
 
 func (b *bucketImpl) GetContent() []*BucketContent {
-	var content []*BucketContent = make([]*BucketContent, len(b.contentCache))
+	var content []*BucketContent = make([]*BucketContent, 0)
 	for _, v := range b.contentCache {
 		if v.ContentType == bt.ResourceIdentifier_CID {
 			content = append(content, v)
@@ -38,7 +38,7 @@ func (b *bucketImpl) GetContent() []*BucketContent {
 }
 
 func (b *bucketImpl) GetBuckets() []*BucketContent {
-	var content []*BucketContent = make([]*BucketContent, len(b.contentCache))
+	var content []*BucketContent = make([]*BucketContent, 0)
 	for _, v := range b.contentCache {
 		if v.ContentType == bt.ResourceIdentifier_DID {
 			content = append(content, v)
