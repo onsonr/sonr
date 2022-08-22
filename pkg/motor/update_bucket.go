@@ -8,26 +8,27 @@ import (
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
+	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/tx"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) UpdateBucket(label string, did string, role bt.BucketRole, visibility bt.BucketVisibility, content []*bt.BucketItem) (bucket.Bucket, error) {
+func (mtr *motorNodeImpl) UpdateBucket(req mt.UpdateBucketRequest) (bucket.Bucket, error) {
 	if mtr.Address == "" {
 		return nil, errors.New("invalid Address")
 	}
 
-	if label == "" {
+	if req.Label == "" {
 		return nil, errors.New("label nust be defined")
 	}
 
-	createWhereIsRequest := bt.NewMsgUpdateWhereIs(mtr.Address, did)
-	createWhereIsRequest.Label = label
-	createWhereIsRequest.Role = role
-	createWhereIsRequest.Visibility = visibility
-	createWhereIsRequest.Content = content
+	updateWhereIsRequest := bt.NewMsgUpdateWhereIs(mtr.Address, req.Did)
+	updateWhereIsRequest.Label = req.Label
+	updateWhereIsRequest.Role = req.Role
+	updateWhereIsRequest.Visibility = req.Visibility
+	updateWhereIsRequest.Content = req.Content
 
-	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.UpdateWhereIs", createWhereIsRequest)
+	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.UpdateWhereIs", updateWhereIsRequest)
 	if err != nil {
 		return nil, fmt.Errorf("sign tx with wallet: %s", err)
 	}
@@ -43,7 +44,7 @@ func (mtr *motorNodeImpl) UpdateBucket(label string, did string, role bt.BucketR
 	}
 
 	if cbresp.Status != http.StatusAccepted {
-		return nil, errors.New("Non success status from Update bucket Request")
+		return nil, errors.New("non success status from Update bucket Request")
 	}
 
 	mtr.Resources.whereIsStore[cbresp.WhereIs.Did] = cbresp.WhereIs
@@ -53,16 +54,16 @@ func (mtr *motorNodeImpl) UpdateBucket(label string, did string, role bt.BucketR
 	}
 
 	if cbresp.Status != http.StatusAccepted {
-		return nil, errors.New("Non success status from Update bucket Request")
+		return nil, errors.New("non success status from Update bucket Request")
 	}
-	mtr.Resources.bucketStore[did] = nil
+	mtr.Resources.bucketStore[req.Did] = nil
 
 	b := bucket.New(addr,
 		mtr.Resources.whereIsStore[cbresp.WhereIs.Did],
 		mtr.Resources.shell,
 		mtr.Resources.bucketQueryClient)
 
-	mtr.Resources.bucketStore[did] = b
+	mtr.Resources.bucketStore[req.Did] = b
 
 	return b, nil
 }
@@ -73,8 +74,15 @@ func (mtr *motorNodeImpl) UpdateBucketItems(context context.Context, did string,
 	}
 
 	wi := mtr.Resources.whereIsStore[did]
-
-	b, err := mtr.UpdateBucket(wi.Label, did, wi.Role, wi.Visibility, items)
+	updateReq := mt.UpdateBucketRequest{
+		Creator:    mtr.Address,
+		Did:        did,
+		Label:      wi.Label,
+		Role:       wi.Role,
+		Visibility: wi.Visibility,
+		Content:    items,
+	}
+	b, err := mtr.UpdateBucket(updateReq)
 
 	if err != nil {
 		return nil, err
@@ -89,8 +97,16 @@ func (mtr *motorNodeImpl) UpdateBucketLabel(context context.Context, did string,
 	}
 
 	wi := mtr.Resources.whereIsStore[did]
+	updateReq := mt.UpdateBucketRequest{
+		Creator:    mtr.Address,
+		Did:        did,
+		Label:      label,
+		Role:       wi.Role,
+		Visibility: wi.Visibility,
+		Content:    wi.Content,
+	}
 
-	b, err := mtr.UpdateBucket(label, did, wi.Role, wi.Visibility, wi.Content)
+	b, err := mtr.UpdateBucket(updateReq)
 
 	if err != nil {
 		return nil, err
@@ -105,8 +121,16 @@ func (mtr *motorNodeImpl) UpdateBucketVisibility(context context.Context, did st
 	}
 
 	wi := mtr.Resources.whereIsStore[did]
+	updateReq := mt.UpdateBucketRequest{
+		Creator:    mtr.Address,
+		Did:        did,
+		Label:      wi.Label,
+		Role:       wi.Role,
+		Visibility: visibility,
+		Content:    wi.Content,
+	}
 
-	b, err := mtr.UpdateBucket(wi.Label, did, wi.Role, visibility, wi.Content)
+	b, err := mtr.UpdateBucket(updateReq)
 
 	if err != nil {
 		return nil, err
