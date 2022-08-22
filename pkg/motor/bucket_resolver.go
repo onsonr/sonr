@@ -2,37 +2,9 @@ package motor
 
 import (
 	"context"
-	"errors"
 
 	"github.com/sonr-io/sonr/internal/bucket"
 )
-
-func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, did string) (bucket.Bucket, error) {
-	if did == "" {
-		return nil, errors.New("creator address and did must be defined within the request")
-	}
-	addr, err := mtr.Wallet.Address()
-	if err != nil {
-		return nil, err
-	}
-
-	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
-		_, err := mtr.QueryWhereIs(context, did)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	b := bucket.New(
-		addr,
-		mtr.Resources.whereIsStore[did],
-		mtr.Resources.shell,
-		mtr.Resources.bucketQueryClient)
-
-	mtr.Resources.bucketStore[did] = b
-
-	return b, nil
-}
 
 func (mtr *motorNodeImpl) GetBucket(context context.Context, did string) (bucket.Bucket, error) {
 	addr := mtr.GetAddress()
