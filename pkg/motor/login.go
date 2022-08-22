@@ -38,7 +38,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
-	mtr.Logger.Print("done reconstructing wallet")
+	mtr.Logger.Info("done reconstructing wallet")
 
 	// fetch DID document from chain
 	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)

@@ -80,6 +80,7 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 		if err != nil {
 			return DefaultVaultService, err
 		}
+		v.logger.Infof("Error while requesting vault cid: %s", errRes.Message)
 		return DefaultVaultService, fmt.Errorf("error creating vault: %s", errRes.Message)
 	}
 
