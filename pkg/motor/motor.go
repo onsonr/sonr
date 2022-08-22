@@ -59,8 +59,10 @@ type motorNodeImpl struct {
 	SonrHost    host.SonrHost
 
 	// internal protocols
-	callback  common.MotorCallback
-	discovery *dp.DiscoverProtocol
+	isHostEnabled      bool
+	isDiscoveryEnabled bool
+	callback           common.MotorCallback
+	discovery          *dp.DiscoverProtocol
 
 	// configuration
 	homeDir    string
@@ -82,11 +84,13 @@ type motorNodeImpl struct {
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) *motorNodeImpl {
 	return &motorNodeImpl{
-		DeviceID:   r.GetDeviceId(),
-		homeDir:    r.GetHomeDir(),
-		supportDir: r.GetSupportDir(),
-		tempDir:    r.GetTempDir(),
-		callback:   cb,
+		isHostEnabled:      r.GetEnableHost(),
+		isDiscoveryEnabled: r.GetEnableDiscovery(),
+		DeviceID:           r.GetDeviceId(),
+		homeDir:            r.GetHomeDir(),
+		supportDir:         r.GetSupportDir(),
+		tempDir:            r.GetTempDir(),
+		callback:           cb,
 	}
 }
 
@@ -134,17 +138,21 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.DID = *baseDid
 
 	// Create new host
-	log.Println("Creating host...")
-	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address))
-	if err != nil {
-		return err
+	if mtr.isHostEnabled {
+		log.Println("Creating host...")
+		mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address))
+		if err != nil {
+			return err
+		}
 	}
 
 	// Utilize discovery protocol
-	log.Println("Enabling Discovery...")
-	mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
-	if err != nil {
-		return err
+	if mtr.isDiscoveryEnabled {
+		log.Println("Enabling Discovery...")
+		mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -214,7 +222,7 @@ func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMet
 }
 
 /*
-	Adds a Credential to the DidDocument of the account
+Adds a Credential to the DidDocument of the account
 */
 func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Credential) error {
 	if w.DIDDocument == nil {

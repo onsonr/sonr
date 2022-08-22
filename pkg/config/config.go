@@ -52,7 +52,17 @@ type Config struct {
 	JWTExpiration    int64
 
 	// Cosmos SDK
-	AccountAddress string
+	AccountAddress           string
+	CosmosAccountName        string
+	CosmosAddressPrefix      string
+	CosmosNodeAddress        string
+	CosmosUseFaucet          bool
+	CosmosFaucetAddress      string
+	CosmosFaucetDenom        string
+	CosmosFaucetMinAmount    uint64
+	CosmosHomePath           string
+	CosmosKeyringBackend     string
+	CosmosKeyringServiceName string
 
 	// Device Config
 	DeviceID       string
@@ -100,23 +110,34 @@ func DefaultConfig(r Role, addr string) *Config {
 
 	// Create the default configuration
 	conf = &Config{
-		LogLevel:             string(InfoLevel),
-		Role:                 r,
-		AccountAddress:       addr,
-		Libp2pMdnsDisabled:   true,
-		HighwayGRPCNetwork:   "tcp",
-		Libp2pBootstrapPeers: ds,
-		Libp2pLowWater:       200,
-		Libp2pHighWater:      400,
-		Libp2pGracePeriod:    time.Second * 20,
-		Libp2pRendezvous:     "/sonr/rendevouz/0.9.2",
-		Libp2pInterval:       time.Second * 5,
-		Libp2pTTL:            dscl.TTL(time.Minute * 2),
-		HighwayGRPCEndpoint:  "localhost:26225",
-		HighwayHTTPEndpoint:  ":8081",
-		MatrixServerName:     "sonr-matrix-1",
-		DeviceID:             "",
-		HostName:             "",
+		LogLevel:       string(InfoLevel),
+		Role:           r,
+		AccountAddress: addr,
+
+		Libp2pMdnsDisabled:       true,
+		HighwayGRPCNetwork:       "tcp",
+		Libp2pBootstrapPeers:     ds,
+		Libp2pLowWater:           200,
+		Libp2pHighWater:          400,
+		Libp2pGracePeriod:        time.Second * 20,
+		Libp2pRendezvous:         "/sonr/rendevouz/0.9.2",
+		Libp2pInterval:           time.Second * 5,
+		Libp2pTTL:                dscl.TTL(time.Minute * 2),
+		HighwayGRPCEndpoint:      "localhost:26225",
+		HighwayHTTPEndpoint:      ":8081",
+		MatrixServerName:         "sonr-matrix-1",
+		DeviceID:                 "",
+		HostName:                 "",
+		CosmosAccountName:        "alice",
+		CosmosAddressPrefix:      "snr",
+		CosmosNodeAddress:        "http://localhost:26657",
+		CosmosUseFaucet:          false,
+		CosmosFaucetAddress:      "",
+		CosmosFaucetDenom:        "uatom",
+		CosmosFaucetMinAmount:    100,
+		CosmosHomePath:           "~/.sonr",
+		CosmosKeyringBackend:     "test",
+		CosmosKeyringServiceName: "sonr",
 	}
 
 	// Role specific configuration
