@@ -16,22 +16,23 @@ import (
 
 func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create motor
-	fmt.Printf("initializing motor... ")
+	mtr.Logger.Print("initializing motor...")
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.Logger.Print("done")
 
 	// Request from Faucet
-	fmt.Printf("requesting initial balance... ")
+	mtr.Logger.Print("requesting initial balance...")
+
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.Logger.Print("Done requesting initial balance")
 
 	// Create Initial Shards
-	fmt.Printf("creating shards... ")
+	mtr.Logger.Print("Creating intial account shards...")
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create shards: %s", err)
@@ -40,7 +41,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.sharedShard = sharedShard
 	mtr.recoveryShard = recShard
 	mtr.unusedShards = unusedShards
-	fmt.Println("done.")
+	mtr.Logger.Print("done creating account shards")
 
 	// Create the DID Document
 	doc, err := did.NewDocument(mtr.DID.String())
@@ -50,15 +51,15 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.DIDDocument = doc
 
 	// create Vault shards to make sure this works before creating WhoIs
-	fmt.Printf("creating account... ")
-	vc := vault.New()
+	mtr.Logger.Print("creating account... ")
+	vc := vault.New(mtr.Logger)
 	if _, err := createWhoIs(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.Logger.Print("done creating account")
 
 	// ecnrypt dscShard with DSC
-	fmt.Printf("encrypting shards... ")
+	mtr.Logger.Print("starting encrypting device shards... ")
 	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
@@ -75,10 +76,10 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.Logger.Print("done creating device shards")
 
 	// create vault
-	fmt.Printf("setting up vault... ")
+	mtr.Logger.Print("starting user vault configuration... ")
 	vaultService, err := vc.CreateVault(
 		mtr.Address,
 		mtr.unusedShards,
@@ -90,18 +91,18 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.Logger.Print("done setting up user vault")
 
 	// update DID Document
-	fmt.Printf("updating WhoIs... ")
+	mtr.Logger.Print("updating WhoIs... ")
 	mtr.DIDDocument.AddService(vaultService)
 
 	// update whois
 	if _, err = updateWhoIs(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
-	fmt.Println("done.")
-	fmt.Println("account created successfully.")
+	mtr.Logger.Print("done updating user WhoIs.")
+	mtr.Logger.Print("account created successfully.")
 
 	docBytes, err := mtr.DIDDocument.MarshalJSON()
 	if err != nil {

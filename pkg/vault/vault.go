@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/did"
 )
 
@@ -13,11 +14,13 @@ type VaultClient interface {
 
 type vaultImpl struct {
 	vaultEndpoint string
+	logger        *golog.Logger
 }
 
-func New() VaultClient {
+func New(logger *golog.Logger) VaultClient {
 	return &vaultImpl{
 		vaultEndpoint: "https://vault.sonr.ws",
 		// vaultEndpoint: "http://127.0.0.1:1234",
+		logger: logger,
 	}
 }

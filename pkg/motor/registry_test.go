@@ -28,7 +28,7 @@ func Test_CreateAccount(t *testing.T) {
 		AesDscKey: aesKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor("test_device", "debug")
 	res, err := m.CreateAccount(req)
 	assert.NoError(t, err, "wallet generation succeeds")
 
@@ -58,7 +58,7 @@ func Test_Login(t *testing.T) {
 			AesPskKey: pskKey,
 		}
 
-		m := EmptyMotor("test_device")
+		m := EmptyMotor("test_device", "debug")
 		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
@@ -88,7 +88,7 @@ func Test_Login(t *testing.T) {
 			AesPskKey: pskKey,
 		}
 
-		m := EmptyMotor("test_device")
+		m := EmptyMotor("test_device", "debug")
 		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
@@ -112,7 +112,7 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor("test_device", "debug")
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 

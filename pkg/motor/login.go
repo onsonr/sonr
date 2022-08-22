@@ -21,14 +21,14 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	mtr.Address = request.Did
 
 	// fetch vault shards
-	fmt.Printf("fetching shards from vault... ")
-	shards, err := vault.New().GetVaultShards(request.Did)
+	mtr.Logger.Info("fetching shards from vault... ")
+	shards, err := vault.New(mtr.Logger).GetVaultShards(request.Did)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.Logger.Info("done retrieving vault shards")
 
-	fmt.Printf("reconstructing wallet... ")
+	mtr.Logger.Info("reconstructing wallet... ")
 	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
@@ -38,7 +38,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.Logger.Print("done reconstructing wallet")
 
 	// fetch DID document from chain
 	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)

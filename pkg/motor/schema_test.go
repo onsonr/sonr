@@ -24,7 +24,7 @@ func Test_CreateSchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor("test_device", "debug")
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
@@ -56,7 +56,7 @@ func Test_QuerySchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m := EmptyMotor("test_device", "debug")
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 

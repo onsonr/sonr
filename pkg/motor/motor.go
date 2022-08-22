@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/kataras/golog"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
@@ -51,7 +52,7 @@ type motorNodeImpl struct {
 	DID         did.DID
 	DIDDocument did.Document
 	SonrHost    host.SonrHost
-
+	Logger      *golog.Logger
 	// Sharding
 	deviceShard   []byte
 	sharedShard   []byte
@@ -65,15 +66,21 @@ type motorNodeImpl struct {
 	Resources *motorResources
 }
 
-func EmptyMotor(id string) *motorNodeImpl {
+func EmptyMotor(id string, logLevel string) *motorNodeImpl {
+	logger := golog.New()
+	logger.SetLevel(logLevel)
 	return &motorNodeImpl{
 		DeviceID: id,
+		Logger:   golog.New(),
 	}
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
+	mtr.Logger.Debug("Intializing motor with account options")
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
+	mtr.Logger.Debug("Creating grpc connection type %d", client.ConnEndpointType_BETA)
+	mtr.Logger.Info("starting creating motor resources")
 
 	grpcConn, err := grpc.Dial(
 		mtr.Cosmos.GetRPCAddress(),
@@ -82,9 +89,11 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	if err != nil {
 		return err
 	}
-
+	mtr.Logger.Info("Done creating grpc client")
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
 	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
+	mtr.Logger.Info("Done creating query cleints")
+	mtr.Logger.Info("Start generating user wallet")
 
 	// Generate wallet
 	mtr.Wallet, err = mpc.GenerateWallet(options...)
@@ -105,6 +114,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	if err != nil {
 		return err
 	}
+	mtr.Logger.Info("Done Configuring user wallet")
 
 	// Set Base DID
 	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", strings.TrimPrefix(mtr.Address, "snr")))
@@ -113,11 +123,14 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	}
 	mtr.DID = *baseDid
 
+	mtr.Logger.Info("Start creating host with motor context")
 	// It creates a new host.
 	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
 	if err != nil {
 		return err
 	}
+
+	mtr.Logger.Info("Done creating motor resources")
 
 	// Create motorNodeImpl
 	return nil

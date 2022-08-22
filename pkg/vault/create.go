@@ -47,7 +47,7 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 	if err != nil {
 		return DefaultVaultService, err
 	}
-
+	v.logger.Info("Initializing valut")
 	createVaultFunc := func() ([]byte, error) {
 		res, err := http.Post(
 			fmt.Sprintf("%s/did/%s/create", v.vaultEndpoint, d),
@@ -71,6 +71,9 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 	if err != nil {
 		return DefaultVaultService, err
 	}
+
+	v.logger.Info("Configuring vault request")
+
 	if cvr.VaultCid == "" {
 		var errRes errorResponse
 		err = json.Unmarshal(body, &errRes)
