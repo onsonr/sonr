@@ -25,7 +25,8 @@ message MsgCreateWhereIs {
 }
 
 message MsgCreateWhereIsResponse {
-  string did = 1;
+  int32 status = 1;
+  WhereIs where_is = 2;
 }
 
 message MsgUpdateWhereIs {
@@ -38,13 +39,18 @@ message MsgUpdateWhereIs {
   map<string, AclJwks> content_acl = 7;
 }
 
-message MsgUpdateWhereIsResponse {}
+message MsgUpdateWhereIsResponse {
+  int32 status = 1;
+  WhereIs where_is = 2;
+}
 
 message MsgDeleteWhereIs {
   string creator = 1;
   string did = 2;
 }
 
-message MsgDeleteWhereIsResponse {}
+message MsgDeleteWhereIsResponse {
+  int32 status = 1;
+}
 
 // this line is used by starport scaffolding # proto/tx/message

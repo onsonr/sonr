@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
@@ -14,33 +15,10 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
 )
-
-type MotorNode interface {
-	GetDeviceID() string
-
-	GetAddress() string
-	GetBalance() int64
-
-	GetClient() *client.Client
-	GetWallet() *mpc.Wallet
-	GetPubKey() *secp256k1.PubKey
-	GetDID() did.DID
-	GetDIDDocument() did.Document
-	GetHost() host.SonrHost
-	AddCredentialVerificationMethod(id string, cred *did.Credential) error
-	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
-	Login(mt.LoginRequest) (mt.LoginResponse, error)
-
-	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
-	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
-
-	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
-}
 
 type motorNodeImpl struct {
 	DeviceID    string
@@ -60,6 +38,7 @@ type motorNodeImpl struct {
 
 	// query clients
 	schemaQueryClient st.QueryClient
+	bucketQueryClient bt.QueryClient
 
 	// resource management
 	Resources *motorResources
@@ -73,7 +52,7 @@ func EmptyMotor(id string) *motorNodeImpl {
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
-	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
+	mtr.Cosmos = client.NewClient(client.ConnEndpointType_DEV)
 
 	grpcConn, err := grpc.Dial(
 		mtr.Cosmos.GetRPCAddress(),
@@ -83,8 +62,11 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 
+	shell := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
 	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
-	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
+	mtr.bucketQueryClient = bt.NewQueryClient(grpcConn)
+
+	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.bucketQueryClient, mtr.schemaQueryClient, shell)
 
 	// Generate wallet
 	mtr.Wallet, err = mpc.GenerateWallet(options...)

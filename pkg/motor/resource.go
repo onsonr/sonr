@@ -1,29 +1,45 @@
 package motor
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	shell "github.com/ipfs/go-ipfs-api"
+	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/pkg/motor/types"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 type motorResources struct {
 	config            *client.Client
 	schemaQueryClient st.QueryClient
-
-	whatIsStore map[string]*st.WhatIs
-	schemaStore map[string]*st.SchemaDefinition
+	bucketQueryClient bt.QueryClient
+	shell             *shell.Shell
+	whatIsStore       map[string]*st.WhatIs
+	whereIsStore      map[string]*bt.WhereIs
+	schemaStore       map[string]*st.SchemaDefinition
+	bucketStore       map[string]bucket.Bucket
 }
 
-func newMotorResources(config *client.Client, schemaQueryClient st.QueryClient) *motorResources {
+func newMotorResources(
+	config *client.Client,
+	bucketQueryClient bt.QueryClient,
+	schemaQueryClient st.QueryClient,
+	shell *shell.Shell) *motorResources {
 	return &motorResources{
 		config:            config,
 		schemaQueryClient: schemaQueryClient,
-
-		whatIsStore: make(map[string]*st.WhatIs),
-		schemaStore: make(map[string]*st.SchemaDefinition),
+		bucketQueryClient: bucketQueryClient,
+		shell:             shell,
+		bucketStore:       make(map[string]bucket.Bucket),
+		whatIsStore:       make(map[string]*st.WhatIs),
+		whereIsStore:      make(map[string]*bt.WhereIs),
+		schemaStore:       make(map[string]*st.SchemaDefinition),
 	}
 }
 
@@ -58,6 +74,20 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 	return definition, nil
 }
 
+func (r *motorResources) StoreWhereIs(whereis *bt.WhereIs) bool {
+	_, ok := r.whatIsStore[whereis.Did]
+	r.whereIsStore[whereis.Did] = whereis
+
+	return ok
+}
+
+func (r *motorResources) StoreBucket(did string, b bucket.Bucket) bool {
+	_, ok := r.whatIsStore[did]
+	r.bucketStore[did] = b
+
+	return ok
+}
+
 func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition, bool) {
 	var whatIs *st.WhatIs
 	if w, ok := r.whatIsStore[did]; !ok {
@@ -73,4 +103,46 @@ func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition
 	}
 
 	return nil, nil, false
+}
+
+func (r *motorResources) GetWhereIs(ctx context.Context, did string, address string) (*bt.WhereIs, error) {
+	if did == "" {
+		return nil, errors.New("did invalid for Get WhereIs by Creator request")
+	}
+
+	resp, err := r.bucketQueryClient.WhereIs(ctx, &bt.QueryGetWhereIsRequest{
+		Creator: address,
+		Did:     did,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	res := types.QueryWhereIsResponse{
+		WhereIs: &resp.WhereIs,
+	}
+
+	r.whereIsStore[res.WhereIs.Did] = res.WhereIs
+
+	return res.WhereIs, nil
+}
+
+func (r *motorResources) GetWhereIsByCreator(ctx context.Context, address string) ([]*bt.WhereIs, error) {
+	res, err := r.bucketQueryClient.WhereIsByCreator(ctx, &bt.QueryGetWhereIsByCreatorRequest{
+		Creator:    address,
+		Pagination: nil,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, len(res.WhereIs))
+	for _, wi := range res.WhereIs {
+		r.whereIsStore[wi.Did] = &wi
+		ptrArr = append(ptrArr, &wi)
+	}
+
+	return ptrArr, nil
 }
