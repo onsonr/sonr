@@ -1,6 +1,7 @@
 package bucket
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -24,10 +25,19 @@ var (
 	CID -> reference to content (map[string]interface{})
 */
 type BucketContent struct {
-	Item        interface{}
-	Id          string
-	ContentType bt.ResourceIdentifier
+	Item        interface{}           `json:"item"`
+	Id          string                `json:"id"`
+	ContentType bt.ResourceIdentifier `json:"contentType"`
 }
+
+func (bc *BucketContent) MarshalJson() ([]byte, error) {
+	return json.Marshal(bc)
+}
+
+func (bc *BucketContent) UnmarshalJson(data []byte, ref *map[string]interface{}) error {
+	return json.Unmarshal(data, ref)
+}
+
 type bucketImpl struct {
 	address      string
 	whereIs      *bt.WhereIs

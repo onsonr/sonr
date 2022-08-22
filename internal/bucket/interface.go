@@ -55,4 +55,6 @@ type Bucket interface {
 		Resolves all content within the bucket by `cid`
 	*/
 	ResolveContent() error
+
+	ResolveContentBySchema(did string) ([]*BucketContent, error)
 }
