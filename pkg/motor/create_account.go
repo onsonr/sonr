@@ -29,7 +29,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
-	mtr.Logger.Print("Done requesting initial balance")
+	mtr.Logger.Info("Done requesting initial balance")
 
 	// Create Initial Shards
 	mtr.Logger.Info("Creating intial account shards...")

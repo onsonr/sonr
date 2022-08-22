@@ -68,10 +68,11 @@ type motorNodeImpl struct {
 
 func EmptyMotor(id string, logLevel string) *motorNodeImpl {
 	logger := golog.New()
+	logger.SetPrefix("[Motor] ")
 	logger.SetLevel(logLevel)
 	return &motorNodeImpl{
 		DeviceID: id,
-		Logger:   golog.New(),
+		Logger:   logger,
 	}
 }
 
@@ -79,7 +80,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
 	mtr.Logger.Debug("Intializing motor with account options")
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
-	mtr.Logger.Debug("Creating grpc connection type %d", client.ConnEndpointType_BETA)
+	mtr.Logger.Debugf("Creating grpc connection type %d", client.ConnEndpointType_BETA)
 	mtr.Logger.Info("starting creating motor resources")
 
 	grpcConn, err := grpc.Dial(
