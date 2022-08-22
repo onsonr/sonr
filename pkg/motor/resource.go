@@ -105,9 +105,9 @@ func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition
 	return nil, nil, false
 }
 
-func (r *motorResources) GetWhereIs(ctx context.Context, did string, address string) error {
+func (r *motorResources) GetWhereIs(ctx context.Context, did string, address string) (*bt.WhereIs, error) {
 	if did == "" {
-		return errors.New("did invalid for Get WhereIs by Creator request")
+		return nil, errors.New("did invalid for Get WhereIs by Creator request")
 	}
 
 	resp, err := r.bucketQueryClient.WhereIs(ctx, &bt.QueryGetWhereIsRequest{
@@ -116,7 +116,7 @@ func (r *motorResources) GetWhereIs(ctx context.Context, did string, address str
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res := types.QueryWhereIsResponse{
@@ -125,22 +125,24 @@ func (r *motorResources) GetWhereIs(ctx context.Context, did string, address str
 
 	r.whereIsStore[res.WhereIs.Did] = res.WhereIs
 
-	return nil
+	return res.WhereIs, nil
 }
 
-func (r *motorResources) GetWhereIsByCreator(ctx context.Context, address string) error {
-	res, err := r.bucketQueryClient.WhereIsByCreator(context.Background(), &bt.QueryGetWhereIsByCreatorRequest{
+func (r *motorResources) GetWhereIsByCreator(ctx context.Context, address string) ([]*bt.WhereIs, error) {
+	res, err := r.bucketQueryClient.WhereIsByCreator(ctx, &bt.QueryGetWhereIsByCreatorRequest{
 		Creator:    address,
 		Pagination: nil,
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, len(res.WhereIs))
 	for _, wi := range res.WhereIs {
 		r.whereIsStore[wi.Did] = &wi
+		ptrArr = append(ptrArr, &wi)
 	}
 
-	return nil
+	return ptrArr, nil
 }

@@ -17,7 +17,7 @@ func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, did string)
 	}
 
 	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
-		err := mtr.QueryWhereIs(context, did)
+		_, err := mtr.QueryWhereIs(context, did)
 		if err != nil {
 			return nil, err
 		}
@@ -37,7 +37,7 @@ func (mtr *motorNodeImpl) NewBucketResolver(context context.Context, did string)
 func (mtr *motorNodeImpl) GetBucket(context context.Context, did string) (bucket.Bucket, error) {
 	addr := mtr.GetAddress()
 	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
-		err := mtr.QueryWhereIs(context, did)
+		_, err := mtr.QueryWhereIs(context, did)
 		wi := mtr.Resources.whereIsStore[did]
 
 		if err != nil {

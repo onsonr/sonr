@@ -28,7 +28,13 @@ message CreateSchemaResponse {
 }
 
 message QueryWhatIsResponse {
-  sonrio.sonr.schema.WhatIs what_is = 1;
+  int32 code = 1;
+  sonrio.sonr.schema.WhatIs what_is = 2;
+}
+
+message QueryWhereIsByCreatorResponse {
+  int32 code = 1;
+  repeated sonrio.sonr.bucket.WhereIs where_is = 2;
 }
 
 message ObjectReference {
