@@ -83,11 +83,6 @@ message QueryWhatIsRequest {
   string did = 2;
 }
 
-message QueryWhereIsRequest {
-  string creator = 1;
-  string did = 2;
-}
-
 message QuerySchemaRequest {
   string creator = 1;
   string did = 2;
@@ -111,4 +106,18 @@ message UpdateBucketRequest {
   sonrio.sonr.bucket.BucketVisibility visibility = 4;
   sonrio.sonr.bucket.BucketRole role = 5;
   repeated sonrio.sonr.bucket.BucketItem content = 6;
+}
+
+message QueryWhereIsRequest {
+  string creator = 1;
+  string did = 2;
+}
+
+message QueryBucketContentBySchemaRequest {
+  // Address of bucket owner
+  string creator = 1;
+  // bucket identifier
+  string bucket_did = 2;
+  // schema identifier
+  string schema_did = 3;
 }
