@@ -125,6 +125,18 @@ func (r *motorResources) GetWhereIs(ctx context.Context, did string, address str
 
 	r.whereIsStore[res.WhereIs.Did] = res.WhereIs
 
+	b := bucket.New(address, r.whereIsStore[res.WhereIs.Did], r.shell, r.bucketQueryClient)
+	err = b.ResolveContent()
+	if err != nil {
+		return nil, err
+	}
+	err = b.ResolveBuckets(address)
+	if err != nil {
+		return nil, err
+	}
+
+	r.bucketStore[res.WhereIs.Did] = b
+
 	return res.WhereIs, nil
 }
 
@@ -142,6 +154,18 @@ func (r *motorResources) GetWhereIsByCreator(ctx context.Context, address string
 	for _, wi := range res.WhereIs {
 		r.whereIsStore[wi.Did] = &wi
 		ptrArr = append(ptrArr, &wi)
+
+		b := bucket.New(address, r.whereIsStore[wi.Did], r.shell, r.bucketQueryClient)
+		err = b.ResolveContent()
+		if err != nil {
+			return nil, err
+		}
+		err = b.ResolveBuckets(address)
+		if err != nil {
+			return nil, err
+		}
+
+		r.bucketStore[wi.Did] = b
 	}
 
 	return ptrArr, nil

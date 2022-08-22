@@ -2,8 +2,10 @@ package motor
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
+	"github.com/sonr-io/sonr/pkg/did"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
 )
 
@@ -32,5 +34,53 @@ func (mtr *motorNodeImpl) QueryWhereIsByCreator(ctx context.Context) (mt.QueryWh
 	return mt.QueryWhereIsByCreatorResponse{
 		Code:    http.StatusAccepted,
 		WhereIs: resp,
+	}, nil
+}
+
+func (mtr *motorNodeImpl) QueryBucketBySchema(ctx context.Context, req mt.QueryBucketContentBySchemaRequest) (mt.QueryBucketContentBySchemaResponse, error) {
+	if req.Creator != mtr.Address {
+		return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("creator address does not match session creator: %s", mtr.Address)
+	}
+	_, err := did.ParseDID(req.BucketDid)
+	if err != nil {
+		return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("cannot parse did: %s", req.BucketDid)
+	}
+
+	_, err = did.ParseDID(req.SchemaDid)
+
+	if err != nil {
+		return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("cannot parse did: %s", req.BucketDid)
+	}
+
+	if _, ok := mtr.Resources.bucketStore[req.BucketDid]; !ok {
+		_, err = mtr.QueryWhereIs(ctx, req.BucketDid)
+		if err != nil {
+			return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("error while querying WhereIs for bucket: %s err: %s", req.BucketDid, err)
+		}
+	}
+
+	b := mtr.Resources.bucketStore[req.BucketDid]
+
+	res, err := b.ResolveContentBySchema(req.SchemaDid)
+
+	if err != nil {
+		return mt.QueryBucketContentBySchemaResponse{}, nil
+	}
+
+	var contentBytes [][]byte = make([][]byte, 0)
+
+	for _, item := range res {
+		b, err := item.MarshalJson()
+		if err != nil {
+			return mt.QueryBucketContentBySchemaResponse{}, err
+		}
+		contentBytes = append(contentBytes, b)
+	}
+
+	return mt.QueryBucketContentBySchemaResponse{
+		Status:    http.StatusAccepted,
+		BucketDid: req.BucketDid,
+		SchemaDid: req.SchemaDid,
+		Content:   contentBytes,
 	}, nil
 }
