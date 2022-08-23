@@ -8,7 +8,7 @@ import (
 
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
-	"github.com/sonr-io/sonr/thirdparty/types/common"
+	"github.com/sonr-io/sonr/third_party/types/common"
 	"github.com/stretchr/testify/assert"
 )
 

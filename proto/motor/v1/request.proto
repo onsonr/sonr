@@ -6,7 +6,7 @@ import "bucket/where_is.proto";
 import "schema/v1/schema.proto";
 import "common/v1/info.proto";
 
-option go_package = "github.com/sonr-io/sonr/thirdparty/types/motor";
+option go_package = "github.com/sonr-io/sonr/third_party/types/motor";
 
 // -----------------------------------------------------------------------------
 // Motor Node API

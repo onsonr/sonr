@@ -4,12 +4,19 @@ import (
 	"context"
 
 	"github.com/sonr-io/sonr/internal/bucket"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 )
 
 func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 	addr := mtr.GetAddress()
 	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
-		_, err := mtr.QueryWhereIs(did)
+		qreq := mt.QueryRequest{
+			Module: ct.BlockchainModule_BUCKET,
+			Query:  did,
+			Kind:   ct.EntityKind_DID,
+		}
+		_, err := mtr.Query(qreq)
 		wi := mtr.Resources.whereIsStore[did]
 
 		if err != nil {
@@ -36,8 +43,8 @@ func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 }
 
 /*
-	Takes the whereIs store and checks for a matching bucket in the cache, if its not present it will create it and get its sub buckets
-	Does not query for new buckets, only respects what is currently present in the store
+Takes the whereIs store and checks for a matching bucket in the cache, if its not present it will create it and get its sub buckets
+Does not query for new buckets, only respects what is currently present in the store
 */
 func (mtr *motorNodeImpl) GetBuckets(context context.Context) ([]bucket.Bucket, error) {
 	addr := mtr.GetAddress()

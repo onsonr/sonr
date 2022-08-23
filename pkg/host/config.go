@@ -12,7 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/sonr/pkg/config"
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 )
 
 // SonrHost returns the SonrHost for the Main Node

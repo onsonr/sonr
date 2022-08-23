@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -47,7 +47,4 @@ type MotorNode interface {
 
 	// Query
 	Query(mt.QueryRequest) (mt.QueryResponse, error)
-	QueryWhatIs(mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
-	QueryWhereIs( did string) (mt.QueryWhereIsResponse, error)
-	QueryWhereIsForCreator() (mt.QueryWhereIsByCreatorResponse, error)
 }

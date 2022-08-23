@@ -14,7 +14,7 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/pool"
 	"github.com/sonr-io/multi-party-sig/pkg/protocol"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
-	"github.com/sonr-io/sonr/thirdparty/types/common"
+	"github.com/sonr-io/sonr/third_party/types/common"
 )
 
 type Wallet struct {

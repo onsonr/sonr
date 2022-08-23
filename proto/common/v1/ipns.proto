@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sonrio.common.v1;
 
-option go_package = "github.com/sonr-io/sonr/thirdparty/types/common";
+option go_package = "github.com/sonr-io/sonr/third_party/types/common";
 
 message IpnsEntry {
   enum ValidityType {

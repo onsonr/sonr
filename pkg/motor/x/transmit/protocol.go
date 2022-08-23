@@ -7,8 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/host"
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
-	st "github.com/sonr-io/sonr/thirdparty/types/service"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	st "github.com/sonr-io/sonr/third_party/types/service"
 )
 
 // TransmitProtocol type

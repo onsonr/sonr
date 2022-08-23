@@ -3,8 +3,8 @@ package transmit
 import (
 	"time"
 
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
-	st "github.com/sonr-io/sonr/thirdparty/types/service"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	st "github.com/sonr-io/sonr/third_party/types/service"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.

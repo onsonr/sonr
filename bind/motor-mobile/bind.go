@@ -6,7 +6,7 @@ import (
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )

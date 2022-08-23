@@ -19,8 +19,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
 	"github.com/sonr-io/sonr/pkg/tx"
-	"github.com/sonr-io/sonr/thirdparty/types/common"
-	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 )
 
 type motorNodeImpl struct {

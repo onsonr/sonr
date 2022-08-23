@@ -3,9 +3,9 @@ package motor
 import (
 	"fmt"
 
-	"github.com/sonr-io/sonr/thirdparty/types/common"
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
-	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -64,8 +64,7 @@ func (mtr *motorNodeImpl) handleBucketQuery(did string) (*mt.QueryResultItem, er
 	if err != nil {
 		return nil, err
 	}
-	mtr.Resources.whereIsStore[resp.Did] = resp
-
+	mtr.Resources.StoreWhereIs(resp)
 	return &mt.QueryResultItem{
 		Kind:    common.EntityKind_DID,
 		WhereIs: resp,
@@ -74,7 +73,7 @@ func (mtr *motorNodeImpl) handleBucketQuery(did string) (*mt.QueryResultItem, er
 
 func (mtr *motorNodeImpl) handleBucketGroupQuery(addr string) (*mt.QueryResultItem, error) {
 	resp, err := mtr.GetClient().QueryWhereIsByCreator(addr)
-	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, len(resp.WhereIs))
+	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, 0)
 	for _, wi := range resp.WhereIs {
 		mtr.Resources.whereIsStore[wi.Did] = &wi
 		ptrArr = append(ptrArr, &wi)

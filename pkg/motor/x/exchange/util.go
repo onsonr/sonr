@@ -3,8 +3,8 @@ package exchange
 import (
 	"github.com/libp2p/go-libp2p-core/peer"
 
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
-	st "github.com/sonr-io/sonr/thirdparty/types/service"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	st "github.com/sonr-io/sonr/third_party/types/service"
 )
 
 // // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.

@@ -9,7 +9,7 @@ import (
 	encoding_binary "encoding/binary"
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
-	common "github.com/sonr-io/sonr/thirdparty/types/common"
+	common "github.com/sonr-io/sonr/third_party/types/common"
 	types1 "github.com/sonr-io/sonr/x/bucket/types"
 	types "github.com/sonr-io/sonr/x/schema/types"
 	io "io"

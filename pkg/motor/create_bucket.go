@@ -8,8 +8,8 @@ import (
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
-	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	"github.com/sonr-io/sonr/pkg/tx"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/sonr-io/sonr/pkg/client"
-	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	"github.com/sonr-io/sonr/pkg/tx"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 

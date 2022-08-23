@@ -11,7 +11,7 @@ import (
 	"syscall/js"
 
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	"github.com/sonr-io/sonr/thirdparty/types/common"
+	"github.com/sonr-io/sonr/third_party/types/common"
 )
 
 var (

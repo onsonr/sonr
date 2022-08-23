@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/sonr/pkg/config"
-	"github.com/sonr-io/sonr/thirdparty/types/common"
+	"github.com/sonr-io/sonr/third_party/types/common"
 
 	host "github.com/sonr-io/sonr/pkg/host"
 )

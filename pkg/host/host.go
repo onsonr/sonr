@@ -16,7 +16,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 
 	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
@@ -247,7 +247,7 @@ func (hn *hostImpl) Close() error {
 }
 
 /*
-	Starts the libp2p host, dhcp, and sets the host status to ready
+Starts the libp2p host, dhcp, and sets the host status to ready
 */
 func (hn *hostImpl) Start() error {
 	// Create Connection Manager
@@ -303,7 +303,7 @@ func (hn *hostImpl) NeedsWait() {
 }
 
 /*
-	Stops the libp2p host, dhcp, and sets the host status to IDLE
+Stops the libp2p host, dhcp, and sets the host status to IDLE
 */
 func (hn *hostImpl) Stop() error {
 	err := hn.host.Close()
@@ -317,7 +317,7 @@ func (hn *hostImpl) Stop() error {
 }
 
 /*
-	Stops the libp2p host, dhcp, and sets the host status to ready
+Stops the libp2p host, dhcp, and sets the host status to ready
 */
 func (hn *hostImpl) Pause() error {
 	defer hn.fsm.PauseOperation()

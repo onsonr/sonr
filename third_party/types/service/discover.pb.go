@@ -8,7 +8,7 @@ package service
 import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
-	common "github.com/sonr-io/sonr/thirdparty/types/common"
+	common "github.com/sonr-io/sonr/third_party/types/common"
 	io "io"
 	math "math"
 	math_bits "math/bits"

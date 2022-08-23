@@ -10,9 +10,9 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	// motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
 	// v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
-	"github.com/sonr-io/sonr/thirdparty/types/common"
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
-	st "github.com/sonr-io/sonr/thirdparty/types/service"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	st "github.com/sonr-io/sonr/third_party/types/service"
 	"google.golang.org/protobuf/proto"
 )
 
