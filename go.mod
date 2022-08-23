@@ -48,7 +48,6 @@ require (
 	github.com/stretchr/testify v1.7.2
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.0
-	github.com/swaggo/swag v1.8.1
 	github.com/tendermint/spn v0.2.1-0.20220609194312-7833ecf4454a
 	github.com/tendermint/starport v0.19.5
 	github.com/tendermint/tendermint v0.34.19
