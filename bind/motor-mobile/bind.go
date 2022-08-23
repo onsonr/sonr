@@ -87,6 +87,13 @@ func Login(buf []byte) ([]byte, error) {
 	}
 }
 
+func Connect() error {
+	if instance == nil {
+		return errWalletNotExists
+	}
+	return instance.Connect()
+}
+
 func CreateSchema(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, errWalletNotExists

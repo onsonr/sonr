@@ -140,6 +140,8 @@ func (mtr *motorNodeImpl) Connect() error {
 		if err != nil {
 			return err
 		}
+	} else {
+		return fmt.Errorf("host is not enabled")
 	}
 
 	// Utilize discovery protocol
