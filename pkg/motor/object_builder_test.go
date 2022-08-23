@@ -35,7 +35,7 @@ func Test_ObjectBuilder(t *testing.T) {
 			AesPskKey: pskKey,
 		}
 
-		m := EmptyMotor(&mt.InitializeRequest{
+		m, _ := EmptyMotor(&mt.InitializeRequest{
 			DeviceId: "test_device",
 		}, common.DefaultCallback())
 		_, err := m.Login(req)

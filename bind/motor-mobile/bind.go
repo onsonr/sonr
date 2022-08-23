@@ -37,7 +37,11 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Check if public key provided
 	if req.DeviceKeyprintPub == nil {
 		// Create Motor instance
-		instance = mtr.EmptyMotor(&req, cb)
+		mtr, err := mtr.EmptyMotor(&req, cb)
+		if err != nil {
+			return nil, err
+		}
+		instance = mtr
 		callback = cb
 
 		// init objectBuilders

@@ -24,7 +24,7 @@ func Test_CreateSchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor(&mt.InitializeRequest{
+	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	_, err := m.Login(req)
@@ -58,7 +58,7 @@ func Test_QuerySchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor(&mt.InitializeRequest{
+	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	_, err := m.Login(req)

@@ -24,7 +24,7 @@ func Test_Buckets(t *testing.T) {
 			Password:  "password123",
 			AesPskKey: pskKey,
 		}
-		m := EmptyMotor(&mt.InitializeRequest{
+		m, _ := EmptyMotor(&mt.InitializeRequest{
 			DeviceId: "test_device",
 		}, common.DefaultCallback())
 		_, err := m.Login(req)

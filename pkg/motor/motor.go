@@ -51,7 +51,10 @@ type motorNodeImpl struct {
 	Resources *motorResources
 }
 
-func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) *motorNodeImpl {
+func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
+	if r.GetDeviceId() == "" {
+		return nil, fmt.Errorf("DeviceID is required to initialize motor node")
+	}
 	return &motorNodeImpl{
 		isHostEnabled:      r.GetEnableHost(),
 		isDiscoveryEnabled: r.GetEnableDiscovery(),
@@ -60,7 +63,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) *motorNodeImpl
 		supportDir:         r.GetSupportDir(),
 		tempDir:            r.GetTempDir(),
 		callback:           cb,
-	}
+	}, nil
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {

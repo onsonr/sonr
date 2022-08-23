@@ -29,7 +29,7 @@ func Test_CreateAccount(t *testing.T) {
 		AesDscKey: aesKey,
 	}
 
-	m := EmptyMotor(&mt.InitializeRequest{
+	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	res, err := m.CreateAccount(req)
@@ -61,7 +61,7 @@ func Test_Login(t *testing.T) {
 			AesPskKey: pskKey,
 		}
 
-		m := EmptyMotor(&mt.InitializeRequest{
+		m, _ := EmptyMotor(&mt.InitializeRequest{
 			DeviceId: "test_device",
 		}, common.DefaultCallback())
 		_, err := m.Login(req)
@@ -93,7 +93,7 @@ func Test_Login(t *testing.T) {
 			AesPskKey: pskKey,
 		}
 
-		m := EmptyMotor(&mt.InitializeRequest{
+		m, _ := EmptyMotor(&mt.InitializeRequest{
 			DeviceId: "test_device",
 		}, common.DefaultCallback())
 		_, err := m.Login(req)
@@ -119,7 +119,7 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor(&mt.InitializeRequest{
+	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	_, err := m.Login(req)
