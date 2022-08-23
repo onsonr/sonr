@@ -15,7 +15,7 @@ func TestWhereIsMsgServerCreate(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		resp, err := srv.CreateWhereIs(ctx, &types.MsgCreateWhereIs{Creator: creator})
 		require.NoError(t, err)
-		require.Equal(t, i, resp.Did)
+		require.Equal(t, i, resp.WhereIs)
 	}
 }
 
