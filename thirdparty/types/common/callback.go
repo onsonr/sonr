@@ -4,6 +4,7 @@ import "log"
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
+	OnWalletCreated(ok bool)
 }
 
 type defaultCallback struct {

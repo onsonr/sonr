@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -25,6 +24,7 @@ var (
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
+	OnWalletCreated(ok bool)
 }
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
@@ -115,7 +115,7 @@ func QueryWhatIs(buf []byte) ([]byte, error) {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
 
-	if res, err := instance.QueryWhatIs(context.Background(), request); err == nil {
+	if res, err := instance.GetClient().QueryWhatIs(request.GetCreator(), request.GetDid()); err == nil {
 		return res.Marshal()
 	} else {
 		return nil, err

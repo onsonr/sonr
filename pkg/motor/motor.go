@@ -25,6 +25,7 @@ import (
 )
 
 type MotorNode interface {
+	Connect() error
 	GetDeviceID() string
 
 	GetAddress() string
@@ -41,7 +42,6 @@ type MotorNode interface {
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
 	SendTokens(req mt.SendTokenRequest) (*mt.SendTokenResponse, error)
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
-	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
 
 	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
 }
@@ -93,7 +93,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 
 	// Generate wallet
 	log.Println("Generating wallet...")
-	mtr.Wallet, err = mpc.GenerateWallet(options...)
+	mtr.Wallet, err = mpc.GenerateWallet(mtr.callback, options...)
 	if err != nil {
 		return err
 	}
@@ -118,7 +118,21 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 	mtr.DID = *baseDid
+	log.Println("Wallet set to:", mtr.Address)
+	return nil
+}
 
+func (mtr *motorNodeImpl) Connect() error {
+	if mtr.Wallet == nil {
+		return fmt.Errorf("wallet is not initialized")
+	}
+
+	if mtr.SonrHost != nil {
+		log.Println("Host already connected")
+		return nil
+	}
+
+	var err error
 	// Create new host
 	if mtr.isHostEnabled {
 		log.Println("Creating host...")
