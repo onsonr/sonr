@@ -51,7 +51,7 @@ func EmptyMotor(id string) *motorNodeImpl {
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
-	mtr.Cosmos = client.NewClient(client.ConnEndpointType_DEV)
+	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 
 	grpcConn, err := grpc.Dial(
 		mtr.Cosmos.GetRPCAddress(),
