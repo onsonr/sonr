@@ -6,13 +6,6 @@ tasks:
   ## ------------------------------------------------------------
   ## Node tasks
   ## ------------------------------------------------------------
-  motorkit:
-    summary: Binding motor to iOS and updating motorkit
-    cmds:
-      - task: clean
-      - task: motor:bind:ios
-      - mv ./bind/build ./build
-
   chain:build:
     summary: "Build cosmos blockchain using ignite"
     cmds:

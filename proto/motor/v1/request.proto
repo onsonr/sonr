@@ -4,6 +4,7 @@ syntax = "proto3";
 package sonrio.motor.api.v1;
 import "bucket/where_is.proto";
 import "schema/v1/schema.proto";
+import "common/v1/info.proto";
 
 option go_package = "github.com/sonr-io/sonr/thirdparty/types/motor";
 
@@ -66,6 +67,12 @@ message CreateSchemaRequest {
   map<string, string> metadata = 3;
 }
 
+message QueryRequest {
+  string query = 1;
+  common.v1.EntityKind kind = 2;
+  common.v1.BlockchainModule module = 3;
+}
+
 message QueryWhatIsRequest {
   string creator = 1;
   string did = 2;
@@ -76,7 +83,7 @@ message QuerySchemaRequest {
   string did = 2;
 }
 
-message SendTokenRequest {
+message PaymentRequest {
   string to = 1;
   string from = 2;
   int64 amount = 3;

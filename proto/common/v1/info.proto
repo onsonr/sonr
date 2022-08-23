@@ -70,3 +70,18 @@ message Peer {
     STATUS_BUSY = 3;    // Busy - Online, but busy with Transfer
   }
 }
+
+enum EntityKind {
+    ADDRESS = 0;
+    DID = 1;
+    CID = 2;
+}
+
+enum BlockchainModule {
+    // Query x/registry module
+    REGISTRY = 0;
+    // Query x/schema module
+    SCHEMA = 1;
+    // Query x/bucket module
+    BUCKET = 2;
+}
