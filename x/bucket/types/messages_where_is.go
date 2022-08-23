@@ -1,6 +1,10 @@
 package types
 
 import (
+	"errors"
+	fmt "fmt"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -13,7 +17,7 @@ const (
 
 var _ sdk.Msg = &MsgCreateWhereIs{}
 
-func NewMsgCreateWhereIs(creator string) *MsgCreateWhereIs {
+func NewMsgCreateWhereIs(creator string, label string, role BucketRole, visibility BucketVisibility, content []*BucketItem) *MsgCreateWhereIs {
 	return &MsgCreateWhereIs{
 		Creator: creator,
 	}
@@ -42,9 +46,11 @@ func (msg *MsgCreateWhereIs) GetSignBytes() []byte {
 
 func (msg *MsgCreateWhereIs) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
+
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
 	return nil
 }
 
@@ -52,7 +58,7 @@ var _ sdk.Msg = &MsgUpdateWhereIs{}
 
 func NewMsgUpdateWhereIs(creator string, id string) *MsgUpdateWhereIs {
 	return &MsgUpdateWhereIs{
-		Did:      id,
+		Did:     id,
 		Creator: creator,
 	}
 }
@@ -83,6 +89,9 @@ func (msg *MsgUpdateWhereIs) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	if len(msg.Label) < 1 {
+		return errors.New("label Cannot be empty")
+	}
 	return nil
 }
 
@@ -90,7 +99,7 @@ var _ sdk.Msg = &MsgDeleteWhereIs{}
 
 func NewMsgDeleteWhereIs(creator string, id string) *MsgDeleteWhereIs {
 	return &MsgDeleteWhereIs{
-		Did:      id,
+		Did:     id,
 		Creator: creator,
 	}
 }
@@ -121,4 +130,20 @@ func (msg *MsgDeleteWhereIs) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	return nil
+}
+
+// GetCreatorDid returns the creator did
+func (msg *MsgCreateWhereIs) GetCreatorDid() string {
+	rawCreator := msg.GetCreator()
+
+	// Trim snr account prefix
+	if strings.HasPrefix(rawCreator, "snr") {
+		rawCreator = strings.TrimLeft(rawCreator, "snr")
+	}
+
+	// Trim cosmos account prefix
+	if strings.HasPrefix(rawCreator, "cosmos") {
+		rawCreator = strings.TrimLeft(rawCreator, "cosmos")
+	}
+	return fmt.Sprintf("did:snr:%s", rawCreator)
 }

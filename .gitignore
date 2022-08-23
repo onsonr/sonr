@@ -18,7 +18,8 @@ cmd/full/sonr_bitcask
 chain
 # Dependencies
 /node_modules
-
+temp/
+tmp/
 
 # Production
 /build
