@@ -2,10 +2,12 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
+import "bucket/where_is.proto";
 import "registry/did.proto";
 import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/thirdparty/types/motor";
+
 
 message InitializeResponse {
   bool success = 1;
@@ -22,11 +24,18 @@ message LoginResponse {
 }
 
 message CreateSchemaResponse {
-  sonrio.sonr.schema.WhatIs what_is = 1;
+  int32 status = 1;
+  sonrio.sonr.schema.WhatIs what_is = 2;
 }
 
 message QueryWhatIsResponse {
-  sonrio.sonr.schema.WhatIs what_is = 1;
+  int32 code = 1;
+  sonrio.sonr.schema.WhatIs what_is = 2;
+}
+
+message QueryWhereIsByCreatorResponse {
+  int32 code = 1;
+  repeated sonrio.sonr.bucket.WhereIs where_is = 2;
 }
 
 message ObjectReference {
@@ -39,6 +48,19 @@ message UploadObjectResponse {
   int32 code = 1;
   ObjectReference reference = 2;
   string message = 3;
+}
+
+message CreateBucketResponse {
+  string did = 1;
+}
+
+message UpdateBucketResponse {
+  int32 status = 1;
+  sonrio.sonr.bucket.WhereIs where_is = 2;
+}
+
+message QueryWhereIsResponse {
+  sonrio.sonr.bucket.WhereIs where_is = 1;
 }
 
 message StatResponse {

@@ -18,33 +18,10 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/thirdparty/types/common"
 	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 )
-
-type MotorNode interface {
-	Connect() error
-	GetDeviceID() string
-
-	GetAddress() string
-	GetBalance() int64
-
-	GetClient() *client.Client
-	GetWallet() *mpc.Wallet
-	GetPubKey() *secp256k1.PubKey
-	GetDID() did.DID
-	GetDIDDocument() did.Document
-	GetHost() host.SonrHost
-	AddCredentialVerificationMethod(id string, cred *did.Credential) error
-	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
-	Login(mt.LoginRequest) (mt.LoginResponse, error)
-	SendTokens(req mt.SendTokenRequest) (*mt.SendTokenResponse, error)
-	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
-
-	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
-}
 
 type motorNodeImpl struct {
 	DeviceID    string
@@ -72,6 +49,9 @@ type motorNodeImpl struct {
 	sharedShard   []byte
 	recoveryShard []byte
 	unusedShards  [][]byte
+
+	// resource management
+	Resources *motorResources
 }
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) *motorNodeImpl {
@@ -88,7 +68,6 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) *motorNodeImpl
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
-	log.Println("Initializing Query clients...")
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 
 	// Generate wallet

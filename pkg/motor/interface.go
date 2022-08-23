@@ -9,12 +9,13 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/host"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
 type MotorNode interface {
+	Connect() error
 	GetDeviceID() string
 
 	GetAddress() string
@@ -29,7 +30,7 @@ type MotorNode interface {
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
 	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
-
+	SendTokens(req mt.SendTokenRequest) (*mt.SendTokenResponse, error)
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
 	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
 	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)

@@ -2,7 +2,9 @@ package client
 
 import (
 	"context"
+	"errors"
 
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
@@ -118,4 +120,53 @@ func (c *Client) QueryWhatIs(creator string, did string) (*st.WhatIs, error) {
 	}
 
 	return res.WhatIs, nil
+}
+
+func (c *Client) GetWhereIs(did string, address string) (*bt.WhereIs, error) {
+	if did == "" {
+		return nil, errors.New("did invalid for Get WhereIs by Creator request")
+	}
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	defer grpcConn.Close()
+	if err != nil {
+		return nil, err
+	}
+	qc := bt.NewQueryClient(grpcConn)
+
+	resp, err := qc.WhereIs(context.Background(), &bt.QueryGetWhereIsRequest{
+		Creator: address,
+		Did:     did,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &resp.WhereIs, nil
+}
+
+func (c *Client) GetWhereIsByCreator(address string) (*bt.QueryGetWhereIsByCreatorResponse, error) {
+		// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	defer grpcConn.Close()
+	if err != nil {
+		return nil, err
+	}
+	qc := bt.NewQueryClient(grpcConn)
+	res, err := qc.WhereIsByCreator(context.Background(), &bt.QueryGetWhereIsByCreatorRequest{
+		Creator:    address,
+		Pagination: nil,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }

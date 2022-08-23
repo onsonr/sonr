@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/thirdparty/types/common"
+	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -23,8 +24,9 @@ func Test_Buckets(t *testing.T) {
 			Password:  "password123",
 			AesPskKey: pskKey,
 		}
-
-		m := EmptyMotor("test_device")
+		m := EmptyMotor(&mt.InitializeRequest{
+			DeviceId: "test_device",
+		}, common.DefaultCallback())
 		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
