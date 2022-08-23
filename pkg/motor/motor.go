@@ -233,7 +233,7 @@ func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Cre
 	return nil
 }
 
-func (m *motorNodeImpl) SendTokens(req mt.SendTokenRequest) (*mt.SendTokenResponse, error) {
+func (m *motorNodeImpl) SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error) {
 	// Build Message
 	fromAddr, err := types.AccAddressFromBech32(req.GetFrom())
 	if err != nil {
@@ -262,9 +262,12 @@ func (m *motorNodeImpl) SendTokens(req mt.SendTokenRequest) (*mt.SendTokenRespon
 		return nil, err
 	}
 
-	return &mt.SendTokenResponse{
-		Code:    int32(resp.TxResponse.Code),
-		Message: resp.TxResponse.Info,
-		TxHash:  resp.TxResponse.TxHash,
+	bal := m.GetBalance()
+
+	return &mt.PaymentResponse{
+		Code:           int32(resp.TxResponse.Code),
+		Message:        resp.TxResponse.Info,
+		TxHash:         resp.TxResponse.TxHash,
+		UpdatedBalance: int32(bal),
 	}, nil
 }

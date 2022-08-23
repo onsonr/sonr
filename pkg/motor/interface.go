@@ -15,31 +15,39 @@ import (
 )
 
 type MotorNode interface {
-	Connect() error
-	GetDeviceID() string
-
+	// Account
 	GetAddress() string
 	GetBalance() int64
-
 	GetClient() *client.Client
 	GetWallet() *mpc.Wallet
 	GetPubKey() *secp256k1.PubKey
-	GetDID() did.DID
-	GetDIDDocument() did.Document
+	SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error)
+
+	// Networking
+	Connect() error
+	GetDeviceID() string
 	GetHost() host.SonrHost
+
+	// Registry
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
 	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
+	GetDID() did.DID
+	GetDIDDocument() did.Document
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
-	SendTokens(req mt.SendTokenRequest) (*mt.SendTokenResponse, error)
+
+	// Schema
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
-	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
 	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
 
+	// Buckets
 	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
-	QueryWhereIs(ctx context.Context, did string) (mt.QueryWhereIsResponse, error)
-	QueryWhereIsByCreator(ctx context.Context) (mt.QueryWhereIsByCreatorResponse, error)
-
-	UpdateBucketItems(ctx context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
-	GetBucket(ctx context.Context, did string) (bucket.Bucket, error)
+	GetBucket(did string) (bucket.Bucket, error)
 	GetBuckets(ctx context.Context) ([]bucket.Bucket, error)
+	UpdateBucketItems(ctx context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
+
+	// Query
+	Query(mt.QueryRequest) (mt.QueryResponse, error)
+	QueryWhatIs(mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
+	QueryWhereIs( did string) (mt.QueryWhereIsResponse, error)
+	QueryWhereIsForCreator() (mt.QueryWhereIsByCreatorResponse, error)
 }

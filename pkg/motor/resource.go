@@ -13,30 +13,24 @@ import (
 )
 
 type motorResources struct {
-	config            *client.Client
-	schemaQueryClient st.QueryClient
-	bucketQueryClient bt.QueryClient
-	shell             *shell.Shell
-	whatIsStore       map[string]*st.WhatIs
-	whereIsStore      map[string]*bt.WhereIs
-	schemaStore       map[string]*st.SchemaDefinition
-	bucketStore       map[string]bucket.Bucket
+	config       *client.Client
+	shell        *shell.Shell
+	whatIsStore  map[string]*st.WhatIs
+	whereIsStore map[string]*bt.WhereIs
+	schemaStore  map[string]*st.SchemaDefinition
+	bucketStore  map[string]bucket.Bucket
 }
 
 func newMotorResources(
 	config *client.Client,
-	bucketQueryClient bt.QueryClient,
-	schemaQueryClient st.QueryClient,
 	shell *shell.Shell) *motorResources {
 	return &motorResources{
-		config:            config,
-		schemaQueryClient: schemaQueryClient,
-		bucketQueryClient: bucketQueryClient,
-		shell:             shell,
-		bucketStore:       make(map[string]bucket.Bucket),
-		whatIsStore:       make(map[string]*st.WhatIs),
-		whereIsStore:      make(map[string]*bt.WhereIs),
-		schemaStore:       make(map[string]*st.SchemaDefinition),
+		config:       config,
+		shell:        shell,
+		bucketStore:  make(map[string]bucket.Bucket),
+		whatIsStore:  make(map[string]*st.WhatIs),
+		whereIsStore: make(map[string]*bt.WhereIs),
+		schemaStore:  make(map[string]*st.SchemaDefinition),
 	}
 }
 

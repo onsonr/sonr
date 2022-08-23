@@ -1,13 +1,12 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 
 	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 )
 
-func (mtr *motorNodeImpl) QueryWhatIs(ctx context.Context, request mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhatIs(request mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhatIs(
 		request.Creator,
 		request.Did,

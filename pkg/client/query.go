@@ -122,7 +122,7 @@ func (c *Client) QueryWhatIs(creator string, did string) (*st.WhatIs, error) {
 	return res.WhatIs, nil
 }
 
-func (c *Client) GetWhereIs(did string, address string) (*bt.WhereIs, error) {
+func (c *Client) QueryWhereIs(did string, address string) (*bt.WhereIs, error) {
 	if did == "" {
 		return nil, errors.New("did invalid for Get WhereIs by Creator request")
 	}
@@ -149,7 +149,7 @@ func (c *Client) GetWhereIs(did string, address string) (*bt.WhereIs, error) {
 	return &resp.WhereIs, nil
 }
 
-func (c *Client) GetWhereIsByCreator(address string) (*bt.QueryGetWhereIsByCreatorResponse, error) {
+func (c *Client) QueryWhereIsByCreator(address string) (*bt.QueryGetWhereIsByCreatorResponse, error) {
 		// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
 		c.GetRPCAddress(),   // Or your gRPC server address.

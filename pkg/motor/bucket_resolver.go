@@ -6,10 +6,10 @@ import (
 	"github.com/sonr-io/sonr/internal/bucket"
 )
 
-func (mtr *motorNodeImpl) GetBucket(context context.Context, did string) (bucket.Bucket, error) {
+func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 	addr := mtr.GetAddress()
 	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
-		_, err := mtr.QueryWhereIs(context, did)
+		_, err := mtr.QueryWhereIs(did)
 		wi := mtr.Resources.whereIsStore[did]
 
 		if err != nil {
