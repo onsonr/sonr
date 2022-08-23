@@ -410,6 +410,7 @@ func (m *QueryRequest) GetModule() common.BlockchainModule {
 	return common.BlockchainModule_REGISTRY
 }
 
+// DEPRECATED - use QueryRequest instead
 type QueryWhatIsRequest struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
@@ -462,6 +463,7 @@ func (m *QueryWhatIsRequest) GetDid() string {
 	return ""
 }
 
+// DEPRECATED - use QueryRequest instead
 type QuerySchemaRequest struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
