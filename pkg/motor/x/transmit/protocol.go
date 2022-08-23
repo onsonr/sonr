@@ -81,7 +81,7 @@ func (p *TransmitProtocol) Outgoing(payload *st.Payload, to *ct.Peer) error {
 	p.current = NewOutSession(payload, nil, to)
 
 	// Send Files
-	if p.current.Payload.GetItems()[0].GetMime().Type != ct.MIME_TYPE_URL {
+	if p.current.Payload.GetItems()[0].GetMime().Type != st.MIME_TYPE_URL {
 		// Create New Stream
 		stream, err := p.node.NewStream(p.ctx, toId, FilePID)
 		if err != nil {

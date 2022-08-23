@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
 	st "github.com/sonr-io/sonr/thirdparty/types/service"
 )
 
@@ -92,16 +91,16 @@ func ToTransferItem(f *st.FileItem) *st.Payload_Item {
 // ** ─── MIME Management ───────────────────────────────────
 // ** ───────────────────────────────────────────────────────
 // DefaultUrlMIME is the standard MIME type for URLs
-func DefaultUrlMIME() *ct.MIME {
-	return &ct.MIME{
-		Type:    ct.MIME_TYPE_URL,
+func DefaultUrlMIME() *st.MIME {
+	return &st.MIME{
+		Type:    st.MIME_TYPE_URL,
 		Subtype: ".html",
 		Value:   "url/html",
 	}
 }
 
 // NewMime creates a new MIME type from Path
-func NewMime(path string) (*ct.MIME, error) {
+func NewMime(path string) (*st.MIME, error) {
 	// Check if path to file exists
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return nil, err
@@ -114,15 +113,15 @@ func NewMime(path string) (*ct.MIME, error) {
 	}
 
 	// Return MIME Type
-	return &ct.MIME{
-		Type:    ct.MIME_Type(ct.MIME_Type_value[strings.ToUpper(mtype.Parent().String())]),
+	return &st.MIME{
+		Type:    st.MIME_Type(st.MIME_Type_value[strings.ToUpper(mtype.Parent().String())]),
 		Value:   mtype.String(),
 		Subtype: mtype.Extension(),
 	}, nil
 }
 
 // Ext Method adjusts extension for JPEG
-func Ext(m *ct.MIME) string {
+func Ext(m *st.MIME) string {
 	if m.Subtype == "jpg" || m.Subtype == "jpeg" {
 		return "jpeg"
 	}
@@ -130,43 +129,43 @@ func Ext(m *ct.MIME) string {
 }
 
 // IsAudio Checks if Mime is Audio
-func IsAudio(m *ct.MIME) bool {
-	return m.Type == ct.MIME_TYPE_AUDIO
+func IsAudio(m *st.MIME) bool {
+	return m.Type == st.MIME_TYPE_AUDIO
 }
 
 // IsImage Checks if Mime is Image
-func IsImage(m *ct.MIME) bool {
-	return m.Type == ct.MIME_TYPE_IMAGE
+func IsImage(m *st.MIME) bool {
+	return m.Type == st.MIME_TYPE_IMAGE
 }
 
 // IsMedia Checks if Mime is any media
-func IsMedia(m *ct.MIME) bool {
+func IsMedia(m *st.MIME) bool {
 	return IsAudio(m) || IsImage(m) || IsVideo(m)
 }
 
 // IsPDF Checks if Mime is PDF
-func IsPDF(m *ct.MIME) bool {
+func IsPDF(m *st.MIME) bool {
 	return strings.Contains(m.GetSubtype(), "pdf")
 }
 
 // IsVideo Checks if Mime is Video
-func IsVideo(m *ct.MIME) bool {
-	return m.Type == ct.MIME_TYPE_VIDEO
+func IsVideo(m *st.MIME) bool {
+	return m.Type == st.MIME_TYPE_VIDEO
 }
 
 // IsUrl Checks if Path is a URL
-func IsUrl(m *ct.MIME) bool {
-	return m.Type == ct.MIME_TYPE_URL
+func IsUrl(m *st.MIME) bool {
+	return m.Type == st.MIME_TYPE_URL
 }
 
 // PermitsThumbnail Checks if Mime Type Allows Thumbnail Generation.
 // Image, Video, Audio, and PDF are allowed.
-func PermitsThumbnail(m *ct.MIME) bool {
+func PermitsThumbnail(m *st.MIME) bool {
 	return IsImage(m) || IsVideo(m) || IsAudio(m) || IsPDF(m)
 }
 
 // NewThumbnail creates a new thumbnail for the given file
-func NewThumbnail(path string, tbuf []byte, mime *ct.MIME, ch chan *st.Thumbnail) {
+func NewThumbnail(path string, tbuf []byte, mime *st.MIME, ch chan *st.Thumbnail) {
 	if IsImage(mime) {
 
 		data, err := genImageThumbnail(path)

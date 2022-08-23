@@ -9,7 +9,6 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/host"
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
 	st "github.com/sonr-io/sonr/thirdparty/types/service"
 )
 
@@ -158,7 +157,7 @@ func FileCount(p *st.Payload) int {
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type != ct.MIME_TYPE_URL {
+		if item.GetMime().Type != st.MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}
@@ -176,7 +175,7 @@ func URLCount(p *st.Payload) int {
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type == ct.MIME_TYPE_URL {
+		if item.GetMime().Type == st.MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}

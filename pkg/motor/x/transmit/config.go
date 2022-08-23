@@ -8,7 +8,6 @@ import (
 
 	device "github.com/sonr-io/sonr/pkg/fs"
 
-	ct "github.com/sonr-io/sonr/thirdparty/types/common"
 	st "github.com/sonr-io/sonr/thirdparty/types/service"
 )
 
@@ -55,7 +54,7 @@ func NewSessionPayload(p *st.Payload) *st.SessionPayload {
 }
 
 // CreateItems creates list of sessionItems
-func CreatePayloadItems(sp *st.SessionPayload, dir ct.Direction) []*st.SessionItem {
+func CreatePayloadItems(sp *st.SessionPayload, dir st.Direction) []*st.SessionItem {
 	// Initialize Properties
 	count := len(sp.GetPayload().GetItems())
 	items := make([]*st.SessionItem, 0)
@@ -67,7 +66,7 @@ func CreatePayloadItems(sp *st.SessionPayload, dir ct.Direction) []*st.SessionIt
 		path := fi.GetPath()
 
 		// Set Path for Incoming
-		if dir == ct.Direction_DIRECTION_INCOMING {
+		if dir == st.Direction_DIRECTION_INCOMING {
 			inpath, err := SetPathFromFolder(fi, device.Downloads)
 			if err == nil {
 				path = inpath
