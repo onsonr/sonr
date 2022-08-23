@@ -77,8 +77,23 @@ func Test_QuerySchema(t *testing.T) {
 	assert.NoError(t, err, "schema created successfully")
 
 	// CREATE DONE, TRY QUERY
-	qresp, err := m.GetClient().QueryWhatIs(resp.WhatIs.Creator, resp.WhatIs.Did)
-	assert.NoError(t, err, "query response succeeds")
+	qReq := mt.QueryRequest{
+		Query:  resp.WhatIs.Did,
+		Module: common.BlockchainModule_SCHEMA,
+		Kind:   common.EntityKind_DID,
+	}
 
-	assert.Equal(t, resp.WhatIs.Did, qresp.Did)
+	qresp, err := m.Query(qReq)
+	assert.NoError(t, err, "query response succeeds")
+	r := findItem(qresp.Results, resp.WhatIs.Did)
+	assert.Equal(t, resp.WhatIs.Did, r)
+}
+
+func findItem(arr []*mt.QueryResultItem, target string) string {
+	for _, item := range arr {
+		if item.Did == target {
+			return item.GetDid()
+		}
+	}
+	return ""
 }
