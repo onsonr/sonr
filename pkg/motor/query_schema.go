@@ -6,6 +6,7 @@ import (
 	mt "github.com/sonr-io/sonr/thirdparty/types/motor"
 )
 
+// DEPRECATED - use Query instead
 func (mtr *motorNodeImpl) QueryWhatIs(request mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhatIs(
 		request.Creator,

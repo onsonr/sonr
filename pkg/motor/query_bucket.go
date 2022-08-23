@@ -7,6 +7,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
+// DEPRECATED - use Query instead
 func (mtr *motorNodeImpl) QueryWhereIs(did string) (mt.QueryWhereIsResponse, error) {
 	// use the item within the cache from GetWhereIs
 	if wi := mtr.Resources.whereIsStore[did]; wi != nil {
@@ -25,6 +26,7 @@ func (mtr *motorNodeImpl) QueryWhereIs(did string) (mt.QueryWhereIsResponse, err
 	}, nil
 }
 
+// DEPRECATED - use Query instead
 func (mtr *motorNodeImpl) QueryWhereIsForCreator() (mt.QueryWhereIsByCreatorResponse, error) {
 	resp, err := mtr.GetClient().QueryWhereIsByCreator(mtr.Address)
 	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, len(resp.WhereIs))

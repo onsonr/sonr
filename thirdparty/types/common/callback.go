@@ -19,14 +19,6 @@ func (cb *defaultCallback) OnDiscover(data []byte) {
 	log.Println("ERROR: MotorCallback not implemented.")
 }
 
-func (cb *defaultCallback) OnEvent(event string, data interface{}) {
-	log.Println("ERROR: MotorCallback not implemented.")
-}
-
-func (cb *defaultCallback) OnSuccess(data interface{}) {
-	log.Println("ERROR: MotorCallback not implemented.")
-}
-
-func (cb *defaultCallback) OnError(err error) {
+func (cb *defaultCallback) OnWalletCreated(ok bool) {
 	log.Println("ERROR: MotorCallback not implemented.")
 }

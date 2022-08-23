@@ -73,11 +73,13 @@ message QueryRequest {
   common.v1.BlockchainModule module = 3;
 }
 
+// DEPRECATED - use QueryRequest instead
 message QueryWhatIsRequest {
   string creator = 1;
   string did = 2;
 }
 
+// DEPRECATED - use QueryRequest instead
 message QuerySchemaRequest {
   string creator = 1;
   string did = 2;
