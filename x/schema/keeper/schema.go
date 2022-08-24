@@ -5,6 +5,8 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -29,16 +31,24 @@ func (k Keeper) LookUpContent(cid string, content *types.SchemaDefinition) error
 
 	defer os.Remove(out_path)
 
-	err := ipfs_inter.Get(cid, out_path)
+	// TODO: replace this when Daniel's PR gets merged
+	// err := ipfs_inter.Get(cid, out_path)
+	// if err != nil {
+	// 	return err
+	// }
+	// buf, err := os.ReadFile(out_path)
+	// if err != nil {
+	// 	return err
+	// }
 
+	resp, err := http.Get(fmt.Sprintf("https://ipfs.sonr.ws/ipfs/%s", cid))
 	if err != nil {
-		return err
+		return fmt.Errorf("error getting CID '%s': %s", cid, err)
 	}
 
-	buf, err := os.ReadFile(out_path)
-
+	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return fmt.Errorf("error reading IPFS response: %s", err)
 	}
 
 	if content == nil {
@@ -86,11 +96,11 @@ func (k Keeper) SetSchemaCount(ctx sdk.Context, count uint64) {
 }
 
 // GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
-func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []types.WhatIs, found bool) {
+func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []*types.WhatIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
-	var vals []types.WhatIs = make([]types.WhatIs, 0)
+	var vals []*types.WhatIs = make([]*types.WhatIs, 0)
 	for ; iterator.Valid(); iterator.Next() {
 		var instance types.WhatIs
 		error := k.cdc.Unmarshal(iterator.Value(), &instance)
@@ -98,7 +108,7 @@ func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []typ
 			return vals, false
 		}
 		if instance.Creator == creator {
-			vals = append(vals, instance)
+			vals = append(vals, &instance)
 		}
 	}
 

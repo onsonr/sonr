@@ -25,18 +25,21 @@ func (v *vaultImpl) GetVaultShards(did string) (Vault, error) {
 	getVaultFunc := func() ([]byte, error) {
 		res, err := http.Get(fmt.Sprintf("%s/did/%s/get", v.vaultEndpoint, did))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error in /did/%s/get request: %s", did, err)
 		}
 		defer res.Body.Close()
 		body, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error reading get vault response body: %s", err)
 		}
 
-		if res.StatusCode != http.StatusOK {
+		statusFamily := res.StatusCode / 100
+		if statusFamily == 5 {
+			return nil, fmt.Errorf("get vault shards error: %d", res.StatusCode)
+		} else if statusFamily != 2 {
 			var er errorResponse
 			if err := json.Unmarshal(body, &er); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("error unmarshalling err response: %s. Response body: %s", err, body)
 			}
 			return nil, fmt.Errorf("error getting vault: %d: %s", res.StatusCode, er)
 		}

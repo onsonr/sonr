@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package sonrio.sonr.schema;
 
-import "registry/did.proto";
 import "schema/v1/schema.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
@@ -22,4 +21,7 @@ message WhatIs {
 
   // IsActive is the status of the DID Document
   bool is_active = 5;
+
+  // Metadata is a map of key-value pairs that can be used to store additional information about the WhatIs (Schema)
+  map<string, string> metadata = 6;
 }

@@ -45,6 +45,13 @@ func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keep
 			Link:     "QmZcGZYuoff9BQSqhzR9aqWfQBHU6bCMzKH7u25xZAijZB",
 		})
 
+		createMsg.Metadata = []*types.MetadataDefintion{
+			{
+				Key:   "image",
+				Value: `<meta property="og:image" content="https://ahrefs.com/blog/wp-content/uploads/2019/12/fb-how-to-become-an-seo-expert.png" />`,
+			},
+		}
+
 		txCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,

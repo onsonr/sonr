@@ -18,7 +18,8 @@ cmd/full/sonr_bitcask
 chain
 # Dependencies
 /node_modules
-
+temp/
+tmp/
 
 # Production
 /build
@@ -27,6 +28,7 @@ bind/dist
 # Generated files
 .docusaurus
 .cache-loader
+psksnr*
 
 # Misc
 .DS_Store

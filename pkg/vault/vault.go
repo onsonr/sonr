@@ -18,6 +18,6 @@ type vaultImpl struct {
 func New() VaultClient {
 	return &vaultImpl{
 		vaultEndpoint: "https://vault.sonr.ws",
-		// vaultEndpoint: "http://128.0.0.1:1234",
+		// vaultEndpoint: "http://127.0.0.1:1234",
 	}
 }

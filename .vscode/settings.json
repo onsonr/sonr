@@ -64,5 +64,6 @@
     "go.inferGopath": false,
     "yaml.schemas": {
         "https://goreleaser.com/static/schema.json": "file:///Users/pradn/Developer/sonr/.goreleaser.yaml"
-    }
+    },
+    "go.testTimeout": "180s"
 }

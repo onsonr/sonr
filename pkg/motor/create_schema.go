@@ -5,8 +5,8 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/tx"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	mt "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error) {
@@ -15,7 +15,7 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("process fields: %s", err)
 	}
-	createSchemaMsg := st.NewMsgCreateSchema(&st.SchemaDefinition{
+	createSchemaMsg := st.NewMsgCreateSchema(convertMetadata(request.Metadata), &st.SchemaDefinition{
 		Creator: mtr.Address,
 		Label:   request.Label,
 		Fields:  listFields,
@@ -36,31 +36,38 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 		return mt.CreateSchemaResponse{}, fmt.Errorf("decode MsgCreateSchemaResponse: %s", err)
 	}
 
-	whatIsBytes, err := csresp.WhatIs.Marshal()
+	// store reference to newly created WhatIs
+	_, err = mtr.Resources.StoreWhatIs(csresp.WhatIs)
 	if err != nil {
-		return mt.CreateSchemaResponse{}, fmt.Errorf("marshal WhatIs: %s", err)
+		return mt.CreateSchemaResponse{}, fmt.Errorf("store WhatIs: %s", err)
 	}
+
 	return mt.CreateSchemaResponse{
-		WhatIs: whatIsBytes,
+		WhatIs: csresp.WhatIs,
 	}, nil
 }
 
-func convertFields(fields map[string]mt.CreateSchemaRequest_SchemaKind) ([]*st.SchemaKindDefinition, error) {
+func convertFields(fields map[string]st.SchemaKind) ([]*st.SchemaKindDefinition, error) {
 	result := make([]*st.SchemaKindDefinition, len(fields))
 	var i int32
 	for k, v := range fields {
-		// Note: This will work while mt and st schema types stay in sync.
-		// This should be refactored such that there is only one proto for these types
-		sk, ok := mt.CreateSchemaRequest_SchemaKind_value[v.String()]
-		if !ok {
-			return nil, fmt.Errorf("invalid schema kind: %s", v)
-		}
 		result[i] = &st.SchemaKindDefinition{
 			Name:  k,
-			Field: st.SchemaKind(sk),
+			Field: v,
 		}
 		i += 1
 	}
 
 	return result, nil
+}
+
+func convertMetadata(m map[string]string) []*st.MetadataDefintion {
+	result := make([]*st.MetadataDefintion, 0)
+	for k, v := range m {
+		result = append(result, &st.MetadataDefintion{
+			Key:   k,
+			Value: v,
+		})
+	}
+	return result
 }

@@ -12,21 +12,6 @@ var (
 	ErrObjectEmpty       = errors.New("object cannot be empty")
 )
 
-type ObjectReference struct {
-	Did   string
-	Label string
-	Cid   string
-}
-
-/*
-	Object definition to be returned after object creation
-*/
-type ObjectUploadResult struct {
-	Code      int32
-	Reference *ObjectReference
-	Message   string
-}
-
 type objectImpl struct {
 	shell  *shell.Shell
 	schema schemas.Schema

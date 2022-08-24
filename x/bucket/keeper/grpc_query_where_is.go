@@ -46,7 +46,7 @@ func (k Keeper) WhereIs(c context.Context, req *types.QueryGetWhereIsRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	whereIs, found := k.GetWhereIs(ctx, req.Did)
+	whereIs, found := k.GetWhereIs(ctx, req.Creator, req.Did)
 	if !found {
 		return nil, sdkerrors.ErrKeyNotFound
 	}
