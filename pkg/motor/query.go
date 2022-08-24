@@ -101,6 +101,14 @@ func (mtr *motorNodeImpl) handleRegistryQuery(did string) (*mt.QueryResultItem, 
 }
 
 func (mtr *motorNodeImpl) handleSchemaQuery(did string) (*mt.QueryResultItem, error) {
+	if wi, sd, ok := mtr.Resources.GetSchema(did); ok {
+		return &mt.QueryResultItem{
+			Kind:             common.EntityKind_DID,
+			WhatIs:           wi,
+			SchemaDefinition: sd,
+		}, nil
+	}
+
 	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetAddress(), did)
 	if err != nil {
 		return nil, err

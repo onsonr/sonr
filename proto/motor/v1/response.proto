@@ -5,6 +5,7 @@ package sonrio.motor.api.v1;
 import "bucket/where_is.proto";
 import "registry/did.proto";
 import "registry/who_is.proto";
+import "schema/v1/schema.proto";
 import "schema/v1/what_is.proto";
 import "common/v1/info.proto";
 
@@ -44,8 +45,9 @@ message QueryResultItem {
   common.v1.EntityKind kind = 2;
   sonrio.sonr.registry.WhoIs who_is = 3; //optional
   sonrio.sonr.schema.WhatIs what_is = 4; //optional
-  sonrio.sonr.bucket.WhereIs where_is = 5; //optional
-  repeated sonrio.sonr.bucket.WhereIs where_is_list = 6; //optional
+  sonrio.sonr.schema.SchemaDefinition schema_definition = 5; //optional
+  sonrio.sonr.bucket.WhereIs where_is = 6; //optional
+  repeated sonrio.sonr.bucket.WhereIs where_is_list = 7; //optional
 }
 
 message QueryWhatIsResponse {
