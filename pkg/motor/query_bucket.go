@@ -2,11 +2,13 @@ package motor
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/sonr-io/sonr/pkg/did"
 	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
 func (mtr *motorNodeImpl) QueryWhereIs(ctx context.Context, did string) (mt.QueryWhereIsResponse, error) {
@@ -38,9 +40,6 @@ func (mtr *motorNodeImpl) QueryWhereIsByCreator(ctx context.Context) (mt.QueryWh
 }
 
 func (mtr *motorNodeImpl) QueryBucketBySchema(ctx context.Context, req mt.QueryBucketContentBySchemaRequest) (mt.QueryBucketContentBySchemaResponse, error) {
-	if req.Creator != mtr.Address {
-		return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("creator address does not match session creator: %s", mtr.Address)
-	}
 	_, err := did.ParseDID(req.BucketDid)
 	if err != nil {
 		return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("cannot parse did: %s", req.BucketDid)
@@ -53,7 +52,10 @@ func (mtr *motorNodeImpl) QueryBucketBySchema(ctx context.Context, req mt.QueryB
 	}
 
 	if _, ok := mtr.Resources.bucketStore[req.BucketDid]; !ok {
-		_, err = mtr.QueryWhereIs(ctx, req.BucketDid)
+		b, err := mtr.QueryWhereIs(ctx, req.BucketDid)
+		if b.WhereIs.Visibility == types.BucketVisibility_PRIVATE && b.WhereIs.Creator != mtr.Address {
+			return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("creator address does not match session creator: %s", mtr.Address)
+		}
 		if err != nil {
 			return mt.QueryBucketContentBySchemaResponse{}, fmt.Errorf("error while querying WhereIs for bucket: %s err: %s", req.BucketDid, err)
 		}
@@ -70,7 +72,7 @@ func (mtr *motorNodeImpl) QueryBucketBySchema(ctx context.Context, req mt.QueryB
 	var contentBytes [][]byte = make([][]byte, 0)
 
 	for _, item := range res {
-		b, err := item.MarshalJson()
+		b, err := json.Marshal(item)
 		if err != nil {
 			return mt.QueryBucketContentBySchemaResponse{}, err
 		}
