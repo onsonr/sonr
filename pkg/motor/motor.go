@@ -28,9 +28,7 @@ type motorNodeImpl struct {
 	PubKey      *secp256k1.PubKey
 	DID         did.DID
 	DIDDocument did.Document
-
-	// Disable for now as per https://github.com/golang/go/issues/40569
-	// SonrHost    host.SonrHost
+	SonrHost    host.SonrHost
 
 	// internal protocols
 	isHostEnabled      bool
@@ -161,10 +159,6 @@ func (m *motorNodeImpl) GetDID() did.DID {
 func (m *motorNodeImpl) GetDIDDocument() did.Document {
 	return m.DIDDocument
 }
-
-// func (m *motorNodeImpl) GetHost() host.SonrHost {
-// 	return m.SonrHost
-// }
 
 // Checking the balance of the wallet.
 func (m *motorNodeImpl) GetBalance() int64 {
