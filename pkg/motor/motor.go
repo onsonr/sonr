@@ -3,6 +3,7 @@ package motor
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -14,33 +15,10 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	st "github.com/sonr-io/sonr/x/schema/types"
-	"google.golang.org/grpc"
+	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 )
-
-type MotorNode interface {
-	GetDeviceID() string
-
-	GetAddress() string
-	GetBalance() int64
-
-	GetClient() *client.Client
-	GetWallet() *mpc.Wallet
-	GetPubKey() *secp256k1.PubKey
-	GetDID() did.DID
-	GetDIDDocument() did.Document
-	GetHost() host.SonrHost
-	AddCredentialVerificationMethod(id string, cred *did.Credential) error
-	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
-	Login(mt.LoginRequest) (mt.LoginResponse, error)
-
-	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
-	QueryWhatIs(context.Context, mt.QueryWhatIsRequest) (mt.QueryWhatIsResponse, error)
-
-	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
-}
 
 type motorNodeImpl struct {
 	DeviceID    string
@@ -52,42 +30,48 @@ type motorNodeImpl struct {
 	DIDDocument did.Document
 	SonrHost    host.SonrHost
 
+	// internal protocols
+	isHostEnabled      bool
+	isDiscoveryEnabled bool
+	callback           common.MotorCallback
+	discovery          *dp.DiscoverProtocol
+
+	// configuration
+	homeDir    string
+	supportDir string
+	tempDir    string
+
 	// Sharding
 	deviceShard   []byte
 	sharedShard   []byte
 	recoveryShard []byte
 	unusedShards  [][]byte
 
-	// query clients
-	schemaQueryClient st.QueryClient
-
 	// resource management
 	Resources *motorResources
 }
 
-func EmptyMotor(id string) *motorNodeImpl {
-	return &motorNodeImpl{
-		DeviceID: id,
+func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
+	if r.GetDeviceId() == "" {
+		return nil, fmt.Errorf("DeviceID is required to initialize motor node")
 	}
+	return &motorNodeImpl{
+		isHostEnabled:      r.GetEnableHost(),
+		isDiscoveryEnabled: r.GetEnableDiscovery(),
+		DeviceID:           r.GetDeviceId(),
+		homeDir:            r.GetHomeDir(),
+		supportDir:         r.GetSupportDir(),
+		tempDir:            r.GetTempDir(),
+		callback:           cb,
+	}, nil
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
-
-	grpcConn, err := grpc.Dial(
-		mtr.Cosmos.GetRPCAddress(),
-		grpc.WithInsecure(),
-	)
-	if err != nil {
-		return err
-	}
-
-	mtr.schemaQueryClient = st.NewQueryClient(grpcConn)
-	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.schemaQueryClient)
-
 	// Generate wallet
-	mtr.Wallet, err = mpc.GenerateWallet(options...)
+	log.Println("Generating wallet...")
+	mtr.Wallet, err = mpc.GenerateWallet(mtr.callback, options...)
 	if err != nil {
 		return err
 	}
@@ -112,14 +96,43 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 	mtr.DID = *baseDid
+	log.Println("Wallet set to:", mtr.Address)
+	mtr.GetClient().PrintConnectionEndpoints()
+	log.Println("✅ Motor Wallet initialized")
+	return nil
+}
 
-	// It creates a new host.
-	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
-	if err != nil {
-		return err
+func (mtr *motorNodeImpl) Connect() error {
+	if mtr.Wallet == nil {
+		return fmt.Errorf("wallet is not initialized")
 	}
 
-	// Create motorNodeImpl
+	if mtr.SonrHost != nil {
+		log.Println("Host already connected")
+		return nil
+	}
+
+	var err error
+	// Create new host
+	if mtr.isHostEnabled {
+		log.Println("Creating host...")
+		mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address))
+		if err != nil {
+			return err
+		}
+	} else {
+		return fmt.Errorf("host is not enabled")
+	}
+
+	// Utilize discovery protocol
+	if mtr.isDiscoveryEnabled {
+		log.Println("Enabling Discovery...")
+		mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
+		if err != nil {
+			return err
+		}
+	}
+	log.Println("✅ Motor Host Connected")
 	return nil
 }
 
@@ -188,7 +201,7 @@ func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMet
 }
 
 /*
-	Adds a Credential to the DidDocument of the account
+Adds a Credential to the DidDocument of the account
 */
 func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Credential) error {
 	if w.DIDDocument == nil {

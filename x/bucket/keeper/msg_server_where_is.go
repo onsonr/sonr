@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -49,13 +50,14 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 		Timestamp:  time.Now().Unix(),
 	}
 
-	id := k.AppendWhereIs(
+	k.AppendWhereIs(
 		ctx,
 		whereIs,
 	)
 
 	return &types.MsgCreateWhereIsResponse{
-		Did: id,
+		Status:  http.StatusAccepted,
+		WhereIs: &whereIs,
 	}, nil
 }
 

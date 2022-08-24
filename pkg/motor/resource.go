@@ -5,25 +5,32 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	shell "github.com/ipfs/go-ipfs-api"
+	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 type motorResources struct {
 	config            *client.Client
-	schemaQueryClient st.QueryClient
-
-	whatIsStore map[string]*st.WhatIs
-	schemaStore map[string]*st.SchemaDefinition
+	shell             *shell.Shell
+	whatIsStore       map[string]*st.WhatIs
+	whereIsStore      map[string]*bt.WhereIs
+	schemaStore       map[string]*st.SchemaDefinition
+	bucketStore       map[string]bucket.Bucket
 }
 
-func newMotorResources(config *client.Client, schemaQueryClient st.QueryClient) *motorResources {
+func newMotorResources(
+	config *client.Client,
+	shell *shell.Shell) *motorResources {
 	return &motorResources{
 		config:            config,
-		schemaQueryClient: schemaQueryClient,
-
-		whatIsStore: make(map[string]*st.WhatIs),
-		schemaStore: make(map[string]*st.SchemaDefinition),
+		shell:             shell,
+		bucketStore:       make(map[string]bucket.Bucket),
+		whatIsStore:       make(map[string]*st.WhatIs),
+		whereIsStore:      make(map[string]*bt.WhereIs),
+		schemaStore:       make(map[string]*st.SchemaDefinition),
 	}
 }
 
@@ -56,6 +63,20 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 
 	r.schemaStore[whatIs.Schema.Cid] = definition
 	return definition, nil
+}
+
+func (r *motorResources) StoreWhereIs(whereis *bt.WhereIs) bool {
+	_, ok := r.whatIsStore[whereis.Did]
+	r.whereIsStore[whereis.Did] = whereis
+
+	return ok
+}
+
+func (r *motorResources) StoreBucket(did string, b bucket.Bucket) bool {
+	_, ok := r.whatIsStore[did]
+	r.bucketStore[did] = b
+
+	return ok
 }
 
 func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition, bool) {

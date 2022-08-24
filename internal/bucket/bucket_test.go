@@ -8,7 +8,6 @@ import (
 	"github.com/sonr-io/sonr/internal/bucket"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/grpc"
 )
 
 func CreateMockWhereIs(creator string, content []*bt.BucketItem) *bt.WhereIs {
@@ -26,17 +25,6 @@ func Test_Bucket(t *testing.T) {
 	t.Skip("Skipping in CI")
 	creator := ""
 	s := shell.NewLocalShell()
-	grpcClient, err := grpc.Dial(
-		"localhost:9090",
-		grpc.WithInsecure(),
-	)
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	queryClient := bt.NewQueryClient(grpcClient)
-
 	t.Run("Bucket should be defined", func(t *testing.T) {
 		content := []*bt.BucketItem{
 			{
@@ -47,7 +35,7 @@ func Test_Bucket(t *testing.T) {
 			},
 		}
 
-		instance := bucket.New(creator, CreateMockWhereIs(creator, content), s, queryClient)
+		instance := bucket.New(creator, CreateMockWhereIs(creator, content), s, "137.184.190.146:9090")
 		err := instance.ResolveContent()
 		assert.NoError(t, err)
 	})

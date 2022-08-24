@@ -1,5 +1,7 @@
 package client
 
+import "log"
+
 const (
 	// -- Local Blockchain --
 	BLOCKCHAIN_REST_LOCAL   = "http://0.0.0.0:26657"
@@ -78,4 +80,13 @@ func (c *Client) GetIPFSAddress() string {
 
 func (c *Client) GetIPFSApiAddress() string {
 	return IPFS_API_ADDRESS
+}
+
+func (c *Client) PrintConnectionEndpoints() {
+	log.Println("Connection Endpoints:")
+	log.Printf("\tREST: %s\n", c.GetAPIAddress())
+	log.Printf("\tRPC: %s\n", c.GetRPCAddress())
+	log.Printf("\tFaucet: %s\n", c.GetFaucetAddress())
+	log.Printf("\tIPFS: %s\n", c.GetIPFSAddress())
+	log.Printf("\tIPFS API: %s\n", c.GetIPFSApiAddress())
 }

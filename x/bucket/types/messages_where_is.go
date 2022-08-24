@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	fmt "fmt"
 	"strings"
 
@@ -16,7 +17,7 @@ const (
 
 var _ sdk.Msg = &MsgCreateWhereIs{}
 
-func NewMsgCreateWhereIs(creator string) *MsgCreateWhereIs {
+func NewMsgCreateWhereIs(creator string, label string, role BucketRole, visibility BucketVisibility, content []*BucketItem) *MsgCreateWhereIs {
 	return &MsgCreateWhereIs{
 		Creator: creator,
 	}
@@ -45,9 +46,11 @@ func (msg *MsgCreateWhereIs) GetSignBytes() []byte {
 
 func (msg *MsgCreateWhereIs) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
+
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
 	return nil
 }
 
@@ -85,6 +88,9 @@ func (msg *MsgUpdateWhereIs) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if len(msg.Label) < 1 {
+		return errors.New("label Cannot be empty")
 	}
 	return nil
 }

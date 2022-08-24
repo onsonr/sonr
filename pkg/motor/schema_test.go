@@ -1,11 +1,11 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -24,7 +24,9 @@ func Test_CreateSchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
@@ -56,7 +58,9 @@ func Test_QuerySchema(t *testing.T) {
 		AesPskKey: pskKey,
 	}
 
-	m := EmptyMotor("test_device")
+	m, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
 	_, err := m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
@@ -73,13 +77,23 @@ func Test_QuerySchema(t *testing.T) {
 	assert.NoError(t, err, "schema created successfully")
 
 	// CREATE DONE, TRY QUERY
-	queryWhatIsRequest := mt.QueryWhatIsRequest{
-		Creator: resp.WhatIs.Creator,
-		Did:     resp.WhatIs.Did,
+	qReq := mt.QueryRequest{
+		Query:  resp.WhatIs.Did,
+		Module: common.BlockchainModule_SCHEMA,
+		Kind:   common.EntityKind_DID,
 	}
 
-	qresp, err := m.QueryWhatIs(context.Background(), queryWhatIsRequest)
+	qresp, err := m.Query(qReq)
 	assert.NoError(t, err, "query response succeeds")
+	r := findItem(qresp.Results, resp.WhatIs.Did)
+	assert.Equal(t, resp.WhatIs.Did, r)
+}
 
-	assert.Equal(t, resp.WhatIs.Did, qresp.WhatIs.Did)
+func findItem(arr []*mt.QueryResultItem, target string) string {
+	for _, item := range arr {
+		if item.Did == target {
+			return item.GetDid()
+		}
+	}
+	return ""
 }
