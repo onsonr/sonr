@@ -8,8 +8,8 @@ import (
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/vault"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 )
 
 // Login creates a motor node from a LoginRequest
