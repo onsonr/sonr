@@ -120,15 +120,7 @@ func Address() string {
 	if instance == nil {
 		return ""
 	}
-	wallet := instance.GetWallet()
-	if wallet == nil {
-		return ""
-	}
-	addr, err := wallet.Address()
-	if err != nil {
-		return ""
-	}
-	return addr
+	return instance.GetAddress()
 }
 
 // Balance returns the balance of the wallet.
