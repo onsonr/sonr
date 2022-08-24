@@ -1,15 +1,18 @@
-package config
+package utils
 
 import (
 	"runtime"
+
+	"github.com/denisbrodbeck/machineid"
+	"github.com/google/uuid"
 )
 
-// Init initializes the device package.
-func Init(options ...MotorOption) {
-	opts := defaultMotorOptions()
-	for _, opt := range options {
-		opt(opts)
-		// return opts.Apply()
+func DesktopID() string {
+	mid, err := machineid.ID()
+	if err != nil {
+		return uuid.NewString()
+	} else {
+		return mid
 	}
 }
 

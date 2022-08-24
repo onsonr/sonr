@@ -1,6 +1,10 @@
 package client
 
-import "log"
+import (
+	"os"
+
+	"github.com/jedib0t/go-pretty/table"
+)
 
 const (
 	// -- Local Blockchain --
@@ -83,10 +87,18 @@ func (c *Client) GetIPFSApiAddress() string {
 }
 
 func (c *Client) PrintConnectionEndpoints() {
-	log.Println("Connection Endpoints:")
-	log.Printf("\tREST: %s\n", c.GetAPIAddress())
-	log.Printf("\tRPC: %s\n", c.GetRPCAddress())
-	log.Printf("\tFaucet: %s\n", c.GetFaucetAddress())
-	log.Printf("\tIPFS: %s\n", c.GetIPFSAddress())
-	log.Printf("\tIPFS API: %s\n", c.GetIPFSApiAddress())
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.SetTitle("Motor Connection Endpoints")
+	t.AppendHeader(table.Row{"Name", "Type", "Address"})
+	t.AppendRows([]table.Row{
+		{"Sonr Chain", "REST", c.GetAPIAddress()},
+		{"Tendermint", "gRPC", c.GetRPCAddress()},
+		{"Faucet", "REST", c.GetFaucetAddress()},
+		{"IPFS Node", "REST", c.GetIPFSAddress()},
+		{"IPFS API", "REST", c.GetIPFSApiAddress()},
+	})
+
+	t.SetStyle(table.StyleLight)
+	t.Render()
 }

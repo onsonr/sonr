@@ -1,6 +1,3 @@
-//go:build !wasm
-// +build !wasm
-
 package main
 
 import (
@@ -43,8 +40,7 @@ func main() {
 		app.New,
 		// this line is used by starport scaffolding # root/arguments
 	)
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
-
+	rootCmd.AddCommand(RootMotorCommand())
 	// Execute the root command.
 	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
 		fmt.Println(err)
