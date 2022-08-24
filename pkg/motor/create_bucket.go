@@ -8,8 +8,8 @@ import (
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/tx"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -53,7 +53,7 @@ func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBuc
 	b := bucket.New(addr,
 		mtr.Resources.whereIsStore[cbresp.WhereIs.Did],
 		mtr.Resources.shell,
-		mtr.Resources.bucketQueryClient)
+		mtr.GetClient().GetRPCAddress())
 
 	mtr.Resources.bucketStore[cbresp.WhereIs.Did] = b
 

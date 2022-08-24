@@ -19,9 +19,9 @@ var (
 )
 
 /*
-	Wraps items within a bucket. Items will be one of the following
-	DID -> reference to another bucket (WhereIs)
-	CID -> reference to content (map[string]interface{})
+Wraps items within a bucket. Items will be one of the following
+DID -> reference to another bucket (WhereIs)
+CID -> reference to content (map[string]interface{})
 */
 type BucketContent struct {
 	Item        interface{}
@@ -33,20 +33,20 @@ type bucketImpl struct {
 	whereIs      *bt.WhereIs
 	contentCache map[string]*BucketContent
 	shell        *shell.Shell
-	queryClient  bt.QueryClient
+	rpcEndpoint  string
 }
 
 func New(
 	address string,
 	whereIs *bt.WhereIs,
 	shell *shell.Shell,
-	client bt.QueryClient) Bucket {
+	rpcEndpoint string) Bucket {
 
 	return &bucketImpl{
 		address:      address,
 		whereIs:      whereIs,
 		shell:        shell,
 		contentCache: make(map[string]*BucketContent),
-		queryClient:  client,
+		rpcEndpoint:  rpcEndpoint,
 	}
 }

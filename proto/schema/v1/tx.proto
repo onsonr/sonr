@@ -13,7 +13,10 @@ option java_multiple_files = true;
 
 // Msg defines the Msg service.
 service Msg {
+  // CreateSchema defines a new on-chain schema.
   rpc CreateSchema(MsgCreateSchema) returns (MsgCreateSchemaResponse);
+
+  // DeprecateSchema deactivates a schema.
   rpc DeprecateSchema(MsgDeprecateSchema) returns (MsgDeprecateSchemaResponse);
 }
 
