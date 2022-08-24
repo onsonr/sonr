@@ -35,8 +35,6 @@
 ## 🧐 About <a name = "about"></a>
 Sonr aims to be the most immersive and powerful DWeb experience for both Users and Developers alike. We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols.
 
-For this we built our Networking layer in [Libp2p](“https://libp2p.io”) and our Layer 1 Blockchain with [Starport](“https://starport.com”). Our network comprises of two separate nodes: [Highway](“https://github.com/sonr-io/sonr/tree/dev/x/) and [Motor](“https://github.com/sonr-io/sonr/tree/dev/pkg/motor), which each have a specific use case on the network.
-
 For a more in-depth technical look into the Sonr ecosystem please refer to the [Architecture Decision Records](./docs/architecture/GUIDE.md).
 
 
@@ -86,8 +84,15 @@ Give an example
 
 ## 🎈 Usage <a name="usage"></a>
 Add notes about how to use the system.
+- [Deploying a Smart Contract]()
+- [Interacting with the Motor]()
+- [Submitting a Proposal]()
 
 ## 🚀 Deployment <a name = "deployment"></a>
+Add additional notes about how to deploy this on a live system.
+### Deploying a Highway Node
+Add additional notes about how to deploy this on a live system.
+### Building a Motor Library
 Add additional notes about how to deploy this on a live system.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
@@ -107,12 +112,10 @@ Add additional notes about how to deploy this on a live system.
 See also the list of [contributors](https://github.com/sonr-io/sonr/contributors) who participated in this project.
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-- [Libp2p](https://libp2p.io/)
-- [Handshake](https://handshake.org/)
-- [Ignite](https://ignite.com/)
-- [IPFS](https://ipfs.io/)
 - [W3C](https://www.w3.org/)
-- [Fido Alliance](https://fidoalliance.org/)
+- [Protocol Labs](https://protocol.ai/)
+- [Ignite](https://ignite.com/)
+- [AE Studio](https://ae.studio/)
 
 
-Inspiration, dependencies, compliance, or just pure appreciation!
+Partners, collaborators, compliance, or just pure appreciation!
