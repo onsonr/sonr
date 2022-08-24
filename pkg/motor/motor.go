@@ -160,6 +160,10 @@ func (m *motorNodeImpl) GetDIDDocument() did.Document {
 	return m.DIDDocument
 }
 
+func (m *motorNodeImpl) GetHost() host.SonrHost {
+	return m.SonrHost
+}
+
 // Checking the balance of the wallet.
 func (m *motorNodeImpl) GetBalance() int64 {
 	cs, err := m.Cosmos.CheckBalance(m.Address)
