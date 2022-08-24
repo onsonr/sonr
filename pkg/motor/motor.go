@@ -155,9 +155,11 @@ func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
 func (m *motorNodeImpl) GetDID() did.DID {
 	return m.DID
 }
+
 func (m *motorNodeImpl) GetDIDDocument() did.Document {
 	return m.DIDDocument
 }
+
 func (m *motorNodeImpl) GetHost() host.SonrHost {
 	return m.SonrHost
 }
