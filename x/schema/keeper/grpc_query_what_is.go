@@ -18,7 +18,7 @@ func (k Keeper) WhatIs(goCtx context.Context, req *st.QueryWhatIsRequest) (*st.Q
 	var what_is *st.WhatIs
 	for _, item := range ref {
 		if item.Did == req.Did {
-			what_is = &item
+			what_is = item
 			break
 		}
 	}

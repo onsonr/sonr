@@ -20,6 +20,7 @@ require (
 	github.com/ipfs/go-cid v0.2.0
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipfs/go-ipfs-api v0.3.0
+	github.com/ipfs/go-ipns v0.1.2
 	github.com/ipld/go-ipld-prime v0.16.0
 	github.com/kataras/go-events v0.0.3
 	github.com/kataras/golog v0.1.7
@@ -47,12 +48,10 @@ require (
 	github.com/stretchr/testify v1.7.2
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.0
-	github.com/swaggo/swag v1.8.1
 	github.com/tendermint/spn v0.2.1-0.20220609194312-7833ecf4454a
 	github.com/tendermint/starport v0.19.5
 	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.7
-	go.buf.build/grpc/go/sonr-io/motor v1.4.27
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
@@ -60,7 +59,7 @@ require (
 	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b // indirect
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
-	google.golang.org/genproto v0.0.0-20220805133916-01dd62135a58
+	google.golang.org/genproto v0.0.0-20220822174746-9e6da59bd2fc
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v2 v2.4.0

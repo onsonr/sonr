@@ -1,0 +1,27 @@
+version: v1
+name: buf.build/sonr-io/blockchain
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/cosmos/cosmos-sdk
+
+lint:
+  allow_comment_ignores: true
+  use:
+    - DEFAULT
+    - COMMENTS
+    - FILE_LOWER_SNAKE_CASE
+  except:
+    - PACKAGE_DIRECTORY_MATCH
+    - UNARY_RPC
+    - COMMENT_FIELD
+    - COMMENT_ENUM_VALUE
+    - SERVICE_SUFFIX
+    - PACKAGE_VERSION_SUFFIX
+    - RPC_REQUEST_STANDARD_NAME
+    - RPC_REQUEST_RESPONSE_UNIQUE
+    - RPC_RESPONSE_STANDARD_NAME
+    - RPC_REQUEST_RESPONSE_UNIQUE
+    - COMMENT_MESSAGE
+breaking:
+  use:
+    - FILE

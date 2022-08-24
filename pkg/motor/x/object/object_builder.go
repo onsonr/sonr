@@ -3,20 +3,18 @@ package object
 import (
 	"errors"
 	"fmt"
-
-	"github.com/sonr-io/sonr/internal/object"
 )
 
 type ObjectBuilder struct {
 	schema       Schema
-	objectClient object.ObjectClient
+	objectClient ObjectClient
 
 	label  string
 	values Object
 }
 
-/// NewBuilder creates an ObjectBuilder to build uploadable objects
-func NewBuilder(schema Schema, objectClient object.ObjectClient) *ObjectBuilder {
+// NewBuilder creates an ObjectBuilder to build uploadable objects
+func NewBuilder(schema Schema, objectClient ObjectClient) *ObjectBuilder {
 	return &ObjectBuilder{
 		schema:       schema,
 		objectClient: objectClient,
@@ -25,12 +23,12 @@ func NewBuilder(schema Schema, objectClient object.ObjectClient) *ObjectBuilder 
 	}
 }
 
-/// SetLabel sets the label for the object
+// SetLabel sets the label for the object
 func (ob *ObjectBuilder) SetLabel(label string) {
 	ob.label = label
 }
 
-/// Set sets the value of the given field, ensuring it matches in type
+// Set sets the value of the given field, ensuring it matches in type
 func (ob *ObjectBuilder) Set(fieldName string, value interface{}) error {
 	var field SchemaField
 	if f, found := ob.schema.GetField(fieldName); !found {
@@ -47,7 +45,7 @@ func (ob *ObjectBuilder) Set(fieldName string, value interface{}) error {
 	return nil
 }
 
-/// Remove removes a field value, returning false if the field did not exist and true otherwise
+// Remove removes a field value, returning false if the field did not exist and true otherwise
 func (ob *ObjectBuilder) Remove(field string) bool {
 	if _, ok := ob.values[field]; ok {
 		delete(ob.values, field)
@@ -56,7 +54,19 @@ func (ob *ObjectBuilder) Remove(field string) bool {
 	return false
 }
 
-/// Build checks that the object is properly built and returns the map
+func (ob *ObjectBuilder) Get(field string) interface{} {
+	if v, ok := ob.values[field]; ok {
+		return v
+	}
+	return nil
+}
+
+func (ob *ObjectBuilder) Has(field string) bool {
+	_, ok := ob.values[field]
+	return ok
+}
+
+// Build checks that the object is properly built and returns the map
 func (ob *ObjectBuilder) Build() (Object, error) {
 	if ob.label == "" {
 		return ob.values, errors.New("object is missing a label")
@@ -74,4 +84,17 @@ func (ob *ObjectBuilder) Build() (Object, error) {
 	}
 
 	return ob.values, nil
+}
+
+func (ob *ObjectBuilder) Upload() (*ObjectUploadResult, error) {
+	toUpload, err := ob.Build()
+	if err != nil {
+		return nil, err
+	}
+
+	return ob.objectClient.CreateObject(ob.label, toUpload)
+}
+
+func (ob *ObjectBuilder) GetByCID(cid string) (Object, error) {
+	return ob.objectClient.GetObject(cid)
 }

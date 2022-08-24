@@ -1,12 +1,13 @@
 package motor
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	apiv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	"github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )
 
@@ -15,25 +16,42 @@ var (
 	errWalletNotExists = errors.New("mpc wallet does not exist")
 )
 
-var instance mtr.MotorNode
+var (
+	instance       mtr.MotorNode
+	objectBuilders map[string]*object.ObjectBuilder
+	callback       MotorCallback
+)
 
-func Init(buf []byte) ([]byte, error) {
+type MotorCallback interface {
+	OnDiscover(data []byte)
+	OnWalletCreated(ok bool)
+}
+
+func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
-	var req apiv1.InitializeRequest
-	if err := json.Unmarshal(buf, &req); err != nil {
+	var req mt.InitializeRequest
+	if err := req.Unmarshal(buf); err != nil {
 		return nil, err
 	}
 
 	// Check if public key provided
 	if req.DeviceKeyprintPub == nil {
 		// Create Motor instance
-		instance = mtr.EmptyMotor(req.DeviceId)
+		mtr, err := mtr.EmptyMotor(&req, cb)
+		if err != nil {
+			return nil, err
+		}
+		instance = mtr
+		callback = cb
+
+		// init objectBuilders
+		objectBuilders = make(map[string]*object.ObjectBuilder)
 
 		// Return Initialization Response
-		resp := apiv1.InitializeResponse{
+		resp := mt.InitializeResponse{
 			Success: true,
 		}
-		return json.Marshal(resp)
+		return resp.Marshal()
 	}
 	return nil, errors.New("loading existing account not implemented")
 }
@@ -43,13 +61,13 @@ func CreateAccount(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 	// decode request
-	var request apiv1.CreateAccountRequest
-	if err := json.Unmarshal(buf, &request); err != nil {
+	request := mt.CreateAccountRequest{}
+	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	if res, err := instance.CreateAccount(request); err == nil {
-		return json.Marshal(res)
+		return res.Marshal()
 	} else {
 		return nil, err
 	}
@@ -61,16 +79,23 @@ func Login(buf []byte) ([]byte, error) {
 	}
 
 	// decode request
-	var request apiv1.LoginRequest
-	if err := json.Unmarshal(buf, &request); err != nil {
+	var request mt.LoginRequest
+	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("error unmarshalling request: %s", err)
 	}
 
 	if res, err := instance.Login(request); err == nil {
-		return json.Marshal(res)
+		return res.Marshal()
 	} else {
 		return nil, err
 	}
+}
+
+func Connect() error {
+	if instance == nil {
+		return errWalletNotExists
+	}
+	return instance.Connect()
 }
 
 func CreateSchema(buf []byte) ([]byte, error) {
@@ -78,63 +103,87 @@ func CreateSchema(buf []byte) ([]byte, error) {
 		return nil, errWalletNotExists
 	}
 
-	var request apiv1.CreateSchemaRequest
-	if err := json.Unmarshal(buf, &request); err != nil {
+	var request mt.CreateSchemaRequest
+	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
 
 	if res, err := instance.CreateSchema(request); err == nil {
-		return json.Marshal(res)
+		return res.Marshal()
 	} else {
 		return nil, err
 	}
 }
 
-// Address returns the address of the wallet.
-func Address() string {
+// Query is a generic query function that can be used to query any object, bucket, or DIDDocument in the Sonr network.
+func Query(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return ""
+		return nil, errWalletNotExists
 	}
+
+	var request mt.QueryRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.Query(request); err == nil {
+		return res.Marshal()
+	} else {
+		return nil, err
+	}
+}
+
+// IssuePayment creates a send/receive token request to the specified address.
+func IssuePayment(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.PaymentRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.SendTokens(request); err == nil {
+		return res.Marshal()
+	} else {
+		return nil, err
+	}
+}
+
+// Stat returns general information about the Motor node its wallet and accompanying Account.
+func Stat() ([]byte, error) {
+	// Check if instance is initialized
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	// Get Wallet Address
+	bal := int32(instance.GetBalance())
 	wallet := instance.GetWallet()
 	if wallet == nil {
-		return ""
+		return nil, errWalletNotExists
 	}
 	addr, err := wallet.Address()
 	if err != nil {
-		return ""
+		return nil, err
 	}
-	return addr
-}
 
-// Balance returns the balance of the wallet.
-func Balance() int {
-	return int(instance.GetBalance())
-}
-
-// func Connect() error {
-// 	if instance == nil {
-// 		return errWalletNotExists
-// 	}
-// 	h, err := host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR))
-// 	if err != nil {
-// 		return err
-// 	}
-// 	instance.host = h
-// 	return nil
-// }
-
-// DidDoc returns the DID document as JSON
-func DidDoc() string {
-	if instance == nil {
-		return ""
-	}
+	// Get Account DID Document
 	doc := instance.GetDIDDocument()
 	if doc == nil {
-		return ""
+		return nil, errWalletNotExists
 	}
-	buf, err := doc.MarshalJSON()
+	diddoc, err := types.NewDIDDocumentFromPkg(doc)
 	if err != nil {
-		return ""
+		return nil, err
 	}
-	return string(buf)
+
+	// Return response
+	resp := mt.StatResponse{
+		Address:     addr,
+		Balance:     bal,
+		DidDocument: diddoc,
+	}
+	return resp.Marshal()
 }

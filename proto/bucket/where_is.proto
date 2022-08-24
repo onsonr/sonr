@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package sonrio.sonr.bucket;
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
@@ -28,7 +29,6 @@ message WhereIs {
   // JWKs of the new bucket.
   map<string, AclJwks> content_acl = 8;
 
-
   // Timestamp of the new bucket.
   int64 timestamp = 9;
 }
@@ -44,13 +44,13 @@ message BucketItem {
   string name = 1;
 
   // DID of the item. If applicable // optional
-  string item_did = 2;
-
-  // CID of the item. If applicable // optional
-  string item_cid = 3;
+  string uri = 2;
 
   // Timestamp of the last update. // optional
-  int64 timestamp = 4;
+  int64 timestamp = 3;
+
+  // Type of the resource
+  ResourceIdentifier type = 4;
 }
 
 // BucketRole is the role of the creator of the bucket.
@@ -75,4 +75,10 @@ enum BucketVisibility {
 
   // Bucket is visible to anyone who has access token.
   PRIVATE = 2;
+}
+
+enum ResourceIdentifier {
+  None = 0;
+  DID = 1;
+  CID = 2;
 }
