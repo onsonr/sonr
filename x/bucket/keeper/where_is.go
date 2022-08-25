@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"encoding/binary"
-	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -114,8 +113,9 @@ func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.WhereIs
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		fmt.Printf("current key for where_is in store: %s", val.Did)
-		list = append(list, val)
+		if val.Visibility == types.BucketVisibility_PUBLIC || val.Visibility == types.BucketVisibility_UNSPECIFIED {
+			list = append(list, val)
+		}
 	}
 
 	return

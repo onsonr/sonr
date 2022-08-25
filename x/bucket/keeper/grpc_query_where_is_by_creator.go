@@ -43,7 +43,7 @@ func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsBy
 	})
 
 	if err != nil {
-		return nil, status.Error(codes.Internal, "Error while panginating whereIs response"+err.Error())
+		return nil, status.Error(codes.Internal, "error while panginating response"+err.Error())
 	}
 
 	return &types.QueryGetWhereIsByCreatorResponse{
