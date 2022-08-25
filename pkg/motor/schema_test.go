@@ -82,7 +82,7 @@ func Test_QuerySchema(t *testing.T) {
 		Did:     resp.WhatIs.Did,
 	}
 
-	qresp, err := m.QuerySchema(qReq)
+	qresp, err := m.QueryWhatIs(qReq)
 	assert.NoError(t, err, "query response succeeds")
 	assert.Equal(t, resp.WhatIs.Did, qresp.WhatIs.Did)
 }

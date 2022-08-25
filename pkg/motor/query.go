@@ -56,7 +56,7 @@ func (mtr *motorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsRe
 	}, nil
 }
 
-func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
 	if wi, _, ok := mtr.Resources.GetSchema(req.Did); ok {
 		return &mt.QueryWhatIsResponse{
 			Code:   http.StatusAccepted,
@@ -70,7 +70,7 @@ func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 	}
 
 	// store reference to schema
-	_, err = mtr.Resources.StoreWhatIs(resp)
+	schema, err := mtr.Resources.StoreWhatIs(resp)
 	if err != nil {
 		return nil, fmt.Errorf("store WhatIs: %s", err)
 	}
@@ -78,10 +78,11 @@ func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 	return &mt.QueryWhatIsResponse{
 		Code:   http.StatusAccepted,
 		WhatIs: mtr.Resources.whatIsStore[req.Did],
+		Schema: schema,
 	}, nil
 }
 
-func (mtr *motorNodeImpl) QuerySchemaByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
+func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
 	resp, err := mtr.GetClient().QueryWhatIsByCreator(req.Creator)
 	if err != nil {
 		return nil, err

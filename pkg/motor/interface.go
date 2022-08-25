@@ -49,6 +49,6 @@ type MotorNode interface {
 	QueryBucket(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error)
 	QueryBucketGroup(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error)
 	QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error)
-	QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error)
-	QuerySchemaByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error)
+	QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error)
+	QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error)
 }
