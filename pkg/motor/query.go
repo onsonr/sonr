@@ -8,7 +8,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) QueryBucket(req mt.QueryWhatIsRequest) (*mt.QueryWhereIsResponse, error) {
+func (mtr *motorNodeImpl) QueryBucket(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error) {
 	// use the item within the cache from GetWhereIs
 	if wi := mtr.Resources.whereIsStore[req.Did]; wi != nil {
 		return &mt.QueryWhereIsResponse{
@@ -56,7 +56,7 @@ func (mtr *motorNodeImpl) QueryRegistry(req mt.QueryWhoIsRequest) (*mt.QueryWhoI
 	}, nil
 }
 
-func (mtr *motorNodeImpl) handleSchemaQuery(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
+func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
 	if wi, _, ok := mtr.Resources.GetSchema(req.Did); ok {
 		return &mt.QueryWhatIsResponse{
 			Code:   http.StatusAccepted,
