@@ -46,8 +46,9 @@ type MotorNode interface {
 	UpdateBucketItems(ctx context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
 
 	// Query
-	QueryBucket(req mt.QueryWhatIsRequest) (*mt.QueryWhereIsResponse, error)
+	QueryBucket(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error)
 	QueryBucketGroup(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error)
-	QueryRegistry(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error)
+	QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error)
 	QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error)
+	QuerySchemaByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error)
 }

@@ -44,7 +44,7 @@ func (mtr *motorNodeImpl) QueryBucketGroup(req mt.QueryWhereIsByCreatorRequest) 
 	}, nil
 }
 
-func (mtr *motorNodeImpl) QueryRegistry(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhoIs(req.Did)
 	if err != nil {
 		return nil, err
@@ -78,5 +78,25 @@ func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 	return &mt.QueryWhatIsResponse{
 		Code:   http.StatusAccepted,
 		WhatIs: mtr.Resources.whatIsStore[req.Did],
+	}, nil
+}
+
+func (mtr *motorNodeImpl) QuerySchemaByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
+	resp, err := mtr.GetClient().QueryWhatIsByCreator(req.Creator)
+	if err != nil {
+		return nil, err
+	}
+
+	// store reference to schema
+	for _, s := range resp {
+		_, err = mtr.Resources.StoreWhatIs(s)
+		if err != nil {
+			return nil, fmt.Errorf("store WhatIs: %s", err)
+		}
+	}
+
+	return &mt.QueryWhatIsByCreatorResponse{
+		Code:   http.StatusAccepted,
+		WhatIs: resp,
 	}, nil
 }
