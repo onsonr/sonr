@@ -19,7 +19,11 @@ var _ sdk.Msg = &MsgCreateWhereIs{}
 
 func NewMsgCreateWhereIs(creator string, label string, role BucketRole, visibility BucketVisibility, content []*BucketItem) *MsgCreateWhereIs {
 	return &MsgCreateWhereIs{
-		Creator: creator,
+		Creator:    creator,
+		Label:      label,
+		Role:       role,
+		Visibility: visibility,
+		Content:    content,
 	}
 }
 
