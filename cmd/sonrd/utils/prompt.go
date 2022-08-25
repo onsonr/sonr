@@ -23,6 +23,22 @@ func DisplayAcc(m motor.MotorNode, msg string) {
 	golog.Default.Printf("✅ SUCCESS: %s", msg)
 }
 
+func DisplayAccList(ul UserAuthList) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.SetTitle("Available Accounts")
+	t.AppendHeader(table.Row{"#", "Address", "Password"})
+	var rows []table.Row
+	idx := 1
+	for addr, ua := range ul.Auths {
+		rows = append(rows, table.Row{idx, addr, ua.Password})
+		idx++
+	}
+	t.AppendRows(rows)
+	t.SetStyle(table.StyleLight)
+	t.Render()
+}
+
 func PromptPassword() (string, error) {
 	validate := func(input string) error {
 		if len(input) < 8 {

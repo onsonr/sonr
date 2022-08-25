@@ -1,15 +1,20 @@
-package main
+package commands
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/cmd/sonrd/utils"
 	"github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/spf13/cobra"
+)
+
+var (
+	logger = golog.Default.Child("sonrd")
 )
 
 func RootMotorCommand() *cobra.Command {
@@ -87,6 +92,22 @@ func registerCmd() *cobra.Command {
 				return
 			}
 			utils.DisplayAcc(m, "Account Registered")
+		},
+	}
+	return cmd
+}
+
+func listCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list",
+		Short: "Lists all accounts on User Keychain",
+		Run: func(cmd *cobra.Command, args []string) {
+			ual, err := utils.GetUserAuthList()
+			if err != nil {
+				logger.Errorf("Failed to fetch UserAuthList", err)
+				return
+			}
+			utils.DisplayAccList(ual)
 		},
 	}
 	return cmd
