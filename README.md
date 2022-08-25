@@ -18,7 +18,7 @@
 
 ---
 
-<p align="center"> Build privacy-preserving, user-centric applications, on a robust, rapid-scaling platform designed for intereoperability, and total digital autonomy.
+<p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for intereoperability, and total digital autonomy.
     <br>
 </p>
 
@@ -39,17 +39,16 @@ For a more in-depth technical look into the Sonr ecosystem please refer to the [
 
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#🚀-deployment-a-name--deploymenta) for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 What things you need to install the software and how to install them.
-
-```
-Give examples
-```
+- [Go](https://golang.org/doc/install)
+- [Ignite CLI](https://github.com/ignite/cli)
+- [Protocol Buffers](https://grpc.io)
 
 ### Installing
-A step by step series of examples that tell you how to get a development env running.
+TODO: A step by step series of examples that tell you how to get a development env running.
 
 Say what the step will be
 
@@ -69,31 +68,29 @@ End with an example of getting some data out of the system or using it for a lit
 Explain how to run the automated tests for this system.
 
 ### Break down into end to end tests
-Explain what these tests test and why
+TODO: Insert Simulation Tests for Blockchain and Unit Tests
 
 ```
 Give an example
 ```
 
 ### And coding style tests
-Explain what these tests test and why
+TODO: Insert gofmt check
 
 ```
 Give an example
 ```
 
 ## 🎈 Usage <a name="usage"></a>
-Add notes about how to use the system.
-- [Deploying a Smart Contract]()
-- [Interacting with the Motor]()
-- [Submitting a Proposal]()
+TODO: Give quick overview of how to use the system, with link to [Structure](./docs/guides/STRUCTURE.md)
+- [Running the Makefile](./docs/guides/USAGE.md#running-the-makefile)
+- [Interacting with the Motor](./docs/guides/USAGE.md#interacting-with-the-motor)
+- [Submitting a Proposal](./docs/guides//USAGE.md#submitting-a-proposal)
 
 ## 🚀 Deployment <a name = "deployment"></a>
-Add additional notes about how to deploy this on a live system.
-### Deploying a Highway Node
-Add additional notes about how to deploy this on a live system.
-### Building a Motor Library
-Add additional notes about how to deploy this on a live system.
+TODO: Insert quick motor v. highway explanation with link to [docs](https://docs.sonr.io).
+- [Running the Highway](./docs/guides/DEPLOYMENT.md#running-the-highway-node)
+- [Building the Motor](./docs/guides/DEPLOYMENT.md#binding-the-motor-library)
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [Libp2p](https://github.com/libp2p/libp2p) - Networking layer
