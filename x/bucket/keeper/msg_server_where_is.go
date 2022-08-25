@@ -26,31 +26,22 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 		return nil, sdkerrors.ErrNotFound
 	}
 
-	for _, c := range msg.Content {
-		if c.Type == types.ResourceIdentifier_CID {
-			if msg.ContentAcl[c.Uri] == nil {
-				k.Logger(ctx).Info("Content does not have an associated ACL %s", c.Uri)
-			}
-		}
-	}
-
-	creator_did := msg.GetCreatorDid()
 	uuid := k.GenerateKeyForDID()
 
 	did := fmt.Sprintf("did:snr:%s", uuid)
 
 	var whereIs = types.WhereIs{
-		Creator:    creator_did,
+		Creator:    msg.Creator,
+		Label:      msg.Label,
 		Did:        did,
 		Visibility: msg.Visibility,
 		Role:       msg.Role,
 		IsActive:   true,
 		Content:    msg.Content,
-		ContentAcl: msg.ContentAcl,
 		Timestamp:  time.Now().Unix(),
 	}
-
-	k.AppendWhereIs(
+	fmt.Printf("label: %s, vi: %d, role: %d \n", whereIs.Label, whereIs.Visibility, whereIs.Role)
+	k.SetWhereIs(
 		ctx,
 		whereIs,
 	)
