@@ -2,14 +2,14 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
+
 import "bucket/where_is.proto";
-import "schema/v1/schema.proto";
 import "common/v1/info.proto";
+import "schema/v1/schema.proto";
 
 option go_package = "github.com/sonr-io/sonr/third_party/types/motor";
-
-option java_package = "io.sonr.types.motor";
 option java_multiple_files = true;
+option java_package = "io.sonr.types.motor";
 
 // -----------------------------------------------------------------------------
 // Motor Node API
@@ -95,14 +95,6 @@ message PaymentRequest {
   string memo = 4;
 }
 
-message PaymentRequest {
-  string to = 1;
-  string from = 2;
-  int64 amount = 3;
-  string memo = 4;
->>>>>>> origin
-}
-
 // -----------------------------------------------------------------------------
 // Bucket Models
 // -----------------------------------------------------------------------------
@@ -128,7 +120,7 @@ message QueryWhereIsRequest {
   string did = 2;
 }
 
-message QueryBucketContentBySchemaRequest {
+message SeachBucketContentBySchemaRequest {
   // Address of bucket owner
   string creator = 1;
   // bucket identifier

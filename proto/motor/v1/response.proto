@@ -101,9 +101,16 @@ message PaymentResponse {
   int32 updated_balance = 4;
 }
 
-message QueryBucketContentBySchemaResponse {
+message SearchBucketContentBySchemaResponse {
   int32 status = 1;
   string bucket_did = 2;
   string schema_did = 3;
+  repeated bytes content = 4;
+}
+
+message SearchResponse {
+  int32 status = 1;
+  string resource_did = 2;
+  string content_did = 3;
   repeated bytes content = 4;
 }
