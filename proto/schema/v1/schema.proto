@@ -4,6 +4,9 @@ package sonrio.sonr.schema;
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
+option java_package = "io.sonr.types.schema";
+option java_multiple_files = true;
+
 enum LinkKind {
   UNKNOWN = 0;
   OBJECT = 1;

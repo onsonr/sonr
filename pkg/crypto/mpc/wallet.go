@@ -14,6 +14,7 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/pool"
 	"github.com/sonr-io/multi-party-sig/pkg/protocol"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
+	"github.com/sonr-io/sonr/third_party/types/common"
 )
 
 type Wallet struct {
@@ -26,7 +27,7 @@ type Wallet struct {
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
-func GenerateWallet(options ...WalletOption) (*Wallet, error) {
+func GenerateWallet(cb common.MotorCallback, options ...WalletOption) (*Wallet, error) {
 	opt := defaultConfig()
 	w := opt.Apply(options...)
 
@@ -44,6 +45,7 @@ func GenerateWallet(options ...WalletOption) (*Wallet, error) {
 		}(id)
 	}
 	wg.Wait()
+	cb.OnWalletCreated(true)
 	// Add the DID Document to the wallet.
 	return w, nil
 }

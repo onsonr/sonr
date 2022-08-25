@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"crypto/ed25519"
+	"strings"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -11,12 +12,15 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/sonr/pkg/config"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 )
 
 // SonrHost returns the SonrHost for the Main Node
 type SonrHost interface {
 	// AuthenticateMessage authenticates a message
 	// AuthenticateMessage(msg proto.Message, metadata *types.Metadata) error
+	// Address returns the account address of the underlying wallet for the host
+	Address() string
 
 	// Config returns the configuration of the node
 	Config() *config.Config
@@ -50,7 +54,7 @@ type SonrHost interface {
 
 	// TODO: implement
 	// Peer returns the peer of the node
-	// Peer() (*types.Peer, error)
+	Peer() (*ct.Peer, error)
 
 	// SignData signs the data with the private key
 	SignData(data []byte) ([]byte, error)
@@ -97,4 +101,12 @@ type SonrHost interface {
 	Resume() error
 
 	Status() HostStatus
+}
+
+func addrToDidUrl(addr string) string {
+	if strings.Contains(addr, "snr") {
+		rawAddr := strings.TrimLeft(addr, "snr")
+		return "did:snr:" + rawAddr
+	}
+	return addr
 }

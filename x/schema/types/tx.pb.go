@@ -297,7 +297,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// CreateSchema defines a new on-chain schema.
 	CreateSchema(ctx context.Context, in *MsgCreateSchema, opts ...grpc.CallOption) (*MsgCreateSchemaResponse, error)
+	// DeprecateSchema deactivates a schema.
 	DeprecateSchema(ctx context.Context, in *MsgDeprecateSchema, opts ...grpc.CallOption) (*MsgDeprecateSchemaResponse, error)
 }
 
@@ -329,7 +331,9 @@ func (c *msgClient) DeprecateSchema(ctx context.Context, in *MsgDeprecateSchema,
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// CreateSchema defines a new on-chain schema.
 	CreateSchema(context.Context, *MsgCreateSchema) (*MsgCreateSchemaResponse, error)
+	// DeprecateSchema deactivates a schema.
 	DeprecateSchema(context.Context, *MsgDeprecateSchema) (*MsgDeprecateSchemaResponse, error)
 }
 

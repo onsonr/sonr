@@ -4,10 +4,15 @@ syntax = "proto3";
 package sonrio.motor.api.v1;
 
 import "bucket/where_is.proto";
-import "google/protobuf/any.proto";
+import "common/v1/info.proto";
+import "registry/did.proto";
+import "registry/who_is.proto";
+import "schema/v1/schema.proto";
 import "schema/v1/what_is.proto";
 
-option go_package = "github.com/sonr-io/sonr/pkg/motor/types";
+option go_package = "github.com/sonr-io/sonr/third_party/types/motor";
+option java_multiple_files = true;
+option java_package = "io.sonr.types.motor";
 
 message InitializeResponse {
   bool success = 1;
@@ -17,15 +22,34 @@ message CreateAccountResponse {
   bytes aes_psk = 1;
   string address = 2;
   bytes did_document = 3;
+  sonrio.sonr.registry.WhoIs who_is = 4;
 }
 
 message LoginResponse {
   bool success = 1;
+  sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
 message CreateSchemaResponse {
   int32 status = 1;
   sonrio.sonr.schema.WhatIs what_is = 2;
+}
+
+message QueryResponse {
+  int32 code = 1;
+  string query = 2;
+  common.v1.BlockchainModule module = 3;
+  repeated QueryResultItem results = 4;
+}
+
+message QueryResultItem {
+  string did = 1;
+  common.v1.EntityKind kind = 2;
+  sonrio.sonr.registry.WhoIs who_is = 3; //optional
+  sonrio.sonr.schema.WhatIs what_is = 4; //optional
+  sonrio.sonr.schema.SchemaDefinition schema_definition = 5; //optional
+  sonrio.sonr.bucket.WhereIs where_is = 6; //optional
+  repeated sonrio.sonr.bucket.WhereIs where_is_list = 7; //optional
 }
 
 message QueryWhatIsResponse {
@@ -61,6 +85,20 @@ message UpdateBucketResponse {
 
 message QueryWhereIsResponse {
   sonrio.sonr.bucket.WhereIs where_is = 1;
+}
+
+message StatResponse {
+  string address = 1;
+  sonrio.sonr.registry.DIDDocument did_document = 2;
+  int32 balance = 3;
+  int32 stake = 4;
+}
+
+message PaymentResponse {
+  int32 code = 1;
+  string message = 2;
+  string tx_hash = 3;
+  int32 updated_balance = 4;
 }
 
 message QueryBucketContentBySchemaResponse {

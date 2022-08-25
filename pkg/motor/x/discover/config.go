@@ -14,6 +14,7 @@ type Option func(*options)
 type options struct {
 	// location        *types.Location
 	interval        time.Duration
+	olcCode         string
 	autoPushEnabled bool
 }
 
@@ -23,6 +24,7 @@ func defaultOptions() *options {
 		//location:        api.DefaultLocation(),
 		interval:        time.Second * 5,
 		autoPushEnabled: true,
+		olcCode:         olc.Encode(40.673010, 73.994450, 4),
 	}
 }
 
@@ -33,18 +35,13 @@ func DisableAutoPush() Option {
 	}
 }
 
-// // WithLocation sets the location of the Topic for Local OLC
-// func WithLocation(l *types.Location) Option {
-// 	return func(o *options) {
-// 		if o.location != nil {
-// 			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
-// 				logger.Debug("Skipping Location Set")
-// 			} else {
-// 				o.location = l
-// 			}
-// 		}
-// 	}
-// }
+// WithLocation sets the location of the Topic for Local OLC
+func WithLocation(lat int32, long int32) Option {
+	return func(o *options) {
+		// Generate OLC Code
+		o.olcCode = olc.Encode(float64(lat), float64(long), 4)
+	}
+}
 
 // WithInterval sets the interval of the Topic for Local OLC
 func WithInterval(i time.Duration) Option {
@@ -60,25 +57,9 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 
 	// Create Local for Motor Stub
 	if p.mode.IsMotor() {
-		// Set Peer in Exchange
-		// TODO: ADR-???
-		// peer, err := p.node.Peer()
-		// if err != nil {
-		// 	logger.Errorf("%s - Failed to get Profile", err)
-		// 	return err
-		// }
-		// p.Put(peer)
-
-		// Get OLC Code from location
-		code := OLC(20, 20)
-		if code == "" {
-			logger.Error("Failed to Determine OLC Code, set to Global")
-			code = "global"
-		}
-
 		// Create Topic Name
-		logger.Debug("Calculated OLC for Location: " + code)
-		topicName := fmt.Sprintf("sonr/topic/%s", code)
+		logger.Debug("Calculated OLC for Location: " + o.olcCode)
+		topicName := fmt.Sprintf("sonr/topic/%s", o.olcCode)
 
 		// Join Topic
 		topic, err := p.node.Join(topicName)
@@ -88,15 +69,10 @@ func (o *options) Apply(p *DiscoverProtocol) error {
 		}
 
 		// Create Lobby
-		if err := p.initLocal(topic, topicName); err != nil {
+		if err := p.initLocal(topic, p.callback); err != nil {
 			logger.Errorf("%s - Failed to initialize Lobby", err)
 			return err
 		}
 	}
 	return nil
-}
-
-// OLC returns Open Location code
-func OLC(lat float64, lng float64) string {
-	return olc.Encode(lat, lng, 4)
 }

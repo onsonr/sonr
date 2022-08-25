@@ -1,8 +1,6 @@
 package motor
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,15 +8,12 @@ import (
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/motor/types"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 type motorResources struct {
 	config            *client.Client
-	schemaQueryClient st.QueryClient
-	bucketQueryClient bt.QueryClient
 	shell             *shell.Shell
 	whatIsStore       map[string]*st.WhatIs
 	whereIsStore      map[string]*bt.WhereIs
@@ -28,13 +23,9 @@ type motorResources struct {
 
 func newMotorResources(
 	config *client.Client,
-	bucketQueryClient bt.QueryClient,
-	schemaQueryClient st.QueryClient,
 	shell *shell.Shell) *motorResources {
 	return &motorResources{
 		config:            config,
-		schemaQueryClient: schemaQueryClient,
-		bucketQueryClient: bucketQueryClient,
 		shell:             shell,
 		bucketStore:       make(map[string]bucket.Bucket),
 		whatIsStore:       make(map[string]*st.WhatIs),
@@ -104,6 +95,7 @@ func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition
 
 	return nil, nil, false
 }
+<<<<<<< HEAD
 
 func (r *motorResources) GetWhereIs(ctx context.Context, did string, address string) (*bt.WhereIs, error) {
 	if did == "" {

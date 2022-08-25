@@ -2,10 +2,12 @@ syntax = "proto3";
 
 package sonrio.sonr.schema;
 
-import "registry/did.proto";
 import "schema/v1/schema.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
+
+option java_package = "io.sonr.types.schema";
+option java_multiple_files = true;
 
 message WhatIs {
   // DID is the DID of the object

@@ -11,6 +11,7 @@ import (
 	"syscall/js"
 
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/sonr/third_party/types/common"
 )
 
 var (
@@ -32,7 +33,7 @@ func NewWallet() error {
 	if instance != nil {
 		return errWalletExists
 	}
-	w, err := mpc.GenerateWallet()
+	w, err := mpc.GenerateWallet(common.DefaultCallback())
 	if err != nil {
 		return err
 	}
@@ -121,7 +122,9 @@ func Broadcast(addr string, tx []byte) error {
 
 /*
 -------------------------------
-		Wrappers
+
+	Wrappers
+
 -------------------------------
 */
 func NewWalletExport() js.Func {

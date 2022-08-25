@@ -52,6 +52,7 @@ type Config struct {
 	JWTExpiration    int64
 
 	// Cosmos SDK
+	AccountAddress           string
 	CosmosAccountName        string
 	CosmosAddressPrefix      string
 	CosmosNodeAddress        string
@@ -75,7 +76,7 @@ type Config struct {
 }
 
 // DefaultConfig returns the default configuration for the Highway node
-func DefaultConfig(r Role) *Config {
+func DefaultConfig(r Role, addr string) *Config {
 	var conf *Config
 	// Define the default bootstrappers
 	bootstrapAddrStrs := []string{
@@ -109,17 +110,24 @@ func DefaultConfig(r Role) *Config {
 
 	// Create the default configuration
 	conf = &Config{
-		LogLevel:                 string(InfoLevel),
-		Role:                     r,
+		LogLevel:       string(InfoLevel),
+		Role:           r,
+		AccountAddress: addr,
+
 		Libp2pMdnsDisabled:       true,
 		HighwayGRPCNetwork:       "tcp",
 		Libp2pBootstrapPeers:     ds,
-		Libp2pLowWater:           200,
-		Libp2pHighWater:          400,
-		Libp2pGracePeriod:        time.Second * 20,
+		Libp2pLowWater:           10,
+		Libp2pHighWater:          20,
+		Libp2pGracePeriod:        time.Second * 4,
 		Libp2pRendezvous:         "/sonr/rendevouz/0.9.2",
 		Libp2pInterval:           time.Second * 5,
 		Libp2pTTL:                dscl.TTL(time.Minute * 2),
+		HighwayGRPCEndpoint:      "localhost:26225",
+		HighwayHTTPEndpoint:      ":8081",
+		MatrixServerName:         "sonr-matrix-1",
+		DeviceID:                 "",
+		HostName:                 "",
 		CosmosAccountName:        "alice",
 		CosmosAddressPrefix:      "snr",
 		CosmosNodeAddress:        "http://localhost:26657",
@@ -130,11 +138,6 @@ func DefaultConfig(r Role) *Config {
 		CosmosHomePath:           "~/.sonr",
 		CosmosKeyringBackend:     "test",
 		CosmosKeyringServiceName: "sonr",
-		HighwayGRPCEndpoint:      "localhost:26225",
-		HighwayHTTPEndpoint:      ":8081",
-		MatrixServerName:         "sonr-matrix-1",
-		DeviceID:                 "",
-		HostName:                 "",
 	}
 
 	// Role specific configuration
