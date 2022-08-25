@@ -2,77 +2,33 @@ package motor
 
 import (
 	"fmt"
+	"net/http"
 
-	"github.com/sonr-io/sonr/third_party/types/common"
-	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) Query(req mt.QueryRequest) (mt.QueryResponse, error) {
-	results := make([]*mt.QueryResultItem, 0)
-	switch req.GetModule() {
-	case ct.BlockchainModule_SCHEMA:
-		i, err := mtr.handleSchemaQuery(req.GetQuery())
-		if err != nil {
-			return mt.QueryResponse{}, err
-		}
-		results = append(results, i)
-	case ct.BlockchainModule_REGISTRY:
-		i, err := mtr.handleRegistryQuery(req.GetQuery())
-		if err != nil {
-			return mt.QueryResponse{}, err
-		}
-		results = append(results, i)
-	case ct.BlockchainModule_BUCKET:
-		if req.GetKind() == common.EntityKind_ADDRESS {
-
-			i, err := mtr.handleBucketGroupQuery(req.GetQuery())
-			if err != nil {
-				return mt.QueryResponse{}, err
-			}
-			results = append(results, i)
-
-		} else {
-			i, err := mtr.handleBucketQuery(req.GetQuery())
-			if err != nil {
-				return mt.QueryResponse{}, err
-			}
-			results = append(results, i)
-
-		}
-	}
-
-	return mt.QueryResponse{
-		Results: results,
-		Query:   req.GetQuery(),
-		Module:  req.GetModule(),
-	}, nil
-}
-
-func (mtr *motorNodeImpl) handleBucketQuery(did string) (*mt.QueryResultItem, error) {
+func (mtr *motorNodeImpl) QueryBucket(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error) {
 	// use the item within the cache from GetWhereIs
-	if wi := mtr.Resources.whereIsStore[did]; wi != nil {
-		return &mt.QueryResultItem{
-			Kind:    common.EntityKind_DID,
+	if wi := mtr.Resources.whereIsStore[req.Did]; wi != nil {
+		return &mt.QueryWhereIsResponse{
 			WhereIs: wi,
 		}, nil
 	}
 
 	// Query from chain
-	resp, err := mtr.GetClient().QueryWhereIs(did, mtr.Address)
+	resp, err := mtr.GetClient().QueryWhereIs(req.Did, mtr.Address)
 	if err != nil {
 		return nil, err
 	}
 	mtr.Resources.StoreWhereIs(resp)
-	return &mt.QueryResultItem{
-		Kind:    common.EntityKind_DID,
+	return &mt.QueryWhereIsResponse{
 		WhereIs: resp,
 	}, nil
 }
 
-func (mtr *motorNodeImpl) handleBucketGroupQuery(addr string) (*mt.QueryResultItem, error) {
-	resp, err := mtr.GetClient().QueryWhereIsByCreator(addr)
+func (mtr *motorNodeImpl) QueryBucketGroup(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error) {
+	resp, err := mtr.GetClient().QueryWhereIsByCreator(req.Creator)
 	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, 0)
 	for _, wi := range resp.WhereIs {
 		mtr.Resources.whereIsStore[wi.Did] = &wi
@@ -82,34 +38,33 @@ func (mtr *motorNodeImpl) handleBucketGroupQuery(addr string) (*mt.QueryResultIt
 		return nil, err
 	}
 
-	return &mt.QueryResultItem{
-		Kind:        common.EntityKind_ADDRESS,
-		WhereIsList: ptrArr,
+	return &mt.QueryWhereIsByCreatorResponse{
+		Code:    http.StatusAccepted,
+		WhereIs: ptrArr,
 	}, nil
 }
 
-func (mtr *motorNodeImpl) handleRegistryQuery(did string) (*mt.QueryResultItem, error) {
-	resp, err := mtr.GetClient().QueryWhoIs(did)
+func (mtr *motorNodeImpl) QueryRegistry(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error) {
+	resp, err := mtr.GetClient().QueryWhoIs(req.Did)
 	if err != nil {
 		return nil, err
 	}
 
-	return &mt.QueryResultItem{
-		Kind:  common.EntityKind_DID,
+	return &mt.QueryWhoIsResponse{
+		Code:  http.StatusAccepted,
 		WhoIs: resp,
 	}, nil
 }
 
-func (mtr *motorNodeImpl) handleSchemaQuery(did string) (*mt.QueryResultItem, error) {
-	if wi, sd, ok := mtr.Resources.GetSchema(did); ok {
-		return &mt.QueryResultItem{
-			Kind:             common.EntityKind_DID,
-			WhatIs:           wi,
-			SchemaDefinition: sd,
+func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
+	if wi, _, ok := mtr.Resources.GetSchema(req.Did); ok {
+		return &mt.QueryWhatIsResponse{
+			Code:   http.StatusAccepted,
+			WhatIs: wi,
 		}, nil
 	}
 
-	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetAddress(), did)
+	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetAddress(), req.Did)
 	if err != nil {
 		return nil, err
 	}
@@ -120,9 +75,8 @@ func (mtr *motorNodeImpl) handleSchemaQuery(did string) (*mt.QueryResultItem, er
 		return nil, fmt.Errorf("store WhatIs: %s", err)
 	}
 
-	return &mt.QueryResultItem{
-		Did:    resp.GetDid(),
-		Kind:   common.EntityKind_DID,
-		WhatIs: resp,
+	return &mt.QueryWhatIsResponse{
+		Code:   http.StatusAccepted,
+		WhatIs: mtr.Resources.whatIsStore[req.Did],
 	}, nil
 }
