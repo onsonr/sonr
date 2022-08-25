@@ -4,19 +4,17 @@ import (
 	"context"
 
 	"github.com/sonr-io/sonr/internal/bucket"
-	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
 )
 
 func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 	addr := mtr.GetAddress()
 	if _, ok := mtr.Resources.whereIsStore[did]; !ok {
-		qreq := mt.QueryRequest{
-			Module: ct.BlockchainModule_BUCKET,
-			Query:  did,
-			Kind:   ct.EntityKind_DID,
+		qreq := mt.QueryWhereIsRequest{
+			Creator: addr,
+			Did:     did,
 		}
-		_, err := mtr.Query(qreq)
+		_, err := mtr.QueryBucket(qreq)
 		wi := mtr.Resources.whereIsStore[did]
 
 		if err != nil {
