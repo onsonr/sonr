@@ -22,9 +22,17 @@ bind.android:
 bind.ios:
 	sh $(SCRIPTS_DIR)/bind.sh -i
 
-## └─ web           - iOS Framework
+## └─ web           - WASM Binary
 bind.web:
 	sh $(SCRIPTS_DIR)/bind.sh -w
+
+## build       :   Builds the Sonr Blockchain for Local Environment
+build:
+	ignite chain build
+
+## └─ release       - Build chain for Linux and MacOS for Release
+build.release:
+	ignite chain build --release -t linux:amd64 -t darwin:arm64
 
 ## proto       :   Compiles Go Proto Files and pushes to Buf.Build
 proto: proto.go proto.buf
@@ -40,7 +48,7 @@ proto.buf:
 	cd $(ROOT_DIR)/proto && buf mod update && buf build && buf push
 	echo "✅ Pushed Protos to Buf.Build"
 
-## clean       :   Clean all artifacts and tidy
+## [clean]     :   Clean all artifacts and tidy
 clean:
 	rm -rf ./build
 	rm -rf ./tmp
