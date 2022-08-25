@@ -10,6 +10,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/sonr/badge)](https://www.codefactor.io/repository/github/sonr-io/sonr)
   [![Status](https://img.shields.io/badge/status-active-success.svg)](https://sonr.io)
   [![Go Reference](https://pkg.go.dev/badge/github.com/sonr-io/sonr.svg)](https://pkg.go.dev/github.com/sonr-io/sonr)
+  [![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/sonr)](https://goreportcard.com/report/github.com/sonr-io/sonr)
   [![GitHub Issues](https://img.shields.io/github/issues/sonr-io/sonr.svg)](https://github.com/sonr-io/sonr/issues)
   [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/sonr-io/sonr.svg)](https://github.com/sonr-io/sonr/pulls)
   [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](/LICENSE)
