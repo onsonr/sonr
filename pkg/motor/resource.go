@@ -13,24 +13,24 @@ import (
 )
 
 type motorResources struct {
-	config            *client.Client
-	shell             *shell.Shell
-	whatIsStore       map[string]*st.WhatIs
-	whereIsStore      map[string]*bt.WhereIs
-	schemaStore       map[string]*st.SchemaDefinition
-	bucketStore       map[string]bucket.Bucket
+	config       *client.Client
+	shell        *shell.Shell
+	whatIsStore  map[string]*st.WhatIs
+	whereIsStore map[string]*bt.WhereIs
+	schemaStore  map[string]*st.SchemaDefinition
+	bucketStore  map[string]bucket.Bucket
 }
 
 func newMotorResources(
 	config *client.Client,
 	shell *shell.Shell) *motorResources {
 	return &motorResources{
-		config:            config,
-		shell:             shell,
-		bucketStore:       make(map[string]bucket.Bucket),
-		whatIsStore:       make(map[string]*st.WhatIs),
-		whereIsStore:      make(map[string]*bt.WhereIs),
-		schemaStore:       make(map[string]*st.SchemaDefinition),
+		config:       config,
+		shell:        shell,
+		bucketStore:  make(map[string]bucket.Bucket),
+		whatIsStore:  make(map[string]*st.WhatIs),
+		whereIsStore: make(map[string]*bt.WhereIs),
+		schemaStore:  make(map[string]*st.SchemaDefinition),
 	}
 }
 
@@ -94,71 +94,4 @@ func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition
 	}
 
 	return nil, nil, false
-}
-<<<<<<< HEAD
-
-func (r *motorResources) GetWhereIs(ctx context.Context, did string, address string) (*bt.WhereIs, error) {
-	if did == "" {
-		return nil, errors.New("did invalid for Get WhereIs by Creator request")
-	}
-
-	resp, err := r.bucketQueryClient.WhereIs(ctx, &bt.QueryGetWhereIsRequest{
-		Creator: address,
-		Did:     did,
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	res := types.QueryWhereIsResponse{
-		WhereIs: &resp.WhereIs,
-	}
-
-	r.whereIsStore[res.WhereIs.Did] = res.WhereIs
-
-	b := bucket.New(address, r.whereIsStore[res.WhereIs.Did], r.shell, r.bucketQueryClient)
-	err = b.ResolveContent()
-	if err != nil {
-		return nil, err
-	}
-	err = b.ResolveBuckets(address)
-	if err != nil {
-		return nil, err
-	}
-
-	r.bucketStore[res.WhereIs.Did] = b
-
-	return res.WhereIs, nil
-}
-
-func (r *motorResources) GetWhereIsByCreator(ctx context.Context, address string) ([]*bt.WhereIs, error) {
-	res, err := r.bucketQueryClient.WhereIsByCreator(ctx, &bt.QueryGetWhereIsByCreatorRequest{
-		Creator:    address,
-		Pagination: nil,
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, len(res.WhereIs))
-	for _, wi := range res.WhereIs {
-		r.whereIsStore[wi.Did] = &wi
-		ptrArr = append(ptrArr, &wi)
-
-		b := bucket.New(address, r.whereIsStore[wi.Did], r.shell, r.bucketQueryClient)
-		err = b.ResolveContent()
-		if err != nil {
-			return nil, err
-		}
-		err = b.ResolveBuckets(address)
-		if err != nil {
-			return nil, err
-		}
-
-		r.bucketStore[wi.Did] = b
-	}
-
-	return ptrArr, nil
 }
