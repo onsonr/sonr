@@ -115,24 +115,6 @@ func CreateSchema(buf []byte) ([]byte, error) {
 	}
 }
 
-// Query is a generic query function that can be used to query any object, bucket, or DIDDocument in the Sonr network.
-func Query(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, errWalletNotExists
-	}
-
-	var request mt.QueryRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	if res, err := instance.Query(request); err == nil {
-		return res.Marshal()
-	} else {
-		return nil, err
-	}
-}
-
 // IssuePayment creates a send/receive token request to the specified address.
 func IssuePayment(buf []byte) ([]byte, error) {
 	if instance == nil {
