@@ -17,7 +17,7 @@ Add a list of goals and milestones for this release.
 -
 
 #### Involved Components
-Select the resources/modules that will be affected by this feature.
+Select the resources/modules that will be affected by this release.
 
 **Blockchain** - Sonr specific modules
 - [ ] Registry

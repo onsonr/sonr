@@ -11,11 +11,18 @@ Enter a clear and concise description of how the feature works.
 
 #### Involved Components
 Select the resources/modules that will be affected by this feature.
+
+**Blockchain** - Sonr specific modules
 - [ ] Registry
 - [ ] Schema
 - [ ] Bucket
 - [ ] Channel
+- [ ] Record
+- [ ] Functions
+
+**Architecture** - Overall Architecture
 - [ ] IBC
+- [ ] CosmWasm
 - [ ] Motor
 - [ ] Other
 

@@ -33,12 +33,19 @@ If applicable, add screenshots to help explain your problem.
  - Browser [e.g. stock browser, safari]
  - Version [e.g. 22]
 
-#### Affected components
-Select the resources/modules that will be affected by this feature.
+#### Involved Components
+Select the resources/modules that are affected by this bug.
+
+**Blockchain** - Sonr specific modules
 - [ ] Registry
 - [ ] Schema
 - [ ] Bucket
 - [ ] Channel
+- [ ] Record
+- [ ] Functions
+
+**Architecture** - Overall Architecture
 - [ ] IBC
+- [ ] CosmWasm
 - [ ] Motor
 - [ ] Other
