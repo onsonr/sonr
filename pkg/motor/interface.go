@@ -44,6 +44,7 @@ type MotorNode interface {
 	GetBucket(did string) (bucket.Bucket, error)
 	GetBuckets(ctx context.Context) ([]bucket.Bucket, error)
 	UpdateBucketItems(ctx context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
+	SeachBucketBySchema(req mt.SeachBucketContentBySchemaRequest) (mt.SearchBucketContentBySchemaResponse, error)
 
 	// Query
 	Query(mt.QueryRequest) (mt.QueryResponse, error)
