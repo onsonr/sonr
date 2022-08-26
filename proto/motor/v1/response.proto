@@ -69,11 +69,6 @@ message QueryWhatIsByCreatorResponse {
   map<string, sonrio.sonr.schema.SchemaDefinition> schemas = 3;
 }
 
-message QueryWhatIsByCreatorResponse {
-  int32 code = 1;
-  repeated sonrio.sonr.schema.WhatIs what_is = 2;
-}
-
 message QueryWhereIsByCreatorResponse {
   int32 code = 1;
   repeated sonrio.sonr.bucket.WhereIs where_is = 2;

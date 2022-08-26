@@ -456,58 +456,6 @@ func (m *QueryWhoIsResponse) GetWhoIs() *types.WhoIs {
 	return nil
 }
 
-type QueryWhoIsResponse struct {
-	Code  int32        `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	WhoIs *types.WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
-}
-
-func (m *QueryWhoIsResponse) Reset()         { *m = QueryWhoIsResponse{} }
-func (m *QueryWhoIsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryWhoIsResponse) ProtoMessage()    {}
-func (*QueryWhoIsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_848516c2c2ca9fc7, []int{6}
-}
-func (m *QueryWhoIsResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryWhoIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryWhoIsResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryWhoIsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryWhoIsResponse.Merge(m, src)
-}
-func (m *QueryWhoIsResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryWhoIsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryWhoIsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryWhoIsResponse proto.InternalMessageInfo
-
-func (m *QueryWhoIsResponse) GetCode() int32 {
-	if m != nil {
-		return m.Code
-	}
-	return 0
-}
-
-func (m *QueryWhoIsResponse) GetWhoIs() *types.WhoIs {
-	if m != nil {
-		return m.WhoIs
-	}
-	return nil
-}
-
 type QueryWhatIsResponse struct {
 	Code   int32                    `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	WhatIs *types1.WhatIs           `protobuf:"bytes,2,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
@@ -941,13 +889,6 @@ func (m *QueryWhereIsResponse) GetCode() int32 {
 	return 0
 }
 
-func (m *QueryWhereIsResponse) GetCode() int32 {
-	if m != nil {
-		return m.Code
-	}
-	return 0
-}
-
 func (m *QueryWhereIsResponse) GetWhereIs() *types2.WhereIs {
 	if m != nil {
 		return m.WhereIs
@@ -1098,7 +1039,6 @@ func init() {
 	proto.RegisterType((*CreateSchemaResponse)(nil), "sonrio.motor.api.v1.CreateSchemaResponse")
 	proto.RegisterType((*QueryResponse)(nil), "sonrio.motor.api.v1.QueryResponse")
 	proto.RegisterType((*QueryResultItem)(nil), "sonrio.motor.api.v1.QueryResultItem")
-	proto.RegisterType((*QueryWhoIsResponse)(nil), "sonrio.motor.api.v1.QueryWhoIsResponse")
 	proto.RegisterType((*QueryWhoIsResponse)(nil), "sonrio.motor.api.v1.QueryWhoIsResponse")
 	proto.RegisterType((*QueryWhatIsResponse)(nil), "sonrio.motor.api.v1.QueryWhatIsResponse")
 	proto.RegisterType((*QueryWhatIsByCreatorResponse)(nil), "sonrio.motor.api.v1.QueryWhatIsByCreatorResponse")
@@ -1503,46 +1443,6 @@ func (m *QueryResultItem) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintResponse(dAtA, i, uint64(len(m.Did)))
 		i--
 		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryWhoIsResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryWhoIsResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryWhoIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.WhoIs != nil {
-		{
-			size, err := m.WhoIs.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintResponse(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Code != 0 {
-		i = encodeVarintResponse(dAtA, i, uint64(m.Code))
-		i--
-		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -2208,22 +2108,6 @@ func (m *QueryWhoIsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryWhoIsResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Code != 0 {
-		n += 1 + sovResponse(uint64(m.Code))
-	}
-	if m.WhoIs != nil {
-		l = m.WhoIs.Size()
-		n += 1 + l + sovResponse(uint64(l))
-	}
-	return n
-}
-
 func (m *QueryWhatIsResponse) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2369,9 +2253,6 @@ func (m *QueryWhereIsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Code != 0 {
-		n += 1 + sovResponse(uint64(m.Code))
-	}
 	if m.Code != 0 {
 		n += 1 + sovResponse(uint64(m.Code))
 	}
@@ -3310,111 +3191,6 @@ func (m *QueryResultItem) Unmarshal(dAtA []byte) error {
 			}
 			m.WhereIsList = append(m.WhereIsList, &types2.WhereIs{})
 			if err := m.WhereIsList[len(m.WhereIsList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipResponse(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthResponse
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryWhoIsResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowResponse
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryWhoIsResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryWhoIsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
-			}
-			m.Code = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowResponse
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Code |= int32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WhoIs", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowResponse
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthResponse
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthResponse
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.WhoIs == nil {
-				m.WhoIs = &types.WhoIs{}
-			}
-			if err := m.WhoIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4520,25 +4296,6 @@ func (m *QueryWhereIsResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
-			}
-			m.Code = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowResponse
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Code |= int32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
 			}
