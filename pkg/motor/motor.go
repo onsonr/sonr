@@ -77,6 +77,9 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 
+	sh := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
+	mtr.Resources = newMotorResources(mtr.Cosmos, sh)
+
 	// Get address
 	if mtr.Address == "" {
 		mtr.Address, err = mtr.Wallet.Address()

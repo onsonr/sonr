@@ -2,6 +2,7 @@ package motor
 
 import (
 	"fmt"
+	"log"
 	"testing"
 
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -82,9 +83,47 @@ func Test_QuerySchema(t *testing.T) {
 		Did:     resp.WhatIs.Did,
 	}
 
-	qresp, err := m.QuerySchema(qReq)
+	qresp, err := m.QueryWhatIs(qReq)
 	assert.NoError(t, err, "query response succeeds")
 	assert.Equal(t, resp.WhatIs.Did, qresp.WhatIs.Did)
+}
+
+func Test_QuerySchemaByCreator(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+	fmt.Printf("psk: %x\n", pskKey)
+	if pskKey == nil || len(pskKey) != 32 {
+		t.Errorf("could not load psk key")
+		return
+	}
+
+	req := mt.LoginRequest{
+		Did:       ADDR,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	m, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	_, err := m.Login(req)
+	assert.NoError(t, err, "login succeeds")
+
+	// CREATE DONE, TRY QUERY
+	qReq := mt.QueryWhatIsByCreatorRequest{
+		Creator: "did:snr:1r77u6dnsavm0094l2075zaqk2qval68mu0papc",
+	}
+
+	qresp, err := m.QueryWhatIsByCreator(qReq)
+	assert.NoError(t, err, "query response succeeds")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if qresp.Schemas != nil {
+		fmt.Println(qresp.Schemas)
+	} else {
+		fmt.Println("no schemas.")
+	}
 }
 
 func findItem(arr []*mt.QueryResultItem, target string) string {

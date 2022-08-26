@@ -22,7 +22,7 @@ while getopts "iawm" opt; do
       rm -rf ${BUILDDIR}/io.sonr.motor-sources.jar
       cd ${BUILDDIR}
       tar -czvf motor-${VERSION}-android.tar.gz io.sonr.motor.aar
-      rm -rf ${ANDROID_ARTIFACT}
+      # rm -rf ${ANDROID_ARTIFACT}
       echo "✅ Android Tarball written to: ${ANDROID_TAR_BALL}"
       ;;
     i)

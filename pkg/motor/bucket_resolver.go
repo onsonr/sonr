@@ -14,7 +14,7 @@ func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 			Creator: addr,
 			Did:     did,
 		}
-		_, err := mtr.QueryBucket(qreq)
+		_, err := mtr.QueryWhereIs(qreq)
 		wi := mtr.Resources.whereIsStore[did]
 
 		if err != nil {
