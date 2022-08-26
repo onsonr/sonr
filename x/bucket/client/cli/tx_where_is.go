@@ -27,10 +27,11 @@ func CmdCreateWhereIs() *cobra.Command {
 				return errors.New("label must be defined")
 			}
 
-			roleConv, err := strconv.Atoi(args[1])
+			// parse strictly
+			roleConv, err := strconv.ParseUint(args[1], 10, 32)
 			role := types.BucketRole(roleConv)
 
-			visiblityConv, err := strconv.Atoi(args[2])
+			visiblityConv, err := strconv.ParseUint(args[2], 10, 32)
 			visilbity := types.BucketVisibility(visiblityConv)
 
 			msg := types.NewMsgCreateWhereIs(clientCtx.GetFromAddress().String(), args[0], role, visilbity, nil)

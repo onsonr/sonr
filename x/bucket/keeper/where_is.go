@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -61,19 +62,21 @@ func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.WhereIs) {
 // GetWhereIs returns a whereIs from its id
 func (k Keeper) GetWhereIs(ctx sdk.Context, creator, id string) (val types.WhereIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	b := store.Get(
+		types.WhereIsKey(
+			id,
+		),
+	)
 
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.WhereIs
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		if val.Did == id && val.Creator == creator {
-			return val, true
-		}
+	if b == nil {
+		return val, false
+	}
+	k.cdc.MustUnmarshal(b, &val)
+	if val.Visibility == types.BucketVisibility_PUBLIC || val.Creator == creator {
+		return val, true
 	}
 
-	return types.WhereIs{}, false
+	return val, false
 }
 
 // GetWhereIs returns a whereIs from its id
@@ -94,24 +97,6 @@ func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []typ
 	return
 }
 
-// GetWhereIs returns a whereIs from its id
-func (k Keeper) GetWhereIsAll(ctx sdk.Context, creator, id string) (val types.WhereIs, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.WhereIs
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		if val.Did == id && val.Creator == creator {
-			return val, true
-		}
-	}
-
-	return types.WhereIs{}, false
-}
-
 // RemoveWhereIs removes a whereIs from the store
 func (k Keeper) RemoveWhereIs(ctx sdk.Context, id string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
@@ -128,12 +113,14 @@ func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.WhereIs
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		if val.Visibility == types.BucketVisibility_PUBLIC || val.Visibility == types.BucketVisibility_UNSPECIFIED {
+			list = append(list, val)
+		}
 	}
 
 	return
 }
 
 func (k Keeper) GenerateKeyForDID() string {
-	return uuid.New().String()
+	return strings.Replace(uuid.New().String(), "-", "", -1)
 }

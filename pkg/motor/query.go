@@ -65,7 +65,7 @@ func (mtr *motorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 		}, nil
 	}
 
-	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetAddress(), req.Did)
+	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetDID().String(), req.Did)
 	if err != nil {
 		return nil, err
 	}
