@@ -12,6 +12,9 @@ import "google/api/annotations.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
+option java_package = "io.sonr.types.bucket";
+option java_multiple_files = true;
+
 // Query defines the gRPC querier service.
 service Query {
   // Parameters queries the parameters of the module.

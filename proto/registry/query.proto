@@ -4,12 +4,14 @@ package sonrio.sonr.registry;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "cosmos/crypto/secp256k1/keys.proto";
 import "registry/params.proto";
 import "registry/who_is.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/sonr-io/sonr/x/registry/types";
+
+option java_package = "io.sonr.types.registry";
+option java_multiple_files = true;
 
 // Query defines the gRPC querier service.
 service Query {
