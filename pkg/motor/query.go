@@ -6,6 +6,7 @@ import (
 
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
+	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 func (mtr *motorNodeImpl) QueryBucket(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error) {
@@ -89,15 +90,18 @@ func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorReques
 	}
 
 	// store reference to schema
-	for _, s := range resp {
-		_, err = mtr.Resources.StoreWhatIs(s)
+	schemas := make(map[string]*st.SchemaDefinition)
+	for _, w := range resp {
+		s, err := mtr.Resources.StoreWhatIs(w)
 		if err != nil {
 			return nil, fmt.Errorf("store WhatIs: %s", err)
 		}
+		schemas[w.Schema.Cid] = s
 	}
 
 	return &mt.QueryWhatIsByCreatorResponse{
-		Code:   http.StatusAccepted,
-		WhatIs: resp,
+		Code:    http.StatusAccepted,
+		WhatIs:  resp,
+		Schemas: schemas,
 	}, nil
 }

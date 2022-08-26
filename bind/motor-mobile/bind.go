@@ -169,23 +169,10 @@ func IssuePayment(buf []byte) ([]byte, error) {
 
 // Stat returns general information about the Motor node its wallet and accompanying Account.
 func Stat() ([]byte, error) {
-	// Check if instance is initialized
 	if instance == nil {
 		return nil, errWalletNotExists
 	}
 
-	// Get Wallet Address
-	bal := int32(instance.GetBalance())
-	wallet := instance.GetWallet()
-	if wallet == nil {
-		return nil, errWalletNotExists
-	}
-	addr, err := wallet.Address()
-	if err != nil {
-		return nil, err
-	}
-
-	// Get Account DID Document
 	doc := instance.GetDIDDocument()
 	if doc == nil {
 		return nil, errWalletNotExists
@@ -195,10 +182,9 @@ func Stat() ([]byte, error) {
 		return nil, err
 	}
 
-	// Return response
 	resp := mt.StatResponse{
-		Address:     addr,
-		Balance:     bal,
+		Address:     instance.GetAddress(),
+		Balance:     int32(instance.GetBalance()),
 		DidDocument: diddoc,
 	}
 	return resp.Marshal()
