@@ -40,7 +40,7 @@ For a more in-depth technical look into the Sonr ecosystem please refer to the [
 
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#🚀-deployment-a-name--deploymenta) for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#-deployment-) for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 What things you need to install the software and how to install them.
