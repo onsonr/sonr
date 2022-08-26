@@ -105,3 +105,17 @@ func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorReques
 		Schemas: schemas,
 	}, nil
 }
+
+func (mtr *motorNodeImpl) QuerySchemaGroup(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
+	whatIss, err := mtr.GetClient().QueryWhatIsByCreator(req.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+	resp := mt.QueryWhatIsByCreatorResponse{
+		Code:   http.StatusAccepted,
+		WhatIs: whatIss,
+	}
+
+	return &resp, nil
+}

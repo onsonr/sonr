@@ -87,9 +87,8 @@ func (c *Client) QueryWhatIs(creator string, did string) (*st.WhatIs, error) {
 
 	qc := st.NewQueryClient(grpcConn)
 	// We then call the QueryWhoIs method on this client.
-	res, err := qc.WhatIs(context.Background(), &st.QueryWhatIsRequest{
+	res, err := qc.WhatIsByCreator(context.Background(), &st.QueryWhatIsCreatorRequest{
 		Creator: creator,
-		Did:     creator,
 	})
 
 	if err != nil {
@@ -111,6 +110,7 @@ func (c *Client) QueryWhatIsByCreator(creator string) ([]*st.WhatIs, error) {
 	defer grpcConn.Close()
 
 	qc := st.NewQueryClient(grpcConn)
+
 	// We then call the QueryWhoIs method on this client.
 	res, err := qc.WhatIsByCreator(context.Background(), &st.QueryWhatIsCreatorRequest{
 		Creator: creator,
