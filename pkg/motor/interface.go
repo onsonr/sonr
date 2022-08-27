@@ -43,7 +43,9 @@ type MotorNode interface {
 	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
 	GetBucket(did string) (bucket.Bucket, error)
 	GetBuckets(ctx context.Context) ([]bucket.Bucket, error)
-	UpdateBucketItems(ctx context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
+	UpdateBucketLabel(context context.Context, did string, label string) (bucket.Bucket, error)
+	UpdateBucketVisibility(context context.Context, did string, visibility bt.BucketVisibility) (bucket.Bucket, error)
+	UpdateBucketItems(context context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
 
 	// Query
 	QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error)

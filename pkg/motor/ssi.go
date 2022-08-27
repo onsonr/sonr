@@ -6,9 +6,9 @@ import (
 
 /*
 	Adds a reference to the bucket as a service endpoint on the registered did document
-	Such functionality might be better on chain and not going through
+	Such functionality might be better on chain as to keep transactions in a single block.
 */
-func (mtr *motorNodeImpl) AddBucketServiceEndpoint(id string) error {
+func (mtr *motorNodeImpl) AddBucketServiceEndpoint(baseURI, id string) error {
 
 	if mtr.DIDDocument == nil {
 		return errors.New("Document is not defined")
@@ -18,7 +18,7 @@ func (mtr *motorNodeImpl) AddBucketServiceEndpoint(id string) error {
 	}
 
 	bucket := mtr.Resources.bucketStore[id]
-	se := bucket.CreateBucketServiceEndpoint()
+	se := bucket.CreateBucketServiceEndpoint(baseURI)
 
 	if mtr.DIDDocument.GetServices().FindByID(se.ID) == nil {
 		mtr.DIDDocument.AddService(se)

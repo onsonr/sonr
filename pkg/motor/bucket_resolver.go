@@ -20,9 +20,9 @@ func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 		if err != nil {
 			return nil, err
 		}
-		b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient().GetRPCAddress())
+		b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient())
 
-		err = b.ResolveBuckets(addr)
+		err = b.ResolveBuckets()
 		if err != nil {
 			return nil, err
 		}
@@ -51,9 +51,9 @@ func (mtr *motorNodeImpl) GetBuckets(context context.Context) ([]bucket.Bucket, 
 	for _, wi := range mtr.Resources.whereIsStore {
 		did := wi.Did
 		if _, ok := mtr.Resources.bucketStore[did]; !ok {
-			b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient().GetRPCAddress())
+			b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient())
 
-			err := b.ResolveBuckets(addr)
+			err := b.ResolveBuckets()
 			if err != nil {
 				return nil, err
 			}
