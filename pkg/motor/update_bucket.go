@@ -65,8 +65,18 @@ func (mtr *motorNodeImpl) UpdateBucket(req mt.UpdateBucketRequest) (bucket.Bucke
 
 	mtr.Resources.bucketStore[req.Did] = b
 
-	b.ResolveBuckets()
-	b.ResolveContent()
+	err = b.ResolveBuckets()
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = b.ResolveContent()
+
+	if err != nil {
+		return nil, err
+	}
+
 	return b, nil
 }
 
