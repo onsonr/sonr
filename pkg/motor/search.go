@@ -26,8 +26,8 @@ func (mtr *motorNodeImpl) SeachBucketBySchema(req mt.SeachBucketContentBySchemaR
 	}
 
 	if _, ok := mtr.Resources.bucketStore[req.BucketDid]; !ok {
-		b, err := mtr.handleBucketQuery(req.BucketDid)
-		if b.WhereIs.Visibility == types.BucketVisibility_PRIVATE && b.WhereIs.Creator != mtr.Address {
+		b, err := mtr.GetBucket(req.BucketDid)
+		if b.GetVisibility() == types.BucketVisibility_PRIVATE && b.GetCreator() != mtr.Address {
 			return mt.SearchBucketContentBySchemaResponse{}, fmt.Errorf("creator address does not match session creator: %s", mtr.Address)
 		}
 		if err != nil {
