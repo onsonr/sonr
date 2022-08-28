@@ -43,9 +43,15 @@ type MotorNode interface {
 	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
 	GetBucket(did string) (bucket.Bucket, error)
 	GetBuckets(ctx context.Context) ([]bucket.Bucket, error)
-	UpdateBucketItems(ctx context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
+	UpdateBucketLabel(context context.Context, did string, label string) (bucket.Bucket, error)
+	UpdateBucketVisibility(context context.Context, did string, visibility bt.BucketVisibility) (bucket.Bucket, error)
+	UpdateBucketItems(context context.Context, did string, items []*bt.BucketItem) (bucket.Bucket, error)
 	SeachBucketBySchema(req mt.SeachBucketContentBySchemaRequest) (mt.SearchBucketContentBySchemaResponse, error)
 
 	// Query
-	Query(mt.QueryRequest) (mt.QueryResponse, error)
+	QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error)
+	QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error)
+	QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error)
+	QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error)
+	QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error)
 }

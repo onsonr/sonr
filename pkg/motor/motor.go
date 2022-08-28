@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
@@ -76,6 +77,9 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 
+	sh := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
+	mtr.Resources = newMotorResources(mtr.Cosmos, sh)
+
 	// Get address
 	if mtr.Address == "" {
 		mtr.Address, err = mtr.Wallet.Address()
@@ -83,6 +87,9 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 			return err
 		}
 	}
+
+	shell := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
+	mtr.Resources = newMotorResources(mtr.Cosmos, shell)
 
 	// Get public key
 	mtr.PubKey, err = mtr.Wallet.PublicKeyProto()

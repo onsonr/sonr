@@ -64,28 +64,10 @@ message LoginRequest {
   bytes aes_psk_key = 4;
 }
 
-message CreateSchemaRequest {
-  string label = 1;
-  map<string, sonrio.sonr.schema.SchemaKind> fields = 2;
-  map<string, string> metadata = 3;
-}
-
 message QueryRequest {
   string query = 1;
   common.v1.EntityKind kind = 2;
   common.v1.BlockchainModule module = 3;
-}
-
-// DEPRECATED - use QueryRequest instead
-message QueryWhatIsRequest {
-  string creator = 1;
-  string did = 2;
-}
-
-// DEPRECATED - use QueryRequest instead
-message QuerySchemaRequest {
-  string creator = 1;
-  string did = 2;
 }
 
 message PaymentRequest {
@@ -94,10 +76,48 @@ message PaymentRequest {
   int64 amount = 3;
   string memo = 4;
 }
+// -----------------------------------------------------------------------------
+// Registry Models
+// -----------------------------------------------------------------------------
+message QueryWhoIsRequest {
+  string did = 1;
+}
+
+// -----------------------------------------------------------------------------
+// Schema Models
+// -----------------------------------------------------------------------------
+message CreateSchemaRequest {
+  string label = 1;
+  map<string, sonrio.sonr.schema.SchemaKind> fields = 2;
+  map<string, string> metadata = 3;
+}
+
+message QueryWhatIsRequest {
+  string creator = 1;
+  string did = 2;
+}
+
+message QueryWhatIsByCreatorRequest {
+  string creator = 1;
+}
+
+message QuerySchemaRequest {
+  string creator = 1;
+  string did = 2;
+}
 
 // -----------------------------------------------------------------------------
 // Bucket Models
 // -----------------------------------------------------------------------------
+message QueryWhereIsRequest {
+  string creator = 1;
+  string did = 2;
+}
+
+message QueryWhereIsByCreatorRequest {
+  string creator = 1;
+}
+
 message CreateBucketRequest {
   string creator = 1;
   string label = 2;
