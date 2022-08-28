@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	shell "github.com/ipfs/go-ipfs-api"
+	"github.com/sonr-io/sonr/pkg/client"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -33,20 +34,20 @@ type bucketImpl struct {
 	whereIs      *bt.WhereIs
 	contentCache map[string]*BucketContent
 	shell        *shell.Shell
-	rpcEndpoint  string
+	rpcClient    *client.Client
 }
 
 func New(
 	address string,
 	whereIs *bt.WhereIs,
 	shell *shell.Shell,
-	rpcEndpoint string) Bucket {
+	rpcClient *client.Client) Bucket {
 
 	return &bucketImpl{
 		address:      address,
 		whereIs:      whereIs,
 		shell:        shell,
 		contentCache: make(map[string]*BucketContent),
-		rpcEndpoint:  rpcEndpoint,
+		rpcClient:    rpcClient,
 	}
 }

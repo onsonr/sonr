@@ -34,7 +34,7 @@ type Bucket interface {
 	/*
 		Creates a did service endpoint for querying a wrapped `WhereIs`
 	*/
-	CreateBucketServiceEndpoint() did.Service
+	CreateBucketServiceEndpoint(baseURI string) did.Service
 
 	/*
 		Checks if a given uri is for a bucket
@@ -49,7 +49,7 @@ type Bucket interface {
 	/*
 		Resolves all buckets defined within the current WhereIs by `did`
 	*/
-	ResolveBuckets(address string) error
+	ResolveBuckets() error
 
 	/*
 		Resolves all content within the bucket by `cid`
