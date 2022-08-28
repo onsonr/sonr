@@ -33,7 +33,7 @@ func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 
 		mtr.Resources.bucketStore[did] = b
 		for _, sb := range b.GetBuckets() {
-			mtr.Resources.bucketStore[sb.Id] = sb.Item.(bucket.Bucket)
+			mtr.Resources.bucketStore[sb.GetDID()] = sb
 		}
 	}
 
@@ -64,7 +64,7 @@ func (mtr *motorNodeImpl) GetBuckets(context context.Context) ([]bucket.Bucket, 
 
 			mtr.Resources.bucketStore[did] = b
 			for _, sb := range b.GetBuckets() {
-				mtr.Resources.bucketStore[sb.Id] = sb.Item.(bucket.Bucket)
+				mtr.Resources.bucketStore[sb.GetDID()] = sb
 			}
 		}
 		buckets = append(buckets, mtr.Resources.bucketStore[did])

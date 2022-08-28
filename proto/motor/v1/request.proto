@@ -135,11 +135,6 @@ message UpdateBucketRequest {
   repeated sonrio.sonr.bucket.BucketItem content = 6;
 }
 
-message QueryWhereIsRequest {
-  string creator = 1;
-  string did = 2;
-}
-
 message SeachBucketContentBySchemaRequest {
   // Address of bucket owner
   string creator = 1;

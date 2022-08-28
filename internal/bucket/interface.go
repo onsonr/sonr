@@ -2,6 +2,7 @@ package bucket
 
 import (
 	"github.com/sonr-io/sonr/pkg/did"
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -15,16 +16,24 @@ type Bucket interface {
 	/*
 		Retrieves a piece of content by the given uri
 	*/
-	GetContentById(id string) (*BucketContent, error)
+	GetContentById(id string) (*mt.BucketContent, error)
+
+	GetCreator() string
 
 	/*
 		Access the `items` of the `WhereIs`
 	*/
 	GetBucketItems() []*bt.BucketItem
 
-	GetBuckets() []*BucketContent
+	GetBuckets() []Bucket
 
-	GetContent() []*BucketContent
+	GetContent() []*mt.BucketContent
+
+	GetDID() string
+
+	GetRole() bt.BucketRole
+
+	GetVisibility() bt.BucketVisibility
 
 	/*
 		Checks if a given uri for existence in the given bucket
@@ -56,5 +65,5 @@ type Bucket interface {
 	*/
 	ResolveContent() error
 
-	ResolveContentBySchema(did string) ([]*BucketContent, error)
+	ResolveContentBySchema(did string) ([]*mt.BucketContent, error)
 }
