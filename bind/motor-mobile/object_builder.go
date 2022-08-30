@@ -4,7 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	_ "golang.org/x/mobile/bind"
+)
+
+var (
+	objectBuilders map[string]*object.ObjectBuilder
 )
 
 func NewObjectBuilder(name, schemaDid string) error {

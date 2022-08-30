@@ -2,6 +2,7 @@ package motor
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
@@ -14,20 +15,18 @@ func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 			Creator: addr,
 			Did:     did,
 		}
-		_, err := mtr.QueryWhereIs(qreq)
+		if _, err := mtr.QueryWhereIs(qreq); err != nil {
+			return nil, fmt.Errorf("error querying WhereIs: '%s'", err)
+		}
+
 		wi := mtr.Resources.whereIsStore[did]
 
-		if err != nil {
-			return nil, err
-		}
 		b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient())
-
-		err = b.ResolveBuckets()
-		if err != nil {
+		if err := b.ResolveBuckets(); err != nil {
 			return nil, err
 		}
-		err = b.ResolveContent()
-		if err != nil {
+
+		if err := b.ResolveContent(); err != nil {
 			return nil, err
 		}
 

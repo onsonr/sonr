@@ -20,16 +20,6 @@ var (
 	}
 )
 
-/*
-Wraps items within a bucket. Items will be one of the following
-DID -> reference to another bucket (WhereIs)
-CID -> reference to content (map[string]interface{})
-*/
-type BucketContent struct {
-	Item        interface{}           `json:"item"`
-	Id          string                `json:"id"`
-	ContentType bt.ResourceIdentifier `json:"contentType"`
-}
 type bucketImpl struct {
 	address      string
 	whereIs      *bt.WhereIs
@@ -43,7 +33,7 @@ func New(
 	address string,
 	whereIs *bt.WhereIs,
 	shell *shell.Shell,
-	rpcClient *client.Client) Bucket {
+	rpcClient *client.Client) *bucketImpl {
 
 	return &bucketImpl{
 		address:      address,
