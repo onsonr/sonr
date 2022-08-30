@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"encoding/json"
 	"fmt"
 
 	_ "golang.org/x/mobile/bind"
@@ -128,4 +129,55 @@ func RemoveObjectField(name, fieldName string) error {
 		builder.Remove(fieldName)
 	}
 	return nil
+}
+
+func BuildObject(name string) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return nil, fmt.Errorf("no object builder with name '%s'", name)
+	}
+
+	res, err := builder.Build()
+	if err != nil {
+		return nil, err
+	}
+
+	// Using JSON marshalling here for arbitrary object types
+	return json.Marshal(res)
+}
+
+func UploadObject(name string) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return nil, fmt.Errorf("no object builder with name '%s'", name)
+	}
+
+	res, err := builder.Upload()
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Marshal()
+}
+
+func GetObject(cid string) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	res, err := instance.QueryObject(cid)
+	if err != nil {
+		return nil, err
+	}
+
+	// Using JSON marshalling here for arbitrary object types
+	return json.Marshal(res)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	shell "github.com/ipfs/go-ipfs-api"
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -104,4 +105,12 @@ func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequ
 		Code:    http.StatusAccepted,
 		WhereIs: ptrArr,
 	}, nil
+}
+
+func (mtr *motorNodeImpl) QueryObject(cid string) (map[string]interface{}, error) {
+	sh := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
+
+	var dag map[string]interface{}
+	err := sh.DagGet(cid, &dag)
+	return dag, err
 }
