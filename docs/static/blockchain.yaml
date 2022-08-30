@@ -30279,6 +30279,26 @@ paths:
                               - DID
                               - CID
                             default: None
+                          schema_definition:
+                            title: >-
+                              References the schema and item within the bucket
+                              is associated with. Bucket items do not need to
+                              use the same schema reference
+
+                              if the bucket is "generic" // optional
+                            type: object
+                            properties:
+                              did:
+                                type: string
+                                title: the DID for this schema
+                              label:
+                                type: string
+                                title: an alternative reference point
+                              cid:
+                                type: string
+                                description: >-
+                                  a reference to information stored within an
+                                  IPFS node.
                         description: >-
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
@@ -30472,6 +30492,26 @@ paths:
                               - DID
                               - CID
                             default: None
+                          schema_definition:
+                            title: >-
+                              References the schema and item within the bucket
+                              is associated with. Bucket items do not need to
+                              use the same schema reference
+
+                              if the bucket is "generic" // optional
+                            type: object
+                            properties:
+                              did:
+                                type: string
+                                title: the DID for this schema
+                              label:
+                                type: string
+                                title: an alternative reference point
+                              cid:
+                                type: string
+                                description: >-
+                                  a reference to information stored within an
+                                  IPFS node.
                         description: >-
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
@@ -30667,6 +30707,26 @@ paths:
                             - DID
                             - CID
                           default: None
+                        schema_definition:
+                          title: >-
+                            References the schema and item within the bucket is
+                            associated with. Bucket items do not need to use the
+                            same schema reference
+
+                            if the bucket is "generic" // optional
+                          type: object
+                          properties:
+                            did:
+                              type: string
+                              title: the DID for this schema
+                            label:
+                              type: string
+                              title: an alternative reference point
+                            cid:
+                              type: string
+                              description: >-
+                                a reference to information stored within an IPFS
+                                node.
                       description: >-
                         BucketItem is a pointer to a single piece of content in
                         a bucket.
@@ -53893,6 +53953,23 @@ definitions:
           - DID
           - CID
         default: None
+      schema_definition:
+        title: >-
+          References the schema and item within the bucket is associated with.
+          Bucket items do not need to use the same schema reference
+
+          if the bucket is "generic" // optional
+        type: object
+        properties:
+          did:
+            type: string
+            title: the DID for this schema
+          label:
+            type: string
+            title: an alternative reference point
+          cid:
+            type: string
+            description: a reference to information stored within an IPFS node.
     description: BucketItem is a pointer to a single piece of content in a bucket.
   sonrio.sonr.bucket.BucketRole:
     type: string
@@ -53984,6 +54061,24 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_definition:
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with. Bucket items do not need to use the same
+                    schema reference
+
+                    if the bucket is "generic" // optional
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      title: the DID for this schema
+                    label:
+                      type: string
+                      title: an alternative reference point
+                    cid:
+                      type: string
+                      description: a reference to information stored within an IPFS node.
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -54073,6 +54168,24 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_definition:
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with. Bucket items do not need to use the same
+                    schema reference
+
+                    if the bucket is "generic" // optional
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      title: the DID for this schema
+                    label:
+                      type: string
+                      title: an alternative reference point
+                    cid:
+                      type: string
+                      description: a reference to information stored within an IPFS node.
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -54158,6 +54271,24 @@ definitions:
                       - DID
                       - CID
                     default: None
+                  schema_definition:
+                    title: >-
+                      References the schema and item within the bucket is
+                      associated with. Bucket items do not need to use the same
+                      schema reference
+
+                      if the bucket is "generic" // optional
+                    type: object
+                    properties:
+                      did:
+                        type: string
+                        title: the DID for this schema
+                      label:
+                        type: string
+                        title: an alternative reference point
+                      cid:
+                        type: string
+                        description: a reference to information stored within an IPFS node.
                 description: >-
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
@@ -54265,6 +54396,24 @@ definitions:
                       - DID
                       - CID
                     default: None
+                  schema_definition:
+                    title: >-
+                      References the schema and item within the bucket is
+                      associated with. Bucket items do not need to use the same
+                      schema reference
+
+                      if the bucket is "generic" // optional
+                    type: object
+                    properties:
+                      did:
+                        type: string
+                        title: the DID for this schema
+                      label:
+                        type: string
+                        title: an alternative reference point
+                      cid:
+                        type: string
+                        description: a reference to information stored within an IPFS node.
                 description: >-
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
@@ -54370,6 +54519,24 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_definition:
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with. Bucket items do not need to use the same
+                    schema reference
+
+                    if the bucket is "generic" // optional
+                  type: object
+                  properties:
+                    did:
+                      type: string
+                      title: the DID for this schema
+                    label:
+                      type: string
+                      title: an alternative reference point
+                    cid:
+                      type: string
+                      description: a reference to information stored within an IPFS node.
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -54461,6 +54628,23 @@ definitions:
                 - DID
                 - CID
               default: None
+            schema_definition:
+              title: >-
+                References the schema and item within the bucket is associated
+                with. Bucket items do not need to use the same schema reference
+
+                if the bucket is "generic" // optional
+              type: object
+              properties:
+                did:
+                  type: string
+                  title: the DID for this schema
+                label:
+                  type: string
+                  title: an alternative reference point
+                cid:
+                  type: string
+                  description: a reference to information stored within an IPFS node.
           description: BucketItem is a pointer to a single piece of content in a bucket.
         description: Content of the new bucket map of DIDs to CIDs.
       content_acl:
@@ -54479,6 +54663,19 @@ definitions:
         type: string
         format: int64
         description: Timestamp of the new bucket.
+  sonrio.sonr.schema.SchemaReference:
+    type: object
+    properties:
+      did:
+        type: string
+        title: the DID for this schema
+      label:
+        type: string
+        title: an alternative reference point
+      cid:
+        type: string
+        description: a reference to information stored within an IPFS node.
+    title: Schema defines the shapes of schemas on Sonr
   cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:
@@ -56608,19 +56805,6 @@ definitions:
         default: UNKNOWN
       link:
         type: string
-  sonrio.sonr.schema.SchemaReference:
-    type: object
-    properties:
-      did:
-        type: string
-        title: the DID for this schema
-      label:
-        type: string
-        title: an alternative reference point
-      cid:
-        type: string
-        description: a reference to information stored within an IPFS node.
-    title: Schema defines the shapes of schemas on Sonr
   sonrio.sonr.schema.WhatIs:
     type: object
     properties:
