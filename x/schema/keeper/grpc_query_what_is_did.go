@@ -8,14 +8,14 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (k Keeper) WhatIsByCreator(goCtx context.Context, req *st.QueryWhatIsCreatorRequest) (*st.QueryWhatIsCreatorResponse, error) {
+func (k Keeper) WhatIsByDid(goCtx context.Context, req *st.QueryWhatIsByDidRequest) (*st.QueryWhatIsByDidResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	ref, found := k.GetWhatIsFromCreator(ctx, req.Creator)
-	if !found {
+	ref, found := k.GetWhatIsFromDid(ctx, req.Did)
+	if !found || ref == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "Schema was not found")
 	}
 
-	return &st.QueryWhatIsCreatorResponse{
+	return &st.QueryWhatIsByDidResponse{
 		WhatIs: ref,
 	}, nil
 }

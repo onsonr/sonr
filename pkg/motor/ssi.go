@@ -18,7 +18,7 @@ func (mtr *motorNodeImpl) AddBucketServiceEndpoint(baseURI, id string) error {
 	}
 
 	bucket := mtr.Resources.bucketStore[id]
-	se := bucket.CreateBucketServiceEndpoint(baseURI)
+	se := bucket.CreateBucketServiceEndpoint()
 
 	if mtr.DIDDocument.GetServices().FindByID(se.ID) == nil {
 		mtr.DIDDocument.AddService(se)

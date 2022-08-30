@@ -4,10 +4,8 @@ syntax = "proto3";
 package sonrio.sonr.bucket;
 
 import "bucket/where_is.proto";
-import "common/v1/info.proto";
-import "schema/v1/schema.proto";
 
-option go_package = "github.com/sonr-io/sonr/third_party/types/motor";
+option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 option java_multiple_files = true;
 option java_package = "io.sonr.types.motor";
 

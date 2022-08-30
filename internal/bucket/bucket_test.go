@@ -65,4 +65,20 @@ func Test_Bucket(t *testing.T) {
 		assert.NotNil(t, item)
 		assert.ObjectsAreEqual(item.ContentType, bt.ResourceIdentifier_CID)
 	})
+
+	t.Run("Bucket Service endpoint should be valid uri", func(t *testing.T) {
+		content := []*bt.BucketItem{
+			{
+				Name:      "test",
+				Uri:       objectURI,
+				Timestamp: time.Now().Unix(),
+				Type:      bt.ResourceIdentifier_CID,
+			},
+		}
+
+		instance := bucket.New(creator, CreateMockWhereIs(creator, content), s, c)
+		ssi := instance.CreateBucketServiceEndpoint()
+		assert.NotNil(t, ssi)
+		assert.ObjectsAreEqual(c.GetAPIAddress(), ssi.ID.Host)
+	})
 }
