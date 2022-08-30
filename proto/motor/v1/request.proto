@@ -134,3 +134,12 @@ message UpdateBucketRequest {
   sonrio.sonr.bucket.BucketRole role = 5;
   repeated sonrio.sonr.bucket.BucketItem content = 6;
 }
+
+message SeachBucketContentBySchemaRequest {
+  // Address of bucket owner
+  string creator = 1;
+  // bucket identifier
+  string bucket_did = 2;
+  // schema identifier
+  string schema_did = 3;
+}
