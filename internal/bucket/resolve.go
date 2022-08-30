@@ -1,8 +1,10 @@
 package bucket
 
 import (
+	"encoding/json"
 	"errors"
 
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -18,11 +20,7 @@ func (b *bucketImpl) ResolveBuckets() error {
 			if err != nil {
 				return err
 			}
-			b.contentCache[bi.Uri] = &BucketContent{
-				Item:        New(b.address, resp, b.shell, b.rpcClient),
-				Id:          bi.Uri,
-				ContentType: types.ResourceIdentifier_DID,
-			}
+			b.bucketCache[bi.Uri] = New(b.address, resp, b.shell, b.rpcClient)
 		}
 	}
 
@@ -42,8 +40,12 @@ func (b *bucketImpl) ResolveContent() error {
 			if err != nil {
 				return err
 			}
-			b.contentCache[bi.Uri] = &BucketContent{
-				Item:        dag,
+			dag_bytes, err := json.Marshal(dag)
+			if err != nil {
+				return err
+			}
+			b.contentCache[bi.Uri] = &mt.BucketContent{
+				Item:        dag_bytes,
 				Id:          bi.Uri,
 				ContentType: types.ResourceIdentifier_CID,
 			}
