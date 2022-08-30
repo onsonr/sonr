@@ -1,7 +1,6 @@
 package types
 
 import (
-	"errors"
 	fmt "fmt"
 	"strings"
 
@@ -93,9 +92,7 @@ func (msg *MsgUpdateWhereIs) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	if len(msg.Label) < 1 {
-		return errors.New("label Cannot be empty")
-	}
+
 	return nil
 }
 

@@ -18,10 +18,6 @@ func (mtr *motorNodeImpl) UpdateBucket(req mt.UpdateBucketRequest) (bucket.Bucke
 		return nil, errors.New("invalid Address")
 	}
 
-	if req.Label == "" {
-		return nil, errors.New("label nust be defined")
-	}
-
 	updateWhereIsRequest := bt.NewMsgUpdateWhereIs(mtr.Address, req.Did)
 	updateWhereIsRequest.Label = req.Label
 	updateWhereIsRequest.Role = req.Role

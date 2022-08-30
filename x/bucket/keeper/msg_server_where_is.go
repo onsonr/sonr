@@ -68,6 +68,7 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 	}
 
 	var whereIs = types.WhereIs{
+		Label:      msg.Label,
 		Creator:    msg.Creator,
 		Did:        msg.Did,
 		Visibility: msg.Visibility,
@@ -90,7 +91,10 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 
 	k.SetWhereIs(ctx, whereIs)
 
-	return &types.MsgUpdateWhereIsResponse{}, nil
+	return &types.MsgUpdateWhereIsResponse{
+		Status:  http.StatusAccepted,
+		WhereIs: &whereIs,
+	}, nil
 }
 
 func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWhereIs) (*types.MsgDeleteWhereIsResponse, error) {
