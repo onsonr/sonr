@@ -34,7 +34,7 @@ type Bucket interface {
 	/*
 		Creates a did service endpoint for querying a wrapped `WhereIs`
 	*/
-	CreateBucketServiceEndpoint(baseURI string) did.Service
+	CreateBucketServiceEndpoint() did.Service
 
 	/*
 		Checks if a given uri is for a bucket
