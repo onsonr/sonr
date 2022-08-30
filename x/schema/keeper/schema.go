@@ -119,6 +119,22 @@ func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []*ty
 	return vals, true
 }
 
+// GetWhatIsFromDid returns a WhatIs which matches the given DID
+func (k Keeper) GetWhatIsFromDid(ctx sdk.Context, did string) (*types.WhatIs, bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
+	whatIsBytes := store.Get(types.WhatIsKey(did))
+	if len(whatIsBytes) == 0 {
+		return nil, false
+	}
+
+	whatIs := &types.WhatIs{}
+	if err := k.cdc.Unmarshal(whatIsBytes, whatIs); err != nil {
+		return nil, false
+	}
+
+	return whatIs, true
+}
+
 // GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller
 func (k Keeper) GetWhatIsFromLabel(ctx sdk.Context, label string) (val []types.WhatIs, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
