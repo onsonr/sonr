@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
-package sonrio.motor.api.v1;
+package sonrio.sonr.bucket;
 
 import "bucket/where_is.proto";
 import "common/v1/info.proto";
