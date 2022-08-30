@@ -50,6 +50,7 @@ type motorNodeImpl struct {
 
 	// resource management
 	Resources *motorResources
+	sh        *shell.Shell
 }
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
@@ -77,8 +78,8 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 
-	sh := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
-	mtr.Resources = newMotorResources(mtr.Cosmos, sh)
+	mtr.sh = shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
+	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.sh)
 
 	// Get address
 	if mtr.Address == "" {

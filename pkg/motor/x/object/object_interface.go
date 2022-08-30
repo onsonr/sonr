@@ -1,19 +1,6 @@
 package object
 
-type ObjectReference struct {
-	Did   string
-	Label string
-	Cid   string
-}
-
-/*
-	Object definition to be returned after object creation
-*/
-type ObjectUploadResult struct {
-	Code      int32
-	Reference *ObjectReference
-	Message   string
-}
+import "github.com/sonr-io/sonr/third_party/types/motor"
 
 /*
 	Underlying api definition of internal implementation of Objects
@@ -27,7 +14,7 @@ type ObjectClient interface {
 	*/
 	CreateObject(
 		label string,
-		object map[string]interface{}) (*ObjectUploadResult, error)
+		object map[string]interface{}) (*motor.UploadObjectResponse, error)
 
 	/*
 		Retrieves an object for the data store

@@ -105,3 +105,9 @@ func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequ
 		WhereIs: ptrArr,
 	}, nil
 }
+
+func (mtr *motorNodeImpl) QueryObject(cid string) (map[string]interface{}, error) {
+	var dag map[string]interface{}
+	err := mtr.sh.DagGet(cid, &dag)
+	return dag, err
+}
