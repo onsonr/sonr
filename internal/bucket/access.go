@@ -51,7 +51,7 @@ func (b *bucketImpl) ResolveContentBySchema(did string) ([]*mt.BucketContent, er
 	var matchedContent []*mt.BucketContent = make([]*mt.BucketContent, 0)
 	for _, c := range b.whereIs.Content {
 		if c.Type == bt.ResourceIdentifier_CID {
-			if c.SchemaDefinition.Did == did {
+			if c.SchemaDid == did {
 				matchedContent = append(matchedContent, b.contentCache[c.Uri])
 			}
 		}
