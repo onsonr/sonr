@@ -147,6 +147,18 @@ func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 	return res.Marshal()
 }
 
+func QuerySchemaByDid(did string) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	res, err := instance.QueryWhatIsByDid(did)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
 func QueryBucket(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, errWalletNotExists

@@ -3,6 +3,7 @@ package motor
 import (
 	"context"
 
+	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -44,7 +45,7 @@ func GetBucketObject(bucketDid, cid string) ([]byte, error) {
 	return c.Marshal()
 }
 
-func GetBucketObjects(bucketDid string) ([][]byte, error) {
+func GetBucketObjects(bucketDid string) ([]byte, error) {
 	if instance == nil {
 		return nil, errWalletNotExists
 	}
@@ -54,7 +55,7 @@ func GetBucketObjects(bucketDid string) ([][]byte, error) {
 		return nil, err
 	}
 
-	result := make([][]byte, 0)
+	buckets := make([]*bt.BucketContent, 0)
 	items := bucket.GetBucketItems()
 	for _, item := range items {
 		c, err := bucket.GetContentById(item.Uri)
@@ -65,15 +66,13 @@ func GetBucketObjects(bucketDid string) ([][]byte, error) {
 		if c.ContentType != bt.ResourceIdentifier_CID {
 			continue
 		}
-
-		if b, err := c.Marshal(); err == nil {
-			result = append(result, b)
-		} else {
-			return nil, err
-		}
+		buckets = append(buckets, c)
 	}
 
-	return result, nil
+	list := &mt.BucketContentList{
+		Buckets: buckets,
+	}
+	return list.Marshal()
 }
 
 func ResolveSubBucket(bucketDid, subBucketDid string) error {
@@ -108,16 +107,17 @@ func UpdateBucketLabel(bucketDid, label string) error {
 	return err
 }
 
-func UpdateBucketVisibility(bucketDid string, vis bt.BucketVisibility) error {
+func UpdateBucketVisibility(bucketDid string, vis int) error {
 	if instance == nil {
 		return errWalletNotExists
 	}
 
-	_, err := instance.UpdateBucketVisibility(context.Background(), bucketDid, vis)
+	_, err := instance.UpdateBucketVisibility(context.Background(), bucketDid, bt.BucketVisibility(vis))
 
 	return err
 }
 
+// TODO: refactor this such that it accepts a CID
 func AddBucketObject(bucketDid string, obj []byte) error {
 	if instance == nil {
 		return errWalletNotExists

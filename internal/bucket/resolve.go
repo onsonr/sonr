@@ -4,8 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
-	"github.com/sonr-io/sonr/x/bucket/types"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
 func (b *bucketImpl) ResolveBuckets() error {
@@ -14,7 +13,7 @@ func (b *bucketImpl) ResolveBuckets() error {
 	}
 
 	for _, bi := range b.whereIs.Content {
-		if bi.Type == types.ResourceIdentifier_DID {
+		if bi.Type == bt.ResourceIdentifier_DID {
 			resp, err := b.rpcClient.QueryWhereIs(bi.Uri, b.address)
 
 			if err != nil {
@@ -33,7 +32,7 @@ func (b *bucketImpl) ResolveContent() error {
 	}
 
 	for _, bi := range b.whereIs.Content {
-		if bi.Type == types.ResourceIdentifier_CID {
+		if bi.Type == bt.ResourceIdentifier_CID {
 			var dag map[string]interface{}
 			err := b.shell.DagGet(bi.Uri, &dag)
 
@@ -44,10 +43,10 @@ func (b *bucketImpl) ResolveContent() error {
 			if err != nil {
 				return err
 			}
-			b.contentCache[bi.Uri] = &mt.BucketContent{
+			b.contentCache[bi.Uri] = &bt.BucketContent{
 				Item:        dag_bytes,
 				Id:          bi.Uri,
-				ContentType: types.ResourceIdentifier_CID,
+				ContentType: bt.ResourceIdentifier_CID,
 			}
 		}
 	}

@@ -4,6 +4,7 @@ syntax = "proto3";
 package sonrio.motor.api.v1;
 
 import "bucket/where_is.proto";
+import "bucket/bucket.proto";
 import "common/v1/info.proto";
 import "registry/did.proto";
 import "registry/who_is.proto";
@@ -98,6 +99,10 @@ message UpdateBucketResponse {
 message QueryWhereIsResponse {
   int32 code = 1;
   sonrio.sonr.bucket.WhereIs where_is = 2;
+}
+
+message BucketContentList {
+  repeated sonrio.sonr.bucket.BucketContent buckets = 1;
 }
 
 message StatResponse {

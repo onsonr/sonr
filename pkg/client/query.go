@@ -124,6 +124,31 @@ func (c *Client) QueryWhatIsByCreator(creator string) ([]*st.WhatIs, error) {
 	return res.WhatIs, nil
 }
 
+func (c *Client) QueryWhatIsByDid(did string) (*st.WhatIs, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer grpcConn.Close()
+
+	qc := st.NewQueryClient(grpcConn)
+
+	// We then call the QueryWhoIs method on this client.
+	res, err := qc.WhatIsByDid(context.Background(), &st.QueryWhatIsByDidRequest{
+		Did: did,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.WhatIs, nil
+}
+
 func (c *Client) QueryWhereIs(did string, address string) (*bt.WhereIs, error) {
 	if did == "" {
 		return nil, errors.New("did invalid for Get WhereIs by Creator request")
