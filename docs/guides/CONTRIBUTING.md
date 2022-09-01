@@ -21,8 +21,6 @@ All types of contributions are encouraged and valued. See the [Table of Contents
   - [Suggesting Enhancements](#suggesting-enhancements)
   - [Your First Code Contribution](#your-first-code-contribution)
   - [Improving The Documentation](#improving-the-documentation)
-- [Styleguides](#styleguides)
-  - [Commit Messages](#commit-messages)
 - [Join The Project Team](#join-the-project-team)
 
 
@@ -134,26 +132,14 @@ Enhancement suggestions are tracked as [GitHub issues](https://gitub.com/sonr-io
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
 
 ### Your First Code Contribution
-<!-- TODO
-include Setup of env, IDE and typical getting started instructions?
-
--->
+1. [Find an issue](https://gitub.com/sonr-io/sonr/issues) that you are interested in addressing or a feature that you would like to add.
+2. [Fork the repository](https://gitub.com/sonr-io/sonr/fork) to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device.
+3. [Setup the development environment](../../README.md#installing) on your local machine.
+4. [Create a new branch](https://help.github.com/articles/creating-and-deleting-branches-within-your-repository/) for your fix or feature.
+5. Submit a [pull request](https://help.github.com/articles/about-pull-requests/) with your changes.
 
 ### Improving The Documentation
-<!-- TODO
-Updating, improving and correcting the documentation
-
--->
-
-## Styleguides
-### Commit Messages
-<!-- TODO
-
--->
+For improving the documentation, please read the [docs README](https://github.com/sonr-io/docs) in the separate repo.
 
 ## Join The Project Team
-<!-- TODO -->
-
-<!-- omit in toc -->
-## Attribution
-This guide is based on the **contributing-gen**. [Make your own](https://github.com/bttger/contributing-gen)!
+Web3 is at a chasm, a lot of companies are building clunky and complex software that neither developers or users can understand. We believe that we are the right people to transition the 87% of the world without crypto to digital freedom. [Let's do this together!](https://jobs.polymer.co/sonr)
