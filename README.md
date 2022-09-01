@@ -47,34 +47,38 @@ What things you need to install the software and how to install them.
 - [Go](https://golang.org/doc/install)
 - [Ignite CLI](https://github.com/ignite/cli)
 - [Protocol Buffers](https://grpc.io)
-- [GRPCLI](https://github.com/grpc/grpc/blob/master/doc/command_line_tool.md)
+- [GRPCLI](https://github.com/grpc/grpc/blob/master/doc/command_line_tool.md) - *(optional)*
 
 ### Installing
 A step by step series of examples that tell you how to get a development env running.
 
-Get the chain running
+Installing Protocol Buffers
+
 ```bash
-ignite chain serve
+brew install protobuf
 ```
 
-Test it with `grpc_cli`
+
+Installing Ignite
+
 ```bash
-grpc_cli ls 137.184.190.146:9090 sonrio.sonr.bucket.Query
+curl https://get.ignite.com/cli! | bash
 ```
-Outputs: 
-```
-Params
-WhereIs
-WhereIsByCreator
-WhereIsAll
+
+Installing Gomobile - for building the Motor library
+
+```bash
+go install golang.org/x/mobile/cmd/gomobile@latest
+gomobile init
 ```
 
 ## 🔧 Running the tests <a name = "tests"></a>
 Explain how to run the automated tests for this system.
 
-### Break down into end to end tests
+### Motor Node Tests
 
-Run a motor test
+
+Run a test for a specific method
 ```bash
 cd pkg/motor
 go test -run CreateAccount
@@ -86,24 +90,36 @@ cd pkg/motor
 go test
 ```
 
-Run the simulation tests
+### Blockchain Tests
+
+Get the chain running
+```bash
+ignite chain serve
+```
+
+Test it with `grpc_cli`
+```bash
+grpc_cli ls 137.184.190.146:9090 sonrio.sonr.bucket.Query
+```
+Outputs:
+```
+Params
+WhereIs
+WhereIsByCreator
+WhereIsAll
+```
+
+Running simulation tests
 ```bash
 ignite chain simulate
 ```
 
-### And coding style tests
-We run `goplz` on our source code. Generally, you can get that as part of the [Go Extension in VS Code](https://marketplace.visualstudio.com/items?itemName=golang.Go)
-
 ## 🎈 Usage <a name="usage"></a>
-TODO: Give quick overview of how to use the system, with link to [Structure](./docs/guides/STRUCTURE.md)
-- [Running the Makefile](./docs/guides/USAGE.md#running-the-makefile)
+This repo serves as a **pseudo-monorepo** for the Sonr platform. You can find details on the organization of this project in [structure](./docs/guides/STRUCTURE.md).
+- [Working the Makefile](./docs/guides/USAGE.md#working-the-makefile)
 - [Interacting with the Motor](./docs/guides/USAGE.md#interacting-with-the-motor)
 - [Submitting a Proposal](./docs/guides//USAGE.md#submitting-a-proposal)
-
-## 🚀 Deployment <a name = "deployment"></a>
-TODO: Insert quick motor v. highway explanation with link to [docs](https://docs.sonr.io).
-- [Running the Highway](./docs/guides/DEPLOYMENT.md#running-the-highway-node)
-- [Building the Motor](./docs/guides/DEPLOYMENT.md#binding-the-motor-library)
+- [Deploying Nodes](./docs/guides/DEPLOYMENT.md)
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [Libp2p](https://github.com/libp2p/libp2p) - Networking layer

@@ -1,6 +1,6 @@
 # Usage
 
-## Running the Makefile
+## Working the Makefile
 
 ```
 make
