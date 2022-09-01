@@ -47,40 +47,52 @@ What things you need to install the software and how to install them.
 - [Go](https://golang.org/doc/install)
 - [Ignite CLI](https://github.com/ignite/cli)
 - [Protocol Buffers](https://grpc.io)
+- [GRPCLI](https://github.com/grpc/grpc/blob/master/doc/command_line_tool.md)
 
 ### Installing
-TODO: A step by step series of examples that tell you how to get a development env running.
+A step by step series of examples that tell you how to get a development env running.
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+Get the chain running
+```bash
+ignite chain serve
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
+Test it with `grpc_cli`
+```bash
+grpc_cli ls 137.184.190.146:9090 sonrio.sonr.bucket.Query
+```
+Outputs: 
+```
+Params
+WhereIs
+WhereIsByCreator
+WhereIsAll
+```
 
 ## 🔧 Running the tests <a name = "tests"></a>
 Explain how to run the automated tests for this system.
 
 ### Break down into end to end tests
-TODO: Insert Simulation Tests for Blockchain and Unit Tests
 
+Run a motor test
+```bash
+cd pkg/motor
+go test -run CreateAccount
 ```
-Give an example
+
+Run <b>ALL</b> motor tests
+```bash
+cd pkg/motor
+go test
+```
+
+Run the simulation tests
+```bash
+ignite chain simulate
 ```
 
 ### And coding style tests
-TODO: Insert gofmt check
-
-```
-Give an example
-```
+We run `goplz` on our source code. Generally, you can get that as part of the [Go Extension in VS Code](https://marketplace.visualstudio.com/items?itemName=golang.Go)
 
 ## 🎈 Usage <a name="usage"></a>
 TODO: Give quick overview of how to use the system, with link to [Structure](./docs/guides/STRUCTURE.md)
