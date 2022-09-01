@@ -6,7 +6,6 @@ import (
 
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/pkg/client"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -20,20 +19,10 @@ var (
 	}
 )
 
-/*
-Wraps items within a bucket. Items will be one of the following
-DID -> reference to another bucket (WhereIs)
-CID -> reference to content (map[string]interface{})
-*/
-type BucketContent struct {
-	Item        interface{}           `json:"item"`
-	Id          string                `json:"id"`
-	ContentType bt.ResourceIdentifier `json:"contentType"`
-}
 type bucketImpl struct {
 	address      string
 	whereIs      *bt.WhereIs
-	contentCache map[string]*mt.BucketContent
+	contentCache map[string]*bt.BucketContent
 	bucketCache  map[string]Bucket
 	shell        *shell.Shell
 	rpcClient    *client.Client
@@ -43,13 +32,13 @@ func New(
 	address string,
 	whereIs *bt.WhereIs,
 	shell *shell.Shell,
-	rpcClient *client.Client) Bucket {
+	rpcClient *client.Client) *bucketImpl {
 
 	return &bucketImpl{
 		address:      address,
 		whereIs:      whereIs,
 		shell:        shell,
-		contentCache: make(map[string]*mt.BucketContent),
+		contentCache: make(map[string]*bt.BucketContent),
 		rpcClient:    rpcClient,
 	}
 }

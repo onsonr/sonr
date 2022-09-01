@@ -43,6 +43,7 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 	}
 
 	var definition *st.SchemaDefinition = &st.SchemaDefinition{
+		Did:     what_is.Did,
 		Creator: what_is.Creator,
 		Label:   what_is.Schema.Label,
 		Fields:  fields,

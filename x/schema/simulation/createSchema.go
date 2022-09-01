@@ -19,6 +19,7 @@ func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keep
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		createMsg := types.MsgCreateSchema{
 			Definition: &types.SchemaDefinition{
+				Did:     "did:snr:123456",
 				Creator: simAccount.Address.String(),
 				Label:   "test schema",
 				Fields:  make([]*types.SchemaKindDefinition, 0),

@@ -12,14 +12,12 @@ import (
 )
 
 var (
-	errWalletExists    = errors.New("mpc wallet already exists")
 	errWalletNotExists = errors.New("mpc wallet does not exist")
 )
 
 var (
-	instance       mtr.MotorNode
-	objectBuilders map[string]*object.ObjectBuilder
-	callback       MotorCallback
+	instance mtr.MotorNode
+	callback MotorCallback
 )
 
 type MotorCallback interface {
@@ -143,6 +141,52 @@ func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 	}
 
 	res, err := instance.QueryWhatIsByCreator(request)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
+func QuerySchemaByDid(did string) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	res, err := instance.QueryWhatIsByDid(did)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
+func QueryBucket(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhereIsRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	res, err := instance.QueryWhereIs(request)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
+func QueryBucketByCreator(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhereIsByCreatorRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	res, err := instance.QueryWhereIsByCreator(request)
 	if err != nil {
 		return nil, err
 	}
