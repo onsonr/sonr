@@ -1,4 +1,4 @@
-### Project Structure
+# Project Structure
 
 The `sonr` repo follows the Go project structure outlined in https://github.com/golang-standards/project-layout.
 

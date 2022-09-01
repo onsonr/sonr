@@ -117,30 +117,27 @@ ignite chain simulate
 ## 🎈 Usage <a name="usage"></a>
 This repo serves as a **pseudo-monorepo** for the Sonr platform. You can find details on the organization of this project in [structure](./docs/guides/STRUCTURE.md).
 - [Working the Makefile](./docs/guides/USAGE.md#working-the-makefile)
-- [Submitting a Proposal](./docs/guides//USAGE.md#submitting-a-proposal)
+- [Submitting a Proposal](https://github.com/sonr-io/sonr/discussions/521)
 - [Deploying Nodes](./docs/guides/DEPLOYMENT.md)
 
 ## ⛏️ Built Using <a name = "built_using"></a>
+List of the main frameworks and tools used to build this project.
 - [Libp2p](https://github.com/libp2p/libp2p) - Networking layer
 - [Cosmos](https://github.com/cosmos-sdk/cosmos) - Blockchain Framework
 - [IPFS](https://github.com/ipfs/ipfs) - Storage Module
 - [HNS](https://handshake.org/) - Decentralized DNS
 
 ## ✍️ Authors <a name = "authors"></a>
-
+See also the list of [contributors](https://github.com/sonr-io/sonr/contributors) who participated in this project.
 - [Prad Nukala](https://github.com/prnk28)
 - [Nick Tindle](https://github.com/ntindle)
 - [Josh Long](https://github.com/joshLong145)
 - [Brayden Cloud](https://github.com/mcjcloud)
 - [Ian Perez](https://github.com/brokecollegekidwithaclothingobsession)
 
-See also the list of [contributors](https://github.com/sonr-io/sonr/contributors) who participated in this project.
-
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+Partners, collaborators, compliance, or just pure appreciation!
 - [W3C](https://www.w3.org/)
 - [Protocol Labs](https://protocol.ai/)
 - [Ignite](https://ignite.com/)
 - [AE Studio](https://ae.studio/)
-
-
-Partners, collaborators, compliance, or just pure appreciation!
