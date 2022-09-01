@@ -117,7 +117,6 @@ ignite chain simulate
 ## 🎈 Usage <a name="usage"></a>
 This repo serves as a **pseudo-monorepo** for the Sonr platform. You can find details on the organization of this project in [structure](./docs/guides/STRUCTURE.md).
 - [Working the Makefile](./docs/guides/USAGE.md#working-the-makefile)
-- [Interacting with the Motor](./docs/guides/USAGE.md#interacting-with-the-motor)
 - [Submitting a Proposal](./docs/guides//USAGE.md#submitting-a-proposal)
 - [Deploying Nodes](./docs/guides/DEPLOYMENT.md)
 
