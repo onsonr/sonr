@@ -1,44 +1,25 @@
 package bucket
 
 import (
-	"context"
+	"encoding/json"
 	"errors"
 
 	bt "github.com/sonr-io/sonr/x/bucket/types"
-	"github.com/sonr-io/sonr/x/bucket/types"
-	"google.golang.org/grpc"
 )
 
-func (b *bucketImpl) ResolveBuckets(address string) error {
-	// Create a connection to the gRPC server.
-	conn, err := grpc.Dial(
-		b.rpcEndpoint,         // Or your gRPC server address.
-		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
-	)
-	defer conn.Close()
-	if err != nil {
-		return err
-	}
-	client := bt.NewQueryClient(conn)
+func (b *bucketImpl) ResolveBuckets() error {
 	if b.whereIs == nil {
 		return errors.New("top level bucket not provided")
 	}
 
 	for _, bi := range b.whereIs.Content {
-		if bi.Type == types.ResourceIdentifier_DID {
-			resp, err := client.WhereIs(context.Background(), &types.QueryGetWhereIsRequest{
-				Creator: address,
-				Did:     bi.Uri,
-			})
+		if bi.Type == bt.ResourceIdentifier_DID {
+			resp, err := b.rpcClient.QueryWhereIs(bi.Uri, b.address)
 
 			if err != nil {
 				return err
 			}
-			b.contentCache[bi.Uri] = &BucketContent{
-				Item:        New(b.address, &resp.WhereIs, b.shell, b.rpcEndpoint),
-				Id:          bi.Uri,
-				ContentType: types.ResourceIdentifier_DID,
-			}
+			b.bucketCache[bi.Uri] = New(b.address, resp, b.shell, b.rpcClient)
 		}
 	}
 
@@ -51,17 +32,21 @@ func (b *bucketImpl) ResolveContent() error {
 	}
 
 	for _, bi := range b.whereIs.Content {
-		if bi.Type == types.ResourceIdentifier_CID {
+		if bi.Type == bt.ResourceIdentifier_CID {
 			var dag map[string]interface{}
 			err := b.shell.DagGet(bi.Uri, &dag)
 
 			if err != nil {
 				return err
 			}
-			b.contentCache[bi.Uri] = &BucketContent{
-				Item:        dag,
+			dag_bytes, err := json.Marshal(dag)
+			if err != nil {
+				return err
+			}
+			b.contentCache[bi.Uri] = &bt.BucketContent{
+				Item:        dag_bytes,
 				Id:          bi.Uri,
-				ContentType: types.ResourceIdentifier_DID,
+				ContentType: bt.ResourceIdentifier_CID,
 			}
 		}
 	}

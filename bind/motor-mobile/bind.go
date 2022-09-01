@@ -12,14 +12,12 @@ import (
 )
 
 var (
-	errWalletExists    = errors.New("mpc wallet already exists")
 	errWalletNotExists = errors.New("mpc wallet does not exist")
 )
 
 var (
-	instance       mtr.MotorNode
-	objectBuilders map[string]*object.ObjectBuilder
-	callback       MotorCallback
+	instance mtr.MotorNode
+	callback MotorCallback
 )
 
 type MotorCallback interface {
@@ -115,6 +113,86 @@ func CreateSchema(buf []byte) ([]byte, error) {
 	}
 }
 
+func QuerySchema(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhatIsRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	res, err := instance.QueryWhatIs(request)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
+func QuerySchemaByCreator(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhatIsByCreatorRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	res, err := instance.QueryWhatIsByCreator(request)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
+func QuerySchemaByDid(did string) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	res, err := instance.QueryWhatIsByDid(did)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
+func QueryBucket(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhereIsRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	res, err := instance.QueryWhereIs(request)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
+func QueryBucketByCreator(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, errWalletNotExists
+	}
+
+	var request mt.QueryWhereIsByCreatorRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	res, err := instance.QueryWhereIsByCreator(request)
+	if err != nil {
+		return nil, err
+	}
+	return res.Marshal()
+}
+
 // IssuePayment creates a send/receive token request to the specified address.
 func IssuePayment(buf []byte) ([]byte, error) {
 	if instance == nil {
@@ -135,23 +213,10 @@ func IssuePayment(buf []byte) ([]byte, error) {
 
 // Stat returns general information about the Motor node its wallet and accompanying Account.
 func Stat() ([]byte, error) {
-	// Check if instance is initialized
 	if instance == nil {
 		return nil, errWalletNotExists
 	}
 
-	// Get Wallet Address
-	bal := int32(instance.GetBalance())
-	wallet := instance.GetWallet()
-	if wallet == nil {
-		return nil, errWalletNotExists
-	}
-	addr, err := wallet.Address()
-	if err != nil {
-		return nil, err
-	}
-
-	// Get Account DID Document
 	doc := instance.GetDIDDocument()
 	if doc == nil {
 		return nil, errWalletNotExists
@@ -161,10 +226,9 @@ func Stat() ([]byte, error) {
 		return nil, err
 	}
 
-	// Return response
 	resp := mt.StatResponse{
-		Address:     addr,
-		Balance:     bal,
+		Address:     instance.GetAddress(),
+		Balance:     int32(instance.GetBalance()),
 		DidDocument: diddoc,
 	}
 	return resp.Marshal()

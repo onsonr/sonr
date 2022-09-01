@@ -2,6 +2,7 @@ package motor
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sonr-io/sonr/internal/bucket"
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
@@ -14,26 +15,24 @@ func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {
 			Creator: addr,
 			Did:     did,
 		}
-		_, err := mtr.QueryBucket(qreq)
+		if _, err := mtr.QueryWhereIs(qreq); err != nil {
+			return nil, fmt.Errorf("error querying WhereIs: '%s'", err)
+		}
+
 		wi := mtr.Resources.whereIsStore[did]
 
-		if err != nil {
+		b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient())
+		if err := b.ResolveBuckets(); err != nil {
 			return nil, err
 		}
-		b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient().GetRPCAddress())
 
-		err = b.ResolveBuckets(addr)
-		if err != nil {
-			return nil, err
-		}
-		err = b.ResolveContent()
-		if err != nil {
+		if err := b.ResolveContent(); err != nil {
 			return nil, err
 		}
 
 		mtr.Resources.bucketStore[did] = b
 		for _, sb := range b.GetBuckets() {
-			mtr.Resources.bucketStore[sb.Id] = sb.Item.(bucket.Bucket)
+			mtr.Resources.bucketStore[sb.GetDID()] = sb
 		}
 	}
 
@@ -51,9 +50,9 @@ func (mtr *motorNodeImpl) GetBuckets(context context.Context) ([]bucket.Bucket, 
 	for _, wi := range mtr.Resources.whereIsStore {
 		did := wi.Did
 		if _, ok := mtr.Resources.bucketStore[did]; !ok {
-			b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient().GetRPCAddress())
+			b := bucket.New(addr, wi, mtr.Resources.shell, mtr.GetClient())
 
-			err := b.ResolveBuckets(addr)
+			err := b.ResolveBuckets()
 			if err != nil {
 				return nil, err
 			}
@@ -64,7 +63,7 @@ func (mtr *motorNodeImpl) GetBuckets(context context.Context) ([]bucket.Bucket, 
 
 			mtr.Resources.bucketStore[did] = b
 			for _, sb := range b.GetBuckets() {
-				mtr.Resources.bucketStore[sb.Id] = sb.Item.(bucket.Bucket)
+				mtr.Resources.bucketStore[sb.GetDID()] = sb
 			}
 		}
 		buckets = append(buckets, mtr.Resources.bucketStore[did])

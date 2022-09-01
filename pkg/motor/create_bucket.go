@@ -53,11 +53,11 @@ func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBuc
 	b := bucket.New(addr,
 		mtr.Resources.whereIsStore[cbresp.WhereIs.Did],
 		mtr.Resources.shell,
-		mtr.GetClient().GetRPCAddress())
+		mtr.GetClient())
 
 	mtr.Resources.bucketStore[cbresp.WhereIs.Did] = b
 
-	mtr.AddBucketServiceEndpoint(cbresp.WhereIs.Did)
+	mtr.AddBucketServiceEndpoint(mtr.GetClient().GetRPCAddress(), cbresp.WhereIs.Did)
 
 	return b, nil
 }

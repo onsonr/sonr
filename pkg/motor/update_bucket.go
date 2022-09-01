@@ -18,17 +18,13 @@ func (mtr *motorNodeImpl) UpdateBucket(req mt.UpdateBucketRequest) (bucket.Bucke
 		return nil, errors.New("invalid Address")
 	}
 
-	if req.Label == "" {
-		return nil, errors.New("label nust be defined")
-	}
-
 	updateWhereIsRequest := bt.NewMsgUpdateWhereIs(mtr.Address, req.Did)
 	updateWhereIsRequest.Label = req.Label
 	updateWhereIsRequest.Role = req.Role
 	updateWhereIsRequest.Visibility = req.Visibility
 	updateWhereIsRequest.Content = req.Content
 
-	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.UpdateWhereIs", updateWhereIsRequest)
+	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgUpdateWhereIs", updateWhereIsRequest)
 	if err != nil {
 		return nil, fmt.Errorf("sign tx with wallet: %s", err)
 	}
@@ -61,9 +57,21 @@ func (mtr *motorNodeImpl) UpdateBucket(req mt.UpdateBucketRequest) (bucket.Bucke
 	b := bucket.New(addr,
 		mtr.Resources.whereIsStore[cbresp.WhereIs.Did],
 		mtr.Resources.shell,
-		mtr.GetClient().GetRPCAddress())
+		mtr.GetClient())
 
 	mtr.Resources.bucketStore[req.Did] = b
+
+	err = b.ResolveBuckets()
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = b.ResolveContent()
+
+	if err != nil {
+		return nil, err
+	}
 
 	return b, nil
 }

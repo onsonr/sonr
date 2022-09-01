@@ -4,6 +4,7 @@ syntax = "proto3";
 package sonrio.motor.api.v1;
 
 import "bucket/where_is.proto";
+import "bucket/bucket.proto";
 import "common/v1/info.proto";
 import "registry/did.proto";
 import "registry/who_is.proto";
@@ -60,11 +61,13 @@ message QueryWhoIsResponse {
 message QueryWhatIsResponse {
   int32 code = 1;
   sonrio.sonr.schema.WhatIs what_is = 2;
+  sonrio.sonr.schema.SchemaDefinition schema = 3;
 }
 
 message QueryWhatIsByCreatorResponse {
   int32 code = 1;
   repeated sonrio.sonr.schema.WhatIs what_is = 2;
+  map<string, sonrio.sonr.schema.SchemaDefinition> schemas = 3;
 }
 
 message QueryWhereIsByCreatorResponse {
@@ -98,6 +101,10 @@ message QueryWhereIsResponse {
   sonrio.sonr.bucket.WhereIs where_is = 2;
 }
 
+message BucketContentList {
+  repeated sonrio.sonr.bucket.BucketContent buckets = 1;
+}
+
 message StatResponse {
   string address = 1;
   sonrio.sonr.registry.DIDDocument did_document = 2;
@@ -110,4 +117,18 @@ message PaymentResponse {
   string message = 2;
   string tx_hash = 3;
   int32 updated_balance = 4;
+}
+
+message SearchBucketContentBySchemaResponse {
+  int32 status = 1;
+  string bucket_did = 2;
+  string schema_did = 3;
+  repeated bytes content = 4;
+}
+
+message SearchResponse {
+  int32 status = 1;
+  string resource_did = 2;
+  string content_did = 3;
+  repeated bytes content = 4;
 }

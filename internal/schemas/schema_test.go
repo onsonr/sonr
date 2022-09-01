@@ -26,6 +26,7 @@ func CreateMockHeirachyThreeLevel(creator string, did string) (st.WhatIs, st.Sch
 		IsActive:  true,
 	}
 	def := st.SchemaDefinition{
+		Did:     "did:snr:123456",
 		Creator: "snr123456",
 		Label:   "testing schema",
 		Fields:  make([]*st.SchemaKindDefinition, 0),
@@ -65,6 +66,7 @@ func CreateMockHeirachyThreeLevel(creator string, did string) (st.WhatIs, st.Sch
 	}
 
 	commentDef := st.SchemaDefinition{
+		Did:     "did:snr:123456",
 		Creator: "snr1234",
 		Label:   "MY App Comment",
 		Fields:  make([]*st.SchemaKindDefinition, 0),
@@ -104,6 +106,7 @@ func CreateMockHeirachyThreeLevel(creator string, did string) (st.WhatIs, st.Sch
 	}
 
 	topDef := st.SchemaDefinition{
+		Did:     "did:snr:123456",
 		Creator: "snr1234",
 		Label:   "MY App Comment",
 		Fields:  make([]*st.SchemaKindDefinition, 0),
@@ -142,6 +145,7 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 		IsActive:  true,
 	}
 	def := st.SchemaDefinition{
+		Did:     "did:snr:123456",
 		Creator: "snr123456",
 		Label:   "testing schema",
 		Fields:  make([]*st.SchemaKindDefinition, 0),
