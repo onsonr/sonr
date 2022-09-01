@@ -64,7 +64,7 @@ func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 		}, nil
 	}
 
-	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetAddress(), req.Did)
+	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetDID().String(), req.Did)
 	if err != nil {
 		return nil, err
 	}
@@ -79,4 +79,18 @@ func (mtr *motorNodeImpl) QuerySchema(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 		Code:   http.StatusAccepted,
 		WhatIs: mtr.Resources.whatIsStore[req.Did],
 	}, nil
+}
+
+func (mtr *motorNodeImpl) QuerySchemaGroup(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
+	whatIss, err := mtr.GetClient().QueryWhatIsByCreator(req.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+	resp := mt.QueryWhatIsByCreatorResponse{
+		Code:   http.StatusAccepted,
+		WhatIs: whatIss,
+	}
+
+	return &resp, nil
 }
