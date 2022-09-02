@@ -33,12 +33,12 @@ proto: proto.go proto.buf
 proto.go:
 	ignite generate proto-go --yes
 	go mod tidy
-	echo "✅ Generated Go Proto Files"
+	@echo "✅ Generated Go Proto Files"
 
 ## └─ buf           - Build and push to buf.build/sonr-io/blockchain
 proto.buf:
 	cd $(ROOT_DIR)/proto && buf mod update && buf build && buf push
-	echo "✅ Pushed Protos to Buf.Build"
+	@echo "✅ Pushed Protos to Buf.Build"
 
 ## clean       :   Clean all artifacts and tidy
 clean:

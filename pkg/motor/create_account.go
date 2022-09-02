@@ -1,10 +1,8 @@
 package motor
 
 import (
-	"errors"
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -59,7 +57,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 
 	// ecnrypt dscShard with DSC
 	fmt.Printf("encrypting shards... ")
-	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
+	dscShard, dscKey, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
 	}
@@ -97,25 +95,21 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.DIDDocument.AddService(vaultService)
 
 	// update whois
-	if _, err = updateWhoIs(mtr); err != nil {
+	resp, err := updateWhoIs(mtr)
+	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
 	fmt.Println("done.")
 	fmt.Println("account created successfully.")
-
-	docBytes, err := mtr.DIDDocument.MarshalJSON()
-	if err != nil {
-		return mt.CreateAccountResponse{}, fmt.Errorf("serialize DID Document: %s", err)
-	}
-
 	return mt.CreateAccountResponse{
-		AesPsk:      psk,
-		Address:     mtr.Address,
-		DidDocument: docBytes,
+		AesPsk:  psk,
+		Address: mtr.Address,
+		AesDsc:  dscKey,
+		WhoIs:   resp.GetWhoIs(),
 	}, err
 }
 
-func createWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
+func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
@@ -137,10 +131,10 @@ func createWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	return resp.TxResponse, nil
+	return cwir, nil
 }
 
-func updateWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
+func updateWhoIs(m *motorNodeImpl) (*rt.MsgUpdateWhoIsResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
@@ -162,7 +156,7 @@ func updateWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	return resp.TxResponse, nil
+	return cwir, nil
 }
 
 func pskEncrypt(shard []byte) ([]byte, []byte, error) {
@@ -179,9 +173,31 @@ func pskEncrypt(shard []byte) ([]byte, []byte, error) {
 	return cipherShard, key, nil
 }
 
-func dscEncrypt(shard, dsc []byte) ([]byte, error) {
-	if len(dsc) != 32 {
-		return nil, errors.New("dsc must be 32 bytes")
+// dscEncrypt encrypts the shard with the DSC key
+// Returns: encrypted shard, given key, error
+func dscEncrypt(shard, dsc []byte) ([]byte, []byte, error) {
+	// generate a random key
+	genAndSetShard := func(setter []byte) error {
+		d, err := mpc.NewAesKey()
+		if err != nil {
+			return err
+		}
+		setter = d
+		return nil
 	}
-	return mpc.AesEncryptWithKey(dsc, shard)
+
+	// Check if the DSC is valid
+	if len(dsc) != 32 {
+		// generate a new DSC
+		if err := genAndSetShard(dsc); err != nil {
+			return nil, nil, err
+		}
+	}
+
+	// encrypt the shard with the DSC
+	dscEnc, err := mpc.AesEncryptWithKey(dsc, shard)
+	if err != nil {
+		return nil, nil, err
+	}
+	return dscEnc, dsc, nil
 }

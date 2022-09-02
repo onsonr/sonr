@@ -21,8 +21,8 @@ message InitializeResponse {
 
 message CreateAccountResponse {
   bytes aes_psk = 1;
-  string address = 2;
-  bytes did_document = 3;
+  bytes aes_dsc = 2;
+  string address = 3;
   sonrio.sonr.registry.WhoIs who_is = 4;
 }
 
