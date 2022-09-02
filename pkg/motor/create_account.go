@@ -175,29 +175,27 @@ func pskEncrypt(shard []byte) ([]byte, []byte, error) {
 
 // dscEncrypt encrypts the shard with the DSC key
 // Returns: encrypted shard, given key, error
-func dscEncrypt(shard, dsc []byte) ([]byte, []byte, error) {
-	// generate a random key
-	genAndSetShard := func(setter []byte) error {
-		d, err := mpc.NewAesKey()
-		if err != nil {
-			return err
-		}
-		setter = d
-		return nil
-	}
-
+func dscEncrypt(shard, d []byte) ([]byte, []byte, error) {
 	// Check if the DSC is valid
-	if len(dsc) != 32 {
+	if len(d) != 32 {
 		// generate a new DSC
-		if err := genAndSetShard(dsc); err != nil {
+		dsc, err := mpc.NewAesKey()
+		if err != nil {
 			return nil, nil, err
 		}
-	}
 
-	// encrypt the shard with the DSC
-	dscEnc, err := mpc.AesEncryptWithKey(dsc, shard)
-	if err != nil {
-		return nil, nil, err
+		// encrypt the shard with the DSC
+		dscEnc, err := mpc.AesEncryptWithKey(dsc, shard)
+		if err != nil {
+			return nil, nil, err
+		}
+		return dscEnc, dsc, nil
+	} else {
+		// encrypt the shard with the DSC
+		dscEnc, err := mpc.AesEncryptWithKey(d, shard)
+		if err != nil {
+			return nil, nil, err
+		}
+		return dscEnc, d, nil
 	}
-	return dscEnc, dsc, nil
 }
