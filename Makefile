@@ -45,9 +45,4 @@ clean:
 	rm -rf ./build
 	rm -rf ./tmp
 	rm -rf ./dist
-	rm -rf ./io.sonr.motor.aar
-	rm -rf ./sonr-motor.wasm
-	rm -rf ./SonrMotor.xcframework
-	rm -rf ./docs/.docusaurus/
-	rm -rf ./docs/build
 	go mod tidy
