@@ -17,6 +17,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
+	"github.com/sonr-io/sonr/pkg/motor/x/logger"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor"
 )
@@ -51,6 +52,9 @@ type motorNodeImpl struct {
 	// resource management
 	Resources *motorResources
 	sh        *shell.Shell
+
+	//Logging
+	log *logger.Logger
 }
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
@@ -69,6 +73,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
+	mtr.log = logger.New("INFO", "motor")
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 	// Generate wallet
@@ -89,9 +94,6 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		}
 	}
 
-	shell := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
-	mtr.Resources = newMotorResources(mtr.Cosmos, shell)
-
 	// Get public key
 	mtr.PubKey, err = mtr.Wallet.PublicKeyProto()
 	if err != nil {
@@ -104,9 +106,10 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 	mtr.DID = *baseDid
-	log.Println("Wallet set to:", mtr.Address)
-	mtr.GetClient().PrintConnectionEndpoints()
-	log.Println("✅ Motor Wallet initialized")
+
+	mtr.log.Info("Connection Endpoints"
+	mtr.log.Info("\tREST:")
+	mtr.log.Info("✅ Motor Wallet initialized")
 	return nil
 }
 
