@@ -70,6 +70,24 @@ func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorReques
 	}, nil
 }
 
+func (mtr *motorNodeImpl) QueryWhatIsByDid(did string) (*mt.QueryWhatIsResponse, error) {
+	resp, err := mtr.GetClient().QueryWhatIsByDid(did)
+	if err != nil {
+		return nil, err
+	}
+
+	s, err := mtr.Resources.StoreWhatIs(resp)
+	if err != nil {
+		return nil, fmt.Errorf("store WhatIs: %s", err)
+	}
+
+	return &mt.QueryWhatIsResponse{
+		Code:   http.StatusOK,
+		WhatIs: resp,
+		Schema: s,
+	}, nil
+}
+
 func (mtr *motorNodeImpl) QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error) {
 	// use the item within the cache from GetWhereIs
 	if wi := mtr.Resources.whereIsStore[req.Did]; wi != nil {
@@ -104,4 +122,10 @@ func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequ
 		Code:    http.StatusAccepted,
 		WhereIs: ptrArr,
 	}, nil
+}
+
+func (mtr *motorNodeImpl) QueryObject(cid string) (map[string]interface{}, error) {
+	var dag map[string]interface{}
+	err := mtr.sh.DagGet(cid, &dag)
+	return dag, err
 }

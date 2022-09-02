@@ -59,11 +59,13 @@ message SchemaReference {
 message SchemaDefinition {
   // Represents the types of fields a schema can have
   // the DID for this schema
-  string creator = 1;
+  string did = 1;
+
+  string creator = 2;
 
   // an alternative reference point
-  string label = 2;
+  string label = 3;
 
   // the properties of this schema
-  repeated SchemaKindDefinition fields = 3;
+  repeated SchemaKindDefinition fields = 4;
 }

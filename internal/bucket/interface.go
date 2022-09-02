@@ -2,7 +2,6 @@ package bucket
 
 import (
 	"github.com/sonr-io/sonr/pkg/did"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -20,7 +19,7 @@ type Bucket interface {
 		`ResolveContent` should be called in order to hydrate content from `BucketItems`
 		Returns `BucketContent`
 	*/
-	GetContentById(id string) (*mt.BucketContent, error)
+	GetContentById(id string) (*bt.BucketContent, error)
 
 	/*
 		Returns the address from the `WhereIs` of the bucket denoting the creator account.
@@ -46,7 +45,7 @@ type Bucket interface {
 		`ResolveContent` should be called in order to hydrate content from `BucketItems`
 		Returns `[]BucketContent`
 	*/
-	GetContent() []*mt.BucketContent
+	GetContent() []*bt.BucketContent
 
 	/*
 		Returns the DID of the bucket
@@ -104,5 +103,5 @@ type Bucket interface {
 	/*
 		Matched `schemaDid`
 	*/
-	ResolveContentBySchema(did string) ([]*mt.BucketContent, error)
+	ResolveContentBySchema(did string) ([]*bt.BucketContent, error)
 }
