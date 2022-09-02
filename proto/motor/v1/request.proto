@@ -73,7 +73,7 @@ message QueryRequest {
 message PaymentRequest {
   string to = 1;
   string from = 2;
-  int64 amount = 3;
+  int32 amount = 3;
   string memo = 4;
 }
 // -----------------------------------------------------------------------------

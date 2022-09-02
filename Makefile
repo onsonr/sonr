@@ -16,15 +16,15 @@ bind: bind.ios bind.android bind.web
 
 ## └─ android       - Android AAR
 bind.android:
-	sh $(SCRIPTS_DIR)/bind.sh -a
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -a
 
 ## └─ ios           - iOS Framework
 bind.ios:
-	sh $(SCRIPTS_DIR)/bind.sh -i
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -i
 
 ## └─ web           - iOS Framework
 bind.web:
-	sh $(SCRIPTS_DIR)/bind.sh -w
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -w
 
 ## proto       :   Compiles Go Proto Files and pushes to Buf.Build
 proto: proto.go proto.buf
