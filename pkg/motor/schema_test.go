@@ -126,6 +126,36 @@ func Test_QuerySchemaByCreator(t *testing.T) {
 	}
 }
 
+func Test_QuerySchemaByDid(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+	fmt.Printf("psk: %x\n", pskKey)
+	if pskKey == nil || len(pskKey) != 32 {
+		t.Errorf("could not load psk key")
+		return
+	}
+
+	req := mt.LoginRequest{
+		Did:       ADDR,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	m, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	_, err := m.Login(req)
+	assert.NoError(t, err, "login succeeds")
+
+	// CREATE DONE, TRY QUERY
+	qresp, err := m.QueryWhatIsByDid("did:snr:Qme2eF6tp63kzjz6UDxmc9xkuthJaMBTb1bmB7Km65F5VM")
+	assert.NoError(t, err, "query response succeeds")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(qresp)
+}
+
 func findItem(arr []*mt.QueryResultItem, target string) string {
 	for _, item := range arr {
 		if item.Did == target {
