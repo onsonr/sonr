@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
@@ -22,6 +23,7 @@ type MotorNode interface {
 	GetWallet() *mpc.Wallet
 	GetPubKey() *secp256k1.PubKey
 	SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error)
+	SendTx(routeUrl string, msg sdk.Msg) ([]byte, error)
 
 	// Networking
 	Connect() error

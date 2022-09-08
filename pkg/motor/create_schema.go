@@ -20,7 +20,6 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 		Label:   request.Label,
 		Fields:  listFields,
 	})
-
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.schema.MsgCreateSchema", createSchemaMsg)
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("sign tx with wallet: %s", err)
@@ -37,13 +36,14 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	}
 
 	// store reference to newly created WhatIs
-	_, err = mtr.Resources.StoreWhatIs(csresp.WhatIs)
+	def, err := mtr.Resources.StoreWhatIs(csresp.WhatIs)
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("store WhatIs: %s", err)
 	}
 
 	return mt.CreateSchemaResponse{
-		WhatIs: csresp.WhatIs,
+		WhatIs:           csresp.WhatIs,
+		SchemaDefinition: def,
 	}, nil
 }
 

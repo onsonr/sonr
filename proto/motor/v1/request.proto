@@ -44,7 +44,7 @@ message InitializeRequest {
   double discovery_longitude = 9; //optional - Default: -73.994450 (Sonr HQ)
 
   // Public Key used for Device Authentication as DID Controller
-  bytes device_keyprint_pub = 10; // optional
+  common.v1.AuthInfo auth_info = 10; // optional
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -143,3 +143,4 @@ message SeachBucketContentBySchemaRequest {
   // schema identifier
   string schema_did = 3;
 }
+

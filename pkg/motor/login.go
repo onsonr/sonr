@@ -21,14 +21,13 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	mtr.Address = request.Did
 
 	// fetch vault shards
-	fmt.Printf("fetching shards from vault... ")
+	mtr.callback.OnWalletEvent("Fetching shards from vault", false)
 	shards, err := vault.New().GetVaultShards(request.Did)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}
-	fmt.Println("done.")
 
-	fmt.Printf("reconstructing wallet... ")
+	mtr.callback.OnWalletEvent("Reconstructing wallet", false)
 	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
@@ -38,9 +37,9 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
-	fmt.Println("done.")
 
 	// fetch DID document from chain
+	mtr.callback.OnWalletEvent("Verifying with Blockchain", false)
 	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error fetching whois: %s", err)
@@ -58,7 +57,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	mtr.sharedShard = shards.PskShard
 	mtr.recoveryShard = shards.RecoveryShard
 	mtr.unusedShards = destructureShards(shards.ShardBank)
-
+	mtr.callback.OnWalletEvent("Logged into account successfully!", true)
 	return mt.LoginResponse{
 		Success: true,
 	}, nil
