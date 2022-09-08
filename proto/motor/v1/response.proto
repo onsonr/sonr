@@ -69,6 +69,7 @@ message QueryWhatIsByCreatorResponse {
   int32 code = 1;
   repeated sonrio.sonr.schema.WhatIs what_is = 2;
   map<string, sonrio.sonr.schema.SchemaDefinition> schemas = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
 
 message QueryWhereIsByCreatorResponse {
