@@ -67,6 +67,8 @@
     },
     "go.testTimeout": "180s",
     "cSpell.words": [
+        "openapi",
+        "sonrd",
         "sonrio",
         "whois"
     ],

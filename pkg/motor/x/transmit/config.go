@@ -8,7 +8,7 @@ import (
 
 	device "github.com/sonr-io/sonr/pkg/fs"
 
-	st "github.com/sonr-io/sonr/third_party/types/service"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // Transfer Protocol ID's

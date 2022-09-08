@@ -7,7 +7,7 @@ import (
 	bt "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/tx"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 func (m *motorNodeImpl) SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error) {
