@@ -28,4 +28,5 @@ var (
 	ErrRoutingNotSet    = errors.New("DHT and Host have not been set by Routing Function")
 	ErrListenerRequired = errors.New("Listener was not Provided")
 	ErrMDNSInvalidConn  = errors.New("Invalid Connection, cannot begin MDNS Service")
+	ErrMotorWallet      = errors.New("Motor Wallet is not initialized")
 )

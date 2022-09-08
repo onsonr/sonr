@@ -1,23 +1,20 @@
 package motor
 
 import (
-	"errors"
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )
 
 var (
-	errWalletNotExists = errors.New("mpc wallet does not exist")
-)
-
-var (
-	instance mtr.MotorNode
-	callback MotorCallback
+	objectBuilders map[string]*object.ObjectBuilder
+	instance       mtr.MotorNode
+	callback       MotorCallback
 )
 
 type MotorCallback interface {
@@ -65,7 +62,7 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 
 func CreateAccount(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 	// decode request
 	request := mt.CreateAccountRequest{}
@@ -82,7 +79,7 @@ func CreateAccount(buf []byte) ([]byte, error) {
 
 func Login(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	// decode request
@@ -100,14 +97,14 @@ func Login(buf []byte) ([]byte, error) {
 
 func Connect() error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWallet
 	}
 	return instance.Connect()
 }
 
 func CreateSchema(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	var request mt.CreateSchemaRequest
@@ -124,7 +121,7 @@ func CreateSchema(buf []byte) ([]byte, error) {
 
 func QuerySchema(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	var request mt.QueryWhatIsRequest
@@ -141,7 +138,7 @@ func QuerySchema(buf []byte) ([]byte, error) {
 
 func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	var request mt.QueryWhatIsByCreatorRequest
@@ -158,7 +155,7 @@ func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 
 func QuerySchemaByDid(did string) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	res, err := instance.QueryWhatIsByDid(did)
@@ -170,7 +167,7 @@ func QuerySchemaByDid(did string) ([]byte, error) {
 
 func QueryBucket(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	var request mt.QueryWhereIsRequest
@@ -187,7 +184,7 @@ func QueryBucket(buf []byte) ([]byte, error) {
 
 func QueryBucketByCreator(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	var request mt.QueryWhereIsByCreatorRequest
@@ -205,7 +202,7 @@ func QueryBucketByCreator(buf []byte) ([]byte, error) {
 // IssuePayment creates a send/receive token request to the specified address.
 func IssuePayment(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	var request mt.PaymentRequest
@@ -223,12 +220,12 @@ func IssuePayment(buf []byte) ([]byte, error) {
 // Stat returns general information about the Motor node its wallet and accompanying Account.
 func Stat() ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 
 	doc := instance.GetDIDDocument()
 	if doc == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 	didDoc, err := rt.NewDIDDocumentFromPkg(doc)
 	if err != nil {
@@ -245,7 +242,7 @@ func Stat() ([]byte, error) {
 
 func BuyAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 	var request rt.MsgBuyAlias
 	if err := request.Unmarshal(buf); err != nil {
@@ -256,7 +253,7 @@ func BuyAlias(buf []byte) ([]byte, error) {
 
 func SellAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 	var request rt.MsgSellAlias
 	if err := request.Unmarshal(buf); err != nil {
@@ -267,7 +264,7 @@ func SellAlias(buf []byte) ([]byte, error) {
 
 func TransferAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWallet
 	}
 	var request rt.MsgTransferAlias
 	if err := request.Unmarshal(buf); err != nil {
