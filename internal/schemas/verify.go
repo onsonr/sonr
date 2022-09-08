@@ -80,6 +80,8 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_STRING
 	case []byte:
 		return fieldType == st.SchemaKind_BYTES
+	case []interface{}:
+		return fieldType == st.SchemaKind_LIST
 	case []int:
 		return fieldType == st.SchemaKind_LIST
 	case []bool:
