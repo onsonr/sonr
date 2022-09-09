@@ -47,3 +47,12 @@ message AuthInfo {
     string password = 5;
     int64 timestamp = 6;
 }
+
+enum MotorCallbackMessage {
+    MTR_INIT = 0;
+    MTR_FAUCET_RECEIVED = 1;
+    MTR_SHARDS_CREATED = 2;
+    MTR_VAULT_CREATED = 3;
+    MTR_ACCOUNT_CREATED = 4;
+    MTR_LOGGED_IN = 5;
+}

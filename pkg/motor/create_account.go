@@ -9,26 +9,29 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create motor
-	mtr.callback.OnWalletEvent("Initializing motor", false)
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_INIT, false)
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_INIT, true)
 
 	// Request from Faucet
-	mtr.callback.OnWalletEvent("Requesting Airdrop for initial balance", false)
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_FAUCET_RECEIVED, false)
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_FAUCET_RECEIVED, true)
 
 	// Create Initial Shards
-	mtr.callback.OnWalletEvent("Creating shards for MPC", false)
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_SHARDS_CREATED, false)
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create shards: %s", err)
@@ -37,6 +40,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.sharedShard = sharedShard
 	mtr.recoveryShard = recShard
 	mtr.unusedShards = unusedShards
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_SHARDS_CREATED, true)
 
 	// Create the DID Document
 	doc, err := did.NewDocument(mtr.DID.String())
@@ -46,14 +50,13 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.DIDDocument = doc
 
 	// create Vault shards to make sure this works before creating WhoIs
-	mtr.callback.OnWalletEvent("Registering new DIDDocument for account", false)
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_VAULT_CREATED, false)
 	vc := vault.New()
 	if _, err := createWhoIs(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
 	}
 
 	// ecnrypt dscShard with DSC
-	mtr.callback.OnWalletEvent("Encrypting shards for Vault", false)
 	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
@@ -72,7 +75,6 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	}
 
 	// create vault
-	mtr.callback.OnWalletEvent("Setting up Account Vault", false)
 	vaultService, err := vc.CreateVault(
 		mtr.Address,
 		mtr.unusedShards,
@@ -84,9 +86,9 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_VAULT_CREATED, true)
 
 	// update DID Document
-	mtr.callback.OnWalletEvent("Updating DIDDocument for Account", false)
 	mtr.DIDDocument.AddService(vaultService)
 
 	// update whois
@@ -94,7 +96,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
-	mtr.callback.OnWalletEvent("Account registered successfully!", true)
+
 	return mt.CreateAccountResponse{
 		AesPsk:  psk,
 		Address: mtr.Address,

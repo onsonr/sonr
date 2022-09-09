@@ -14,22 +14,15 @@ import (
 var (
 	objectBuilders map[string]*object.ObjectBuilder
 	instance       mtr.MotorNode
-	callback       MotorCallback
+	callback       ct.MotorCallback
 )
 
-type MotorCallback interface {
-	OnDiscover(data []byte)
-	OnWalletEvent(msg string, isDone bool)
-}
-
-func Init(buf []byte, cb MotorCallback) ([]byte, error) {
+func Init(buf []byte, cb ct.MotorCallback) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
 		return nil, err
 	}
-
-	// Check if public key provided
 
 	// Create Motor instance
 	mtr, err := mtr.EmptyMotor(&req, cb)
