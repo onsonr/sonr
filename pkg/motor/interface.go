@@ -13,6 +13,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 type MotorNode interface {
@@ -36,6 +37,9 @@ type MotorNode interface {
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
+	BuyAlias(rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error)
+	SellAlias(rt.MsgSellAlias) (rt.MsgSellAliasResponse, error)
+	TransferAlias(rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error)
 
 	// Schema
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)

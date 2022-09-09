@@ -244,31 +244,52 @@ func BuyAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWallet
 	}
+
 	var request rt.MsgBuyAlias
 	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
-	return instance.SendTx(request.Route(), &request)
+
+	resp, err := instance.BuyAlias(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Marshal()
 }
 
 func SellAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWallet
 	}
+
 	var request rt.MsgSellAlias
 	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
-	return instance.SendTx(request.Route(), &request)
+
+	resp, err := instance.SellAlias(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Marshal()
 }
 
 func TransferAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWallet
 	}
+
 	var request rt.MsgTransferAlias
 	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
-	return instance.SendTx(request.Route(), &request)
+
+	resp, err := instance.TransferAlias(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Marshal()
 }
