@@ -5,6 +5,7 @@ package sonrio.motor.api.v1;
 
 import "bucket/where_is.proto";
 import "common/v1/info.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "schema/v1/schema.proto";
 
 option go_package = "github.com/sonr-io/sonr/third_party/types/motor";
@@ -99,6 +100,7 @@ message QueryWhatIsRequest {
 
 message QueryWhatIsByCreatorRequest {
   string creator = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QuerySchemaRequest {
@@ -116,6 +118,7 @@ message QueryWhereIsRequest {
 
 message QueryWhereIsByCreatorRequest {
   string creator = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message CreateBucketRequest {
