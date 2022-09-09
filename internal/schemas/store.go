@@ -2,11 +2,7 @@ package schemas
 
 import (
 	"context"
-	"fmt"
-	"os"
-	"path/filepath"
 	"sync"
-	"time"
 
 	"github.com/ipld/go-ipld-prime/storage"
 	"github.com/sonr-io/sonr/pkg/client"
@@ -50,11 +46,6 @@ func (rs *readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
 	if rs.cache[key] != nil {
 		return rs.cache[key], nil
 	}
-
-	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
-
-	out_path := filepath.Join(os.TempDir(), key+time_stamp+".txt")
-	defer os.Remove(out_path)
 
 	wi, err := rs.client.QueryWhatIsByDid(key)
 
