@@ -15,11 +15,7 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("process fields: %s", err)
 	}
-	createSchemaMsg := st.NewMsgCreateSchema(convertMetadata(request.Metadata), &st.SchemaDefinition{
-		Creator: mtr.Address,
-		Label:   request.Label,
-		Fields:  listFields,
-	})
+	createSchemaMsg := st.NewMsgCreateSchema(convertMetadata(request.Metadata), listFields, mtr.Address, request.Label)
 
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.schema.MsgCreateSchema", createSchemaMsg)
 	if err != nil {
