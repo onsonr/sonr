@@ -3,9 +3,10 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
-import "bucket/where_is.proto";
 import "bucket/bucket.proto";
+import "bucket/where_is.proto";
 import "common/v1/info.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "registry/did.proto";
 import "registry/who_is.proto";
 import "schema/v1/schema.proto";
@@ -68,11 +69,13 @@ message QueryWhatIsByCreatorResponse {
   int32 code = 1;
   repeated sonrio.sonr.schema.WhatIs what_is = 2;
   map<string, sonrio.sonr.schema.SchemaDefinition> schemas = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
 
 message QueryWhereIsByCreatorResponse {
   int32 code = 1;
   repeated sonrio.sonr.bucket.WhereIs where_is = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
 message ObjectReference {

@@ -7,6 +7,7 @@ package v1
 
 import (
 	fmt "fmt"
+	query "github.com/cosmos/cosmos-sdk/types/query"
 	proto "github.com/gogo/protobuf/proto"
 	common "github.com/sonr-io/sonr/third_party/types/common"
 	types2 "github.com/sonr-io/sonr/x/bucket/types"
@@ -517,9 +518,10 @@ func (m *QueryWhatIsResponse) GetSchema() *types1.SchemaDefinition {
 }
 
 type QueryWhatIsByCreatorResponse struct {
-	Code    int32                               `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	WhatIs  []*types1.WhatIs                    `protobuf:"bytes,2,rep,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
-	Schemas map[string]*types1.SchemaDefinition `protobuf:"bytes,3,rep,name=schemas,proto3" json:"schemas,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Code       int32                               `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	WhatIs     []*types1.WhatIs                    `protobuf:"bytes,2,rep,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
+	Schemas    map[string]*types1.SchemaDefinition `protobuf:"bytes,3,rep,name=schemas,proto3" json:"schemas,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Pagination *query.PageResponse                 `protobuf:"bytes,4,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryWhatIsByCreatorResponse) Reset()         { *m = QueryWhatIsByCreatorResponse{} }
@@ -576,9 +578,17 @@ func (m *QueryWhatIsByCreatorResponse) GetSchemas() map[string]*types1.SchemaDef
 	return nil
 }
 
+func (m *QueryWhatIsByCreatorResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 type QueryWhereIsByCreatorResponse struct {
-	Code    int32             `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	WhereIs []*types2.WhereIs `protobuf:"bytes,2,rep,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
+	Code       int32               `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	WhereIs    []*types2.WhereIs   `protobuf:"bytes,2,rep,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
+	Pagination *query.PageResponse `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryWhereIsByCreatorResponse) Reset()         { *m = QueryWhereIsByCreatorResponse{} }
@@ -624,6 +634,13 @@ func (m *QueryWhereIsByCreatorResponse) GetCode() int32 {
 func (m *QueryWhereIsByCreatorResponse) GetWhereIs() []*types2.WhereIs {
 	if m != nil {
 		return m.WhereIs
+	}
+	return nil
+}
+
+func (m *QueryWhereIsByCreatorResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
 	}
 	return nil
 }
@@ -1754,6 +1771,18 @@ func (m *QueryWhatIsByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	_ = i
 	var l int
 	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintResponse(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.Schemas) > 0 {
 		for k := range m.Schemas {
 			v := m.Schemas[k]
@@ -1822,6 +1851,18 @@ func (m *QueryWhereIsByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	_ = i
 	var l int
 	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintResponse(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.WhereIs) > 0 {
 		for iNdEx := len(m.WhereIs) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -2490,6 +2531,10 @@ func (m *QueryWhatIsByCreatorResponse) Size() (n int) {
 			n += mapEntrySize + 1 + sovResponse(uint64(mapEntrySize))
 		}
 	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovResponse(uint64(l))
+	}
 	return n
 }
 
@@ -2507,6 +2552,10 @@ func (m *QueryWhereIsByCreatorResponse) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovResponse(uint64(l))
 		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovResponse(uint64(l))
 	}
 	return n
 }
@@ -4075,6 +4124,42 @@ func (m *QueryWhatIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Schemas[mapkey] = mapvalue
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipResponse(dAtA[iNdEx:])
@@ -4175,6 +4260,42 @@ func (m *QueryWhereIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.WhereIs = append(m.WhereIs, &types2.WhereIs{})
 			if err := m.WhereIs[len(m.WhereIs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
