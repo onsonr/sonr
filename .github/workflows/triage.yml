@@ -7,7 +7,7 @@ on:
 permissions:
   issues:
    write
-  
+
 
 jobs:
   add-to-project:
