@@ -3,7 +3,6 @@ module github.com/sonr-io/sonr
 go 1.16
 
 require (
-	github.com/99designs/keyring v1.1.6
 	github.com/cosmos/cosmos-sdk v0.45.5
 	github.com/cosmos/ibc-go/v3 v3.0.0
 	github.com/fxamacker/cbor/v2 v2.4.0
@@ -41,7 +40,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.2
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16 // indirect
+	github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16
 	github.com/sonr-io/multi-party-sig v0.7.0
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.4.0

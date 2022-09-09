@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/99designs/keyring"
+	kr "github.com/sonr-io/keyring"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 )
 
@@ -26,7 +26,7 @@ func CreateDSC() ([]byte, error) {
 		return nil, fmt.Errorf("open keyring: %s", err)
 	}
 
-	if err := ring.Set(keyring.Item{
+	if err := ring.Set(kr.Item{
 		Key:  DSC_KEY,
 		Data: newDsc,
 	}); err != nil {
@@ -65,7 +65,7 @@ func CreatePSK() ([]byte, error) {
 		return nil, fmt.Errorf("open keyring: %s", err)
 	}
 
-	if err := ring.Set(keyring.Item{
+	if err := ring.Set(kr.Item{
 		Key:  PSK_KEY,
 		Data: newPsk,
 	}); err != nil {
@@ -93,8 +93,8 @@ func GetPSK() ([]byte, error) {
 	return item.Data, nil
 }
 
-func openKeyring() (keyring.Keyring, error) {
-	return keyring.Open(keyring.Config{
+func openKeyring() (kr.Keyring, error) {
+	return kr.Open(kr.Config{
 		ServiceName: SERVICE_NAME_KEY,
 	})
 }
