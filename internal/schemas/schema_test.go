@@ -1,157 +1,146 @@
 package schemas_test
 
 import (
-	"bytes"
+	"fmt"
 	"testing"
 	"time"
 
-	shell "github.com/ipfs/go-ipfs-api"
+	"github.com/google/uuid"
 	"github.com/sonr-io/sonr/internal/schemas"
 
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
 
-func CreateMockHeirachyThreeLevel(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
+func GenerateKeyForDID() string {
+	return uuid.New().String()
+}
 
+func CreateMockHeirachyThreeLevel(creator string) []st.WhatIs {
+	whatIss := make([]st.WhatIs, 3)
+
+	did_one := fmt.Sprintf("did:snr: %d", GenerateKeyForDID())
 	mockWhatIs := st.WhatIs{
-		Did: did,
-		Schema: &st.SchemaReference{
-			Did:   did,
-			Label: "testing schema",
-			Cid:   "asdasd12312",
+		Did: did_one,
+		Schema: &st.SchemaDefinition{
+			Creator: creator,
+			Did:     did_one,
+			Label:   "testing schema",
+			Fields:  make([]*st.SchemaKindDefinition, 0),
 		},
 		Creator:   creator,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
 	}
-	def := st.SchemaDefinition{
-		Did:     "did:snr:123456",
-		Creator: "snr123456",
-		Label:   "testing schema",
-		Fields:  make([]*st.SchemaKindDefinition, 0),
-	}
 
-	def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+	mockWhatIs.Schema.Fields = append(mockWhatIs.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "field-1",
 		Field: st.SchemaKind_INT,
 	})
-	def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+	mockWhatIs.Schema.Fields = append(mockWhatIs.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "field-2",
 		Field: st.SchemaKind_FLOAT,
 	})
-	def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+	mockWhatIs.Schema.Fields = append(mockWhatIs.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "field-3",
 		Field: st.SchemaKind_LIST,
 	})
 
-	def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+	mockWhatIs.Schema.Fields = append(mockWhatIs.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "field-4",
 		Field: st.SchemaKind_STRING,
 	})
-	def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+	mockWhatIs.Schema.Fields = append(mockWhatIs.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "field-5",
 		Field: st.SchemaKind_LIST,
 	})
+	whatIss = append(whatIss, mockWhatIs)
 
-	buf, err := def.Marshal()
-	if err != nil {
-		panic("Unable to serialize test data")
+	did_two := fmt.Sprintf("did:snr: %d", GenerateKeyForDID())
+	mockWhatIs_2 := st.WhatIs{
+		Did: did_two,
+		Schema: &st.SchemaDefinition{
+			Did:     did_two,
+			Label:   "testing schema",
+			Creator: creator,
+			Fields:  make([]*st.SchemaKindDefinition, 0),
+		},
+		Creator:   creator,
+		Timestamp: time.Now().Unix(),
+		IsActive:  true,
 	}
 
-	cid, err := shell.NewLocalShell().Add(bytes.NewReader(buf))
-
-	if err != nil {
-		panic("error while persisting mock data")
-	}
-
-	commentDef := st.SchemaDefinition{
-		Did:     "did:snr:123456",
-		Creator: "snr1234",
-		Label:   "MY App Comment",
-		Fields:  make([]*st.SchemaKindDefinition, 0),
-	}
-
-	commentDef.Fields = append(commentDef.Fields, &st.SchemaKindDefinition{
+	mockWhatIs_2.Schema.Fields = append(mockWhatIs_2.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "message",
 		Field: st.SchemaKind_STRING,
 	})
 
-	commentDef.Fields = append(commentDef.Fields, &st.SchemaKindDefinition{
+	mockWhatIs_2.Schema.Fields = append(mockWhatIs_2.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "icon",
 		Field: st.SchemaKind_INT,
 	})
 
-	commentDef.Fields = append(commentDef.Fields, &st.SchemaKindDefinition{
+	mockWhatIs_2.Schema.Fields = append(mockWhatIs_2.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "type",
 		Field: st.SchemaKind_INT,
 	})
 
-	commentDef.Fields = append(commentDef.Fields, &st.SchemaKindDefinition{
+	mockWhatIs_2.Schema.Fields = append(mockWhatIs_2.Schema.Fields, &st.SchemaKindDefinition{
 		Name:     "sub",
 		Field:    st.SchemaKind_LINK,
 		LinkKind: st.LinkKind_SCHEMA,
-		Link:     cid,
+		Link:     did_one,
 	})
+	whatIss = append(whatIss, mockWhatIs_2)
 
-	commentBuf, err := commentDef.Marshal()
-	if err != nil {
-		panic("Unable to serialize test data")
+	did_three := fmt.Sprintf("did:snr: %d", GenerateKeyForDID())
+	mockWhatIs_3 := st.WhatIs{
+		Did: did_two,
+		Schema: &st.SchemaDefinition{
+			Did:     did_three,
+			Label:   "testing schema",
+			Creator: creator,
+			Fields:  make([]*st.SchemaKindDefinition, 0),
+		},
+		Creator:   creator,
+		Timestamp: time.Now().Unix(),
+		IsActive:  true,
 	}
 
-	commentCid, err := shell.NewLocalShell().Add(bytes.NewReader(commentBuf))
-
-	if err != nil {
-		panic("error while attempting to persist mocks")
-	}
-
-	topDef := st.SchemaDefinition{
-		Did:     "did:snr:123456",
-		Creator: "snr1234",
-		Label:   "MY App Comment",
-		Fields:  make([]*st.SchemaKindDefinition, 0),
-	}
-
-	topDef.Fields = append(topDef.Fields, &st.SchemaKindDefinition{
+	mockWhatIs_3.Schema.Fields = append(mockWhatIs_3.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "id",
 		Field: st.SchemaKind_INT,
 	})
 
-	topDef.Fields = append(topDef.Fields, &st.SchemaKindDefinition{
+	mockWhatIs_3.Schema.Fields = append(mockWhatIs_3.Schema.Fields, &st.SchemaKindDefinition{
 		Name:  "name",
 		Field: st.SchemaKind_STRING,
 	})
 
-	topDef.Fields = append(topDef.Fields, &st.SchemaKindDefinition{
+	mockWhatIs_3.Schema.Fields = append(mockWhatIs_3.Schema.Fields, &st.SchemaKindDefinition{
 		Name:     "data",
 		Field:    st.SchemaKind_LINK,
 		LinkKind: st.LinkKind_SCHEMA,
-		Link:     commentCid,
+		Link:     did_two,
 	})
 
-	return mockWhatIs, topDef
+	return whatIss
 }
 
 func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 	mockWhatIs := st.WhatIs{
 		Did: did,
-		Schema: &st.SchemaReference{
-			Did:   did,
-			Label: "testing schema",
-			Cid:   "asdasd12312",
+		Schema: &st.SchemaDefinition{
+			Did:    did,
+			Label:  "testing schema",
+			Fields: make([]*st.SchemaKindDefinition, 0),
 		},
 		Creator:   creator,
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
 	}
-	def := st.SchemaDefinition{
-		Did:     "did:snr:123456",
-		Creator: "snr123456",
-		Label:   "testing schema",
-		Fields:  make([]*st.SchemaKindDefinition, 0),
-	}
 
-	return mockWhatIs, def
+	return mockWhatIs, *mockWhatIs.Schema
 }
 
 func Test_IPLD_Nodes(t *testing.T) {
@@ -355,10 +344,10 @@ func Test_IPLD_Nodes(t *testing.T) {
 
 func Test_Sub_Schemas(t *testing.T) {
 	t.Skip("Skipping for CI")
-	whatIs, def := CreateMockHeirachyThreeLevel("snr12345", "did:snr:1234")
+	whatIss := CreateMockHeirachyThreeLevel("snr12345")
 
 	t.Run("multi level sub schema should load into internal module", func(t *testing.T) {
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(whatIss[0].Schema.Fields, &whatIss[0])
 
 		obj := map[string]interface{}{
 			"id":   1,
@@ -392,7 +381,7 @@ func Test_Sub_Schemas(t *testing.T) {
 	})
 
 	t.Run("multi level sub schema should error with invalid types", func(t *testing.T) {
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(whatIss[0].Schema.Fields, &whatIss[0])
 
 		obj := map[string]interface{}{
 			"id":   1,
