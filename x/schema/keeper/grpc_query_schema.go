@@ -28,7 +28,6 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 	}
 
 	var schemaJson *st.SchemaDefinition = &st.SchemaDefinition{}
-	err := k.LookUpContent(what_is.Schema.Cid, schemaJson)
 
 	fields := make([]*st.SchemaKindDefinition, len(schemaJson.Fields))
 	for _, v := range schemaJson.Fields {
@@ -38,18 +37,7 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 		})
 	}
 
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "Error while accessing schema content")
-	}
-
-	var definition *st.SchemaDefinition = &st.SchemaDefinition{
-		Did:     what_is.Did,
-		Creator: what_is.Creator,
-		Label:   what_is.Schema.Label,
-		Fields:  fields,
-	}
-
 	return &st.QuerySchemaResponse{
-		Definition: definition,
+		Definition: what_is.Schema,
 	}, nil
 }
