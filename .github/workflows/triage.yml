@@ -16,4 +16,3 @@ jobs:
           # to the issue
           project-url: https://github.com/orgs/sonr-io/projects/9
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          labeled: needs-triage
