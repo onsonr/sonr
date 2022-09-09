@@ -4,7 +4,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 
 	ct "github.com/sonr-io/sonr/third_party/types/common"
-	st "github.com/sonr-io/sonr/third_party/types/service"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.

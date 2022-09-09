@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-	st "github.com/sonr-io/sonr/third_party/types/service"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 var (

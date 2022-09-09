@@ -1,12 +1,12 @@
 package object
 
-import "github.com/sonr-io/sonr/third_party/types/motor"
+import motor "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 
 /*
-	Underlying api definition of internal implementation of Objects
-	Higher level APIs implementing ObjectClient features
+Underlying api definition of internal implementation of Objects
+Higher level APIs implementing ObjectClient features
 
-	Version 0.1.0
+Version 0.1.0
 */
 type ObjectClient interface {
 	/*

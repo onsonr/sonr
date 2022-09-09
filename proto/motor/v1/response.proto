@@ -12,7 +12,7 @@ import "registry/who_is.proto";
 import "schema/v1/schema.proto";
 import "schema/v1/what_is.proto";
 
-option go_package = "github.com/sonr-io/sonr/third_party/types/motor";
+option go_package = "github.com/sonr-io/sonr/third_party/types/motor/api/v1";
 option java_multiple_files = true;
 option java_package = "io.sonr.types.motor";
 
@@ -23,8 +23,7 @@ message InitializeResponse {
 message CreateAccountResponse {
   bytes aes_psk = 1;
   string address = 2;
-  bytes did_document = 3;
-  sonrio.sonr.registry.WhoIs who_is = 4;
+  sonrio.sonr.registry.WhoIs who_is = 3;
 }
 
 message LoginResponse {
@@ -35,6 +34,7 @@ message LoginResponse {
 message CreateSchemaResponse {
   int32 status = 1;
   sonrio.sonr.schema.WhatIs what_is = 2;
+  sonrio.sonr.schema.SchemaDefinition schema_definition = 3;
 }
 
 message QueryResponse {

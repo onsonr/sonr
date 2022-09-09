@@ -4,34 +4,34 @@ import (
 	"errors"
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create motor
-	fmt.Printf("initializing motor... ")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_INIT, false)
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_INIT, true)
 
 	// Request from Faucet
-	fmt.Printf("requesting initial balance... ")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_FAUCET_RECEIVED, false)
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_FAUCET_RECEIVED, true)
 
 	// Create Initial Shards
-	fmt.Printf("creating shards... ")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_SHARDS_CREATED, false)
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create shards: %s", err)
@@ -40,7 +40,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.sharedShard = sharedShard
 	mtr.recoveryShard = recShard
 	mtr.unusedShards = unusedShards
-	fmt.Println("done.")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_SHARDS_CREATED, true)
 
 	// Create the DID Document
 	doc, err := did.NewDocument(mtr.DID.String())
@@ -50,15 +50,13 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.DIDDocument = doc
 
 	// create Vault shards to make sure this works before creating WhoIs
-	fmt.Printf("creating account... ")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_VAULT_CREATED, false)
 	vc := vault.New()
 	if _, err := createWhoIs(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
 	}
-	fmt.Println("done.")
 
 	// ecnrypt dscShard with DSC
-	fmt.Printf("encrypting shards... ")
 	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
@@ -75,10 +73,8 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
-	fmt.Println("done.")
 
 	// create vault
-	fmt.Printf("setting up vault... ")
 	vaultService, err := vc.CreateVault(
 		mtr.Address,
 		mtr.unusedShards,
@@ -90,32 +86,25 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
-	fmt.Println("done.")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_VAULT_CREATED, true)
 
 	// update DID Document
-	fmt.Printf("updating WhoIs... ")
 	mtr.DIDDocument.AddService(vaultService)
 
 	// update whois
-	if _, err = updateWhoIs(mtr); err != nil {
-		return mt.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
-	}
-	fmt.Println("done.")
-	fmt.Println("account created successfully.")
-
-	docBytes, err := mtr.DIDDocument.MarshalJSON()
+	resp, err := updateWhoIs(mtr)
 	if err != nil {
-		return mt.CreateAccountResponse{}, fmt.Errorf("serialize DID Document: %s", err)
+		return mt.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
 
 	return mt.CreateAccountResponse{
-		AesPsk:      psk,
-		Address:     mtr.Address,
-		DidDocument: docBytes,
+		AesPsk:  psk,
+		Address: mtr.Address,
+		WhoIs:   resp.GetWhoIs(),
 	}, err
 }
 
-func createWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
+func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
@@ -137,10 +126,10 @@ func createWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	return resp.TxResponse, nil
+	return cwir, nil
 }
 
-func updateWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
+func updateWhoIs(m *motorNodeImpl) (*rt.MsgUpdateWhoIsResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
@@ -162,7 +151,7 @@ func updateWhoIs(m *motorNodeImpl) (*sdk.TxResponse, error) {
 		return nil, err
 	}
 
-	return resp.TxResponse, nil
+	return cwir, nil
 }
 
 func pskEncrypt(shard []byte) ([]byte, []byte, error) {
@@ -179,9 +168,13 @@ func pskEncrypt(shard []byte) ([]byte, []byte, error) {
 	return cipherShard, key, nil
 }
 
+// dscEncrypt encrypts the shard with the DSC key
+// Returns: encrypted shard, given key, error
 func dscEncrypt(shard, dsc []byte) ([]byte, error) {
+	// Check if the DSC is valid
 	if len(dsc) != 32 {
 		return nil, errors.New("dsc must be 32 bytes")
 	}
+
 	return mpc.AesEncryptWithKey(dsc, shard)
 }

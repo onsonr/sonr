@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/third_party/types/common"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )

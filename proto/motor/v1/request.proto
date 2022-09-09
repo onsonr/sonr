@@ -8,7 +8,7 @@ import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "schema/v1/schema.proto";
 
-option go_package = "github.com/sonr-io/sonr/third_party/types/motor";
+option go_package = "github.com/sonr-io/sonr/third_party/types/motor/api/v1";
 option java_multiple_files = true;
 option java_package = "io.sonr.types.motor";
 
@@ -45,7 +45,7 @@ message InitializeRequest {
   double discovery_longitude = 9; //optional - Default: -73.994450 (Sonr HQ)
 
   // Public Key used for Device Authentication as DID Controller
-  bytes device_keyprint_pub = 10; // optional
+  common.v1.AuthInfo auth_info = 10; // optional
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -145,4 +145,7 @@ message SeachBucketContentBySchemaRequest {
   string bucket_did = 2;
   // schema identifier
   string schema_did = 3;
+}
+
+message StatRequest {
 }

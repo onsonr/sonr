@@ -8,7 +8,7 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/third_party/types/common"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/stretchr/testify/assert"
 )

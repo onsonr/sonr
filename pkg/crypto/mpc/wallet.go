@@ -45,7 +45,6 @@ func GenerateWallet(cb common.MotorCallback, options ...WalletOption) (*Wallet, 
 		}(id)
 	}
 	wg.Wait()
-	cb.OnWalletCreated(true)
 	// Add the DID Document to the wallet.
 	return w, nil
 }

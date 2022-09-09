@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 type ObjectBuilder struct {

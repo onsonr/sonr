@@ -37,3 +37,22 @@ enum BlockchainModule {
     // Query x/bucket module
     BUCKET = 2;
 }
+
+// AuthInfo is a object used by Motor clients to store authentication information in Biometric storage
+message AuthInfo {
+    string address = 1;
+    string did = 2;
+    bytes aes_dsc_key = 3;
+    bytes aes_psk_key = 4;
+    string password = 5;
+    int64 timestamp = 6;
+}
+
+enum MotorCallbackMessage {
+    MTR_INIT = 0;
+    MTR_FAUCET_RECEIVED = 1;
+    MTR_SHARDS_CREATED = 2;
+    MTR_VAULT_CREATED = 3;
+    MTR_ACCOUNT_CREATED = 4;
+    MTR_LOGGED_IN = 5;
+}
