@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/sonr-io/sonr/pkg/client"
@@ -53,7 +54,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 
 	// ecnrypt dscShard with DSC
 	mtr.callback.OnWalletEvent("Encrypting shards for Vault", false)
-	dscShard, dscKey, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
+	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
 	}
@@ -97,7 +98,6 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	return mt.CreateAccountResponse{
 		AesPsk:  psk,
 		Address: mtr.Address,
-		AesDsc:  dscKey,
 		WhoIs:   resp.GetWhoIs(),
 	}, err
 }
@@ -113,7 +113,7 @@ func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	msg1.Type()
+
 	resp, err := m.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
 		return nil, err
@@ -168,27 +168,11 @@ func pskEncrypt(shard []byte) ([]byte, []byte, error) {
 
 // dscEncrypt encrypts the shard with the DSC key
 // Returns: encrypted shard, given key, error
-func dscEncrypt(shard, d []byte) ([]byte, []byte, error) {
+func dscEncrypt(shard, dsc []byte) ([]byte, error) {
 	// Check if the DSC is valid
-	if len(d) != 32 {
-		// generate a new DSC
-		dsc, err := mpc.NewAesKey()
-		if err != nil {
-			return nil, nil, err
-		}
-
-		// encrypt the shard with the DSC
-		dscEnc, err := mpc.AesEncryptWithKey(dsc, shard)
-		if err != nil {
-			return nil, nil, err
-		}
-		return dscEnc, dsc, nil
-	} else {
-		// encrypt the shard with the DSC
-		dscEnc, err := mpc.AesEncryptWithKey(d, shard)
-		if err != nil {
-			return nil, nil, err
-		}
-		return dscEnc, d, nil
+	if len(dsc) != 32 {
+		return nil, errors.New("dsc must be 32 bytes")
 	}
+
+	return mpc.AesEncryptWithKey(dsc, shard)
 }
