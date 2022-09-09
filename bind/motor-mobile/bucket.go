@@ -13,15 +13,8 @@ func ResolveBucket(did string) error {
 		return ct.ErrMotorWalletNotInitialized
 	}
 
-	bucket, err := instance.GetBucket(did)
+	_, err := instance.GetBucket(did)
 	if err != nil {
-		return err
-	}
-
-	if err = bucket.ResolveContent(); err != nil {
-		return err
-	}
-	if err = bucket.ResolveBuckets(); err != nil {
 		return err
 	}
 
