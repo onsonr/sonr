@@ -12,10 +12,12 @@ const TypeMsgCreateSchema = "create_schema"
 
 var _ sdk.Msg = &MsgCreateSchema{}
 
-func NewMsgCreateSchema(metadata []*MetadataDefintion, defintion *SchemaDefinition) *MsgCreateSchema {
+func NewMsgCreateSchema(metadata []*MetadataDefintion, fields []*SchemaKindDefinition, creator string, label string) *MsgCreateSchema {
 	return &MsgCreateSchema{
-		Metadata:   metadata,
-		Definition: defintion,
+		Metadata: metadata,
+		Creator:  creator,
+		Label:    label,
+		Fields:   fields,
 	}
 }
 func (msg *MsgCreateSchema) Route() string {
@@ -31,7 +33,7 @@ func (msg *MsgCreateSchema) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateSchema) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Definition.GetCreator())
+	creator, err := sdk.AccAddressFromBech32(msg.GetCreator()))
 	if err != nil {
 		panic(err)
 	}
@@ -43,6 +45,16 @@ func (msg *MsgCreateSchema) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if len(msg.Label) < 1 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest)
+	}
+
+	if len(msg.Fields) < 1 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Fields cannot be empty")
+	}
+
+	
 	return nil
 }
 
