@@ -24,6 +24,7 @@ tmp/
 # Production
 /build
 bind/dist
+gen/
 
 # Generated files
 .docusaurus

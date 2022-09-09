@@ -4,6 +4,9 @@ package sonrio.sonr.schema;
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
+option java_package = "io.sonr.types.schema";
+option java_multiple_files = true;
+
 enum LinkKind {
   UNKNOWN = 0;
   OBJECT = 1;
@@ -56,11 +59,13 @@ message SchemaReference {
 message SchemaDefinition {
   // Represents the types of fields a schema can have
   // the DID for this schema
-  string creator = 1;
+  string did = 1;
+
+  string creator = 2;
 
   // an alternative reference point
-  string label = 2;
+  string label = 3;
 
   // the properties of this schema
-  repeated SchemaKindDefinition fields = 3;
+  repeated SchemaKindDefinition fields = 4;
 }

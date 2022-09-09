@@ -11,7 +11,7 @@ import (
 func (k Keeper) WhatIsByCreator(goCtx context.Context, req *st.QueryWhatIsCreatorRequest) (*st.QueryWhatIsCreatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	ref, found := k.GetWhatIsFromCreator(ctx, req.Creator)
-	if !found || len(ref) < 1 {
+	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "Schema was not found")
 	}
 

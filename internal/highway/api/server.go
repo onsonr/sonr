@@ -25,6 +25,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/crypto/jwt"
 	hn "github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/third_party/types/common"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -64,7 +65,7 @@ type HighwayServer struct {
 
 // setupBaseStub creates the base Highway Server.
 func CreateStub(ctx context.Context, c *config.Config) (*HighwayServer, error) {
-	node, err := hn.NewDefaultHost(ctx, c)
+	node, err := hn.NewDefaultHost(ctx, c, common.DefaultCallback())
 	if err != nil {
 		return nil, err
 	}

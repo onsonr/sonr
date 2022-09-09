@@ -1,34 +1,22 @@
 package motor
 
 import (
-	"errors"
+	"encoding/json"
 	"fmt"
 
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 	_ "golang.org/x/mobile/bind"
 )
 
-/*
-#include <stdlib.h>
-*/
-import "C"
-
-func NewObjectBuilder(n, d *C.char) error {
+func NewObjectBuilder(name, schemaDid string) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if d == nil {
-		return errors.New("schema did cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; ok {
 		return fmt.Errorf("object builder exists with name '%s'", name)
 	}
 
-	schemaDid := C.GoString(d)
 	builder, err := instance.NewObjectBuilder(schemaDid)
 	if err != nil {
 		return err
@@ -38,44 +26,28 @@ func NewObjectBuilder(n, d *C.char) error {
 	return nil
 }
 
-func SetObjectLabel(n, l *C.char) error {
+func SetObjectLabel(name, label string) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if l == nil {
-		return errors.New("label cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	label := C.GoString(l)
 	objectBuilders[name].SetLabel(label)
 	return nil
 }
 
-func SetBool(n, f *C.char, v C.int) error {
+func SetBool(name, fieldName string, v int) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return errors.New("field name cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	fieldName := C.GoString(f)
 	var value bool
 	if int(v) == 0 {
 		value = false
@@ -85,136 +57,128 @@ func SetBool(n, f *C.char, v C.int) error {
 	return objectBuilders[name].Set(fieldName, value)
 }
 
-func SetInt(n, f *C.char, v C.int) error {
+func SetInt(name, fieldName string, v int) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return errors.New("field name cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	fieldName := C.GoString(f)
 	value := int(v)
 	return objectBuilders[name].Set(fieldName, value)
 }
 
-func SetFloat(n, f *C.char, v C.float) error {
+func SetFloat(name, fieldName string, v float32) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return errors.New("field name cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	fieldName := C.GoString(f)
 	value := float32(v)
 	return objectBuilders[name].Set(fieldName, value)
 }
 
-func SetString(n, f, v *C.char) error {
+func SetString(name, fieldName, value string) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return errors.New("field name cannot be nil")
-	}
-	if v == nil {
-		return errors.New("value cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	fieldName := C.GoString(f)
-	value := C.GoString(v)
 	return objectBuilders[name].Set(fieldName, value)
 }
 
-func SetBytes(n, f *C.char, v []byte) error {
+func SetBytes(name, fieldName string, v []byte) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return errors.New("field name cannot be nil")
-	}
-	if v == nil {
-		return errors.New("value cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	fieldName := C.GoString(f)
 	return objectBuilders[name].Set(fieldName, v)
 }
 
-func SetLink(n, f, v *C.char) error {
+func SetLink(name, fieldName, value string) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return errors.New("field name cannot be nil")
-	}
-	if v == nil {
-		return errors.New("value cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
 	if _, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	fieldName := C.GoString(f)
-	value := C.GoString(v)
 	return objectBuilders[name].Set(fieldName, value)
 }
 
-func RemoveObjectField(n, f *C.char) error {
+func RemoveObjectField(name, fieldName string) error {
 	if instance == nil {
-		return errWalletNotExists
-	}
-	if n == nil {
-		return errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return errors.New("field name cannot be nil")
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	name := C.GoString(n)
-	fieldName := C.GoString(f)
 	if builder, ok := objectBuilders[name]; !ok {
 		return fmt.Errorf("no object builder with name '%s'", name)
 	} else {
 		builder.Remove(fieldName)
 	}
 	return nil
+}
+
+func BuildObject(name string) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return nil, fmt.Errorf("no object builder with name '%s'", name)
+	}
+
+	res, err := builder.Build()
+	if err != nil {
+		return nil, err
+	}
+
+	// Using JSON marshalling here for arbitrary object types
+	return json.Marshal(res)
+}
+
+func UploadObject(name string) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return nil, fmt.Errorf("no object builder with name '%s'", name)
+	}
+
+	res, err := builder.Upload()
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Marshal()
+}
+
+func GetObject(cid string) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	res, err := instance.QueryObject(cid)
+	if err != nil {
+		return nil, err
+	}
+
+	// Using JSON marshalling here for arbitrary object types
+	return json.Marshal(res)
 }

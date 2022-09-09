@@ -65,5 +65,14 @@
     "yaml.schemas": {
         "https://goreleaser.com/static/schema.json": "file:///Users/pradn/Developer/sonr/.goreleaser.yaml"
     },
-    "go.testTimeout": "180s"
+    "go.testTimeout": "180s",
+    "cSpell.words": [
+        "openapi",
+        "sonrd",
+        "sonrio",
+        "whois"
+    ],
+    "cSpell.enableFiletypes": [
+        "!go"
+    ]
 }

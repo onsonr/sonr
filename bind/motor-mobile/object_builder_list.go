@@ -4,23 +4,18 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 	_ "golang.org/x/mobile/bind"
 )
 
-/*
-#include <stdlib.h>
-*/
-import "C"
-
-func AddListBool(n, f *C.char, v C.int) error {
+func AddListBool(name, fieldName string, value bool) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	builder, fieldName, err := findBuilder(n, f)
-	if err != nil {
-		return err
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
 	if !builder.Has(fieldName) {
@@ -29,32 +24,23 @@ func AddListBool(n, f *C.char, v C.int) error {
 		}
 	}
 
-	var list []bool
-	if l, ok := builder.Get(fieldName).([]bool); !ok {
+	list, ok := builder.Get(fieldName).([]bool)
+	if !ok {
 		return fmt.Errorf("field '%s' is not of boolean type", fieldName)
-	} else {
-		list = l
-	}
-
-	var value bool
-	if int(v) == 0 {
-		value = false
-	} else {
-		value = true
 	}
 	list = append(list, value)
 
 	return builder.Set(fieldName, list)
 }
 
-func AddListInt(n, f *C.char, v C.int) error {
+func AddListInt(name, fieldName string, value int) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	builder, fieldName, err := findBuilder(n, f)
-	if err != nil {
-		return err
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
 	if !builder.Has(fieldName) {
@@ -63,25 +49,23 @@ func AddListInt(n, f *C.char, v C.int) error {
 		}
 	}
 
-	var list []int
-	if l, ok := builder.Get(fieldName).([]int); !ok {
+	list, ok := builder.Get(fieldName).([]int)
+	if !ok {
 		return fmt.Errorf("field '%s' is not of int type", fieldName)
-	} else {
-		list = l
 	}
-	list = append(list, int(v))
+	list = append(list, value)
 
 	return builder.Set(fieldName, list)
 }
 
-func AddListFloat(n, f *C.char, v C.float) error {
+func AddListFloat(name, fieldName string, value float32) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	builder, fieldName, err := findBuilder(n, f)
-	if err != nil {
-		return err
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
 	if !builder.Has(fieldName) {
@@ -90,29 +74,27 @@ func AddListFloat(n, f *C.char, v C.float) error {
 		}
 	}
 
-	var list []float32
-	if l, ok := builder.Get(fieldName).([]float32); !ok {
+	list, ok := builder.Get(fieldName).([]float32)
+	if !ok {
 		return fmt.Errorf("field '%s' is not of float type", fieldName)
-	} else {
-		list = l
 	}
-	list = append(list, float32(v))
+	list = append(list, value)
 
 	return builder.Set(fieldName, list)
 }
 
-func AddListString(n, f, v *C.char) error {
+func AddListString(name, fieldName, value string) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	builder, fieldName, err := findBuilder(n, f)
-	if err != nil {
-		return err
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	if v == nil {
-		return errors.New("value cannot be nil")
+	if value == "" {
+		return errors.New("value cannot be empty")
 	}
 
 	if !builder.Has(fieldName) {
@@ -121,30 +103,26 @@ func AddListString(n, f, v *C.char) error {
 		}
 	}
 
-	var list []string
-	if l, ok := builder.Get(fieldName).([]string); !ok {
+	list, ok := builder.Get(fieldName).([]string)
+	if !ok {
 		return fmt.Errorf("field '%s' is not of string type", fieldName)
-	} else {
-		list = l
 	}
-
-	value := C.GoString(v)
 	list = append(list, value)
 
 	return builder.Set(fieldName, list)
 }
 
-func AddListBytes(n, f *C.char, v []byte) error {
+func AddListBytes(name, fieldName string, value []byte) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	builder, fieldName, err := findBuilder(n, f)
-	if err != nil {
-		return err
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	if v == nil {
+	if value == nil {
 		return errors.New("value cannot be nil")
 	}
 
@@ -154,55 +132,34 @@ func AddListBytes(n, f *C.char, v []byte) error {
 		}
 	}
 
-	var list [][]byte
-	if l, ok := builder.Get(fieldName).([][]byte); !ok {
+	list, ok := builder.Get(fieldName).([][]byte)
+	if !ok {
 		return fmt.Errorf("field '%s' is not of bytes type", fieldName)
-	} else {
-		list = l
 	}
-
-	list = append(list, v)
+	list = append(list, value)
 
 	return builder.Set(fieldName, list)
 }
 
-func RemoveListItem(n, f *C.char, i C.int) error {
+func RemoveListItem(name, fieldName string, index int) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
-	builder, fieldName, err := findBuilder(n, f)
-	if err != nil {
-		return err
+	builder, ok := objectBuilders[name]
+	if !ok {
+		return fmt.Errorf("no object builder with name '%s'", name)
 	}
 
-	var list []interface{}
-	var ok bool
-	if list, ok = builder.Get(fieldName).([]interface{}); !ok || list == nil {
+	list, ok := builder.Get(fieldName).([]interface{})
+	if !ok || list == nil {
 		return fmt.Errorf("no list field with name '%s'", fieldName)
 	}
 
-	index := int(i)
 	if index < 0 || index >= len(list) {
 		return fmt.Errorf("index %d of of range %d", index, len(list))
 	}
 
 	list = append(list[:index], list[index+1:])
 	return builder.Set(fieldName, list)
-}
-
-func findBuilder(n, f *C.char) (*object.ObjectBuilder, string, error) {
-	if n == nil {
-		return nil, "", errors.New("name cannot be nil")
-	}
-	if f == nil {
-		return nil, "", errors.New("field name cannot be nil")
-	}
-
-	name := C.GoString(n)
-	if builder, ok := objectBuilders[name]; !ok {
-		return nil, "", fmt.Errorf("no object builder with name '%s'", name)
-	} else {
-		return builder, C.GoString(f), nil
-	}
 }

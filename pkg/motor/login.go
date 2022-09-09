@@ -9,7 +9,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 // Login creates a motor node from a LoginRequest
@@ -21,14 +22,12 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	mtr.Address = request.Did
 
 	// fetch vault shards
-	fmt.Printf("fetching shards from vault... ")
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_LOGGED_IN, false)
 	shards, err := vault.New().GetVaultShards(request.Did)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}
-	fmt.Println("done.")
 
-	fmt.Printf("reconstructing wallet... ")
 	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
@@ -38,7 +37,6 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
-	fmt.Println("done.")
 
 	// fetch DID document from chain
 	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)
@@ -58,6 +56,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	mtr.sharedShard = shards.PskShard
 	mtr.recoveryShard = shards.RecoveryShard
 	mtr.unusedShards = destructureShards(shards.ShardBank)
+	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_LOGGED_IN, true)
 
 	return mt.LoginResponse{
 		Success: true,

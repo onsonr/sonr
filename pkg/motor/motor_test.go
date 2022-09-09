@@ -7,12 +7,14 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/stretchr/testify/assert"
 )
 
 // TODO: improve test suite (make more robust for CI/CID)
-const ADDR = "snr1atqwz6a7cydt7566zkdggmfaqftms5xq7zgugx"
+const ADDR = "snr1scyspluvk7a9p7q0705qcwtpumapagwyd2m6uq"
 
 func Test_DecodeTxData(t *testing.T) {
 	data := "0A91010A242F736F6E72696F2E736F6E722E72656769737472792E4D736743726561746557686F497312691267122A736E723134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A35371A31122F6469643A736E723A3134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A353730BC8FA197063801"
@@ -33,6 +35,28 @@ func storeKey(n string, aesKey []byte) bool {
 
 	_, err = file.Write(aesKey)
 	return err == nil
+}
+
+func Test_GetAddress(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+	if pskKey == nil || len(pskKey) != 32 {
+		t.Errorf("could not load psk key")
+		return
+	}
+
+	req := mt.LoginRequest{
+		Did:       ADDR,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	m, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	_, err := m.Login(req)
+	assert.NoError(t, err, "login succeeds")
+
+	assert.Equal(t, ADDR, m.GetAddress())
 }
 
 func loadKey(n string) []byte {

@@ -13,6 +13,9 @@ import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
 
+option java_package = "io.sonr.types.schema";
+option java_multiple_files = true;
+
 // Query defines the gRPC querier service.
 service Query {
   // Parameters queries the parameters of the module.
@@ -33,6 +36,10 @@ service Query {
   // Queries a whatis by creator
   rpc WhatIsByCreator(QueryWhatIsCreatorRequest) returns (QueryWhatIsCreatorResponse) {
     option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is/{creator}";
+  }
+
+  rpc WhatIsByDid(QueryWhatIsByDidRequest) returns (QueryWhatIsByDidResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is/{did}";
   }
 
   // Queries all whatIs definitions supports pagination
@@ -82,6 +89,12 @@ message QuerySchemaResponse {
   SchemaDefinition definition = 2;
 }
 
+message QueryWhatIsByDidRequest {
+  string did = 1;
+  // pageination values
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
 message QueryWhatIsResponse {
   // Schema Repersentation
   WhatIs what_is = 1;
@@ -90,6 +103,10 @@ message QueryWhatIsResponse {
 message QueryWhatIsCreatorResponse {
   // Schema Repersentation
   repeated WhatIs what_is = 1;
+}
+
+message QueryWhatIsByDidResponse {
+  WhatIs what_is = 1;
 }
 
 // this line is used by starport scaffolding # 3
