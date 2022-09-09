@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/ipfs/go-cid"
-	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/sonr-io/sonr/pkg/client"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -17,11 +16,6 @@ var (
 )
 
 type Encoding int
-
-type Event struct {
-	name     string
-	previous cid.Cid
-}
 
 const (
 	EncType_DAG_CBOR Encoding = iota
@@ -38,7 +32,7 @@ type schemaImpl struct {
 }
 
 /*
-	Default initialization with a local shell for persistence
+	Default initialization with a local client instance created in scope
 */
 func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
@@ -47,7 +41,7 @@ func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
 		whatIs:     whatIs,
 		nodes:      nil,
 		store: &readStoreImpl{
-			shell: shell.NewLocalShell(),
+			client: client.NewClient(client.ConnEndpointType_LOCAL),
 		},
 	}
 
@@ -56,16 +50,16 @@ func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
 }
 
 /*
-	Initialize with a ipfs shell instance
+	Initialize with a instance of pkg/client
 */
-func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
+func NewWithShell(client *client.Client, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
 		fields:     fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
 		whatIs:     whatIs,
 		nodes:      nil,
 		store: &readStoreImpl{
-			shell: shell,
+			client: client,
 		},
 	}
 

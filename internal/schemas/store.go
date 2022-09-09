@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/ipld/go-ipld-prime/storage"
+	"github.com/sonr-io/sonr/pkg/client"
 )
 
 type ReadableStore interface {
@@ -18,9 +18,9 @@ type ReadableStore interface {
 
 // Store implementation to abstract store operations
 type readStoreImpl struct {
-	mu    sync.Mutex
-	cache map[string][]byte
-	shell *shell.Shell
+	mu     sync.Mutex
+	cache  map[string][]byte
+	client *client.Client
 }
 
 func (rs *readStoreImpl) Has(ctx context.Context, key string) (bool, error) {
@@ -56,13 +56,13 @@ func (rs *readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
 	out_path := filepath.Join(os.TempDir(), key+time_stamp+".txt")
 	defer os.Remove(out_path)
 
-	err := rs.shell.Get(key, out_path)
+	wi, err := rs.client.QueryWhatIsByDid(key)
 
 	if err != nil {
 		return nil, err
 	}
 
-	buf, err := os.ReadFile(out_path)
+	buf, err := wi.Marshal()
 
 	if err != nil {
 		return nil, err
