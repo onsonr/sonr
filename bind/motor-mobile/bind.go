@@ -62,7 +62,7 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 
 func CreateAccount(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 	// decode request
 	request := mt.CreateAccountRequest{}
@@ -79,7 +79,7 @@ func CreateAccount(buf []byte) ([]byte, error) {
 
 func Login(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	// decode request
@@ -97,14 +97,14 @@ func Login(buf []byte) ([]byte, error) {
 
 func Connect() error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 	return instance.Connect()
 }
 
 func CreateSchema(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.CreateSchemaRequest
@@ -121,7 +121,7 @@ func CreateSchema(buf []byte) ([]byte, error) {
 
 func QuerySchema(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhatIsRequest
@@ -138,7 +138,7 @@ func QuerySchema(buf []byte) ([]byte, error) {
 
 func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhatIsByCreatorRequest
@@ -155,7 +155,7 @@ func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 
 func QuerySchemaByDid(did string) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	res, err := instance.QueryWhatIsByDid(did)
@@ -167,7 +167,7 @@ func QuerySchemaByDid(did string) ([]byte, error) {
 
 func QueryBucket(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhereIsRequest
@@ -184,7 +184,7 @@ func QueryBucket(buf []byte) ([]byte, error) {
 
 func QueryBucketByCreator(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhereIsByCreatorRequest
@@ -202,7 +202,7 @@ func QueryBucketByCreator(buf []byte) ([]byte, error) {
 // IssuePayment creates a send/receive token request to the specified address.
 func IssuePayment(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.PaymentRequest
@@ -220,12 +220,12 @@ func IssuePayment(buf []byte) ([]byte, error) {
 // Stat returns general information about the Motor node its wallet and accompanying Account.
 func Stat() ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	doc := instance.GetDIDDocument()
 	if doc == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 	didDoc, err := rt.NewDIDDocumentFromPkg(doc)
 	if err != nil {
@@ -242,7 +242,7 @@ func Stat() ([]byte, error) {
 
 func BuyAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request rt.MsgBuyAlias
@@ -260,7 +260,7 @@ func BuyAlias(buf []byte) ([]byte, error) {
 
 func SellAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request rt.MsgSellAlias
@@ -278,7 +278,7 @@ func SellAlias(buf []byte) ([]byte, error) {
 
 func TransferAlias(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request rt.MsgTransferAlias

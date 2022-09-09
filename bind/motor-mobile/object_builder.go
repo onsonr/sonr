@@ -10,7 +10,7 @@ import (
 
 func NewObjectBuilder(name, schemaDid string) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; ok {
@@ -28,7 +28,7 @@ func NewObjectBuilder(name, schemaDid string) error {
 
 func SetObjectLabel(name, label string) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; !ok {
@@ -41,7 +41,7 @@ func SetObjectLabel(name, label string) error {
 
 func SetBool(name, fieldName string, v int) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; !ok {
@@ -59,7 +59,7 @@ func SetBool(name, fieldName string, v int) error {
 
 func SetInt(name, fieldName string, v int) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; !ok {
@@ -72,7 +72,7 @@ func SetInt(name, fieldName string, v int) error {
 
 func SetFloat(name, fieldName string, v float32) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; !ok {
@@ -85,7 +85,7 @@ func SetFloat(name, fieldName string, v float32) error {
 
 func SetString(name, fieldName, value string) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; !ok {
@@ -97,7 +97,7 @@ func SetString(name, fieldName, value string) error {
 
 func SetBytes(name, fieldName string, v []byte) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; !ok {
@@ -109,7 +109,7 @@ func SetBytes(name, fieldName string, v []byte) error {
 
 func SetLink(name, fieldName, value string) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if _, ok := objectBuilders[name]; !ok {
@@ -121,7 +121,7 @@ func SetLink(name, fieldName, value string) error {
 
 func RemoveObjectField(name, fieldName string) error {
 	if instance == nil {
-		return ct.ErrMotorWallet
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	if builder, ok := objectBuilders[name]; !ok {
@@ -134,7 +134,7 @@ func RemoveObjectField(name, fieldName string) error {
 
 func BuildObject(name string) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]
@@ -153,7 +153,7 @@ func BuildObject(name string) ([]byte, error) {
 
 func UploadObject(name string) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]
@@ -171,7 +171,7 @@ func UploadObject(name string) ([]byte, error) {
 
 func GetObject(cid string) ([]byte, error) {
 	if instance == nil {
-		return nil, ct.ErrMotorWallet
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	res, err := instance.QueryObject(cid)
