@@ -6,12 +6,12 @@ import (
 	"net/http"
 
 	"github.com/sonr-io/sonr/pkg/did"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
 /*
-	Stop gap implementation for
+Stop gap implementation for
 */
 func (mtr *motorNodeImpl) SeachBucketBySchema(req mt.SeachBucketContentBySchemaRequest) (mt.SearchBucketContentBySchemaResponse, error) {
 	_, err := did.ParseDID(req.BucketDid)

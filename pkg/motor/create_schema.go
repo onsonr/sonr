@@ -5,7 +5,7 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/tx"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -15,8 +15,11 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("process fields: %s", err)
 	}
-	createSchemaMsg := st.NewMsgCreateSchema(convertMetadata(request.Metadata), listFields, mtr.Address, request.Label)
-
+	createSchemaMsg := st.NewMsgCreateSchema(convertMetadata(request.Metadata), &st.SchemaDefinition{
+		Creator: mtr.Address,
+		Label:   request.Label,
+		Fields:  listFields,
+	})
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.schema.MsgCreateSchema", createSchemaMsg)
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("sign tx with wallet: %s", err)

@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 	_ "golang.org/x/mobile/bind"
 )
 
 func AddListBool(name, fieldName string, value bool) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]
@@ -34,7 +35,7 @@ func AddListBool(name, fieldName string, value bool) error {
 
 func AddListInt(name, fieldName string, value int) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]
@@ -59,7 +60,7 @@ func AddListInt(name, fieldName string, value int) error {
 
 func AddListFloat(name, fieldName string, value float32) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]
@@ -84,7 +85,7 @@ func AddListFloat(name, fieldName string, value float32) error {
 
 func AddListString(name, fieldName, value string) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]
@@ -113,7 +114,7 @@ func AddListString(name, fieldName, value string) error {
 
 func AddListBytes(name, fieldName string, value []byte) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]
@@ -142,7 +143,7 @@ func AddListBytes(name, fieldName string, value []byte) error {
 
 func RemoveListItem(name, fieldName string, index int) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	builder, ok := objectBuilders[name]

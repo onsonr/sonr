@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
@@ -48,7 +48,7 @@ func (mtr *motorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 }
 
 func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
-	resp, err := mtr.GetClient().QueryWhatIsByCreator(req.Creator)
+	resp, err := mtr.GetClient().QueryWhatIsByCreator(req.Creator, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (mtr *motorNodeImpl) QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhe
 }
 
 func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error) {
-	resp, err := mtr.GetClient().QueryWhereIsByCreator(req.Creator)
+	resp, err := mtr.GetClient().QueryWhereIsByCreator(req.Creator, req.Pagination)
 	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, 0)
 	for _, wi := range resp.WhereIs {
 		mtr.Resources.whereIsStore[wi.Did] = &wi

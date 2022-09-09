@@ -4,7 +4,7 @@ syntax = "proto3";
 package sonrio.motor.service.v1;
 import "common/v1/info.proto";
 
-option go_package = "github.com/sonr-io/sonr/third_party/types/service";
+option go_package = "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1";
 
 option java_package = "io.sonr.types.service";
 option java_multiple_files = true;
