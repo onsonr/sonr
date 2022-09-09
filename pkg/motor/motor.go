@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
@@ -16,8 +18,9 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
+	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/third_party/types/common"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 type motorNodeImpl struct {
@@ -49,6 +52,7 @@ type motorNodeImpl struct {
 
 	// resource management
 	Resources *motorResources
+	sh        *shell.Shell
 }
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
@@ -76,6 +80,9 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 
+	mtr.sh = shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
+	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.sh)
+
 	// Get address
 	if mtr.Address == "" {
 		mtr.Address, err = mtr.Wallet.Address()
@@ -83,6 +90,9 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 			return err
 		}
 	}
+
+	shell := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
+	mtr.Resources = newMotorResources(mtr.Cosmos, shell)
 
 	// Get public key
 	mtr.PubKey, err = mtr.Wallet.PublicKeyProto()
@@ -116,7 +126,7 @@ func (mtr *motorNodeImpl) Connect() error {
 	// Create new host
 	if mtr.isHostEnabled {
 		log.Println("Creating host...")
-		mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address))
+		mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address), mtr.callback)
 		if err != nil {
 			return err
 		}
@@ -155,9 +165,11 @@ func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
 func (m *motorNodeImpl) GetDID() did.DID {
 	return m.DID
 }
+
 func (m *motorNodeImpl) GetDIDDocument() did.Document {
 	return m.DIDDocument
 }
+
 func (m *motorNodeImpl) GetHost() host.SonrHost {
 	return m.SonrHost
 }
@@ -233,4 +245,19 @@ func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Cre
 	}
 
 	return nil
+}
+
+func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) ([]byte, error) {
+	cleanMsgRoute := strings.TrimLeft(routeUrl, "/")
+	typeUrl := fmt.Sprintf("/sonrio.sonr.%s", cleanMsgRoute)
+	txRaw, err := tx.SignTxWithWallet(w.Wallet, typeUrl, msg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to sign tx (%s) with wallet: %s", typeUrl, err)
+	}
+
+	resp, err := w.Cosmos.BroadcastTx(txRaw)
+	if err != nil {
+		return nil, fmt.Errorf("failed to broadcast tx (%s): %s", typeUrl, err)
+	}
+	return resp.GetTxResponse().Marshal()
 }

@@ -15,6 +15,7 @@ func CreateMockSchemaDefinition() (st.SchemaDefinition, map[string]interface{}) 
 	obj := make(map[string]interface{})
 
 	def := st.SchemaDefinition{
+		Did:     "did:snr:123456",
 		Creator: "snr123456",
 		Label:   "testing schema",
 		Fields:  make([]*st.SchemaKindDefinition, 0),

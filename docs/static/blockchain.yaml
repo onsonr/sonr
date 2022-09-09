@@ -30279,6 +30279,14 @@ paths:
                               - DID
                               - CID
                             default: None
+                          schema_did:
+                            type: string
+                            title: >-
+                              References the schema and item within the bucket
+                              is associated with.
+
+                              Bucket items do not need to use the same schema if
+                              the bucket is "generic" // optional
                         description: >-
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
@@ -30472,6 +30480,14 @@ paths:
                               - DID
                               - CID
                             default: None
+                          schema_did:
+                            type: string
+                            title: >-
+                              References the schema and item within the bucket
+                              is associated with.
+
+                              Bucket items do not need to use the same schema if
+                              the bucket is "generic" // optional
                         description: >-
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
@@ -30667,6 +30683,14 @@ paths:
                             - DID
                             - CID
                           default: None
+                        schema_did:
+                          type: string
+                          title: >-
+                            References the schema and item within the bucket is
+                            associated with.
+
+                            Bucket items do not need to use the same schema if
+                            the bucket is "generic" // optional
                       description: >-
                         BucketItem is a pointer to a single piece of content in
                         a bucket.
@@ -31005,16 +31029,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -31789,11 +31803,13 @@ paths:
                 title: Definition of schema
                 type: object
                 properties:
-                  creator:
+                  did:
                     type: string
                     title: |-
                       Represents the types of fields a schema can have
                       the DID for this schema
+                  creator:
+                    type: string
                   label:
                     type: string
                     title: an alternative reference point
@@ -32012,6 +32028,134 @@ paths:
       parameters:
         - name: creator
           description: address of the schema creator
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/schema/query/what_is/{did}':
+    get:
+      operationId: SonrioSonrSchemaWhatIsByDid
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              what_is:
+                type: object
+                properties:
+                  did:
+                    type: string
+                    title: DID is the DID of the object
+                  schema:
+                    title: Object_doc is the object document
+                    type: object
+                    properties:
+                      did:
+                        type: string
+                        title: the DID for this schema
+                      label:
+                        type: string
+                        title: an alternative reference point
+                      cid:
+                        type: string
+                        description: a reference to information stored within an IPFS node.
+                  creator:
+                    type: string
+                    title: Creator is the DID of the creator
+                  timestamp:
+                    type: string
+                    format: int64
+                    title: >-
+                      Timestamp is the time of the last update of the DID
+                      Document
+                  is_active:
+                    type: boolean
+                    title: IsActive is the status of the DID Document
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    title: >-
+                      Metadata is a map of key-value pairs that can be used to
+                      store additional information about the WhatIs (Schema)
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
           in: path
           required: true
           type: string
@@ -53913,6 +54057,13 @@ definitions:
           - DID
           - CID
         default: None
+      schema_did:
+        type: string
+        title: >-
+          References the schema and item within the bucket is associated with.
+
+          Bucket items do not need to use the same schema if the bucket is
+          "generic" // optional
     description: BucketItem is a pointer to a single piece of content in a bucket.
   sonrio.sonr.bucket.BucketRole:
     type: string
@@ -54004,6 +54155,14 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_did:
+                  type: string
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with.
+
+                    Bucket items do not need to use the same schema if the
+                    bucket is "generic" // optional
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -54093,6 +54252,14 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_did:
+                  type: string
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with.
+
+                    Bucket items do not need to use the same schema if the
+                    bucket is "generic" // optional
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -54178,6 +54345,14 @@ definitions:
                       - DID
                       - CID
                     default: None
+                  schema_did:
+                    type: string
+                    title: >-
+                      References the schema and item within the bucket is
+                      associated with.
+
+                      Bucket items do not need to use the same schema if the
+                      bucket is "generic" // optional
                 description: >-
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
@@ -54285,6 +54460,14 @@ definitions:
                       - DID
                       - CID
                     default: None
+                  schema_did:
+                    type: string
+                    title: >-
+                      References the schema and item within the bucket is
+                      associated with.
+
+                      Bucket items do not need to use the same schema if the
+                      bucket is "generic" // optional
                 description: >-
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
@@ -54390,6 +54573,14 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_did:
+                  type: string
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with.
+
+                    Bucket items do not need to use the same schema if the
+                    bucket is "generic" // optional
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -54481,6 +54672,14 @@ definitions:
                 - DID
                 - CID
               default: None
+            schema_did:
+              type: string
+              title: >-
+                References the schema and item within the bucket is associated
+                with.
+
+                Bucket items do not need to use the same schema if the bucket is
+                "generic" // optional
           description: BucketItem is a pointer to a single piece of content in a bucket.
         description: Content of the new bucket map of DIDs to CIDs.
       content_acl:
@@ -56418,11 +56617,13 @@ definitions:
         title: Definition of schema
         type: object
         properties:
-          creator:
+          did:
             type: string
             title: |-
               Represents the types of fields a schema can have
               the DID for this schema
+          creator:
+            type: string
           label:
             type: string
             title: an alternative reference point
@@ -56460,6 +56661,45 @@ definitions:
                 link:
                   type: string
             title: the properties of this schema
+  sonrio.sonr.schema.QueryWhatIsByDidResponse:
+    type: object
+    properties:
+      what_is:
+        type: object
+        properties:
+          did:
+            type: string
+            title: DID is the DID of the object
+          schema:
+            title: Object_doc is the object document
+            type: object
+            properties:
+              did:
+                type: string
+                title: the DID for this schema
+              label:
+                type: string
+                title: an alternative reference point
+              cid:
+                type: string
+                description: a reference to information stored within an IPFS node.
+          creator:
+            type: string
+            title: Creator is the DID of the creator
+          timestamp:
+            type: string
+            format: int64
+            title: Timestamp is the time of the last update of the DID Document
+          is_active:
+            type: boolean
+            title: IsActive is the status of the DID Document
+          metadata:
+            type: object
+            additionalProperties:
+              type: string
+            title: >-
+              Metadata is a map of key-value pairs that can be used to store
+              additional information about the WhatIs (Schema)
   sonrio.sonr.schema.QueryWhatIsCreatorResponse:
     type: object
     properties:
@@ -56545,11 +56785,13 @@ definitions:
   sonrio.sonr.schema.SchemaDefinition:
     type: object
     properties:
-      creator:
+      did:
         type: string
         title: |-
           Represents the types of fields a schema can have
           the DID for this schema
+      creator:
+        type: string
       label:
         type: string
         title: an alternative reference point

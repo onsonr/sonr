@@ -7,6 +7,9 @@ import "bucket/where_is.proto";
 // this line is used by starport scaffolding # proto/tx/import
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
 
+option java_package = "io.sonr.types.bucket";
+option java_multiple_files = true;
+
 // Msg defines the Msg service.
 service Msg {
   rpc CreateWhereIs(MsgCreateWhereIs) returns (MsgCreateWhereIsResponse);

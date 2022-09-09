@@ -3,6 +3,8 @@ package object
 import (
 	"errors"
 	"fmt"
+
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 type ObjectBuilder struct {
@@ -86,7 +88,7 @@ func (ob *ObjectBuilder) Build() (Object, error) {
 	return ob.values, nil
 }
 
-func (ob *ObjectBuilder) Upload() (*ObjectUploadResult, error) {
+func (ob *ObjectBuilder) Upload() (*mt.UploadObjectResponse, error) {
 	toUpload, err := ob.Build()
 	if err != nil {
 		return nil, err

@@ -1,7 +1,6 @@
 package types
 
 import (
-	"errors"
 	fmt "fmt"
 	"strings"
 
@@ -19,7 +18,11 @@ var _ sdk.Msg = &MsgCreateWhereIs{}
 
 func NewMsgCreateWhereIs(creator string, label string, role BucketRole, visibility BucketVisibility, content []*BucketItem) *MsgCreateWhereIs {
 	return &MsgCreateWhereIs{
-		Creator: creator,
+		Creator:    creator,
+		Label:      label,
+		Role:       role,
+		Visibility: visibility,
+		Content:    content,
 	}
 }
 
@@ -89,9 +92,7 @@ func (msg *MsgUpdateWhereIs) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	if len(msg.Label) < 1 {
-		return errors.New("label Cannot be empty")
-	}
+
 	return nil
 }
 

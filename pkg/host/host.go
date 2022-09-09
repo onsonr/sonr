@@ -16,6 +16,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
+	"github.com/sonr-io/sonr/third_party/types/common"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 
 	// mplex "github.com/libp2p/go-libp2p-mplex"
@@ -31,10 +32,11 @@ import (
 // hostImpl type - a p2p host implementing one or more p2p protocols
 type hostImpl struct {
 	// Standard Node Implementation
-	host    host.Host
-	config  *config.Config
-	events  events.EventEmmiter
-	accAddr string
+	callback common.MotorCallback
+	host     host.Host
+	config   *config.Config
+	events   events.EventEmmiter
+	accAddr  string
 
 	// Host and context
 	privKey      crypto.PrivKey
@@ -52,7 +54,7 @@ type hostImpl struct {
 }
 
 // NewDefaultHost Creates a Sonr libp2p Host with the given config
-func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
+func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallback) (SonrHost, error) {
 	var err error
 	// Create the host.
 	hn := &hostImpl{
@@ -110,6 +112,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 			continue
 		} else {
 			hn.fsm.SetState(Status_FAIL)
+			
 			break
 		}
 	}

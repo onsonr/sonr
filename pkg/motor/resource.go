@@ -13,24 +13,24 @@ import (
 )
 
 type motorResources struct {
-	config            *client.Client
-	shell             *shell.Shell
-	whatIsStore       map[string]*st.WhatIs
-	whereIsStore      map[string]*bt.WhereIs
-	schemaStore       map[string]*st.SchemaDefinition
-	bucketStore       map[string]bucket.Bucket
+	config       *client.Client
+	shell        *shell.Shell
+	whatIsStore  map[string]*st.WhatIs
+	whereIsStore map[string]*bt.WhereIs
+	schemaStore  map[string]*st.SchemaDefinition
+	bucketStore  map[string]bucket.Bucket
 }
 
 func newMotorResources(
 	config *client.Client,
 	shell *shell.Shell) *motorResources {
 	return &motorResources{
-		config:            config,
-		shell:             shell,
-		bucketStore:       make(map[string]bucket.Bucket),
-		whatIsStore:       make(map[string]*st.WhatIs),
-		whereIsStore:      make(map[string]*bt.WhereIs),
-		schemaStore:       make(map[string]*st.SchemaDefinition),
+		config:       config,
+		shell:        shell,
+		bucketStore:  make(map[string]bucket.Bucket),
+		whatIsStore:  make(map[string]*st.WhatIs),
+		whereIsStore: make(map[string]*bt.WhereIs),
+		schemaStore:  make(map[string]*st.SchemaDefinition),
 	}
 }
 
@@ -60,6 +60,7 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 	if err = definition.Unmarshal(body); err != nil {
 		return nil, fmt.Errorf("error unmarshalling body: %s", err)
 	}
+	definition.Did = whatIs.Schema.Did
 
 	r.schemaStore[whatIs.Schema.Cid] = definition
 	return definition, nil

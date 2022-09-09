@@ -7,11 +7,12 @@ import (
 	bt "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/tx"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 func (m *motorNodeImpl) SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error) {
 	// Build Message
+	amt := types.NewInt(int64(req.Amount))
 	fromAddr, err := types.AccAddressFromBech32(req.GetFrom())
 	if err != nil {
 		return nil, err
@@ -24,12 +25,12 @@ func (m *motorNodeImpl) SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, 
 
 	// Check user balance
 	bal := m.GetBalance()
-	if bal < req.GetAmount() {
+	if bal < amt.Int64() {
 		return nil, errors.New("Failed to issue payment to user: insufficient funds")
 	}
 
 	// Build transaction
-	amount := types.NewCoins(types.NewCoin("snr", types.NewInt(req.GetAmount())))
+	amount := types.NewCoins(types.NewCoin("snr", amt))
 	msg1 := bt.NewMsgSend(fromAddr, toAddr, amount)
 	txRaw, err := tx.SignTxWithWallet(m.Wallet, "/cosmos.bank.v1beta1.MsgSend", msg1)
 	if err != nil {
@@ -43,7 +44,7 @@ func (m *motorNodeImpl) SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, 
 	}
 
 	// Get updated balance and return response
-	updatedBal := bal - req.GetAmount()
+	updatedBal := bal - amt.Int64()
 	cwir := &bt.MsgSendResponse{}
 	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cwir); err != nil {
 		return nil, err

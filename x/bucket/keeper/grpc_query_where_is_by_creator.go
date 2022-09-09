@@ -15,16 +15,23 @@ func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsBy
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-	var whereIss []types.WhereIs
+
 	ctx := sdk.UnwrapSDKContext(c)
+	if req.Pagination == nil {
+		whereIss := k.GetWhereIsByCreator(ctx, req.Creator)
+
+		return &types.QueryGetWhereIsByCreatorResponse{
+			WhereIs:    whereIss,
+			Pagination: nil,
+		}, nil
+	}
 
 	store := ctx.KVStore(k.storeKey)
-	whereIsStore := prefix.NewStore(store, types.WhereIsKey(types.MemStoreKey))
-
+	whereIsStore := prefix.NewStore(store, types.KeyPrefix(types.WhereIsKeyPrefix))
+	var whereIss []types.WhereIs
 	pageRes, err := query.Paginate(whereIsStore, req.Pagination, func(key []byte, value []byte) error {
 		var whereIs types.WhereIs
 		if err := k.cdc.Unmarshal(value, &whereIs); err != nil {
-			k.Logger(ctx).Error("Error while unMarshaling WhatIs: %s", err.Error())
 			return err
 		}
 
@@ -36,8 +43,7 @@ func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsBy
 	})
 
 	if err != nil {
-		k.Logger(ctx).Error("Error while querying whatIs: %s", err.Error())
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.Internal, "error while panginating response"+err.Error())
 	}
 
 	return &types.QueryGetWhereIsByCreatorResponse{
