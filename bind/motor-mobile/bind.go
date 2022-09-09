@@ -1,62 +1,61 @@
 package motor
 
 import (
-	"errors"
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
-	"github.com/sonr-io/sonr/x/registry/types"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )
 
 var (
-	errWalletNotExists = errors.New("mpc wallet does not exist")
+	objectBuilders map[string]*object.ObjectBuilder
+	instance       mtr.MotorNode
+	callback       ct.MotorCallback
 )
 
-var (
-	instance mtr.MotorNode
-	callback MotorCallback
-)
-
-type MotorCallback interface {
-	OnDiscover(data []byte)
-	OnWalletCreated(ok bool)
-}
-
-func Init(buf []byte, cb MotorCallback) ([]byte, error) {
+func Init(buf []byte, cb ct.MotorCallback) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
 		return nil, err
 	}
 
-	// Check if public key provided
-	if req.DeviceKeyprintPub == nil {
-		// Create Motor instance
-		mtr, err := mtr.EmptyMotor(&req, cb)
-		if err != nil {
-			return nil, err
-		}
-		instance = mtr
-		callback = cb
-
-		// init objectBuilders
-		objectBuilders = make(map[string]*object.ObjectBuilder)
-
-		// Return Initialization Response
-		resp := mt.InitializeResponse{
-			Success: true,
-		}
-		return resp.Marshal()
+	// Create Motor instance
+	mtr, err := mtr.EmptyMotor(&req, cb)
+	if err != nil {
+		return nil, err
 	}
-	return nil, errors.New("loading existing account not implemented")
+	instance = mtr
+	callback = cb
+
+	// init objectBuilders
+	objectBuilders = make(map[string]*object.ObjectBuilder)
+
+	// Return Initialization Response
+	resp := mt.InitializeResponse{
+		Success: true,
+	}
+
+	if req.AuthInfo != nil {
+		if res, err := instance.Login(mt.LoginRequest{
+			Did:       req.AuthInfo.Did,
+			Password:  req.AuthInfo.Password,
+			AesDscKey: req.AuthInfo.AesDscKey,
+			AesPskKey: req.AuthInfo.AesPskKey,
+		}); err == nil {
+			return res.Marshal()
+		}
+	}
+	return resp.Marshal()
 }
 
 func CreateAccount(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 	// decode request
 	request := mt.CreateAccountRequest{}
@@ -73,7 +72,7 @@ func CreateAccount(buf []byte) ([]byte, error) {
 
 func Login(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	// decode request
@@ -91,14 +90,14 @@ func Login(buf []byte) ([]byte, error) {
 
 func Connect() error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 	return instance.Connect()
 }
 
 func CreateSchema(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.CreateSchemaRequest
@@ -115,7 +114,7 @@ func CreateSchema(buf []byte) ([]byte, error) {
 
 func QuerySchema(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhatIsRequest
@@ -132,7 +131,7 @@ func QuerySchema(buf []byte) ([]byte, error) {
 
 func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhatIsByCreatorRequest
@@ -149,7 +148,7 @@ func QuerySchemaByCreator(buf []byte) ([]byte, error) {
 
 func QuerySchemaByDid(did string) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	res, err := instance.QueryWhatIsByDid(did)
@@ -161,7 +160,7 @@ func QuerySchemaByDid(did string) ([]byte, error) {
 
 func QueryBucket(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhereIsRequest
@@ -178,7 +177,7 @@ func QueryBucket(buf []byte) ([]byte, error) {
 
 func QueryBucketByCreator(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.QueryWhereIsByCreatorRequest
@@ -196,7 +195,7 @@ func QueryBucketByCreator(buf []byte) ([]byte, error) {
 // IssuePayment creates a send/receive token request to the specified address.
 func IssuePayment(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	var request mt.PaymentRequest
@@ -214,14 +213,14 @@ func IssuePayment(buf []byte) ([]byte, error) {
 // Stat returns general information about the Motor node its wallet and accompanying Account.
 func Stat() ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	doc := instance.GetDIDDocument()
 	if doc == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
-	diddoc, err := types.NewDIDDocumentFromPkg(doc)
+	didDoc, err := rt.NewDIDDocumentFromPkg(doc)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +228,61 @@ func Stat() ([]byte, error) {
 	resp := mt.StatResponse{
 		Address:     instance.GetAddress(),
 		Balance:     int32(instance.GetBalance()),
-		DidDocument: diddoc,
+		DidDocument: didDoc,
 	}
+	return resp.Marshal()
+}
+
+func BuyAlias(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request rt.MsgBuyAlias
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.BuyAlias(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Marshal()
+}
+
+func SellAlias(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request rt.MsgSellAlias
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.SellAlias(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Marshal()
+}
+
+func TransferAlias(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request rt.MsgTransferAlias
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.TransferAlias(request)
+	if err != nil {
+		return nil, err
+	}
+
 	return resp.Marshal()
 }

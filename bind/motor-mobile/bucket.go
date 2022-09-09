@@ -3,13 +3,14 @@ package motor
 import (
 	"context"
 
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
 func ResolveBucket(did string) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	bucket, err := instance.GetBucket(did)
@@ -29,7 +30,7 @@ func ResolveBucket(did string) error {
 
 func GetBucketObject(bucketDid, cid string) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	bucket, err := instance.GetBucket(bucketDid)
@@ -47,7 +48,7 @@ func GetBucketObject(bucketDid, cid string) ([]byte, error) {
 
 func GetBucketObjects(bucketDid string) ([]byte, error) {
 	if instance == nil {
-		return nil, errWalletNotExists
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
 	bucket, err := instance.GetBucket(bucketDid)
@@ -77,7 +78,7 @@ func GetBucketObjects(bucketDid string) ([]byte, error) {
 
 func ResolveSubBucket(bucketDid, subBucketDid string) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	bucket, err := instance.GetBucket(bucketDid)
@@ -99,7 +100,7 @@ func ResolveSubBucket(bucketDid, subBucketDid string) error {
 
 func UpdateBucketLabel(bucketDid, label string) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	_, err := instance.UpdateBucketLabel(context.Background(), bucketDid, label)
@@ -109,7 +110,7 @@ func UpdateBucketLabel(bucketDid, label string) error {
 
 func UpdateBucketVisibility(bucketDid string, vis int) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	_, err := instance.UpdateBucketVisibility(context.Background(), bucketDid, bt.BucketVisibility(vis))
@@ -120,7 +121,7 @@ func UpdateBucketVisibility(bucketDid string, vis int) error {
 // TODO: refactor this such that it accepts a CID
 func AddBucketObject(bucketDid string, obj []byte) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	newObject := &bt.BucketItem{}
@@ -141,7 +142,7 @@ func AddBucketObject(bucketDid string, obj []byte) error {
 
 func RemoveBucketObject(bucketDid, cid string) error {
 	if instance == nil {
-		return errWalletNotExists
+		return ct.ErrMotorWalletNotInitialized
 	}
 
 	b, err := instance.GetBucket(bucketDid)
