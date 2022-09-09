@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/cosmos/cosmos-sdk/types/query"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -99,7 +100,7 @@ func (c *Client) QueryWhatIs(creator string, did string) (*st.WhatIs, error) {
 	return res.WhatIs, nil
 }
 
-func (c *Client) QueryWhatIsByCreator(creator string) ([]*st.WhatIs, error) {
+func (c *Client) QueryWhatIsByCreator(creator string, pagination *query.PageRequest) ([]*st.WhatIs, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
 		c.GetRPCAddress(),   // Or your gRPC server address.
@@ -114,7 +115,8 @@ func (c *Client) QueryWhatIsByCreator(creator string) ([]*st.WhatIs, error) {
 
 	// We then call the QueryWhoIs method on this client.
 	res, err := qc.WhatIsByCreator(context.Background(), &st.QueryWhatIsCreatorRequest{
-		Creator: creator,
+		Creator:    creator,
+		Pagination: pagination,
 	})
 
 	if err != nil {
@@ -176,7 +178,7 @@ func (c *Client) QueryWhereIs(did string, address string) (*bt.WhereIs, error) {
 	return &resp.WhereIs, nil
 }
 
-func (c *Client) QueryWhereIsByCreator(address string) (*bt.QueryGetWhereIsByCreatorResponse, error) {
+func (c *Client) QueryWhereIsByCreator(address string, pagination *query.PageRequest) (*bt.QueryGetWhereIsByCreatorResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
 		c.GetRPCAddress(),   // Or your gRPC server address.
@@ -190,7 +192,7 @@ func (c *Client) QueryWhereIsByCreator(address string) (*bt.QueryGetWhereIsByCre
 	qc := bt.NewQueryClient(grpcConn)
 	res, err := qc.WhereIsByCreator(context.Background(), &bt.QueryGetWhereIsByCreatorRequest{
 		Creator:    address,
-		Pagination: nil,
+		Pagination: pagination,
 	})
 
 	if err != nil {
