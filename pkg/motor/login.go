@@ -9,7 +9,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
-	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
@@ -22,7 +21,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	mtr.Address = request.Did
 
 	// fetch vault shards
-	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_LOGGED_IN, false)
+	// mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_LOGGED_IN, false)
 	shards, err := vault.New().GetVaultShards(request.Did)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
@@ -56,7 +55,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	mtr.sharedShard = shards.PskShard
 	mtr.recoveryShard = shards.RecoveryShard
 	mtr.unusedShards = destructureShards(shards.ShardBank)
-	mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_LOGGED_IN, true)
+	// mtr.callback.OnMotorEvent(ct.MotorCallbackMessage_MTR_LOGGED_IN, true)
 
 	return mt.LoginResponse{
 		Success: true,
