@@ -2,8 +2,6 @@ package motor
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
 
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/internal/bucket"
@@ -46,20 +44,7 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 		return schema, nil
 	}
 
-	resp, err := http.Get(fmt.Sprintf("%s/ipfs/%s", r.config.GetIPFSAddress(), whatIs.Schema.Cid))
-	if err != nil {
-		return nil, fmt.Errorf("error getting cid '%s': %s", whatIs.Schema.Cid, err)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error reading body: %s", err)
-	}
-
-	definition := &st.SchemaDefinition{}
-	if err = definition.Unmarshal(body); err != nil {
-		return nil, fmt.Errorf("error unmarshalling body: %s", err)
-	}
+	var definition *st.SchemaDefinition = whatIs.Schema
 	definition.Did = whatIs.Schema.Did
 
 	r.schemaStore[whatIs.Schema.Did] = definition
