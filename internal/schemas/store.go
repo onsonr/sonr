@@ -13,13 +13,20 @@ type ReadableStore interface {
 }
 
 // Store implementation to abstract store operations
-type readStoreImpl struct {
+type ReadStoreImpl struct {
 	mu     sync.Mutex
 	cache  map[string][]byte
-	client *client.Client
+	Client *client.Client
 }
 
-func (rs *readStoreImpl) Has(ctx context.Context, key string) (bool, error) {
+func (rs *ReadStoreImpl) GetCache() map[string][]byte {
+	if rs.cache == nil {
+		rs.cache = make(map[string][]byte)
+	}
+	return rs.cache
+}
+
+func (rs *ReadStoreImpl) Has(ctx context.Context, key string) (bool, error) {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
 
@@ -35,7 +42,7 @@ func (rs *readStoreImpl) Has(ctx context.Context, key string) (bool, error) {
 	return false, nil
 }
 
-func (rs *readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
+func (rs *ReadStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
 
@@ -47,7 +54,7 @@ func (rs *readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
 		return rs.cache[key], nil
 	}
 
-	wi, err := rs.client.QueryWhatIsByDid(key)
+	wi, err := rs.Client.QueryWhatIsByDid(key)
 
 	if err != nil {
 		return nil, err

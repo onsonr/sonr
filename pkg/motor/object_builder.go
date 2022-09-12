@@ -10,12 +10,12 @@ import (
 )
 
 func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, error) {
-	whatIs, schema, found := mtr.Resources.GetSchema(did)
+	whatIs, _, found := mtr.Resources.GetSchema(did)
 	if !found {
 		return nil, fmt.Errorf("could not find WhatIs with did '%s'", did)
 	}
 
-	schemaImpl := schemas.New(schema.Fields, whatIs)
+	schemaImpl := schemas.NewWithClient(mtr.GetClient(), whatIs)
 	objCli := objectcli.New(schemaImpl, shell.NewShell(mtr.Cosmos.GetIPFSApiAddress()))
 	return object.NewBuilder(schemaImpl, objCli), nil
 }

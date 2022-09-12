@@ -27,42 +27,40 @@ type schemaImpl struct {
 	subSchemas map[string]*st.SchemaDefinition
 	whatIs     *st.WhatIs
 	nodes      datamodel.Node
-	store      *readStoreImpl
+	store      *ReadStoreImpl
 	next       *schemaImpl
 }
 
 /*
 	Default initialization with a local client instance created in scope
 */
-func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
+func New(store *ReadStoreImpl, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
-		fields:     fields,
+		fields:     whatIs.Schema.Fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
 		whatIs:     whatIs,
 		nodes:      nil,
-		store: &readStoreImpl{
-			client: client.NewClient(client.ConnEndpointType_LOCAL),
-		},
+		store:      store,
 	}
 
-	asi.loadSubSchemas(context.Background(), fields)
+	asi.LoadSubSchemas(context.Background())
 	return asi
 }
 
 /*
 	Initialize with a instance of pkg/client
 */
-func NewWithShell(client *client.Client, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
+func NewWithClient(client *client.Client, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
-		fields:     fields,
+		fields:     whatIs.Schema.Fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
 		whatIs:     whatIs,
 		nodes:      nil,
-		store: &readStoreImpl{
-			client: client,
+		store: &ReadStoreImpl{
+			Client: client,
 		},
 	}
 
-	asi.loadSubSchemas(context.Background(), fields)
+	asi.LoadSubSchemas(context.Background())
 	return asi
 }
