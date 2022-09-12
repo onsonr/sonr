@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/sonr-io/sonr/internal/schemas"
+	"github.com/sonr-io/sonr/pkg/client"
 
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
@@ -16,10 +17,10 @@ func GenerateKeyForDID() string {
 	return uuid.New().String()
 }
 
-func CreateMockHeirachyThreeLevel(creator string) []st.WhatIs {
-	whatIss := make([]st.WhatIs, 3)
+func CreateMockHeirachyThreeLevel(creator string) []*st.WhatIs {
+	whatIss := make([]*st.WhatIs, 0)
 
-	did_one := fmt.Sprintf("did:snr: %d", GenerateKeyForDID())
+	did_one := fmt.Sprintf("did:snr: %s", GenerateKeyForDID())
 	mockWhatIs := st.WhatIs{
 		Did: did_one,
 		Schema: &st.SchemaDefinition{
@@ -54,9 +55,9 @@ func CreateMockHeirachyThreeLevel(creator string) []st.WhatIs {
 		Name:  "field-5",
 		Field: st.SchemaKind_LIST,
 	})
-	whatIss = append(whatIss, mockWhatIs)
+	whatIss = append(whatIss, &mockWhatIs)
 
-	did_two := fmt.Sprintf("did:snr: %d", GenerateKeyForDID())
+	did_two := fmt.Sprintf("did:snr: %s", GenerateKeyForDID())
 	mockWhatIs_2 := st.WhatIs{
 		Did: did_two,
 		Schema: &st.SchemaDefinition{
@@ -91,11 +92,11 @@ func CreateMockHeirachyThreeLevel(creator string) []st.WhatIs {
 		LinkKind: st.LinkKind_SCHEMA,
 		Link:     did_one,
 	})
-	whatIss = append(whatIss, mockWhatIs_2)
+	whatIss = append(whatIss, &mockWhatIs_2)
 
-	did_three := fmt.Sprintf("did:snr: %d", GenerateKeyForDID())
+	did_three := fmt.Sprintf("did:snr: %s", GenerateKeyForDID())
 	mockWhatIs_3 := st.WhatIs{
-		Did: did_two,
+		Did: did_three,
 		Schema: &st.SchemaDefinition{
 			Did:     did_three,
 			Label:   "testing schema",
@@ -124,6 +125,8 @@ func CreateMockHeirachyThreeLevel(creator string) []st.WhatIs {
 		Link:     did_two,
 	})
 
+	whatIss = append(whatIss, &mockWhatIs_3)
+
 	return whatIss
 }
 
@@ -144,6 +147,9 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 }
 
 func Test_IPLD_Nodes(t *testing.T) {
+	store := &schemas.ReadStoreImpl{
+		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+	}
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
 		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
@@ -155,7 +161,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			Field: st.SchemaKind_FLOAT,
 		})
 
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(store, &whatIs)
 
 		obj := map[string]interface{}{
 			"field-1": 1,
@@ -195,7 +201,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			Field: st.SchemaKind_LIST,
 		})
 
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(store, &whatIs)
 
 		obj := map[string]interface{}{
 			"field-1": 1,
@@ -230,7 +236,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			Field: st.SchemaKind_FLOAT,
 		})
 
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(store, &whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -268,7 +274,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			Field: st.SchemaKind_FLOAT,
 		})
 
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(store, &whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -300,7 +306,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			Field: st.SchemaKind_FLOAT,
 		})
 
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(store, &whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -332,7 +338,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			Field: st.SchemaKind_STRING,
 		})
 
-		schema := schemas.New(def.Fields, &whatIs)
+		schema := schemas.New(store, &whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-4": 2.0,
@@ -343,11 +349,21 @@ func Test_IPLD_Nodes(t *testing.T) {
 }
 
 func Test_Sub_Schemas(t *testing.T) {
-	t.Skip("Skipping for CI")
 	whatIss := CreateMockHeirachyThreeLevel("snr12345")
+	store := &schemas.ReadStoreImpl{
+		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+	}
 
+	for _, wi := range whatIss {
+		b, err := wi.Schema.Marshal()
+		if err != nil {
+			assert.Error(t, err)
+		}
+		store.GetCache()[wi.Did] = b
+	}
 	t.Run("multi level sub schema should load into internal module", func(t *testing.T) {
-		schema := schemas.New(whatIss[0].Schema.Fields, &whatIss[0])
+
+		schema := schemas.New(store, whatIss[2])
 
 		obj := map[string]interface{}{
 			"id":   1,
@@ -381,7 +397,7 @@ func Test_Sub_Schemas(t *testing.T) {
 	})
 
 	t.Run("multi level sub schema should error with invalid types", func(t *testing.T) {
-		schema := schemas.New(whatIss[0].Schema.Fields, &whatIss[0])
+		schema := schemas.New(store, whatIss[2])
 
 		obj := map[string]interface{}{
 			"id":   1,
