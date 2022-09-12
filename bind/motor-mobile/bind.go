@@ -11,13 +11,18 @@ import (
 	_ "golang.org/x/mobile/bind"
 )
 
+type MotorCallback interface {
+	OnDiscover(data []byte)
+	OnMotorEvent(msg string, isDone bool)
+}
+
 var (
 	objectBuilders map[string]*object.ObjectBuilder
 	instance       mtr.MotorNode
 	callback       ct.MotorCallback
 )
 
-func Init(buf []byte, cb ct.MotorCallback) ([]byte, error) {
+func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
