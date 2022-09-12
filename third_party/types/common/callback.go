@@ -4,7 +4,7 @@ import "log"
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
-	OnMotorEvent(msg MotorCallbackMessage, isDone bool)
+	OnMotorEvent(msg string, isDone bool)
 }
 
 type defaultCallback struct {
