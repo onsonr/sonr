@@ -15,11 +15,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          
+
       - id: setup-ndk
         uses: nttld/setup-ndk@v1
         with:
           ndk-version: r23c
+
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin" # See 'Supported distributions' for available options
@@ -51,8 +52,13 @@ jobs:
         with:
           args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
 
+      - name: Install go mobile
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          gomobile init
+
       - name: Test Motor Bind
         run: make bind
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
