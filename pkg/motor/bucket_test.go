@@ -19,9 +19,8 @@ func Test_CreateBucket(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:       ADDR,
-		Password:  "password123",
-		AesPskKey: pskKey,
+		Did:      ADDR,
+		Password: "password123",
 	}
 	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
@@ -49,9 +48,8 @@ func Test_GetBucket(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:       ADDR,
-		Password:  "password123",
-		AesPskKey: pskKey,
+		Did:      ADDR,
+		Password: "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{

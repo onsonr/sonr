@@ -55,8 +55,7 @@ message InitializeRequest {
 // CreateAccount Request contains the three keys needed to create an account on Sonr
 message CreateAccountRequest {
   string password = 1;
-  bytes aes_dsc_key = 2;
-  map<string, string> metadata = 3;
+  map<string, string> metadata = 2;
 }
 
 // Login requires the DID of the account being logged into,
@@ -65,8 +64,6 @@ message CreateAccountRequest {
 message LoginRequest {
   string did = 1;
   string password = 2;
-  bytes aes_dsc_key = 3;
-  bytes aes_psk_key = 4;
 }
 
 message QueryRequest {

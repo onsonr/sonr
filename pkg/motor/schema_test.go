@@ -20,9 +20,8 @@ func Test_CreateSchema(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:       ADDR,
-		Password:  "password123",
-		AesPskKey: pskKey,
+		Did:      ADDR,
+		Password: "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
@@ -54,9 +53,8 @@ func Test_QuerySchema(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:       ADDR,
-		Password:  "password123",
-		AesPskKey: pskKey,
+		Did:      ADDR,
+		Password: "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
@@ -97,9 +95,8 @@ func Test_QuerySchemaByCreator(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:       ADDR,
-		Password:  "password123",
-		AesPskKey: pskKey,
+		Did:      ADDR,
+		Password: "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
@@ -135,9 +132,8 @@ func Test_QuerySchemaByDid(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:       ADDR,
-		Password:  "password123",
-		AesPskKey: pskKey,
+		Did:      ADDR,
+		Password: "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
