@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -39,7 +40,15 @@ func New(level string, category string) *Logger {
 	}
 }
 
-func (l *Logger) log(level LogLevel, category string, message string, args ...interface{}) {
+func NewWithWriter(writer io.Writer, level string, category string) *Logger {
+	return &Logger{
+		level:    conevertLogLevel(level),
+		category: category,
+		logger:   log.New(writer, category, 0),
+	}
+}
+
+func (l *Logger) log(level LogLevel, message string, args ...interface{}) {
 	if l.level <= level {
 		ts := time.Now().Format("2006-01-02 15:04:05")
 		prefix := fmt.Sprintf("%s %s %s : ", conevertLogLevelCategory(level), ts, l.category)
@@ -47,18 +56,19 @@ func (l *Logger) log(level LogLevel, category string, message string, args ...in
 		l.logger.Printf(message, args...)
 	}
 }
+
 func (l *Logger) Debug(message string, args ...interface{}) {
-	l.log(LEVEL_DEBUG, CAT_DEBUG, message, args...)
+	l.log(LEVEL_DEBUG, message, args...)
 }
 
 func (l *Logger) Info(message string, args ...interface{}) {
-	l.log(LEVEL_INFO, CAT_INFO, message, args...)
+	l.log(LEVEL_INFO, message, args...)
 }
 
 func (l *Logger) Warn(message string, args ...interface{}) {
-	l.log(LEVEL_WARN, CAT_WARN, message, args...)
+	l.log(LEVEL_WARN, message, args...)
 }
 
 func (l *Logger) Error(message string, args ...interface{}) {
-	l.log(LEVEL_ERROR, CAT_ERROR, message, args...)
+	l.log(LEVEL_ERROR, message, args...)
 }

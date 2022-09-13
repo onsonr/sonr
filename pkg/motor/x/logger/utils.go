@@ -3,15 +3,15 @@ package logger
 func conevertLogLevelCategory(level LogLevel) string {
 	switch level {
 	case LEVEL_INFO:
-		return "[INFO]"
+		return CAT_INFO
 	case LEVEL_DEBUG:
-		return "[DEBUG]"
+		return CAT_DEBUG
 	case LEVEL_WARN:
-		return "[WARN]"
+		return CAT_WARN
 	case LEVEL_ERROR:
-		return "[ERROR]"
+		return CAT_ERROR
 	case LEVEL_FATAL:
-		return "[FATAL]"
+		return CAT_FATAL
 	}
 
 	return ""
