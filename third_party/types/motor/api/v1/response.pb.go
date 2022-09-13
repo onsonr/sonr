@@ -11,8 +11,8 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 	common "github.com/sonr-io/sonr/third_party/types/common"
 	types2 "github.com/sonr-io/sonr/x/bucket/types"
-	types "github.com/sonr-io/sonr/x/registry/types"
-	types1 "github.com/sonr-io/sonr/x/schema/types"
+	types1 "github.com/sonr-io/sonr/x/registry/types"
+	types "github.com/sonr-io/sonr/x/schema/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -30,7 +30,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type InitializeResponse struct {
-	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Success     bool                      `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Definitions []*types.SchemaDefinition `protobuf:"bytes,2,rep,name=definitions,proto3" json:"definitions,omitempty"`
 }
 
 func (m *InitializeResponse) Reset()         { *m = InitializeResponse{} }
@@ -73,9 +74,16 @@ func (m *InitializeResponse) GetSuccess() bool {
 	return false
 }
 
+func (m *InitializeResponse) GetDefinitions() []*types.SchemaDefinition {
+	if m != nil {
+		return m.Definitions
+	}
+	return nil
+}
+
 type CreateAccountResponse struct {
-	Address string       `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	WhoIs   *types.WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
+	Address string        `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	WhoIs   *types1.WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
 }
 
 func (m *CreateAccountResponse) Reset()         { *m = CreateAccountResponse{} }
@@ -118,7 +126,7 @@ func (m *CreateAccountResponse) GetAddress() string {
 	return ""
 }
 
-func (m *CreateAccountResponse) GetWhoIs() *types.WhoIs {
+func (m *CreateAccountResponse) GetWhoIs() *types1.WhoIs {
 	if m != nil {
 		return m.WhoIs
 	}
@@ -126,8 +134,8 @@ func (m *CreateAccountResponse) GetWhoIs() *types.WhoIs {
 }
 
 type LoginResponse struct {
-	Success bool         `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	WhoIs   *types.WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
+	Success bool          `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	WhoIs   *types1.WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
 }
 
 func (m *LoginResponse) Reset()         { *m = LoginResponse{} }
@@ -170,7 +178,7 @@ func (m *LoginResponse) GetSuccess() bool {
 	return false
 }
 
-func (m *LoginResponse) GetWhoIs() *types.WhoIs {
+func (m *LoginResponse) GetWhoIs() *types1.WhoIs {
 	if m != nil {
 		return m.WhoIs
 	}
@@ -178,9 +186,9 @@ func (m *LoginResponse) GetWhoIs() *types.WhoIs {
 }
 
 type CreateSchemaResponse struct {
-	Status           int32                    `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	WhatIs           *types1.WhatIs           `protobuf:"bytes,2,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
-	SchemaDefinition *types1.SchemaDefinition `protobuf:"bytes,3,opt,name=schema_definition,json=schemaDefinition,proto3" json:"schema_definition,omitempty"`
+	Status           int32                   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	WhatIs           *types.WhatIs           `protobuf:"bytes,2,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
+	SchemaDefinition *types.SchemaDefinition `protobuf:"bytes,3,opt,name=schema_definition,json=schemaDefinition,proto3" json:"schema_definition,omitempty"`
 }
 
 func (m *CreateSchemaResponse) Reset()         { *m = CreateSchemaResponse{} }
@@ -223,14 +231,14 @@ func (m *CreateSchemaResponse) GetStatus() int32 {
 	return 0
 }
 
-func (m *CreateSchemaResponse) GetWhatIs() *types1.WhatIs {
+func (m *CreateSchemaResponse) GetWhatIs() *types.WhatIs {
 	if m != nil {
 		return m.WhatIs
 	}
 	return nil
 }
 
-func (m *CreateSchemaResponse) GetSchemaDefinition() *types1.SchemaDefinition {
+func (m *CreateSchemaResponse) GetSchemaDefinition() *types.SchemaDefinition {
 	if m != nil {
 		return m.SchemaDefinition
 	}
@@ -306,13 +314,13 @@ func (m *QueryResponse) GetResults() []*QueryResultItem {
 }
 
 type QueryResultItem struct {
-	Did              string                   `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	Kind             common.EntityKind        `protobuf:"varint,2,opt,name=kind,proto3,enum=sonrio.common.v1.EntityKind" json:"kind,omitempty"`
-	WhoIs            *types.WhoIs             `protobuf:"bytes,3,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
-	WhatIs           *types1.WhatIs           `protobuf:"bytes,4,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
-	SchemaDefinition *types1.SchemaDefinition `protobuf:"bytes,5,opt,name=schema_definition,json=schemaDefinition,proto3" json:"schema_definition,omitempty"`
-	WhereIs          *types2.WhereIs          `protobuf:"bytes,6,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
-	WhereIsList      []*types2.WhereIs        `protobuf:"bytes,7,rep,name=where_is_list,json=whereIsList,proto3" json:"where_is_list,omitempty"`
+	Did              string                  `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	Kind             common.EntityKind       `protobuf:"varint,2,opt,name=kind,proto3,enum=sonrio.common.v1.EntityKind" json:"kind,omitempty"`
+	WhoIs            *types1.WhoIs           `protobuf:"bytes,3,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
+	WhatIs           *types.WhatIs           `protobuf:"bytes,4,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
+	SchemaDefinition *types.SchemaDefinition `protobuf:"bytes,5,opt,name=schema_definition,json=schemaDefinition,proto3" json:"schema_definition,omitempty"`
+	WhereIs          *types2.WhereIs         `protobuf:"bytes,6,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
+	WhereIsList      []*types2.WhereIs       `protobuf:"bytes,7,rep,name=where_is_list,json=whereIsList,proto3" json:"where_is_list,omitempty"`
 }
 
 func (m *QueryResultItem) Reset()         { *m = QueryResultItem{} }
@@ -362,21 +370,21 @@ func (m *QueryResultItem) GetKind() common.EntityKind {
 	return common.EntityKind_ADDRESS
 }
 
-func (m *QueryResultItem) GetWhoIs() *types.WhoIs {
+func (m *QueryResultItem) GetWhoIs() *types1.WhoIs {
 	if m != nil {
 		return m.WhoIs
 	}
 	return nil
 }
 
-func (m *QueryResultItem) GetWhatIs() *types1.WhatIs {
+func (m *QueryResultItem) GetWhatIs() *types.WhatIs {
 	if m != nil {
 		return m.WhatIs
 	}
 	return nil
 }
 
-func (m *QueryResultItem) GetSchemaDefinition() *types1.SchemaDefinition {
+func (m *QueryResultItem) GetSchemaDefinition() *types.SchemaDefinition {
 	if m != nil {
 		return m.SchemaDefinition
 	}
@@ -398,8 +406,8 @@ func (m *QueryResultItem) GetWhereIsList() []*types2.WhereIs {
 }
 
 type QueryWhoIsResponse struct {
-	Code  int32        `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	WhoIs *types.WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
+	Code  int32         `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	WhoIs *types1.WhoIs `protobuf:"bytes,2,opt,name=who_is,json=whoIs,proto3" json:"who_is,omitempty"`
 }
 
 func (m *QueryWhoIsResponse) Reset()         { *m = QueryWhoIsResponse{} }
@@ -442,7 +450,7 @@ func (m *QueryWhoIsResponse) GetCode() int32 {
 	return 0
 }
 
-func (m *QueryWhoIsResponse) GetWhoIs() *types.WhoIs {
+func (m *QueryWhoIsResponse) GetWhoIs() *types1.WhoIs {
 	if m != nil {
 		return m.WhoIs
 	}
@@ -450,9 +458,9 @@ func (m *QueryWhoIsResponse) GetWhoIs() *types.WhoIs {
 }
 
 type QueryWhatIsResponse struct {
-	Code   int32                    `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	WhatIs *types1.WhatIs           `protobuf:"bytes,2,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
-	Schema *types1.SchemaDefinition `protobuf:"bytes,3,opt,name=schema,proto3" json:"schema,omitempty"`
+	Code   int32                   `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	WhatIs *types.WhatIs           `protobuf:"bytes,2,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
+	Schema *types.SchemaDefinition `protobuf:"bytes,3,opt,name=schema,proto3" json:"schema,omitempty"`
 }
 
 func (m *QueryWhatIsResponse) Reset()         { *m = QueryWhatIsResponse{} }
@@ -495,14 +503,14 @@ func (m *QueryWhatIsResponse) GetCode() int32 {
 	return 0
 }
 
-func (m *QueryWhatIsResponse) GetWhatIs() *types1.WhatIs {
+func (m *QueryWhatIsResponse) GetWhatIs() *types.WhatIs {
 	if m != nil {
 		return m.WhatIs
 	}
 	return nil
 }
 
-func (m *QueryWhatIsResponse) GetSchema() *types1.SchemaDefinition {
+func (m *QueryWhatIsResponse) GetSchema() *types.SchemaDefinition {
 	if m != nil {
 		return m.Schema
 	}
@@ -510,10 +518,10 @@ func (m *QueryWhatIsResponse) GetSchema() *types1.SchemaDefinition {
 }
 
 type QueryWhatIsByCreatorResponse struct {
-	Code       int32                               `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	WhatIs     []*types1.WhatIs                    `protobuf:"bytes,2,rep,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
-	Schemas    map[string]*types1.SchemaDefinition `protobuf:"bytes,3,rep,name=schemas,proto3" json:"schemas,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Pagination *query.PageResponse                 `protobuf:"bytes,4,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Code       int32                              `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	WhatIs     []*types.WhatIs                    `protobuf:"bytes,2,rep,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
+	Schemas    map[string]*types.SchemaDefinition `protobuf:"bytes,3,rep,name=schemas,proto3" json:"schemas,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Pagination *query.PageResponse                `protobuf:"bytes,4,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryWhatIsByCreatorResponse) Reset()         { *m = QueryWhatIsByCreatorResponse{} }
@@ -556,14 +564,14 @@ func (m *QueryWhatIsByCreatorResponse) GetCode() int32 {
 	return 0
 }
 
-func (m *QueryWhatIsByCreatorResponse) GetWhatIs() []*types1.WhatIs {
+func (m *QueryWhatIsByCreatorResponse) GetWhatIs() []*types.WhatIs {
 	if m != nil {
 		return m.WhatIs
 	}
 	return nil
 }
 
-func (m *QueryWhatIsByCreatorResponse) GetSchemas() map[string]*types1.SchemaDefinition {
+func (m *QueryWhatIsByCreatorResponse) GetSchemas() map[string]*types.SchemaDefinition {
 	if m != nil {
 		return m.Schemas
 	}
@@ -950,10 +958,10 @@ func (m *BucketContentList) GetBuckets() []*types2.BucketContent {
 }
 
 type StatResponse struct {
-	Address     string             `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	DidDocument *types.DIDDocument `protobuf:"bytes,2,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
-	Balance     int32              `protobuf:"varint,3,opt,name=balance,proto3" json:"balance,omitempty"`
-	Stake       int32              `protobuf:"varint,4,opt,name=stake,proto3" json:"stake,omitempty"`
+	Address     string              `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	DidDocument *types1.DIDDocument `protobuf:"bytes,2,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
+	Balance     int32               `protobuf:"varint,3,opt,name=balance,proto3" json:"balance,omitempty"`
+	Stake       int32               `protobuf:"varint,4,opt,name=stake,proto3" json:"stake,omitempty"`
 }
 
 func (m *StatResponse) Reset()         { *m = StatResponse{} }
@@ -996,7 +1004,7 @@ func (m *StatResponse) GetAddress() string {
 	return ""
 }
 
-func (m *StatResponse) GetDidDocument() *types.DIDDocument {
+func (m *StatResponse) GetDidDocument() *types1.DIDDocument {
 	if m != nil {
 		return m.DidDocument
 	}
@@ -1221,6 +1229,142 @@ func (m *SearchResponse) GetContent() [][]byte {
 	return nil
 }
 
+type UploadDocumentResponse struct {
+	Status   int32                 `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Did      string                `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+	Cid      string                `protobuf:"bytes,3,opt,name=cid,proto3" json:"cid,omitempty"`
+	Document *types.SchemaDocument `protobuf:"bytes,4,opt,name=document,proto3" json:"document,omitempty"`
+}
+
+func (m *UploadDocumentResponse) Reset()         { *m = UploadDocumentResponse{} }
+func (m *UploadDocumentResponse) String() string { return proto.CompactTextString(m) }
+func (*UploadDocumentResponse) ProtoMessage()    {}
+func (*UploadDocumentResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_848516c2c2ca9fc7, []int{20}
+}
+func (m *UploadDocumentResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UploadDocumentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UploadDocumentResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UploadDocumentResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UploadDocumentResponse.Merge(m, src)
+}
+func (m *UploadDocumentResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *UploadDocumentResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_UploadDocumentResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UploadDocumentResponse proto.InternalMessageInfo
+
+func (m *UploadDocumentResponse) GetStatus() int32 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
+func (m *UploadDocumentResponse) GetDid() string {
+	if m != nil {
+		return m.Did
+	}
+	return ""
+}
+
+func (m *UploadDocumentResponse) GetCid() string {
+	if m != nil {
+		return m.Cid
+	}
+	return ""
+}
+
+func (m *UploadDocumentResponse) GetDocument() *types.SchemaDocument {
+	if m != nil {
+		return m.Document
+	}
+	return nil
+}
+
+type GetDocumentResponse struct {
+	Status   int32                 `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Did      string                `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+	Cid      string                `protobuf:"bytes,3,opt,name=cid,proto3" json:"cid,omitempty"`
+	Document *types.SchemaDocument `protobuf:"bytes,4,opt,name=document,proto3" json:"document,omitempty"`
+}
+
+func (m *GetDocumentResponse) Reset()         { *m = GetDocumentResponse{} }
+func (m *GetDocumentResponse) String() string { return proto.CompactTextString(m) }
+func (*GetDocumentResponse) ProtoMessage()    {}
+func (*GetDocumentResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_848516c2c2ca9fc7, []int{21}
+}
+func (m *GetDocumentResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetDocumentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetDocumentResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetDocumentResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetDocumentResponse.Merge(m, src)
+}
+func (m *GetDocumentResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetDocumentResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetDocumentResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetDocumentResponse proto.InternalMessageInfo
+
+func (m *GetDocumentResponse) GetStatus() int32 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
+func (m *GetDocumentResponse) GetDid() string {
+	if m != nil {
+		return m.Did
+	}
+	return ""
+}
+
+func (m *GetDocumentResponse) GetCid() string {
+	if m != nil {
+		return m.Cid
+	}
+	return ""
+}
+
+func (m *GetDocumentResponse) GetDocument() *types.SchemaDocument {
+	if m != nil {
+		return m.Document
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*InitializeResponse)(nil), "sonrio.motor.api.v1.InitializeResponse")
 	proto.RegisterType((*CreateAccountResponse)(nil), "sonrio.motor.api.v1.CreateAccountResponse")
@@ -1231,7 +1375,7 @@ func init() {
 	proto.RegisterType((*QueryWhoIsResponse)(nil), "sonrio.motor.api.v1.QueryWhoIsResponse")
 	proto.RegisterType((*QueryWhatIsResponse)(nil), "sonrio.motor.api.v1.QueryWhatIsResponse")
 	proto.RegisterType((*QueryWhatIsByCreatorResponse)(nil), "sonrio.motor.api.v1.QueryWhatIsByCreatorResponse")
-	proto.RegisterMapType((map[string]*types1.SchemaDefinition)(nil), "sonrio.motor.api.v1.QueryWhatIsByCreatorResponse.SchemasEntry")
+	proto.RegisterMapType((map[string]*types.SchemaDefinition)(nil), "sonrio.motor.api.v1.QueryWhatIsByCreatorResponse.SchemasEntry")
 	proto.RegisterType((*QueryWhereIsByCreatorResponse)(nil), "sonrio.motor.api.v1.QueryWhereIsByCreatorResponse")
 	proto.RegisterType((*ObjectReference)(nil), "sonrio.motor.api.v1.ObjectReference")
 	proto.RegisterType((*UploadObjectResponse)(nil), "sonrio.motor.api.v1.UploadObjectResponse")
@@ -1243,85 +1387,91 @@ func init() {
 	proto.RegisterType((*PaymentResponse)(nil), "sonrio.motor.api.v1.PaymentResponse")
 	proto.RegisterType((*SearchBucketContentBySchemaResponse)(nil), "sonrio.motor.api.v1.SearchBucketContentBySchemaResponse")
 	proto.RegisterType((*SearchResponse)(nil), "sonrio.motor.api.v1.SearchResponse")
+	proto.RegisterType((*UploadDocumentResponse)(nil), "sonrio.motor.api.v1.UploadDocumentResponse")
+	proto.RegisterType((*GetDocumentResponse)(nil), "sonrio.motor.api.v1.GetDocumentResponse")
 }
 
 func init() { proto.RegisterFile("motor/v1/response.proto", fileDescriptor_848516c2c2ca9fc7) }
 
 var fileDescriptor_848516c2c2ca9fc7 = []byte{
-	// 1160 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x57, 0xcf, 0x6f, 0x1b, 0xc5,
-	0x17, 0xef, 0xc6, 0xb1, 0x5d, 0xbf, 0xa4, 0x49, 0xbb, 0x71, 0x5b, 0x2b, 0xdf, 0xd6, 0xdf, 0x76,
-	0x41, 0x6a, 0x84, 0xc4, 0x2e, 0x49, 0xa5, 0x0a, 0x15, 0x54, 0x84, 0xeb, 0x0a, 0xac, 0x16, 0x91,
-	0x6e, 0x84, 0x82, 0x10, 0xc8, 0x8c, 0x77, 0x26, 0xde, 0xc1, 0xf6, 0x8e, 0xd9, 0x99, 0x8d, 0x6b,
-	0x6e, 0x5c, 0x10, 0xe2, 0xc4, 0x85, 0x1b, 0xe2, 0xaf, 0x00, 0xfe, 0x06, 0x8e, 0x3d, 0x72, 0x44,
-	0xc9, 0x95, 0x3f, 0x02, 0xcd, 0x2f, 0x67, 0x9d, 0x1f, 0x8e, 0x9b, 0x9e, 0x76, 0xe7, 0xcd, 0xfb,
-	0xf1, 0x79, 0x6f, 0x3e, 0xef, 0xcd, 0x2e, 0xdc, 0x1c, 0x30, 0xc1, 0xd2, 0x60, 0x7f, 0x33, 0x48,
-	0x09, 0x1f, 0xb2, 0x84, 0x13, 0x7f, 0x98, 0x32, 0xc1, 0xdc, 0x35, 0xce, 0x92, 0x94, 0x32, 0x5f,
-	0xed, 0xfb, 0x68, 0x48, 0xfd, 0xfd, 0xcd, 0xf5, 0xb5, 0x4e, 0x16, 0xf5, 0x88, 0x08, 0xf4, 0x43,
-	0x6b, 0xae, 0x5f, 0x37, 0xc2, 0x51, 0x4c, 0x52, 0xd2, 0xa6, 0xdc, 0x88, 0xab, 0x11, 0x1b, 0x0c,
-	0x58, 0x22, 0x5d, 0xd3, 0x64, 0x8f, 0x19, 0xe9, 0x5b, 0x11, 0xe3, 0x03, 0xc6, 0x83, 0x0e, 0xe2,
-	0x24, 0xf8, 0x36, 0x23, 0xe9, 0x38, 0xd8, 0xdf, 0xec, 0x10, 0x81, 0x36, 0x83, 0x21, 0xea, 0xd2,
-	0x04, 0x09, 0xca, 0x12, 0xa3, 0xeb, 0xa6, 0xa4, 0x4b, 0xb9, 0x48, 0xc7, 0x01, 0xa6, 0xd8, 0x06,
-	0x9b, 0xc8, 0x46, 0x31, 0x3b, 0x0a, 0x76, 0x83, 0x47, 0x31, 0x19, 0x20, 0x19, 0x4c, 0xbf, 0x19,
-	0xf9, 0xcd, 0x23, 0xf9, 0x28, 0x46, 0x62, 0x62, 0xe0, 0xf9, 0xe0, 0xb6, 0x12, 0x2a, 0x28, 0xea,
-	0xd3, 0xef, 0x48, 0x68, 0x52, 0x77, 0x6b, 0x50, 0xe6, 0x59, 0x14, 0x11, 0xce, 0x6b, 0xce, 0x1d,
-	0x67, 0xe3, 0x72, 0x68, 0x97, 0x1e, 0x81, 0xeb, 0x8f, 0x53, 0x82, 0x04, 0xf9, 0x30, 0x8a, 0x58,
-	0x96, 0x88, 0xbc, 0x09, 0xc2, 0x38, 0xb5, 0x26, 0x95, 0xd0, 0x2e, 0xdd, 0x2d, 0x28, 0x69, 0x8c,
-	0xb5, 0x85, 0x3b, 0xce, 0xc6, 0xd2, 0xd6, 0xff, 0x7c, 0x53, 0x52, 0xf9, 0xf0, 0x6d, 0x1e, 0xfe,
-	0x6e, 0xcc, 0x5a, 0x3c, 0x2c, 0x8e, 0xe4, 0xc3, 0xfb, 0x0a, 0xae, 0x3c, 0x63, 0x5d, 0x9a, 0x9c,
-	0x8f, 0xe8, 0x42, 0xee, 0xff, 0x74, 0xa0, 0xaa, 0xd3, 0xd8, 0x51, 0x75, 0x99, 0x84, 0xb9, 0x01,
-	0x25, 0x2e, 0x90, 0xc8, 0x74, 0x94, 0x62, 0x68, 0x56, 0xee, 0x7d, 0x28, 0x9b, 0xba, 0x99, 0x28,
-	0xeb, 0x53, 0x51, 0x4c, 0xad, 0x77, 0x63, 0x24, 0x5a, 0x3c, 0x2c, 0x8d, 0xd4, 0xd3, 0x7d, 0x0e,
-	0xd7, 0xf4, 0x46, 0x1b, 0x93, 0x3d, 0x2a, 0xab, 0xcc, 0x92, 0x5a, 0x41, 0x99, 0xbf, 0x79, 0x9a,
-	0xb9, 0xc6, 0xd2, 0x9c, 0xe8, 0x86, 0x57, 0xf9, 0x31, 0x89, 0xf7, 0x87, 0x03, 0x57, 0x9e, 0x4b,
-	0xb6, 0x4c, 0x10, 0xbb, 0xb0, 0x18, 0x31, 0x4c, 0x0c, 0x5e, 0xf5, 0xee, 0x56, 0xa1, 0xa8, 0x28,
-	0xa5, 0xb0, 0x56, 0x42, 0xbd, 0x70, 0x1f, 0x42, 0x69, 0xc0, 0x70, 0xd6, 0x27, 0x0a, 0xc3, 0xca,
-	0x96, 0x67, 0x31, 0x68, 0x82, 0xfa, 0xfb, 0x9b, 0x7e, 0xa3, 0xcf, 0xa2, 0x5e, 0x14, 0x23, 0x9a,
-	0x7c, 0xa2, 0x34, 0x43, 0x63, 0xe1, 0x3e, 0x82, 0x72, 0x4a, 0x78, 0xd6, 0x17, 0xbc, 0xb6, 0x78,
-	0xa7, 0x90, 0x4f, 0x20, 0xdf, 0x17, 0xbe, 0x85, 0x96, 0xf5, 0x45, 0x4b, 0x90, 0x41, 0x68, 0x8d,
-	0xbc, 0x9f, 0x0a, 0xb0, 0x7a, 0x6c, 0xd3, 0xbd, 0x0a, 0x05, 0x4c, 0xb1, 0x61, 0x8b, 0x7c, 0x75,
-	0xdf, 0x81, 0xc5, 0x1e, 0x4d, 0xb0, 0x82, 0xbd, 0xb2, 0x75, 0xeb, 0x24, 0xbe, 0x27, 0x89, 0xa0,
-	0x62, 0xfc, 0x94, 0x26, 0x38, 0x54, 0x9a, 0xb9, 0xc3, 0x2f, 0xcc, 0x7b, 0xf8, 0xf9, 0xb3, 0x5c,
-	0x7c, 0xbd, 0xb3, 0x2c, 0xbe, 0xce, 0x59, 0xba, 0x0f, 0xe0, 0xb2, 0x1d, 0x15, 0xb5, 0xd2, 0x29,
-	0xe8, 0xcd, 0x70, 0xd9, 0x95, 0x3a, 0x2d, 0x1e, 0x96, 0x47, 0xfa, 0xc5, 0xfd, 0x00, 0xae, 0x58,
-	0xbb, 0x76, 0x9f, 0x72, 0x51, 0x2b, 0xab, 0x13, 0x99, 0x69, 0xbc, 0x64, 0x8c, 0x9f, 0x51, 0x2e,
-	0xbc, 0x2f, 0xc1, 0x55, 0x67, 0xa1, 0xab, 0x32, 0x8b, 0x48, 0x17, 0xe9, 0xad, 0x5f, 0x1d, 0x58,
-	0x33, 0xee, 0x55, 0x05, 0x67, 0xf9, 0xbf, 0x50, 0x5b, 0xbd, 0x0f, 0x25, 0xbd, 0xf1, 0x4a, 0xbd,
-	0x64, 0x6c, 0xbc, 0x7f, 0x17, 0xe0, 0x56, 0x0e, 0x5e, 0x63, 0xac, 0xe6, 0x00, 0x4b, 0xe7, 0xc7,
-	0x59, 0x98, 0x13, 0xe7, 0xe7, 0x50, 0xd6, 0x1b, 0x92, 0x9c, 0xd2, 0xe8, 0xd1, 0xd9, 0x3d, 0x73,
-	0x06, 0x18, 0x93, 0x06, 0x7f, 0x92, 0x88, 0x74, 0x1c, 0x5a, 0x77, 0xee, 0x47, 0x00, 0x47, 0x97,
-	0x84, 0x21, 0xf1, 0x3d, 0x5f, 0xdf, 0x28, 0xbe, 0xbc, 0x51, 0x7c, 0xd5, 0xf1, 0xbe, 0xb9, 0x51,
-	0xfc, 0x6d, 0xd4, 0x9d, 0xcc, 0xf6, 0x30, 0x67, 0xba, 0xfe, 0x35, 0x2c, 0xe7, 0x23, 0xc8, 0x96,
-	0xec, 0x91, 0xb1, 0x6d, 0xc9, 0x1e, 0x91, 0x43, 0xa3, 0xb8, 0x8f, 0xfa, 0x19, 0x31, 0xe7, 0x33,
-	0x5f, 0xad, 0xb5, 0xc9, 0xc3, 0x85, 0x77, 0x1d, 0xef, 0x77, 0x07, 0x6e, 0x9b, 0x0c, 0x15, 0x01,
-	0xe7, 0xab, 0x77, 0xbe, 0x35, 0x16, 0xce, 0x67, 0xf7, 0xa4, 0x35, 0xa6, 0x0b, 0x53, 0xb8, 0x70,
-	0x61, 0xbc, 0xa7, 0xb0, 0xfa, 0x69, 0xe7, 0x1b, 0x12, 0x89, 0x90, 0xec, 0x91, 0x94, 0x24, 0x11,
-	0x39, 0x65, 0x5c, 0x55, 0xa1, 0xd8, 0x47, 0x1d, 0xd2, 0xb7, 0x63, 0x56, 0x2d, 0xa4, 0x5e, 0x44,
-	0xb1, 0x0a, 0x5e, 0x09, 0xe5, 0xab, 0xf7, 0xa3, 0x03, 0xd5, 0xcf, 0x86, 0x7d, 0x86, 0xb0, 0xf5,
-	0x39, 0x23, 0xf5, 0x06, 0x54, 0x52, 0x1b, 0xf3, 0x78, 0xd1, 0xa7, 0x78, 0x73, 0x0c, 0x5f, 0x78,
-	0x64, 0x26, 0x2f, 0xcb, 0x01, 0xe1, 0x1c, 0x75, 0x89, 0x81, 0x61, 0x97, 0xde, 0x86, 0xbd, 0xf7,
-	0x1a, 0xaa, 0x82, 0x13, 0x24, 0x27, 0x92, 0xf3, 0xf6, 0x24, 0x66, 0x7c, 0x52, 0xf3, 0xac, 0x1b,
-	0x72, 0xfa, 0xc8, 0xe6, 0x9e, 0x66, 0x5e, 0x07, 0xaa, 0x79, 0x7e, 0xbc, 0x02, 0x2d, 0xe6, 0x8f,
-	0xb1, 0x0d, 0xd7, 0x74, 0x16, 0x8f, 0x59, 0x22, 0x48, 0x22, 0xe4, 0x14, 0x74, 0xdf, 0x83, 0xb2,
-	0xd6, 0x97, 0x99, 0x48, 0x8a, 0xdd, 0x3d, 0xcd, 0xd7, 0x94, 0x5d, 0x68, 0x2d, 0xbc, 0xdf, 0x1c,
-	0x58, 0xde, 0x11, 0x68, 0x9e, 0xcf, 0x9f, 0x26, 0x2c, 0x63, 0x8a, 0xdb, 0x98, 0x45, 0xd9, 0x80,
-	0x24, 0xc2, 0x00, 0xbf, 0x7b, 0xfa, 0x24, 0x6d, 0xb6, 0x9a, 0x4d, 0xa3, 0x18, 0x2e, 0x61, 0x8a,
-	0xed, 0x42, 0xfa, 0xef, 0xa0, 0x3e, 0x92, 0xa4, 0x28, 0xa8, 0x8a, 0xd8, 0xa5, 0x64, 0x21, 0x17,
-	0xa8, 0x47, 0xd4, 0x1c, 0x28, 0x86, 0x7a, 0xe1, 0x7d, 0xef, 0xc0, 0xea, 0x36, 0x1a, 0x2b, 0x47,
-	0xb3, 0x4a, 0x9a, 0xa3, 0xca, 0xc2, 0x14, 0x55, 0xdc, 0x9b, 0x50, 0x16, 0x2f, 0xda, 0x31, 0xe2,
-	0xb1, 0x21, 0x51, 0x49, 0xbc, 0xf8, 0x18, 0xf1, 0xd8, 0xbd, 0x07, 0xab, 0x99, 0x62, 0x06, 0x6e,
-	0x5b, 0x48, 0x3a, 0xf4, 0x8a, 0x11, 0x37, 0xb4, 0xd4, 0xfb, 0xc5, 0x81, 0x37, 0x76, 0x08, 0x4a,
-	0xa3, 0x78, 0xaa, 0x8a, 0x8d, 0xf1, 0x9c, 0x1f, 0x5d, 0xb7, 0x01, 0x74, 0xbd, 0xdb, 0x92, 0x9b,
-	0x1a, 0x5e, 0x45, 0x4b, 0x9a, 0x14, 0xcb, 0x6d, 0x7b, 0x25, 0x4f, 0xfa, 0xad, 0x62, 0x6e, 0x59,
-	0x8a, 0x65, 0x66, 0x91, 0x0e, 0xa8, 0x3e, 0x59, 0x96, 0x43, 0xbb, 0xf4, 0x7e, 0x70, 0x60, 0x45,
-	0xe3, 0x3a, 0x17, 0xc2, 0x5d, 0x58, 0x4e, 0x09, 0x67, 0x59, 0x1a, 0x91, 0x1c, 0x88, 0x25, 0x2b,
-	0x93, 0x71, 0xfe, 0x0f, 0x4b, 0xc6, 0x71, 0x0e, 0x07, 0x18, 0xd1, 0x4c, 0x20, 0x8d, 0xee, 0x5f,
-	0x07, 0x75, 0xe7, 0xe5, 0x41, 0xdd, 0xf9, 0xe7, 0xa0, 0xee, 0xfc, 0x7c, 0x58, 0xbf, 0xf4, 0xf2,
-	0xb0, 0x7e, 0xe9, 0xef, 0xc3, 0xfa, 0x25, 0x58, 0xb3, 0xcc, 0x10, 0xe3, 0x21, 0xe1, 0xba, 0xf1,
-	0xb7, 0x9d, 0x2f, 0x1e, 0x74, 0xa9, 0x88, 0xb3, 0x8e, 0xfc, 0x22, 0x0a, 0xe4, 0xf6, 0xdb, 0x94,
-	0xa9, 0x67, 0x20, 0x62, 0x9a, 0xe2, 0xf6, 0x10, 0xa5, 0x62, 0x1c, 0x28, 0x93, 0x40, 0xff, 0xcf,
-	0xa0, 0x21, 0x95, 0xff, 0x15, 0x25, 0xf5, 0xb1, 0x7f, 0xff, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff,
-	0x5f, 0x85, 0xa3, 0x56, 0xe6, 0x0c, 0x00, 0x00,
+	// 1228 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0x4f, 0x6f, 0x1b, 0x45,
+	0x14, 0xef, 0xda, 0xb1, 0xdd, 0x3c, 0xa7, 0x49, 0xbb, 0x71, 0x5b, 0x2b, 0xb4, 0xa6, 0x5d, 0x90,
+	0x1a, 0x21, 0xb1, 0x4b, 0x52, 0xa9, 0x42, 0x05, 0x15, 0xe1, 0xba, 0x14, 0xab, 0x45, 0xa4, 0x5b,
+	0xa1, 0x22, 0x04, 0x32, 0xe3, 0xdd, 0x89, 0x77, 0xb0, 0xbd, 0x63, 0x76, 0x66, 0xed, 0x9a, 0x1b,
+	0x17, 0x84, 0x38, 0x81, 0x04, 0x37, 0xc4, 0xa7, 0x00, 0x3e, 0x03, 0xc7, 0x1e, 0x39, 0xa2, 0xf6,
+	0xca, 0x87, 0x40, 0xf3, 0x6f, 0xbd, 0x4e, 0x52, 0xc7, 0x4d, 0x2f, 0x9c, 0x66, 0xe7, 0xcd, 0xbc,
+	0xf7, 0x7e, 0xf3, 0xe6, 0xf7, 0xde, 0x9b, 0x85, 0x8b, 0x43, 0xca, 0x69, 0xe2, 0x8d, 0x77, 0xbc,
+	0x04, 0xb3, 0x11, 0x8d, 0x19, 0x76, 0x47, 0x09, 0xe5, 0xd4, 0xde, 0x64, 0x34, 0x4e, 0x08, 0x75,
+	0xe5, 0xba, 0x8b, 0x46, 0xc4, 0x1d, 0xef, 0x6c, 0x6d, 0x76, 0xd3, 0xa0, 0x8f, 0xb9, 0xa7, 0x06,
+	0xb5, 0x73, 0xeb, 0xbc, 0x16, 0x4e, 0x22, 0x9c, 0xe0, 0x0e, 0x61, 0x5a, 0x5c, 0x0b, 0xe8, 0x70,
+	0x48, 0x63, 0x61, 0x9a, 0xc4, 0xfb, 0x54, 0x4b, 0xdf, 0x08, 0x28, 0x1b, 0x52, 0xe6, 0x75, 0x11,
+	0xc3, 0xde, 0xd7, 0x29, 0x4e, 0xa6, 0xde, 0x78, 0xa7, 0x8b, 0x39, 0xda, 0xf1, 0x46, 0xa8, 0x47,
+	0x62, 0xc4, 0x09, 0x8d, 0xf5, 0x5e, 0x3b, 0xc1, 0x3d, 0xc2, 0x78, 0x32, 0xf5, 0x42, 0x12, 0x1a,
+	0x67, 0x99, 0x6c, 0x12, 0xd1, 0x99, 0xb3, 0x0b, 0x2c, 0x88, 0xf0, 0x10, 0x09, 0x67, 0xea, 0x4b,
+	0xcb, 0xeb, 0x33, 0x79, 0x48, 0x83, 0x74, 0x88, 0x63, 0x83, 0xfa, 0xe2, 0x6c, 0x65, 0x12, 0x21,
+	0x9e, 0x99, 0x72, 0xc6, 0x60, 0xb7, 0x63, 0xc2, 0x09, 0x1a, 0x90, 0x6f, 0xb0, 0xaf, 0x83, 0x62,
+	0xd7, 0xa1, 0xc2, 0xd2, 0x20, 0xc0, 0x8c, 0xd5, 0xad, 0x2b, 0xd6, 0xf6, 0x69, 0xdf, 0x4c, 0xed,
+	0x0f, 0xa0, 0x1a, 0xe2, 0x7d, 0x22, 0x54, 0x68, 0xcc, 0xea, 0x85, 0x2b, 0xc5, 0xed, 0xea, 0xee,
+	0xeb, 0xae, 0x0e, 0x9f, 0x18, 0x5c, 0x0d, 0xe9, 0xa1, 0x1c, 0x5a, 0xd9, 0x66, 0x3f, 0xaf, 0xe8,
+	0x60, 0x38, 0x7f, 0x3b, 0xc1, 0x88, 0xe3, 0xf7, 0x83, 0x80, 0xa6, 0x31, 0xcf, 0xbb, 0x46, 0x61,
+	0x98, 0x18, 0xd7, 0xab, 0xbe, 0x99, 0xda, 0xbb, 0x50, 0x56, 0x51, 0xa8, 0x17, 0xae, 0x58, 0xdb,
+	0xd5, 0xdd, 0x57, 0xe6, 0xbc, 0x9a, 0x48, 0xb9, 0x8f, 0x22, 0xda, 0x66, 0x7e, 0x69, 0x22, 0x06,
+	0xe7, 0x0b, 0x38, 0x73, 0x9f, 0xf6, 0x48, 0xbc, 0xc4, 0xc9, 0x4e, 0x62, 0xfe, 0x4f, 0x0b, 0x6a,
+	0xea, 0x18, 0xea, 0xb4, 0x99, 0x9b, 0x0b, 0x50, 0x66, 0x1c, 0xf1, 0x54, 0x79, 0x29, 0xf9, 0x7a,
+	0x66, 0x5f, 0x87, 0x8a, 0x8e, 0xbf, 0xf6, 0xb2, 0x75, 0x54, 0xe8, 0x1e, 0x45, 0x88, 0xb7, 0x99,
+	0x5f, 0x9e, 0xc8, 0xd1, 0x7e, 0x00, 0xe7, 0xd4, 0x42, 0x67, 0x16, 0xc1, 0x7a, 0x51, 0xaa, 0x2f,
+	0x17, 0xf9, 0xb3, 0xec, 0x80, 0xc4, 0xf9, 0xc3, 0x82, 0x33, 0x0f, 0x04, 0x1f, 0x33, 0xc4, 0x36,
+	0xac, 0x04, 0x34, 0xc4, 0x1a, 0xaf, 0xfc, 0xb6, 0x6b, 0x50, 0x92, 0xa4, 0x95, 0x58, 0x57, 0x7d,
+	0x35, 0xb1, 0x6f, 0x42, 0x79, 0x48, 0xc3, 0x74, 0x80, 0x25, 0x86, 0xf5, 0x5d, 0xc7, 0x60, 0x50,
+	0x29, 0xe0, 0x8e, 0x77, 0xdc, 0xe6, 0x80, 0x06, 0xfd, 0x20, 0x42, 0x24, 0xfe, 0x48, 0xee, 0xf4,
+	0xb5, 0x86, 0x7d, 0x0b, 0x2a, 0x09, 0x66, 0xe9, 0x80, 0xb3, 0xfa, 0xca, 0x3c, 0x75, 0xf2, 0x99,
+	0xe7, 0x1a, 0x68, 0xe9, 0x80, 0xb7, 0x39, 0x1e, 0xfa, 0x46, 0xc9, 0xf9, 0xa1, 0x08, 0x1b, 0x07,
+	0x16, 0xed, 0xb3, 0x50, 0x0c, 0x49, 0xa8, 0xd9, 0x22, 0x3e, 0xed, 0xb7, 0x60, 0xa5, 0x4f, 0xe2,
+	0x50, 0xc2, 0x5e, 0xdf, 0xbd, 0x74, 0x18, 0xdf, 0x9d, 0x98, 0x13, 0x3e, 0xbd, 0x47, 0xe2, 0xd0,
+	0x97, 0x3b, 0x73, 0x97, 0x5f, 0x5c, 0xf6, 0xf2, 0xf3, 0x77, 0xb9, 0xf2, 0x72, 0x77, 0x59, 0x7a,
+	0x99, 0xbb, 0xb4, 0x6f, 0xc0, 0x69, 0x53, 0x8c, 0xea, 0xe5, 0x23, 0xd0, 0xeb, 0xf2, 0xf5, 0x48,
+	0xec, 0x69, 0x33, 0xbf, 0x32, 0x51, 0x1f, 0xf6, 0x7b, 0x70, 0xc6, 0xe8, 0x75, 0x06, 0x84, 0xf1,
+	0x7a, 0x45, 0xde, 0xc8, 0x42, 0xe5, 0xaa, 0x56, 0xbe, 0x4f, 0x18, 0x77, 0x3e, 0x07, 0x5b, 0xde,
+	0x85, 0x8a, 0xca, 0x22, 0x22, 0x9d, 0x24, 0xb7, 0x7e, 0xb5, 0x60, 0x53, 0x9b, 0x97, 0x11, 0x5c,
+	0x64, 0xff, 0x44, 0x69, 0xf5, 0x2e, 0x94, 0xd5, 0xc2, 0x0b, 0xe5, 0x92, 0xd6, 0x71, 0xfe, 0x2d,
+	0xc0, 0xa5, 0x1c, 0xbc, 0xe6, 0x54, 0xd6, 0x01, 0x9a, 0x2c, 0x8f, 0xb3, 0xb8, 0x24, 0xce, 0x4f,
+	0xa1, 0xa2, 0x16, 0x04, 0x39, 0x85, 0xd2, 0xad, 0xe7, 0xe7, 0xcc, 0x73, 0xc0, 0xe8, 0x63, 0xb0,
+	0x3b, 0x31, 0x4f, 0xa6, 0xbe, 0x31, 0x67, 0xdf, 0x05, 0x98, 0xb5, 0x21, 0x4d, 0xe2, 0x6b, 0xae,
+	0xea, 0x59, 0xae, 0xe8, 0x59, 0xae, 0xcc, 0x78, 0x57, 0xf7, 0x2c, 0x77, 0x0f, 0xf5, 0xb2, 0x1e,
+	0xe1, 0xe7, 0x54, 0xb7, 0xbe, 0x84, 0xb5, 0xbc, 0x07, 0x91, 0x92, 0x7d, 0x3c, 0x35, 0x29, 0xd9,
+	0xc7, 0xa2, 0x68, 0x94, 0xc6, 0x68, 0x90, 0x62, 0x7d, 0x3f, 0xcb, 0xc5, 0x5a, 0xa9, 0xdc, 0x2c,
+	0xbc, 0x6d, 0x39, 0xbf, 0x5b, 0x70, 0x59, 0x9f, 0x50, 0x12, 0x70, 0xb9, 0x78, 0xe7, 0x53, 0xa3,
+	0x70, 0x3c, 0xbb, 0xb3, 0xd4, 0x98, 0x0f, 0x4c, 0xf1, 0xc4, 0x81, 0x71, 0xee, 0xc1, 0xc6, 0xc7,
+	0xdd, 0xaf, 0x70, 0xc0, 0x7d, 0xbc, 0x8f, 0x13, 0x1c, 0x07, 0xf8, 0x88, 0x72, 0x55, 0x83, 0xd2,
+	0x00, 0x75, 0xf1, 0xc0, 0x94, 0x59, 0x39, 0x11, 0xfb, 0x02, 0x12, 0x4a, 0xe7, 0xab, 0xbe, 0xf8,
+	0x74, 0xbe, 0xb7, 0xa0, 0xf6, 0xc9, 0x68, 0x40, 0x51, 0x68, 0x6c, 0x2e, 0x38, 0x7a, 0x13, 0x56,
+	0x13, 0xe3, 0xf3, 0x60, 0xd0, 0xe7, 0x78, 0x73, 0x00, 0x9f, 0x3f, 0x53, 0x13, 0xcd, 0x72, 0x88,
+	0x19, 0x43, 0x3d, 0xac, 0x61, 0x98, 0xa9, 0xb3, 0x6d, 0xfa, 0x5e, 0x53, 0x46, 0x30, 0x43, 0x72,
+	0xe8, 0x70, 0xce, 0xbe, 0xc0, 0x1c, 0x1e, 0xde, 0xf9, 0xbc, 0x0e, 0x39, 0x7f, 0x65, 0x4b, 0x57,
+	0x33, 0xa7, 0x0b, 0xb5, 0x3c, 0x3f, 0x5e, 0x80, 0x16, 0xcb, 0xfb, 0xd8, 0x83, 0x73, 0xea, 0x14,
+	0xb7, 0x69, 0xcc, 0x71, 0xcc, 0x45, 0x15, 0xb4, 0xdf, 0x81, 0x8a, 0xda, 0x2f, 0x4e, 0x22, 0x28,
+	0x76, 0xf5, 0x28, 0x5b, 0x73, 0x7a, 0xbe, 0xd1, 0x70, 0x7e, 0xb3, 0x60, 0xed, 0x21, 0x47, 0xcb,
+	0x3c, 0x7f, 0x5a, 0xb0, 0x16, 0x92, 0xb0, 0x63, 0x1e, 0x76, 0x1a, 0xf8, 0xd5, 0xa3, 0x2b, 0x69,
+	0xab, 0xdd, 0x6a, 0xe9, 0x8d, 0x7e, 0x35, 0x24, 0xa1, 0x99, 0x08, 0xfb, 0x5d, 0x34, 0x40, 0x82,
+	0x14, 0x45, 0x19, 0x11, 0x33, 0x15, 0x2c, 0x64, 0x1c, 0xf5, 0xb1, 0xac, 0x03, 0x25, 0x5f, 0x4d,
+	0x9c, 0x6f, 0x2d, 0xd8, 0xd8, 0x43, 0x53, 0x69, 0x68, 0x51, 0x48, 0x73, 0x54, 0x29, 0xcc, 0x51,
+	0xc5, 0xbe, 0x08, 0x15, 0xfe, 0xb8, 0x13, 0x21, 0x16, 0x69, 0x12, 0x95, 0xf9, 0xe3, 0x0f, 0x11,
+	0x8b, 0xec, 0x6b, 0xb0, 0x91, 0x4a, 0x66, 0x84, 0x1d, 0x03, 0x49, 0xb9, 0x5e, 0xd7, 0xe2, 0xa6,
+	0x92, 0x3a, 0xbf, 0x58, 0xf0, 0xda, 0x43, 0x8c, 0x92, 0x20, 0x9a, 0x8b, 0x62, 0x73, 0xba, 0xe4,
+	0xa3, 0xeb, 0x32, 0x80, 0x8a, 0x77, 0x47, 0x70, 0x53, 0xc1, 0x5b, 0x55, 0x92, 0x16, 0x09, 0xc5,
+	0xb2, 0x69, 0xc9, 0x59, 0xbe, 0xad, 0xea, 0x2e, 0x4b, 0x42, 0x71, 0xb2, 0x40, 0x39, 0x94, 0x4f,
+	0x96, 0x35, 0xdf, 0x4c, 0x9d, 0xef, 0x2c, 0x58, 0x57, 0xb8, 0x8e, 0x85, 0x70, 0x15, 0xd6, 0x12,
+	0xcc, 0x68, 0x9a, 0x04, 0x38, 0x07, 0xa2, 0x6a, 0x64, 0xc2, 0xcf, 0xab, 0x50, 0xd5, 0x86, 0x73,
+	0x38, 0x40, 0x8b, 0x16, 0x03, 0xf9, 0xd9, 0x82, 0x0b, 0xaa, 0x30, 0x64, 0x97, 0x7e, 0x1c, 0x20,
+	0x9d, 0xa8, 0x85, 0x59, 0x15, 0x3a, 0x54, 0x6f, 0xec, 0x5b, 0x70, 0x3a, 0x63, 0x9b, 0x6a, 0x0e,
+	0xce, 0x82, 0xb2, 0x6d, 0x3c, 0x67, 0x3a, 0xce, 0x4f, 0x16, 0x6c, 0xde, 0xc5, 0xfc, 0xff, 0x84,
+	0xa9, 0xd9, 0xfb, 0xeb, 0x69, 0xc3, 0x7a, 0xf2, 0xb4, 0x61, 0xfd, 0xf3, 0xb4, 0x61, 0xfd, 0xf8,
+	0xac, 0x71, 0xea, 0xc9, 0xb3, 0xc6, 0xa9, 0xbf, 0x9f, 0x35, 0x4e, 0xc1, 0xa6, 0x31, 0xc1, 0xa7,
+	0x23, 0xcc, 0x54, 0x8d, 0xdc, 0xb3, 0x3e, 0xbb, 0xd1, 0x23, 0x3c, 0x4a, 0xbb, 0xe2, 0xf1, 0xe8,
+	0x89, 0xe5, 0x37, 0x09, 0x95, 0xa3, 0xc7, 0x23, 0x92, 0x84, 0x9d, 0x11, 0x4a, 0xf8, 0xd4, 0x93,
+	0x2a, 0x9e, 0xfa, 0xb9, 0x44, 0x23, 0x22, 0x7e, 0xf2, 0xca, 0xf2, 0xff, 0xea, 0xfa, 0x7f, 0x01,
+	0x00, 0x00, 0xff, 0xff, 0x78, 0xe2, 0x2f, 0x1a, 0x73, 0x0e, 0x00, 0x00,
 }
 
 func (m *InitializeResponse) Marshal() (dAtA []byte, err error) {
@@ -1344,6 +1494,20 @@ func (m *InitializeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Definitions) > 0 {
+		for iNdEx := len(m.Definitions) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Definitions[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintResponse(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
 	if m.Success {
 		i--
 		if m.Success {
@@ -2312,6 +2476,114 @@ func (m *SearchResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *UploadDocumentResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UploadDocumentResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UploadDocumentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Document != nil {
+		{
+			size, err := m.Document.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintResponse(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Cid) > 0 {
+		i -= len(m.Cid)
+		copy(dAtA[i:], m.Cid)
+		i = encodeVarintResponse(dAtA, i, uint64(len(m.Cid)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintResponse(dAtA, i, uint64(len(m.Did)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Status != 0 {
+		i = encodeVarintResponse(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetDocumentResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetDocumentResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetDocumentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Document != nil {
+		{
+			size, err := m.Document.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintResponse(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Cid) > 0 {
+		i -= len(m.Cid)
+		copy(dAtA[i:], m.Cid)
+		i = encodeVarintResponse(dAtA, i, uint64(len(m.Cid)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintResponse(dAtA, i, uint64(len(m.Did)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Status != 0 {
+		i = encodeVarintResponse(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintResponse(dAtA []byte, offset int, v uint64) int {
 	offset -= sovResponse(v)
 	base := offset
@@ -2331,6 +2603,12 @@ func (m *InitializeResponse) Size() (n int) {
 	_ = l
 	if m.Success {
 		n += 2
+	}
+	if len(m.Definitions) > 0 {
+		for _, e := range m.Definitions {
+			l = e.Size()
+			n += 1 + l + sovResponse(uint64(l))
+		}
 	}
 	return n
 }
@@ -2743,6 +3021,54 @@ func (m *SearchResponse) Size() (n int) {
 	return n
 }
 
+func (m *UploadDocumentResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Status != 0 {
+		n += 1 + sovResponse(uint64(m.Status))
+	}
+	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovResponse(uint64(l))
+	}
+	l = len(m.Cid)
+	if l > 0 {
+		n += 1 + l + sovResponse(uint64(l))
+	}
+	if m.Document != nil {
+		l = m.Document.Size()
+		n += 1 + l + sovResponse(uint64(l))
+	}
+	return n
+}
+
+func (m *GetDocumentResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Status != 0 {
+		n += 1 + sovResponse(uint64(m.Status))
+	}
+	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovResponse(uint64(l))
+	}
+	l = len(m.Cid)
+	if l > 0 {
+		n += 1 + l + sovResponse(uint64(l))
+	}
+	if m.Document != nil {
+		l = m.Document.Size()
+		n += 1 + l + sovResponse(uint64(l))
+	}
+	return n
+}
+
 func sovResponse(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
@@ -2798,6 +3124,40 @@ func (m *InitializeResponse) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Definitions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Definitions = append(m.Definitions, &types.SchemaDefinition{})
+			if err := m.Definitions[len(m.Definitions)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipResponse(dAtA[iNdEx:])
@@ -2910,7 +3270,7 @@ func (m *CreateAccountResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhoIs == nil {
-				m.WhoIs = &types.WhoIs{}
+				m.WhoIs = &types1.WhoIs{}
 			}
 			if err := m.WhoIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3016,7 +3376,7 @@ func (m *LoginResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhoIs == nil {
-				m.WhoIs = &types.WhoIs{}
+				m.WhoIs = &types1.WhoIs{}
 			}
 			if err := m.WhoIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3121,7 +3481,7 @@ func (m *CreateSchemaResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhatIs == nil {
-				m.WhatIs = &types1.WhatIs{}
+				m.WhatIs = &types.WhatIs{}
 			}
 			if err := m.WhatIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3157,7 +3517,7 @@ func (m *CreateSchemaResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.SchemaDefinition == nil {
-				m.SchemaDefinition = &types1.SchemaDefinition{}
+				m.SchemaDefinition = &types.SchemaDefinition{}
 			}
 			if err := m.SchemaDefinition.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3448,7 +3808,7 @@ func (m *QueryResultItem) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhoIs == nil {
-				m.WhoIs = &types.WhoIs{}
+				m.WhoIs = &types1.WhoIs{}
 			}
 			if err := m.WhoIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3484,7 +3844,7 @@ func (m *QueryResultItem) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhatIs == nil {
-				m.WhatIs = &types1.WhatIs{}
+				m.WhatIs = &types.WhatIs{}
 			}
 			if err := m.WhatIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3520,7 +3880,7 @@ func (m *QueryResultItem) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.SchemaDefinition == nil {
-				m.SchemaDefinition = &types1.SchemaDefinition{}
+				m.SchemaDefinition = &types.SchemaDefinition{}
 			}
 			if err := m.SchemaDefinition.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3695,7 +4055,7 @@ func (m *QueryWhoIsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhoIs == nil {
-				m.WhoIs = &types.WhoIs{}
+				m.WhoIs = &types1.WhoIs{}
 			}
 			if err := m.WhoIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3800,7 +4160,7 @@ func (m *QueryWhatIsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhatIs == nil {
-				m.WhatIs = &types1.WhatIs{}
+				m.WhatIs = &types.WhatIs{}
 			}
 			if err := m.WhatIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3836,7 +4196,7 @@ func (m *QueryWhatIsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Schema == nil {
-				m.Schema = &types1.SchemaDefinition{}
+				m.Schema = &types.SchemaDefinition{}
 			}
 			if err := m.Schema.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3940,7 +4300,7 @@ func (m *QueryWhatIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.WhatIs = append(m.WhatIs, &types1.WhatIs{})
+			m.WhatIs = append(m.WhatIs, &types.WhatIs{})
 			if err := m.WhatIs[len(m.WhatIs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -3975,10 +4335,10 @@ func (m *QueryWhatIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Schemas == nil {
-				m.Schemas = make(map[string]*types1.SchemaDefinition)
+				m.Schemas = make(map[string]*types.SchemaDefinition)
 			}
 			var mapkey string
-			var mapvalue *types1.SchemaDefinition
+			var mapvalue *types.SchemaDefinition
 			for iNdEx < postIndex {
 				entryPreIndex := iNdEx
 				var wire uint64
@@ -4052,7 +4412,7 @@ func (m *QueryWhatIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 					if postmsgIndex > l {
 						return io.ErrUnexpectedEOF
 					}
-					mapvalue = &types1.SchemaDefinition{}
+					mapvalue = &types.SchemaDefinition{}
 					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
 						return err
 					}
@@ -5020,7 +5380,7 @@ func (m *StatResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.DidDocument == nil {
-				m.DidDocument = &types.DIDDocument{}
+				m.DidDocument = &types1.DIDDocument{}
 			}
 			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -5545,6 +5905,344 @@ func (m *SearchResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Content = append(m.Content, make([]byte, postIndex-iNdEx))
 			copy(m.Content[len(m.Content)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipResponse(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UploadDocumentResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowResponse
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UploadDocumentResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UploadDocumentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Document", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Document == nil {
+				m.Document = &types.SchemaDocument{}
+			}
+			if err := m.Document.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipResponse(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetDocumentResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowResponse
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetDocumentResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetDocumentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Document", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Document == nil {
+				m.Document = &types.SchemaDocument{}
+			}
+			if err := m.Document.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
