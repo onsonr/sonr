@@ -11,9 +11,9 @@ import (
 	bypassing link loader implementation due to lack of compatibilitty with our arch. Once support for json schemas are added we will no longer need to parse in this structure.
 	but will loose the ability to reuse sub schemas in this fashion.
 */
-func (as *schemaImpl) loadSubSchemas(ctx context.Context, fields []*st.SchemaKindDefinition) error {
+func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
 	var links []string = make([]string, 0)
-	for _, f := range fields {
+	for _, f := range as.fields {
 		if f.LinkKind == st.LinkKind_SCHEMA {
 			if f.Link == "" {
 				return errSchemaFieldsInvalid

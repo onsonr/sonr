@@ -7,9 +7,8 @@ import "schema/v1/what_is.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
-
-option java_package = "io.sonr.types.schema";
 option java_multiple_files = true;
+option java_package = "io.sonr.types.schema";
 
 // Msg defines the Msg service.
 service Msg {
@@ -21,11 +20,18 @@ service Msg {
 }
 
 message MsgCreateSchema {
-  // definition of schema to be persisted
-  SchemaDefinition definition = 1;
+  // Address of the creator account
+  // can be an application address or user address
+  string creator = 1;
+
+  // label for the schema.
+  string label = 2;
+
+  // List of Kind Definitions for the schema
+  repeated SchemaKindDefinition fields = 3;
 
   // Metadata is a map of key-value pairs that can be used to store additional information about the WhatIs (Schema)
-  repeated MetadataDefintion metadata = 2;
+  repeated MetadataDefintion metadata = 4;
 }
 
 message MsgCreateSchemaResponse {
