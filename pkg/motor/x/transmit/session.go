@@ -4,7 +4,7 @@ import (
 	"time"
 
 	ct "github.com/sonr-io/sonr/third_party/types/common"
-	st "github.com/sonr-io/sonr/third_party/types/service"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.

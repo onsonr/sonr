@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/host"
-	st "github.com/sonr-io/sonr/third_party/types/service"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // ReadFromStream reads the item from the stream

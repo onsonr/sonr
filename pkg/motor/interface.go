@@ -4,14 +4,16 @@ import (
 	"context"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 type MotorNode interface {
@@ -22,6 +24,7 @@ type MotorNode interface {
 	GetWallet() *mpc.Wallet
 	GetPubKey() *secp256k1.PubKey
 	SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error)
+	SendTx(routeUrl string, msg sdk.Msg) ([]byte, error)
 
 	// Networking
 	Connect() error
@@ -34,6 +37,9 @@ type MotorNode interface {
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
+	BuyAlias(rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error)
+	SellAlias(rt.MsgSellAlias) (rt.MsgSellAliasResponse, error)
+	TransferAlias(rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error)
 
 	// Schema
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)

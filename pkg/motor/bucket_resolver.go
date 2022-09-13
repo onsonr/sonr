@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/sonr-io/sonr/internal/bucket"
-	mt "github.com/sonr-io/sonr/third_party/types/motor"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 func (mtr *motorNodeImpl) GetBucket(did string) (bucket.Bucket, error) {

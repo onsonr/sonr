@@ -16,15 +16,21 @@ bind: bind.ios bind.android bind.web
 
 ## └─ android       - Android AAR
 bind.android:
-	sh $(SCRIPTS_DIR)/bind.sh -a
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -a
 
 ## └─ ios           - iOS Framework
 bind.ios:
-	sh $(SCRIPTS_DIR)/bind.sh -i
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -i
 
-## └─ web           - iOS Framework
+## └─ web           - WASM Framework
 bind.web:
-	sh $(SCRIPTS_DIR)/bind.sh -w
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -w
+
+## └─ tar           - Build All & Tar Compress
+bind.tar:
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -a
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -i
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -w
 
 ## proto       :   Compiles Go Proto Files and pushes to Buf.Build
 proto: proto.go proto.buf
@@ -33,21 +39,16 @@ proto: proto.go proto.buf
 proto.go:
 	ignite generate proto-go --yes
 	go mod tidy
-	echo "✅ Generated Go Proto Files"
+	@echo "✅ Generated Go Proto Files"
 
 ## └─ buf           - Build and push to buf.build/sonr-io/blockchain
 proto.buf:
 	cd $(ROOT_DIR)/proto && buf mod update && buf build && buf push
-	echo "✅ Pushed Protos to Buf.Build"
+	@echo "✅ Pushed Protos to Buf.Build"
 
 ## clean       :   Clean all artifacts and tidy
 clean:
 	rm -rf ./build
 	rm -rf ./tmp
 	rm -rf ./dist
-	rm -rf ./io.sonr.motor.aar
-	rm -rf ./sonr-motor.wasm
-	rm -rf ./SonrMotor.xcframework
-	rm -rf ./docs/.docusaurus/
-	rm -rf ./docs/build
 	go mod tidy

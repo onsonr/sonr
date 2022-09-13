@@ -30,7 +30,7 @@ func (k Keeper) WhereIsAll(c context.Context, req *types.QueryAllWhereIsRequest)
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	whereIsStore := prefix.NewStore(store, types.WhereIsKey(types.MemStoreKey))
+	whereIsStore := prefix.NewStore(store, types.KeyPrefix(types.WhereIsKeyPrefix))
 
 	pageRes, err := query.Paginate(whereIsStore, req.Pagination, func(key []byte, value []byte) error {
 		var whereIs types.WhereIs
