@@ -10,8 +10,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         go-version: [1.17, 1.18]
+        ignite-version: [v0.22.1, v0.23.0, v0.24.0]
     name: "Build All Binaries and Frameworks"
     runs-on: ${{ matrix.os }}
     steps:
@@ -28,14 +29,13 @@ jobs:
         continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
-      - name: Prepare Variables
-        id: vars
-        uses: ignite-hq/cli/actions/release/vars@develop
+      - name: Install Ignite
+        run: |
+          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
 
       - name: Run build against Release target for macos and linux
-        uses: ignite-hq/cli/actions/cli@develop
-        with:
-          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
+        run: |
+          ignite chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
