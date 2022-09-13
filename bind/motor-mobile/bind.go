@@ -291,3 +291,37 @@ func TransferAlias(buf []byte) ([]byte, error) {
 
 	return resp.Marshal()
 }
+
+func GetDocument(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.GetDocumentRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.GetDocument(request)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Marshal()
+}
+
+func UploadDocument(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.UploadDocumentRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.UploadDocument(request)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Marshal()
+}
