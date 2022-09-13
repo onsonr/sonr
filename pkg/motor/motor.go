@@ -75,7 +75,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
-	mtr.log = logger.New("INFO", "motor")
+	mtr.log = logger.New(logger.LEVEL_WARN, "motor")
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 	// Generate wallet
@@ -109,8 +109,11 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	}
 	mtr.DID = *baseDid
 
-	mtr.log.Info("Connection Endpoints"
-	mtr.log.Info("\tREST:")
+	mtr.log.Info("Connection Endpoints")
+	mtr.log.Info("REST: %s\n", mtr.GetClient().GetAPIAddress())
+	mtr.log.Info("RPC: %s\n", mtr.GetClient().GetRPCAddress())
+	mtr.log.Info("Faucet: %s\n", mtr.GetClient().GetFaucetAddress())
+	mtr.log.Info("IPFS: %s\n", mtr.GetClient().GetIPFSAddress())
 	mtr.log.Info("✅ Motor Wallet initialized")
 	return nil
 }
@@ -121,14 +124,14 @@ func (mtr *motorNodeImpl) Connect() error {
 	}
 
 	if mtr.SonrHost != nil {
-		log.Println("Host already connected")
+		mtr.log.Warn("Host already connected")
 		return nil
 	}
 
 	var err error
 	// Create new host
 	if mtr.isHostEnabled {
-		log.Println("Creating host...")
+		mtr.log.Info("Creating host...")
 		mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address), mtr.callback)
 		if err != nil {
 			return err
@@ -139,13 +142,13 @@ func (mtr *motorNodeImpl) Connect() error {
 
 	// Utilize discovery protocol
 	if mtr.isDiscoveryEnabled {
-		log.Println("Enabling Discovery...")
+		mtr.log.Info("Enabling Discovery...")
 		mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
 		if err != nil {
 			return err
 		}
 	}
-	log.Println("✅ Motor Host Connected")
+	mtr.log.Info("✅ Motor Host Connected")
 	return nil
 }
 
