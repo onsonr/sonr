@@ -25,17 +25,18 @@ jobs:
         with:
           go-version: ~${{ matrix.go-version }}
 
-      - name: Run tests and evaluate coverage
-        continue-on-error: true
-        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
-
       - name: Install Ignite
         run: |
           sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
 
       - name: Run build against Release target for macos and linux
+        continue-on-error: false
         run: |
-          ignite chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
+          ignite chain build --release -t linux:amd64 -t darwin:amd64
+
+      - name: Run tests and evaluate coverage
+        continue-on-error: true
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
