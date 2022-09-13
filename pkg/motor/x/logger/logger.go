@@ -31,9 +31,9 @@ type Logger struct {
 	category string
 }
 
-func New(level LogLevel, category string) *Logger {
+func New(level string, category string) *Logger {
 	return &Logger{
-		level:    level,
+		level:    conevertLogLevel(level),
 		category: category,
 		logger:   log.New(os.Stdout, category, 0),
 	}
@@ -42,7 +42,7 @@ func New(level LogLevel, category string) *Logger {
 func (l *Logger) log(level LogLevel, category string, message string, args ...interface{}) {
 	if l.level <= level {
 		ts := time.Now().Format("2006-01-02 15:04:05")
-		prefix := fmt.Sprintf("%s %s %s : ", conevertLogLevel(level), ts, l.category)
+		prefix := fmt.Sprintf("%s %s %s : ", conevertLogLevelCategory(level), ts, l.category)
 		l.logger.SetPrefix(prefix)
 		l.logger.Printf(message, args...)
 	}

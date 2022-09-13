@@ -56,13 +56,19 @@ type motorNodeImpl struct {
 	sh        *shell.Shell
 
 	//Logging
-	log *logger.Logger
+	log      *logger.Logger
+	logLevel string
 }
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
 	if r.GetDeviceId() == "" {
 		return nil, fmt.Errorf("DeviceID is required to initialize motor node")
 	}
+
+	if r.GetLogLevel() == "" {
+		r.LogLevel = "warn"
+	}
+
 	return &motorNodeImpl{
 		isHostEnabled:      r.GetEnableHost(),
 		isDiscoveryEnabled: r.GetEnableDiscovery(),
@@ -71,11 +77,12 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 		supportDir:         r.GetSupportDir(),
 		tempDir:            r.GetTempDir(),
 		callback:           cb,
+		logLevel:           r.LogLevel,
 	}, nil
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
-	mtr.log = logger.New(logger.LEVEL_WARN, "motor")
+	mtr.log = logger.New(mtr.logLevel, "motor")
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 	// Generate wallet
