@@ -30,21 +30,6 @@ jobs:
         with:
           distribution: "temurin" # See 'Supported distributions' for available options
           java-version: "17"
-          
-
-
-      # - name: Configure Homebrew w/ cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       ~/Library/Caches/Homebrew/foo--*
-      #       ~/Library/Caches/Homebrew/downloads/*--foo-*
-      #     key: brew-${{ hashFiles('.github/brew-formulae') }}
-      #     restore-keys: brew-
-      # - name: Install Homebrew dependencies
-      #   run: |
-      #     brew install FiloSottile/musl-cross/musl-cross
-      #     brew install mingw-w64
 
       - name: Run coverage
         continue-on-error: true
@@ -68,9 +53,11 @@ jobs:
       matrix:
         platform: [ios, web, android]
         build-on: [ubuntu-latest, macos-latest]
+        exclude:
+        - build-on: ubuntu-latest
+          platform: ios
       fail-fast: false
     name: "Build Bindings for ${{ matrix.platform }}"
-
     runs-on: ${{ matrix.build-on }}
     steps:
       - name: Checkout
@@ -78,11 +65,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - id: setup-ndk
-        if: matrix.platform == 'android'
-        uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r23c
+      - name: Force NDK version
+        if : matrix.platform == 'android'
+        run: |
+          echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;23.1.7779620" | grep -v = || true
+          echo 'ANDROID_NDK=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
+          echo 'ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
+          echo 'ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
+          echo 'ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
+
       - uses: actions/setup-java@v3
         if: matrix.platform == 'android'
         with:
