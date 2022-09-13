@@ -9,6 +9,10 @@ from os.path import exists
 
 PORT = 26656
 NODE_ENDPOINTS = [
+    'v1-beta.sonr.ws',
+    'v2-beta.sonr.ws',
+    'v3-beta.sonr.ws',
+    'v4-beta.sonr.ws',
     'v1.sonr.ws',
     'v2.sonr.ws',
     'v3.sonr.ws',
@@ -105,6 +109,7 @@ def reload_daemon(node):
     return send_command(node, 'systemctl daemon-reload')
 
 def upload_sonrd_service(node):
+    print(f"Uploading sonrd service to {node}")
     return upload_file(node, '/etc/systemd/system/sonrd.service', f'{SCRIPT_DIR}/sonrd.service')
 
 def upload_setup_chain_dev_script(node):
