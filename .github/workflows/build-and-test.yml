@@ -15,6 +15,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          
+      - name: Setup Go environment
+        uses: actions/setup-go@v3.3.0
+        with:
+          go-version: 1.17
 
       - id: setup-ndk
         uses: nttld/setup-ndk@v1
@@ -30,8 +35,8 @@ jobs:
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           go install golang.org/x/mobile/cmd/gobind@latest
-          go get -d golang.org/x/mobile/cmd/gobind
-          go get -d golang.org/x/mobile/cmd/gomobile
+          go get golang.org/x/mobile/cmd/gobind
+          go get golang.org/x/mobile/cmd/gomobile
           gomobile init
         env:
           GOPROXY: https://proxy.golang.org,direct
