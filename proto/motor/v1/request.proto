@@ -81,6 +81,8 @@ message PaymentRequest {
   int64 amount = 3;
   string memo = 4;
 }
+
+
 // -----------------------------------------------------------------------------
 // Registry Models
 // -----------------------------------------------------------------------------
@@ -157,9 +159,15 @@ message StatRequest {
 message UploadDocumentRequest {
   string creator = 1;
 
+  string label = 2;
+
   // The definition of the document used to build the values
-  sonrio.sonr.schema.SchemaDefinition definition = 2;
+  sonrio.sonr.schema.SchemaDefinition definition = 3;
 
   // the properties of this schemadocument
-  repeated sonrio.sonr.schema.SchemaDocumentValue fields = 3;
+  repeated sonrio.sonr.schema.SchemaDocumentValue fields = 4;
+}
+
+message GetDocumentRequest {
+  string cid = 1;
 }
