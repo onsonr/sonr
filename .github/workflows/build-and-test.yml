@@ -5,12 +5,15 @@ on:
     branches: [dev]
   pull_request:
     branches: [dev]
-env:
-  go-version: 1.18
 jobs:
   run-bulid:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        go-version: [1.17, 1.18]
     name: "Build All Binaries and Frameworks"
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -19,7 +22,7 @@ jobs:
 
       - uses: actions/setup-go@v3
         with:
-          go-version: ~${{ env.go-version }}
+          go-version: ~${{ matrix.go-version }}
 
       - name: Run tests and evaluate coverage
         continue-on-error: true
@@ -43,6 +46,7 @@ jobs:
       matrix:
         platform: [ios, web, android]
         build-on: [ubuntu-latest, macos-latest]
+        go-version: [1.17, 1.18]
         exclude:
         - build-on: ubuntu-latest
           platform: ios
@@ -74,7 +78,7 @@ jobs:
 
       - uses: actions/setup-go@v3
         with:
-          go-version: ~${{ env.go-version }}
+          go-version: ~${{ matrix.go-version }}
 
       - name: Install Gomobile
         run: |
