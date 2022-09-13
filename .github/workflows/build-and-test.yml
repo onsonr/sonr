@@ -21,7 +21,7 @@ jobs:
         with:
           go-version: ~${{ env.go-version }}
 
-      - name: Run coverage
+      - name: Run tests and evaluate coverage
         continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
@@ -46,6 +46,8 @@ jobs:
         exclude:
         - build-on: ubuntu-latest
           platform: ios
+        - build-on: macos-latest
+          platform: android
       fail-fast: false
     name: "Build Bindings for ${{ matrix.platform }}"
     runs-on: ${{ matrix.build-on }}
