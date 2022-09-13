@@ -7,7 +7,7 @@ on:
     branches: [dev]
 
 jobs:
-  run-goreleaser:
+  run-bulid:
     name: "Build All Binaries and Frameworks"
     runs-on: ubuntu-latest
     steps:
@@ -31,16 +31,7 @@ jobs:
           distribution: "temurin" # See 'Supported distributions' for available options
           java-version: "17"
           
-      - name: Install Gomobile
-        run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          go install golang.org/x/mobile/cmd/gobind@latest
-          go get golang.org/x/mobile/cmd/gobind
-          go get golang.org/x/mobile/cmd/gomobile
-          gomobile init
-        env:
-          GOPROXY: https://proxy.golang.org,direct
-          GO111MODULE: "on"
+
 
       # - name: Configure Homebrew w/ cache
       #   uses: actions/cache@v3
@@ -59,19 +50,59 @@ jobs:
         continue-on-error: true
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
-      - name: Prepare Release Variables
+      - name: Prepare Variables
         id: vars
         uses: ignite-hq/cli/actions/release/vars@develop
 
-      - name: Issue Release Assets
+      - name: Run build against Release target for macos and linux
         uses: ignite-hq/cli/actions/cli@develop
         with:
           args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
 
-
-
-      - name: Test Motor Bind
-        run: make bind.web
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+
+
+  bind-them-all:
+    strategy:
+      matrix:
+        platform: [ios, web, android]
+        build-on: [ubuntu-latest, macos-latest]
+      fail-fast: false
+    name: "Build Bindings for ${{ matrix.platform }}"
+
+    runs-on: ${{ matrix.build-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - id: setup-ndk
+        if: matrix.platform == 'android'
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r23c
+      - uses: actions/setup-java@v3
+        if: matrix.platform == 'android'
+        with:
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "17"
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ~1.18
+
+      - name: Install Gomobile
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          go install golang.org/x/mobile/cmd/gobind@latest
+          go get golang.org/x/mobile/cmd/gobind
+          go get golang.org/x/mobile/cmd/gomobile
+          gomobile init
+        env:
+          GOPROXY: https://proxy.golang.org,direct
+          GO111MODULE: "on"
+      
+      - name: Test Motor Bind
+        run: make bind.${{ matrix.platform }}
