@@ -86,6 +86,6 @@ jobs:
         env:
           GOPROXY: https://proxy.golang.org,direct
           GO111MODULE: "on"
-      
+
       - name: Test Motor Bind
         run: make bind.${{ matrix.platform }}
