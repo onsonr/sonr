@@ -95,13 +95,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
-  #     # - name: motor-ios Repository Dispatch
-  #     #   uses: peter-evans/repository-dispatch@v2
-  #     #   with:
-  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
-  #     #     repository: sonr-io/motor-ios
-  #     #     event-type: new-ios-framework
-  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+      - name: motor-ios Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.ACTIONS_GH_TOKEN }}
+          repository: sonr-io/motor_pod
+          event-type: new-ios-framework
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Android
