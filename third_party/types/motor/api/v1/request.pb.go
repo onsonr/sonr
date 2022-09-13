@@ -169,9 +169,8 @@ func (m *InitializeRequest) GetAuthInfo() *common.AuthInfo {
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
 type CreateAccountRequest struct {
-	Password  string            `protobuf:"bytes,1,opt,name=password,proto3" json:"password,omitempty"`
-	AesDscKey []byte            `protobuf:"bytes,2,opt,name=aes_dsc_key,json=aesDscKey,proto3" json:"aes_dsc_key,omitempty"`
-	Metadata  map[string]string `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Password string            `protobuf:"bytes,1,opt,name=password,proto3" json:"password,omitempty"`
+	Metadata map[string]string `protobuf:"bytes,2,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *CreateAccountRequest) Reset()         { *m = CreateAccountRequest{} }
@@ -214,13 +213,6 @@ func (m *CreateAccountRequest) GetPassword() string {
 	return ""
 }
 
-func (m *CreateAccountRequest) GetAesDscKey() []byte {
-	if m != nil {
-		return m.AesDscKey
-	}
-	return nil
-}
-
 func (m *CreateAccountRequest) GetMetadata() map[string]string {
 	if m != nil {
 		return m.Metadata
@@ -232,10 +224,8 @@ func (m *CreateAccountRequest) GetMetadata() map[string]string {
 // and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 type LoginRequest struct {
-	Did       string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	Password  string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	AesDscKey []byte `protobuf:"bytes,3,opt,name=aes_dsc_key,json=aesDscKey,proto3" json:"aes_dsc_key,omitempty"`
-	AesPskKey []byte `protobuf:"bytes,4,opt,name=aes_psk_key,json=aesPskKey,proto3" json:"aes_psk_key,omitempty"`
+	Did      string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 }
 
 func (m *LoginRequest) Reset()         { *m = LoginRequest{} }
@@ -283,20 +273,6 @@ func (m *LoginRequest) GetPassword() string {
 		return m.Password
 	}
 	return ""
-}
-
-func (m *LoginRequest) GetAesDscKey() []byte {
-	if m != nil {
-		return m.AesDscKey
-	}
-	return nil
-}
-
-func (m *LoginRequest) GetAesPskKey() []byte {
-	if m != nil {
-		return m.AesPskKey
-	}
-	return nil
 }
 
 type QueryRequest struct {
@@ -1305,15 +1281,8 @@ func (m *CreateAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0xa
 			i = encodeVarintRequest(dAtA, i, uint64(baseI-i))
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x12
 		}
-	}
-	if len(m.AesDscKey) > 0 {
-		i -= len(m.AesDscKey)
-		copy(dAtA[i:], m.AesDscKey)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.AesDscKey)))
-		i--
-		dAtA[i] = 0x12
 	}
 	if len(m.Password) > 0 {
 		i -= len(m.Password)
@@ -1345,20 +1314,6 @@ func (m *LoginRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.AesPskKey) > 0 {
-		i -= len(m.AesPskKey)
-		copy(dAtA[i:], m.AesPskKey)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.AesPskKey)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.AesDscKey) > 0 {
-		i -= len(m.AesDscKey)
-		copy(dAtA[i:], m.AesDscKey)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.AesDscKey)))
-		i--
-		dAtA[i] = 0x1a
-	}
 	if len(m.Password) > 0 {
 		i -= len(m.Password)
 		copy(dAtA[i:], m.Password)
@@ -2021,10 +1976,6 @@ func (m *CreateAccountRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
-	l = len(m.AesDscKey)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
 	if len(m.Metadata) > 0 {
 		for k, v := range m.Metadata {
 			_ = k
@@ -2047,14 +1998,6 @@ func (m *LoginRequest) Size() (n int) {
 		n += 1 + l + sovRequest(uint64(l))
 	}
 	l = len(m.Password)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
-	l = len(m.AesDscKey)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
-	l = len(m.AesPskKey)
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
@@ -2720,40 +2663,6 @@ func (m *CreateAccountRequest) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AesDscKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AesDscKey = append(m.AesDscKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.AesDscKey == nil {
-				m.AesDscKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
 			}
 			var msglen int
@@ -2992,74 +2901,6 @@ func (m *LoginRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Password = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AesDscKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AesDscKey = append(m.AesDscKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.AesDscKey == nil {
-				m.AesDscKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AesPskKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AesPskKey = append(m.AesPskKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.AesPskKey == nil {
-				m.AesPskKey = []byte{}
-			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

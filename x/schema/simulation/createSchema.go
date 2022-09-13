@@ -18,28 +18,25 @@ func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keep
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		createMsg := types.MsgCreateSchema{
-			Definition: &types.SchemaDefinition{
-				Did:     "did:snr:123456",
-				Creator: simAccount.Address.String(),
-				Label:   "test schema",
-				Fields:  make([]*types.SchemaKindDefinition, 0),
-			},
+			Creator: simAccount.Address.String(),
+			Label:   "test schema",
+			Fields:  make([]*types.SchemaKindDefinition, 0),
 		}
 
-		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
 			Name:  "message",
 			Field: types.SchemaKind_STRING,
 		})
-		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
 			Name:  "Icon",
 			Field: types.SchemaKind_INT,
 		})
-		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
 			Name:  "type",
 			Field: types.SchemaKind_STRING,
 		})
 
-		createMsg.Definition.Fields = append(createMsg.Definition.Fields, &types.SchemaKindDefinition{
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
 			Name:     "comment",
 			Field:    types.SchemaKind_LINK,
 			LinkKind: types.LinkKind_SCHEMA,

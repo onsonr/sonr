@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	kr "github.com/sonr-io/sonr/internal/keyring"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -52,15 +53,27 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 		return mt.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
 	}
 
-	// ecnrypt dscShard with DSC
 	mtr.callback.OnMotorEvent("Encrypting shards for Vault", false)
-	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
+	// create DSC and store it in keychain
+	dsc, err := kr.CreateDSC()
+	if err != nil {
+		return mt.CreateAccountResponse{}, fmt.Errorf("create DSC: %s", err)
+	}
+
+	// encrypt dscShard with DSC
+	dscShard, err := dscEncrypt(mtr.deviceShard, dsc)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
 	}
 
+	// create PSK and store it in keychain
+	psk, err := kr.CreatePSK()
+	if err != nil {
+		return mt.CreateAccountResponse{}, fmt.Errorf("create PSK: %s", err)
+	}
+
 	// encrypt pskShard with psk (must be generated)
-	pskShard, psk, err := pskEncrypt(mtr.sharedShard)
+	pskShard, err := pskEncrypt(mtr.sharedShard, psk)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("encrypt psk shards: %s", err)
 	}
@@ -96,7 +109,6 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	}
 	mtr.callback.OnMotorEvent("Account registered successfully!", true)
 	return mt.CreateAccountResponse{
-		AesPsk:  psk,
 		Address: mtr.Address,
 		WhoIs:   resp.GetWhoIs(),
 	}, err
@@ -152,18 +164,13 @@ func updateWhoIs(m *motorNodeImpl) (*rt.MsgUpdateWhoIsResponse, error) {
 	return cwir, nil
 }
 
-func pskEncrypt(shard []byte) ([]byte, []byte, error) {
-	key, err := mpc.NewAesKey()
-	if err != nil {
-		return nil, nil, err
-	}
-
+func pskEncrypt(shard, key []byte) ([]byte, error) {
 	cipherShard, err := mpc.AesEncryptWithKey(key, shard)
 	if err != nil {
-		return nil, key, err
+		return nil, err
 	}
 
-	return cipherShard, key, nil
+	return cipherShard, nil
 }
 
 // dscEncrypt encrypts the shard with the DSC key

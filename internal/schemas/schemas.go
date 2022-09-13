@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/ipfs/go-cid"
-	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/sonr-io/sonr/pkg/client"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -18,11 +17,6 @@ var (
 
 type Encoding int
 
-type Event struct {
-	name     string
-	previous cid.Cid
-}
-
 const (
 	EncType_DAG_CBOR Encoding = iota
 	EncType_DAG_JSON
@@ -33,42 +27,40 @@ type schemaImpl struct {
 	subSchemas map[string]*st.SchemaDefinition
 	whatIs     *st.WhatIs
 	nodes      datamodel.Node
-	store      *readStoreImpl
+	store      *ReadStoreImpl
 	next       *schemaImpl
 }
 
 /*
-	Default initialization with a local shell for persistence
+	Default initialization with a local client instance created in scope
 */
-func New(fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
+func New(store *ReadStoreImpl, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
-		fields:     fields,
+		fields:     whatIs.Schema.Fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
 		whatIs:     whatIs,
 		nodes:      nil,
-		store: &readStoreImpl{
-			shell: shell.NewLocalShell(),
-		},
+		store:      store,
 	}
 
-	asi.loadSubSchemas(context.Background(), fields)
+	asi.LoadSubSchemas(context.Background())
 	return asi
 }
 
 /*
-	Initialize with a ipfs shell instance
+	Initialize with a instance of pkg/client
 */
-func NewWithShell(shell *shell.Shell, fields []*st.SchemaKindDefinition, whatIs *st.WhatIs) *schemaImpl {
+func NewWithClient(client *client.Client, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
-		fields:     fields,
+		fields:     whatIs.Schema.Fields,
 		subSchemas: make(map[string]*st.SchemaDefinition),
 		whatIs:     whatIs,
 		nodes:      nil,
-		store: &readStoreImpl{
-			shell: shell,
+		store: &ReadStoreImpl{
+			Client: client,
 		},
 	}
 
-	asi.loadSubSchemas(context.Background(), fields)
+	asi.LoadSubSchemas(context.Background())
 	return asi
 }

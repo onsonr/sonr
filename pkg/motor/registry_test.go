@@ -25,20 +25,14 @@ func Test_CreateAccount(t *testing.T) {
 	}
 
 	req := mt.CreateAccountRequest{
-		Password:  "password123",
-		AesDscKey: aesKey,
+		Password: "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
-	res, err := m.CreateAccount(req)
+	_, err := m.CreateAccount(req)
 	assert.NoError(t, err, "wallet generation succeeds")
-
-	// write the PSK to local file system for later use
-	if err == nil {
-		fmt.Printf("stored psk? %v\n", storeKey(fmt.Sprintf("psk%s", m.Address), res.AesPsk))
-	}
 
 	b := m.GetBalance()
 	log.Println("balance:", b)
@@ -56,9 +50,8 @@ func Test_Login(t *testing.T) {
 		}
 
 		req := mt.LoginRequest{
-			Did:       ADDR,
-			Password:  "password123",
-			AesPskKey: pskKey,
+			Did:      ADDR,
+			Password: "password123",
 		}
 
 		m, _ := EmptyMotor(&mt.InitializeRequest{
@@ -88,9 +81,7 @@ func Test_Login(t *testing.T) {
 		}
 
 		req := mt.LoginRequest{
-			Did:       ADDR,
-			AesDscKey: aesKey,
-			AesPskKey: pskKey,
+			Did: ADDR,
 		}
 
 		m, _ := EmptyMotor(&mt.InitializeRequest{
@@ -114,9 +105,8 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:       ADDR,
-		Password:  "password123",
-		AesPskKey: pskKey,
+		Did:      ADDR,
+		Password: "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{

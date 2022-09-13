@@ -30,9 +30,8 @@ func Test_ObjectBuilder(t *testing.T) {
 		}
 
 		req := mt.LoginRequest{
-			Did:       ADDR,
-			Password:  "password123",
-			AesPskKey: pskKey,
+			Did:      ADDR,
+			Password: "password123",
 		}
 
 		m, _ := EmptyMotor(&mt.InitializeRequest{
