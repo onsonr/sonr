@@ -2,14 +2,10 @@ package schemas
 
 import (
 	"context"
-	"fmt"
-	"os"
-	"path/filepath"
 	"sync"
-	"time"
 
-	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/ipld/go-ipld-prime/storage"
+	"github.com/sonr-io/sonr/pkg/client"
 )
 
 type ReadableStore interface {
@@ -17,13 +13,20 @@ type ReadableStore interface {
 }
 
 // Store implementation to abstract store operations
-type readStoreImpl struct {
-	mu    sync.Mutex
-	cache map[string][]byte
-	shell *shell.Shell
+type ReadStoreImpl struct {
+	mu     sync.Mutex
+	cache  map[string][]byte
+	Client *client.Client
 }
 
-func (rs *readStoreImpl) Has(ctx context.Context, key string) (bool, error) {
+func (rs *ReadStoreImpl) GetCache() map[string][]byte {
+	if rs.cache == nil {
+		rs.cache = make(map[string][]byte)
+	}
+	return rs.cache
+}
+
+func (rs *ReadStoreImpl) Has(ctx context.Context, key string) (bool, error) {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
 
@@ -39,7 +42,7 @@ func (rs *readStoreImpl) Has(ctx context.Context, key string) (bool, error) {
 	return false, nil
 }
 
-func (rs *readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
+func (rs *ReadStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
 
@@ -51,18 +54,13 @@ func (rs *readStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
 		return rs.cache[key], nil
 	}
 
-	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
-
-	out_path := filepath.Join(os.TempDir(), key+time_stamp+".txt")
-	defer os.Remove(out_path)
-
-	err := rs.shell.Get(key, out_path)
+	wi, err := rs.Client.QueryWhatIsByDid(key)
 
 	if err != nil {
 		return nil, err
 	}
 
-	buf, err := os.ReadFile(out_path)
+	buf, err := wi.Marshal()
 
 	if err != nil {
 		return nil, err
