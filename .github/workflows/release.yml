@@ -31,7 +31,7 @@ jobs:
         if: github.event.pull_request.merged == false
         id: version
         with:
-          prefix: 'v'
+          prefix: "v"
 
       - id: tag
         if: github.event.pull_request.merged == false
@@ -94,13 +94,14 @@ jobs:
           gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     # - name: motor-ios Repository Dispatch
-  #     #   uses: peter-evans/repository-dispatch@v2
-  #     #   with:
-  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
-  #     #     repository: sonr-io/motor-ios
-  #     #     event-type: new-ios-framework
-  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          TAR_COMPRESS: true
+      - name: motor-ios Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.ACTIONS_GH_TOKEN }}
+          repository: sonr-io/motor_pod
+          event-type: new-ios-framework
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Android
@@ -144,6 +145,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          TAR_COMPRESS: true
   #     # - name: motor-android Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:
@@ -191,6 +193,7 @@ jobs:
           gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAR_COMPRESS: true
   #     # - name: motor-android Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:

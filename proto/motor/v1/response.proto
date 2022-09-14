@@ -21,8 +21,13 @@ message InitializeResponse {
 }
 
 message CreateAccountResponse {
-  bytes aes_psk = 1;
-  string address = 2;
+  string address = 1;
+  sonrio.sonr.registry.WhoIs who_is = 2;
+}
+
+message CreateAccountWithKeysResponse {
+  string address = 1;
+  bytes aes_psk_key = 2;
   sonrio.sonr.registry.WhoIs who_is = 3;
 }
 
