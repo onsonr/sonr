@@ -55,8 +55,12 @@ jobs:
           platform: ios
         - build-on: macos-latest
           platform: android
+        - platform: web
+          ndk-version: [r22b, r23c, r24, r25b]
+        - platform: ios
+          ndk-version: [r22b, r23c, r24, r25b]
       fail-fast: false
-    name: "Bindings: ${{ matrix.platform }}; ${{ matrix.build-on }}; Go ${{ matrix.go-version }}"
+    name: "Bindings: ${{ matrix.platform }}; ${{ matrix.build-on }}; Go ${{ matrix.go-version }}; NDK ${{ matrix.ndk-version }}"
     runs-on: ${{ matrix.build-on }}
     steps:
       - name: Checkout
