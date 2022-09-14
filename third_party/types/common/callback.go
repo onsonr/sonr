@@ -24,7 +24,3 @@ func (cb *defaultCallback) OnDiscover(data []byte) {
 func (cb *defaultCallback) OnWalletCreated(ok bool) {
 	log.Println("ERROR: MotorCallback not implemented.")
 }
-
-func (d defaultCallback) OnMotorEvent(msg string, done bool) {
-	log.Println("ERROR: MotorCallback not implemented.")
-}
