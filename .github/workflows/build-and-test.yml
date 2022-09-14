@@ -48,7 +48,19 @@ jobs:
         platform: [ios, web, android]
         build-on: [ubuntu-latest, macos-latest]
         go-version: [1.17, 1.18, 1.19]
-        ndk-version: [23.1.7779620]
+        # https://github.com/android/ndk/wiki/Unsupported-Downloads && https://developer.android.com/ndk/downloads
+        include:
+        # Adds teh following details to the android matrix only
+          - platform: android
+            ndk-version: r21e
+          - platform: android
+            ndk-version: r22b
+          - platform: android
+            ndk-version: r23c
+          - platform: android
+            ndk-version: r24
+          - platform: android
+            ndk-version: r25b
         exclude:
         - build-on: ubuntu-latest
           platform: ios
@@ -63,14 +75,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Force NDK version
-        if : matrix.platform == 'android'
-        run: |
-          echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;${{ matrix.ndk-version }}" | grep -v = || true
-          echo 'ANDROID_NDK=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
-          echo 'ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
-          echo 'ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
-          echo 'ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
+      - id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: ${{ matrix.ndk-version }}
+          add-to-path: true
 
       - uses: actions/setup-java@v3
         if: matrix.platform == 'android'
@@ -92,6 +101,11 @@ jobs:
         env:
           GOPROXY: https://proxy.golang.org,direct
           GO111MODULE: "on"
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
 
       - name: Test Motor Bind
         run: make bind.${{ matrix.platform }}
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
