@@ -57,7 +57,7 @@ jobs:
         - build-on: macos-latest
           platform: android
 
-        # Don't pollute the build matrix cause of android
+        # Don't pollute the build matrix cause of android on ios
         - platform: ios
           ndk-version: r22b
         - platform: ios
@@ -66,13 +66,14 @@ jobs:
           ndk-version: r24
         - platform: ios
           ndk-version: r25b
-        - platform: ios
+        # Don't pollute the build matrix cause of android on web
+        - platform: web
           ndk-version: r22b
-        - platform: ios
+        - platform: web
           ndk-version: r23c
-        - platform: ios
+        - platform: web
           ndk-version: r24
-        - platform: ios
+        - platform: web
           ndk-version: r25b
       fail-fast: false
     name: "Bindings: ${{ matrix.platform }}; ${{ matrix.build-on }}; Go ${{ matrix.go-version }}; NDK ${{ matrix.ndk-version }}"
