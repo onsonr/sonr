@@ -16,20 +16,20 @@ import (
 
 func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create motor
-	mtr.callback.OnMotorEvent("Initializing motor", false)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Initializing motor", false)
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
 
 	// Request from Faucet
-	mtr.callback.OnMotorEvent("Requesting Airdrop for initial balance", false)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Requesting Airdrop for initial balance", false)
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
 
 	// Create Initial Shards
-	mtr.callback.OnMotorEvent("Creating shards for MPC", false)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Creating shards for MPC", false)
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create shards: %s", err)
@@ -47,13 +47,13 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	mtr.DIDDocument = doc
 
 	// create Vault shards to make sure this works before creating WhoIs
-	mtr.callback.OnMotorEvent("Registering new DIDDocument for account", false)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Registering new DIDDocument for account", false)
 	vc := vault.New()
 	if _, err := createWhoIs(mtr); err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("create account: %s", err)
 	}
 
-	mtr.callback.OnMotorEvent("Encrypting shards for Vault", false)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Encrypting shards for Vault", false)
 	// create DSC and store it in keychain
 	dsc, err := kr.CreateDSC()
 	if err != nil {
@@ -85,7 +85,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	}
 
 	// create vault
-	mtr.callback.OnMotorEvent("Setting up Account Vault", false)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Setting up Account Vault", false)
 	vaultService, err := vc.CreateVault(
 		mtr.Address,
 		mtr.unusedShards,
@@ -99,7 +99,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	}
 
 	// update DID Document
-	mtr.callback.OnMotorEvent("Updating DIDDocument for Account", false)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Updating DIDDocument for Account", false)
 	mtr.DIDDocument.AddService(vaultService)
 
 	// update whois
@@ -107,7 +107,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 	if err != nil {
 		return mt.CreateAccountResponse{}, fmt.Errorf("update WhoIs: %s", err)
 	}
-	mtr.callback.OnMotorEvent("Account registered successfully!", true)
+	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Account registered successfully!", true)
 	return mt.CreateAccountResponse{
 		Address: mtr.Address,
 		WhoIs:   resp.GetWhoIs(),
