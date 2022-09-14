@@ -3,9 +3,8 @@ syntax = "proto3";
 package sonrio.sonr.schema;
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
-
-option java_package = "io.sonr.types.schema";
 option java_multiple_files = true;
+option java_package = "io.sonr.types.schema";
 
 enum LinkKind {
   UNKNOWN = 0;
@@ -44,21 +43,8 @@ message SchemaKindDefinition {
   string link = 4;
 }
 
-// Schema defines the shapes of schemas on Sonr
-message SchemaReference {
-  // the DID for this schema
-  string did = 1;
-
-  // an alternative reference point
-  string label = 2;
-
-  // a reference to information stored within an IPFS node.
-  string cid = 3;
-}
-
 message SchemaDefinition {
-  // Represents the types of fields a schema can have
-  // the DID for this schema
+  // the DID for this schema should not be populated by request
   string did = 1;
 
   string creator = 2;
