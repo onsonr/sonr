@@ -46,15 +46,13 @@ jobs:
     strategy:
       matrix:
         platform: [ios, web, android]
-        build-on: [ubuntu-latest, macos-latest, windows-latest]
+        build-on: [ubuntu-latest, macos-latest]
         go-version: [1.17, 1.18, 1.19]
         # https://github.com/android/ndk/wiki/Unsupported-Downloads && https://developer.android.com/ndk/downloads
         ndk-version: [r21e, r22b, r23c, r24, r25b]
         exclude:
         # Don't build on incompatible targets
         - build-on: ubuntu-latest
-          platform: ios
-        - build-on: windows-latest
           platform: ios
         - build-on: macos-latest
           platform: android
@@ -120,5 +118,3 @@ jobs:
         run: make bind.${{ matrix.platform }}
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-        shell: bash
-

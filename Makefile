@@ -16,21 +16,21 @@ bind: bind.ios bind.android bind.web
 
 ## └─ android       - Android AAR
 bind.android:
-	TAR_COMPRESS=false && ${SHELL} $(SCRIPTS_DIR)/bind.sh -a
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -a
 
 ## └─ ios           - iOS Framework
 bind.ios:
-	TAR_COMPRESS=false && ${SHELL} $(SCRIPTS_DIR)/bind.sh -i
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -i
 
 ## └─ web           - WASM Framework
 bind.web:
-	TAR_COMPRESS=false && ${SHELL} $(SCRIPTS_DIR)/bind.sh -w
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -w
 
 ## └─ tar           - Build All & Tar Compress
 bind.tar:
-	TAR_COMPRESS=true && ${SHELL} $(SCRIPTS_DIR)/bind.sh -a
-	TAR_COMPRESS=true && ${SHELL} $(SCRIPTS_DIR)/bind.sh -i
-	TAR_COMPRESS=true && ${SHELL} $(SCRIPTS_DIR)/bind.sh -w
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -a
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -i
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -w
 
 ## proto       :   Compiles Go Proto Files and pushes to Buf.Build
 proto: proto.go proto.buf
