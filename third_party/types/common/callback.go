@@ -7,9 +7,7 @@ type MotorCallback interface {
 	OnMotorEvent(msg string, isDone bool)
 }
 
-type defaultCallback struct {
-	MotorCallback
-}
+type defaultCallback struct{}
 
 func DefaultCallback() MotorCallback {
 	return &defaultCallback{}
@@ -20,5 +18,9 @@ func (cb *defaultCallback) OnDiscover(data []byte) {
 }
 
 func (cb *defaultCallback) OnWalletCreated(ok bool) {
+	log.Println("ERROR: MotorCallback not implemented.")
+}
+
+func (d defaultCallback) OnMotorEvent(msg string, done bool) {
 	log.Println("ERROR: MotorCallback not implemented.")
 }
