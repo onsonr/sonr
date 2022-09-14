@@ -13,8 +13,33 @@ import (
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
-// Login creates a motor node from a LoginRequest
 func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, error) {
+	var err error
+	// get PSK
+	psk, err := kr.GetPSK()
+	if err != nil {
+		return mt.LoginResponse{}, fmt.Errorf("get PSK: %s", err)
+	}
+
+	var dsc []byte
+	if request.Password == "" {
+		// get DSC
+		dsc, err = kr.GetDSC()
+		if err != nil {
+			return mt.LoginResponse{}, fmt.Errorf("get DSC: %s", err)
+		}
+	}
+
+	return mtr.LoginWithKeys(mt.LoginWithKeysRequest{
+		Did:       request.Did,
+		Password:  request.Password,
+		AesDscKey: dsc,
+		AesPskKey: psk,
+	})
+}
+
+// LoginWithKeys creates a motor node from a LoginRequest
+func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.LoginResponse, error) {
 	if request.Did == "" {
 		return mt.LoginResponse{}, fmt.Errorf("did must be provided")
 	}
@@ -64,14 +89,8 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	}, nil
 }
 
-func createWalletConfigs(id string, req mt.LoginRequest, shards vault.Vault) (map[party.ID]*cmp.Config, error) {
+func createWalletConfigs(id string, req mt.LoginWithKeysRequest, shards vault.Vault) (map[party.ID]*cmp.Config, error) {
 	configs := make(map[party.ID]*cmp.Config)
-
-	// get PSK
-	psk, err := kr.GetPSK()
-	if err != nil {
-		return nil, fmt.Errorf("get PSK: %s", err)
-	}
 
 	// if a password is provided, prefer that over the DSC
 	if req.Password != "" {
@@ -86,18 +105,12 @@ func createWalletConfigs(id string, req mt.LoginRequest, shards vault.Vault) (ma
 			return nil, fmt.Errorf("recovery shard: %s", err)
 		}
 	} else {
-		// get DSC
-		dsc, err := kr.GetDSC()
-		if err != nil {
-			return nil, fmt.Errorf("get DSC: %s", err)
-		}
-
 		// build DSC Config if password is not provided
 		deviceShard, ok := shards.IssuedShards[id]
 		if !ok {
 			return nil, fmt.Errorf("could not find device shard with key '%s'", id)
 		}
-		dscShard, err := mpc.AesDecryptWithKey(dsc, deviceShard)
+		dscShard, err := mpc.AesDecryptWithKey(req.AesDscKey, deviceShard)
 		if err != nil {
 			return nil, fmt.Errorf("error decrypting DSC shard: %s", err)
 		}
@@ -109,7 +122,7 @@ func createWalletConfigs(id string, req mt.LoginRequest, shards vault.Vault) (ma
 	}
 
 	// in all cases, use the PSK
-	pskShard, err := mpc.AesDecryptWithKey(psk, shards.PskShard)
+	pskShard, err := mpc.AesDecryptWithKey(req.AesPskKey, shards.PskShard)
 	if err != nil {
 		return nil, fmt.Errorf("error decrypting PSK shard: %s", err)
 	}

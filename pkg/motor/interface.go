@@ -34,9 +34,11 @@ type MotorNode interface {
 	// Registry
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
 	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
+	CreateAccountWithKeys(mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error)
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
+	LoginWithKeys(mt.LoginWithKeysRequest) (mt.LoginResponse, error)
 	BuyAlias(rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error)
 	SellAlias(rt.MsgSellAlias) (rt.MsgSellAliasResponse, error)
 	TransferAlias(rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error)

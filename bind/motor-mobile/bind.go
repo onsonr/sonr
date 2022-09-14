@@ -71,6 +71,23 @@ func CreateAccount(buf []byte) ([]byte, error) {
 	}
 }
 
+func CreateAccountWithKeys(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+	// decode request
+	request := mt.CreateAccountWithKeysRequest{}
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.CreateAccountWithKeys(request); err == nil {
+		return res.Marshal()
+	} else {
+		return nil, err
+	}
+}
+
 func Login(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWalletNotInitialized
@@ -83,6 +100,24 @@ func Login(buf []byte) ([]byte, error) {
 	}
 
 	if res, err := instance.Login(request); err == nil {
+		return res.Marshal()
+	} else {
+		return nil, err
+	}
+}
+
+func LoginWithKeys(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	// decode request
+	var request mt.LoginWithKeysRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("error unmarshalling request: %s", err)
+	}
+
+	if res, err := instance.LoginWithKeys(request); err == nil {
 		return res.Marshal()
 	} else {
 		return nil, err
