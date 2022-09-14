@@ -51,14 +51,29 @@ jobs:
         # https://github.com/android/ndk/wiki/Unsupported-Downloads && https://developer.android.com/ndk/downloads
         ndk-version: [r21e, r22b, r23c, r24, r25b]
         exclude:
+        # Don't build on incompatible targets
         - build-on: ubuntu-latest
           platform: ios
         - build-on: macos-latest
           platform: android
-        - platform: web
-          ndk-version: [r22b, r23c, r24, r25b]
+
+        # Don't pollute the build matrix cause of android
         - platform: ios
-          ndk-version: [r22b, r23c, r24, r25b]
+          ndk-version: r22b
+        - platform: ios
+          ndk-version: r23c
+        - platform: ios
+          ndk-version: r24
+        - platform: ios
+          ndk-version: r25b
+        - platform: ios
+          ndk-version: r22b
+        - platform: ios
+          ndk-version: r23c
+        - platform: ios
+          ndk-version: r24
+        - platform: ios
+          ndk-version: r25b
       fail-fast: false
     name: "Bindings: ${{ matrix.platform }}; ${{ matrix.build-on }}; Go ${{ matrix.go-version }}; NDK ${{ matrix.ndk-version }}"
     runs-on: ${{ matrix.build-on }}
