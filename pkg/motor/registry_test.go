@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_CreateAccount(t *testing.T) {
+func Test_CreateAccountWithKeyring(t *testing.T) {
 	req := mt.CreateAccountRequest{
 		Password: "password123",
 	}
