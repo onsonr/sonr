@@ -19,7 +19,6 @@ type MotorCallback interface {
 var (
 	objectBuilders map[string]*object.ObjectBuilder
 	instance       mtr.MotorNode
-	callback       ct.MotorCallback
 )
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
@@ -35,7 +34,6 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 		return nil, err
 	}
 	instance = mtr
-	callback = cb
 
 	// init objectBuilders
 	objectBuilders = make(map[string]*object.ObjectBuilder)
