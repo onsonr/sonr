@@ -49,18 +49,7 @@ jobs:
         build-on: [ubuntu-latest, macos-latest]
         go-version: [1.17, 1.18, 1.19]
         # https://github.com/android/ndk/wiki/Unsupported-Downloads && https://developer.android.com/ndk/downloads
-        include:
-        # Adds teh following details to the android matrix only
-          - platform: android
-            ndk-version: r21e
-          - platform: android
-            ndk-version: r22b
-          - platform: android
-            ndk-version: r23c
-          - platform: android
-            ndk-version: r24
-          - platform: android
-            ndk-version: r25b
+        ndk-version: [r21e, r22b, r23c, r24, r25b]
         exclude:
         - build-on: ubuntu-latest
           platform: ios
