@@ -25,6 +25,12 @@ message CreateAccountResponse {
   sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
+message CreateAccountWithKeysResponse {
+  string address = 1;
+  bytes aes_psk_key = 2;
+  sonrio.sonr.registry.WhoIs who_is = 3;
+}
+
 message LoginResponse {
   bool success = 1;
   sonrio.sonr.registry.WhoIs who_is = 2;
