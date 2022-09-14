@@ -120,4 +120,5 @@ jobs:
         run: make bind.${{ matrix.platform }}
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        shell: bash
 
