@@ -32,7 +32,7 @@ while getopts "iawm" opt; do
       IOS_ARTIFACT=${BUILDDIR}/Motor.xcframework
       echo "🔷 Binding iOS Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
-      gomobile bind -ldflags='-s -w' -target=ios,macos,iossimulator -prefix=SNR  -o ${IOS_ARTIFACT} -v
+      gomobile bind -ldflags='-s -w' -target=ios/arm64,macos,iossimulator -prefix=SNR  -o ${IOS_ARTIFACT} -v
       cd ${BUILDDIR}
 
       if [ "$TAR_COMPRESS" = true ] ; then
