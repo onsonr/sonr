@@ -48,6 +48,7 @@ jobs:
         platform: [ios, web, android]
         build-on: [ubuntu-latest, macos-latest]
         go-version: [1.17, 1.18, 1.19]
+        ndk-version: [23.1.7779620]
         exclude:
         - build-on: ubuntu-latest
           platform: ios
@@ -65,11 +66,11 @@ jobs:
       - name: Force NDK version
         if : matrix.platform == 'android'
         run: |
-          echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;23.1.7779620" | grep -v = || true
-          echo 'ANDROID_NDK=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
-          echo 'ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
-          echo 'ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
-          echo 'ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/23.1.7779620' >> $GITHUB_ENV
+          echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;${{ matrix.ndk-version }}" | grep -v = || true
+          echo 'ANDROID_NDK=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
+          echo 'ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
+          echo 'ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
+          echo 'ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/${{ matrix.ndk-version }}' >> $GITHUB_ENV
 
       - uses: actions/setup-java@v3
         if: matrix.platform == 'android'
