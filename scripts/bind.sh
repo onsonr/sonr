@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 SCRIPTS_DIR=$(dirname "$0")
 cd ${SCRIPTS_DIR}/../
