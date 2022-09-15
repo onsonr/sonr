@@ -13,7 +13,6 @@ import (
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
-	OnMotorEvent(msg string, isDone bool)
 }
 
 var (
