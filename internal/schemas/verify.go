@@ -7,6 +7,10 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
+var (
+	DocumentSpecialFields = []string{"@did"}
+)
+
 /*
 	Top level verification of the given schema def
 */
@@ -22,7 +26,11 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 
 	for key, value := range doc {
 		if _, ok := fields[key]; !ok {
-			return errSchemaFieldsInvalid
+			if !arrayContains(DocumentSpecialFields, key) {
+				return errSchemaFieldsInvalid
+			} else {
+				continue
+			}
 		}
 		if !CheckValueOfField(value, fields[key]) {
 			return errSchemaFieldsInvalid

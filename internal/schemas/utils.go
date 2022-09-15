@@ -26,3 +26,14 @@ func (as *schemaImpl) GetSchema() ([]*st.SchemaKindDefinition, error) {
 	}
 	return as.fields, nil
 }
+
+func arrayContains(arr []string, val interface{}) bool {
+
+	for _, v := range arr {
+		if v == val {
+			return true
+		}
+	}
+
+	return false
+}
