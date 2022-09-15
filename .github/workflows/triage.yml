@@ -4,16 +4,16 @@ on:
   issues:
     types:
       - opened
+      - labeled
 
 jobs:
   add-to-project:
     name: Add issue to project
     runs-on: ubuntu-latest
-    permissions: write-all
     steps:
       - uses: actions/add-to-project@v0.3.0
         with:
           # You can target a repository in a different organization
           # to the issue
           project-url: https://github.com/orgs/sonr-io/projects/9
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
