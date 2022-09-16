@@ -685,6 +685,7 @@ type QueryClient interface {
 	WhatIs(ctx context.Context, in *QueryWhatIsRequest, opts ...grpc.CallOption) (*QueryWhatIsResponse, error)
 	// Queries a whatis by creator
 	WhatIsByCreator(ctx context.Context, in *QueryWhatIsCreatorRequest, opts ...grpc.CallOption) (*QueryWhatIsCreatorResponse, error)
+	// Queries a whatis by did
 	WhatIsByDid(ctx context.Context, in *QueryWhatIsByDidRequest, opts ...grpc.CallOption) (*QueryWhatIsByDidResponse, error)
 	// Queries all whatIs definitions supports pagination
 	WhatIsAll(ctx context.Context, in *QueryAllWhatIsRequest, opts ...grpc.CallOption) (*QueryAllWhatIsResponse, error)
@@ -762,6 +763,7 @@ type QueryServer interface {
 	WhatIs(context.Context, *QueryWhatIsRequest) (*QueryWhatIsResponse, error)
 	// Queries a whatis by creator
 	WhatIsByCreator(context.Context, *QueryWhatIsCreatorRequest) (*QueryWhatIsCreatorResponse, error)
+	// Queries a whatis by did
 	WhatIsByDid(context.Context, *QueryWhatIsByDidRequest) (*QueryWhatIsByDidResponse, error)
 	// Queries all whatIs definitions supports pagination
 	WhatIsAll(context.Context, *QueryAllWhatIsRequest) (*QueryAllWhatIsResponse, error)
