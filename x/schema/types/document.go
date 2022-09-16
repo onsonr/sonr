@@ -31,7 +31,7 @@ func (d *SchemaDocumentValue) GetValue() interface{} {
 		}
 	case SchemaKind_LIST:
 		if d.ArrayValue != nil {
-			return d.ArrayValue.Value
+			return resolveArrayValues(d.ArrayValue.Value)
 		}
 	default:
 		return nil
@@ -119,4 +119,23 @@ func NewDocumentValueFromInterface(name string, value interface{}) *SchemaDocume
 	default:
 		return nil
 	}
+}
+
+func resolveArrayValues(vals []*SchemaDocumentValue) []interface{} {
+	arr := make([]interface{}, 0)
+	for _, val := range vals {
+		if val.BoolValue != nil {
+			arr = append(arr, val.BoolValue.Value)
+		} else if val.StringValue != nil {
+			arr = append(arr, val.StringValue.Value)
+		} else if val.IntValue != nil {
+			arr = append(arr, val.IntValue.Value)
+		} else if val.FloatValue != nil {
+			arr = append(arr, val.FloatValue.Value)
+		} else if val.BytesValue != nil {
+			arr = append(arr, val.BytesValue.Value)
+		}
+	}
+
+	return arr
 }
