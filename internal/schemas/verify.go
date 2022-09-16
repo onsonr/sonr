@@ -26,6 +26,7 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 
 	for key, value := range doc {
 		if _, ok := fields[key]; !ok {
+			// check for special metadata fields, if found skip validation
 			if !arrayContains(DocumentSpecialFields, key) {
 				return errSchemaFieldsInvalid
 			} else {
@@ -79,6 +80,12 @@ func (as *schemaImpl) VerifyList(lst []interface{}) error {
 func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 	switch value.(type) {
 	case int:
+		return fieldType == st.SchemaKind_INT
+	case uint:
+		return fieldType == st.SchemaKind_INT
+	case int32:
+		return fieldType == st.SchemaKind_INT
+	case int64:
 		return fieldType == st.SchemaKind_INT
 	case float64:
 		return fieldType == st.SchemaKind_FLOAT

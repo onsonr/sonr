@@ -6,32 +6,32 @@ func (d *SchemaDocumentValue) GetValue() interface{} {
 	switch d.Field {
 	case SchemaKind_BOOL:
 		if d.BoolValue != nil {
-			return d.BoolValue
+			return d.BoolValue.Value
 		}
 	case SchemaKind_BYTES:
 		if d.BytesValue != nil {
-			return d.BytesValue
+			return d.BytesValue.Value
 		}
 	case SchemaKind_INT:
 		if d.IntValue != nil {
-			return d.IntValue
+			return int64(d.IntValue.Value)
 		}
 	case SchemaKind_FLOAT:
 		if d.FloatValue != nil {
-			return d.FloatValue
+			return d.FloatValue.Value
 		}
 	case SchemaKind_STRING:
 
 		if d.StringValue != nil {
-			return d.StringValue
+			return d.StringValue.Value
 		}
 	case SchemaKind_LINK:
 		if d.LinkValue != nil {
-			return d.LinkValue
+			return d.LinkValue.Value
 		}
 	case SchemaKind_LIST:
 		if d.ArrayValue != nil {
-			return d.ArrayValue
+			return d.ArrayValue.Value
 		}
 	default:
 		return nil

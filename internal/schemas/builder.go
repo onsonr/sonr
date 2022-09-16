@@ -64,7 +64,7 @@ func (as *schemaImpl) AssignValueToNode(field st.SchemaKind, ma datamodel.MapAss
 		val := value.(string)
 		ma.AssembleValue().AssignString(val)
 	case st.SchemaKind_INT:
-		val := int64(value.(int))
+		val := int64(value.(int64))
 		ma.AssembleValue().AssignInt(val)
 	case st.SchemaKind_FLOAT:
 		val := value.(float64)
