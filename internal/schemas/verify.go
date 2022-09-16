@@ -89,6 +89,8 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_INT
 	case float64:
 		return fieldType == st.SchemaKind_FLOAT
+	case float32:
+		return fieldType == st.SchemaKind_FLOAT
 	case bool:
 		return fieldType == st.SchemaKind_BOOL
 	case string:

@@ -164,14 +164,17 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, erro
 			lstItem := interface{}(val).(int)
 			la.AssembleValue().AssignInt(int64(lstItem))
 		case int32:
-			lstItem := interface{}(val).(int)
+			lstItem := interface{}(val).(int32)
 			la.AssembleValue().AssignInt(int64(lstItem))
 		case int64:
-			lstItem := interface{}(val).(int)
+			lstItem := interface{}(val).(int32)
 			la.AssembleValue().AssignInt(int64(lstItem))
 		case float64:
 			lstItem := interface{}(val).(float64)
 			la.AssembleValue().AssignFloat(lstItem)
+		case float32:
+			lstItem := interface{}(val).(float32)
+			la.AssembleValue().AssignFloat(float64(lstItem))
 		case bool:
 			lstItem := interface{}(val).(bool)
 			la.AssembleValue().AssignBool(lstItem)
