@@ -517,6 +517,24 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	return vm, nil
 }
 
+// NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
+// It automatically encodes the provided public key based on the keyType.
+func NewVerificationMethodFromBytes(id DID, keyType ssi.KeyType, controller DID, key []byte) (*VerificationMethod, error) {
+
+	if keyType == ssi.JsonWebKey2020 {
+		return nil, errors.New("JWK is not implemented for NewVerificationMethodFromBytes")
+	}
+	encodedKey := base58.Encode(key, base58.BitcoinAlphabet)
+	vm := &VerificationMethod{
+		ID:              id,
+		Type:            keyType,
+		Controller:      controller,
+		PublicKeyBase58: encodedKey,
+	}
+
+	return vm, nil
+}
+
 // VerificationRelationship represents the usage of a VerificationMethod e.g. in authentication, assertionMethod, or keyAgreement.
 type VerificationRelationship struct {
 	*VerificationMethod

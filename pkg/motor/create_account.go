@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -58,6 +59,26 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
 
+	// Create the DID Document
+	doc, err := did.NewDocument(mtr.DID.String())
+	if err != nil {
+		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create DID document: %s", err)
+	}
+	mtr.DIDDocument = doc
+
+	// Format DID for setting MPC as controller
+	controller, err := did.ParseDID(fmt.Sprintf("%s#mpc", doc.GetID().String()))
+	if err != nil {
+		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("parse controller DID: %s", err)
+	}
+
+	// Add MPC as a VerificationMethod for the assertion of the DID Document
+	vm, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.ECDSASECP256K1VerificationKey2019, *controller, mtr.GetPubKey().Bytes())
+	if err != nil {
+		return mt.CreateAccountWithKeysResponse{}, err
+	}
+	doc.AddAssertionMethod(vm)
+
 	// Create Initial Shards
 	// mtr.callback.OnMotorEvent("Creating shards for MPC", false)
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
@@ -68,13 +89,6 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	mtr.sharedShard = sharedShard
 	mtr.recoveryShard = recShard
 	mtr.unusedShards = unusedShards
-
-	// Create the DID Document
-	doc, err := did.NewDocument(mtr.DID.String())
-	if err != nil {
-		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create DID document: %s", err)
-	}
-	mtr.DIDDocument = doc
 
 	// create Vault shards to make sure this works before creating WhoIs
 	// mtr.callback.OnMotorEvent("Registering new DIDDocument for account", false)
