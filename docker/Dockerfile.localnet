@@ -1,0 +1,20 @@
+FROM ignitehq/cli:latest
+
+USER root
+
+WORKDIR /app
+
+COPY . .
+
+RUN mv /app/test-config.yaml /app/config.yml
+RUN ignite chain init
+
+EXPOSE 1317
+EXPOSE 26656
+EXPOSE 26657
+EXPOSE 4500
+EXPOSE 9090
+EXPOSE 9091
+
+ENTRYPOINT ["ignite","chain", "serve"]
+
