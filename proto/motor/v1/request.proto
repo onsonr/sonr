@@ -3,6 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
+import "schema/v1/document.proto";
 import "bucket/where_is.proto";
 import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -46,6 +47,9 @@ message InitializeRequest {
 
   // Public Key used for Device Authentication as DID Controller
   common.v1.AuthInfo auth_info = 10; // optional
+
+  // Application DID
+  string app_did = 11; // optional
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -90,6 +94,8 @@ message PaymentRequest {
   int64 amount = 3;
   string memo = 4;
 }
+
+
 // -----------------------------------------------------------------------------
 // Registry Models
 // -----------------------------------------------------------------------------
@@ -161,4 +167,20 @@ message SeachBucketContentBySchemaRequest {
 }
 
 message StatRequest {
+}
+
+message UploadDocumentRequest {
+  string creator = 1;
+
+  string label = 2;
+
+  // The definition of the document used to build the values
+  sonrio.sonr.schema.SchemaDefinition definition = 3;
+
+  // the properties of this schemadocument
+  repeated sonrio.sonr.schema.SchemaDocumentValue fields = 4;
+}
+
+message GetDocumentRequest {
+  string cid = 1;
 }

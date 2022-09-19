@@ -7,6 +7,10 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
+var (
+	DocumentSpecialFields = []string{"@did"}
+)
+
 /*
 	Top level verification of the given schema def
 */
@@ -22,7 +26,12 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 
 	for key, value := range doc {
 		if _, ok := fields[key]; !ok {
-			return errSchemaFieldsInvalid
+			// check for special metadata fields, if found skip validation
+			if !arrayContains(DocumentSpecialFields, key) {
+				return errSchemaFieldsInvalid
+			} else {
+				continue
+			}
 		}
 		if !CheckValueOfField(value, fields[key]) {
 			return errSchemaFieldsInvalid
@@ -72,7 +81,15 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 	switch value.(type) {
 	case int:
 		return fieldType == st.SchemaKind_INT
+	case uint:
+		return fieldType == st.SchemaKind_INT
+	case int32:
+		return fieldType == st.SchemaKind_INT
+	case int64:
+		return fieldType == st.SchemaKind_INT
 	case float64:
+		return fieldType == st.SchemaKind_FLOAT
+	case float32:
 		return fieldType == st.SchemaKind_FLOAT
 	case bool:
 		return fieldType == st.SchemaKind_BOOL

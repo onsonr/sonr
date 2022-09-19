@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package sonrio.sonr.schema;
+
+import "schema/v1/schema.proto";
+
+option go_package = "github.com/sonr-io/sonr/x/schema/types";
+option java_multiple_files = true;
+option java_package = "io.sonr.types.schema";
+
+message SchemaDocument {
+  // the DID for this schema should not be populated by request
+  string did = 1;
+
+  string cid = 2;
+
+  string creator = 3;
+
+  // The definition of the document used to build the values
+  SchemaDefinition definition = 4;
+
+  // the properties of this schemadocument
+  repeated SchemaDocumentValue fields = 5;
+}
+
+
+message BoolValue {
+    bool value = 1;
+}
+
+message StringValue {
+    string value = 1;
+}
+
+message IntValue {
+    int32 value = 1;
+}
+
+message FloatValue {
+    double value = 1;
+}
+
+message BytesValue {
+    bytes value = 1;
+}
+
+message LinkValue {
+    LinkKind link = 1;
+    string value = 2;
+}
+
+message ArrayValue {
+    repeated SchemaDocumentValue value = 1;
+}
+
+
+message SchemaDocumentValue {
+    string name = 1;
+    // Type of a single schema property
+    SchemaKind field = 2;
+
+    // The value of the field
+    BoolValue bool_value = 3; // optional
+    StringValue string_value = 4; // optional
+    IntValue int_value = 5; // optional
+    FloatValue float_value = 6; // optional
+    BytesValue bytes_value = 7; // optional
+    LinkValue link_value = 8; // optional
+    ArrayValue array_value = 9; // optional
+}
