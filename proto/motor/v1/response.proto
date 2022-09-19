@@ -10,6 +10,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "registry/did.proto";
 import "registry/who_is.proto";
 import "schema/v1/schema.proto";
+import "schema/v1/document.proto";
 import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/third_party/types/motor/api/v1";
@@ -18,11 +19,18 @@ option java_package = "io.sonr.types.motor";
 
 message InitializeResponse {
   bool success = 1;
+  repeated sonrio.sonr.schema.SchemaDefinition definitions = 2;
 }
 
 message CreateAccountResponse {
   string address = 1;
   sonrio.sonr.registry.WhoIs who_is = 2;
+}
+
+message CreateAccountWithKeysResponse {
+  string address = 1;
+  bytes aes_psk_key = 2;
+  sonrio.sonr.registry.WhoIs who_is = 3;
 }
 
 message LoginResponse {
@@ -133,4 +141,18 @@ message SearchResponse {
   string resource_did = 2;
   string content_did = 3;
   repeated bytes content = 4;
+}
+
+message UploadDocumentResponse {
+  int32 status = 1;
+  string did = 2;
+  string cid = 3;
+  sonrio.sonr.schema.SchemaDocument document = 4;
+}
+
+message GetDocumentResponse {
+  int32 status = 1;
+  string did = 2;
+  string cid = 3;
+  sonrio.sonr.schema.SchemaDocument document = 4;
 }

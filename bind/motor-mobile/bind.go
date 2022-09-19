@@ -13,13 +13,11 @@ import (
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
-	OnMotorEvent(msg string, isDone bool)
 }
 
 var (
 	objectBuilders map[string]*object.ObjectBuilder
 	instance       mtr.MotorNode
-	callback       ct.MotorCallback
 )
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
@@ -35,7 +33,6 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 		return nil, err
 	}
 	instance = mtr
-	callback = cb
 
 	// init objectBuilders
 	objectBuilders = make(map[string]*object.ObjectBuilder)
@@ -73,6 +70,23 @@ func CreateAccount(buf []byte) ([]byte, error) {
 	}
 }
 
+func CreateAccountWithKeys(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+	// decode request
+	request := mt.CreateAccountWithKeysRequest{}
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	if res, err := instance.CreateAccountWithKeys(request); err == nil {
+		return res.Marshal()
+	} else {
+		return nil, err
+	}
+}
+
 func Login(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWalletNotInitialized
@@ -85,6 +99,24 @@ func Login(buf []byte) ([]byte, error) {
 	}
 
 	if res, err := instance.Login(request); err == nil {
+		return res.Marshal()
+	} else {
+		return nil, err
+	}
+}
+
+func LoginWithKeys(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	// decode request
+	var request mt.LoginWithKeysRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("error unmarshalling request: %s", err)
+	}
+
+	if res, err := instance.LoginWithKeys(request); err == nil {
 		return res.Marshal()
 	} else {
 		return nil, err
@@ -287,5 +319,39 @@ func TransferAlias(buf []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	return resp.Marshal()
+}
+
+func GetDocument(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.GetDocumentRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.GetDocument(request)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Marshal()
+}
+
+func UploadDocument(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.UploadDocumentRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.UploadDocument(request)
+	if err != nil {
+		return nil, err
+	}
 	return resp.Marshal()
 }

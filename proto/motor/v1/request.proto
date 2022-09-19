@@ -3,6 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
+import "schema/v1/document.proto";
 import "bucket/where_is.proto";
 import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -50,6 +51,9 @@ message InitializeRequest {
 
   // Public Key used for Device Authentication as DID Controller
   common.v1.AuthInfo auth_info = 11; // optional
+
+  // Application DID
+  string app_did = 12; // optional
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -58,12 +62,28 @@ message CreateAccountRequest {
   map<string, string> metadata = 2;
 }
 
+// CreateAccountWithKeyRequest allows the DSC to be specified manually when creating a request.
+// Necessary for android (for now)
+message CreateAccountWithKeysRequest {
+  string password = 1;
+  bytes aes_dsc_key = 2;
+  bytes aes_psk_key = 3;
+  map<string, string> metadata = 4;
+}
+
 // Login requires the DID of the account being logged into,
 // and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 message LoginRequest {
   string did = 1;
   string password = 2;
+}
+
+message LoginWithKeysRequest {
+  string did = 1;
+  string password = 2;
+  bytes aes_dsc_key = 3;
+  bytes aes_psk_key = 4;
 }
 
 message QueryRequest {
@@ -78,6 +98,8 @@ message PaymentRequest {
   int64 amount = 3;
   string memo = 4;
 }
+
+
 // -----------------------------------------------------------------------------
 // Registry Models
 // -----------------------------------------------------------------------------
@@ -148,4 +170,25 @@ message SeachBucketContentBySchemaRequest {
   string schema_did = 3;
 }
 
+<<<<<<< HEAD
 message StatRequest {}
+=======
+message StatRequest {
+}
+
+message UploadDocumentRequest {
+  string creator = 1;
+
+  string label = 2;
+
+  // The definition of the document used to build the values
+  sonrio.sonr.schema.SchemaDefinition definition = 3;
+
+  // the properties of this schemadocument
+  repeated sonrio.sonr.schema.SchemaDocumentValue fields = 4;
+}
+
+message GetDocumentRequest {
+  string cid = 1;
+}
+>>>>>>> d116c81b644bac24b229bf6cd224fe434771cc0a

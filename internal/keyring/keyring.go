@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	kr "github.com/sonr-io/keyring"
+	kr "github.com/99designs/keyring"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 )
 
