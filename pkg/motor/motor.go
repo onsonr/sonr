@@ -3,7 +3,6 @@ package motor
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -17,8 +16,8 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/pkg/logger"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
-	"github.com/sonr-io/sonr/pkg/motor/x/logger"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -86,7 +85,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
 	// Generate wallet
-	log.Println("Generating wallet...")
+	mtr.log.Info("Generating wallet...")
 	mtr.Wallet, err = mpc.GenerateWallet(mtr.callback, options...)
 	if err != nil {
 		return err
