@@ -148,7 +148,7 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 
 func Test_IPLD_Nodes(t *testing.T) {
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(),
 	}
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
@@ -351,7 +351,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 func Test_Sub_Schemas(t *testing.T) {
 	whatIss := CreateMockHeirachyThreeLevel("snr12345")
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(),
 	}
 
 	for _, wi := range whatIss {

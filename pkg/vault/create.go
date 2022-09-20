@@ -7,8 +7,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
@@ -80,8 +82,13 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 		return DefaultVaultService, fmt.Errorf("error creating vault: %s", errRes.Message)
 	}
 
+	err = godotenv.Load("../../.env")
+  if err != nil {
+    log.Fatal(err)
+  }
+
 	return did.Service{
-		ID:   ssi.MustParseURI("https://vault.sonr.ws"),
+		ID:   ssi.MustParseURI(os.Getenv("VAULT_ENDPOINT")),
 		Type: "vault",
 		ServiceEndpoint: map[string]string{
 			"cid": cvr.VaultCid,
