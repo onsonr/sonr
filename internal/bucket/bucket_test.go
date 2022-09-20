@@ -31,7 +31,7 @@ func Test_Bucket(t *testing.T) {
 	creator := "snr1ld9u3wpq752wmqaus5rzcfanqg65sgldhnscx5"
 	objectURI := "bafyreihnj3feeesb6wmd46lmsvtwalvuckns647ghy44xn63lfsfed3ydm"
 	s := shell.NewLocalShell()
-	c := client.NewClient(client.ConnEndpointType_DEV)
+	c := client.NewClient()
 	t.Run("Bucket should be defined", func(t *testing.T) {
 		content := []*bt.BucketItem{
 			{

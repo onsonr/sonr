@@ -1,6 +1,10 @@
 package vault
 
 import (
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 	"github.com/sonr-io/sonr/pkg/did"
 )
 
@@ -16,8 +20,12 @@ type vaultImpl struct {
 }
 
 func New() VaultClient {
+	err := godotenv.Load("../../.env")
+  if err != nil {
+    log.Fatal(err)
+  }
+
 	return &vaultImpl{
-		vaultEndpoint: "https://vault.sonr.ws",
-		// vaultEndpoint: "http://127.0.0.1:1234",
+		vaultEndpoint: os.Getenv("VAULT_ENDPOINT"),
 	}
 }

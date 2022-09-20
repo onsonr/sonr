@@ -65,7 +65,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 func Test_Object(t *testing.T) {
 	t.Skip("Skipping test in CI")
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(),
 	}
 	config := object.Config{}
 	def, jsonData := CreateMockSchemaDefinition()
