@@ -2,6 +2,8 @@ FROM ignitehq/cli:latest
 
 USER root
 
+RUN go install github.com/tomwright/dasel/cmd/dasel@master
+
 WORKDIR /app
 
 COPY . .
