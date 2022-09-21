@@ -5,6 +5,7 @@ import (
 
 	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
+	"github.com/sonr-io/sonr/x/schema/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -34,7 +35,7 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
 		if t.Field != st.SchemaKind_LINK {
-			err = as.AssignValueToNode(t.Field, ma, object[k])
+			err = as.AssignValueToNode(t, ma, object[k])
 			if err != nil {
 				return err
 			}
@@ -58,13 +59,13 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 	return nil
 }
 
-func (as *schemaImpl) AssignValueToNode(field st.SchemaKind, ma datamodel.MapAssembler, value interface{}) error {
-	switch field {
+func (as *schemaImpl) AssignValueToNode(field *st.SchemaKindDefinition, ma datamodel.MapAssembler, value interface{}) error {
+	switch field.Field {
 	case st.SchemaKind_STRING:
 		val := value.(string)
 		ma.AssembleValue().AssignString(val)
 	case st.SchemaKind_INT:
-		val := int64(value.(int64))
+		val := int64(value.(int))
 		ma.AssembleValue().AssignInt(val)
 	case st.SchemaKind_FLOAT:
 		val := value.(float64)
@@ -81,7 +82,7 @@ func (as *schemaImpl) AssignValueToNode(field st.SchemaKind, ma datamodel.MapAss
 		for i := 0; i < s.Len(); i++ {
 			val = append(val, s.Index(i).Interface())
 		}
-		n, err := as.BuildNodeFromList(val)
+		n, err := as.BuildNodeFromList(val, field.Item)
 		if err != nil {
 			return errSchemaFieldsInvalid
 		}
@@ -118,7 +119,7 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	for _, f := range sd.Fields {
 		lma.AssembleKey().AssignString(f.Name)
 		if f.Field != st.SchemaKind_LINK {
-			err := as.AssignValueToNode(f.Field, lma, value[f.Name])
+			err := as.AssignValueToNode(f, lma, value[f.Name])
 			if err != nil {
 				return err
 			}
@@ -138,7 +139,7 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	return nil
 }
 
-func (as *schemaImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, error) {
+func (as *schemaImpl) BuildNodeFromList(lst []interface{}, itemType *types.SchemaItemKindDefinition) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
@@ -152,7 +153,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, erro
 		return nb.Build(), nil
 	}
 
-	err = as.VerifyList(lst)
+	err = as.VerifyList(lst, itemType)
 
 	if err != nil {
 		return nil, err
@@ -167,7 +168,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, erro
 			lstItem := interface{}(val).(int32)
 			la.AssembleValue().AssignInt(int64(lstItem))
 		case int64:
-			lstItem := interface{}(val).(int32)
+			lstItem := interface{}(val).(int64)
 			la.AssembleValue().AssignInt(int64(lstItem))
 		case float64:
 			lstItem := interface{}(val).(float64)
@@ -181,6 +182,213 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}) (datamodel.Node, erro
 		case string:
 			lstItem := interface{}(val).(string)
 			la.AssembleValue().AssignString(lstItem)
+		case []byte:
+			lstItem := interface{}(val).([]byte)
+			la.AssembleValue().AssignBytes(lstItem)
+		/*
+			The below cases are for handling lists of up to 3 dimensions.
+			Within each cases arrays are normalized to match a type of []interface{}
+			each generic []interface{} array is then handed back to this function to further resolve types.
+			depth is cut off at 3 dimensions due to having to implement explicit type cases here
+		*/
+		case []string:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case []int:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case []int32:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case []int64:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case []float32:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case []float64:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][]string:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][]int:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][]int32:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][]int64:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][]float32:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][]float64:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][][]string:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][][]int:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][][]int32:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][][]int64:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][][]float32:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
+		case [][][]float64:
+			value := make([]interface{}, 0)
+			s := reflect.ValueOf(val)
+			for i := 0; i < s.Len(); i++ {
+				value = append(value, s.Index(i).Interface())
+			}
+			n, err := as.BuildNodeFromList(value, nil)
+			if err != nil {
+				return nil, err
+			}
+			la.AssembleValue().AssignNode(n)
 		}
 	}
 	err = la.Finish()

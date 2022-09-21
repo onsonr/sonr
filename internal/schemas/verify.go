@@ -66,10 +66,19 @@ func (as *schemaImpl) VerifySubObject(lst []*st.SchemaKindDefinition, doc map[st
 	return nil
 }
 
-func (as *schemaImpl) VerifyList(lst []interface{}) error {
+func (as *schemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaItemKindDefinition) error {
+	if itemType == nil {
+		for _, val := range lst {
+			if reflect.TypeOf(val) != reflect.TypeOf(lst[0]) {
+				return errors.New("array type is not of uniform values")
+			}
+		}
+		return nil
+	}
+
 	for _, val := range lst {
-		if reflect.TypeOf(val) != reflect.TypeOf(lst[0]) {
-			return errors.New("array type is not of uniform values")
+		if !CheckValueOfField(val, itemType.Field) {
+			return errSchemaFieldsInvalid
 		}
 	}
 
@@ -101,16 +110,46 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_LIST
 	case []int:
 		return fieldType == st.SchemaKind_LIST
+	case []int32:
+		return fieldType == st.SchemaKind_LIST
+	case []int64:
+		return fieldType == st.SchemaKind_LIST
 	case []bool:
 		return fieldType == st.SchemaKind_LIST
 	case []float64:
 		return fieldType == st.SchemaKind_LIST
+	case []float32:
+		return fieldType == st.SchemaKind_LIST
 	case []string:
+		return fieldType == st.SchemaKind_LIST
+	case [][]byte:
+		return fieldType == st.SchemaKind_LIST
+	case [][]string:
+		return fieldType == st.SchemaKind_LIST
+	case [][]int32:
+		return fieldType == st.SchemaKind_LIST
+	case [][]int64:
+		return fieldType == st.SchemaKind_LIST
+	case [][]float32:
+		return fieldType == st.SchemaKind_LIST
+	case [][]float64:
+		return fieldType == st.SchemaKind_LIST
+	case [][][]bool:
+		return fieldType == st.SchemaKind_LIST
+	case [][][]byte:
+		return fieldType == st.SchemaKind_LIST
+	case [][][]string:
+		return fieldType == st.SchemaKind_LIST
+	case [][][]int32:
+		return fieldType == st.SchemaKind_LIST
+	case [][][]int64:
+		return fieldType == st.SchemaKind_LIST
+	case [][][]float32:
+		return fieldType == st.SchemaKind_LIST
+	case [][][]float64:
 		return fieldType == st.SchemaKind_LIST
 	case map[string]interface{}:
 		return fieldType == st.SchemaKind_LINK
-	case interface{}:
-		return fieldType == st.SchemaKind_ANY
 	default:
 		return false
 	}
