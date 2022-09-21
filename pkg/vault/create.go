@@ -8,9 +8,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/sonr-io/sonr/internal/projectpath"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
@@ -82,7 +84,8 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 		return DefaultVaultService, fmt.Errorf("error creating vault: %s", errRes.Message)
 	}
 
-	err = godotenv.Load("../../.env")
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err = godotenv.Load(env_path)
   if err != nil {
     log.Fatal(err)
   }

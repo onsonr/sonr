@@ -3,8 +3,10 @@ package client
 import (
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
+	"github.com/sonr-io/sonr/internal/projectpath"
 )
 
 type Client struct {}
@@ -14,7 +16,8 @@ func NewClient() *Client {
 }
 
 func (c *Client) GetFaucetAddress() string {
-	err := godotenv.Load("../../.env")
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
   if err != nil {
     log.Fatal(err)
   }
@@ -23,7 +26,8 @@ func (c *Client) GetFaucetAddress() string {
 }
 
 func (c *Client) GetRPCAddress() string {
-	err := godotenv.Load("../../.env")
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
   if err != nil {
     log.Fatal(err)
   }
@@ -32,7 +36,8 @@ func (c *Client) GetRPCAddress() string {
 }
 
 func (c *Client) GetAPIAddress() string {
-	err := godotenv.Load("../../.env")
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
   if err != nil {
     log.Fatal(err)
   }
@@ -41,7 +46,8 @@ func (c *Client) GetAPIAddress() string {
 }
 
 func (c *Client) GetIPFSAddress() string {
-	err := godotenv.Load("../../.env")
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
   if err != nil {
     log.Fatal(err)
   }
@@ -50,7 +56,8 @@ func (c *Client) GetIPFSAddress() string {
 }
 
 func (c *Client) GetIPFSApiAddress() string {
-	err := godotenv.Load("../../.env")
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
   if err != nil {
     log.Fatal(err)
   }
