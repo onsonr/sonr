@@ -65,11 +65,26 @@ func (as *schemaImpl) AssignValueToNode(field *st.SchemaKindDefinition, ma datam
 		val := value.(string)
 		ma.AssembleValue().AssignString(val)
 	case st.SchemaKind_INT:
-		val := int64(value.(int))
-		ma.AssembleValue().AssignInt(val)
+		switch value.(type) {
+		case int:
+			val := int64(value.(int))
+			ma.AssembleValue().AssignInt(val)
+		case int32:
+			val := int64(value.(int32))
+			ma.AssembleValue().AssignInt(val)
+		case int64:
+			val := int64(value.(int64))
+			ma.AssembleValue().AssignInt(val)
+		}
 	case st.SchemaKind_FLOAT:
-		val := value.(float64)
-		ma.AssembleValue().AssignFloat(val)
+		switch value.(type) {
+		case float64:
+			val := value.(float64)
+			ma.AssembleValue().AssignFloat(val)
+		case float32:
+			val := value.(float32)
+			ma.AssembleValue().AssignFloat(float64(val))
+		}
 	case st.SchemaKind_BOOL:
 		val := value.(bool)
 		ma.AssembleValue().AssignBool(val)
