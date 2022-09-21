@@ -355,6 +355,56 @@ func Test_List_Types(t *testing.T) {
 	}
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_INT,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_FLOAT,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-3",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_STRING,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-4",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_BOOL,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-5",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_BYTES,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-6",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_LIST,
+				Item: &st.SchemaKindDefinition{
+					Field: st.SchemaKind_STRING,
+				},
+			},
+		})
 
 		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-7",
