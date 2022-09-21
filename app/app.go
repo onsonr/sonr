@@ -412,18 +412,6 @@ func New(
 	)
 	monitoringModule := monitoringp.NewAppModule(appCodec, app.MonitoringKeeper)
 
-	app.SchemaKeeper = *schemamodulekeeper.NewKeeper(
-		appCodec,
-		keys[schemamoduletypes.StoreKey],
-		keys[schemamoduletypes.MemStoreKey],
-		app.GetSubspace(schemamoduletypes.ModuleName),
-
-		app.AccountKeeper,
-		app.CapabilityKeeper,
-		app.BankKeeper,
-	)
-	schemaModule := schemamodule.NewAppModule(appCodec, app.SchemaKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.RegistryKeeper = *registrymodulekeeper.NewKeeper(
 		appCodec,
 		keys[registrymoduletypes.StoreKey],
@@ -434,6 +422,19 @@ func New(
 	)
 	registryModule := registrymodule.NewAppModule(appCodec, app.RegistryKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.SchemaKeeper = *schemamodulekeeper.NewKeeper(
+		appCodec,
+		keys[schemamoduletypes.StoreKey],
+		keys[schemamoduletypes.MemStoreKey],
+		app.GetSubspace(schemamoduletypes.ModuleName),
+
+		app.AccountKeeper,
+		app.CapabilityKeeper,
+		app.BankKeeper,
+		app.RegistryKeeper,
+	)
+	schemaModule := schemamodule.NewAppModule(appCodec, app.SchemaKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.BucketKeeper = *bucketmodulekeeper.NewKeeper(
 		appCodec,
 		keys[bucketmoduletypes.StoreKey],
@@ -441,6 +442,7 @@ func New(
 		app.GetSubspace(bucketmoduletypes.ModuleName),
 
 		app.BankKeeper,
+		app.RegistryKeeper,
 	)
 	bucketModule := bucketmodule.NewAppModule(appCodec, app.BucketKeeper, app.AccountKeeper, app.BankKeeper)
 

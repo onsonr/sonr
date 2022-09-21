@@ -31657,15 +31657,48 @@ paths:
                       properties:
                         did:
                           type: string
-                          title: the DID for this schema
+                          title: >-
+                            the DID for this schema should not be populated by
+                            request
+                        creator:
+                          type: string
                         label:
                           type: string
                           title: an alternative reference point
-                        cid:
-                          type: string
-                          description: >-
-                            a reference to information stored within an IPFS
-                            node.
+                        fields:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              field:
+                                title: Type of a single schema property
+                                type: string
+                                enum:
+                                  - LIST
+                                  - BOOL
+                                  - INT
+                                  - FLOAT
+                                  - STRING
+                                  - BYTES
+                                  - LINK
+                                  - ANY
+                                default: LIST
+                              link_kind:
+                                title: >-
+                                  Optional field for a link context if
+                                  `SchemaKind` is of type `Link`
+                                type: string
+                                enum:
+                                  - UNKNOWN
+                                  - OBJECT
+                                  - SCHEMA
+                                  - BUCKET
+                                default: UNKNOWN
+                              link:
+                                type: string
+                          title: the properties of this schema
                     creator:
                       type: string
                       title: Creator is the DID of the creator
@@ -31777,16 +31810,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -31805,9 +31828,7 @@ paths:
                 properties:
                   did:
                     type: string
-                    title: |-
-                      Represents the types of fields a schema can have
-                      the DID for this schema
+                    title: the DID for this schema should not be populated by request
                   creator:
                     type: string
                   label:
@@ -31898,13 +31919,48 @@ paths:
                     properties:
                       did:
                         type: string
-                        title: the DID for this schema
+                        title: >-
+                          the DID for this schema should not be populated by
+                          request
+                      creator:
+                        type: string
                       label:
                         type: string
                         title: an alternative reference point
-                      cid:
-                        type: string
-                        description: a reference to information stored within an IPFS node.
+                      fields:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            field:
+                              title: Type of a single schema property
+                              type: string
+                              enum:
+                                - LIST
+                                - BOOL
+                                - INT
+                                - FLOAT
+                                - STRING
+                                - BYTES
+                                - LINK
+                                - ANY
+                              default: LIST
+                            link_kind:
+                              title: >-
+                                Optional field for a link context if
+                                `SchemaKind` is of type `Link`
+                              type: string
+                              enum:
+                                - UNKNOWN
+                                - OBJECT
+                                - SCHEMA
+                                - BUCKET
+                              default: UNKNOWN
+                            link:
+                              type: string
+                        title: the properties of this schema
                   creator:
                     type: string
                     title: Creator is the DID of the creator
@@ -31978,15 +32034,48 @@ paths:
                       properties:
                         did:
                           type: string
-                          title: the DID for this schema
+                          title: >-
+                            the DID for this schema should not be populated by
+                            request
+                        creator:
+                          type: string
                         label:
                           type: string
                           title: an alternative reference point
-                        cid:
-                          type: string
-                          description: >-
-                            a reference to information stored within an IPFS
-                            node.
+                        fields:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              field:
+                                title: Type of a single schema property
+                                type: string
+                                enum:
+                                  - LIST
+                                  - BOOL
+                                  - INT
+                                  - FLOAT
+                                  - STRING
+                                  - BYTES
+                                  - LINK
+                                  - ANY
+                                default: LIST
+                              link_kind:
+                                title: >-
+                                  Optional field for a link context if
+                                  `SchemaKind` is of type `Link`
+                                type: string
+                                enum:
+                                  - UNKNOWN
+                                  - OBJECT
+                                  - SCHEMA
+                                  - BUCKET
+                                default: UNKNOWN
+                              link:
+                                type: string
+                          title: the properties of this schema
                     creator:
                       type: string
                       title: Creator is the DID of the creator
@@ -32077,20 +32166,11 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/schema/query/what_is/{did}':
     get:
+      summary: Queries a whatis by did
       operationId: SonrioSonrSchemaWhatIsByDid
       responses:
         '200':
@@ -32110,13 +32190,48 @@ paths:
                     properties:
                       did:
                         type: string
-                        title: the DID for this schema
+                        title: >-
+                          the DID for this schema should not be populated by
+                          request
+                      creator:
+                        type: string
                       label:
                         type: string
                         title: an alternative reference point
-                      cid:
-                        type: string
-                        description: a reference to information stored within an IPFS node.
+                      fields:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            field:
+                              title: Type of a single schema property
+                              type: string
+                              enum:
+                                - LIST
+                                - BOOL
+                                - INT
+                                - FLOAT
+                                - STRING
+                                - BYTES
+                                - LINK
+                                - ANY
+                              default: LIST
+                            link_kind:
+                              title: >-
+                                Optional field for a link context if
+                                `SchemaKind` is of type `Link`
+                              type: string
+                              enum:
+                                - UNKNOWN
+                                - OBJECT
+                                - SCHEMA
+                                - BUCKET
+                              default: UNKNOWN
+                            link:
+                              type: string
+                        title: the properties of this schema
                   creator:
                     type: string
                     title: Creator is the DID of the creator
@@ -32202,16 +32317,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -56501,13 +56606,46 @@ definitions:
             properties:
               did:
                 type: string
-                title: the DID for this schema
+                title: the DID for this schema should not be populated by request
+              creator:
+                type: string
               label:
                 type: string
                 title: an alternative reference point
-              cid:
-                type: string
-                description: a reference to information stored within an IPFS node.
+              fields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    field:
+                      title: Type of a single schema property
+                      type: string
+                      enum:
+                        - LIST
+                        - BOOL
+                        - INT
+                        - FLOAT
+                        - STRING
+                        - BYTES
+                        - LINK
+                        - ANY
+                      default: LIST
+                    link_kind:
+                      title: >-
+                        Optional field for a link context if `SchemaKind` is of
+                        type `Link`
+                      type: string
+                      enum:
+                        - UNKNOWN
+                        - OBJECT
+                        - SCHEMA
+                        - BUCKET
+                      default: UNKNOWN
+                    link:
+                      type: string
+                title: the properties of this schema
           creator:
             type: string
             title: Creator is the DID of the creator
@@ -56554,13 +56692,46 @@ definitions:
               properties:
                 did:
                   type: string
-                  title: the DID for this schema
+                  title: the DID for this schema should not be populated by request
+                creator:
+                  type: string
                 label:
                   type: string
                   title: an alternative reference point
-                cid:
-                  type: string
-                  description: a reference to information stored within an IPFS node.
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      field:
+                        title: Type of a single schema property
+                        type: string
+                        enum:
+                          - LIST
+                          - BOOL
+                          - INT
+                          - FLOAT
+                          - STRING
+                          - BYTES
+                          - LINK
+                          - ANY
+                        default: LIST
+                      link_kind:
+                        title: >-
+                          Optional field for a link context if `SchemaKind` is
+                          of type `Link`
+                        type: string
+                        enum:
+                          - UNKNOWN
+                          - OBJECT
+                          - SCHEMA
+                          - BUCKET
+                        default: UNKNOWN
+                      link:
+                        type: string
+                  title: the properties of this schema
             creator:
               type: string
               title: Creator is the DID of the creator
@@ -56619,9 +56790,7 @@ definitions:
         properties:
           did:
             type: string
-            title: |-
-              Represents the types of fields a schema can have
-              the DID for this schema
+            title: the DID for this schema should not be populated by request
           creator:
             type: string
           label:
@@ -56676,13 +56845,46 @@ definitions:
             properties:
               did:
                 type: string
-                title: the DID for this schema
+                title: the DID for this schema should not be populated by request
+              creator:
+                type: string
               label:
                 type: string
                 title: an alternative reference point
-              cid:
-                type: string
-                description: a reference to information stored within an IPFS node.
+              fields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    field:
+                      title: Type of a single schema property
+                      type: string
+                      enum:
+                        - LIST
+                        - BOOL
+                        - INT
+                        - FLOAT
+                        - STRING
+                        - BYTES
+                        - LINK
+                        - ANY
+                      default: LIST
+                    link_kind:
+                      title: >-
+                        Optional field for a link context if `SchemaKind` is of
+                        type `Link`
+                      type: string
+                      enum:
+                        - UNKNOWN
+                        - OBJECT
+                        - SCHEMA
+                        - BUCKET
+                      default: UNKNOWN
+                    link:
+                      type: string
+                title: the properties of this schema
           creator:
             type: string
             title: Creator is the DID of the creator
@@ -56717,13 +56919,46 @@ definitions:
               properties:
                 did:
                   type: string
-                  title: the DID for this schema
+                  title: the DID for this schema should not be populated by request
+                creator:
+                  type: string
                 label:
                   type: string
                   title: an alternative reference point
-                cid:
-                  type: string
-                  description: a reference to information stored within an IPFS node.
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      field:
+                        title: Type of a single schema property
+                        type: string
+                        enum:
+                          - LIST
+                          - BOOL
+                          - INT
+                          - FLOAT
+                          - STRING
+                          - BYTES
+                          - LINK
+                          - ANY
+                        default: LIST
+                      link_kind:
+                        title: >-
+                          Optional field for a link context if `SchemaKind` is
+                          of type `Link`
+                        type: string
+                        enum:
+                          - UNKNOWN
+                          - OBJECT
+                          - SCHEMA
+                          - BUCKET
+                        default: UNKNOWN
+                      link:
+                        type: string
+                  title: the properties of this schema
             creator:
               type: string
               title: Creator is the DID of the creator
@@ -56757,13 +56992,46 @@ definitions:
             properties:
               did:
                 type: string
-                title: the DID for this schema
+                title: the DID for this schema should not be populated by request
+              creator:
+                type: string
               label:
                 type: string
                 title: an alternative reference point
-              cid:
-                type: string
-                description: a reference to information stored within an IPFS node.
+              fields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    field:
+                      title: Type of a single schema property
+                      type: string
+                      enum:
+                        - LIST
+                        - BOOL
+                        - INT
+                        - FLOAT
+                        - STRING
+                        - BYTES
+                        - LINK
+                        - ANY
+                      default: LIST
+                    link_kind:
+                      title: >-
+                        Optional field for a link context if `SchemaKind` is of
+                        type `Link`
+                      type: string
+                      enum:
+                        - UNKNOWN
+                        - OBJECT
+                        - SCHEMA
+                        - BUCKET
+                      default: UNKNOWN
+                    link:
+                      type: string
+                title: the properties of this schema
           creator:
             type: string
             title: Creator is the DID of the creator
@@ -56787,9 +57055,7 @@ definitions:
     properties:
       did:
         type: string
-        title: |-
-          Represents the types of fields a schema can have
-          the DID for this schema
+        title: the DID for this schema should not be populated by request
       creator:
         type: string
       label:
@@ -56870,19 +57136,6 @@ definitions:
         default: UNKNOWN
       link:
         type: string
-  sonrio.sonr.schema.SchemaReference:
-    type: object
-    properties:
-      did:
-        type: string
-        title: the DID for this schema
-      label:
-        type: string
-        title: an alternative reference point
-      cid:
-        type: string
-        description: a reference to information stored within an IPFS node.
-    title: Schema defines the shapes of schemas on Sonr
   sonrio.sonr.schema.WhatIs:
     type: object
     properties:
@@ -56895,13 +57148,46 @@ definitions:
         properties:
           did:
             type: string
-            title: the DID for this schema
+            title: the DID for this schema should not be populated by request
+          creator:
+            type: string
           label:
             type: string
             title: an alternative reference point
-          cid:
-            type: string
-            description: a reference to information stored within an IPFS node.
+          fields:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                field:
+                  title: Type of a single schema property
+                  type: string
+                  enum:
+                    - LIST
+                    - BOOL
+                    - INT
+                    - FLOAT
+                    - STRING
+                    - BYTES
+                    - LINK
+                    - ANY
+                  default: LIST
+                link_kind:
+                  title: >-
+                    Optional field for a link context if `SchemaKind` is of type
+                    `Link`
+                  type: string
+                  enum:
+                    - UNKNOWN
+                    - OBJECT
+                    - SCHEMA
+                    - BUCKET
+                  default: UNKNOWN
+                link:
+                  type: string
+            title: the properties of this schema
       creator:
         type: string
         title: Creator is the DID of the creator
