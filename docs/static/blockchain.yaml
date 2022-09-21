@@ -32992,16 +32992,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/where_is/{creator}':
@@ -33186,16 +33176,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -33606,6 +33586,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -34354,6 +34344,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -34372,9 +34372,7 @@ paths:
                 properties:
                   creator:
                     type: string
-                    title: |-
-                      Represents the types of fields a schema can have
-                      the DID for this schema
+                    title: "Represents the types of fields a schema can have\r\nthe DID for this schema"
                   label:
                     type: string
                     title: an alternative reference point
@@ -34639,6 +34637,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -59898,9 +59906,7 @@ definitions:
         properties:
           creator:
             type: string
-            title: |-
-              Represents the types of fields a schema can have
-              the DID for this schema
+            title: "Represents the types of fields a schema can have\r\nthe DID for this schema"
           label:
             type: string
             title: an alternative reference point
@@ -60025,9 +60031,7 @@ definitions:
     properties:
       creator:
         type: string
-        title: |-
-          Represents the types of fields a schema can have
-          the DID for this schema
+        title: "Represents the types of fields a schema can have\r\nthe DID for this schema"
       label:
         type: string
         title: an alternative reference point

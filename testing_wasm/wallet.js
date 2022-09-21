@@ -18,7 +18,9 @@ const endpoint = "http://localhost:26657";
 
 
 // Copy Memonic from the Terminal and UPDATE IT HERE
-export const mnemonic = "fold merit circle virus tonight neglect grit wash exotic shift improve alone flee orchard fantasy honey shell object outer mystery course winner force banana"
+export const mnemonic = "service ball cushion genius salmon cross find grape inject long inquiry rent liberty object raw nest alarm category crime adapt awesome taxi visual exhibit"
+
+
 export class Wallet {
     wallet_address;
     publicKey;

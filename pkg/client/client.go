@@ -46,7 +46,7 @@ func (c *Client) GetFaucetAddress() string {
 	case ConnEndpointType_DEV:
 		return BLOCKCHAIN_FAUCET_DEV
 	case ConnEndpointType_BETA:
-		return BLOCKCHAIN_FAUCET_BETA
+		return BLOCKCHAIN_FAUCET_LOCAL
 	default:
 		return BLOCKCHAIN_FAUCET_LOCAL
 	}
@@ -59,7 +59,7 @@ func (c *Client) GetRPCAddress() string {
 	case ConnEndpointType_DEV:
 		return BLOCKCHAIN_RPC_DEV
 	case ConnEndpointType_BETA:
-		return BLOCKCHAIN_RPC_BETA
+		return BLOCKCHAIN_RPC_LOCAL
 	default:
 		return BLOCKCHAIN_RPC_LOCAL
 	}
