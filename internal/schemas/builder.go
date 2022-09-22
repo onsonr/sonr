@@ -22,7 +22,7 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 		return errSchemaFieldsInvalid
 	}
 
-	// Create IPLD Node
+	// Create IPLD Noded
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
 	ma, err := nb.BeginMap(int64(len(as.fields)))
@@ -154,6 +154,51 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	return nil
 }
 
+func (as *schemaImpl) BuildSchemaFromLinkForList(key string, ma datamodel.ListAssembler, value map[string]interface{}) error {
+	if as.subSchemas[key] == nil {
+		return errNodeNotFound
+	}
+
+	sd := as.subSchemas[key]
+
+	err := as.VerifySubObject(sd.Fields, value)
+
+	if err != nil {
+		return err
+	}
+
+	// Create IPLD Node
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder() // Create a builder.
+	lma, err := nb.BeginMap(int64(len(value)))
+
+	if err != nil {
+		return err
+	}
+
+	for _, f := range sd.Fields {
+		lma.AssembleKey().AssignString(f.Name)
+		if f.Field != st.SchemaKind_LINK {
+			err := as.AssignValueToNode(f, lma, value[f.Name])
+			if err != nil {
+				return err
+			}
+		} else if f.Field == st.SchemaKind_LINK {
+			err = as.BuildSchemaFromLink(f.Link, lma, value[f.Name].(map[string]interface{}))
+			if err != nil {
+				return err
+			}
+		}
+
+	}
+
+	lma.Finish()
+	n := nb.Build()
+	ma.AssembleValue().AssignNode(n)
+
+	return nil
+}
+
 func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaItemKindDefinition) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
@@ -200,13 +245,21 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaIte
 		case []byte:
 			lstItem := interface{}(val).([]byte)
 			la.AssembleValue().AssignBytes(lstItem)
+		case map[string]interface{}:
+			if kind.Field == st.SchemaKind_LINK {
+				err = as.BuildSchemaFromLinkForList(kind.Link, la, val.(map[string]interface{}))
+
+				if err != nil {
+					return nil, err
+				}
+			}
 		/*
 			The below cases are for handling lists of up to 3 dimensions.
 			Within each cases arrays are normalized to match a type of []interface{}
 			each generic []interface{} array is then handed back to this function to further resolve types.
 			depth is cut off at 3 dimensions due to having to implement explicit type cases here
 		*/
-		case []string, []int, []int32, []int64, []float32, []float64:
+		case []map[string]interface{}, []string, []int, []int32, []int64, []float32, []float64:
 			value := make([]interface{}, 0)
 			s := reflect.ValueOf(val)
 			for i := 0; i < s.Len(); i++ {
@@ -217,7 +270,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaIte
 				return nil, err
 			}
 			la.AssembleValue().AssignNode(n)
-		case [][]byte, [][]string, [][]int, [][]int32, [][]int64, [][]float32, [][]float64:
+		case [][]map[string]interface{}, [][]byte, [][]string, [][]int, [][]int32, [][]int64, [][]float32, [][]float64:
 			value := make([]interface{}, 0)
 			s := reflect.ValueOf(val)
 			for i := 0; i < s.Len(); i++ {
@@ -228,7 +281,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaIte
 				return nil, err
 			}
 			la.AssembleValue().AssignNode(n)
-		case [][][]byte, [][][]string, [][][]int, [][][]int32, [][][]int64, [][][]float32, [][][]float64:
+		case [][][]map[string]interface{}, [][][]byte, [][][]string, [][][]int, [][][]int32, [][][]int64, [][][]float32, [][][]float64:
 			value := make([]interface{}, 0)
 			s := reflect.ValueOf(val)
 			for i := 0; i < s.Len(); i++ {
@@ -239,6 +292,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaIte
 				return nil, err
 			}
 			la.AssembleValue().AssignNode(n)
+
 		}
 	}
 	err = la.Finish()
