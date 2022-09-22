@@ -21,16 +21,17 @@ import (
 */
 const SCHEMA_DID string = "did:snr:QmZLKGrTcUAKsUVUZ5e72rAWRg1Y1SzRJqWqcXaDqjFUqm"
 
-func Test_ObjectBuilder(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+func (suite *MotorTestSuite) Test_ObjectBuilder() {
+	suite.T().Skip()
+	suite.T().Run("success", func(t *testing.T) {
+		pskKey := loadKey(fmt.Sprintf("psk%s", suite.accountAddress))
 		if pskKey == nil || len(pskKey) != 32 {
 			t.Errorf("could not load psk key")
 			return
 		}
 
 		req := mt.LoginRequest{
-			Did:      ADDR,
+			Did:      suite.accountAddress,
 			Password: "password123",
 		}
 
