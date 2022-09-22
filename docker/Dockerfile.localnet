@@ -1,10 +1,17 @@
-FROM ignitehq/cli:latest
+FROM ignitehq/cli:develop
+
 USER root
-RUN go install github.com/tomwright/dasel/cmd/dasel@master
+
 WORKDIR /app
 COPY . .
 RUN mv /app/test-config.yaml /app/config.yml
+RUN chown -R tendermint /app && chown -R tendermint /go
+
+USER tendermint
+
+RUN go install github.com/tomwright/dasel/cmd/dasel@master
 RUN ignite chain init
+
 EXPOSE 1317
 EXPOSE 26656
 EXPOSE 26657
