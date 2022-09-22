@@ -154,7 +154,7 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	return nil
 }
 
-func (as *schemaImpl) BuildNodeFromList(lst []interface{}, itemType *types.SchemaItemKindDefinition) (datamodel.Node, error) {
+func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaItemKindDefinition) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
@@ -168,7 +168,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, itemType *types.Schem
 		return nb.Build(), nil
 	}
 
-	err = as.VerifyList(lst, itemType)
+	err = as.VerifyList(lst, kind)
 
 	if err != nil {
 		return nil, err
@@ -212,7 +212,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, itemType *types.Schem
 			for i := 0; i < s.Len(); i++ {
 				value = append(value, s.Index(i).Interface())
 			}
-			n, err := as.BuildNodeFromList(value, nil)
+			n, err := as.BuildNodeFromList(value, kind.Item)
 			if err != nil {
 				return nil, err
 			}
@@ -223,7 +223,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, itemType *types.Schem
 			for i := 0; i < s.Len(); i++ {
 				value = append(value, s.Index(i).Interface())
 			}
-			n, err := as.BuildNodeFromList(value, nil)
+			n, err := as.BuildNodeFromList(value, kind.Item)
 			if err != nil {
 				return nil, err
 			}
@@ -234,7 +234,7 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, itemType *types.Schem
 			for i := 0; i < s.Len(); i++ {
 				value = append(value, s.Index(i).Interface())
 			}
-			n, err := as.BuildNodeFromList(value, nil)
+			n, err := as.BuildNodeFromList(value, kind.Item)
 			if err != nil {
 				return nil, err
 			}
