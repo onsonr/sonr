@@ -400,7 +400,7 @@ func Test_List_Types(t *testing.T) {
 			Field: st.SchemaKind_LIST,
 			Item: &st.SchemaItemKindDefinition{
 				Field: st.SchemaKind_LIST,
-				Item: &st.SchemaKindDefinition{
+				Item: &st.SchemaItemKindDefinition{
 					Field: st.SchemaKind_STRING,
 				},
 			},
@@ -411,7 +411,7 @@ func Test_List_Types(t *testing.T) {
 			Field: st.SchemaKind_LIST,
 			Item: &st.SchemaItemKindDefinition{
 				Field: st.SchemaKind_LIST,
-				Item: &st.SchemaKindDefinition{
+				Item: &st.SchemaItemKindDefinition{
 					Field: st.SchemaKind_LIST,
 					Item: &st.SchemaItemKindDefinition{
 						Field: st.SchemaKind_INT,
