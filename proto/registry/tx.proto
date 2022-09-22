@@ -7,6 +7,9 @@ import "registry/who_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/registry/types";
 
+option java_package = "io.sonr.types.registry";
+option java_multiple_files = true;
+
 // Msg defines the Msg service.
 service Msg {
   rpc CreateWhoIs(MsgCreateWhoIs) returns (MsgCreateWhoIsResponse);

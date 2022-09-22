@@ -1,19 +1,10 @@
 package keeper
 
 import (
-	"bytes"
 	"encoding/binary"
-	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"path/filepath"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/google/uuid"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -23,52 +14,6 @@ var (
 	url        = "https://api.ipfs.sonr.ws"
 	ipfs_inter = shell.NewShell(url)
 )
-
-func (k Keeper) LookUpContent(cid string, content *types.SchemaDefinition) error {
-	time_stamp := fmt.Sprintf("%d", time.Now().Unix())
-
-	out_path := filepath.Join(os.TempDir(), cid+time_stamp+".txt")
-
-	defer os.Remove(out_path)
-
-	// TODO: replace this when Daniel's PR gets merged
-	// err := ipfs_inter.Get(cid, out_path)
-	// if err != nil {
-	// 	return err
-	// }
-	// buf, err := os.ReadFile(out_path)
-	// if err != nil {
-	// 	return err
-	// }
-
-	resp, err := http.Get(fmt.Sprintf("https://ipfs.sonr.ws/ipfs/%s", cid))
-	if err != nil {
-		return fmt.Errorf("error getting CID '%s': %s", cid, err)
-	}
-
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("error reading IPFS response: %s", err)
-	}
-
-	if content == nil {
-		return sdkerrors.Wrap(errors.New("content cannot be nil"), "grpc schema query")
-	}
-
-	if err = content.Unmarshal(buf); err != nil {
-		return err
-	}
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (k Keeper) PinContent(data []byte) (string, error) {
-	return ipfs_inter.Add(bytes.NewBuffer(data))
-}
 
 func (k Keeper) GenerateKeyForDID() string {
 	return uuid.New().String()
@@ -117,6 +62,22 @@ func (k Keeper) GetWhatIsFromCreator(ctx sdk.Context, creator string) (val []*ty
 	}
 
 	return vals, true
+}
+
+// GetWhatIsFromDid returns a WhatIs which matches the given DID
+func (k Keeper) GetWhatIsFromDid(ctx sdk.Context, did string) (*types.WhatIs, bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SchemaKeyPrefix))
+	whatIsBytes := store.Get(types.WhatIsKey(did))
+	if len(whatIsBytes) == 0 {
+		return nil, false
+	}
+
+	whatIs := &types.WhatIs{}
+	if err := k.cdc.Unmarshal(whatIsBytes, whatIs); err != nil {
+		return nil, false
+	}
+
+	return whatIs, true
 }
 
 // GetSchemaFromCreator returns a WhoIs whos DIDDocument contains the given controller

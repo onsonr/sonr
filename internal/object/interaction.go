@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 func (ao *objectImpl) CreateObject(
 	label string,
-	obj map[string]interface{}) (*object.ObjectUploadResult, error) {
+	obj map[string]interface{}) (*mt.UploadObjectResponse, error) {
 	err := ao.schema.VerifyObject(obj)
 
 	if err != nil {
@@ -33,9 +33,9 @@ func (ao *objectImpl) CreateObject(
 		return nil, err
 	}
 
-	return &object.ObjectUploadResult{
+	return &mt.UploadObjectResponse{
 		Code: 200,
-		Reference: &object.ObjectReference{
+		Reference: &mt.ObjectReference{
 			Did:   did,
 			Cid:   cid,
 			Label: label,

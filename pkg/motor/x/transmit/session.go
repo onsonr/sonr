@@ -3,70 +3,70 @@ package transmit
 import (
 	"time"
 
-	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // NewInSession creates a new Session from the given payload with Incoming direction.
-func NewInSession(payload *v1.Payload, from *motor.Peer, to *motor.Peer) *v1.Session {
+func NewInSession(payload *st.Payload, from *ct.Peer, to *ct.Peer) *st.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
-	return &v1.Session{
-		Direction:    motor.Direction_DIRECTION_INCOMING,
+	return &st.Session{
+		Direction:    st.Direction_DIRECTION_INCOMING,
 		Payload:      payload,
 		From:         from,
 		To:           to,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, motor.Direction_DIRECTION_INCOMING),
+		Items:        CreatePayloadItems(sessionPayload, st.Direction_DIRECTION_INCOMING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // NewOutSession creates a new Session from the given payload with Outgoing direction.
-func NewOutSession(payload *v1.Payload, to *motor.Peer, from *motor.Peer) *v1.Session {
+func NewOutSession(payload *st.Payload, to *ct.Peer, from *ct.Peer) *st.Session {
 	// Create Session Items
 	sessionPayload := NewSessionPayload(payload)
-	return &v1.Session{
-		Direction:    motor.Direction_DIRECTION_OUTGOING,
+	return &st.Session{
+		Direction:    st.Direction_DIRECTION_OUTGOING,
 		Payload:      payload,
 		To:           to,
 		From:         from,
 		LastUpdated:  int64(time.Now().Unix()),
-		Items:        CreatePayloadItems(sessionPayload, motor.Direction_DIRECTION_OUTGOING),
+		Items:        CreatePayloadItems(sessionPayload, st.Direction_DIRECTION_OUTGOING),
 		CurrentIndex: 0,
 		Results:      make(map[int32]bool),
 	}
 }
 
 // FinalIndex returns the final index of the session.
-func SessionFinalIndex(s *v1.Session) int {
+func SessionFinalIndex(s *st.Session) int {
 	return len(s.Items) - 1
 }
 
 // HasRead returns true if all files have been read.
-func SessionHasRead(s *v1.Session) bool {
+func SessionHasRead(s *st.Session) bool {
 	return SessionIsIn(s) && SessionIsDone(s)
 }
 
 // HasWrote returns true if all files have been written.
-func SessionHasWrote(s *v1.Session) bool {
+func SessionHasWrote(s *st.Session) bool {
 	return SessionIsOut(s) && SessionIsDone(s)
 }
 
 // IsDone returns true if all files have been read or written.
-func SessionIsDone(s *v1.Session) bool {
+func SessionIsDone(s *st.Session) bool {
 	return int(s.GetCurrentIndex()) >= SessionFinalIndex(s)
 }
 
 // IsOut returns true if the session is outgoing.
-func SessionIsOut(s *v1.Session) bool {
-	return s.Direction == motor.Direction_DIRECTION_OUTGOING
+func SessionIsOut(s *st.Session) bool {
+	return s.Direction == st.Direction_DIRECTION_OUTGOING
 }
 
 // IsIn returns true if the session is incoming.
-func SessionIsIn(s *v1.Session) bool {
-	return s.Direction == motor.Direction_DIRECTION_INCOMING
+func SessionIsIn(s *st.Session) bool {
+	return s.Direction == st.Direction_DIRECTION_INCOMING
 }
 
 // // Event returns the complete event for the session.
@@ -146,7 +146,7 @@ func SessionIsIn(s *v1.Session) bool {
 // }
 
 // UpdateCurrent updates the current index of the session.
-func UpdateCurrent(s *v1.Session, result bool) bool {
+func UpdateCurrent(s *st.Session, result bool) bool {
 	logger.Debugf("Item (%v) transmit result: %v", s.GetCurrentIndex(), result)
 	s.Results[s.GetCurrentIndex()] = result
 	s.CurrentIndex = s.GetCurrentIndex() + 1

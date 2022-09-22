@@ -8,14 +8,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgCreateSchema = "create_schema"
+const (
+	TypeMsgCreateSchema = "create_schema"
+	InvalidFieldSymbol  = "@"
+)
 
 var _ sdk.Msg = &MsgCreateSchema{}
 
-func NewMsgCreateSchema(metadata []*MetadataDefintion, defintion *SchemaDefinition) *MsgCreateSchema {
+func NewMsgCreateSchema(metadata []*MetadataDefintion, fields []*SchemaKindDefinition, creator string, label string) *MsgCreateSchema {
 	return &MsgCreateSchema{
-		Metadata:   metadata,
-		Definition: defintion,
+		Metadata: metadata,
+		Creator:  creator,
+		Label:    label,
+		Fields:   fields,
 	}
 }
 func (msg *MsgCreateSchema) Route() string {
@@ -31,7 +36,7 @@ func (msg *MsgCreateSchema) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateSchema) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Definition.GetCreator())
+	creator, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		panic(err)
 	}
@@ -39,16 +44,30 @@ func (msg *MsgCreateSchema) GetSigners() []sdk.AccAddress {
 }
 
 func (msg *MsgCreateSchema) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Definition.GetCreator())
+	_, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+
+	if len(msg.Label) < 1 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Label must be defined and non empty")
+	}
+
+	if len(msg.Fields) < 1 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Fields cannot be empty")
+	}
+
+	for _, field := range msg.Fields {
+		if strings.Contains(field.Name, InvalidFieldSymbol) {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, fmt.Sprintf("Error while processing schema fields key: %s cannot contain symbol '@'", field.Name))
+		}
 	}
 	return nil
 }
 
 // GetCreatorDid returns the creator did
 func (msg *MsgCreateSchema) GetCreatorDid() string {
-	rawCreator := msg.Definition.GetCreator()
+	rawCreator := msg.GetCreator()
 
 	// Trim snr account prefix
 	if strings.HasPrefix(rawCreator, "snr") {

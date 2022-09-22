@@ -1,13 +1,10 @@
 package exchange
 
 import (
-	"errors"
-
 	"github.com/libp2p/go-libp2p-core/peer"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
-	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
@@ -61,7 +58,7 @@ import (
 // }
 
 // createResponse creates a new InviteResponse
-func (p *ExchangeProtocol) createResponse(decs bool, to *motor.Peer) (peer.ID, *v1.InviteResponse, error) {
+func (p *ExchangeProtocol) createResponse(decs bool, to *ct.Peer) (peer.ID, *st.InviteResponse, error) {
 
 	// // Call Peer from Node
 	// from, err := p.node.Peer()
@@ -78,7 +75,7 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *motor.Peer) (peer.ID, *
 	// }
 
 	// Create Invite Response
-	resp := &v1.InviteResponse{
+	resp := &st.InviteResponse{
 		Decision: decs,
 		// TODO: Implement Signed Meta to Proto Method
 		//Metadata: api.SignedMetadataToProto(meta),
@@ -96,19 +93,9 @@ func (p *ExchangeProtocol) createResponse(decs bool, to *motor.Peer) (peer.ID, *
 }
 
 // Libp2pID returns the PeerID based on PublicKey from Profile
-func Libp2pID(p *motor.Peer) (peer.ID, error) {
-	// Check if PublicKey is empty
-	if len(p.GetPublicKey()) == 0 {
-		return "", errors.New("Peer Public Key is not set.")
-	}
-
-	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
-	if err != nil {
-		return "", err
-	}
-
+func Libp2pID(p *ct.Peer) (peer.ID, error) {
 	// Return Peer ID
-	id, err := peer.IDFromPublicKey(pubKey)
+	id, err := peer.IDFromString(p.GetPeerId())
 	if err != nil {
 		return "", err
 	}

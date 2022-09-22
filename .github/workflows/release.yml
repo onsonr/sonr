@@ -27,6 +27,12 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: nowsprinting/check-version-format-action@v3
+        if: github.event.pull_request.merged == false
+        id: version
+        with:
+          prefix: "v"
+
       - id: tag
         if: github.event.pull_request.merged == false
         uses: dawidd6/action-get-tag@v1
@@ -41,7 +47,7 @@ jobs:
           tag: ${{ github.ref }}
           name: ${{steps.tag.outputs.tag}}
           draft: false
-          prerelease: false
+          prerelease: ${{steps.version.outputs.is_stable == 'false'}}
 
       - name: Create a GitHub from New Tag
         id: new_tag_release
@@ -88,13 +94,14 @@ jobs:
           gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     # - name: motor-ios Repository Dispatch
-  #     #   uses: peter-evans/repository-dispatch@v2
-  #     #   with:
-  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
-  #     #     repository: sonr-io/motor-ios
-  #     #     event-type: new-ios-framework
-  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          TAR_COMPRESS: true
+      - name: motor-ios Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.ACTIONS_GH_TOKEN }}
+          repository: sonr-io/motor_pod
+          event-type: new-ios-framework
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Android
@@ -138,6 +145,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          TAR_COMPRESS: true
   #     # - name: motor-android Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:
@@ -185,6 +193,7 @@ jobs:
           gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAR_COMPRESS: true
   #     # - name: motor-android Repository Dispatch
   #     #   uses: peter-evans/repository-dispatch@v2
   #     #   with:
@@ -263,7 +272,7 @@ jobs:
       - name: Setup Environment
         uses: actions/checkout@v3
       - id: info
-        uses: jossef/action-latest-release-info@v1.1.0
+        uses: jossef/action-latest-release-info@v1.2.0
       - run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }} ${{ github.workspace }}/tmp/cover.png
       - name: Publish Tweet
         id: tweet

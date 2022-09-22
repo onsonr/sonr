@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/sonr/third_party/types/common"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -12,7 +13,7 @@ import (
 func Test_FaucetCheckBalance(t *testing.T) {
 	// Create Client instance and Generate wallet
 	client := NewClient(ConnEndpointType_BETA)
-	w, err := mpc.GenerateWallet()
+	w, err := mpc.GenerateWallet(common.DefaultCallback())
 	assert.NoError(t, err, "wallet generation succeeds")
 
 	// Get Wallet Address

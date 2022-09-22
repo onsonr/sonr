@@ -11,7 +11,7 @@ import (
 // NewHighwayServer creates a new Highway service stub for the node.
 func NewHighway(ctx context.Context, opts ...config.Option) (*api.HighwayServer, error) {
 	// Create Config
-	c := config.DefaultConfig(config.Role_HIGHWAY)
+	c := config.DefaultConfig(config.Role_HIGHWAY, "")
 	for _, opt := range opts {
 		if opt != nil {
 			opt(c)

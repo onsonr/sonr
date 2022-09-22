@@ -9,8 +9,7 @@ import (
 	"github.com/patrickmn/go-cache"
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/host"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
-	"google.golang.org/protobuf/proto"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 type ExchangeProtocol struct {
@@ -132,8 +131,8 @@ func (p *ExchangeProtocol) onInviteRequest(s network.Stream) {
 	s.Close()
 
 	// unmarshal it
-	req := &v1.InviteRequest{}
-	err = proto.Unmarshal(buf, req)
+	req := &st.InviteRequest{}
+	err = req.Unmarshal(buf)
 	if err != nil {
 		logger.Errorf("%s - Failed to Unmarshal Invite REQUEST buffer.", err)
 		return
@@ -164,8 +163,8 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 	s.Close()
 
 	// Unmarshal response
-	resp := &v1.InviteResponse{}
-	err = proto.Unmarshal(buf, resp)
+	resp := &st.InviteResponse{}
+	err = resp.Unmarshal(buf)
 	if err != nil {
 		logger.Errorf("%s - Failed to Unmarshal Invite RESPONSE buffer.", err)
 		return
@@ -185,7 +184,7 @@ func (p *ExchangeProtocol) onInviteResponse(s network.Stream) {
 
 	// Get Next Entry
 	if x, found := p.invites.Get(remotePeer.String()); found {
-		req := x.(*v1.InviteRequest)
+		req := x.(*st.InviteRequest)
 		logger.Debug(req)
 		// TODO: Implement Decision Response to Event Method
 		//p.callback.OnDecision(resp.ToEvent(), req.ToEvent())

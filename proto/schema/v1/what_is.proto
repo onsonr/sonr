@@ -2,17 +2,18 @@ syntax = "proto3";
 
 package sonrio.sonr.schema;
 
-import "registry/did.proto";
 import "schema/v1/schema.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
+option java_multiple_files = true;
+option java_package = "io.sonr.types.schema";
 
 message WhatIs {
   // DID is the DID of the object
   string did = 1;
 
   // Object_doc is the object document
-  SchemaReference schema = 2;
+  SchemaDefinition schema = 2;
 
   // Creator is the DID of the creator
   string creator = 3;

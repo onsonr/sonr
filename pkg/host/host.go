@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"errors"
+	"fmt"
 
 	"github.com/kataras/go-events"
 	"github.com/libp2p/go-libp2p"
@@ -14,12 +15,16 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p/p2p/discovery/mdns"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 
 	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	/// direct "github.com/libp2p/go-libp2p-webrtc-direct"
 	ma "github.com/multiformats/go-multiaddr"
 	// "github.com/pion/webrtc/v3"
+
 	"github.com/sonr-io/sonr/pkg/config"
 	"google.golang.org/protobuf/proto"
 )
@@ -27,9 +32,11 @@ import (
 // hostImpl type - a p2p host implementing one or more p2p protocols
 type hostImpl struct {
 	// Standard Node Implementation
-	host   host.Host
-	config *config.Config
-	events events.EventEmmiter
+	callback common.MotorCallback
+	host     host.Host
+	config   *config.Config
+	events   events.EventEmmiter
+	accAddr  string
 
 	// Host and context
 	privKey      crypto.PrivKey
@@ -47,7 +54,7 @@ type hostImpl struct {
 }
 
 // NewDefaultHost Creates a Sonr libp2p Host with the given config
-func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
+func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallback) (SonrHost, error) {
 	var err error
 	// Create the host.
 	hn := &hostImpl{
@@ -56,6 +63,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		config:       c,
 		events:       events.New(),
+		accAddr:      c.AccountAddress,
 	}
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
@@ -104,6 +112,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 			continue
 		} else {
 			hn.fsm.SetState(Status_FAIL)
+			
 			break
 		}
 	}
@@ -116,13 +125,12 @@ func NewDefaultHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	}
 
 	// Initialize Discovery for MDNS
-	if !c.Libp2pMdnsDisabled && hn.Role() != config.Role_HIGHWAY {
-		// hn.createMdnsDiscovery(config)
+	if !c.Libp2pMdnsDisabled {
+		hn.createMdnsDiscovery(c)
 	}
 
 	hn.fsm.SetState(Status_READY)
 	go hn.Serve()
-
 	return hn, nil
 }
 
@@ -158,17 +166,10 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 		return nil, err
 	}
 
-	// // TODO: bind to hostNode perhaps as an interface for creating a generic transport abstraction
-	// transport := direct.NewTransport(
-	// 	webrtc.Configuration{},
-	// 	new(mplex.Transport),
-	// )
-
 	// Start Host
 	hn.host, err = libp2p.New(
 		libp2p.Identity(hn.privKey),
 		libp2p.Routing(hn.Router),
-		// libp2p.Transport(transport),
 		libp2p.ListenAddrs(maddr),
 		libp2p.DisableRelay(),
 	)
@@ -204,6 +205,11 @@ func NewWasmHost(ctx context.Context, c *config.Config) (SonrHost, error) {
 	hn.fsm.SetState(Status_READY)
 	go hn.Serve()
 	return hn, nil
+}
+
+// Address returns the address of the underlying wallet
+func (h *hostImpl) Address() string {
+	return h.accAddr
 }
 
 // createDHTDiscovery is a Helper Method to initialize the DHT Discovery
@@ -244,7 +250,7 @@ func (hn *hostImpl) Close() error {
 }
 
 /*
-	Starts the libp2p host, dhcp, and sets the host status to ready
+Starts the libp2p host, dhcp, and sets the host status to ready
 */
 func (hn *hostImpl) Start() error {
 	// Create Connection Manager
@@ -300,7 +306,7 @@ func (hn *hostImpl) NeedsWait() {
 }
 
 /*
-	Stops the libp2p host, dhcp, and sets the host status to IDLE
+Stops the libp2p host, dhcp, and sets the host status to IDLE
 */
 func (hn *hostImpl) Stop() error {
 	err := hn.host.Close()
@@ -314,7 +320,7 @@ func (hn *hostImpl) Stop() error {
 }
 
 /*
-	Stops the libp2p host, dhcp, and sets the host status to ready
+Stops the libp2p host, dhcp, and sets the host status to ready
 */
 func (hn *hostImpl) Pause() error {
 	defer hn.fsm.PauseOperation()
@@ -333,17 +339,26 @@ func (hn *hostImpl) Status() HostStatus {
 	return hn.fsm.CurrentStatus
 }
 
-// TODO Migrate MDNS Service to latesat libp2p spec
-// // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
-// func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
-// 	if hn.Role() == device.Role_MOTOR {
-// 		// Create MDNS Service
-// 		ser := mdns.NewMdnsService(hn.host, c.Libp2pRendezvous)
+// createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
+func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
+	if hn.Role() == config.Role_MOTOR {
+		fmt.Println("Starting MDNS Discovery...")
+		// Create MDNS Service
+		ser := mdns.NewMdnsService(hn.host, c.Libp2pRendezvous, hn)
+		if err := ser.Start(); err != nil {
+			fmt.Println("Error starting MDNS Service: ", err)
+			return
+		}
+	}
+}
 
-// 		// Handle Events
-// 		ser.RegisterNotifee(hn)
-// 	}
-// }
+// Peer is a Helper Method to get the peer from the host
+func (hn *hostImpl) Peer() (*ct.Peer, error) {
+	return &ct.Peer{
+		PeerId: hn.host.ID().String(),
+		Did:    addrToDidUrl(hn.accAddr),
+	}, nil
+}
 
 // send sends the proto message to specified peer.
 func (h *hostImpl) SendMSG(ctx context.Context, target string, data interface{}, protocol protocol.ID) error {

@@ -1,23 +1,23 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
-	mt "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/stretchr/testify/assert"
 )
 
 /*
-prt.CreateSchemaRequest{
-	Label: "TestUser",
-	Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
-		"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-		"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-		"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
-	},
-}
+	prt.CreateSchemaRequest{
+		Label: "TestUser",
+		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
+			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
+			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
+			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
+		},
+	}
 */
 const SCHEMA_DID string = "did:snr:QmZLKGrTcUAKsUVUZ5e72rAWRg1Y1SzRJqWqcXaDqjFUqm"
 
@@ -30,20 +30,18 @@ func Test_ObjectBuilder(t *testing.T) {
 		}
 
 		req := mt.LoginRequest{
-			Did:       ADDR,
-			Password:  "password123",
-			AesPskKey: pskKey,
+			Did:      ADDR,
+			Password: "password123",
 		}
 
-		m := EmptyMotor("test_device")
+		m, _ := EmptyMotor(&mt.InitializeRequest{
+			DeviceId: "test_device",
+		}, common.DefaultCallback())
 		_, err := m.Login(req)
 		assert.NoError(t, err, "login succeeds")
 
 		// query WhatIs so it's cached
-		_, err = m.QueryWhatIs(context.Background(), mt.QueryWhatIsRequest{
-			Creator: m.GetDID().String(),
-			Did:     SCHEMA_DID,
-		})
+		_, err = m.GetClient().QueryWhatIs(m.GetDID().String(), SCHEMA_DID)
 		assert.NoError(t, err, "query whatis")
 
 		// upload object

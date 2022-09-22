@@ -9,12 +9,11 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/sonr/pkg/fs"
 	"github.com/sonr-io/sonr/pkg/host"
-	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // ReadFromStream reads the item from the stream
-func ReadItemFromStream(si *v1.SessionItem, node host.SonrHost, reader msgio.ReadCloser) error {
+func ReadItemFromStream(si *st.SessionItem, node host.SonrHost, reader msgio.ReadCloser) error {
 	// Create New File
 	dst, err := os.Create(si.GetPath())
 	defer dst.Close()
@@ -54,7 +53,7 @@ func ReadItemFromStream(si *v1.SessionItem, node host.SonrHost, reader msgio.Rea
 }
 
 // WriteToStream writes the item to the stream
-func WriteItemToStream(si *v1.SessionItem, h host.SonrHost, writer msgio.WriteCloser) error {
+func WriteItemToStream(si *st.SessionItem, h host.SonrHost, writer msgio.WriteCloser) error {
 	// Create New Chunker
 	f, err := os.Open(si.GetPath())
 	defer f.Close()
@@ -99,7 +98,7 @@ func WriteItemToStream(si *v1.SessionItem, h host.SonrHost, writer msgio.WriteCl
 }
 
 // Progress pushes a progress event to the node. Returns true if the item is done.
-func ProgressItem(si *v1.SessionItem, wrt int, h host.SonrHost) bool {
+func ProgressItem(si *st.SessionItem, wrt int, h host.SonrHost) bool {
 	// Update Progress
 	si.Written += int64(wrt)
 
@@ -117,18 +116,18 @@ func ProgressItem(si *v1.SessionItem, wrt int, h host.SonrHost) bool {
 	}
 
 	// Return if Done
-	return si.GetWritten() >= si.GetSize()
+	return si.GetWritten() >= si.GetSize_()
 }
 
 // ** ───────────────────────────────────────────────────────
 // ** ─── Payload Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────
 // PayloadItemFunc is the Map function for PayloadItem
-type PayloadItemFunc func(item *v1.Payload_Item, index int, total int) error
+type PayloadItemFunc func(item *st.Payload_Item, index int, total int) error
 
 // IsSingle returns true if the transfer is a single transfer. Error returned
 // if No Items present in Payload
-func IsSingle(p *v1.Payload) (bool, error) {
+func IsSingle(p *st.Payload) (bool, error) {
 	if len(p.GetItems()) == 0 {
 		return false, errors.New("No Items present in Payload")
 	}
@@ -140,7 +139,7 @@ func IsSingle(p *v1.Payload) (bool, error) {
 
 // IsMultiple returns true if the transfer is a multiple transfer. Error returned
 // if No Items present in Payload
-func IsMultiple(p *v1.Payload) (bool, error) {
+func IsMultiple(p *st.Payload) (bool, error) {
 	if len(p.GetItems()) == 0 {
 		return false, errors.New("No Items present in Payload")
 	}
@@ -151,14 +150,14 @@ func IsMultiple(p *v1.Payload) (bool, error) {
 }
 
 // FileCount returns the number of files in the Payload
-func FileCount(p *v1.Payload) int {
+func FileCount(p *st.Payload) int {
 	// Initialize
 	count := 0
 
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type != motor.MIME_TYPE_URL {
+		if item.GetMime().Type != st.MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}
@@ -169,14 +168,14 @@ func FileCount(p *v1.Payload) int {
 }
 
 // URLCount returns the number of URLs in the Payload
-func URLCount(p *v1.Payload) int {
+func URLCount(p *st.Payload) int {
 	// Initialize
 	count := 0
 
 	// Iterate over Items
 	for _, item := range p.GetItems() {
 		// Check if Item is File
-		if item.GetMime().Type == motor.MIME_TYPE_URL {
+		if item.GetMime().Type == st.MIME_TYPE_URL {
 			// Increase Count
 			count++
 		}
@@ -187,7 +186,7 @@ func URLCount(p *v1.Payload) int {
 }
 
 // SetPathFromFolder sets the path of the FileItem
-func SetPathFromFolder(f *v1.FileItem, folder fs.Folder) (string, error) {
+func SetPathFromFolder(f *st.FileItem, folder fs.Folder) (string, error) {
 	// Set Path
 	oldPath := f.GetPath()
 

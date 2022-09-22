@@ -18,14 +18,6 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	if err != nil {
 		return nil, err
 	}
-	if len(msg.Definition.Fields) < 1 {
-		k.Logger(ctx).Info("Create schema request empty, must have defined fields. aborting operation")
-		return &types.MsgCreateSchemaResponse{
-			Code:    http.StatusBadRequest,
-			Message: "Schema Fields must non nil",
-			WhatIs:  nil,
-		}, nil
-	}
 
 	k.Logger(ctx).Info("msg validation successful")
 
@@ -41,29 +33,19 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 		return nil, err
 	}
 
-	b, err := msg.Definition.Marshal()
-
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while pinning schema definition to storage")
 	}
 
-	cid_str, err := k.PinContent(b)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
 	}
-	k.Logger(ctx).Info(fmt.Sprintf("Schema persisted with cid %s", cid_str))
 
-	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", cid_str))
+	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", k.GenerateKeyForDID()))
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "error while creating did from cid")
 	}
 	k.Logger(ctx).Info(fmt.Sprintf("Creating schema with did %s", what_is_did))
-
-	var schema = types.SchemaReference{
-		Label: msg.Definition.Label,
-		Did:   what_is_did.String(),
-		Cid:   cid_str,
-	}
 
 	metadata := make(map[string]string)
 
@@ -72,9 +54,13 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	var whatIs = types.WhatIs{
-		Creator:   creator_did,
-		Did:       what_is_did.String(),
-		Schema:    &schema,
+		Creator: creator_did,
+		Did:     what_is_did.String(),
+		Schema: &types.SchemaDefinition{
+			Did:    what_is_did.String(),
+			Label:  msg.Label,
+			Fields: msg.Fields,
+		},
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
 		Metadata:  metadata,

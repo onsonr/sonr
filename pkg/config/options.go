@@ -12,36 +12,6 @@ import (
 // Option configures your client.
 type Option func(*Config)
 
-func WithCosmosAccountSettings(accountName string, addrPrefix string, homeDir string, keyringServiceName string, keyringBackend string) Option {
-	return func(c *Config) {
-		c.CosmosAccountName = accountName
-		c.CosmosAddressPrefix = addrPrefix
-		c.CosmosHomePath = homeDir
-		c.CosmosKeyringServiceName = keyringServiceName
-		c.CosmosKeyringBackend = keyringBackend
-	}
-}
-
-// WithCosmosNodeAddress sets the node address of your chain. When this option is not provided
-// `http://localhost:26657` is used as default.
-func WithCosmosNodeAddress(addr string) Option {
-	return func(c *Config) {
-		c.CosmosNodeAddress = addr
-	}
-}
-
-func WithUseFaucet(faucetAddress, denom string, minAmount uint64) Option {
-	return func(c *Config) {
-		c.CosmosUseFaucet = true
-		c.CosmosFaucetAddress = faucetAddress
-		if denom != "" {
-			c.CosmosFaucetDenom = denom
-		}
-		if minAmount != 0 {
-			c.CosmosFaucetMinAmount = minAmount
-		}
-	}
-}
 
 // WithHighwayAPISettings sets the host address for the Node Stub Client Host
 func WithHighwayAPISettings(network string, grpcHost string, grpcPort int, httpPort int) Option {

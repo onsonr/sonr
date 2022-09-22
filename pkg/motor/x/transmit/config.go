@@ -8,8 +8,7 @@ import (
 
 	device "github.com/sonr-io/sonr/pkg/fs"
 
-	types "go.buf.build/grpc/go/sonr-io/motor/common/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // Transfer Protocol ID's
@@ -48,17 +47,17 @@ func (o *options) Apply(p *TransmitProtocol) error {
 }
 
 // NewSessionPayload creates session payload
-func NewSessionPayload(p *v1.Payload) *v1.SessionPayload {
-	return &v1.SessionPayload{
+func NewSessionPayload(p *st.Payload) *st.SessionPayload {
+	return &st.SessionPayload{
 		Payload: p,
 	}
 }
 
 // CreateItems creates list of sessionItems
-func CreatePayloadItems(sp *v1.SessionPayload, dir types.Direction) []*v1.SessionItem {
+func CreatePayloadItems(sp *st.SessionPayload, dir st.Direction) []*st.SessionItem {
 	// Initialize Properties
 	count := len(sp.GetPayload().GetItems())
-	items := make([]*v1.SessionItem, 0)
+	items := make([]*st.SessionItem, 0)
 
 	// Iterate over items
 	for i, v := range sp.GetPayload().GetItems() {
@@ -67,7 +66,7 @@ func CreatePayloadItems(sp *v1.SessionPayload, dir types.Direction) []*v1.Sessio
 		path := fi.GetPath()
 
 		// Set Path for Incoming
-		if dir == types.Direction_DIRECTION_INCOMING {
+		if dir == st.Direction_DIRECTION_INCOMING {
 			inpath, err := SetPathFromFolder(fi, device.Downloads)
 			if err == nil {
 				path = inpath
@@ -77,11 +76,10 @@ func CreatePayloadItems(sp *v1.SessionPayload, dir types.Direction) []*v1.Sessio
 		}
 
 		// Create Session Item
-		item := &v1.SessionItem{
+		item := &st.SessionItem{
 			Item:      fi,
 			Index:     int32(i),
-			TotalSize: sp.GetPayload().GetSize(),
-			Size:      fi.GetSize(),
+			TotalSize: sp.GetPayload().GetSize_(),
 			Count:     int32(count),
 			Direction: dir,
 			Written:   0,

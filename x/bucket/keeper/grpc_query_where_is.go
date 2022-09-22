@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,8 +21,16 @@ func (k Keeper) WhereIsAll(c context.Context, req *types.QueryAllWhereIsRequest)
 	var whereIss []types.WhereIs
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if req.Pagination == nil {
+		whereIss = k.GetAllWhereIs(ctx)
+		return &types.QueryAllWhereIsResponse{
+			WhereIs:    whereIss,
+			Pagination: nil,
+		}, nil
+	}
+
 	store := ctx.KVStore(k.storeKey)
-	whereIsStore := prefix.NewStore(store, types.WhereIsKey(types.MemStoreKey))
+	whereIsStore := prefix.NewStore(store, types.KeyPrefix(types.WhereIsKeyPrefix))
 
 	pageRes, err := query.Paginate(whereIsStore, req.Pagination, func(key []byte, value []byte) error {
 		var whereIs types.WhereIs
@@ -34,10 +43,13 @@ func (k Keeper) WhereIsAll(c context.Context, req *types.QueryAllWhereIsRequest)
 	})
 
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.Internal, "error while paginating response: "+err.Error())
 	}
 
-	return &types.QueryAllWhereIsResponse{WhereIs: whereIss, Pagination: pageRes}, nil
+	return &types.QueryAllWhereIsResponse{
+		WhereIs:    whereIss,
+		Pagination: pageRes,
+	}, nil
 }
 
 func (k Keeper) WhereIs(c context.Context, req *types.QueryGetWhereIsRequest) (*types.QueryGetWhereIsResponse, error) {
@@ -48,7 +60,7 @@ func (k Keeper) WhereIs(c context.Context, req *types.QueryGetWhereIsRequest) (*
 	ctx := sdk.UnwrapSDKContext(c)
 	whereIs, found := k.GetWhereIs(ctx, req.Creator, req.Did)
 	if !found {
-		return nil, sdkerrors.ErrKeyNotFound
+		return nil, fmt.Errorf("error while querying whereIs: %s %s", req.Did, sdkerrors.ErrKeyNotFound)
 	}
 
 	return &types.QueryGetWhereIsResponse{WhereIs: whereIs}, nil

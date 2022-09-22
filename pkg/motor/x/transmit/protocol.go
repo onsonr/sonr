@@ -2,22 +2,20 @@ package transmit
 
 import (
 	"context"
-	"errors"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/host"
-	motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
-	v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
+	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 // TransmitProtocol type
 type TransmitProtocol struct {
 	node    host.SonrHost
 	ctx     context.Context // Context
-	current *v1.Session     // current session
+	current *st.Session     // current session
 	mode    config.Role
 }
 
@@ -42,7 +40,7 @@ func New(ctx context.Context, host host.SonrHost, options ...Option) (*TransmitP
 }
 
 // CurrentSession returns the current session
-func (p *TransmitProtocol) CurrentSession() (*v1.Session, error) {
+func (p *TransmitProtocol) CurrentSession() (*st.Session, error) {
 	if p.current != nil {
 		return p.current, nil
 	}
@@ -50,7 +48,7 @@ func (p *TransmitProtocol) CurrentSession() (*v1.Session, error) {
 }
 
 // Incoming is called by the node to accept an incoming transfer
-func (p *TransmitProtocol) Incoming(payload *v1.Payload, from *motor.Peer) error {
+func (p *TransmitProtocol) Incoming(payload *st.Payload, from *ct.Peer) error {
 	// // Get User Peer
 	// to, err := p.node.Peer()
 	// if err != nil {
@@ -64,7 +62,7 @@ func (p *TransmitProtocol) Incoming(payload *v1.Payload, from *motor.Peer) error
 }
 
 // Outgoing is called by the node to initiate a transfer
-func (p *TransmitProtocol) Outgoing(payload *v1.Payload, to *motor.Peer) error {
+func (p *TransmitProtocol) Outgoing(payload *st.Payload, to *ct.Peer) error {
 	// // Get User Peer
 	// from, err := p.node.Peer()
 	// if err != nil {
@@ -83,7 +81,7 @@ func (p *TransmitProtocol) Outgoing(payload *v1.Payload, to *motor.Peer) error {
 	p.current = NewOutSession(payload, nil, to)
 
 	// Send Files
-	if p.current.Payload.GetItems()[0].GetMime().Type != motor.MIME_TYPE_URL {
+	if p.current.Payload.GetItems()[0].GetMime().Type != st.MIME_TYPE_URL {
 		// Create New Stream
 		stream, err := p.node.NewStream(p.ctx, toId, FilePID)
 		if err != nil {
@@ -149,19 +147,9 @@ func (p *TransmitProtocol) onOutgoingTransfer(stream network.Stream) {
 }
 
 // Libp2pID returns the PeerID based on PublicKey from Profile
-func Libp2pID(p *motor.Peer) (peer.ID, error) {
-	// Check if PublicKey is empty
-	if len(p.GetPublicKey()) == 0 {
-		return "", errors.New("Peer Public Key is not set.")
-	}
-
-	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
-	if err != nil {
-		return "", err
-	}
-
+func Libp2pID(p *ct.Peer) (peer.ID, error) {
 	// Return Peer ID
-	id, err := peer.IDFromPublicKey(pubKey)
+	id, err := peer.IDFromString(p.GetPeerId())
 	if err != nil {
 		return "", err
 	}
