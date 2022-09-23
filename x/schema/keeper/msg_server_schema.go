@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,6 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/sonr-io/sonr/pkg/did"
+	rtv1 "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -68,6 +70,23 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 
 	k.SetWhatIs(ctx, whatIs)
 
+	who_is, found := k.registryKeeper.GetWhoIs(ctx, creator_did)
+
+	if !found {
+		return nil, errors.New(fmt.Sprintf("error while querying who is for creator %s", creator_did))
+	}
+
+	who_is.DidDocument.Service = append(who_is.DidDocument.Service, &rtv1.Service{
+		Id:   fmt.Sprintf("%s#%s", who_is.DidDocument.Id, whatIs.Schema.Label),
+		Type: "sonr:what_is",
+		ServiceEndpoint: []*rtv1.KeyValuePair{
+			{
+				Key:   "did",
+				Value: who_is.DidDocument.Id,
+			},
+		},
+	})
+	k.registryKeeper.SetWhoIs(ctx, who_is)
 	resp := types.MsgCreateSchemaResponse{
 		Code:    http.StatusAccepted,
 		Message: "Schema Registered Sucessfully",
@@ -103,11 +122,29 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schema with same creator as message creator found.")
 	}
 
+	who_is, found := k.registryKeeper.GetWhoIs(ctx, what_is.Creator)
+
+	if !found {
+		return nil, errors.New(fmt.Sprintf("error while querying who is for creator %s", what_is.Creator))
+	}
+
 	//If already deactivated, do nothing.
 	//Responsibility of caller to check if isActive beforehand
 	if what_is.GetIsActive() {
 		what_is.IsActive = false
 		k.SetWhatIs(ctx, *what_is)
+	}
+
+	var serviceIndex int = -1
+	for i, s := range who_is.DidDocument.Service {
+		if s.Id == fmt.Sprintf("%s#%s", who_is.DidDocument.Id, what_is.Schema.Label) {
+			serviceIndex = i
+		}
+	}
+
+	if serviceIndex < -1 {
+		who_is.DidDocument.Service = append(who_is.DidDocument.Service[:serviceIndex], who_is.DidDocument.Service[serviceIndex+1:]...)
+		k.registryKeeper.SetWhoIs(ctx, who_is)
 	}
 
 	return &types.MsgDeprecateSchemaResponse{
