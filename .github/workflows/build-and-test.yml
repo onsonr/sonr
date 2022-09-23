@@ -2,16 +2,14 @@ name: Build and Test
 
 on:
   push:
-    branches: [dev]
   pull_request:
-    branches: [dev]
 jobs:
-  run-bulid:
+  run-bulid-linux:
     strategy:
       fail-fast: false
-      max-parallel: 8
+      max-parallel: 4
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         go-version: [1.18, 1.19]
         ignite-version: [v0.22.1, v0.23.0, v0.24.0]
     name: "Build/Test ${{ matrix.os }}; Go ${{ matrix.go-version }}; Ignite ${{ matrix.ignite-version }}"
@@ -30,10 +28,10 @@ jobs:
         run: |
           sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
 
-      - name: Run build against Release target for macos and linux
+      - name: Run build against Release target for linux
         continue-on-error: false
         run: |
-          ignite chain build --release -t linux:amd64 -t darwin:amd64
+          ignite chain build --release -t linux:amd64
 
       - name: Run tests and evaluate coverage
         continue-on-error: true
@@ -46,6 +44,45 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
 
+  run-bulid-mac:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [macos-latest]
+        go-version: [1.18, 1.19]
+        ignite-version: [v0.22.1, v0.23.0, v0.24.0]
+    name: "Build/Test ${{ matrix.os }}; Go ${{ matrix.go-version }}; Ignite ${{ matrix.ignite-version }}"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ~${{ matrix.go-version }}
+
+      - name: Install Ignite
+        run: |
+          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+
+      - name: Run build against Release target for macos
+        continue-on-error: false
+        run: |
+          ignite chain build --release -t darwin:amd64
+
+      - name: Run tests and evaluate coverage
+        continue-on-error: true
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Run simulate
+        continue-on-error: true
+        run: go test -benchmem -run=^$ -bench ^BenchmarkSimulation ./app -NumBlocks=200 -BlockSize 50 -Commit=true -Verbose=true -Enabled=true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
 
   bind-them-all:
     strategy:
