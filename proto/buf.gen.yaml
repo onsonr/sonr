@@ -1,0 +1,9 @@
+version: v1beta1
+
+plugins:
+  - name: js
+    out: build/es
+    opt: import_style=commonjs,binary
+  - name: ts
+    out: build/ts
+    opt: grpc_js
