@@ -412,6 +412,143 @@ func Test_IPLD_Nodes(t *testing.T) {
 	})
 }
 
+func Test_List_Types(t *testing.T) {
+	store := &schemas.ReadStoreImpl{
+		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+	}
+	t.Run("Should build Nodes and store in map", func(t *testing.T) {
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-1",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind: st.Kind_INT,
+				},
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-2",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind: st.Kind_FLOAT,
+				},
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-3",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind: st.Kind_STRING,
+				},
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-4",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind: st.Kind_BOOL,
+				},
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-5",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind: st.Kind_BYTES,
+				},
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-6",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind: st.Kind_LIST,
+					ListKind: &st.SchemaFieldKind{
+						Kind: st.Kind_LIST,
+						ListKind: &st.SchemaFieldKind{
+							Kind: st.Kind_STRING,
+						},
+					},
+				},
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-7",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind: st.Kind_LIST,
+					ListKind: &st.SchemaFieldKind{
+						Kind: st.Kind_LIST,
+						ListKind: &st.SchemaFieldKind{
+							Kind: st.Kind_INT,
+						},
+					},
+				},
+			},
+		})
+
+		schema := schemas.New(store, &whatIs)
+
+		obj := map[string]interface{}{
+			"field-1": []int32{
+				1, 2, 3, 4,
+			},
+			"field-2": []float32{
+				2.1, 2.2, 3.1, 3.2,
+			},
+			"field-3": []string{
+				"1", "2", "3", "4",
+			},
+			"field-4": []bool{
+				true, true, false,
+			},
+			"field-5": [][]byte{
+				[]byte("hello"),
+				[]byte("world"),
+			},
+			"field-6": [][]string{
+				{
+					"hello",
+				},
+				{
+					"world",
+				},
+			},
+			"field-7": [][][]int64{
+				{
+					{
+						1, 2, 4,
+					},
+					{
+						1, 2, 4,
+					},
+				},
+			},
+		}
+
+		err := schema.BuildNodesFromDefinition(obj)
+		assert.NoError(t, err)
+
+		n, err := schema.GetNode()
+		assert.NoError(t, err)
+
+		assert.NotNil(t, n)
+	})
+}
+
 func Test_Sub_Schemas(t *testing.T) {
 	whatIss := CreateMockHeirachyThreeLevel("snr12345")
 	store := &schemas.ReadStoreImpl{
