@@ -151,12 +151,13 @@ func Test_IPLD_Nodes(t *testing.T) {
 		Client: client.NewClient(client.ConnEndpointType_LOCAL),
 	}
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
-		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-1",
 			Field: st.SchemaKind_INT,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-2",
 			Field: st.SchemaKind_FLOAT,
 		})
@@ -177,26 +178,26 @@ func Test_IPLD_Nodes(t *testing.T) {
 	})
 
 	t.Run("Should build Nodes from definition", func(t *testing.T) {
-		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-1",
 			Field: st.SchemaKind_INT,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-2",
 			Field: st.SchemaKind_FLOAT,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-3",
 			Field: st.SchemaKind_LIST,
 		})
 
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-4",
 			Field: st.SchemaKind_STRING,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-5",
 			Field: st.SchemaKind_LIST,
 		})
@@ -225,13 +226,13 @@ func Test_IPLD_Nodes(t *testing.T) {
 	})
 
 	t.Run("Should build Nodes from definition, should encode and decode correctly (JSON)", func(t *testing.T) {
-		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-1",
 			Field: st.SchemaKind_INT,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-2",
 			Field: st.SchemaKind_FLOAT,
 		})
@@ -263,13 +264,13 @@ func Test_IPLD_Nodes(t *testing.T) {
 	})
 
 	t.Run("Should build Nodes from definition, should encode and decode correctly (JSON)", func(t *testing.T) {
-		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-1",
 			Field: st.SchemaKind_INT,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-2",
 			Field: st.SchemaKind_FLOAT,
 		})
@@ -295,13 +296,13 @@ func Test_IPLD_Nodes(t *testing.T) {
 	})
 
 	t.Run("Should build Nodes from definition, should encode and decode correctly (CBOR)", func(t *testing.T) {
-		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-1",
 			Field: st.SchemaKind_INT,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-2",
 			Field: st.SchemaKind_FLOAT,
 		})
@@ -327,13 +328,13 @@ func Test_IPLD_Nodes(t *testing.T) {
 	})
 
 	t.Run("Should throw invalid error with mismatching definitions", func(t *testing.T) {
-		whatIs, def := CreateMocks("snr12345", "did:snr:1234")
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-1",
 			Field: st.SchemaKind_INT,
 		})
-		def.Fields = append(def.Fields, &st.SchemaKindDefinition{
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
 			Name:  "field-2",
 			Field: st.SchemaKind_STRING,
 		})
@@ -345,6 +346,126 @@ func Test_IPLD_Nodes(t *testing.T) {
 		}
 		err := schema.BuildNodesFromDefinition(obj)
 		assert.Error(t, err)
+	})
+}
+
+func Test_List_Types(t *testing.T) {
+	store := &schemas.ReadStoreImpl{
+		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+	}
+	t.Run("Should build Nodes and store in map", func(t *testing.T) {
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_INT,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-2",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_FLOAT,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-3",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_STRING,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-4",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_BOOL,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-5",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_BYTES,
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-6",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_LIST,
+				Item: &st.SchemaItemKindDefinition{
+					Field: st.SchemaKind_STRING,
+				},
+			},
+		})
+
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-7",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field: st.SchemaKind_LIST,
+				Item: &st.SchemaItemKindDefinition{
+					Field: st.SchemaKind_LIST,
+					Item: &st.SchemaItemKindDefinition{
+						Field: st.SchemaKind_INT,
+					},
+				},
+			},
+		})
+
+		schema := schemas.New(store, &whatIs)
+
+		obj := map[string]interface{}{
+			"field-1": []int32{
+				1, 2, 3, 4,
+			},
+			"field-2": []float32{
+				2.1, 2.2, 3.1, 3.2,
+			},
+			"field-3": []string{
+				"1", "2", "3", "4",
+			},
+			"field-4": []bool{
+				true, true, false,
+			},
+			"field-5": [][]byte{
+				[]byte("hello"),
+				[]byte("world"),
+			},
+			"field-6": [][]string{
+				{
+					"hello",
+				},
+				{
+					"world",
+				},
+			},
+			"field-7": [][][]int64{
+				{
+					{
+						1, 2, 4,
+					},
+					{
+						1, 2, 4,
+					},
+				},
+			},
+		}
+
+		err := schema.BuildNodesFromDefinition(obj)
+		assert.NoError(t, err)
+
+		n, err := schema.GetNode()
+		assert.NoError(t, err)
+
+		assert.NotNil(t, n)
 	})
 }
 
