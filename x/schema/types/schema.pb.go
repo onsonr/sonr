@@ -22,51 +22,19 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type LinkKind int32
+type Kind int32
 
 const (
-	LinkKind_UNKNOWN LinkKind = 0
-	LinkKind_OBJECT  LinkKind = 1
-	LinkKind_SCHEMA  LinkKind = 2
-	LinkKind_BUCKET  LinkKind = 3
+	Kind_LIST   Kind = 0
+	Kind_BOOL   Kind = 1
+	Kind_INT    Kind = 2
+	Kind_FLOAT  Kind = 3
+	Kind_STRING Kind = 4
+	Kind_BYTES  Kind = 5
+	Kind_LINK   Kind = 6
 )
 
-var LinkKind_name = map[int32]string{
-	0: "UNKNOWN",
-	1: "OBJECT",
-	2: "SCHEMA",
-	3: "BUCKET",
-}
-
-var LinkKind_value = map[string]int32{
-	"UNKNOWN": 0,
-	"OBJECT":  1,
-	"SCHEMA":  2,
-	"BUCKET":  3,
-}
-
-func (x LinkKind) String() string {
-	return proto.EnumName(LinkKind_name, int32(x))
-}
-
-func (LinkKind) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a184c368e8c5a046, []int{0}
-}
-
-type SchemaKind int32
-
-const (
-	SchemaKind_LIST   SchemaKind = 0
-	SchemaKind_BOOL   SchemaKind = 1
-	SchemaKind_INT    SchemaKind = 2
-	SchemaKind_FLOAT  SchemaKind = 3
-	SchemaKind_STRING SchemaKind = 4
-	SchemaKind_BYTES  SchemaKind = 5
-	SchemaKind_LINK   SchemaKind = 6
-	SchemaKind_ANY    SchemaKind = 7
-)
-
-var SchemaKind_name = map[int32]string{
+var Kind_name = map[int32]string{
 	0: "LIST",
 	1: "BOOL",
 	2: "INT",
@@ -74,10 +42,9 @@ var SchemaKind_name = map[int32]string{
 	4: "STRING",
 	5: "BYTES",
 	6: "LINK",
-	7: "ANY",
 }
 
-var SchemaKind_value = map[string]int32{
+var Kind_value = map[string]int32{
 	"LIST":   0,
 	"BOOL":   1,
 	"INT":    2,
@@ -85,21 +52,21 @@ var SchemaKind_value = map[string]int32{
 	"STRING": 4,
 	"BYTES":  5,
 	"LINK":   6,
-	"ANY":    7,
 }
 
-func (x SchemaKind) String() string {
-	return proto.EnumName(SchemaKind_name, int32(x))
+func (x Kind) String() string {
+	return proto.EnumName(Kind_name, int32(x))
 }
 
-func (SchemaKind) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a184c368e8c5a046, []int{1}
+func (Kind) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_a184c368e8c5a046, []int{0}
 }
 
+// Defines key value pairs for indexable metadata related to the schema
 type MetadataDefintion struct {
-	// key of the metadata
+	// metadata key
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	// metadata
+	// metadata value
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
@@ -150,32 +117,27 @@ func (m *MetadataDefintion) GetValue() string {
 	return ""
 }
 
-//
-//Defines the "kind" of an item within a collection for a SchemaKind that is "LIST"
-//Definition is recurssive to allow nesting of definitions
-type SchemaItemKindDefinition struct {
-	// Type of the item contained within the collection, must be of type SchemaKind
-	Field SchemaKind `protobuf:"varint,1,opt,name=field,proto3,enum=sonrio.sonr.schema.SchemaKind" json:"field,omitempty"`
-	// Type of an item if field is of type list. usage is for defining multidimensional collections.
-	Item *SchemaKindDefinition `protobuf:"bytes,2,opt,name=item,proto3" json:"item,omitempty"`
-	// Type of link for the given item for schemas, type should be SCHEMA fields of type LINK
-	LinkKind LinkKind `protobuf:"varint,3,opt,name=link_kind,json=linkKind,proto3,enum=sonrio.sonr.schema.LinkKind" json:"link_kind,omitempty"`
-	// String to denote URI for Link, should be defined if field is of type 'LINK'
-	Link string `protobuf:"bytes,4,opt,name=link,proto3" json:"link,omitempty"`
+// Schema is the root level document of a schema, stored on chain
+type Schema struct {
+	Did      string               `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	Owner    string               `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	Label    string               `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
+	Fields   []*SchemaField       `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
+	Metadata []*MetadataDefintion `protobuf:"bytes,5,rep,name=metadata,proto3" json:"metadata,omitempty"`
 }
 
-func (m *SchemaItemKindDefinition) Reset()         { *m = SchemaItemKindDefinition{} }
-func (m *SchemaItemKindDefinition) String() string { return proto.CompactTextString(m) }
-func (*SchemaItemKindDefinition) ProtoMessage()    {}
-func (*SchemaItemKindDefinition) Descriptor() ([]byte, []int) {
+func (m *Schema) Reset()         { *m = Schema{} }
+func (m *Schema) String() string { return proto.CompactTextString(m) }
+func (*Schema) ProtoMessage()    {}
+func (*Schema) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a184c368e8c5a046, []int{1}
 }
-func (m *SchemaItemKindDefinition) XXX_Unmarshal(b []byte) error {
+func (m *Schema) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SchemaItemKindDefinition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Schema) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SchemaItemKindDefinition.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Schema.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -185,249 +147,207 @@ func (m *SchemaItemKindDefinition) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *SchemaItemKindDefinition) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SchemaItemKindDefinition.Merge(m, src)
+func (m *Schema) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Schema.Merge(m, src)
 }
-func (m *SchemaItemKindDefinition) XXX_Size() int {
+func (m *Schema) XXX_Size() int {
 	return m.Size()
 }
-func (m *SchemaItemKindDefinition) XXX_DiscardUnknown() {
-	xxx_messageInfo_SchemaItemKindDefinition.DiscardUnknown(m)
+func (m *Schema) XXX_DiscardUnknown() {
+	xxx_messageInfo_Schema.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SchemaItemKindDefinition proto.InternalMessageInfo
+var xxx_messageInfo_Schema proto.InternalMessageInfo
 
-func (m *SchemaItemKindDefinition) GetField() SchemaKind {
-	if m != nil {
-		return m.Field
-	}
-	return SchemaKind_LIST
-}
-
-func (m *SchemaItemKindDefinition) GetItem() *SchemaKindDefinition {
-	if m != nil {
-		return m.Item
-	}
-	return nil
-}
-
-func (m *SchemaItemKindDefinition) GetLinkKind() LinkKind {
-	if m != nil {
-		return m.LinkKind
-	}
-	return LinkKind_UNKNOWN
-}
-
-func (m *SchemaItemKindDefinition) GetLink() string {
-	if m != nil {
-		return m.Link
-	}
-	return ""
-}
-
-//
-//Defines a type for a given property within a Schema types conform to the IPLD Kind defintion
-//https://ipld.io/docs/data-model/kinds/
-type SchemaKindDefinition struct {
-	// Name of the property
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Type of a single schema property
-	Field SchemaKind `protobuf:"varint,2,opt,name=field,proto3,enum=sonrio.sonr.schema.SchemaKind" json:"field,omitempty"`
-	// Optional field for a link context if `SchemaKind` is of type `Link`
-	LinkKind LinkKind `protobuf:"varint,3,opt,name=link_kind,json=linkKind,proto3,enum=sonrio.sonr.schema.LinkKind" json:"link_kind,omitempty"`
-	// String to denote URI for Link, should be defined if field is of type 'LINK'
-	Link string `protobuf:"bytes,4,opt,name=link,proto3" json:"link,omitempty"`
-	// optional field if field is of Kind List to define item types.
-	Item *SchemaItemKindDefinition `protobuf:"bytes,5,opt,name=item,proto3" json:"item,omitempty"`
-}
-
-func (m *SchemaKindDefinition) Reset()         { *m = SchemaKindDefinition{} }
-func (m *SchemaKindDefinition) String() string { return proto.CompactTextString(m) }
-func (*SchemaKindDefinition) ProtoMessage()    {}
-func (*SchemaKindDefinition) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a184c368e8c5a046, []int{2}
-}
-func (m *SchemaKindDefinition) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SchemaKindDefinition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SchemaKindDefinition.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SchemaKindDefinition) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SchemaKindDefinition.Merge(m, src)
-}
-func (m *SchemaKindDefinition) XXX_Size() int {
-	return m.Size()
-}
-func (m *SchemaKindDefinition) XXX_DiscardUnknown() {
-	xxx_messageInfo_SchemaKindDefinition.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SchemaKindDefinition proto.InternalMessageInfo
-
-func (m *SchemaKindDefinition) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *SchemaKindDefinition) GetField() SchemaKind {
-	if m != nil {
-		return m.Field
-	}
-	return SchemaKind_LIST
-}
-
-func (m *SchemaKindDefinition) GetLinkKind() LinkKind {
-	if m != nil {
-		return m.LinkKind
-	}
-	return LinkKind_UNKNOWN
-}
-
-func (m *SchemaKindDefinition) GetLink() string {
-	if m != nil {
-		return m.Link
-	}
-	return ""
-}
-
-func (m *SchemaKindDefinition) GetItem() *SchemaItemKindDefinition {
-	if m != nil {
-		return m.Item
-	}
-	return nil
-}
-
-//
-//Defines a schema and additional metadata
-type SchemaDefinition struct {
-	// The DID for this schema should not be populated by request
-	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	// The Creator address for the schema (from the wallet)
-	Creator string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
-	// an alternative reference point
-	Label string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
-	// the properties of this schema
-	Fields []*SchemaKindDefinition `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
-}
-
-func (m *SchemaDefinition) Reset()         { *m = SchemaDefinition{} }
-func (m *SchemaDefinition) String() string { return proto.CompactTextString(m) }
-func (*SchemaDefinition) ProtoMessage()    {}
-func (*SchemaDefinition) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a184c368e8c5a046, []int{3}
-}
-func (m *SchemaDefinition) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SchemaDefinition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SchemaDefinition.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SchemaDefinition) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SchemaDefinition.Merge(m, src)
-}
-func (m *SchemaDefinition) XXX_Size() int {
-	return m.Size()
-}
-func (m *SchemaDefinition) XXX_DiscardUnknown() {
-	xxx_messageInfo_SchemaDefinition.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SchemaDefinition proto.InternalMessageInfo
-
-func (m *SchemaDefinition) GetDid() string {
+func (m *Schema) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-func (m *SchemaDefinition) GetCreator() string {
+func (m *Schema) GetOwner() string {
 	if m != nil {
-		return m.Creator
+		return m.Owner
 	}
 	return ""
 }
 
-func (m *SchemaDefinition) GetLabel() string {
+func (m *Schema) GetLabel() string {
 	if m != nil {
 		return m.Label
 	}
 	return ""
 }
 
-func (m *SchemaDefinition) GetFields() []*SchemaKindDefinition {
+func (m *Schema) GetFields() []*SchemaField {
 	if m != nil {
 		return m.Fields
 	}
 	return nil
 }
 
+func (m *Schema) GetMetadata() []*MetadataDefintion {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+// SchemaField represents an individual field in the schema
+type SchemaField struct {
+	Name      string           `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	FieldKind *SchemaFieldKind `protobuf:"bytes,2,opt,name=field_kind,json=fieldKind,proto3" json:"field_kind,omitempty"`
+}
+
+func (m *SchemaField) Reset()         { *m = SchemaField{} }
+func (m *SchemaField) String() string { return proto.CompactTextString(m) }
+func (*SchemaField) ProtoMessage()    {}
+func (*SchemaField) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a184c368e8c5a046, []int{2}
+}
+func (m *SchemaField) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SchemaField) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SchemaField.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SchemaField) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SchemaField.Merge(m, src)
+}
+func (m *SchemaField) XXX_Size() int {
+	return m.Size()
+}
+func (m *SchemaField) XXX_DiscardUnknown() {
+	xxx_messageInfo_SchemaField.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SchemaField proto.InternalMessageInfo
+
+func (m *SchemaField) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *SchemaField) GetFieldKind() *SchemaFieldKind {
+	if m != nil {
+		return m.FieldKind
+	}
+	return nil
+}
+
+// SchemaFieldKind is the type for a field
+type SchemaFieldKind struct {
+	Kind     Kind             `protobuf:"varint,1,opt,name=kind,proto3,enum=sonrio.sonr.schema.Kind" json:"kind,omitempty"`
+	ListKind *SchemaFieldKind `protobuf:"bytes,2,opt,name=list_kind,json=listKind,proto3" json:"list_kind,omitempty"`
+	LinkDid  string           `protobuf:"bytes,3,opt,name=link_did,json=linkDid,proto3" json:"link_did,omitempty"`
+}
+
+func (m *SchemaFieldKind) Reset()         { *m = SchemaFieldKind{} }
+func (m *SchemaFieldKind) String() string { return proto.CompactTextString(m) }
+func (*SchemaFieldKind) ProtoMessage()    {}
+func (*SchemaFieldKind) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a184c368e8c5a046, []int{3}
+}
+func (m *SchemaFieldKind) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SchemaFieldKind) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SchemaFieldKind.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SchemaFieldKind) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SchemaFieldKind.Merge(m, src)
+}
+func (m *SchemaFieldKind) XXX_Size() int {
+	return m.Size()
+}
+func (m *SchemaFieldKind) XXX_DiscardUnknown() {
+	xxx_messageInfo_SchemaFieldKind.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SchemaFieldKind proto.InternalMessageInfo
+
+func (m *SchemaFieldKind) GetKind() Kind {
+	if m != nil {
+		return m.Kind
+	}
+	return Kind_LIST
+}
+
+func (m *SchemaFieldKind) GetListKind() *SchemaFieldKind {
+	if m != nil {
+		return m.ListKind
+	}
+	return nil
+}
+
+func (m *SchemaFieldKind) GetLinkDid() string {
+	if m != nil {
+		return m.LinkDid
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterEnum("sonrio.sonr.schema.LinkKind", LinkKind_name, LinkKind_value)
-	proto.RegisterEnum("sonrio.sonr.schema.SchemaKind", SchemaKind_name, SchemaKind_value)
+	proto.RegisterEnum("sonrio.sonr.schema.Kind", Kind_name, Kind_value)
 	proto.RegisterType((*MetadataDefintion)(nil), "sonrio.sonr.schema.MetadataDefintion")
-	proto.RegisterType((*SchemaItemKindDefinition)(nil), "sonrio.sonr.schema.SchemaItemKindDefinition")
-	proto.RegisterType((*SchemaKindDefinition)(nil), "sonrio.sonr.schema.SchemaKindDefinition")
-	proto.RegisterType((*SchemaDefinition)(nil), "sonrio.sonr.schema.SchemaDefinition")
+	proto.RegisterType((*Schema)(nil), "sonrio.sonr.schema.Schema")
+	proto.RegisterType((*SchemaField)(nil), "sonrio.sonr.schema.SchemaField")
+	proto.RegisterType((*SchemaFieldKind)(nil), "sonrio.sonr.schema.SchemaFieldKind")
 }
 
 func init() { proto.RegisterFile("schema/v1/schema.proto", fileDescriptor_a184c368e8c5a046) }
 
 var fileDescriptor_a184c368e8c5a046 = []byte{
-	// 506 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xcd, 0x6e, 0xd3, 0x4c,
-	0x14, 0xf5, 0xc4, 0x76, 0x7e, 0x6e, 0xa5, 0x4f, 0xf3, 0x8d, 0x22, 0xe4, 0x05, 0xb2, 0xaa, 0x2c,
-	0x50, 0x55, 0x81, 0x2d, 0x0a, 0x1b, 0x54, 0x16, 0x8d, 0x43, 0x80, 0x90, 0xd4, 0x46, 0x8e, 0x2b,
-	0x28, 0x0b, 0x90, 0x13, 0x4f, 0xe9, 0x28, 0xfe, 0xa9, 0x12, 0xb7, 0xa2, 0x6f, 0xc1, 0x8a, 0x67,
-	0x62, 0xd9, 0x25, 0x1b, 0x24, 0x94, 0x3c, 0x01, 0x6f, 0x80, 0xe6, 0x8e, 0xa3, 0x20, 0xb5, 0x20,
-	0x55, 0x62, 0x35, 0x67, 0x7e, 0xce, 0x39, 0x73, 0xee, 0xdc, 0x81, 0x3b, 0x8b, 0xe9, 0x29, 0xcf,
-	0x62, 0xf7, 0xe2, 0xa1, 0xab, 0x90, 0x73, 0x36, 0x2f, 0xca, 0x82, 0xb1, 0x45, 0x91, 0xcf, 0x45,
-	0xe1, 0xc8, 0xc1, 0x51, 0x3b, 0x9d, 0x7d, 0xf8, 0xff, 0x90, 0x97, 0x71, 0x12, 0x97, 0xf1, 0x33,
-	0x7e, 0x22, 0xf2, 0x52, 0x14, 0x39, 0xa3, 0xa0, 0xcf, 0xf8, 0xa5, 0x45, 0xb6, 0xc9, 0x4e, 0x2b,
-	0x94, 0x90, 0xb5, 0xc1, 0xbc, 0x88, 0xd3, 0x73, 0x6e, 0xd5, 0x70, 0x4d, 0x4d, 0x3a, 0xdf, 0x09,
-	0x58, 0x63, 0xd4, 0x19, 0x94, 0x3c, 0x1b, 0x8a, 0x3c, 0x41, 0x0d, 0x81, 0x22, 0x8f, 0xc1, 0x3c,
-	0x11, 0x3c, 0x4d, 0x50, 0xe6, 0xbf, 0x3d, 0xdb, 0xb9, 0xee, 0xee, 0x28, 0xb2, 0x24, 0x86, 0xea,
-	0x30, 0x7b, 0x0a, 0x86, 0x28, 0x79, 0x86, 0x3e, 0x5b, 0x7b, 0x3b, 0x7f, 0x27, 0x6d, 0xdc, 0x42,
-	0x64, 0xb1, 0x27, 0xd0, 0x4a, 0x45, 0x3e, 0xfb, 0x30, 0x13, 0x79, 0x62, 0xe9, 0xe8, 0x7b, 0xf7,
-	0x26, 0x89, 0x91, 0xc8, 0x67, 0xe8, 0xda, 0x4c, 0x2b, 0xc4, 0x18, 0x18, 0x12, 0x5b, 0x06, 0x06,
-	0x44, 0xdc, 0xf9, 0x49, 0xa0, 0x7d, 0x93, 0x9b, 0x3c, 0x9c, 0xc7, 0x19, 0xaf, 0x2a, 0x84, 0x78,
-	0x93, 0xb7, 0x76, 0x9b, 0xbc, 0xff, 0xf6, 0xc6, 0xec, 0xa0, 0x2a, 0x9f, 0x89, 0xe5, 0xbb, 0xff,
-	0xe7, 0x3b, 0x5c, 0x7f, 0x30, 0x55, 0xc2, 0xce, 0x17, 0x02, 0x54, 0x1d, 0xf9, 0x2d, 0x2f, 0x05,
-	0x3d, 0x11, 0xc9, 0xba, 0x21, 0x12, 0x91, 0x30, 0x0b, 0x1a, 0xd3, 0x39, 0x8f, 0xcb, 0x62, 0x5e,
-	0xb5, 0xc4, 0x7a, 0x2a, 0x5b, 0x25, 0x8d, 0x27, 0x3c, 0xc5, 0x34, 0xad, 0x50, 0x4d, 0xd8, 0x01,
-	0xd4, 0x31, 0xf0, 0xc2, 0x32, 0xb6, 0xf5, 0x5b, 0xbd, 0x6c, 0xc5, 0xdb, 0xdd, 0x87, 0xe6, 0xba,
-	0x08, 0x6c, 0x0b, 0x1a, 0x47, 0xfe, 0xd0, 0x0f, 0xde, 0xf8, 0x54, 0x63, 0x00, 0xf5, 0xc0, 0x7b,
-	0xd5, 0xef, 0x45, 0x94, 0x48, 0x3c, 0xee, 0xbd, 0xec, 0x1f, 0x76, 0x69, 0x4d, 0x62, 0xef, 0xa8,
-	0x37, 0xec, 0x47, 0x54, 0xdf, 0x7d, 0x0f, 0xb0, 0x11, 0x67, 0x4d, 0x30, 0x46, 0x83, 0x71, 0x44,
-	0x35, 0x89, 0xbc, 0x20, 0x18, 0x51, 0xc2, 0x1a, 0xa0, 0x0f, 0xfc, 0x88, 0xd6, 0x58, 0x0b, 0xcc,
-	0xe7, 0xa3, 0xa0, 0x1b, 0x51, 0x1d, 0xd5, 0xa2, 0x70, 0xe0, 0xbf, 0xa0, 0x86, 0x5c, 0xf6, 0x8e,
-	0xa3, 0xfe, 0x98, 0x9a, 0x8a, 0xee, 0x0f, 0x69, 0x5d, 0x92, 0xba, 0xfe, 0x31, 0x6d, 0x78, 0x6f,
-	0xbf, 0x2e, 0x6d, 0x72, 0xb5, 0xb4, 0xc9, 0x8f, 0xa5, 0x4d, 0x3e, 0xaf, 0x6c, 0xed, 0x6a, 0x65,
-	0x6b, 0xdf, 0x56, 0xb6, 0x06, 0xed, 0x75, 0xc6, 0xf2, 0xf2, 0x8c, 0x2f, 0xaa, 0xa4, 0xaf, 0xc9,
-	0xbb, 0x7b, 0x1f, 0x45, 0x79, 0x7a, 0x3e, 0x71, 0xa6, 0x45, 0xe6, 0xca, 0xfd, 0x07, 0xa2, 0xc0,
-	0xd1, 0xfd, 0x54, 0x7d, 0x5a, 0x17, 0x09, 0x93, 0x3a, 0xfe, 0xdd, 0x47, 0xbf, 0x02, 0x00, 0x00,
-	0xff, 0xff, 0xbf, 0x83, 0x6f, 0xa3, 0xd5, 0x03, 0x00, 0x00,
+	// 438 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0x86, 0xb3, 0xb5, 0xe3, 0x26, 0x13, 0x09, 0x96, 0x55, 0x85, 0xcc, 0xc5, 0x54, 0x41, 0xa0,
+	0x0a, 0x81, 0x2d, 0xc2, 0x81, 0x03, 0x17, 0x6a, 0x95, 0xa2, 0xa8, 0x21, 0x46, 0xb6, 0x0f, 0xc0,
+	0xa5, 0x72, 0xba, 0x1b, 0xba, 0x8a, 0xbd, 0x5b, 0xc5, 0x6e, 0xa1, 0x6f, 0xc1, 0x03, 0xf0, 0x34,
+	0x9c, 0x38, 0xf6, 0xc8, 0x11, 0x25, 0x2f, 0x82, 0x76, 0x6c, 0x23, 0x44, 0x23, 0xa1, 0x9e, 0x76,
+	0x66, 0x76, 0xbe, 0x7f, 0xfe, 0xb1, 0x17, 0xee, 0x96, 0x27, 0xa7, 0xa2, 0xc8, 0x82, 0x8b, 0x67,
+	0x41, 0x1d, 0xf9, 0x67, 0x4b, 0x5d, 0x69, 0xc6, 0x4a, 0xad, 0x96, 0x52, 0xfb, 0xe6, 0xf0, 0xeb,
+	0x9b, 0xe1, 0x4b, 0xb8, 0xf3, 0x56, 0x54, 0x19, 0xcf, 0xaa, 0xec, 0x40, 0xcc, 0xa5, 0xaa, 0xa4,
+	0x56, 0x8c, 0x82, 0xb5, 0x10, 0x97, 0x2e, 0xd9, 0x25, 0x7b, 0xfd, 0xd8, 0x84, 0x6c, 0x07, 0xba,
+	0x17, 0x59, 0x7e, 0x2e, 0xdc, 0x2d, 0xac, 0xd5, 0xc9, 0xf0, 0x3b, 0x01, 0x27, 0x41, 0x1d, 0x83,
+	0x70, 0xc9, 0x5b, 0x84, 0x4b, 0x6e, 0x10, 0xfd, 0x59, 0x89, 0x65, 0x8b, 0x60, 0x62, 0xaa, 0x79,
+	0x36, 0x13, 0xb9, 0x6b, 0xd5, 0x55, 0x4c, 0xd8, 0x0b, 0x70, 0xe6, 0x52, 0xe4, 0xbc, 0x74, 0xed,
+	0x5d, 0x6b, 0x6f, 0x30, 0xba, 0xef, 0x5f, 0xb7, 0xea, 0xd7, 0x93, 0x0e, 0x4d, 0x5f, 0xdc, 0xb4,
+	0xb3, 0x7d, 0xe8, 0x15, 0x8d, 0x7d, 0xb7, 0x8b, 0xe8, 0xc3, 0x4d, 0xe8, 0xb5, 0x15, 0xe3, 0x3f,
+	0xd8, 0x50, 0xc0, 0xe0, 0x2f, 0x65, 0xc6, 0xc0, 0x56, 0x59, 0x21, 0x9a, 0x4d, 0x30, 0x66, 0x21,
+	0x00, 0xce, 0x3b, 0x5e, 0x48, 0xc5, 0x71, 0x9f, 0xc1, 0xe8, 0xc1, 0x7f, 0x2c, 0x1e, 0x49, 0xc5,
+	0xe3, 0xfe, 0xbc, 0x0d, 0x87, 0xdf, 0x08, 0xdc, 0xfe, 0xe7, 0x9a, 0x3d, 0x01, 0x1b, 0x15, 0xcd,
+	0xac, 0x5b, 0x23, 0x77, 0x93, 0x22, 0xca, 0x60, 0x17, 0x7b, 0x05, 0xfd, 0x5c, 0x96, 0xd5, 0x8d,
+	0x4d, 0xf4, 0x0c, 0x85, 0xf3, 0xee, 0x41, 0x2f, 0x97, 0x6a, 0x71, 0x6c, 0xfe, 0x54, 0xfd, 0xfd,
+	0xb7, 0x4d, 0x7e, 0x20, 0xf9, 0xe3, 0x08, 0x6c, 0x6c, 0xe9, 0x81, 0x3d, 0x19, 0x27, 0x29, 0xed,
+	0x98, 0x28, 0x8c, 0xa2, 0x09, 0x25, 0x6c, 0x1b, 0xac, 0xf1, 0x34, 0xa5, 0x5b, 0xac, 0x0f, 0xdd,
+	0xc3, 0x49, 0xb4, 0x9f, 0x52, 0x8b, 0x01, 0x38, 0x49, 0x1a, 0x8f, 0xa7, 0x6f, 0xa8, 0x6d, 0xca,
+	0xe1, 0x87, 0xf4, 0x75, 0x42, 0xbb, 0x35, 0x3e, 0x3d, 0xa2, 0x4e, 0xf8, 0xfe, 0xc7, 0xca, 0x23,
+	0x57, 0x2b, 0x8f, 0xfc, 0x5a, 0x79, 0xe4, 0xeb, 0xda, 0xeb, 0x5c, 0xad, 0xbd, 0xce, 0xcf, 0xb5,
+	0xd7, 0x81, 0x9d, 0xd6, 0x6f, 0x75, 0x79, 0x26, 0xca, 0xc6, 0xf5, 0x3b, 0xf2, 0xf1, 0xd1, 0x27,
+	0x59, 0x9d, 0x9e, 0xcf, 0xfc, 0x13, 0x5d, 0x04, 0xe6, 0xfe, 0xa9, 0xd4, 0x78, 0x06, 0x5f, 0x9a,
+	0x67, 0x1c, 0x20, 0x30, 0x73, 0xf0, 0x35, 0x3f, 0xff, 0x1d, 0x00, 0x00, 0xff, 0xff, 0xb8, 0x66,
+	0x47, 0x35, 0xe7, 0x02, 0x00, 0x00,
 }
 
 func (m *MetadataDefintion) Marshal() (dAtA []byte, err error) {
@@ -467,7 +387,7 @@ func (m *MetadataDefintion) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *SchemaItemKindDefinition) Marshal() (dAtA []byte, err error) {
+func (m *Schema) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -477,127 +397,30 @@ func (m *SchemaItemKindDefinition) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SchemaItemKindDefinition) MarshalTo(dAtA []byte) (int, error) {
+func (m *Schema) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SchemaItemKindDefinition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Schema) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Link) > 0 {
-		i -= len(m.Link)
-		copy(dAtA[i:], m.Link)
-		i = encodeVarintSchema(dAtA, i, uint64(len(m.Link)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if m.LinkKind != 0 {
-		i = encodeVarintSchema(dAtA, i, uint64(m.LinkKind))
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.Item != nil {
-		{
-			size, err := m.Item.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
+	if len(m.Metadata) > 0 {
+		for iNdEx := len(m.Metadata) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Metadata[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintSchema(dAtA, i, uint64(size))
 			}
-			i -= size
-			i = encodeVarintSchema(dAtA, i, uint64(size))
+			i--
+			dAtA[i] = 0x2a
 		}
-		i--
-		dAtA[i] = 0x12
 	}
-	if m.Field != 0 {
-		i = encodeVarintSchema(dAtA, i, uint64(m.Field))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SchemaKindDefinition) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SchemaKindDefinition) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SchemaKindDefinition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Item != nil {
-		{
-			size, err := m.Item.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintSchema(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.Link) > 0 {
-		i -= len(m.Link)
-		copy(dAtA[i:], m.Link)
-		i = encodeVarintSchema(dAtA, i, uint64(len(m.Link)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if m.LinkKind != 0 {
-		i = encodeVarintSchema(dAtA, i, uint64(m.LinkKind))
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.Field != 0 {
-		i = encodeVarintSchema(dAtA, i, uint64(m.Field))
-		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintSchema(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SchemaDefinition) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SchemaDefinition) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SchemaDefinition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	if len(m.Fields) > 0 {
 		for iNdEx := len(m.Fields) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -619,10 +442,10 @@ func (m *SchemaDefinition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintSchema(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.Owner)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -632,6 +455,95 @@ func (m *SchemaDefinition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintSchema(dAtA, i, uint64(len(m.Did)))
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SchemaField) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SchemaField) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SchemaField) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.FieldKind != nil {
+		{
+			size, err := m.FieldKind.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintSchema(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SchemaFieldKind) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SchemaFieldKind) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SchemaFieldKind) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.LinkDid) > 0 {
+		i -= len(m.LinkDid)
+		copy(dAtA[i:], m.LinkDid)
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.LinkDid)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.ListKind != nil {
+		{
+			size, err := m.ListKind.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintSchema(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Kind != 0 {
+		i = encodeVarintSchema(dAtA, i, uint64(m.Kind))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -664,57 +576,7 @@ func (m *MetadataDefintion) Size() (n int) {
 	return n
 }
 
-func (m *SchemaItemKindDefinition) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Field != 0 {
-		n += 1 + sovSchema(uint64(m.Field))
-	}
-	if m.Item != nil {
-		l = m.Item.Size()
-		n += 1 + l + sovSchema(uint64(l))
-	}
-	if m.LinkKind != 0 {
-		n += 1 + sovSchema(uint64(m.LinkKind))
-	}
-	l = len(m.Link)
-	if l > 0 {
-		n += 1 + l + sovSchema(uint64(l))
-	}
-	return n
-}
-
-func (m *SchemaKindDefinition) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovSchema(uint64(l))
-	}
-	if m.Field != 0 {
-		n += 1 + sovSchema(uint64(m.Field))
-	}
-	if m.LinkKind != 0 {
-		n += 1 + sovSchema(uint64(m.LinkKind))
-	}
-	l = len(m.Link)
-	if l > 0 {
-		n += 1 + l + sovSchema(uint64(l))
-	}
-	if m.Item != nil {
-		l = m.Item.Size()
-		n += 1 + l + sovSchema(uint64(l))
-	}
-	return n
-}
-
-func (m *SchemaDefinition) Size() (n int) {
+func (m *Schema) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -724,7 +586,7 @@ func (m *SchemaDefinition) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovSchema(uint64(l))
 	}
-	l = len(m.Creator)
+	l = len(m.Owner)
 	if l > 0 {
 		n += 1 + l + sovSchema(uint64(l))
 	}
@@ -737,6 +599,49 @@ func (m *SchemaDefinition) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovSchema(uint64(l))
 		}
+	}
+	if len(m.Metadata) > 0 {
+		for _, e := range m.Metadata {
+			l = e.Size()
+			n += 1 + l + sovSchema(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *SchemaField) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if m.FieldKind != nil {
+		l = m.FieldKind.Size()
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	return n
+}
+
+func (m *SchemaFieldKind) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Kind != 0 {
+		n += 1 + sovSchema(uint64(m.Kind))
+	}
+	if m.ListKind != nil {
+		l = m.ListKind.Size()
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	l = len(m.LinkDid)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
 	}
 	return n
 }
@@ -861,7 +766,7 @@ func (m *MetadataDefintion) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SchemaItemKindDefinition) Unmarshal(dAtA []byte) error {
+func (m *Schema) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -884,354 +789,10 @@ func (m *SchemaItemKindDefinition) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SchemaItemKindDefinition: wiretype end group for non-group")
+			return fmt.Errorf("proto: Schema: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SchemaItemKindDefinition: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Field", wireType)
-			}
-			m.Field = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Field |= SchemaKind(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Item", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthSchema
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthSchema
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Item == nil {
-				m.Item = &SchemaKindDefinition{}
-			}
-			if err := m.Item.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LinkKind", wireType)
-			}
-			m.LinkKind = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.LinkKind |= LinkKind(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Link", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthSchema
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthSchema
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Link = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipSchema(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthSchema
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SchemaKindDefinition) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowSchema
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SchemaKindDefinition: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SchemaKindDefinition: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthSchema
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthSchema
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Field", wireType)
-			}
-			m.Field = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Field |= SchemaKind(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LinkKind", wireType)
-			}
-			m.LinkKind = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.LinkKind |= LinkKind(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Link", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthSchema
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthSchema
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Link = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Item", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSchema
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthSchema
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthSchema
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Item == nil {
-				m.Item = &SchemaItemKindDefinition{}
-			}
-			if err := m.Item.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipSchema(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthSchema
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SchemaDefinition) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowSchema
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SchemaDefinition: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SchemaDefinition: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Schema: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1268,7 +829,7 @@ func (m *SchemaDefinition) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1296,7 +857,7 @@ func (m *SchemaDefinition) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -1359,10 +920,299 @@ func (m *SchemaDefinition) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Fields = append(m.Fields, &SchemaKindDefinition{})
+			m.Fields = append(m.Fields, &SchemaField{})
 			if err := m.Fields[len(m.Fields)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Metadata = append(m.Metadata, &MetadataDefintion{})
+			if err := m.Metadata[len(m.Metadata)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SchemaField) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SchemaField: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SchemaField: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FieldKind", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.FieldKind == nil {
+				m.FieldKind = &SchemaFieldKind{}
+			}
+			if err := m.FieldKind.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SchemaFieldKind) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SchemaFieldKind: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SchemaFieldKind: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+			}
+			m.Kind = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Kind |= Kind(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ListKind", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ListKind == nil {
+				m.ListKind = &SchemaFieldKind{}
+			}
+			if err := m.ListKind.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LinkDid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LinkDid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

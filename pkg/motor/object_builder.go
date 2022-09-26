@@ -38,13 +38,13 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 }
 
 func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error) {
-	builder, err := mtr.NewObjectBuilder(req.GetDefinition().GetDid())
+	builder, err := mtr.NewObjectBuilder(req.GetSchema().GetDid())
 	if err != nil {
 		return nil, err
 	}
 
 	builder.SetLabel(req.GetLabel())
-	builder.Set("@did", req.GetDefinition().GetDid())
+	builder.Set("@did", req.GetSchema().GetDid())
 	for _, field := range req.GetFields() {
 		builder.Set(field.GetName(), field.GetValue())
 	}
@@ -61,7 +61,7 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 			Did:        resp.Reference.Did,
 			Cid:        resp.Reference.Cid,
 			Creator:    mtr.GetAddress(),
-			Definition: req.GetDefinition(),
+			Definition: req.GetSchema(),
 			Fields:     req.GetFields(),
 		},
 	}, nil

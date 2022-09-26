@@ -33,13 +33,13 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 	for _, t := range as.fields {
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
-		if t.Field != st.SchemaKind_LINK {
-			err = as.AssignValueToNode(t.Field, ma, object[k])
+		if t.GetKind() != st.Kind_LINK {
+			err = as.AssignValueToNode(t.GetKind(), ma, object[k])
 			if err != nil {
 				return err
 			}
-		} else if t.Field == st.SchemaKind_LINK {
-			err := as.BuildSchemaFromLink(t.Link, ma, object[t.Name].(map[string]interface{}))
+		} else if t.GetKind() == st.Kind_LINK {
+			err := as.BuildSchemaFromLink(t.FieldKind.LinkDid, ma, object[t.Name].(map[string]interface{}))
 			if err != nil {
 				return err
 			}
@@ -58,24 +58,24 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 	return nil
 }
 
-func (as *schemaImpl) AssignValueToNode(field st.SchemaKind, ma datamodel.MapAssembler, value interface{}) error {
+func (as *schemaImpl) AssignValueToNode(field st.Kind, ma datamodel.MapAssembler, value interface{}) error {
 	switch field {
-	case st.SchemaKind_STRING:
+	case st.Kind_STRING:
 		val := value.(string)
 		ma.AssembleValue().AssignString(val)
-	case st.SchemaKind_INT:
+	case st.Kind_INT:
 		val := int64(value.(int64))
 		ma.AssembleValue().AssignInt(val)
-	case st.SchemaKind_FLOAT:
+	case st.Kind_FLOAT:
 		val := value.(float64)
 		ma.AssembleValue().AssignFloat(val)
-	case st.SchemaKind_BOOL:
+	case st.Kind_BOOL:
 		val := value.(bool)
 		ma.AssembleValue().AssignBool(val)
-	case st.SchemaKind_BYTES:
+	case st.Kind_BYTES:
 		val := value.([]byte)
 		ma.AssembleValue().AssignBytes(val)
-	case st.SchemaKind_LIST:
+	case st.Kind_LIST:
 		val := make([]interface{}, 0)
 		s := reflect.ValueOf(value)
 		for i := 0; i < s.Len(); i++ {
@@ -117,13 +117,13 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 
 	for _, f := range sd.Fields {
 		lma.AssembleKey().AssignString(f.Name)
-		if f.Field != st.SchemaKind_LINK {
-			err := as.AssignValueToNode(f.Field, lma, value[f.Name])
+		if f.GetKind() != st.Kind_LINK {
+			err := as.AssignValueToNode(f.GetKind(), lma, value[f.Name])
 			if err != nil {
 				return err
 			}
-		} else if f.Field == st.SchemaKind_LINK {
-			err = as.BuildSchemaFromLink(f.Link, lma, value[f.Name].(map[string]interface{}))
+		} else if f.GetKind() == st.Kind_LINK {
+			err = as.BuildSchemaFromLink(f.FieldKind.LinkDid, lma, value[f.Name].(map[string]interface{}))
 			if err != nil {
 				return err
 			}

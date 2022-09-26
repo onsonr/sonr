@@ -19,9 +19,9 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 		return errSchemaFieldsNotFound
 	}
 
-	fields := make(map[string]st.SchemaKind)
+	fields := make(map[string]st.Kind)
 	for _, c := range as.fields {
-		fields[c.Name] = c.Field
+		fields[c.Name] = c.FieldKind.Kind
 	}
 
 	for key, value := range doc {
@@ -44,14 +44,14 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 /*
 	Sub level verification of the given schema def
 */
-func (as *schemaImpl) VerifySubObject(lst []*st.SchemaKindDefinition, doc map[string]interface{}) error {
+func (as *schemaImpl) VerifySubObject(lst []*st.SchemaField, doc map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsNotFound
 	}
 
-	fields := make(map[string]st.SchemaKind)
+	fields := make(map[string]st.Kind)
 	for _, c := range lst {
-		fields[c.Name] = c.Field
+		fields[c.Name] = c.GetKind()
 	}
 
 	for key, value := range doc {
@@ -77,40 +77,38 @@ func (as *schemaImpl) VerifyList(lst []interface{}) error {
 }
 
 // Current supported IPLD types, will be adding more once supporting of Links and Complex types (Object)
-func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
+func CheckValueOfField(value interface{}, fieldType st.Kind) bool {
 	switch value.(type) {
 	case int:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case uint:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case int32:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case int64:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case float64:
-		return fieldType == st.SchemaKind_FLOAT
+		return fieldType == st.Kind_FLOAT
 	case float32:
-		return fieldType == st.SchemaKind_FLOAT
+		return fieldType == st.Kind_FLOAT
 	case bool:
-		return fieldType == st.SchemaKind_BOOL
+		return fieldType == st.Kind_BOOL
 	case string:
-		return fieldType == st.SchemaKind_STRING
+		return fieldType == st.Kind_STRING
 	case []byte:
-		return fieldType == st.SchemaKind_BYTES
+		return fieldType == st.Kind_BYTES
 	case []interface{}:
-		return fieldType == st.SchemaKind_LIST
+		return fieldType == st.Kind_LIST
 	case []int:
-		return fieldType == st.SchemaKind_LIST
+		return fieldType == st.Kind_LIST
 	case []bool:
-		return fieldType == st.SchemaKind_LIST
+		return fieldType == st.Kind_LIST
 	case []float64:
-		return fieldType == st.SchemaKind_LIST
+		return fieldType == st.Kind_LIST
 	case []string:
-		return fieldType == st.SchemaKind_LIST
+		return fieldType == st.Kind_LIST
 	case map[string]interface{}:
-		return fieldType == st.SchemaKind_LINK
-	case interface{}:
-		return fieldType == st.SchemaKind_ANY
+		return fieldType == st.Kind_LINK
 	default:
 		return false
 	}
