@@ -96,11 +96,10 @@ func (SchemaKind) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_a184c368e8c5a046, []int{1}
 }
 
-// Defines key value pairs for indexable metadata related to the schema
 type MetadataDefintion struct {
-	// metadata key
+	// key of the metadata
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	// metadata value
+	// metadata
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
@@ -311,7 +310,7 @@ func (m *SchemaKindDefinition) GetItem() *SchemaItemKindDefinition {
 }
 
 //
-//Defines a schema and additional metadata related to the definition
+//Defines a schema and additional metadata
 type SchemaDefinition struct {
 	// The DID for this schema should not be populated by request
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
