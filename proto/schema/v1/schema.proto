@@ -27,22 +27,39 @@ enum Kind {
 
 // Schema is the root level document of a schema, stored on chain
 message Schema {
+  // the DID of the schema
   string did = 1;
+
+  // the address of the owner
   string owner = 2;
+
+  // the name of the schema
   string label = 3;
+
+  // list of fields the schema contains
   repeated SchemaField fields = 4;
+
+  // list of metadata
   repeated MetadataDefintion metadata = 5;
 }
 
 // SchemaField represents an individual field in the schema
 message SchemaField {
+  // the name/key of the field
   string name = 1;
+
+  // the type/kind of the field
   SchemaFieldKind field_kind = 2;
 }
 
 // SchemaFieldKind is the type for a field
 message SchemaFieldKind {
+  // the explicit kind
   Kind kind = 1;
-  SchemaFieldKind list_kind = 2; // Optional; this is recursive, allowing an indefinite level of nesting
-  string link_did = 3; // Optional; if the kind is "LINK", this will be the DID of the linked schema
+
+  // Optional; this is recursive, allowing an indefinite level of nesting
+  SchemaFieldKind list_kind = 2;
+
+  // Optional; if the kind is "LINK", this will be the DID of the linked schema
+  string link_did = 3;
 }
