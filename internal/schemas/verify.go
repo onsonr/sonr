@@ -108,55 +108,55 @@ func CheckValueOfField(value interface{}, fieldType st.Kind) bool {
 		return fieldType == st.Kind_LINK
 	case []byte:
 		return fieldType == st.Kind_BYTES
-	case []interface{}:
-		return fieldType == st.Kind_LIST
-	case []int:
-		return fieldType == st.Kind_LIST
-	case []int32:
-		return fieldType == st.Kind_LIST
-	case []int64:
-		return fieldType == st.Kind_LIST
-	case []bool:
-		return fieldType == st.Kind_LIST
-	case []float64:
-		return fieldType == st.Kind_LIST
-	case []float32:
-		return fieldType == st.Kind_LIST
-	case []string:
-		return fieldType == st.Kind_LIST
-	case []map[string]interface{}:
-		return fieldType == st.Kind_LIST
-	case [][]byte:
-		return fieldType == st.Kind_LIST
-	case [][]string:
-		return fieldType == st.Kind_LIST
-	case [][]int32:
-		return fieldType == st.Kind_LIST
-	case [][]int64:
-		return fieldType == st.Kind_LIST
-	case [][]float32:
-		return fieldType == st.Kind_LIST
-	case [][]float64:
-		return fieldType == st.Kind_LIST
-	case [][]map[string]interface{}:
-		return fieldType == st.Kind_LIST
-	case [][][]bool:
-		return fieldType == st.Kind_LIST
-	case [][][]byte:
-		return fieldType == st.Kind_LIST
-	case [][][]string:
-		return fieldType == st.Kind_LIST
-	case [][][]int32:
-		return fieldType == st.Kind_LIST
-	case [][][]int64:
-		return fieldType == st.Kind_LIST
-	case [][][]float32:
-		return fieldType == st.Kind_LIST
-	case [][][]float64:
-		return fieldType == st.Kind_LIST
-	case [][][]map[string]interface{}:
-		return fieldType == st.Kind_LIST
+	// case []interface{}:
+	// 	return fieldType == st.Kind_LIST
+	// case []int:
+	// 	return fieldType == st.Kind_LIST
+	// case []int32:
+	// 	return fieldType == st.Kind_LIST
+	// case []int64:
+	// 	return fieldType == st.Kind_LIST
+	// case []bool:
+	// 	return fieldType == st.Kind_LIST
+	// case []float64:
+	// 	return fieldType == st.Kind_LIST
+	// case []float32:
+	// 	return fieldType == st.Kind_LIST
+	// case []string:
+	// 	return fieldType == st.Kind_LIST
+	// case []map[string]interface{}:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]byte:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]string:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]int32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]int64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]float32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]float64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]map[string]interface{}:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]bool:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]byte:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]string:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]int32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]int64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]float32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]float64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]map[string]interface{}:
+	// 	return fieldType == st.Kind_LIST
 	default:
-		return false
+		return fieldType == st.Kind_LIST
 	}
 }

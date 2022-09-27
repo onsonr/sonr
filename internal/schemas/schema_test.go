@@ -559,13 +559,14 @@ func Test_List_Types(t *testing.T) {
 			}
 			store.GetCache()[wi.Did] = b
 		}
-		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
-			Name:  "field-1",
-			Field: st.SchemaKind_LIST,
-			Item: &st.SchemaItemKindDefinition{
-				Field:    st.SchemaKind_LINK,
-				LinkKind: st.LinkKind_SCHEMA,
-				Link:     whatIss[2].Did,
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-1",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind:    st.Kind_LINK,
+					LinkDid: whatIss[2].Did,
+				},
 			},
 		})
 
@@ -595,7 +596,7 @@ func Test_List_Types(t *testing.T) {
 			},
 		}
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 
 		err := schema.BuildNodesFromDefinition(obj)
 		assert.NoError(t, err)
@@ -619,13 +620,14 @@ func Test_List_Types(t *testing.T) {
 			}
 			store.GetCache()[wi.Did] = b
 		}
-		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
-			Name:  "field-1",
-			Field: st.SchemaKind_LIST,
-			Item: &st.SchemaItemKindDefinition{
-				Field:    st.SchemaKind_LINK,
-				LinkKind: st.LinkKind_SCHEMA,
-				Link:     whatIss[2].Did,
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaField{
+			Name: "field-1",
+			FieldKind: &st.SchemaFieldKind{
+				Kind: st.Kind_LIST,
+				ListKind: &st.SchemaFieldKind{
+					Kind:    st.Kind_LINK,
+					LinkDid: whatIss[2].Did,
+				},
 			},
 		})
 
@@ -655,7 +657,7 @@ func Test_List_Types(t *testing.T) {
 			},
 		}
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 
 		err := schema.BuildNodesFromDefinition(obj)
 		assert.Error(t, err)
