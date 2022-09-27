@@ -5,12 +5,10 @@ import (
 
 	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
-	"github.com/sonr-io/sonr/x/schema/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *schemaImpl) BuildNodesFromDefinition(
-	object map[string]interface{}) error {
+func (as *schemaImpl) BuildNodesFromDefinition(object map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsInvalid
 	}
@@ -134,7 +132,7 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	for _, f := range sd.Fields {
 		lma.AssembleKey().AssignString(f.Name)
 		if f.GetKind() != st.Kind_LINK {
-			err := as.AssignValueToNode(f.FieldKind.ListKind, lma, value[f.Name])
+			err := as.AssignValueToNode(f.FieldKind, lma, value[f.Name])
 			if err != nil {
 				return err
 			}
@@ -154,7 +152,7 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	return nil
 }
 
-func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaFieldKind) (datamodel.Node, error) {
+func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *st.SchemaFieldKind) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.

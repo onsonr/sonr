@@ -20,8 +20,8 @@ func GenerateKeyForDID() string {
 func CreateMockHeirachyThreeLevel(creator string) []*st.WhatIs {
 	whatIss := make([]*st.WhatIs, 0)
 
-	did_one := fmt.Sprintf("did:snr: %s", GenerateKeyForDID())
-	mockWhatIs := st.WhatIs{
+	did_one := fmt.Sprintf("did:snr:%s", GenerateKeyForDID())
+	mockWhatIs := &st.WhatIs{
 		Did: did_one,
 		Schema: &st.Schema{
 			Owner:  creator,
@@ -65,16 +65,16 @@ func CreateMockHeirachyThreeLevel(creator string) []*st.WhatIs {
 	mockWhatIs.Schema.Fields = append(mockWhatIs.Schema.Fields, &st.SchemaField{
 		Name: "field-5",
 		FieldKind: &st.SchemaFieldKind{
-			Kind: st.Kind_INT,
+			Kind: st.Kind_LIST,
 			ListKind: &st.SchemaFieldKind{
-				Kind: st.Kind_INT,
+				Kind: st.Kind_STRING,
 			},
 		},
 	})
-	whatIss = append(whatIss, &mockWhatIs)
+	whatIss = append(whatIss, mockWhatIs)
 
-	did_two := fmt.Sprintf("did:snr: %s", GenerateKeyForDID())
-	mockWhatIs_2 := st.WhatIs{
+	did_two := fmt.Sprintf("did:snr:%s", GenerateKeyForDID())
+	mockWhatIs_2 := &st.WhatIs{
 		Did: did_two,
 		Schema: &st.Schema{
 			Did:    did_two,
@@ -115,10 +115,10 @@ func CreateMockHeirachyThreeLevel(creator string) []*st.WhatIs {
 			LinkDid: did_one,
 		},
 	})
-	whatIss = append(whatIss, &mockWhatIs_2)
+	whatIss = append(whatIss, mockWhatIs_2)
 
-	did_three := fmt.Sprintf("did:snr: %s", GenerateKeyForDID())
-	mockWhatIs_3 := st.WhatIs{
+	did_three := fmt.Sprintf("did:snr:%s", GenerateKeyForDID())
+	mockWhatIs_3 := &st.WhatIs{
 		Did: did_three,
 		Schema: &st.Schema{
 			Did:    did_three,
@@ -153,13 +153,13 @@ func CreateMockHeirachyThreeLevel(creator string) []*st.WhatIs {
 		},
 	})
 
-	whatIss = append(whatIss, &mockWhatIs_3)
+	whatIss = append(whatIss, mockWhatIs_3)
 
 	return whatIss
 }
 
-func CreateMocks(creator string, did string) (st.WhatIs, st.Schema) {
-	mockWhatIs := st.WhatIs{
+func CreateMocks(creator string, did string) (*st.WhatIs, *st.Schema) {
+	mockWhatIs := &st.WhatIs{
 		Did: did,
 		Schema: &st.Schema{
 			Did:    did,
@@ -171,7 +171,7 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.Schema) {
 		IsActive:  true,
 	}
 
-	return mockWhatIs, *mockWhatIs.Schema
+	return mockWhatIs, mockWhatIs.Schema
 }
 
 func Test_IPLD_Nodes(t *testing.T) {
@@ -193,7 +193,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			},
 		})
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 
 		obj := map[string]interface{}{
 			"field-1": 1,
@@ -244,12 +244,12 @@ func Test_IPLD_Nodes(t *testing.T) {
 			FieldKind: &st.SchemaFieldKind{
 				Kind: st.Kind_LIST,
 				ListKind: &st.SchemaFieldKind{
-					Kind: st.Kind_INT,
+					Kind: st.Kind_STRING,
 				},
 			},
 		})
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 
 		obj := map[string]interface{}{
 			"field-1": 1,
@@ -288,7 +288,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			},
 		})
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -330,7 +330,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			},
 		})
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -366,7 +366,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			},
 		})
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
@@ -402,7 +402,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 			},
 		})
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 		obj := map[string]interface{}{
 			"field-1": 1,
 			"field-4": 2.0,
@@ -475,10 +475,7 @@ func Test_List_Types(t *testing.T) {
 				ListKind: &st.SchemaFieldKind{
 					Kind: st.Kind_LIST,
 					ListKind: &st.SchemaFieldKind{
-						Kind: st.Kind_LIST,
-						ListKind: &st.SchemaFieldKind{
-							Kind: st.Kind_STRING,
-						},
+						Kind: st.Kind_STRING,
 					},
 				},
 			},
@@ -500,7 +497,7 @@ func Test_List_Types(t *testing.T) {
 			},
 		})
 
-		schema := schemas.New(store, &whatIs)
+		schema := schemas.New(store, whatIs)
 
 		obj := map[string]interface{}{
 			"field-1": []int32{

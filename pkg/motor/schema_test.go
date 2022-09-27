@@ -34,13 +34,13 @@ func Test_CreateSchema(t *testing.T) {
 	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
 		Fields: map[string]*st.SchemaFieldKind{
-			"email": &st.SchemaFieldKind{
+			"email": {
 				Kind: st.Kind_STRING,
 			},
-			"firstName": &st.SchemaFieldKind{
+			"firstName": {
 				Kind: st.Kind_STRING,
 			},
-			"age": &st.SchemaFieldKind{
+			"age": {
 				Kind: st.Kind_INT,
 			},
 		},
@@ -73,13 +73,13 @@ func Test_QuerySchema(t *testing.T) {
 	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
 		Fields: map[string]*st.SchemaFieldKind{
-			"email": &st.SchemaFieldKind{
+			"email": {
 				Kind: st.Kind_STRING,
 			},
-			"firstName": &st.SchemaFieldKind{
+			"firstName": {
 				Kind: st.Kind_STRING,
 			},
-			"age": &st.SchemaFieldKind{
+			"age": {
 				Kind: st.Kind_INT,
 			},
 		},
@@ -162,13 +162,4 @@ func Test_QuerySchemaByDid(t *testing.T) {
 	}
 
 	fmt.Println(qresp)
-}
-
-func findItem(arr []*mt.QueryResultItem, target string) string {
-	for _, item := range arr {
-		if item.Did == target {
-			return item.GetDid()
-		}
-	}
-	return ""
 }
