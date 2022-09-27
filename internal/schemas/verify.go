@@ -104,6 +104,8 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_BOOL
 	case string:
 		return fieldType == st.SchemaKind_STRING
+	case map[string]interface{}:
+		return fieldType == st.SchemaKind_LINK
 	case []byte:
 		return fieldType == st.SchemaKind_BYTES
 	case []interface{}:
@@ -122,6 +124,8 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_LIST
 	case []string:
 		return fieldType == st.SchemaKind_LIST
+	case []map[string]interface{}:
+		return fieldType == st.SchemaKind_LIST
 	case [][]byte:
 		return fieldType == st.SchemaKind_LIST
 	case [][]string:
@@ -133,6 +137,8 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 	case [][]float32:
 		return fieldType == st.SchemaKind_LIST
 	case [][]float64:
+		return fieldType == st.SchemaKind_LIST
+	case [][]map[string]interface{}:
 		return fieldType == st.SchemaKind_LIST
 	case [][][]bool:
 		return fieldType == st.SchemaKind_LIST
@@ -148,8 +154,8 @@ func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
 		return fieldType == st.SchemaKind_LIST
 	case [][][]float64:
 		return fieldType == st.SchemaKind_LIST
-	case map[string]interface{}:
-		return fieldType == st.SchemaKind_LINK
+	case [][][]map[string]interface{}:
+		return fieldType == st.SchemaKind_LIST
 	default:
 		return false
 	}
