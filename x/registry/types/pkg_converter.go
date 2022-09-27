@@ -77,21 +77,24 @@ func convertContext(c []string) ([]ssi.URI, error) {
 }
 
 func convertVerificationMethods(methods []*VerificationMethod) (did.VerificationMethods, error) {
-	res := make(did.VerificationMethods, len(methods))
-	for i, m := range methods {
+	res := make(did.VerificationMethods, 0)
+	for _, m := range methods {
 		var cred did.Credential
-		err := json.Unmarshal(m.CredentialJson, &cred)
-		if err != nil {
-			return nil, err
+		if m.CredentialJson != nil {
+			err := json.Unmarshal(m.CredentialJson, &cred)
+			if err != nil {
+				return nil, err
+			}
 		}
-		res[i] = &did.VerificationMethod{
-			ID:              did.MustParseDID(m.Id),
+
+		res = append(res, &did.VerificationMethod{
+			ID:              did.MustParseDID(fmt.Sprintf("did:snr:%s", m.Id)),
 			Type:            ssi.KeyType(m.Type),
-			Controller:      did.MustParseDID(m.Controller),
+			Controller:      did.MustParseDID(fmt.Sprintf("did:snr:%s", m.Id)),
 			PublicKeyBase58: m.PublicKeyBase58,
 			PublicKeyJwk:    convertKeyValuePair(m.PublicKeyJwk),
 			Credential:      &cred,
-		}
+		})
 	}
 
 	return res, nil
