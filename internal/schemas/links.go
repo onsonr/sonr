@@ -20,6 +20,18 @@ func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
 			}
 			links = append(links, f.FieldKind.LinkDid)
 		}
+		kind := f.Item
+
+		for kind != nil {
+			if kind.Field == st.SchemaKind_LINK {
+				if kind.Link == "" {
+					return errSchemaFieldsInvalid
+				}
+				links = append(links, kind.Link)
+			}
+
+			kind = kind.Item
+		}
 	}
 
 	for len(links) > 0 {

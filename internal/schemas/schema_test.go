@@ -544,6 +544,123 @@ func Test_List_Types(t *testing.T) {
 
 		assert.NotNil(t, n)
 	})
+
+	t.Run("Should validate link types in arrays", func(t *testing.T) {
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
+		whatIss := CreateMockHeirachyThreeLevel("snr12345")
+		store := &schemas.ReadStoreImpl{
+			Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		}
+
+		for _, wi := range whatIss {
+			b, err := wi.Schema.Marshal()
+			if err != nil {
+				assert.Error(t, err)
+			}
+			store.GetCache()[wi.Did] = b
+		}
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field:    st.SchemaKind_LINK,
+				LinkKind: st.LinkKind_SCHEMA,
+				Link:     whatIss[2].Did,
+			},
+		})
+
+		obj := map[string]interface{}{
+			"field-1": []map[string]interface{}{
+				{
+					"id":   1,
+					"name": "asAASD",
+					"data": map[string]interface{}{
+						"icon":    1,
+						"message": "asdasd",
+						"type":    2,
+						"sub": map[string]interface{}{
+							"field-1": 1,
+							"field-2": 2.0,
+							"field-3": []int{
+								1, 2, 3, 4,
+							},
+							"field-4": "hey there",
+							"field-5": []string{
+								"hey",
+								"there",
+							},
+						},
+					},
+				},
+			},
+		}
+
+		schema := schemas.New(store, &whatIs)
+
+		err := schema.BuildNodesFromDefinition(obj)
+		assert.NoError(t, err)
+
+		node, err := schema.GetNode()
+		assert.NoError(t, err)
+		assert.NotNil(t, node)
+	})
+
+	t.Run("Should throw error if object does not match link structure", func(t *testing.T) {
+		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
+		whatIss := CreateMockHeirachyThreeLevel("snr12345")
+		store := &schemas.ReadStoreImpl{
+			Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		}
+
+		for _, wi := range whatIss {
+			b, err := wi.Schema.Marshal()
+			if err != nil {
+				assert.Error(t, err)
+			}
+			store.GetCache()[wi.Did] = b
+		}
+		whatIs.Schema.Fields = append(whatIs.Schema.Fields, &st.SchemaKindDefinition{
+			Name:  "field-1",
+			Field: st.SchemaKind_LIST,
+			Item: &st.SchemaItemKindDefinition{
+				Field:    st.SchemaKind_LINK,
+				LinkKind: st.LinkKind_SCHEMA,
+				Link:     whatIss[2].Did,
+			},
+		})
+
+		obj := map[string]interface{}{
+			"field-1": []map[string]interface{}{
+				{
+					"id":   1,
+					"name": "asAASD",
+					"data": map[string]interface{}{
+						"icon":    "heyy",
+						"message": "asdasd",
+						"type":    2,
+						"sub": map[string]interface{}{
+							"field-1": 1,
+							"field-2": 2.0,
+							"field-3": []int{
+								1, 2, 3, 4,
+							},
+							"field-4": "hey there",
+							"field-5": []string{
+								"hey",
+								"there",
+							},
+						},
+					},
+				},
+			},
+		}
+
+		schema := schemas.New(store, &whatIs)
+
+		err := schema.BuildNodesFromDefinition(obj)
+		assert.Error(t, err)
+		assert.NotNil(t, err)
+	})
 }
 
 func Test_Sub_Schemas(t *testing.T) {
