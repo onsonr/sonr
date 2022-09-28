@@ -3,6 +3,7 @@ package motor
 import (
 	"fmt"
 	"log"
+	"testing"
 
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -10,17 +11,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *MotorTestSuite) Test_CreateSchema() {
-	suite.T().Skip()
-	pskKey := loadKey(fmt.Sprintf("psk%s", suite.accountAddress))
+func Test_CreateSchema(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 	fmt.Printf("psk: %x\n", pskKey)
 	if pskKey == nil || len(pskKey) != 32 {
-		suite.T().Errorf("could not load psk key")
+		t.Errorf("could not load psk key")
 		return
 	}
 
 	req := mt.LoginRequest{
-		Did:      suite.accountAddress,
+		Did:      ADDR,
 		Password: "password123",
 	}
 
@@ -28,7 +28,7 @@ func (suite *MotorTestSuite) Test_CreateSchema() {
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	_, err := m.Login(req)
-	assert.NoError(suite.T(), err, "login succeeds")
+	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO CREATE SCHEMA
 	createSchemaRequest := mt.CreateSchemaRequest{
@@ -40,21 +40,20 @@ func (suite *MotorTestSuite) Test_CreateSchema() {
 		},
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
-	assert.NoError(suite.T(), err, "schema created successfully")
+	assert.NoError(t, err, "schema created successfully")
 	fmt.Printf("success: %s\n", resp.WhatIs)
 }
 
-func (suite *MotorTestSuite) Test_QuerySchema() {
-	suite.T().Skip()
-	pskKey := loadKey(fmt.Sprintf("psk%s", suite.accountAddress))
+func Test_QuerySchema(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 	fmt.Printf("psk: %x\n", pskKey)
 	if pskKey == nil || len(pskKey) != 32 {
-		suite.T().Errorf("could not load psk key")
+		t.Errorf("could not load psk key")
 		return
 	}
 
 	req := mt.LoginRequest{
-		Did:      suite.accountAddress,
+		Did:      ADDR,
 		Password: "password123",
 	}
 
@@ -62,7 +61,7 @@ func (suite *MotorTestSuite) Test_QuerySchema() {
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	_, err := m.Login(req)
-	assert.NoError(suite.T(), err, "login succeeds")
+	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO QUERY SCHEMA
 	createSchemaRequest := mt.CreateSchemaRequest{
@@ -74,7 +73,7 @@ func (suite *MotorTestSuite) Test_QuerySchema() {
 		},
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
-	assert.NoError(suite.T(), err, "schema created successfully")
+	assert.NoError(t, err, "schema created successfully")
 
 	// CREATE DONE, TRY QUERY
 	qReq := mt.QueryWhatIsRequest{
@@ -83,21 +82,20 @@ func (suite *MotorTestSuite) Test_QuerySchema() {
 	}
 
 	qresp, err := m.QueryWhatIs(qReq)
-	assert.NoError(suite.T(), err, "query response succeeds")
-	assert.Equal(suite.T(), resp.WhatIs.Did, qresp.WhatIs.Did)
+	assert.NoError(t, err, "query response succeeds")
+	assert.Equal(t, resp.WhatIs.Did, qresp.WhatIs.Did)
 }
 
-func (suite *MotorTestSuite) Test_QuerySchemaByCreator() {
-	suite.T().Skip()
-	pskKey := loadKey(fmt.Sprintf("psk%s", suite.accountAddress))
+func Test_QuerySchemaByCreator(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 	fmt.Printf("psk: %x\n", pskKey)
 	if pskKey == nil || len(pskKey) != 32 {
-		suite.T().Errorf("could not load psk key")
+		t.Errorf("could not load psk key")
 		return
 	}
 
 	req := mt.LoginRequest{
-		Did:      suite.accountAddress,
+		Did:      ADDR,
 		Password: "password123",
 	}
 
@@ -105,7 +103,7 @@ func (suite *MotorTestSuite) Test_QuerySchemaByCreator() {
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	_, err := m.Login(req)
-	assert.NoError(suite.T(), err, "login succeeds")
+	assert.NoError(t, err, "login succeeds")
 
 	// CREATE DONE, TRY QUERY
 	qReq := mt.QueryWhatIsByCreatorRequest{
@@ -113,7 +111,7 @@ func (suite *MotorTestSuite) Test_QuerySchemaByCreator() {
 	}
 
 	qresp, err := m.QueryWhatIsByCreator(qReq)
-	assert.NoError(suite.T(), err, "query response succeeds")
+	assert.NoError(t, err, "query response succeeds")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -125,17 +123,16 @@ func (suite *MotorTestSuite) Test_QuerySchemaByCreator() {
 	}
 }
 
-func (suite *MotorTestSuite) Test_QuerySchemaByDid() {
-	suite.T().Skip()
-	pskKey := loadKey(fmt.Sprintf("psk%s", suite.accountAddress))
+func Test_QuerySchemaByDid(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 	fmt.Printf("psk: %x\n", pskKey)
 	if pskKey == nil || len(pskKey) != 32 {
-		suite.T().Errorf("could not load psk key")
+		t.Errorf("could not load psk key")
 		return
 	}
 
 	req := mt.LoginRequest{
-		Did:      suite.accountAddress,
+		Did:      ADDR,
 		Password: "password123",
 	}
 
@@ -143,11 +140,11 @@ func (suite *MotorTestSuite) Test_QuerySchemaByDid() {
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
 	_, err := m.Login(req)
-	assert.NoError(suite.T(), err, "login succeeds")
+	assert.NoError(t, err, "login succeeds")
 
 	// CREATE DONE, TRY QUERY
 	qresp, err := m.QueryWhatIsByDid("did:snr:Qme2eF6tp63kzjz6UDxmc9xkuthJaMBTb1bmB7Km65F5VM")
-	assert.NoError(suite.T(), err, "query response succeeds")
+	assert.NoError(t, err, "query response succeeds")
 	if err != nil {
 		log.Fatal(err)
 	}
