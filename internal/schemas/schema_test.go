@@ -351,7 +351,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 
 func Test_List_Types(t *testing.T) {
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(),
 	}
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
