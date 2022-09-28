@@ -1,33 +1,33 @@
 package types
 
-func (skd *SchemaField) GetKind() Kind {
-	return skd.FieldKind.Kind
+func (skd *SchemaKindDefinition) GetKind() SchemaKind {
+	return skd.Field
 }
 
-func (skd *SchemaField) TryValue(val interface{}) bool {
+func (skd *SchemaKindDefinition) TryValue(val interface{}) bool {
 	switch val.(type) {
 	case int:
-		return skd.GetKind() == Kind_INT
+		return skd.Field == SchemaKind_INT
 	case uint:
-		return skd.GetKind() == Kind_INT
+		return skd.Field == SchemaKind_INT
 	case int32:
-		return skd.GetKind() == Kind_INT
+		return skd.Field == SchemaKind_INT
 	case uint32:
-		return skd.GetKind() == Kind_INT
+		return skd.Field == SchemaKind_INT
 	case int64:
-		return skd.GetKind() == Kind_INT
+		return skd.Field == SchemaKind_INT
 	case uint64:
-		return skd.GetKind() == Kind_INT
+		return skd.Field == SchemaKind_INT
 	case string:
-		return skd.GetKind() == Kind_STRING
+		return skd.Field == SchemaKind_STRING
 	case float64:
-		return skd.GetKind() == Kind_FLOAT
+		return skd.Field == SchemaKind_FLOAT
 	case bool:
-		return skd.GetKind() == Kind_BOOL
+		return skd.Field == SchemaKind_BOOL
 	case []byte:
-		return skd.GetKind() == Kind_BYTES
+		return skd.Field == SchemaKind_BYTES
 	case []interface{}:
-		return skd.GetKind() == Kind_LIST
+		return skd.Field == SchemaKind_LIST
 	default:
 		return false
 	}

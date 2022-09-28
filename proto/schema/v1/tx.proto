@@ -28,7 +28,7 @@ message MsgCreateSchema {
   string label = 2;
 
   // List of Kind Definitions for the schema
-  repeated SchemaField fields = 3;
+  repeated SchemaKindDefinition fields = 3;
 
   // Metadata is a map of key-value pairs that can be used to store additional information about the WhatIs (Schema)
   repeated MetadataDefintion metadata = 4;
