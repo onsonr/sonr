@@ -12,39 +12,62 @@ import (
 
 type MotorTestSuite struct {
 	suite.Suite
-	accountAddress string
+	motor *motorNodeImpl
+	motorWithKeys *motorNodeImpl
 }
 
 func (suite *MotorTestSuite) SetupSuite() {
-	fmt.Println()
-	fmt.Println("Setting up suite")
-	fmt.Println()
+	fmt.Println("Setting up suite...")
+
 	var err error
-	suite.accountAddress, err = setupTestAddress()
+
+	// setup motor
+	suite.motor, err = EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
 	if err != nil {
-		suite.T().Errorf("Failed to setup test address")
+		suite.T().Error("Failed to setup test suite motor")
 	}
 
-	fmt.Printf("Setup test address: %s\n", suite.accountAddress)
+	err = setupTestAddress(suite.motor)
+	if err != nil {
+		suite.T().Error("Failed to setup test address")
+	}
+
+	suite.motorWithKeys, err = EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+
+	if err != nil {
+		suite.T().Error("Failed to setup test suite motor with keys")
+	}
+
+	err = setupTestAddressWithKeys(suite.motorWithKeys)
+	if err != nil {
+		suite.T().Error("Failed to setup test address with keys")
+	}
+
+	fmt.Printf("Setup test address: %s\n", suite.motor.Address)
+	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.Address)
 }
 
 func Test_MotorTestSuite(t *testing.T) {
 	suite.Run(t, new(MotorTestSuite))
 }
 
-func setupTestAddress() (string, error) {
+func setupTestAddressWithKeys(motor *motorNodeImpl) (error) {
 	aesKey := loadKey("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {
 		key, err := mpc.NewAesKey()
 		if err != nil {
-			return "", err
+			return err
 		}
 		aesKey = key
 	}
 
 	psk, err := mpc.NewAesKey()
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	req := mt.CreateAccountWithKeysRequest{
@@ -53,15 +76,24 @@ func setupTestAddress() (string, error) {
 		AesPskKey: psk,
 	}
 
-	motor, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
 	_, err = motor.CreateAccountWithKeys(req)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	storeKey(fmt.Sprintf("psk%s", motor.Address), psk)
 
-	return motor.Address, nil
+	return nil
+}
+
+func setupTestAddress(motor *motorNodeImpl) (error) {
+	req := mt.CreateAccountRequest{
+		Password: "password123",
+	}
+	_, err := motor.CreateAccount(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
