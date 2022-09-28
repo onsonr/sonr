@@ -54,7 +54,7 @@ func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorReques
 	}
 
 	// store reference to schema
-	schemas := make(map[string]*st.SchemaDefinition)
+	schemas := make(map[string]*st.Schema)
 	for _, w := range resp {
 		def := w.Schema
 		if err != nil {

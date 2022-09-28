@@ -13,7 +13,7 @@ message WhatIs {
   string did = 1;
 
   // Object_doc is the object document
-  SchemaDefinition schema = 2;
+  Schema schema = 2;
 
   // Creator is the DID of the creator
   string creator = 3;

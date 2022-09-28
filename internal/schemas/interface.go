@@ -48,7 +48,7 @@ type Schema interface {
 	/*
 		Returns a list of SchemaKindDefinitions, composing the schema
 	*/
-	GetSchema() ([]*st.SchemaKindDefinition, error)
+	GetSchema() ([]*st.SchemaField, error)
 
 	/*
 		Returns top level node of a hydrated schema

@@ -33,10 +33,16 @@ func Test_CreateSchema(t *testing.T) {
 	// LOGIN DONE, TRY TO CREATE SCHEMA
 	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
-		Fields: map[string]st.SchemaKind{
-			"email":     st.SchemaKind_STRING,
-			"firstName": st.SchemaKind_STRING,
-			"age":       st.SchemaKind_INT,
+		Fields: map[string]*st.SchemaFieldKind{
+			"email": {
+				Kind: st.Kind_STRING,
+			},
+			"firstName": {
+				Kind: st.Kind_STRING,
+			},
+			"age": {
+				Kind: st.Kind_INT,
+			},
 		},
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
@@ -66,10 +72,16 @@ func Test_QuerySchema(t *testing.T) {
 	// LOGIN DONE, TRY TO QUERY SCHEMA
 	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
-		Fields: map[string]st.SchemaKind{
-			"email":     st.SchemaKind_STRING,
-			"firstName": st.SchemaKind_STRING,
-			"age":       st.SchemaKind_INT,
+		Fields: map[string]*st.SchemaFieldKind{
+			"email": {
+				Kind: st.Kind_STRING,
+			},
+			"firstName": {
+				Kind: st.Kind_STRING,
+			},
+			"age": {
+				Kind: st.Kind_INT,
+			},
 		},
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
@@ -150,13 +162,4 @@ func Test_QuerySchemaByDid(t *testing.T) {
 	}
 
 	fmt.Println(qresp)
-}
-
-func findItem(arr []*mt.QueryResultItem, target string) string {
-	for _, item := range arr {
-		if item.Did == target {
-			return item.GetDid()
-		}
-	}
-	return ""
 }
