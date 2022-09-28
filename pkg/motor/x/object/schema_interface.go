@@ -4,7 +4,7 @@ import "github.com/sonr-io/sonr/x/schema/types"
 
 type SchemaField interface {
 	GetName() string
-	GetKind() types.SchemaKind
+	GetKind() types.Kind
 	TryValue(interface{}) bool
 }
 

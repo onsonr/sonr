@@ -9,8 +9,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *schemaImpl) BuildNodesFromDefinition(
-	object map[string]interface{}) error {
+func (as *schemaImpl) BuildNodesFromDefinition(object map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsInvalid
 	}
@@ -22,7 +21,7 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 		return errSchemaFieldsInvalid
 	}
 
-	// Create IPLD Node
+	// Create IPLD Noded
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
 	ma, err := nb.BeginMap(int64(len(as.fields)))
@@ -34,13 +33,13 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 	for _, t := range as.fields {
 		k := t.Name
 		ma.AssembleKey().AssignString(k)
-		if t.Field != st.SchemaKind_LINK {
-			err = as.AssignValueToNode(t, ma, object[k])
+		if t.GetKind() != st.Kind_LINK {
+			err = as.AssignValueToNode(t.FieldKind, ma, object[k])
 			if err != nil {
 				return err
 			}
-		} else if t.Field == st.SchemaKind_LINK {
-			err := as.BuildSchemaFromLink(t.Link, ma, object[t.Name].(map[string]interface{}))
+		} else if t.GetKind() == st.Kind_LINK {
+			err := as.BuildSchemaFromLink(t.FieldKind.LinkDid, ma, object[t.Name].(map[string]interface{}))
 			if err != nil {
 				return err
 			}
@@ -59,12 +58,12 @@ func (as *schemaImpl) BuildNodesFromDefinition(
 	return nil
 }
 
-func (as *schemaImpl) AssignValueToNode(field *st.SchemaKindDefinition, ma datamodel.MapAssembler, value interface{}) error {
-	switch field.Field {
-	case st.SchemaKind_STRING:
+func (as *schemaImpl) AssignValueToNode(kind *st.SchemaFieldKind, ma datamodel.MapAssembler, value interface{}) error {
+	switch kind.GetKind() {
+	case st.Kind_STRING:
 		val := value.(string)
 		ma.AssembleValue().AssignString(val)
-	case st.SchemaKind_INT:
+	case st.Kind_INT:
 		switch value.(type) {
 		case int:
 			val := int64(value.(int))
@@ -76,7 +75,7 @@ func (as *schemaImpl) AssignValueToNode(field *st.SchemaKindDefinition, ma datam
 			val := int64(value.(int64))
 			ma.AssembleValue().AssignInt(val)
 		}
-	case st.SchemaKind_FLOAT:
+	case st.Kind_FLOAT:
 		switch value.(type) {
 		case float64:
 			val := value.(float64)
@@ -85,19 +84,19 @@ func (as *schemaImpl) AssignValueToNode(field *st.SchemaKindDefinition, ma datam
 			val := value.(float32)
 			ma.AssembleValue().AssignFloat(float64(val))
 		}
-	case st.SchemaKind_BOOL:
+	case st.Kind_BOOL:
 		val := value.(bool)
 		ma.AssembleValue().AssignBool(val)
-	case st.SchemaKind_BYTES:
+	case st.Kind_BYTES:
 		val := value.([]byte)
 		ma.AssembleValue().AssignBytes(val)
-	case st.SchemaKind_LIST:
+	case st.Kind_LIST:
 		val := make([]interface{}, 0)
 		s := reflect.ValueOf(value)
 		for i := 0; i < s.Len(); i++ {
 			val = append(val, s.Index(i).Interface())
 		}
-		n, err := as.BuildNodeFromList(val, field.Item)
+		n, err := as.BuildNodeFromList(val, kind.ListKind)
 		if err != nil {
 			return errSchemaFieldsInvalid
 		}
@@ -133,13 +132,13 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 
 	for _, f := range sd.Fields {
 		lma.AssembleKey().AssignString(f.Name)
-		if f.Field != st.SchemaKind_LINK {
-			err := as.AssignValueToNode(f, lma, value[f.Name])
+		if f.GetKind() != st.Kind_LINK {
+			err := as.AssignValueToNode(f.FieldKind, lma, value[f.Name])
 			if err != nil {
 				return err
 			}
-		} else if f.Field == st.SchemaKind_LINK {
-			err = as.BuildSchemaFromLink(f.Link, lma, value[f.Name].(map[string]interface{}))
+		} else if f.GetKind() == st.Kind_LINK {
+			err = as.BuildSchemaFromLink(f.FieldKind.LinkDid, lma, value[f.Name].(map[string]interface{}))
 			if err != nil {
 				return err
 			}
@@ -154,7 +153,52 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	return nil
 }
 
-func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaItemKindDefinition) (datamodel.Node, error) {
+func (as *schemaImpl) BuildSchemaFromLinkForList(key string, ma datamodel.ListAssembler, value map[string]interface{}) error {
+	if as.subSchemas[key] == nil {
+		return errNodeNotFound
+	}
+
+	sd := as.subSchemas[key]
+
+	err := as.VerifySubObject(sd.Fields, value)
+
+	if err != nil {
+		return err
+	}
+
+	// Create IPLD Node
+	np := basicnode.Prototype.Any
+	nb := np.NewBuilder() // Create a builder.
+	lma, err := nb.BeginMap(int64(len(value)))
+
+	if err != nil {
+		return err
+	}
+
+	for _, f := range sd.Fields {
+		lma.AssembleKey().AssignString(f.Name)
+		if f.GetKind() != st.Kind_LINK {
+			err := as.AssignValueToNode(f.FieldKind, lma, value[f.Name])
+			if err != nil {
+				return err
+			}
+		} else if f.GetKind() == st.Kind_LINK {
+			err = as.BuildSchemaFromLink(f.FieldKind.LinkDid, lma, value[f.Name].(map[string]interface{}))
+			if err != nil {
+				return err
+			}
+		}
+
+	}
+
+	lma.Finish()
+	n := nb.Build()
+	ma.AssembleValue().AssignNode(n)
+
+	return nil
+}
+
+func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaFieldKind) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
@@ -200,41 +244,38 @@ func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaIte
 		case []byte:
 			lstItem := interface{}(val).([]byte)
 			la.AssembleValue().AssignBytes(lstItem)
+		case map[string]interface{}:
+			if kind.Kind == st.Kind_LINK {
+				err = as.BuildSchemaFromLinkForList(kind.LinkDid, la, val.(map[string]interface{}))
+
+				if err != nil {
+					return nil, err
+				}
+			}
 		/*
 			The below cases are for handling lists of up to 3 dimensions.
 			Within each cases arrays are normalized to match a type of []interface{}
 			each generic []interface{} array is then handed back to this function to further resolve types.
 			depth is cut off at 3 dimensions due to having to implement explicit type cases here
 		*/
-		case []string, []int, []int32, []int64, []float32, []float64:
+		case []map[string]interface{}, []string, []int, []int32, []int64, []float32, []float64:
 			value := make([]interface{}, 0)
 			s := reflect.ValueOf(val)
 			for i := 0; i < s.Len(); i++ {
 				value = append(value, s.Index(i).Interface())
 			}
-			n, err := as.BuildNodeFromList(value, kind.Item)
+			n, err := as.BuildNodeFromList(value, kind.ListKind)
 			if err != nil {
 				return nil, err
 			}
 			la.AssembleValue().AssignNode(n)
-		case [][]byte, [][]string, [][]int, [][]int32, [][]int64, [][]float32, [][]float64:
+		default:
 			value := make([]interface{}, 0)
 			s := reflect.ValueOf(val)
 			for i := 0; i < s.Len(); i++ {
 				value = append(value, s.Index(i).Interface())
 			}
-			n, err := as.BuildNodeFromList(value, kind.Item)
-			if err != nil {
-				return nil, err
-			}
-			la.AssembleValue().AssignNode(n)
-		case [][][]byte, [][][]string, [][][]int, [][][]int32, [][][]int64, [][][]float32, [][][]float64:
-			value := make([]interface{}, 0)
-			s := reflect.ValueOf(val)
-			for i := 0; i < s.Len(); i++ {
-				value = append(value, s.Index(i).Interface())
-			}
-			n, err := as.BuildNodeFromList(value, kind.Item)
+			n, err := as.BuildNodeFromList(value, kind.ListKind)
 			if err != nil {
 				return nil, err
 			}
