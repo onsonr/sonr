@@ -549,7 +549,7 @@ func Test_List_Types(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 		whatIss := CreateMockHeirachyThreeLevel("snr12345")
 		store := &schemas.ReadStoreImpl{
-			Client: client.NewClient(client.ConnEndpointType_LOCAL),
+			Client: client.NewClient(),
 		}
 
 		for _, wi := range whatIss {
@@ -610,7 +610,7 @@ func Test_List_Types(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 		whatIss := CreateMockHeirachyThreeLevel("snr12345")
 		store := &schemas.ReadStoreImpl{
-			Client: client.NewClient(client.ConnEndpointType_LOCAL),
+			Client: client.NewClient(),
 		}
 
 		for _, wi := range whatIss {
