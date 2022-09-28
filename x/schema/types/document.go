@@ -1,35 +1,33 @@
 package types
 
-import "strings"
-
 func (d *SchemaDocumentValue) GetValue() interface{} {
-	switch d.Field {
-	case SchemaKind_BOOL:
+	switch d.Kind {
+	case Kind_BOOL:
 		if d.BoolValue != nil {
 			return d.BoolValue.Value
 		}
-	case SchemaKind_BYTES:
+	case Kind_BYTES:
 		if d.BytesValue != nil {
 			return d.BytesValue.Value
 		}
-	case SchemaKind_INT:
+	case Kind_INT:
 		if d.IntValue != nil {
 			return int64(d.IntValue.Value)
 		}
-	case SchemaKind_FLOAT:
+	case Kind_FLOAT:
 		if d.FloatValue != nil {
 			return d.FloatValue.Value
 		}
-	case SchemaKind_STRING:
+	case Kind_STRING:
 
 		if d.StringValue != nil {
 			return d.StringValue.Value
 		}
-	case SchemaKind_LINK:
+	case Kind_LINK:
 		if d.LinkValue != nil {
 			return d.LinkValue.Value
 		}
-	case SchemaKind_LIST:
+	case Kind_LIST:
 		if d.ArrayValue != nil {
 			return resolveArrayValues(d.ArrayValue.Value)
 		}
@@ -60,58 +58,58 @@ func NewDocumentValueFromInterface(name string, value interface{}) *SchemaDocume
 	switch v := value.(type) {
 	case bool:
 		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_BOOL,
+			Name: name,
+			Kind: Kind_BOOL,
 			BoolValue: &BoolValue{
 				Value: v,
 			},
 		}
 	case []byte:
+		// TODO: add schema DID to objects in IPFS so that the types don't need to be inferred.
+		// if strings.Contains(v, "did:") && name != "@did" {
+		// 	return &SchemaDocumentValue{
+		// 		Name: name,
+		// 		Kind: Kind_LINK,
+		// 		LinkValue: &LinkValue{
+		// 			Value: ,
+		// 		},
+		// 	}
+		// }
 		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_BYTES,
+			Name: name,
+			Kind: Kind_BYTES,
 			BytesValue: &BytesValue{
 				Value: v,
 			},
 		}
 	case int:
 		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_INT,
+			Name: name,
+			Kind: Kind_INT,
 			IntValue: &IntValue{
 				Value: int32(v),
 			},
 		}
 	case float64:
 		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_FLOAT,
+			Name: name,
+			Kind: Kind_FLOAT,
 			FloatValue: &FloatValue{
 				Value: v,
 			},
 		}
 	case string:
-		if strings.Contains(v, "did:") && name != "@did" {
-			return &SchemaDocumentValue{
-				Name:  name,
-				Field: SchemaKind_LINK,
-				LinkValue: &LinkValue{
-					Value: v,
-					Link:  LinkKind_UNKNOWN,
-				},
-			}
-		}
 		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_STRING,
+			Name: name,
+			Kind: Kind_STRING,
 			StringValue: &StringValue{
 				Value: v,
 			},
 		}
 	case []*SchemaDocumentValue:
 		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_LIST,
+			Name: name,
+			Kind: Kind_LIST,
 			ArrayValue: &ArrayValue{
 				Value: v,
 			},

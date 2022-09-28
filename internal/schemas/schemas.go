@@ -23,8 +23,8 @@ const (
 )
 
 type schemaImpl struct {
-	fields     []*st.SchemaKindDefinition
-	subSchemas map[string]*st.SchemaDefinition
+	fields     []*st.SchemaField
+	subSchemas map[string]*st.Schema
 	whatIs     *st.WhatIs
 	nodes      datamodel.Node
 	store      *ReadStoreImpl
@@ -37,7 +37,7 @@ type schemaImpl struct {
 func New(store *ReadStoreImpl, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
 		fields:     whatIs.Schema.Fields,
-		subSchemas: make(map[string]*st.SchemaDefinition),
+		subSchemas: make(map[string]*st.Schema),
 		whatIs:     whatIs,
 		nodes:      nil,
 		store:      store,
@@ -53,7 +53,7 @@ func New(store *ReadStoreImpl, whatIs *st.WhatIs) *schemaImpl {
 func NewWithClient(client *client.Client, whatIs *st.WhatIs) *schemaImpl {
 	asi := &schemaImpl{
 		fields:     whatIs.Schema.Fields,
-		subSchemas: make(map[string]*st.SchemaDefinition),
+		subSchemas: make(map[string]*st.Schema),
 		whatIs:     whatIs,
 		nodes:      nil,
 		store: &ReadStoreImpl{
