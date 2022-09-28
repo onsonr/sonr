@@ -14,7 +14,7 @@ type ObjectClient interface {
 	*/
 	CreateObject(
 		label string,
-		object map[string]interface{}) (*motor.UploadObjectResponse, error)
+		object map[string]interface{}) (*motor.UploadDocumentResponse, error)
 
 	/*
 		Retrieves an object for the data store

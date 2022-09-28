@@ -128,6 +128,25 @@ message QuerySchemaRequest {
 }
 
 // -----------------------------------------------------------------------------
+// Document Models
+// -----------------------------------------------------------------------------
+
+message UploadDocumentRequest {
+  // DID of the schema being used for the document
+  string schema_did = 1;
+
+  // the label of the document
+  string label = 2;
+
+  // JSON encoded document map
+  bytes document = 3;
+}
+
+message GetDocumentRequest {
+  string cid = 1;
+}
+
+// -----------------------------------------------------------------------------
 // Bucket Models
 // -----------------------------------------------------------------------------
 message QueryWhereIsRequest {
@@ -167,20 +186,4 @@ message SeachBucketContentBySchemaRequest {
 }
 
 message StatRequest {
-}
-
-message UploadDocumentRequest {
-  string creator = 1;
-
-  string label = 2;
-
-  // The definition of the document used to build the values
-  sonrio.sonr.schema.Schema schema = 3;
-
-  // the properties of this schemadocument
-  repeated sonrio.sonr.schema.SchemaDocumentValue fields = 4;
-}
-
-message GetDocumentRequest {
-  string cid = 1;
 }

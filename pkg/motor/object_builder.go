@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"encoding/json"
 	"fmt"
 
 	shell "github.com/ipfs/go-ipfs-api"
@@ -30,7 +31,6 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 
 	doc := st.NewDocumentFromMap(req.GetCid(), obj)
 	return &mt.GetDocumentResponse{
-		Did:      doc.Did,
 		Status:   200,
 		Document: doc,
 		Cid:      req.GetCid(),
@@ -38,31 +38,29 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 }
 
 func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error) {
-	builder, err := mtr.NewObjectBuilder(req.GetSchema().GetDid())
+	var obj map[string]interface{}
+	if err := json.Unmarshal(req.GetDocument(), &obj); err != nil {
+		return nil, fmt.Errorf("error decoding document JSON")
+	}
+
+	builder, err := mtr.NewObjectBuilder(req.GetSchemaDid())
 	if err != nil {
 		return nil, err
 	}
 
 	builder.SetLabel(req.GetLabel())
-	builder.Set("@did", req.GetSchema().GetDid())
-	for _, field := range req.GetFields() {
-		builder.Set(field.GetName(), field.GetValue())
+	for k, v := range obj {
+		builder.Set(k, v)
 	}
 
 	resp, err := builder.Upload()
 	if err != nil {
 		return nil, err
 	}
+
 	return &mt.UploadDocumentResponse{
-		Status: resp.Code,
-		Cid:    resp.Reference.Cid,
-		Did:    resp.Reference.Did,
-		Document: &st.SchemaDocument{
-			Did:        resp.Reference.Did,
-			Cid:        resp.Reference.Cid,
-			Creator:    mtr.GetAddress(),
-			Definition: req.GetSchema(),
-			Fields:     req.GetFields(),
-		},
+		Status:   resp.Status,
+		Cid:      resp.Cid,
+		Document: resp.Document,
 	}, nil
 }

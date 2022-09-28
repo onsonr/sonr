@@ -10,14 +10,7 @@ option java_package = "io.sonr.types.schema";
 
 message SchemaDocument {
   // the DID for this schema should not be populated by request
-  string did = 1;
-
-  string cid = 2;
-
-  string creator = 3;
-
-  // The definition of the document used to build the values
-  Schema definition = 4; // deprecated, will be removed soon
+  string schema_did = 1;
 
   // the properties of this schemadocument
   repeated SchemaDocumentValue fields = 5;
@@ -45,7 +38,7 @@ message BytesValue {
 }
 
 message LinkValue {
-    bytes value = 1;
+    SchemaDocument value = 1;
 }
 
 message ArrayValue {

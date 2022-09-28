@@ -95,7 +95,7 @@ func (ob *ObjectBuilder) Build() (Object, error) {
 	return ob.values, nil
 }
 
-func (ob *ObjectBuilder) Upload() (*mt.UploadObjectResponse, error) {
+func (ob *ObjectBuilder) Upload() (*mt.UploadDocumentResponse, error) {
 	toUpload, err := ob.Build()
 	if err != nil {
 		return nil, err

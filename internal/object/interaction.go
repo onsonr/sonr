@@ -1,15 +1,13 @@
 package object
 
 import (
-	"fmt"
-
-	"github.com/google/uuid"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
 func (ao *objectImpl) CreateObject(
 	label string,
-	obj map[string]interface{}) (*mt.UploadObjectResponse, error) {
+	obj map[string]interface{}) (*mt.UploadDocumentResponse, error) {
 	err := ao.schema.VerifyObject(obj)
 
 	if err != nil {
@@ -22,25 +20,21 @@ func (ao *objectImpl) CreateObject(
 	}
 
 	enc, err := ao.schema.EncodeDagJson()
-
 	if err != nil {
 		return nil, err
 	}
 
 	cid, err := ao.shell.DagPut(enc, "dag-json", "dag-cbor")
-	did := fmt.Sprintf("did:snr:%s", uuid.New().String())
 	if err != nil {
 		return nil, err
 	}
 
-	return &mt.UploadObjectResponse{
-		Code: 200,
-		Reference: &mt.ObjectReference{
-			Did:   did,
-			Cid:   cid,
-			Label: label,
-		},
-		Message: "Object uploaded",
+	doc := st.NewDocumentFromMap(cid, obj)
+
+	return &mt.UploadDocumentResponse{
+		Status:   200,
+		Cid:      cid,
+		Document: doc,
 	}, nil
 }
 
