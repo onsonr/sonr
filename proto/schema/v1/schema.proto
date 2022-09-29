@@ -42,7 +42,7 @@ message SchemaItemKindDefinition {
   SchemaKind field = 1;
 
   // Type of an item if field is of type list. usage is for defining multidimensional collections.
-  SchemaKindDefinition item = 2;
+  SchemaItemKindDefinition item = 2;
 
   // Type of link for the given item for schemas, type should be SCHEMA fields of type LINK
   LinkKind link_kind = 3;
