@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	serviceId = "sonr:what_is"
+	SERVICE_ID  = "sonr:what_is"
+	SERVICE_KEY = "did"
 )
 
 func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchema) (*types.MsgCreateSchemaResponse, error) {
@@ -82,10 +83,10 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 
 	who_is.DidDocument.Service = append(who_is.DidDocument.Service, &rtv1.Service{
 		Id:   fmt.Sprintf("%s#%s", who_is.DidDocument.Id, whatIs.Schema.Label),
-		Type: serviceId,
+		Type: SERVICE_ID,
 		ServiceEndpoint: []*rtv1.KeyValuePair{
 			{
-				Key:   "did",
+				Key:   SERVICE_KEY,
 				Value: who_is.DidDocument.Id,
 			},
 		},
