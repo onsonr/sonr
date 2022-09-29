@@ -14,6 +14,10 @@ import (
 	"github.com/sonr-io/sonr/x/schema/types"
 )
 
+const (
+	serviceId = "sonr:what_is"
+)
+
 func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchema) (*types.MsgCreateSchemaResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := msg.ValidateBasic()
@@ -78,7 +82,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 
 	who_is.DidDocument.Service = append(who_is.DidDocument.Service, &rtv1.Service{
 		Id:   fmt.Sprintf("%s#%s", who_is.DidDocument.Id, whatIs.Schema.Label),
-		Type: "sonr:what_is",
+		Type: serviceId,
 		ServiceEndpoint: []*rtv1.KeyValuePair{
 			{
 				Key:   "did",
@@ -86,6 +90,7 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 			},
 		},
 	})
+
 	k.registryKeeper.SetWhoIs(ctx, who_is)
 	resp := types.MsgCreateSchemaResponse{
 		Code:    http.StatusAccepted,
