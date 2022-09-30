@@ -14,40 +14,48 @@ import (
 )
 
 func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
-	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
-	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
+	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		createMsg := types.MsgCreateSchema{
 			Creator: simAccount.Address.String(),
 			Label:   "test schema",
-			Fields:  make([]*types.SchemaKindDefinition, 0),
+			Fields:  make([]*types.SchemaField, 0),
 		}
 
-		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
-			Name:  "message",
-			Field: types.SchemaKind_STRING,
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaField{
+			Name: "message",
+			FieldKind: &types.SchemaFieldKind{
+				Kind: types.Kind_STRING,
+			},
 		})
-		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
-			Name:  "Icon",
-			Field: types.SchemaKind_INT,
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaField{
+			Name: "Icon",
+			FieldKind: &types.SchemaFieldKind{
+				Kind: types.Kind_INT,
+			},
 		})
-		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
-			Name:  "type",
-			Field: types.SchemaKind_STRING,
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaField{
+			Name: "type",
+			FieldKind: &types.SchemaFieldKind{
+				Kind: types.Kind_STRING,
+			},
 		})
 
-		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
-			Name:     "comment",
-			Field:    types.SchemaKind_LINK,
-			LinkKind: types.LinkKind_SCHEMA,
-			Link:     "QmZcGZYuoff9BQSqhzR9aqWfQBHU6bCMzKH7u25xZAijZB",
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaField{
+			Name: "comment",
+			FieldKind: &types.SchemaFieldKind{
+				Kind:    types.Kind_LINK,
+				LinkDid: "QmZcGZYuoff9BQSqhzR9aqWfQBHU6bCMzKH7u25xZAijZB",
+			},
 		})
 
-		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
-			Name:  "attributes",
-			Field: types.SchemaKind_LIST,
-			Item: &types.SchemaItemKindDefinition{
-				Field: types.SchemaKind_STRING,
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaField{
+			Name: "attributes",
+			FieldKind: &types.SchemaFieldKind{
+				Kind: types.Kind_LIST,
+				ListKind: &types.SchemaFieldKind{
+					Kind: types.Kind_STRING,
+				},
 			},
 		})
 

@@ -15,7 +15,7 @@ const (
 
 var _ sdk.Msg = &MsgCreateSchema{}
 
-func NewMsgCreateSchema(metadata []*MetadataDefintion, fields []*SchemaKindDefinition, creator string, label string) *MsgCreateSchema {
+func NewMsgCreateSchema(metadata []*MetadataDefintion, fields []*SchemaField, creator string, label string) *MsgCreateSchema {
 	return &MsgCreateSchema{
 		Metadata: metadata,
 		Creator:  creator,
