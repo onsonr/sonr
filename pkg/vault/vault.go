@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -23,12 +24,22 @@ type vaultImpl struct {
 
 func New() VaultClient {
 	env_path := filepath.Join(projectpath.Root, ".env")
-	err := godotenv.Load(env_path)
-  if err != nil {
-    log.Fatal(err)
-  }
 
+	var uri string
+	// by default use .env if it exists
+	_, err := os.Stat(env_path)
+	if errors.Is(err, os.ErrNotExist) {
+		uri = "https://vault.sonr.ws"
+	} else {
+		err = godotenv.Load(env_path)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		uri = os.Getenv("VAULT_ENDPOINT")
+	}
+	
 	return &vaultImpl{
-		vaultEndpoint: os.Getenv("VAULT_ENDPOINT"),
+		vaultEndpoint: uri,
 	}
 }

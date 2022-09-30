@@ -3,6 +3,7 @@ package vault
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -85,13 +86,23 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 	}
 
 	env_path := filepath.Join(projectpath.Root, ".env")
-	err = godotenv.Load(env_path)
-  if err != nil {
-    log.Fatal(err)
-  }
+
+	var uri string
+	// by default use .env if it exists
+	_, err = os.Stat(env_path)
+	if errors.Is(err, os.ErrNotExist) {
+		uri = "https://vault.sonr.ws"
+	} else {
+		err = godotenv.Load(env_path)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		uri = os.Getenv("VAULT_ENDPOINT")
+	}
 
 	return did.Service{
-		ID:   ssi.MustParseURI(os.Getenv("VAULT_ENDPOINT")),
+		ID:   ssi.MustParseURI(uri),
 		Type: "vault",
 		ServiceEndpoint: map[string]string{
 			"cid": cvr.VaultCid,

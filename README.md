@@ -88,7 +88,7 @@ VAULT_API_ADDRESS=
 VAULT_ENDPOINT=
 ```
 
-Refer to **.env.example** for typical values to use.
+Refer to **.env.example** for typical values to use. If not set, default values will be used in place.
 
 ### Motor Node Tests
 

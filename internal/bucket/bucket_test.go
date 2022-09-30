@@ -7,6 +7,7 @@ import (
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/client"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -31,7 +32,7 @@ func Test_Bucket(t *testing.T) {
 	creator := "snr1ld9u3wpq752wmqaus5rzcfanqg65sgldhnscx5"
 	objectURI := "bafyreihnj3feeesb6wmd46lmsvtwalvuckns647ghy44xn63lfsfed3ydm"
 	s := shell.NewLocalShell()
-	c := client.NewClient()
+	c := client.NewClient(mt.ClientMode_ENDPOINT_BETA)
 	t.Run("Bucket should be defined", func(t *testing.T) {
 		content := []*bt.BucketItem{
 			{

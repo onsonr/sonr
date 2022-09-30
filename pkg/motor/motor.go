@@ -43,6 +43,7 @@ type motorNodeImpl struct {
 	homeDir    string
 	supportDir string
 	tempDir    string
+	clientMode mt.ClientMode
 
 	// Sharding
 	deviceShard   []byte
@@ -59,6 +60,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 	if r.GetDeviceId() == "" {
 		return nil, fmt.Errorf("DeviceID is required to initialize motor node")
 	}
+	
 	return &motorNodeImpl{
 		isHostEnabled:      r.GetEnableHost(),
 		isDiscoveryEnabled: r.GetEnableDiscovery(),
@@ -66,13 +68,14 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 		homeDir:            r.GetHomeDir(),
 		supportDir:         r.GetSupportDir(),
 		tempDir:            r.GetTempDir(),
+		clientMode:         r.GetClientMode(),
 		callback:           cb,
 	}, nil
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
-	mtr.Cosmos = client.NewClient()
+	mtr.Cosmos = client.NewClient(mtr.clientMode)
 	// Generate wallet
 	log.Println("Generating wallet...")
 	mtr.Wallet, err = mpc.GenerateWallet(mtr.callback, options...)
