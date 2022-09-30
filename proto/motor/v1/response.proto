@@ -99,6 +99,7 @@ message UploadObjectResponse {
 
 message CreateBucketResponse {
   string did = 1;
+  sonrio.sonr.bucket.WhereIs where_is = 2;
 }
 
 message UpdateBucketResponse {
