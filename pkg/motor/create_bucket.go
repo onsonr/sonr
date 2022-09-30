@@ -57,8 +57,8 @@ func (mtr *motorNodeImpl) CreateBucket(request mt.CreateBucketRequest) (*mt.Crea
 	mtr.Resources.bucketStore[cbresp.WhereIs.Did] = b
 
 	mtr.AddBucketServiceEndpoint(mtr.GetClient().GetRPCAddress(), cbresp.WhereIs.Did)
-
 	return &mt.CreateBucketResponse{
-		Did: cbresp.WhereIs.Did,
+		Did:     cbresp.WhereIs.Did,
+		WhereIs: cbresp.GetWhereIs(),
 	}, b, nil
 }
