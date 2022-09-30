@@ -12,8 +12,11 @@ message SchemaDocument {
   // the DID for this schema should not be populated by request
   string schema_did = 1;
 
+  // label for the Document
+  string label = 2;
+
   // the properties of this schemadocument
-  repeated SchemaDocumentValue fields = 5;
+  repeated SchemaDocumentValue fields = 3;
 }
 
 
@@ -41,13 +44,15 @@ message LinkValue {
     SchemaDocument value = 1;
 }
 
-message ArrayValue {
+message ListValue {
     repeated SchemaDocumentValue value = 1;
 }
 
 
 message SchemaDocumentValue {
-    string name = 1;
+    // The key of the document value
+    string key = 1;
+
     // Type of a single schema property
     Kind kind = 2;
 
@@ -58,5 +63,5 @@ message SchemaDocumentValue {
     FloatValue float_value = 6; // optional
     BytesValue bytes_value = 7; // optional
     LinkValue link_value = 8; // optional
-    ArrayValue array_value = 9; // optional
+    ListValue array_value = 9; // optional
 }

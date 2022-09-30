@@ -62,6 +62,6 @@ func Test_ObjectBuilder(t *testing.T) {
 		result, err := builder.Upload()
 		assert.NoError(t, err, "upload succeeds")
 
-		assert.Equal(t, "Player 1", result.Reference.Label)
+		assert.Equal(t, "Player 1", result.Document.Label)
 	})
 }

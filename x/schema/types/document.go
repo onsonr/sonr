@@ -47,10 +47,11 @@ func NewDocumentFromMap(cid string, m map[string]interface{}) *SchemaDocument {
 		}
 		fields = append(fields, NewDocumentValueFromInterface(k, v))
 	}
+
 	return &SchemaDocument{
-		Fields: fields,
-		Did:    schemaDid,
-		Cid:    cid,
+		Fields:    fields,
+		SchemaDid: schemaDid,
+		Cid:       cid,
 	}
 }
 

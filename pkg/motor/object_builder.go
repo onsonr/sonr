@@ -24,7 +24,7 @@ func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, e
 }
 
 func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error) {
-	obj, err := mtr.QueryObject(req.GetCid())
+	obj, err := mtr.queryDocument(req.GetCid())
 	if err != nil {
 		return nil, err
 	}
