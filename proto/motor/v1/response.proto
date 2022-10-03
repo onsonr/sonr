@@ -19,7 +19,7 @@ option java_package = "io.sonr.types.motor";
 
 message InitializeResponse {
   bool success = 1;
-  repeated sonrio.sonr.schema.Schema schemas = 2;
+  repeated sonrio.sonr.schema.SchemaDefinition definitions = 2;
 }
 
 message CreateAccountResponse {
@@ -41,7 +41,7 @@ message LoginResponse {
 message CreateSchemaResponse {
   int32 status = 1;
   sonrio.sonr.schema.WhatIs what_is = 2;
-  sonrio.sonr.schema.Schema schema = 3;
+  sonrio.sonr.schema.SchemaDefinition schema_definition = 3;
 }
 
 message QueryResponse {
@@ -56,7 +56,7 @@ message QueryResultItem {
   common.v1.EntityKind kind = 2;
   sonrio.sonr.registry.WhoIs who_is = 3; //optional
   sonrio.sonr.schema.WhatIs what_is = 4; //optional
-  sonrio.sonr.schema.Schema schema = 5; //optional
+  sonrio.sonr.schema.SchemaDefinition schema_definition = 5; //optional
   sonrio.sonr.bucket.WhereIs where_is = 6; //optional
   repeated sonrio.sonr.bucket.WhereIs where_is_list = 7; //optional
 }
@@ -69,13 +69,13 @@ message QueryWhoIsResponse {
 message QueryWhatIsResponse {
   int32 code = 1;
   sonrio.sonr.schema.WhatIs what_is = 2;
-  sonrio.sonr.schema.Schema schema = 3;
+  sonrio.sonr.schema.SchemaDefinition schema = 3;
 }
 
 message QueryWhatIsByCreatorResponse {
   int32 code = 1;
   repeated sonrio.sonr.schema.WhatIs what_is = 2;
-  map<string, sonrio.sonr.schema.Schema> schemas = 3;
+  map<string, sonrio.sonr.schema.SchemaDefinition> schemas = 3;
   cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
 
@@ -99,6 +99,7 @@ message UploadObjectResponse {
 
 message CreateBucketResponse {
   string did = 1;
+  sonrio.sonr.bucket.WhereIs where_is = 2;
 }
 
 message UpdateBucketResponse {

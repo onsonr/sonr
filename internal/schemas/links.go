@@ -14,23 +14,23 @@ import (
 func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
 	var links []string = make([]string, 0)
 	for _, f := range as.fields {
-		if f.GetKind() == st.Kind_LINK {
-			if f.FieldKind.LinkDid == "" {
+		if f.LinkKind == st.LinkKind_SCHEMA {
+			if f.Link == "" {
 				return errSchemaFieldsInvalid
 			}
-			links = append(links, f.FieldKind.LinkDid)
+			links = append(links, f.Link)
 		}
+		kind := f.Item
 
-		kind := f.FieldKind
 		for kind != nil {
-			if kind.Kind == st.Kind_LINK {
-				if kind.LinkDid == "" {
+			if kind.Field == st.SchemaKind_LINK {
+				if kind.Link == "" {
 					return errSchemaFieldsInvalid
 				}
-				links = append(links, kind.LinkDid)
+				links = append(links, kind.Link)
 			}
 
-			kind = kind.ListKind
+			kind = kind.Item
 		}
 	}
 
@@ -43,21 +43,21 @@ func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
 			return err
 		}
 
-		def := &st.Schema{}
+		var def st.SchemaDefinition
 		err = def.Unmarshal(buf)
 
 		if err != nil {
 			return err
 		}
 
-		as.subSchemas[key] = def
+		as.subSchemas[key] = &def
 
 		for _, sf := range def.Fields {
-			if sf.FieldKind.Kind == st.Kind_LINK {
-				if sf.FieldKind.LinkDid == "" {
+			if sf.LinkKind == st.LinkKind_SCHEMA {
+				if sf.Link == "" {
 					return errSchemaFieldsInvalid
 				}
-				links = append(links, sf.FieldKind.LinkDid)
+				links = append(links, sf.Link)
 			}
 		}
 	}

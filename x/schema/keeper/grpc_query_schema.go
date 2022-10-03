@@ -27,7 +27,17 @@ func (k Keeper) Schema(goCtx context.Context, req *st.QuerySchemaRequest) (*st.Q
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "Schema was not found for id: %s", req.Did)
 	}
 
+	var schemaJson *st.SchemaDefinition = &st.SchemaDefinition{}
+
+	fields := make([]*st.SchemaKindDefinition, len(schemaJson.Fields))
+	for _, v := range schemaJson.Fields {
+		fields = append(fields, &st.SchemaKindDefinition{
+			Name:  v.Name,
+			Field: v.Field,
+		})
+	}
+
 	return &st.QuerySchemaResponse{
-		Schema: what_is.Schema,
+		Definition: what_is.Schema,
 	}, nil
 }

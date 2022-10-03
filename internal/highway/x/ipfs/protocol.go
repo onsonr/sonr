@@ -104,7 +104,7 @@ func (i *IPFSProtocol) PutData(data []byte) (*cid.Cid, error) {
 }
 
 // PutObjectSchema puts an object schema to IPFS and returns the CID.
-func (i *IPFSProtocol) PutObjectSchema(doc *st.Schema) (*cid.Cid, error) {
+func (i *IPFSProtocol) PutObjectSchema(doc *st.SchemaDefinition) (*cid.Cid, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder()                               // Create a builder.
@@ -116,18 +116,18 @@ func (i *IPFSProtocol) PutObjectSchema(doc *st.Schema) (*cid.Cid, error) {
 	// Add each field to the map
 	for _, t := range doc.GetFields() {
 		ma.AssembleKey().AssignString(t.Name)
-		switch t.FieldKind.Kind {
-		case st.Kind_STRING:
+		switch t.Field {
+		case st.SchemaKind_STRING:
 			ma.AssembleValue().AssignString("")
-		case st.Kind_INT:
+		case st.SchemaKind_INT:
 			ma.AssembleValue().AssignInt(0)
-		case st.Kind_FLOAT:
+		case st.SchemaKind_FLOAT:
 			ma.AssembleValue().AssignFloat(0.0)
-		case st.Kind_BOOL:
+		case st.SchemaKind_BOOL:
 			ma.AssembleValue().AssignBool(false)
-		case st.Kind_BYTES:
+		case st.SchemaKind_BYTES:
 			ma.AssembleValue().AssignBytes([]byte{})
-		case st.Kind_LINK:
+		case st.SchemaKind_LINK:
 			ma.AssembleValue().AssignLink(nil)
 		default:
 			ma.AssembleValue().AssignNull()

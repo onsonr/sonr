@@ -130,6 +130,24 @@ func Connect() error {
 	return instance.Connect()
 }
 
+func CreateBucket(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.CreateBucketRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, _, err := instance.CreateBucket(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Marshal()
+}
+
 func CreateSchema(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWalletNotInitialized

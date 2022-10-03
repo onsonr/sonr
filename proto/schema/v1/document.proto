@@ -17,7 +17,7 @@ message SchemaDocument {
   string creator = 3;
 
   // The definition of the document used to build the values
-  Schema definition = 4; // deprecated, will be removed soon
+  SchemaDefinition definition = 4;
 
   // the properties of this schemadocument
   repeated SchemaDocumentValue fields = 5;
@@ -45,7 +45,8 @@ message BytesValue {
 }
 
 message LinkValue {
-    bytes value = 1;
+    LinkKind link = 1;
+    string value = 2;
 }
 
 message ArrayValue {
@@ -56,7 +57,7 @@ message ArrayValue {
 message SchemaDocumentValue {
     string name = 1;
     // Type of a single schema property
-    Kind kind = 2;
+    SchemaKind field = 2;
 
     // The value of the field
     BoolValue bool_value = 3; // optional
