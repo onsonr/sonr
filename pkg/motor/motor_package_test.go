@@ -2,8 +2,11 @@ package motor
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
+	"github.com/sonr-io/sonr/internal/projectpath"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -49,6 +52,25 @@ func (suite *MotorTestSuite) SetupSuite() {
 
 	fmt.Printf("Setup test address: %s\n", suite.motor.Address)
 	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.Address)
+}
+
+func (suite *MotorTestSuite) TearDownSuite() {
+	testKeysPath := filepath.Join(projectpath.Root, "pkg/motor/test_keys/psksnr*")
+	
+	// delete created accounts
+	files, err := filepath.Glob(testKeysPath)
+	if err != nil {
+		suite.T().Error("Failed to clean up generated test keys")
+	}
+
+	for _, file := range files {
+		err := os.Remove(file)
+		if err != nil {
+			suite.T().Errorf("Failed to clean up %s", file)
+		}
+	}
+
+	fmt.Println("Teardown of test suite complete.")
 }
 
 func Test_MotorTestSuite(t *testing.T) {
