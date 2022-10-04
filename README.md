@@ -99,6 +99,12 @@ cd pkg/motor
 go test -run CreateAccount
 ```
 
+Run a test suite
+```bash
+cd pkg/motor
+go test -run MotorTestSuite
+```
+
 Run <b>ALL</b> motor tests
 ```bash
 cd pkg/motor
