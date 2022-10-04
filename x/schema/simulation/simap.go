@@ -59,6 +59,13 @@ func CreateMockSchema(simAcc simtypes.Account) (types.SchemaDefinition, error) {
 				Name:  "DOB",
 				Field: types.SchemaKind_STRING,
 			},
+			{
+				Name:  "categories",
+				Field: types.SchemaKind_LIST,
+				Item: &types.SchemaItemKindDefinition{
+					Field: types.SchemaKind_STRING,
+				},
+			},
 		},
 	}
 

@@ -34,9 +34,11 @@ type MotorNode interface {
 	// Registry
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
 	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
+	CreateAccountWithKeys(mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error)
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	Login(mt.LoginRequest) (mt.LoginResponse, error)
+	LoginWithKeys(mt.LoginWithKeysRequest) (mt.LoginResponse, error)
 	BuyAlias(rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error)
 	SellAlias(rt.MsgSellAlias) (rt.MsgSellAliasResponse, error)
 	TransferAlias(rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error)
@@ -47,15 +49,14 @@ type MotorNode interface {
 
 	// Buckets
 
-	/*
-		Creates a new bucket with the defined properties in the request.
-		Returns and instance of `bucket`. before returning both content and buckets are resolved.
-	*/
+	// Creates a new bucket with the defined properties in the request. Returns and instance of `bucket`. before returning both content and buckets are resolved.
 	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
 
 	GetBucket(did string) (bucket.Bucket, error)
 
 	GetBuckets(ctx context.Context) ([]bucket.Bucket, error)
+
+	GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error)
 	/*
 		Updates a pre existing Bucket's label. before calling update the bucket must already be resolved using `GetBucket`
 	*/
@@ -82,4 +83,6 @@ type MotorNode interface {
 	QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error)
 	QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error)
 	QueryObject(cid string) (map[string]interface{}, error)
+
+	UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error)
 }

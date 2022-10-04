@@ -96,8 +96,10 @@ func deriveKey(password string) ([]byte, error) {
 // NewAesKey generates a new 32-bit key.
 func NewAesKey() ([]byte, error) {
 	key := make([]byte, 32)
-	if _, err := rand.Read(key); err != nil {
+	if n, err := rand.Read(key); err != nil {
 		return nil, err
+	} else if n != 32 {
+		return nil, errors.New("could not create key at 32 bytes")
 	}
 
 	return key, nil

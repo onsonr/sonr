@@ -8,7 +8,10 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgCreateSchema = "create_schema"
+const (
+	TypeMsgCreateSchema = "create_schema"
+	InvalidFieldSymbol  = "@"
+)
 
 var _ sdk.Msg = &MsgCreateSchema{}
 
@@ -54,6 +57,11 @@ func (msg *MsgCreateSchema) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Fields cannot be empty")
 	}
 
+	for _, field := range msg.Fields {
+		if strings.Contains(field.Name, InvalidFieldSymbol) {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, fmt.Sprintf("Error while processing schema fields key: %s cannot contain symbol '@'", field.Name))
+		}
+	}
 	return nil
 }
 

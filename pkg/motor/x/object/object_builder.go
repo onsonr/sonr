@@ -7,6 +7,10 @@ import (
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
+var (
+	DocumentSpecialFields = []string{"@did"}
+)
+
 type ObjectBuilder struct {
 	schema       Schema
 	objectClient ObjectClient
@@ -33,14 +37,17 @@ func (ob *ObjectBuilder) SetLabel(label string) {
 // Set sets the value of the given field, ensuring it matches in type
 func (ob *ObjectBuilder) Set(fieldName string, value interface{}) error {
 	var field SchemaField
-	if f, found := ob.schema.GetField(fieldName); !found {
-		return fmt.Errorf("no field '%s' in schema '%s'", field, ob.schema.GetLabel())
-	} else {
-		field = f
-	}
+	// check for special metadata fields, if found skip validation
+	if !arrayContains(DocumentSpecialFields, fieldName) {
+		if f, found := ob.schema.GetField(fieldName); !found {
+			return fmt.Errorf("no field '%s' in schema '%s'", field, ob.schema.GetLabel())
+		} else {
+			field = f
+		}
 
-	if !field.TryValue(value) {
-		return fmt.Errorf("value '%s' not of kind '%s'", value, field.GetKind())
+		if !field.TryValue(value) {
+			return fmt.Errorf("value '%s' not of kind '%s'", value, field.GetKind())
+		}
 	}
 
 	ob.values[fieldName] = value
