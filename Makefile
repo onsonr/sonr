@@ -12,7 +12,7 @@ all: Makefile
 ## > The following Makefile is used for various actions for the Sonr project.
 ##
 ## bind        :   Binds Android, iOS and Web for Plugin Path
-bind: bind.ios bind.android bind.web
+bind: bind.ios bind.mac bind.android bind.web
 
 ## └─ android       - Android AAR
 bind.android:
@@ -21,6 +21,10 @@ bind.android:
 ## └─ ios           - iOS Framework
 bind.ios:
 	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -i
+
+## └─ mac           - Mac Framework
+bind.mac:
+	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -m
 
 ## └─ web           - WASM Framework
 bind.web:
