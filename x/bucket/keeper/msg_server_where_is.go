@@ -41,7 +41,7 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 		Timestamp:  time.Now().Unix(),
 	}
 	fmt.Printf("label: %s, vi: %d, role: %d \n", whereIs.Label, whereIs.Visibility, whereIs.Role)
-	k.SetWhereIs(
+	k.AppendWhereIs(
 		ctx,
 		whereIs,
 	)

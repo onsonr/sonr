@@ -30399,16 +30399,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/where_is/{creator}':
@@ -30601,16 +30591,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -31641,110 +31621,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      title: DID is the DID of the object
-                    schema:
-                      title: Object_doc is the object document
-                      type: object
-                      properties:
-                        did:
-                          type: string
-                          title: >-
-                            the DID for this schema should not be populated by
-                            request
-                        creator:
-                          type: string
-                        label:
-                          type: string
-                          title: an alternative reference point
-                        fields:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                              field:
-                                title: Type of a single schema property
-                                type: string
-                                enum:
-                                  - LIST
-                                  - BOOL
-                                  - INT
-                                  - FLOAT
-                                  - STRING
-                                  - BYTES
-                                  - LINK
-                                  - ANY
-                                default: LIST
-                              link_kind:
-                                title: >-
-                                  Optional field for a link context if
-                                  `SchemaKind` is of type `Link`
-                                type: string
-                                enum:
-                                  - UNKNOWN
-                                  - OBJECT
-                                  - SCHEMA
-                                  - BUCKET
-                                default: UNKNOWN
-                              link:
-                                type: string
-                          title: the properties of this schema
-                    creator:
-                      type: string
-                      title: Creator is the DID of the creator
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: IsActive is the status of the DID Document
-                    metadata:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      title: >-
-                        Metadata is a map of key-value pairs that can be used to
-                        store additional information about the WhatIs (Schema)
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
+            $ref: '#/definitions/sonrio.sonr.schema.QueryAllWhatIsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -31810,6 +31687,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -31820,54 +31707,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              definition:
-                title: Definition of schema
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: the DID for this schema should not be populated by request
-                  creator:
-                    type: string
-                  label:
-                    type: string
-                    title: an alternative reference point
-                  fields:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        field:
-                          title: Type of a single schema property
-                          type: string
-                          enum:
-                            - LIST
-                            - BOOL
-                            - INT
-                            - FLOAT
-                            - STRING
-                            - BYTES
-                            - LINK
-                            - ANY
-                          default: LIST
-                        link_kind:
-                          title: >-
-                            Optional field for a link context if `SchemaKind` is
-                            of type `Link`
-                          type: string
-                          enum:
-                            - UNKNOWN
-                            - OBJECT
-                            - SCHEMA
-                            - BUCKET
-                          default: UNKNOWN
-                        link:
-                          type: string
-                    title: the properties of this schema
+            $ref: '#/definitions/sonrio.sonr.schema.QuerySchemaResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -31905,82 +31745,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: DID is the DID of the object
-                  schema:
-                    title: Object_doc is the object document
-                    type: object
-                    properties:
-                      did:
-                        type: string
-                        title: >-
-                          the DID for this schema should not be populated by
-                          request
-                      creator:
-                        type: string
-                      label:
-                        type: string
-                        title: an alternative reference point
-                      fields:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            field:
-                              title: Type of a single schema property
-                              type: string
-                              enum:
-                                - LIST
-                                - BOOL
-                                - INT
-                                - FLOAT
-                                - STRING
-                                - BYTES
-                                - LINK
-                                - ANY
-                              default: LIST
-                            link_kind:
-                              title: >-
-                                Optional field for a link context if
-                                `SchemaKind` is of type `Link`
-                              type: string
-                              enum:
-                                - UNKNOWN
-                                - OBJECT
-                                - SCHEMA
-                                - BUCKET
-                              default: UNKNOWN
-                            link:
-                              type: string
-                        title: the properties of this schema
-                  creator:
-                    type: string
-                    title: Creator is the DID of the creator
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: >-
-                      Timestamp is the time of the last update of the DID
-                      Document
-                  is_active:
-                    type: boolean
-                    title: IsActive is the status of the DID Document
-                  metadata:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    title: >-
-                      Metadata is a map of key-value pairs that can be used to
-                      store additional information about the WhatIs (Schema)
-                title: Schema Repersentation
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -32018,84 +31783,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      title: DID is the DID of the object
-                    schema:
-                      title: Object_doc is the object document
-                      type: object
-                      properties:
-                        did:
-                          type: string
-                          title: >-
-                            the DID for this schema should not be populated by
-                            request
-                        creator:
-                          type: string
-                        label:
-                          type: string
-                          title: an alternative reference point
-                        fields:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                              field:
-                                title: Type of a single schema property
-                                type: string
-                                enum:
-                                  - LIST
-                                  - BOOL
-                                  - INT
-                                  - FLOAT
-                                  - STRING
-                                  - BYTES
-                                  - LINK
-                                  - ANY
-                                default: LIST
-                              link_kind:
-                                title: >-
-                                  Optional field for a link context if
-                                  `SchemaKind` is of type `Link`
-                                type: string
-                                enum:
-                                  - UNKNOWN
-                                  - OBJECT
-                                  - SCHEMA
-                                  - BUCKET
-                                default: UNKNOWN
-                              link:
-                                type: string
-                          title: the properties of this schema
-                    creator:
-                      type: string
-                      title: Creator is the DID of the creator
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: IsActive is the status of the DID Document
-                    metadata:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      title: >-
-                        Metadata is a map of key-value pairs that can be used to
-                        store additional information about the WhatIs (Schema)
-                title: Schema Repersentation
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsCreatorResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -32166,6 +31854,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/schema/query/what_is/{did}':
@@ -32176,81 +31874,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: DID is the DID of the object
-                  schema:
-                    title: Object_doc is the object document
-                    type: object
-                    properties:
-                      did:
-                        type: string
-                        title: >-
-                          the DID for this schema should not be populated by
-                          request
-                      creator:
-                        type: string
-                      label:
-                        type: string
-                        title: an alternative reference point
-                      fields:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            field:
-                              title: Type of a single schema property
-                              type: string
-                              enum:
-                                - LIST
-                                - BOOL
-                                - INT
-                                - FLOAT
-                                - STRING
-                                - BYTES
-                                - LINK
-                                - ANY
-                              default: LIST
-                            link_kind:
-                              title: >-
-                                Optional field for a link context if
-                                `SchemaKind` is of type `Link`
-                              type: string
-                              enum:
-                                - UNKNOWN
-                                - OBJECT
-                                - SCHEMA
-                                - BUCKET
-                              default: UNKNOWN
-                            link:
-                              type: string
-                        title: the properties of this schema
-                  creator:
-                    type: string
-                    title: Creator is the DID of the creator
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: >-
-                      Timestamp is the time of the last update of the DID
-                      Document
-                  is_active:
-                    type: boolean
-                    title: IsActive is the status of the DID Document
-                  metadata:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    title: >-
-                      Metadata is a map of key-value pairs that can be used to
-                      store additional information about the WhatIs (Schema)
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsByDidResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -32317,6 +31941,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -56581,10 +56215,11 @@ definitions:
     properties:
       key:
         type: string
-        title: key of the metadata
+        title: metadata key
       value:
         type: string
-        title: metadata
+        title: metadata value
+    title: Defines key value pairs for indexable metadata related to the schema
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -56595,74 +56230,7 @@ definitions:
       message:
         type: string
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema should not be populated by request
-              creator:
-                type: string
-              label:
-                type: string
-                title: an alternative reference point
-              fields:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    field:
-                      title: Type of a single schema property
-                      type: string
-                      enum:
-                        - LIST
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - ANY
-                      default: LIST
-                    link_kind:
-                      title: >-
-                        Optional field for a link context if `SchemaKind` is of
-                        type `Link`
-                      type: string
-                      enum:
-                        - UNKNOWN
-                        - OBJECT
-                        - SCHEMA
-                        - BUCKET
-                      default: UNKNOWN
-                    link:
-                      type: string
-                title: the properties of this schema
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
@@ -56681,74 +56249,7 @@ definitions:
       what_is:
         type: array
         items:
-          type: object
-          properties:
-            did:
-              type: string
-              title: DID is the DID of the object
-            schema:
-              title: Object_doc is the object document
-              type: object
-              properties:
-                did:
-                  type: string
-                  title: the DID for this schema should not be populated by request
-                creator:
-                  type: string
-                label:
-                  type: string
-                  title: an alternative reference point
-                fields:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      field:
-                        title: Type of a single schema property
-                        type: string
-                        enum:
-                          - LIST
-                          - BOOL
-                          - INT
-                          - FLOAT
-                          - STRING
-                          - BYTES
-                          - LINK
-                          - ANY
-                        default: LIST
-                      link_kind:
-                        title: >-
-                          Optional field for a link context if `SchemaKind` is
-                          of type `Link`
-                        type: string
-                        enum:
-                          - UNKNOWN
-                          - OBJECT
-                          - SCHEMA
-                          - BUCKET
-                        default: UNKNOWN
-                      link:
-                        type: string
-                  title: the properties of this schema
-            creator:
-              type: string
-              title: Creator is the DID of the creator
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: IsActive is the status of the DID Document
-            metadata:
-              type: object
-              additionalProperties:
-                type: string
-              title: >-
-                Metadata is a map of key-value pairs that can be used to store
-                additional information about the WhatIs (Schema)
+          $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
       pagination:
         type: object
         properties:
@@ -56785,316 +56286,89 @@ definitions:
     type: object
     properties:
       definition:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaDefinition'
         title: Definition of schema
-        type: object
-        properties:
-          did:
-            type: string
-            title: the DID for this schema should not be populated by request
-          creator:
-            type: string
-          label:
-            type: string
-            title: an alternative reference point
-          fields:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                field:
-                  title: Type of a single schema property
-                  type: string
-                  enum:
-                    - LIST
-                    - BOOL
-                    - INT
-                    - FLOAT
-                    - STRING
-                    - BYTES
-                    - LINK
-                    - ANY
-                  default: LIST
-                link_kind:
-                  title: >-
-                    Optional field for a link context if `SchemaKind` is of type
-                    `Link`
-                  type: string
-                  enum:
-                    - UNKNOWN
-                    - OBJECT
-                    - SCHEMA
-                    - BUCKET
-                  default: UNKNOWN
-                link:
-                  type: string
-            title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsByDidResponse:
     type: object
     properties:
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema should not be populated by request
-              creator:
-                type: string
-              label:
-                type: string
-                title: an alternative reference point
-              fields:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    field:
-                      title: Type of a single schema property
-                      type: string
-                      enum:
-                        - LIST
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - ANY
-                      default: LIST
-                    link_kind:
-                      title: >-
-                        Optional field for a link context if `SchemaKind` is of
-                        type `Link`
-                      type: string
-                      enum:
-                        - UNKNOWN
-                        - OBJECT
-                        - SCHEMA
-                        - BUCKET
-                      default: UNKNOWN
-                    link:
-                      type: string
-                title: the properties of this schema
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
   sonrio.sonr.schema.QueryWhatIsCreatorResponse:
     type: object
     properties:
       what_is:
         type: array
         items:
-          type: object
-          properties:
-            did:
-              type: string
-              title: DID is the DID of the object
-            schema:
-              title: Object_doc is the object document
-              type: object
-              properties:
-                did:
-                  type: string
-                  title: the DID for this schema should not be populated by request
-                creator:
-                  type: string
-                label:
-                  type: string
-                  title: an alternative reference point
-                fields:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      field:
-                        title: Type of a single schema property
-                        type: string
-                        enum:
-                          - LIST
-                          - BOOL
-                          - INT
-                          - FLOAT
-                          - STRING
-                          - BYTES
-                          - LINK
-                          - ANY
-                        default: LIST
-                      link_kind:
-                        title: >-
-                          Optional field for a link context if `SchemaKind` is
-                          of type `Link`
-                        type: string
-                        enum:
-                          - UNKNOWN
-                          - OBJECT
-                          - SCHEMA
-                          - BUCKET
-                        default: UNKNOWN
-                      link:
-                        type: string
-                  title: the properties of this schema
-            creator:
-              type: string
-              title: Creator is the DID of the creator
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: IsActive is the status of the DID Document
-            metadata:
-              type: object
-              additionalProperties:
-                type: string
-              title: >-
-                Metadata is a map of key-value pairs that can be used to store
-                additional information about the WhatIs (Schema)
+          $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema should not be populated by request
-              creator:
-                type: string
-              label:
-                type: string
-                title: an alternative reference point
-              fields:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    field:
-                      title: Type of a single schema property
-                      type: string
-                      enum:
-                        - LIST
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - ANY
-                      default: LIST
-                    link_kind:
-                      title: >-
-                        Optional field for a link context if `SchemaKind` is of
-                        type `Link`
-                      type: string
-                      enum:
-                        - UNKNOWN
-                        - OBJECT
-                        - SCHEMA
-                        - BUCKET
-                      default: UNKNOWN
-                    link:
-                      type: string
-                title: the properties of this schema
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
   sonrio.sonr.schema.SchemaDefinition:
     type: object
     properties:
       did:
         type: string
-        title: the DID for this schema should not be populated by request
+        title: The DID for this schema should not be populated by request
       creator:
         type: string
+        title: The Creator address for the schema (from the wallet)
       label:
         type: string
         title: an alternative reference point
       fields:
         type: array
         items:
-          type: object
-          properties:
-            name:
-              type: string
-            field:
-              title: Type of a single schema property
-              type: string
-              enum:
-                - LIST
-                - BOOL
-                - INT
-                - FLOAT
-                - STRING
-                - BYTES
-                - LINK
-                - ANY
-              default: LIST
-            link_kind:
-              title: >-
-                Optional field for a link context if `SchemaKind` is of type
-                `Link`
-              type: string
-              enum:
-                - UNKNOWN
-                - OBJECT
-                - SCHEMA
-                - BUCKET
-              default: UNKNOWN
-            link:
-              type: string
+          $ref: '#/definitions/sonrio.sonr.schema.SchemaKindDefinition'
         title: the properties of this schema
+    title: Defines a schema and additional metadata related to the definition
+  sonrio.sonr.schema.SchemaItemKindDefinition:
+    type: object
+    properties:
+      field:
+        title: >-
+          Type of the item contained within the collection, must be of type
+          SchemaKind
+        type: string
+        enum:
+          - LIST
+          - BOOL
+          - INT
+          - FLOAT
+          - STRING
+          - BYTES
+          - LINK
+          - ANY
+        default: LIST
+      item:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaItemKindDefinition'
+        description: >-
+          Type of an item if field is of type list. usage is for defining
+          multidimensional collections.
+      link_kind:
+        title: >-
+          Type of link for the given item for schemas, type should be SCHEMA
+          fields of type LINK
+        type: string
+        enum:
+          - UNKNOWN
+          - OBJECT
+          - SCHEMA
+          - BUCKET
+        default: UNKNOWN
+      link:
+        type: string
+        title: >-
+          String to denote URI for Link, should be defined if field is of type
+          'LINK'
+    title: >-
+      Defines the "kind" of an item within a collection for a SchemaKind that is
+      "LIST"
+
+      Definition is recurssive to allow nesting of definitions
   sonrio.sonr.schema.SchemaKind:
     type: string
     enum:
@@ -57112,6 +56386,7 @@ definitions:
     properties:
       name:
         type: string
+        title: Name of the property
       field:
         title: Type of a single schema property
         type: string
@@ -57136,6 +56411,17 @@ definitions:
         default: UNKNOWN
       link:
         type: string
+        title: >-
+          String to denote URI for Link, should be defined if field is of type
+          'LINK'
+      item:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaItemKindDefinition'
+        description: optional field if field is of Kind List to define item types.
+    title: >-
+      Defines a type for a given property within a Schema types conform to the
+      IPLD Kind defintion
+
+      https://ipld.io/docs/data-model/kinds/
   sonrio.sonr.schema.WhatIs:
     type: object
     properties:
@@ -57143,51 +56429,8 @@ definitions:
         type: string
         title: DID is the DID of the object
       schema:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaDefinition'
         title: Object_doc is the object document
-        type: object
-        properties:
-          did:
-            type: string
-            title: the DID for this schema should not be populated by request
-          creator:
-            type: string
-          label:
-            type: string
-            title: an alternative reference point
-          fields:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                field:
-                  title: Type of a single schema property
-                  type: string
-                  enum:
-                    - LIST
-                    - BOOL
-                    - INT
-                    - FLOAT
-                    - STRING
-                    - BYTES
-                    - LINK
-                    - ANY
-                  default: LIST
-                link_kind:
-                  title: >-
-                    Optional field for a link context if `SchemaKind` is of type
-                    `Link`
-                  type: string
-                  enum:
-                    - UNKNOWN
-                    - OBJECT
-                    - SCHEMA
-                    - BUCKET
-                  default: UNKNOWN
-                link:
-                  type: string
-            title: the properties of this schema
       creator:
         type: string
         title: Creator is the DID of the creator

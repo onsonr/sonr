@@ -16,10 +16,10 @@ func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*typ
 	}
 
 	// Check if Alias exists
-	_, isAliasOwned := k.FindWhoIsByAlias(ctx, msg.Name)
-	if isAliasOwned {
-		return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name already has an owner")
-	}
+	//_, isAliasOwned := k.FindWhoIsByAlias(ctx, msg.Name)
+	//if isAliasOwned {
+	//	return nil, sdkerrors.Wrap(types.ErrAliasUnavailable, "Name already has an owner")
+	//}
 
 	// Get whois from Owner
 	// TODO: Implement Multisig for root level owner #322
