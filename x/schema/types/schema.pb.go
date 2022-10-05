@@ -119,10 +119,15 @@ func (m *MetadataDefintion) GetValue() string {
 
 // Schema is the root level document of a schema, stored on chain
 type Schema struct {
-	Did      string               `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	Owner    string               `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
-	Label    string               `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
-	Fields   []*SchemaField       `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
+	// the DID of the schema
+	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// the address of the owner
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// the name of the schema
+	Label string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
+	// list of fields the schema contains
+	Fields []*SchemaField `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
+	// list of metadata
 	Metadata []*MetadataDefintion `protobuf:"bytes,5,rep,name=metadata,proto3" json:"metadata,omitempty"`
 }
 
@@ -196,7 +201,9 @@ func (m *Schema) GetMetadata() []*MetadataDefintion {
 
 // SchemaField represents an individual field in the schema
 type SchemaField struct {
-	Name      string           `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// the name/key of the field
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// the type/kind of the field
 	FieldKind *SchemaFieldKind `protobuf:"bytes,2,opt,name=field_kind,json=fieldKind,proto3" json:"field_kind,omitempty"`
 }
 
@@ -249,9 +256,12 @@ func (m *SchemaField) GetFieldKind() *SchemaFieldKind {
 
 // SchemaFieldKind is the type for a field
 type SchemaFieldKind struct {
-	Kind     Kind             `protobuf:"varint,1,opt,name=kind,proto3,enum=sonrio.sonr.schema.Kind" json:"kind,omitempty"`
+	// the explicit kind
+	Kind Kind `protobuf:"varint,1,opt,name=kind,proto3,enum=sonrio.sonr.schema.Kind" json:"kind,omitempty"`
+	// Optional; this is recursive, allowing an indefinite level of nesting
 	ListKind *SchemaFieldKind `protobuf:"bytes,2,opt,name=list_kind,json=listKind,proto3" json:"list_kind,omitempty"`
-	LinkDid  string           `protobuf:"bytes,3,opt,name=link_did,json=linkDid,proto3" json:"link_did,omitempty"`
+	// Optional; if the kind is "LINK", this will be the DID of the linked schema
+	LinkDid string `protobuf:"bytes,3,opt,name=link_did,json=linkDid,proto3" json:"link_did,omitempty"`
 }
 
 func (m *SchemaFieldKind) Reset()         { *m = SchemaFieldKind{} }
