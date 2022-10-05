@@ -18,5 +18,5 @@ mkdir daemon_home/config
 cd daemon_home
 # Installing in case its not installed
 go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@latest
-cosmovisor init $path
+cosmovisor init "$path"
 echo "Done"
