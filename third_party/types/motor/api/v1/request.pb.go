@@ -42,20 +42,23 @@ type InitializeRequest struct {
 	SupportDir string `protobuf:"bytes,3,opt,name=support_dir,json=supportDir,proto3" json:"support_dir,omitempty"`
 	// Device Temporary Storage Directory
 	TempDir string `protobuf:"bytes,4,opt,name=temp_dir,json=tempDir,proto3" json:"temp_dir,omitempty"`
+	// Logging level for the session, can be configured after setting
+	// (info|debug|warn|error|fatal)
+	LogLevel string `protobuf:"bytes,5,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
 	// Enable Libp2p Host
-	EnableHost bool `protobuf:"varint,5,opt,name=enable_host,json=enableHost,proto3" json:"enable_host,omitempty"`
+	EnableHost bool `protobuf:"varint,6,opt,name=enable_host,json=enableHost,proto3" json:"enable_host,omitempty"`
 	// Enable Discovery Service
-	EnableDiscovery bool `protobuf:"varint,6,opt,name=enable_discovery,json=enableDiscovery,proto3" json:"enable_discovery,omitempty"`
+	EnableDiscovery bool `protobuf:"varint,7,opt,name=enable_discovery,json=enableDiscovery,proto3" json:"enable_discovery,omitempty"`
 	// Enable Query Clients
-	EnableQuery bool `protobuf:"varint,7,opt,name=enable_query,json=enableQuery,proto3" json:"enable_query,omitempty"`
+	EnableQuery bool `protobuf:"varint,8,opt,name=enable_query,json=enableQuery,proto3" json:"enable_query,omitempty"`
 	// Discovery Latitude
-	DiscoveryLatitude float64 `protobuf:"fixed64,8,opt,name=discovery_latitude,json=discoveryLatitude,proto3" json:"discovery_latitude,omitempty"`
+	DiscoveryLatitude float64 `protobuf:"fixed64,9,opt,name=discovery_latitude,json=discoveryLatitude,proto3" json:"discovery_latitude,omitempty"`
 	// Discovery Longitude
-	DiscoveryLongitude float64 `protobuf:"fixed64,9,opt,name=discovery_longitude,json=discoveryLongitude,proto3" json:"discovery_longitude,omitempty"`
+	DiscoveryLongitude float64 `protobuf:"fixed64,10,opt,name=discovery_longitude,json=discoveryLongitude,proto3" json:"discovery_longitude,omitempty"`
 	// Public Key used for Device Authentication as DID Controller
-	AuthInfo *common.AuthInfo `protobuf:"bytes,10,opt,name=auth_info,json=authInfo,proto3" json:"auth_info,omitempty"`
+	AuthInfo *common.AuthInfo `protobuf:"bytes,11,opt,name=auth_info,json=authInfo,proto3" json:"auth_info,omitempty"`
 	// Application DID
-	AppDid string `protobuf:"bytes,11,opt,name=app_did,json=appDid,proto3" json:"app_did,omitempty"`
+	AppDid string `protobuf:"bytes,12,opt,name=app_did,json=appDid,proto3" json:"app_did,omitempty"`
 }
 
 func (m *InitializeRequest) Reset()         { *m = InitializeRequest{} }
@@ -115,6 +118,13 @@ func (m *InitializeRequest) GetSupportDir() string {
 func (m *InitializeRequest) GetTempDir() string {
 	if m != nil {
 		return m.TempDir
+	}
+	return ""
+}
+
+func (m *InitializeRequest) GetLogLevel() string {
+	if m != nil {
+		return m.LogLevel
 	}
 	return ""
 }
@@ -1416,7 +1426,7 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.AppDid)
 		i = encodeVarintRequest(dAtA, i, uint64(len(m.AppDid)))
 		i--
-		dAtA[i] = 0x5a
+		dAtA[i] = 0x62
 	}
 	if m.AuthInfo != nil {
 		{
@@ -1428,19 +1438,19 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintRequest(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x52
+		dAtA[i] = 0x5a
 	}
 	if m.DiscoveryLongitude != 0 {
 		i -= 8
 		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DiscoveryLongitude))))
 		i--
-		dAtA[i] = 0x49
+		dAtA[i] = 0x51
 	}
 	if m.DiscoveryLatitude != 0 {
 		i -= 8
 		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DiscoveryLatitude))))
 		i--
-		dAtA[i] = 0x41
+		dAtA[i] = 0x49
 	}
 	if m.EnableQuery {
 		i--
@@ -1450,7 +1460,7 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x40
 	}
 	if m.EnableDiscovery {
 		i--
@@ -1460,7 +1470,7 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x30
+		dAtA[i] = 0x38
 	}
 	if m.EnableHost {
 		i--
@@ -1470,7 +1480,14 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x28
+		dAtA[i] = 0x30
+	}
+	if len(m.LogLevel) > 0 {
+		i -= len(m.LogLevel)
+		copy(dAtA[i:], m.LogLevel)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.LogLevel)))
+		i--
+		dAtA[i] = 0x2a
 	}
 	if len(m.TempDir) > 0 {
 		i -= len(m.TempDir)
@@ -2395,6 +2412,10 @@ func (m *InitializeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
+	l = len(m.LogLevel)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
 	if m.EnableHost {
 		n += 2
 	}
@@ -2978,6 +2999,38 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 			m.TempDir = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LogLevel", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LogLevel = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EnableHost", wireType)
 			}
@@ -2997,7 +3050,7 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.EnableHost = bool(v != 0)
-		case 6:
+		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EnableDiscovery", wireType)
 			}
@@ -3017,7 +3070,7 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.EnableDiscovery = bool(v != 0)
-		case 7:
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EnableQuery", wireType)
 			}
@@ -3037,7 +3090,7 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.EnableQuery = bool(v != 0)
-		case 8:
+		case 9:
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DiscoveryLatitude", wireType)
 			}
@@ -3048,7 +3101,7 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
 			iNdEx += 8
 			m.DiscoveryLatitude = float64(math.Float64frombits(v))
-		case 9:
+		case 10:
 			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DiscoveryLongitude", wireType)
 			}
@@ -3059,7 +3112,7 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
 			iNdEx += 8
 			m.DiscoveryLongitude = float64(math.Float64frombits(v))
-		case 10:
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AuthInfo", wireType)
 			}
@@ -3095,7 +3148,7 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 11:
+		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AppDid", wireType)
 			}
