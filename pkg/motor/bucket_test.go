@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -35,7 +34,7 @@ func Test_CreateBucket(t *testing.T) {
 		Role:       types.BucketRole_USER,
 		Content:    make([]*types.BucketItem, 0),
 	}
-	b, err := m.CreateBucket(context.Background(), createReq)
+	_, b, err := m.CreateBucket(createReq)
 	assert.NoError(t, err)
 	assert.NotNil(t, b)
 }

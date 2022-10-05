@@ -82,6 +82,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	// Create Initial Shards
 	// mtr.callback.OnMotorEvent("Creating shards for MPC", false)
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
+
 	if err != nil {
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create shards: %s", err)
 	}
@@ -126,6 +127,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		pskShard,
 		pwShard,
 	)
+	fmt.Println("Response From Create Vault :", vaultService)
 	if err != nil {
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
