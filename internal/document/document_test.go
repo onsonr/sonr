@@ -1,11 +1,10 @@
-package object_test
+package document
 
 import (
 	"fmt"
 	"testing"
 
 	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/internal/object"
 	"github.com/sonr-io/sonr/internal/schemas"
 	"github.com/sonr-io/sonr/pkg/client"
 	st "github.com/sonr-io/sonr/x/schema/types"
@@ -77,20 +76,20 @@ func Test_Object(t *testing.T) {
 	store := &schemas.ReadStoreImpl{
 		Client: client.NewClient(client.ConnEndpointType_LOCAL),
 	}
-	config := object.Config{}
+	config := Config{}
 	def, jsonData := CreateMockSchemaDefinition()
 	schema := schemas.New(store, def)
 	config.WithStorage(shell.NewShell("localhost:5001"))
 	config.WithSchemaImpl(schema)
 
-	obj := object.NewWithConfig(&config)
+	obj := NewWithConfig(&config)
 
 	t.Run("Should upload object", func(t *testing.T) {
-		res, err := obj.CreateObject("testing", jsonData)
+		res, err := obj.CreateDocument("testing", schema.GetDID(), jsonData)
 		assert.NoError(t, err)
 		fmt.Print(res)
 
-		data, err := obj.GetObject(res.Reference.Cid)
+		data, err := obj.GetDocument(res.Cid)
 		assert.NoError(t, err)
 		assert.NotNil(t, data)
 	})

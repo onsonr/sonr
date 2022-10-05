@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/pkg/motor/x/document"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -16,7 +16,7 @@ type MotorCallback interface {
 }
 
 var (
-	objectBuilders map[string]*object.ObjectBuilder
+	objectBuilders map[string]*document.DocumentBuilder
 	instance       mtr.MotorNode
 )
 
@@ -35,7 +35,7 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	instance = mtr
 
 	// init objectBuilders
-	objectBuilders = make(map[string]*object.ObjectBuilder)
+	objectBuilders = make(map[string]*document.DocumentBuilder)
 
 	// Return Initialization Response
 	resp := mt.InitializeResponse{

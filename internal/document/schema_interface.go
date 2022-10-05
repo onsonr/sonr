@@ -1,7 +1,8 @@
-package schemas
+package document
 
 import (
 	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/sonr-io/sonr/internal/schemas"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
@@ -14,10 +15,20 @@ import (
 type Schema interface {
 
 	/*
+		Returns the DID of the schema
+	*/
+	GetDID() string
+
+	/*
+		Returns the label of the schema
+	*/
+	GetLabel() string
+
+	/*
 		Builds a linkage of IPLD nodes from the provided schema definition
 		returns the `Node` and assigns it to the given id internally.
 	*/
-	BuildNodesFromDefinition(object map[string]interface{}) error
+	BuildNodesFromDefinition(label, schemaDid string, object map[string]interface{}) error
 
 	/*
 		Returns an error if any of the keys within provided data dont match the given schema definition
@@ -46,9 +57,24 @@ type Schema interface {
 	DecodeDagCbor(buffer []byte) error
 
 	/*
-		Returns a list of SchemaKindDefinitions, composing the schema
+		Returns a specific SchemaFields for the schema
 	*/
-	GetSchema() ([]*st.SchemaField, error)
+	GetField(name string) (*st.SchemaField, bool)
+
+	/*
+		Returns a list of SchemaFields for the schema
+	*/
+	GetFields() []*st.SchemaField
+
+	/*
+		Returns the underlying schema type Schema
+	*/
+	GetSchema() (*st.Schema, error)
+
+	/*
+		Returns a Schema interface contained by the Schema
+	*/
+	GetSubSchema(did string) (*schemas.SchemaImpl, error)
 
 	/*
 		Returns top level node of a hydrated schema

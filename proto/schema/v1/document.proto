@@ -63,5 +63,5 @@ message SchemaDocumentValue {
     FloatValue float_value = 6; // optional
     BytesValue bytes_value = 7; // optional
     LinkValue link_value = 8; // optional
-    ListValue array_value = 9; // optional
+    ListValue list_value = 9; // optional
 }

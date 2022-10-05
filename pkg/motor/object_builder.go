@@ -5,22 +5,22 @@ import (
 	"fmt"
 
 	shell "github.com/ipfs/go-ipfs-api"
-	objectcli "github.com/sonr-io/sonr/internal/object"
+	id "github.com/sonr-io/sonr/internal/document"
 	"github.com/sonr-io/sonr/internal/schemas"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/pkg/motor/x/document"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, error) {
+func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*document.DocumentBuilder, error) {
 	whatIs, _, found := mtr.Resources.GetSchema(did)
 	if !found {
 		return nil, fmt.Errorf("could not find WhatIs with did '%s'", did)
 	}
 
 	schemaImpl := schemas.NewWithClient(mtr.GetClient(), whatIs)
-	objCli := objectcli.New(schemaImpl, shell.NewShell(mtr.Cosmos.GetIPFSApiAddress()))
-	return object.NewBuilder(schemaImpl, objCli), nil
+	objCli := id.New(schemaImpl, shell.NewShell(mtr.Cosmos.GetIPFSApiAddress()))
+	return document.NewBuilder(schemaImpl, objCli), nil
 }
 
 func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error) {
@@ -29,7 +29,23 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 		return nil, err
 	}
 
-	doc := st.NewDocumentFromMap(req.GetCid(), obj)
+	schemaDid, ok := obj[st.IPLD_SCHEMA_DID].(string)
+	if !ok {
+		return nil, fmt.Errorf("could not get schema did from DAG")
+	}
+
+	schemaRes, err := mtr.QueryWhatIsByDid(schemaDid)
+	if err != nil {
+		return nil, fmt.Errorf("fetch WhatIs: %s", err)
+	}
+
+	schema := schemas.NewWithClient(mtr.GetClient(), schemaRes.WhatIs)
+
+	doc, err := id.NewDocumentFromDag(obj, schema)
+	if err != nil {
+		return nil, fmt.Errorf("create document from DAG: %s", err)
+	}
+
 	return &mt.GetDocumentResponse{
 		Status:   200,
 		Document: doc,

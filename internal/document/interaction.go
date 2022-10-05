@@ -1,12 +1,13 @@
-package object
+package document
 
 import (
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (ao *objectImpl) CreateObject(
+func (ao *documentImpl) CreateDocument(
 	label string,
+	schemaDid string,
 	obj map[string]interface{}) (*mt.UploadDocumentResponse, error) {
 	err := ao.schema.VerifyObject(obj)
 
@@ -14,7 +15,7 @@ func (ao *objectImpl) CreateObject(
 		return nil, err
 	}
 
-	err = ao.schema.BuildNodesFromDefinition(obj)
+	err = ao.schema.BuildNodesFromDefinition(label, schemaDid, obj)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +30,14 @@ func (ao *objectImpl) CreateObject(
 		return nil, err
 	}
 
-	doc := st.NewDocumentFromMap(cid, obj)
+	doc, err := NewDocumentFromDag(map[string]interface{}{
+		st.IPLD_LABEL:      label,
+		st.IPLD_SCHEMA_DID: schemaDid,
+		st.IPLD_DOCUMENT:   obj,
+	}, ao.schema)
+	if err != nil {
+		return nil, err
+	}
 
 	return &mt.UploadDocumentResponse{
 		Status:   200,
@@ -38,15 +46,12 @@ func (ao *objectImpl) CreateObject(
 	}, nil
 }
 
-func (ao *objectImpl) GetObject(cid string) (map[string]interface{}, error) {
+func (ao *documentImpl) GetDocument(cid string) (*st.SchemaDocument, error) {
 	var dag map[string]interface{}
 	err := ao.shell.DagGet(cid, &dag)
 	if err != nil {
 		return nil, err
 	}
 
-	if err != nil {
-		return nil, err
-	}
-	return dag, err
+	return NewDocumentFromDag(dag, ao.schema)
 }
