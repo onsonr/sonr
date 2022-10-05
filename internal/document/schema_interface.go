@@ -34,7 +34,7 @@ type Schema interface {
 		Returns an error if any of the keys within provided data dont match the given schema definition
 		useful for verifying
 	*/
-	VerifyObject(doc map[string]interface{}) error
+	VerifyDocument(doc map[string]interface{}) error
 
 	/*
 		Encodes a given IPLD Node as JSON

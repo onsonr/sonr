@@ -14,7 +14,7 @@ func (as *SchemaImpl) BuildNodesFromDefinition(label, schemaDid string, object m
 		return errSchemaFieldsInvalid
 	}
 
-	err := as.VerifyObject(object)
+	err := as.VerifyDocument(object)
 
 	if err != nil {
 

@@ -12,7 +12,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*document.DocumentBuilder, error) {
+func (mtr *motorNodeImpl) NewDocumentBuilder(did string) (*document.DocumentBuilder, error) {
 	whatIs, _, found := mtr.Resources.GetSchema(did)
 	if !found {
 		return nil, fmt.Errorf("could not find WhatIs with did '%s'", did)
@@ -59,7 +59,7 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 		return nil, fmt.Errorf("error decoding document JSON")
 	}
 
-	builder, err := mtr.NewObjectBuilder(req.GetSchemaDid())
+	builder, err := mtr.NewDocumentBuilder(req.GetSchemaDid())
 	if err != nil {
 		return nil, err
 	}

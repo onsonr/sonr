@@ -14,7 +14,7 @@ var (
 /*
 	Top level verification of the given schema def
 */
-func (as *SchemaImpl) VerifyObject(doc map[string]interface{}) error {
+func (as *SchemaImpl) VerifyDocument(doc map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsNotFound
 	}

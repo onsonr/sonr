@@ -45,7 +45,7 @@ type MotorNode interface {
 
 	// Schema
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
-	NewObjectBuilder(schemaDid string) (*document.DocumentBuilder, error)
+	NewDocumentBuilder(schemaDid string) (*document.DocumentBuilder, error)
 
 	// Buckets
 

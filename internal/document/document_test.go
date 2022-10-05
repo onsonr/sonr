@@ -71,7 +71,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 
 	return wi, obj
 }
-func Test_Object(t *testing.T) {
+func Test_Document(t *testing.T) {
 	t.Skip("Skipping test in CI")
 	store := &schemas.ReadStoreImpl{
 		Client: client.NewClient(client.ConnEndpointType_LOCAL),
@@ -84,7 +84,7 @@ func Test_Object(t *testing.T) {
 
 	obj := NewWithConfig(&config)
 
-	t.Run("Should upload object", func(t *testing.T) {
+	t.Run("Should upload document", func(t *testing.T) {
 		res, err := obj.CreateDocument("testing", schema.GetDID(), jsonData)
 		assert.NoError(t, err)
 		fmt.Print(res)

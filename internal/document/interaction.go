@@ -9,7 +9,7 @@ func (ao *documentImpl) CreateDocument(
 	label string,
 	schemaDid string,
 	obj map[string]interface{}) (*mt.UploadDocumentResponse, error) {
-	err := ao.schema.VerifyObject(obj)
+	err := ao.schema.VerifyDocument(obj)
 
 	if err != nil {
 		return nil, err
