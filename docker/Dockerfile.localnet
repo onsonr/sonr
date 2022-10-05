@@ -1,4 +1,4 @@
-FROM ignitehq/cli:develop
+FROM ignitehq/cli:0.23.0
 
 USER root
 
@@ -20,4 +20,3 @@ EXPOSE 9090
 EXPOSE 9091
 
 ENTRYPOINT ["ignite","chain", "serve"]
-
