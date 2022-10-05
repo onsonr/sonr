@@ -826,7 +826,8 @@ func (m *UploadObjectResponse) GetMessage() string {
 }
 
 type CreateBucketResponse struct {
-	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	Did     string          `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	WhereIs *types2.WhereIs `protobuf:"bytes,2,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
 }
 
 func (m *CreateBucketResponse) Reset()         { *m = CreateBucketResponse{} }
@@ -867,6 +868,13 @@ func (m *CreateBucketResponse) GetDid() string {
 		return m.Did
 	}
 	return ""
+}
+
+func (m *CreateBucketResponse) GetWhereIs() *types2.WhereIs {
+	if m != nil {
+		return m.WhereIs
+	}
+	return nil
 }
 
 type UpdateBucketResponse struct {
@@ -2259,6 +2267,18 @@ func (m *CreateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.WhereIs != nil {
+		{
+			size, err := m.WhereIs.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintResponse(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Did) > 0 {
 		i -= len(m.Did)
 		copy(dAtA[i:], m.Did)
@@ -3003,6 +3023,10 @@ func (m *CreateBucketResponse) Size() (n int) {
 	_ = l
 	l = len(m.Did)
 	if l > 0 {
+		n += 1 + l + sovResponse(uint64(l))
+	}
+	if m.WhereIs != nil {
+		l = m.WhereIs.Size()
 		n += 1 + l + sovResponse(uint64(l))
 	}
 	return n
@@ -5257,6 +5281,42 @@ func (m *CreateBucketResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WhereIs", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowResponse
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthResponse
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthResponse
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.WhereIs == nil {
+				m.WhereIs = &types2.WhereIs{}
+			}
+			if err := m.WhereIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
