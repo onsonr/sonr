@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/sonr/x/bucket/types"
+	"github.com/sonr-io/sonr/x/registry/types"
 )
 
 func RegisterInvariants(ir sdk.InvariantRegistry, keeper Keeper) {

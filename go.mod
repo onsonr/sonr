@@ -43,10 +43,10 @@ require (
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16 // indirect
 	github.com/sonr-io/multi-party-sig v0.7.0
-	github.com/spf13/cast v1.4.1
+	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.4.0
-	github.com/spf13/viper v1.10.1
-	github.com/stretchr/testify v1.7.2
+	github.com/spf13/viper v1.11.0
+	github.com/stretchr/testify v1.8.0
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.0
 	github.com/tendermint/spn v0.2.1-0.20220609194312-7833ecf4454a
@@ -68,6 +68,7 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/sonr-io/keyring v1.2.2-0.20220701001003-9f5deb6c197a
+	github.com/CosmWasm/wasmd => github.com/CosmWasm/wasmd v0.28.0
 	github.com/elastic/gosigar => github.com/sonr-io/gosigar v0.14.3-0.20220630215707-0c344b060447
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2

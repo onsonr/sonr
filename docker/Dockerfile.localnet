@@ -1,4 +1,4 @@
-FROM ignitehq/cli:develop
+FROM ignitehq/cli:0.23.0
 
 USER root
 
