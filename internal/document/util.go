@@ -2,6 +2,7 @@ package document
 
 import (
 	"fmt"
+	"reflect"
 
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
@@ -25,7 +26,7 @@ func NewDocumentFromDag(m map[string]interface{}, schema Schema) (*st.SchemaDocu
 			return nil, fmt.Errorf("DAG does not contain key %s", field.GetName())
 		}
 
-		vals, err := NewDocumentValueFromInterface(field.GetName(), field.GetFieldKind(), v)
+		vals, err := newDocumentValueFromInterface(field.GetName(), schema, field.GetFieldKind(), v)
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +45,7 @@ func NewDocumentFromDag(m map[string]interface{}, schema Schema) (*st.SchemaDocu
 	}, nil
 }
 
-func NewDocumentValueFromInterface(key string, keyType *st.SchemaFieldKind, value interface{}) (*st.SchemaDocumentValue, error) {
+func newDocumentValueFromInterface(key string, schema Schema, keyType *st.SchemaFieldKind, value interface{}) (*st.SchemaDocumentValue, error) {
 	switch keyType.Kind {
 	case st.Kind_BOOL:
 		v, ok := value.(bool)
@@ -71,29 +72,56 @@ func NewDocumentValueFromInterface(key string, keyType *st.SchemaFieldKind, valu
 			},
 		}, nil
 	case st.Kind_INT:
-		v, ok := value.(int)
-		if !ok {
+		switch v := value.(type) {
+		case int:
+			return &st.SchemaDocumentValue{
+				Key:  key,
+				Kind: st.Kind_INT,
+				IntValue: &st.IntValue{
+					Value: int32(v),
+				},
+			}, nil
+		case int32:
+			return &st.SchemaDocumentValue{
+				Key:  key,
+				Kind: st.Kind_INT,
+				IntValue: &st.IntValue{
+					Value: int32(v),
+				},
+			}, nil
+		case int64:
+			return &st.SchemaDocumentValue{
+				Key:  key,
+				Kind: st.Kind_INT,
+				IntValue: &st.IntValue{
+					Value: int32(v),
+				},
+			}, nil
+		default:
 			return nil, fmt.Errorf("could not cast to int")
+
 		}
-		return &st.SchemaDocumentValue{
-			Key:  key,
-			Kind: st.Kind_INT,
-			IntValue: &st.IntValue{
-				Value: int32(v),
-			},
-		}, nil
 	case st.Kind_FLOAT:
-		v, ok := value.(float64)
-		if !ok {
+		switch v := value.(type) {
+		case float32:
+			return &st.SchemaDocumentValue{
+				Key:  key,
+				Kind: st.Kind_FLOAT,
+				FloatValue: &st.FloatValue{
+					Value: float64(v),
+				},
+			}, nil
+		case float64:
+			return &st.SchemaDocumentValue{
+				Key:  key,
+				Kind: st.Kind_FLOAT,
+				FloatValue: &st.FloatValue{
+					Value: v,
+				},
+			}, nil
+		default:
 			return nil, fmt.Errorf("could not cast to float")
 		}
-		return &st.SchemaDocumentValue{
-			Key:  key,
-			Kind: st.Kind_FLOAT,
-			FloatValue: &st.FloatValue{
-				Value: v,
-			},
-		}, nil
 	case st.Kind_STRING:
 		v, ok := value.(string)
 		if !ok {
@@ -107,15 +135,21 @@ func NewDocumentValueFromInterface(key string, keyType *st.SchemaFieldKind, valu
 			},
 		}, nil
 	case st.Kind_LIST:
-		v, ok := value.([]*st.SchemaDocumentValue)
-		if !ok {
-			return nil, fmt.Errorf("could not cast to List")
+		s := reflect.ValueOf(value)
+		val := make([]*st.SchemaDocumentValue, s.Len())
+
+		for i := 0; i < s.Len(); i++ {
+			item, err := newDocumentValueFromInterface("", schema, keyType.ListKind, s.Index(i).Interface())
+			if err != nil {
+				return nil, fmt.Errorf("deciphering list value: %s", err)
+			}
+			val[i] = item
 		}
 		return &st.SchemaDocumentValue{
 			Key:  key,
 			Kind: st.Kind_LIST,
 			ListValue: &st.ListValue{
-				Value: v,
+				Value: val,
 			},
 		}, nil
 	case st.Kind_LINK:
@@ -123,7 +157,18 @@ func NewDocumentValueFromInterface(key string, keyType *st.SchemaFieldKind, valu
 		if !ok {
 			return nil, fmt.Errorf("could not cast to string for list")
 		}
-		linkedValue, err := NewDocumentFromDag(v, nil) // TODO
+
+		subSchemaDid, ok := v[st.IPLD_SCHEMA_DID].(string)
+		if !ok {
+			return nil, fmt.Errorf("sub schema has no did")
+		}
+
+		subSchema, err := schema.GetSubSchema(subSchemaDid)
+		if err != nil {
+			return nil, fmt.Errorf("get subschema: %s", err)
+		}
+
+		linkedValue, err := NewDocumentFromDag(v, subSchema)
 		if err != nil {
 			return nil, err
 		}
