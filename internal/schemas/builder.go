@@ -1,20 +1,20 @@
 package schemas
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
-	"github.com/sonr-io/sonr/x/schema/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *schemaImpl) BuildNodesFromDefinition(object map[string]interface{}) error {
+func (as *SchemaImpl) BuildNodesFromDefinition(label, schemaDid string, object map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsInvalid
 	}
 
-	err := as.VerifyObject(object)
+	err := as.VerifyDocument(object)
 
 	if err != nil {
 
@@ -23,66 +23,90 @@ func (as *schemaImpl) BuildNodesFromDefinition(object map[string]interface{}) er
 
 	// Create IPLD Noded
 	np := basicnode.Prototype.Any
-	nb := np.NewBuilder() // Create a builder.
-	ma, err := nb.BeginMap(int64(len(as.fields)))
+	nb := np.NewBuilder()     // Create a builder.
+	ma, err := nb.BeginMap(3) // label, schema DID, and document
+	if err != nil {
+		return err
+	}
 
+	labelAs, err := ma.AssembleEntry(st.IPLD_LABEL)
+	if err != nil {
+		return err
+	}
+	if err := labelAs.AssignString(label); err != nil {
+		return err
+	}
+
+	schemaDidAs, err := ma.AssembleEntry(st.IPLD_SCHEMA_DID)
+	if err != nil {
+		return err
+	}
+	if err := schemaDidAs.AssignString(schemaDid); err != nil {
+		return err
+	}
+
+	docAs, err := ma.AssembleEntry(st.IPLD_DOCUMENT)
+	if err != nil {
+		return err
+	}
+	valueAs, err := docAs.BeginMap(int64(len(as.fields)))
 	if err != nil {
 		return err
 	}
 
 	for _, t := range as.fields {
 		k := t.Name
-		ma.AssembleKey().AssignString(k)
+		valueAs.AssembleKey().AssignString(k)
 		if t.GetKind() != st.Kind_LINK {
-			err = as.AssignValueToNode(t.FieldKind, ma, object[k])
+			err = as.AssignValueToNode(t.FieldKind, valueAs, object[k])
 			if err != nil {
 				return err
 			}
 		} else if t.GetKind() == st.Kind_LINK {
-			err := as.BuildSchemaFromLink(t.FieldKind.LinkDid, ma, object[t.Name].(map[string]interface{}))
+			err := as.BuildSchemaFromLink(t.FieldKind.LinkDid, valueAs, object[t.Name].(map[string]interface{}))
 			if err != nil {
 				return err
 			}
 		}
 	}
 
-	buildErr := ma.Finish()
-
+	buildErr := valueAs.Finish()
 	if buildErr != nil {
 		return buildErr
 	}
-	node := nb.Build()
+	buildErr = ma.Finish()
+	if buildErr != nil {
+		return buildErr
+	}
 
-	as.nodes = node
+	as.nodes = nb.Build()
 
 	return nil
 }
 
-func (as *schemaImpl) AssignValueToNode(kind *st.SchemaFieldKind, ma datamodel.MapAssembler, value interface{}) error {
+func (as *SchemaImpl) AssignValueToNode(kind *st.SchemaFieldKind, ma datamodel.MapAssembler, value interface{}) error {
 	switch kind.GetKind() {
 	case st.Kind_STRING:
 		val := value.(string)
 		ma.AssembleValue().AssignString(val)
 	case st.Kind_INT:
-		switch value.(type) {
+		switch v := value.(type) {
 		case int:
-			val := int64(value.(int))
+			val := int64(v)
 			ma.AssembleValue().AssignInt(val)
 		case int32:
-			val := int64(value.(int32))
+			val := int64(v)
 			ma.AssembleValue().AssignInt(val)
 		case int64:
-			val := int64(value.(int64))
+			val := int64(v)
 			ma.AssembleValue().AssignInt(val)
 		}
 	case st.Kind_FLOAT:
-		switch value.(type) {
+		switch v := value.(type) {
 		case float64:
-			val := value.(float64)
-			ma.AssembleValue().AssignFloat(val)
+			ma.AssembleValue().AssignFloat(v)
 		case float32:
-			val := value.(float32)
-			ma.AssembleValue().AssignFloat(float64(val))
+			ma.AssembleValue().AssignFloat(float64(v))
 		}
 	case st.Kind_BOOL:
 		val := value.(bool)
@@ -108,14 +132,17 @@ func (as *schemaImpl) AssignValueToNode(kind *st.SchemaFieldKind, ma datamodel.M
 	return nil
 }
 
-func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler, value map[string]interface{}) error {
-	if as.subSchemas[key] == nil {
+func (as *SchemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler, value map[string]interface{}) error {
+	if as.subWhatIs[key] == nil {
 		return errNodeNotFound
 	}
 
-	sd := as.subSchemas[key]
+	sd, ok := as.subWhatIs[key]
+	if !ok {
+		return fmt.Errorf("sub WhatIs '%s' not found", key)
+	}
 
-	err := as.VerifySubObject(sd.Fields, value)
+	err := as.VerifySubObject(sd.Schema.Fields, value)
 
 	if err != nil {
 		return err
@@ -130,7 +157,7 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 		return err
 	}
 
-	for _, f := range sd.Fields {
+	for _, f := range sd.Schema.Fields {
 		lma.AssembleKey().AssignString(f.Name)
 		if f.GetKind() != st.Kind_LINK {
 			err := as.AssignValueToNode(f.FieldKind, lma, value[f.Name])
@@ -153,14 +180,14 @@ func (as *schemaImpl) BuildSchemaFromLink(key string, ma datamodel.MapAssembler,
 	return nil
 }
 
-func (as *schemaImpl) BuildSchemaFromLinkForList(key string, ma datamodel.ListAssembler, value map[string]interface{}) error {
-	if as.subSchemas[key] == nil {
+func (as *SchemaImpl) BuildSchemaFromLinkForList(key string, ma datamodel.ListAssembler, value map[string]interface{}) error {
+	if as.subWhatIs[key] == nil {
 		return errNodeNotFound
 	}
 
-	sd := as.subSchemas[key]
+	sd := as.subWhatIs[key]
 
-	err := as.VerifySubObject(sd.Fields, value)
+	err := as.VerifySubObject(sd.Schema.Fields, value)
 
 	if err != nil {
 		return err
@@ -175,7 +202,7 @@ func (as *schemaImpl) BuildSchemaFromLinkForList(key string, ma datamodel.ListAs
 		return err
 	}
 
-	for _, f := range sd.Fields {
+	for _, f := range sd.Schema.Fields {
 		lma.AssembleKey().AssignString(f.Name)
 		if f.GetKind() != st.Kind_LINK {
 			err := as.AssignValueToNode(f.FieldKind, lma, value[f.Name])
@@ -198,7 +225,7 @@ func (as *schemaImpl) BuildSchemaFromLinkForList(key string, ma datamodel.ListAs
 	return nil
 }
 
-func (as *schemaImpl) BuildNodeFromList(lst []interface{}, kind *types.SchemaFieldKind) (datamodel.Node, error) {
+func (as *SchemaImpl) BuildNodeFromList(lst []interface{}, kind *st.SchemaFieldKind) (datamodel.Node, error) {
 	// Create IPLD Node
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.

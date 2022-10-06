@@ -1,5 +1,11 @@
 package types
 
+const (
+	IPLD_LABEL      = "label"
+	IPLD_SCHEMA_DID = "schema_did"
+	IPLD_DOCUMENT   = "document"
+)
+
 func (skd *SchemaField) GetKind() Kind {
 	return skd.FieldKind.Kind
 }

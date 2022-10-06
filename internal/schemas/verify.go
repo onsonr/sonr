@@ -14,7 +14,7 @@ var (
 /*
 	Top level verification of the given schema def
 */
-func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
+func (as *SchemaImpl) VerifyDocument(doc map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsNotFound
 	}
@@ -44,7 +44,7 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 /*
 	Sub level verification of the given schema def
 */
-func (as *schemaImpl) VerifySubObject(lst []*st.SchemaField, doc map[string]interface{}) error {
+func (as *SchemaImpl) VerifySubObject(lst []*st.SchemaField, doc map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsNotFound
 	}
@@ -66,7 +66,7 @@ func (as *schemaImpl) VerifySubObject(lst []*st.SchemaField, doc map[string]inte
 	return nil
 }
 
-func (as *schemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaFieldKind) error {
+func (as *SchemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaFieldKind) error {
 	if itemType == nil {
 		for _, val := range lst {
 			if reflect.TypeOf(val) != reflect.TypeOf(lst[0]) {

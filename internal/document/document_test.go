@@ -1,11 +1,10 @@
-package object_test
+package document
 
 import (
 	"fmt"
 	"testing"
 
 	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/internal/object"
 	"github.com/sonr-io/sonr/internal/schemas"
 	"github.com/sonr-io/sonr/pkg/client"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -14,7 +13,7 @@ import (
 )
 
 func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
-	obj := make(map[string]interface{})
+	doc := make(map[string]interface{})
 	wi := &st.WhatIs{
 		Did:     "did:snr:123456",
 		Creator: "snr123456",
@@ -35,7 +34,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_INT,
 				},
 			})
-			obj[name] = i
+			doc[name] = i
 		} else if i%3 == 0 {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -43,7 +42,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_BOOL,
 				},
 			})
-			obj[name] = true
+			doc[name] = true
 		} else if i%7 == 0 {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -51,7 +50,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_FLOAT,
 				},
 			})
-			obj[name] = 123.456
+			doc[name] = 123.456
 		} else if i%13 == 0 {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -59,7 +58,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_STRING,
 				},
 			})
-			obj[name] = fmt.Sprintf("%d", i)
+			doc[name] = fmt.Sprintf("%d", i)
 		} else {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -67,31 +66,31 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_BYTES,
 				},
 			})
-			obj[name] = []byte("Hello-world")
+			doc[name] = []byte("Hello-world")
 		}
 	}
 
-	return wi, obj
+	return wi, doc
 }
-func Test_Object(t *testing.T) {
+func Test_Document(t *testing.T) {
 	t.Skip("Skipping test in CI")
 	store := &schemas.ReadStoreImpl{
 		Client: client.NewClient(mt.ClientMode_ENDPOINT_BETA),
 	}
-	config := object.Config{}
+	config := Config{}
 	def, jsonData := CreateMockSchemaDefinition()
 	schema := schemas.New(store, def)
 	config.WithStorage(shell.NewShell("localhost:5001"))
 	config.WithSchemaImpl(schema)
 
-	obj := object.NewWithConfig(&config)
+	doc := NewWithConfig(&config)
 
-	t.Run("Should upload object", func(t *testing.T) {
-		res, err := obj.CreateObject("testing", jsonData)
+	t.Run("Should upload document", func(t *testing.T) {
+		res, err := doc.CreateDocument("testing", schema.GetDID(), jsonData)
 		assert.NoError(t, err)
 		fmt.Print(res)
 
-		data, err := obj.GetObject(res.Reference.Cid)
+		data, err := doc.GetDocument(res.Cid)
 		assert.NoError(t, err)
 		assert.NotNil(t, data)
 	})

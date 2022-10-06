@@ -21,7 +21,7 @@ import (
 */
 const SCHEMA_DID string = "did:snr:QmZLKGrTcUAKsUVUZ5e72rAWRg1Y1SzRJqWqcXaDqjFUqm"
 
-func Test_ObjectBuilder(t *testing.T) {
+func Test_DocumentBuilder(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
 		if pskKey == nil || len(pskKey) != 32 {
@@ -45,7 +45,7 @@ func Test_ObjectBuilder(t *testing.T) {
 		assert.NoError(t, err, "query whatis")
 
 		// upload object
-		builder, err := m.NewObjectBuilder(SCHEMA_DID)
+		builder, err := m.NewDocumentBuilder(SCHEMA_DID)
 		assert.NoError(t, err, "object builder created successfully")
 
 		builder.SetLabel("Player 1")
@@ -62,6 +62,6 @@ func Test_ObjectBuilder(t *testing.T) {
 		result, err := builder.Upload()
 		assert.NoError(t, err, "upload succeeds")
 
-		assert.Equal(t, "Player 1", result.Reference.Label)
+		assert.Equal(t, "Player 1", result.Document.Label)
 	})
 }

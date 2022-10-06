@@ -196,11 +196,11 @@ func Test_IPLD_Nodes(t *testing.T) {
 
 		schema := schemas.New(store, whatIs)
 
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.NoError(t, err)
 
 		n, err := schema.GetNode()
@@ -252,7 +252,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 
 		schema := schemas.New(store, whatIs)
 
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
 			"field-3": []int{
@@ -264,7 +264,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 				"there",
 			},
 		}
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.NoError(t, err)
 
 		n, err := schema.GetNode()
@@ -290,11 +290,11 @@ func Test_IPLD_Nodes(t *testing.T) {
 		})
 
 		schema := schemas.New(store, whatIs)
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.NoError(t, err)
 		n, err := schema.GetNode()
 		assert.NoError(t, err)
@@ -310,7 +310,10 @@ func Test_IPLD_Nodes(t *testing.T) {
 		n, err = schema.GetNode()
 		assert.NoError(t, err)
 
-		found, err := n.LookupByString("field-1")
+		document, err := n.LookupByString(st.IPLD_DOCUMENT)
+		assert.NoError(t, err)
+
+		found, err := document.LookupByString("field-1")
 		assert.NoError(t, err)
 		assert.NotNil(t, found)
 	})
@@ -332,21 +335,27 @@ func Test_IPLD_Nodes(t *testing.T) {
 		})
 
 		schema := schemas.New(store, whatIs)
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.NoError(t, err)
 
 		enc, err := schema.EncodeDagJson()
 		assert.NoError(t, err)
 		assert.NotNil(t, enc)
+
 		err = schema.DecodeDagJson(enc)
 		assert.NoError(t, err)
+
 		n, err := schema.GetNode()
 		assert.NoError(t, err)
-		found, err := n.LookupByString("field-1")
+
+		document, err := n.LookupByString(st.IPLD_DOCUMENT)
+		assert.NoError(t, err)
+
+		found, err := document.LookupByString("field-1")
 		assert.NoError(t, err)
 		assert.NotNil(t, found)
 	})
@@ -368,21 +377,27 @@ func Test_IPLD_Nodes(t *testing.T) {
 		})
 
 		schema := schemas.New(store, whatIs)
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": 1,
 			"field-2": 2.0,
 		}
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.NoError(t, err)
 
 		enc, err := schema.EncodeDagCbor()
 		assert.NoError(t, err)
 		assert.NotNil(t, enc)
+
 		err = schema.DecodeDagCbor(enc)
 		assert.NoError(t, err)
+
 		n, err := schema.GetNode()
 		assert.NoError(t, err)
-		found, err := n.LookupByString("field-1")
+
+		document, err := n.LookupByString(st.IPLD_DOCUMENT)
+		assert.NoError(t, err)
+
+		found, err := document.LookupByString("field-1")
 		assert.NoError(t, err)
 		assert.NotNil(t, found)
 	})
@@ -404,11 +419,11 @@ func Test_IPLD_Nodes(t *testing.T) {
 		})
 
 		schema := schemas.New(store, whatIs)
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": 1,
 			"field-4": 2.0,
 		}
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.Error(t, err)
 	})
 }
@@ -500,7 +515,7 @@ func Test_List_Types(t *testing.T) {
 
 		schema := schemas.New(store, whatIs)
 
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": []int32{
 				1, 2, 3, 4,
 			},
@@ -537,7 +552,7 @@ func Test_List_Types(t *testing.T) {
 			},
 		}
 
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.NoError(t, err)
 
 		n, err := schema.GetNode()
@@ -554,7 +569,7 @@ func Test_List_Types(t *testing.T) {
 		}
 
 		for _, wi := range whatIss {
-			b, err := wi.Schema.Marshal()
+			b, err := wi.Marshal()
 			if err != nil {
 				assert.Error(t, err)
 			}
@@ -571,7 +586,7 @@ func Test_List_Types(t *testing.T) {
 			},
 		})
 
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": []map[string]interface{}{
 				{
 					"id":   1,
@@ -599,7 +614,7 @@ func Test_List_Types(t *testing.T) {
 
 		schema := schemas.New(store, whatIs)
 
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.NoError(t, err)
 
 		node, err := schema.GetNode()
@@ -615,7 +630,7 @@ func Test_List_Types(t *testing.T) {
 		}
 
 		for _, wi := range whatIss {
-			b, err := wi.Schema.Marshal()
+			b, err := wi.Marshal()
 			if err != nil {
 				assert.Error(t, err)
 			}
@@ -632,7 +647,7 @@ func Test_List_Types(t *testing.T) {
 			},
 		})
 
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"field-1": []map[string]interface{}{
 				{
 					"id":   1,
@@ -660,7 +675,7 @@ func Test_List_Types(t *testing.T) {
 
 		schema := schemas.New(store, whatIs)
 
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIs.Did, doc)
 		assert.Error(t, err)
 		assert.NotNil(t, err)
 	})
@@ -673,7 +688,7 @@ func Test_Sub_Schemas(t *testing.T) {
 	}
 
 	for _, wi := range whatIss {
-		b, err := wi.Schema.Marshal()
+		b, err := wi.Marshal()
 		if err != nil {
 			assert.Error(t, err)
 		}
@@ -683,7 +698,7 @@ func Test_Sub_Schemas(t *testing.T) {
 
 		schema := schemas.New(store, whatIss[2])
 
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"id":   1,
 			"name": "asAASD",
 			"data": map[string]interface{}{
@@ -705,7 +720,7 @@ func Test_Sub_Schemas(t *testing.T) {
 			},
 		}
 
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIss[2].Did, doc)
 
 		assert.NoError(t, err)
 		bytes, err := schema.EncodeDagJson()
@@ -717,7 +732,7 @@ func Test_Sub_Schemas(t *testing.T) {
 	t.Run("multi level sub schema should error with invalid types", func(t *testing.T) {
 		schema := schemas.New(store, whatIss[2])
 
-		obj := map[string]interface{}{
+		doc := map[string]interface{}{
 			"id":   1,
 			"name": "asAASD",
 			"data": map[string]interface{}{
@@ -739,7 +754,7 @@ func Test_Sub_Schemas(t *testing.T) {
 			},
 		}
 
-		err := schema.BuildNodesFromDefinition(obj)
+		err := schema.BuildNodesFromDefinition("doc", whatIss[2].Did, doc)
 
 		assert.Error(t, err)
 	})

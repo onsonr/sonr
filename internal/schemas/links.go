@@ -11,7 +11,7 @@ import (
 	bypassing link loader implementation due to lack of compatibilitty with our arch. Once support for json schemas are added we will no longer need to parse in this structure.
 	but will loose the ability to reuse sub schemas in this fashion.
 */
-func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
+func (as *SchemaImpl) LoadSubSchemas(ctx context.Context) error {
 	var links []string = make([]string, 0)
 	for _, f := range as.fields {
 		if f.GetKind() == st.Kind_LINK {
@@ -43,16 +43,16 @@ func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
 			return err
 		}
 
-		def := &st.Schema{}
+		def := &st.WhatIs{}
 		err = def.Unmarshal(buf)
 
 		if err != nil {
 			return err
 		}
 
-		as.subSchemas[key] = def
+		as.subWhatIs[key] = def
 
-		for _, sf := range def.Fields {
+		for _, sf := range def.Schema.Fields {
 			if sf.FieldKind.Kind == st.Kind_LINK {
 				if sf.FieldKind.LinkDid == "" {
 					return errSchemaFieldsInvalid

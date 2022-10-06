@@ -19,15 +19,16 @@ func Test_CreateSchema(t *testing.T) {
 		return
 	}
 
-	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+	req := mt.LoginWithKeysRequest{
+		Did:       ADDR,
+		Password:  "password123",
+		AesPskKey: pskKey,
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
-	_, err := m.Login(req)
+	_, err := m.LoginWithKeys(req)
 	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO CREATE SCHEMA
@@ -58,15 +59,16 @@ func Test_QuerySchema(t *testing.T) {
 		return
 	}
 
-	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+	req := mt.LoginWithKeysRequest{
+		Did:       ADDR,
+		Password:  "password123",
+		AesPskKey: pskKey,
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
-	_, err := m.Login(req)
+	_, err := m.LoginWithKeys(req)
 	assert.NoError(t, err, "login succeeds")
 
 	// LOGIN DONE, TRY TO QUERY SCHEMA
