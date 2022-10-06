@@ -13,7 +13,7 @@ import (
 )
 
 func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
-	obj := make(map[string]interface{})
+	doc := make(map[string]interface{})
 	wi := &st.WhatIs{
 		Did:     "did:snr:123456",
 		Creator: "snr123456",
@@ -34,7 +34,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_INT,
 				},
 			})
-			obj[name] = i
+			doc[name] = i
 		} else if i%3 == 0 {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -42,7 +42,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_BOOL,
 				},
 			})
-			obj[name] = true
+			doc[name] = true
 		} else if i%7 == 0 {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -50,7 +50,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_FLOAT,
 				},
 			})
-			obj[name] = 123.456
+			doc[name] = 123.456
 		} else if i%13 == 0 {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -58,7 +58,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_STRING,
 				},
 			})
-			obj[name] = fmt.Sprintf("%d", i)
+			doc[name] = fmt.Sprintf("%d", i)
 		} else {
 			wi.Schema.Fields = append(wi.Schema.Fields, &st.SchemaField{
 				Name: name,
@@ -66,11 +66,11 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 					Kind: st.Kind_BYTES,
 				},
 			})
-			obj[name] = []byte("Hello-world")
+			doc[name] = []byte("Hello-world")
 		}
 	}
 
-	return wi, obj
+	return wi, doc
 }
 func Test_Document(t *testing.T) {
 	t.Skip("Skipping test in CI")
@@ -83,14 +83,14 @@ func Test_Document(t *testing.T) {
 	config.WithStorage(shell.NewShell("localhost:5001"))
 	config.WithSchemaImpl(schema)
 
-	obj := NewWithConfig(&config)
+	doc := NewWithConfig(&config)
 
 	t.Run("Should upload document", func(t *testing.T) {
-		res, err := obj.CreateDocument("testing", schema.GetDID(), jsonData)
+		res, err := doc.CreateDocument("testing", schema.GetDID(), jsonData)
 		assert.NoError(t, err)
 		fmt.Print(res)
 
-		data, err := obj.GetDocument(res.Cid)
+		data, err := doc.GetDocument(res.Cid)
 		assert.NoError(t, err)
 		assert.NotNil(t, data)
 	})
