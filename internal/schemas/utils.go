@@ -20,7 +20,7 @@ func (as *schemaImpl) GetNode() (datamodel.Node, error) {
 	return as.nodes, nil
 }
 
-func (as *schemaImpl) GetSchema() ([]*st.SchemaField, error) {
+func (as *schemaImpl) GetSchema() ([]*st.SchemaKindDefinition, error) {
 	if as.fields == nil {
 		return nil, errSchemaFieldsNotFound
 	}

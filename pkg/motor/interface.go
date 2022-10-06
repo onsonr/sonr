@@ -50,7 +50,7 @@ type MotorNode interface {
 	// Buckets
 
 	// Creates a new bucket with the defined properties in the request. Returns and instance of `bucket`. before returning both content and buckets are resolved.
-	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
+	CreateBucket(mt.CreateBucketRequest) (*mt.CreateBucketResponse, bucket.Bucket, error)
 
 	GetBucket(did string) (bucket.Bucket, error)
 

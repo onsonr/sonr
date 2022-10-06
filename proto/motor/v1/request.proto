@@ -16,6 +16,12 @@ option java_package = "io.sonr.types.motor";
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
+enum ClientMode {
+  ENDPOINT_BETA = 0;
+  ENDPOINT_DEV = 1;
+  ENDPOINT_LOCAL = 2;
+}
+
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
   // Identifier of this Device
@@ -30,26 +36,33 @@ message InitializeRequest {
   // Device Temporary Storage Directory
   string temp_dir = 4;
 
+  // Logging level for the session, can be configured after setting
+  // (info|debug|warn|error|fatal)
+  string log_level = 5;
+
   // Enable Libp2p Host
-  bool enable_host = 5;
+  bool enable_host = 6;
 
   // Enable Discovery Service
-  bool enable_discovery = 6;
+  bool enable_discovery = 7;
 
   // Enable Query Clients
-  bool enable_query = 7;
+  bool enable_query = 8;
 
   // Discovery Latitude
-  double discovery_latitude = 8; //optional - Default: 40.673010 (Sonr HQ)
+  double discovery_latitude = 9; //optional - Default: 40.673010 (Sonr HQ)
 
   // Discovery Longitude
-  double discovery_longitude = 9; //optional - Default: -73.994450 (Sonr HQ)
+  double discovery_longitude = 10; //optional - Default: -73.994450 (Sonr HQ)
 
   // Public Key used for Device Authentication as DID Controller
-  common.v1.AuthInfo auth_info = 10; // optional
+  common.v1.AuthInfo auth_info = 11; // optional
 
   // Application DID
-  string app_did = 11; // optional
+  string app_did = 12; // optional
+
+  // Client Mode
+  ClientMode client_mode = 13; // Default: ENDPOINT_BETA
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -189,7 +202,7 @@ message UploadDocumentRequest {
   string label = 2;
 
   // The definition of the document used to build the values
-  sonrio.sonr.schema.Schema schema = 3;
+  sonrio.sonr.schema.SchemaDefinition definition = 3;
 
   // the properties of this schemadocument
   repeated sonrio.sonr.schema.SchemaDocumentValue fields = 4;
