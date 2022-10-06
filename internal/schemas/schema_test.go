@@ -9,6 +9,7 @@ import (
 	"github.com/sonr-io/sonr/internal/schemas"
 	"github.com/sonr-io/sonr/pkg/client"
 
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -148,7 +149,7 @@ func CreateMocks(creator string, did string) (st.WhatIs, st.SchemaDefinition) {
 
 func Test_IPLD_Nodes(t *testing.T) {
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(mt.ClientMode_ENDPOINT_BETA),
 	}
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
@@ -351,7 +352,7 @@ func Test_IPLD_Nodes(t *testing.T) {
 
 func Test_List_Types(t *testing.T) {
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(mt.ClientMode_ENDPOINT_BETA),
 	}
 	t.Run("Should build Nodes and store in map", func(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
@@ -472,7 +473,7 @@ func Test_List_Types(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 		whatIss := CreateMockHeirachyThreeLevel("snr12345")
 		store := &schemas.ReadStoreImpl{
-			Client: client.NewClient(client.ConnEndpointType_LOCAL),
+			Client: client.NewClient(mt.ClientMode_ENDPOINT_BETA),
 		}
 
 		for _, wi := range whatIss {
@@ -532,7 +533,7 @@ func Test_List_Types(t *testing.T) {
 		whatIs, _ := CreateMocks("snr12345", "did:snr:1234")
 		whatIss := CreateMockHeirachyThreeLevel("snr12345")
 		store := &schemas.ReadStoreImpl{
-			Client: client.NewClient(client.ConnEndpointType_LOCAL),
+			Client: client.NewClient(mt.ClientMode_ENDPOINT_BETA),
 		}
 
 		for _, wi := range whatIss {
@@ -589,7 +590,7 @@ func Test_List_Types(t *testing.T) {
 func Test_Sub_Schemas(t *testing.T) {
 	whatIss := CreateMockHeirachyThreeLevel("snr12345")
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(mt.ClientMode_ENDPOINT_BETA),
 	}
 
 	for _, wi := range whatIss {

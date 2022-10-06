@@ -32,6 +32,34 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
+type ClientMode int32
+
+const (
+	ClientMode_ENDPOINT_BETA  ClientMode = 0
+	ClientMode_ENDPOINT_DEV   ClientMode = 1
+	ClientMode_ENDPOINT_LOCAL ClientMode = 2
+)
+
+var ClientMode_name = map[int32]string{
+	0: "ENDPOINT_BETA",
+	1: "ENDPOINT_DEV",
+	2: "ENDPOINT_LOCAL",
+}
+
+var ClientMode_value = map[string]int32{
+	"ENDPOINT_BETA":  0,
+	"ENDPOINT_DEV":   1,
+	"ENDPOINT_LOCAL": 2,
+}
+
+func (x ClientMode) String() string {
+	return proto.EnumName(ClientMode_name, int32(x))
+}
+
+func (ClientMode) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{0}
+}
+
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 type InitializeRequest struct {
 	// Identifier of this Device
@@ -59,6 +87,8 @@ type InitializeRequest struct {
 	AuthInfo *common.AuthInfo `protobuf:"bytes,11,opt,name=auth_info,json=authInfo,proto3" json:"auth_info,omitempty"`
 	// Application DID
 	AppDid string `protobuf:"bytes,12,opt,name=app_did,json=appDid,proto3" json:"app_did,omitempty"`
+	// Client Mode
+	ClientMode ClientMode `protobuf:"varint,13,opt,name=client_mode,json=clientMode,proto3,enum=sonrio.motor.api.v1.ClientMode" json:"client_mode,omitempty"`
 }
 
 func (m *InitializeRequest) Reset()         { *m = InitializeRequest{} }
@@ -176,6 +206,13 @@ func (m *InitializeRequest) GetAppDid() string {
 		return m.AppDid
 	}
 	return ""
+}
+
+func (m *InitializeRequest) GetClientMode() ClientMode {
+	if m != nil {
+		return m.ClientMode
+	}
+	return ClientMode_ENDPOINT_BETA
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -1349,6 +1386,7 @@ func (m *GetDocumentRequest) GetCid() string {
 }
 
 func init() {
+	proto.RegisterEnum("sonrio.motor.api.v1.ClientMode", ClientMode_name, ClientMode_value)
 	proto.RegisterType((*InitializeRequest)(nil), "sonrio.motor.api.v1.InitializeRequest")
 	proto.RegisterType((*CreateAccountRequest)(nil), "sonrio.motor.api.v1.CreateAccountRequest")
 	proto.RegisterMapType((map[string]string)(nil), "sonrio.motor.api.v1.CreateAccountRequest.MetadataEntry")
@@ -1483,6 +1521,11 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.ClientMode != 0 {
+		i = encodeVarintRequest(dAtA, i, uint64(m.ClientMode))
+		i--
+		dAtA[i] = 0x68
+	}
 	if len(m.AppDid) > 0 {
 		i -= len(m.AppDid)
 		copy(dAtA[i:], m.AppDid)
@@ -2541,6 +2584,9 @@ func (m *InitializeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
+	if m.ClientMode != 0 {
+		n += 1 + sovRequest(uint64(m.ClientMode))
+	}
 	return n
 }
 
@@ -3296,6 +3342,25 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.AppDid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 13:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientMode", wireType)
+			}
+			m.ClientMode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ClientMode |= ClientMode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRequest(dAtA[iNdEx:])
