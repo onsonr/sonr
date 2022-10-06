@@ -52,6 +52,14 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 
 	// Add the also known as to the whois
 	k.SetWhoIs(ctx, whoIs)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCreateWhoIs,
+			sdk.NewAttribute(types.AttributeDID, sonrDidDoc.Id),
+		),
+	)
+
 	return &types.MsgCreateWhoIsResponse{
 		WhoIs: &whoIs,
 	}, nil
@@ -105,6 +113,13 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 	val.IsActive = true
 	k.SetWhoIs(ctx, val)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeUpdateWhoIs,
+			sdk.NewAttribute(types.AttributeDID, val.DidDocument.GetId()),
+		),
+	)
+
 	return &types.MsgUpdateWhoIsResponse{
 		Success: true,
 		WhoIs:   &val,
@@ -142,5 +157,13 @@ func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactiva
 	val.Alias = make([]*types.Alias, 0)
 	val.DidDocument = sonrDidDoc
 	k.SetWhoIs(ctx, val)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeDeactivateWhoIs,
+			sdk.NewAttribute(types.AttributeDID, sonrDidDoc.Id),
+		),
+	)
+
 	return &types.MsgDeactivateWhoIsResponse{}, nil
 }
