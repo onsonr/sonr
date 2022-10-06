@@ -127,7 +127,7 @@ message QueryWhatIsRequest {
 
 // Query for all WhatIs instances for a single creator address (snr address)
 message QueryWhatIsByCreatorRequest {
-  // Address to query on
+  // Creator's address (snr address)
   string creator = 1;
 
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
