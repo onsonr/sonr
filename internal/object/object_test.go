@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/sonr/internal/object"
 	"github.com/sonr-io/sonr/internal/schemas"
 	"github.com/sonr-io/sonr/pkg/client"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -75,7 +76,7 @@ func CreateMockSchemaDefinition() (*st.WhatIs, map[string]interface{}) {
 func Test_Object(t *testing.T) {
 	t.Skip("Skipping test in CI")
 	store := &schemas.ReadStoreImpl{
-		Client: client.NewClient(client.ConnEndpointType_LOCAL),
+		Client: client.NewClient(mt.ClientMode_ENDPOINT_BETA),
 	}
 	config := object.Config{}
 	def, jsonData := CreateMockSchemaDefinition()
