@@ -48,7 +48,7 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 	}
 
 	// Create Client instance
-	mtr.Cosmos = client.NewClient(client.ConnEndpointType_BETA)
+	mtr.Cosmos = client.NewClient(mtr.clientMode)
 
 	// if the given ID is an alias, first fetch the address
 	var whoIs *types.WhoIs
