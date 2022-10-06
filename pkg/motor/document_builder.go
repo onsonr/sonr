@@ -24,12 +24,12 @@ func (mtr *motorNodeImpl) NewDocumentBuilder(did string) (*document.DocumentBuil
 }
 
 func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error) {
-	obj, err := mtr.queryDocument(req.GetCid())
+	dag, err := mtr.queryDocument(req.GetCid())
 	if err != nil {
 		return nil, err
 	}
 
-	schemaDid, ok := obj[st.IPLD_SCHEMA_DID].(string)
+	schemaDid, ok := dag[st.IPLD_SCHEMA_DID].(string)
 	if !ok {
 		return nil, fmt.Errorf("could not get schema did from DAG")
 	}
@@ -41,7 +41,7 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 
 	schema := schemas.NewWithClient(mtr.GetClient(), schemaRes.WhatIs)
 
-	doc, err := id.NewDocumentFromDag(obj, schema)
+	doc, err := id.NewDocumentFromDag(dag, schema)
 	if err != nil {
 		return nil, fmt.Errorf("create document from DAG: %s", err)
 	}
@@ -54,8 +54,8 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 }
 
 func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error) {
-	var obj map[string]interface{}
-	if err := json.Unmarshal(req.GetDocument(), &obj); err != nil {
+	var doc map[string]interface{}
+	if err := json.Unmarshal(req.GetDocument(), &doc); err != nil {
 		return nil, fmt.Errorf("error decoding document JSON")
 	}
 
@@ -65,7 +65,7 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 	}
 
 	builder.SetLabel(req.GetLabel())
-	for k, v := range obj {
+	for k, v := range doc {
 		builder.Set(k, v)
 	}
 

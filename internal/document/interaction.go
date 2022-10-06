@@ -8,14 +8,14 @@ import (
 func (ao *documentImpl) CreateDocument(
 	label string,
 	schemaDid string,
-	obj map[string]interface{}) (*mt.UploadDocumentResponse, error) {
-	err := ao.schema.VerifyDocument(obj)
+	docMap map[string]interface{}) (*mt.UploadDocumentResponse, error) {
+	err := ao.schema.VerifyDocument(docMap)
 
 	if err != nil {
 		return nil, err
 	}
 
-	err = ao.schema.BuildNodesFromDefinition(label, schemaDid, obj)
+	err = ao.schema.BuildNodesFromDefinition(label, schemaDid, docMap)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (ao *documentImpl) CreateDocument(
 	doc, err := NewDocumentFromDag(map[string]interface{}{
 		st.IPLD_LABEL:      label,
 		st.IPLD_SCHEMA_DID: schemaDid,
-		st.IPLD_DOCUMENT:   obj,
+		st.IPLD_DOCUMENT:   docMap,
 	}, ao.schema)
 	if err != nil {
 		return nil, err
