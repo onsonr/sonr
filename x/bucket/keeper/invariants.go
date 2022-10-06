@@ -6,8 +6,10 @@ import (
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
+const TOTAL_WHERE_IS = "total-where-is"
+
 func RegisterInvariants(ir sdk.InvariantRegistry, keeper Keeper) {
-	ir.RegisterRoute(types.ModuleName, "test",
+	ir.RegisterRoute(types.ModuleName, TOTAL_WHERE_IS,
 		TotalWhereIsCountInvariant(keeper))
 }
 
@@ -27,8 +29,8 @@ func TotalWhereIsCountInvariant(k Keeper) sdk.Invariant {
 		allWhereIs := k.GetAllWhereIs(ctx)
 		broken := len(allWhereIs) != int(whereIsCount)
 		return sdk.FormatInvariant(types.ModuleName,
-				"total-where-is",
-				fmt.Sprintf("Total WhereIs: %v, whereIsCount: %v", len(allWhereIs), whereIsCount)),
+				TOTAL_WHERE_IS,
+				fmt.Sprintf("Count of WhereIs: %v, whereIsCount in store: %v", len(allWhereIs), whereIsCount)),
 			broken
 	}
 }

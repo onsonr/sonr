@@ -7,9 +7,14 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
+const SINGLE_ALIAS_OWNER = "single-alias-owner"
+const NON_NEGATIVE_SELL_PRICE = "nonnegative-sell-price"
+
 func RegisterInvariants(ir sdk.InvariantRegistry, keeper Keeper) {
-	ir.RegisterRoute(types.ModuleName, "test",
+	ir.RegisterRoute(types.ModuleName, SINGLE_ALIAS_OWNER,
 		SingleAliasOwner(keeper))
+	ir.RegisterRoute(types.ModuleName, NON_NEGATIVE_SELL_PRICE,
+		NonNegativeAliasSellPrice(keeper))
 }
 
 func AllInvariants(k Keeper) sdk.Invariant {
@@ -17,7 +22,9 @@ func AllInvariants(k Keeper) sdk.Invariant {
 		if res, broken := SingleAliasOwner(k)(ctx); broken {
 			return res, broken
 		}
-
+		if res, broken := NonNegativeAliasSellPrice(k)(ctx); broken {
+			return res, broken
+		}
 		return "Every invariant condition is fulfilled correctly", true
 	}
 }
@@ -52,8 +59,38 @@ func SingleAliasOwner(k Keeper) sdk.Invariant {
 		}
 
 		return sdk.FormatInvariant(types.ModuleName,
-				"single-alias-owner",
+				SINGLE_ALIAS_OWNER,
 				fmt.Sprintf("Following Aliases have multiple owners: %s", msg)),
+			broken
+	}
+}
+
+func NonNegativeAliasSellPrice(k Keeper) sdk.Invariant {
+	return func(ctx sdk.Context) (string, bool) {
+		allWhoIs := k.GetAllWhoIs(ctx)
+
+		faultyRecords := make(map[string]int32)
+		for _, whoIs := range allWhoIs {
+			for _, alias := range whoIs.GetAlias() {
+				aliasAmount := alias.Amount
+				aliasName := alias.Name
+				if alias.IsForSale && aliasAmount < 0 {
+					faultyRecords[aliasName] = aliasAmount
+				}
+			}
+		}
+		broken := len(faultyRecords) != 0
+		b, err := json.MarshalIndent(faultyRecords, "", "  ")
+		msg := ""
+		if err != nil {
+			msg = fmt.Sprintf("%v", faultyRecords)
+		} else {
+			msg = fmt.Sprint(string(b))
+		}
+
+		return sdk.FormatInvariant(types.ModuleName,
+				NON_NEGATIVE_SELL_PRICE,
+				fmt.Sprintf("Following aliases are listed for sale but have inapporipriate prices: %s", msg)),
 			broken
 	}
 }
