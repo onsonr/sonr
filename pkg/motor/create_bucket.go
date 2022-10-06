@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -13,41 +12,41 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBucketRequest) (bucket.Bucket, error) {
+func (mtr *motorNodeImpl) CreateBucket(request mt.CreateBucketRequest) (*mt.CreateBucketResponse, bucket.Bucket, error) {
 
 	if request.Creator == "" {
-		return nil, errors.New("invalid Address")
+		return nil, nil, errors.New("invalid Address")
 	}
 
 	if request.Label == "" {
-		return nil, errors.New("label nust be defined")
+		return nil, nil, errors.New("label nust be defined")
 	}
 
 	createWhereIsRequest := bt.NewMsgCreateWhereIs(request.Creator, request.Label, request.Role, request.Visibility, request.Content)
 
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgCreateWhereIs", createWhereIsRequest)
 	if err != nil {
-		return nil, fmt.Errorf("sign tx with wallet: %s", err)
+		return nil, nil, fmt.Errorf("sign tx with wallet: %s", err)
 	}
 
 	resp, err := mtr.Cosmos.BroadcastTx(txRaw)
 	if err != nil {
-		return nil, fmt.Errorf("broadcast tx: %s", err)
+		return nil, nil, fmt.Errorf("broadcast tx: %s", err)
 	}
 
 	cbresp := &bt.MsgCreateWhereIsResponse{}
 	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cbresp); err != nil {
-		return nil, fmt.Errorf("decode MsgCreateWhereIsResponse: %s", err)
+		return nil, nil, fmt.Errorf("decode MsgCreateWhereIsResponse: %s", err)
 	}
 
 	if cbresp.Status != http.StatusAccepted {
-		return nil, fmt.Errorf("non success status from Create bucket Reques: %d", cbresp.Status)
+		return nil, nil, fmt.Errorf("non success status from Create bucket Reques: %d", cbresp.Status)
 	}
 
 	mtr.Resources.whereIsStore[cbresp.WhereIs.Did] = cbresp.WhereIs
 	addr, err := mtr.Wallet.Address()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	b := bucket.New(addr,
@@ -58,6 +57,8 @@ func (mtr *motorNodeImpl) CreateBucket(ctx context.Context, request mt.CreateBuc
 	mtr.Resources.bucketStore[cbresp.WhereIs.Did] = b
 
 	mtr.AddBucketServiceEndpoint(mtr.GetClient().GetRPCAddress(), cbresp.WhereIs.Did)
-
-	return b, nil
+	return &mt.CreateBucketResponse{
+		Did:     cbresp.WhereIs.Did,
+		WhereIs: cbresp.GetWhereIs(),
+	}, b, nil
 }
