@@ -76,7 +76,7 @@ func Test_LoginWithKeys(t *testing.T) {
 		}
 
 		req := mt.LoginWithKeysRequest{
-			Did:       ADDR,
+			AccountId: ADDR,
 			Password:  "password123",
 			AesPskKey: pskKey,
 		}
@@ -108,7 +108,7 @@ func Test_LoginWithKeys(t *testing.T) {
 		}
 
 		req := mt.LoginWithKeysRequest{
-			Did:       ADDR,
+			AccountId: ADDR,
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
 		}
@@ -128,7 +128,7 @@ func Test_LoginWithKeys(t *testing.T) {
 
 func Test_LoginWithKeyring(t *testing.T) {
 	req := mt.LoginRequest{
-		Did: ADDR,
+		AccountId: ADDR,
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
@@ -150,19 +150,45 @@ func Test_LoginAndMakeRequest(t *testing.T) {
 		return
 	}
 
-	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+	req := mt.LoginWithKeysRequest{
+		AccountId: ADDR,
+		Password:  "password123",
+		AesPskKey: pskKey,
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
 	}, common.DefaultCallback())
-	_, err := m.Login(req)
+	_, err := m.LoginWithKeys(req)
 	assert.NoError(t, err, "login succeeds")
 
 	// do something with the logged in account
-	m.DIDDocument.AddAlias("gotest.snr")
+	m.DIDDocument.AddAlias("goalias.snr")
 	_, err = updateWhoIs(m)
 	assert.NoError(t, err, "updates successfully")
+}
+
+func Test_LoginWithAlias(t *testing.T) {
+	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+	if pskKey == nil || len(pskKey) != 32 {
+		t.Errorf("could not load psk key")
+		return
+	}
+
+	req := mt.LoginWithKeysRequest{
+		AccountId: "goalias.snr",
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	m, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	_, err := m.LoginWithKeys(req)
+	assert.NoError(t, err, "login succeeds")
+
+	if err == nil {
+		fmt.Println("balance: ", m.GetBalance())
+		fmt.Println("address: ", m.Address)
+	}
 }
