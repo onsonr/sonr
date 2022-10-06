@@ -16,6 +16,12 @@ option java_package = "io.sonr.types.motor";
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
+enum ClientMode {
+  ENDPOINT_BETA = 0;
+  ENDPOINT_DEV = 1;
+  ENDPOINT_LOCAL = 2;
+}
+
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
   // Identifier of this Device
@@ -54,6 +60,9 @@ message InitializeRequest {
 
   // Application DID
   string app_did = 12; // optional
+
+  // Client Mode
+  ClientMode client_mode = 13; // Default: ENDPOINT_BETA
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr

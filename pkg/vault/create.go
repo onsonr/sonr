@@ -80,8 +80,13 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 		return DefaultVaultService, fmt.Errorf("error creating vault: %s", errRes.Message)
 	}
 
+	uri, err := getVaultUri()
+	if err != nil {
+		fmt.Printf("Error when retrieving vault uri: %s\n", err)
+	}
+
 	return did.Service{
-		ID:   ssi.MustParseURI("https://vault.sonr.ws"),
+		ID:   ssi.MustParseURI(uri),
 		Type: "vault",
 		ServiceEndpoint: map[string]string{
 			"cid": cvr.VaultCid,
