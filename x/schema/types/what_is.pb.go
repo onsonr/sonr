@@ -22,16 +22,17 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+//Defines a structure which holds a `Schema` and meta data related to that Schema instance
 type WhatIs struct {
 	// DID is the DID of the object
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	// Object_doc is the object document
+	// Schema to persist on chain
 	Schema *SchemaDefinition `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
 	// Creator is the DID of the creator
 	Creator string `protobuf:"bytes,3,opt,name=creator,proto3" json:"creator,omitempty"`
-	// Timestamp is the time of the last update of the DID Document
+	// The time of the last update
 	Timestamp int64 `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	// IsActive is the status of the DID Document
+	// Indicates if the schema is depricated
 	IsActive bool `protobuf:"varint,5,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
 	// Metadata is a map of key-value pairs that can be used to store additional information about the WhatIs (Schema)
 	Metadata map[string]string `protobuf:"bytes,6,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
