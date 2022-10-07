@@ -1,9 +1,21 @@
 package types
 
 const (
-	EventTypeCreateWhoIs     = "create-who-is"
-	EventTypeUpdateWhoIs     = "update-who-is"
-	EventTypeDeactivateWhoIs = "deactivate-who-is"
-	AttributeValueCategory   = ModuleName
-    AttributeDID = "did"
+	EventTypeCreateWhoIs     = "createWhoIs"
+	EventTypeUpdateWhoIs     = "updateWhoIs"
+	EventTypeDeactivateWhoIs = "deactivateWhoIs"
+
+	AttributeValueCategory = ModuleName
+	AttributeKeyTxType     = "txType"
+
+	AttributeKeyCreator = "whoIsCreator"
+	AttributeKeyDID     = "did"
+
+	AttributeKeyOwner  = "whoIsOwner"
+	AttributeKeySeller = "whoIsSeller"
+	AttributeKeyAlias  = "aliasName"
+
+	EventTypeBuyAlias      = "buyAlias"
+	EventTypeSellAlias     = "sellAlias"
+	EventTypeTransferAlias = "transferAlias"
 )

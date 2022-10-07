@@ -24,10 +24,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-//
-//Wraps items within a bucket. Items will be one of the following
-//DID -> reference to another bucket (WhereIs)
-//CID -> reference to content (map[string]interface{})
+// Wraps items within a bucket. Items will be one of the following
+// DID -> reference to another bucket (WhereIs)
+// CID -> reference to content (map[string]interface{})
 type BucketContent struct {
 	// Raw content serialized to bytes
 	Item []byte `protobuf:"bytes,1,opt,name=item,proto3" json:"item,omitempty"`

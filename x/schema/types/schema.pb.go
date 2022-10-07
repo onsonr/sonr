@@ -151,9 +151,8 @@ func (m *MetadataDefintion) GetValue() string {
 	return ""
 }
 
-//
-//Defines the "kind" of an item within a collection for a SchemaKind that is "LIST"
-//Definition is recurssive to allow nesting of definitions
+// Defines the "kind" of an item within a collection for a SchemaKind that is "LIST"
+// Definition is recurssive to allow nesting of definitions
 type SchemaItemKindDefinition struct {
 	// Type of the item contained within the collection, must be of type SchemaKind
 	Field SchemaKind `protobuf:"varint,1,opt,name=field,proto3,enum=sonrio.sonr.schema.SchemaKind" json:"field,omitempty"`
@@ -226,9 +225,8 @@ func (m *SchemaItemKindDefinition) GetLink() string {
 	return ""
 }
 
-//
-//Defines a type for a given property within a Schema types conform to the IPLD Kind defintion
-//https://ipld.io/docs/data-model/kinds/
+// Defines a type for a given property within a Schema types conform to the IPLD Kind defintion
+// https://ipld.io/docs/data-model/kinds/
 type SchemaKindDefinition struct {
 	// Name of the property
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -310,8 +308,7 @@ func (m *SchemaKindDefinition) GetItem() *SchemaItemKindDefinition {
 	return nil
 }
 
-//
-//Defines a schema and additional metadata related to the definition
+// Defines a schema and additional metadata related to the definition
 type SchemaDefinition struct {
 	// The DID for this schema should not be populated by request
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`

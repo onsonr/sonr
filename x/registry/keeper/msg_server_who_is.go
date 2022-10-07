@@ -55,8 +55,11 @@ func (k msgServer) CreateWhoIs(goCtx context.Context, msg *types.MsgCreateWhoIs)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeCreateWhoIs,
-			sdk.NewAttribute(types.AttributeDID, sonrDidDoc.Id),
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, sonrDidDoc.Id),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeCreateWhoIs),
 		),
 	)
 
@@ -115,8 +118,11 @@ func (k msgServer) UpdateWhoIs(goCtx context.Context, msg *types.MsgUpdateWhoIs)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeUpdateWhoIs,
-			sdk.NewAttribute(types.AttributeDID, val.DidDocument.GetId()),
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, val.DidDocument.Id),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeUpdateWhoIs),
 		),
 	)
 
@@ -160,8 +166,11 @@ func (k msgServer) DeactivateWhoIs(goCtx context.Context, msg *types.MsgDeactiva
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeDeactivateWhoIs,
-			sdk.NewAttribute(types.AttributeDID, sonrDidDoc.Id),
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, sonrDidDoc.Id),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeactivateWhoIs),
 		),
 	)
 
