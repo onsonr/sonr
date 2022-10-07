@@ -124,7 +124,7 @@ message CreateSchemaRequest {
   // human readable name of the schema
   string label = 1;
   // Definition of the schema provided as a map
-  map<string, sonrio.sonr.schema.SchemaKindDefinition> fields = 2;
+  map<string, sonrio.sonr.schema.SchemaKind> fields = 2;
 
   // custom metadata for the definition. will be recorded on chain
   map<string, string> metadata = 3;
