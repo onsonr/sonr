@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/internal/projectpath"
-	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/stretchr/testify/suite"
@@ -15,8 +14,8 @@ import (
 
 type MotorTestSuite struct {
 	suite.Suite
-	motor *motorNodeImpl
-	motorWithKeys *motorNodeImpl
+	motor *MotorNodeImpl
+	motorWithKeys *MotorNodeImpl
 }
 
 func (suite *MotorTestSuite) SetupSuite() {
@@ -32,7 +31,7 @@ func (suite *MotorTestSuite) SetupSuite() {
 		suite.T().Error("Failed to setup test suite motor")
 	}
 
-	err = setupTestAddress(suite.motor)
+	err = SetupTestAddress(suite.motor)
 	if err != nil {
 		suite.T().Error("Failed to setup test address")
 	}
@@ -45,7 +44,7 @@ func (suite *MotorTestSuite) SetupSuite() {
 		suite.T().Error("Failed to setup test suite motor with keys")
 	}
 
-	err = setupTestAddressWithKeys(suite.motorWithKeys)
+	err = SetupTestAddressWithKeys(suite.motorWithKeys)
 	if err != nil {
 		suite.T().Error("Failed to setup test address with keys")
 	}
@@ -75,47 +74,4 @@ func (suite *MotorTestSuite) TearDownSuite() {
 
 func Test_MotorTestSuite(t *testing.T) {
 	suite.Run(t, new(MotorTestSuite))
-}
-
-func setupTestAddressWithKeys(motor *motorNodeImpl) (error) {
-	aesKey := loadKey("aes.key")
-	if aesKey == nil || len(aesKey) != 32 {
-		key, err := mpc.NewAesKey()
-		if err != nil {
-			return err
-		}
-		aesKey = key
-	}
-
-	psk, err := mpc.NewAesKey()
-	if err != nil {
-		return err
-	}
-
-	req := mt.CreateAccountWithKeysRequest{
-		Password:  "password123",
-		AesDscKey: aesKey,
-		AesPskKey: psk,
-	}
-
-	_, err = motor.CreateAccountWithKeys(req)
-	if err != nil {
-		return err
-	}
-
-	storeKey(fmt.Sprintf("psk%s", motor.Address), psk)
-
-	return nil
-}
-
-func setupTestAddress(motor *motorNodeImpl) (error) {
-	req := mt.CreateAccountRequest{
-		Password: "password123",
-	}
-	_, err := motor.CreateAccount(req)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

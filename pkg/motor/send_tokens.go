@@ -10,7 +10,7 @@ import (
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
-func (m *motorNodeImpl) SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error) {
+func (m *MotorNodeImpl) SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error) {
 	// Build Message
 	amt := types.NewInt(int64(req.Amount))
 	fromAddr, err := types.AccAddressFromBech32(req.GetFrom())

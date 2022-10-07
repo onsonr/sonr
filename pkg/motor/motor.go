@@ -3,7 +3,9 @@ package motor
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -23,7 +25,7 @@ import (
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
-type motorNodeImpl struct {
+type MotorNodeImpl struct {
 	DeviceID    string
 	Cosmos      *client.Client
 	Wallet      *mpc.Wallet
@@ -56,12 +58,12 @@ type motorNodeImpl struct {
 	sh        *shell.Shell
 }
 
-func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
+func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*MotorNodeImpl, error) {
 	if r.GetDeviceId() == "" {
 		return nil, fmt.Errorf("DeviceID is required to initialize motor node")
 	}
 	
-	return &motorNodeImpl{
+	return &MotorNodeImpl{
 		isHostEnabled:      r.GetEnableHost(),
 		isDiscoveryEnabled: r.GetEnableDiscovery(),
 		DeviceID:           r.GetDeviceId(),
@@ -73,7 +75,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 	}, nil
 }
 
-func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
+func initMotor(mtr *MotorNodeImpl, options ...mpc.WalletOption) (err error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(mtr.clientMode)
 	// Generate wallet
@@ -115,7 +117,7 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	return nil
 }
 
-func (mtr *motorNodeImpl) Connect() error {
+func (mtr *MotorNodeImpl) Connect() error {
 	if mtr.Wallet == nil {
 		return fmt.Errorf("wallet is not initialized")
 	}
@@ -149,36 +151,36 @@ func (mtr *motorNodeImpl) Connect() error {
 	return nil
 }
 
-func (m *motorNodeImpl) GetDeviceID() string {
+func (m *MotorNodeImpl) GetDeviceID() string {
 	return m.DeviceID
 }
 
-func (m *motorNodeImpl) GetAddress() string {
+func (m *MotorNodeImpl) GetAddress() string {
 	return m.Address
 }
 
-func (m *motorNodeImpl) GetWallet() *mpc.Wallet {
+func (m *MotorNodeImpl) GetWallet() *mpc.Wallet {
 	return m.Wallet
 }
 
-func (m *motorNodeImpl) GetPubKey() *secp256k1.PubKey {
+func (m *MotorNodeImpl) GetPubKey() *secp256k1.PubKey {
 	return m.PubKey
 }
 
-func (m *motorNodeImpl) GetDID() did.DID {
+func (m *MotorNodeImpl) GetDID() did.DID {
 	return m.DID
 }
 
-func (m *motorNodeImpl) GetDIDDocument() did.Document {
+func (m *MotorNodeImpl) GetDIDDocument() did.Document {
 	return m.DIDDocument
 }
 
-func (m *motorNodeImpl) GetHost() host.SonrHost {
+func (m *MotorNodeImpl) GetHost() host.SonrHost {
 	return m.SonrHost
 }
 
 // Checking the balance of the wallet.
-func (m *motorNodeImpl) GetBalance() int64 {
+func (m *MotorNodeImpl) GetBalance() int64 {
 	cs, err := m.Cosmos.CheckBalance(m.Address)
 	if err != nil {
 		return 0
@@ -189,12 +191,12 @@ func (m *motorNodeImpl) GetBalance() int64 {
 	return cs[0].Amount.Int64()
 }
 
-func (m *motorNodeImpl) GetClient() *client.Client {
+func (m *MotorNodeImpl) GetClient() *client.Client {
 	return m.Cosmos
 }
 
 // GetVerificationMethod returns the VerificationMethod for the given party.
-func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
+func (w *MotorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMethod, error) {
 	vmdid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s", strings.TrimPrefix(w.Address, "snr"), id))
 	if err != nil {
 		return nil, err
@@ -218,7 +220,7 @@ func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMet
 /*
 Adds a Credential to the DidDocument of the account
 */
-func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Credential) error {
+func (w *MotorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Credential) error {
 	if w.DIDDocument == nil {
 		return fmt.Errorf("cannot create verification method did document not found")
 	}
@@ -250,7 +252,7 @@ func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Cre
 	return nil
 }
 
-func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) ([]byte, error) {
+func (w *MotorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) ([]byte, error) {
 	cleanMsgRoute := strings.TrimLeft(routeUrl, "/")
 	typeUrl := fmt.Sprintf("/sonrio.sonr.%s", cleanMsgRoute)
 	txRaw, err := tx.SignTxWithWallet(w.Wallet, typeUrl, msg)
@@ -263,4 +265,84 @@ func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) ([]byte, error) {
 		return nil, fmt.Errorf("failed to broadcast tx (%s): %s", typeUrl, err)
 	}
 	return resp.GetTxResponse().Marshal()
+}
+
+func SetupTestAddressWithKeys(motor *MotorNodeImpl) (error) {
+	aesKey := loadKey("aes.key")
+	if aesKey == nil || len(aesKey) != 32 {
+		key, err := mpc.NewAesKey()
+		if err != nil {
+			return err
+		}
+		aesKey = key
+	}
+
+	psk, err := mpc.NewAesKey()
+	if err != nil {
+		return err
+	}
+
+	req := mt.CreateAccountWithKeysRequest{
+		Password:  "password123",
+		AesDscKey: aesKey,
+		AesPskKey: psk,
+	}
+
+	_, err = motor.CreateAccountWithKeys(req)
+	if err != nil {
+		return err
+	}
+
+	storeKey(fmt.Sprintf("psk%s", motor.Address), psk)
+
+	return nil
+}
+
+func SetupTestAddress(motor *MotorNodeImpl) (error) {
+	req := mt.CreateAccountRequest{
+		Password: "password123",
+	}
+	_, err := motor.CreateAccount(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func loadKey(n string) []byte {
+	name := fmt.Sprintf("./test_keys/%s", n)
+	var file *os.File
+	if _, err := os.Stat(name); os.IsNotExist(err) {
+		file, err = os.Create(name)
+		if err != nil {
+			return nil
+		}
+	} else if err != nil {
+		fmt.Printf("load err: %s\n", err)
+	} else {
+		file, err = os.Open(name)
+		if err != nil {
+			return nil
+		}
+	}
+	defer file.Close()
+
+	key, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil
+	}
+	return key
+}
+
+func storeKey(n string, aesKey []byte) bool {
+	name := fmt.Sprintf("./test_keys/%s", n)
+	file, err := os.Create(name)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+
+	_, err = file.Write(aesKey)
+	return err == nil
 }

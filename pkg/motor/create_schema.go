@@ -9,7 +9,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error) {
+func (mtr *MotorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error) {
 
 	listFields, err := convertFields(request.Fields)
 	if err != nil {

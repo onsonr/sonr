@@ -12,7 +12,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) CreateBucket(request mt.CreateBucketRequest) (*mt.CreateBucketResponse, bucket.Bucket, error) {
+func (mtr *MotorNodeImpl) CreateBucket(request mt.CreateBucketRequest) (*mt.CreateBucketResponse, bucket.Bucket, error) {
 
 	if request.Creator == "" {
 		return nil, nil, errors.New("invalid Address")
