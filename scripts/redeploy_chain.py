@@ -1,5 +1,9 @@
 ## uses pydig v 0.4.0
 ## Run from within scripts
+
+## Requires toml-cli [https://github.com/MinseokOh/toml-cli] in the release folder
+## Requires the release folder to exist
+## Maybe needs a genesis.json in the tmep folder
 import os
 import subprocess
 import pathlib
@@ -93,6 +97,10 @@ def upload_persistent_peers(node_list):
 def upload_toml_cli(node):
     return upload_file(node, '/usr/bin/toml-cli', f'{BIN_DIR}/toml-cli')
 
+def upload_libwasmvm(node):
+    #TODO check arch of recieving machine and upload appropriate version
+    return upload_file(node, '/usr/lib/libwasmvm.x86_64.so', f'{BIN_DIR}/libwasmvm.x86_64.so')
+
 def stop_sonrd(node):
     return send_command(node, 'systemctl stop sonrd')
 
@@ -173,12 +181,16 @@ if __name__ == "__main__":
 
     # send data to all the nodes, secondary nodes will get more data than the primary
     for i, node in enumerate(NODE_ENDPOINTS):
+
+        # upload the wasm lib
+        upload_libwasmvm(node)
         
         # upload the sonrd binary
         deploy_sonrd(node)
 
         # Upload the toml-cli binary
         upload_toml_cli(node)
+
 
         # make the systemd log directories
         send_command(node, 'mkdir -p /var/log/sonrd/')
@@ -214,9 +226,11 @@ if __name__ == "__main__":
 
             # Upload the genesis file
             upload_genesis(node)
+        
+        # Enable the api
+        enable_api(node)
 
-            # Enable the api
-            enable_api(node)
+
 
 
 
