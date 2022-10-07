@@ -3,7 +3,6 @@ package motor
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -17,6 +16,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
+	"github.com/sonr-io/sonr/pkg/logger"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -54,13 +54,21 @@ type motorNodeImpl struct {
 	// resource management
 	Resources *motorResources
 	sh        *shell.Shell
+
+	//Logging
+	log      *logger.Logger
+	logLevel string
 }
 
 func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImpl, error) {
 	if r.GetDeviceId() == "" {
 		return nil, fmt.Errorf("DeviceID is required to initialize motor node")
 	}
-	
+
+	if r.GetLogLevel() == "" {
+		r.LogLevel = "warn"
+	}
+
 	return &motorNodeImpl{
 		isHostEnabled:      r.GetEnableHost(),
 		isDiscoveryEnabled: r.GetEnableDiscovery(),
@@ -70,14 +78,16 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 		tempDir:            r.GetTempDir(),
 		clientMode:         r.GetClientMode(),
 		callback:           cb,
+		logLevel:           r.LogLevel,
 	}, nil
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
+	mtr.log = logger.New(mtr.logLevel, "motor")
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(mtr.clientMode)
 	// Generate wallet
-	log.Println("Generating wallet...")
+	mtr.log.Info("Generating wallet...")
 	mtr.Wallet, err = mpc.GenerateWallet(mtr.callback, options...)
 	if err != nil {
 		return err
@@ -94,9 +104,6 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		}
 	}
 
-	shell := shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
-	mtr.Resources = newMotorResources(mtr.Cosmos, shell)
-
 	// Get public key
 	mtr.PubKey, err = mtr.Wallet.PublicKeyProto()
 	if err != nil {
@@ -109,9 +116,13 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 		return err
 	}
 	mtr.DID = *baseDid
-	log.Println("Wallet set to:", mtr.Address)
-	mtr.GetClient().PrintConnectionEndpoints()
-	log.Println("✅ Motor Wallet initialized")
+
+	mtr.log.Info("Connection Endpoints")
+	mtr.log.Info("REST: %s\n", mtr.GetClient().GetAPIAddress())
+	mtr.log.Info("RPC: %s\n", mtr.GetClient().GetRPCAddress())
+	mtr.log.Info("Faucet: %s\n", mtr.GetClient().GetFaucetAddress())
+	mtr.log.Info("IPFS: %s\n", mtr.GetClient().GetIPFSAddress())
+	mtr.log.Info("✅ Motor Wallet initialized")
 	return nil
 }
 
@@ -121,14 +132,14 @@ func (mtr *motorNodeImpl) Connect() error {
 	}
 
 	if mtr.SonrHost != nil {
-		log.Println("Host already connected")
+		mtr.log.Warn("Host already connected")
 		return nil
 	}
 
 	var err error
 	// Create new host
 	if mtr.isHostEnabled {
-		log.Println("Creating host...")
+		mtr.log.Info("Creating host...")
 		mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address), mtr.callback)
 		if err != nil {
 			return err
@@ -139,13 +150,13 @@ func (mtr *motorNodeImpl) Connect() error {
 
 	// Utilize discovery protocol
 	if mtr.isDiscoveryEnabled {
-		log.Println("Enabling Discovery...")
+		mtr.log.Info("Enabling Discovery...")
 		mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
 		if err != nil {
 			return err
 		}
 	}
-	log.Println("✅ Motor Host Connected")
+	mtr.log.Info("✅ Motor Host Connected")
 	return nil
 }
 
