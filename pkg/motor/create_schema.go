@@ -43,15 +43,13 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	}, nil
 }
 
-func convertFields(fields map[string]*st.SchemaKindDefinition) ([]*st.SchemaKindDefinition, error) {
+func convertFields(fields map[string]st.SchemaKind) ([]*st.SchemaKindDefinition, error) {
 	result := make([]*st.SchemaKindDefinition, len(fields))
 	var i int32
 	for k, v := range fields {
 		result[i] = &st.SchemaKindDefinition{
-			Name:     k,
-			Field:    v.Field,
-			LinkKind: v.LinkKind,
-			Item:     v.Item,
+			Name:  k,
+			Field: v,
 		}
 		i += 1
 	}

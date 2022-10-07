@@ -33,16 +33,10 @@ func Test_CreateSchema(t *testing.T) {
 	// LOGIN DONE, TRY TO CREATE SCHEMA
 	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
-		Fields: map[string]*st.SchemaKindDefinition{
-			"email": {
-				Field: st.SchemaKind_STRING,
-			},
-			"firstName": {
-				Field: st.SchemaKind_STRING,
-			},
-			"age": {
-				Field: st.SchemaKind_INT,
-			},
+		Fields: map[string]st.SchemaKind{
+			"email":     st.SchemaKind_STRING,
+			"firstName": st.SchemaKind_STRING,
+			"age":       st.SchemaKind_INT,
 		},
 	}
 	resp, err := m.CreateSchema(createSchemaRequest)
@@ -72,16 +66,10 @@ func Test_QuerySchema(t *testing.T) {
 	// LOGIN DONE, TRY TO QUERY SCHEMA
 	createSchemaRequest := mt.CreateSchemaRequest{
 		Label: "TestUser",
-		Fields: map[string]*st.SchemaKindDefinition{
-			"email": {
-				Field: st.SchemaKind_STRING,
-			},
-			"firstName": {
-				Field: st.SchemaKind_STRING,
-			},
-			"age": {
-				Field: st.SchemaKind_INT,
-			},
+		Fields: map[string]st.SchemaKind{
+			"email":     st.SchemaKind_STRING,
+			"firstName": st.SchemaKind_STRING,
+			"age":       st.SchemaKind_INT,
 		},
 	}
 
