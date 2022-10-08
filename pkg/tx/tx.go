@@ -119,11 +119,12 @@ func GetAuthInfoSingle(w *mpc.Wallet, gas int) (*txtypes.AuthInfo, error) {
 				Sequence: 0,
 			},
 		},
-		Fee: &txtypes.Fee{
-			Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(gas)))),
-			GasLimit: uint64(100000),
-			Granter:  addr,
-		},
+		// TODO: Reenable fees when ante handler is figured out
+		// Fee: &txtypes.Fee{
+		// 	Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(gas)))),
+		// 	GasLimit: uint64(100000),
+		// 	Granter:  addr,
+		// },
 	}
 	return &authInfo, nil
 }
