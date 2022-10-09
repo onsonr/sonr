@@ -28,7 +28,7 @@ type DiscoverProtocol struct {
 	callback common.MotorCallback
 }
 
-// New creates new DiscoveryProtocol
+// New creates new DiscoverProtocol
 func New(ctx context.Context, host host.SonrHost, cb common.MotorCallback, options ...Option) (*DiscoverProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &DiscoverProtocol{
@@ -43,7 +43,7 @@ func New(ctx context.Context, host host.SonrHost, cb common.MotorCallback, optio
 		opt(opts)
 	}
 	opts.Apply(protocol)
-	log.Println("✅  DiscoveryProtocol is Activated")
+	log.Println("✅  DiscoverProtocol is Activated")
 	return protocol, nil
 }
 
