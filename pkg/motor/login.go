@@ -7,6 +7,7 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 	kr "github.com/sonr-io/sonr/internal/keyring"
+	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
@@ -44,28 +45,13 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 		return mt.LoginResponse{}, fmt.Errorf("did must be provided")
 	}
 
-	mtr.Address = request.Did
+	// Create Client instance
+	mtr.Cosmos = client.NewClient(mtr.clientMode)
 
-	// fetch vault shards
-	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Fetching shards from vault", false)
-	shards, err := vault.New().GetVaultShards(request.Did)
-	if err != nil {
-		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
-	}
-
-	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Reconstructing wallet", false)
-	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
-	if err != nil {
-		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
-	}
-
-	// generate wallet
-	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
-		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
-	}
+	// set address manually
+	// mtr.Address = request.Did
 
 	// fetch DID document from chain
-	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Verifying with Blockchain", false)
 	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error fetching whois: %s", err)
@@ -76,6 +62,30 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 	mtr.DIDDocument, err = whoIs.DidDocument.ToPkgDoc()
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting DID Document: %s", err)
+	}
+
+	// get the pubkey
+	vm := mtr.DIDDocument.GetVerificationMethods().FindByID(mtr.DIDDocument.GetID())
+	if vm == nil {
+		return mt.LoginResponse{}, fmt.Errorf("could not find assertion method with ID %s", mtr.DIDDocument.GetID())
+	}
+
+	// fetch vault shards
+	shards, err := vault.New().GetVaultShards(request.Did)
+	if err != nil {
+		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
+	}
+
+	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
+	if err != nil {
+		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
+	}
+
+	// generate wallet
+	if err = initMotor(mtr,
+		mpc.WithConfigs(cnfgs),
+		mpc.WithBase58PubKey(vm.PublicKeyBase58)); err != nil {
+		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
 
 	// assign shards
