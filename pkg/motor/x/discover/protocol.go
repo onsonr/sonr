@@ -43,7 +43,7 @@ func New(ctx context.Context, host host.SonrHost, cb common.MotorCallback, optio
 		opt(opts)
 	}
 	opts.Apply(protocol)
-	log.Println("✅  ExchangeProtocol is Activated")
+	log.Println("✅  DiscoveryProtocol is Activated")
 	return protocol, nil
 }
 
