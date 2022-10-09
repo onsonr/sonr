@@ -51,7 +51,6 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 			AesPskKey: pskKey,
 		}
 
-		
 		_, err := suite.motor.LoginWithKeys(req)
 		assert.NoError(t, err, "login succeeds")
 
@@ -64,7 +63,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 
 func (suite *MotorTestSuite) Test_LoginWithKeyring() {
 	req := mt.LoginRequest{
-		Did: suite.motor.Address,
+		Did:      suite.motor.Address,
 		Password: "password123",
 	}
 
@@ -79,6 +78,13 @@ func (suite *MotorTestSuite) Test_LoginWithKeyring() {
 }
 
 func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
+	aesKey := loadKey("aes.key")
+	fmt.Printf("aes: %x\n", aesKey)
+	if aesKey == nil || len(aesKey) != 32 {
+		suite.T().Errorf("could not load key.")
+		return
+	}
+
 	pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
 	if pskKey == nil || len(pskKey) != 32 {
 		suite.T().Errorf("could not load psk key")
@@ -87,7 +93,7 @@ func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
 
 	req := mt.LoginWithKeysRequest{
 		Did:       suite.motorWithKeys.Address,
-		Password:  "password123",
+		AesDscKey: aesKey,
 		AesPskKey: pskKey,
 	}
 

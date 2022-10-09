@@ -15,7 +15,7 @@ import (
 
 type MotorTestSuite struct {
 	suite.Suite
-	motor *motorNodeImpl
+	motor         *motorNodeImpl
 	motorWithKeys *motorNodeImpl
 }
 
@@ -26,7 +26,8 @@ func (suite *MotorTestSuite) SetupSuite() {
 
 	// setup motor
 	suite.motor, err = EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
+		DeviceId:   "test_device",
+		ClientMode: mt.ClientMode_ENDPOINT_BETA,
 	}, common.DefaultCallback())
 	if err != nil {
 		suite.T().Error("Failed to setup test suite motor")
@@ -38,7 +39,8 @@ func (suite *MotorTestSuite) SetupSuite() {
 	}
 
 	suite.motorWithKeys, err = EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
+		DeviceId:   "test_device",
+		ClientMode: mt.ClientMode_ENDPOINT_BETA,
 	}, common.DefaultCallback())
 
 	if err != nil {
@@ -56,7 +58,7 @@ func (suite *MotorTestSuite) SetupSuite() {
 
 func (suite *MotorTestSuite) TearDownSuite() {
 	testKeysPath := filepath.Join(projectpath.Root, "pkg/motor/test_keys/psksnr*")
-	
+
 	// delete created accounts
 	files, err := filepath.Glob(testKeysPath)
 	if err != nil {
@@ -77,7 +79,7 @@ func Test_MotorTestSuite(t *testing.T) {
 	suite.Run(t, new(MotorTestSuite))
 }
 
-func setupTestAddressWithKeys(motor *motorNodeImpl) (error) {
+func setupTestAddressWithKeys(motor *motorNodeImpl) error {
 	aesKey := loadKey("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {
 		key, err := mpc.NewAesKey()
@@ -108,7 +110,7 @@ func setupTestAddressWithKeys(motor *motorNodeImpl) (error) {
 	return nil
 }
 
-func setupTestAddress(motor *motorNodeImpl) (error) {
+func setupTestAddress(motor *motorNodeImpl) error {
 	req := mt.CreateAccountRequest{
 		Password: "password123",
 	}
