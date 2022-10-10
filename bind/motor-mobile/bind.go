@@ -123,11 +123,21 @@ func LoginWithKeys(buf []byte) ([]byte, error) {
 	}
 }
 
-func Connect() error {
+func Connect(buf []byte) ([]byte, error) {
 	if instance == nil {
-		return ct.ErrMotorWalletNotInitialized
+		return nil, ct.ErrMotorWalletNotInitialized
 	}
-	return instance.Connect()
+
+	var request mt.ConnectRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.Connect(request)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Marshal()
 }
 
 func CreateBucket(buf []byte) ([]byte, error) {
@@ -144,7 +154,6 @@ func CreateBucket(buf []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return resp.Marshal()
 }
 

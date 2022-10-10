@@ -22,6 +22,11 @@ message InitializeResponse {
   repeated sonrio.sonr.schema.Schema schemas = 2;
 }
 
+message ConnectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 message CreateAccountResponse {
   string address = 1;
   sonrio.sonr.registry.WhoIs who_is = 2;

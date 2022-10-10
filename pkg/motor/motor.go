@@ -18,6 +18,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/logger"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
+	tp "github.com/sonr-io/sonr/pkg/motor/x/transmit"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -34,10 +35,9 @@ type motorNodeImpl struct {
 	SonrHost    host.SonrHost
 
 	// internal protocols
-	isHostEnabled      bool
-	isDiscoveryEnabled bool
-	callback           common.MotorCallback
-	discovery          *dp.DiscoverProtocol
+	callback common.MotorCallback
+	discover *dp.DiscoverProtocol
+	transmit *tp.TransmitProtocol
 
 	// configuration
 	homeDir    string
@@ -70,15 +70,13 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 	}
 
 	return &motorNodeImpl{
-		isHostEnabled:      r.GetEnableHost(),
-		isDiscoveryEnabled: r.GetEnableDiscovery(),
-		DeviceID:           r.GetDeviceId(),
-		homeDir:            r.GetHomeDir(),
-		supportDir:         r.GetSupportDir(),
-		tempDir:            r.GetTempDir(),
-		clientMode:         r.GetClientMode(),
-		callback:           cb,
-		logLevel:           r.LogLevel,
+		DeviceID:   r.GetDeviceId(),
+		homeDir:    r.GetHomeDir(),
+		supportDir: r.GetSupportDir(),
+		tempDir:    r.GetTempDir(),
+		clientMode: r.GetClientMode(),
+		callback:   cb,
+		logLevel:   r.LogLevel,
 	}, nil
 }
 
@@ -126,38 +124,51 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	return nil
 }
 
-func (mtr *motorNodeImpl) Connect() error {
+func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectResponse, error) {
 	if mtr.Wallet == nil {
-		return fmt.Errorf("wallet is not initialized")
+		return nil, fmt.Errorf("wallet is not initialized")
 	}
 
 	if mtr.SonrHost != nil {
 		mtr.log.Warn("Host already connected")
-		return nil
+		return &mt.ConnectResponse{
+			Success: true,
+			Message: "Host already connected",
+		}, nil
 	}
 
 	var err error
 	// Create new host
-	if mtr.isHostEnabled {
-		mtr.log.Info("Creating host...")
-		mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, mtr.Address), mtr.callback)
-		if err != nil {
-			return err
-		}
-	} else {
-		return fmt.Errorf("host is not enabled")
+
+	mtr.log.Info("Starting host...")
+	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, config.WithAccountAddress(mtr.GetAddress()), config.WithDeviceID(mtr.DeviceID)), mtr.callback)
+	if err != nil {
+		return nil, err
 	}
 
 	// Utilize discovery protocol
-	if mtr.isDiscoveryEnabled {
+	if request.GetEnableDiscovery() {
 		mtr.log.Info("Enabling Discovery...")
-		mtr.discovery, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
+		mtr.discover, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
+
+	// Utilize transmit protocol
+	if request.GetEnableTransmit() {
+		mtr.log.Info("Enabling Transmit...")
+		mtr.transmit, err = tp.New(context.Background(), mtr.SonrHost)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	mtr.log.Info("✅ Motor Host Connected")
-	return nil
+	return &mt.ConnectResponse{
+		Success: true,
+		Message: "Successfully connected host to network",
+	}, nil
 }
 
 func (m *motorNodeImpl) GetDeviceID() string {

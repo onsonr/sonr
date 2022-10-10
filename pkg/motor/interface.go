@@ -27,7 +27,7 @@ type MotorNode interface {
 	SendTx(routeUrl string, msg sdk.Msg) ([]byte, error)
 
 	// Networking
-	Connect() error
+	Connect(request mt.ConnectRequest) (*mt.ConnectResponse, error)
 	GetDeviceID() string
 	GetHost() host.SonrHost
 

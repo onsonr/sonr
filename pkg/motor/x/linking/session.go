@@ -1,4 +1,4 @@
-package discover
+package linking
 
 import (
 	"context"
@@ -13,13 +13,14 @@ import (
 	"github.com/sonr-io/sonr/third_party/types/common"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 // ErrFunc is a function that returns an error
 type ErrFunc func() error
 
-// Local is the protocol for managing local peers.
-type Local struct {
+// Session is the protocol for managing local peers.
+type Session struct {
 	callback     common.MotorCallback
 	node         host.SonrHost
 	ctx          context.Context
@@ -34,7 +35,7 @@ type Local struct {
 }
 
 // Initializing the local struct.
-func (e *DiscoverProtocol) initLocal(topic *ps.Topic, cb common.MotorCallback) error {
+func (e *LinkingProtocol) buildNewSession(topic *ps.Topic, cb common.MotorCallback) error {
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
@@ -51,7 +52,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, cb common.MotorCallback) e
 	}
 
 	// Create Local Struct
-	e.local = &Local{
+	e.session = &Session{
 		ctx:          e.ctx,
 		selfID:       e.node.HostID(),
 		node:         e.node,
@@ -65,15 +66,15 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, cb common.MotorCallback) e
 	}
 
 	// Handle Events
-	go e.local.handleSub()
-	go e.local.handleTopic()
-	go e.local.handleEvents()
-	go e.local.autoPushUpdates()
+	go e.session.handleSub()
+	go e.session.handleTopic()
+	go e.session.handleEvents()
+	go e.session.handleTimeout()
 	return nil
 }
 
 // Publish publishes a LobbyMessage to the Local Topic
-func (p *Local) Publish(data *ct.Peer) error {
+func (p *Session) Publish(data *ct.Peer) error {
 	// Create Message Buffer
 	buf := createLobbyMsgBuf(data)
 	err := p.topic.Publish(p.ctx, buf)
@@ -84,8 +85,8 @@ func (p *Local) Publish(data *ct.Peer) error {
 	return nil
 }
 
-// autoPushUpdates method pushes updates to the Local Topic
-func (p *Local) autoPushUpdates() {
+// handleTimeout method closes the session if timeout is reached
+func (p *Session) handleTimeout() {
 	// Loop Messages
 	for {
 		err := p.callUpdate()
@@ -98,7 +99,7 @@ func (p *Local) autoPushUpdates() {
 }
 
 // handleSub method listens to Pubsub Events for Local Topic
-func (p *Local) handleSub() {
+func (p *Session) handleSub() {
 	// Loop Events
 	for {
 		// Get next event
@@ -118,7 +119,7 @@ func (p *Local) handleSub() {
 }
 
 // handleTopic method listens to Pubsub Messages for Local Topic
-func (p *Local) handleTopic() {
+func (p *Session) handleTopic() {
 	// Loop Messages
 	for {
 		// Get next message
@@ -142,7 +143,7 @@ func (p *Local) handleTopic() {
 }
 
 // handleEvents method listens to Lobby Events passed from the Local Topic
-func (p *Local) handleEvents() {
+func (p *Session) handleEvents() {
 	// Loop Messages
 	for {
 		// Get next message
@@ -158,7 +159,7 @@ func (p *Local) handleEvents() {
 }
 
 // callRefresh calls back RefreshEvent to Node
-func (lp *Local) callRefresh() {
+func (lp *Session) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
 	ev := &st.RefreshEvent{
@@ -177,7 +178,7 @@ func (lp *Local) callRefresh() {
 }
 
 // callUpdate publishes a LobbyMessage to the Local Topic
-func (lp *Local) callUpdate() error {
+func (lp *Session) callUpdate() error {
 	// Create Event
 	logger.Debug("Sending Update to Lobby")
 	err := lp.updateFunc()
@@ -191,8 +192,8 @@ func (lp *Local) callUpdate() error {
 // createLobbyMsgBuf Creates a new Message Buffer for Local Topic
 func createLobbyMsgBuf(p *ct.Peer) []byte {
 	// Marshal Event
-	msg := st.LobbyMessage{From: p}
-	_, err := msg.Marshal()
+	//event := &v1.LobbyMessage{Peer: p}
+	_, err := proto.Marshal(nil)
 	if err != nil {
 		logger.Errorf("%s - Failed to Marshal Event", err)
 		return nil
@@ -202,7 +203,7 @@ func createLobbyMsgBuf(p *ct.Peer) []byte {
 }
 
 // hasPeer Checks if Peer is in Peer List
-func (lp *Local) hasPeer(data *ct.Peer) bool {
+func (lp *Session) hasPeer(data *ct.Peer) bool {
 	hasInList := false
 	hasInTopic := false
 	// Check if Peer is in Data List
@@ -225,7 +226,7 @@ func (lp *Local) hasPeer(data *ct.Peer) bool {
 }
 
 // hasPeerData Checks if Peer Data is in Local Peer-Data List
-func (lp *Local) hasPeerData(data *ct.Peer) bool {
+func (lp *Session) hasPeerData(data *ct.Peer) bool {
 	for _, p := range lp.peers {
 		if p.GetAccountId() == data.GetAccountId() {
 			return true
@@ -235,7 +236,7 @@ func (lp *Local) hasPeerData(data *ct.Peer) bool {
 }
 
 // hasPeerID Checks if Peer ID is in Local Topic
-func (lp *Local) hasPeerID(id peer.ID) bool {
+func (lp *Session) hasPeerID(id peer.ID) bool {
 	for _, p := range lp.topic.ListPeers() {
 		if p == id {
 			return true
@@ -245,7 +246,7 @@ func (lp *Local) hasPeerID(id peer.ID) bool {
 }
 
 // indexOfPeer Returns Peer Index in Local Peer-Data List
-func (lp *Local) indexOfPeer(peer *ct.Peer) int {
+func (lp *Session) indexOfPeer(peer *ct.Peer) int {
 	for i, p := range lp.peers {
 		if p.GetAccountId() == peer.GetAccountId() {
 			return i
@@ -255,7 +256,7 @@ func (lp *Local) indexOfPeer(peer *ct.Peer) int {
 }
 
 // removePeer Removes Peer from Local Peer-Data List
-func (lp *Local) removePeer(peerID peer.ID) bool {
+func (lp *Session) removePeer(peerID peer.ID) bool {
 	for i, p := range lp.peers {
 		if p.GetAccountId() == peerID.String() {
 			lp.peers = append(lp.peers[:i], lp.peers[i+1:]...)
@@ -267,7 +268,7 @@ func (lp *Local) removePeer(peerID peer.ID) bool {
 }
 
 // updatePeer Adds Peer to Local Peer List
-func (lp *Local) updatePeer(peerID peer.ID, data *ct.Peer) bool {
+func (lp *Session) updatePeer(peerID peer.ID, data *ct.Peer) bool {
 	// Check if Peer is in Peer List and Topic already
 	if ok := lp.hasPeerID(peerID); !ok {
 		lp.removePeer(peerID)

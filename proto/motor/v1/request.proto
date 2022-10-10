@@ -40,21 +40,6 @@ message InitializeRequest {
   // (info|debug|warn|error|fatal)
   string log_level = 5;
 
-  // Enable Libp2p Host
-  bool enable_host = 6;
-
-  // Enable Discovery Service
-  bool enable_discovery = 7;
-
-  // Enable Query Clients
-  bool enable_query = 8;
-
-  // Discovery Latitude
-  double discovery_latitude = 9; //optional - Default: 40.673010 (Sonr HQ)
-
-  // Discovery Longitude
-  double discovery_longitude = 10; //optional - Default: -73.994450 (Sonr HQ)
-
   // Public Key used for Device Authentication as DID Controller
   common.v1.AuthInfo auth_info = 11; // optional
 
@@ -63,6 +48,24 @@ message InitializeRequest {
 
   // Client Mode
   ClientMode client_mode = 13; // Default: ENDPOINT_BETA
+}
+
+// ConnectRequest initializes the libp2p host and connects to the Sonr network.
+message ConnectRequest {
+  // Enable Discovery Service
+  bool enable_discovery = 1;
+
+  // Enable Transmit Protocol
+  bool enable_transmit = 2;
+
+  // Enable Linking Protocol
+  bool enable_linking = 3;
+
+  // Discovery Latitude
+  double discovery_latitude = 4; //optional - Default: 40.673010 (Sonr HQ)
+
+  // Discovery Longitude
+  double discovery_longitude = 5; //optional - Default: -73.994450 (Sonr HQ)
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr

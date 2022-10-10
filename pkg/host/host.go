@@ -112,7 +112,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallba
 			continue
 		} else {
 			hn.fsm.SetState(Status_FAIL)
-			
+
 			break
 		}
 	}
@@ -355,8 +355,9 @@ func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
 // Peer is a Helper Method to get the peer from the host
 func (hn *hostImpl) Peer() (*ct.Peer, error) {
 	return &ct.Peer{
-		PeerId: hn.host.ID().String(),
-		Did:    addrToDidUrl(hn.accAddr),
+		PeerId:    hn.host.ID().String(),
+		AccountId: addrToDidUrl(hn.accAddr),
+		DeviceId:  hn.config.DeviceID,
 	}, nil
 }
 
