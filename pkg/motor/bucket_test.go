@@ -25,9 +25,9 @@ func (suite *MotorTestSuite) Test_CreateBucket() {
 	})
 
 	suite.T().Run("create many buckets", func(t *testing.T) {
+		uris := make([]*types.BucketItem, 0)
 		for i := 0; i < 3; i++ {
 			var createReq mt.CreateBucketRequest
-			uris := make([]*types.BucketItem, 0)
 			if i == 0 {
 				createReq = mt.CreateBucketRequest{
 					Creator:    suite.motorWithKeys.Address,
@@ -52,6 +52,7 @@ func (suite *MotorTestSuite) Test_CreateBucket() {
 			assert.NotNil(t, b)
 
 			if i != 0 {
+				b.ResolveBuckets()
 				buckets := b.GetBuckets()
 				assert.Equal(t, len(buckets), len(uris))
 			}
