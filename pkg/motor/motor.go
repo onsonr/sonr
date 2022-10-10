@@ -18,7 +18,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/logger"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
-	lp "github.com/sonr-io/sonr/pkg/motor/x/linking"
+
 	tp "github.com/sonr-io/sonr/pkg/motor/x/transmit"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -39,7 +39,6 @@ type motorNodeImpl struct {
 	// Networking/Protocols
 	hostInitialized bool
 	discover        *dp.DiscoverProtocol
-	linking         *lp.LinkingProtocol
 	transmit        *tp.TransmitProtocol
 
 	// configuration
@@ -156,15 +155,6 @@ func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectRespons
 	if request.GetEnableDiscovery() {
 		mtr.log.Info("Enabling Discovery...")
 		mtr.discover, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// Utilize linking protocol
-	if request.GetEnableLinking() {
-		mtr.log.Info("Enabling Linking...")
-		mtr.linking, err = lp.New(context.Background(), mtr.SonrHost, mtr.callback)
 		if err != nil {
 			return nil, err
 		}

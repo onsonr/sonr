@@ -237,14 +237,20 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	return nil
 }
 
-func (hn *hostImpl) AddrInfo() ct.AddrInfo {
+func (hn *hostImpl) AddrInfo(protocols ...protocol.ID) ct.AddrInfo {
 	maddrsStr := make([]string, len(hn.host.Addrs()))
 	for i, maddr := range hn.host.Addrs() {
 		maddrsStr[i] = maddr.String()
 	}
+
+	protocolsStr := make([]string, len(protocols))
+	for i, protocol := range protocols {
+		protocolsStr[i] = string(protocol)
+	}
 	return ct.AddrInfo{
-		Id:    hn.host.ID().String(),
-		Addrs: maddrsStr,
+		Id:        hn.host.ID().String(),
+		Addrs:     maddrsStr,
+		Protocols: protocolsStr,
 	}
 }
 

@@ -23,7 +23,7 @@ type SonrHost interface {
 	Address() string
 
 	// AddrInfo returns the Libp2p hosts peer.AddrInfo as a Sonr Common AddrInfo
-	AddrInfo() ct.AddrInfo
+	AddrInfo(protocols ...protocol.ID) ct.AddrInfo
 
 	// Config returns the configuration of the node
 	Config() *config.Config

@@ -2,9 +2,11 @@ package common
 
 import (
 	"encoding/base64"
+	"errors"
 	"strings"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/skip2/go-qrcode"
 )
@@ -74,6 +76,24 @@ func (ai *AddrInfo) Base64() (string, error) {
 	return base64.StdEncoding.EncodeToString(bz), nil
 }
 
+func (ai *AddrInfo) GetLinkProtocolId() (protocol.ID, error) {
+	for _, proto := range ai.Protocols {
+		if strings.Contains(proto, "/sonr/link/") {
+			return protocol.ID(proto), nil
+		}
+	}
+	return "", errors.New("no link protocol found")
+}
+
+// ListProtocols returns a list of all the protocols that are supported by the Host as a Libp2p Protocol ID
+func (ai *AddrInfo) ListProtocols() []protocol.ID {
+	protos := make([]protocol.ID, len(ai.Protocols))
+	for i, proto := range ai.Protocols {
+		protos[i] = protocol.ID(proto)
+	}
+	return protos
+}
+
 // ToLibp2pAddrInfo converts the Sonr common AddrInfo to a libp2p peer.AddrInfo
 func (ai *AddrInfo) ToLibp2pAddrInfo() (peer.AddrInfo, error) {
 	var err error
@@ -101,6 +121,7 @@ func (ai *AddrInfo) WriteQrCode() ([]byte, error) {
 	return qrcode.Encode(b64, qrcode.Medium, 256)
 }
 
+// WriteQrCodeToFile writes the AddrInfo to a QR Code and writes it to a file
 func (ai *AddrInfo) WriteQrCodeToFile(filename string) error {
 	// Write AddrInfo to JSON
 	b64, err := ai.Base64()

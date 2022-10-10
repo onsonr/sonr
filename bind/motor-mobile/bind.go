@@ -13,6 +13,7 @@ import (
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
+	OnLinking(data []byte)
 }
 
 var (
@@ -151,6 +152,23 @@ func OpenLinking(buf []byte) ([]byte, error) {
 	}
 
 	resp, err := instance.OpenLinking(request)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Marshal()
+}
+
+func PairDevice(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.PairDeviceRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.PairDevice(request)
 	if err != nil {
 		return nil, err
 	}

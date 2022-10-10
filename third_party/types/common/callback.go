@@ -4,6 +4,7 @@ import "log"
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
+	OnLinking(data []byte)
 	// OnMotorEvent(msg string, isDone bool)
 }
 
@@ -18,5 +19,9 @@ func DefaultCallback() MotorCallback {
 // }
 
 func (cb *defaultCallback) OnDiscover(data []byte) {
+	log.Println("ERROR: MotorCallback not implemented.")
+}
+
+func (cb *defaultCallback) OnLinking(data []byte) {
 	log.Println("ERROR: MotorCallback not implemented.")
 }

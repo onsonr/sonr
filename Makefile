@@ -47,8 +47,8 @@ proto.go:
 
 ## └─ buf           - Build and push to buf.build/sonr-io/blockchain
 proto.buf:
-	cd $(ROOT_DIR)/proto && buf mod update && buf build && buf push
-	@echo "✅ Pushed Protos to Buf.Build"
+	cd $(ROOT_DIR)/proto && buf mod update && buf build
+	@echo "✅ Built protos for Buf.Build"
 
 ## clean       :   Clean all artifacts and tidy
 clean:
