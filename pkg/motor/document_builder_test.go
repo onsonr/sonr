@@ -1,51 +1,40 @@
 package motor
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
 
-/*
-	prt.CreateSchemaRequest{
-		Label: "TestUser",
-		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
-			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
-		},
-	}
-*/
-const SCHEMA_DID string = "did:snr:QmZLKGrTcUAKsUVUZ5e72rAWRg1Y1SzRJqWqcXaDqjFUqm"
-
-func Test_DocumentBuilder(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
-		if pskKey == nil || len(pskKey) != 32 {
-			t.Errorf("could not load psk key")
-			return
+func (suite *MotorTestSuite) Test_DocumentBuilder() {
+	suite.T().Run("success", func(t *testing.T) {
+		// create schema
+		createSchemaRequest := mt.CreateSchemaRequest{
+			Label: "TestUser",
+			Fields: map[string]*st.SchemaFieldKind{
+				"email": {
+					Kind: st.Kind_STRING,
+				},
+				"firstName": {
+					Kind: st.Kind_STRING,
+				},
+				"age": {
+					Kind: st.Kind_INT,
+				},
+			},
 		}
 
-		req := mt.LoginRequest{
-			Did:      ADDR,
-			Password: "password123",
-		}
-
-		m, _ := EmptyMotor(&mt.InitializeRequest{
-			DeviceId: "test_device",
-		}, common.DefaultCallback())
-		_, err := m.Login(req)
-		assert.NoError(t, err, "login succeeds")
+		resp, err := suite.motorWithKeys.CreateSchema(createSchemaRequest)
+		assert.NoError(suite.T(), err, "schema created successfully")
 
 		// query WhatIs so it's cached
-		_, err = m.GetClient().QueryWhatIs(m.GetDID().String(), SCHEMA_DID)
+		_, err = suite.motorWithKeys.QueryWhatIsByDid(resp.WhatIs.Did)
 		assert.NoError(t, err, "query whatis")
 
 		// upload object
-		builder, err := m.NewDocumentBuilder(SCHEMA_DID)
+		builder, err := suite.motorWithKeys.NewDocumentBuilder(resp.WhatIs.Did)
 		assert.NoError(t, err, "object builder created successfully")
 
 		builder.SetLabel("Player 1")
