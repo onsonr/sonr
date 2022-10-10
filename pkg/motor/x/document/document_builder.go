@@ -99,6 +99,6 @@ func (db *DocumentBuilder) Upload() (*mt.UploadDocumentResponse, error) {
 	return db.docClient.CreateDocument(db.label, db.schema.GetDID(), toUpload)
 }
 
-func (db *DocumentBuilder) GetByCID(cid string) (*st.SchemaDocument, error) {
+func (db *DocumentBuilder) GetByCID(cid string) (*st.Document, error) {
 	return db.docClient.GetDocument(cid)
 }

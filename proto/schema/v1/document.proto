@@ -8,15 +8,18 @@ option go_package = "github.com/sonr-io/sonr/x/schema/types";
 option java_multiple_files = true;
 option java_package = "io.sonr.types.schema";
 
-message SchemaDocument {
+message Document {
   // the DID for this schema should not be populated by request
   string schema_did = 1;
 
-  // label for the Document
-  string label = 2;
+  // The CID of the schema document on IPFS, should not be populated by request
+  string document_cid = 2;
 
-  // the properties of this schemadocument
-  repeated SchemaDocumentValue fields = 3;
+  // label for the Document
+  string label = 3;
+
+  // the properties of this schemas document
+  repeated DocumentValue fields = 4;
 }
 
 
@@ -41,15 +44,15 @@ message BytesValue {
 }
 
 message LinkValue {
-    SchemaDocument value = 1;
+    Document value = 1;
 }
 
 message ListValue {
-    repeated SchemaDocumentValue value = 1;
+    repeated DocumentValue value = 1;
 }
 
 
-message SchemaDocumentValue {
+message DocumentValue {
     // The key of the document value
     string key = 1;
 

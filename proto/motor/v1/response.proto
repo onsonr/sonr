@@ -150,11 +150,11 @@ message SearchResponse {
 message UploadDocumentResponse {
   int32 status = 1;
   string cid = 2;
-  sonrio.sonr.schema.SchemaDocument document = 3;
+  sonrio.sonr.schema.Document document = 3;
 }
 
 message GetDocumentResponse {
   int32 status = 1;
   string cid = 2;
-  sonrio.sonr.schema.SchemaDocument document = 3;
+  sonrio.sonr.schema.Document document = 3;
 }

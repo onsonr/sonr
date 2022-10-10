@@ -7,8 +7,8 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func NewDocumentFromDag(m map[string]interface{}, schema Schema) (*st.SchemaDocument, error) {
-	fields := make([]*st.SchemaDocumentValue, 0)
+func NewDocumentFromDag(m map[string]interface{}, schema Schema) (*st.Document, error) {
+	fields := make([]*st.DocumentValue, 0)
 
 	label, ok := m[st.IPLD_LABEL].(string)
 	if !ok {
@@ -38,21 +38,21 @@ func NewDocumentFromDag(m map[string]interface{}, schema Schema) (*st.SchemaDocu
 		return nil, err
 	}
 
-	return &st.SchemaDocument{
+	return &st.Document{
 		Label:     label,
 		Fields:    fields,
 		SchemaDid: s.Did,
 	}, nil
 }
 
-func newDocumentValueFromInterface(key string, schema Schema, keyType *st.SchemaFieldKind, value interface{}) (*st.SchemaDocumentValue, error) {
+func newDocumentValueFromInterface(key string, schema Schema, keyType *st.SchemaFieldKind, value interface{}) (*st.DocumentValue, error) {
 	switch keyType.Kind {
 	case st.Kind_BOOL:
 		v, ok := value.(bool)
 		if !ok {
 			return nil, fmt.Errorf("could not cast to bool")
 		}
-		return &st.SchemaDocumentValue{
+		return &st.DocumentValue{
 			Key:  key,
 			Kind: st.Kind_BOOL,
 			BoolValue: &st.BoolValue{
@@ -64,7 +64,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 		if !ok {
 			return nil, fmt.Errorf("could not cast to []byte")
 		}
-		return &st.SchemaDocumentValue{
+		return &st.DocumentValue{
 			Key:  key,
 			Kind: st.Kind_BYTES,
 			BytesValue: &st.BytesValue{
@@ -74,7 +74,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 	case st.Kind_INT:
 		switch v := value.(type) {
 		case int:
-			return &st.SchemaDocumentValue{
+			return &st.DocumentValue{
 				Key:  key,
 				Kind: st.Kind_INT,
 				IntValue: &st.IntValue{
@@ -82,7 +82,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 				},
 			}, nil
 		case int32:
-			return &st.SchemaDocumentValue{
+			return &st.DocumentValue{
 				Key:  key,
 				Kind: st.Kind_INT,
 				IntValue: &st.IntValue{
@@ -90,7 +90,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 				},
 			}, nil
 		case int64:
-			return &st.SchemaDocumentValue{
+			return &st.DocumentValue{
 				Key:  key,
 				Kind: st.Kind_INT,
 				IntValue: &st.IntValue{
@@ -104,7 +104,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 	case st.Kind_FLOAT:
 		switch v := value.(type) {
 		case float32:
-			return &st.SchemaDocumentValue{
+			return &st.DocumentValue{
 				Key:  key,
 				Kind: st.Kind_FLOAT,
 				FloatValue: &st.FloatValue{
@@ -112,7 +112,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 				},
 			}, nil
 		case float64:
-			return &st.SchemaDocumentValue{
+			return &st.DocumentValue{
 				Key:  key,
 				Kind: st.Kind_FLOAT,
 				FloatValue: &st.FloatValue{
@@ -127,7 +127,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 		if !ok {
 			return nil, fmt.Errorf("could not cast to string")
 		}
-		return &st.SchemaDocumentValue{
+		return &st.DocumentValue{
 			Key:  key,
 			Kind: st.Kind_STRING,
 			StringValue: &st.StringValue{
@@ -136,7 +136,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 		}, nil
 	case st.Kind_LIST:
 		s := reflect.ValueOf(value)
-		val := make([]*st.SchemaDocumentValue, s.Len())
+		val := make([]*st.DocumentValue, s.Len())
 
 		for i := 0; i < s.Len(); i++ {
 			item, err := newDocumentValueFromInterface("", schema, keyType.ListKind, s.Index(i).Interface())
@@ -145,7 +145,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 			}
 			val[i] = item
 		}
-		return &st.SchemaDocumentValue{
+		return &st.DocumentValue{
 			Key:  key,
 			Kind: st.Kind_LIST,
 			ListValue: &st.ListValue{
@@ -172,7 +172,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 		if err != nil {
 			return nil, err
 		}
-		return &st.SchemaDocumentValue{
+		return &st.DocumentValue{
 			Key:  key,
 			Kind: st.Kind_LINK,
 			LinkValue: &st.LinkValue{

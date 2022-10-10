@@ -46,7 +46,7 @@ func (ao *documentImpl) CreateDocument(
 	}, nil
 }
 
-func (ao *documentImpl) GetDocument(cid string) (*st.SchemaDocument, error) {
+func (ao *documentImpl) GetDocument(cid string) (*st.Document, error) {
 	var dag map[string]interface{}
 	err := ao.shell.DagGet(cid, &dag)
 	if err != nil {
