@@ -21,6 +21,18 @@ func (mtr *motorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsRe
 	}, nil
 }
 
+func (mtr *motorNodeImpl) QueryWhoIsByAlias(req mt.QueryWhoIsByAliasRequest) (*mt.QueryWhoIsResponse, error) {
+	resp, err := mtr.GetClient().QueryWhoIsByAlias(req.Alias)
+	if err != nil {
+		return nil, err
+	}
+
+	return &mt.QueryWhoIsResponse{
+		Code:  http.StatusAccepted,
+		WhoIs: resp,
+	}, nil
+}
+
 func (mtr *motorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
 	if wi, _, ok := mtr.Resources.GetSchema(req.Did); ok {
 		return &mt.QueryWhatIsResponse{

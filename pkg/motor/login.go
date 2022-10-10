@@ -32,7 +32,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	}
 
 	return mtr.LoginWithKeys(mt.LoginWithKeysRequest{
-		Did:       request.Did,
+		AccountId: request.AccountId,
 		Password:  request.Password,
 		AesDscKey: dsc,
 		AesPskKey: psk,
@@ -41,7 +41,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 
 // LoginWithKeys creates a motor node from a LoginRequest
 func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.LoginResponse, error) {
-	if request.Did == "" {
+	if request.AccountId == "" {
 		return mt.LoginResponse{}, fmt.Errorf("did must be provided")
 	}
 
