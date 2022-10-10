@@ -29,7 +29,7 @@ func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingRespo
 	m.SonrHost.SetStreamHandler(protocolId, m.handleLinking)
 
 	ai := m.SonrHost.AddrInfo(protocolId)
-	if request.Filename == "" {
+	if request.Filename != "" {
 		err := ai.WriteQrCodeToFile(request.Filename)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to write qr code")
