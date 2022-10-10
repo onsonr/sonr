@@ -26,29 +26,19 @@ func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingRespo
 		return nil, errors.Wrap(err, "failed to generate uuid")
 	}
 	protocolId := protocol.ID(fmt.Sprintf("/sonr/link/%s/%s", request.GetDeviceId(), id.String()))
+	ai := m.SonrHost.AddrInfo(protocolId)
 	m.SonrHost.SetStreamHandler(protocolId, m.handleLinking)
 
-	ai := m.SonrHost.AddrInfo(protocolId)
-	if request.Filename != "" {
-		err := ai.WriteQrCodeToFile(request.Filename)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to write qr code")
-		}
-
-		return &mt.LinkingResponse{
-			Success: true,
-		}, nil
-	} else {
-		qrBz, err := ai.WriteQrCode()
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to write qr code")
-		}
-
-		return &mt.LinkingResponse{
-			Success: true,
-			QrCode:  qrBz,
-		}, nil
+	// Write AddrInfo to Base64
+	b64, err := ai.Base64()
+	if err != nil {
+		return nil, err
 	}
+	return &mt.LinkingResponse{
+		Success:        true,
+		AddrInfoBase64: b64,
+		AddrInfo:       &ai,
+	}, nil
 }
 func (m *motorNodeImpl) PairDevice(request mt.PairDeviceRequest) (*mt.PairDeviceResponse, error) {
 	if !m.IsHostActive() {

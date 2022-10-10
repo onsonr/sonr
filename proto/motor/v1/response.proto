@@ -40,12 +40,14 @@ message CreateAccountWithKeysResponse {
 
 message LinkingResponse {
   bool success = 1;
-  bytes qr_code = 2;
+  sonrio.common.v1.AddrInfo addr_info = 2;
+  string addr_info_base64 = 3;
 }
 
 message PairDeviceResponse {
   bool success = 1;
   string message = 2;
+  sonrio.sonr.registry.WhoIs who_is = 3;
 }
 
 message LoginResponse {
