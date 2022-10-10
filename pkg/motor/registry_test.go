@@ -2,7 +2,9 @@ package motor
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -114,7 +116,8 @@ func (suite *MotorTestSuite) Test_LoginWithAlias() {
 		return
 	}
 
-	alias := fmt.Sprintf("%s.snr", suite.motorWithKeys.Address[:6])
+	// alias := fmt.Sprintf("%s", randSeq(6))
+	alias := randSeq(6)
 	_, err := suite.motorWithKeys.BuyAlias(rt.MsgBuyAlias{
 		Creator: suite.motorWithKeys.Address,
 		Name:    alias,
@@ -129,4 +132,14 @@ func (suite *MotorTestSuite) Test_LoginWithAlias() {
 
 	_, err = suite.motorWithKeys.LoginWithKeys(req)
 	assert.NoError(suite.T(), err, "login succeeds")
+}
+
+func randSeq(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
