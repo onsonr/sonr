@@ -21,9 +21,10 @@ type Wallet struct {
 	pool *pool.Pool
 	ID   party.ID
 
-	Configs   map[party.ID]*cmp.Config
-	Network   *Network
-	Threshold int
+	Configs   		map[party.ID]*cmp.Config
+	ConfigsLock		sync.Mutex
+	Network   		*Network
+	Threshold 		int
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
@@ -41,7 +42,9 @@ func GenerateWallet(cb common.MotorCallback, options ...WalletOption) (*Wallet, 
 			if err != nil {
 				return
 			}
+			w.ConfigsLock.Lock()
 			w.Configs[conf.ID] = conf
+			w.ConfigsLock.Unlock()
 		}(id)
 	}
 	wg.Wait()
