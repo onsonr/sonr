@@ -2,6 +2,7 @@ package motor
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
@@ -12,6 +13,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, error) {
@@ -32,7 +34,7 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 	}
 
 	return mtr.LoginWithKeys(mt.LoginWithKeysRequest{
-		Did:       request.Did,
+		AccountId: request.AccountId,
 		Password:  request.Password,
 		AesDscKey: dsc,
 		AesPskKey: psk,
@@ -41,20 +43,34 @@ func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 
 // LoginWithKeys creates a motor node from a LoginRequest
 func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.LoginResponse, error) {
-	if request.Did == "" {
+	if request.AccountId == "" {
 		return mt.LoginResponse{}, fmt.Errorf("did must be provided")
 	}
 
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(mtr.clientMode)
 
-	// set address manually
-	// mtr.Address = request.Did
-
-	// fetch DID document from chain
-	whoIs, err := mtr.Cosmos.QueryWhoIs(request.Did)
-	if err != nil {
-		return mt.LoginResponse{}, fmt.Errorf("error fetching whois: %s", err)
+	// if the given ID is an alias, first fetch the address
+	var (
+		whoIs *rt.WhoIs
+		err   error
+	)
+	if strings.HasSuffix(request.AccountId, ".snr") {
+		whoIsResp, err := mtr.QueryWhoIsByAlias(mt.QueryWhoIsByAliasRequest{
+			Alias: request.AccountId,
+		})
+		if err != nil {
+			return mt.LoginResponse{}, fmt.Errorf("query WhoIs by alias: %s", err)
+		}
+		whoIs = whoIsResp.WhoIs
+	} else {
+		whoIsResp, err := mtr.QueryWhoIs(mt.QueryWhoIsRequest{
+			Did: request.AccountId,
+		})
+		if err != nil {
+			return mt.LoginResponse{}, fmt.Errorf("query WhoIs: %s", err)
+		}
+		whoIs = whoIsResp.WhoIs
 	}
 
 	// TODO: this is a hacky workaround for the Id not being populated in the DID document
@@ -71,7 +87,7 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 	}
 
 	// fetch vault shards
-	shards, err := vault.New().GetVaultShards(request.Did)
+	shards, err := vault.New().GetVaultShards(whoIs.Owner)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}

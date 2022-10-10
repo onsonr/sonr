@@ -44,8 +44,8 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 
 	if req.AuthInfo != nil {
 		if res, err := instance.Login(mt.LoginRequest{
-			Did:      req.AuthInfo.Did,
-			Password: req.AuthInfo.Password,
+			AccountId: req.AuthInfo.Did,
+			Password:  req.AuthInfo.Password,
 		}); err == nil {
 			return res.Marshal()
 		}

@@ -45,7 +45,7 @@ func (suite *MotorTestSuite) Test_CreateBucket() {
 					Content:    uris,
 				}
 			}
-
+      
 			_, b, err := suite.motorWithKeys.CreateBucket(createReq)
 
 			assert.NoError(t, err)
