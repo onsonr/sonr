@@ -18,6 +18,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/logger"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
+	lp "github.com/sonr-io/sonr/pkg/motor/x/linking"
 	tp "github.com/sonr-io/sonr/pkg/motor/x/transmit"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -33,11 +34,13 @@ type motorNodeImpl struct {
 	DID         did.DID
 	DIDDocument did.Document
 	SonrHost    host.SonrHost
+	callback    common.MotorCallback
 
-	// internal protocols
-	callback common.MotorCallback
-	discover *dp.DiscoverProtocol
-	transmit *tp.TransmitProtocol
+	// Networking/Protocols
+	hostInitialized bool
+	discover        *dp.DiscoverProtocol
+	linking         *lp.LinkingProtocol
+	transmit        *tp.TransmitProtocol
 
 	// configuration
 	homeDir    string
@@ -70,13 +73,14 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 	}
 
 	return &motorNodeImpl{
-		DeviceID:   r.GetDeviceId(),
-		homeDir:    r.GetHomeDir(),
-		supportDir: r.GetSupportDir(),
-		tempDir:    r.GetTempDir(),
-		clientMode: r.GetClientMode(),
-		callback:   cb,
-		logLevel:   r.LogLevel,
+		hostInitialized: false,
+		DeviceID:        r.GetDeviceId(),
+		homeDir:         r.GetHomeDir(),
+		supportDir:      r.GetSupportDir(),
+		tempDir:         r.GetTempDir(),
+		clientMode:      r.GetClientMode(),
+		callback:        cb,
+		logLevel:        r.LogLevel,
 	}, nil
 }
 
@@ -137,11 +141,13 @@ func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectRespons
 		}, nil
 	}
 
+	// Setup host config
 	var err error
-	// Create new host
+	cnfg := config.DefaultConfig(config.Role_MOTOR, config.WithAccountAddress(mtr.GetAddress()), config.WithDeviceID(mtr.DeviceID), config.WithHomePath(mtr.homeDir), config.WithSupportPath(mtr.supportDir), config.WithTempPath(mtr.tempDir))
 
+	// Create new host
 	mtr.log.Info("Starting host...")
-	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), config.DefaultConfig(config.Role_MOTOR, config.WithAccountAddress(mtr.GetAddress()), config.WithDeviceID(mtr.DeviceID)), mtr.callback)
+	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), cnfg, mtr.callback)
 	if err != nil {
 		return nil, err
 	}
@@ -150,6 +156,15 @@ func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectRespons
 	if request.GetEnableDiscovery() {
 		mtr.log.Info("Enabling Discovery...")
 		mtr.discover, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Utilize linking protocol
+	if request.GetEnableLinking() {
+		mtr.log.Info("Enabling Linking...")
+		mtr.linking, err = lp.New(context.Background(), mtr.SonrHost, mtr.callback)
 		if err != nil {
 			return nil, err
 		}
@@ -165,6 +180,7 @@ func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectRespons
 	}
 
 	mtr.log.Info("✅ Motor Host Connected")
+	mtr.hostInitialized = true
 	return &mt.ConnectResponse{
 		Success: true,
 		Message: "Successfully connected host to network",
@@ -235,6 +251,10 @@ func (w *motorNodeImpl) GetVerificationMethod(id party.ID) (*did.VerificationMet
 		Controller:      w.DID,
 		PublicKeyBase58: pub,
 	}, nil
+}
+
+func (w *motorNodeImpl) IsHostActive() bool {
+	return w.hostInitialized
 }
 
 /*

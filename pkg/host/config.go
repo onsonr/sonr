@@ -22,6 +22,9 @@ type SonrHost interface {
 	// Address returns the account address of the underlying wallet for the host
 	Address() string
 
+	// AddrInfo returns the Libp2p hosts peer.AddrInfo as a Sonr Common AddrInfo
+	AddrInfo() ct.AddrInfo
+
 	// Config returns the configuration of the node
 	Config() *config.Config
 

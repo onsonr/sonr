@@ -25,7 +25,6 @@ type Session struct {
 	node         host.SonrHost
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
-	messages     chan *LobbyEvent
 	subscription *ps.Subscription
 	topic        *ps.Topic
 	olc          string
@@ -36,7 +35,6 @@ type Session struct {
 
 // Initializing the local struct.
 func (e *LinkingProtocol) buildNewSession(topic *ps.Topic, cb common.MotorCallback) error {
-
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
@@ -56,12 +54,10 @@ func (e *LinkingProtocol) buildNewSession(topic *ps.Topic, cb common.MotorCallba
 		ctx:          e.ctx,
 		selfID:       e.node.HostID(),
 		node:         e.node,
-		updateFunc:   e.Update,
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
 		olc:          sub.Topic(),
-		messages:     make(chan *LobbyEvent),
 		peers:        make([]*ct.Peer, 0),
 	}
 
@@ -70,18 +66,6 @@ func (e *LinkingProtocol) buildNewSession(topic *ps.Topic, cb common.MotorCallba
 	go e.session.handleTopic()
 	go e.session.handleEvents()
 	go e.session.handleTimeout()
-	return nil
-}
-
-// Publish publishes a LobbyMessage to the Local Topic
-func (p *Session) Publish(data *ct.Peer) error {
-	// Create Message Buffer
-	buf := createLobbyMsgBuf(data)
-	err := p.topic.Publish(p.ctx, buf)
-	if err != nil {
-		logger.Errorf("%s - Failed to Publish Event", err)
-		return err
-	}
 	return nil
 }
 

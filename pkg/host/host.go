@@ -237,6 +237,17 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	return nil
 }
 
+func (hn *hostImpl) AddrInfo() ct.AddrInfo {
+	maddrsStr := make([]string, len(hn.host.Addrs()))
+	for i, maddr := range hn.host.Addrs() {
+		maddrsStr[i] = maddr.String()
+	}
+	return ct.AddrInfo{
+		Id:    hn.host.ID().String(),
+		Addrs: maddrsStr,
+	}
+}
+
 func (hn *hostImpl) Close() error {
 	err := hn.host.Close()
 	if err != nil {

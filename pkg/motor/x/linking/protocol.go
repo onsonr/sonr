@@ -49,24 +49,6 @@ func New(ctx context.Context, host host.SonrHost, cb common.MotorCallback, optio
 	return protocol, nil
 }
 
-// Update method publishes peer data to the topic
-func (p *LinkingProtocol) Update() error {
-	if p.mode.IsMotor() {
-		// Verify Peer is not nil
-		peer, err := p.node.Peer()
-		if err != nil {
-			return err
-		}
-
-		// Publish Event
-		err = p.session.Publish(peer)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 // Close method closes the ExchangeProtocol
 func (p *LinkingProtocol) Close() error {
 	p.session.eventHandler.Cancel()

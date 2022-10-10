@@ -83,8 +83,37 @@ message CreateAccountWithKeysRequest {
   map<string, string> metadata = 4;
 }
 
-// Login requires the DID of the account being logged into,
-// and optionally a password if the vault pw is being used
+// LinkingRequest opens a pubsub topic session in order to pair the current device with an existing Sonr Account.
+message LinkingRequest {
+  // Device ID of the requesting device. This is the only required field.
+  string device_id = 1;
+
+  // Filename is an optional field that can be used to specify the name of the output QR code file.
+  string filename = 2; // optional
+}
+
+// PairDeviceRequest attempts to join a pubsub topic session in order to pair the current device with an existing Sonr Account.
+message PairDeviceRequest {
+  // The Protocol ID of the session to join. This is the only required field.
+  string protocol_id = 1;
+
+  // The Peer ID of the device to pair with. This is optional and will be removed after this implementation is stable
+  string peer_id = 2;
+
+  // The Peer AddrInfo
+  common.v1.AddrInfo addr_info = 3;
+
+  // The Peer AddrInfo as Base64 Encoded String
+  string addr_info_base64 = 4;
+
+  // Device Shared Cred
+  bytes aes_dsc_key = 5;
+
+  // Password Secure Key
+  bytes aes_psk_key = 6;
+}
+
+// Login requires the DID of the account being logged into, and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 message LoginRequest {
   string did = 1;
@@ -111,9 +140,7 @@ message PaymentRequest {
   string memo = 4;
 }
 
-// -----------------------------------------------------------------------------
 // Registry Models
-// -----------------------------------------------------------------------------
 message QueryWhoIsRequest {
   string did = 1;
 }

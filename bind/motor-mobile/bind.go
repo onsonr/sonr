@@ -140,6 +140,23 @@ func Connect(buf []byte) ([]byte, error) {
 	return resp.Marshal()
 }
 
+func OpenLinking(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.LinkingRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, err := instance.OpenLinking(request)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Marshal()
+}
+
 func CreateBucket(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWalletNotInitialized

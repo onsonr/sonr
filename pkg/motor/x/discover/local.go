@@ -72,7 +72,7 @@ func (e *DiscoverProtocol) initLocal(topic *ps.Topic, cb common.MotorCallback) e
 	return nil
 }
 
-// Publish publishes a LobbyMessage to the Local Topic
+// Publish publishes a PubSubLobbyMessage to the Local Topic
 func (p *Local) Publish(data *ct.Peer) error {
 	// Create Message Buffer
 	buf := createLobbyMsgBuf(data)
@@ -130,7 +130,7 @@ func (p *Local) handleTopic() {
 		// Check Message and Validate not User
 		if msg.ReceivedFrom != p.selfID {
 			// Unmarshal Message
-			data := &st.LobbyMessage{}
+			data := &st.PubSubLobbyMessage{}
 			err = data.Unmarshal(msg.Data)
 			if err != nil {
 				logger.Errorf("%s - Failed to Unmarshal Message", err)
@@ -161,7 +161,7 @@ func (p *Local) handleEvents() {
 func (lp *Local) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
-	ev := &st.RefreshEvent{
+	ev := &st.DiscoverEvent{
 		Peers:      lp.peers,
 		TopicName:  lp.olc,
 		ReceivedAt: int64(time.Now().Unix()),
@@ -176,7 +176,7 @@ func (lp *Local) callRefresh() {
 	lp.callback.OnDiscover(buf)
 }
 
-// callUpdate publishes a LobbyMessage to the Local Topic
+// callUpdate publishes a PubSubLobbyMessage to the Local Topic
 func (lp *Local) callUpdate() error {
 	// Create Event
 	logger.Debug("Sending Update to Lobby")
@@ -191,7 +191,7 @@ func (lp *Local) callUpdate() error {
 // createLobbyMsgBuf Creates a new Message Buffer for Local Topic
 func createLobbyMsgBuf(p *ct.Peer) []byte {
 	// Marshal Event
-	msg := st.LobbyMessage{From: p}
+	msg := st.PubSubLobbyMessage{From: p}
 	_, err := msg.Marshal()
 	if err != nil {
 		logger.Errorf("%s - Failed to Marshal Event", err)

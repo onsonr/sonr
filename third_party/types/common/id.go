@@ -1,6 +1,13 @@
 package common
 
-import "strings"
+import (
+	"encoding/base64"
+	"strings"
+
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
+	"github.com/skip2/go-qrcode"
+)
 
 type AccountId string
 
@@ -42,4 +49,63 @@ func (id AccountId) IsPeerId() bool {
 
 func (id AccountId) String() string {
 	return string(id)
+}
+
+func AddrInfoFromBase64(aistr string) (*AddrInfo, error) {
+	bz, err := base64.StdEncoding.DecodeString(aistr)
+	if err != nil {
+		return nil, err
+	}
+	var ai AddrInfo
+	err = ai.Unmarshal(bz)
+	if err != nil {
+		return nil, err
+	}
+	return &ai, nil
+}
+
+// Base64 returns the base64 encoded string of the Marshaled AddrInfo
+func (ai *AddrInfo) Base64() (string, error) {
+	// Write AddrInfo to bytes
+	bz, err := ai.Marshal()
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(bz), nil
+}
+
+// ToLibp2pAddrInfo converts the Sonr common AddrInfo to a libp2p peer.AddrInfo
+func (ai *AddrInfo) ToLibp2pAddrInfo() (peer.AddrInfo, error) {
+	var err error
+	maddrs := make([]multiaddr.Multiaddr, len(ai.Addrs))
+	for i, addr := range ai.Addrs {
+		maddrs[i], err = multiaddr.NewMultiaddr(addr)
+	}
+	if err != nil {
+		return peer.AddrInfo{}, err
+	}
+	return peer.AddrInfo{
+		ID:    peer.ID(ai.Id),
+		Addrs: maddrs,
+	}, nil
+}
+
+// WriteQrCode writes the AddrInfo to a QR Code and returns the base64 encoded string
+func (ai *AddrInfo) WriteQrCode() ([]byte, error) {
+	// Write AddrInfo to JSON
+	b64, err := ai.Base64()
+	if err != nil {
+		return nil, err
+	}
+
+	return qrcode.Encode(b64, qrcode.Medium, 256)
+}
+
+func (ai *AddrInfo) WriteQrCodeToFile(filename string) error {
+	// Write AddrInfo to JSON
+	b64, err := ai.Base64()
+	if err != nil {
+		return err
+	}
+	return qrcode.WriteFile(b64, qrcode.Medium, 256, filename)
 }
