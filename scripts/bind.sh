@@ -33,7 +33,7 @@ while getopts "iawm" opt; do
       IOS_ARTIFACT=${BUILDDIR}/Motor.xcframework
       echo "🔷 Binding iOS Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
-      gomobile bind -ldflags='-s -w' -target=ios,macos,iossimulator -prefix=SNR  -o ${IOS_ARTIFACT} -v
+      gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR  -o ${IOS_ARTIFACT} -v
       cd ${BUILDDIR}
 
       if [ "$TAR_COMPRESS" = true ] ; then
@@ -41,6 +41,19 @@ while getopts "iawm" opt; do
         tar -czf ${BUILDDIR}/motor-${VERSION}-ios.tar.gz Motor.xcframework
         rm -rf ${IOS_ARTIFACT}
         echo "✅ iOS Tarball written to: ${IOS_TAR_BALL}"
+      fi
+      ;;
+    m)
+      MAC_ARTIFACT=${BUILDDIR}/MotorMac.xcframework
+      echo "🔷 Binding macOS Artifact Version ${VERSION}..."
+      cd ${MOTOR_LIB_DIR}
+      gomobile bind -ldflags='-s -w' -target=macos -prefix=SNR  -o ${MAC_ARTIFACT} -v
+      cd ${BUILDDIR}
+
+      if [ "$TAR_COMPRESS" = true ] ; then
+        echo "🔷 Compressing Mac Artifact..."
+        tar -czf ${BUILDDIR}/motor-${VERSION}-macos.tar.gz MotorMac.xcframework
+        rm -rf ${IOS_ARTIFACT}
       fi
       ;;
     w)

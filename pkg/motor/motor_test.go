@@ -15,7 +15,7 @@ import (
 
 // TODO: improve test suite (make more robust for CI/CID)
 // const ADDR = "snr1k6wwsvvpfa60hwfnll3l5ygnfmrdrqw8rfedh7"
-const ADDR = "snr15sr8yqegpg4qvare73hlpssyuaw7jgc0s4azag"
+const ADDR = "snr1gfdqqq636rh205du7036ks3tvcyfsw8cdrqycr"
 
 func Test_DecodeTxData(t *testing.T) {
 	data := "0A91010A242F736F6E72696F2E736F6E722E72656769737472792E4D736743726561746557686F497312691267122A736E723134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A35371A31122F6469643A736E723A3134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A353730BC8FA197063801"
@@ -46,8 +46,8 @@ func Test_GetAddress(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+		AccountId: ADDR,
+		Password:  "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{

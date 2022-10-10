@@ -9,6 +9,7 @@ jobs:
   run-bulid:
     strategy:
       fail-fast: false
+      max-parallel: 8
       matrix:
         os: [ubuntu-latest, macos-latest]
         go-version: [1.18, 1.19]
@@ -38,12 +39,17 @@ jobs:
         continue-on-error: false
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
+      - name: Run simulate
+        continue-on-error: true
+        run: go test -benchmem -run=^$ -bench ^BenchmarkSimulation ./app -NumBlocks=200 -BlockSize 50 -Commit=true -Verbose=true -Enabled=true
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
 
 
   bind-them-all:
     strategy:
+      max-parallel: 8
       matrix:
         platform: [ios, web, android]
         build-on: [ubuntu-latest, macos-latest]

@@ -1,0 +1,23 @@
+FROM ignitehq/cli:0.23.0
+
+USER root
+
+WORKDIR /app
+COPY . .
+RUN mv /app/test-config.yaml /app/config.yml
+RUN chown -R tendermint /app && chown -R tendermint /go
+
+USER tendermint
+
+RUN go install github.com/tomwright/dasel/cmd/dasel@master
+RUN ignite chain init
+
+EXPOSE 1317
+EXPOSE 26656
+EXPOSE 26657
+EXPOSE 4500
+EXPOSE 9090
+EXPOSE 9091
+
+ENTRYPOINT ["ignite","chain", "serve"]
+

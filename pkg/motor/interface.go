@@ -49,15 +49,14 @@ type MotorNode interface {
 
 	// Buckets
 
-	/*
-		Creates a new bucket with the defined properties in the request.
-		Returns and instance of `bucket`. before returning both content and buckets are resolved.
-	*/
-	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
+	// Creates a new bucket with the defined properties in the request. Returns and instance of `bucket`. before returning both content and buckets are resolved.
+	CreateBucket(mt.CreateBucketRequest) (*mt.CreateBucketResponse, bucket.Bucket, error)
 
 	GetBucket(did string) (bucket.Bucket, error)
 
 	GetBuckets(ctx context.Context) ([]bucket.Bucket, error)
+
+	GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error)
 	/*
 		Updates a pre existing Bucket's label. before calling update the bucket must already be resolved using `GetBucket`
 	*/
@@ -84,4 +83,6 @@ type MotorNode interface {
 	QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error)
 	QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error)
 	QueryObject(cid string) (map[string]interface{}, error)
+
+	UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error)
 }

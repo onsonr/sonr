@@ -43,6 +43,14 @@ func SimulateMsgCreateScehma(ak types.AccountKeeper, bk types.BankKeeper, k keep
 			Link:     "QmZcGZYuoff9BQSqhzR9aqWfQBHU6bCMzKH7u25xZAijZB",
 		})
 
+		createMsg.Fields = append(createMsg.Fields, &types.SchemaKindDefinition{
+			Name:  "attributes",
+			Field: types.SchemaKind_LIST,
+			Item: &types.SchemaItemKindDefinition{
+				Field: types.SchemaKind_STRING,
+			},
+		})
+
 		createMsg.Metadata = []*types.MetadataDefintion{
 			{
 				Key:   "image",

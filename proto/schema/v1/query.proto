@@ -38,6 +38,7 @@ service Query {
     option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is/{creator}";
   }
 
+  // Queries a whatis by did
   rpc WhatIsByDid(QueryWhatIsByDidRequest) returns (QueryWhatIsByDidResponse) {
     option (google.api.http).get = "/sonr-io/sonr/schema/query/what_is/{did}";
   }

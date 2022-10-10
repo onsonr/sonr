@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -19,8 +18,8 @@ func Test_CreateBucket(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+		AccountId: ADDR,
+		Password:  "password123",
 	}
 	m, _ := EmptyMotor(&mt.InitializeRequest{
 		DeviceId: "test_device",
@@ -35,7 +34,7 @@ func Test_CreateBucket(t *testing.T) {
 		Role:       types.BucketRole_USER,
 		Content:    make([]*types.BucketItem, 0),
 	}
-	b, err := m.CreateBucket(context.Background(), createReq)
+	_, b, err := m.CreateBucket(createReq)
 	assert.NoError(t, err)
 	assert.NotNil(t, b)
 }
@@ -48,8 +47,8 @@ func Test_GetBucket(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+		AccountId: ADDR,
+		Password:  "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{
