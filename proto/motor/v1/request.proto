@@ -84,14 +84,24 @@ message CreateAccountWithKeysRequest {
 // and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 message LoginRequest {
-  string did = 1;
+  // Either the DID or an alias of the account
+  string account_id = 1;
+
+  // The account password
   string password = 2;
 }
 
 message LoginWithKeysRequest {
-  string did = 1;
+  // Either the DID or an alias of the account
+  string account_id = 1;
+
+  // The account password
   string password = 2;
+
+  // The device-specific credential, known only to the logging in device
   bytes aes_dsc_key = 3;
+
+  // The preshared key, known to all devices of the account
   bytes aes_psk_key = 4;
 }
 
@@ -113,6 +123,10 @@ message PaymentRequest {
 // -----------------------------------------------------------------------------
 message QueryWhoIsRequest {
   string did = 1;
+}
+
+message QueryWhoIsByAliasRequest {
+  string alias = 1;
 }
 
 // -----------------------------------------------------------------------------
