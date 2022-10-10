@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,12 +25,12 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 			AesPskKey: pskKey,
 		}
 
-		_, err := suite.motor.LoginWithKeys(req)
+		_, err := suite.motorWithKeys.LoginWithKeys(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", suite.motor.GetBalance())
-			fmt.Println("address: ", suite.motor.Address)
+			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())
+			fmt.Println("address: ", suite.motorWithKeys.Address)
 		}
 	})
 
@@ -54,29 +54,34 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 			AesPskKey: pskKey,
 		}
 
-		_, err := suite.motor.LoginWithKeys(req)
+		_, err := suite.motorWithKeys.LoginWithKeys(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", suite.motor.GetBalance())
-			fmt.Println("address: ", suite.motor.Address)
+			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())
+			fmt.Println("address: ", suite.motorWithKeys.Address)
 		}
 	})
 }
 
-func (suite *MotorTestSuite) Test_LoginWithKeyring() {
+func Test_LoginWithKeyring(t *testing.T) {
 	req := mt.LoginRequest{
-		AccountId: suite.motor.Address,
+		AccountId: ADDR,
 		Password:  "password123",
 	}
 
-	fmt.Println("Empty Motor generated")
-	_, err := suite.motor.Login(req)
-	assert.NoError(suite.T(), err, "login succeeds")
+	m, err := EmptyMotor(&mt.InitializeRequest{
+		DeviceId:   "test_device",
+		ClientMode: mt.ClientMode_ENDPOINT_BETA,
+	}, common.DefaultCallback())
+	assert.NoError(t, err, "create motor")
+
+	_, err = m.Login(req)
+	assert.NoError(t, err, "login succeeds")
 
 	if err == nil {
-		fmt.Println("balance: ", suite.motor.GetBalance())
-		fmt.Println("address: ", suite.motor.Address)
+		fmt.Println("balance: ", m.GetBalance())
+		fmt.Println("address: ", m.Address)
 	}
 }
 
@@ -117,11 +122,9 @@ func (suite *MotorTestSuite) Test_LoginWithAlias() {
 	}
 
 	// alias := fmt.Sprintf("%s", randSeq(6))
-	alias := randSeq(6)
-	_, err := suite.motorWithKeys.BuyAlias(rt.MsgBuyAlias{
-		Creator: suite.motorWithKeys.Address,
-		Name:    alias,
-	})
+	alias := fmt.Sprintf("%s.snr", randSeq(6))
+	suite.motorWithKeys.DIDDocument.AddAlias(alias)
+	_, err := updateWhoIs(suite.motorWithKeys)
 	assert.NoError(suite.T(), err, "buy alias successfully")
 
 	req := mt.LoginWithKeysRequest{

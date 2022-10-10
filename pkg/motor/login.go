@@ -87,7 +87,7 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 	}
 
 	// fetch vault shards
-	shards, err := vault.New().GetVaultShards(request.AccountId)
+	shards, err := vault.New().GetVaultShards(whoIs.Owner)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}

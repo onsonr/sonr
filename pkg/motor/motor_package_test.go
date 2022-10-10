@@ -24,20 +24,7 @@ func (suite *MotorTestSuite) SetupSuite() {
 
 	var err error
 
-	// // setup motor
-	// suite.motor, err = EmptyMotor(&mt.InitializeRequest{
-	// 	DeviceId:   "test_device",
-	// 	ClientMode: mt.ClientMode_ENDPOINT_BETA,
-	// }, common.DefaultCallback())
-	// if err != nil {
-	// 	suite.T().Error("Failed to setup test suite motor")
-	// }
-
-	// err = setupTestAddress(suite.motor)
-	// if err != nil {
-	// 	suite.T().Error("Failed to setup test address")
-	// }
-
+	// setup motor
 	suite.motorWithKeys, err = EmptyMotor(&mt.InitializeRequest{
 		DeviceId:   "test_device",
 		ClientMode: mt.ClientMode_ENDPOINT_BETA,
@@ -52,7 +39,6 @@ func (suite *MotorTestSuite) SetupSuite() {
 		suite.T().Error("Failed to setup test address with keys")
 	}
 
-	// fmt.Printf("Setup test address: %s\n", suite.motor.Address)
 	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.Address)
 }
 
