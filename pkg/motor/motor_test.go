@@ -45,8 +45,8 @@ func Test_GetAddress(t *testing.T) {
 	}
 
 	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+		AccountId: ADDR,
+		Password:  "password123",
 	}
 
 	m, _ := EmptyMotor(&mt.InitializeRequest{

@@ -2,9 +2,12 @@ package motor
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +20,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 		}
 
 		req := mt.LoginWithKeysRequest{
-			Did:       suite.motorWithKeys.Address,
+			AccountId: suite.motorWithKeys.Address,
 			Password:  "password123",
 			AesPskKey: pskKey,
 		}
@@ -46,7 +49,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 		}
 
 		req := mt.LoginWithKeysRequest{
-			Did:       suite.motorWithKeys.Address,
+			AccountId: suite.motorWithKeys.Address,
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
 		}
@@ -63,8 +66,8 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 
 func (suite *MotorTestSuite) Test_LoginWithKeyring() {
 	req := mt.LoginRequest{
-		Did:      suite.motor.Address,
-		Password: "password123",
+		AccountId: suite.motor.Address,
+		Password:  "password123",
 	}
 
 	fmt.Println("Empty Motor generated")
@@ -92,8 +95,8 @@ func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
 	}
 
 	req := mt.LoginWithKeysRequest{
-		Did:       suite.motorWithKeys.Address,
-		AesDscKey: aesKey,
+		AccountId: suite.motorWithKeys.Address,
+		Password:  "password123",
 		AesPskKey: pskKey,
 	}
 
@@ -104,4 +107,39 @@ func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
 	suite.motorWithKeys.DIDDocument.AddAlias("gotest.snr")
 	_, err = updateWhoIs(suite.motorWithKeys)
 	assert.NoError(suite.T(), err, "updates successfully")
+}
+
+func (suite *MotorTestSuite) Test_LoginWithAlias() {
+	pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
+	if pskKey == nil || len(pskKey) != 32 {
+		suite.T().Errorf("could not load psk key")
+		return
+	}
+
+	// alias := fmt.Sprintf("%s", randSeq(6))
+	alias := randSeq(6)
+	_, err := suite.motorWithKeys.BuyAlias(rt.MsgBuyAlias{
+		Creator: suite.motorWithKeys.Address,
+		Name:    alias,
+	})
+	assert.NoError(suite.T(), err, "buy alias successfully")
+
+	req := mt.LoginWithKeysRequest{
+		AccountId: alias,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	_, err = suite.motorWithKeys.LoginWithKeys(req)
+	assert.NoError(suite.T(), err, "login succeeds")
+}
+
+func randSeq(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
