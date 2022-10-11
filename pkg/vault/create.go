@@ -3,17 +3,12 @@ package vault
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"time"
 
-	"github.com/joho/godotenv"
-	"github.com/sonr-io/sonr/internal/projectpath"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
@@ -85,20 +80,9 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 		return DefaultVaultService, fmt.Errorf("error creating vault: %s", errRes.Message)
 	}
 
-	env_path := filepath.Join(projectpath.Root, ".env")
-
-	var uri string
-	// by default use .env if it exists
-	_, err = os.Stat(env_path)
-	if errors.Is(err, os.ErrNotExist) {
-		uri = "https://vault.sonr.ws"
-	} else {
-		err = godotenv.Load(env_path)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		uri = os.Getenv("VAULT_ENDPOINT")
+	uri, err := getVaultUri()
+	if err != nil {
+		fmt.Printf("Error when retrieving vault uri: %s\n", err)
 	}
 
 	return did.Service{

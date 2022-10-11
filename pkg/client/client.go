@@ -151,12 +151,3 @@ func (c *Client) GetIPFSApiAddress() string {
 
 	return os.Getenv("IPFS_API_ADDRESS")
 }
-
-func (c *Client) PrintConnectionEndpoints() {
-	log.Println("Connection Endpoints:")
-	log.Printf("\tREST: %s\n", c.GetAPIAddress())
-	log.Printf("\tRPC: %s\n", c.GetRPCAddress())
-	log.Printf("\tFaucet: %s\n", c.GetFaucetAddress())
-	log.Printf("\tIPFS: %s\n", c.GetIPFSAddress())
-	log.Printf("\tIPFS API: %s\n", c.GetIPFSApiAddress())
-}
