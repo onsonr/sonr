@@ -63,7 +63,7 @@ func (suite *ClientTestSuite) SetupSuite() {
 	}
 
 	// copy .env file to project root
-	test_env := filepath.Join(projectpath.Root, "pkg/client/test_file/.env.test")
+	test_env := filepath.Join(projectpath.Root, ".env.example")
 	input, err := ioutil.ReadFile(test_env)
 	if err != nil {
 		fmt.Printf("Failed to read test .env file: %s", err)
