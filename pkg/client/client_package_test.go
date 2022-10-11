@@ -69,13 +69,6 @@ func (suite *ClientTestSuite) SetupSuite() {
 		fmt.Printf("Failed to check existence of .env file: %s", err)
 	}
 
-	// copy .env file to project root
-	// test_env := filepath.Join(projectpath.Root, ".env.example")
-	// input, err := ioutil.ReadFile(test_env)
-	// if err != nil {
-	// 	fmt.Printf("Failed to read test .env file: %s", err)
-	// }
-
 	err = ioutil.WriteFile(env_path, []byte(ENV_FILE_CONTENT), 0644)
 	if err != nil {
 		fmt.Printf("Failed to create .env file: %s", err)
