@@ -774,13 +774,13 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 }
 
 // RegisterUpgradeHandlers returns upgrade handlers
-func (app *App) RegisterUpgradeHandlers(cfg module.Configurator) {
-	app.UpgradeKeeper.SetUpgradeHandler("v10",
-		func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-			// transfer module consensus version has been bumped to 2
-			return app.mm.RunMigrations(ctx, cfg, fromVM)
-		})
-}
+//func (app *App) RegisterUpgradeHandlers(cfg module.Configurator) {
+//	app.UpgradeKeeper.SetUpgradeHandler("v10",
+//		func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
+//			// transfer module consensus version has been bumped to 2
+//			return app.mm.RunMigrations(ctx, cfg, fromVM)
+//		})
+//}
 
 // GetMaccPerms returns a copy of the module account permissions
 func GetMaccPerms() map[string][]string {
