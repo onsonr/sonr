@@ -22,23 +22,24 @@ func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingRespo
 	var err error
 	cnfg := config.DefaultConfig(config.Role_MOTOR, config.WithDeviceID(request.DeviceId))
 
-	// Create new host
-	m.log.Info("Starting host...")
+	// Create new temporary host
 	h, err := host.NewDefaultHost(context.Background(), cnfg, m.callback)
 	if err != nil {
 		return nil, err
 	}
 
-	m.log.Info("Enabling Linking StreamHandler...")
+	// Generate Protocol ID
 	id, err := uuid.NewUUID()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate uuid")
 	}
+
+	// Setup protocol handler
 	protocolId := protocol.ID(fmt.Sprintf("/sonr/link/%s/%s", request.GetDeviceId(), id.String()))
-	ai := h.AddrInfo(protocolId)
 	h.SetStreamHandler(protocolId, m.handleLinking)
 
 	// Write AddrInfo to Base64
+	ai := h.AddrInfo(protocolId)
 	b64, err := ai.Base64()
 	if err != nil {
 		return nil, err
