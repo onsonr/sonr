@@ -19,7 +19,7 @@ import (
 
 const TEMP_ENV_RENAME_FILE_NAME = ".env.temp.rename.client.package.test"
 
-type Client interface{
+type Client interface {
 	GetFaucetAddress() string
 	GetRPCAddress() string
 	GetAPIAddress() string
@@ -33,7 +33,7 @@ type Client interface{
 
 type ClientTestSuite struct {
 	suite.Suite
-	motorNode *motor.MotorNodeImpl
+	motorNode motor.MotorNode
 }
 
 func (suite *ClientTestSuite) SetupSuite() {

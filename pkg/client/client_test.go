@@ -2,7 +2,11 @@ package client_test
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
+	"github.com/joho/godotenv"
+	"github.com/sonr-io/sonr/internal/projectpath"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/third_party/types/common"
 
@@ -36,4 +40,39 @@ func (suite *ClientTestSuite) Test_QueryWhoIs() {
 	acc, err := suite.motorNode.GetClient().QueryWhoIs(suite.motorNode.GetAddress())
 	assert.NoError(suite.T(), err, "QueryAccount succeeds")
 	fmt.Printf("-- Get Account --\n%+v\n", acc)
+}
+
+func (suite *ClientTestSuite) Test_GetFaucetAddress() {
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
+  assert.NoError(suite.T(), err, "Load .env success")
+	assert.Equal(suite.T(), os.Getenv("BLOCKCHAIN_FAUCET"), suite.motorNode.GetClient().GetFaucetAddress(), "Faucet address should be the same")
+}
+
+func (suite *ClientTestSuite) Test_GetRPCAddress() {
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
+  assert.NoError(suite.T(), err, "Load .env success")
+	assert.Equal(suite.T(), os.Getenv("BLOCKCHAIN_RPC"), suite.motorNode.GetClient().GetRPCAddress(), "RPC address should be the same")
+}
+
+func (suite *ClientTestSuite) Test_GetAPIAddress() {
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
+  assert.NoError(suite.T(), err, "Load .env success")
+	assert.Equal(suite.T(), os.Getenv("BLOCKCHAIN_REST"), suite.motorNode.GetClient().GetAPIAddress(), "API address should be the same")
+}
+
+func (suite *ClientTestSuite) Test_GetIPFSAddress() {
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
+  assert.NoError(suite.T(), err, "Load .env success")
+	assert.Equal(suite.T(), os.Getenv("IPFS_ADDRESS"), suite.motorNode.GetClient().GetIPFSAddress(), "IPFS address should be the same")
+}
+
+func (suite *ClientTestSuite) Test_GetIPFSApiAddress() {
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
+  assert.NoError(suite.T(), err, "Load .env success")
+	assert.Equal(suite.T(), os.Getenv("IPFS_API_ADDRESS"), suite.motorNode.GetClient().GetIPFSApiAddress(), "IPFS API address should be the same")
 }
