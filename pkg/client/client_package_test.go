@@ -18,6 +18,13 @@ import (
 )
 
 const TEMP_ENV_RENAME_FILE_NAME = ".env.temp.rename.client.package.test"
+const ENV_FILE_CONTENT = `BLOCKCHAIN_REST="http://137.184.190.146:1317"
+BLOCKCHAIN_FAUCET="http://137.184.190.146:8000"
+BLOCKCHAIN_RPC="137.184.190.146:9090"
+IPFS_ADDRESS="https://ipfs.sonr.ws"
+IPFS_API_ADDRESS="https://api.ipfs.sonr.ws"
+VAULT_API_ADDRESS="http://164.92.99.233"
+VAULT_ENDPOINT="https://vault.sonr.ws"`
 
 type Client interface {
 	GetFaucetAddress() string
@@ -63,13 +70,13 @@ func (suite *ClientTestSuite) SetupSuite() {
 	}
 
 	// copy .env file to project root
-	test_env := filepath.Join(projectpath.Root, ".env.example")
-	input, err := ioutil.ReadFile(test_env)
-	if err != nil {
-		fmt.Printf("Failed to read test .env file: %s", err)
-	}
+	// test_env := filepath.Join(projectpath.Root, ".env.example")
+	// input, err := ioutil.ReadFile(test_env)
+	// if err != nil {
+	// 	fmt.Printf("Failed to read test .env file: %s", err)
+	// }
 
-	err = ioutil.WriteFile(env_path, input, 0644)
+	err = ioutil.WriteFile(env_path, []byte(ENV_FILE_CONTENT), 0644)
 	if err != nil {
 		fmt.Printf("Failed to create .env file: %s", err)
 	}
