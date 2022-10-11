@@ -84,7 +84,6 @@ func (m *motorNodeImpl) PairDevice(request mt.PairingRequest) (*mt.PairingRespon
 	}
 	return &mt.PairingResponse{
 		Success: true,
-		Message: "Succesfully paired device via Key Exchange Linking",
 	}, nil
 }
 
