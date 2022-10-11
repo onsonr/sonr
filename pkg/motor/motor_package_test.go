@@ -14,7 +14,6 @@ import (
 
 type MotorTestSuite struct {
 	suite.Suite
-	motor         *motorNodeImpl
 	motorWithKeys *motorNodeImpl
 }
 
