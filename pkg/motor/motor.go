@@ -71,7 +71,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*MotorNodeImp
 		r.LogLevel = "warn"
 	}
 
-	return &motorNodeImpl{
+	return &MotorNodeImpl{
 		isHostEnabled:      r.GetEnableHost(),
 		isDiscoveryEnabled: r.GetEnableDiscovery(),
 		DeviceID:           r.GetDeviceId(),
@@ -84,7 +84,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*MotorNodeImp
 	}, nil
 }
 
-func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
+func initMotor(mtr *MotorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.log = logger.New(mtr.logLevel, "motor")
 	// Generate wallet
 	mtr.log.Info("Generating wallet...")
