@@ -13,7 +13,7 @@ import (
 /*
 Stop gap implementation for
 */
-func (mtr *MotorNodeImpl) SeachBucketBySchema(req mt.SeachBucketContentBySchemaRequest) (mt.SearchBucketContentBySchemaResponse, error) {
+func (mtr *motorNodeImpl) SeachBucketBySchema(req mt.SeachBucketContentBySchemaRequest) (mt.SearchBucketContentBySchemaResponse, error) {
 	_, err := did.ParseDID(req.BucketDid)
 	if err != nil {
 		return mt.SearchBucketContentBySchemaResponse{}, fmt.Errorf("cannot parse did: %s", req.BucketDid)

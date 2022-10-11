@@ -8,7 +8,7 @@ import (
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (mtr *MotorNodeImpl) BuyAlias(msg rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error) {
+func (mtr *motorNodeImpl) BuyAlias(msg rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error) {
 	if msg.Creator == "" {
 		return rt.MsgBuyAliasResponse{}, fmt.Errorf("creator cannot be empty")
 	}
@@ -34,7 +34,7 @@ func (mtr *MotorNodeImpl) BuyAlias(msg rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, 
 	return *resp, nil
 }
 
-func (mtr *MotorNodeImpl) SellAlias(msg rt.MsgSellAlias) (rt.MsgSellAliasResponse, error) {
+func (mtr *motorNodeImpl) SellAlias(msg rt.MsgSellAlias) (rt.MsgSellAliasResponse, error) {
 	if msg.Creator == "" {
 		return rt.MsgSellAliasResponse{}, fmt.Errorf("creator cannot be empty")
 	}
@@ -60,7 +60,7 @@ func (mtr *MotorNodeImpl) SellAlias(msg rt.MsgSellAlias) (rt.MsgSellAliasRespons
 	return *resp, nil
 }
 
-func (mtr *MotorNodeImpl) TransferAlias(msg rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error) {
+func (mtr *motorNodeImpl) TransferAlias(msg rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error) {
 	if msg.Creator == "" {
 		return rt.MsgTransferAliasResponse{}, fmt.Errorf("creator cannot be empty")
 	}

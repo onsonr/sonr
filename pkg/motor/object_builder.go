@@ -11,7 +11,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (mtr *MotorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, error) {
+func (mtr *motorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, error) {
 	whatIs, _, found := mtr.Resources.GetSchema(did)
 	if !found {
 		return nil, fmt.Errorf("could not find WhatIs with did '%s'", did)
@@ -22,7 +22,7 @@ func (mtr *MotorNodeImpl) NewObjectBuilder(did string) (*object.ObjectBuilder, e
 	return object.NewBuilder(schemaImpl, objCli), nil
 }
 
-func (mtr *MotorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error) {
+func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error) {
 	obj, err := mtr.QueryObject(req.GetCid())
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (mtr *MotorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error) {
+func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error) {
 	builder, err := mtr.NewObjectBuilder(req.GetDefinition().GetDid())
 	if err != nil {
 		return nil, err

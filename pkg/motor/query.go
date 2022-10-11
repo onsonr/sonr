@@ -9,7 +9,7 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (mtr *MotorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhoIs(req.Did)
 	if err != nil {
 		return nil, err
@@ -21,7 +21,7 @@ func (mtr *MotorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsRe
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) QueryWhoIsByAlias(req mt.QueryWhoIsByAliasRequest) (*mt.QueryWhoIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhoIsByAlias(req mt.QueryWhoIsByAliasRequest) (*mt.QueryWhoIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhoIsByAlias(req.Alias)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (mtr *MotorNodeImpl) QueryWhoIsByAlias(req mt.QueryWhoIsByAliasRequest) (*m
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
 	if wi, _, ok := mtr.Resources.GetSchema(req.Did); ok {
 		return &mt.QueryWhatIsResponse{
 			Code:   http.StatusAccepted,
@@ -59,7 +59,7 @@ func (mtr *MotorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
+func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error) {
 	resp, err := mtr.GetClient().QueryWhatIsByCreator(req.Creator, req.Pagination)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (mtr *MotorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorReques
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) QueryWhatIsByDid(did string) (*mt.QueryWhatIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhatIsByDid(did string) (*mt.QueryWhatIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhatIsByDid(did)
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ func (mtr *MotorNodeImpl) QueryWhatIsByDid(did string) (*mt.QueryWhatIsResponse,
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error) {
+func (mtr *motorNodeImpl) QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error) {
 	// use the item within the cache from GetWhereIs
 	if wi := mtr.Resources.whereIsStore[req.Did]; wi != nil {
 		return &mt.QueryWhereIsResponse{
@@ -119,7 +119,7 @@ func (mtr *MotorNodeImpl) QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhe
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error) {
+func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error) {
 	resp, err := mtr.GetClient().QueryWhereIsByCreator(req.Creator, req.Pagination)
 	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, 0)
 	for _, wi := range resp.WhereIs {
@@ -136,7 +136,7 @@ func (mtr *MotorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequ
 	}, nil
 }
 
-func (mtr *MotorNodeImpl) QueryObject(cid string) (map[string]interface{}, error) {
+func (mtr *motorNodeImpl) QueryObject(cid string) (map[string]interface{}, error) {
 	var dag map[string]interface{}
 	err := mtr.sh.DagGet(cid, &dag)
 	return dag, err

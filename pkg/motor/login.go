@@ -16,7 +16,7 @@ import (
 	"github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (mtr *MotorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, error) {
+func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, error) {
 	var err error
 	// get PSK
 	psk, err := kr.GetPSK()
@@ -42,7 +42,7 @@ func (mtr *MotorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, erro
 }
 
 // LoginWithKeys creates a motor node from a LoginRequest
-func (mtr *MotorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.LoginResponse, error) {
+func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.LoginResponse, error) {
 	if request.AccountId == "" {
 		return mt.LoginResponse{}, fmt.Errorf("did must be provided")
 	}

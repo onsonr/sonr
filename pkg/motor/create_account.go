@@ -15,7 +15,7 @@ import (
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (mtr *MotorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
+func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create DSC and store it in keychain
 	dsc, err := kr.CreateDSC()
 	if err != nil {
@@ -45,7 +45,7 @@ func (mtr *MotorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 }
 
 // CreateAccountWithKeys allows PSK and DSC to be provided manually
-func (mtr *MotorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error) {
+func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(mtr.clientMode)
 
@@ -149,7 +149,7 @@ func (mtr *MotorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}, err
 }
 
-func createWhoIs(m *MotorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
+func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err
@@ -174,7 +174,7 @@ func createWhoIs(m *MotorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
 	return cwir, nil
 }
 
-func updateWhoIs(m *MotorNodeImpl) (*rt.MsgUpdateWhoIsResponse, error) {
+func updateWhoIs(m *motorNodeImpl) (*rt.MsgUpdateWhoIsResponse, error) {
 	docBz, err := m.DIDDocument.MarshalJSON()
 	if err != nil {
 		return nil, err

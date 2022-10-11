@@ -14,8 +14,8 @@ import (
 
 type MotorTestSuite struct {
 	suite.Suite
-	motor *MotorNodeImpl
-	motorWithKeys *MotorNodeImpl
+	motor *motorNodeImpl
+	motorWithKeys *motorNodeImpl
 }
 
 func (suite *MotorTestSuite) SetupSuite() {
@@ -49,8 +49,8 @@ func (suite *MotorTestSuite) SetupSuite() {
 		suite.T().Error("Failed to setup test address with keys")
 	}
 
-	fmt.Printf("Setup test address: %s\n", suite.motor.Address)
-	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.Address)
+	fmt.Printf("Setup test address: %s\n", suite.motor.GetAddress())
+	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.GetAddress())
 }
 
 func (suite *MotorTestSuite) TearDownSuite() {
