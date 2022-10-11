@@ -46,8 +46,7 @@ message LinkingResponse {
 
 message PairingResponse {
   bool success = 1;
-  string message = 2;
-  sonrio.sonr.registry.WhoIs who_is = 3;
+  sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
 message LoginResponse {
