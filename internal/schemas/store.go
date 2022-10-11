@@ -55,13 +55,11 @@ func (rs *ReadStoreImpl) Get(ctx context.Context, key string) ([]byte, error) {
 	}
 
 	wi, err := rs.Client.QueryWhatIsByDid(key)
-
 	if err != nil {
 		return nil, err
 	}
 
 	buf, err := wi.Marshal()
-
 	if err != nil {
 		return nil, err
 	}
