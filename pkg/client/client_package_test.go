@@ -1,7 +1,9 @@
 package client_test
 
 import (
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,6 +16,8 @@ import (
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/stretchr/testify/suite"
 )
+
+const TEMP_ENV_RENAME_FILE_NAME = ".env.temp.rename.client.package.test"
 
 type Client interface{
 	GetFaucetAddress() string
@@ -43,6 +47,32 @@ func (suite *ClientTestSuite) SetupSuite() {
 	}
 
 	motor.SetupTestAddressWithKeys(suite.motorNode)
+
+	// setup test .env
+	env_path := filepath.Join(projectpath.Root, ".env")
+	_, err = os.Stat(env_path)
+	if err == nil {
+		// .env already exists rename it
+		new_path := filepath.Join(projectpath.Root, TEMP_ENV_RENAME_FILE_NAME)
+		err = os.Rename(env_path, new_path)
+		if err != nil {
+			fmt.Printf("Failed to rename .env file: %s", err)
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		fmt.Printf("Failed to check existence of .env file: %s", err)
+	}
+
+	// copy .env file to project root
+	test_env := filepath.Join(projectpath.Root, "pkg/client/test_file/.env.test")
+	input, err := ioutil.ReadFile(test_env)
+	if err != nil {
+		fmt.Printf("Failed to read test .env file: %s", err)
+	}
+
+	err = ioutil.WriteFile(env_path, input, 0644)
+	if err != nil {
+		fmt.Printf("Failed to create .env file: %s", err)
+	}
 }
 
 func (suite *ClientTestSuite) TearDownSuite() {
@@ -51,14 +81,33 @@ func (suite *ClientTestSuite) TearDownSuite() {
 	// delete created accounts
 	files, err := filepath.Glob(testKeysPath)
 	if err != nil {
-		suite.T().Error("Failed to clean up generated test keys")
+		fmt.Printf("Failed to clean up generated test keys")
 	}
 
 	for _, file := range files {
 		err := os.Remove(file)
 		if err != nil {
-			suite.T().Errorf("Failed to clean up %s", file)
+			fmt.Printf("Failed to clean up %s", file)
 		}
+	}
+
+	// delete .env
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err = os.Remove(env_path)
+	if err != nil {
+		fmt.Printf("Failed to clean up .env file: %s", err)
+	}
+
+	// rename old .env back to .env if it exists
+	old_env := filepath.Join(projectpath.Root, TEMP_ENV_RENAME_FILE_NAME)
+	_, err = os.Stat(old_env)
+	if err == nil {
+		err = os.Rename(old_env, env_path)
+		if err != nil {
+			fmt.Printf("Failed to rename old .env file: %s", err)
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		fmt.Printf("Failed to check existence of old .env file: %s", err)
 	}
 
 	fmt.Println("Teardown of test suite complete.")
