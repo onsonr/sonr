@@ -15,7 +15,7 @@ type motorResources struct {
 	shell        *shell.Shell
 	whatIsStore  map[string]*st.WhatIs
 	whereIsStore map[string]*bt.WhereIs
-	schemaStore  map[string]*st.SchemaDefinition
+	schemaStore  map[string]*st.Schema
 	bucketStore  map[string]bucket.Bucket
 }
 
@@ -28,12 +28,12 @@ func newMotorResources(
 		bucketStore:  make(map[string]bucket.Bucket),
 		whatIsStore:  make(map[string]*st.WhatIs),
 		whereIsStore: make(map[string]*bt.WhereIs),
-		schemaStore:  make(map[string]*st.SchemaDefinition),
+		schemaStore:  make(map[string]*st.Schema),
 	}
 }
 
 // StoreWhatIs fetches the schema definition from IPFS and caches it
-func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, error) {
+func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.Schema, error) {
 
 	r.whatIsStore[whatIs.Did] = whatIs
 
@@ -44,7 +44,7 @@ func (r *motorResources) StoreWhatIs(whatIs *st.WhatIs) (*st.SchemaDefinition, e
 		return schema, nil
 	}
 
-	var definition *st.SchemaDefinition = whatIs.Schema
+	var definition *st.Schema = whatIs.Schema
 	definition.Did = whatIs.Schema.Did
 
 	r.schemaStore[whatIs.Schema.Did] = definition
@@ -65,7 +65,7 @@ func (r *motorResources) StoreBucket(did string, b bucket.Bucket) bool {
 	return ok
 }
 
-func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.SchemaDefinition, bool) {
+func (r *motorResources) GetSchema(did string) (*st.WhatIs, *st.Schema, bool) {
 	var whatIs *st.WhatIs
 	if w, ok := r.whatIsStore[did]; !ok {
 		return nil, nil, false
