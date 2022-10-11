@@ -19,7 +19,7 @@ func AllInvariants(k Keeper) sdk.Invariant {
 			return res, broken
 		}
 
-		return "Every invariant condition is fulfilled correctly", true
+		return "Every invariant condition is fulfilled correctly", false
 	}
 }
 

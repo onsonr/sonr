@@ -334,7 +334,6 @@ type Payload_Item struct {
 	// Attached Data
 	//
 	// Types that are valid to be assigned to Data:
-	//
 	//	*Payload_Item_File
 	//	*Payload_Item_Url
 	//	*Payload_Item_Message

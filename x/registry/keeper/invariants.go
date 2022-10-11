@@ -22,10 +22,7 @@ func AllInvariants(k Keeper) sdk.Invariant {
 		if res, broken := SingleAliasOwner(k)(ctx); broken {
 			return res, broken
 		}
-		if res, broken := NonNegativeAliasSellPrice(k)(ctx); broken {
-			return res, broken
-		}
-		return "Every invariant condition is fulfilled correctly", true
+		return NonNegativeAliasSellPrice(k)(ctx)
 	}
 }
 
