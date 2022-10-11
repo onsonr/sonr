@@ -7,7 +7,7 @@ import (
 )
 
 // The default shards that are added to the MPC wallet
-var defaultParticipants = party.IDSlice{"dsc", "recovery", "psk", "bank0", "bank1", "bank2", "bank3", "bank4", "bank5", "bank6"}
+var defaultParticipants = party.IDSlice{"dsc", "recovery", "psk", "bank0", "bank1", "bank2"}
 
 // Preset options struct
 type walletConfig struct {
