@@ -92,25 +92,19 @@ message LinkingRequest {
   string filename = 2; // optional
 }
 
-// PairDeviceRequest attempts to join a pubsub topic session in order to pair the current device with an existing Sonr Account.
-message PairDeviceRequest {
-  // The Protocol ID of the session to join. This is the only required field.
-  string protocol_id = 1;
-
-  // The Peer ID of the device to pair with. This is optional and will be removed after this implementation is stable
-  string peer_id = 2;
-
+// PairingRequest attempts to join a pubsub topic session in order to pair the current device with an existing Sonr Account.
+message PairingRequest {
   // The Peer AddrInfo
-  common.v1.AddrInfo addr_info = 3;
+  common.v1.AddrInfo addr_info = 1;
 
   // The Peer AddrInfo as Base64 Encoded String
-  string addr_info_base64 = 4;
+  string addr_info_base64 = 2;
 
   // Device Shared Cred
-  bytes aes_dsc_key = 5;
+  bytes aes_dsc_key = 3;
 
   // Password Secure Key
-  bytes aes_psk_key = 6;
+  bytes aes_psk_key = 4;
 }
 
 // Login requires the DID of the account being logged into, and optionally a password if the vault pw is being used

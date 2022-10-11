@@ -44,7 +44,7 @@ message LinkingResponse {
   string addr_info_base64 = 3;
 }
 
-message PairDeviceResponse {
+message PairingResponse {
   bool success = 1;
   string message = 2;
   sonrio.sonr.registry.WhoIs who_is = 3;

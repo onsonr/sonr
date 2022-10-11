@@ -10,14 +10,23 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/sonr/pkg/config"
+	"github.com/sonr-io/sonr/pkg/host"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	v1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingResponse, error) {
-	if !m.IsHostActive() {
-		return nil, fmt.Errorf("host is not active")
+	// Setup host config
+	var err error
+	cnfg := config.DefaultConfig(config.Role_MOTOR, config.WithDeviceID(request.DeviceId))
+
+	// Create new host
+	m.log.Info("Starting host...")
+	h, err := host.NewDefaultHost(context.Background(), cnfg, m.callback)
+	if err != nil {
+		return nil, err
 	}
 
 	m.log.Info("Enabling Linking StreamHandler...")
@@ -26,8 +35,8 @@ func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingRespo
 		return nil, errors.Wrap(err, "failed to generate uuid")
 	}
 	protocolId := protocol.ID(fmt.Sprintf("/sonr/link/%s/%s", request.GetDeviceId(), id.String()))
-	ai := m.SonrHost.AddrInfo(protocolId)
-	m.SonrHost.SetStreamHandler(protocolId, m.handleLinking)
+	ai := h.AddrInfo(protocolId)
+	h.SetStreamHandler(protocolId, m.handleLinking)
 
 	// Write AddrInfo to Base64
 	b64, err := ai.Base64()
@@ -40,7 +49,8 @@ func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingRespo
 		AddrInfo:       &ai,
 	}, nil
 }
-func (m *motorNodeImpl) PairDevice(request mt.PairDeviceRequest) (*mt.PairDeviceResponse, error) {
+
+func (m *motorNodeImpl) PairDevice(request mt.PairingRequest) (*mt.PairingResponse, error) {
 	if !m.IsHostActive() {
 		return nil, fmt.Errorf("host is not active")
 	}
@@ -71,24 +81,13 @@ func (m *motorNodeImpl) PairDevice(request mt.PairDeviceRequest) (*mt.PairDevice
 			return nil, err
 		}
 	}
-	if request.PeerId != "" {
-		peerId, err := peer.Decode(request.PeerId)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to decode peer id")
-		}
-		peerInfo := peer.AddrInfo{ID: peerId}
-		err = m.connectToPeerAndTransmit(peerInfo, request)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return &mt.PairDeviceResponse{
+	return &mt.PairingResponse{
 		Success: true,
 		Message: "Succesfully paired device via Key Exchange Linking",
 	}, nil
 }
 
-func (m *motorNodeImpl) connectToPeerAndTransmit(peerInfo peer.AddrInfo, request mt.PairDeviceRequest) error {
+func (m *motorNodeImpl) connectToPeerAndTransmit(peerInfo peer.AddrInfo, request mt.PairingRequest) error {
 	err := m.SonrHost.Connect(peerInfo)
 	if err != nil {
 		m.SonrHost.Host().Peerstore().ClearAddrs(peerInfo.ID)
@@ -164,4 +163,6 @@ func (mtr *motorNodeImpl) handleLinking(stream network.Stream) {
 		return
 	}
 	mtr.callback.OnLinking(evbz)
+	stream.Close()
+	return
 }

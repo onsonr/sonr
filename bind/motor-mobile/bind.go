@@ -145,7 +145,6 @@ func OpenLinking(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWalletNotInitialized
 	}
-
 	var request mt.LinkingRequest
 	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
@@ -163,7 +162,7 @@ func PairDevice(buf []byte) ([]byte, error) {
 		return nil, ct.ErrMotorWalletNotInitialized
 	}
 
-	var request mt.PairDeviceRequest
+	var request mt.PairingRequest
 	if err := request.Unmarshal(buf); err != nil {
 		return nil, fmt.Errorf("unmarshal request: %s", err)
 	}
