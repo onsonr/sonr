@@ -82,7 +82,7 @@ type Bucket interface {
 	IsBucket(id string) bool
 
 	/*
-		Checks if a given uri is for an object
+		Checks if a given uri is for a document
 		Returns boolean
 	*/
 	IsContent(id string) bool

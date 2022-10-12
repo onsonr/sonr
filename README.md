@@ -75,6 +75,21 @@ gomobile init
 ## 🔧 Running the tests <a name = "tests"></a>
 Explain how to run the automated tests for this system.
 
+### Setup Test Environment
+
+Create file named **.env** in project root and set the following variables:
+```
+BLOCKCHAIN_REST=
+BLOCKCHAIN_FAUCET=
+BLOCKCHAIN_RPC=
+IPFS_ADDRESS=
+IPFS_API_ADDRESS=
+VAULT_API_ADDRESS=
+VAULT_ENDPOINT=
+```
+
+Refer to **.env.example** for typical values to use. If not set, default values will be used in place.
+
 ### Motor Node Tests
 
 
@@ -82,6 +97,12 @@ Run a test for a specific method
 ```bash
 cd pkg/motor
 go test -run CreateAccount
+```
+
+Run a test suite
+```bash
+cd pkg/motor
+go test -run MotorTestSuite
 ```
 
 Run <b>ALL</b> motor tests

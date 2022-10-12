@@ -10,7 +10,6 @@ import (
 )
 
 func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error) {
-
 	listFields, err := convertFields(request.Fields)
 	if err != nil {
 		return mt.CreateSchemaResponse{}, fmt.Errorf("process fields: %s", err)
@@ -43,13 +42,13 @@ func (mtr *motorNodeImpl) CreateSchema(request mt.CreateSchemaRequest) (mt.Creat
 	}, nil
 }
 
-func convertFields(fields map[string]st.SchemaKind) ([]*st.SchemaKindDefinition, error) {
-	result := make([]*st.SchemaKindDefinition, len(fields))
+func convertFields(fields map[string]*st.SchemaFieldKind) ([]*st.SchemaField, error) {
+	result := make([]*st.SchemaField, len(fields))
 	var i int32
 	for k, v := range fields {
-		result[i] = &st.SchemaKindDefinition{
-			Name:  k,
-			Field: v,
+		result[i] = &st.SchemaField{
+			Name:      k,
+			FieldKind: v,
 		}
 		i += 1
 	}

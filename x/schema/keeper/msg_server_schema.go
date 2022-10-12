@@ -29,11 +29,12 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	var whatIs = types.WhatIs{
 		Creator: msg.Creator,
 		Did:     what_is_did.String(),
-		Schema: &types.SchemaDefinition{
-			Creator: msg.Creator,
-			Did:     what_is_did.String(),
-			Label:   msg.Label,
-			Fields:  msg.Fields,
+		Schema: &types.Schema{
+			Did:      what_is_did.String(),
+			Owner:    msg.Creator,
+			Label:    msg.Label,
+			Fields:   msg.Fields,
+			Metadata: msg.Metadata,
 		},
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,

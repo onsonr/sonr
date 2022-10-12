@@ -4,6 +4,19 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+  {
+    "name": "Debug unit test",
+    "type": "go",
+    "request": "launch",
+    "mode": "test",
+    "program": "${workspaceFolder}/pkg/motor",
+    "args": [
+      "-test.run",
+      "Test_MotorTestSuite",
+      "-testify.m",
+      "Test_LoginWithAlias" // debug specific function
+    ]
+  },
     {
       "name": "Python: Deploy Script",
       "type": "python",

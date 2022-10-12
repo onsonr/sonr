@@ -21,9 +21,11 @@ type Wallet struct {
 	pool *pool.Pool
 	ID   party.ID
 
-	Configs   map[party.ID]*cmp.Config
-	Network   *Network
-	Threshold int
+	PubKey      []byte
+	Configs     map[party.ID]*cmp.Config
+	ConfigsLock sync.Mutex
+	Network     *Network
+	Threshold   int
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
@@ -41,7 +43,9 @@ func GenerateWallet(cb common.MotorCallback, options ...WalletOption) (*Wallet, 
 			if err != nil {
 				return
 			}
+			w.ConfigsLock.Lock()
 			w.Configs[conf.ID] = conf
+			w.ConfigsLock.Unlock()
 		}(id)
 	}
 	wg.Wait()
@@ -86,6 +90,10 @@ func (w *Wallet) Marshal() ([]byte, error) {
 
 // Returns the ECDSA public key of the given party.
 func (w *Wallet) PublicKey() ([]byte, error) {
+	if w.PubKey != nil && len(w.PubKey) != 0 {
+		return w.PubKey, nil
+	}
+
 	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
 	buf, err := p.MarshalBinary()
 	if err != nil {
@@ -95,6 +103,9 @@ func (w *Wallet) PublicKey() ([]byte, error) {
 	if len(buf) != 33 {
 		return nil, fmt.Errorf("invalid public key length")
 	}
+
+	w.PubKey = buf
+
 	return buf, nil
 }
 

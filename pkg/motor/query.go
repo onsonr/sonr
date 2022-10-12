@@ -21,6 +21,18 @@ func (mtr *motorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsRe
 	}, nil
 }
 
+func (mtr *motorNodeImpl) QueryWhoIsByAlias(req mt.QueryWhoIsByAliasRequest) (*mt.QueryWhoIsResponse, error) {
+	resp, err := mtr.GetClient().QueryWhoIsByAlias(req.Alias)
+	if err != nil {
+		return nil, err
+	}
+
+	return &mt.QueryWhoIsResponse{
+		Code:  http.StatusAccepted,
+		WhoIs: resp,
+	}, nil
+}
+
 func (mtr *motorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error) {
 	if wi, _, ok := mtr.Resources.GetSchema(req.Did); ok {
 		return &mt.QueryWhatIsResponse{
@@ -29,7 +41,7 @@ func (mtr *motorNodeImpl) QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatI
 		}, nil
 	}
 
-	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetDID().String(), req.Did)
+	resp, err := mtr.GetClient().QueryWhatIs(mtr.GetAddress(), req.Did)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +66,7 @@ func (mtr *motorNodeImpl) QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorReques
 	}
 
 	// store reference to schema
-	schemas := make(map[string]*st.SchemaDefinition)
+	schemas := make(map[string]*st.Schema)
 	for _, w := range resp {
 		def := w.Schema
 		if err != nil {
@@ -124,7 +136,7 @@ func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequ
 	}, nil
 }
 
-func (mtr *motorNodeImpl) QueryObject(cid string) (map[string]interface{}, error) {
+func (mtr *motorNodeImpl) queryDocument(cid string) (map[string]interface{}, error) {
 	var dag map[string]interface{}
 	err := mtr.sh.DagGet(cid, &dag)
 	return dag, err

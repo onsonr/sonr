@@ -16,6 +16,12 @@ option java_package = "io.sonr.types.motor";
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
+enum ClientMode {
+  ENDPOINT_BETA = 0;
+  ENDPOINT_DEV = 1;
+  ENDPOINT_LOCAL = 2;
+}
+
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
   // Identifier of this Device
@@ -54,6 +60,9 @@ message InitializeRequest {
 
   // Application DID
   string app_did = 12; // optional
+
+  // Client Mode
+  ClientMode client_mode = 13; // Default: ENDPOINT_BETA
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -75,14 +84,24 @@ message CreateAccountWithKeysRequest {
 // and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 message LoginRequest {
-  string did = 1;
+  // Either the DID or an alias of the account
+  string account_id = 1;
+
+  // The account password
   string password = 2;
 }
 
 message LoginWithKeysRequest {
-  string did = 1;
+  // Either the DID or an alias of the account
+  string account_id = 1;
+
+  // The account password
   string password = 2;
+
+  // The device-specific credential, known only to the logging in device
   bytes aes_dsc_key = 3;
+
+  // The preshared key, known to all devices of the account
   bytes aes_psk_key = 4;
 }
 
@@ -106,12 +125,16 @@ message QueryWhoIsRequest {
   string did = 1;
 }
 
+message QueryWhoIsByAliasRequest {
+  string alias = 1;
+}
+
 // -----------------------------------------------------------------------------
 // Schema Models
 // -----------------------------------------------------------------------------
 message CreateSchemaRequest {
   string label = 1;
-  map<string, sonrio.sonr.schema.SchemaKind> fields = 2;
+  map<string, sonrio.sonr.schema.SchemaFieldKind> fields = 2;
   map<string, string> metadata = 3;
 }
 
@@ -128,6 +151,25 @@ message QueryWhatIsByCreatorRequest {
 message QuerySchemaRequest {
   string creator = 1;
   string did = 2;
+}
+
+// -----------------------------------------------------------------------------
+// Document Models
+// -----------------------------------------------------------------------------
+
+message UploadDocumentRequest {
+  // DID of the schema being used for the document
+  string schema_did = 1;
+
+  // the label of the document
+  string label = 2;
+
+  // JSON encoded document map
+  bytes document = 3;
+}
+
+message GetDocumentRequest {
+  string cid = 1;
 }
 
 // -----------------------------------------------------------------------------
@@ -170,19 +212,3 @@ message SeachBucketContentBySchemaRequest {
 }
 
 message StatRequest {}
-
-message UploadDocumentRequest {
-  string creator = 1;
-
-  string label = 2;
-
-  // The definition of the document used to build the values
-  sonrio.sonr.schema.SchemaDefinition definition = 3;
-
-  // the properties of this schemadocument
-  repeated sonrio.sonr.schema.SchemaDocumentValue fields = 4;
-}
-
-message GetDocumentRequest {
-  string cid = 1;
-}

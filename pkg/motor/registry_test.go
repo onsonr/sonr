@@ -2,98 +2,39 @@ package motor
 
 import (
 	"fmt"
-	"log"
+	"math/rand"
 	"testing"
+	"time"
 
-	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_CreateAccountWithKeyring(t *testing.T) {
-	req := mt.CreateAccountRequest{
-		Password: "password123",
-	}
-
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err := m.CreateAccount(req)
-	assert.NoError(t, err, "wallet generation succeeds")
-
-	b := m.GetBalance()
-	log.Println("balance:", b)
-
-	// Print the address of the wallet
-	log.Println("address:", m.Address)
-}
-
-func Test_CreateAccountWithKeys(t *testing.T) {
-	aesKey := loadKey("aes.key")
-	if aesKey == nil || len(aesKey) != 32 {
-		key, err := mpc.NewAesKey()
-		assert.NoError(t, err, "generates aes key")
-		aesKey = key
-
-		// store the key
-		fmt.Printf("stored key? %v\n", storeKey("aes.key", key))
-	} else {
-		fmt.Println("loaded key")
-	}
-
-	psk, err := mpc.NewAesKey()
-	assert.NoError(t, err, "create psk")
-
-	req := mt.CreateAccountWithKeysRequest{
-		Password:  "password123",
-		AesDscKey: aesKey,
-		AesPskKey: psk,
-	}
-
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err = m.CreateAccountWithKeys(req)
-	assert.NoError(t, err, "wallet generation succeeds")
-
-	b := m.GetBalance()
-	log.Println("balance:", b)
-
-	// Print the address of the wallet
-	log.Println("address:", m.Address)
-
-	// store PSK
-	storeKey(fmt.Sprintf("psk%s", m.Address), psk)
-}
-
-func Test_LoginWithKeys(t *testing.T) {
-	t.Run("with password and psk", func(t *testing.T) {
-		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+func (suite *MotorTestSuite) Test_LoginWithKeys() {
+	suite.T().Run("with password and psk", func(t *testing.T) {
+		pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
 		if pskKey == nil || len(pskKey) != 32 {
 			t.Errorf("could not load psk key")
 			return
 		}
 
 		req := mt.LoginWithKeysRequest{
-			Did:       ADDR,
+			AccountId: suite.motorWithKeys.Address,
 			Password:  "password123",
 			AesPskKey: pskKey,
 		}
 
-		m, _ := EmptyMotor(&mt.InitializeRequest{
-			DeviceId: "test_device",
-		}, common.DefaultCallback())
-		_, err := m.LoginWithKeys(req)
+		_, err := suite.motorWithKeys.LoginWithKeys(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", m.GetBalance())
-			fmt.Println("address: ", m.Address)
+			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())
+			fmt.Println("address: ", suite.motorWithKeys.Address)
 		}
 	})
 
-	t.Run("with DSC and PSK", func(t *testing.T) {
+	suite.T().Run("with DSC and PSK", func(t *testing.T) {
 		aesKey := loadKey("aes.key")
 		fmt.Printf("aes: %x\n", aesKey)
 		if aesKey == nil || len(aesKey) != 32 {
@@ -101,40 +42,41 @@ func Test_LoginWithKeys(t *testing.T) {
 			return
 		}
 
-		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+		pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
 		if pskKey == nil || len(pskKey) != 32 {
 			t.Errorf("could not load psk key")
 			return
 		}
 
 		req := mt.LoginWithKeysRequest{
-			Did:       ADDR,
+			AccountId: suite.motorWithKeys.Address,
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
 		}
 
-		m, _ := EmptyMotor(&mt.InitializeRequest{
-			DeviceId: "test_device",
-		}, common.DefaultCallback())
-		_, err := m.LoginWithKeys(req)
+		_, err := suite.motorWithKeys.LoginWithKeys(req)
 		assert.NoError(t, err, "login succeeds")
 
 		if err == nil {
-			fmt.Println("balance: ", m.GetBalance())
-			fmt.Println("address: ", m.Address)
+			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())
+			fmt.Println("address: ", suite.motorWithKeys.Address)
 		}
 	})
 }
 
 func Test_LoginWithKeyring(t *testing.T) {
 	req := mt.LoginRequest{
-		Did: ADDR,
+		AccountId: ADDR,
+		Password:  "password123",
 	}
 
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
+	m, err := EmptyMotor(&mt.InitializeRequest{
+		DeviceId:   "test_device",
+		ClientMode: mt.ClientMode_ENDPOINT_BETA,
 	}, common.DefaultCallback())
-	_, err := m.Login(req)
+	assert.NoError(t, err, "create motor")
+
+	_, err = m.Login(req)
 	assert.NoError(t, err, "login succeeds")
 
 	if err == nil {
@@ -143,26 +85,64 @@ func Test_LoginWithKeyring(t *testing.T) {
 	}
 }
 
-func Test_LoginAndMakeRequest(t *testing.T) {
-	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
-	if pskKey == nil || len(pskKey) != 32 {
-		t.Errorf("could not load psk key")
+func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
+	aesKey := loadKey("aes.key")
+	fmt.Printf("aes: %x\n", aesKey)
+	if aesKey == nil || len(aesKey) != 32 {
+		suite.T().Errorf("could not load key.")
 		return
 	}
 
-	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
+	pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
+	if pskKey == nil || len(pskKey) != 32 {
+		suite.T().Errorf("could not load psk key")
+		return
 	}
 
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err := m.Login(req)
-	assert.NoError(t, err, "login succeeds")
+	req := mt.LoginWithKeysRequest{
+		AccountId: suite.motorWithKeys.Address,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	_, err := suite.motorWithKeys.LoginWithKeys(req)
+	assert.NoError(suite.T(), err, "login succeeds")
 
 	// do something with the logged in account
-	m.DIDDocument.AddAlias("gotest.snr")
-	_, err = updateWhoIs(m)
-	assert.NoError(t, err, "updates successfully")
+	suite.motorWithKeys.DIDDocument.AddAlias("gotest.snr")
+	_, err = updateWhoIs(suite.motorWithKeys)
+	assert.NoError(suite.T(), err, "updates successfully")
+}
+
+func (suite *MotorTestSuite) Test_LoginWithAlias() {
+	pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
+	if pskKey == nil || len(pskKey) != 32 {
+		suite.T().Errorf("could not load psk key")
+		return
+	}
+
+	// alias := fmt.Sprintf("%s", randSeq(6))
+	alias := fmt.Sprintf("%s.snr", randSeq(6))
+	suite.motorWithKeys.DIDDocument.AddAlias(alias)
+	_, err := updateWhoIs(suite.motorWithKeys)
+	assert.NoError(suite.T(), err, "buy alias successfully")
+
+	req := mt.LoginWithKeysRequest{
+		AccountId: alias,
+		Password:  "password123",
+		AesPskKey: pskKey,
+	}
+
+	_, err = suite.motorWithKeys.LoginWithKeys(req)
+	assert.NoError(suite.T(), err, "login succeeds")
+}
+
+func randSeq(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	letters := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

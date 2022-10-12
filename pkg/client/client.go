@@ -1,5 +1,16 @@
 package client
 
+import (
+	"errors"
+	"log"
+	"os"
+	"path/filepath"
+
+	"github.com/joho/godotenv"
+	"github.com/sonr-io/sonr/internal/projectpath"
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+)
+
 const (
 	// -- Local Blockchain --
 	BLOCKCHAIN_REST_LOCAL   = "http://0.0.0.0:26657"
@@ -22,67 +33,121 @@ const (
 	VAULT_API_ADDRESS = "http://164.92.99.233"
 )
 
-type ConnEndpointType int
-
-const (
-	ConnEndpointType_NONE ConnEndpointType = iota
-	ConnEndpointType_LOCAL
-	ConnEndpointType_DEV
-	ConnEndpointType_BETA
-)
-
 type Client struct {
-	connType ConnEndpointType
+	clientMode mt.ClientMode
 }
 
-func NewClient(t ConnEndpointType) *Client {
+func NewClient(mode mt.ClientMode) *Client {
 	return &Client{
-		connType: t,
+		clientMode: mode,
 	}
 }
 
 func (c *Client) GetFaucetAddress() string {
-	switch c.connType {
-	case ConnEndpointType_LOCAL:
-		return BLOCKCHAIN_FAUCET_LOCAL
-	case ConnEndpointType_DEV:
-		return BLOCKCHAIN_FAUCET_DEV
-	case ConnEndpointType_BETA:
-		return BLOCKCHAIN_FAUCET_BETA
-	default:
-		return BLOCKCHAIN_FAUCET_LOCAL
+	env_path := filepath.Join(projectpath.Root, ".env")
+	
+	// by default use .env if it exists
+	_, err := os.Stat(env_path)
+	if errors.Is(err, os.ErrNotExist) {
+		// .env does not exist, use preset client mode
+		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_BETA:
+			return BLOCKCHAIN_FAUCET_BETA
+		case mt.ClientMode_ENDPOINT_DEV:
+			return BLOCKCHAIN_FAUCET_DEV
+		case mt.ClientMode_ENDPOINT_LOCAL:
+			return BLOCKCHAIN_FAUCET_LOCAL
+		}
+	} 
+	
+	err = godotenv.Load(env_path)
+	if err != nil {
+		log.Fatal(err)
 	}
+	
+	return os.Getenv("BLOCKCHAIN_FAUCET")
 }
 
 func (c *Client) GetRPCAddress() string {
-	switch c.connType {
-	case ConnEndpointType_LOCAL:
-		return BLOCKCHAIN_RPC_LOCAL
-	case ConnEndpointType_DEV:
-		return BLOCKCHAIN_RPC_DEV
-	case ConnEndpointType_BETA:
-		return BLOCKCHAIN_RPC_BETA
-	default:
-		return BLOCKCHAIN_RPC_LOCAL
+	env_path := filepath.Join(projectpath.Root, ".env")
+
+	// by default use .env if it exists
+	_, err := os.Stat(env_path)
+	if errors.Is(err, os.ErrNotExist) {
+		// .env does not exist, use preset client mode
+		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_BETA:
+			return BLOCKCHAIN_RPC_BETA
+		case mt.ClientMode_ENDPOINT_DEV:
+			return BLOCKCHAIN_RPC_DEV
+		case mt.ClientMode_ENDPOINT_LOCAL:
+			return BLOCKCHAIN_RPC_LOCAL
+		}
 	}
+
+	err = godotenv.Load(env_path)
+  if err != nil {
+    log.Fatal(err)
+  }
+	
+	return os.Getenv("BLOCKCHAIN_RPC")
 }
 
 func (c *Client) GetAPIAddress() string {
-	switch c.connType {
-	case ConnEndpointType_LOCAL:
-		return BLOCKCHAIN_REST_LOCAL
-	case ConnEndpointType_BETA:
-		return BLOCKCHAIN_REST_BETA
-	case ConnEndpointType_DEV:
-		return BLOCKCHAIN_REST_DEV
+	env_path := filepath.Join(projectpath.Root, ".env")
+
+	// by default use .env if it exists
+	_, err := os.Stat(env_path)
+	if errors.Is(err, os.ErrNotExist) {
+		// .env does not exist, use preset client mode
+		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_BETA:
+			return BLOCKCHAIN_REST_BETA
+		case mt.ClientMode_ENDPOINT_DEV:
+			return BLOCKCHAIN_REST_DEV
+		case mt.ClientMode_ENDPOINT_LOCAL:
+			return BLOCKCHAIN_REST_LOCAL
+		}
 	}
-	return ""
+
+	err = godotenv.Load(env_path)
+  if err != nil {
+    log.Fatal(err)
+  }
+	
+	return os.Getenv("BLOCKCHAIN_REST")
 }
 
 func (c *Client) GetIPFSAddress() string {
-	return IPFS_ADDRESS
+	env_path := filepath.Join(projectpath.Root, ".env")
+
+	// by default use .env if it exists
+	_, err := os.Stat(env_path)
+	if errors.Is(err, os.ErrNotExist) {
+		return IPFS_ADDRESS
+	}
+
+	err = godotenv.Load(env_path)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+	return os.Getenv("IPFS_ADDRESS")
 }
 
 func (c *Client) GetIPFSApiAddress() string {
-	return IPFS_API_ADDRESS
+	env_path := filepath.Join(projectpath.Root, ".env")
+
+	// by default use .env if it exists
+	_, err := os.Stat(env_path)
+	if errors.Is(err, os.ErrNotExist) {
+		return IPFS_API_ADDRESS
+	}
+
+	err = godotenv.Load(env_path)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+	return os.Getenv("IPFS_API_ADDRESS")
 }

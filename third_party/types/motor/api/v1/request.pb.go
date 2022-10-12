@@ -32,6 +32,34 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // -----------------------------------------------------------------------------
 // Motor Node API
 // -----------------------------------------------------------------------------
+type ClientMode int32
+
+const (
+	ClientMode_ENDPOINT_BETA  ClientMode = 0
+	ClientMode_ENDPOINT_DEV   ClientMode = 1
+	ClientMode_ENDPOINT_LOCAL ClientMode = 2
+)
+
+var ClientMode_name = map[int32]string{
+	0: "ENDPOINT_BETA",
+	1: "ENDPOINT_DEV",
+	2: "ENDPOINT_LOCAL",
+}
+
+var ClientMode_value = map[string]int32{
+	"ENDPOINT_BETA":  0,
+	"ENDPOINT_DEV":   1,
+	"ENDPOINT_LOCAL": 2,
+}
+
+func (x ClientMode) String() string {
+	return proto.EnumName(ClientMode_name, int32(x))
+}
+
+func (ClientMode) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{0}
+}
+
 // (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 type InitializeRequest struct {
 	// Identifier of this Device
@@ -59,6 +87,8 @@ type InitializeRequest struct {
 	AuthInfo *common.AuthInfo `protobuf:"bytes,11,opt,name=auth_info,json=authInfo,proto3" json:"auth_info,omitempty"`
 	// Application DID
 	AppDid string `protobuf:"bytes,12,opt,name=app_did,json=appDid,proto3" json:"app_did,omitempty"`
+	// Client Mode
+	ClientMode ClientMode `protobuf:"varint,13,opt,name=client_mode,json=clientMode,proto3,enum=sonrio.motor.api.v1.ClientMode" json:"client_mode,omitempty"`
 }
 
 func (m *InitializeRequest) Reset()         { *m = InitializeRequest{} }
@@ -176,6 +206,13 @@ func (m *InitializeRequest) GetAppDid() string {
 		return m.AppDid
 	}
 	return ""
+}
+
+func (m *InitializeRequest) GetClientMode() ClientMode {
+	if m != nil {
+		return m.ClientMode
+	}
+	return ClientMode_ENDPOINT_BETA
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -305,7 +342,9 @@ func (m *CreateAccountWithKeysRequest) GetMetadata() map[string]string {
 // and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 type LoginRequest struct {
-	Did      string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	// Either the DID or an alias of the account
+	AccountId string `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	// The account password
 	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 }
 
@@ -342,9 +381,9 @@ func (m *LoginRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LoginRequest proto.InternalMessageInfo
 
-func (m *LoginRequest) GetDid() string {
+func (m *LoginRequest) GetAccountId() string {
 	if m != nil {
-		return m.Did
+		return m.AccountId
 	}
 	return ""
 }
@@ -357,9 +396,13 @@ func (m *LoginRequest) GetPassword() string {
 }
 
 type LoginWithKeysRequest struct {
-	Did       string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	Password  string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	// Either the DID or an alias of the account
+	AccountId string `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	// The account password
+	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	// The device-specific credential, known only to the logging in device
 	AesDscKey []byte `protobuf:"bytes,3,opt,name=aes_dsc_key,json=aesDscKey,proto3" json:"aes_dsc_key,omitempty"`
+	// The preshared key, known to all devices of the account
 	AesPskKey []byte `protobuf:"bytes,4,opt,name=aes_psk_key,json=aesPskKey,proto3" json:"aes_psk_key,omitempty"`
 }
 
@@ -396,9 +439,9 @@ func (m *LoginWithKeysRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LoginWithKeysRequest proto.InternalMessageInfo
 
-func (m *LoginWithKeysRequest) GetDid() string {
+func (m *LoginWithKeysRequest) GetAccountId() string {
 	if m != nil {
-		return m.Did
+		return m.AccountId
 	}
 	return ""
 }
@@ -599,20 +642,64 @@ func (m *QueryWhoIsRequest) GetDid() string {
 	return ""
 }
 
+type QueryWhoIsByAliasRequest struct {
+	Alias string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
+}
+
+func (m *QueryWhoIsByAliasRequest) Reset()         { *m = QueryWhoIsByAliasRequest{} }
+func (m *QueryWhoIsByAliasRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryWhoIsByAliasRequest) ProtoMessage()    {}
+func (*QueryWhoIsByAliasRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{8}
+}
+func (m *QueryWhoIsByAliasRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryWhoIsByAliasRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryWhoIsByAliasRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryWhoIsByAliasRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryWhoIsByAliasRequest.Merge(m, src)
+}
+func (m *QueryWhoIsByAliasRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryWhoIsByAliasRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryWhoIsByAliasRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryWhoIsByAliasRequest proto.InternalMessageInfo
+
+func (m *QueryWhoIsByAliasRequest) GetAlias() string {
+	if m != nil {
+		return m.Alias
+	}
+	return ""
+}
+
 // -----------------------------------------------------------------------------
 // Schema Models
 // -----------------------------------------------------------------------------
 type CreateSchemaRequest struct {
-	Label    string                      `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
-	Fields   map[string]types.SchemaKind `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=sonrio.sonr.schema.SchemaKind"`
-	Metadata map[string]string           `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Label    string                            `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	Fields   map[string]*types.SchemaFieldKind `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Metadata map[string]string                 `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *CreateSchemaRequest) Reset()         { *m = CreateSchemaRequest{} }
 func (m *CreateSchemaRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateSchemaRequest) ProtoMessage()    {}
 func (*CreateSchemaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{8}
+	return fileDescriptor_df014f183f77a01a, []int{9}
 }
 func (m *CreateSchemaRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -648,7 +735,7 @@ func (m *CreateSchemaRequest) GetLabel() string {
 	return ""
 }
 
-func (m *CreateSchemaRequest) GetFields() map[string]types.SchemaKind {
+func (m *CreateSchemaRequest) GetFields() map[string]*types.SchemaFieldKind {
 	if m != nil {
 		return m.Fields
 	}
@@ -671,7 +758,7 @@ func (m *QueryWhatIsRequest) Reset()         { *m = QueryWhatIsRequest{} }
 func (m *QueryWhatIsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhatIsRequest) ProtoMessage()    {}
 func (*QueryWhatIsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{9}
+	return fileDescriptor_df014f183f77a01a, []int{10}
 }
 func (m *QueryWhatIsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -723,7 +810,7 @@ func (m *QueryWhatIsByCreatorRequest) Reset()         { *m = QueryWhatIsByCreato
 func (m *QueryWhatIsByCreatorRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhatIsByCreatorRequest) ProtoMessage()    {}
 func (*QueryWhatIsByCreatorRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{10}
+	return fileDescriptor_df014f183f77a01a, []int{11}
 }
 func (m *QueryWhatIsByCreatorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -775,7 +862,7 @@ func (m *QuerySchemaRequest) Reset()         { *m = QuerySchemaRequest{} }
 func (m *QuerySchemaRequest) String() string { return proto.CompactTextString(m) }
 func (*QuerySchemaRequest) ProtoMessage()    {}
 func (*QuerySchemaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{11}
+	return fileDescriptor_df014f183f77a01a, []int{12}
 }
 func (m *QuerySchemaRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -818,6 +905,113 @@ func (m *QuerySchemaRequest) GetDid() string {
 	return ""
 }
 
+type UploadDocumentRequest struct {
+	// DID of the schema being used for the document
+	SchemaDid string `protobuf:"bytes,1,opt,name=schema_did,json=schemaDid,proto3" json:"schema_did,omitempty"`
+	// the label of the document
+	Label string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	// JSON encoded document map
+	Document []byte `protobuf:"bytes,3,opt,name=document,proto3" json:"document,omitempty"`
+}
+
+func (m *UploadDocumentRequest) Reset()         { *m = UploadDocumentRequest{} }
+func (m *UploadDocumentRequest) String() string { return proto.CompactTextString(m) }
+func (*UploadDocumentRequest) ProtoMessage()    {}
+func (*UploadDocumentRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{13}
+}
+func (m *UploadDocumentRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UploadDocumentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UploadDocumentRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UploadDocumentRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UploadDocumentRequest.Merge(m, src)
+}
+func (m *UploadDocumentRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *UploadDocumentRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UploadDocumentRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UploadDocumentRequest proto.InternalMessageInfo
+
+func (m *UploadDocumentRequest) GetSchemaDid() string {
+	if m != nil {
+		return m.SchemaDid
+	}
+	return ""
+}
+
+func (m *UploadDocumentRequest) GetLabel() string {
+	if m != nil {
+		return m.Label
+	}
+	return ""
+}
+
+func (m *UploadDocumentRequest) GetDocument() []byte {
+	if m != nil {
+		return m.Document
+	}
+	return nil
+}
+
+type GetDocumentRequest struct {
+	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+}
+
+func (m *GetDocumentRequest) Reset()         { *m = GetDocumentRequest{} }
+func (m *GetDocumentRequest) String() string { return proto.CompactTextString(m) }
+func (*GetDocumentRequest) ProtoMessage()    {}
+func (*GetDocumentRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{14}
+}
+func (m *GetDocumentRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetDocumentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetDocumentRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetDocumentRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetDocumentRequest.Merge(m, src)
+}
+func (m *GetDocumentRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetDocumentRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetDocumentRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetDocumentRequest proto.InternalMessageInfo
+
+func (m *GetDocumentRequest) GetCid() string {
+	if m != nil {
+		return m.Cid
+	}
+	return ""
+}
+
 // -----------------------------------------------------------------------------
 // Bucket Models
 // -----------------------------------------------------------------------------
@@ -830,7 +1024,7 @@ func (m *QueryWhereIsRequest) Reset()         { *m = QueryWhereIsRequest{} }
 func (m *QueryWhereIsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhereIsRequest) ProtoMessage()    {}
 func (*QueryWhereIsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{12}
+	return fileDescriptor_df014f183f77a01a, []int{15}
 }
 func (m *QueryWhereIsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -882,7 +1076,7 @@ func (m *QueryWhereIsByCreatorRequest) Reset()         { *m = QueryWhereIsByCrea
 func (m *QueryWhereIsByCreatorRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhereIsByCreatorRequest) ProtoMessage()    {}
 func (*QueryWhereIsByCreatorRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{13}
+	return fileDescriptor_df014f183f77a01a, []int{16}
 }
 func (m *QueryWhereIsByCreatorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -937,7 +1131,7 @@ func (m *CreateBucketRequest) Reset()         { *m = CreateBucketRequest{} }
 func (m *CreateBucketRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateBucketRequest) ProtoMessage()    {}
 func (*CreateBucketRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{14}
+	return fileDescriptor_df014f183f77a01a, []int{17}
 }
 func (m *CreateBucketRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1014,7 +1208,7 @@ func (m *UpdateBucketRequest) Reset()         { *m = UpdateBucketRequest{} }
 func (m *UpdateBucketRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateBucketRequest) ProtoMessage()    {}
 func (*UpdateBucketRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{15}
+	return fileDescriptor_df014f183f77a01a, []int{18}
 }
 func (m *UpdateBucketRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1098,7 +1292,7 @@ func (m *SeachBucketContentBySchemaRequest) Reset()         { *m = SeachBucketCo
 func (m *SeachBucketContentBySchemaRequest) String() string { return proto.CompactTextString(m) }
 func (*SeachBucketContentBySchemaRequest) ProtoMessage()    {}
 func (*SeachBucketContentBySchemaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{16}
+	return fileDescriptor_df014f183f77a01a, []int{19}
 }
 func (m *SeachBucketContentBySchemaRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1155,7 +1349,7 @@ func (m *StatRequest) Reset()         { *m = StatRequest{} }
 func (m *StatRequest) String() string { return proto.CompactTextString(m) }
 func (*StatRequest) ProtoMessage()    {}
 func (*StatRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{17}
+	return fileDescriptor_df014f183f77a01a, []int{20}
 }
 func (m *StatRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1184,121 +1378,8 @@ func (m *StatRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_StatRequest proto.InternalMessageInfo
 
-type UploadDocumentRequest struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Label   string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
-	// The definition of the document used to build the values
-	Definition *types.SchemaDefinition `protobuf:"bytes,3,opt,name=definition,proto3" json:"definition,omitempty"`
-	// the properties of this schemadocument
-	Fields []*types.SchemaDocumentValue `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
-}
-
-func (m *UploadDocumentRequest) Reset()         { *m = UploadDocumentRequest{} }
-func (m *UploadDocumentRequest) String() string { return proto.CompactTextString(m) }
-func (*UploadDocumentRequest) ProtoMessage()    {}
-func (*UploadDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{18}
-}
-func (m *UploadDocumentRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *UploadDocumentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_UploadDocumentRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *UploadDocumentRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UploadDocumentRequest.Merge(m, src)
-}
-func (m *UploadDocumentRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *UploadDocumentRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_UploadDocumentRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UploadDocumentRequest proto.InternalMessageInfo
-
-func (m *UploadDocumentRequest) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *UploadDocumentRequest) GetLabel() string {
-	if m != nil {
-		return m.Label
-	}
-	return ""
-}
-
-func (m *UploadDocumentRequest) GetDefinition() *types.SchemaDefinition {
-	if m != nil {
-		return m.Definition
-	}
-	return nil
-}
-
-func (m *UploadDocumentRequest) GetFields() []*types.SchemaDocumentValue {
-	if m != nil {
-		return m.Fields
-	}
-	return nil
-}
-
-type GetDocumentRequest struct {
-	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
-}
-
-func (m *GetDocumentRequest) Reset()         { *m = GetDocumentRequest{} }
-func (m *GetDocumentRequest) String() string { return proto.CompactTextString(m) }
-func (*GetDocumentRequest) ProtoMessage()    {}
-func (*GetDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{19}
-}
-func (m *GetDocumentRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GetDocumentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GetDocumentRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GetDocumentRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetDocumentRequest.Merge(m, src)
-}
-func (m *GetDocumentRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *GetDocumentRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetDocumentRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetDocumentRequest proto.InternalMessageInfo
-
-func (m *GetDocumentRequest) GetCid() string {
-	if m != nil {
-		return m.Cid
-	}
-	return ""
-}
-
 func init() {
+	proto.RegisterEnum("sonrio.motor.api.v1.ClientMode", ClientMode_name, ClientMode_value)
 	proto.RegisterType((*InitializeRequest)(nil), "sonrio.motor.api.v1.InitializeRequest")
 	proto.RegisterType((*CreateAccountRequest)(nil), "sonrio.motor.api.v1.CreateAccountRequest")
 	proto.RegisterMapType((map[string]string)(nil), "sonrio.motor.api.v1.CreateAccountRequest.MetadataEntry")
@@ -1309,105 +1390,111 @@ func init() {
 	proto.RegisterType((*QueryRequest)(nil), "sonrio.motor.api.v1.QueryRequest")
 	proto.RegisterType((*PaymentRequest)(nil), "sonrio.motor.api.v1.PaymentRequest")
 	proto.RegisterType((*QueryWhoIsRequest)(nil), "sonrio.motor.api.v1.QueryWhoIsRequest")
+	proto.RegisterType((*QueryWhoIsByAliasRequest)(nil), "sonrio.motor.api.v1.QueryWhoIsByAliasRequest")
 	proto.RegisterType((*CreateSchemaRequest)(nil), "sonrio.motor.api.v1.CreateSchemaRequest")
-	proto.RegisterMapType((map[string]types.SchemaKind)(nil), "sonrio.motor.api.v1.CreateSchemaRequest.FieldsEntry")
+	proto.RegisterMapType((map[string]*types.SchemaFieldKind)(nil), "sonrio.motor.api.v1.CreateSchemaRequest.FieldsEntry")
 	proto.RegisterMapType((map[string]string)(nil), "sonrio.motor.api.v1.CreateSchemaRequest.MetadataEntry")
 	proto.RegisterType((*QueryWhatIsRequest)(nil), "sonrio.motor.api.v1.QueryWhatIsRequest")
 	proto.RegisterType((*QueryWhatIsByCreatorRequest)(nil), "sonrio.motor.api.v1.QueryWhatIsByCreatorRequest")
 	proto.RegisterType((*QuerySchemaRequest)(nil), "sonrio.motor.api.v1.QuerySchemaRequest")
+	proto.RegisterType((*UploadDocumentRequest)(nil), "sonrio.motor.api.v1.UploadDocumentRequest")
+	proto.RegisterType((*GetDocumentRequest)(nil), "sonrio.motor.api.v1.GetDocumentRequest")
 	proto.RegisterType((*QueryWhereIsRequest)(nil), "sonrio.motor.api.v1.QueryWhereIsRequest")
 	proto.RegisterType((*QueryWhereIsByCreatorRequest)(nil), "sonrio.motor.api.v1.QueryWhereIsByCreatorRequest")
 	proto.RegisterType((*CreateBucketRequest)(nil), "sonrio.motor.api.v1.CreateBucketRequest")
 	proto.RegisterType((*UpdateBucketRequest)(nil), "sonrio.motor.api.v1.UpdateBucketRequest")
 	proto.RegisterType((*SeachBucketContentBySchemaRequest)(nil), "sonrio.motor.api.v1.SeachBucketContentBySchemaRequest")
 	proto.RegisterType((*StatRequest)(nil), "sonrio.motor.api.v1.StatRequest")
-	proto.RegisterType((*UploadDocumentRequest)(nil), "sonrio.motor.api.v1.UploadDocumentRequest")
-	proto.RegisterType((*GetDocumentRequest)(nil), "sonrio.motor.api.v1.GetDocumentRequest")
 }
 
 func init() { proto.RegisterFile("motor/v1/request.proto", fileDescriptor_df014f183f77a01a) }
 
 var fileDescriptor_df014f183f77a01a = []byte{
-	// 1260 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0xcf, 0x6f, 0x1b, 0xc5,
-	0x17, 0xef, 0xda, 0x8e, 0x63, 0x3f, 0xa7, 0xf9, 0xa6, 0x93, 0xb4, 0xdf, 0x6d, 0x5a, 0x4c, 0x6a,
-	0x41, 0x09, 0x48, 0xdd, 0x25, 0xa6, 0x6a, 0xab, 0x82, 0x54, 0x9a, 0xba, 0x85, 0xa8, 0xa9, 0x14,
-	0x36, 0x6a, 0x2b, 0xe0, 0x60, 0xc6, 0xbb, 0x13, 0xef, 0xc8, 0xbb, 0x3b, 0xdb, 0xdd, 0x59, 0x57,
-	0x0b, 0x07, 0x38, 0x70, 0xe3, 0x82, 0x10, 0x7f, 0x12, 0x48, 0x9c, 0x50, 0x8f, 0x1c, 0x51, 0x2b,
-	0xfe, 0x08, 0x6e, 0x68, 0x7e, 0xac, 0xbd, 0x76, 0x7f, 0xa4, 0x69, 0x85, 0x38, 0x79, 0xe7, 0xfd,
-	0xf8, 0xbc, 0x99, 0xcf, 0x7b, 0x6f, 0xde, 0x18, 0x4e, 0x85, 0x8c, 0xb3, 0xc4, 0x1e, 0x6f, 0xd9,
-	0x09, 0x79, 0x90, 0x91, 0x94, 0x5b, 0x71, 0xc2, 0x38, 0x43, 0xab, 0x29, 0x8b, 0x12, 0xca, 0x2c,
-	0xa9, 0xb6, 0x70, 0x4c, 0xad, 0xf1, 0xd6, 0xfa, 0xc9, 0x41, 0xe6, 0x8e, 0x08, 0xb7, 0x1f, 0xfa,
-	0x24, 0x21, 0x7d, 0x9a, 0x2a, 0xdb, 0xf5, 0x35, 0x97, 0x85, 0x21, 0x8b, 0x04, 0x08, 0x8d, 0x0e,
-	0x98, 0x96, 0xbe, 0xe7, 0xb2, 0x34, 0x64, 0xa9, 0x3d, 0xc0, 0x29, 0xb1, 0x1f, 0x64, 0x24, 0xc9,
-	0xed, 0xf1, 0xd6, 0x80, 0x70, 0xbc, 0x65, 0xc7, 0x78, 0x48, 0x23, 0xcc, 0x29, 0x8b, 0xb4, 0xad,
-	0x99, 0xba, 0x3e, 0x09, 0xb1, 0x40, 0xf0, 0x98, 0x9b, 0x85, 0x24, 0xd2, 0xfb, 0x58, 0x3f, 0x35,
-	0xd5, 0xa8, 0x2f, 0x25, 0xef, 0xfc, 0x5a, 0x85, 0x13, 0x3b, 0x11, 0xe5, 0x14, 0x07, 0xf4, 0x6b,
-	0xe2, 0xa8, 0xbd, 0xa3, 0x33, 0xd0, 0xf4, 0xc8, 0x98, 0xba, 0xa4, 0x4f, 0x3d, 0xd3, 0xd8, 0x30,
-	0x36, 0x9b, 0x4e, 0x43, 0x09, 0x76, 0x3c, 0x74, 0x1a, 0x1a, 0x3e, 0x0b, 0x49, 0xdf, 0xa3, 0x89,
-	0x59, 0x91, 0xba, 0x45, 0xb1, 0xee, 0xd1, 0x04, 0xbd, 0x09, 0xad, 0x34, 0x8b, 0x63, 0x96, 0x70,
-	0xa9, 0xad, 0x4a, 0x2d, 0x68, 0x91, 0x30, 0x38, 0x0d, 0x0d, 0x4e, 0xc2, 0x58, 0x6a, 0x6b, 0xca,
-	0x57, 0xac, 0x85, 0xea, 0x0c, 0x34, 0x03, 0x36, 0xec, 0x07, 0x64, 0x4c, 0x02, 0x73, 0x41, 0xc5,
-	0x0c, 0xd8, 0x70, 0x57, 0xac, 0x05, 0x30, 0x89, 0xf0, 0x20, 0x20, 0x7d, 0x9f, 0xa5, 0xdc, 0xac,
-	0x6f, 0x18, 0x9b, 0x0d, 0x07, 0x94, 0xe8, 0x53, 0x96, 0x72, 0xf4, 0x2e, 0xac, 0x68, 0x03, 0x8f,
-	0xa6, 0x2e, 0x1b, 0x93, 0x24, 0x37, 0x17, 0xa5, 0xd5, 0xff, 0x94, 0xbc, 0x57, 0x88, 0xd1, 0x39,
-	0x58, 0xd2, 0xa6, 0x92, 0x4d, 0xb3, 0x21, 0xcd, 0x34, 0xfe, 0x67, 0x42, 0x84, 0x2e, 0x00, 0x9a,
-	0xc0, 0xf4, 0x03, 0xcc, 0x29, 0xcf, 0x3c, 0x62, 0x36, 0x37, 0x8c, 0x4d, 0xc3, 0x39, 0x31, 0xd1,
-	0xec, 0x6a, 0x05, 0xb2, 0x61, 0xb5, 0x64, 0xce, 0xa2, 0xa1, 0xb2, 0x07, 0x69, 0x3f, 0x45, 0xda,
-	0x2d, 0x34, 0xe8, 0x32, 0x34, 0x71, 0xc6, 0xfd, 0xbe, 0x48, 0xb3, 0xd9, 0xda, 0x30, 0x36, 0x5b,
-	0xdd, 0x75, 0x4b, 0x57, 0x8a, 0x2a, 0x02, 0x6b, 0xbc, 0x65, 0x5d, 0xcf, 0xb8, 0xbf, 0x13, 0x1d,
-	0x30, 0xa7, 0x81, 0xf5, 0x17, 0xfa, 0x3f, 0x2c, 0xe2, 0x58, 0xd0, 0xe7, 0x99, 0x4b, 0x92, 0xa2,
-	0x3a, 0x8e, 0xe3, 0x1e, 0xf5, 0x3a, 0xbf, 0x18, 0xb0, 0x76, 0x23, 0x21, 0x98, 0x93, 0xeb, 0xae,
-	0xcb, 0xb2, 0x88, 0x17, 0xa9, 0x5c, 0x87, 0x46, 0x8c, 0xd3, 0xf4, 0x21, 0x4b, 0x26, 0x99, 0x2c,
-	0xd6, 0x68, 0x1f, 0x1a, 0x21, 0xe1, 0xd8, 0xc3, 0x1c, 0x9b, 0x95, 0x8d, 0xea, 0x66, 0xab, 0x7b,
-	0xd9, 0x7a, 0x46, 0xbd, 0x5a, 0xcf, 0x02, 0xb6, 0xee, 0x68, 0xcf, 0x9b, 0x11, 0x4f, 0x72, 0x67,
-	0x02, 0xb4, 0xfe, 0x21, 0x1c, 0x9f, 0x51, 0xa1, 0x15, 0xa8, 0x8e, 0x48, 0xae, 0x83, 0x8b, 0x4f,
-	0xb4, 0x06, 0x0b, 0x63, 0x1c, 0x64, 0x44, 0x97, 0x8f, 0x5a, 0x5c, 0xad, 0x5c, 0x31, 0x3a, 0x3f,
-	0x57, 0xe0, 0xec, 0x4c, 0xb4, 0xfb, 0x94, 0xfb, 0xb7, 0x49, 0x9e, 0xbe, 0xcc, 0x71, 0xda, 0xd0,
-	0xc2, 0x24, 0xed, 0x7b, 0xa9, 0xdb, 0x17, 0x01, 0x05, 0xf8, 0x92, 0xd3, 0xc4, 0x24, 0xed, 0xa5,
-	0xee, 0x6d, 0x92, 0x17, 0xfa, 0x38, 0x1d, 0x49, 0x7d, 0x75, 0xa2, 0xdf, 0x4b, 0x47, 0x42, 0xff,
-	0x65, 0x89, 0x8e, 0x9a, 0xa4, 0xe3, 0xda, 0xe1, 0x74, 0xcc, 0x6d, 0xf0, 0xdf, 0xa1, 0xe5, 0x23,
-	0x58, 0xda, 0x65, 0x43, 0x1a, 0x15, 0x2c, 0xac, 0x40, 0xd5, 0x9b, 0x74, 0xa6, 0xf8, 0x9c, 0xe1,
-	0xa5, 0x32, 0xcb, 0x4b, 0xe7, 0x7b, 0x03, 0xd6, 0xa4, 0xfb, 0x3c, 0x99, 0x47, 0x82, 0x99, 0xa7,
-	0xb7, 0x7a, 0x08, 0xbd, 0xb5, 0x39, 0x7a, 0x3b, 0x3f, 0x19, 0xb0, 0x24, 0xdb, 0xab, 0x08, 0xbf,
-	0x06, 0x0b, 0xaa, 0x03, 0xd5, 0x06, 0xd4, 0x02, 0xbd, 0x0f, 0xb5, 0x11, 0x8d, 0x54, 0xf8, 0xe5,
-	0xee, 0xd9, 0xa7, 0xdb, 0xe2, 0x66, 0xc4, 0x29, 0xcf, 0x6f, 0xd3, 0xc8, 0x73, 0xa4, 0x25, 0xba,
-	0x0a, 0xf5, 0x90, 0x79, 0x59, 0x40, 0xe4, 0x9e, 0x96, 0xbb, 0x9d, 0xa7, 0x7d, 0xb6, 0x03, 0xe6,
-	0x8e, 0x5c, 0x1f, 0xd3, 0xe8, 0x8e, 0xb4, 0x74, 0xb4, 0x47, 0xe7, 0x2b, 0x58, 0xde, 0xc3, 0xb9,
-	0xb8, 0x28, 0x8b, 0x5d, 0x2d, 0x43, 0x85, 0x33, 0xbd, 0xa5, 0x0a, 0x67, 0x08, 0x41, 0xed, 0x20,
-	0x61, 0xa1, 0xa6, 0x43, 0x7e, 0xa3, 0x53, 0x50, 0xc7, 0xa1, 0xc8, 0xbe, 0x8c, 0x58, 0x75, 0xf4,
-	0x4a, 0xd8, 0x86, 0x24, 0x64, 0xfa, 0x6a, 0x93, 0xdf, 0x9d, 0xb7, 0xe1, 0x84, 0x3c, 0xf5, 0x7d,
-	0x9f, 0xed, 0x3c, 0x9f, 0xf9, 0xce, 0x5f, 0x15, 0x58, 0x55, 0x85, 0xb5, 0x2f, 0xef, 0xe7, 0x12,
-	0x49, 0x01, 0x1e, 0x90, 0xa0, 0x20, 0x49, 0x2e, 0xd0, 0x2e, 0xd4, 0x0f, 0x28, 0x09, 0xbc, 0x54,
-	0xf7, 0xed, 0xc5, 0x17, 0x14, 0xea, 0x0c, 0x9e, 0x75, 0x4b, 0xba, 0xa9, 0xea, 0xd4, 0x18, 0xc8,
-	0x29, 0x15, 0x7e, 0x55, 0xe2, 0x5d, 0x7a, 0x69, 0xbc, 0xe7, 0xd5, 0xfb, 0xe7, 0xd0, 0x2a, 0x85,
-	0x7a, 0x46, 0xb5, 0x5f, 0x2c, 0x57, 0xfb, 0x72, 0xb7, 0x5d, 0x44, 0x14, 0x3f, 0x96, 0x9e, 0x51,
-	0x2a, 0x94, 0x4c, 0xf5, 0xb4, 0x1b, 0x5e, 0xaf, 0x95, 0x3e, 0x06, 0xa4, 0xd3, 0x81, 0xf9, 0x34,
-	0x1f, 0x26, 0x2c, 0xba, 0xe2, 0x70, 0x2c, 0xd1, 0x28, 0xc5, 0xb2, 0xc8, 0x54, 0x65, 0x9a, 0xa9,
-	0x6f, 0xe1, 0x4c, 0x09, 0x61, 0x3b, 0xbf, 0xa1, 0x2c, 0x0f, 0x87, 0xba, 0x05, 0x30, 0x9d, 0xd8,
-	0x12, 0xb1, 0xd5, 0x3d, 0x6f, 0xa9, 0xf1, 0x6e, 0x89, 0xf1, 0x6e, 0xc9, 0x0e, 0xb0, 0xf4, 0x78,
-	0xb7, 0xf6, 0xf0, 0xb0, 0x98, 0xc8, 0x4e, 0xc9, 0x73, 0x72, 0x84, 0xd9, 0x42, 0x39, 0xca, 0x11,
-	0xae, 0xc3, 0xaa, 0x3e, 0x02, 0x49, 0xc8, 0xab, 0xb1, 0xf0, 0x9d, 0x01, 0x67, 0xcb, 0x18, 0xff,
-	0x01, 0x0f, 0x7f, 0x1b, 0x45, 0xcb, 0x6c, 0xcb, 0xf7, 0xd4, 0xe1, 0x91, 0x27, 0xcd, 0x54, 0x29,
-	0x37, 0x53, 0x0f, 0x60, 0x4c, 0x53, 0x3a, 0xa0, 0x01, 0xe5, 0xb9, 0xbe, 0x43, 0xde, 0x9a, 0x29,
-	0x47, 0xf5, 0x5e, 0xb3, 0x54, 0x98, 0x7b, 0x13, 0x5b, 0xa7, 0xe4, 0x87, 0xba, 0x50, 0x4b, 0x58,
-	0x40, 0x64, 0xef, 0xcf, 0x97, 0xf3, 0x8c, 0xbf, 0xc3, 0x02, 0xe2, 0x48, 0x5b, 0x74, 0x05, 0x16,
-	0x5d, 0x16, 0x71, 0x12, 0x71, 0x73, 0x41, 0xf6, 0xdd, 0x0b, 0xdc, 0x76, 0x38, 0x09, 0x9d, 0xc2,
-	0xbc, 0xf3, 0x43, 0x05, 0x56, 0xef, 0xc6, 0xde, 0x11, 0xce, 0xfe, 0x54, 0x0a, 0xa7, 0x6c, 0x54,
-	0x9f, 0xcf, 0x46, 0xed, 0x35, 0xd9, 0x58, 0x78, 0x35, 0x36, 0xea, 0x47, 0x63, 0xe3, 0x1b, 0x38,
-	0xb7, 0x4f, 0xb0, 0xeb, 0x2b, 0xdd, 0x0d, 0x25, 0xdd, 0x7e, 0xe9, 0x06, 0x79, 0x03, 0x40, 0x81,
-	0xf7, 0xa7, 0x0c, 0x35, 0x95, 0xa4, 0x47, 0x3d, 0xa1, 0x56, 0xf7, 0x91, 0x54, 0x2b, 0xb2, 0x9a,
-	0x4a, 0x22, 0x9e, 0x5e, 0xc7, 0xa1, 0xb5, 0xcf, 0x71, 0x91, 0x81, 0xce, 0xef, 0x06, 0x9c, 0xbc,
-	0x1b, 0x07, 0x0c, 0x7b, 0x3d, 0xfd, 0x04, 0x7f, 0x8d, 0xba, 0xf4, 0xc8, 0x01, 0x15, 0xaf, 0x73,
-	0x16, 0xc9, 0xb8, 0xad, 0xb9, 0x4c, 0xcc, 0x5c, 0x93, 0xbd, 0x89, 0xad, 0x53, 0xf2, 0x43, 0xd7,
-	0x26, 0xa3, 0x42, 0xbd, 0x69, 0xde, 0x79, 0x01, 0x82, 0xde, 0xf0, 0x3d, 0x71, 0x5b, 0x16, 0xd3,
-	0xa1, 0x73, 0x1e, 0xd0, 0x27, 0x84, 0xcf, 0x1f, 0x66, 0x05, 0xaa, 0xee, 0x74, 0x82, 0xb9, 0xd4,
-	0xdb, 0x1e, 0xfe, 0xf6, 0xb8, 0x6d, 0x3c, 0x7a, 0xdc, 0x36, 0xfe, 0x7c, 0xdc, 0x36, 0x7e, 0x7c,
-	0xd2, 0x3e, 0xf6, 0xe8, 0x49, 0xfb, 0xd8, 0x1f, 0x4f, 0xda, 0xc7, 0x60, 0xb5, 0x88, 0xc6, 0xf3,
-	0x98, 0xa4, 0x6a, 0xa6, 0xec, 0x19, 0x5f, 0x5c, 0x1a, 0x52, 0xee, 0x67, 0x03, 0x31, 0xa6, 0x6d,
-	0xa1, 0xbe, 0x40, 0x99, 0xfc, 0xb5, 0xb9, 0x4f, 0x13, 0xaf, 0x1f, 0xe3, 0x84, 0xe7, 0xb6, 0x74,
-	0xb1, 0xd5, 0xbf, 0x2b, 0x1c, 0x53, 0xf1, 0xdf, 0xa7, 0x2e, 0xff, 0xba, 0x7c, 0xf0, 0x4f, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x1d, 0x26, 0x0c, 0x0c, 0x74, 0x0d, 0x00, 0x00,
+	// 1342 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0xcf, 0x73, 0xdb, 0xc4,
+	0x17, 0x8f, 0x6c, 0x27, 0xb1, 0x9f, 0x93, 0x7c, 0x9d, 0x4d, 0xda, 0xaf, 0x9a, 0xb6, 0x6e, 0x2a,
+	0xa0, 0x13, 0x3a, 0x53, 0xb9, 0x31, 0x4c, 0x5b, 0xca, 0x81, 0x26, 0x71, 0x0a, 0x9e, 0xa6, 0x6d,
+	0x50, 0xfa, 0x63, 0x06, 0x66, 0x10, 0x6b, 0x69, 0x63, 0xef, 0x44, 0xd2, 0xaa, 0xd2, 0xda, 0x1d,
+	0xc3, 0x01, 0x6e, 0x1c, 0xb8, 0x00, 0xc3, 0x9f, 0xc4, 0x81, 0x63, 0x8f, 0x1c, 0x99, 0xf6, 0xc6,
+	0x7f, 0xc0, 0x8d, 0xd9, 0x1f, 0x92, 0xed, 0x34, 0x6d, 0xfa, 0x63, 0x18, 0x4e, 0xde, 0xf7, 0xde,
+	0x67, 0x3f, 0x6f, 0xf7, 0xb3, 0xef, 0xad, 0xd6, 0x70, 0x32, 0x64, 0x9c, 0x25, 0x8d, 0xc1, 0x7a,
+	0x23, 0x21, 0x8f, 0xfa, 0x24, 0xe5, 0x76, 0x9c, 0x30, 0xce, 0xd0, 0x52, 0xca, 0xa2, 0x84, 0x32,
+	0x5b, 0x86, 0x6d, 0x1c, 0x53, 0x7b, 0xb0, 0xbe, 0x72, 0xa2, 0xd3, 0xf7, 0x0e, 0x08, 0x6f, 0x3c,
+	0xee, 0x91, 0x84, 0xb8, 0x34, 0x55, 0xd8, 0x95, 0x65, 0x8f, 0x85, 0x21, 0x8b, 0x04, 0x09, 0x8d,
+	0xf6, 0x99, 0xf6, 0x5e, 0xf4, 0x58, 0x1a, 0xb2, 0xb4, 0xd1, 0xc1, 0x29, 0x69, 0x3c, 0xea, 0x93,
+	0x64, 0xd8, 0x18, 0xac, 0x77, 0x08, 0xc7, 0xeb, 0x8d, 0x18, 0x77, 0x69, 0x84, 0x39, 0x65, 0x91,
+	0xc6, 0x9a, 0xa9, 0xd7, 0x23, 0x21, 0x16, 0x0c, 0x3e, 0xf3, 0xfa, 0x21, 0x89, 0xf4, 0x3a, 0x56,
+	0x4e, 0x8e, 0x22, 0x6a, 0xa4, 0xfc, 0xd6, 0x0f, 0x25, 0x58, 0x6c, 0x47, 0x94, 0x53, 0x1c, 0xd0,
+	0x6f, 0x88, 0xa3, 0xd6, 0x8e, 0x4e, 0x43, 0xc5, 0x27, 0x03, 0xea, 0x11, 0x97, 0xfa, 0xa6, 0xb1,
+	0x6a, 0xac, 0x55, 0x9c, 0xb2, 0x72, 0xb4, 0x7d, 0x74, 0x0a, 0xca, 0x3d, 0x16, 0x12, 0xd7, 0xa7,
+	0x89, 0x59, 0x90, 0xb1, 0x59, 0x61, 0xb7, 0x68, 0x82, 0xce, 0x41, 0x35, 0xed, 0xc7, 0x31, 0x4b,
+	0xb8, 0x8c, 0x16, 0x65, 0x14, 0xb4, 0x4b, 0x00, 0x4e, 0x41, 0x99, 0x93, 0x30, 0x96, 0xd1, 0x92,
+	0x9a, 0x2b, 0x6c, 0x11, 0x3a, 0x0d, 0x95, 0x80, 0x75, 0xdd, 0x80, 0x0c, 0x48, 0x60, 0x4e, 0xab,
+	0x9c, 0x01, 0xeb, 0xee, 0x08, 0x5b, 0x10, 0x93, 0x08, 0x77, 0x02, 0xe2, 0xf6, 0x58, 0xca, 0xcd,
+	0x99, 0x55, 0x63, 0xad, 0xec, 0x80, 0x72, 0x7d, 0xc6, 0x52, 0x8e, 0xde, 0x87, 0x9a, 0x06, 0xf8,
+	0x34, 0xf5, 0xd8, 0x80, 0x24, 0x43, 0x73, 0x56, 0xa2, 0xfe, 0xa7, 0xfc, 0xad, 0xcc, 0x8d, 0xce,
+	0xc3, 0x9c, 0x86, 0x4a, 0x35, 0xcd, 0xb2, 0x84, 0x69, 0xfe, 0xcf, 0x85, 0x0b, 0x5d, 0x02, 0x94,
+	0xd3, 0xb8, 0x01, 0xe6, 0x94, 0xf7, 0x7d, 0x62, 0x56, 0x56, 0x8d, 0x35, 0xc3, 0x59, 0xcc, 0x23,
+	0x3b, 0x3a, 0x80, 0x1a, 0xb0, 0x34, 0x06, 0x67, 0x51, 0x57, 0xe1, 0x41, 0xe2, 0x47, 0x4c, 0x3b,
+	0x59, 0x04, 0x5d, 0x85, 0x0a, 0xee, 0xf3, 0x9e, 0x2b, 0x8e, 0xd9, 0xac, 0xae, 0x1a, 0x6b, 0xd5,
+	0xe6, 0x8a, 0xad, 0x2b, 0x45, 0x15, 0x81, 0x3d, 0x58, 0xb7, 0x37, 0xfa, 0xbc, 0xd7, 0x8e, 0xf6,
+	0x99, 0x53, 0xc6, 0x7a, 0x84, 0xfe, 0x0f, 0xb3, 0x38, 0x16, 0xf2, 0xf9, 0xe6, 0x9c, 0x94, 0x68,
+	0x06, 0xc7, 0x71, 0x8b, 0xfa, 0xe8, 0x06, 0x54, 0xbd, 0x80, 0x92, 0x88, 0xbb, 0x21, 0xf3, 0x89,
+	0x39, 0xbf, 0x6a, 0xac, 0x2d, 0x34, 0xcf, 0xd9, 0x47, 0x54, 0x9f, 0xbd, 0x25, 0x71, 0xb7, 0x99,
+	0x4f, 0x1c, 0xf0, 0xf2, 0xb1, 0xf5, 0x9b, 0x01, 0xcb, 0x5b, 0x09, 0xc1, 0x9c, 0x6c, 0x78, 0x1e,
+	0xeb, 0x47, 0x3c, 0x2b, 0x86, 0x15, 0x28, 0xc7, 0x38, 0x4d, 0x1f, 0xb3, 0x24, 0xaf, 0x85, 0xcc,
+	0x46, 0x7b, 0x50, 0x0e, 0x09, 0xc7, 0x3e, 0xe6, 0xd8, 0x2c, 0xac, 0x16, 0xd7, 0xaa, 0xcd, 0xab,
+	0x47, 0xe7, 0x3c, 0x82, 0xd8, 0xbe, 0xad, 0x67, 0x6e, 0x47, 0x3c, 0x19, 0x3a, 0x39, 0xd1, 0xca,
+	0xc7, 0x30, 0x3f, 0x11, 0x42, 0x35, 0x28, 0x1e, 0x90, 0xa1, 0x4e, 0x2e, 0x86, 0x68, 0x19, 0xa6,
+	0x07, 0x38, 0xe8, 0x13, 0x5d, 0x80, 0xca, 0xb8, 0x5e, 0xb8, 0x66, 0x58, 0xbf, 0x16, 0xe0, 0xcc,
+	0x44, 0xb6, 0x87, 0x94, 0xf7, 0x6e, 0x91, 0x61, 0xfa, 0x2a, 0xdb, 0xa9, 0x43, 0x15, 0x93, 0xd4,
+	0xf5, 0x53, 0xcf, 0x15, 0x09, 0x05, 0xf9, 0x9c, 0x53, 0xc1, 0x24, 0x6d, 0xa5, 0xde, 0x2d, 0x32,
+	0xcc, 0xe2, 0x71, 0x7a, 0x20, 0xe3, 0xc5, 0x3c, 0xbe, 0x9b, 0x1e, 0x88, 0xf8, 0x97, 0x63, 0x72,
+	0x94, 0xa4, 0x1c, 0x9f, 0x1c, 0x2f, 0xc7, 0xa1, 0x05, 0xfe, 0x3b, 0xb2, 0xb4, 0x61, 0x6e, 0x87,
+	0x75, 0x69, 0x94, 0xa9, 0x70, 0x16, 0x00, 0xab, 0xf4, 0xa3, 0x16, 0xaf, 0x68, 0x4f, 0xdb, 0x9f,
+	0x10, 0xa9, 0x30, 0x29, 0x92, 0xf5, 0xb3, 0x01, 0xcb, 0x92, 0xeb, 0xb0, 0xb2, 0x6f, 0xce, 0x79,
+	0x58, 0xf8, 0xe2, 0x31, 0xc2, 0x97, 0x0e, 0x09, 0x6f, 0xfd, 0x62, 0xc0, 0x9c, 0x6c, 0xdd, 0x6c,
+	0x2d, 0xcb, 0x30, 0xad, 0xba, 0x5b, 0x2d, 0x43, 0x19, 0xe8, 0x32, 0x94, 0x0e, 0x68, 0xa4, 0xd2,
+	0x2f, 0x34, 0xcf, 0x3c, 0xdf, 0x72, 0xdb, 0x11, 0xa7, 0x7c, 0x78, 0x8b, 0x46, 0xbe, 0x23, 0x91,
+	0xe8, 0x3a, 0xcc, 0x84, 0xcc, 0xef, 0x07, 0x44, 0xae, 0x69, 0xa1, 0x69, 0x3d, 0x3f, 0x67, 0x33,
+	0x60, 0xde, 0x81, 0xd7, 0xc3, 0x34, 0xba, 0x2d, 0x91, 0x8e, 0x9e, 0x61, 0x7d, 0x0d, 0x0b, 0xbb,
+	0x78, 0x28, 0x2e, 0xe1, 0x6c, 0x55, 0x0b, 0x50, 0xe0, 0x4c, 0x2f, 0xa9, 0xc0, 0x19, 0x42, 0x50,
+	0xda, 0x4f, 0x58, 0xa8, 0xe5, 0x90, 0x63, 0x74, 0x12, 0x66, 0x70, 0x28, 0x24, 0x93, 0x19, 0x8b,
+	0x8e, 0xb6, 0x04, 0x36, 0x24, 0x21, 0xd3, 0xd7, 0xa6, 0x1c, 0x5b, 0xef, 0xc1, 0xa2, 0xdc, 0xf5,
+	0xc3, 0x1e, 0x6b, 0xe7, 0xc7, 0x50, 0x83, 0xa2, 0x9f, 0xeb, 0x2f, 0x86, 0xd6, 0x65, 0x30, 0x47,
+	0xb0, 0xcd, 0xe1, 0x46, 0x40, 0x71, 0x3a, 0x26, 0x14, 0x16, 0x76, 0x26, 0x94, 0x34, 0xac, 0xbf,
+	0x0a, 0xb0, 0xa4, 0x8a, 0x74, 0x4f, 0x7e, 0x2d, 0xc6, 0xd0, 0x01, 0xee, 0x90, 0x20, 0x43, 0x4b,
+	0x03, 0xed, 0xc0, 0xcc, 0x3e, 0x25, 0x81, 0x9f, 0xea, 0x3b, 0xe0, 0xc3, 0x97, 0x14, 0xfd, 0x04,
+	0x9f, 0x7d, 0x53, 0x4e, 0x53, 0x95, 0xae, 0x39, 0x90, 0x33, 0xd6, 0x44, 0x45, 0xc9, 0x77, 0xe5,
+	0x95, 0xf9, 0x5e, 0xd4, 0x3b, 0x5f, 0x41, 0x75, 0x2c, 0xd5, 0x11, 0x9d, 0xf3, 0xd1, 0x78, 0xe7,
+	0x54, 0x9b, 0xef, 0x64, 0x19, 0xc5, 0x8f, 0xad, 0xbf, 0x98, 0x2a, 0x95, 0xe4, 0x91, 0x15, 0x32,
+	0x6a, 0xaf, 0xb7, 0xeb, 0xcd, 0x1b, 0x80, 0xf4, 0xf1, 0x60, 0x3e, 0x3a, 0x46, 0x13, 0x66, 0x3d,
+	0xb1, 0x43, 0x96, 0x68, 0x96, 0xcc, 0xcc, 0x0e, 0xb8, 0x30, 0x3a, 0xe0, 0xef, 0xe0, 0xf4, 0x18,
+	0xc3, 0xe6, 0x70, 0x4b, 0x21, 0x8f, 0xa7, 0xba, 0x09, 0x30, 0x7a, 0x44, 0xe8, 0xbd, 0x5f, 0xb0,
+	0xd5, 0x8b, 0xc3, 0x16, 0x2f, 0x0e, 0x5b, 0x36, 0x8e, 0xad, 0x5f, 0x1c, 0xf6, 0x2e, 0xee, 0x66,
+	0x8f, 0x04, 0x67, 0x6c, 0x66, 0xbe, 0x85, 0xc9, 0x6a, 0x79, 0x9d, 0x2d, 0xf4, 0xe0, 0xc4, 0xfd,
+	0x38, 0x60, 0xd8, 0x6f, 0xe9, 0x87, 0xcb, 0xd8, 0xad, 0xa2, 0xf4, 0x77, 0x47, 0x55, 0x5d, 0x51,
+	0x1e, 0xf1, 0xe1, 0xcb, 0x2b, 0xb2, 0x30, 0x5e, 0x91, 0x2b, 0x50, 0xce, 0x1e, 0x40, 0xfa, 0x32,
+	0xc9, 0x6d, 0xeb, 0x02, 0xa0, 0x4f, 0x09, 0x3f, 0x9c, 0xa6, 0x06, 0x45, 0x6f, 0xd4, 0x35, 0x1e,
+	0xf5, 0xad, 0x0d, 0x58, 0xd2, 0xa2, 0x92, 0x84, 0xbc, 0xd9, 0xb9, 0x7c, 0x6f, 0xc0, 0x99, 0x71,
+	0x8e, 0xff, 0xe0, 0x64, 0xfe, 0x36, 0xb2, 0x4e, 0xde, 0x94, 0x8f, 0xce, 0xe3, 0x33, 0x1f, 0xad,
+	0x68, 0x0b, 0x60, 0x40, 0x53, 0xda, 0xa1, 0x01, 0xe5, 0x43, 0x7d, 0x19, 0xbe, 0x3b, 0xd1, 0x25,
+	0xea, 0x51, 0x6b, 0xab, 0x34, 0x0f, 0x72, 0xac, 0x33, 0x36, 0x0f, 0x35, 0xa1, 0x94, 0xb0, 0x80,
+	0xc8, 0x4b, 0x6c, 0xa1, 0x59, 0x7f, 0xf1, 0x7c, 0x87, 0x05, 0xc4, 0x91, 0x58, 0x74, 0x0d, 0x66,
+	0x3d, 0x16, 0x71, 0x71, 0x94, 0xd3, 0xf2, 0x3a, 0x78, 0xc9, 0xb4, 0x36, 0x27, 0xa1, 0x93, 0xc1,
+	0xad, 0x1f, 0x0b, 0xb0, 0x74, 0x3f, 0xf6, 0x5f, 0x63, 0xef, 0xcf, 0x1d, 0xe1, 0x48, 0x8d, 0xe2,
+	0x8b, 0xd5, 0x28, 0xbd, 0xa5, 0x1a, 0xd3, 0x6f, 0xa6, 0xc6, 0xcc, 0xeb, 0xa9, 0xf1, 0x2d, 0x9c,
+	0xdf, 0x23, 0xd8, 0xeb, 0xa9, 0xd8, 0x96, 0xf2, 0x6e, 0xbe, 0x72, 0xcb, 0x9e, 0x05, 0x50, 0xe4,
+	0xee, 0x48, 0xa1, 0x8a, 0xf2, 0x88, 0x3e, 0x9c, 0x6c, 0xd3, 0xe2, 0xa1, 0x36, 0xb5, 0xe6, 0xa1,
+	0xba, 0xc7, 0x71, 0x76, 0x02, 0x17, 0xb7, 0x01, 0x46, 0xcf, 0x50, 0xb4, 0x08, 0xf3, 0xdb, 0x77,
+	0x5a, 0xbb, 0x77, 0xdb, 0x77, 0xee, 0xb9, 0x9b, 0xdb, 0xf7, 0x36, 0x6a, 0x53, 0xa8, 0x06, 0x73,
+	0xb9, 0xab, 0xb5, 0xfd, 0xa0, 0x66, 0x20, 0x04, 0x0b, 0xb9, 0x67, 0xe7, 0xee, 0xd6, 0xc6, 0x4e,
+	0xad, 0xb0, 0xd9, 0xfd, 0xfd, 0x69, 0xdd, 0x78, 0xf2, 0xb4, 0x6e, 0xfc, 0xf9, 0xb4, 0x6e, 0xfc,
+	0xf4, 0xac, 0x3e, 0xf5, 0xe4, 0x59, 0x7d, 0xea, 0x8f, 0x67, 0xf5, 0x29, 0x58, 0xca, 0x04, 0xe1,
+	0xc3, 0x98, 0xa4, 0xea, 0xc3, 0xb1, 0x6b, 0x7c, 0x71, 0xa5, 0x4b, 0x79, 0xaf, 0xdf, 0x11, 0x5f,
+	0xef, 0x86, 0x08, 0x5f, 0xa2, 0x4c, 0xfe, 0x36, 0x78, 0x8f, 0x26, 0xbe, 0x1b, 0xe3, 0x84, 0x0f,
+	0x1b, 0x72, 0x4a, 0x43, 0xfd, 0xa1, 0xc3, 0x31, 0x15, 0x7f, 0xb7, 0x66, 0xe4, 0xbf, 0xa5, 0x0f,
+	0xfe, 0x09, 0x00, 0x00, 0xff, 0xff, 0xd7, 0x00, 0xec, 0xd4, 0xe7, 0x0d, 0x00, 0x00,
 }
 
 func (m *InitializeRequest) Marshal() (dAtA []byte, err error) {
@@ -1430,6 +1517,11 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.ClientMode != 0 {
+		i = encodeVarintRequest(dAtA, i, uint64(m.ClientMode))
+		i--
+		dAtA[i] = 0x68
+	}
 	if len(m.AppDid) > 0 {
 		i -= len(m.AppDid)
 		copy(dAtA[i:], m.AppDid)
@@ -1668,10 +1760,10 @@ func (m *LoginRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.Did)))
+	if len(m.AccountId) > 0 {
+		i -= len(m.AccountId)
+		copy(dAtA[i:], m.AccountId)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.AccountId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1719,10 +1811,10 @@ func (m *LoginWithKeysRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.Did)))
+	if len(m.AccountId) > 0 {
+		i -= len(m.AccountId)
+		copy(dAtA[i:], m.AccountId)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.AccountId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1848,6 +1940,36 @@ func (m *QueryWhoIsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryWhoIsByAliasRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryWhoIsByAliasRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryWhoIsByAliasRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.Alias)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *CreateSchemaRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1891,9 +2013,18 @@ func (m *CreateSchemaRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		for k := range m.Fields {
 			v := m.Fields[k]
 			baseI := i
-			i = encodeVarintRequest(dAtA, i, uint64(v))
-			i--
-			dAtA[i] = 0x10
+			if v != nil {
+				{
+					size, err := v.MarshalToSizedBuffer(dAtA[:i])
+					if err != nil {
+						return 0, err
+					}
+					i -= size
+					i = encodeVarintRequest(dAtA, i, uint64(size))
+				}
+				i--
+				dAtA[i] = 0x12
+			}
 			i -= len(k)
 			copy(dAtA[i:], k)
 			i = encodeVarintRequest(dAtA, i, uint64(len(k)))
@@ -2024,6 +2155,80 @@ func (m *QuerySchemaRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Creator)
 		copy(dAtA[i:], m.Creator)
 		i = encodeVarintRequest(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UploadDocumentRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UploadDocumentRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UploadDocumentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Document) > 0 {
+		i -= len(m.Document)
+		copy(dAtA[i:], m.Document)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.Document)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Label) > 0 {
+		i -= len(m.Label)
+		copy(dAtA[i:], m.Label)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.Label)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.SchemaDid) > 0 {
+		i -= len(m.SchemaDid)
+		copy(dAtA[i:], m.SchemaDid)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.SchemaDid)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetDocumentRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetDocumentRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetDocumentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Cid) > 0 {
+		i -= len(m.Cid)
+		copy(dAtA[i:], m.Cid)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.Cid)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -2305,99 +2510,6 @@ func (m *StatRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *UploadDocumentRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *UploadDocumentRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *UploadDocumentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Fields) > 0 {
-		for iNdEx := len(m.Fields) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Fields[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintRequest(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x22
-		}
-	}
-	if m.Definition != nil {
-		{
-			size, err := m.Definition.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintRequest(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Label) > 0 {
-		i -= len(m.Label)
-		copy(dAtA[i:], m.Label)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.Label)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GetDocumentRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GetDocumentRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GetDocumentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintRequest(dAtA, i, uint64(len(m.Cid)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
 func encodeVarintRequest(dAtA []byte, offset int, v uint64) int {
 	offset -= sovRequest(v)
 	base := offset
@@ -2458,6 +2570,9 @@ func (m *InitializeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
+	if m.ClientMode != 0 {
+		n += 1 + sovRequest(uint64(m.ClientMode))
+	}
 	return n
 }
 
@@ -2517,7 +2632,7 @@ func (m *LoginRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Did)
+	l = len(m.AccountId)
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
@@ -2534,7 +2649,7 @@ func (m *LoginWithKeysRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Did)
+	l = len(m.AccountId)
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
@@ -2609,6 +2724,19 @@ func (m *QueryWhoIsRequest) Size() (n int) {
 	return n
 }
 
+func (m *QueryWhoIsByAliasRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Alias)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	return n
+}
+
 func (m *CreateSchemaRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2623,7 +2751,12 @@ func (m *CreateSchemaRequest) Size() (n int) {
 		for k, v := range m.Fields {
 			_ = k
 			_ = v
-			mapEntrySize := 1 + len(k) + sovRequest(uint64(len(k))) + 1 + sovRequest(uint64(v))
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovRequest(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovRequest(uint64(len(k))) + l
 			n += mapEntrySize + 1 + sovRequest(uint64(mapEntrySize))
 		}
 	}
@@ -2683,6 +2816,40 @@ func (m *QuerySchemaRequest) Size() (n int) {
 		n += 1 + l + sovRequest(uint64(l))
 	}
 	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	return n
+}
+
+func (m *UploadDocumentRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SchemaDid)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	l = len(m.Label)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	l = len(m.Document)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	return n
+}
+
+func (m *GetDocumentRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Cid)
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
@@ -2812,46 +2979,6 @@ func (m *StatRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *UploadDocumentRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
-	l = len(m.Label)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
-	if m.Definition != nil {
-		l = m.Definition.Size()
-		n += 1 + l + sovRequest(uint64(l))
-	}
-	if len(m.Fields) > 0 {
-		for _, e := range m.Fields {
-			l = e.Size()
-			n += 1 + l + sovRequest(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *GetDocumentRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Cid)
-	if l > 0 {
-		n += 1 + l + sovRequest(uint64(l))
-	}
 	return n
 }
 
@@ -3200,6 +3327,25 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.AppDid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 13:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientMode", wireType)
+			}
+			m.ClientMode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ClientMode |= ClientMode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRequest(dAtA[iNdEx:])
@@ -3738,7 +3884,7 @@ func (m *LoginRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3766,7 +3912,7 @@ func (m *LoginRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Did = string(dAtA[iNdEx:postIndex])
+			m.AccountId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -3852,7 +3998,7 @@ func (m *LoginWithKeysRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3880,7 +4026,7 @@ func (m *LoginWithKeysRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Did = string(dAtA[iNdEx:postIndex])
+			m.AccountId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -4370,6 +4516,88 @@ func (m *QueryWhoIsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *QueryWhoIsByAliasRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryWhoIsByAliasRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryWhoIsByAliasRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *CreateSchemaRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4461,10 +4689,10 @@ func (m *CreateSchemaRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Fields == nil {
-				m.Fields = make(map[string]types.SchemaKind)
+				m.Fields = make(map[string]*types.SchemaFieldKind)
 			}
 			var mapkey string
-			var mapvalue types.SchemaKind
+			var mapvalue *types.SchemaFieldKind
 			for iNdEx < postIndex {
 				entryPreIndex := iNdEx
 				var wire uint64
@@ -4513,6 +4741,7 @@ func (m *CreateSchemaRequest) Unmarshal(dAtA []byte) error {
 					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
 					iNdEx = postStringIndexmapkey
 				} else if fieldNum == 2 {
+					var mapmsglen int
 					for shift := uint(0); ; shift += 7 {
 						if shift >= 64 {
 							return ErrIntOverflowRequest
@@ -4522,11 +4751,26 @@ func (m *CreateSchemaRequest) Unmarshal(dAtA []byte) error {
 						}
 						b := dAtA[iNdEx]
 						iNdEx++
-						mapvalue |= types.SchemaKind(b&0x7F) << shift
+						mapmsglen |= int(b&0x7F) << shift
 						if b < 0x80 {
 							break
 						}
 					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthRequest
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return ErrInvalidLengthRequest
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &types.SchemaFieldKind{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
 				} else {
 					iNdEx = entryPreIndex
 					skippy, err := skipRequest(dAtA[iNdEx:])
@@ -5016,6 +5260,236 @@ func (m *QuerySchemaRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UploadDocumentRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UploadDocumentRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UploadDocumentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SchemaDid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SchemaDid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Label = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Document", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Document = append(m.Document[:0], dAtA[iNdEx:postIndex]...)
+			if m.Document == nil {
+				m.Document = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetDocumentRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetDocumentRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetDocumentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -5849,272 +6323,6 @@ func (m *StatRequest) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: StatRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipRequest(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *UploadDocumentRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowRequest
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: UploadDocumentRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: UploadDocumentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Label = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Definition", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Definition == nil {
-				m.Definition = &types.SchemaDefinition{}
-			}
-			if err := m.Definition.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Fields", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Fields = append(m.Fields, &types.SchemaDocumentValue{})
-			if err := m.Fields[len(m.Fields)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipRequest(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GetDocumentRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowRequest
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetDocumentRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetDocumentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRequest
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRequest
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRequest(dAtA[iNdEx:])
