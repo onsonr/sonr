@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/internal/projectpath"
+	mtu "github.com/sonr-io/sonr/testutil/motor"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/stretchr/testify/suite"
@@ -14,7 +15,7 @@ import (
 
 type MotorTestSuite struct {
 	suite.Suite
-	motorWithKeys *motorNodeImpl
+	motorWithKeys MotorNode
 }
 
 func (suite *MotorTestSuite) SetupSuite() {
@@ -32,12 +33,12 @@ func (suite *MotorTestSuite) SetupSuite() {
 		suite.T().Error("Failed to setup test suite motor with keys")
 	}
 
-	err = SetupTestAddressWithKeys(suite.motorWithKeys)
+	err = mtu.SetupTestAddressWithKeys(suite.motorWithKeys)
 	if err != nil {
 		suite.T().Error("Failed to setup test address with keys")
 	}
 
-	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.Address)
+	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.GetAddress())
 }
 
 func (suite *MotorTestSuite) TearDownSuite() {

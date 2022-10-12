@@ -3,8 +3,6 @@ package motor
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
-	"os"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -275,84 +273,4 @@ func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) ([]byte, error) {
 		return nil, fmt.Errorf("failed to broadcast tx (%s): %s", typeUrl, err)
 	}
 	return resp.GetTxResponse().Marshal()
-}
-
-func SetupTestAddressWithKeys(motor MotorNode) (error) {
-	aesKey := loadKey("aes.key")
-	if aesKey == nil || len(aesKey) != 32 {
-		key, err := mpc.NewAesKey()
-		if err != nil {
-			return err
-		}
-		aesKey = key
-	}
-
-	psk, err := mpc.NewAesKey()
-	if err != nil {
-		return err
-	}
-
-	req := mt.CreateAccountWithKeysRequest{
-		Password:  "password123",
-		AesDscKey: aesKey,
-		AesPskKey: psk,
-	}
-
-	_, err = motor.CreateAccountWithKeys(req)
-	if err != nil {
-		return err
-	}
-
-	storeKey(fmt.Sprintf("psk%s", motor.GetAddress()), psk)
-
-	return nil
-}
-
-func SetupTestAddress(motor MotorNode) (error) {
-	req := mt.CreateAccountRequest{
-		Password: "password123",
-	}
-	_, err := motor.CreateAccount(req)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func loadKey(n string) []byte {
-	name := fmt.Sprintf("./test_keys/%s", n)
-	var file *os.File
-	if _, err := os.Stat(name); os.IsNotExist(err) {
-		file, err = os.Create(name)
-		if err != nil {
-			return nil
-		}
-	} else if err != nil {
-		fmt.Printf("load err: %s\n", err)
-	} else {
-		file, err = os.Open(name)
-		if err != nil {
-			return nil
-		}
-	}
-	defer file.Close()
-
-	key, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil
-	}
-	return key
-}
-
-func storeKey(n string, aesKey []byte) bool {
-	name := fmt.Sprintf("./test_keys/%s", n)
-	file, err := os.Create(name)
-	if err != nil {
-		return false
-	}
-	defer file.Close()
-
-	_, err = file.Write(aesKey)
-	return err == nil
 }

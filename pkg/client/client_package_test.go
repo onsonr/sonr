@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/internal/projectpath"
 	"github.com/sonr-io/sonr/pkg/motor"
+	mtu "github.com/sonr-io/sonr/testutil/motor"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -32,7 +33,7 @@ type Client interface {
 	GetAPIAddress() string
 	GetIPFSAddress() string
 	GetIPFSApiAddress() string
-	CheckBalance(string) (types.Coins, error) 
+	CheckBalance(string) (types.Coins, error)
 	RequestFaucet(string) error
 	QueryWhoIs(string) (*rt.WhoIs, error)
 	PrintConnectionEndpoints()
@@ -53,7 +54,7 @@ func (suite *ClientTestSuite) SetupSuite() {
 		fmt.Printf("Failed to setup test suite motor: %s", err)
 	}
 
-	motor.SetupTestAddressWithKeys(suite.motorNode)
+	mtu.SetupTestAddressWithKeys(suite.motorNode)
 
 	// setup test .env
 	env_path := filepath.Join(projectpath.Root, ".env")
@@ -77,7 +78,7 @@ func (suite *ClientTestSuite) SetupSuite() {
 
 func (suite *ClientTestSuite) TearDownSuite() {
 	testKeysPath := filepath.Join(projectpath.Root, "pkg/motor/test_keys/psksnr*")
-	
+
 	// delete created accounts
 	files, err := filepath.Glob(testKeysPath)
 	if err != nil {
@@ -116,4 +117,3 @@ func (suite *ClientTestSuite) TearDownSuite() {
 func Test_ClientTestSuite(t *testing.T) {
 	suite.Run(t, new(ClientTestSuite))
 }
- 

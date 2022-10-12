@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/sonr-io/sonr/pkg/client"
+
+	mtu "github.com/sonr-io/sonr/testutil/motor"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -24,7 +26,7 @@ func Test_DecodeTxData(t *testing.T) {
 }
 
 func Test_GetAddress(t *testing.T) {
-	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
+	pskKey := mtu.LoadKey(fmt.Sprintf("psk%s", ADDR))
 	if pskKey == nil || len(pskKey) != 32 {
 		t.Errorf("could not load psk key")
 		return
