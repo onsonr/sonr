@@ -1,30 +1,17 @@
-version: 1
-build:
-  main: cmd/sonrd
-  binary: sonrd
-  proto:
-    path: proto
-    third_party_paths:
-    - third_party/proto
-    - proto_vendor
 accounts:
-- name: alice
-  coins:
-  - 20000snr
-  - 200000000stake
-- name: bob
-  coins:
-  - 10000snr
-  - 100000000stake
-faucet:
-  name: bob
-  coins:
-  - 50000000snr
-  - 100000000stake
-  host: 0.0.0.0:4500
+  - name: alice
+    coins: ["2000000000snr", "200000000stake"]
+  - name: bob
+    coins: ["1000000000snr", "100000000stake"]
+validator:
+  name: alice
+  staked: "100000000stake"
 client:
   openapi:
-    path: docs/static/blockchain.yaml
-validators:
-- name: alice
-  bonded: 100000000stake
+    path: "docs/static/blockchain.yaml"
+faucet:
+  name: bob
+  coins: ["50000000snr", "100000000stake"]
+build:
+  main: "cmd/sonrd"
+  binary: "sonrd"
