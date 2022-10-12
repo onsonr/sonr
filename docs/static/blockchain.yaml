@@ -32880,6 +32880,14 @@ paths:
                               - DID
                               - CID
                             default: None
+                          schema_did:
+                            type: string
+                            title: >-
+                              References the schema and item within the bucket
+                              is associated with.
+
+                              Bucket items do not need to use the same schema if
+                              the bucket is "generic" // optional
                         description: >-
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
@@ -33063,6 +33071,14 @@ paths:
                               - DID
                               - CID
                             default: None
+                          schema_did:
+                            type: string
+                            title: >-
+                              References the schema and item within the bucket
+                              is associated with.
+
+                              Bucket items do not need to use the same schema if
+                              the bucket is "generic" // optional
                         description: >-
                           BucketItem is a pointer to a single piece of content
                           in a bucket.
@@ -33248,6 +33264,14 @@ paths:
                             - DID
                             - CID
                           default: None
+                        schema_did:
+                          type: string
+                          title: >-
+                            References the schema and item within the bucket is
+                            associated with.
+
+                            Bucket items do not need to use the same schema if
+                            the bucket is "generic" // optional
                       description: >-
                         BucketItem is a pointer to a single piece of content in
                         a bucket.
@@ -33586,16 +33610,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -34208,77 +34222,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      title: DID is the DID of the object
-                    schema:
-                      title: Object_doc is the object document
-                      type: object
-                      properties:
-                        did:
-                          type: string
-                          title: the DID for this schema
-                        label:
-                          type: string
-                          title: an alternative reference point
-                        cid:
-                          type: string
-                          description: >-
-                            a reference to information stored within an IPFS
-                            node.
-                    creator:
-                      type: string
-                      title: Creator is the DID of the creator
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: IsActive is the status of the DID Document
-                    metadata:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      title: >-
-                        Metadata is a map of key-value pairs that can be used to
-                        store additional information about the WhatIs (Schema)
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
+            $ref: '#/definitions/sonrio.sonr.schema.QueryAllWhatIsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -34364,52 +34308,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              definition:
-                title: Definition of schema
-                type: object
-                properties:
-                  creator:
-                    type: string
-                    title: "Represents the types of fields a schema can have\r\nthe DID for this schema"
-                  label:
-                    type: string
-                    title: an alternative reference point
-                  fields:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        field:
-                          title: Type of a single schema property
-                          type: string
-                          enum:
-                            - LIST
-                            - BOOL
-                            - INT
-                            - FLOAT
-                            - STRING
-                            - BYTES
-                            - LINK
-                            - ANY
-                          default: LIST
-                        link_kind:
-                          title: >-
-                            Optional field for a link context if `SchemaKind` is
-                            of type `Link`
-                          type: string
-                          enum:
-                            - UNKNOWN
-                            - OBJECT
-                            - SCHEMA
-                            - BUCKET
-                          default: UNKNOWN
-                        link:
-                          type: string
-                    title: the properties of this schema
+            $ref: '#/definitions/sonrio.sonr.schema.QuerySchemaResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -34447,47 +34346,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: DID is the DID of the object
-                  schema:
-                    title: Object_doc is the object document
-                    type: object
-                    properties:
-                      did:
-                        type: string
-                        title: the DID for this schema
-                      label:
-                        type: string
-                        title: an alternative reference point
-                      cid:
-                        type: string
-                        description: a reference to information stored within an IPFS node.
-                  creator:
-                    type: string
-                    title: Creator is the DID of the creator
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: >-
-                      Timestamp is the time of the last update of the DID
-                      Document
-                  is_active:
-                    type: boolean
-                    title: IsActive is the status of the DID Document
-                  metadata:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    title: >-
-                      Metadata is a map of key-value pairs that can be used to
-                      store additional information about the WhatIs (Schema)
-                title: Schema Repersentation
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -34525,51 +34384,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      title: DID is the DID of the object
-                    schema:
-                      title: Object_doc is the object document
-                      type: object
-                      properties:
-                        did:
-                          type: string
-                          title: the DID for this schema
-                        label:
-                          type: string
-                          title: an alternative reference point
-                        cid:
-                          type: string
-                          description: >-
-                            a reference to information stored within an IPFS
-                            node.
-                    creator:
-                      type: string
-                      title: Creator is the DID of the creator
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: IsActive is the status of the DID Document
-                    metadata:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      title: >-
-                        Metadata is a map of key-value pairs that can be used to
-                        store additional information about the WhatIs (Schema)
-                title: Schema Repersentation
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsCreatorResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -34647,6 +34462,86 @@ paths:
 
 
             Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/schema/query/what_is/{did}':
+    get:
+      summary: Queries a whatis by did
+      operationId: SonrioSonrSchemaWhatIsByDid
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsByDidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
           in: query
           required: false
           type: boolean
@@ -57409,6 +57304,13 @@ definitions:
           - DID
           - CID
         default: None
+      schema_did:
+        type: string
+        title: >-
+          References the schema and item within the bucket is associated with.
+
+          Bucket items do not need to use the same schema if the bucket is
+          "generic" // optional
     description: BucketItem is a pointer to a single piece of content in a bucket.
   sonrio.sonr.bucket.BucketRole:
     type: string
@@ -57500,6 +57402,14 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_did:
+                  type: string
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with.
+
+                    Bucket items do not need to use the same schema if the
+                    bucket is "generic" // optional
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -57589,6 +57499,14 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_did:
+                  type: string
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with.
+
+                    Bucket items do not need to use the same schema if the
+                    bucket is "generic" // optional
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -57674,6 +57592,14 @@ definitions:
                       - DID
                       - CID
                     default: None
+                  schema_did:
+                    type: string
+                    title: >-
+                      References the schema and item within the bucket is
+                      associated with.
+
+                      Bucket items do not need to use the same schema if the
+                      bucket is "generic" // optional
                 description: >-
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
@@ -57781,6 +57707,14 @@ definitions:
                       - DID
                       - CID
                     default: None
+                  schema_did:
+                    type: string
+                    title: >-
+                      References the schema and item within the bucket is
+                      associated with.
+
+                      Bucket items do not need to use the same schema if the
+                      bucket is "generic" // optional
                 description: >-
                   BucketItem is a pointer to a single piece of content in a
                   bucket.
@@ -57886,6 +57820,14 @@ definitions:
                     - DID
                     - CID
                   default: None
+                schema_did:
+                  type: string
+                  title: >-
+                    References the schema and item within the bucket is
+                    associated with.
+
+                    Bucket items do not need to use the same schema if the
+                    bucket is "generic" // optional
               description: >-
                 BucketItem is a pointer to a single piece of content in a
                 bucket.
@@ -57977,6 +57919,14 @@ definitions:
                 - DID
                 - CID
               default: None
+            schema_did:
+              type: string
+              title: >-
+                References the schema and item within the bucket is associated
+                with.
+
+                Bucket items do not need to use the same schema if the bucket is
+                "generic" // optional
           description: BucketItem is a pointer to a single piece of content in a bucket.
         description: Content of the new bucket map of DIDs to CIDs.
       content_acl:
@@ -59760,14 +59710,17 @@ definitions:
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
     title: WhoIsType is the type of DIDDocument stored in the registry module
-  sonrio.sonr.schema.LinkKind:
+  sonrio.sonr.schema.Kind:
     type: string
     enum:
-      - UNKNOWN
-      - OBJECT
-      - SCHEMA
-      - BUCKET
-    default: UNKNOWN
+      - LIST
+      - BOOL
+      - INT
+      - FLOAT
+      - STRING
+      - BYTES
+      - LINK
+    default: LIST
   sonrio.sonr.schema.MetadataDefintion:
     type: object
     properties:
@@ -59788,41 +59741,7 @@ definitions:
       message:
         type: string
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema
-              label:
-                type: string
-                title: an alternative reference point
-              cid:
-                type: string
-                description: a reference to information stored within an IPFS node.
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
@@ -59841,41 +59760,7 @@ definitions:
       what_is:
         type: array
         items:
-          type: object
-          properties:
-            did:
-              type: string
-              title: DID is the DID of the object
-            schema:
-              title: Object_doc is the object document
-              type: object
-              properties:
-                did:
-                  type: string
-                  title: the DID for this schema
-                label:
-                  type: string
-                  title: an alternative reference point
-                cid:
-                  type: string
-                  description: a reference to information stored within an IPFS node.
-            creator:
-              type: string
-              title: Creator is the DID of the creator
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: IsActive is the status of the DID Document
-            metadata:
-              type: object
-              additionalProperties:
-                type: string
-              title: >-
-                Metadata is a map of key-value pairs that can be used to store
-                additional information about the WhatIs (Schema)
+          $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
       pagination:
         type: object
         properties:
@@ -59911,196 +59796,74 @@ definitions:
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
-      definition:
-        $ref: '#/definitions/sonrio.sonr.schema.SchemaDefinition'
+      schema:
+        $ref: '#/definitions/sonrio.sonr.schema.Schema'
         title: Definition of schema
-        type: object
-        properties:
-          creator:
-            type: string
-            title: "Represents the types of fields a schema can have\r\nthe DID for this schema"
-          label:
-            type: string
-            title: an alternative reference point
-          fields:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                field:
-                  title: Type of a single schema property
-                  type: string
-                  enum:
-                    - LIST
-                    - BOOL
-                    - INT
-                    - FLOAT
-                    - STRING
-                    - BYTES
-                    - LINK
-                    - ANY
-                  default: LIST
-                link_kind:
-                  title: >-
-                    Optional field for a link context if `SchemaKind` is of type
-                    `Link`
-                  type: string
-                  enum:
-                    - UNKNOWN
-                    - OBJECT
-                    - SCHEMA
-                    - BUCKET
-                  default: UNKNOWN
-                link:
-                  type: string
-            title: the properties of this schema
+  sonrio.sonr.schema.QueryWhatIsByDidResponse:
+    type: object
+    properties:
+      what_is:
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
   sonrio.sonr.schema.QueryWhatIsCreatorResponse:
     type: object
     properties:
       what_is:
         type: array
         items:
-          type: object
-          properties:
-            did:
-              type: string
-              title: DID is the DID of the object
-            schema:
-              title: Object_doc is the object document
-              type: object
-              properties:
-                did:
-                  type: string
-                  title: the DID for this schema
-                label:
-                  type: string
-                  title: an alternative reference point
-                cid:
-                  type: string
-                  description: a reference to information stored within an IPFS node.
-            creator:
-              type: string
-              title: Creator is the DID of the creator
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: IsActive is the status of the DID Document
-            metadata:
-              type: object
-              additionalProperties:
-                type: string
-              title: >-
-                Metadata is a map of key-value pairs that can be used to store
-                additional information about the WhatIs (Schema)
+          $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema
-              label:
-                type: string
-                title: an alternative reference point
-              cid:
-                type: string
-                description: a reference to information stored within an IPFS node.
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
-  sonrio.sonr.schema.SchemaDefinition:
+  sonrio.sonr.schema.Schema:
     type: object
     properties:
-      creator:
+      did:
         type: string
-        title: "Represents the types of fields a schema can have\r\nthe DID for this schema"
+        title: the DID of the schema
+      owner:
+        type: string
+        title: the address of the owner
       label:
         type: string
-        title: an alternative reference point
+        title: the name of the schema
       fields:
+        type: array
+        items:
+          $ref: '#/definitions/sonrio.sonr.schema.SchemaField'
+        title: list of fields the schema contains
+      metadata:
         type: array
         items:
           type: object
           properties:
-            name:
+            key:
               type: string
-            field:
-              title: Type of a single schema property
+              title: metadata key
+            value:
               type: string
-              enum:
-                - LIST
-                - BOOL
-                - INT
-                - FLOAT
-                - STRING
-                - BYTES
-                - LINK
-                - ANY
-              default: LIST
-            link_kind:
-              title: >-
-                Optional field for a link context if `SchemaKind` is of type
-                `Link`
-              type: string
-              enum:
-                - UNKNOWN
-                - OBJECT
-                - SCHEMA
-                - BUCKET
-              default: UNKNOWN
-            link:
-              type: string
-        title: the properties of this schema
-  sonrio.sonr.schema.SchemaKind:
-    type: string
-    enum:
-      - LIST
-      - BOOL
-      - INT
-      - FLOAT
-      - STRING
-      - BYTES
-      - LINK
-      - ANY
-    default: LIST
-  sonrio.sonr.schema.SchemaKindDefinition:
+              title: metadata value
+          title: Defines key value pairs for indexable metadata related to the schema
+        title: list of metadata
+    title: 'Schema is the root level document of a schema, stored on chain'
+  sonrio.sonr.schema.SchemaField:
     type: object
     properties:
       name:
         type: string
-        title: Name of the property
-      field:
-        title: Type of a single schema property
+        title: the name/key of the field
+      field_kind:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
+        title: the type/kind of the field
+    title: SchemaField represents an individual field in the schema
+  sonrio.sonr.schema.SchemaFieldKind:
+    type: object
+    properties:
+      kind:
+        title: the explicit kind
         type: string
         enum:
           - LIST
@@ -60110,32 +59873,16 @@ definitions:
           - STRING
           - BYTES
           - LINK
-          - ANY
         default: LIST
-      link_kind:
-        title: Optional field for a link context if `SchemaKind` is of type `Link`
+      list_kind:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
+        title: 'Optional; this is recursive, allowing an indefinite level of nesting'
+      link_did:
         type: string
-        enum:
-          - UNKNOWN
-          - OBJECT
-          - SCHEMA
-          - BUCKET
-        default: UNKNOWN
-      link:
-        type: string
-  sonrio.sonr.schema.SchemaReference:
-    type: object
-    properties:
-      did:
-        type: string
-        title: the DID for this schema
-      label:
-        type: string
-        title: an alternative reference point
-      cid:
-        type: string
-        description: a reference to information stored within an IPFS node.
-    title: Schema defines the shapes of schemas on Sonr
+        title: >-
+          Optional; if the kind is "LINK", this will be the DID of the linked
+          schema
+    title: SchemaFieldKind is the type for a field
   sonrio.sonr.schema.WhatIs:
     type: object
     properties:
@@ -60143,19 +59890,8 @@ definitions:
         type: string
         title: DID is the DID of the object
       schema:
-        $ref: '#/definitions/sonrio.sonr.schema.SchemaDefinition'
+        $ref: '#/definitions/sonrio.sonr.schema.Schema'
         title: Object_doc is the object document
-        type: object
-        properties:
-          did:
-            type: string
-            title: the DID for this schema
-          label:
-            type: string
-            title: an alternative reference point
-          cid:
-            type: string
-            description: a reference to information stored within an IPFS node.
       creator:
         type: string
         title: Creator is the DID of the creator
