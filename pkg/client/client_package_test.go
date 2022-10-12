@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/joho/godotenv"
 	"github.com/sonr-io/sonr/internal/projectpath"
 	"github.com/sonr-io/sonr/pkg/motor"
 	mtu "github.com/sonr-io/sonr/testutil/motor"
@@ -73,6 +74,11 @@ func (suite *ClientTestSuite) SetupSuite() {
 	err = ioutil.WriteFile(env_path, []byte(ENV_FILE_CONTENT), 0644)
 	if err != nil {
 		fmt.Printf("Failed to create .env file: %s", err)
+	}
+
+	err = godotenv.Load(env_path)
+	if err != nil {
+		fmt.Printf("Failed to load .env file: %s", err)
 	}
 }
 
