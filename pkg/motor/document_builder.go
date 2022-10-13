@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
@@ -47,10 +48,10 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 	if !ok {
 		return nil, fmt.Errorf("missing document in dag")
 	}
-	for _, f := range schema.GetFields() {
-		if f.GetKind() == st.Kind_INT {
-			d[f.Name] = int(d[f.Name].(float64))
-		}
+
+	dag[st.IPLD_DOCUMENT], err = normalizeDocument(schema, d)
+	if err != nil {
+		return nil, fmt.Errorf("error normalizing document: %s", err)
 	}
 
 	doc, err := id.NewDocumentFromDag(dag, schema)
@@ -73,21 +74,18 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 
 	builder, err := mtr.NewDocumentBuilder(req.GetSchemaDid())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating document builder: %s", err)
 	}
 
-	// Normalize number values
-	// json.Unmarshal decodes all numbers as float64 by default
-	for _, f := range builder.GetSchema().GetFields() {
-		if f.GetKind() == st.Kind_INT {
-			doc[f.Name] = int(doc[f.Name].(float64))
-		}
+	doc, err = normalizeDocument(builder.GetSchema(), doc)
+	if err != nil {
+		return nil, fmt.Errorf("error normalizing document: %s", err)
 	}
 
 	builder.SetLabel(req.GetLabel())
 	for k, v := range doc {
 		if err = builder.Set(k, v); err != nil {
-			return nil, fmt.Errorf("error setting document field: %s", err)
+			return nil, fmt.Errorf("error setting document field '%s': %s", k, err)
 		}
 	}
 
@@ -101,4 +99,34 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 		Cid:      resp.Cid,
 		Document: resp.Document,
 	}, nil
+}
+
+func normalizeDocument(schema id.Schema, doc map[string]interface{}) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
+	for _, f := range schema.GetFields() {
+		k, v := f.Name, doc[f.Name]
+		switch f.GetKind() {
+		// json.Unmarshal decodes all numbers as float64 by default
+		case st.Kind_INT:
+			if fl, ok := v.(float64); ok {
+				result[k] = int(fl)
+			} else {
+				result[k] = v
+			}
+		// json.Unmarshal encodes byte arrays as base64 strings
+		case st.Kind_BYTES:
+			if by, ok := v.(string); ok {
+				res := make([]byte, 0)
+				if _, err := base64.StdEncoding.Decode(res, []byte(by)); err != nil {
+					return nil, err
+				}
+			} else {
+				result[k] = v
+			}
+		default:
+			result[k] = v
+		}
+	}
+
+	return result, nil
 }
