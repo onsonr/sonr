@@ -13,7 +13,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/vault"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/sonr/x/registry/types"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 func (mtr *motorNodeImpl) Login(request mt.LoginRequest) (mt.LoginResponse, error) {
@@ -51,7 +51,10 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 	mtr.Cosmos = client.NewClient(mtr.clientMode)
 
 	// if the given ID is an alias, first fetch the address
-	var whoIs *types.WhoIs
+	var (
+		whoIs *rt.WhoIs
+		err   error
+	)
 	if strings.HasSuffix(request.AccountId, ".snr") {
 		whoIsResp, err := mtr.QueryWhoIsByAlias(mt.QueryWhoIsByAliasRequest{
 			Alias: request.AccountId,
@@ -70,31 +73,35 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 		whoIs = whoIsResp.WhoIs
 	}
 
-	mtr.Address = whoIs.Owner
+	// TODO: this is a hacky workaround for the Id not being populated in the DID document
+	whoIs.DidDocument.Id = did.CreateDIDFromAccount(whoIs.Owner)
+	mtr.DIDDocument, err = whoIs.DidDocument.ToPkgDoc()
+	if err != nil {
+		return mt.LoginResponse{}, fmt.Errorf("error getting DID Document: %s", err)
+	}
+
+	// get the pubkey
+	vm := mtr.DIDDocument.GetVerificationMethods().FindByID(mtr.DIDDocument.GetID())
+	if vm == nil {
+		return mt.LoginResponse{}, fmt.Errorf("could not find assertion method with ID %s", mtr.DIDDocument.GetID())
+	}
 
 	// fetch vault shards
-	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Fetching shards from vault", false)
-	shards, err := vault.New().GetVaultShards(mtr.Address)
+	shards, err := vault.New().GetVaultShards(whoIs.Owner)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error getting vault shards: %s", err)
 	}
 
-	// TODO: Breaking (bind.ios) mtr.callback.OnMotorEvent("Reconstructing wallet", false)
 	cnfgs, err := createWalletConfigs(mtr.DeviceID, request, shards)
 	if err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
 	}
 
 	// generate wallet
-	if err = initMotor(mtr, mpc.WithConfigs(cnfgs)); err != nil {
+	if err = initMotor(mtr,
+		mpc.WithConfigs(cnfgs),
+		mpc.WithBase58PubKey(vm.PublicKeyBase58)); err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
-	}
-
-	// TODO: this is a hacky workaround for the Id not being populated in the DID document
-	whoIs.DidDocument.Id = did.CreateDIDFromAccount(whoIs.Owner)
-	mtr.DIDDocument, err = whoIs.DidDocument.ToPkgDoc()
-	if err != nil {
-		return mt.LoginResponse{}, fmt.Errorf("error getting DID Document: %s", err)
 	}
 
 	// assign shards

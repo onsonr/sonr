@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	errSchemaNotFound       = errors.New("schema not found")
 	errSchemaFieldsInvalid  = errors.New("supplied Schema is invalid")
 	errSchemaFieldsNotFound = errors.New("no Schema Fields found")
 	errNodeNotFound         = errors.New("no object definition built from schema")
@@ -22,25 +23,25 @@ const (
 	EncType_DAG_JSON
 )
 
-type schemaImpl struct {
-	fields     []*st.SchemaKindDefinition
-	subSchemas map[string]*st.SchemaDefinition
-	whatIs     *st.WhatIs
-	nodes      datamodel.Node
-	store      *ReadStoreImpl
-	next       *schemaImpl
+type SchemaImpl struct {
+	fields    []*st.SchemaField
+	subWhatIs map[string]*st.WhatIs
+	whatIs    *st.WhatIs
+	nodes     datamodel.Node
+	store     *ReadStoreImpl
+	next      *SchemaImpl
 }
 
 /*
 	Default initialization with a local client instance created in scope
 */
-func New(store *ReadStoreImpl, whatIs *st.WhatIs) *schemaImpl {
-	asi := &schemaImpl{
-		fields:     whatIs.Schema.Fields,
-		subSchemas: make(map[string]*st.SchemaDefinition),
-		whatIs:     whatIs,
-		nodes:      nil,
-		store:      store,
+func New(store *ReadStoreImpl, whatIs *st.WhatIs) *SchemaImpl {
+	asi := &SchemaImpl{
+		fields:    whatIs.Schema.Fields,
+		subWhatIs: make(map[string]*st.WhatIs),
+		whatIs:    whatIs,
+		nodes:     nil,
+		store:     store,
 	}
 
 	asi.LoadSubSchemas(context.Background())
@@ -50,12 +51,12 @@ func New(store *ReadStoreImpl, whatIs *st.WhatIs) *schemaImpl {
 /*
 	Initialize with a instance of pkg/client
 */
-func NewWithClient(client *client.Client, whatIs *st.WhatIs) *schemaImpl {
-	asi := &schemaImpl{
-		fields:     whatIs.Schema.Fields,
-		subSchemas: make(map[string]*st.SchemaDefinition),
-		whatIs:     whatIs,
-		nodes:      nil,
+func NewWithClient(client *client.Client, whatIs *st.WhatIs) *SchemaImpl {
+	asi := &SchemaImpl{
+		fields:    whatIs.Schema.Fields,
+		subWhatIs: make(map[string]*st.WhatIs),
+		whatIs:    whatIs,
+		nodes:     nil,
 		store: &ReadStoreImpl{
 			Client: client,
 		},

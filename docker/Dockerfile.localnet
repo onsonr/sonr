@@ -20,4 +20,3 @@ EXPOSE 9090
 EXPOSE 9091
 
 ENTRYPOINT ["ignite","chain", "serve"]
-

@@ -31,7 +31,7 @@ func getVaultUri() (string, error) {
 	_, err := os.Stat(env_path)
 	if errors.Is(err, os.ErrNotExist) {
 		return uriDefault, nil
-	} 
+	}
 
 	err = godotenv.Load(env_path)
 	if err != nil {
@@ -46,7 +46,7 @@ func New() VaultClient {
 	if err != nil {
 		fmt.Printf("Error when retrieving vault uri: %s\n", err)
 	}
-	
+
 	return &vaultImpl{
 		vaultEndpoint: uri,
 	}

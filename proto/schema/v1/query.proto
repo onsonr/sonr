@@ -87,7 +87,7 @@ message QueryWhatIsCreatorRequest {
 
 message QuerySchemaResponse {
   // Definition of schema
-  SchemaDefinition definition = 2;
+  Schema schema = 2;
 }
 
 message QueryWhatIsByDidRequest {
