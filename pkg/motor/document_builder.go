@@ -1,6 +1,7 @@
 package motor
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
@@ -83,7 +84,13 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 		if f.GetKind() == st.Kind_INT {
 			doc[f.Name] = int(doc[f.Name].(float64))
 		} else if f.GetKind() == st.Kind_BYTES {
-			doc[f.Name] = []byte(doc[f.Name].([]byte))
+			bytes := []byte(doc[f.Name].([]byte))
+			decodedBytes := make([]byte, 0)
+			_, err := base64.StdEncoding.Decode(decodedBytes, bytes)
+			if err != nil {
+				return nil, fmt.Errorf("could not decode byte array as base64 %s", f.Name)
+			}
+			doc[f.Name] = decodedBytes
 		}
 	}
 
