@@ -76,11 +76,14 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 		return nil, err
 	}
 
-	// Normalize number values
+	// Normalize values
 	// json.Unmarshal decodes all numbers as float64 by default
+	// json.Unmarshal decodes base64 encoded bytes as strings
 	for _, f := range builder.GetSchema().GetFields() {
 		if f.GetKind() == st.Kind_INT {
 			doc[f.Name] = int(doc[f.Name].(float64))
+		} else if f.GetKind() == st.Kind_BYTES {
+			doc[f.Name] = []byte(doc[f.Name].([]byte))
 		}
 	}
 
