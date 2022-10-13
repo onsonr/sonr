@@ -14,11 +14,8 @@ func (as *SchemaImpl) BuildNodesFromDefinition(label, schemaDid string, object m
 		return errSchemaFieldsInvalid
 	}
 
-	err := as.VerifyDocument(object)
-
-	if err != nil {
-
-		return errSchemaFieldsInvalid
+	if err := as.VerifyDocument(object); err != nil {
+		return fmt.Errorf("%s: %s", errSchemaFieldsInvalid, err)
 	}
 
 	// Create IPLD Noded
