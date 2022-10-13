@@ -26,7 +26,7 @@ func (mtr *motorNodeImpl) NewDocumentBuilder(did string) (*document.DocumentBuil
 func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error) {
 	dag, err := mtr.queryDocument(req.GetCid())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("query document: %s", err)
 	}
 
 	schemaDid, ok := dag[st.IPLD_SCHEMA_DID].(string)
@@ -40,6 +40,18 @@ func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumen
 	}
 
 	schema := schemas.NewWithClient(mtr.GetClient(), schemaRes.WhatIs)
+
+	// convert dag float values to int if necessary
+	// json unmarshalling uses float64 by default
+	d, ok := dag[st.IPLD_DOCUMENT].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("missing document in dag")
+	}
+	for _, f := range schema.GetFields() {
+		if f.GetKind() == st.Kind_INT {
+			d[f.Name] = int(d[f.Name].(float64))
+		}
+	}
 
 	doc, err := id.NewDocumentFromDag(dag, schema)
 	if err != nil {
@@ -64,9 +76,19 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 		return nil, err
 	}
 
+	// Normalize number values
+	// json.Unmarshal decodes all numbers as float64 by default
+	for _, f := range builder.GetSchema().GetFields() {
+		if f.GetKind() == st.Kind_INT {
+			doc[f.Name] = int(doc[f.Name].(float64))
+		}
+	}
+
 	builder.SetLabel(req.GetLabel())
 	for k, v := range doc {
-		builder.Set(k, v)
+		if err = builder.Set(k, v); err != nil {
+			return nil, fmt.Errorf("error setting document field: %s", err)
+		}
 	}
 
 	resp, err := builder.Upload()
