@@ -58,15 +58,15 @@ func (suite *MotorTestSuite) Test_DocumentBuilder() {
 			},
 		}
 
-		resp, err = suite.motorWithKeys.CreateSchema(createInmateRequest)
+		resp2, err := suite.motorWithKeys.CreateSchema(createInmateRequest)
 		assert.NoError(suite.T(), err, "schema created successfully")
 
 		// query WhatIs so it's cached
-		_, err = suite.motorWithKeys.QueryWhatIsByDid(resp.WhatIs.Did)
+		_, err = suite.motorWithKeys.QueryWhatIsByDid(resp2.WhatIs.Did)
 		assert.NoError(t, err, "query whatis")
 
 		// upload object
-		builder, err := suite.motorWithKeys.NewDocumentBuilder(resp.WhatIs.Did)
+		builder, err := suite.motorWithKeys.NewDocumentBuilder(resp2.WhatIs.Did)
 		assert.NoError(t, err, "object builder created successfully")
 
 		builder.SetLabel("Billy the kid")
@@ -81,7 +81,7 @@ func (suite *MotorTestSuite) Test_DocumentBuilder() {
 		err = builder.Set("mug_shot", []byte{0xef, 0xbe, 0x4e, 0x10, 0xef, 0xbe, 0x4e, 0x10})
 		assert.NoError(t, err, "set mug_shot property")
 		ints := make([]interface{}, 1)
-		ints[0] = map[string]string{
+		ints[0] = map[string]interface{}{
 			"name": "Nicky Bobby",
 		}
 		err = builder.Set("associates", ints)
@@ -95,6 +95,6 @@ func (suite *MotorTestSuite) Test_DocumentBuilder() {
 		result, err := builder.Upload()
 		assert.NoError(t, err, "upload succeeds")
 
-		assert.Equal(t, "Player 1", result.Document.Label)
+		assert.Equal(t, "Billy the kid", result.Document.Label)
 	})
 }
