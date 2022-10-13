@@ -10,5 +10,5 @@ const (
 
 	AttributeKeyCreator = "whereIsCreator"
 	AttributeKeyDID     = "did"
-	AttributeKeyLabel   = "lable"
+	AttributeKeyLabel   = "label"
 )
