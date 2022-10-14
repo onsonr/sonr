@@ -24,6 +24,12 @@ func (mtr *motorNodeImpl) NewDocumentBuilder(did string) (*document.DocumentBuil
 	return document.NewBuilder(schemaImpl, objCli), nil
 }
 
+func (mtr *motorNodeImpl) NewDocumentBuilderFromWhatIs(whatIs *st.WhatIs) (*document.DocumentBuilder, error) {
+	schemaImpl := schemas.NewWithClient(mtr.GetClient(), whatIs)
+	objCli := id.New(schemaImpl, shell.NewShell(mtr.Cosmos.GetIPFSApiAddress()))
+	return document.NewBuilder(schemaImpl, objCli), nil
+}
+
 func (mtr *motorNodeImpl) GetDocument(req mt.GetDocumentRequest) (*mt.GetDocumentResponse, error) {
 	dag, err := mtr.queryDocument(req.GetCid())
 	if err != nil {
@@ -72,9 +78,18 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 		return nil, fmt.Errorf("error decoding document JSON")
 	}
 
-	builder, err := mtr.NewDocumentBuilder(req.GetSchemaDid())
-	if err != nil {
-		return nil, fmt.Errorf("error creating document builder: %s", err)
+	var err error
+	var builder *document.DocumentBuilder
+	if req.WhatIsReference == nil {
+		builder, err = mtr.NewDocumentBuilder(req.SchemaDid)
+		if err != nil {
+			return nil, fmt.Errorf("error creating document builder: %s", err)
+		}
+	} else {
+		builder, err = mtr.NewDocumentBuilderFromWhatIs(req.WhatIsReference)
+		if err != nil {
+			return nil, fmt.Errorf("error creating document builder: %s", err)
+		}
 	}
 
 	doc, err = normalizeDocument(builder.GetSchema(), doc)
