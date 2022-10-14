@@ -59,7 +59,7 @@ func (mtr *motorNodeImpl) UploadDocument(req mt.UploadDocumentRequest) (*mt.Uplo
 		return nil, fmt.Errorf("error decoding document JSON")
 	}
 
-	builder, err := mtr.NewDocumentBuilder(req.GetSchemaDid())
+	builder, err := mtr.NewDocumentBuilder(req.SchemaDid)
 	if err != nil {
 		return nil, err
 	}
