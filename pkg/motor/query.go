@@ -120,11 +120,11 @@ func (mtr *motorNodeImpl) QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhe
 }
 
 func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error) {
-	resp, err := mtr.GetClient().QueryWhereIsByCreator(req.Creator, req.Pagination)
+	resp, err := mtr.GetClient().QueryWhereIsByCreator(req.Creator, nil)
 	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, 0)
 	for _, wi := range resp.WhereIs {
-		mtr.Resources.whereIsStore[wi.Did] = &wi
-		ptrArr = append(ptrArr, &wi)
+		mtr.Resources.whereIsStore[wi.Did] = wi
+		ptrArr = append(ptrArr, wi)
 	}
 	if err != nil {
 		return nil, err

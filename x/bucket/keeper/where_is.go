@@ -80,7 +80,8 @@ func (k Keeper) GetWhereIs(ctx sdk.Context, creator, id string) (val types.Where
 }
 
 // GetWhereIs returns a whereIs from its id
-func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []types.WhereIs) {
+func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []*types.WhereIs) {
+	list = make([]*types.WhereIs, 0)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
@@ -90,7 +91,7 @@ func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []typ
 		var val types.WhereIs
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		if val.Creator == creator {
-			list = append(list, val)
+			list = append(list, &val)
 		}
 	}
 

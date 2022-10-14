@@ -11,9 +11,8 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
-
-option java_package = "io.sonr.types.bucket";
 option java_multiple_files = true;
+option java_package = "io.sonr.types.bucket";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -62,7 +61,7 @@ message QueryGetWhereIsByCreatorRequest {
 }
 
 message QueryGetWhereIsByCreatorResponse {
-  repeated WhereIs where_is = 1 [(gogoproto.nullable) = false];
+  repeated WhereIs where_is = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
