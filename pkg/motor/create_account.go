@@ -46,9 +46,6 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 
 // CreateAccountWithKeys allows PSK and DSC to be provided manually
 func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error) {
-	// Create Client instance
-	mtr.Cosmos = client.NewClient(mtr.clientMode)
-
 	// create motor
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("initialize motor: %s", err)
