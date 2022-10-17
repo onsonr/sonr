@@ -14,7 +14,7 @@ RUN /bin/bash -c 'ARCH=`uname -m` && \
     wget $URL -O /go/bin/dasel && chmod +x /go/bin/dasel'
 
 #RUN go install github.com/tomwright/dasel/cmd/dasel@master
-RUN /bin/bash -c 'ignite chain init --skip-proto -y'
+RUN /bin/bash -c 'ignite chain init -y'
 
 EXPOSE 1317
 EXPOSE 26656
@@ -23,5 +23,5 @@ EXPOSE 4500
 EXPOSE 9090
 EXPOSE 9091
 
-ENTRYPOINT ["ignite","chain", "serve", "--skip-proto", "-y"]
+ENTRYPOINT ["ignite","chain", "serve", "-y"]
 
