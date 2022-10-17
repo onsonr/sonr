@@ -135,6 +135,7 @@ func normalizeDocument(schema id.Schema, doc map[string]interface{}) (map[string
 				if _, err := base64.StdEncoding.Decode(res, []byte(by)); err != nil {
 					return nil, err
 				}
+				result[k] = res
 			} else {
 				result[k] = v
 			}
