@@ -45,7 +45,7 @@ func NewClient(mode mt.ClientMode) *Client {
 
 func (c *Client) GetFaucetAddress() string {
 	env_path := filepath.Join(projectpath.Root, ".env")
-	
+
 	// by default use .env if it exists
 	_, err := os.Stat(env_path)
 	if errors.Is(err, os.ErrNotExist) {
@@ -58,13 +58,13 @@ func (c *Client) GetFaucetAddress() string {
 		case mt.ClientMode_ENDPOINT_LOCAL:
 			return BLOCKCHAIN_FAUCET_LOCAL
 		}
-	} 
-	
+	}
+
 	err = godotenv.Load(env_path)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	return os.Getenv("BLOCKCHAIN_FAUCET")
 }
 
@@ -86,10 +86,10 @@ func (c *Client) GetRPCAddress() string {
 	}
 
 	err = godotenv.Load(env_path)
-  if err != nil {
-    log.Fatal(err)
-  }
-	
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return os.Getenv("BLOCKCHAIN_RPC")
 }
 
@@ -111,10 +111,10 @@ func (c *Client) GetAPIAddress() string {
 	}
 
 	err = godotenv.Load(env_path)
-  if err != nil {
-    log.Fatal(err)
-  }
-	
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return os.Getenv("BLOCKCHAIN_REST")
 }
 
@@ -128,9 +128,9 @@ func (c *Client) GetIPFSAddress() string {
 	}
 
 	err = godotenv.Load(env_path)
-  if err != nil {
-    log.Fatal(err)
-  }
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return os.Getenv("IPFS_ADDRESS")
 }
@@ -145,9 +145,9 @@ func (c *Client) GetIPFSApiAddress() string {
 	}
 
 	err = godotenv.Load(env_path)
-  if err != nil {
-    log.Fatal(err)
-  }
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return os.Getenv("IPFS_API_ADDRESS")
 }

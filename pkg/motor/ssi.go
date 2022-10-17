@@ -5,8 +5,8 @@ import (
 )
 
 /*
-	Adds a reference to the bucket as a service endpoint on the registered did document
-	Such functionality might be better on chain as to keep transactions in a single block.
+Adds a reference to the bucket as a service endpoint on the registered did document
+Such functionality might be better on chain as to keep transactions in a single block.
 */
 func (mtr *motorNodeImpl) AddBucketServiceEndpoint(baseURI, id string) error {
 

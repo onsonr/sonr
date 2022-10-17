@@ -53,7 +53,7 @@ func (suite *MotorTestSuite) Test_QuerySchema() {
 
 	// CREATE DONE, TRY QUERY
 	qReq := mt.QueryWhatIsRequest{
-		Creator: suite.motorWithKeys.Address,
+		Creator: suite.motorWithKeys.GetAddress(),
 		Did:     resp.WhatIs.Did,
 	}
 
