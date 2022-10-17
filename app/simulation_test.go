@@ -4,12 +4,15 @@ import (
 	"testing"
 	"time"
 
+	wasmappparams "github.com/CosmWasm/wasmd/app/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
+	"github.com/sonr-io/sonr/app"
+	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -69,20 +72,23 @@ func BenchmarkSimulation(b *testing.B) {
 
 	// encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
 
-	// app := app.New(
-	// 	logger,
-	// 	db,
-	// 	nil,
-	// 	true,
-	// 	map[int64]bool{},
-	// 	app.DefaultNodeHome,
-	// 	0,
-	// 	encoding,
-	// 	simapp.EmptyAppOptions{},
-	// )
+	var a SimApp
+	a = app.New(
+		logger,
+		db,
+		nil,
+		true,
+		map[int64]bool{},
+		app.DefaultNodeHome,
+		0,
+		wasmappparams.EncodingConfig(encoding),
+		app.GetEnabledProposals(),
+		simapp.EmptyAppOptions{},
+		app.GetWasmOpts(simapp.EmptyAppOptions{}),
+	)
 
-	// simApp, ok := app.(SimApp)
-	// require.True(b, ok, "can't use simapp")
+	simApp, ok := a.(SimApp)
+	require.True(b, ok, "can't use simapp")
 
 	// // Run randomized simulations
 	// _, simParams, simErr := simulation.SimulateFromSeed(
