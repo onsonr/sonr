@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	mtu "github.com/sonr-io/sonr/testutil/motor"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/stretchr/testify/assert"
@@ -13,14 +14,14 @@ import (
 
 func (suite *MotorTestSuite) Test_LoginWithKeys() {
 	suite.T().Run("with password and psk", func(t *testing.T) {
-		pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
+		pskKey := mtu.LoadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.GetAddress()))
 		if pskKey == nil || len(pskKey) != 32 {
 			t.Errorf("could not load psk key")
 			return
 		}
 
 		req := mt.LoginWithKeysRequest{
-			AccountId: suite.motorWithKeys.Address,
+			AccountId: suite.motorWithKeys.GetAddress(),
 			Password:  "password123",
 			AesPskKey: pskKey,
 		}
@@ -30,26 +31,26 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 
 		if err == nil {
 			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())
-			fmt.Println("address: ", suite.motorWithKeys.Address)
+			fmt.Println("address: ", suite.motorWithKeys.GetAddress())
 		}
 	})
 
 	suite.T().Run("with DSC and PSK", func(t *testing.T) {
-		aesKey := loadKey("aes.key")
+		aesKey := mtu.LoadKey("aes.key")
 		fmt.Printf("aes: %x\n", aesKey)
 		if aesKey == nil || len(aesKey) != 32 {
 			t.Errorf("could not load key.")
 			return
 		}
 
-		pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
+		pskKey := mtu.LoadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.GetAddress()))
 		if pskKey == nil || len(pskKey) != 32 {
 			t.Errorf("could not load psk key")
 			return
 		}
 
 		req := mt.LoginWithKeysRequest{
-			AccountId: suite.motorWithKeys.Address,
+			AccountId: suite.motorWithKeys.GetAddress(),
 			AesDscKey: aesKey,
 			AesPskKey: pskKey,
 		}
@@ -59,7 +60,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 
 		if err == nil {
 			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())
-			fmt.Println("address: ", suite.motorWithKeys.Address)
+			fmt.Println("address: ", suite.motorWithKeys.GetAddress())
 		}
 	})
 }
@@ -86,21 +87,21 @@ func Test_LoginWithKeyring(t *testing.T) {
 }
 
 func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
-	aesKey := loadKey("aes.key")
+	aesKey := mtu.LoadKey("aes.key")
 	fmt.Printf("aes: %x\n", aesKey)
 	if aesKey == nil || len(aesKey) != 32 {
 		suite.T().Errorf("could not load key.")
 		return
 	}
 
-	pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
+	pskKey := mtu.LoadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.GetAddress()))
 	if pskKey == nil || len(pskKey) != 32 {
 		suite.T().Errorf("could not load psk key")
 		return
 	}
 
 	req := mt.LoginWithKeysRequest{
-		AccountId: suite.motorWithKeys.Address,
+		AccountId: suite.motorWithKeys.GetAddress(),
 		Password:  "password123",
 		AesPskKey: pskKey,
 	}
@@ -109,13 +110,13 @@ func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
 	assert.NoError(suite.T(), err, "login succeeds")
 
 	// do something with the logged in account
-	suite.motorWithKeys.DIDDocument.AddAlias("gotest.snr")
+	suite.motorWithKeys.GetDIDDocument().AddAlias("gotest.snr")
 	_, err = updateWhoIs(suite.motorWithKeys)
 	assert.NoError(suite.T(), err, "updates successfully")
 }
 
 func (suite *MotorTestSuite) Test_LoginWithAlias() {
-	pskKey := loadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.Address))
+	pskKey := mtu.LoadKey(fmt.Sprintf("psk%s", suite.motorWithKeys.GetAddress()))
 	if pskKey == nil || len(pskKey) != 32 {
 		suite.T().Errorf("could not load psk key")
 		return
@@ -123,7 +124,7 @@ func (suite *MotorTestSuite) Test_LoginWithAlias() {
 
 	// alias := fmt.Sprintf("%s", randSeq(6))
 	alias := fmt.Sprintf("%s.snr", randSeq(6))
-	suite.motorWithKeys.DIDDocument.AddAlias(alias)
+	suite.motorWithKeys.GetDIDDocument().AddAlias(alias)
 	_, err := updateWhoIs(suite.motorWithKeys)
 	assert.NoError(suite.T(), err, "buy alias successfully")
 

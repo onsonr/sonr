@@ -169,19 +169,19 @@ func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
 	return cwir, nil
 }
 
-func updateWhoIs(m *motorNodeImpl) (*rt.MsgUpdateWhoIsResponse, error) {
-	docBz, err := m.DIDDocument.MarshalJSON()
+func updateWhoIs(m MotorNode) (*rt.MsgUpdateWhoIsResponse, error) {
+	docBz, err := m.GetDIDDocument().MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
 
-	msg1 := rt.NewMsgUpdateWhoIs(m.Address, docBz)
-	txRaw, err := tx.SignTxWithWallet(m.Wallet, "/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
+	msg1 := rt.NewMsgUpdateWhoIs(m.GetAddress(), docBz)
+	txRaw, err := tx.SignTxWithWallet(m.GetWallet(), "/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := m.Cosmos.BroadcastTx(txRaw)
+	resp, err := m.GetClient().BroadcastTx(txRaw)
 	if err != nil {
 		return nil, err
 	}
