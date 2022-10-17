@@ -14,12 +14,12 @@ import (
 )
 
 func (mtr *motorNodeImpl) NewDocumentBuilder(did string) (*document.DocumentBuilder, error) {
-	whatIs, _, found := mtr.Resources.GetSchema(did)
-	if !found {
-		return nil, fmt.Errorf("could not find WhatIs with did '%s'", did)
+	whatIsResp, err := mtr.QueryWhatIsByDid(did)
+	if err != nil {
+		return nil, fmt.Errorf("could not find WhatIs with did '%s': %s", did, err)
 	}
 
-	schemaImpl := schemas.NewWithClient(mtr.GetClient(), whatIs)
+	schemaImpl := schemas.NewWithClient(mtr.GetClient(), whatIsResp.WhatIs)
 	objCli := id.New(schemaImpl, shell.NewShell(mtr.Cosmos.GetIPFSApiAddress()))
 	return document.NewBuilder(schemaImpl, objCli), nil
 }
