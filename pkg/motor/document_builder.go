@@ -131,11 +131,12 @@ func normalizeDocument(schema id.Schema, doc map[string]interface{}) (map[string
 		// json.Unmarshal encodes byte arrays as base64 strings
 		case st.Kind_BYTES:
 			if by, ok := v.(string); ok {
-				res := make([]byte, base64.StdEncoding.EncodedLen(len(by)))
-				if _, err := base64.StdEncoding.Decode(res, []byte(by)); err != nil {
+				res := make([]byte, base64.StdEncoding.DecodedLen(len(by)))
+				n, err := base64.StdEncoding.Decode(res, []byte(by))
+				if err != nil {
 					return nil, err
 				}
-				result[k] = res
+				result[k] = res[0:n]
 			} else {
 				result[k] = v
 			}
