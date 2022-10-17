@@ -1,4 +1,4 @@
-FROM ignitehq/cli:develop
+FROM ignitehq/cli:0.23.0
 
 USER root
 
@@ -13,8 +13,7 @@ RUN /bin/bash -c 'ARCH=`uname -m` && \
     export URL=https://github.com/TomWright/dasel/releases/latest/download/dasel_linux_$ARCH && \
     wget $URL -O /go/bin/dasel && chmod +x /go/bin/dasel'
 
-#RUN go install github.com/tomwright/dasel/cmd/dasel@master
-RUN /bin/bash -c 'ignite chain init -y'
+RUN /bin/bash -c 'ignite chain init'
 
 EXPOSE 1317
 EXPOSE 26656
@@ -23,5 +22,5 @@ EXPOSE 4500
 EXPOSE 9090
 EXPOSE 9091
 
-ENTRYPOINT ["ignite","chain", "serve", "-y"]
+ENTRYPOINT ["ignite","chain", "serve"]
 
