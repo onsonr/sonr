@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	simulationtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 	"github.com/sonr-io/sonr/app"
 	"github.com/stretchr/testify/require"
@@ -58,19 +61,19 @@ var defaultConsensusParams = &abci.ConsensusParams{
 // Running as go benchmark test:
 // `go test -benchmem -run=^$ -bench ^BenchmarkSimulation ./app -NumBlocks=200 -BlockSize 50 -Commit=true -Verbose=true -Enabled=true`
 func BenchmarkSimulation(b *testing.B) {
-	// simapp.FlagEnabledValue = true
-	// simapp.FlagCommitValue = true
+	simapp.FlagEnabledValue = true
+	simapp.FlagCommitValue = true
 
-	// config, db, dir, logger, _, err := simapp.SetupSimulation("goleveldb-app-sim", "Simulation")
-	// require.NoError(b, err, "simulation setup failed")
+	config, db, dir, logger, _, err := simapp.SetupSimulation("goleveldb-app-sim", "Simulation")
+	require.NoError(b, err, "simulation setup failed")
 
-	// b.Cleanup(func() {
-	// 	db.Close()
-	// 	err = os.RemoveAll(dir)
-	// 	require.NoError(b, err)
-	// })
+	b.Cleanup(func() {
+		db.Close()
+		err = os.RemoveAll(dir)
+		require.NoError(b, err)
+	})
 
-	// encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
+	encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
 
 	var a SimApp
 	a = app.New(
@@ -90,25 +93,25 @@ func BenchmarkSimulation(b *testing.B) {
 	simApp, ok := a.(SimApp)
 	require.True(b, ok, "can't use simapp")
 
-	// // Run randomized simulations
-	// _, simParams, simErr := simulation.SimulateFromSeed(
-	// 	b,
-	// 	os.Stdout,
-	// 	simApp.GetBaseApp(),
-	// 	simapp.AppStateFn(simApp.AppCodec(), simApp.SimulationManager()),
-	// 	simulationtypes.RandomAccounts,
-	// 	simapp.SimulationOperations(simApp, simApp.AppCodec(), config),
-	// 	simApp.ModuleAccountAddrs(),
-	// 	config,
-	// 	simApp.AppCodec(),
-	// )
+	// Run randomized simulations
+	_, simParams, simErr := simulation.SimulateFromSeed(
+		b,
+		os.Stdout,
+		simApp.GetBaseApp(),
+		simapp.AppStateFn(simApp.AppCodec(), simApp.SimulationManager()),
+		simulationtypes.RandomAccounts,
+		simapp.SimulationOperations(simApp, simApp.AppCodec(), config),
+		simApp.ModuleAccountAddrs(),
+		config,
+		simApp.AppCodec(),
+	)
 
-	// // export state and simParams before the simulation error is checked
-	// err = simapp.CheckExportSimulation(simApp, config, simParams)
-	// require.NoError(b, err)
-	// require.NoError(b, simErr)
+	// export state and simParams before the simulation error is checked
+	err = simapp.CheckExportSimulation(simApp, config, simParams)
+	require.NoError(b, err)
+	require.NoError(b, simErr)
 
-	// if config.Commit {
-	// 	simapp.PrintStats(db)
-	// }
+	if config.Commit {
+		simapp.PrintStats(db)
+	}
 }
