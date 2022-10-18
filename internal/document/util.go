@@ -86,7 +86,7 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 				Key:  key,
 				Kind: st.Kind_INT,
 				IntValue: &st.IntValue{
-					Value: int32(v),
+					Value: v,
 				},
 			}, nil
 		case int64:
@@ -99,7 +99,6 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 			}, nil
 		default:
 			return nil, fmt.Errorf("could not cast to int")
-
 		}
 	case st.Kind_FLOAT:
 		switch v := value.(type) {
@@ -158,16 +157,12 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 			return nil, fmt.Errorf("could not cast to string for list")
 		}
 
-		subSchemaDid, ok := v[st.IPLD_SCHEMA_DID].(string)
-		if !ok {
-			return nil, fmt.Errorf("sub schema has no did")
-		}
-
-		subSchema, err := schema.GetSubSchema(subSchemaDid)
+		subSchema, err := schema.GetSubSchema(keyType.LinkDid)
 		if err != nil {
 			return nil, fmt.Errorf("get subschema: %s", err)
 		}
 
+		v = embedDocument(v, keyType)
 		linkedValue, err := NewDocumentFromDag(v, subSchema)
 		if err != nil {
 			return nil, err
@@ -182,4 +177,15 @@ func newDocumentValueFromInterface(key string, schema Schema, keyType *st.Schema
 	default:
 		return nil, fmt.Errorf("unknown schema type %s", keyType)
 	}
+}
+
+func embedDocument(doc map[string]interface{}, field *st.SchemaFieldKind) map[string]interface{} {
+	if field.GetKind() == st.Kind_LINK {
+		return map[string]interface{}{
+			st.IPLD_LABEL:      "",
+			st.IPLD_SCHEMA_DID: field.LinkDid,
+			st.IPLD_DOCUMENT:   doc,
+		}
+	}
+	return doc
 }
