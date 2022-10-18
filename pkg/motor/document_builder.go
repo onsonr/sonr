@@ -14,12 +14,12 @@ import (
 )
 
 func (mtr *motorNodeImpl) NewDocumentBuilder(did string) (*document.DocumentBuilder, error) {
-	whatIs, _, found := mtr.Resources.GetSchema(did)
-	if !found {
-		return nil, fmt.Errorf("could not find WhatIs with did '%s'", did)
+	whatIsResp, err := mtr.QueryWhatIsByDid(did)
+	if err != nil {
+		return nil, fmt.Errorf("could not find WhatIs with did '%s': %s", did, err)
 	}
 
-	schemaImpl := schemas.NewWithClient(mtr.GetClient(), whatIs)
+	schemaImpl := schemas.NewWithClient(mtr.GetClient(), whatIsResp.WhatIs)
 	objCli := id.New(schemaImpl, shell.NewShell(mtr.Cosmos.GetIPFSApiAddress()))
 	return document.NewBuilder(schemaImpl, objCli), nil
 }
@@ -131,10 +131,12 @@ func normalizeDocument(schema id.Schema, doc map[string]interface{}) (map[string
 		// json.Unmarshal encodes byte arrays as base64 strings
 		case st.Kind_BYTES:
 			if by, ok := v.(string); ok {
-				res := make([]byte, 0)
-				if _, err := base64.StdEncoding.Decode(res, []byte(by)); err != nil {
+				res := make([]byte, base64.StdEncoding.DecodedLen(len(by)))
+				n, err := base64.StdEncoding.Decode(res, []byte(by))
+				if err != nil {
 					return nil, err
 				}
+				result[k] = res[0:n]
 			} else {
 				result[k] = v
 			}
