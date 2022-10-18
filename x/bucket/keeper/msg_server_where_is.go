@@ -41,9 +41,20 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 		Timestamp:  time.Now().Unix(),
 	}
 	fmt.Printf("label: %s, vi: %d, role: %d \n", whereIs.Label, whereIs.Visibility, whereIs.Role)
-	k.SetWhereIs(
+	k.AppendWhereIs(
 		ctx,
 		whereIs,
+	)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, whereIs.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
+			sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeCreateWhereIs),
+		),
 	)
 
 	return &types.MsgCreateWhereIsResponse{
@@ -91,6 +102,16 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 
 	k.SetWhereIs(ctx, whereIs)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, whereIs.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
+			sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeUpdateWhereIs),
+		),
+	)
 	return &types.MsgUpdateWhereIsResponse{
 		Status:  http.StatusAccepted,
 		WhereIs: &whereIs,
@@ -114,5 +135,15 @@ func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWher
 	val.IsActive = false
 	k.SetWhereIs(ctx, val)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, val.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, val.Did),
+			sdk.NewAttribute(types.AttributeKeyLabel, val.Label),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeleteWhereIs),
+		),
+	)
 	return &types.MsgDeleteWhereIsResponse{}, nil
 }

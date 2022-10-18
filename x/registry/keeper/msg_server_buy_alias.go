@@ -48,6 +48,16 @@ func (k msgServer) BuyAlias(goCtx context.Context, msg *types.MsgBuyAlias) (*typ
 
 	k.SetWhoIs(ctx, newWhoIs)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyOwner, whois.Owner),
+			sdk.NewAttribute(types.AttributeKeyAlias, msg.Name),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeBuyAlias),
+		),
+	)
+
 	// Return response
 	return &types.MsgBuyAliasResponse{
 		Success: true,
