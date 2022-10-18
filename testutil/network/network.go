@@ -17,7 +17,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
-	tmdb "github.com/tendermint/tm-db"
 
 	"github.com/sonr-io/sonr/app"
 )
@@ -56,12 +55,12 @@ func DefaultConfig() network.Config {
 		AccountRetriever:  authtypes.AccountRetriever{},
 		AppConstructor: func(val network.Validator) servertypes.Application {
 			return app.New(
-				val.Ctx.Logger, 
-				tmdb.NewMemDB(), 
-				nil, 
-				true, 
-				map[int64]bool{}, 
-				val.Ctx.Config.RootDir, 
+				val.Ctx.Logger,
+				tmdb.NewMemDB(),
+				nil,
+				true,
+				map[int64]bool{},
+				val.Ctx.Config.RootDir,
 				0,
 				wasmappparams.EncodingConfig(encoding),
 				app.GetEnabledProposals(),

@@ -102,3 +102,7 @@ func (db *DocumentBuilder) Upload() (*mt.UploadDocumentResponse, error) {
 func (db *DocumentBuilder) GetByCID(cid string) (*st.SchemaDocument, error) {
 	return db.docClient.GetDocument(cid)
 }
+
+func (db *DocumentBuilder) GetSchema() id.Schema {
+	return db.schema
+}

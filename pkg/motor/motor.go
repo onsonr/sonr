@@ -95,12 +95,9 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.sh = shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
 	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.sh)
 
-	// Get address
-	if mtr.Address == "" {
-		mtr.Address, err = mtr.Wallet.Address()
-		if err != nil {
-			return err
-		}
+	mtr.Address, err = mtr.Wallet.Address()
+	if err != nil {
+		return err
 	}
 
 	// Get public key
