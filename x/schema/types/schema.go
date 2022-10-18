@@ -32,7 +32,7 @@ func (skd *SchemaField) TryValue(val interface{}) bool {
 		return skd.GetKind() == Kind_BOOL
 	case []byte:
 		return skd.GetKind() == Kind_BYTES
-	case []interface{}:
+	case []interface{}, []map[string]interface{}, []string, []int, []int32, []int64, []float32, []float64:
 		return skd.GetKind() == Kind_LIST
 	default:
 		return false

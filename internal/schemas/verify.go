@@ -2,13 +2,10 @@ package schemas
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	st "github.com/sonr-io/sonr/x/schema/types"
-)
-
-var (
-	DocumentSpecialFields = []string{"@did"}
 )
 
 /*
@@ -25,16 +22,8 @@ func (as *SchemaImpl) VerifyDocument(doc map[string]interface{}) error {
 	}
 
 	for key, value := range doc {
-		if _, ok := fields[key]; !ok {
-			// check for special metadata fields, if found skip validation
-			if !arrayContains(DocumentSpecialFields, key) {
-				return errSchemaFieldsInvalid
-			} else {
-				continue
-			}
-		}
 		if !CheckValueOfField(value, fields[key]) {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("field '%s' has invalid value '%s'", key, value)
 		}
 	}
 
@@ -56,10 +45,10 @@ func (as *SchemaImpl) VerifySubObject(lst []*st.SchemaField, doc map[string]inte
 
 	for key, value := range doc {
 		if _, ok := fields[key]; !ok {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("missing field %s", key)
 		}
 		if !CheckValueOfField(value, fields[key]) {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("invalid value '%s' for field '%s'", value, key)
 		}
 	}
 
@@ -78,7 +67,7 @@ func (as *SchemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaFieldKind
 
 	for _, val := range lst {
 		if !CheckValueOfField(val, itemType.GetKind()) {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("value '%s' not of type %s", val, itemType.GetKind())
 		}
 	}
 

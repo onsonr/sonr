@@ -88,7 +88,7 @@ func BenchmarkSimulation(b *testing.B) {
 		app.GetEnabledProposals(),
 		simapp.EmptyAppOptions{},
 		app.GetWasmOpts(simapp.EmptyAppOptions{}),
- )
+	)
 
 	simApp, ok := a.(SimApp)
 	require.True(b, ok, "can't use simapp")
