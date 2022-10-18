@@ -99,6 +99,12 @@ cd pkg/motor
 go test -run CreateAccount
 ```
 
+Run a specfic test inside a test suite
+```bash
+cd pkg/motor
+go test -run MotorTestSuite -testify.m LoginWithKeys
+```
+
 Run a test suite
 ```bash
 cd pkg/motor
