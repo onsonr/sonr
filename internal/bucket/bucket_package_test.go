@@ -20,7 +20,8 @@ type BucketTestSuite struct {
 	suite.Suite
 	motorNode  motor.MotorNode
 	testBucket bucket.Bucket
-	cid        string
+	cidDoc1    string
+	cidDoc2    string
 }
 
 func (suite *BucketTestSuite) SetupSuite() {
@@ -60,7 +61,7 @@ func (suite *BucketTestSuite) SetupSuite() {
 	// query WhatIs so it's cached
 	_, err = suite.motorNode.QueryWhatIsByDid(resp.WhatIs.Did)
 
-	// upload object
+	// create 2 different test items and upload them
 	builder, err := suite.motorNode.NewDocumentBuilder(resp.WhatIs.Did)
 
 	builder.SetLabel("Player 1")
@@ -77,14 +78,26 @@ func (suite *BucketTestSuite) SetupSuite() {
 	if "Player 1" != result.Document.Label {
 		fmt.Println("Failed to upload document")
 	}
+	
+	suite.cidDoc1 = result.GetCid()
 
-	suite.cid = result.GetCid()
+	builder.SetLabel("Player 2")
+	builder.Set("email", "test_email_2")
+	builder.Set("firstName", "test_name_2")
+	builder.Set("age", 20)
+
+	result, err = builder.Upload()
+	if "Player 2" != result.Document.Label {
+		fmt.Println("Failed to upload document")
+	}
+	
+	suite.cidDoc2 = result.GetCid()
 
 	// create bucket with content
 	content := []*bt.BucketItem{
 		{
 			Name:      "test",
-			Uri:       suite.cid,
+			Uri:       suite.cidDoc1,
 			Timestamp: time.Now().Unix(),
 			Type:      bt.ResourceIdentifier_CID,
 		},
