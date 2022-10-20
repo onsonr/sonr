@@ -16,7 +16,12 @@ var (
 	instance    mtr.MotorNode
 )
 
-func Init(buf []byte) ([]byte, error) {
+type MotorCallback interface {
+	OnDiscover(data []byte)
+	OnWalletEvent(data []byte)
+}
+
+func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
@@ -24,7 +29,7 @@ func Init(buf []byte) ([]byte, error) {
 	}
 
 	// Create Motor instance
-	mtr, err := mtr.EmptyMotor(&req, ct.DefaultCallback())
+	mtr, err := mtr.EmptyMotor(&req, cb)
 	if err != nil {
 		return nil, err
 	}
