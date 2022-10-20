@@ -11,14 +11,15 @@ import (
 	_ "golang.org/x/mobile/bind"
 )
 
-type MotorCallback interface {
-	OnDiscover(data []byte)
-}
-
 var (
 	docBuilders map[string]*document.DocumentBuilder
 	instance    mtr.MotorNode
 )
+
+type MotorCallback interface {
+	OnDiscover(data []byte)
+	OnWalletEvent(data []byte)
+}
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
