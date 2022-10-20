@@ -45,7 +45,10 @@ type motorNodeImpl struct {
 	tempDir    string
 	clientMode mt.ClientMode
 
-	// Sharding
+	// AES encryption key
+	encryptionKey []byte
+
+	// sharding
 	deviceShard   []byte
 	sharedShard   []byte
 	recoveryShard []byte

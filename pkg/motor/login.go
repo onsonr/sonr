@@ -73,6 +73,9 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 		whoIs = whoIsResp.WhoIs
 	}
 
+	// setup encryption key
+	mtr.encryptionKey = request.AesPskKey
+
 	// TODO: this is a hacky workaround for the Id not being populated in the DID document
 	whoIs.DidDocument.Id = did.CreateDIDFromAccount(whoIs.Owner)
 	mtr.DIDDocument, err = whoIs.DidDocument.ToPkgDoc()
