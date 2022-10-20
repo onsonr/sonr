@@ -1,10 +1,14 @@
 package motor
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
+	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
+	"github.com/sonr-io/multi-party-sig/pkg/paillier"
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 
 	mtu "github.com/sonr-io/sonr/testutil/motor"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -44,4 +48,74 @@ func Test_GetAddress(t *testing.T) {
 	assert.NoError(t, err, "login succeeds")
 
 	assert.Equal(t, ADDR, m.GetAddress())
+}
+
+func Test_WalletEncryption(t *testing.T) {
+	dsc, err := mpc.NewAesKey()
+	assert.NoError(t, err, "dsc")
+	psk, err := mpc.NewAesKey()
+	assert.NoError(t, err, "psk")
+
+	m, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	m.CreateAccountWithKeys(mt.CreateAccountWithKeysRequest{
+		Password:  "password123",
+		AesDscKey: dsc,
+		AesPskKey: psk,
+	})
+
+	req := mt.LoginWithKeysRequest{
+		AccountId: m.Address,
+		Password:  "password123",
+		AesPskKey: psk,
+	}
+
+	m1, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	_, err = m1.LoginWithKeys(req)
+	assert.NoError(t, err, "m1 login")
+
+	m2, _ := EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	_, err = m2.LoginWithKeys(req)
+	assert.NoError(t, err, "m2 login")
+
+	// j1, err := marshalPaillier(m1.Wallet.Config().Paillier)
+	j1, err := m1.Wallet.Sign([]byte("mysupersecure32bytesignaturemess"))
+	assert.NoError(t, err, "marshal j1")
+	j1e, err := marshalSignature(j1)
+	assert.NoError(t, err, "marshal j1e")
+
+	// j2, err := marshalPaillier(m2.Wallet.Config().Paillier)
+	j2, err := m2.Wallet.Sign([]byte("mysupersecure32bytesignaturemess"))
+	assert.NoError(t, err, "marshal j2")
+	j2e, err := marshalSignature(j2)
+	assert.NoError(t, err, "marshal j2e")
+
+	assert.Equal(t, string(j1e), string(j2e), "pailliers match")
+}
+
+func marshalPaillier(p *paillier.SecretKey) ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"p":   p.P().Bytes(),
+		"q":   p.Q().Bytes(),
+		"phi": p.Phi().Bytes(),
+	})
+}
+
+func marshalSignature(sig *ecdsa.Signature) ([]byte, error) {
+	r, err := sig.R.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+
+	s, err := sig.S.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+
+	return append(r, s...), nil
 }
