@@ -29,5 +29,5 @@ var (
 	ErrListenerRequired          = errors.New("listener was not Provided")
 	ErrMDNSInvalidConn           = errors.New("invalid Connection, cannot begin MDNS Service")
 	ErrMotorWalletNotInitialized = errors.New("motor Wallet is not initialized")
-	ErrDefaultStillImplemented   = errors.New("default implementation of event callback still defined")
+	ErrDefaultStillImplemented   = errors.New("callback not implemented")
 )

@@ -26,5 +26,5 @@ func (cb *defaultCallback) OnWalletEvent(data []byte) {
 	if err != nil {
 		log.Printf("error while unmarshalling event \n%s\n", err.Error())
 	}
-	log.Printf("type: %s\nErrored: %t\nError Message: %s\nMessage: %s\nCompleted: %t\n", event.Type, event.HasErrored, event.ErrorMessage, event.Message, event.Completed)
+	log.Printf("type: %s\nError Message: %s\nMessage: %s\n", event.Type, event.ErrorMessage, event.Message)
 }

@@ -30,7 +30,6 @@ enum WALLET_EVENT_TYPE {
   // triggered before intial token faucet occurs to the new address.
   FAUCET_REQUEST_START = 10;
   // triggered after a response from faucet request is recieved.
-  // will fire regardless of error state of the faucet request
   FAUCET_REQUEST_END = 11;
   // triggered if fauceting has an error errorMessage will be populated
   FAUCET_REQUEST_ERROR = 12;
@@ -52,12 +51,8 @@ enum WALLET_EVENT_TYPE {
 message WalletEvent {
   // context on what part of the wallet creation process is occuring
   WALLET_EVENT_TYPE type = 1;
-  // will be true if an error has occured errorMessage should be populated if this is `true`
-  bool hasErrored = 2;
-  // will be populated if `hasErrrored` is true
-  string errorMessage = 3;
+  // populated if an error has occured, type will denote an error
+  string errorMessage = 2;
   // status message. does not have to be populated
-  string message = 4;
-  // will be true once the final
-  bool completed = 5;
+  string message = 3;
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/sonr-io/sonr/third_party/types/common"
 )
 
-func (mtr *motorNodeImpl) triggerWalletCreateEvent(event common.WalletEvent) error {
+func (mtr *motorNodeImpl) triggerWalletEvent(event common.WalletEvent) error {
 	if mtr.callback == nil {
 		return fmt.Errorf("error callback is nil cannot trigger")
 	}
