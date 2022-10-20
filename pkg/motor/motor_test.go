@@ -1,121 +1,19 @@
 package motor
 
 import (
-	"encoding/json"
-	"fmt"
 	"testing"
 
-	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
-	"github.com/sonr-io/multi-party-sig/pkg/paillier"
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 
-	mtu "github.com/sonr-io/sonr/testutil/motor"
-	"github.com/sonr-io/sonr/third_party/types/common"
-	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/stretchr/testify/assert"
 )
 
-// TODO: improve test suite (make more robust for CI/CID)
-const ADDR = "snr19c99rqjsts86mm4t6u8qzy2al3ghkfgu7f2zua"
-
-func Test_DecodeTxData(t *testing.T) {
+func (suite *MotorTestSuite) Test_DecodeTxData(t *testing.T) {
 	data := "0A91010A242F736F6E72696F2E736F6E722E72656769737472792E4D736743726561746557686F497312691267122A736E723134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A35371A31122F6469643A736E723A3134373071366D3476776D6537346A376D3573326364773939357A35796E6B747A726D377A353730BC8FA197063801"
 
 	mcr := &rt.MsgCreateWhoIsResponse{}
 	err := client.DecodeTxResponseData(data, mcr)
 	assert.NoError(t, err, "decodes tx data successfully")
 	assert.Equal(t, "snr1470q6m4vwme74j7m5s2cdw995z5ynktzrm7z57", mcr.WhoIs.Owner)
-}
-
-func Test_GetAddress(t *testing.T) {
-	pskKey := mtu.LoadKey(fmt.Sprintf("psk%s", ADDR))
-	if pskKey == nil || len(pskKey) != 32 {
-		t.Errorf("could not load psk key")
-		return
-	}
-
-	req := mt.LoginRequest{
-		AccountId: ADDR,
-		Password:  "password123",
-	}
-
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err := m.Login(req)
-	assert.NoError(t, err, "login succeeds")
-
-	assert.Equal(t, ADDR, m.GetAddress())
-}
-
-func Test_WalletEncryption(t *testing.T) {
-	dsc, err := mpc.NewAesKey()
-	assert.NoError(t, err, "dsc")
-	psk, err := mpc.NewAesKey()
-	assert.NoError(t, err, "psk")
-
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	m.CreateAccountWithKeys(mt.CreateAccountWithKeysRequest{
-		Password:  "password123",
-		AesDscKey: dsc,
-		AesPskKey: psk,
-	})
-
-	req := mt.LoginWithKeysRequest{
-		AccountId: m.Address,
-		Password:  "password123",
-		AesPskKey: psk,
-	}
-
-	m1, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err = m1.LoginWithKeys(req)
-	assert.NoError(t, err, "m1 login")
-
-	m2, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err = m2.LoginWithKeys(req)
-	assert.NoError(t, err, "m2 login")
-
-	// j1, err := marshalPaillier(m1.Wallet.Config().Paillier)
-	j1, err := m1.Wallet.Sign([]byte("mysupersecure32bytesignaturemess"))
-	assert.NoError(t, err, "marshal j1")
-	j1e, err := marshalSignature(j1)
-	assert.NoError(t, err, "marshal j1e")
-
-	// j2, err := marshalPaillier(m2.Wallet.Config().Paillier)
-	j2, err := m2.Wallet.Sign([]byte("mysupersecure32bytesignaturemess"))
-	assert.NoError(t, err, "marshal j2")
-	j2e, err := marshalSignature(j2)
-	assert.NoError(t, err, "marshal j2e")
-
-	assert.Equal(t, string(j1e), string(j2e), "pailliers match")
-}
-
-func marshalPaillier(p *paillier.SecretKey) ([]byte, error) {
-	return json.Marshal(map[string]interface{}{
-		"p":   p.P().Bytes(),
-		"q":   p.Q().Bytes(),
-		"phi": p.Phi().Bytes(),
-	})
-}
-
-func marshalSignature(sig *ecdsa.Signature) ([]byte, error) {
-	r, err := sig.R.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-
-	s, err := sig.S.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-
-	return append(r, s...), nil
 }
