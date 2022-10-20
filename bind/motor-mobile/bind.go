@@ -5,7 +5,6 @@ import (
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/document"
-	"github.com/sonr-io/sonr/third_party/types/common"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -17,7 +16,7 @@ var (
 	instance    mtr.MotorNode
 )
 
-func Init(buf []byte, cb common.MotorCallback) ([]byte, error) {
+func Init(buf []byte, cb ct.MotorCallback) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
