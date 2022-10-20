@@ -10,20 +10,36 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
+	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create DSC and store it in keychain
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_START,
+		ErrorMessage: "",
+		Message:      "",
+	})
 	dsc, err := kr.CreateDSC()
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_END,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountResponse{}, fmt.Errorf("create DSC: %s", err)
 	}
 
 	// create PSK and store it in keychain
 	psk, err := kr.CreatePSK()
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountResponse{}, fmt.Errorf("create PSK: %s", err)
 	}
 
@@ -34,6 +50,11 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 		Metadata:  request.Metadata,
 	})
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountResponse{}, err
 	}
 
@@ -52,16 +73,41 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
-
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_FAUCET_REQUEST_START,
+		ErrorMessage: "",
+		Message:      "",
+	})
 	// Request from Faucet
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_FAUCET_REQUEST_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_FAUCET_REQUEST_END,
+		ErrorMessage: "",
+		Message:      "",
+	})
+
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_START,
+		ErrorMessage: "",
+		Message:      "",
+	})
 
 	// Create the DID Document
 	doc, err := did.NewDocument(mtr.DID.String())
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create DID document: %s", err)
 	}
 	mtr.DIDDocument = doc
@@ -69,16 +115,36 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	// Format DID for setting MPC as controller
 	controller, err := did.ParseDID(fmt.Sprintf("%s#mpc", doc.GetID().String()))
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("parse controller DID: %s", err)
 	}
 
 	// Add MPC as a VerificationMethod for the assertion of the DID Document
 	vm, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.ECDSASECP256K1VerificationKey2019, *controller, mtr.GetPubKey().Bytes())
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, err
 	}
 	doc.AddAssertionMethod(vm)
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
+		ErrorMessage: "",
+		Message:      "",
+	})
 
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_START,
+		ErrorMessage: "",
+		Message:      "",
+	})
 	// Create Initial Shards
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 
@@ -86,8 +152,19 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	mtr.encryptionKey = request.AesPskKey
 
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create shards: %s", err)
 	}
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_END,
+		ErrorMessage: "",
+		Message:      "",
+	})
+
 	mtr.deviceShard = deviceShard
 	mtr.sharedShard = sharedShard
 	mtr.recoveryShard = recShard
@@ -99,21 +176,42 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create account: %s", err)
 	}
 
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_START,
+		ErrorMessage: "",
+		Message:      "",
+	})
+
 	// encrypt dscShard with DSC
 	dscShard, err := mpc.AesEncryptWithKey(request.AesDscKey, mtr.deviceShard)
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
 	}
 
 	// encrypt pskShard with psk (must be generated)
 	pskShard, err := mpc.AesEncryptWithKey(request.AesPskKey, mtr.sharedShard)
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt psk shards: %s", err)
 	}
 
 	// password protect the recovery shard
 	pwShard, err := mpc.AesEncryptWithPassword(request.Password, mtr.recoveryShard)
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
 
@@ -121,9 +219,27 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	for i, s := range mtr.unusedShards {
 		mtr.unusedShards[i], err = mpc.AesEncryptWithKey(mtr.encryptionKey, s)
 		if err != nil {
+			mtr.triggerWalletEvent(common.WalletEvent{
+				Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
+				ErrorMessage: err.Error(),
+				Message:      "",
+			})
+
 			return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt backup shard #%d: %s", i+1, err)
 		}
 	}
+
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_END,
+		ErrorMessage: "",
+		Message:      "",
+	})
+
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_START,
+		ErrorMessage: "",
+		Message:      "",
+	})
 
 	// create vault
 	vaultService, err := vc.CreateVault(
@@ -136,8 +252,19 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	)
 	fmt.Println("Response From Create Vault :", vaultService)
 	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_END,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
+
+	mtr.triggerWalletEvent(common.WalletEvent{
+		Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_END,
+		ErrorMessage: "",
+		Message:      "",
+	})
 
 	// update DID Document
 	mtr.DIDDocument.AddService(vaultService)
