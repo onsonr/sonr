@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"errors"
 	"fmt"
 
 	kr "github.com/sonr-io/sonr/internal/keyring"
@@ -149,6 +148,9 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	// Create Initial Shards
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 
+	// set encryption key, based on preshared key
+	mtr.encryptionKey = request.AesPskKey
+
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_ERROR,
@@ -181,7 +183,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	})
 
 	// encrypt dscShard with DSC
-	dscShard, err := dscEncrypt(mtr.deviceShard, request.AesDscKey)
+	dscShard, err := mpc.AesEncryptWithKey(request.AesDscKey, mtr.deviceShard)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
@@ -192,7 +194,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}
 
 	// encrypt pskShard with psk (must be generated)
-	pskShard, err := pskEncrypt(mtr.sharedShard, request.AesPskKey)
+	pskShard, err := mpc.AesEncryptWithKey(request.AesPskKey, mtr.sharedShard)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
@@ -212,6 +214,21 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
+
+	// encrypt each of the unused shards
+	for i, s := range mtr.unusedShards {
+		mtr.unusedShards[i], err = mpc.AesEncryptWithKey(mtr.encryptionKey, s)
+		if err != nil {
+			mtr.triggerWalletEvent(common.WalletEvent{
+				Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
+				ErrorMessage: err.Error(),
+				Message:      "",
+			})
+
+			return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt backup shard #%d: %s", i+1, err)
+		}
+	}
+
 	mtr.triggerWalletEvent(common.WalletEvent{
 		Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_END,
 		ErrorMessage: "",
@@ -223,6 +240,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		ErrorMessage: "",
 		Message:      "",
 	})
+
 	// create vault
 	vaultService, err := vc.CreateVault(
 		mtr.Address,
@@ -311,24 +329,4 @@ func updateWhoIs(m MotorNode) (*rt.MsgUpdateWhoIsResponse, error) {
 	}
 
 	return cwir, nil
-}
-
-func pskEncrypt(shard, key []byte) ([]byte, error) {
-	cipherShard, err := mpc.AesEncryptWithKey(key, shard)
-	if err != nil {
-		return nil, err
-	}
-
-	return cipherShard, nil
-}
-
-// dscEncrypt encrypts the shard with the DSC key
-// Returns: encrypted shard, given key, error
-func dscEncrypt(shard, dsc []byte) ([]byte, error) {
-	// Check if the DSC is valid
-	if len(dsc) != 32 {
-		return nil, errors.New("dsc must be 32 bytes")
-	}
-
-	return mpc.AesEncryptWithKey(dsc, shard)
 }
