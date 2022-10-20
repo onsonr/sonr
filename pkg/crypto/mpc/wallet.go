@@ -224,25 +224,13 @@ func (w *Wallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, unu
 		return
 	}
 
-	// sign unused shards using MPC
-	// TODO: this is insecure! We're signing but should be encrypting.
-	// Can't encrypt with ECDSA. Is that the only encryption supported by mpc?
+	// list bank shards
 	for i := 0; i < len(ss); i++ {
 		u, ok := ss[fmt.Sprintf("bank%d", i+1)]
 		if !ok {
 			continue
 		}
-		sig, e := w.Sign([]byte(u))
-		if e != nil {
-			err = e
-			return
-		}
-		sSig, e := SerializeSignature(sig)
-		if e != nil {
-			err = e
-			return
-		}
-		unused = append(unused, sSig)
+		unused = append(unused, u)
 	}
 	if len(unused) == 0 {
 		err = errors.New("no backup shards")

@@ -66,6 +66,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 }
 
 func Test_LoginWithKeyring(t *testing.T) {
+	const ADDR = "snr19c99rqjsts86mm4t6u8qzy2al3ghkfgu7f2zua"
 	req := mt.LoginRequest{
 		AccountId: ADDR,
 		Password:  "password123",
