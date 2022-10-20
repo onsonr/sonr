@@ -69,6 +69,17 @@ func (k msgServer) TransferAlias(goCtx context.Context, msg *types.MsgTransferAl
 	}
 	k.SetWhoIs(ctx, oldOwnerWhois)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyOwner, newOwnerWhois.Owner),
+			sdk.NewAttribute(types.AttributeKeySeller, oldOwnerWhois.Owner),
+			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeTransferAlias),
+		),
+	)
+
 	// Update WhoIs in keeper store
 	return &types.MsgTransferAliasResponse{
 		Success: true,

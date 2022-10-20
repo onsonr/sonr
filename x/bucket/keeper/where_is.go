@@ -42,9 +42,7 @@ func (k Keeper) AppendWhereIs(
 	// Create the whereIs
 	count := k.GetWhereIsCount(ctx)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
-	appendedValue := k.cdc.MustMarshal(&whereIs)
-	store.Set(types.WhereIsKey(whereIs.Did), appendedValue)
+    k.SetWhereIs(ctx, whereIs)
 
 	// Update whereIs count
 	k.SetWhereIsCount(ctx, count+1)
