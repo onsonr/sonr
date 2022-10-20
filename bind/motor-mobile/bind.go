@@ -16,7 +16,7 @@ var (
 	instance    mtr.MotorNode
 )
 
-func Init(buf []byte, cb ct.MotorCallback) ([]byte, error) {
+func Init(buf []byte) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
@@ -24,7 +24,7 @@ func Init(buf []byte, cb ct.MotorCallback) ([]byte, error) {
 	}
 
 	// Create Motor instance
-	mtr, err := mtr.EmptyMotor(&req, cb)
+	mtr, err := mtr.EmptyMotor(&req, ct.DefaultCallback())
 	if err != nil {
 		return nil, err
 	}
