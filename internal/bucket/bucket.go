@@ -38,6 +38,7 @@ func New(
 		address:      address,
 		whereIs:      whereIs,
 		shell:        shell,
+		bucketCache:  make(map[string]Bucket),
 		contentCache: make(map[string]*bt.BucketContent),
 		rpcClient:    rpcClient,
 	}

@@ -67,21 +67,27 @@ func CreateWhatIsWithDID(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 		var whatIs = types.WhatIs{
 			Creator: id,
 			Did:     schemaId,
-			Schema: &types.SchemaDefinition{
+			Schema: &types.Schema{
 				Did:   schemaId,
 				Label: "test",
-				Fields: []*types.SchemaKindDefinition{
+				Fields: []*types.SchemaField{
 					{
-						Name:  "name",
-						Field: types.SchemaKind_STRING,
+						Name: "name",
+						FieldKind: &types.SchemaFieldKind{
+							Kind: types.Kind_STRING,
+						},
 					},
 					{
-						Name:  "age",
-						Field: types.SchemaKind_INT,
+						Name: "age",
+						FieldKind: &types.SchemaFieldKind{
+							Kind: types.Kind_INT,
+						},
 					},
 					{
-						Name:  "DOB",
-						Field: types.SchemaKind_STRING,
+						Name: "DOB",
+						FieldKind: &types.SchemaFieldKind{
+							Kind: types.Kind_STRING,
+						},
 					},
 				},
 			},

@@ -2,39 +2,28 @@ package schemas
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-var (
-	DocumentSpecialFields = []string{"@did"}
-)
-
 /*
 	Top level verification of the given schema def
 */
-func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
+func (as *SchemaImpl) VerifyDocument(doc map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsNotFound
 	}
 
-	fields := make(map[string]st.SchemaKind)
+	fields := make(map[string]st.Kind)
 	for _, c := range as.fields {
-		fields[c.Name] = c.Field
+		fields[c.Name] = c.FieldKind.Kind
 	}
 
 	for key, value := range doc {
-		if _, ok := fields[key]; !ok {
-			// check for special metadata fields, if found skip validation
-			if !arrayContains(DocumentSpecialFields, key) {
-				return errSchemaFieldsInvalid
-			} else {
-				continue
-			}
-		}
 		if !CheckValueOfField(value, fields[key]) {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("field '%s' has invalid value '%s'", key, value)
 		}
 	}
 
@@ -44,29 +33,29 @@ func (as *schemaImpl) VerifyObject(doc map[string]interface{}) error {
 /*
 	Sub level verification of the given schema def
 */
-func (as *schemaImpl) VerifySubObject(lst []*st.SchemaKindDefinition, doc map[string]interface{}) error {
+func (as *SchemaImpl) VerifySubObject(lst []*st.SchemaField, doc map[string]interface{}) error {
 	if as.fields == nil {
 		return errSchemaFieldsNotFound
 	}
 
-	fields := make(map[string]st.SchemaKind)
+	fields := make(map[string]st.Kind)
 	for _, c := range lst {
-		fields[c.Name] = c.Field
+		fields[c.Name] = c.GetKind()
 	}
 
 	for key, value := range doc {
 		if _, ok := fields[key]; !ok {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("missing field %s", key)
 		}
 		if !CheckValueOfField(value, fields[key]) {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("invalid value '%s' for field '%s'", value, key)
 		}
 	}
 
 	return nil
 }
 
-func (as *schemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaItemKindDefinition) error {
+func (as *SchemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaFieldKind) error {
 	if itemType == nil {
 		for _, val := range lst {
 			if reflect.TypeOf(val) != reflect.TypeOf(lst[0]) {
@@ -77,8 +66,8 @@ func (as *schemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaItemKindD
 	}
 
 	for _, val := range lst {
-		if !CheckValueOfField(val, itemType.Field) {
-			return errSchemaFieldsInvalid
+		if !CheckValueOfField(val, itemType.GetKind()) {
+			return fmt.Errorf("value '%s' not of type %s", val, itemType.GetKind())
 		}
 	}
 
@@ -86,77 +75,77 @@ func (as *schemaImpl) VerifyList(lst []interface{}, itemType *st.SchemaItemKindD
 }
 
 // Current supported IPLD types, will be adding more once supporting of Links and Complex types (Object)
-func CheckValueOfField(value interface{}, fieldType st.SchemaKind) bool {
+func CheckValueOfField(value interface{}, fieldType st.Kind) bool {
 	switch value.(type) {
 	case int:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case uint:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case int32:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case int64:
-		return fieldType == st.SchemaKind_INT
+		return fieldType == st.Kind_INT
 	case float64:
-		return fieldType == st.SchemaKind_FLOAT
+		return fieldType == st.Kind_FLOAT
 	case float32:
-		return fieldType == st.SchemaKind_FLOAT
+		return fieldType == st.Kind_FLOAT
 	case bool:
-		return fieldType == st.SchemaKind_BOOL
+		return fieldType == st.Kind_BOOL
 	case string:
-		return fieldType == st.SchemaKind_STRING
+		return fieldType == st.Kind_STRING
 	case map[string]interface{}:
-		return fieldType == st.SchemaKind_LINK
+		return fieldType == st.Kind_LINK
 	case []byte:
-		return fieldType == st.SchemaKind_BYTES
-	case []interface{}:
-		return fieldType == st.SchemaKind_LIST
-	case []int:
-		return fieldType == st.SchemaKind_LIST
-	case []int32:
-		return fieldType == st.SchemaKind_LIST
-	case []int64:
-		return fieldType == st.SchemaKind_LIST
-	case []bool:
-		return fieldType == st.SchemaKind_LIST
-	case []float64:
-		return fieldType == st.SchemaKind_LIST
-	case []float32:
-		return fieldType == st.SchemaKind_LIST
-	case []string:
-		return fieldType == st.SchemaKind_LIST
-	case []map[string]interface{}:
-		return fieldType == st.SchemaKind_LIST
-	case [][]byte:
-		return fieldType == st.SchemaKind_LIST
-	case [][]string:
-		return fieldType == st.SchemaKind_LIST
-	case [][]int32:
-		return fieldType == st.SchemaKind_LIST
-	case [][]int64:
-		return fieldType == st.SchemaKind_LIST
-	case [][]float32:
-		return fieldType == st.SchemaKind_LIST
-	case [][]float64:
-		return fieldType == st.SchemaKind_LIST
-	case [][]map[string]interface{}:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]bool:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]byte:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]string:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]int32:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]int64:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]float32:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]float64:
-		return fieldType == st.SchemaKind_LIST
-	case [][][]map[string]interface{}:
-		return fieldType == st.SchemaKind_LIST
+		return fieldType == st.Kind_BYTES
+	// case []interface{}:
+	// 	return fieldType == st.Kind_LIST
+	// case []int:
+	// 	return fieldType == st.Kind_LIST
+	// case []int32:
+	// 	return fieldType == st.Kind_LIST
+	// case []int64:
+	// 	return fieldType == st.Kind_LIST
+	// case []bool:
+	// 	return fieldType == st.Kind_LIST
+	// case []float64:
+	// 	return fieldType == st.Kind_LIST
+	// case []float32:
+	// 	return fieldType == st.Kind_LIST
+	// case []string:
+	// 	return fieldType == st.Kind_LIST
+	// case []map[string]interface{}:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]byte:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]string:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]int32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]int64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]float32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]float64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][]map[string]interface{}:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]bool:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]byte:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]string:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]int32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]int64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]float32:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]float64:
+	// 	return fieldType == st.Kind_LIST
+	// case [][][]map[string]interface{}:
+	// 	return fieldType == st.Kind_LIST
 	default:
-		return false
+		return fieldType == st.Kind_LIST
 	}
 }

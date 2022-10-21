@@ -121,7 +121,7 @@ func GetAuthInfoSingle(w *mpc.Wallet, gas int) (*txtypes.AuthInfo, error) {
 		},
 		Fee: &txtypes.Fee{
 			Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(gas)))),
-			GasLimit: uint64(100000),
+			GasLimit: uint64(300000),
 			Granter:  addr,
 		},
 	}

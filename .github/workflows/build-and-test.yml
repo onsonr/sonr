@@ -30,10 +30,17 @@ jobs:
         run: |
           sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
 
-      - name: Run build against Release target for macos and linux
+      - name: Run build against Release target for macos
+        if: ${{matrix.os == 'macos-latest'}}
         continue-on-error: false
         run: |
-          ignite chain build --release -t linux:amd64 -t darwin:amd64
+          ignite chain build --release -t darwin:amd64
+
+      - name: Run build against Release target for ubuntu
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        continue-on-error: false
+        run: |
+          ignite chain build --release -t linux:amd64
 
       - name: Run tests and evaluate coverage
         continue-on-error: true

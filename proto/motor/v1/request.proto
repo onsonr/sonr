@@ -8,6 +8,7 @@ import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "schema/v1/document.proto";
 import "schema/v1/schema.proto";
+import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/third_party/types/motor/api/v1";
 option java_multiple_files = true;
@@ -84,14 +85,24 @@ message CreateAccountWithKeysRequest {
 // and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 message LoginRequest {
-  string did = 1;
+  // Either the DID or an alias of the account
+  string account_id = 1;
+
+  // The account password
   string password = 2;
 }
 
 message LoginWithKeysRequest {
-  string did = 1;
+  // Either the DID or an alias of the account
+  string account_id = 1;
+
+  // The account password
   string password = 2;
+
+  // The device-specific credential, known only to the logging in device
   bytes aes_dsc_key = 3;
+
+  // The preshared key, known to all devices of the account
   bytes aes_psk_key = 4;
 }
 
@@ -115,6 +126,10 @@ message QueryWhoIsRequest {
   string did = 1;
 }
 
+message QueryWhoIsByAliasRequest {
+  string alias = 1;
+}
+
 // -----------------------------------------------------------------------------
 // Schema Models
 // -----------------------------------------------------------------------------
@@ -123,9 +138,10 @@ message QueryWhoIsRequest {
 message CreateSchemaRequest {
   // human readable name of the schema
   string label = 1;
-  // Definition of the schema provided as a map
-  map<string, sonrio.sonr.schema.SchemaKind> fields = 2;
 
+  // Definition of the schema provided as a map
+  map<string, sonrio.sonr.schema.SchemaFieldKind> fields = 2;
+  
   // custom metadata for the definition. will be recorded on chain
   map<string, string> metadata = 3;
 }
@@ -153,6 +169,28 @@ message QuerySchemaRequest {
 
   // DID (identifer) of the specific schema
   string did = 2;
+}
+
+// -----------------------------------------------------------------------------
+// Document Models
+// -----------------------------------------------------------------------------
+
+message UploadDocumentRequest {
+  // DID of the schema being used for the document
+  string schema_did = 1;
+
+  // the label of the document
+  string label = 2;
+
+  // JSON encoded document map
+  bytes document = 3;
+
+  // Schema reference
+  sonrio.sonr.schema.WhatIs what_is_reference = 4; //optional
+}
+
+message GetDocumentRequest {
+  string cid = 1;
 }
 
 // -----------------------------------------------------------------------------
@@ -195,19 +233,3 @@ message SeachBucketContentBySchemaRequest {
 }
 
 message StatRequest {}
-
-message UploadDocumentRequest {
-  string creator = 1;
-
-  string label = 2;
-
-  // The definition of the document used to build the values
-  sonrio.sonr.schema.SchemaDefinition definition = 3;
-
-  // the properties of this schemadocument
-  repeated sonrio.sonr.schema.SchemaDocumentValue fields = 4;
-}
-
-message GetDocumentRequest {
-  string cid = 1;
-}

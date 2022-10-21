@@ -14,7 +14,7 @@ message WhatIs {
   string did = 1;
 
   // Schema to persist on chain
-  SchemaDefinition schema = 2;
+  Schema schema = 2;
 
   // Creator is the DID of the creator
   string creator = 3;

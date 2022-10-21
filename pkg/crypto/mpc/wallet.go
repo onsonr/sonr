@@ -21,10 +21,11 @@ type Wallet struct {
 	pool *pool.Pool
 	ID   party.ID
 
-	Configs   		map[party.ID]*cmp.Config
-	ConfigsLock		sync.Mutex
-	Network   		*Network
-	Threshold 		int
+	PubKey      []byte
+	Configs     map[party.ID]*cmp.Config
+	ConfigsLock sync.Mutex
+	Network     *Network
+	Threshold   int
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
@@ -89,6 +90,10 @@ func (w *Wallet) Marshal() ([]byte, error) {
 
 // Returns the ECDSA public key of the given party.
 func (w *Wallet) PublicKey() ([]byte, error) {
+	if w.PubKey != nil && len(w.PubKey) != 0 {
+		return w.PubKey, nil
+	}
+
 	p := w.Config().PublicPoint().(*curve.Secp256k1Point)
 	buf, err := p.MarshalBinary()
 	if err != nil {
@@ -98,6 +103,9 @@ func (w *Wallet) PublicKey() ([]byte, error) {
 	if len(buf) != 33 {
 		return nil, fmt.Errorf("invalid public key length")
 	}
+
+	w.PubKey = buf
+
 	return buf, nil
 }
 
@@ -216,25 +224,13 @@ func (w *Wallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, unu
 		return
 	}
 
-	// sign unused shards using MPC
-	// TODO: this is insecure! We're signing but should be encrypting.
-	// Can't encrypt with ECDSA. Is that the only encryption supported by mpc?
+	// list bank shards
 	for i := 0; i < len(ss); i++ {
 		u, ok := ss[fmt.Sprintf("bank%d", i+1)]
 		if !ok {
 			continue
 		}
-		sig, e := w.Sign([]byte(u))
-		if e != nil {
-			err = e
-			return
-		}
-		sSig, e := SerializeSignature(sig)
-		if e != nil {
-			err = e
-			return
-		}
-		unused = append(unused, sSig)
+		unused = append(unused, u)
 	}
 	if len(unused) == 0 {
 		err = errors.New("no backup shards")

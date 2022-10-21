@@ -34,7 +34,7 @@ func (c *Client) CheckBalance(address string) (types.Coins, error) {
 func (c *Client) RequestFaucet(address string) error {
 	values := faucetRequest{
 		Address: address,
-		Coins:   []string{"200snr"},
+		Coins:   []string{"12000snr"},
 	}
 	json_data, err := json.Marshal(values)
 	if err != nil {

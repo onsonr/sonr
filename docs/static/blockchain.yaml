@@ -20122,6 +20122,2607 @@ paths:
           format: int64
       tags:
         - Query
+  /cosmwasm/wasm/v1/code:
+    get:
+      summary: Codes gets the metadata for all stored wasm codes
+      operationId: CosmwasmWasmV1Codes
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              code_infos:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code_id:
+                      type: string
+                      format: uint64
+                    creator:
+                      type: string
+                    data_hash:
+                      type: string
+                      format: byte
+                    instantiate_permission:
+                      type: object
+                      properties:
+                        permission:
+                          type: string
+                          enum:
+                            - ACCESS_TYPE_UNSPECIFIED
+                            - ACCESS_TYPE_NOBODY
+                            - ACCESS_TYPE_ONLY_ADDRESS
+                            - ACCESS_TYPE_EVERYBODY
+                          default: ACCESS_TYPE_UNSPECIFIED
+                          description: >-
+                            - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
+                            placeholder for empty value
+                             - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                             - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                             - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                          title: AccessType permission types
+                        address:
+                          type: string
+                      description: AccessConfig access control type.
+                  title: CodeInfoResponse contains code meta data from CodeInfo
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            title: >-
+              QueryCodesResponse is the response type for the Query/Codes RPC
+              method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/cosmwasm/wasm/v1/code/{code_id}':
+    get:
+      summary: Code gets the binary code and metadata for a singe wasm code
+      operationId: CosmwasmWasmV1Code
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              code_info:
+                type: object
+                properties:
+                  code_id:
+                    type: string
+                    format: uint64
+                  creator:
+                    type: string
+                  data_hash:
+                    type: string
+                    format: byte
+                  instantiate_permission:
+                    type: object
+                    properties:
+                      permission:
+                        type: string
+                        enum:
+                          - ACCESS_TYPE_UNSPECIFIED
+                          - ACCESS_TYPE_NOBODY
+                          - ACCESS_TYPE_ONLY_ADDRESS
+                          - ACCESS_TYPE_EVERYBODY
+                        default: ACCESS_TYPE_UNSPECIFIED
+                        description: >-
+                          - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
+                          placeholder for empty value
+                           - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                           - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                        title: AccessType permission types
+                      address:
+                        type: string
+                    description: AccessConfig access control type.
+                title: CodeInfoResponse contains code meta data from CodeInfo
+              data:
+                type: string
+                format: byte
+            title: >-
+              QueryCodeResponse is the response type for the Query/Code RPC
+              method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: code_id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  '/cosmwasm/wasm/v1/code/{code_id}/contracts':
+    get:
+      summary: ContractsByCode lists all smart contracts for a code id
+      operationId: CosmwasmWasmV1ContractsByCode
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              contracts:
+                type: array
+                items:
+                  type: string
+                title: contracts are a set of contract addresses
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            title: |-
+              QueryContractsByCodeResponse is the response type for the
+              Query/ContractsByCode RPC method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: code_id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /cosmwasm/wasm/v1/codes/pinned:
+    get:
+      summary: PinnedCodes gets the pinned code ids
+      operationId: CosmwasmWasmV1PinnedCodes
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              code_ids:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            title: |-
+              QueryPinnedCodesResponse is the response type for the
+              Query/PinnedCodes RPC method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/cosmwasm/wasm/v1/contract/{address}':
+    get:
+      summary: ContractInfo gets the contract meta data
+      operationId: CosmwasmWasmV1ContractInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+                title: address is the address of the contract
+              contract_info:
+                type: object
+                properties:
+                  code_id:
+                    type: string
+                    format: uint64
+                    title: CodeID is the reference to the stored Wasm code
+                  creator:
+                    type: string
+                    title: Creator address who initially instantiated the contract
+                  admin:
+                    type: string
+                    title: Admin is an optional address that can execute migrations
+                  label:
+                    type: string
+                    description: >-
+                      Label is optional metadata to be stored with a contract
+                      instance.
+                  created:
+                    title: >-
+                      Created Tx position when the contract was instantiated.
+
+                      This data should kept internal and not be exposed via
+                      query results. Just
+
+                      use for sorting
+                    type: object
+                    properties:
+                      block_height:
+                        type: string
+                        format: uint64
+                        title: BlockHeight is the block the contract was created at
+                      tx_index:
+                        type: string
+                        format: uint64
+                        title: >-
+                          TxIndex is a monotonic counter within the block
+                          (actual transaction index,
+
+                          or gas consumed)
+                    description: >-
+                      AbsoluteTxPosition is a unique transaction position that
+                      allows for global
+
+                      ordering of transactions.
+                  ibc_port_id:
+                    type: string
+                  extension:
+                    type: object
+                    properties:
+                      '@type':
+                        type: string
+                        description: >-
+                          A URL/resource name that uniquely identifies the type
+                          of the serialized
+
+                          protocol buffer message. This string must contain at
+                          least
+
+                          one "/" character. The last segment of the URL's path
+                          must represent
+
+                          the fully qualified name of the type (as in
+
+                          `path/google.protobuf.Duration`). The name should be
+                          in a canonical form
+
+                          (e.g., leading "." is not accepted).
+
+
+                          In practice, teams usually precompile into the binary
+                          all types that they
+
+                          expect it to use in the context of Any. However, for
+                          URLs which use the
+
+                          scheme `http`, `https`, or no scheme, one can
+                          optionally set up a type
+
+                          server that maps type URLs to message definitions as
+                          follows:
+
+
+                          * If no scheme is provided, `https` is assumed.
+
+                          * An HTTP GET on the URL must yield a
+                          [google.protobuf.Type][]
+                            value in binary format, or produce an error.
+                          * Applications are allowed to cache lookup results
+                          based on the
+                            URL, or have them precompiled into a binary to avoid any
+                            lookup. Therefore, binary compatibility needs to be preserved
+                            on changes to types. (Use versioned type names to manage
+                            breaking changes.)
+
+                          Note: this functionality is not currently available in
+                          the official
+
+                          protobuf release, and it is not used for type URLs
+                          beginning with
+
+                          type.googleapis.com.
+
+
+                          Schemes other than `http`, `https` (or the empty
+                          scheme) might be
+
+                          used with implementation specific semantics.
+                    additionalProperties: {}
+                    description: >-
+                      `Any` contains an arbitrary serialized protocol buffer
+                      message along with a
+
+                      URL that describes the type of the serialized message.
+
+
+                      Protobuf library provides support to pack/unpack Any
+                      values in the form
+
+                      of utility functions or additional generated methods of
+                      the Any type.
+
+
+                      Example 1: Pack and unpack a message in C++.
+
+                          Foo foo = ...;
+                          Any any;
+                          any.PackFrom(foo);
+                          ...
+                          if (any.UnpackTo(&foo)) {
+                            ...
+                          }
+
+                      Example 2: Pack and unpack a message in Java.
+
+                          Foo foo = ...;
+                          Any any = Any.pack(foo);
+                          ...
+                          if (any.is(Foo.class)) {
+                            foo = any.unpack(Foo.class);
+                          }
+
+                       Example 3: Pack and unpack a message in Python.
+
+                          foo = Foo(...)
+                          any = Any()
+                          any.Pack(foo)
+                          ...
+                          if any.Is(Foo.DESCRIPTOR):
+                            any.Unpack(foo)
+                            ...
+
+                       Example 4: Pack and unpack a message in Go
+
+                           foo := &pb.Foo{...}
+                           any, err := anypb.New(foo)
+                           if err != nil {
+                             ...
+                           }
+                           ...
+                           foo := &pb.Foo{}
+                           if err := any.UnmarshalTo(foo); err != nil {
+                             ...
+                           }
+
+                      The pack methods provided by protobuf library will by
+                      default use
+
+                      'type.googleapis.com/full.type.name' as the type URL and
+                      the unpack
+
+                      methods only use the fully qualified type name after the
+                      last '/'
+
+                      in the type URL, for example "foo.bar.com/x/y.z" will
+                      yield type
+
+                      name "y.z".
+
+
+
+                      JSON
+
+                      ====
+
+                      The JSON representation of an `Any` value uses the regular
+
+                      representation of the deserialized, embedded message, with
+                      an
+
+                      additional field `@type` which contains the type URL.
+                      Example:
+
+                          package google.profile;
+                          message Person {
+                            string first_name = 1;
+                            string last_name = 2;
+                          }
+
+                          {
+                            "@type": "type.googleapis.com/google.profile.Person",
+                            "firstName": <string>,
+                            "lastName": <string>
+                          }
+
+                      If the embedded message type is well-known and has a
+                      custom JSON
+
+                      representation, that representation will be embedded
+                      adding a field
+
+                      `value` which holds the custom JSON in addition to the
+                      `@type`
+
+                      field. Example (for message [google.protobuf.Duration][]):
+
+                          {
+                            "@type": "type.googleapis.com/google.protobuf.Duration",
+                            "value": "1.212s"
+                          }
+                title: ContractInfo stores a WASM contract instance
+            title: >-
+              QueryContractInfoResponse is the response type for the
+              Query/ContractInfo RPC
+
+              method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: address
+          description: address is the address of the contract to query
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/cosmwasm/wasm/v1/contract/{address}/history':
+    get:
+      summary: ContractHistory gets the contract code history
+      operationId: CosmwasmWasmV1ContractHistory
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              entries:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    operation:
+                      type: string
+                      enum:
+                        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+                        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT
+                        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE
+                        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS
+                      default: CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+                      description: >-
+                        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED:
+                        ContractCodeHistoryOperationTypeUnspecified placeholder
+                        for empty value
+                         - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT: ContractCodeHistoryOperationTypeInit on chain contract instantiation
+                         - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE: ContractCodeHistoryOperationTypeMigrate code migration
+                         - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS: ContractCodeHistoryOperationTypeGenesis based on genesis data
+                      title: >-
+                        ContractCodeHistoryOperationType actions that caused a
+                        code change
+                    code_id:
+                      type: string
+                      format: uint64
+                      title: CodeID is the reference to the stored WASM code
+                    updated:
+                      description: Updated Tx position when the operation was executed.
+                      type: object
+                      properties:
+                        block_height:
+                          type: string
+                          format: uint64
+                          title: BlockHeight is the block the contract was created at
+                        tx_index:
+                          type: string
+                          format: uint64
+                          title: >-
+                            TxIndex is a monotonic counter within the block
+                            (actual transaction index,
+
+                            or gas consumed)
+                    msg:
+                      type: string
+                      format: byte
+                  description: ContractCodeHistoryEntry metadata to a contract.
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            title: |-
+              QueryContractHistoryResponse is the response type for the
+              Query/ContractHistory RPC method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: address
+          description: address is the address of the contract to query
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/cosmwasm/wasm/v1/contract/{address}/raw/{query_data}':
+    get:
+      summary: RawContractState gets single key from the raw store data of a contract
+      operationId: CosmwasmWasmV1RawContractState
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
+                format: byte
+                title: Data contains the raw store data
+            title: |-
+              QueryRawContractStateResponse is the response type for the
+              Query/RawContractState RPC method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: address
+          description: address is the address of the contract
+          in: path
+          required: true
+          type: string
+        - name: query_data
+          in: path
+          required: true
+          type: string
+          format: byte
+      tags:
+        - Query
+  '/cosmwasm/wasm/v1/contract/{address}/smart/{query_data}':
+    get:
+      summary: SmartContractState get smart query result from the contract
+      operationId: CosmwasmWasmV1SmartContractState
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
+                format: byte
+                title: Data contains the json data returned from the smart contract
+            title: |-
+              QuerySmartContractStateResponse is the response type for the
+              Query/SmartContractState RPC method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: address
+          description: address is the address of the contract
+          in: path
+          required: true
+          type: string
+        - name: query_data
+          description: QueryData contains the query data passed to the contract
+          in: path
+          required: true
+          type: string
+          format: byte
+      tags:
+        - Query
+  '/cosmwasm/wasm/v1/contract/{address}/state':
+    get:
+      summary: AllContractState gets all raw store data for a single contract
+      operationId: CosmwasmWasmV1AllContractState
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              models:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                      format: byte
+                      title: hex-encode key to read it better (this is often ascii)
+                    value:
+                      type: string
+                      format: byte
+                      title: base64-encode raw value
+                  title: Model is a struct that holds a KV pair
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            title: |-
+              QueryAllContractStateResponse is the response type for the
+              Query/AllContractState RPC method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                  additionalProperties: {}
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: address
+          description: address is the address of the contract
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
   /ibc/apps/interchain_accounts/controller/v1/params:
     get:
       summary: Params queries all parameters of the ICA controller submodule.
@@ -30399,16 +33000,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/where_is/{creator}':
@@ -30601,16 +33192,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -31641,110 +34222,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      title: DID is the DID of the object
-                    schema:
-                      title: Object_doc is the object document
-                      type: object
-                      properties:
-                        did:
-                          type: string
-                          title: >-
-                            the DID for this schema should not be populated by
-                            request
-                        creator:
-                          type: string
-                        label:
-                          type: string
-                          title: an alternative reference point
-                        fields:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                              field:
-                                title: Type of a single schema property
-                                type: string
-                                enum:
-                                  - LIST
-                                  - BOOL
-                                  - INT
-                                  - FLOAT
-                                  - STRING
-                                  - BYTES
-                                  - LINK
-                                  - ANY
-                                default: LIST
-                              link_kind:
-                                title: >-
-                                  Optional field for a link context if
-                                  `SchemaKind` is of type `Link`
-                                type: string
-                                enum:
-                                  - UNKNOWN
-                                  - OBJECT
-                                  - SCHEMA
-                                  - BUCKET
-                                default: UNKNOWN
-                              link:
-                                type: string
-                          title: the properties of this schema
-                    creator:
-                      type: string
-                      title: Creator is the DID of the creator
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: IsActive is the status of the DID Document
-                    metadata:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      title: >-
-                        Metadata is a map of key-value pairs that can be used to
-                        store additional information about the WhatIs (Schema)
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
+            $ref: '#/definitions/sonrio.sonr.schema.QueryAllWhatIsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -31810,6 +34288,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -31820,54 +34308,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              definition:
-                title: Definition of schema
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: the DID for this schema should not be populated by request
-                  creator:
-                    type: string
-                  label:
-                    type: string
-                    title: an alternative reference point
-                  fields:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        field:
-                          title: Type of a single schema property
-                          type: string
-                          enum:
-                            - LIST
-                            - BOOL
-                            - INT
-                            - FLOAT
-                            - STRING
-                            - BYTES
-                            - LINK
-                            - ANY
-                          default: LIST
-                        link_kind:
-                          title: >-
-                            Optional field for a link context if `SchemaKind` is
-                            of type `Link`
-                          type: string
-                          enum:
-                            - UNKNOWN
-                            - OBJECT
-                            - SCHEMA
-                            - BUCKET
-                          default: UNKNOWN
-                        link:
-                          type: string
-                    title: the properties of this schema
+            $ref: '#/definitions/sonrio.sonr.schema.QuerySchemaResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -31905,82 +34346,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: DID is the DID of the object
-                  schema:
-                    title: Object_doc is the object document
-                    type: object
-                    properties:
-                      did:
-                        type: string
-                        title: >-
-                          the DID for this schema should not be populated by
-                          request
-                      creator:
-                        type: string
-                      label:
-                        type: string
-                        title: an alternative reference point
-                      fields:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            field:
-                              title: Type of a single schema property
-                              type: string
-                              enum:
-                                - LIST
-                                - BOOL
-                                - INT
-                                - FLOAT
-                                - STRING
-                                - BYTES
-                                - LINK
-                                - ANY
-                              default: LIST
-                            link_kind:
-                              title: >-
-                                Optional field for a link context if
-                                `SchemaKind` is of type `Link`
-                              type: string
-                              enum:
-                                - UNKNOWN
-                                - OBJECT
-                                - SCHEMA
-                                - BUCKET
-                              default: UNKNOWN
-                            link:
-                              type: string
-                        title: the properties of this schema
-                  creator:
-                    type: string
-                    title: Creator is the DID of the creator
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: >-
-                      Timestamp is the time of the last update of the DID
-                      Document
-                  is_active:
-                    type: boolean
-                    title: IsActive is the status of the DID Document
-                  metadata:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    title: >-
-                      Metadata is a map of key-value pairs that can be used to
-                      store additional information about the WhatIs (Schema)
-                title: Schema Repersentation
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -32018,84 +34384,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      title: DID is the DID of the object
-                    schema:
-                      title: Object_doc is the object document
-                      type: object
-                      properties:
-                        did:
-                          type: string
-                          title: >-
-                            the DID for this schema should not be populated by
-                            request
-                        creator:
-                          type: string
-                        label:
-                          type: string
-                          title: an alternative reference point
-                        fields:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                              field:
-                                title: Type of a single schema property
-                                type: string
-                                enum:
-                                  - LIST
-                                  - BOOL
-                                  - INT
-                                  - FLOAT
-                                  - STRING
-                                  - BYTES
-                                  - LINK
-                                  - ANY
-                                default: LIST
-                              link_kind:
-                                title: >-
-                                  Optional field for a link context if
-                                  `SchemaKind` is of type `Link`
-                                type: string
-                                enum:
-                                  - UNKNOWN
-                                  - OBJECT
-                                  - SCHEMA
-                                  - BUCKET
-                                default: UNKNOWN
-                              link:
-                                type: string
-                          title: the properties of this schema
-                    creator:
-                      type: string
-                      title: Creator is the DID of the creator
-                    timestamp:
-                      type: string
-                      format: int64
-                      title: >-
-                        Timestamp is the time of the last update of the DID
-                        Document
-                    is_active:
-                      type: boolean
-                      title: IsActive is the status of the DID Document
-                    metadata:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      title: >-
-                        Metadata is a map of key-value pairs that can be used to
-                        store additional information about the WhatIs (Schema)
-                title: Schema Repersentation
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsCreatorResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -32166,6 +34455,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/schema/query/what_is/{did}':
@@ -32176,81 +34475,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            type: object
-            properties:
-              what_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    title: DID is the DID of the object
-                  schema:
-                    title: Object_doc is the object document
-                    type: object
-                    properties:
-                      did:
-                        type: string
-                        title: >-
-                          the DID for this schema should not be populated by
-                          request
-                      creator:
-                        type: string
-                      label:
-                        type: string
-                        title: an alternative reference point
-                      fields:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            field:
-                              title: Type of a single schema property
-                              type: string
-                              enum:
-                                - LIST
-                                - BOOL
-                                - INT
-                                - FLOAT
-                                - STRING
-                                - BYTES
-                                - LINK
-                                - ANY
-                              default: LIST
-                            link_kind:
-                              title: >-
-                                Optional field for a link context if
-                                `SchemaKind` is of type `Link`
-                              type: string
-                              enum:
-                                - UNKNOWN
-                                - OBJECT
-                                - SCHEMA
-                                - BUCKET
-                              default: UNKNOWN
-                            link:
-                              type: string
-                        title: the properties of this schema
-                  creator:
-                    type: string
-                    title: Creator is the DID of the creator
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: >-
-                      Timestamp is the time of the last update of the DID
-                      Document
-                  is_active:
-                    type: boolean
-                    title: IsActive is the status of the DID Document
-                  metadata:
-                    type: object
-                    additionalProperties:
-                      type: string
-                    title: >-
-                      Metadata is a map of key-value pairs that can be used to
-                      store additional information about the WhatIs (Schema)
+            $ref: '#/definitions/sonrio.sonr.schema.QueryWhatIsByDidResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -32317,6 +34542,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -49716,6 +51951,913 @@ definitions:
     description: >-
       MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount
       response type.
+  cosmwasm.wasm.v1.AbsoluteTxPosition:
+    type: object
+    properties:
+      block_height:
+        type: string
+        format: uint64
+        title: BlockHeight is the block the contract was created at
+      tx_index:
+        type: string
+        format: uint64
+        title: >-
+          TxIndex is a monotonic counter within the block (actual transaction
+          index,
+
+          or gas consumed)
+    description: |-
+      AbsoluteTxPosition is a unique transaction position that allows for global
+      ordering of transactions.
+  cosmwasm.wasm.v1.AccessConfig:
+    type: object
+    properties:
+      permission:
+        type: string
+        enum:
+          - ACCESS_TYPE_UNSPECIFIED
+          - ACCESS_TYPE_NOBODY
+          - ACCESS_TYPE_ONLY_ADDRESS
+          - ACCESS_TYPE_EVERYBODY
+        default: ACCESS_TYPE_UNSPECIFIED
+        description: >-
+          - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
+          value
+           - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+           - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+        title: AccessType permission types
+      address:
+        type: string
+    description: AccessConfig access control type.
+  cosmwasm.wasm.v1.AccessType:
+    type: string
+    enum:
+      - ACCESS_TYPE_UNSPECIFIED
+      - ACCESS_TYPE_NOBODY
+      - ACCESS_TYPE_ONLY_ADDRESS
+      - ACCESS_TYPE_EVERYBODY
+    default: ACCESS_TYPE_UNSPECIFIED
+    description: >-
+      - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
+      value
+       - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+       - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+       - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+    title: AccessType permission types
+  cosmwasm.wasm.v1.CodeInfoResponse:
+    type: object
+    properties:
+      code_id:
+        type: string
+        format: uint64
+      creator:
+        type: string
+      data_hash:
+        type: string
+        format: byte
+      instantiate_permission:
+        type: object
+        properties:
+          permission:
+            type: string
+            enum:
+              - ACCESS_TYPE_UNSPECIFIED
+              - ACCESS_TYPE_NOBODY
+              - ACCESS_TYPE_ONLY_ADDRESS
+              - ACCESS_TYPE_EVERYBODY
+            default: ACCESS_TYPE_UNSPECIFIED
+            description: >-
+              - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for
+              empty value
+               - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+               - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+               - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+            title: AccessType permission types
+          address:
+            type: string
+        description: AccessConfig access control type.
+    title: CodeInfoResponse contains code meta data from CodeInfo
+  cosmwasm.wasm.v1.ContractCodeHistoryEntry:
+    type: object
+    properties:
+      operation:
+        type: string
+        enum:
+          - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+          - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT
+          - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE
+          - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS
+        default: CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+        description: >-
+          - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED:
+          ContractCodeHistoryOperationTypeUnspecified placeholder for empty
+          value
+           - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT: ContractCodeHistoryOperationTypeInit on chain contract instantiation
+           - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE: ContractCodeHistoryOperationTypeMigrate code migration
+           - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS: ContractCodeHistoryOperationTypeGenesis based on genesis data
+        title: ContractCodeHistoryOperationType actions that caused a code change
+      code_id:
+        type: string
+        format: uint64
+        title: CodeID is the reference to the stored WASM code
+      updated:
+        description: Updated Tx position when the operation was executed.
+        type: object
+        properties:
+          block_height:
+            type: string
+            format: uint64
+            title: BlockHeight is the block the contract was created at
+          tx_index:
+            type: string
+            format: uint64
+            title: >-
+              TxIndex is a monotonic counter within the block (actual
+              transaction index,
+
+              or gas consumed)
+      msg:
+        type: string
+        format: byte
+    description: ContractCodeHistoryEntry metadata to a contract.
+  cosmwasm.wasm.v1.ContractCodeHistoryOperationType:
+    type: string
+    enum:
+      - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+      - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT
+      - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE
+      - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS
+    default: CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+    description: >-
+      - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED:
+      ContractCodeHistoryOperationTypeUnspecified placeholder for empty value
+       - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT: ContractCodeHistoryOperationTypeInit on chain contract instantiation
+       - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE: ContractCodeHistoryOperationTypeMigrate code migration
+       - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS: ContractCodeHistoryOperationTypeGenesis based on genesis data
+    title: ContractCodeHistoryOperationType actions that caused a code change
+  cosmwasm.wasm.v1.ContractInfo:
+    type: object
+    properties:
+      code_id:
+        type: string
+        format: uint64
+        title: CodeID is the reference to the stored Wasm code
+      creator:
+        type: string
+        title: Creator address who initially instantiated the contract
+      admin:
+        type: string
+        title: Admin is an optional address that can execute migrations
+      label:
+        type: string
+        description: Label is optional metadata to be stored with a contract instance.
+      created:
+        title: >-
+          Created Tx position when the contract was instantiated.
+
+          This data should kept internal and not be exposed via query results.
+          Just
+
+          use for sorting
+        type: object
+        properties:
+          block_height:
+            type: string
+            format: uint64
+            title: BlockHeight is the block the contract was created at
+          tx_index:
+            type: string
+            format: uint64
+            title: >-
+              TxIndex is a monotonic counter within the block (actual
+              transaction index,
+
+              or gas consumed)
+        description: >-
+          AbsoluteTxPosition is a unique transaction position that allows for
+          global
+
+          ordering of transactions.
+      ibc_port_id:
+        type: string
+      extension:
+        type: object
+        properties:
+          '@type':
+            type: string
+            description: >-
+              A URL/resource name that uniquely identifies the type of the
+              serialized
+
+              protocol buffer message. This string must contain at least
+
+              one "/" character. The last segment of the URL's path must
+              represent
+
+              the fully qualified name of the type (as in
+
+              `path/google.protobuf.Duration`). The name should be in a
+              canonical form
+
+              (e.g., leading "." is not accepted).
+
+
+              In practice, teams usually precompile into the binary all types
+              that they
+
+              expect it to use in the context of Any. However, for URLs which
+              use the
+
+              scheme `http`, `https`, or no scheme, one can optionally set up a
+              type
+
+              server that maps type URLs to message definitions as follows:
+
+
+              * If no scheme is provided, `https` is assumed.
+
+              * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                value in binary format, or produce an error.
+              * Applications are allowed to cache lookup results based on the
+                URL, or have them precompiled into a binary to avoid any
+                lookup. Therefore, binary compatibility needs to be preserved
+                on changes to types. (Use versioned type names to manage
+                breaking changes.)
+
+              Note: this functionality is not currently available in the
+              official
+
+              protobuf release, and it is not used for type URLs beginning with
+
+              type.googleapis.com.
+
+
+              Schemes other than `http`, `https` (or the empty scheme) might be
+
+              used with implementation specific semantics.
+        additionalProperties: {}
+        description: >-
+          `Any` contains an arbitrary serialized protocol buffer message along
+          with a
+
+          URL that describes the type of the serialized message.
+
+
+          Protobuf library provides support to pack/unpack Any values in the
+          form
+
+          of utility functions or additional generated methods of the Any type.
+
+
+          Example 1: Pack and unpack a message in C++.
+
+              Foo foo = ...;
+              Any any;
+              any.PackFrom(foo);
+              ...
+              if (any.UnpackTo(&foo)) {
+                ...
+              }
+
+          Example 2: Pack and unpack a message in Java.
+
+              Foo foo = ...;
+              Any any = Any.pack(foo);
+              ...
+              if (any.is(Foo.class)) {
+                foo = any.unpack(Foo.class);
+              }
+
+           Example 3: Pack and unpack a message in Python.
+
+              foo = Foo(...)
+              any = Any()
+              any.Pack(foo)
+              ...
+              if any.Is(Foo.DESCRIPTOR):
+                any.Unpack(foo)
+                ...
+
+           Example 4: Pack and unpack a message in Go
+
+               foo := &pb.Foo{...}
+               any, err := anypb.New(foo)
+               if err != nil {
+                 ...
+               }
+               ...
+               foo := &pb.Foo{}
+               if err := any.UnmarshalTo(foo); err != nil {
+                 ...
+               }
+
+          The pack methods provided by protobuf library will by default use
+
+          'type.googleapis.com/full.type.name' as the type URL and the unpack
+
+          methods only use the fully qualified type name after the last '/'
+
+          in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+          name "y.z".
+
+
+
+          JSON
+
+          ====
+
+          The JSON representation of an `Any` value uses the regular
+
+          representation of the deserialized, embedded message, with an
+
+          additional field `@type` which contains the type URL. Example:
+
+              package google.profile;
+              message Person {
+                string first_name = 1;
+                string last_name = 2;
+              }
+
+              {
+                "@type": "type.googleapis.com/google.profile.Person",
+                "firstName": <string>,
+                "lastName": <string>
+              }
+
+          If the embedded message type is well-known and has a custom JSON
+
+          representation, that representation will be embedded adding a field
+
+          `value` which holds the custom JSON in addition to the `@type`
+
+          field. Example (for message [google.protobuf.Duration][]):
+
+              {
+                "@type": "type.googleapis.com/google.protobuf.Duration",
+                "value": "1.212s"
+              }
+    title: ContractInfo stores a WASM contract instance
+  cosmwasm.wasm.v1.Model:
+    type: object
+    properties:
+      key:
+        type: string
+        format: byte
+        title: hex-encode key to read it better (this is often ascii)
+      value:
+        type: string
+        format: byte
+        title: base64-encode raw value
+    title: Model is a struct that holds a KV pair
+  cosmwasm.wasm.v1.MsgClearAdminResponse:
+    type: object
+    title: MsgClearAdminResponse returns empty data
+  cosmwasm.wasm.v1.MsgExecuteContractResponse:
+    type: object
+    properties:
+      data:
+        type: string
+        format: byte
+        title: Data contains base64-encoded bytes to returned from the contract
+    description: MsgExecuteContractResponse returns execution result data.
+  cosmwasm.wasm.v1.MsgInstantiateContractResponse:
+    type: object
+    properties:
+      address:
+        type: string
+        description: Address is the bech32 address of the new contract instance.
+      data:
+        type: string
+        format: byte
+        title: Data contains base64-encoded bytes to returned from the contract
+    title: MsgInstantiateContractResponse return instantiation result data
+  cosmwasm.wasm.v1.MsgMigrateContractResponse:
+    type: object
+    properties:
+      data:
+        type: string
+        format: byte
+        title: |-
+          Data contains same raw bytes returned as data from the wasm contract.
+          (May be empty)
+    description: MsgMigrateContractResponse returns contract migration result data.
+  cosmwasm.wasm.v1.MsgStoreCodeResponse:
+    type: object
+    properties:
+      code_id:
+        type: string
+        format: uint64
+        title: CodeID is the reference to the stored WASM code
+    description: MsgStoreCodeResponse returns store result data.
+  cosmwasm.wasm.v1.MsgUpdateAdminResponse:
+    type: object
+    title: MsgUpdateAdminResponse returns empty data
+  cosmwasm.wasm.v1.QueryAllContractStateResponse:
+    type: object
+    properties:
+      models:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+              format: byte
+              title: hex-encode key to read it better (this is often ascii)
+            value:
+              type: string
+              format: byte
+              title: base64-encode raw value
+          title: Model is a struct that holds a KV pair
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    title: |-
+      QueryAllContractStateResponse is the response type for the
+      Query/AllContractState RPC method
+  cosmwasm.wasm.v1.QueryCodeResponse:
+    type: object
+    properties:
+      code_info:
+        type: object
+        properties:
+          code_id:
+            type: string
+            format: uint64
+          creator:
+            type: string
+          data_hash:
+            type: string
+            format: byte
+          instantiate_permission:
+            type: object
+            properties:
+              permission:
+                type: string
+                enum:
+                  - ACCESS_TYPE_UNSPECIFIED
+                  - ACCESS_TYPE_NOBODY
+                  - ACCESS_TYPE_ONLY_ADDRESS
+                  - ACCESS_TYPE_EVERYBODY
+                default: ACCESS_TYPE_UNSPECIFIED
+                description: >-
+                  - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
+                  for empty value
+                   - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                   - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                   - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                title: AccessType permission types
+              address:
+                type: string
+            description: AccessConfig access control type.
+        title: CodeInfoResponse contains code meta data from CodeInfo
+      data:
+        type: string
+        format: byte
+    title: QueryCodeResponse is the response type for the Query/Code RPC method
+  cosmwasm.wasm.v1.QueryCodesResponse:
+    type: object
+    properties:
+      code_infos:
+        type: array
+        items:
+          type: object
+          properties:
+            code_id:
+              type: string
+              format: uint64
+            creator:
+              type: string
+            data_hash:
+              type: string
+              format: byte
+            instantiate_permission:
+              type: object
+              properties:
+                permission:
+                  type: string
+                  enum:
+                    - ACCESS_TYPE_UNSPECIFIED
+                    - ACCESS_TYPE_NOBODY
+                    - ACCESS_TYPE_ONLY_ADDRESS
+                    - ACCESS_TYPE_EVERYBODY
+                  default: ACCESS_TYPE_UNSPECIFIED
+                  description: >-
+                    - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
+                    for empty value
+                     - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                     - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                     - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                  title: AccessType permission types
+                address:
+                  type: string
+              description: AccessConfig access control type.
+          title: CodeInfoResponse contains code meta data from CodeInfo
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    title: QueryCodesResponse is the response type for the Query/Codes RPC method
+  cosmwasm.wasm.v1.QueryContractHistoryResponse:
+    type: object
+    properties:
+      entries:
+        type: array
+        items:
+          type: object
+          properties:
+            operation:
+              type: string
+              enum:
+                - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+                - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT
+                - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE
+                - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS
+              default: CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
+              description: >-
+                - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED:
+                ContractCodeHistoryOperationTypeUnspecified placeholder for
+                empty value
+                 - CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT: ContractCodeHistoryOperationTypeInit on chain contract instantiation
+                 - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE: ContractCodeHistoryOperationTypeMigrate code migration
+                 - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS: ContractCodeHistoryOperationTypeGenesis based on genesis data
+              title: >-
+                ContractCodeHistoryOperationType actions that caused a code
+                change
+            code_id:
+              type: string
+              format: uint64
+              title: CodeID is the reference to the stored WASM code
+            updated:
+              description: Updated Tx position when the operation was executed.
+              type: object
+              properties:
+                block_height:
+                  type: string
+                  format: uint64
+                  title: BlockHeight is the block the contract was created at
+                tx_index:
+                  type: string
+                  format: uint64
+                  title: >-
+                    TxIndex is a monotonic counter within the block (actual
+                    transaction index,
+
+                    or gas consumed)
+            msg:
+              type: string
+              format: byte
+          description: ContractCodeHistoryEntry metadata to a contract.
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    title: |-
+      QueryContractHistoryResponse is the response type for the
+      Query/ContractHistory RPC method
+  cosmwasm.wasm.v1.QueryContractInfoResponse:
+    type: object
+    properties:
+      address:
+        type: string
+        title: address is the address of the contract
+      contract_info:
+        type: object
+        properties:
+          code_id:
+            type: string
+            format: uint64
+            title: CodeID is the reference to the stored Wasm code
+          creator:
+            type: string
+            title: Creator address who initially instantiated the contract
+          admin:
+            type: string
+            title: Admin is an optional address that can execute migrations
+          label:
+            type: string
+            description: Label is optional metadata to be stored with a contract instance.
+          created:
+            title: >-
+              Created Tx position when the contract was instantiated.
+
+              This data should kept internal and not be exposed via query
+              results. Just
+
+              use for sorting
+            type: object
+            properties:
+              block_height:
+                type: string
+                format: uint64
+                title: BlockHeight is the block the contract was created at
+              tx_index:
+                type: string
+                format: uint64
+                title: >-
+                  TxIndex is a monotonic counter within the block (actual
+                  transaction index,
+
+                  or gas consumed)
+            description: >-
+              AbsoluteTxPosition is a unique transaction position that allows
+              for global
+
+              ordering of transactions.
+          ibc_port_id:
+            type: string
+          extension:
+            type: object
+            properties:
+              '@type':
+                type: string
+                description: >-
+                  A URL/resource name that uniquely identifies the type of the
+                  serialized
+
+                  protocol buffer message. This string must contain at least
+
+                  one "/" character. The last segment of the URL's path must
+                  represent
+
+                  the fully qualified name of the type (as in
+
+                  `path/google.protobuf.Duration`). The name should be in a
+                  canonical form
+
+                  (e.g., leading "." is not accepted).
+
+
+                  In practice, teams usually precompile into the binary all
+                  types that they
+
+                  expect it to use in the context of Any. However, for URLs
+                  which use the
+
+                  scheme `http`, `https`, or no scheme, one can optionally set
+                  up a type
+
+                  server that maps type URLs to message definitions as follows:
+
+
+                  * If no scheme is provided, `https` is assumed.
+
+                  * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                    value in binary format, or produce an error.
+                  * Applications are allowed to cache lookup results based on
+                  the
+                    URL, or have them precompiled into a binary to avoid any
+                    lookup. Therefore, binary compatibility needs to be preserved
+                    on changes to types. (Use versioned type names to manage
+                    breaking changes.)
+
+                  Note: this functionality is not currently available in the
+                  official
+
+                  protobuf release, and it is not used for type URLs beginning
+                  with
+
+                  type.googleapis.com.
+
+
+                  Schemes other than `http`, `https` (or the empty scheme) might
+                  be
+
+                  used with implementation specific semantics.
+            additionalProperties: {}
+            description: >-
+              `Any` contains an arbitrary serialized protocol buffer message
+              along with a
+
+              URL that describes the type of the serialized message.
+
+
+              Protobuf library provides support to pack/unpack Any values in the
+              form
+
+              of utility functions or additional generated methods of the Any
+              type.
+
+
+              Example 1: Pack and unpack a message in C++.
+
+                  Foo foo = ...;
+                  Any any;
+                  any.PackFrom(foo);
+                  ...
+                  if (any.UnpackTo(&foo)) {
+                    ...
+                  }
+
+              Example 2: Pack and unpack a message in Java.
+
+                  Foo foo = ...;
+                  Any any = Any.pack(foo);
+                  ...
+                  if (any.is(Foo.class)) {
+                    foo = any.unpack(Foo.class);
+                  }
+
+               Example 3: Pack and unpack a message in Python.
+
+                  foo = Foo(...)
+                  any = Any()
+                  any.Pack(foo)
+                  ...
+                  if any.Is(Foo.DESCRIPTOR):
+                    any.Unpack(foo)
+                    ...
+
+               Example 4: Pack and unpack a message in Go
+
+                   foo := &pb.Foo{...}
+                   any, err := anypb.New(foo)
+                   if err != nil {
+                     ...
+                   }
+                   ...
+                   foo := &pb.Foo{}
+                   if err := any.UnmarshalTo(foo); err != nil {
+                     ...
+                   }
+
+              The pack methods provided by protobuf library will by default use
+
+              'type.googleapis.com/full.type.name' as the type URL and the
+              unpack
+
+              methods only use the fully qualified type name after the last '/'
+
+              in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+              name "y.z".
+
+
+
+              JSON
+
+              ====
+
+              The JSON representation of an `Any` value uses the regular
+
+              representation of the deserialized, embedded message, with an
+
+              additional field `@type` which contains the type URL. Example:
+
+                  package google.profile;
+                  message Person {
+                    string first_name = 1;
+                    string last_name = 2;
+                  }
+
+                  {
+                    "@type": "type.googleapis.com/google.profile.Person",
+                    "firstName": <string>,
+                    "lastName": <string>
+                  }
+
+              If the embedded message type is well-known and has a custom JSON
+
+              representation, that representation will be embedded adding a
+              field
+
+              `value` which holds the custom JSON in addition to the `@type`
+
+              field. Example (for message [google.protobuf.Duration][]):
+
+                  {
+                    "@type": "type.googleapis.com/google.protobuf.Duration",
+                    "value": "1.212s"
+                  }
+        title: ContractInfo stores a WASM contract instance
+    title: >-
+      QueryContractInfoResponse is the response type for the Query/ContractInfo
+      RPC
+
+      method
+  cosmwasm.wasm.v1.QueryContractsByCodeResponse:
+    type: object
+    properties:
+      contracts:
+        type: array
+        items:
+          type: string
+        title: contracts are a set of contract addresses
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    title: |-
+      QueryContractsByCodeResponse is the response type for the
+      Query/ContractsByCode RPC method
+  cosmwasm.wasm.v1.QueryPinnedCodesResponse:
+    type: object
+    properties:
+      code_ids:
+        type: array
+        items:
+          type: string
+          format: uint64
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    title: |-
+      QueryPinnedCodesResponse is the response type for the
+      Query/PinnedCodes RPC method
+  cosmwasm.wasm.v1.QueryRawContractStateResponse:
+    type: object
+    properties:
+      data:
+        type: string
+        format: byte
+        title: Data contains the raw store data
+    title: |-
+      QueryRawContractStateResponse is the response type for the
+      Query/RawContractState RPC method
+  cosmwasm.wasm.v1.QuerySmartContractStateResponse:
+    type: object
+    properties:
+      data:
+        type: string
+        format: byte
+        title: Data contains the json data returned from the smart contract
+    title: |-
+      QuerySmartContractStateResponse is the response type for the
+      Query/SmartContractState RPC method
   ibc.applications.interchain_accounts.controller.v1.Params:
     type: object
     properties:
@@ -56568,23 +59710,27 @@ definitions:
       - USER: User is the type of the registered name
        - APPLICATION: Application is the type of the registered name
     title: WhoIsType is the type of DIDDocument stored in the registry module
-  sonrio.sonr.schema.LinkKind:
+  sonrio.sonr.schema.Kind:
     type: string
     enum:
-      - UNKNOWN
-      - OBJECT
-      - SCHEMA
-      - BUCKET
-    default: UNKNOWN
+      - LIST
+      - BOOL
+      - INT
+      - FLOAT
+      - STRING
+      - BYTES
+      - LINK
+    default: LIST
   sonrio.sonr.schema.MetadataDefintion:
     type: object
     properties:
       key:
         type: string
-        title: key of the metadata
+        title: metadata key
       value:
         type: string
-        title: metadata
+        title: metadata value
+    title: Defines key value pairs for indexable metadata related to the schema
   sonrio.sonr.schema.MsgCreateSchemaResponse:
     type: object
     properties:
@@ -56595,74 +59741,7 @@ definitions:
       message:
         type: string
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema should not be populated by request
-              creator:
-                type: string
-              label:
-                type: string
-                title: an alternative reference point
-              fields:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    field:
-                      title: Type of a single schema property
-                      type: string
-                      enum:
-                        - LIST
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - ANY
-                      default: LIST
-                    link_kind:
-                      title: >-
-                        Optional field for a link context if `SchemaKind` is of
-                        type `Link`
-                      type: string
-                      enum:
-                        - UNKNOWN
-                        - OBJECT
-                        - SCHEMA
-                        - BUCKET
-                      default: UNKNOWN
-                    link:
-                      type: string
-                title: the properties of this schema
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
@@ -56681,74 +59760,7 @@ definitions:
       what_is:
         type: array
         items:
-          type: object
-          properties:
-            did:
-              type: string
-              title: DID is the DID of the object
-            schema:
-              title: Object_doc is the object document
-              type: object
-              properties:
-                did:
-                  type: string
-                  title: the DID for this schema should not be populated by request
-                creator:
-                  type: string
-                label:
-                  type: string
-                  title: an alternative reference point
-                fields:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      field:
-                        title: Type of a single schema property
-                        type: string
-                        enum:
-                          - LIST
-                          - BOOL
-                          - INT
-                          - FLOAT
-                          - STRING
-                          - BYTES
-                          - LINK
-                          - ANY
-                        default: LIST
-                      link_kind:
-                        title: >-
-                          Optional field for a link context if `SchemaKind` is
-                          of type `Link`
-                        type: string
-                        enum:
-                          - UNKNOWN
-                          - OBJECT
-                          - SCHEMA
-                          - BUCKET
-                        default: UNKNOWN
-                      link:
-                        type: string
-                  title: the properties of this schema
-            creator:
-              type: string
-              title: Creator is the DID of the creator
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: IsActive is the status of the DID Document
-            metadata:
-              type: object
-              additionalProperties:
-                type: string
-              title: >-
-                Metadata is a map of key-value pairs that can be used to store
-                additional information about the WhatIs (Schema)
+          $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
       pagination:
         type: object
         properties:
@@ -56784,336 +59796,74 @@ definitions:
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
-      definition:
+      schema:
+        $ref: '#/definitions/sonrio.sonr.schema.Schema'
         title: Definition of schema
-        type: object
-        properties:
-          did:
-            type: string
-            title: the DID for this schema should not be populated by request
-          creator:
-            type: string
-          label:
-            type: string
-            title: an alternative reference point
-          fields:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                field:
-                  title: Type of a single schema property
-                  type: string
-                  enum:
-                    - LIST
-                    - BOOL
-                    - INT
-                    - FLOAT
-                    - STRING
-                    - BYTES
-                    - LINK
-                    - ANY
-                  default: LIST
-                link_kind:
-                  title: >-
-                    Optional field for a link context if `SchemaKind` is of type
-                    `Link`
-                  type: string
-                  enum:
-                    - UNKNOWN
-                    - OBJECT
-                    - SCHEMA
-                    - BUCKET
-                  default: UNKNOWN
-                link:
-                  type: string
-            title: the properties of this schema
   sonrio.sonr.schema.QueryWhatIsByDidResponse:
     type: object
     properties:
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema should not be populated by request
-              creator:
-                type: string
-              label:
-                type: string
-                title: an alternative reference point
-              fields:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    field:
-                      title: Type of a single schema property
-                      type: string
-                      enum:
-                        - LIST
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - ANY
-                      default: LIST
-                    link_kind:
-                      title: >-
-                        Optional field for a link context if `SchemaKind` is of
-                        type `Link`
-                      type: string
-                      enum:
-                        - UNKNOWN
-                        - OBJECT
-                        - SCHEMA
-                        - BUCKET
-                      default: UNKNOWN
-                    link:
-                      type: string
-                title: the properties of this schema
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
   sonrio.sonr.schema.QueryWhatIsCreatorResponse:
     type: object
     properties:
       what_is:
         type: array
         items:
-          type: object
-          properties:
-            did:
-              type: string
-              title: DID is the DID of the object
-            schema:
-              title: Object_doc is the object document
-              type: object
-              properties:
-                did:
-                  type: string
-                  title: the DID for this schema should not be populated by request
-                creator:
-                  type: string
-                label:
-                  type: string
-                  title: an alternative reference point
-                fields:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      field:
-                        title: Type of a single schema property
-                        type: string
-                        enum:
-                          - LIST
-                          - BOOL
-                          - INT
-                          - FLOAT
-                          - STRING
-                          - BYTES
-                          - LINK
-                          - ANY
-                        default: LIST
-                      link_kind:
-                        title: >-
-                          Optional field for a link context if `SchemaKind` is
-                          of type `Link`
-                        type: string
-                        enum:
-                          - UNKNOWN
-                          - OBJECT
-                          - SCHEMA
-                          - BUCKET
-                        default: UNKNOWN
-                      link:
-                        type: string
-                  title: the properties of this schema
-            creator:
-              type: string
-              title: Creator is the DID of the creator
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp is the time of the last update of the DID Document
-            is_active:
-              type: boolean
-              title: IsActive is the status of the DID Document
-            metadata:
-              type: object
-              additionalProperties:
-                type: string
-              title: >-
-                Metadata is a map of key-value pairs that can be used to store
-                additional information about the WhatIs (Schema)
+          $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       what_is:
-        type: object
-        properties:
-          did:
-            type: string
-            title: DID is the DID of the object
-          schema:
-            title: Object_doc is the object document
-            type: object
-            properties:
-              did:
-                type: string
-                title: the DID for this schema should not be populated by request
-              creator:
-                type: string
-              label:
-                type: string
-                title: an alternative reference point
-              fields:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    field:
-                      title: Type of a single schema property
-                      type: string
-                      enum:
-                        - LIST
-                        - BOOL
-                        - INT
-                        - FLOAT
-                        - STRING
-                        - BYTES
-                        - LINK
-                        - ANY
-                      default: LIST
-                    link_kind:
-                      title: >-
-                        Optional field for a link context if `SchemaKind` is of
-                        type `Link`
-                      type: string
-                      enum:
-                        - UNKNOWN
-                        - OBJECT
-                        - SCHEMA
-                        - BUCKET
-                      default: UNKNOWN
-                    link:
-                      type: string
-                title: the properties of this schema
-          creator:
-            type: string
-            title: Creator is the DID of the creator
-          timestamp:
-            type: string
-            format: int64
-            title: Timestamp is the time of the last update of the DID Document
-          is_active:
-            type: boolean
-            title: IsActive is the status of the DID Document
-          metadata:
-            type: object
-            additionalProperties:
-              type: string
-            title: >-
-              Metadata is a map of key-value pairs that can be used to store
-              additional information about the WhatIs (Schema)
+        $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
-  sonrio.sonr.schema.SchemaDefinition:
+  sonrio.sonr.schema.Schema:
     type: object
     properties:
       did:
         type: string
-        title: the DID for this schema should not be populated by request
-      creator:
+        title: the DID of the schema
+      owner:
         type: string
+        title: the address of the owner
       label:
         type: string
-        title: an alternative reference point
+        title: the name of the schema
       fields:
+        type: array
+        items:
+          $ref: '#/definitions/sonrio.sonr.schema.SchemaField'
+        title: list of fields the schema contains
+      metadata:
         type: array
         items:
           type: object
           properties:
-            name:
+            key:
               type: string
-            field:
-              title: Type of a single schema property
+              title: metadata key
+            value:
               type: string
-              enum:
-                - LIST
-                - BOOL
-                - INT
-                - FLOAT
-                - STRING
-                - BYTES
-                - LINK
-                - ANY
-              default: LIST
-            link_kind:
-              title: >-
-                Optional field for a link context if `SchemaKind` is of type
-                `Link`
-              type: string
-              enum:
-                - UNKNOWN
-                - OBJECT
-                - SCHEMA
-                - BUCKET
-              default: UNKNOWN
-            link:
-              type: string
-        title: the properties of this schema
-  sonrio.sonr.schema.SchemaKind:
-    type: string
-    enum:
-      - LIST
-      - BOOL
-      - INT
-      - FLOAT
-      - STRING
-      - BYTES
-      - LINK
-      - ANY
-    default: LIST
-  sonrio.sonr.schema.SchemaKindDefinition:
+              title: metadata value
+          title: Defines key value pairs for indexable metadata related to the schema
+        title: list of metadata
+    title: 'Schema is the root level document of a schema, stored on chain'
+  sonrio.sonr.schema.SchemaField:
     type: object
     properties:
       name:
         type: string
-      field:
-        title: Type of a single schema property
+        title: the name/key of the field
+      field_kind:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
+        title: the type/kind of the field
+    title: SchemaField represents an individual field in the schema
+  sonrio.sonr.schema.SchemaFieldKind:
+    type: object
+    properties:
+      kind:
+        title: the explicit kind
         type: string
         enum:
           - LIST
@@ -57123,19 +59873,16 @@ definitions:
           - STRING
           - BYTES
           - LINK
-          - ANY
         default: LIST
-      link_kind:
-        title: Optional field for a link context if `SchemaKind` is of type `Link`
+      list_kind:
+        $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
+        title: 'Optional; this is recursive, allowing an indefinite level of nesting'
+      link_did:
         type: string
-        enum:
-          - UNKNOWN
-          - OBJECT
-          - SCHEMA
-          - BUCKET
-        default: UNKNOWN
-      link:
-        type: string
+        title: >-
+          Optional; if the kind is "LINK", this will be the DID of the linked
+          schema
+    title: SchemaFieldKind is the type for a field
   sonrio.sonr.schema.WhatIs:
     type: object
     properties:
@@ -57143,51 +59890,8 @@ definitions:
         type: string
         title: DID is the DID of the object
       schema:
+        $ref: '#/definitions/sonrio.sonr.schema.Schema'
         title: Object_doc is the object document
-        type: object
-        properties:
-          did:
-            type: string
-            title: the DID for this schema should not be populated by request
-          creator:
-            type: string
-          label:
-            type: string
-            title: an alternative reference point
-          fields:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                field:
-                  title: Type of a single schema property
-                  type: string
-                  enum:
-                    - LIST
-                    - BOOL
-                    - INT
-                    - FLOAT
-                    - STRING
-                    - BYTES
-                    - LINK
-                    - ANY
-                  default: LIST
-                link_kind:
-                  title: >-
-                    Optional field for a link context if `SchemaKind` is of type
-                    `Link`
-                  type: string
-                  enum:
-                    - UNKNOWN
-                    - OBJECT
-                    - SCHEMA
-                    - BUCKET
-                  default: UNKNOWN
-                link:
-                  type: string
-            title: the properties of this schema
       creator:
         type: string
         title: Creator is the DID of the creator

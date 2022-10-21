@@ -29,11 +29,12 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	var whatIs = types.WhatIs{
 		Creator: msg.Creator,
 		Did:     what_is_did.String(),
-		Schema: &types.SchemaDefinition{
-			Creator: msg.Creator,
-			Did:     what_is_did.String(),
-			Label:   msg.Label,
-			Fields:  msg.Fields,
+		Schema: &types.Schema{
+			Did:      what_is_did.String(),
+			Owner:    msg.Creator,
+			Label:    msg.Label,
+			Fields:   msg.Fields,
+			Metadata: msg.Metadata,
 		},
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
@@ -41,6 +42,17 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	k.SetWhatIs(ctx, whatIs)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, what_is_did.String()),
+			sdk.NewAttribute(types.AttributeKeyLabel, msg.Label),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeCreateSchema),
+		),
+	)
 
 	resp := types.MsgCreateSchemaResponse{
 		Code:    http.StatusAccepted,
@@ -78,6 +90,17 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		what_is.IsActive = false
 		k.SetWhatIs(ctx, *what_is)
 	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, msg.GetDid()),
+			sdk.NewAttribute(types.AttributeKeyLabel, what_is.Schema.Label),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeprecateSchema),
+		),
+	)
 
 	return &types.MsgDeprecateSchemaResponse{
 		Code:    200,

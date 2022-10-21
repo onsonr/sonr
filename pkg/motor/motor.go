@@ -45,7 +45,10 @@ type motorNodeImpl struct {
 	tempDir    string
 	clientMode mt.ClientMode
 
-	// Sharding
+	// AES encryption key
+	encryptionKey []byte
+
+	// sharding
 	deviceShard   []byte
 	sharedShard   []byte
 	recoveryShard []byte
@@ -84,8 +87,7 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.log = logger.New(mtr.logLevel, "motor")
-	// Create Client instance
-	mtr.Cosmos = client.NewClient(mtr.clientMode)
+
 	// Generate wallet
 	mtr.log.Info("Generating wallet...")
 	mtr.Wallet, err = mpc.GenerateWallet(mtr.callback, options...)
@@ -96,12 +98,9 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.sh = shell.NewShell(mtr.Cosmos.GetIPFSApiAddress())
 	mtr.Resources = newMotorResources(mtr.Cosmos, mtr.sh)
 
-	// Get address
-	if mtr.Address == "" {
-		mtr.Address, err = mtr.Wallet.Address()
-		if err != nil {
-			return err
-		}
+	mtr.Address, err = mtr.Wallet.Address()
+	if err != nil {
+		return err
 	}
 
 	// Get public key

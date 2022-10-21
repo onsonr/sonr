@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	wasmappparams "github.com/CosmWasm/wasmd/app/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -74,7 +75,8 @@ func BenchmarkSimulation(b *testing.B) {
 
 	encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
 
-	app := app.New(
+	var a SimApp
+	a = app.New(
 		logger,
 		db,
 		nil,
@@ -82,11 +84,13 @@ func BenchmarkSimulation(b *testing.B) {
 		map[int64]bool{},
 		app.DefaultNodeHome,
 		0,
-		encoding,
+		wasmappparams.EncodingConfig(encoding),
+		app.GetEnabledProposals(),
 		simapp.EmptyAppOptions{},
+		app.GetWasmOpts(simapp.EmptyAppOptions{}),
 	)
 
-	simApp, ok := app.(SimApp)
+	simApp, ok := a.(SimApp)
 	require.True(b, ok, "can't use simapp")
 
 	// Run randomized simulations

@@ -5,14 +5,14 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func (as *schemaImpl) GetPath() (datamodel.ListIterator, error) {
+func (as *SchemaImpl) GetPath() (datamodel.ListIterator, error) {
 	if as.nodes == nil {
 		return nil, errNodeNotFound
 	}
 	return as.nodes.ListIterator(), nil
 }
 
-func (as *schemaImpl) GetNode() (datamodel.Node, error) {
+func (as *SchemaImpl) GetNode() (datamodel.Node, error) {
 	if as.nodes == nil {
 		return nil, errNodeNotFound
 	}
@@ -20,11 +20,20 @@ func (as *schemaImpl) GetNode() (datamodel.Node, error) {
 	return as.nodes, nil
 }
 
-func (as *schemaImpl) GetSchema() ([]*st.SchemaKindDefinition, error) {
+func (as *SchemaImpl) GetSchema() (*st.Schema, error) {
 	if as.fields == nil {
-		return nil, errSchemaFieldsNotFound
+		return nil, errSchemaNotFound
 	}
-	return as.fields, nil
+	return as.whatIs.Schema, nil
+}
+
+func (as *SchemaImpl) GetSubSchema(did string) (*SchemaImpl, error) {
+	subWhatIs, ok := as.subWhatIs[did]
+	if !ok {
+		return nil, errSchemaNotFound
+	}
+
+	return NewWithClient(as.store.Client, subWhatIs), nil
 }
 
 func arrayContains(arr []string, val interface{}) bool {
