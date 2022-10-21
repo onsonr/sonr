@@ -269,6 +269,25 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	// update DID Document
 	mtr.DIDDocument.AddService(vaultService)
 
+	// Format DID for setting MPC as controller
+	encKeyController, err := did.ParseDID(fmt.Sprintf("%s#enc", doc.GetID().String()))
+	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
+			ErrorMessage: err.Error(),
+			Message:      "",
+		})
+		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("parse controller DID: %s", err)
+	}
+
+	// Add MPC as a VerificationMethod for the assertion of the DID Document
+	encKeyVM, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.ECDSASECP256K1VerificationKey2019, *encKeyController, pskShard)
+
+	if err != nil {
+		return mt.CreateAccountWithKeysResponse{}, err
+	}
+
+	mtr.DIDDocument.AddAuthenticationMethod(encKeyVM)
 	// update whois
 	resp, err := updateWhoIs(mtr)
 	if err != nil {
