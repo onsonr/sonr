@@ -281,13 +281,14 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}
 
 	// Add MPC as a VerificationMethod for the assertion of the DID Document
-	encKeyVM, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.ECDSASECP256K1VerificationKey2019, *encKeyController, pskShard)
+	encKeyVM, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.RSAVerificationKey2018, *encKeyController, pskShard)
 
 	if err != nil {
 		return mt.CreateAccountWithKeysResponse{}, err
 	}
 
-	mtr.DIDDocument.AddAuthenticationMethod(encKeyVM)
+	mtr.DIDDocument.AddAssertionMethod(encKeyVM)
+
 	// update whois
 	resp, err := updateWhoIs(mtr)
 	if err != nil {
