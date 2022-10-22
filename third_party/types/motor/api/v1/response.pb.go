@@ -517,6 +517,7 @@ func (m *QueryWhoIsResponse) GetWhoIs() *types1.WhoIs {
 	return nil
 }
 
+// Query reponse for a WhatIs instance
 type QueryWhatIsResponse struct {
 	Code   int32         `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	WhatIs *types.WhatIs `protobuf:"bytes,2,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
@@ -577,6 +578,7 @@ func (m *QueryWhatIsResponse) GetSchema() *types.Schema {
 	return nil
 }
 
+// Query response for WhatIs
 type QueryWhatIsByCreatorResponse struct {
 	Code       int32                    `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	WhatIs     []*types.WhatIs          `protobuf:"bytes,2,rep,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
@@ -645,8 +647,11 @@ func (m *QueryWhatIsByCreatorResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+// Query Response for WhatIs by Creator
 type QueryWhereIsByCreatorResponse struct {
-	Code       int32               `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// status code of the request
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	// List of WhereIs instances associated with the given creator address from the request
 	WhereIs    []*types2.WhereIs   `protobuf:"bytes,2,rep,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
 	Pagination *query.PageResponse `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }

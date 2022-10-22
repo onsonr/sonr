@@ -12,9 +12,8 @@ import "schema/v1/schema.proto";
 import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/x/schema/types";
-
-option java_package = "io.sonr.types.schema";
 option java_multiple_files = true;
+option java_package = "io.sonr.types.schema";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -59,25 +58,30 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
+// Query for all WhatIs instances on chain
 message QueryAllWhatIsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// Response for `QueryAllWhatIsRequest`
 message QueryAllWhatIsResponse {
   repeated WhatIs what_is = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+// Query for a single WhatIs instance on chain
 message QuerySchemaRequest {
   string creator = 1;
   string did = 2;
 }
 
+// Query for a single WhatIs instance on chian
 message QueryWhatIsRequest {
   string creator = 1;
   string did = 2;
 }
 
+// Response for a `WhatIsByCreator` request from chain
 message QueryWhatIsCreatorRequest {
   // address of the schema creator
   string creator = 1;
@@ -85,27 +89,32 @@ message QueryWhatIsCreatorRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
+// Abstract a single WhatIs by only returning a `Schema` in the response
 message QuerySchemaResponse {
   // Definition of schema
   Schema schema = 2;
 }
 
+// Query for a `WhatIs` instance by its did. will use the current session context for the creator address
 message QueryWhatIsByDidRequest {
   string did = 1;
   // pageination values
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
+// Response for Querying a `WhatIs` instance
 message QueryWhatIsResponse {
   // Schema Repersentation
   WhatIs what_is = 1;
 }
 
+// Response for querying `WhatIs`s by the creator address
 message QueryWhatIsCreatorResponse {
   // Schema Repersentation
   repeated WhatIs what_is = 1;
 }
 
+// Response for querying a WhatIs instance by its did
 message QueryWhatIsByDidResponse {
   WhatIs what_is = 1;
 }
