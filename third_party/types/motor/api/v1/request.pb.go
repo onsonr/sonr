@@ -686,13 +686,14 @@ func (m *QueryWhoIsByAliasRequest) GetAlias() string {
 	return ""
 }
 
-// -----------------------------------------------------------------------------
-// Schema Models
-// -----------------------------------------------------------------------------
+// Create Schema (`WhatIs`) recorded on chain
 type CreateSchemaRequest struct {
-	Label    string                            `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
-	Fields   map[string]*types.SchemaFieldKind `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Metadata map[string]string                 `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// human readable name of the schema
+	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	// Definition of the schema provided as a map
+	Fields map[string]*types.SchemaFieldKind `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// custom metadata for the definition. will be recorded on chain
+	Metadata map[string]string `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *CreateSchemaRequest) Reset()         { *m = CreateSchemaRequest{} }

@@ -26,7 +26,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type WhatIs struct {
 	// DID is the DID of the object
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	// Object_doc is the object document
+	// Schema to persist on chain
 	Schema *Schema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
 	// Creator is the DID of the creator
 	Creator string `protobuf:"bytes,3,opt,name=creator,proto3" json:"creator,omitempty"`

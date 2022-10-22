@@ -24,7 +24,6 @@ message InitializeResponse {
 
 message CreateAccountResponse {
   string address = 1;
-  sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
 message CreateAccountWithKeysResponse {
@@ -93,8 +92,6 @@ message QueryWhatIsByCreatorResponse {
   repeated sonrio.sonr.schema.WhatIs what_is = 2;
 
   // Schema instance contained in the `WhatIs` also in this response. Here for convience
-  map<string, sonrio.sonr.schema.SchemaDefinition> schemas = 3;
-
   map<string, sonrio.sonr.schema.Schema> schemas = 3;
   cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
