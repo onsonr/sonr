@@ -17,17 +17,12 @@ import (
 
 func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create DSC and store it in keychain
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_START,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_CREATE_START})
 	dsc, err := kr.CreateDSC()
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_END,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountResponse{}, fmt.Errorf("create DSC: %s", err)
 	}
@@ -38,7 +33,6 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountResponse{}, fmt.Errorf("create PSK: %s", err)
 	}
@@ -53,7 +47,6 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountResponse{}, err
 	}
@@ -73,32 +66,19 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_FAUCET_REQUEST_START,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_FAUCET_REQUEST_START})
 	// Request from Faucet
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_FAUCET_REQUEST_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_FAUCET_REQUEST_END,
-		ErrorMessage: "",
-		Message:      "",
-	})
 
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_START,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_FAUCET_REQUEST_END})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_START})
 
 	// Create the DID Document
 	doc, err := did.NewDocument(mtr.DID.String())
@@ -106,7 +86,6 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create DID document: %s", err)
 	}
@@ -118,7 +97,6 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("parse controller DID: %s", err)
 	}
@@ -129,22 +107,14 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, err
 	}
 	doc.AddAssertionMethod(vm)
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
-		ErrorMessage: "",
-		Message:      "",
-	})
 
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_START,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_START})
+
 	// Create Initial Shards
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 
@@ -155,15 +125,10 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create shards: %s", err)
 	}
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_END,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_END})
 
 	mtr.deviceShard = deviceShard
 	mtr.sharedShard = sharedShard
@@ -176,11 +141,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create account: %s", err)
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_START,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_ENCRYPT_START})
 
 	// encrypt dscShard with DSC
 	dscShard, err := mpc.AesEncryptWithKey(request.AesDscKey, mtr.deviceShard)
@@ -188,7 +149,6 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt backup shards: %s", err)
 	}
@@ -199,7 +159,6 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt psk shards: %s", err)
 	}
@@ -210,7 +169,6 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt password shard: %s", err)
 	}
@@ -222,24 +180,14 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 			mtr.triggerWalletEvent(common.WalletEvent{
 				Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_ERROR,
 				ErrorMessage: err.Error(),
-				Message:      "",
 			})
 
 			return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("encrypt backup shard #%d: %s", i+1, err)
 		}
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_KEY_ENCRYPT_END,
-		ErrorMessage: "",
-		Message:      "",
-	})
-
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_START,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_ENCRYPT_END})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_START})
 
 	// create vault
 	vaultService, err := vc.CreateVault(
@@ -255,16 +203,11 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_END,
 			ErrorMessage: err.Error(),
-			Message:      "",
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("setup vault: %s", err)
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{
-		Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_END,
-		ErrorMessage: "",
-		Message:      "",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_END})
 
 	// update DID Document
 	mtr.DIDDocument.AddService(vaultService)
