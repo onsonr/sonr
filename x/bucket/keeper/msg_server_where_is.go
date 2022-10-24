@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -54,87 +53,32 @@ func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucke
 	}, nil
 }
 
-func (k msgServer) UpdateBucket(goCtx context.Context, msg *types.MsgUpdateBucket) (*types.MsgUpdateBucketResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := msg.ValidateBasic()
-	k.Logger(ctx).Info("basic request validation finished")
+// func (k msgServer) DeactivateBucket(goCtx context.Context, msg *types.MsgDeactivateBucket) (*types.MsgDeleteBucketResponse, error) {
+// 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err != nil {
-		return nil, err
-	}
+// 	// Checks that the element exists
+// 	val, found := k.GetBucket(ctx, msg.Did)
+// 	if !found {
+// 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
+// 	}
 
-	accts := msg.GetSigners()
-	if len(accts) < 1 {
-		k.Logger(ctx).Error("Error while querying account: not found")
-		return nil, sdkerrors.ErrNotFound
-	}
+// 	// Checks if the msg creator is the same as the current owner
+// 	if msg.Creator != val.Creator {
+// 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+// 	}
 
-	var whereIs = types.Bucket{
-		// Label:      msg.Label,
-		Creator: msg.Creator,
-		// Did:        msg.Did,
-		// Visibility: msg.Visibility,
-		// Role:       msg.Role,
-		IsActive: true,
-		// Content:    msg.Content,
-		// Timestamp:  time.Now().Unix(),
-	}
+// 	val.IsActive = false
+// 	k.SetWhereIs(ctx, val)
 
-	// Checks that the element exists
-	val, found := k.GetBucket(ctx, msg.Did)
-	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
-	}
-
-	// Checks if the msg creator is the same as the current owner
-	if msg.Creator != val.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
-
-	k.SetWhereIs(ctx, whereIs)
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyCreator, whereIs.Creator),
-			// sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
-			// sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
-			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeUpdateWhereIs),
-		),
-	)
-	return &types.MsgUpdateBucketResponse{
-		Status:  http.StatusAccepted,
-		WhereIs: &whereIs,
-	}, nil
-}
-
-func (k msgServer) DeleteBucket(goCtx context.Context, msg *types.MsgDeleteBucket) (*types.MsgDeleteBucketResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// Checks that the element exists
-	val, found := k.GetBucket(ctx, msg.Did)
-	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
-	}
-
-	// Checks if the msg creator is the same as the current owner
-	if msg.Creator != val.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
-
-	val.IsActive = false
-	k.SetWhereIs(ctx, val)
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyCreator, val.Creator),
-			// sdk.NewAttribute(types.AttributeKeyDID, val.Did),
-			// sdk.NewAttribute(types.AttributeKeyLabel, val.Label),
-			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeleteWhereIs),
-		),
-	)
-	return &types.MsgDeleteBucketResponse{}, nil
-}
+// 	ctx.EventManager().EmitEvent(
+// 		sdk.NewEvent(
+// 			sdk.EventTypeMessage,
+// 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+// 			sdk.NewAttribute(types.AttributeKeyCreator, val.Creator),
+// 			// sdk.NewAttribute(types.AttributeKeyDID, val.Did),
+// 			// sdk.NewAttribute(types.AttributeKeyLabel, val.Label),
+// 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeleteWhereIs),
+// 		),
+// 	)
+// 	return &types.MsgDeleteBucketResponse{}, nil
+// }

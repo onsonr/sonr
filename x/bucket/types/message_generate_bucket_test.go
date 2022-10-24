@@ -4,25 +4,25 @@ import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonr-io/sonr/testutil/sample"
 	"github.com/stretchr/testify/require"
+	"github.com/sonr-io/sonr/testutil/sample"
 )
 
-func TestMsgDefineBucket_ValidateBasic(t *testing.T) {
+func TestMsgGenerateBucket_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDefineBucket
+		msg  MsgGenerateBucket
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDefineBucket{
+			msg: MsgGenerateBucket{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDefineBucket{
+			msg: MsgGenerateBucket{
 				Creator: sample.AccAddress(),
 			},
 		},

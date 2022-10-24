@@ -21,12 +21,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			res, err := msgServer.DefineBucket(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
-		case *types.MsgUpdateBucket:
-			res, err := msgServer.UpdateBucket(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-
-		case *types.MsgDeleteBucket:
-			res, err := msgServer.DeleteBucket(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgGenerateBucket:
+			res, err := msgServer.GenerateBucket(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 			// this line is used by starport scaffolding # 1

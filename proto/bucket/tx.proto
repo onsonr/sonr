@@ -13,9 +13,8 @@ option java_multiple_files = true;
 // Msg defines the Msg service.
 service Msg {
   rpc DefineBucket(MsgDefineBucket) returns (MsgDefineBucketResponse);
-  rpc UpdateBucket(MsgUpdateBucket) returns (MsgUpdateBucketResponse);
-  rpc DeleteBucket(MsgDeleteBucket) returns (MsgDeleteBucketResponse);
-  // this line is used by starport scaffolding # proto/tx/rpc
+  rpc GenerateBucket(MsgGenerateBucket) returns (MsgGenerateBucketResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
 }
 
 message MsgDefineBucket {
@@ -28,24 +27,11 @@ message MsgDefineBucketResponse {
   Bucket where_is = 2;
 }
 
-message MsgUpdateBucket {
+message MsgGenerateBucket {
   string creator = 1;
-  string did = 2;
-  string label = 3;
 }
 
-message MsgUpdateBucketResponse {
-  int32 status = 1;
-  Bucket where_is = 2;
-}
-
-message MsgDeleteBucket {
-  string creator = 1;
-  string did = 2;
-}
-
-message MsgDeleteBucketResponse {
-  int32 status = 1;
+message MsgGenerateBucketResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message

@@ -31,8 +31,7 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdCreateWhereIs())
-	cmd.AddCommand(CmdUpdateWhereIs())
-	cmd.AddCommand(CmdDeleteWhereIs())
+	cmd.AddCommand(CmdGenerateBucket())
 	// this line is used by starport scaffolding # 1
 
 	return cmd
