@@ -14,33 +14,6 @@ import (
 
 func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchema) (*types.MsgCreateSchemaResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := msg.ValidateBasic()
-	if err != nil {
-		return nil, err
-	}
-
-	k.Logger(ctx).Info("msg validation successful")
-
-	accts := msg.GetSigners()
-	if len(accts) < 1 {
-		return nil, sdkerrors.ErrNotFound
-	}
-
-	creator_did := msg.GetCreatorDid()
-	k.Logger(ctx).Info(fmt.Sprintf("Creating schema for creator did %s", creator_did))
-
-	if err != nil {
-		return nil, err
-	}
-
-	if err != nil {
-		return nil, sdkerrors.Wrapf(err, "Error while pinning schema definition to storage")
-	}
-
-	if err != nil {
-		return nil, sdkerrors.Wrapf(err, "Error while persisting schema fields")
-	}
-
 	what_is_did, err := did.ParseDID(fmt.Sprintf("did:snr:%s", k.GenerateKeyForDID()))
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "error while creating did from cid")
@@ -54,12 +27,14 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	var whatIs = types.WhatIs{
-		Creator: creator_did,
+		Creator: msg.Creator,
 		Did:     what_is_did.String(),
-		Schema: &types.SchemaDefinition{
-			Did:    what_is_did.String(),
-			Label:  msg.Label,
-			Fields: msg.Fields,
+		Schema: &types.Schema{
+			Did:      what_is_did.String(),
+			Owner:    msg.Creator,
+			Label:    msg.Label,
+			Fields:   msg.Fields,
+			Metadata: msg.Metadata,
 		},
 		Timestamp: time.Now().Unix(),
 		IsActive:  true,
@@ -67,6 +42,17 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 	}
 
 	k.SetWhatIs(ctx, whatIs)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, what_is_did.String()),
+			sdk.NewAttribute(types.AttributeKeyLabel, msg.Label),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeCreateSchema),
+		),
+	)
 
 	resp := types.MsgCreateSchemaResponse{
 		Code:    http.StatusAccepted,
@@ -79,11 +65,6 @@ func (k msgServer) CreateSchema(goCtx context.Context, msg *types.MsgCreateSchem
 
 func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecateSchema) (*types.MsgDeprecateSchemaResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := msg.ValidateBasic()
-	if err != nil {
-		return nil, err
-	}
-
 	schemas, found := k.GetWhatIsFromCreator(ctx, msg.GetCreator())
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "No Schemas found under same creator as message creator.")
@@ -109,6 +90,17 @@ func (k msgServer) DeprecateSchema(goCtx context.Context, msg *types.MsgDeprecat
 		what_is.IsActive = false
 		k.SetWhatIs(ctx, *what_is)
 	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyDID, msg.GetDid()),
+			sdk.NewAttribute(types.AttributeKeyLabel, what_is.Schema.Label),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeprecateSchema),
+		),
+	)
 
 	return &types.MsgDeprecateSchemaResponse{
 		Code:    200,

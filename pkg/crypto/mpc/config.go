@@ -1,16 +1,18 @@
 package mpc
 
 import (
+	"github.com/mr-tron/base58/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/pkg/pool"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 )
 
 // The default shards that are added to the MPC wallet
-var defaultParticipants = party.IDSlice{"dsc", "recovery", "psk", "bank0", "bank1", "bank2", "bank3", "bank4", "bank5", "bank6"}
+var defaultParticipants = party.IDSlice{"dsc", "recovery", "psk", "bank0", "bank1", "bank2"}
 
 // Preset options struct
 type walletConfig struct {
+	pubKey       []byte
 	participants party.IDSlice
 	threshold    int
 	network      *Network
@@ -20,6 +22,7 @@ type walletConfig struct {
 // default configuration options
 func defaultConfig() *walletConfig {
 	return &walletConfig{
+		pubKey:       make([]byte, 0),
 		participants: defaultParticipants,
 		threshold:    1,
 		network:      NewNetwork(defaultParticipants),
@@ -36,6 +39,7 @@ func (wc *walletConfig) Apply(opts ...WalletOption) *Wallet {
 	return &Wallet{
 		pool: pool.NewPool(0),
 
+		PubKey:    wc.pubKey,
 		Configs:   wc.configs,
 		ID:        wc.participants[0],
 		Threshold: wc.threshold,
@@ -45,6 +49,16 @@ func (wc *walletConfig) Apply(opts ...WalletOption) *Wallet {
 
 // WalletOption is a function that applies a configuration option to a walletConfig
 type WalletOption func(*walletConfig)
+
+func WithBase58PubKey(key string) WalletOption {
+	return func(c *walletConfig) {
+		decoded, err := base58.Decode(key)
+		if err != nil {
+			panic(err)
+		}
+		c.pubKey = decoded
+	}
+}
 
 // WithParticipants adds a list of participants to the wallet
 func WithParticipants(participants ...party.ID) WalletOption {

@@ -38,32 +38,40 @@ func CreatMockWhatIs(simmAcc simtypes.Account) (types.WhatIs, error) {
 	}, nil
 }
 
-func CreateMockSchema(simAcc simtypes.Account) (types.SchemaDefinition, error) {
+func CreateMockSchema(simAcc simtypes.Account) (types.Schema, error) {
 	doc, err := CreateMockDidDocument(simAcc)
 	if err != nil {
 		panic(err)
 	}
-	schema := types.SchemaDefinition{
+	schema := types.Schema{
 		Did:   doc.GetID().String(),
 		Label: "test",
-		Fields: []*types.SchemaKindDefinition{
+		Fields: []*types.SchemaField{
 			{
-				Name:  "name",
-				Field: types.SchemaKind_STRING,
+				Name: "name",
+				FieldKind: &types.SchemaFieldKind{
+					Kind: types.Kind_STRING,
+				},
 			},
 			{
-				Name:  "age",
-				Field: types.SchemaKind_INT,
+				Name: "age",
+				FieldKind: &types.SchemaFieldKind{
+					Kind: types.Kind_INT,
+				},
 			},
 			{
-				Name:  "DOB",
-				Field: types.SchemaKind_STRING,
+				Name: "DOB",
+				FieldKind: &types.SchemaFieldKind{
+					Kind: types.Kind_STRING,
+				},
 			},
 			{
-				Name:  "categories",
-				Field: types.SchemaKind_LIST,
-				Item: &types.SchemaItemKindDefinition{
-					Field: types.SchemaKind_STRING,
+				Name: "categories",
+				FieldKind: &types.SchemaFieldKind{
+					Kind: types.Kind_LIST,
+					ListKind: &types.SchemaFieldKind{
+						Kind: types.Kind_STRING,
+					},
 				},
 			},
 		},

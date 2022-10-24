@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/host"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/pkg/motor/x/document"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -45,12 +45,12 @@ type MotorNode interface {
 
 	// Schema
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
-	NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error)
+	NewDocumentBuilder(schemaDid string) (*document.DocumentBuilder, error)
 
 	// Buckets
 
 	// Creates a new bucket with the defined properties in the request. Returns and instance of `bucket`. before returning both content and buckets are resolved.
-	CreateBucket(context.Context, mt.CreateBucketRequest) (bucket.Bucket, error)
+	CreateBucket(mt.CreateBucketRequest) (*mt.CreateBucketResponse, bucket.Bucket, error)
 
 	GetBucket(did string) (bucket.Bucket, error)
 
@@ -82,7 +82,6 @@ type MotorNode interface {
 	QueryWhatIsByDid(did string) (*mt.QueryWhatIsResponse, error)
 	QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error)
 	QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error)
-	QueryObject(cid string) (map[string]interface{}, error)
 
 	UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error)
 }

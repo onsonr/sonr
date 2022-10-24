@@ -1,68 +1,67 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
-	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_CreateBucket(t *testing.T) {
-	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
-	if pskKey == nil || len(pskKey) != 32 {
-		t.Errorf("could not load psk key")
-		return
-	}
+func (suite *MotorTestSuite) Test_CreateBucket() {
+	suite.T().Run("create single bucket", func(t *testing.T) {
+		createReq := mt.CreateBucketRequest{
+			Creator:    suite.motorWithKeys.GetAddress(),
+			Label:      "my awesome bucket",
+			Visibility: types.BucketVisibility_PUBLIC,
+			Role:       types.BucketRole_USER,
+			Content:    make([]*types.BucketItem, 0),
+		}
+		_, b, err := suite.motorWithKeys.CreateBucket(createReq)
 
-	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
-	}
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err := m.Login(req)
-	assert.NoError(t, err, "login succeeds")
+		assert.NoError(t, err)
+		assert.NotNil(t, b)
+	})
 
-	createReq := mt.CreateBucketRequest{
-		Creator:    ADDR,
-		Label:      "my awesome bucket",
-		Visibility: types.BucketVisibility_PUBLIC,
-		Role:       types.BucketRole_USER,
-		Content:    make([]*types.BucketItem, 0),
-	}
-	b, err := m.CreateBucket(context.Background(), createReq)
-	assert.NoError(t, err)
-	assert.NotNil(t, b)
-}
+	suite.T().Run("create many buckets", func(t *testing.T) {
+		uris := make([]*types.BucketItem, 0)
+		for i := 0; i < 3; i++ {
+			var createReq mt.CreateBucketRequest
+			if i == 0 {
+				createReq = mt.CreateBucketRequest{
+					Creator:    suite.motorWithKeys.GetAddress(),
+					Label:      fmt.Sprintf("my awesome bucket %d", i),
+					Visibility: types.BucketVisibility_PUBLIC,
+					Role:       types.BucketRole_USER,
+					Content:    make([]*types.BucketItem, 0),
+				}
+			} else {
+				createReq = mt.CreateBucketRequest{
+					Creator:    suite.motorWithKeys.GetAddress(),
+					Label:      fmt.Sprintf("my awesome bucket %d", i),
+					Visibility: types.BucketVisibility_PUBLIC,
+					Role:       types.BucketRole_USER,
+					Content:    uris,
+				}
+			}
 
-func Test_GetBucket(t *testing.T) {
-	pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
-	if pskKey == nil || len(pskKey) != 32 {
-		t.Errorf("could not load psk key")
-		return
-	}
+			_, b, err := suite.motorWithKeys.CreateBucket(createReq)
 
-	req := mt.LoginRequest{
-		Did:      ADDR,
-		Password: "password123",
-	}
+			assert.NoError(t, err)
+			assert.NotNil(t, b)
 
-	m, _ := EmptyMotor(&mt.InitializeRequest{
-		DeviceId: "test_device",
-	}, common.DefaultCallback())
-	_, err := m.Login(req)
-	assert.NoError(t, err, "login succeeds")
+			if i != 0 {
+				b.ResolveBuckets()
+				buckets := b.GetBuckets()
+				assert.Equal(t, len(buckets), len(uris))
+			}
 
-	b, err := m.GetBucket("did:snr:e7360323120e4b70a5366984c994b536")
-	assert.NoError(t, err, "get bucket")
-
-	b.ResolveContent()
-	for _, c := range b.GetBucketItems() {
-		fmt.Println(c.Name)
-	}
+			uris = append(uris, &types.BucketItem{
+				Name: "content",
+				Uri:  b.GetDID(),
+				Type: types.ResourceIdentifier_DID,
+			})
+		}
+	})
 }

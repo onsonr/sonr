@@ -11,26 +11,26 @@ import (
 	bypassing link loader implementation due to lack of compatibilitty with our arch. Once support for json schemas are added we will no longer need to parse in this structure.
 	but will loose the ability to reuse sub schemas in this fashion.
 */
-func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
+func (as *SchemaImpl) LoadSubSchemas(ctx context.Context) error {
 	var links []string = make([]string, 0)
 	for _, f := range as.fields {
-		if f.LinkKind == st.LinkKind_SCHEMA {
-			if f.Link == "" {
+		if f.GetKind() == st.Kind_LINK {
+			if f.FieldKind.LinkDid == "" {
 				return errSchemaFieldsInvalid
 			}
-			links = append(links, f.Link)
+			links = append(links, f.FieldKind.LinkDid)
 		}
-		kind := f.Item
 
+		kind := f.FieldKind
 		for kind != nil {
-			if kind.Field == st.SchemaKind_LINK {
-				if kind.Link == "" {
+			if kind.Kind == st.Kind_LINK {
+				if kind.LinkDid == "" {
 					return errSchemaFieldsInvalid
 				}
-				links = append(links, kind.Link)
+				links = append(links, kind.LinkDid)
 			}
 
-			kind = kind.Item
+			kind = kind.ListKind
 		}
 	}
 
@@ -43,21 +43,21 @@ func (as *schemaImpl) LoadSubSchemas(ctx context.Context) error {
 			return err
 		}
 
-		var def st.SchemaDefinition
+		def := &st.WhatIs{}
 		err = def.Unmarshal(buf)
 
 		if err != nil {
 			return err
 		}
 
-		as.subSchemas[key] = &def
+		as.subWhatIs[key] = def
 
-		for _, sf := range def.Fields {
-			if sf.LinkKind == st.LinkKind_SCHEMA {
-				if sf.Link == "" {
+		for _, sf := range def.Schema.Fields {
+			if sf.FieldKind.Kind == st.Kind_LINK {
+				if sf.FieldKind.LinkDid == "" {
 					return errSchemaFieldsInvalid
 				}
-				links = append(links, sf.Link)
+				links = append(links, sf.FieldKind.LinkDid)
 			}
 		}
 	}

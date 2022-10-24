@@ -1,37 +1,43 @@
 package types
 
-import "strings"
+import (
+	"fmt"
+)
 
 func (d *SchemaDocumentValue) GetValue() interface{} {
-	switch d.Field {
-	case SchemaKind_BOOL:
+	switch d.Kind {
+	case Kind_BOOL:
 		if d.BoolValue != nil {
 			return d.BoolValue.Value
 		}
-	case SchemaKind_BYTES:
+	case Kind_BYTES:
 		if d.BytesValue != nil {
 			return d.BytesValue.Value
 		}
-	case SchemaKind_INT:
+	case Kind_INT:
 		if d.IntValue != nil {
 			return int64(d.IntValue.Value)
 		}
-	case SchemaKind_FLOAT:
+	case Kind_FLOAT:
 		if d.FloatValue != nil {
 			return d.FloatValue.Value
 		}
-	case SchemaKind_STRING:
+	case Kind_STRING:
 
 		if d.StringValue != nil {
 			return d.StringValue.Value
 		}
-	case SchemaKind_LINK:
+	case Kind_LINK:
 		if d.LinkValue != nil {
 			return d.LinkValue.Value
 		}
-	case SchemaKind_LIST:
-		if d.ArrayValue != nil {
-			return resolveArrayValues(d.ArrayValue.Value)
+	case Kind_LIST:
+		if d.ListValue != nil {
+			listVal, err := resolveArrayValues(d.ListValue.Value)
+			if err != nil {
+				return nil
+			}
+			return listVal
 		}
 	default:
 		return nil
@@ -39,89 +45,7 @@ func (d *SchemaDocumentValue) GetValue() interface{} {
 	return nil
 }
 
-func NewDocumentFromMap(cid string, m map[string]interface{}) *SchemaDocument {
-	var schemaDid string
-	fields := make([]*SchemaDocumentValue, 0)
-	for k, v := range m {
-		if k == "@did" {
-			schemaDid = v.(string)
-			continue
-		}
-		fields = append(fields, NewDocumentValueFromInterface(k, v))
-	}
-	return &SchemaDocument{
-		Fields: fields,
-		Did:    schemaDid,
-		Cid:    cid,
-	}
-}
-
-func NewDocumentValueFromInterface(name string, value interface{}) *SchemaDocumentValue {
-	switch v := value.(type) {
-	case bool:
-		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_BOOL,
-			BoolValue: &BoolValue{
-				Value: v,
-			},
-		}
-	case []byte:
-		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_BYTES,
-			BytesValue: &BytesValue{
-				Value: v,
-			},
-		}
-	case int:
-		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_INT,
-			IntValue: &IntValue{
-				Value: int32(v),
-			},
-		}
-	case float64:
-		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_FLOAT,
-			FloatValue: &FloatValue{
-				Value: v,
-			},
-		}
-	case string:
-		if strings.Contains(v, "did:") && name != "@did" {
-			return &SchemaDocumentValue{
-				Name:  name,
-				Field: SchemaKind_LINK,
-				LinkValue: &LinkValue{
-					Value: v,
-					Link:  LinkKind_UNKNOWN,
-				},
-			}
-		}
-		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_STRING,
-			StringValue: &StringValue{
-				Value: v,
-			},
-		}
-	case []*SchemaDocumentValue:
-		return &SchemaDocumentValue{
-			Name:  name,
-			Field: SchemaKind_LIST,
-			ArrayValue: &ArrayValue{
-				Value: v,
-			},
-		}
-	default:
-		return nil
-	}
-}
-
-func resolveArrayValues(vals []*SchemaDocumentValue) []interface{} {
+func resolveArrayValues(vals []*SchemaDocumentValue) ([]interface{}, error) {
 	arr := make([]interface{}, 0)
 	for _, val := range vals {
 		if val.BoolValue != nil {
@@ -134,8 +58,18 @@ func resolveArrayValues(vals []*SchemaDocumentValue) []interface{} {
 			arr = append(arr, val.FloatValue.Value)
 		} else if val.BytesValue != nil {
 			arr = append(arr, val.BytesValue.Value)
+		} else if val.ListValue != nil {
+			v, err := resolveArrayValues(val.ListValue.Value)
+			if err != nil {
+				return nil, err
+			}
+			arr = append(arr, v)
+		} else if val.LinkValue != nil {
+			arr = append(arr, val.LinkValue.Value)
+		} else {
+			return nil, fmt.Errorf("unknown list value: %s", val)
 		}
 	}
 
-	return arr
+	return arr, nil
 }

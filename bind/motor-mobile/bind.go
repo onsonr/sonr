@@ -4,21 +4,22 @@ import (
 	"fmt"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/pkg/motor/x/document"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )
 
+var (
+	docBuilders map[string]*document.DocumentBuilder
+	instance    mtr.MotorNode
+)
+
 type MotorCallback interface {
 	OnDiscover(data []byte)
+	OnWalletEvent(data []byte)
 }
-
-var (
-	objectBuilders map[string]*object.ObjectBuilder
-	instance       mtr.MotorNode
-)
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
@@ -34,8 +35,8 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	}
 	instance = mtr
 
-	// init objectBuilders
-	objectBuilders = make(map[string]*object.ObjectBuilder)
+	// init docBuilders
+	docBuilders = make(map[string]*document.DocumentBuilder)
 
 	// Return Initialization Response
 	resp := mt.InitializeResponse{
@@ -44,8 +45,8 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 
 	if req.AuthInfo != nil {
 		if res, err := instance.Login(mt.LoginRequest{
-			Did:      req.AuthInfo.Did,
-			Password: req.AuthInfo.Password,
+			AccountId: req.AuthInfo.Did,
+			Password:  req.AuthInfo.Password,
 		}); err == nil {
 			return res.Marshal()
 		}
@@ -128,6 +129,24 @@ func Connect() error {
 		return ct.ErrMotorWalletNotInitialized
 	}
 	return instance.Connect()
+}
+
+func CreateBucket(buf []byte) ([]byte, error) {
+	if instance == nil {
+		return nil, ct.ErrMotorWalletNotInitialized
+	}
+
+	var request mt.CreateBucketRequest
+	if err := request.Unmarshal(buf); err != nil {
+		return nil, fmt.Errorf("unmarshal request: %s", err)
+	}
+
+	resp, _, err := instance.CreateBucket(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Marshal()
 }
 
 func CreateSchema(buf []byte) ([]byte, error) {
