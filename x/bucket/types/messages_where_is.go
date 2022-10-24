@@ -16,13 +16,10 @@ const (
 
 var _ sdk.Msg = &MsgCreateWhereIs{}
 
-func NewMsgCreateWhereIs(creator string, label string, role BucketRole, visibility BucketVisibility, content []*BucketItem) *MsgCreateWhereIs {
+func NewMsgCreateWhereIs(creator string, label string) *MsgCreateWhereIs {
 	return &MsgCreateWhereIs{
 		Creator:    creator,
 		Label:      label,
-		Role:       role,
-		Visibility: visibility,
-		Content:    content,
 	}
 }
 

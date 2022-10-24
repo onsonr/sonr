@@ -68,7 +68,7 @@ func SimulateMsgUpdateWhereIs(
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whereIs creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
-		msg.Did = whereIs.Did
+		msg.Did = whereIs.Uuid
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -113,7 +113,7 @@ func SimulateMsgDeleteWhereIs(
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "whereIs creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
-		msg.Did = whereIs.Did
+		msg.Did = whereIs.Uuid
 
 		txCtx := simulation.OperationInput{
 			R:               r,

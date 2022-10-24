@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -28,13 +27,10 @@ func CmdCreateWhereIs() *cobra.Command {
 			}
 
 			// parse strictly
-			roleConv, err := strconv.ParseUint(args[1], 10, 32)
-			role := types.BucketRole(roleConv)
+			// visiblityConv, err := strconv.ParseUint(args[2], 10, 32)
+			// visilbity := types.BucketVisibility(visiblityConv)
 
-			visiblityConv, err := strconv.ParseUint(args[2], 10, 32)
-			visilbity := types.BucketVisibility(visiblityConv)
-
-			msg := types.NewMsgCreateWhereIs(clientCtx.GetFromAddress().String(), args[0], role, visilbity, nil)
+			msg := types.NewMsgCreateWhereIs(clientCtx.GetFromAddress().String(), args[0])
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

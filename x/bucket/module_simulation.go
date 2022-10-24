@@ -49,11 +49,11 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		Params: types.DefaultParams(),
 		WhereIsList: []types.WhereIs{
 			{
-				Did:     "did:sonr:1",
+				Uuid:     "did:sonr:1",
 				Creator: sample.AccAddress(),
 			},
 			{
-				Did:     "did:sonr:2",
+				Uuid:     "did:sonr:2",
 				Creator: sample.AccAddress(),
 			},
 		},

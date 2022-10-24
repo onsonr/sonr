@@ -25,7 +25,7 @@ func networkWithWhereIsObjects(t *testing.T, n int) (*network.Network, []types.W
 
 	for i := 0; i < n; i++ {
 		whereIs := types.WhereIs{
-			Did: fmt.Sprintf("did:sonr:%d", i),
+			Uuid: fmt.Sprintf("did:sonr:%d", i),
 		}
 		nullify.Fill(&whereIs)
 		state.WhereIsList = append(state.WhereIsList, whereIs)
@@ -52,7 +52,7 @@ func TestShowWhereIs(t *testing.T) {
 	}{
 		{
 			desc: "found",
-			id:   fmt.Sprintf("%s", objs[0].Did),
+			id:   fmt.Sprintf("%s", objs[0].Uuid),
 			args: common,
 			obj:  objs[0],
 		},

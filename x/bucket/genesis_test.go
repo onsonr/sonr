@@ -16,10 +16,10 @@ func TestGenesis(t *testing.T) {
 
 		WhereIsList: []types.WhereIs{
 			{
-				Did: "did:sonr:1",
+				Uuid: "did:sonr:1",
 			},
 			{
-				Did: "did:sonr:2",
+				Uuid: "did:sonr:2",
 			},
 		},
 		// this line is used by starport scaffolding # genesis/test/state

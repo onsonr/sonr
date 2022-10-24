@@ -14,7 +14,7 @@ import (
 func createNWhereIs(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.WhereIs {
 	items := make([]types.WhereIs, n)
 	for i := range items {
-		items[i].Did = keeper.AppendWhereIs(ctx, items[i])
+		items[i].Uuid = keeper.AppendWhereIs(ctx, items[i])
 	}
 	return items
 }
@@ -23,7 +23,7 @@ func TestWhereIsGet(t *testing.T) {
 	keeper, ctx := keepertest.BucketKeeper(t)
 	items := createNWhereIs(keeper, ctx, 10)
 	for _, item := range items {
-		got, found := keeper.GetWhereIs(ctx, item.Creator, item.Did)
+		got, found := keeper.GetWhereIs(ctx, item.Creator, item.Uuid)
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
@@ -36,8 +36,8 @@ func TestWhereIsRemove(t *testing.T) {
 	keeper, ctx := keepertest.BucketKeeper(t)
 	items := createNWhereIs(keeper, ctx, 10)
 	for _, item := range items {
-		keeper.RemoveWhereIs(ctx, item.Did)
-		_, found := keeper.GetWhereIs(ctx, item.Creator, item.Did)
+		keeper.RemoveWhereIs(ctx, item.Uuid)
+		_, found := keeper.GetWhereIs(ctx, item.Creator, item.Uuid)
 		require.False(t, found)
 	}
 }

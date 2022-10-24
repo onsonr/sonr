@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -27,20 +26,12 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 	}
 
 	uuid := k.GenerateKeyForDID()
-
-	did := fmt.Sprintf("did:snr:%s", uuid)
-
 	var whereIs = types.WhereIs{
-		Creator:    msg.Creator,
-		Label:      msg.Label,
-		Did:        did,
-		Visibility: msg.Visibility,
-		Role:       msg.Role,
-		IsActive:   true,
-		Content:    msg.Content,
-		Timestamp:  time.Now().Unix(),
+		Creator:  msg.Creator,
+		IsActive: true,
+		Uuid:     uuid,
 	}
-	fmt.Printf("label: %s, vi: %d, role: %d \n", whereIs.Label, whereIs.Visibility, whereIs.Role)
+	// fmt.Printf("label: %s, vi: %d, role: %d \n", whereIs.Label, whereIs.Visibility, whereIs.Role)
 	k.AppendWhereIs(
 		ctx,
 		whereIs,
@@ -51,8 +42,8 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeyCreator, whereIs.Creator),
-			sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
-			sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
+			// sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
+			// sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeCreateWhereIs),
 		),
 	)
@@ -79,14 +70,14 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 	}
 
 	var whereIs = types.WhereIs{
-		Label:      msg.Label,
-		Creator:    msg.Creator,
-		Did:        msg.Did,
-		Visibility: msg.Visibility,
-		Role:       msg.Role,
-		IsActive:   true,
-		Content:    msg.Content,
-		Timestamp:  time.Now().Unix(),
+		// Label:      msg.Label,
+		Creator: msg.Creator,
+		// Did:        msg.Did,
+		// Visibility: msg.Visibility,
+		// Role:       msg.Role,
+		IsActive: true,
+		// Content:    msg.Content,
+		// Timestamp:  time.Now().Unix(),
 	}
 
 	// Checks that the element exists
@@ -107,8 +98,8 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeyCreator, whereIs.Creator),
-			sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
-			sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
+			// sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
+			// sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeUpdateWhereIs),
 		),
 	)
@@ -140,8 +131,8 @@ func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWher
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeyCreator, val.Creator),
-			sdk.NewAttribute(types.AttributeKeyDID, val.Did),
-			sdk.NewAttribute(types.AttributeKeyLabel, val.Label),
+			// sdk.NewAttribute(types.AttributeKeyDID, val.Did),
+			// sdk.NewAttribute(types.AttributeKeyLabel, val.Label),
 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeleteWhereIs),
 		),
 	)

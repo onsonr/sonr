@@ -42,19 +42,19 @@ func (k Keeper) AppendWhereIs(
 	// Create the whereIs
 	count := k.GetWhereIsCount(ctx)
 
-    k.SetWhereIs(ctx, whereIs)
+	k.SetWhereIs(ctx, whereIs)
 
 	// Update whereIs count
 	k.SetWhereIsCount(ctx, count+1)
 
-	return whereIs.Did
+	return whereIs.Uuid
 }
 
 // SetWhereIs set a specific whereIs in the store
 func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.WhereIs) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
 	b := k.cdc.MustMarshal(&whereIs)
-	store.Set(types.WhereIsKey(whereIs.Did), b)
+	store.Set(types.WhereIsKey(whereIs.Uuid), b)
 }
 
 // GetWhereIs returns a whereIs from its id
@@ -111,11 +111,10 @@ func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.WhereIs
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		if val.Visibility == types.BucketVisibility_PUBLIC || val.Visibility == types.BucketVisibility_UNSPECIFIED {
+		if val.Visibility == types.BucketVisibility_PUBLIC {
 			list = append(list, val)
 		}
 	}
-
 	return
 }
 

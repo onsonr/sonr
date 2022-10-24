@@ -27,12 +27,12 @@ func TestWhereIsQuerySingle(t *testing.T) {
 	}{
 		{
 			desc:     "First",
-			request:  &types.QueryGetWhereIsRequest{Did: msgs[0].Did},
+			request:  &types.QueryGetWhereIsRequest{Did: msgs[0].Uuid},
 			response: &types.QueryGetWhereIsResponse{WhereIs: msgs[0]},
 		},
 		{
 			desc:     "Second",
-			request:  &types.QueryGetWhereIsRequest{Did: msgs[1].Did},
+			request:  &types.QueryGetWhereIsRequest{Did: msgs[1].Uuid},
 			response: &types.QueryGetWhereIsResponse{WhereIs: msgs[1]},
 		},
 		{

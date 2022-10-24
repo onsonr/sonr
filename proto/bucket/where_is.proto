@@ -8,83 +8,33 @@ option java_package = "io.sonr.types.bucket";
 
 message WhereIs {
   // DID of the created bucket.
-  string did = 1;
+  string uuid = 1;
 
   // Creator of the new bucket
   string creator = 2;
 
-  // Label of the new bucket.
-  string label = 3;
+  // Name of the new bucket.
+  string name = 3;
 
   // Visibility of the new bucket.
   BucketVisibility visibility = 4;
 
-  // Role of the creator of the new bucket.
-  BucketRole role = 5;
-
   // IsActive flag of the new bucket.
   bool is_active = 6;
 
-  // Content of the new bucket map of DIDs to CIDs.
-  repeated BucketItem content = 7;
-
-  // JWKs of the new bucket.
-  map<string, AclJwks> content_acl = 8;
-
   // Timestamp of the new bucket.
-  int64 timestamp = 9;
+  int64 size = 9;
 }
 
-// AclJwks is a map of JWKs for a given Schema
-message AclJwks {
-  map<string, bytes> encrypted_jwks = 1;
-}
-
-// BucketItem is a pointer to a single piece of content in a bucket.
-message BucketItem {
-  // Name of the bucket item.
-  string name = 1;
-
-  // DID of the item. If applicable // optional
-  string uri = 2;
-
-  // Timestamp of the last update. // optional
-  int64 timestamp = 3;
-
-  // Type of the resource
-  ResourceIdentifier type = 4;
-
-  // References the schema and item within the bucket is associated with.
-  // Bucket items do not need to use the same schema if the bucket is "generic" // optional
-  string schema_did = 5;
-}
-
-// BucketRole is the role of the creator of the bucket.
-enum BucketRole {
-  // Bucket does not have role set.
-  NONE = 0;
-
-  // Bucket is visible to anyone.
-  APPLICATION = 1;
-
-  // Bucket is visible to anyone who has access token.
-  USER = 2;
-}
 
 // BucketVisibility is the visibility of the bucket to authorized users of an application
 enum BucketVisibility {
   // Bucket does not have visibility set.
-  UNSPECIFIED = 0;
+  PUBLIC = 0;
 
   // Bucket is visible to anyone.
-  PUBLIC = 1;
+  USER = 1;
 
   // Bucket is visible to anyone who has access token.
-  PRIVATE = 2;
-}
-
-enum ResourceIdentifier {
-  None = 0;
-  DID = 1;
-  CID = 2;
+  APPLICATION = 2;
 }
