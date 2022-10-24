@@ -30,7 +30,7 @@ func CmdCreateWhereIs() *cobra.Command {
 			// visiblityConv, err := strconv.ParseUint(args[2], 10, 32)
 			// visilbity := types.BucketVisibility(visiblityConv)
 
-			msg := types.NewMsgCreateWhereIs(clientCtx.GetFromAddress().String(), args[0])
+			msg := types.NewMsgDefineBucket(clientCtx.GetFromAddress().String(), args[0])
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -57,7 +57,7 @@ func CmdUpdateWhereIs() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateWhereIs(clientCtx.GetFromAddress().String(), id)
+			msg := types.NewMsgUpdateBucket(clientCtx.GetFromAddress().String(), id)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -83,7 +83,7 @@ func CmdDeleteWhereIs() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeleteWhereIs(clientCtx.GetFromAddress().String(), id)
+			msg := types.NewMsgDeleteBucket(clientCtx.GetFromAddress().String(), id)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

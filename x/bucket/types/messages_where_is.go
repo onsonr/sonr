@@ -9,29 +9,29 @@ import (
 )
 
 const (
-	TypeMsgCreateWhereIs = "create_where_is"
-	TypeMsgUpdateWhereIs = "update_where_is"
-	TypeMsgDeleteWhereIs = "delete_where_is"
+	TypeMsgDefineBucket = "create_where_is"
+	TypeMsgUpdateBucket = "update_where_is"
+	TypeMsgDeleteBucket = "delete_where_is"
 )
 
-var _ sdk.Msg = &MsgCreateWhereIs{}
+var _ sdk.Msg = &MsgDefineBucket{}
 
-func NewMsgCreateWhereIs(creator string, label string) *MsgCreateWhereIs {
-	return &MsgCreateWhereIs{
-		Creator:    creator,
-		Label:      label,
+func NewMsgDefineBucket(creator string, label string) *MsgDefineBucket {
+	return &MsgDefineBucket{
+		Creator: creator,
+		Label:   label,
 	}
 }
 
-func (msg *MsgCreateWhereIs) Route() string {
+func (msg *MsgDefineBucket) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgCreateWhereIs) Type() string {
-	return TypeMsgCreateWhereIs
+func (msg *MsgDefineBucket) Type() string {
+	return TypeMsgDefineBucket
 }
 
-func (msg *MsgCreateWhereIs) GetSigners() []sdk.AccAddress {
+func (msg *MsgDefineBucket) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -39,12 +39,12 @@ func (msg *MsgCreateWhereIs) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgCreateWhereIs) GetSignBytes() []byte {
+func (msg *MsgDefineBucket) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCreateWhereIs) ValidateBasic() error {
+func (msg *MsgDefineBucket) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 
 	if err != nil {
@@ -54,24 +54,24 @@ func (msg *MsgCreateWhereIs) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgUpdateWhereIs{}
+var _ sdk.Msg = &MsgUpdateBucket{}
 
-func NewMsgUpdateWhereIs(creator string, id string) *MsgUpdateWhereIs {
-	return &MsgUpdateWhereIs{
+func NewMsgUpdateBucket(creator string, id string) *MsgUpdateBucket {
+	return &MsgUpdateBucket{
 		Did:     id,
 		Creator: creator,
 	}
 }
 
-func (msg *MsgUpdateWhereIs) Route() string {
+func (msg *MsgUpdateBucket) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgUpdateWhereIs) Type() string {
-	return TypeMsgUpdateWhereIs
+func (msg *MsgUpdateBucket) Type() string {
+	return TypeMsgUpdateBucket
 }
 
-func (msg *MsgUpdateWhereIs) GetSigners() []sdk.AccAddress {
+func (msg *MsgUpdateBucket) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -79,12 +79,12 @@ func (msg *MsgUpdateWhereIs) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgUpdateWhereIs) GetSignBytes() []byte {
+func (msg *MsgUpdateBucket) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUpdateWhereIs) ValidateBasic() error {
+func (msg *MsgUpdateBucket) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -93,23 +93,23 @@ func (msg *MsgUpdateWhereIs) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgDeleteWhereIs{}
+var _ sdk.Msg = &MsgDeleteBucket{}
 
-func NewMsgDeleteWhereIs(creator string, id string) *MsgDeleteWhereIs {
-	return &MsgDeleteWhereIs{
+func NewMsgDeleteBucket(creator string, id string) *MsgDeleteBucket {
+	return &MsgDeleteBucket{
 		Did:     id,
 		Creator: creator,
 	}
 }
-func (msg *MsgDeleteWhereIs) Route() string {
+func (msg *MsgDeleteBucket) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgDeleteWhereIs) Type() string {
-	return TypeMsgDeleteWhereIs
+func (msg *MsgDeleteBucket) Type() string {
+	return TypeMsgDeleteBucket
 }
 
-func (msg *MsgDeleteWhereIs) GetSigners() []sdk.AccAddress {
+func (msg *MsgDeleteBucket) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -117,12 +117,12 @@ func (msg *MsgDeleteWhereIs) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgDeleteWhereIs) GetSignBytes() []byte {
+func (msg *MsgDeleteBucket) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgDeleteWhereIs) ValidateBasic() error {
+func (msg *MsgDeleteBucket) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -131,7 +131,7 @@ func (msg *MsgDeleteWhereIs) ValidateBasic() error {
 }
 
 // GetCreatorDid returns the creator did
-func (msg *MsgCreateWhereIs) GetCreatorDid() string {
+func (msg *MsgDefineBucket) GetCreatorDid() string {
 	rawCreator := msg.GetCreator()
 
 	// Trim snr account prefix

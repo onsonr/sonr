@@ -12,11 +12,8 @@ import (
 func (suite *MotorTestSuite) Test_CreateBucket() {
 	suite.T().Run("create single bucket", func(t *testing.T) {
 		createReq := mt.CreateBucketRequest{
-			Creator:    suite.motorWithKeys.GetAddress(),
-			Label:      "my awesome bucket",
-			Visibility: types.BucketVisibility_PUBLIC,
-			Role:       types.BucketRole_USER,
-			Content:    make([]*types.BucketItem, 0),
+			Creator: suite.motorWithKeys.GetAddress(),
+			Label:   "my awesome bucket",
 		}
 		_, b, err := suite.motorWithKeys.CreateBucket(createReq)
 
@@ -25,24 +22,20 @@ func (suite *MotorTestSuite) Test_CreateBucket() {
 	})
 
 	suite.T().Run("create many buckets", func(t *testing.T) {
-		uris := make([]*types.BucketItem, 0)
+		uris := make([]*types.Bucket, 0)
 		for i := 0; i < 3; i++ {
 			var createReq mt.CreateBucketRequest
 			if i == 0 {
 				createReq = mt.CreateBucketRequest{
 					Creator:    suite.motorWithKeys.GetAddress(),
 					Label:      fmt.Sprintf("my awesome bucket %d", i),
-					Visibility: types.BucketVisibility_PUBLIC,
-					Role:       types.BucketRole_USER,
-					Content:    make([]*types.BucketItem, 0),
+
 				}
 			} else {
 				createReq = mt.CreateBucketRequest{
 					Creator:    suite.motorWithKeys.GetAddress(),
 					Label:      fmt.Sprintf("my awesome bucket %d", i),
-					Visibility: types.BucketVisibility_PUBLIC,
-					Role:       types.BucketRole_USER,
-					Content:    uris,
+
 				}
 			}
 
@@ -56,12 +49,6 @@ func (suite *MotorTestSuite) Test_CreateBucket() {
 				buckets := b.GetBuckets()
 				assert.Equal(t, len(buckets), len(uris))
 			}
-
-			uris = append(uris, &types.BucketItem{
-				Name: "content",
-				Uri:  b.GetDID(),
-				Type: types.ResourceIdentifier_DID,
-			})
 		}
 	})
 }

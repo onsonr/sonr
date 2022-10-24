@@ -21,23 +21,23 @@ func TestWhereIsQuerySingle(t *testing.T) {
 	msgs := createNWhereIs(keeper, ctx, 2)
 	for _, tc := range []struct {
 		desc     string
-		request  *types.QueryGetWhereIsRequest
-		response *types.QueryGetWhereIsResponse
+		request  *types.QueryGetBucketRequest
+		response *types.QueryGetBucketResponse
 		err      error
 	}{
 		{
 			desc:     "First",
-			request:  &types.QueryGetWhereIsRequest{Did: msgs[0].Uuid},
-			response: &types.QueryGetWhereIsResponse{WhereIs: msgs[0]},
+			request:  &types.QueryGetBucketRequest{Uuid: msgs[0].Uuid},
+			response: &types.QueryGetBucketResponse{Bucket: msgs[0]},
 		},
 		{
 			desc:     "Second",
-			request:  &types.QueryGetWhereIsRequest{Did: msgs[1].Uuid},
-			response: &types.QueryGetWhereIsResponse{WhereIs: msgs[1]},
+			request:  &types.QueryGetBucketRequest{Uuid: msgs[1].Uuid},
+			response: &types.QueryGetBucketResponse{Bucket: msgs[1]},
 		},
 		{
 			desc:    "KeyNotFound",
-			request: &types.QueryGetWhereIsRequest{Did: "not-found"},
+			request: &types.QueryGetBucketRequest{Uuid: "not-found"},
 			err:     sdkerrors.ErrKeyNotFound,
 		},
 		{
@@ -46,7 +46,7 @@ func TestWhereIsQuerySingle(t *testing.T) {
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
-			response, err := keeper.WhereIs(wctx, tc.request)
+			response, err := keeper.Bucket(wctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
@@ -65,8 +65,8 @@ func TestWhereIsQueryPaginated(t *testing.T) {
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNWhereIs(keeper, ctx, 5)
 
-	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllWhereIsRequest {
-		return &types.QueryAllWhereIsRequest{
+	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllBucketsRequest {
+		return &types.QueryAllBucketsRequest{
 			Pagination: &query.PageRequest{
 				Key:        next,
 				Offset:     offset,
@@ -78,12 +78,12 @@ func TestWhereIsQueryPaginated(t *testing.T) {
 	t.Run("ByOffset", func(t *testing.T) {
 		step := 2
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.WhereIsAll(wctx, request(nil, uint64(i), uint64(step), false))
+			resp, err := keeper.BucketsAll(wctx, request(nil, uint64(i), uint64(step), false))
 			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.WhereIs), step)
+			require.LessOrEqual(t, len(resp.Buckets), step)
 			require.Subset(t,
 				nullify.Fill(msgs),
-				nullify.Fill(resp.WhereIs),
+				nullify.Fill(resp.Buckets),
 			)
 		}
 	})
@@ -91,27 +91,27 @@ func TestWhereIsQueryPaginated(t *testing.T) {
 		step := 2
 		var next []byte
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.WhereIsAll(wctx, request(next, 0, uint64(step), false))
+			resp, err := keeper.BucketsAll(wctx, request(next, 0, uint64(step), false))
 			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.WhereIs), step)
+			require.LessOrEqual(t, len(resp.Buckets), step)
 			require.Subset(t,
 				nullify.Fill(msgs),
-				nullify.Fill(resp.WhereIs),
+				nullify.Fill(resp.Buckets),
 			)
 			next = resp.Pagination.NextKey
 		}
 	})
 	t.Run("Total", func(t *testing.T) {
-		resp, err := keeper.WhereIsAll(wctx, request(nil, 0, 0, true))
+		resp, err := keeper.BucketsAll(wctx, request(nil, 0, 0, true))
 		require.NoError(t, err)
 		require.Equal(t, len(msgs), int(resp.Pagination.Total))
 		require.ElementsMatch(t,
 			nullify.Fill(msgs),
-			nullify.Fill(resp.WhereIs),
+			nullify.Fill(resp.Buckets),
 		)
 	})
 	t.Run("InvalidRequest", func(t *testing.T) {
-		_, err := keeper.WhereIsAll(wctx, nil)
+		_, err := keeper.BucketsAll(wctx, nil)
 		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
 }

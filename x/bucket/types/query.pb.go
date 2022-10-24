@@ -113,23 +113,22 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-type QueryGetWhereIsRequest struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+type QueryGetBucketRequest struct {
+	Uuid string `protobuf:"bytes,1,opt,name=uuid,proto3" json:"uuid,omitempty"`
 }
 
-func (m *QueryGetWhereIsRequest) Reset()         { *m = QueryGetWhereIsRequest{} }
-func (m *QueryGetWhereIsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetWhereIsRequest) ProtoMessage()    {}
-func (*QueryGetWhereIsRequest) Descriptor() ([]byte, []int) {
+func (m *QueryGetBucketRequest) Reset()         { *m = QueryGetBucketRequest{} }
+func (m *QueryGetBucketRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBucketRequest) ProtoMessage()    {}
+func (*QueryGetBucketRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_193313c7681ac565, []int{2}
 }
-func (m *QueryGetWhereIsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetBucketRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetWhereIsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetBucketRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetWhereIsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetBucketRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -139,48 +138,41 @@ func (m *QueryGetWhereIsRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryGetWhereIsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetWhereIsRequest.Merge(m, src)
+func (m *QueryGetBucketRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBucketRequest.Merge(m, src)
 }
-func (m *QueryGetWhereIsRequest) XXX_Size() int {
+func (m *QueryGetBucketRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetWhereIsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetWhereIsRequest.DiscardUnknown(m)
+func (m *QueryGetBucketRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBucketRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetWhereIsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetBucketRequest proto.InternalMessageInfo
 
-func (m *QueryGetWhereIsRequest) GetCreator() string {
+func (m *QueryGetBucketRequest) GetUuid() string {
 	if m != nil {
-		return m.Creator
+		return m.Uuid
 	}
 	return ""
 }
 
-func (m *QueryGetWhereIsRequest) GetDid() string {
-	if m != nil {
-		return m.Did
-	}
-	return ""
+type QueryGetBucketResponse struct {
+	Bucket Bucket `protobuf:"bytes,1,opt,name=bucket,proto3" json:"bucket"`
 }
 
-type QueryGetWhereIsResponse struct {
-	WhereIs WhereIs `protobuf:"bytes,1,opt,name=where_is,json=whereIs,proto3" json:"where_is"`
-}
-
-func (m *QueryGetWhereIsResponse) Reset()         { *m = QueryGetWhereIsResponse{} }
-func (m *QueryGetWhereIsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetWhereIsResponse) ProtoMessage()    {}
-func (*QueryGetWhereIsResponse) Descriptor() ([]byte, []int) {
+func (m *QueryGetBucketResponse) Reset()         { *m = QueryGetBucketResponse{} }
+func (m *QueryGetBucketResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBucketResponse) ProtoMessage()    {}
+func (*QueryGetBucketResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_193313c7681ac565, []int{3}
 }
-func (m *QueryGetWhereIsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetBucketResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetWhereIsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetBucketResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -190,42 +182,42 @@ func (m *QueryGetWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryGetWhereIsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetWhereIsResponse.Merge(m, src)
+func (m *QueryGetBucketResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBucketResponse.Merge(m, src)
 }
-func (m *QueryGetWhereIsResponse) XXX_Size() int {
+func (m *QueryGetBucketResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetWhereIsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetWhereIsResponse.DiscardUnknown(m)
+func (m *QueryGetBucketResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBucketResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetWhereIsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetBucketResponse proto.InternalMessageInfo
 
-func (m *QueryGetWhereIsResponse) GetWhereIs() WhereIs {
+func (m *QueryGetBucketResponse) GetBucket() Bucket {
 	if m != nil {
-		return m.WhereIs
+		return m.Bucket
 	}
-	return WhereIs{}
+	return Bucket{}
 }
 
-type QueryGetWhereIsByCreatorRequest struct {
+type QueryGetBucketByCreatorRequest struct {
 	Creator    string             `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryGetWhereIsByCreatorRequest) Reset()         { *m = QueryGetWhereIsByCreatorRequest{} }
-func (m *QueryGetWhereIsByCreatorRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetWhereIsByCreatorRequest) ProtoMessage()    {}
-func (*QueryGetWhereIsByCreatorRequest) Descriptor() ([]byte, []int) {
+func (m *QueryGetBucketByCreatorRequest) Reset()         { *m = QueryGetBucketByCreatorRequest{} }
+func (m *QueryGetBucketByCreatorRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBucketByCreatorRequest) ProtoMessage()    {}
+func (*QueryGetBucketByCreatorRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_193313c7681ac565, []int{4}
 }
-func (m *QueryGetWhereIsByCreatorRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetBucketByCreatorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetWhereIsByCreatorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetBucketByCreatorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetWhereIsByCreatorRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetBucketByCreatorRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -235,49 +227,49 @@ func (m *QueryGetWhereIsByCreatorRequest) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *QueryGetWhereIsByCreatorRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetWhereIsByCreatorRequest.Merge(m, src)
+func (m *QueryGetBucketByCreatorRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBucketByCreatorRequest.Merge(m, src)
 }
-func (m *QueryGetWhereIsByCreatorRequest) XXX_Size() int {
+func (m *QueryGetBucketByCreatorRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetWhereIsByCreatorRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetWhereIsByCreatorRequest.DiscardUnknown(m)
+func (m *QueryGetBucketByCreatorRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBucketByCreatorRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetWhereIsByCreatorRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetBucketByCreatorRequest proto.InternalMessageInfo
 
-func (m *QueryGetWhereIsByCreatorRequest) GetCreator() string {
+func (m *QueryGetBucketByCreatorRequest) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *QueryGetWhereIsByCreatorRequest) GetPagination() *query.PageRequest {
+func (m *QueryGetBucketByCreatorRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryGetWhereIsByCreatorResponse struct {
-	WhereIs    []WhereIs           `protobuf:"bytes,1,rep,name=where_is,json=whereIs,proto3" json:"where_is"`
+type QueryGetBucketByCreatorResponse struct {
+	Buckets    []Bucket            `protobuf:"bytes,1,rep,name=buckets,proto3" json:"buckets"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryGetWhereIsByCreatorResponse) Reset()         { *m = QueryGetWhereIsByCreatorResponse{} }
-func (m *QueryGetWhereIsByCreatorResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetWhereIsByCreatorResponse) ProtoMessage()    {}
-func (*QueryGetWhereIsByCreatorResponse) Descriptor() ([]byte, []int) {
+func (m *QueryGetBucketByCreatorResponse) Reset()         { *m = QueryGetBucketByCreatorResponse{} }
+func (m *QueryGetBucketByCreatorResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBucketByCreatorResponse) ProtoMessage()    {}
+func (*QueryGetBucketByCreatorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_193313c7681ac565, []int{5}
 }
-func (m *QueryGetWhereIsByCreatorResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetBucketByCreatorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetWhereIsByCreatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetBucketByCreatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetWhereIsByCreatorResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetBucketByCreatorResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -287,48 +279,48 @@ func (m *QueryGetWhereIsByCreatorResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *QueryGetWhereIsByCreatorResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetWhereIsByCreatorResponse.Merge(m, src)
+func (m *QueryGetBucketByCreatorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBucketByCreatorResponse.Merge(m, src)
 }
-func (m *QueryGetWhereIsByCreatorResponse) XXX_Size() int {
+func (m *QueryGetBucketByCreatorResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetWhereIsByCreatorResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetWhereIsByCreatorResponse.DiscardUnknown(m)
+func (m *QueryGetBucketByCreatorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBucketByCreatorResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetWhereIsByCreatorResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetBucketByCreatorResponse proto.InternalMessageInfo
 
-func (m *QueryGetWhereIsByCreatorResponse) GetWhereIs() []WhereIs {
+func (m *QueryGetBucketByCreatorResponse) GetBuckets() []Bucket {
 	if m != nil {
-		return m.WhereIs
+		return m.Buckets
 	}
 	return nil
 }
 
-func (m *QueryGetWhereIsByCreatorResponse) GetPagination() *query.PageResponse {
+func (m *QueryGetBucketByCreatorResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryAllWhereIsRequest struct {
+type QueryAllBucketsRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryAllWhereIsRequest) Reset()         { *m = QueryAllWhereIsRequest{} }
-func (m *QueryAllWhereIsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllWhereIsRequest) ProtoMessage()    {}
-func (*QueryAllWhereIsRequest) Descriptor() ([]byte, []int) {
+func (m *QueryAllBucketsRequest) Reset()         { *m = QueryAllBucketsRequest{} }
+func (m *QueryAllBucketsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllBucketsRequest) ProtoMessage()    {}
+func (*QueryAllBucketsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_193313c7681ac565, []int{6}
 }
-func (m *QueryAllWhereIsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllBucketsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllWhereIsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllBucketsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllWhereIsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllBucketsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -338,42 +330,42 @@ func (m *QueryAllWhereIsRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryAllWhereIsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllWhereIsRequest.Merge(m, src)
+func (m *QueryAllBucketsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllBucketsRequest.Merge(m, src)
 }
-func (m *QueryAllWhereIsRequest) XXX_Size() int {
+func (m *QueryAllBucketsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllWhereIsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllWhereIsRequest.DiscardUnknown(m)
+func (m *QueryAllBucketsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllBucketsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllWhereIsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllBucketsRequest proto.InternalMessageInfo
 
-func (m *QueryAllWhereIsRequest) GetPagination() *query.PageRequest {
+func (m *QueryAllBucketsRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryAllWhereIsResponse struct {
-	WhereIs    []WhereIs           `protobuf:"bytes,1,rep,name=where_is,json=whereIs,proto3" json:"where_is"`
+type QueryAllBucketsResponse struct {
+	Buckets    []Bucket            `protobuf:"bytes,1,rep,name=buckets,proto3" json:"buckets"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryAllWhereIsResponse) Reset()         { *m = QueryAllWhereIsResponse{} }
-func (m *QueryAllWhereIsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllWhereIsResponse) ProtoMessage()    {}
-func (*QueryAllWhereIsResponse) Descriptor() ([]byte, []int) {
+func (m *QueryAllBucketsResponse) Reset()         { *m = QueryAllBucketsResponse{} }
+func (m *QueryAllBucketsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllBucketsResponse) ProtoMessage()    {}
+func (*QueryAllBucketsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_193313c7681ac565, []int{7}
 }
-func (m *QueryAllWhereIsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllBucketsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllBucketsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllWhereIsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllBucketsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -383,26 +375,26 @@ func (m *QueryAllWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryAllWhereIsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllWhereIsResponse.Merge(m, src)
+func (m *QueryAllBucketsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllBucketsResponse.Merge(m, src)
 }
-func (m *QueryAllWhereIsResponse) XXX_Size() int {
+func (m *QueryAllBucketsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllWhereIsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllWhereIsResponse.DiscardUnknown(m)
+func (m *QueryAllBucketsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllBucketsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllWhereIsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllBucketsResponse proto.InternalMessageInfo
 
-func (m *QueryAllWhereIsResponse) GetWhereIs() []WhereIs {
+func (m *QueryAllBucketsResponse) GetBuckets() []Bucket {
 	if m != nil {
-		return m.WhereIs
+		return m.Buckets
 	}
 	return nil
 }
 
-func (m *QueryAllWhereIsResponse) GetPagination() *query.PageResponse {
+func (m *QueryAllBucketsResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
@@ -412,55 +404,54 @@ func (m *QueryAllWhereIsResponse) GetPagination() *query.PageResponse {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "sonrio.sonr.bucket.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "sonrio.sonr.bucket.QueryParamsResponse")
-	proto.RegisterType((*QueryGetWhereIsRequest)(nil), "sonrio.sonr.bucket.QueryGetWhereIsRequest")
-	proto.RegisterType((*QueryGetWhereIsResponse)(nil), "sonrio.sonr.bucket.QueryGetWhereIsResponse")
-	proto.RegisterType((*QueryGetWhereIsByCreatorRequest)(nil), "sonrio.sonr.bucket.QueryGetWhereIsByCreatorRequest")
-	proto.RegisterType((*QueryGetWhereIsByCreatorResponse)(nil), "sonrio.sonr.bucket.QueryGetWhereIsByCreatorResponse")
-	proto.RegisterType((*QueryAllWhereIsRequest)(nil), "sonrio.sonr.bucket.QueryAllWhereIsRequest")
-	proto.RegisterType((*QueryAllWhereIsResponse)(nil), "sonrio.sonr.bucket.QueryAllWhereIsResponse")
+	proto.RegisterType((*QueryGetBucketRequest)(nil), "sonrio.sonr.bucket.QueryGetBucketRequest")
+	proto.RegisterType((*QueryGetBucketResponse)(nil), "sonrio.sonr.bucket.QueryGetBucketResponse")
+	proto.RegisterType((*QueryGetBucketByCreatorRequest)(nil), "sonrio.sonr.bucket.QueryGetBucketByCreatorRequest")
+	proto.RegisterType((*QueryGetBucketByCreatorResponse)(nil), "sonrio.sonr.bucket.QueryGetBucketByCreatorResponse")
+	proto.RegisterType((*QueryAllBucketsRequest)(nil), "sonrio.sonr.bucket.QueryAllBucketsRequest")
+	proto.RegisterType((*QueryAllBucketsResponse)(nil), "sonrio.sonr.bucket.QueryAllBucketsResponse")
 }
 
 func init() { proto.RegisterFile("bucket/query.proto", fileDescriptor_193313c7681ac565) }
 
 var fileDescriptor_193313c7681ac565 = []byte{
-	// 585 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x95, 0xbf, 0x6f, 0xd3, 0x40,
-	0x14, 0xc7, 0x73, 0x6d, 0x49, 0xe0, 0x75, 0xa9, 0xae, 0x01, 0x22, 0x97, 0x3a, 0x95, 0x11, 0x09,
-	0x14, 0xd5, 0xa7, 0xa6, 0x20, 0x31, 0xb0, 0x34, 0x20, 0x2a, 0x26, 0x42, 0x96, 0x22, 0x16, 0x70,
-	0x92, 0x93, 0x6b, 0x91, 0xf8, 0x5c, 0xfb, 0x42, 0x89, 0xaa, 0x32, 0xc0, 0xca, 0x80, 0xc4, 0xc4,
-	0xc6, 0xca, 0xc2, 0xdf, 0xd1, 0xb1, 0x12, 0x0b, 0x13, 0x42, 0x09, 0x7f, 0x08, 0xf2, 0xdd, 0xb3,
-	0x68, 0xe2, 0x34, 0x49, 0x99, 0x98, 0x7c, 0x7e, 0x79, 0xef, 0xfb, 0x3e, 0xef, 0xc7, 0xc5, 0x40,
-	0x1b, 0xdd, 0xe6, 0x2b, 0x2e, 0xd9, 0x7e, 0x97, 0x87, 0x3d, 0x3b, 0x08, 0x85, 0x14, 0x94, 0x46,
-	0xc2, 0x0f, 0x3d, 0x61, 0xc7, 0x0f, 0x5b, 0xff, 0x6e, 0x2c, 0xa3, 0x5f, 0xe0, 0x84, 0x4e, 0x27,
-	0xd2, 0x8e, 0xc6, 0x65, 0x34, 0x1e, 0xec, 0xf1, 0x90, 0xbf, 0xf0, 0x12, 0xf3, 0x7a, 0x53, 0x44,
-	0x1d, 0x11, 0xb1, 0x86, 0x13, 0x71, 0x2d, 0xcc, 0x5e, 0x6f, 0x36, 0xb8, 0x74, 0x36, 0x59, 0xe0,
-	0xb8, 0x9e, 0xef, 0x48, 0x4f, 0xf8, 0xe8, 0x9b, 0x77, 0x85, 0x2b, 0xd4, 0x91, 0xc5, 0x27, 0xb4,
-	0x5e, 0x73, 0x85, 0x70, 0xdb, 0x9c, 0x39, 0x81, 0xc7, 0x1c, 0xdf, 0x17, 0x52, 0x85, 0xa0, 0xbe,
-	0x95, 0x07, 0xfa, 0x34, 0x56, 0xad, 0x29, 0x96, 0x3a, 0xdf, 0xef, 0xf2, 0x48, 0x5a, 0x4f, 0x60,
-	0x79, 0xc8, 0x1a, 0x05, 0xc2, 0x8f, 0x38, 0xbd, 0x07, 0x59, 0xcd, 0x5c, 0x20, 0x6b, 0xe4, 0xe6,
-	0x62, 0xc5, 0xb0, 0xd3, 0xd5, 0xd9, 0x3a, 0xa6, 0xba, 0x70, 0xfc, 0xb3, 0x98, 0xa9, 0xa3, 0xbf,
-	0xf5, 0x10, 0xae, 0x28, 0xc1, 0x1d, 0x2e, 0x77, 0xe3, 0x02, 0x1f, 0x27, 0xa9, 0x68, 0x01, 0x72,
-	0xcd, 0x90, 0x3b, 0x52, 0x84, 0x4a, 0xf4, 0x52, 0x3d, 0x79, 0xa5, 0x4b, 0x30, 0xdf, 0xf2, 0x5a,
-	0x85, 0x39, 0x65, 0x8d, 0x8f, 0xd6, 0x2e, 0x5c, 0x4d, 0xa9, 0x20, 0xda, 0x7d, 0xb8, 0x98, 0x74,
-	0x0e, 0xe1, 0x56, 0xc6, 0xc1, 0x61, 0x18, 0xd2, 0xe5, 0x0e, 0xf4, 0xab, 0xf5, 0x9e, 0x40, 0x71,
-	0x44, 0xb9, 0xda, 0x7b, 0xa0, 0x39, 0xa6, 0x83, 0x3e, 0x02, 0xf8, 0x3b, 0x0b, 0xc5, 0xbb, 0x58,
-	0x29, 0xd9, 0x7a, 0x70, 0x76, 0x3c, 0x38, 0x5b, 0x6f, 0x04, 0x0e, 0xce, 0xae, 0x39, 0x2e, 0x47,
-	0xd5, 0xfa, 0xa9, 0x48, 0xeb, 0x2b, 0x81, 0xb5, 0xb3, 0x29, 0xc6, 0x16, 0x3a, 0x7f, 0xbe, 0x42,
-	0xe9, 0xce, 0x18, 0xd4, 0xf2, 0x54, 0x54, 0x9d, 0x7a, 0x88, 0xf5, 0x25, 0x0e, 0x74, 0xbb, 0xdd,
-	0x1e, 0x19, 0xe8, 0x70, 0x37, 0xc8, 0x3f, 0x77, 0xe3, 0x0b, 0xc1, 0x69, 0x9f, 0x4e, 0xf1, 0x5f,
-	0x35, 0xa1, 0x32, 0x58, 0x80, 0x0b, 0x0a, 0x91, 0xbe, 0x85, 0xac, 0xde, 0x7b, 0x5a, 0x1a, 0x07,
-	0x92, 0xbe, 0x62, 0x46, 0x79, 0xaa, 0x9f, 0x4e, 0x68, 0x5d, 0x7f, 0xf7, 0xfd, 0xf7, 0xa7, 0xb9,
-	0x55, 0xba, 0xc2, 0x62, 0xcf, 0x0d, 0x4f, 0xa8, 0x27, 0x1b, 0xfa, 0x0f, 0xa1, 0x9f, 0x09, 0xe4,
-	0xb0, 0x5a, 0xba, 0x7e, 0xa6, 0x72, 0xea, 0xf6, 0x19, 0xb7, 0x67, 0xf2, 0x45, 0x92, 0xbb, 0x8a,
-	0x84, 0xd1, 0x8d, 0xb1, 0x24, 0xc9, 0x40, 0xd8, 0x21, 0xde, 0x8b, 0x23, 0x76, 0xd8, 0xf2, 0x5a,
-	0x47, 0xf4, 0x1b, 0x81, 0xa5, 0xd1, 0x75, 0xa6, 0x5b, 0x33, 0x24, 0x1e, 0xbd, 0x82, 0xc6, 0x9d,
-	0xf3, 0x05, 0x21, 0x36, 0x53, 0xd8, 0xb7, 0x68, 0x79, 0x46, 0x6c, 0xfa, 0x81, 0x00, 0xa0, 0xda,
-	0x76, 0xbb, 0x3d, 0xa1, 0x9f, 0xa9, 0xe5, 0x9f, 0xd0, 0xcf, 0xf4, 0x16, 0x5b, 0x37, 0x14, 0x58,
-	0x91, 0xae, 0x4e, 0x04, 0xab, 0x3e, 0x3b, 0xee, 0x9b, 0xe4, 0xa4, 0x6f, 0x92, 0x5f, 0x7d, 0x93,
-	0x7c, 0x1c, 0x98, 0x99, 0x93, 0x81, 0x99, 0xf9, 0x31, 0x30, 0x33, 0x90, 0x4f, 0x12, 0xc9, 0x5e,
-	0xc0, 0x23, 0x4c, 0x57, 0x23, 0xcf, 0x4b, 0xae, 0x27, 0xf7, 0xba, 0x0d, 0xbb, 0x29, 0x3a, 0xc3,
-	0xd2, 0x6f, 0x12, 0x71, 0x15, 0xd0, 0xc8, 0xaa, 0x6f, 0xc0, 0xd6, 0x9f, 0x00, 0x00, 0x00, 0xff,
-	0xff, 0x08, 0x0e, 0x8e, 0xfe, 0xb9, 0x06, 0x00, 0x00,
+	// 564 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x94, 0xb1, 0x6f, 0xd3, 0x4e,
+	0x14, 0xc7, 0x73, 0xfd, 0xe5, 0x97, 0x8a, 0xc7, 0x80, 0xf4, 0x1a, 0x20, 0x32, 0xe0, 0x46, 0x46,
+	0x4a, 0xa1, 0x15, 0x67, 0x35, 0x5d, 0x10, 0x5b, 0x83, 0x44, 0x47, 0x42, 0x26, 0xc4, 0xc4, 0x39,
+	0x9c, 0x8c, 0x85, 0xe3, 0x73, 0xed, 0x33, 0x22, 0x42, 0x65, 0xa8, 0x90, 0x58, 0x91, 0xd8, 0x19,
+	0x18, 0xf8, 0x2f, 0xd8, 0x3b, 0x56, 0x62, 0x61, 0x42, 0x28, 0xe1, 0x0f, 0x41, 0xbe, 0x3b, 0x53,
+	0xec, 0x24, 0x24, 0x30, 0x31, 0xdd, 0xe5, 0xe5, 0xfb, 0xde, 0xf7, 0x73, 0xef, 0xee, 0x19, 0xd0,
+	0xcb, 0x86, 0xcf, 0xb8, 0x74, 0x0f, 0x33, 0x9e, 0x8c, 0x69, 0x9c, 0x08, 0x29, 0x10, 0x53, 0x11,
+	0x25, 0x81, 0xa0, 0xf9, 0x42, 0xf5, 0xff, 0xd6, 0x86, 0xd1, 0xc5, 0x2c, 0x61, 0xa3, 0x54, 0x0b,
+	0x7f, 0x06, 0xf5, 0x62, 0x82, 0xdb, 0x43, 0x91, 0x8e, 0x44, 0xea, 0x7a, 0x2c, 0xe5, 0xba, 0xac,
+	0xfb, 0x7c, 0xd7, 0xe3, 0x92, 0xed, 0xba, 0x31, 0xf3, 0x83, 0x88, 0xc9, 0x40, 0x44, 0x46, 0xdb,
+	0xf4, 0x85, 0x2f, 0xd4, 0xd6, 0xcd, 0x77, 0x26, 0x7a, 0xd5, 0x17, 0xc2, 0x0f, 0xb9, 0xcb, 0xe2,
+	0xc0, 0x65, 0x51, 0x24, 0xa4, 0x4a, 0x31, 0xa6, 0x4e, 0x13, 0xf0, 0x41, 0x5e, 0xb5, 0xaf, 0x48,
+	0x06, 0xfc, 0x30, 0xe3, 0xa9, 0x74, 0xee, 0xc3, 0x46, 0x29, 0x9a, 0xc6, 0x22, 0x4a, 0x39, 0xde,
+	0x86, 0x86, 0x26, 0x6e, 0x91, 0x36, 0xb9, 0x71, 0xbe, 0x6b, 0xd1, 0xd9, 0xb3, 0x51, 0x9d, 0xd3,
+	0xab, 0x9f, 0x7c, 0xdd, 0xac, 0x0d, 0x8c, 0xde, 0xd9, 0x81, 0x8b, 0xaa, 0xe0, 0x01, 0x97, 0x3d,
+	0x25, 0x33, 0x4e, 0x88, 0x50, 0xcf, 0xb2, 0xe0, 0x89, 0x2a, 0x78, 0x6e, 0xa0, 0xf6, 0xce, 0x00,
+	0x2e, 0x55, 0xc5, 0x67, 0x00, 0xda, 0xe5, 0x77, 0x00, 0x3a, 0xa7, 0x00, 0xd0, 0x41, 0xe7, 0x98,
+	0x80, 0x5d, 0x2e, 0xda, 0x1b, 0xdf, 0x4d, 0x38, 0x93, 0x22, 0x29, 0x50, 0x5a, 0xb0, 0x3e, 0xd4,
+	0x11, 0x43, 0x53, 0xfc, 0xc4, 0x7b, 0x00, 0x67, 0xcd, 0x6e, 0xad, 0x29, 0xeb, 0x0e, 0xd5, 0x37,
+	0x43, 0xf3, 0x9b, 0xa1, 0xfa, 0xc2, 0xcd, 0xcd, 0xd0, 0x3e, 0xf3, 0xb9, 0xa9, 0x3a, 0xf8, 0x25,
+	0xd3, 0xf9, 0x48, 0x60, 0x73, 0x21, 0x84, 0x39, 0xe2, 0x1d, 0x58, 0xd7, 0xc8, 0x79, 0x93, 0xff,
+	0x5b, 0xe9, 0x8c, 0x45, 0x02, 0x1e, 0xcc, 0xe1, 0xdc, 0x5a, 0xca, 0xa9, 0x8d, 0x4b, 0xa0, 0x8f,
+	0xcd, 0x0d, 0xec, 0x87, 0xa1, 0x76, 0x2a, 0x5e, 0x46, 0xa5, 0x15, 0xe4, 0xaf, 0x5b, 0xf1, 0x9e,
+	0xc0, 0xe5, 0x19, 0x8b, 0x7f, 0xa8, 0x05, 0xdd, 0x4f, 0x75, 0xf8, 0x5f, 0x01, 0xe2, 0x2b, 0x68,
+	0xe8, 0x37, 0x8d, 0x9d, 0x79, 0x1c, 0xb3, 0xe3, 0x63, 0x6d, 0x2d, 0xd5, 0x69, 0x43, 0xe7, 0xfa,
+	0xf1, 0xe7, 0xef, 0xef, 0xd6, 0xae, 0xe1, 0x15, 0x37, 0x57, 0xde, 0x0a, 0x84, 0x5a, 0xdd, 0xd2,
+	0xd7, 0x01, 0x5f, 0x13, 0x68, 0xe8, 0xc3, 0xe2, 0xcd, 0x85, 0x85, 0xab, 0x83, 0x65, 0x6d, 0xaf,
+	0x22, 0x5d, 0x09, 0xe3, 0x65, 0x3e, 0x94, 0x47, 0xf8, 0x81, 0xc0, 0x85, 0xca, 0xa3, 0xc5, 0xee,
+	0x72, 0x93, 0xea, 0x98, 0x59, 0x7b, 0x7f, 0x94, 0x63, 0x08, 0x3b, 0x8a, 0xb0, 0x8d, 0xf6, 0x7c,
+	0x42, 0x33, 0xa8, 0x47, 0xf8, 0x86, 0x00, 0x98, 0xe7, 0xb4, 0x1f, 0x86, 0xb8, 0xb8, 0x09, 0x33,
+	0x2f, 0xdb, 0xda, 0x59, 0x49, 0x6b, 0x78, 0xda, 0x8a, 0xc7, 0xc2, 0xd6, 0x5c, 0x1e, 0x16, 0x86,
+	0xbd, 0x87, 0x27, 0x13, 0x9b, 0x9c, 0x4e, 0x6c, 0xf2, 0x6d, 0x62, 0x93, 0xb7, 0x53, 0xbb, 0x76,
+	0x3a, 0xb5, 0x6b, 0x5f, 0xa6, 0x76, 0x0d, 0x9a, 0x85, 0x87, 0x1c, 0xc7, 0x3c, 0x35, 0x4e, 0x7d,
+	0xf2, 0xa8, 0xe3, 0x07, 0xf2, 0x69, 0xe6, 0xd1, 0xa1, 0x18, 0x95, 0xab, 0xbe, 0x28, 0xea, 0xaa,
+	0x04, 0xaf, 0xa1, 0xbe, 0xdc, 0x7b, 0x3f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x08, 0x07, 0x40, 0x77,
+	0x6d, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -478,11 +469,11 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a WhereIs by did and creator.
-	WhereIs(ctx context.Context, in *QueryGetWhereIsRequest, opts ...grpc.CallOption) (*QueryGetWhereIsResponse, error)
+	Bucket(ctx context.Context, in *QueryGetBucketRequest, opts ...grpc.CallOption) (*QueryGetBucketResponse, error)
 	// Queries all WhereIs by creator.
-	WhereIsByCreator(ctx context.Context, in *QueryGetWhereIsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetWhereIsByCreatorResponse, error)
+	BucketByCreator(ctx context.Context, in *QueryGetBucketByCreatorRequest, opts ...grpc.CallOption) (*QueryGetBucketByCreatorResponse, error)
 	// Queries a list of WhereIs items.
-	WhereIsAll(ctx context.Context, in *QueryAllWhereIsRequest, opts ...grpc.CallOption) (*QueryAllWhereIsResponse, error)
+	BucketsAll(ctx context.Context, in *QueryAllBucketsRequest, opts ...grpc.CallOption) (*QueryAllBucketsResponse, error)
 }
 
 type queryClient struct {
@@ -502,27 +493,27 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) WhereIs(ctx context.Context, in *QueryGetWhereIsRequest, opts ...grpc.CallOption) (*QueryGetWhereIsResponse, error) {
-	out := new(QueryGetWhereIsResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/WhereIs", in, out, opts...)
+func (c *queryClient) Bucket(ctx context.Context, in *QueryGetBucketRequest, opts ...grpc.CallOption) (*QueryGetBucketResponse, error) {
+	out := new(QueryGetBucketResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/Bucket", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) WhereIsByCreator(ctx context.Context, in *QueryGetWhereIsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetWhereIsByCreatorResponse, error) {
-	out := new(QueryGetWhereIsByCreatorResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/WhereIsByCreator", in, out, opts...)
+func (c *queryClient) BucketByCreator(ctx context.Context, in *QueryGetBucketByCreatorRequest, opts ...grpc.CallOption) (*QueryGetBucketByCreatorResponse, error) {
+	out := new(QueryGetBucketByCreatorResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/BucketByCreator", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) WhereIsAll(ctx context.Context, in *QueryAllWhereIsRequest, opts ...grpc.CallOption) (*QueryAllWhereIsResponse, error) {
-	out := new(QueryAllWhereIsResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/WhereIsAll", in, out, opts...)
+func (c *queryClient) BucketsAll(ctx context.Context, in *QueryAllBucketsRequest, opts ...grpc.CallOption) (*QueryAllBucketsResponse, error) {
+	out := new(QueryAllBucketsResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/BucketsAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -534,11 +525,11 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a WhereIs by did and creator.
-	WhereIs(context.Context, *QueryGetWhereIsRequest) (*QueryGetWhereIsResponse, error)
+	Bucket(context.Context, *QueryGetBucketRequest) (*QueryGetBucketResponse, error)
 	// Queries all WhereIs by creator.
-	WhereIsByCreator(context.Context, *QueryGetWhereIsByCreatorRequest) (*QueryGetWhereIsByCreatorResponse, error)
+	BucketByCreator(context.Context, *QueryGetBucketByCreatorRequest) (*QueryGetBucketByCreatorResponse, error)
 	// Queries a list of WhereIs items.
-	WhereIsAll(context.Context, *QueryAllWhereIsRequest) (*QueryAllWhereIsResponse, error)
+	BucketsAll(context.Context, *QueryAllBucketsRequest) (*QueryAllBucketsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -548,14 +539,14 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) WhereIs(ctx context.Context, req *QueryGetWhereIsRequest) (*QueryGetWhereIsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WhereIs not implemented")
+func (*UnimplementedQueryServer) Bucket(ctx context.Context, req *QueryGetBucketRequest) (*QueryGetBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Bucket not implemented")
 }
-func (*UnimplementedQueryServer) WhereIsByCreator(ctx context.Context, req *QueryGetWhereIsByCreatorRequest) (*QueryGetWhereIsByCreatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WhereIsByCreator not implemented")
+func (*UnimplementedQueryServer) BucketByCreator(ctx context.Context, req *QueryGetBucketByCreatorRequest) (*QueryGetBucketByCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BucketByCreator not implemented")
 }
-func (*UnimplementedQueryServer) WhereIsAll(ctx context.Context, req *QueryAllWhereIsRequest) (*QueryAllWhereIsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WhereIsAll not implemented")
+func (*UnimplementedQueryServer) BucketsAll(ctx context.Context, req *QueryAllBucketsRequest) (*QueryAllBucketsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BucketsAll not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -580,56 +571,56 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_WhereIs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetWhereIsRequest)
+func _Query_Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetBucketRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).WhereIs(ctx, in)
+		return srv.(QueryServer).Bucket(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.bucket.Query/WhereIs",
+		FullMethod: "/sonrio.sonr.bucket.Query/Bucket",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).WhereIs(ctx, req.(*QueryGetWhereIsRequest))
+		return srv.(QueryServer).Bucket(ctx, req.(*QueryGetBucketRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_WhereIsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetWhereIsByCreatorRequest)
+func _Query_BucketByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetBucketByCreatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).WhereIsByCreator(ctx, in)
+		return srv.(QueryServer).BucketByCreator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.bucket.Query/WhereIsByCreator",
+		FullMethod: "/sonrio.sonr.bucket.Query/BucketByCreator",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).WhereIsByCreator(ctx, req.(*QueryGetWhereIsByCreatorRequest))
+		return srv.(QueryServer).BucketByCreator(ctx, req.(*QueryGetBucketByCreatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_WhereIsAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllWhereIsRequest)
+func _Query_BucketsAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllBucketsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).WhereIsAll(ctx, in)
+		return srv.(QueryServer).BucketsAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.bucket.Query/WhereIsAll",
+		FullMethod: "/sonrio.sonr.bucket.Query/BucketsAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).WhereIsAll(ctx, req.(*QueryAllWhereIsRequest))
+		return srv.(QueryServer).BucketsAll(ctx, req.(*QueryAllBucketsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -643,16 +634,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "WhereIs",
-			Handler:    _Query_WhereIs_Handler,
+			MethodName: "Bucket",
+			Handler:    _Query_Bucket_Handler,
 		},
 		{
-			MethodName: "WhereIsByCreator",
-			Handler:    _Query_WhereIsByCreator_Handler,
+			MethodName: "BucketByCreator",
+			Handler:    _Query_BucketByCreator_Handler,
 		},
 		{
-			MethodName: "WhereIsAll",
-			Handler:    _Query_WhereIsAll_Handler,
+			MethodName: "BucketsAll",
+			Handler:    _Query_BucketsAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -715,7 +706,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetWhereIsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetBucketRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -725,34 +716,27 @@ func (m *QueryGetWhereIsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetWhereIsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetBucketRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetWhereIsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetBucketRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Did)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Uuid) > 0 {
+		i -= len(m.Uuid)
+		copy(dAtA[i:], m.Uuid)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Uuid)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetWhereIsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetBucketResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -762,18 +746,18 @@ func (m *QueryGetWhereIsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetWhereIsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetBucketResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.WhereIs.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -785,7 +769,7 @@ func (m *QueryGetWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetWhereIsByCreatorRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetBucketByCreatorRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -795,12 +779,12 @@ func (m *QueryGetWhereIsByCreatorRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetWhereIsByCreatorRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetBucketByCreatorRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetWhereIsByCreatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetBucketByCreatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -827,7 +811,7 @@ func (m *QueryGetWhereIsByCreatorRequest) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetWhereIsByCreatorResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetBucketByCreatorResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -837,12 +821,12 @@ func (m *QueryGetWhereIsByCreatorResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetWhereIsByCreatorResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetBucketByCreatorResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetWhereIsByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetBucketByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -859,10 +843,10 @@ func (m *QueryGetWhereIsByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (in
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.WhereIs) > 0 {
-		for iNdEx := len(m.WhereIs) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.Buckets) > 0 {
+		for iNdEx := len(m.Buckets) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.WhereIs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.Buckets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -876,7 +860,7 @@ func (m *QueryGetWhereIsByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllWhereIsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllBucketsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -886,12 +870,12 @@ func (m *QueryAllWhereIsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllWhereIsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllBucketsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllWhereIsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllBucketsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -911,7 +895,7 @@ func (m *QueryAllWhereIsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllWhereIsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllBucketsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -921,12 +905,12 @@ func (m *QueryAllWhereIsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllWhereIsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllBucketsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllBucketsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -943,10 +927,10 @@ func (m *QueryAllWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.WhereIs) > 0 {
-		for iNdEx := len(m.WhereIs) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.Buckets) > 0 {
+		for iNdEx := len(m.Buckets) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.WhereIs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.Buckets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -991,35 +975,31 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetWhereIsRequest) Size() (n int) {
+func (m *QueryGetBucketRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.Did)
+	l = len(m.Uuid)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
 
-func (m *QueryGetWhereIsResponse) Size() (n int) {
+func (m *QueryGetBucketResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.WhereIs.Size()
+	l = m.Bucket.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
-func (m *QueryGetWhereIsByCreatorRequest) Size() (n int) {
+func (m *QueryGetBucketByCreatorRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1036,14 +1016,14 @@ func (m *QueryGetWhereIsByCreatorRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetWhereIsByCreatorResponse) Size() (n int) {
+func (m *QueryGetBucketByCreatorResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.WhereIs) > 0 {
-		for _, e := range m.WhereIs {
+	if len(m.Buckets) > 0 {
+		for _, e := range m.Buckets {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
@@ -1055,7 +1035,7 @@ func (m *QueryGetWhereIsByCreatorResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllWhereIsRequest) Size() (n int) {
+func (m *QueryAllBucketsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1068,14 +1048,14 @@ func (m *QueryAllWhereIsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllWhereIsResponse) Size() (n int) {
+func (m *QueryAllBucketsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.WhereIs) > 0 {
-		for _, e := range m.WhereIs {
+	if len(m.Buckets) > 0 {
+		for _, e := range m.Buckets {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
@@ -1226,7 +1206,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetWhereIsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetBucketRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1249,15 +1229,15 @@ func (m *QueryGetWhereIsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetWhereIsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetBucketRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetWhereIsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetBucketRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Uuid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1285,39 +1265,7 @@ func (m *QueryGetWhereIsRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Did = string(dAtA[iNdEx:postIndex])
+			m.Uuid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1340,7 +1288,7 @@ func (m *QueryGetWhereIsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetWhereIsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetBucketResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1363,15 +1311,15 @@ func (m *QueryGetWhereIsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetWhereIsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetBucketResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetWhereIsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WhereIs", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1398,7 +1346,7 @@ func (m *QueryGetWhereIsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.WhereIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1423,7 +1371,7 @@ func (m *QueryGetWhereIsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetWhereIsByCreatorRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetBucketByCreatorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1446,10 +1394,10 @@ func (m *QueryGetWhereIsByCreatorRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetWhereIsByCreatorRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetBucketByCreatorRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetWhereIsByCreatorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetBucketByCreatorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1541,7 +1489,7 @@ func (m *QueryGetWhereIsByCreatorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetWhereIsByCreatorResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetBucketByCreatorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1564,15 +1512,15 @@ func (m *QueryGetWhereIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetWhereIsByCreatorResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetBucketByCreatorResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetWhereIsByCreatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetBucketByCreatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WhereIs", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Buckets", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1599,8 +1547,8 @@ func (m *QueryGetWhereIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.WhereIs = append(m.WhereIs, WhereIs{})
-			if err := m.WhereIs[len(m.WhereIs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Buckets = append(m.Buckets, Bucket{})
+			if err := m.Buckets[len(m.Buckets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1661,7 +1609,7 @@ func (m *QueryGetWhereIsByCreatorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllWhereIsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryAllBucketsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1684,10 +1632,10 @@ func (m *QueryAllWhereIsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllWhereIsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllBucketsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllWhereIsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllBucketsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1747,7 +1695,7 @@ func (m *QueryAllWhereIsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllWhereIsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryAllBucketsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1770,15 +1718,15 @@ func (m *QueryAllWhereIsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllWhereIsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllBucketsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllWhereIsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllBucketsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WhereIs", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Buckets", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1805,8 +1753,8 @@ func (m *QueryAllWhereIsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.WhereIs = append(m.WhereIs, WhereIs{})
-			if err := m.WhereIs[len(m.WhereIs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Buckets = append(m.Buckets, Bucket{})
+			if err := m.Buckets[len(m.Buckets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

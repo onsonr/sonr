@@ -27,23 +27,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgCreateWhereIs struct {
+type MsgDefineBucket struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Label   string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
 }
 
-func (m *MsgCreateWhereIs) Reset()         { *m = MsgCreateWhereIs{} }
-func (m *MsgCreateWhereIs) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateWhereIs) ProtoMessage()    {}
-func (*MsgCreateWhereIs) Descriptor() ([]byte, []int) {
+func (m *MsgDefineBucket) Reset()         { *m = MsgDefineBucket{} }
+func (m *MsgDefineBucket) String() string { return proto.CompactTextString(m) }
+func (*MsgDefineBucket) ProtoMessage()    {}
+func (*MsgDefineBucket) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{0}
 }
-func (m *MsgCreateWhereIs) XXX_Unmarshal(b []byte) error {
+func (m *MsgDefineBucket) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateWhereIs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDefineBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateWhereIs.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDefineBucket.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -53,49 +53,49 @@ func (m *MsgCreateWhereIs) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateWhereIs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateWhereIs.Merge(m, src)
+func (m *MsgDefineBucket) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDefineBucket.Merge(m, src)
 }
-func (m *MsgCreateWhereIs) XXX_Size() int {
+func (m *MsgDefineBucket) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateWhereIs) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateWhereIs.DiscardUnknown(m)
+func (m *MsgDefineBucket) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDefineBucket.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateWhereIs proto.InternalMessageInfo
+var xxx_messageInfo_MsgDefineBucket proto.InternalMessageInfo
 
-func (m *MsgCreateWhereIs) GetCreator() string {
+func (m *MsgDefineBucket) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgCreateWhereIs) GetLabel() string {
+func (m *MsgDefineBucket) GetLabel() string {
 	if m != nil {
 		return m.Label
 	}
 	return ""
 }
 
-type MsgCreateWhereIsResponse struct {
-	Status  int32    `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	WhereIs *WhereIs `protobuf:"bytes,2,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
+type MsgDefineBucketResponse struct {
+	Status  int32   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	WhereIs *Bucket `protobuf:"bytes,2,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
 }
 
-func (m *MsgCreateWhereIsResponse) Reset()         { *m = MsgCreateWhereIsResponse{} }
-func (m *MsgCreateWhereIsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateWhereIsResponse) ProtoMessage()    {}
-func (*MsgCreateWhereIsResponse) Descriptor() ([]byte, []int) {
+func (m *MsgDefineBucketResponse) Reset()         { *m = MsgDefineBucketResponse{} }
+func (m *MsgDefineBucketResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDefineBucketResponse) ProtoMessage()    {}
+func (*MsgDefineBucketResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{1}
 }
-func (m *MsgCreateWhereIsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgDefineBucketResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDefineBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateWhereIsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDefineBucketResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -105,50 +105,50 @@ func (m *MsgCreateWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateWhereIsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateWhereIsResponse.Merge(m, src)
+func (m *MsgDefineBucketResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDefineBucketResponse.Merge(m, src)
 }
-func (m *MsgCreateWhereIsResponse) XXX_Size() int {
+func (m *MsgDefineBucketResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateWhereIsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateWhereIsResponse.DiscardUnknown(m)
+func (m *MsgDefineBucketResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDefineBucketResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateWhereIsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgDefineBucketResponse proto.InternalMessageInfo
 
-func (m *MsgCreateWhereIsResponse) GetStatus() int32 {
+func (m *MsgDefineBucketResponse) GetStatus() int32 {
 	if m != nil {
 		return m.Status
 	}
 	return 0
 }
 
-func (m *MsgCreateWhereIsResponse) GetWhereIs() *WhereIs {
+func (m *MsgDefineBucketResponse) GetWhereIs() *Bucket {
 	if m != nil {
 		return m.WhereIs
 	}
 	return nil
 }
 
-type MsgUpdateWhereIs struct {
+type MsgUpdateBucket struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 	Label   string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
 }
 
-func (m *MsgUpdateWhereIs) Reset()         { *m = MsgUpdateWhereIs{} }
-func (m *MsgUpdateWhereIs) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateWhereIs) ProtoMessage()    {}
-func (*MsgUpdateWhereIs) Descriptor() ([]byte, []int) {
+func (m *MsgUpdateBucket) Reset()         { *m = MsgUpdateBucket{} }
+func (m *MsgUpdateBucket) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateBucket) ProtoMessage()    {}
+func (*MsgUpdateBucket) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{2}
 }
-func (m *MsgUpdateWhereIs) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpdateBucket) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateWhereIs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdateBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateWhereIs.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdateBucket.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -158,56 +158,56 @@ func (m *MsgUpdateWhereIs) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateWhereIs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateWhereIs.Merge(m, src)
+func (m *MsgUpdateBucket) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateBucket.Merge(m, src)
 }
-func (m *MsgUpdateWhereIs) XXX_Size() int {
+func (m *MsgUpdateBucket) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateWhereIs) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateWhereIs.DiscardUnknown(m)
+func (m *MsgUpdateBucket) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateBucket.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateWhereIs proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateBucket proto.InternalMessageInfo
 
-func (m *MsgUpdateWhereIs) GetCreator() string {
+func (m *MsgUpdateBucket) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgUpdateWhereIs) GetDid() string {
+func (m *MsgUpdateBucket) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-func (m *MsgUpdateWhereIs) GetLabel() string {
+func (m *MsgUpdateBucket) GetLabel() string {
 	if m != nil {
 		return m.Label
 	}
 	return ""
 }
 
-type MsgUpdateWhereIsResponse struct {
-	Status  int32    `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	WhereIs *WhereIs `protobuf:"bytes,2,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
+type MsgUpdateBucketResponse struct {
+	Status  int32   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	WhereIs *Bucket `protobuf:"bytes,2,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
 }
 
-func (m *MsgUpdateWhereIsResponse) Reset()         { *m = MsgUpdateWhereIsResponse{} }
-func (m *MsgUpdateWhereIsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateWhereIsResponse) ProtoMessage()    {}
-func (*MsgUpdateWhereIsResponse) Descriptor() ([]byte, []int) {
+func (m *MsgUpdateBucketResponse) Reset()         { *m = MsgUpdateBucketResponse{} }
+func (m *MsgUpdateBucketResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateBucketResponse) ProtoMessage()    {}
+func (*MsgUpdateBucketResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{3}
 }
-func (m *MsgUpdateWhereIsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpdateBucketResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdateBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateWhereIsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdateBucketResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -217,49 +217,49 @@ func (m *MsgUpdateWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateWhereIsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateWhereIsResponse.Merge(m, src)
+func (m *MsgUpdateBucketResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateBucketResponse.Merge(m, src)
 }
-func (m *MsgUpdateWhereIsResponse) XXX_Size() int {
+func (m *MsgUpdateBucketResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateWhereIsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateWhereIsResponse.DiscardUnknown(m)
+func (m *MsgUpdateBucketResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateBucketResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateWhereIsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateBucketResponse proto.InternalMessageInfo
 
-func (m *MsgUpdateWhereIsResponse) GetStatus() int32 {
+func (m *MsgUpdateBucketResponse) GetStatus() int32 {
 	if m != nil {
 		return m.Status
 	}
 	return 0
 }
 
-func (m *MsgUpdateWhereIsResponse) GetWhereIs() *WhereIs {
+func (m *MsgUpdateBucketResponse) GetWhereIs() *Bucket {
 	if m != nil {
 		return m.WhereIs
 	}
 	return nil
 }
 
-type MsgDeleteWhereIs struct {
+type MsgDeleteBucket struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 }
 
-func (m *MsgDeleteWhereIs) Reset()         { *m = MsgDeleteWhereIs{} }
-func (m *MsgDeleteWhereIs) String() string { return proto.CompactTextString(m) }
-func (*MsgDeleteWhereIs) ProtoMessage()    {}
-func (*MsgDeleteWhereIs) Descriptor() ([]byte, []int) {
+func (m *MsgDeleteBucket) Reset()         { *m = MsgDeleteBucket{} }
+func (m *MsgDeleteBucket) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteBucket) ProtoMessage()    {}
+func (*MsgDeleteBucket) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{4}
 }
-func (m *MsgDeleteWhereIs) XXX_Unmarshal(b []byte) error {
+func (m *MsgDeleteBucket) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDeleteWhereIs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDeleteBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDeleteWhereIs.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDeleteBucket.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -269,48 +269,48 @@ func (m *MsgDeleteWhereIs) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *MsgDeleteWhereIs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDeleteWhereIs.Merge(m, src)
+func (m *MsgDeleteBucket) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteBucket.Merge(m, src)
 }
-func (m *MsgDeleteWhereIs) XXX_Size() int {
+func (m *MsgDeleteBucket) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDeleteWhereIs) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDeleteWhereIs.DiscardUnknown(m)
+func (m *MsgDeleteBucket) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteBucket.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDeleteWhereIs proto.InternalMessageInfo
+var xxx_messageInfo_MsgDeleteBucket proto.InternalMessageInfo
 
-func (m *MsgDeleteWhereIs) GetCreator() string {
+func (m *MsgDeleteBucket) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgDeleteWhereIs) GetDid() string {
+func (m *MsgDeleteBucket) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-type MsgDeleteWhereIsResponse struct {
+type MsgDeleteBucketResponse struct {
 	Status int32 `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
 }
 
-func (m *MsgDeleteWhereIsResponse) Reset()         { *m = MsgDeleteWhereIsResponse{} }
-func (m *MsgDeleteWhereIsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgDeleteWhereIsResponse) ProtoMessage()    {}
-func (*MsgDeleteWhereIsResponse) Descriptor() ([]byte, []int) {
+func (m *MsgDeleteBucketResponse) Reset()         { *m = MsgDeleteBucketResponse{} }
+func (m *MsgDeleteBucketResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteBucketResponse) ProtoMessage()    {}
+func (*MsgDeleteBucketResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{5}
 }
-func (m *MsgDeleteWhereIsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgDeleteBucketResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDeleteWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDeleteBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDeleteWhereIsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDeleteBucketResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -320,19 +320,19 @@ func (m *MsgDeleteWhereIsResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgDeleteWhereIsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDeleteWhereIsResponse.Merge(m, src)
+func (m *MsgDeleteBucketResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteBucketResponse.Merge(m, src)
 }
-func (m *MsgDeleteWhereIsResponse) XXX_Size() int {
+func (m *MsgDeleteBucketResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDeleteWhereIsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDeleteWhereIsResponse.DiscardUnknown(m)
+func (m *MsgDeleteBucketResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteBucketResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDeleteWhereIsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgDeleteBucketResponse proto.InternalMessageInfo
 
-func (m *MsgDeleteWhereIsResponse) GetStatus() int32 {
+func (m *MsgDeleteBucketResponse) GetStatus() int32 {
 	if m != nil {
 		return m.Status
 	}
@@ -340,12 +340,12 @@ func (m *MsgDeleteWhereIsResponse) GetStatus() int32 {
 }
 
 func init() {
-	proto.RegisterType((*MsgCreateWhereIs)(nil), "sonrio.sonr.bucket.MsgCreateWhereIs")
-	proto.RegisterType((*MsgCreateWhereIsResponse)(nil), "sonrio.sonr.bucket.MsgCreateWhereIsResponse")
-	proto.RegisterType((*MsgUpdateWhereIs)(nil), "sonrio.sonr.bucket.MsgUpdateWhereIs")
-	proto.RegisterType((*MsgUpdateWhereIsResponse)(nil), "sonrio.sonr.bucket.MsgUpdateWhereIsResponse")
-	proto.RegisterType((*MsgDeleteWhereIs)(nil), "sonrio.sonr.bucket.MsgDeleteWhereIs")
-	proto.RegisterType((*MsgDeleteWhereIsResponse)(nil), "sonrio.sonr.bucket.MsgDeleteWhereIsResponse")
+	proto.RegisterType((*MsgDefineBucket)(nil), "sonrio.sonr.bucket.MsgDefineBucket")
+	proto.RegisterType((*MsgDefineBucketResponse)(nil), "sonrio.sonr.bucket.MsgDefineBucketResponse")
+	proto.RegisterType((*MsgUpdateBucket)(nil), "sonrio.sonr.bucket.MsgUpdateBucket")
+	proto.RegisterType((*MsgUpdateBucketResponse)(nil), "sonrio.sonr.bucket.MsgUpdateBucketResponse")
+	proto.RegisterType((*MsgDeleteBucket)(nil), "sonrio.sonr.bucket.MsgDeleteBucket")
+	proto.RegisterType((*MsgDeleteBucketResponse)(nil), "sonrio.sonr.bucket.MsgDeleteBucketResponse")
 }
 
 func init() { proto.RegisterFile("bucket/tx.proto", fileDescriptor_3479ee73a3c611d5) }
@@ -354,26 +354,26 @@ var fileDescriptor_3479ee73a3c611d5 = []byte{
 	// 350 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0x2a, 0x4d, 0xce,
 	0x4e, 0x2d, 0xd1, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x2a, 0xce, 0xcf,
-	0x2b, 0xca, 0xcc, 0xd7, 0x03, 0x51, 0x7a, 0x10, 0x49, 0x29, 0x51, 0xa8, 0xa2, 0xf2, 0x8c, 0xd4,
-	0xa2, 0xd4, 0xf8, 0xcc, 0x62, 0x88, 0x52, 0x25, 0x27, 0x2e, 0x01, 0xdf, 0xe2, 0x74, 0xe7, 0xa2,
-	0xd4, 0xc4, 0x92, 0xd4, 0x70, 0x90, 0x94, 0x67, 0xb1, 0x90, 0x04, 0x17, 0x7b, 0x32, 0x48, 0x20,
-	0xbf, 0x48, 0x82, 0x51, 0x81, 0x51, 0x83, 0x33, 0x08, 0xc6, 0x15, 0x12, 0xe1, 0x62, 0xcd, 0x49,
-	0x4c, 0x4a, 0xcd, 0x91, 0x60, 0x02, 0x8b, 0x43, 0x38, 0x4a, 0x59, 0x5c, 0x12, 0xe8, 0x66, 0x04,
-	0xa5, 0x16, 0x17, 0xe4, 0xe7, 0x15, 0xa7, 0x0a, 0x89, 0x71, 0xb1, 0x15, 0x97, 0x24, 0x96, 0x94,
-	0x16, 0x83, 0x8d, 0x62, 0x0d, 0x82, 0xf2, 0x84, 0xcc, 0xb8, 0x38, 0x60, 0x2e, 0x01, 0x1b, 0xc6,
-	0x6d, 0x24, 0xad, 0x87, 0xe9, 0x6a, 0x3d, 0x98, 0x71, 0xec, 0xe5, 0x10, 0x86, 0x52, 0x08, 0xd8,
-	0xbd, 0xa1, 0x05, 0x29, 0x44, 0xb9, 0x57, 0x80, 0x8b, 0x39, 0x25, 0x33, 0x05, 0xea, 0x5a, 0x10,
-	0x13, 0xe1, 0x03, 0x66, 0x4c, 0x1f, 0xa0, 0x98, 0x4a, 0x33, 0x1f, 0xd8, 0x81, 0x7d, 0xe0, 0x92,
-	0x9a, 0x93, 0x4a, 0x96, 0x0f, 0x94, 0x8c, 0xc0, 0x6e, 0x45, 0xd1, 0x4f, 0xc8, 0xad, 0x46, 0x5b,
-	0x98, 0xb8, 0x98, 0x7d, 0x8b, 0xd3, 0x85, 0x92, 0xb9, 0x78, 0x51, 0xa3, 0x5a, 0x05, 0x9b, 0x93,
-	0xd1, 0x23, 0x53, 0x4a, 0x87, 0x18, 0x55, 0x70, 0x47, 0x24, 0x73, 0xf1, 0xa2, 0xc6, 0x0f, 0x2e,
-	0x4b, 0x50, 0x54, 0xe1, 0xb4, 0x04, 0x7b, 0xac, 0x24, 0x73, 0xf1, 0xa2, 0x06, 0x21, 0x2e, 0x4b,
-	0x50, 0x54, 0xe1, 0xb4, 0x04, 0x6b, 0x70, 0x3a, 0x45, 0x9c, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91,
+	0x2b, 0xca, 0xcc, 0xd7, 0x03, 0x51, 0x7a, 0x10, 0x49, 0x29, 0x61, 0xa8, 0x22, 0x08, 0x05, 0x51,
+	0xa8, 0xe4, 0xc8, 0xc5, 0xef, 0x5b, 0x9c, 0xee, 0x92, 0x9a, 0x96, 0x99, 0x97, 0xea, 0x04, 0x96,
+	0x10, 0x92, 0xe0, 0x62, 0x4f, 0x2e, 0x4a, 0x4d, 0x2c, 0xc9, 0x2f, 0x92, 0x60, 0x54, 0x60, 0xd4,
+	0xe0, 0x0c, 0x82, 0x71, 0x85, 0x44, 0xb8, 0x58, 0x73, 0x12, 0x93, 0x52, 0x73, 0x24, 0x98, 0xc0,
+	0xe2, 0x10, 0x8e, 0x52, 0x06, 0x97, 0x38, 0x9a, 0x11, 0x41, 0xa9, 0xc5, 0x05, 0xf9, 0x79, 0xc5,
+	0xa9, 0x42, 0x62, 0x5c, 0x6c, 0xc5, 0x25, 0x89, 0x25, 0xa5, 0xc5, 0x60, 0x93, 0x58, 0x83, 0xa0,
+	0x3c, 0x21, 0x53, 0x2e, 0x8e, 0xf2, 0x8c, 0xd4, 0xa2, 0xd4, 0xf8, 0xcc, 0x62, 0xb0, 0x59, 0xdc,
+	0x46, 0x52, 0x7a, 0x98, 0x2e, 0xd6, 0x83, 0x9a, 0xc6, 0x0e, 0x56, 0xeb, 0x59, 0xac, 0x14, 0x0c,
+	0x76, 0x6c, 0x68, 0x41, 0x4a, 0x62, 0x09, 0x61, 0xc7, 0x0a, 0x70, 0x31, 0xa7, 0x64, 0xa6, 0x40,
+	0x9d, 0x0a, 0x62, 0x22, 0x9c, 0xcf, 0x8c, 0xe9, 0x7c, 0x64, 0x43, 0x69, 0xe5, 0x7c, 0x5b, 0x68,
+	0x58, 0xe7, 0xa4, 0x92, 0xe3, 0x7c, 0x25, 0x43, 0x68, 0x38, 0x23, 0xb4, 0x13, 0x72, 0xa8, 0xd1,
+	0x6a, 0x26, 0x2e, 0x66, 0xdf, 0xe2, 0x74, 0xa1, 0x04, 0x2e, 0x1e, 0x94, 0x28, 0x56, 0xc6, 0xe6,
+	0x5c, 0xb4, 0x48, 0x94, 0xd2, 0x26, 0x42, 0x11, 0xdc, 0x05, 0x09, 0x5c, 0x3c, 0x28, 0xf1, 0x82,
+	0xcb, 0x06, 0x64, 0x45, 0x38, 0x6d, 0xc0, 0x1a, 0x19, 0x60, 0x3f, 0x20, 0x05, 0x1d, 0x6e, 0x3f,
+	0x20, 0x14, 0xe1, 0xf1, 0x03, 0x66, 0x28, 0x3a, 0x45, 0x9c, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91,
 	0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3,
-	0xb1, 0x1c, 0x03, 0x97, 0x08, 0xcc, 0x88, 0x92, 0xca, 0x82, 0xd4, 0x62, 0xa8, 0x41, 0x01, 0x8c,
+	0xb1, 0x1c, 0x03, 0x97, 0x08, 0xcc, 0x84, 0x92, 0xca, 0x82, 0xd4, 0x62, 0xa8, 0x39, 0x01, 0x8c,
 	0x51, 0x6a, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x20, 0x79, 0xdd,
-	0xcc, 0x7c, 0x30, 0xad, 0x5f, 0xa1, 0x0f, 0xcb, 0xa4, 0x20, 0x0d, 0x49, 0x6c, 0xe0, 0xdc, 0x67,
-	0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x82, 0x36, 0x7c, 0x59, 0xbb, 0x03, 0x00, 0x00,
+	0xcc, 0x7c, 0x30, 0xad, 0x5f, 0xa1, 0x0f, 0xcb, 0x91, 0x20, 0x0d, 0x49, 0x6c, 0xe0, 0xcc, 0x66,
+	0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xd5, 0xa1, 0x13, 0x6d, 0xa8, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -388,9 +388,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	CreateWhereIs(ctx context.Context, in *MsgCreateWhereIs, opts ...grpc.CallOption) (*MsgCreateWhereIsResponse, error)
-	UpdateWhereIs(ctx context.Context, in *MsgUpdateWhereIs, opts ...grpc.CallOption) (*MsgUpdateWhereIsResponse, error)
-	DeleteWhereIs(ctx context.Context, in *MsgDeleteWhereIs, opts ...grpc.CallOption) (*MsgDeleteWhereIsResponse, error)
+	DefineBucket(ctx context.Context, in *MsgDefineBucket, opts ...grpc.CallOption) (*MsgDefineBucketResponse, error)
+	UpdateBucket(ctx context.Context, in *MsgUpdateBucket, opts ...grpc.CallOption) (*MsgUpdateBucketResponse, error)
+	DeleteBucket(ctx context.Context, in *MsgDeleteBucket, opts ...grpc.CallOption) (*MsgDeleteBucketResponse, error)
 }
 
 type msgClient struct {
@@ -401,27 +401,27 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) CreateWhereIs(ctx context.Context, in *MsgCreateWhereIs, opts ...grpc.CallOption) (*MsgCreateWhereIsResponse, error) {
-	out := new(MsgCreateWhereIsResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/CreateWhereIs", in, out, opts...)
+func (c *msgClient) DefineBucket(ctx context.Context, in *MsgDefineBucket, opts ...grpc.CallOption) (*MsgDefineBucketResponse, error) {
+	out := new(MsgDefineBucketResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/DefineBucket", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) UpdateWhereIs(ctx context.Context, in *MsgUpdateWhereIs, opts ...grpc.CallOption) (*MsgUpdateWhereIsResponse, error) {
-	out := new(MsgUpdateWhereIsResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/UpdateWhereIs", in, out, opts...)
+func (c *msgClient) UpdateBucket(ctx context.Context, in *MsgUpdateBucket, opts ...grpc.CallOption) (*MsgUpdateBucketResponse, error) {
+	out := new(MsgUpdateBucketResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/UpdateBucket", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) DeleteWhereIs(ctx context.Context, in *MsgDeleteWhereIs, opts ...grpc.CallOption) (*MsgDeleteWhereIsResponse, error) {
-	out := new(MsgDeleteWhereIsResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/DeleteWhereIs", in, out, opts...)
+func (c *msgClient) DeleteBucket(ctx context.Context, in *MsgDeleteBucket, opts ...grpc.CallOption) (*MsgDeleteBucketResponse, error) {
+	out := new(MsgDeleteBucketResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/DeleteBucket", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -430,79 +430,79 @@ func (c *msgClient) DeleteWhereIs(ctx context.Context, in *MsgDeleteWhereIs, opt
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	CreateWhereIs(context.Context, *MsgCreateWhereIs) (*MsgCreateWhereIsResponse, error)
-	UpdateWhereIs(context.Context, *MsgUpdateWhereIs) (*MsgUpdateWhereIsResponse, error)
-	DeleteWhereIs(context.Context, *MsgDeleteWhereIs) (*MsgDeleteWhereIsResponse, error)
+	DefineBucket(context.Context, *MsgDefineBucket) (*MsgDefineBucketResponse, error)
+	UpdateBucket(context.Context, *MsgUpdateBucket) (*MsgUpdateBucketResponse, error)
+	DeleteBucket(context.Context, *MsgDeleteBucket) (*MsgDeleteBucketResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) CreateWhereIs(ctx context.Context, req *MsgCreateWhereIs) (*MsgCreateWhereIsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateWhereIs not implemented")
+func (*UnimplementedMsgServer) DefineBucket(ctx context.Context, req *MsgDefineBucket) (*MsgDefineBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DefineBucket not implemented")
 }
-func (*UnimplementedMsgServer) UpdateWhereIs(ctx context.Context, req *MsgUpdateWhereIs) (*MsgUpdateWhereIsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateWhereIs not implemented")
+func (*UnimplementedMsgServer) UpdateBucket(ctx context.Context, req *MsgUpdateBucket) (*MsgUpdateBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBucket not implemented")
 }
-func (*UnimplementedMsgServer) DeleteWhereIs(ctx context.Context, req *MsgDeleteWhereIs) (*MsgDeleteWhereIsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteWhereIs not implemented")
+func (*UnimplementedMsgServer) DeleteBucket(ctx context.Context, req *MsgDeleteBucket) (*MsgDeleteBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBucket not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_CreateWhereIs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateWhereIs)
+func _Msg_DefineBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDefineBucket)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CreateWhereIs(ctx, in)
+		return srv.(MsgServer).DefineBucket(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.bucket.Msg/CreateWhereIs",
+		FullMethod: "/sonrio.sonr.bucket.Msg/DefineBucket",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreateWhereIs(ctx, req.(*MsgCreateWhereIs))
+		return srv.(MsgServer).DefineBucket(ctx, req.(*MsgDefineBucket))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateWhereIs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateWhereIs)
+func _Msg_UpdateBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateBucket)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateWhereIs(ctx, in)
+		return srv.(MsgServer).UpdateBucket(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.bucket.Msg/UpdateWhereIs",
+		FullMethod: "/sonrio.sonr.bucket.Msg/UpdateBucket",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateWhereIs(ctx, req.(*MsgUpdateWhereIs))
+		return srv.(MsgServer).UpdateBucket(ctx, req.(*MsgUpdateBucket))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_DeleteWhereIs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgDeleteWhereIs)
+func _Msg_DeleteBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteBucket)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).DeleteWhereIs(ctx, in)
+		return srv.(MsgServer).DeleteBucket(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.bucket.Msg/DeleteWhereIs",
+		FullMethod: "/sonrio.sonr.bucket.Msg/DeleteBucket",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).DeleteWhereIs(ctx, req.(*MsgDeleteWhereIs))
+		return srv.(MsgServer).DeleteBucket(ctx, req.(*MsgDeleteBucket))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -512,23 +512,23 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateWhereIs",
-			Handler:    _Msg_CreateWhereIs_Handler,
+			MethodName: "DefineBucket",
+			Handler:    _Msg_DefineBucket_Handler,
 		},
 		{
-			MethodName: "UpdateWhereIs",
-			Handler:    _Msg_UpdateWhereIs_Handler,
+			MethodName: "UpdateBucket",
+			Handler:    _Msg_UpdateBucket_Handler,
 		},
 		{
-			MethodName: "DeleteWhereIs",
-			Handler:    _Msg_DeleteWhereIs_Handler,
+			MethodName: "DeleteBucket",
+			Handler:    _Msg_DeleteBucket_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "bucket/tx.proto",
 }
 
-func (m *MsgCreateWhereIs) Marshal() (dAtA []byte, err error) {
+func (m *MsgDefineBucket) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -538,12 +538,12 @@ func (m *MsgCreateWhereIs) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateWhereIs) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDefineBucket) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDefineBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -565,7 +565,7 @@ func (m *MsgCreateWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreateWhereIsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgDefineBucketResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -575,12 +575,12 @@ func (m *MsgCreateWhereIsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateWhereIsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDefineBucketResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDefineBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -605,7 +605,7 @@ func (m *MsgCreateWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateWhereIs) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpdateBucket) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -615,12 +615,12 @@ func (m *MsgUpdateWhereIs) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateWhereIs) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpdateBucket) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpdateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -649,7 +649,7 @@ func (m *MsgUpdateWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateWhereIsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpdateBucketResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -659,12 +659,12 @@ func (m *MsgUpdateWhereIsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateWhereIsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpdateBucketResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpdateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -689,7 +689,7 @@ func (m *MsgUpdateWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDeleteWhereIs) Marshal() (dAtA []byte, err error) {
+func (m *MsgDeleteBucket) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -699,12 +699,12 @@ func (m *MsgDeleteWhereIs) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDeleteWhereIs) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDeleteBucket) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDeleteWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDeleteBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -726,7 +726,7 @@ func (m *MsgDeleteWhereIs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDeleteWhereIsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgDeleteBucketResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -736,12 +736,12 @@ func (m *MsgDeleteWhereIsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDeleteWhereIsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDeleteBucketResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDeleteWhereIsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDeleteBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -765,7 +765,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCreateWhereIs) Size() (n int) {
+func (m *MsgDefineBucket) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -782,7 +782,7 @@ func (m *MsgCreateWhereIs) Size() (n int) {
 	return n
 }
 
-func (m *MsgCreateWhereIsResponse) Size() (n int) {
+func (m *MsgDefineBucketResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -798,7 +798,7 @@ func (m *MsgCreateWhereIsResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateWhereIs) Size() (n int) {
+func (m *MsgUpdateBucket) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -819,7 +819,7 @@ func (m *MsgUpdateWhereIs) Size() (n int) {
 	return n
 }
 
-func (m *MsgUpdateWhereIsResponse) Size() (n int) {
+func (m *MsgUpdateBucketResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -835,7 +835,7 @@ func (m *MsgUpdateWhereIsResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgDeleteWhereIs) Size() (n int) {
+func (m *MsgDeleteBucket) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -852,7 +852,7 @@ func (m *MsgDeleteWhereIs) Size() (n int) {
 	return n
 }
 
-func (m *MsgDeleteWhereIsResponse) Size() (n int) {
+func (m *MsgDeleteBucketResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -870,7 +870,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgCreateWhereIs) Unmarshal(dAtA []byte) error {
+func (m *MsgDefineBucket) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -893,10 +893,10 @@ func (m *MsgCreateWhereIs) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateWhereIs: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDefineBucket: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateWhereIs: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDefineBucket: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -984,7 +984,7 @@ func (m *MsgCreateWhereIs) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCreateWhereIsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgDefineBucketResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1007,10 +1007,10 @@ func (m *MsgCreateWhereIsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateWhereIsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDefineBucketResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateWhereIsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDefineBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1062,7 +1062,7 @@ func (m *MsgCreateWhereIsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhereIs == nil {
-				m.WhereIs = &WhereIs{}
+				m.WhereIs = &Bucket{}
 			}
 			if err := m.WhereIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1089,7 +1089,7 @@ func (m *MsgCreateWhereIsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateWhereIs) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdateBucket) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1112,10 +1112,10 @@ func (m *MsgUpdateWhereIs) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateWhereIs: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdateBucket: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateWhereIs: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdateBucket: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1235,7 +1235,7 @@ func (m *MsgUpdateWhereIs) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateWhereIsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdateBucketResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1258,10 +1258,10 @@ func (m *MsgUpdateWhereIsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateWhereIsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdateBucketResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateWhereIsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdateBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1313,7 +1313,7 @@ func (m *MsgUpdateWhereIsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.WhereIs == nil {
-				m.WhereIs = &WhereIs{}
+				m.WhereIs = &Bucket{}
 			}
 			if err := m.WhereIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1340,7 +1340,7 @@ func (m *MsgUpdateWhereIsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDeleteWhereIs) Unmarshal(dAtA []byte) error {
+func (m *MsgDeleteBucket) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1363,10 +1363,10 @@ func (m *MsgDeleteWhereIs) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDeleteWhereIs: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDeleteBucket: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDeleteWhereIs: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDeleteBucket: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1454,7 +1454,7 @@ func (m *MsgDeleteWhereIs) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDeleteWhereIsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgDeleteBucketResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1477,10 +1477,10 @@ func (m *MsgDeleteWhereIsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDeleteWhereIsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDeleteBucketResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDeleteWhereIsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDeleteBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

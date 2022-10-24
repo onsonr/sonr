@@ -24,17 +24,17 @@ var (
 )
 
 const (
-	opWeightMsgCreateWhereIs = "op_weight_msg_where_is"
+	opWeightMsgDefineBucket = "op_weight_msg_where_is"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreateWhereIs int = 100
+	defaultWeightMsgDefineBucket int = 100
 
-	opWeightMsgUpdateWhereIs = "op_weight_msg_where_is"
+	opWeightMsgUpdateBucket = "op_weight_msg_where_is"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdateWhereIs int = 100
+	defaultWeightMsgUpdateBucket int = 100
 
-	opWeightMsgDeleteWhereIs = "op_weight_msg_where_is"
+	opWeightMsgDeleteBucket = "op_weight_msg_where_is"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgDeleteWhereIs int = 100
+	defaultWeightMsgDeleteBucket int = 100
 
 	// this line is used by starport scaffolding # simapp/module/const
 )
@@ -47,13 +47,13 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	bucketGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
-		WhereIsList: []types.WhereIs{
+		BucketList: []types.Bucket{
 			{
-				Uuid:     "did:sonr:1",
+				Uuid:    "did:sonr:1",
 				Creator: sample.AccAddress(),
 			},
 			{
-				Uuid:     "did:sonr:2",
+				Uuid:    "did:sonr:2",
 				Creator: sample.AccAddress(),
 			},
 		},
@@ -80,37 +80,37 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgCreateWhereIs int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateWhereIs, &weightMsgCreateWhereIs, nil,
+	var weightMsgDefineBucket int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDefineBucket, &weightMsgDefineBucket, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreateWhereIs = defaultWeightMsgCreateWhereIs
+			weightMsgDefineBucket = defaultWeightMsgDefineBucket
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreateWhereIs,
-		bucketsimulation.SimulateMsgCreateWhereIs(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgDefineBucket,
+		bucketsimulation.SimulateMsgDefineBucket(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgUpdateWhereIs int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateWhereIs, &weightMsgUpdateWhereIs, nil,
+	var weightMsgUpdateBucket int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateBucket, &weightMsgUpdateBucket, nil,
 		func(_ *rand.Rand) {
-			weightMsgUpdateWhereIs = defaultWeightMsgUpdateWhereIs
+			weightMsgUpdateBucket = defaultWeightMsgUpdateBucket
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateWhereIs,
-		bucketsimulation.SimulateMsgUpdateWhereIs(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgUpdateBucket,
+		bucketsimulation.SimulateMsgUpdateBucket(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgDeleteWhereIs int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteWhereIs, &weightMsgDeleteWhereIs, nil,
+	var weightMsgDeleteBucket int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteBucket, &weightMsgDeleteBucket, nil,
 		func(_ *rand.Rand) {
-			weightMsgDeleteWhereIs = defaultWeightMsgDeleteWhereIs
+			weightMsgDeleteBucket = defaultWeightMsgDeleteBucket
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeleteWhereIs,
-		bucketsimulation.SimulateMsgDeleteWhereIs(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgDeleteBucket,
+		bucketsimulation.SimulateMsgDeleteBucket(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

@@ -8,21 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreateWhereIs_ValidateBasic(t *testing.T) {
+func TestMsgDefineBucket_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreateWhereIs
+		msg  MsgDefineBucket
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreateWhereIs{
+			msg: MsgDefineBucket{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreateWhereIs{
+			msg: MsgDefineBucket{
 				Creator: sample.AccAddress(),
 			},
 		},
@@ -39,21 +39,21 @@ func TestMsgCreateWhereIs_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgUpdateWhereIs_ValidateBasic(t *testing.T) {
+func TestMsgUpdateBucket_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgUpdateWhereIs
+		msg  MsgUpdateBucket
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgUpdateWhereIs{
+			msg: MsgUpdateBucket{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgUpdateWhereIs{
+			msg: MsgUpdateBucket{
 				Creator: sample.AccAddress(),
 			},
 		},
@@ -70,21 +70,21 @@ func TestMsgUpdateWhereIs_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgDeleteWhereIs_ValidateBasic(t *testing.T) {
+func TestMsgDeleteBucket_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDeleteWhereIs
+		msg  MsgDeleteBucket
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDeleteWhereIs{
+			msg: MsgDeleteBucket{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDeleteWhereIs{
+			msg: MsgDeleteBucket{
 				Creator: sample.AccAddress(),
 			},
 		},

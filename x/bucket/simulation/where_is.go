@@ -12,7 +12,7 @@ import (
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func SimulateMsgCreateWhereIs(
+func SimulateMsgDefineBucket(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -21,7 +21,7 @@ func SimulateMsgCreateWhereIs(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		msg := &types.MsgCreateWhereIs{
+		msg := &types.MsgDefineBucket{
 			Creator: simAccount.Address.String(),
 		}
 
@@ -43,7 +43,7 @@ func SimulateMsgCreateWhereIs(
 	}
 }
 
-func SimulateMsgUpdateWhereIs(
+func SimulateMsgUpdateBucket(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -52,8 +52,8 @@ func SimulateMsgUpdateWhereIs(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount = simtypes.Account{}
-			whereIs    = types.WhereIs{}
-			msg        = &types.MsgUpdateWhereIs{}
+			whereIs    = types.Bucket{}
+			msg        = &types.MsgUpdateBucket{}
 			allWhereIs = k.GetAllWhereIs(ctx)
 			found      = false
 		)
@@ -88,7 +88,7 @@ func SimulateMsgUpdateWhereIs(
 	}
 }
 
-func SimulateMsgDeleteWhereIs(
+func SimulateMsgDeleteBucket(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -97,8 +97,8 @@ func SimulateMsgDeleteWhereIs(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount = simtypes.Account{}
-			whereIs    = types.WhereIs{}
-			msg        = &types.MsgUpdateWhereIs{}
+			whereIs    = types.Bucket{}
+			msg        = &types.MsgUpdateBucket{}
 			allWhereIs = k.GetAllWhereIs(ctx)
 			found      = false
 		)

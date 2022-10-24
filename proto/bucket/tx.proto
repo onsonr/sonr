@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sonrio.sonr.bucket;
 
-import "bucket/where_is.proto";
+import "bucket/bucket.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
@@ -12,39 +12,39 @@ option java_multiple_files = true;
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateWhereIs(MsgCreateWhereIs) returns (MsgCreateWhereIsResponse);
-  rpc UpdateWhereIs(MsgUpdateWhereIs) returns (MsgUpdateWhereIsResponse);
-  rpc DeleteWhereIs(MsgDeleteWhereIs) returns (MsgDeleteWhereIsResponse);
+  rpc DefineBucket(MsgDefineBucket) returns (MsgDefineBucketResponse);
+  rpc UpdateBucket(MsgUpdateBucket) returns (MsgUpdateBucketResponse);
+  rpc DeleteBucket(MsgDeleteBucket) returns (MsgDeleteBucketResponse);
   // this line is used by starport scaffolding # proto/tx/rpc
 }
 
-message MsgCreateWhereIs {
+message MsgDefineBucket {
   string creator = 1;
   string label = 2;
 }
 
-message MsgCreateWhereIsResponse {
+message MsgDefineBucketResponse {
   int32 status = 1;
-  WhereIs where_is = 2;
+  Bucket where_is = 2;
 }
 
-message MsgUpdateWhereIs {
+message MsgUpdateBucket {
   string creator = 1;
   string did = 2;
   string label = 3;
 }
 
-message MsgUpdateWhereIsResponse {
+message MsgUpdateBucketResponse {
   int32 status = 1;
-  WhereIs where_is = 2;
+  Bucket where_is = 2;
 }
 
-message MsgDeleteWhereIs {
+message MsgDeleteBucket {
   string creator = 1;
   string did = 2;
 }
 
-message MsgDeleteWhereIsResponse {
+message MsgDeleteBucketResponse {
   int32 status = 1;
 }
 

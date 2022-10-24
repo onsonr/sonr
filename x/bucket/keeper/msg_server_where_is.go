@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWhereIs) (*types.MsgCreateWhereIsResponse, error) {
+func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucket) (*types.MsgDefineBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := msg.ValidateBasic()
 	k.Logger(ctx).Info("basic request validation finished")
@@ -26,7 +26,7 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 	}
 
 	uuid := k.GenerateKeyForDID()
-	var whereIs = types.WhereIs{
+	var whereIs = types.Bucket{
 		Creator:  msg.Creator,
 		IsActive: true,
 		Uuid:     uuid,
@@ -48,13 +48,13 @@ func (k msgServer) CreateWhereIs(goCtx context.Context, msg *types.MsgCreateWher
 		),
 	)
 
-	return &types.MsgCreateWhereIsResponse{
+	return &types.MsgDefineBucketResponse{
 		Status:  http.StatusAccepted,
 		WhereIs: &whereIs,
 	}, nil
 }
 
-func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWhereIs) (*types.MsgUpdateWhereIsResponse, error) {
+func (k msgServer) UpdateBucket(goCtx context.Context, msg *types.MsgUpdateBucket) (*types.MsgUpdateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := msg.ValidateBasic()
 	k.Logger(ctx).Info("basic request validation finished")
@@ -69,7 +69,7 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 		return nil, sdkerrors.ErrNotFound
 	}
 
-	var whereIs = types.WhereIs{
+	var whereIs = types.Bucket{
 		// Label:      msg.Label,
 		Creator: msg.Creator,
 		// Did:        msg.Did,
@@ -81,7 +81,7 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 	}
 
 	// Checks that the element exists
-	val, found := k.GetWhereIs(ctx, msg.Creator, msg.Did)
+	val, found := k.GetBucket(ctx, msg.Did)
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
 	}
@@ -103,17 +103,17 @@ func (k msgServer) UpdateWhereIs(goCtx context.Context, msg *types.MsgUpdateWher
 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeUpdateWhereIs),
 		),
 	)
-	return &types.MsgUpdateWhereIsResponse{
+	return &types.MsgUpdateBucketResponse{
 		Status:  http.StatusAccepted,
 		WhereIs: &whereIs,
 	}, nil
 }
 
-func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWhereIs) (*types.MsgDeleteWhereIsResponse, error) {
+func (k msgServer) DeleteBucket(goCtx context.Context, msg *types.MsgDeleteBucket) (*types.MsgDeleteBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetWhereIs(ctx, msg.Creator, msg.Did)
+	val, found := k.GetBucket(ctx, msg.Did)
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
 	}
@@ -136,5 +136,5 @@ func (k msgServer) DeleteWhereIs(goCtx context.Context, msg *types.MsgDeleteWher
 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeleteWhereIs),
 		),
 	)
-	return &types.MsgDeleteWhereIsResponse{}, nil
+	return &types.MsgDeleteBucketResponse{}, nil
 }

@@ -17,23 +17,23 @@ import (
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func networkWithWhereIsObjects(t *testing.T, n int) (*network.Network, []types.WhereIs) {
+func networkWithWhereIsObjects(t *testing.T, n int) (*network.Network, []types.Bucket) {
 	t.Helper()
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
 	require.NoError(t, cfg.Codec.UnmarshalJSON(cfg.GenesisState[types.ModuleName], &state))
 
 	for i := 0; i < n; i++ {
-		whereIs := types.WhereIs{
+		whereIs := types.Bucket{
 			Uuid: fmt.Sprintf("did:sonr:%d", i),
 		}
 		nullify.Fill(&whereIs)
-		state.WhereIsList = append(state.WhereIsList, whereIs)
+		state.BucketList = append(state.BucketList, whereIs)
 	}
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
-	return network.New(t, cfg), state.WhereIsList
+	return network.New(t, cfg), state.BucketList
 }
 
 func TestShowWhereIs(t *testing.T) {
@@ -48,7 +48,7 @@ func TestShowWhereIs(t *testing.T) {
 		id   string
 		args []string
 		err  error
-		obj  types.WhereIs
+		obj  types.Bucket
 	}{
 		{
 			desc: "found",
@@ -74,12 +74,12 @@ func TestShowWhereIs(t *testing.T) {
 				require.ErrorIs(t, stat.Err(), tc.err)
 			} else {
 				require.NoError(t, err)
-				var resp types.QueryGetWhereIsResponse
+				var resp types.QueryGetBucketResponse
 				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-				require.NotNil(t, resp.WhereIs)
+				require.NotNil(t, resp.Bucket)
 				require.Equal(t,
 					nullify.Fill(&tc.obj),
-					nullify.Fill(&resp.WhereIs),
+					nullify.Fill(&resp.Bucket),
 				)
 			}
 		})
@@ -111,12 +111,12 @@ func TestListWhereIs(t *testing.T) {
 			args := request(nil, uint64(i), uint64(step), false)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListWhereIs(), args)
 			require.NoError(t, err)
-			var resp types.QueryAllWhereIsResponse
+			var resp types.QueryAllBucketsResponse
 			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.LessOrEqual(t, len(resp.WhereIs), step)
+			require.LessOrEqual(t, len(resp.Buckets), step)
 			require.Subset(t,
 				nullify.Fill(objs),
-				nullify.Fill(resp.WhereIs),
+				nullify.Fill(resp.Buckets),
 			)
 		}
 	})
@@ -127,12 +127,12 @@ func TestListWhereIs(t *testing.T) {
 			args := request(next, 0, uint64(step), false)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListWhereIs(), args)
 			require.NoError(t, err)
-			var resp types.QueryAllWhereIsResponse
+			var resp types.QueryAllBucketsResponse
 			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.LessOrEqual(t, len(resp.WhereIs), step)
+			require.LessOrEqual(t, len(resp.Buckets), step)
 			require.Subset(t,
 				nullify.Fill(objs),
-				nullify.Fill(resp.WhereIs),
+				nullify.Fill(resp.Buckets),
 			)
 			next = resp.Pagination.NextKey
 		}
@@ -141,13 +141,13 @@ func TestListWhereIs(t *testing.T) {
 		args := request(nil, 0, uint64(len(objs)), true)
 		out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListWhereIs(), args)
 		require.NoError(t, err)
-		var resp types.QueryAllWhereIsResponse
+		var resp types.QueryAllBucketsResponse
 		require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 		require.NoError(t, err)
 		require.Equal(t, len(objs), int(resp.Pagination.Total))
 		require.ElementsMatch(t,
 			nullify.Fill(objs),
-			nullify.Fill(resp.WhereIs),
+			nullify.Fill(resp.Buckets),
 		)
 	})
 }

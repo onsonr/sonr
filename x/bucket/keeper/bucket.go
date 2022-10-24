@@ -13,7 +13,7 @@ import (
 // GetWhereIsCount get the total number of whereIs
 func (k Keeper) GetWhereIsCount(ctx sdk.Context) uint64 {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	byteKey := types.KeyPrefix(types.WhereIsCountKey)
+	byteKey := types.KeyPrefix(types.BucketCountKey)
 	bz := store.Get(byteKey)
 
 	// Count doesn't exist: no element
@@ -28,7 +28,7 @@ func (k Keeper) GetWhereIsCount(ctx sdk.Context) uint64 {
 // SetWhereIsCount set the total number of whereIs
 func (k Keeper) SetWhereIsCount(ctx sdk.Context, count uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	byteKey := types.KeyPrefix(types.WhereIsCountKey)
+	byteKey := types.KeyPrefix(types.BucketCountKey)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, count)
 	store.Set(byteKey, bz)
@@ -37,7 +37,7 @@ func (k Keeper) SetWhereIsCount(ctx sdk.Context, count uint64) {
 // AppendWhereIs appends a whereIs in the store with a new id and update the count
 func (k Keeper) AppendWhereIs(
 	ctx sdk.Context,
-	whereIs types.WhereIs,
+	whereIs types.Bucket,
 ) string {
 	// Create the whereIs
 	count := k.GetWhereIsCount(ctx)
@@ -51,17 +51,17 @@ func (k Keeper) AppendWhereIs(
 }
 
 // SetWhereIs set a specific whereIs in the store
-func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.WhereIs) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
+func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.Bucket) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	b := k.cdc.MustMarshal(&whereIs)
-	store.Set(types.WhereIsKey(whereIs.Uuid), b)
+	store.Set(types.BucketKey(whereIs.Uuid), b)
 }
 
-// GetWhereIs returns a whereIs from its id
-func (k Keeper) GetWhereIs(ctx sdk.Context, creator, id string) (val types.WhereIs, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
+// GetBucket returns a whereIs from its id
+func (k Keeper) GetBucket(ctx sdk.Context, id string) (val types.Bucket, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	b := store.Get(
-		types.WhereIsKey(
+		types.BucketKey(
 			id,
 		),
 	)
@@ -70,7 +70,7 @@ func (k Keeper) GetWhereIs(ctx sdk.Context, creator, id string) (val types.Where
 		return val, false
 	}
 	k.cdc.MustUnmarshal(b, &val)
-	if val.Visibility == types.BucketVisibility_PUBLIC || val.Creator == creator {
+	if val.Visibility == types.BucketVisibility_PUBLIC {
 		return val, true
 	}
 
@@ -78,14 +78,14 @@ func (k Keeper) GetWhereIs(ctx sdk.Context, creator, id string) (val types.Where
 }
 
 // GetWhereIs returns a whereIs from its id
-func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []types.WhereIs) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
+func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []types.Bucket) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.WhereIs
+		var val types.Bucket
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		if val.Creator == creator {
 			list = append(list, val)
@@ -97,19 +97,19 @@ func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []typ
 
 // RemoveWhereIs removes a whereIs from the store
 func (k Keeper) RemoveWhereIs(ctx sdk.Context, id string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
-	store.Delete(types.WhereIsKey(id))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
+	store.Delete(types.BucketKey(id))
 }
 
 // GetAllWhereIs returns all whereIs
-func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.WhereIs) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.WhereIsKeyPrefix))
+func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.Bucket) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.WhereIs
+		var val types.Bucket
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		if val.Visibility == types.BucketVisibility_PUBLIC {
 			list = append(list, val)
