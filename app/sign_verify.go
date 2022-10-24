@@ -83,7 +83,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 				if snrErr := VerifySonrSignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx); snrErr == nil {
 					return next(ctx, tx, simulate)
 				} else {
-					fmt.Printf("ethereum signature verification failed; %s", snrErr.Error())
+					fmt.Printf("Sonr signature verification failed; %s", snrErr.Error())
 				}
 
 				var errMsg string
