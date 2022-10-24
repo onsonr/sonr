@@ -133,24 +133,41 @@ message QueryWhoIsByAliasRequest {
 // -----------------------------------------------------------------------------
 // Schema Models
 // -----------------------------------------------------------------------------
+
+// Create Schema (`WhatIs`) recorded on chain
 message CreateSchemaRequest {
+  // human readable name of the schema
   string label = 1;
+
+  // Definition of the schema provided as a map
   map<string, sonrio.sonr.schema.SchemaFieldKind> fields = 2;
+  
+  // custom metadata for the definition. will be recorded on chain
   map<string, string> metadata = 3;
 }
 
+// Query for a `WhatIs` instance on chain
 message QueryWhatIsRequest {
+  // Creator's address (snr address)
   string creator = 1;
+  // did (identifier) of the specific schema
   string did = 2;
 }
 
+// Query for all WhatIs instances for a single creator address (snr address)
 message QueryWhatIsByCreatorRequest {
+  // Creator's address (snr address)
   string creator = 1;
+
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
+// Abstraction for querying a `Schema` without having a `WhatIs` instance returned
 message QuerySchemaRequest {
+  // Creator's address (snr address)
   string creator = 1;
+
+  // DID (identifer) of the specific schema
   string did = 2;
 }
 
