@@ -14,6 +14,8 @@ option java_multiple_files = true;
 service Msg {
   rpc DefineBucket(MsgDefineBucket) returns (MsgDefineBucketResponse);
   rpc GenerateBucket(MsgGenerateBucket) returns (MsgGenerateBucketResponse);
+  rpc DeactivateBucket(MsgDeactivateBucket) returns (MsgDeactivateBucketResponse);
+  rpc BurnBucket(MsgBurnBucket) returns (MsgBurnBucketResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -32,6 +34,20 @@ message MsgGenerateBucket {
 }
 
 message MsgGenerateBucketResponse {
+}
+
+message MsgDeactivateBucket {
+  string creator = 1;
+}
+
+message MsgDeactivateBucketResponse {
+}
+
+message MsgBurnBucket {
+  string creator = 1;
+}
+
+message MsgBurnBucketResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message

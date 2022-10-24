@@ -12,10 +12,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdGenerateBucket() *cobra.Command {
+func CmdBurnBucket() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "generate-bucket",
-		Short: "Broadcast message GenerateBucket",
+		Use:   "burn-bucket",
+		Short: "Broadcast message BurnBucket",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -24,7 +24,7 @@ func CmdGenerateBucket() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgGenerateBucket(
+			msg := types.NewMsgBurnBucket(
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

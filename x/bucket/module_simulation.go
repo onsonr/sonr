@@ -40,6 +40,14 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgGenerateBucket int = 100
 
+	opWeightMsgDeactivateBucket = "op_weight_msg_deactivate_bucket"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeactivateBucket int = 100
+
+	opWeightMsgBurnBucket = "op_weight_msg_burn_bucket"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgBurnBucket int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -104,6 +112,28 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgGenerateBucket,
 		bucketsimulation.SimulateMsgGenerateBucket(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeactivateBucket int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeactivateBucket, &weightMsgDeactivateBucket, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeactivateBucket = defaultWeightMsgDeactivateBucket
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeactivateBucket,
+		bucketsimulation.SimulateMsgDeactivateBucket(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgBurnBucket int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBurnBucket, &weightMsgBurnBucket, nil,
+		func(_ *rand.Rand) {
+			weightMsgBurnBucket = defaultWeightMsgBurnBucket
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgBurnBucket,
+		bucketsimulation.SimulateMsgBurnBucket(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

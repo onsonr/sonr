@@ -7,11 +7,11 @@ import (
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (k msgServer) GenerateBucket(goCtx context.Context, msg *types.MsgGenerateBucket) (*types.MsgGenerateBucketResponse, error) {
+func (k msgServer) BurnBucket(goCtx context.Context, msg *types.MsgBurnBucket) (*types.MsgBurnBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO: Handling the message
 	_ = ctx
 
-	return &types.MsgGenerateBucketResponse{}, nil
+	return &types.MsgBurnBucketResponse{}, nil
 }

@@ -5,25 +5,25 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgGenerateBucket = "generate_bucket"
+const TypeMsgBurnBucket = "burn_bucket"
 
-var _ sdk.Msg = &MsgGenerateBucket{}
+var _ sdk.Msg = &MsgBurnBucket{}
 
-func NewMsgGenerateBucket(creator string) *MsgGenerateBucket {
-	return &MsgGenerateBucket{
+func NewMsgBurnBucket(creator string) *MsgBurnBucket {
+	return &MsgBurnBucket{
 		Creator: creator,
 	}
 }
 
-func (msg *MsgGenerateBucket) Route() string {
+func (msg *MsgBurnBucket) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgGenerateBucket) Type() string {
-	return TypeMsgGenerateBucket
+func (msg *MsgBurnBucket) Type() string {
+	return TypeMsgBurnBucket
 }
 
-func (msg *MsgGenerateBucket) GetSigners() []sdk.AccAddress {
+func (msg *MsgBurnBucket) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -31,12 +31,12 @@ func (msg *MsgGenerateBucket) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgGenerateBucket) GetSignBytes() []byte {
+func (msg *MsgBurnBucket) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgGenerateBucket) ValidateBasic() error {
+func (msg *MsgBurnBucket) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

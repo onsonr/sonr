@@ -78,7 +78,7 @@ func (suite *BucketTestSuite) SetupSuite() {
 	if "Player 1" != result.Document.Label {
 		fmt.Println("Failed to upload document")
 	}
-	
+
 	suite.cidDoc1 = result.GetCid()
 
 	builder.SetLabel("Player 2")
@@ -90,7 +90,7 @@ func (suite *BucketTestSuite) SetupSuite() {
 	if "Player 2" != result.Document.Label {
 		fmt.Println("Failed to upload document")
 	}
-	
+
 	suite.cidDoc2 = result.GetCid()
 
 	// create bucket with content

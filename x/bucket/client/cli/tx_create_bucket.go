@@ -10,10 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdCreateWhereIs() *cobra.Command {
+func CmdCreateBucket() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-where-is",
-		Short: "Create a new WhereIs",
+		Use:   "create-bucket",
+		Short: "Create a new Bucket",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

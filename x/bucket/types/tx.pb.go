@@ -211,37 +211,206 @@ func (m *MsgGenerateBucketResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgGenerateBucketResponse proto.InternalMessageInfo
 
+type MsgDeactivateBucket struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+}
+
+func (m *MsgDeactivateBucket) Reset()         { *m = MsgDeactivateBucket{} }
+func (m *MsgDeactivateBucket) String() string { return proto.CompactTextString(m) }
+func (*MsgDeactivateBucket) ProtoMessage()    {}
+func (*MsgDeactivateBucket) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3479ee73a3c611d5, []int{4}
+}
+func (m *MsgDeactivateBucket) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeactivateBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeactivateBucket.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeactivateBucket) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeactivateBucket.Merge(m, src)
+}
+func (m *MsgDeactivateBucket) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeactivateBucket) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeactivateBucket.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeactivateBucket proto.InternalMessageInfo
+
+func (m *MsgDeactivateBucket) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+type MsgDeactivateBucketResponse struct {
+}
+
+func (m *MsgDeactivateBucketResponse) Reset()         { *m = MsgDeactivateBucketResponse{} }
+func (m *MsgDeactivateBucketResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeactivateBucketResponse) ProtoMessage()    {}
+func (*MsgDeactivateBucketResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3479ee73a3c611d5, []int{5}
+}
+func (m *MsgDeactivateBucketResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeactivateBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeactivateBucketResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeactivateBucketResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeactivateBucketResponse.Merge(m, src)
+}
+func (m *MsgDeactivateBucketResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeactivateBucketResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeactivateBucketResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeactivateBucketResponse proto.InternalMessageInfo
+
+type MsgBurnBucket struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+}
+
+func (m *MsgBurnBucket) Reset()         { *m = MsgBurnBucket{} }
+func (m *MsgBurnBucket) String() string { return proto.CompactTextString(m) }
+func (*MsgBurnBucket) ProtoMessage()    {}
+func (*MsgBurnBucket) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3479ee73a3c611d5, []int{6}
+}
+func (m *MsgBurnBucket) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgBurnBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgBurnBucket.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgBurnBucket) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgBurnBucket.Merge(m, src)
+}
+func (m *MsgBurnBucket) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgBurnBucket) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgBurnBucket.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgBurnBucket proto.InternalMessageInfo
+
+func (m *MsgBurnBucket) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+type MsgBurnBucketResponse struct {
+}
+
+func (m *MsgBurnBucketResponse) Reset()         { *m = MsgBurnBucketResponse{} }
+func (m *MsgBurnBucketResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgBurnBucketResponse) ProtoMessage()    {}
+func (*MsgBurnBucketResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3479ee73a3c611d5, []int{7}
+}
+func (m *MsgBurnBucketResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgBurnBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgBurnBucketResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgBurnBucketResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgBurnBucketResponse.Merge(m, src)
+}
+func (m *MsgBurnBucketResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgBurnBucketResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgBurnBucketResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgBurnBucketResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgDefineBucket)(nil), "sonrio.sonr.bucket.MsgDefineBucket")
 	proto.RegisterType((*MsgDefineBucketResponse)(nil), "sonrio.sonr.bucket.MsgDefineBucketResponse")
 	proto.RegisterType((*MsgGenerateBucket)(nil), "sonrio.sonr.bucket.MsgGenerateBucket")
 	proto.RegisterType((*MsgGenerateBucketResponse)(nil), "sonrio.sonr.bucket.MsgGenerateBucketResponse")
+	proto.RegisterType((*MsgDeactivateBucket)(nil), "sonrio.sonr.bucket.MsgDeactivateBucket")
+	proto.RegisterType((*MsgDeactivateBucketResponse)(nil), "sonrio.sonr.bucket.MsgDeactivateBucketResponse")
+	proto.RegisterType((*MsgBurnBucket)(nil), "sonrio.sonr.bucket.MsgBurnBucket")
+	proto.RegisterType((*MsgBurnBucketResponse)(nil), "sonrio.sonr.bucket.MsgBurnBucketResponse")
 }
 
 func init() { proto.RegisterFile("bucket/tx.proto", fileDescriptor_3479ee73a3c611d5) }
 
 var fileDescriptor_3479ee73a3c611d5 = []byte{
-	// 314 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0x2a, 0x4d, 0xce,
-	0x4e, 0x2d, 0xd1, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x2a, 0xce, 0xcf,
-	0x2b, 0xca, 0xcc, 0xd7, 0x03, 0x51, 0x7a, 0x10, 0x49, 0x29, 0x61, 0xa8, 0x22, 0x08, 0x05, 0x51,
-	0xa8, 0xe4, 0xc8, 0xc5, 0xef, 0x5b, 0x9c, 0xee, 0x92, 0x9a, 0x96, 0x99, 0x97, 0xea, 0x04, 0x96,
-	0x10, 0x92, 0xe0, 0x62, 0x4f, 0x2e, 0x4a, 0x4d, 0x2c, 0xc9, 0x2f, 0x92, 0x60, 0x54, 0x60, 0xd4,
-	0xe0, 0x0c, 0x82, 0x71, 0x85, 0x44, 0xb8, 0x58, 0x73, 0x12, 0x93, 0x52, 0x73, 0x24, 0x98, 0xc0,
-	0xe2, 0x10, 0x8e, 0x52, 0x06, 0x97, 0x38, 0x9a, 0x11, 0x41, 0xa9, 0xc5, 0x05, 0xf9, 0x79, 0xc5,
-	0xa9, 0x42, 0x62, 0x5c, 0x6c, 0xc5, 0x25, 0x89, 0x25, 0xa5, 0xc5, 0x60, 0x93, 0x58, 0x83, 0xa0,
-	0x3c, 0x21, 0x53, 0x2e, 0x8e, 0xf2, 0x8c, 0xd4, 0xa2, 0xd4, 0xf8, 0xcc, 0x62, 0xb0, 0x59, 0xdc,
-	0x46, 0x52, 0x7a, 0x98, 0x2e, 0xd6, 0x83, 0x9a, 0xc6, 0x0e, 0x56, 0xeb, 0x59, 0xac, 0xa4, 0xcb,
-	0x25, 0xe8, 0x5b, 0x9c, 0xee, 0x9e, 0x9a, 0x97, 0x5a, 0x94, 0x58, 0x42, 0xd0, 0xb9, 0x4a, 0xd2,
-	0x5c, 0x92, 0x18, 0xca, 0x61, 0x4e, 0x33, 0x3a, 0xcf, 0xc8, 0xc5, 0xec, 0x5b, 0x9c, 0x2e, 0x94,
-	0xc0, 0xc5, 0x83, 0xe2, 0x7b, 0x65, 0x6c, 0x0e, 0x41, 0xf3, 0x9f, 0x94, 0x36, 0x11, 0x8a, 0xe0,
-	0x81, 0x90, 0xc6, 0xc5, 0x87, 0xe6, 0x64, 0x55, 0x1c, 0xda, 0x51, 0x95, 0x49, 0xe9, 0x12, 0xa5,
-	0x0c, 0x66, 0x8f, 0x53, 0xc4, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24,
-	0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x70, 0x89,
-	0xc0, 0xcc, 0x28, 0xa9, 0x2c, 0x48, 0x2d, 0x86, 0x9a, 0x14, 0xc0, 0x18, 0xa5, 0x96, 0x9e, 0x59,
-	0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f, 0x92, 0xd7, 0xcd, 0xcc, 0x07, 0xd3, 0xfa,
-	0x15, 0xfa, 0xb0, 0x04, 0x05, 0xd2, 0x90, 0xc4, 0x06, 0x4e, 0x2b, 0xc6, 0x80, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0x48, 0xff, 0x19, 0xde, 0x67, 0x02, 0x00, 0x00,
+	// 386 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x4d, 0x4f, 0xf2, 0x40,
+	0x10, 0x80, 0xe9, 0x4b, 0x80, 0xf7, 0x9d, 0x57, 0x45, 0x17, 0x14, 0x2c, 0xb1, 0xd1, 0x1a, 0x3f,
+	0x88, 0xa1, 0x4d, 0x30, 0xfe, 0x00, 0x89, 0x89, 0xf1, 0xd0, 0xc4, 0x70, 0x32, 0x5c, 0xb4, 0x6d,
+	0x96, 0xd2, 0x88, 0x5d, 0xb2, 0xbb, 0x55, 0xfc, 0x17, 0x5e, 0xfd, 0x47, 0x1e, 0x39, 0x7a, 0x34,
+	0xf0, 0x47, 0x0c, 0xdb, 0x0f, 0x2d, 0x1f, 0xa1, 0xa7, 0xc9, 0x74, 0x9e, 0x79, 0x3a, 0x99, 0xc9,
+	0x42, 0xd1, 0xf2, 0xed, 0x47, 0xcc, 0x75, 0x3e, 0xd4, 0x06, 0x94, 0x70, 0x82, 0x10, 0x23, 0x1e,
+	0x75, 0x89, 0x36, 0x0d, 0x5a, 0x50, 0x94, 0x4b, 0x21, 0x14, 0x84, 0x00, 0x54, 0x2f, 0xa1, 0x68,
+	0x30, 0xe7, 0x0a, 0x77, 0x5d, 0x0f, 0xb7, 0x44, 0x01, 0x55, 0xa1, 0x60, 0x53, 0x6c, 0x72, 0x42,
+	0xab, 0xd2, 0xbe, 0x74, 0xfa, 0xaf, 0x1d, 0xa5, 0xa8, 0x0c, 0xb9, 0xbe, 0x69, 0xe1, 0x7e, 0xf5,
+	0x8f, 0xf8, 0x1e, 0x24, 0x6a, 0x0f, 0x2a, 0x33, 0x8a, 0x36, 0x66, 0x03, 0xe2, 0x31, 0x8c, 0x76,
+	0x20, 0xcf, 0xb8, 0xc9, 0x7d, 0x26, 0x4c, 0xb9, 0x76, 0x98, 0xa1, 0x0b, 0xf8, 0xfb, 0xd2, 0xc3,
+	0x14, 0xdf, 0xbb, 0x4c, 0xb8, 0xfe, 0x37, 0x65, 0x6d, 0x7e, 0x62, 0x2d, 0xb4, 0x15, 0x04, 0x7b,
+	0xc3, 0xd4, 0x06, 0x6c, 0x19, 0xcc, 0xb9, 0xc6, 0x1e, 0xa6, 0x26, 0x5f, 0x39, 0xae, 0x5a, 0x83,
+	0xdd, 0x39, 0x3c, 0x1a, 0x4d, 0xd5, 0xa1, 0x24, 0xa6, 0x36, 0x6d, 0xee, 0x3e, 0xa7, 0xb1, 0xed,
+	0x41, 0x6d, 0x41, 0x43, 0xec, 0xab, 0xc3, 0xba, 0xc1, 0x9c, 0x96, 0x4f, 0xbd, 0x95, 0xa6, 0x0a,
+	0x6c, 0x27, 0xd0, 0xc8, 0xd1, 0x7c, 0xcf, 0x42, 0xd6, 0x60, 0x0e, 0x7a, 0x80, 0xb5, 0xc4, 0x45,
+	0x0e, 0x17, 0x2d, 0x67, 0x66, 0xe7, 0xf2, 0x59, 0x0a, 0x28, 0x3e, 0x4c, 0x17, 0x36, 0x66, 0xd6,
+	0x78, 0xb4, 0xa4, 0x3d, 0x89, 0xc9, 0x8d, 0x54, 0x58, 0xfc, 0x9f, 0x3e, 0x6c, 0xce, 0xad, 0xf8,
+	0x64, 0xe9, 0xa0, 0x49, 0x50, 0xd6, 0x53, 0x82, 0xf1, 0xdf, 0x3a, 0x00, 0xbf, 0x0e, 0x70, 0xb0,
+	0xa4, 0xfd, 0x07, 0x91, 0xeb, 0x2b, 0x91, 0xc8, 0xdd, 0xba, 0xfb, 0x18, 0x2b, 0xd2, 0x68, 0xac,
+	0x48, 0x5f, 0x63, 0x45, 0x7a, 0x9b, 0x28, 0x99, 0xd1, 0x44, 0xc9, 0x7c, 0x4e, 0x94, 0x0c, 0x94,
+	0xa3, 0x7e, 0xfe, 0x3a, 0xc0, 0x2c, 0xb4, 0xdc, 0x4a, 0x9d, 0x63, 0xc7, 0xe5, 0x3d, 0xdf, 0xd2,
+	0x6c, 0xf2, 0xa4, 0x4f, 0xeb, 0x0d, 0x97, 0x88, 0xa8, 0x0f, 0xf5, 0xe8, 0xb9, 0x4e, 0x1b, 0xac,
+	0xbc, 0x78, 0x89, 0xe7, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0xf8, 0x58, 0xfb, 0x91, 0xc5, 0x03,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -258,6 +427,8 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	DefineBucket(ctx context.Context, in *MsgDefineBucket, opts ...grpc.CallOption) (*MsgDefineBucketResponse, error)
 	GenerateBucket(ctx context.Context, in *MsgGenerateBucket, opts ...grpc.CallOption) (*MsgGenerateBucketResponse, error)
+	DeactivateBucket(ctx context.Context, in *MsgDeactivateBucket, opts ...grpc.CallOption) (*MsgDeactivateBucketResponse, error)
+	BurnBucket(ctx context.Context, in *MsgBurnBucket, opts ...grpc.CallOption) (*MsgBurnBucketResponse, error)
 }
 
 type msgClient struct {
@@ -286,10 +457,30 @@ func (c *msgClient) GenerateBucket(ctx context.Context, in *MsgGenerateBucket, o
 	return out, nil
 }
 
+func (c *msgClient) DeactivateBucket(ctx context.Context, in *MsgDeactivateBucket, opts ...grpc.CallOption) (*MsgDeactivateBucketResponse, error) {
+	out := new(MsgDeactivateBucketResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/DeactivateBucket", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) BurnBucket(ctx context.Context, in *MsgBurnBucket, opts ...grpc.CallOption) (*MsgBurnBucketResponse, error) {
+	out := new(MsgBurnBucketResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/BurnBucket", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	DefineBucket(context.Context, *MsgDefineBucket) (*MsgDefineBucketResponse, error)
 	GenerateBucket(context.Context, *MsgGenerateBucket) (*MsgGenerateBucketResponse, error)
+	DeactivateBucket(context.Context, *MsgDeactivateBucket) (*MsgDeactivateBucketResponse, error)
+	BurnBucket(context.Context, *MsgBurnBucket) (*MsgBurnBucketResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -301,6 +492,12 @@ func (*UnimplementedMsgServer) DefineBucket(ctx context.Context, req *MsgDefineB
 }
 func (*UnimplementedMsgServer) GenerateBucket(ctx context.Context, req *MsgGenerateBucket) (*MsgGenerateBucketResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateBucket not implemented")
+}
+func (*UnimplementedMsgServer) DeactivateBucket(ctx context.Context, req *MsgDeactivateBucket) (*MsgDeactivateBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeactivateBucket not implemented")
+}
+func (*UnimplementedMsgServer) BurnBucket(ctx context.Context, req *MsgBurnBucket) (*MsgBurnBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BurnBucket not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -343,6 +540,42 @@ func _Msg_GenerateBucket_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_DeactivateBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeactivateBucket)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeactivateBucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrio.sonr.bucket.Msg/DeactivateBucket",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeactivateBucket(ctx, req.(*MsgDeactivateBucket))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_BurnBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgBurnBucket)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).BurnBucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrio.sonr.bucket.Msg/BurnBucket",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).BurnBucket(ctx, req.(*MsgBurnBucket))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sonrio.sonr.bucket.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -354,6 +587,14 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GenerateBucket",
 			Handler:    _Msg_GenerateBucket_Handler,
+		},
+		{
+			MethodName: "DeactivateBucket",
+			Handler:    _Msg_DeactivateBucket_Handler,
+		},
+		{
+			MethodName: "BurnBucket",
+			Handler:    _Msg_BurnBucket_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -490,6 +731,112 @@ func (m *MsgGenerateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgDeactivateBucket) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeactivateBucket) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeactivateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeactivateBucketResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeactivateBucketResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeactivateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgBurnBucket) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgBurnBucket) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgBurnBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgBurnBucketResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgBurnBucketResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgBurnBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -548,6 +895,50 @@ func (m *MsgGenerateBucket) Size() (n int) {
 }
 
 func (m *MsgGenerateBucketResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDeactivateBucket) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDeactivateBucketResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgBurnBucket) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgBurnBucketResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -890,6 +1281,270 @@ func (m *MsgGenerateBucketResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgGenerateBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeactivateBucket) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeactivateBucket: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeactivateBucket: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeactivateBucketResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeactivateBucketResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeactivateBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgBurnBucket) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgBurnBucket: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgBurnBucket: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgBurnBucketResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgBurnBucketResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgBurnBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

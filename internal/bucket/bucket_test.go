@@ -38,11 +38,11 @@ func (suite *BucketTestSuite) Test_Bucket() {
 		items := suite.testBucket.GetBucketItems()
 		assert.Equal(t, len(items), 1)
 		item := bt.BucketItem{
-				Name:      "test",
-				Uri:       suite.cidDoc2,
-				Timestamp: time.Now().Unix(),
-				Type:      bt.ResourceIdentifier_CID,
-			}
+			Name:      "test",
+			Uri:       suite.cidDoc2,
+			Timestamp: time.Now().Unix(),
+			Type:      bt.ResourceIdentifier_CID,
+		}
 		items = append(items, &item)
 		assert.Equal(t, len(items), 2)
 		err := suite.testBucket.ResolveContent()

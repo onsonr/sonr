@@ -27,15 +27,13 @@ func (suite *MotorTestSuite) Test_CreateBucket() {
 			var createReq mt.CreateBucketRequest
 			if i == 0 {
 				createReq = mt.CreateBucketRequest{
-					Creator:    suite.motorWithKeys.GetAddress(),
-					Label:      fmt.Sprintf("my awesome bucket %d", i),
-
+					Creator: suite.motorWithKeys.GetAddress(),
+					Label:   fmt.Sprintf("my awesome bucket %d", i),
 				}
 			} else {
 				createReq = mt.CreateBucketRequest{
-					Creator:    suite.motorWithKeys.GetAddress(),
-					Label:      fmt.Sprintf("my awesome bucket %d", i),
-
+					Creator: suite.motorWithKeys.GetAddress(),
+					Label:   fmt.Sprintf("my awesome bucket %d", i),
 				}
 			}
 
