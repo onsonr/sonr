@@ -39,13 +39,19 @@ enum WALLET_EVENT_TYPE {
   SHARD_GENERATE_END = 14;
   // triggered if shard generation has an error errorMessage will be populated
   SHARD_GENERATE_ERROR = 15;
+  // triggered on start of WhoIs creation
+  WHO_IS_CREATE_START = 16;
+  // triggered when WhoIs creation ends
+  WHO_IS_CREATE_END = 17;
+  // triggered when WhoIs creation errors
+  WHO_IS_CREATE_ERROR = 18;
   // triggered when the vault is being created.
-  VAULT_CREATE_START = 16;
+  VAULT_CREATE_START = 19;
   // triggered after vault creation has returned.
   // if an error occurs it will be within the event
-  VAULT_CREATE_END = 17;
+  VAULT_CREATE_END = 20;
   // triggered if vault create has an error populates errorMessage
-  VAULT_CREATE_ERROR = 18;
+  VAULT_CREATE_ERROR = 21;
 }
 
 message WalletEvent {
