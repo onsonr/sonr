@@ -23,11 +23,17 @@ service Query {
   }
   // Queries a WhereIs by did and creator.
   rpc Bucket(QueryGetBucketRequest) returns (QueryGetBucketResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/bucket/{uuid}";
+    option (google.api.http).get = "/sonr-io/sonr/bucket/id/{uuid}";
   }
+
   // Queries all WhereIs by creator.
   rpc BucketByCreator(QueryGetBucketByCreatorRequest) returns (QueryGetBucketByCreatorResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/bucket/{creator}";
+    option (google.api.http).get = "/sonr-io/sonr/bucket/creator/{creator}";
+  }
+
+  // Queries all WhereIs by creator.
+  rpc BucketByName(QueryGetBucketByNameRequest) returns (QueryGetBucketByNameResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/name/{name}";
   }
 
   // Queries a list of WhereIs items.
@@ -61,6 +67,16 @@ message QueryGetBucketByCreatorRequest {
 }
 
 message QueryGetBucketByCreatorResponse {
+  repeated Bucket buckets = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetBucketByNameRequest {
+  string name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetBucketByNameResponse {
   repeated Bucket buckets = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

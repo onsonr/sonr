@@ -305,6 +305,110 @@ func (m *QueryGetBucketByCreatorResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+type QueryGetBucketByNameRequest struct {
+	Name       string             `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetBucketByNameRequest) Reset()         { *m = QueryGetBucketByNameRequest{} }
+func (m *QueryGetBucketByNameRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBucketByNameRequest) ProtoMessage()    {}
+func (*QueryGetBucketByNameRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_193313c7681ac565, []int{6}
+}
+func (m *QueryGetBucketByNameRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetBucketByNameRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetBucketByNameRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetBucketByNameRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBucketByNameRequest.Merge(m, src)
+}
+func (m *QueryGetBucketByNameRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetBucketByNameRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBucketByNameRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetBucketByNameRequest proto.InternalMessageInfo
+
+func (m *QueryGetBucketByNameRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *QueryGetBucketByNameRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetBucketByNameResponse struct {
+	Buckets    []Bucket            `protobuf:"bytes,1,rep,name=buckets,proto3" json:"buckets"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetBucketByNameResponse) Reset()         { *m = QueryGetBucketByNameResponse{} }
+func (m *QueryGetBucketByNameResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBucketByNameResponse) ProtoMessage()    {}
+func (*QueryGetBucketByNameResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_193313c7681ac565, []int{7}
+}
+func (m *QueryGetBucketByNameResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetBucketByNameResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetBucketByNameResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetBucketByNameResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBucketByNameResponse.Merge(m, src)
+}
+func (m *QueryGetBucketByNameResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetBucketByNameResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBucketByNameResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetBucketByNameResponse proto.InternalMessageInfo
+
+func (m *QueryGetBucketByNameResponse) GetBuckets() []Bucket {
+	if m != nil {
+		return m.Buckets
+	}
+	return nil
+}
+
+func (m *QueryGetBucketByNameResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 type QueryAllBucketsRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -313,7 +417,7 @@ func (m *QueryAllBucketsRequest) Reset()         { *m = QueryAllBucketsRequest{}
 func (m *QueryAllBucketsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAllBucketsRequest) ProtoMessage()    {}
 func (*QueryAllBucketsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_193313c7681ac565, []int{6}
+	return fileDescriptor_193313c7681ac565, []int{8}
 }
 func (m *QueryAllBucketsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -358,7 +462,7 @@ func (m *QueryAllBucketsResponse) Reset()         { *m = QueryAllBucketsResponse
 func (m *QueryAllBucketsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAllBucketsResponse) ProtoMessage()    {}
 func (*QueryAllBucketsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_193313c7681ac565, []int{7}
+	return fileDescriptor_193313c7681ac565, []int{9}
 }
 func (m *QueryAllBucketsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -408,6 +512,8 @@ func init() {
 	proto.RegisterType((*QueryGetBucketResponse)(nil), "sonrio.sonr.bucket.QueryGetBucketResponse")
 	proto.RegisterType((*QueryGetBucketByCreatorRequest)(nil), "sonrio.sonr.bucket.QueryGetBucketByCreatorRequest")
 	proto.RegisterType((*QueryGetBucketByCreatorResponse)(nil), "sonrio.sonr.bucket.QueryGetBucketByCreatorResponse")
+	proto.RegisterType((*QueryGetBucketByNameRequest)(nil), "sonrio.sonr.bucket.QueryGetBucketByNameRequest")
+	proto.RegisterType((*QueryGetBucketByNameResponse)(nil), "sonrio.sonr.bucket.QueryGetBucketByNameResponse")
 	proto.RegisterType((*QueryAllBucketsRequest)(nil), "sonrio.sonr.bucket.QueryAllBucketsRequest")
 	proto.RegisterType((*QueryAllBucketsResponse)(nil), "sonrio.sonr.bucket.QueryAllBucketsResponse")
 }
@@ -415,43 +521,47 @@ func init() {
 func init() { proto.RegisterFile("bucket/query.proto", fileDescriptor_193313c7681ac565) }
 
 var fileDescriptor_193313c7681ac565 = []byte{
-	// 564 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x94, 0xb1, 0x6f, 0xd3, 0x4e,
-	0x14, 0xc7, 0x73, 0xfd, 0xe5, 0x97, 0x8a, 0xc7, 0x80, 0xf4, 0x1a, 0x20, 0x32, 0xe0, 0x46, 0x46,
-	0x4a, 0xa1, 0x15, 0x67, 0x35, 0x5d, 0x10, 0x5b, 0x83, 0x44, 0x47, 0x42, 0x26, 0xc4, 0xc4, 0x39,
-	0x9c, 0x8c, 0x85, 0xe3, 0x73, 0xed, 0x33, 0x22, 0x42, 0x65, 0xa8, 0x90, 0x58, 0x91, 0xd8, 0x19,
-	0x18, 0xf8, 0x2f, 0xd8, 0x3b, 0x56, 0x62, 0x61, 0x42, 0x28, 0xe1, 0x0f, 0x41, 0xbe, 0x3b, 0x53,
-	0xec, 0x24, 0x24, 0x30, 0x31, 0xdd, 0xe5, 0xe5, 0xfb, 0xde, 0xf7, 0x73, 0xef, 0xee, 0x19, 0xd0,
-	0xcb, 0x86, 0xcf, 0xb8, 0x74, 0x0f, 0x33, 0x9e, 0x8c, 0x69, 0x9c, 0x08, 0x29, 0x10, 0x53, 0x11,
-	0x25, 0x81, 0xa0, 0xf9, 0x42, 0xf5, 0xff, 0xd6, 0x86, 0xd1, 0xc5, 0x2c, 0x61, 0xa3, 0x54, 0x0b,
-	0x7f, 0x06, 0xf5, 0x62, 0x82, 0xdb, 0x43, 0x91, 0x8e, 0x44, 0xea, 0x7a, 0x2c, 0xe5, 0xba, 0xac,
-	0xfb, 0x7c, 0xd7, 0xe3, 0x92, 0xed, 0xba, 0x31, 0xf3, 0x83, 0x88, 0xc9, 0x40, 0x44, 0x46, 0xdb,
-	0xf4, 0x85, 0x2f, 0xd4, 0xd6, 0xcd, 0x77, 0x26, 0x7a, 0xd5, 0x17, 0xc2, 0x0f, 0xb9, 0xcb, 0xe2,
-	0xc0, 0x65, 0x51, 0x24, 0xa4, 0x4a, 0x31, 0xa6, 0x4e, 0x13, 0xf0, 0x41, 0x5e, 0xb5, 0xaf, 0x48,
-	0x06, 0xfc, 0x30, 0xe3, 0xa9, 0x74, 0xee, 0xc3, 0x46, 0x29, 0x9a, 0xc6, 0x22, 0x4a, 0x39, 0xde,
-	0x86, 0x86, 0x26, 0x6e, 0x91, 0x36, 0xb9, 0x71, 0xbe, 0x6b, 0xd1, 0xd9, 0xb3, 0x51, 0x9d, 0xd3,
-	0xab, 0x9f, 0x7c, 0xdd, 0xac, 0x0d, 0x8c, 0xde, 0xd9, 0x81, 0x8b, 0xaa, 0xe0, 0x01, 0x97, 0x3d,
-	0x25, 0x33, 0x4e, 0x88, 0x50, 0xcf, 0xb2, 0xe0, 0x89, 0x2a, 0x78, 0x6e, 0xa0, 0xf6, 0xce, 0x00,
-	0x2e, 0x55, 0xc5, 0x67, 0x00, 0xda, 0xe5, 0x77, 0x00, 0x3a, 0xa7, 0x00, 0xd0, 0x41, 0xe7, 0x98,
-	0x80, 0x5d, 0x2e, 0xda, 0x1b, 0xdf, 0x4d, 0x38, 0x93, 0x22, 0x29, 0x50, 0x5a, 0xb0, 0x3e, 0xd4,
-	0x11, 0x43, 0x53, 0xfc, 0xc4, 0x7b, 0x00, 0x67, 0xcd, 0x6e, 0xad, 0x29, 0xeb, 0x0e, 0xd5, 0x37,
-	0x43, 0xf3, 0x9b, 0xa1, 0xfa, 0xc2, 0xcd, 0xcd, 0xd0, 0x3e, 0xf3, 0xb9, 0xa9, 0x3a, 0xf8, 0x25,
-	0xd3, 0xf9, 0x48, 0x60, 0x73, 0x21, 0x84, 0x39, 0xe2, 0x1d, 0x58, 0xd7, 0xc8, 0x79, 0x93, 0xff,
-	0x5b, 0xe9, 0x8c, 0x45, 0x02, 0x1e, 0xcc, 0xe1, 0xdc, 0x5a, 0xca, 0xa9, 0x8d, 0x4b, 0xa0, 0x8f,
-	0xcd, 0x0d, 0xec, 0x87, 0xa1, 0x76, 0x2a, 0x5e, 0x46, 0xa5, 0x15, 0xe4, 0xaf, 0x5b, 0xf1, 0x9e,
-	0xc0, 0xe5, 0x19, 0x8b, 0x7f, 0xa8, 0x05, 0xdd, 0x4f, 0x75, 0xf8, 0x5f, 0x01, 0xe2, 0x2b, 0x68,
-	0xe8, 0x37, 0x8d, 0x9d, 0x79, 0x1c, 0xb3, 0xe3, 0x63, 0x6d, 0x2d, 0xd5, 0x69, 0x43, 0xe7, 0xfa,
-	0xf1, 0xe7, 0xef, 0xef, 0xd6, 0xae, 0xe1, 0x15, 0x37, 0x57, 0xde, 0x0a, 0x84, 0x5a, 0xdd, 0xd2,
-	0xd7, 0x01, 0x5f, 0x13, 0x68, 0xe8, 0xc3, 0xe2, 0xcd, 0x85, 0x85, 0xab, 0x83, 0x65, 0x6d, 0xaf,
-	0x22, 0x5d, 0x09, 0xe3, 0x65, 0x3e, 0x94, 0x47, 0xf8, 0x81, 0xc0, 0x85, 0xca, 0xa3, 0xc5, 0xee,
-	0x72, 0x93, 0xea, 0x98, 0x59, 0x7b, 0x7f, 0x94, 0x63, 0x08, 0x3b, 0x8a, 0xb0, 0x8d, 0xf6, 0x7c,
-	0x42, 0x33, 0xa8, 0x47, 0xf8, 0x86, 0x00, 0x98, 0xe7, 0xb4, 0x1f, 0x86, 0xb8, 0xb8, 0x09, 0x33,
-	0x2f, 0xdb, 0xda, 0x59, 0x49, 0x6b, 0x78, 0xda, 0x8a, 0xc7, 0xc2, 0xd6, 0x5c, 0x1e, 0x16, 0x86,
-	0xbd, 0x87, 0x27, 0x13, 0x9b, 0x9c, 0x4e, 0x6c, 0xf2, 0x6d, 0x62, 0x93, 0xb7, 0x53, 0xbb, 0x76,
-	0x3a, 0xb5, 0x6b, 0x5f, 0xa6, 0x76, 0x0d, 0x9a, 0x85, 0x87, 0x1c, 0xc7, 0x3c, 0x35, 0x4e, 0x7d,
-	0xf2, 0xa8, 0xe3, 0x07, 0xf2, 0x69, 0xe6, 0xd1, 0xa1, 0x18, 0x95, 0xab, 0xbe, 0x28, 0xea, 0xaa,
-	0x04, 0xaf, 0xa1, 0xbe, 0xdc, 0x7b, 0x3f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x08, 0x07, 0x40, 0x77,
-	0x6d, 0x06, 0x00, 0x00,
+	// 640 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x95, 0xcf, 0x6b, 0x13, 0x41,
+	0x14, 0xc7, 0x33, 0xb5, 0x4d, 0xf1, 0x29, 0x08, 0xaf, 0x55, 0xc3, 0xb6, 0x6e, 0xc3, 0x0a, 0x69,
+	0x6d, 0x71, 0xc7, 0xb6, 0x17, 0xf1, 0xd6, 0x08, 0xf6, 0xa6, 0x35, 0x27, 0xf1, 0xe4, 0x24, 0x1d,
+	0xd6, 0xc5, 0xcd, 0xce, 0x76, 0x7f, 0x88, 0x21, 0xc4, 0x43, 0x2f, 0x5e, 0x05, 0x8f, 0x82, 0x17,
+	0xc1, 0x83, 0x7f, 0x49, 0x8f, 0x05, 0x2f, 0x9e, 0x44, 0x12, 0xf1, 0xef, 0x90, 0x9d, 0x99, 0xb5,
+	0xc9, 0x66, 0x63, 0xa2, 0x78, 0xe8, 0x25, 0x3b, 0x79, 0x79, 0xef, 0x7d, 0x3f, 0xf3, 0xde, 0xbe,
+	0x17, 0xc0, 0x66, 0xd2, 0x7a, 0xc1, 0x63, 0x7a, 0x94, 0xf0, 0xb0, 0x63, 0x07, 0xa1, 0x88, 0x05,
+	0x62, 0x24, 0xfc, 0xd0, 0x15, 0x76, 0xfa, 0xb0, 0xd5, 0xef, 0xc6, 0x92, 0xf6, 0x0b, 0x58, 0xc8,
+	0xda, 0x91, 0x72, 0xfc, 0x6d, 0x54, 0x0f, 0x6d, 0xdc, 0x6c, 0x89, 0xa8, 0x2d, 0x22, 0xda, 0x64,
+	0x11, 0x57, 0x69, 0xe9, 0xcb, 0xed, 0x26, 0x8f, 0xd9, 0x36, 0x0d, 0x98, 0xe3, 0xfa, 0x2c, 0x76,
+	0x85, 0xaf, 0x7d, 0x97, 0x1d, 0xe1, 0x08, 0x79, 0xa4, 0xe9, 0x49, 0x5b, 0x57, 0x1d, 0x21, 0x1c,
+	0x8f, 0x53, 0x16, 0xb8, 0x94, 0xf9, 0xbe, 0x88, 0x65, 0x88, 0x16, 0xb5, 0x96, 0x01, 0x1f, 0xa7,
+	0x59, 0x0f, 0x24, 0x49, 0x83, 0x1f, 0x25, 0x3c, 0x8a, 0xad, 0x47, 0xb0, 0x34, 0x62, 0x8d, 0x02,
+	0xe1, 0x47, 0x1c, 0xef, 0x42, 0x59, 0x11, 0x57, 0x48, 0x95, 0x6c, 0x5c, 0xda, 0x31, 0xec, 0xf1,
+	0xbb, 0xd9, 0x2a, 0xa6, 0x3e, 0x7f, 0xf2, 0x6d, 0xad, 0xd4, 0xd0, 0xfe, 0xd6, 0x16, 0x5c, 0x95,
+	0x09, 0xf7, 0x79, 0x5c, 0x97, 0x6e, 0x5a, 0x09, 0x11, 0xe6, 0x93, 0xc4, 0x3d, 0x94, 0x09, 0x2f,
+	0x36, 0xe4, 0xd9, 0x6a, 0xc0, 0xb5, 0xbc, 0xf3, 0x19, 0x80, 0x52, 0xf9, 0x13, 0x80, 0x8a, 0xc9,
+	0x00, 0x94, 0xd1, 0x3a, 0x26, 0x60, 0x8e, 0x26, 0xad, 0x77, 0xee, 0x87, 0x9c, 0xc5, 0x22, 0xcc,
+	0x50, 0x2a, 0xb0, 0xd8, 0x52, 0x16, 0x4d, 0x93, 0x7d, 0xc5, 0x07, 0x00, 0x67, 0xc5, 0xae, 0xcc,
+	0x49, 0xe9, 0x9a, 0xad, 0x3a, 0x63, 0xa7, 0x9d, 0xb1, 0x55, 0xc3, 0x75, 0x67, 0xec, 0x03, 0xe6,
+	0x70, 0x9d, 0xb5, 0x31, 0x14, 0x69, 0x7d, 0x22, 0xb0, 0x36, 0x11, 0x42, 0x5f, 0xf1, 0x1e, 0x2c,
+	0x2a, 0xe4, 0xb4, 0xc8, 0x17, 0x66, 0xba, 0x63, 0x16, 0x80, 0xfb, 0x05, 0x9c, 0xeb, 0x53, 0x39,
+	0x95, 0xf0, 0x08, 0x68, 0x07, 0x56, 0xf2, 0x9c, 0x0f, 0x59, 0x9b, 0x0f, 0x35, 0xcd, 0x67, 0x6d,
+	0x9e, 0x35, 0x2d, 0x3d, 0xff, 0xb7, 0x1a, 0x7d, 0x24, 0xb0, 0x5a, 0xac, 0x7d, 0x9e, 0x0a, 0xf4,
+	0x4c, 0xbf, 0xa2, 0x7b, 0x9e, 0xa7, 0x94, 0xb2, 0xd1, 0xc9, 0xd5, 0x81, 0xfc, 0x73, 0x1d, 0x3e,
+	0x10, 0xb8, 0x3e, 0x26, 0x71, 0x8e, 0x4a, 0xb0, 0xf3, 0x73, 0x01, 0x16, 0x24, 0x20, 0xbe, 0x86,
+	0xb2, 0x1a, 0x7a, 0xac, 0x15, 0x71, 0x8c, 0xef, 0x17, 0x63, 0x7d, 0xaa, 0x9f, 0x12, 0xb4, 0x6e,
+	0x1e, 0x7f, 0xf9, 0xf1, 0x6e, 0xee, 0x06, 0xae, 0xd0, 0xd4, 0xf3, 0xb6, 0x2b, 0xe4, 0x93, 0x8e,
+	0xac, 0x4f, 0x7c, 0x43, 0xa0, 0xac, 0x2e, 0x8b, 0xb7, 0x26, 0x26, 0xce, 0x6f, 0x1e, 0x63, 0x73,
+	0x16, 0x57, 0x8d, 0x51, 0x93, 0x18, 0x55, 0x34, 0x0b, 0x31, 0xdc, 0x43, 0xda, 0x4d, 0x17, 0x57,
+	0x0f, 0x3f, 0x13, 0xb8, 0x92, 0x1b, 0x6c, 0xdc, 0x99, 0xae, 0x93, 0x5f, 0x45, 0xc6, 0xee, 0x5f,
+	0xc5, 0x68, 0x48, 0x5b, 0x42, 0x6e, 0x60, 0xad, 0x10, 0x52, 0xef, 0x32, 0xda, 0xd5, 0x87, 0x1e,
+	0xbe, 0x27, 0x70, 0x79, 0x78, 0xc2, 0x90, 0xce, 0xa2, 0x3a, 0xb4, 0x07, 0x8c, 0x3b, 0xb3, 0x07,
+	0x68, 0xc6, 0x0d, 0xc9, 0x68, 0x61, 0xb5, 0x90, 0x31, 0x5d, 0x24, 0xb4, 0x9b, 0x7e, 0xf6, 0xd2,
+	0xa6, 0x82, 0x7e, 0xef, 0xf7, 0x3c, 0x0f, 0x27, 0x77, 0x6b, 0x6c, 0x04, 0x8d, 0xad, 0x99, 0x7c,
+	0x35, 0x51, 0x55, 0x12, 0x19, 0x58, 0x29, 0x24, 0x62, 0x9e, 0x57, 0x7f, 0x72, 0xd2, 0x37, 0xc9,
+	0x69, 0xdf, 0x24, 0xdf, 0xfb, 0x26, 0x79, 0x3b, 0x30, 0x4b, 0xa7, 0x03, 0xb3, 0xf4, 0x75, 0x60,
+	0x96, 0x60, 0x39, 0xd3, 0x88, 0x3b, 0x01, 0x8f, 0xb4, 0xd2, 0x01, 0x79, 0x5a, 0x73, 0xdc, 0xf8,
+	0x79, 0xd2, 0xb4, 0x5b, 0xa2, 0x3d, 0x9a, 0xf5, 0x55, 0x96, 0x57, 0x06, 0x34, 0xcb, 0xf2, 0x3f,
+	0x78, 0xf7, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe7, 0x76, 0xe8, 0xac, 0x37, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -472,6 +582,8 @@ type QueryClient interface {
 	Bucket(ctx context.Context, in *QueryGetBucketRequest, opts ...grpc.CallOption) (*QueryGetBucketResponse, error)
 	// Queries all WhereIs by creator.
 	BucketByCreator(ctx context.Context, in *QueryGetBucketByCreatorRequest, opts ...grpc.CallOption) (*QueryGetBucketByCreatorResponse, error)
+	// Queries all WhereIs by creator.
+	BucketByName(ctx context.Context, in *QueryGetBucketByNameRequest, opts ...grpc.CallOption) (*QueryGetBucketByNameResponse, error)
 	// Queries a list of WhereIs items.
 	BucketsAll(ctx context.Context, in *QueryAllBucketsRequest, opts ...grpc.CallOption) (*QueryAllBucketsResponse, error)
 }
@@ -511,6 +623,15 @@ func (c *queryClient) BucketByCreator(ctx context.Context, in *QueryGetBucketByC
 	return out, nil
 }
 
+func (c *queryClient) BucketByName(ctx context.Context, in *QueryGetBucketByNameRequest, opts ...grpc.CallOption) (*QueryGetBucketByNameResponse, error) {
+	out := new(QueryGetBucketByNameResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/BucketByName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) BucketsAll(ctx context.Context, in *QueryAllBucketsRequest, opts ...grpc.CallOption) (*QueryAllBucketsResponse, error) {
 	out := new(QueryAllBucketsResponse)
 	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Query/BucketsAll", in, out, opts...)
@@ -528,6 +649,8 @@ type QueryServer interface {
 	Bucket(context.Context, *QueryGetBucketRequest) (*QueryGetBucketResponse, error)
 	// Queries all WhereIs by creator.
 	BucketByCreator(context.Context, *QueryGetBucketByCreatorRequest) (*QueryGetBucketByCreatorResponse, error)
+	// Queries all WhereIs by creator.
+	BucketByName(context.Context, *QueryGetBucketByNameRequest) (*QueryGetBucketByNameResponse, error)
 	// Queries a list of WhereIs items.
 	BucketsAll(context.Context, *QueryAllBucketsRequest) (*QueryAllBucketsResponse, error)
 }
@@ -544,6 +667,9 @@ func (*UnimplementedQueryServer) Bucket(ctx context.Context, req *QueryGetBucket
 }
 func (*UnimplementedQueryServer) BucketByCreator(ctx context.Context, req *QueryGetBucketByCreatorRequest) (*QueryGetBucketByCreatorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BucketByCreator not implemented")
+}
+func (*UnimplementedQueryServer) BucketByName(ctx context.Context, req *QueryGetBucketByNameRequest) (*QueryGetBucketByNameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BucketByName not implemented")
 }
 func (*UnimplementedQueryServer) BucketsAll(ctx context.Context, req *QueryAllBucketsRequest) (*QueryAllBucketsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BucketsAll not implemented")
@@ -607,6 +733,24 @@ func _Query_BucketByCreator_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_BucketByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetBucketByNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).BucketByName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrio.sonr.bucket.Query/BucketByName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).BucketByName(ctx, req.(*QueryGetBucketByNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_BucketsAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllBucketsRequest)
 	if err := dec(in); err != nil {
@@ -640,6 +784,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BucketByCreator",
 			Handler:    _Query_BucketByCreator_Handler,
+		},
+		{
+			MethodName: "BucketByName",
+			Handler:    _Query_BucketByName_Handler,
 		},
 		{
 			MethodName: "BucketsAll",
@@ -860,6 +1008,97 @@ func (m *QueryGetBucketByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGetBucketByNameRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetBucketByNameRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetBucketByNameRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetBucketByNameResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetBucketByNameResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetBucketByNameResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Buckets) > 0 {
+		for iNdEx := len(m.Buckets) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Buckets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *QueryAllBucketsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1017,6 +1256,42 @@ func (m *QueryGetBucketByCreatorRequest) Size() (n int) {
 }
 
 func (m *QueryGetBucketByCreatorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Buckets) > 0 {
+		for _, e := range m.Buckets {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetBucketByNameRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetBucketByNameResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1516,6 +1791,244 @@ func (m *QueryGetBucketByCreatorResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: QueryGetBucketByCreatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Buckets", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Buckets = append(m.Buckets, Bucket{})
+			if err := m.Buckets[len(m.Buckets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetBucketByNameRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetBucketByNameRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetBucketByNameRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetBucketByNameResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetBucketByNameResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetBucketByNameResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
