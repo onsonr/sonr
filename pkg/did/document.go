@@ -522,7 +522,24 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 func NewVerificationMethodFromBytes(id DID, keyType ssi.KeyType, controller DID, key []byte) (*VerificationMethod, error) {
 
 	if keyType == ssi.JsonWebKey2020 {
-		return nil, errors.New("JWK is not implemented for NewVerificationMethodFromBytes")
+		jwx := jwx.New(key)
+		key, err := jwx.CreateSignJWK()
+
+		if err != nil {
+			return nil, err
+		}
+		b, err := json.Marshal(key)
+		if err != nil {
+			return nil, err
+		}
+		keyAsMap := make(map[string]interface{})
+		json.Unmarshal(b, &keyAsMap)
+		return &VerificationMethod{
+			ID:           id,
+			Type:         keyType,
+			Controller:   controller,
+			PublicKeyJwk: keyAsMap,
+		}, nil
 	}
 	encodedKey := base58.Encode(key, base58.BitcoinAlphabet)
 	vm := &VerificationMethod{

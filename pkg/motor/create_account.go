@@ -105,7 +105,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}
 
 	// Add MPC as a VerificationMethod for the assertion of the DID Document
-	vm, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.ECDSASECP256K1VerificationKey2019, *controller, mtr.GetPubKey().Bytes())
+	vm, err := did.NewVerificationMethod(doc.GetID(), ssi.JsonWebKey2020, *controller, mtr.GetPubKey().Bytes())
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
@@ -226,25 +226,14 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 	// update DID Document
 	mtr.DIDDocument.AddService(vaultService)
 
-	// Format DID for setting MPC as controller
-	encKeyController, err := did.ParseDID(fmt.Sprintf("%s#enc", doc.GetID().String()))
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
 			ErrorMessage: err.Error(),
 			Message:      "",
 		})
-		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("parse controller DID: %s", err)
+		return
 	}
-
-	// Add MPC as a VerificationMethod for the assertion of the DID Document
-	encKeyVM, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.RSAVerificationKey2018, *encKeyController, pskShard)
-
-	if err != nil {
-		return mt.CreateAccountWithKeysResponse{}, err
-	}
-
-	mtr.DIDDocument.AddAssertionMethod(encKeyVM)
 
 	// update whois
 	_, err = updateWhoIs(mtr)
