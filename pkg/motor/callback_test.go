@@ -41,3 +41,28 @@ func Test_Callbacks(t *testing.T) {
 	})
 	assert.Equal(t, cb.GetWalletEventState(), true)
 }
+
+func Test_FailedInitializeRequest(t *testing.T) {
+	cb := &testCallback{}
+	// setup empty motor
+	mtr, err := EmptyMotor(&mt.InitializeRequest{}, cb)
+	// assert there is an error
+	assert.Error(t, err)
+	// assert the callback was not executed
+	assert.Equal(t, cb.GetWalletEventState(), false)
+	assert.Nil(t, mtr)
+}
+
+func Test_EmptyWalletEvent(t *testing.T) {
+	cb := &testCallback{}
+	// setup empty motor
+	mtr, err := EmptyMotor(&mt.InitializeRequest{
+		DeviceId:   "test_device",
+		ClientMode: mt.ClientMode_ENDPOINT_BETA,
+	}, cb)
+
+	assert.NoError(t, err)
+
+	mtr.triggerWalletEvent(common.WalletEvent{})
+	assert.Equal(t, cb.GetWalletEventState(), true)
+}
