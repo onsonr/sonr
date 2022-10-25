@@ -11,34 +11,14 @@ import (
 
 	Version: 0.1.0
 */
-type Bucket interface {
-	/*
-		Looks up content by the resource identifier.
-		Bucket Content maps one to one with `BucketItem`.
-		If the given identifier is not present an error is returned.
-		`ResolveContent` should be called in order to hydrate content from `BucketItems`
-		Returns `BucketContent`
-	*/
-	GetContentById(id string) (*bt.BucketContent, error)
-
-	/*
-		Returns the address from the `WhereIs` of the bucket denoting the creator account.
-	*/
-	GetCreator() string
-
-	/*
-		Returns all `BucketItem`s which contain metdata on content contained within the bucket.
-		`Uri` fields from `BucketContent` can be used with `GetContentById` to resolve content.
-	*/
-	GetBucketItems() []*bt.BucketItem
-
+type BucketClient interface {
 	/*
 		Returns all buckets referenced by a `BucketItem`.
 		`ResolveBuckets` should be called in order to hydrate content from `BucketItems`
 		Returns []Bucket
 
 	*/
-	GetBuckets() []Bucket
+	GetBuckets() []bt.Bucket
 
 	/*
 		Returns  All `BucketContent` defined by a `BucketItem`.
@@ -53,16 +33,7 @@ type Bucket interface {
 	*/
 	GetDID() string
 
-	/*
-		Returns the `BucketRole`
-		Return BucketRole
-	*/
-	GetRole() bt.BucketRole
 
-	/*
-		Returns the `BucketVisibility`
-		Return BucketVisibility
-	*/
 	GetVisibility() bt.BucketVisibility
 
 	/*

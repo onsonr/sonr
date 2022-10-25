@@ -21,16 +21,15 @@ var (
 
 type bucketImpl struct {
 	address      string
-	whereIs      *bt.WhereIs
+	whereIs      *bt.Bucket
 	contentCache map[string]*bt.BucketContent
-	bucketCache  map[string]Bucket
 	shell        *shell.Shell
 	rpcClient    *client.Client
 }
 
 func New(
 	address string,
-	whereIs *bt.WhereIs,
+	whereIs *bt.Bucket,
 	shell *shell.Shell,
 	rpcClient *client.Client) *bucketImpl {
 
@@ -38,7 +37,6 @@ func New(
 		address:      address,
 		whereIs:      whereIs,
 		shell:        shell,
-		bucketCache:  make(map[string]Bucket),
 		contentCache: make(map[string]*bt.BucketContent),
 		rpcClient:    rpcClient,
 	}

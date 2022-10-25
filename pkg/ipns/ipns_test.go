@@ -25,7 +25,7 @@ import (
 type IPNSTestSuite struct {
 	suite.Suite
 	motorNode  motor.MotorNode
-	testBucket bucket.Bucket
+	testBucket bucket.BucketClient
 	cid        string
 }
 

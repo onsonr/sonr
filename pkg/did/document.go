@@ -416,9 +416,9 @@ func (d *DocumentImpl) ControllersAsString() []string {
 
 // Service represents a DID Service as specified by the DID Core specification (https://www.w3.org/TR/did-core/#service-endpoints).
 type Service struct {
-	ID              ssi.URI           `json:"id"`
-	Type            string            `json:"type,omitempty"`
-	ServiceEndpoint map[string]string `json:"serviceEndpoint,omitempty"`
+	ID              ssi.URI `json:"id"`
+	Type            string  `json:"type,omitempty"`
+	ServiceEndpoint string  `json:"serviceEndpoint,omitempty"`
 }
 
 func (s Service) MarshalJSON() ([]byte, error) {
