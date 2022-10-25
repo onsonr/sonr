@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/sonr-io/sonr/x/registry/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -80,8 +81,8 @@ func (m *MsgDefineBucket) GetLabel() string {
 }
 
 type MsgDefineBucketResponse struct {
-	Status  int32   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	WhereIs *Bucket `protobuf:"bytes,2,opt,name=where_is,json=whereIs,proto3" json:"where_is,omitempty"`
+	Status int32   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Bucket *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
 func (m *MsgDefineBucketResponse) Reset()         { *m = MsgDefineBucketResponse{} }
@@ -124,15 +125,16 @@ func (m *MsgDefineBucketResponse) GetStatus() int32 {
 	return 0
 }
 
-func (m *MsgDefineBucketResponse) GetWhereIs() *Bucket {
+func (m *MsgDefineBucketResponse) GetBucket() *Bucket {
 	if m != nil {
-		return m.WhereIs
+		return m.Bucket
 	}
 	return nil
 }
 
 type MsgGenerateBucket struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Creator string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Bucket  *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
 func (m *MsgGenerateBucket) Reset()         { *m = MsgGenerateBucket{} }
@@ -175,7 +177,18 @@ func (m *MsgGenerateBucket) GetCreator() string {
 	return ""
 }
 
+func (m *MsgGenerateBucket) GetBucket() *Bucket {
+	if m != nil {
+		return m.Bucket
+	}
+	return nil
+}
+
 type MsgGenerateBucketResponse struct {
+	Status          int32              `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Bucket          *Bucket            `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	ServiceEndpoint string             `protobuf:"bytes,3,opt,name=serviceEndpoint,proto3" json:"serviceEndpoint,omitempty"`
+	DidDocument     *types.DIDDocument `protobuf:"bytes,4,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
 func (m *MsgGenerateBucketResponse) Reset()         { *m = MsgGenerateBucketResponse{} }
@@ -211,8 +224,37 @@ func (m *MsgGenerateBucketResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgGenerateBucketResponse proto.InternalMessageInfo
 
+func (m *MsgGenerateBucketResponse) GetStatus() int32 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
+func (m *MsgGenerateBucketResponse) GetBucket() *Bucket {
+	if m != nil {
+		return m.Bucket
+	}
+	return nil
+}
+
+func (m *MsgGenerateBucketResponse) GetServiceEndpoint() string {
+	if m != nil {
+		return m.ServiceEndpoint
+	}
+	return ""
+}
+
+func (m *MsgGenerateBucketResponse) GetDidDocument() *types.DIDDocument {
+	if m != nil {
+		return m.DidDocument
+	}
+	return nil
+}
+
 type MsgDeactivateBucket struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Creator string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Bucket  *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
 func (m *MsgDeactivateBucket) Reset()         { *m = MsgDeactivateBucket{} }
@@ -255,7 +297,17 @@ func (m *MsgDeactivateBucket) GetCreator() string {
 	return ""
 }
 
+func (m *MsgDeactivateBucket) GetBucket() *Bucket {
+	if m != nil {
+		return m.Bucket
+	}
+	return nil
+}
+
 type MsgDeactivateBucketResponse struct {
+	Status      int32   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Bucket      *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	TotalBurned int32   `protobuf:"varint,3,opt,name=totalBurned,proto3" json:"totalBurned,omitempty"`
 }
 
 func (m *MsgDeactivateBucketResponse) Reset()         { *m = MsgDeactivateBucketResponse{} }
@@ -291,8 +343,30 @@ func (m *MsgDeactivateBucketResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeactivateBucketResponse proto.InternalMessageInfo
 
+func (m *MsgDeactivateBucketResponse) GetStatus() int32 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
+func (m *MsgDeactivateBucketResponse) GetBucket() *Bucket {
+	if m != nil {
+		return m.Bucket
+	}
+	return nil
+}
+
+func (m *MsgDeactivateBucketResponse) GetTotalBurned() int32 {
+	if m != nil {
+		return m.TotalBurned
+	}
+	return 0
+}
+
 type MsgBurnBucket struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Creator string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Bucket  *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
 func (m *MsgBurnBucket) Reset()         { *m = MsgBurnBucket{} }
@@ -335,7 +409,17 @@ func (m *MsgBurnBucket) GetCreator() string {
 	return ""
 }
 
+func (m *MsgBurnBucket) GetBucket() *Bucket {
+	if m != nil {
+		return m.Bucket
+	}
+	return nil
+}
+
 type MsgBurnBucketResponse struct {
+	Status      int32              `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Bucket      *Bucket            `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	DidDocument *types.DIDDocument `protobuf:"bytes,4,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
 func (m *MsgBurnBucketResponse) Reset()         { *m = MsgBurnBucketResponse{} }
@@ -371,6 +455,27 @@ func (m *MsgBurnBucketResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBurnBucketResponse proto.InternalMessageInfo
 
+func (m *MsgBurnBucketResponse) GetStatus() int32 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
+func (m *MsgBurnBucketResponse) GetBucket() *Bucket {
+	if m != nil {
+		return m.Bucket
+	}
+	return nil
+}
+
+func (m *MsgBurnBucketResponse) GetDidDocument() *types.DIDDocument {
+	if m != nil {
+		return m.DidDocument
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*MsgDefineBucket)(nil), "sonrio.sonr.bucket.MsgDefineBucket")
 	proto.RegisterType((*MsgDefineBucketResponse)(nil), "sonrio.sonr.bucket.MsgDefineBucketResponse")
@@ -385,32 +490,37 @@ func init() {
 func init() { proto.RegisterFile("bucket/tx.proto", fileDescriptor_3479ee73a3c611d5) }
 
 var fileDescriptor_3479ee73a3c611d5 = []byte{
-	// 386 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x4d, 0x4f, 0xf2, 0x40,
-	0x10, 0x80, 0xe9, 0x4b, 0x80, 0xf7, 0x9d, 0x57, 0x45, 0x17, 0x14, 0x2c, 0xb1, 0xd1, 0x1a, 0x3f,
-	0x88, 0xa1, 0x4d, 0x30, 0xfe, 0x00, 0x89, 0x89, 0xf1, 0xd0, 0xc4, 0x70, 0x32, 0x5c, 0xb4, 0x6d,
-	0x96, 0xd2, 0x88, 0x5d, 0xb2, 0xbb, 0x55, 0xfc, 0x17, 0x5e, 0xfd, 0x47, 0x1e, 0x39, 0x7a, 0x34,
-	0xf0, 0x47, 0x0c, 0xdb, 0x0f, 0x2d, 0x1f, 0xa1, 0xa7, 0xc9, 0x74, 0x9e, 0x79, 0x3a, 0x99, 0xc9,
-	0x42, 0xd1, 0xf2, 0xed, 0x47, 0xcc, 0x75, 0x3e, 0xd4, 0x06, 0x94, 0x70, 0x82, 0x10, 0x23, 0x1e,
-	0x75, 0x89, 0x36, 0x0d, 0x5a, 0x50, 0x94, 0x4b, 0x21, 0x14, 0x84, 0x00, 0x54, 0x2f, 0xa1, 0x68,
-	0x30, 0xe7, 0x0a, 0x77, 0x5d, 0x0f, 0xb7, 0x44, 0x01, 0x55, 0xa1, 0x60, 0x53, 0x6c, 0x72, 0x42,
-	0xab, 0xd2, 0xbe, 0x74, 0xfa, 0xaf, 0x1d, 0xa5, 0xa8, 0x0c, 0xb9, 0xbe, 0x69, 0xe1, 0x7e, 0xf5,
-	0x8f, 0xf8, 0x1e, 0x24, 0x6a, 0x0f, 0x2a, 0x33, 0x8a, 0x36, 0x66, 0x03, 0xe2, 0x31, 0x8c, 0x76,
-	0x20, 0xcf, 0xb8, 0xc9, 0x7d, 0x26, 0x4c, 0xb9, 0x76, 0x98, 0xa1, 0x0b, 0xf8, 0xfb, 0xd2, 0xc3,
-	0x14, 0xdf, 0xbb, 0x4c, 0xb8, 0xfe, 0x37, 0x65, 0x6d, 0x7e, 0x62, 0x2d, 0xb4, 0x15, 0x04, 0x7b,
-	0xc3, 0xd4, 0x06, 0x6c, 0x19, 0xcc, 0xb9, 0xc6, 0x1e, 0xa6, 0x26, 0x5f, 0x39, 0xae, 0x5a, 0x83,
-	0xdd, 0x39, 0x3c, 0x1a, 0x4d, 0xd5, 0xa1, 0x24, 0xa6, 0x36, 0x6d, 0xee, 0x3e, 0xa7, 0xb1, 0xed,
-	0x41, 0x6d, 0x41, 0x43, 0xec, 0xab, 0xc3, 0xba, 0xc1, 0x9c, 0x96, 0x4f, 0xbd, 0x95, 0xa6, 0x0a,
-	0x6c, 0x27, 0xd0, 0xc8, 0xd1, 0x7c, 0xcf, 0x42, 0xd6, 0x60, 0x0e, 0x7a, 0x80, 0xb5, 0xc4, 0x45,
-	0x0e, 0x17, 0x2d, 0x67, 0x66, 0xe7, 0xf2, 0x59, 0x0a, 0x28, 0x3e, 0x4c, 0x17, 0x36, 0x66, 0xd6,
-	0x78, 0xb4, 0xa4, 0x3d, 0x89, 0xc9, 0x8d, 0x54, 0x58, 0xfc, 0x9f, 0x3e, 0x6c, 0xce, 0xad, 0xf8,
-	0x64, 0xe9, 0xa0, 0x49, 0x50, 0xd6, 0x53, 0x82, 0xf1, 0xdf, 0x3a, 0x00, 0xbf, 0x0e, 0x70, 0xb0,
-	0xa4, 0xfd, 0x07, 0x91, 0xeb, 0x2b, 0x91, 0xc8, 0xdd, 0xba, 0xfb, 0x18, 0x2b, 0xd2, 0x68, 0xac,
-	0x48, 0x5f, 0x63, 0x45, 0x7a, 0x9b, 0x28, 0x99, 0xd1, 0x44, 0xc9, 0x7c, 0x4e, 0x94, 0x0c, 0x94,
-	0xa3, 0x7e, 0xfe, 0x3a, 0xc0, 0x2c, 0xb4, 0xdc, 0x4a, 0x9d, 0x63, 0xc7, 0xe5, 0x3d, 0xdf, 0xd2,
-	0x6c, 0xf2, 0xa4, 0x4f, 0xeb, 0x0d, 0x97, 0x88, 0xa8, 0x0f, 0xf5, 0xe8, 0xb9, 0x4e, 0x1b, 0xac,
-	0xbc, 0x78, 0x89, 0xe7, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0xf8, 0x58, 0xfb, 0x91, 0xc5, 0x03,
-	0x00, 0x00,
+	// 480 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x55, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xce, 0x12, 0x12, 0xc4, 0xa4, 0x10, 0xd8, 0x16, 0x30, 0x46, 0xb2, 0x5a, 0x23, 0xa0, 0x08,
+	0xd5, 0x96, 0xc2, 0x13, 0x10, 0x19, 0x21, 0x0e, 0x91, 0x90, 0x4f, 0xa8, 0x12, 0x02, 0xc7, 0x3b,
+	0x35, 0x2b, 0x52, 0x6f, 0xb4, 0xbb, 0xae, 0xda, 0x67, 0xe0, 0xc2, 0x95, 0x47, 0xe0, 0x4d, 0x38,
+	0xf6, 0x06, 0x47, 0x94, 0xbc, 0x08, 0xca, 0xda, 0x0e, 0x75, 0xd2, 0x28, 0x11, 0xaa, 0x4f, 0xab,
+	0x99, 0xfd, 0xe6, 0xfb, 0xe6, 0x67, 0xc7, 0x86, 0xee, 0x30, 0x8b, 0xbf, 0xa0, 0xf6, 0xf5, 0xa9,
+	0x37, 0x96, 0x42, 0x0b, 0x4a, 0x95, 0x48, 0x25, 0x17, 0xde, 0xec, 0xf0, 0xf2, 0x4b, 0x7b, 0xbb,
+	0x00, 0xe5, 0x47, 0x0e, 0xb4, 0xa9, 0xc4, 0x84, 0x2b, 0x2d, 0xcf, 0x7c, 0xc6, 0x59, 0xee, 0x73,
+	0x5f, 0x41, 0x77, 0xa0, 0x92, 0x00, 0x8f, 0x78, 0x8a, 0x7d, 0x03, 0xa6, 0x16, 0xdc, 0x88, 0x25,
+	0x46, 0x5a, 0x48, 0x8b, 0xec, 0x92, 0xfd, 0x9b, 0x61, 0x69, 0xd2, 0x1d, 0x68, 0x8d, 0xa2, 0x21,
+	0x8e, 0xac, 0x6b, 0xc6, 0x9f, 0x1b, 0x2e, 0xc2, 0x83, 0x05, 0x8a, 0x10, 0xd5, 0x58, 0xa4, 0x0a,
+	0xe9, 0x7d, 0x68, 0x2b, 0x1d, 0xe9, 0x4c, 0x19, 0xa6, 0x56, 0x58, 0x58, 0xb4, 0x07, 0xed, 0x3c,
+	0x33, 0xc3, 0xd4, 0xe9, 0xd9, 0xde, 0x72, 0x0d, 0x5e, 0xc1, 0x55, 0x20, 0xdd, 0x08, 0xee, 0x0e,
+	0x54, 0xf2, 0x06, 0x53, 0x94, 0x91, 0x5e, 0x9f, 0xeb, 0xff, 0x48, 0xfc, 0x22, 0xf0, 0x70, 0x49,
+	0xa3, 0x8e, 0x62, 0xe8, 0x3e, 0x74, 0x15, 0xca, 0x13, 0x1e, 0xe3, 0xeb, 0x94, 0x8d, 0x05, 0x4f,
+	0xb5, 0xd5, 0x34, 0xf9, 0x2f, 0xba, 0x69, 0x00, 0x5b, 0x8c, 0xb3, 0x8f, 0x4c, 0xc4, 0xd9, 0x31,
+	0xa6, 0xda, 0xba, 0x6e, 0x34, 0xf6, 0x2a, 0x1a, 0xe5, 0x5c, 0xbd, 0xe0, 0x6d, 0x10, 0x14, 0xc0,
+	0xb0, 0xc3, 0x38, 0x2b, 0x0d, 0x37, 0x86, 0x6d, 0x33, 0xa3, 0x28, 0xd6, 0xfc, 0xa4, 0xae, 0xf6,
+	0x7d, 0x25, 0xf0, 0xe8, 0x12, 0x95, 0x5a, 0x1a, 0xb8, 0x0b, 0x1d, 0x2d, 0x74, 0x34, 0xea, 0x67,
+	0x32, 0x45, 0x66, 0x9a, 0xd7, 0x0a, 0x2f, 0xba, 0xdc, 0x0f, 0x70, 0x6b, 0xa0, 0x92, 0x99, 0x51,
+	0x4b, 0xb1, 0x3f, 0x08, 0xdc, 0xab, 0xf0, 0xd7, 0x52, 0xe6, 0x95, 0x4c, 0xbf, 0xf7, 0xbd, 0x09,
+	0xcd, 0x81, 0x4a, 0xe8, 0x27, 0xd8, 0xaa, 0x6c, 0xfa, 0xe3, 0xcb, 0x32, 0x58, 0xd8, 0x65, 0xfb,
+	0xc5, 0x06, 0xa0, 0x79, 0xed, 0x47, 0x70, 0x7b, 0x61, 0x43, 0x9f, 0xac, 0x08, 0xaf, 0xc2, 0xec,
+	0x83, 0x8d, 0x60, 0x73, 0x9d, 0x11, 0xdc, 0x59, 0x7a, 0xcc, 0xcf, 0x56, 0x26, 0x5a, 0x05, 0xda,
+	0xfe, 0x86, 0xc0, 0xb9, 0xda, 0x21, 0xc0, 0x85, 0x77, 0xb4, 0xb7, 0x22, 0xfc, 0x1f, 0xc4, 0x7e,
+	0xbe, 0x16, 0x52, 0x72, 0xf7, 0xdf, 0xff, 0x9c, 0x38, 0xe4, 0x7c, 0xe2, 0x90, 0x3f, 0x13, 0x87,
+	0x7c, 0x9b, 0x3a, 0x8d, 0xf3, 0xa9, 0xd3, 0xf8, 0x3d, 0x75, 0x1a, 0xb0, 0x53, 0xc6, 0xeb, 0xb3,
+	0x31, 0xaa, 0x82, 0xe5, 0x1d, 0x39, 0x7c, 0x9a, 0x70, 0xfd, 0x39, 0x1b, 0x7a, 0xb1, 0x38, 0xf6,
+	0x67, 0xf7, 0x07, 0x5c, 0x98, 0xd3, 0x3f, 0xf5, 0xcb, 0x5f, 0xc3, 0x2c, 0x60, 0xd8, 0x36, 0x5f,
+	0xf8, 0x97, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xb9, 0x6f, 0x78, 0x0b, 0x31, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -658,9 +768,9 @@ func (m *MsgDefineBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if m.WhereIs != nil {
+	if m.Bucket != nil {
 		{
-			size, err := m.WhereIs.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -698,6 +808,18 @@ func (m *MsgGenerateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Bucket != nil {
+		{
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Creator) > 0 {
 		i -= len(m.Creator)
 		copy(dAtA[i:], m.Creator)
@@ -728,6 +850,42 @@ func (m *MsgGenerateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
+	if m.DidDocument != nil {
+		{
+			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.ServiceEndpoint) > 0 {
+		i -= len(m.ServiceEndpoint)
+		copy(dAtA[i:], m.ServiceEndpoint)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ServiceEndpoint)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Bucket != nil {
+		{
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Status != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -751,6 +909,18 @@ func (m *MsgDeactivateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Bucket != nil {
+		{
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Creator) > 0 {
 		i -= len(m.Creator)
 		copy(dAtA[i:], m.Creator)
@@ -781,6 +951,28 @@ func (m *MsgDeactivateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	_ = i
 	var l int
 	_ = l
+	if m.TotalBurned != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.TotalBurned))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Bucket != nil {
+		{
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Status != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -804,6 +996,18 @@ func (m *MsgBurnBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Bucket != nil {
+		{
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Creator) > 0 {
 		i -= len(m.Creator)
 		copy(dAtA[i:], m.Creator)
@@ -834,6 +1038,35 @@ func (m *MsgBurnBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.DidDocument != nil {
+		{
+			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Bucket != nil {
+		{
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Status != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -874,8 +1107,8 @@ func (m *MsgDefineBucketResponse) Size() (n int) {
 	if m.Status != 0 {
 		n += 1 + sovTx(uint64(m.Status))
 	}
-	if m.WhereIs != nil {
-		l = m.WhereIs.Size()
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
@@ -891,6 +1124,10 @@ func (m *MsgGenerateBucket) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -900,6 +1137,21 @@ func (m *MsgGenerateBucketResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Status != 0 {
+		n += 1 + sovTx(uint64(m.Status))
+	}
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ServiceEndpoint)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -913,6 +1165,10 @@ func (m *MsgDeactivateBucket) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -922,6 +1178,16 @@ func (m *MsgDeactivateBucketResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Status != 0 {
+		n += 1 + sovTx(uint64(m.Status))
+	}
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.TotalBurned != 0 {
+		n += 1 + sovTx(uint64(m.TotalBurned))
+	}
 	return n
 }
 
@@ -935,6 +1201,10 @@ func (m *MsgBurnBucket) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -944,6 +1214,17 @@ func (m *MsgBurnBucketResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Status != 0 {
+		n += 1 + sovTx(uint64(m.Status))
+	}
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1117,7 +1398,7 @@ func (m *MsgDefineBucketResponse) Unmarshal(dAtA []byte) error {
 			}
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WhereIs", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1144,10 +1425,10 @@ func (m *MsgDefineBucketResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.WhereIs == nil {
-				m.WhereIs = &Bucket{}
+			if m.Bucket == nil {
+				m.Bucket = &Bucket{}
 			}
-			if err := m.WhereIs.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1233,6 +1514,42 @@ func (m *MsgGenerateBucket) Unmarshal(dAtA []byte) error {
 			}
 			m.Creator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Bucket == nil {
+				m.Bucket = &Bucket{}
+			}
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1283,6 +1600,129 @@ func (m *MsgGenerateBucketResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgGenerateBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Bucket == nil {
+				m.Bucket = &Bucket{}
+			}
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ServiceEndpoint", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ServiceEndpoint = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DidDocument == nil {
+				m.DidDocument = &types.DIDDocument{}
+			}
+			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1365,6 +1805,42 @@ func (m *MsgDeactivateBucket) Unmarshal(dAtA []byte) error {
 			}
 			m.Creator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Bucket == nil {
+				m.Bucket = &Bucket{}
+			}
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1415,6 +1891,80 @@ func (m *MsgDeactivateBucketResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgDeactivateBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Bucket == nil {
+				m.Bucket = &Bucket{}
+			}
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalBurned", wireType)
+			}
+			m.TotalBurned = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.TotalBurned |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1497,6 +2047,42 @@ func (m *MsgBurnBucket) Unmarshal(dAtA []byte) error {
 			}
 			m.Creator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Bucket == nil {
+				m.Bucket = &Bucket{}
+			}
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1547,6 +2133,97 @@ func (m *MsgBurnBucketResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgBurnBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Bucket == nil {
+				m.Bucket = &Bucket{}
+			}
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DidDocument == nil {
+				m.DidDocument = &types.DIDDocument{}
+			}
+			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

@@ -1,11 +1,14 @@
 package bucket
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/sonr-io/sonr/pkg/client"
+	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -27,17 +30,38 @@ type bucketImpl struct {
 	rpcClient    *client.Client
 }
 
-func New(
-	address string,
-	whereIs *bt.Bucket,
-	shell *shell.Shell,
-	rpcClient *client.Client) *bucketImpl {
-
+func New(address string, shell *shell.Shell, rpcClient *client.Client) *bucketImpl {
 	return &bucketImpl{
 		address:      address,
-		whereIs:      whereIs,
 		shell:        shell,
 		contentCache: make(map[string]*bt.BucketContent),
 		rpcClient:    rpcClient,
 	}
+}
+
+func GenerateBucket(sh *shell.Shell, whereIs *bt.Bucket, address string) (*did.Service, error) {
+	allocPath := whereIs.GetPath(address)
+	allocDid := whereIs.GetDid(address)
+	serviceEndpoint := whereIs.GetServiceEndpoint(address)
+
+	err := sh.FilesMkdir(context.Background(), allocPath, shell.FilesWrite.Create(true))
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := sh.FilesStat(context.Background(), allocPath)
+	if err != nil {
+		return nil, err
+	}
+	cid := res.Hash
+	err = sh.Publish(cid, allocDid)
+	if err != nil {
+		return nil, err
+	}
+
+	return &did.Service{
+		ID:              ssi.MustParseURI(allocDid),
+		Type:            "LinkedResource",
+		ServiceEndpoint: serviceEndpoint,
+	}, nil
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
 
-func (b *bucketImpl) CreateBucketServiceEndpoint() did.Service {
+func (b *bucketImpl) CreateBucketServiceEndpoint(urlPath string, id string) did.Service {
 	return did.Service{
 		ID:              ssi.MustParseURI(fmt.Sprintf("did:snr:%s#%s", b.address, b.whereIs.Name)),
 		Type:            "LinkedResource",

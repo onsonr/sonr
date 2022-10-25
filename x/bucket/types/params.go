@@ -14,7 +14,10 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams() Params {
-	return Params{}
+	return Params{
+		IpfsGateway: "https://ipfs.sonr.ws",
+		IptsApiUrl: "https://api.ipfs.sonr.ws",
+	}
 }
 
 // DefaultParams returns a default set of parameters
