@@ -19,7 +19,7 @@ message Document {
   string label = 3;
 
   // the properties of this schemadocument
-  repeated SchemaDocumentValue fields = 4;
+  repeated DocumentValue fields = 4;
 }
 
 
