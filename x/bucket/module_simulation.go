@@ -59,7 +59,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	bucketGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
-		BucketList: []types.Bucket{
+		BucketDefinitions: []types.Bucket{
 			{
 				Uuid:    "did:sonr:1",
 				Creator: sample.AccAddress(),

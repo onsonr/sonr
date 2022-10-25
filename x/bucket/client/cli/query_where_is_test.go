@@ -28,12 +28,12 @@ func networkWithWhereIsObjects(t *testing.T, n int) (*network.Network, []types.B
 			Uuid: fmt.Sprintf("did:sonr:%d", i),
 		}
 		nullify.Fill(&whereIs)
-		state.BucketList = append(state.BucketList, whereIs)
+		state.BucketDefinitions = append(state.BucketDefinitions, whereIs)
 	}
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
-	return network.New(t, cfg), state.BucketList
+	return network.New(t, cfg), state.BucketDefinitions
 }
 
 func TestShowWhereIs(t *testing.T) {

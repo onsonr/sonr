@@ -22,7 +22,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
-				BucketList: []types.Bucket{
+				BucketDefinitions: []types.Bucket{
 					{
 						Uuid: "did:sonr:1",
 					},
@@ -37,7 +37,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated whereIs",
 			genState: &types.GenesisState{
-				BucketList: []types.Bucket{
+				BucketDefinitions: []types.Bucket{
 					{
 						Uuid: "did:sonr:1",
 					},
@@ -51,7 +51,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "invalid whereIs count",
 			genState: &types.GenesisState{
-				BucketList: []types.Bucket{
+				BucketDefinitions: []types.Bucket{
 					{
 						Uuid: "did:sonr:1",
 					},

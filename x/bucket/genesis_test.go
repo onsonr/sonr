@@ -14,7 +14,7 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		BucketList: []types.Bucket{
+		BucketDefinitions: []types.Bucket{
 			{
 				Uuid: "did:sonr:1",
 			},
@@ -33,6 +33,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
-	require.ElementsMatch(t, genesisState.BucketList, got.BucketList)
+	require.ElementsMatch(t, genesisState.BucketDefinitions, got.BucketDefinitions)
 	// this line is used by starport scaffolding # genesis/test/assert
 }
