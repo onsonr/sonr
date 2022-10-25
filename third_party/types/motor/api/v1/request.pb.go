@@ -686,13 +686,14 @@ func (m *QueryWhoIsByAliasRequest) GetAlias() string {
 	return ""
 }
 
-// -----------------------------------------------------------------------------
-// Schema Models
-// -----------------------------------------------------------------------------
+// Create Schema (`WhatIs`) recorded on chain
 type CreateSchemaRequest struct {
-	Label    string                            `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
-	Fields   map[string]*types.SchemaFieldKind `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Metadata map[string]string                 `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// human readable name of the schema
+	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	// Definition of the schema provided as a map
+	Fields map[string]*types.SchemaFieldKind `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// custom metadata for the definition. will be recorded on chain
+	Metadata map[string]string `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *CreateSchemaRequest) Reset()         { *m = CreateSchemaRequest{} }
@@ -749,9 +750,12 @@ func (m *CreateSchemaRequest) GetMetadata() map[string]string {
 	return nil
 }
 
+// Query for a `WhatIs` instance on chain
 type QueryWhatIsRequest struct {
+	// Creator's address (snr address)
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+	// did (identifier) of the specific schema
+	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 }
 
 func (m *QueryWhatIsRequest) Reset()         { *m = QueryWhatIsRequest{} }
@@ -801,7 +805,9 @@ func (m *QueryWhatIsRequest) GetDid() string {
 	return ""
 }
 
+// Query for all WhatIs instances for a single creator address (snr address)
 type QueryWhatIsByCreatorRequest struct {
+	// Creator's address (snr address)
 	Creator    string             `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -853,9 +859,12 @@ func (m *QueryWhatIsByCreatorRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
+// Abstraction for querying a `Schema` without having a `WhatIs` instance returned
 type QuerySchemaRequest struct {
+	// Creator's address (snr address)
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+	// DID (identifer) of the specific schema
+	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 }
 
 func (m *QuerySchemaRequest) Reset()         { *m = QuerySchemaRequest{} }
