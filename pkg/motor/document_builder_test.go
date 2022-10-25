@@ -1,60 +1,93 @@
 package motor
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/stretchr/testify/assert"
 )
 
-/*
-	prt.CreateSchemaRequest{
-		Label: "TestUser",
-		Fields: map[string]prt.CreateSchemaRequest_SchemaKind{
-			"email":     prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"firstName": prt.CreateSchemaRequest_SCHEMA_KIND_STRING,
-			"age":       prt.CreateSchemaRequest_SCHEMA_KIND_INT,
-		},
-	}
-*/
-const SCHEMA_DID string = "did:snr:QmZLKGrTcUAKsUVUZ5e72rAWRg1Y1SzRJqWqcXaDqjFUqm"
+func (suite *MotorTestSuite) Test_DocumentBuilder() {
+	suite.T().Run("success", func(t *testing.T) {
 
-func Test_DocumentBuilder(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		pskKey := loadKey(fmt.Sprintf("psk%s", ADDR))
-		if pskKey == nil || len(pskKey) != 32 {
-			t.Errorf("could not load psk key")
-			return
+		// create schema
+		createAssociateRequest := mt.CreateSchemaRequest{
+			Label: "Associate",
+			Fields: map[string]*st.SchemaFieldKind{
+				"name": {
+					Kind: st.Kind_STRING,
+				},
+			},
 		}
 
-		req := mt.LoginRequest{
-			Did:      ADDR,
-			Password: "password123",
+		resp, err := suite.motorWithKeys.CreateSchema(createAssociateRequest)
+		assert.NoError(suite.T(), err, "associate schema created successfully")
+
+		createInmateRequest := mt.CreateSchemaRequest{
+			Label: "Inmate",
+			Fields: map[string]*st.SchemaFieldKind{
+				"name": {
+					Kind: st.Kind_STRING,
+				},
+				"age": {
+					Kind: st.Kind_INT,
+				},
+				"known_aliases": {
+					Kind: st.Kind_LIST,
+					ListKind: &st.SchemaFieldKind{
+						Kind: st.Kind_STRING,
+					},
+				},
+				"height": {
+					Kind: st.Kind_FLOAT,
+				},
+				"mug_shot": {
+					Kind: st.Kind_BYTES,
+				},
+				"associates": {
+					Kind: st.Kind_LIST,
+					ListKind: &st.SchemaFieldKind{
+						Kind:    st.Kind_LINK,
+						LinkDid: resp.WhatIs.Did,
+					},
+				},
+				"at_large": {
+					Kind: st.Kind_BOOL,
+				},
+			},
 		}
 
-		m, _ := EmptyMotor(&mt.InitializeRequest{
-			DeviceId: "test_device",
-		}, common.DefaultCallback())
-		_, err := m.Login(req)
-		assert.NoError(t, err, "login succeeds")
+		resp2, err := suite.motorWithKeys.CreateSchema(createInmateRequest)
+		assert.NoError(suite.T(), err, "schema created successfully")
 
 		// query WhatIs so it's cached
-		_, err = m.GetClient().QueryWhatIs(m.GetDID().String(), SCHEMA_DID)
+		_, err = suite.motorWithKeys.QueryWhatIsByDid(resp2.WhatIs.Did)
 		assert.NoError(t, err, "query whatis")
 
 		// upload object
-		builder, err := m.NewDocumentBuilder(SCHEMA_DID)
+		builder, err := suite.motorWithKeys.NewDocumentBuilder(resp2.WhatIs.Did)
 		assert.NoError(t, err, "object builder created successfully")
 
-		builder.SetLabel("Player 1")
-		err = builder.Set("email", "player1@sonr.io")
-		assert.NoError(t, err, "set email property")
-		err = builder.Set("firstName", "Brayden")
-		assert.NoError(t, err, "set firstName property")
+		builder.SetLabel("Billy the kid")
+		err = builder.Set("name", "Billy")
+		assert.NoError(t, err, "set name property")
 		err = builder.Set("age", 24)
 		assert.NoError(t, err, "set age property")
+		err = builder.Set("known_aliases", []string{"Brayden", "Bob", "The kid"})
+		assert.NoError(t, err, "set known_alias property")
+		err = builder.Set("height", 180.5)
+		assert.NoError(t, err, "set height property")
+		err = builder.Set("mug_shot", []byte{0xef, 0xbe, 0x4e, 0x10, 0xef, 0xbe, 0x4e, 0x10})
+		assert.NoError(t, err, "set mug_shot property")
+		ints := make([]interface{}, 1)
+		ints[0] = map[string]interface{}{
+			"name": "Nicky Bobby",
+		}
+		err = builder.Set("associates", ints)
+		assert.NoError(t, err, "set associates property")
+		err = builder.Set("at_large", true)
+		assert.NoError(t, err, "set at_large property")
 
 		_, err = builder.Build()
 		assert.NoError(t, err, "builds successfully")
@@ -62,6 +95,6 @@ func Test_DocumentBuilder(t *testing.T) {
 		result, err := builder.Upload()
 		assert.NoError(t, err, "upload succeeds")
 
-		assert.Equal(t, "Player 1", result.Document.Label)
+		assert.Equal(t, "Billy the kid", result.Document.Label)
 	})
 }

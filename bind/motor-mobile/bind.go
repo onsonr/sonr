@@ -11,15 +11,15 @@ import (
 	_ "golang.org/x/mobile/bind"
 )
 
-type MotorCallback interface {
-	OnDiscover(data []byte)
-	OnLinking(data []byte)
-}
-
 var (
 	docBuilders map[string]*document.DocumentBuilder
 	instance    mtr.MotorNode
 )
+
+type MotorCallback interface {
+	OnDiscover(data []byte)
+	OnWalletEvent(data []byte)
+}
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
@@ -45,8 +45,8 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 
 	if req.AuthInfo != nil {
 		if res, err := instance.Login(mt.LoginRequest{
-			Did:      req.AuthInfo.Did,
-			Password: req.AuthInfo.Password,
+			AccountId: req.AuthInfo.Did,
+			Password:  req.AuthInfo.Password,
 		}); err == nil {
 			return res.Marshal()
 		}

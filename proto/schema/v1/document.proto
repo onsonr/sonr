@@ -12,14 +12,14 @@ message Document {
   // the DID for this schema should not be populated by request
   string schema_did = 1;
 
-  // The CID of the schema document on IPFS, should not be populated by request
-  string document_cid = 2;
+  // The CID of the schema document
+  string cid = 2;
 
   // label for the Document
   string label = 3;
 
-  // the properties of this schemas document
-  repeated DocumentValue fields = 4;
+  // the properties of this schemadocument
+  repeated SchemaDocumentValue fields = 4;
 }
 
 

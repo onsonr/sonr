@@ -18,7 +18,7 @@ while getopts "iawm" opt; do
       ANDROID_ARTIFACT=${BUILDDIR}/io.sonr.motor.aar
       echo "🔷 Binding Android Artifact Version ${VERSION}..."
       cd ${MOTOR_LIB_DIR}
-      gomobile bind -ldflags='-s -w' -target=android/arm64 -androidapi 19 -o ${ANDROID_ARTIFACT} -v
+      gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -androidapi 19 -v
       rm -rf ${BUILDDIR}/io.sonr.motor-sources.jar
       cd ${BUILDDIR}
 

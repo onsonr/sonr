@@ -5,18 +5,22 @@ import (
 	"testing"
 	"time"
 
-//	"github.com/cosmos/cosmos-sdk/baseapp"
+	wasmappparams "github.com/CosmWasm/wasmd/app/params"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-//	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-//	"github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/cosmos/cosmos-sdk/simapp"
+
+	//	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	//	"github.com/cosmos/cosmos-sdk/simapp"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
-//	tmdb "github.com/tendermint/tm-db"
+
+	//	tmdb "github.com/tendermint/tm-db"
 
 	"github.com/sonr-io/sonr/app"
 )
@@ -53,15 +57,23 @@ func DefaultConfig() network.Config {
 		LegacyAmino:       encoding.Amino,
 		InterfaceRegistry: encoding.InterfaceRegistry,
 		AccountRetriever:  authtypes.AccountRetriever{},
-		// AppConstructor: func(val network.Validator) servertypes.Application {
-		// 	return app.New(
-		// 		val.Ctx.Logger, tmdb.NewMemDB(), nil, true, map[int64]bool{}, val.Ctx.Config.RootDir, 0,
-		// 		encoding,
-		// 		simapp.EmptyAppOptions{},
-		// 		baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
-		// 		baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
-		// 	)
-		// },
+		AppConstructor: func(val network.Validator) servertypes.Application {
+			return app.New(
+				val.Ctx.Logger,
+				tmdb.NewMemDB(),
+				nil,
+				true,
+				map[int64]bool{},
+				val.Ctx.Config.RootDir,
+				0,
+				wasmappparams.EncodingConfig(encoding),
+				app.GetEnabledProposals(),
+				simapp.EmptyAppOptions{},
+				app.GetWasmOpts(simapp.EmptyAppOptions{}),
+				baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
+				baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+			)
+		},
 		GenesisState:    app.ModuleBasics.DefaultGenesis(encoding.Marshaler),
 		TimeoutCommit:   2 * time.Second,
 		ChainID:         "chain-" + tmrand.NewRand().Str(6),

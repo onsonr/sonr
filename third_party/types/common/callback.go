@@ -1,11 +1,12 @@
 package common
 
-import "log"
+import (
+	"log"
+)
 
 type MotorCallback interface {
 	OnDiscover(data []byte)
-	OnLinking(data []byte)
-	// OnMotorEvent(msg string, isDone bool)
+	OnWalletEvent(data []byte)
 }
 
 type defaultCallback struct{}
@@ -14,12 +15,18 @@ func DefaultCallback() MotorCallback {
 	return &defaultCallback{}
 }
 
-// func (cb *defaultCallback) OnMotorEvent(msg string, isDone bool) {
-// 	log.Printf("message: %s done: %t", msg, isDone)
-// }
-
 func (cb *defaultCallback) OnDiscover(data []byte) {
-	log.Println("ERROR: MotorCallback not implemented.")
+	log.Println(ErrDefaultStillImplemented.Error())
+}
+
+func (cb *defaultCallback) OnWalletEvent(data []byte) {
+	event := WalletEvent{}
+	err := event.Unmarshal(data)
+
+	if err != nil {
+		log.Printf("error while unmarshalling event \n%s\n", err.Error())
+	}
+	log.Printf("type: %s\nError Message: %s\nMessage: %s\n", event.Type, event.ErrorMessage, event.Message)
 }
 
 func (cb *defaultCallback) OnLinking(data []byte) {

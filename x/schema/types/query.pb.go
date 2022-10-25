@@ -113,6 +113,7 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+// Query for all WhatIs instances on chain
 type QueryAllWhatIsRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -157,6 +158,7 @@ func (m *QueryAllWhatIsRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
+// Response for `QueryAllWhatIsRequest`
 type QueryAllWhatIsResponse struct {
 	WhatIs     []WhatIs            `protobuf:"bytes,1,rep,name=what_is,json=whatIs,proto3" json:"what_is"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -209,6 +211,7 @@ func (m *QueryAllWhatIsResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+// Query for a single WhatIs instance on chain
 type QuerySchemaRequest struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
@@ -261,6 +264,7 @@ func (m *QuerySchemaRequest) GetDid() string {
 	return ""
 }
 
+// Query for a single WhatIs instance on chian
 type QueryWhatIsRequest struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
@@ -313,6 +317,7 @@ func (m *QueryWhatIsRequest) GetDid() string {
 	return ""
 }
 
+// Response for a `WhatIsByCreator` request from chain
 type QueryWhatIsCreatorRequest struct {
 	// address of the schema creator
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -367,6 +372,7 @@ func (m *QueryWhatIsCreatorRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
+// Abstract a single WhatIs by only returning a `Schema` in the response
 type QuerySchemaResponse struct {
 	// Definition of schema
 	Schema *Schema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
@@ -412,6 +418,7 @@ func (m *QuerySchemaResponse) GetSchema() *Schema {
 	return nil
 }
 
+// Query for a `WhatIs` instance by its did. will use the current session context for the creator address
 type QueryWhatIsByDidRequest struct {
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
 	// pageination values
@@ -465,6 +472,7 @@ func (m *QueryWhatIsByDidRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
+// Response for Querying a `WhatIs` instance
 type QueryWhatIsResponse struct {
 	// Schema Repersentation
 	WhatIs *WhatIs `protobuf:"bytes,1,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
@@ -510,6 +518,7 @@ func (m *QueryWhatIsResponse) GetWhatIs() *WhatIs {
 	return nil
 }
 
+// Response for querying `WhatIs`s by the creator address
 type QueryWhatIsCreatorResponse struct {
 	// Schema Repersentation
 	WhatIs []*WhatIs `protobuf:"bytes,1,rep,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
@@ -555,6 +564,7 @@ func (m *QueryWhatIsCreatorResponse) GetWhatIs() []*WhatIs {
 	return nil
 }
 
+// Response for querying a WhatIs instance by its did
 type QueryWhatIsByDidResponse struct {
 	WhatIs *WhatIs `protobuf:"bytes,1,opt,name=what_is,json=whatIs,proto3" json:"what_is,omitempty"`
 }

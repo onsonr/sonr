@@ -9,8 +9,8 @@ import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "registry/did.proto";
 import "registry/who_is.proto";
-import "schema/v1/schema.proto";
 import "schema/v1/document.proto";
+import "schema/v1/schema.proto";
 import "schema/v1/what_is.proto";
 
 option go_package = "github.com/sonr-io/sonr/third_party/types/motor/api/v1";
@@ -29,7 +29,6 @@ message ConnectResponse {
 
 message CreateAccountResponse {
   string address = 1;
-  sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
 message CreateAccountWithKeysResponse {
@@ -54,9 +53,15 @@ message LoginResponse {
   sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
+// response from creating a schema
 message CreateSchemaResponse {
+  // status code for the operation
   int32 status = 1;
+
+  // WhatIs isntance created from the initial request
   sonrio.sonr.schema.WhatIs what_is = 2;
+
+  // Schema contained within the `WhatIs` instance also in the response. here for convience
   sonrio.sonr.schema.Schema schema = 3;
 }
 
@@ -82,23 +87,62 @@ message QueryWhoIsResponse {
   sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
+// Query reponse for a WhatIs instance
 message QueryWhatIsResponse {
+  // status code of the request
   int32 code = 1;
+
+  // WhatIs instance specified within the request
   sonrio.sonr.schema.WhatIs what_is = 2;
+
+  // Schema instance contained in the `WhatIs` also in this response. Here for convience
   sonrio.sonr.schema.Schema schema = 3;
 }
 
+// Query response for WhatIs
 message QueryWhatIsByCreatorResponse {
+  // status code of the request
   int32 code = 1;
+
+  // WhatIs instance specified within the request
   repeated sonrio.sonr.schema.WhatIs what_is = 2;
+
+  // Schema instance contained in the `WhatIs` also in this response. Here for convience
   map<string, sonrio.sonr.schema.Schema> schemas = 3;
   cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
 
+// Query Response for WhatIs by Creator
 message QueryWhereIsByCreatorResponse {
+  // status code of the request
   int32 code = 1;
+  // List of WhereIs instances associated with the given creator address from the request
   repeated sonrio.sonr.bucket.WhereIs where_is = 2;
   cosmos.base.query.v1beta1.PageResponse pagination = 3;
+}
+
+
+// A reference to an object stored within Sonr's Storage network
+message ObjectReference {
+  // Id of the Schema outlining the objects structure
+  string did = 1;
+
+  // a human readable name of the object
+  string label = 2;
+
+  // Hash of the object for the Sonr storage network
+  string cid = 3;
+}
+
+// Response for uploading an object to Sonr Storage Network
+message UploadObjectResponse {
+  // status code of the request
+  int32 code = 1;
+  // reference to data relating to the content stored on network
+  ObjectReference reference = 2;
+
+  // message relating to the request status. Will include success on successful upload
+  string message = 3;
 }
 
 message CreateBucketResponse {
