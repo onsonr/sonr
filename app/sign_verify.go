@@ -4,11 +4,14 @@ package app
 import (
 	"fmt"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	curve "github.com/sonr-io/multi-party-sig/pkg/math/curve"
+	mpc "github.com/sonr-io/sonr/pkg/crypto/mpc"
 )
 
 type SigVerificationDecorator struct {
@@ -104,6 +107,37 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 }
 
 func VerifySonrSignature(pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx) error {
+	switch data := sigData.(type) {
+	case *signing.SingleSignatureData:
+		point := curve.Secp256k1Point{}
+		err := point.UnmarshalBinary(pubKey.Bytes())
+		if err != nil {
+			return fmt.Errorf("unable to verify single signer signature")
+		}
+		signBytes, err := handler.GetSignBytes(data.SignMode, signerData, tx)
+		edsig, err := mpc.SignatureFromBytes(data.Signature)
+		if err != nil {
+			return fmt.Errorf("unable to verify single signer signature")
+		}
+		mpcVerif := edsig.Verify(&point, signBytes)
+		if !mpcVerif {
+			return fmt.Errorf("unable to verify single signer signature")
+		}
+		return nil
 
-	return nil
+	case *signing.MultiSignatureData:
+		multiPK, ok := pubKey.(multisig.PubKey)
+		if !ok {
+			return fmt.Errorf("expected %T, got %T", (multisig.PubKey)(nil), pubKey)
+		}
+		err := multiPK.VerifyMultisignature(func(mode signing.SignMode) ([]byte, error) {
+			return handler.GetSignBytes(mode, signerData, tx)
+		}, data)
+		if err != nil {
+			return err
+		}
+		return nil
+	default:
+		return fmt.Errorf("unexpected SignatureData %T", sigData)
+	}
 }
