@@ -10,7 +10,6 @@ import (
 	"time"
 
 	shell "github.com/ipfs/go-ipfs-api"
-	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/ipns"
 	"github.com/sonr-io/sonr/pkg/motor"
 	mtu "github.com/sonr-io/sonr/testutil/motor"
@@ -24,9 +23,8 @@ import (
 
 type IPNSTestSuite struct {
 	suite.Suite
-	motorNode  motor.MotorNode
-	testBucket bucket.BucketClient
-	cid        string
+	motorNode motor.MotorNode
+	cid       string
 }
 
 func (suite *IPNSTestSuite) SetupSuite() {
