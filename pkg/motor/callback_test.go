@@ -44,7 +44,7 @@ func Test_Callbacks(t *testing.T) {
 
 func Test_FailedInitializeRequest(t *testing.T) {
 	cb := &testCallback{}
-	// setup motor
+	// setup empty motor
 	mtr, err := EmptyMotor(&mt.InitializeRequest{}, cb)
 	// assert there is an error
 	assert.Error(t, err)
@@ -53,9 +53,9 @@ func Test_FailedInitializeRequest(t *testing.T) {
 	assert.Nil(t, mtr)
 }
 
-func Test_CreateAccount(t *testing.T) {
+func Test_EmptyWalletEvent(t *testing.T) {
 	cb := &testCallback{}
-	// setup motor
+	// setup empty motor
 	mtr, err := EmptyMotor(&mt.InitializeRequest{
 		DeviceId:   "test_device",
 		ClientMode: mt.ClientMode_ENDPOINT_BETA,
@@ -63,11 +63,6 @@ func Test_CreateAccount(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	mtr.CreateAccount(mt.CreateAccountRequest{
-		Password: "test_password",
-	})
+	mtr.triggerWalletEvent(common.WalletEvent{})
 	assert.Equal(t, cb.GetWalletEventState(), true)
-
-	docBz := mtr.GetDIDDocument()
-	assert.NotEmpty(t, docBz)
 }
