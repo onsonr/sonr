@@ -43,5 +43,6 @@ func New(key interface{}) *jwxImpl {
 		key:     key,
 		keyAlg:  jwa.ECDH_ES_A256KW,
 		contAlg: jwa.A128CBC_HS256,
+		sigAlg:  jwa.ES256K,
 	}
 }

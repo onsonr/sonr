@@ -1,6 +1,9 @@
 package mpc
 
 import (
+	"bytes"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -91,4 +94,22 @@ func Test_MPCSignMessage(t *testing.T) {
 	assert.NoError(t, err, "signing succeeds")
 	deserializedSigVerified := sig.Verify(w.Config().PublicPoint(), m)
 	assert.True(t, deserializedSigVerified, "deserialized signature is verified")
+}
+
+func Test_MPCAddressDerive(t *testing.T) {
+	w, err := GenerateWallet(common.DefaultCallback())
+	assert.NoError(t, err)
+
+	p, err := w.PublicKey()
+
+	for len(p) < 40 {
+		p = append(p, 0) // padding
+	}
+	assert.NoError(t, err)
+	key1, err := ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(p))
+	assert.NoError(t, err)
+
+	key2, err := ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(p))
+	assert.NoError(t, err)
+	assert.Equal(t, key1.Equal(key2), true)
 }

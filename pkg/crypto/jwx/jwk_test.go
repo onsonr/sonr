@@ -1,17 +1,52 @@
 package jwx
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
 	"testing"
 
 	"github.com/lestrrat-go/jwx/v2/jwe"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/sonr/third_party/types/common"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_JWK(t *testing.T) {
+	t.Run("can create JWK from wallet keys", func(t *testing.T) {
+		w, err := mpc.GenerateWallet(common.DefaultCallback())
+		assert.NoError(t, err)
+		p, err := w.PublicKey()
+
+		// need to pad the key to 40 bytes for
+		// ecdsa key generation which sizes its buffers from
+		for len(p) < 40 {
+			p = append(p, 0)
+		}
+		assert.NoError(t, err)
+		key, err := ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(p))
+		assert.NoError(t, err)
+
+		x := New(key)
+
+		_, err = x.CreateSignJWK()
+
+		assert.NoError(t, err)
+
+		msg := "my message to sign"
+
+		b, err := x.Sign([]byte(msg), key)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, b)
+
+		m, err := x.MarshallJSON()
+		assert.NoError(t, err)
+		assert.NotNil(t, m)
+	})
+
 	t.Run("can create JWK for encryption with public key", func(t *testing.T) {
 		key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 		if err != nil {
