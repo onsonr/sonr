@@ -105,7 +105,15 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}
 
 	// Add MPC as a VerificationMethod for the assertion of the DID Document
-	vm, err := did.NewVerificationMethod(doc.GetID(), ssi.JsonWebKey2020, *controller, mtr.GetPubKey().Bytes())
+	pk, err := mtr.Wallet.CreateEcdsaFromPublicKey()
+	if err != nil {
+		mtr.triggerWalletEvent(common.WalletEvent{
+			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
+			ErrorMessage: err.Error(),
+		})
+		return mt.CreateAccountWithKeysResponse{}, err
+	}
+	vm, err := did.NewVerificationMethod(doc.GetID(), ssi.JsonWebKey2020, *controller, pk)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
