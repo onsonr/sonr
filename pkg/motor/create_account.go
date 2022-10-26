@@ -95,7 +95,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	mtr.DIDDocument = doc
 
 	// Format DID for setting MPC as controller
-	controller, err := did.ParseDID(fmt.Sprintf("%s#mpc", doc.GetID().String()))
+	controller, err := did.ParseDID(fmt.Sprintf("%s#jwk", doc.GetID().String()))
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
