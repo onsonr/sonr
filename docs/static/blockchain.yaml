@@ -33310,6 +33310,11 @@ paths:
             properties:
               params:
                 type: object
+                properties:
+                  ipfs_gateway:
+                    type: string
+                  ipts_api_url:
+                    type: string
                 description: Params defines the parameters for the module.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
@@ -57304,15 +57309,172 @@ definitions:
       application
   sonrio.sonr.bucket.MsgBurnBucketResponse:
     type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
+            type: string
+            format: int64
+            description: Timestamp of the new bucket.
+      did_document:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+          verification_method:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                controller:
+                  type: string
+                public_key_jwk:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                public_key_base58:
+                  type: string
+                credential_json:
+                  type: string
+                  format: byte
+          authentication:
+            type: array
+            items:
+              type: string
+          assertion_method:
+            type: array
+            items:
+              type: string
+          capability_invocation:
+            type: array
+            items:
+              type: string
+          capability_delegation:
+            type: array
+            items:
+              type: string
+          key_agreement:
+            type: array
+            items:
+              type: string
+          service:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+          also_known_as:
+            type: array
+            items:
+              type: string
   sonrio.sonr.bucket.MsgDeactivateBucketResponse:
     type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
+            type: string
+            format: int64
+            description: Timestamp of the new bucket.
+      totalBurned:
+        type: integer
+        format: int32
   sonrio.sonr.bucket.MsgDefineBucketResponse:
     type: object
     properties:
       status:
         type: integer
         format: int32
-      where_is:
+      bucket:
         type: object
         properties:
           uuid:
@@ -57347,8 +57509,132 @@ definitions:
             description: Timestamp of the new bucket.
   sonrio.sonr.bucket.MsgGenerateBucketResponse:
     type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
+            type: string
+            format: int64
+            description: Timestamp of the new bucket.
+      serviceEndpoint:
+        type: string
+      did_document:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+          verification_method:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                controller:
+                  type: string
+                public_key_jwk:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                public_key_base58:
+                  type: string
+                credential_json:
+                  type: string
+                  format: byte
+          authentication:
+            type: array
+            items:
+              type: string
+          assertion_method:
+            type: array
+            items:
+              type: string
+          capability_invocation:
+            type: array
+            items:
+              type: string
+          capability_delegation:
+            type: array
+            items:
+              type: string
+          key_agreement:
+            type: array
+            items:
+              type: string
+          service:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+          also_known_as:
+            type: array
+            items:
+              type: string
   sonrio.sonr.bucket.Params:
     type: object
+    properties:
+      ipfs_gateway:
+        type: string
+      ipts_api_url:
+        type: string
     description: Params defines the parameters for the module.
   sonrio.sonr.bucket.QueryAllBucketsResponse:
     type: object
@@ -57580,44 +57866,13 @@ definitions:
     properties:
       params:
         type: object
+        properties:
+          ipfs_gateway:
+            type: string
+          ipts_api_url:
+            type: string
         description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  cosmos.crypto.secp256k1.PubKey:
-    type: object
-    properties:
-      key:
-        type: string
-        format: byte
-    description: >-
-      PubKey defines a secp256k1 public key
-
-      Key is the compressed form of the pubkey. The first byte depends is a 0x02
-      byte
-
-      if the y-coordinate is the lexicographically largest of the two associated
-      with
-
-      the x-coordinate. Otherwise the first byte is a 0x03.
-
-      This prefix is followed with the x-coordinate.
-  sonrio.sonr.registry.Alias:
-    type: object
-    properties:
-      name:
-        type: string
-        title: Name is the string name of an Alias
-      is_for_sale:
-        type: boolean
-        title: IsForSale is the boolean value indicating if the Alias is for sale
-      amount:
-        type: integer
-        format: int32
-        title: >-
-          Amount is the amount listed for purchasing the Alias from the
-          User/Application
-    title: >-
-      Alias is a message detailing a known "alsoKnownAs" identifier of a
-      DIDDocument and contains properties for transfer/exchange
   sonrio.sonr.registry.DIDDocument:
     type: object
     properties:
@@ -57705,6 +57960,81 @@ definitions:
         type: string
       value:
         type: string
+  sonrio.sonr.registry.Service:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      service_endpoint:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
+  sonrio.sonr.registry.VerificationMethod:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      controller:
+        type: string
+      public_key_jwk:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
+      public_key_base58:
+        type: string
+      credential_json:
+        type: string
+        format: byte
+  cosmos.crypto.secp256k1.PubKey:
+    type: object
+    properties:
+      key:
+        type: string
+        format: byte
+    description: >-
+      PubKey defines a secp256k1 public key
+
+      Key is the compressed form of the pubkey. The first byte depends is a 0x02
+      byte
+
+      if the y-coordinate is the lexicographically largest of the two associated
+      with
+
+      the x-coordinate. Otherwise the first byte is a 0x03.
+
+      This prefix is followed with the x-coordinate.
+  sonrio.sonr.registry.Alias:
+    type: object
+    properties:
+      name:
+        type: string
+        title: Name is the string name of an Alias
+      is_for_sale:
+        type: boolean
+        title: IsForSale is the boolean value indicating if the Alias is for sale
+      amount:
+        type: integer
+        format: int32
+        title: >-
+          Amount is the amount listed for purchasing the Alias from the
+          User/Application
+    title: >-
+      Alias is a message detailing a known "alsoKnownAs" identifier of a
+      DIDDocument and contains properties for transfer/exchange
   sonrio.sonr.registry.MsgBuyAliasResponse:
     type: object
     properties:
@@ -59091,45 +59421,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-  sonrio.sonr.registry.Service:
-    type: object
-    properties:
-      id:
-        type: string
-      type:
-        type: string
-      service_endpoint:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
-  sonrio.sonr.registry.VerificationMethod:
-    type: object
-    properties:
-      id:
-        type: string
-      type:
-        type: string
-      controller:
-        type: string
-      public_key_jwk:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
-      public_key_base58:
-        type: string
-      credential_json:
-        type: string
-        format: byte
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:
