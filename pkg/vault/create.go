@@ -86,11 +86,9 @@ func (v *vaultImpl) CreateVault(d string, deviceShards [][]byte, dscPub string, 
 	}
 
 	return did.Service{
-		ID:   ssi.MustParseURI(uri),
-		Type: "vault",
-		ServiceEndpoint: map[string]string{
-			"cid": cvr.VaultCid,
-		},
+		ID:              ssi.MustParseURI(uri),
+		Type:            "vault",
+		ServiceEndpoint: cvr.VaultCid,
 	}, nil
 }
 

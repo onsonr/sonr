@@ -100,9 +100,14 @@ func servicesFromPkg(srvs did.Services) []*Service {
 	res := make([]*Service, 0)
 	for _, s := range srvs {
 		res = append(res, &Service{
-			Id:              s.ID.String(),
-			Type:            s.Type,
-			ServiceEndpoint: mapToKVPair(s.ServiceEndpoint),
+			Id:   s.ID.String(),
+			Type: s.Type,
+			ServiceEndpoint: []*KeyValuePair{
+				{
+					Key:   "uri",
+					Value: s.ServiceEndpoint,
+				},
+			},
 		})
 	}
 

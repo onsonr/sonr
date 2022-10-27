@@ -129,7 +129,7 @@ func convertServices(srvs []*Service) (did.Services, error) {
 		res[i] = did.Service{
 			ID:              ssi.MustParseURI(s.Id),
 			Type:            s.Type,
-			ServiceEndpoint: endpoints,
+			ServiceEndpoint: endpoints["uri"],
 		}
 	}
 

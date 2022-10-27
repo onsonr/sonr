@@ -2,7 +2,19 @@ package types
 
 import (
 	"fmt"
+
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
+
+func (d *SchemaDocument) ToBucketItem() (bt.BucketItem, error) {
+	name := d.Label
+	fileName := fmt.Sprintf("%s.json", name)
+	content, err := d.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	return bt.NewBucketItemFromBytes(fileName, content)
+}
 
 func (d *SchemaDocumentValue) GetValue() interface{} {
 	switch d.Kind {

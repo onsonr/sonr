@@ -48,37 +48,7 @@ func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucke
 	)
 
 	return &types.MsgDefineBucketResponse{
-		Status:  http.StatusAccepted,
-		WhereIs: &whereIs,
+		Status: http.StatusAccepted,
+		Bucket: &whereIs,
 	}, nil
 }
-
-// func (k msgServer) DeactivateBucket(goCtx context.Context, msg *types.MsgDeactivateBucket) (*types.MsgDeleteBucketResponse, error) {
-// 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-// 	// Checks that the element exists
-// 	val, found := k.GetBucket(ctx, msg.Did)
-// 	if !found {
-// 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Did))
-// 	}
-
-// 	// Checks if the msg creator is the same as the current owner
-// 	if msg.Creator != val.Creator {
-// 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-// 	}
-
-// 	val.IsActive = false
-// 	k.SetWhereIs(ctx, val)
-
-// 	ctx.EventManager().EmitEvent(
-// 		sdk.NewEvent(
-// 			sdk.EventTypeMessage,
-// 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-// 			sdk.NewAttribute(types.AttributeKeyCreator, val.Creator),
-// 			// sdk.NewAttribute(types.AttributeKeyDID, val.Did),
-// 			// sdk.NewAttribute(types.AttributeKeyLabel, val.Label),
-// 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeDeleteWhereIs),
-// 		),
-// 	)
-// 	return &types.MsgDeleteBucketResponse{}, nil
-// }

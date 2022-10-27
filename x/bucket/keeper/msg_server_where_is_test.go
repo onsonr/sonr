@@ -14,6 +14,6 @@ func TestWhereIsMsgServerCreate(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		resp, err := srv.DefineBucket(ctx, &types.MsgDefineBucket{Creator: creator})
 		require.NoError(t, err)
-		require.Equal(t, i, resp.WhereIs)
+		require.Equal(t, i, resp.Bucket)
 	}
 }

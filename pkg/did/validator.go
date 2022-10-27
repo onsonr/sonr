@@ -170,7 +170,7 @@ func (s serviceValidator) Validate(document DocumentImpl) error {
 		if len(strings.TrimSpace(service.Type)) == 0 {
 			return makeValidationError(ErrInvalidService)
 		}
-		if service.ServiceEndpoint == nil {
+		if len(strings.TrimSpace(service.ServiceEndpoint)) == 0{
 			return makeValidationError(ErrInvalidService)
 		}
 	}

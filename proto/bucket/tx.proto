@@ -3,6 +3,7 @@ syntax = "proto3";
 package sonrio.sonr.bucket;
 
 import "bucket/bucket.proto";
+import "registry/did.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
@@ -26,28 +27,41 @@ message MsgDefineBucket {
 
 message MsgDefineBucketResponse {
   int32 status = 1;
-  Bucket where_is = 2;
+  Bucket bucket = 2;
 }
 
 message MsgGenerateBucket {
   string creator = 1;
+  Bucket bucket = 2;
 }
 
 message MsgGenerateBucketResponse {
+  int32 status = 1;
+  Bucket bucket = 2;
+  string serviceEndpoint = 3;
+  sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 
 message MsgDeactivateBucket {
   string creator = 1;
+  Bucket bucket = 2;
 }
 
 message MsgDeactivateBucketResponse {
+  int32 status = 1;
+  Bucket bucket = 2;
+  int32 totalBurned = 3;
 }
 
 message MsgBurnBucket {
   string creator = 1;
+  Bucket bucket = 2;
 }
 
 message MsgBurnBucketResponse {
+  int32 status = 1;
+  Bucket bucket = 2;
+  sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 
 // this line is used by starport scaffolding # proto/tx/message
