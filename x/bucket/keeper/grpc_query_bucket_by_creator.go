@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsByCreatorRequest) (*types.QueryGetWhereIsByCreatorResponse, error) {
+func (k Keeper) BucketByCreator(c context.Context, req *types.QueryGetBucketByCreatorRequest) (*types.QueryGetBucketByCreatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -20,17 +20,17 @@ func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsBy
 	if req.Pagination == nil {
 		whereIss := k.GetWhereIsByCreator(ctx, req.Creator)
 
-		return &types.QueryGetWhereIsByCreatorResponse{
-			WhereIs:    whereIss,
+		return &types.QueryGetBucketByCreatorResponse{
+			Buckets:    whereIss,
 			Pagination: nil,
 		}, nil
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	whereIsStore := prefix.NewStore(store, types.KeyPrefix(types.WhereIsKeyPrefix))
-	var whereIss []types.WhereIs
+	whereIsStore := prefix.NewStore(store, types.KeyPrefix(types.BucketKeyPrefix))
+	var whereIss []types.Bucket
 	pageRes, err := query.Paginate(whereIsStore, req.Pagination, func(key []byte, value []byte) error {
-		var whereIs types.WhereIs
+		var whereIs types.Bucket
 		if err := k.cdc.Unmarshal(value, &whereIs); err != nil {
 			return err
 		}
@@ -46,8 +46,8 @@ func (k Keeper) WhereIsByCreator(c context.Context, req *types.QueryGetWhereIsBy
 		return nil, status.Error(codes.Internal, "error while panginating response"+err.Error())
 	}
 
-	return &types.QueryGetWhereIsByCreatorResponse{
-		WhereIs:    whereIss,
+	return &types.QueryGetBucketByCreatorResponse{
+		Buckets:    whereIss,
 		Pagination: pageRes,
 	}, nil
 }

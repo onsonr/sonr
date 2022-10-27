@@ -18,13 +18,13 @@ func (mtr *motorNodeImpl) UpdateBucket(req mt.UpdateBucketRequest) (bucket.Bucke
 		return nil, errors.New("invalid Address")
 	}
 
-	updateWhereIsRequest := bt.NewMsgUpdateWhereIs(mtr.Address, req.Did)
+	updateWhereIsRequest := bt.NewMsgUpdateBucket(mtr.Address, req.Did)
 	updateWhereIsRequest.Label = req.Label
 	updateWhereIsRequest.Role = req.Role
 	updateWhereIsRequest.Visibility = req.Visibility
 	updateWhereIsRequest.Content = req.Content
 
-	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgUpdateWhereIs", updateWhereIsRequest)
+	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgUpdateBucket", updateWhereIsRequest)
 	if err != nil {
 		return nil, fmt.Errorf("sign tx with wallet: %s", err)
 	}
@@ -34,9 +34,9 @@ func (mtr *motorNodeImpl) UpdateBucket(req mt.UpdateBucketRequest) (bucket.Bucke
 		return nil, fmt.Errorf("broadcast tx: %s", err)
 	}
 
-	cbresp := &bt.MsgUpdateWhereIsResponse{}
+	cbresp := &bt.MsgUpdateBucketResponse{}
 	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cbresp); err != nil {
-		return nil, fmt.Errorf("decode MsgUpdateWhereIsResponse: %s", err)
+		return nil, fmt.Errorf("decode MsgUpdateBucketResponse: %s", err)
 	}
 
 	if cbresp.Status != http.StatusAccepted {

@@ -12,7 +12,6 @@ import (
 // Option configures your client.
 type Option func(*Config)
 
-
 // WithHighwayAPISettings sets the host address for the Node Stub Client Host
 func WithHighwayAPISettings(network string, grpcHost string, grpcPort int, httpPort int) Option {
 	return func(o *Config) {

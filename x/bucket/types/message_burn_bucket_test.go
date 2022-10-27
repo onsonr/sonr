@@ -8,21 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgDefineBucket_ValidateBasic(t *testing.T) {
+func TestMsgBurnBucket_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDefineBucket
+		msg  MsgBurnBucket
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDefineBucket{
+			msg: MsgBurnBucket{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDefineBucket{
+			msg: MsgBurnBucket{
 				Creator: sample.AccAddress(),
 			},
 		},

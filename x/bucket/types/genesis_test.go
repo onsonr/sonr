@@ -22,12 +22,12 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
-				WhereIsList: []types.WhereIs{
+				BucketDefinitions: []types.Bucket{
 					{
-						Did: "did:sonr:1",
+						Uuid: "did:sonr:1",
 					},
 					{
-						Did: "did:sonr:2",
+						Uuid: "did:sonr:2",
 					},
 				},
 				// this line is used by starport scaffolding # types/genesis/validField
@@ -37,12 +37,12 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated whereIs",
 			genState: &types.GenesisState{
-				WhereIsList: []types.WhereIs{
+				BucketDefinitions: []types.Bucket{
 					{
-						Did: "did:sonr:1",
+						Uuid: "did:sonr:1",
 					},
 					{
-						Did: "did:sonr:1",
+						Uuid: "did:sonr:1",
 					},
 				},
 			},
@@ -51,9 +51,9 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "invalid whereIs count",
 			genState: &types.GenesisState{
-				WhereIsList: []types.WhereIs{
+				BucketDefinitions: []types.Bucket{
 					{
-						Did: "did:sonr:1",
+						Uuid: "did:sonr:1",
 					},
 				},
 			},

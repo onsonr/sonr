@@ -22,12 +22,12 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	WhereIsCountKey   = "WhereIs-count-"
-	WhereIsKeyPrefix  = "Bucket/value/"
-	DoucmnetKeyPrefix = "Document/value/"
+	BucketCountKey    = "WhereIs-count-"
+	BucketKeyPrefix   = "Bucket/value/"
+	DocumentKeyPrefix = "Document/value/"
 )
 
-func WhereIsKey(creator string) []byte {
+func BucketKey(creator string) []byte {
 	var key []byte
 	creatorBytes := []byte(creator)
 	key = append(key, creatorBytes...)

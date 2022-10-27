@@ -3,7 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
-import "bucket/where_is.proto";
+import "bucket/bucket.proto";
 import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "schema/v1/document.proto";
@@ -141,7 +141,7 @@ message CreateSchemaRequest {
 
   // Definition of the schema provided as a map
   map<string, sonrio.sonr.schema.SchemaFieldKind> fields = 2;
-  
+
   // custom metadata for the definition. will be recorded on chain
   map<string, string> metadata = 3;
 }
@@ -209,18 +209,12 @@ message QueryWhereIsByCreatorRequest {
 message CreateBucketRequest {
   string creator = 1;
   string label = 2;
-  sonrio.sonr.bucket.BucketVisibility visibility = 3;
-  sonrio.sonr.bucket.BucketRole role = 4;
-  repeated sonrio.sonr.bucket.BucketItem content = 5;
 }
 
 message UpdateBucketRequest {
   string creator = 1;
   string did = 2;
   string label = 3;
-  sonrio.sonr.bucket.BucketVisibility visibility = 4;
-  sonrio.sonr.bucket.BucketRole role = 5;
-  repeated sonrio.sonr.bucket.BucketItem content = 6;
 }
 
 message SeachBucketContentBySchemaRequest {

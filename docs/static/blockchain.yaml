@@ -32775,6 +32775,529 @@ paths:
           format: uint64
       tags:
         - Query
+  /sonr-io/sonr/bucket/all:
+    get:
+      summary: Queries a list of WhereIs items.
+      operationId: SonrioSonrBucketBucketsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              buckets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      description: DID of the created bucket.
+                    creator:
+                      type: string
+                      title: Creator of the new bucket
+                    name:
+                      type: string
+                      description: Name of the new bucket.
+                    visibility:
+                      type: string
+                      enum:
+                        - PUBLIC
+                        - USER
+                        - APPLICATION
+                      default: PUBLIC
+                      description: |-
+                        - PUBLIC: Bucket does not have visibility set.
+                         - USER: Bucket is visible to anyone.
+                         - APPLICATION: Bucket is visible to anyone who has access token.
+                      title: >-
+                        BucketVisibility is the visibility of the bucket to
+                        authorized users of an application
+                    is_active:
+                      type: boolean
+                      description: IsActive flag of the new bucket.
+                    size:
+                      type: string
+                      format: int64
+                      description: Timestamp of the new bucket.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/creator/{creator}':
+    get:
+      summary: Queries all WhereIs by creator.
+      operationId: SonrioSonrBucketBucketByCreator
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              buckets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      description: DID of the created bucket.
+                    creator:
+                      type: string
+                      title: Creator of the new bucket
+                    name:
+                      type: string
+                      description: Name of the new bucket.
+                    visibility:
+                      type: string
+                      enum:
+                        - PUBLIC
+                        - USER
+                        - APPLICATION
+                      default: PUBLIC
+                      description: |-
+                        - PUBLIC: Bucket does not have visibility set.
+                         - USER: Bucket is visible to anyone.
+                         - APPLICATION: Bucket is visible to anyone who has access token.
+                      title: >-
+                        BucketVisibility is the visibility of the bucket to
+                        authorized users of an application
+                    is_active:
+                      type: boolean
+                      description: IsActive flag of the new bucket.
+                    size:
+                      type: string
+                      format: int64
+                      description: Timestamp of the new bucket.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/id/{uuid}':
+    get:
+      summary: Queries a WhereIs by did and creator.
+      operationId: SonrioSonrBucketBucket
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              bucket:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    description: DID of the created bucket.
+                  creator:
+                    type: string
+                    title: Creator of the new bucket
+                  name:
+                    type: string
+                    description: Name of the new bucket.
+                  visibility:
+                    type: string
+                    enum:
+                      - PUBLIC
+                      - USER
+                      - APPLICATION
+                    default: PUBLIC
+                    description: |-
+                      - PUBLIC: Bucket does not have visibility set.
+                       - USER: Bucket is visible to anyone.
+                       - APPLICATION: Bucket is visible to anyone who has access token.
+                    title: >-
+                      BucketVisibility is the visibility of the bucket to
+                      authorized users of an application
+                  is_active:
+                    type: boolean
+                    description: IsActive flag of the new bucket.
+                  size:
+                    type: string
+                    format: int64
+                    description: Timestamp of the new bucket.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/name/{name}':
+    get:
+      summary: Queries all WhereIs by creator.
+      operationId: SonrioSonrBucketBucketByName
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              buckets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      description: DID of the created bucket.
+                    creator:
+                      type: string
+                      title: Creator of the new bucket
+                    name:
+                      type: string
+                      description: Name of the new bucket.
+                    visibility:
+                      type: string
+                      enum:
+                        - PUBLIC
+                        - USER
+                        - APPLICATION
+                      default: PUBLIC
+                      description: |-
+                        - PUBLIC: Bucket does not have visibility set.
+                         - USER: Bucket is visible to anyone.
+                         - APPLICATION: Bucket is visible to anyone who has access token.
+                      title: >-
+                        BucketVisibility is the visibility of the bucket to
+                        authorized users of an application
+                    is_active:
+                      type: boolean
+                      description: IsActive flag of the new bucket.
+                    size:
+                      type: string
+                      format: int64
+                      description: Timestamp of the new bucket.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
   /sonr-io/sonr/bucket/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -32786,8 +33309,8 @@ paths:
             type: object
             properties:
               params:
-                description: params holds all the parameters of this module.
                 type: object
+                description: Params defines the parameters for the module.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -32811,516 +33334,6 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sonr-io/sonr/bucket/where_is:
-    get:
-      summary: Queries a list of WhereIs items.
-      operationId: SonrioSonrBucketWhereIsAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              where_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      description: DID of the created bucket.
-                    creator:
-                      type: string
-                      title: Creator of the new bucket
-                    label:
-                      type: string
-                      description: Label of the new bucket.
-                    visibility:
-                      description: Visibility of the new bucket.
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - PUBLIC
-                        - PRIVATE
-                      default: UNSPECIFIED
-                      title: >-
-                        BucketVisibility is the visibility of the bucket to
-                        authorized users of an application
-                    role:
-                      description: Role of the creator of the new bucket.
-                      type: string
-                      enum:
-                        - NONE
-                        - APPLICATION
-                        - USER
-                      default: NONE
-                    is_active:
-                      type: boolean
-                      description: IsActive flag of the new bucket.
-                    content:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                            description: Name of the bucket item.
-                          uri:
-                            type: string
-                            title: DID of the item. If applicable // optional
-                          timestamp:
-                            type: string
-                            format: int64
-                            title: Timestamp of the last update. // optional
-                          type:
-                            title: Type of the resource
-                            type: string
-                            enum:
-                              - None
-                              - DID
-                              - CID
-                            default: None
-                          schema_did:
-                            type: string
-                            title: >-
-                              References the schema and item within the bucket
-                              is associated with.
-
-                              Bucket items do not need to use the same schema if
-                              the bucket is "generic" // optional
-                        description: >-
-                          BucketItem is a pointer to a single piece of content
-                          in a bucket.
-                      description: Content of the new bucket map of DIDs to CIDs.
-                    content_acl:
-                      type: object
-                      additionalProperties:
-                        type: object
-                        properties:
-                          encrypted_jwks:
-                            type: object
-                            additionalProperties:
-                              type: string
-                              format: byte
-                        title: AclJwks is a map of JWKs for a given Schema
-                      description: JWKs of the new bucket.
-                    timestamp:
-                      type: string
-                      format: int64
-                      description: Timestamp of the new bucket.
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  '/sonr-io/sonr/bucket/where_is/{creator}':
-    get:
-      summary: Queries all WhereIs by creator.
-      operationId: SonrioSonrBucketWhereIsByCreator
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              where_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      description: DID of the created bucket.
-                    creator:
-                      type: string
-                      title: Creator of the new bucket
-                    label:
-                      type: string
-                      description: Label of the new bucket.
-                    visibility:
-                      description: Visibility of the new bucket.
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - PUBLIC
-                        - PRIVATE
-                      default: UNSPECIFIED
-                      title: >-
-                        BucketVisibility is the visibility of the bucket to
-                        authorized users of an application
-                    role:
-                      description: Role of the creator of the new bucket.
-                      type: string
-                      enum:
-                        - NONE
-                        - APPLICATION
-                        - USER
-                      default: NONE
-                    is_active:
-                      type: boolean
-                      description: IsActive flag of the new bucket.
-                    content:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                            description: Name of the bucket item.
-                          uri:
-                            type: string
-                            title: DID of the item. If applicable // optional
-                          timestamp:
-                            type: string
-                            format: int64
-                            title: Timestamp of the last update. // optional
-                          type:
-                            title: Type of the resource
-                            type: string
-                            enum:
-                              - None
-                              - DID
-                              - CID
-                            default: None
-                          schema_did:
-                            type: string
-                            title: >-
-                              References the schema and item within the bucket
-                              is associated with.
-
-                              Bucket items do not need to use the same schema if
-                              the bucket is "generic" // optional
-                        description: >-
-                          BucketItem is a pointer to a single piece of content
-                          in a bucket.
-                      description: Content of the new bucket map of DIDs to CIDs.
-                    content_acl:
-                      type: object
-                      additionalProperties:
-                        type: object
-                        properties:
-                          encrypted_jwks:
-                            type: object
-                            additionalProperties:
-                              type: string
-                              format: byte
-                        title: AclJwks is a map of JWKs for a given Schema
-                      description: JWKs of the new bucket.
-                    timestamp:
-                      type: string
-                      format: int64
-                      description: Timestamp of the new bucket.
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: creator
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  '/sonr-io/sonr/bucket/where_is/{creator}/{did}':
-    get:
-      summary: Queries a WhereIs by did and creator.
-      operationId: SonrioSonrBucketWhereIs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              where_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    description: DID of the created bucket.
-                  creator:
-                    type: string
-                    title: Creator of the new bucket
-                  label:
-                    type: string
-                    description: Label of the new bucket.
-                  visibility:
-                    description: Visibility of the new bucket.
-                    type: string
-                    enum:
-                      - UNSPECIFIED
-                      - PUBLIC
-                      - PRIVATE
-                    default: UNSPECIFIED
-                    title: >-
-                      BucketVisibility is the visibility of the bucket to
-                      authorized users of an application
-                  role:
-                    description: Role of the creator of the new bucket.
-                    type: string
-                    enum:
-                      - NONE
-                      - APPLICATION
-                      - USER
-                    default: NONE
-                  is_active:
-                    type: boolean
-                    description: IsActive flag of the new bucket.
-                  content:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                          description: Name of the bucket item.
-                        uri:
-                          type: string
-                          title: DID of the item. If applicable // optional
-                        timestamp:
-                          type: string
-                          format: int64
-                          title: Timestamp of the last update. // optional
-                        type:
-                          title: Type of the resource
-                          type: string
-                          enum:
-                            - None
-                            - DID
-                            - CID
-                          default: None
-                        schema_did:
-                          type: string
-                          title: >-
-                            References the schema and item within the bucket is
-                            associated with.
-
-                            Bucket items do not need to use the same schema if
-                            the bucket is "generic" // optional
-                      description: >-
-                        BucketItem is a pointer to a single piece of content in
-                        a bucket.
-                    description: Content of the new bucket map of DIDs to CIDs.
-                  content_acl:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        encrypted_jwks:
-                          type: object
-                          additionalProperties:
-                            type: string
-                            format: byte
-                      title: AclJwks is a map of JWKs for a given Schema
-                    description: JWKs of the new bucket.
-                  timestamp:
-                    type: string
-                    format: int64
-                    description: Timestamp of the new bucket.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: creator
-          in: path
-          required: true
-          type: string
-        - name: did
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
   /sonr-io/sonr/registry/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -33332,8 +33345,8 @@ paths:
             type: object
             properties:
               params:
-                description: params holds all the parameters of this module.
                 type: object
+                description: Params defines the parameters for the module.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -33404,9 +33417,6 @@ paths:
                         Owner is the top level DID of the User or Application
                         derived from the multisignature wallet.
                     did_document:
-                      description: >-
-                        DIDDocument is the bytes representation of DIDDocument
-                        within the WhoIs. Initially marshalled as JSON.
                       type: object
                       properties:
                         context:
@@ -33494,9 +33504,6 @@ paths:
                         Credentials are the biometric info of the registered
                         name and account encoded with public key
                     type:
-                      title: >-
-                        Type is the kind of the entity. Possible values are:
-                        "user", "application"
                       type: string
                       enum:
                         - USER
@@ -33505,6 +33512,9 @@ paths:
                       description: |-
                         - USER: User is the type of the registered name
                          - APPLICATION: Application is the type of the registered name
+                      title: >-
+                        WhoIsType is the type of DIDDocument stored in the
+                        registry module
                     timestamp:
                       type: string
                       format: int64
@@ -33613,6 +33623,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/registry/who_is/{did}':
@@ -33660,9 +33680,6 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    description: >-
-                      DIDDocument is the bytes representation of DIDDocument
-                      within the WhoIs. Initially marshalled as JSON.
                     type: object
                     properties:
                       context:
@@ -33750,9 +33767,6 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
-                    title: >-
-                      Type is the kind of the entity. Possible values are:
-                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -33761,6 +33775,9 @@ paths:
                     description: |-
                       - USER: User is the type of the registered name
                        - APPLICATION: Application is the type of the registered name
+                    title: >-
+                      WhoIsType is the type of DIDDocument stored in the
+                      registry module
                   timestamp:
                     type: string
                     format: int64
@@ -33847,9 +33864,6 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    description: >-
-                      DIDDocument is the bytes representation of DIDDocument
-                      within the WhoIs. Initially marshalled as JSON.
                     type: object
                     properties:
                       context:
@@ -33937,9 +33951,6 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
-                    title: >-
-                      Type is the kind of the entity. Possible values are:
-                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -33948,6 +33959,9 @@ paths:
                     description: |-
                       - USER: User is the type of the registered name
                        - APPLICATION: Application is the type of the registered name
+                    title: >-
+                      WhoIsType is the type of DIDDocument stored in the
+                      registry module
                   timestamp:
                     type: string
                     format: int64
@@ -34035,9 +34049,6 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
-                    description: >-
-                      DIDDocument is the bytes representation of DIDDocument
-                      within the WhoIs. Initially marshalled as JSON.
                     type: object
                     properties:
                       context:
@@ -34125,9 +34136,6 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
-                    title: >-
-                      Type is the kind of the entity. Possible values are:
-                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -34136,6 +34144,9 @@ paths:
                     description: |-
                       - USER: User is the type of the registered name
                        - APPLICATION: Application is the type of the registered name
+                    title: >-
+                      WhoIsType is the type of DIDDocument stored in the
+                      registry module
                   timestamp:
                     type: string
                     format: int64
@@ -34189,8 +34200,8 @@ paths:
             type: object
             properties:
               params:
-                description: params holds all the parameters of this module.
                 type: object
+                description: Params defines the parameters for the module.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -34285,16 +34296,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -34455,16 +34456,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/schema/query/what_is/{did}':
@@ -34542,16 +34533,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -57274,72 +57255,58 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
-  sonrio.sonr.bucket.AclJwks:
+  sonrio.sonr.bucket.Bucket:
     type: object
     properties:
-      encrypted_jwks:
-        type: object
-        additionalProperties:
-          type: string
-          format: byte
-    title: AclJwks is a map of JWKs for a given Schema
-  sonrio.sonr.bucket.BucketItem:
-    type: object
-    properties:
+      uuid:
+        type: string
+        description: DID of the created bucket.
+      creator:
+        type: string
+        title: Creator of the new bucket
       name:
         type: string
-        description: Name of the bucket item.
-      uri:
-        type: string
-        title: DID of the item. If applicable // optional
-      timestamp:
-        type: string
-        format: int64
-        title: Timestamp of the last update. // optional
-      type:
-        title: Type of the resource
+        description: Name of the new bucket.
+      visibility:
         type: string
         enum:
-          - None
-          - DID
-          - CID
-        default: None
-      schema_did:
-        type: string
+          - PUBLIC
+          - USER
+          - APPLICATION
+        default: PUBLIC
+        description: |-
+          - PUBLIC: Bucket does not have visibility set.
+           - USER: Bucket is visible to anyone.
+           - APPLICATION: Bucket is visible to anyone who has access token.
         title: >-
-          References the schema and item within the bucket is associated with.
-
-          Bucket items do not need to use the same schema if the bucket is
-          "generic" // optional
-    description: BucketItem is a pointer to a single piece of content in a bucket.
-  sonrio.sonr.bucket.BucketRole:
-    type: string
-    enum:
-      - NONE
-      - APPLICATION
-      - USER
-    default: NONE
-    description: |-
-      BucketRole is the role of the creator of the bucket.
-
-       - NONE: Bucket does not have role set.
-       - APPLICATION: Bucket is visible to anyone.
-       - USER: Bucket is visible to anyone who has access token.
+          BucketVisibility is the visibility of the bucket to authorized users
+          of an application
+      is_active:
+        type: boolean
+        description: IsActive flag of the new bucket.
+      size:
+        type: string
+        format: int64
+        description: Timestamp of the new bucket.
   sonrio.sonr.bucket.BucketVisibility:
     type: string
     enum:
-      - UNSPECIFIED
       - PUBLIC
-      - PRIVATE
-    default: UNSPECIFIED
+      - USER
+      - APPLICATION
+    default: PUBLIC
     description: |-
-      - UNSPECIFIED: Bucket does not have visibility set.
-       - PUBLIC: Bucket is visible to anyone.
-       - PRIVATE: Bucket is visible to anyone who has access token.
+      - PUBLIC: Bucket does not have visibility set.
+       - USER: Bucket is visible to anyone.
+       - APPLICATION: Bucket is visible to anyone who has access token.
     title: >-
       BucketVisibility is the visibility of the bucket to authorized users of an
       application
-  sonrio.sonr.bucket.MsgCreateWhereIsResponse:
+  sonrio.sonr.bucket.MsgBurnBucketResponse:
+    type: object
+  sonrio.sonr.bucket.MsgDeactivateBucketResponse:
+    type: object
+  sonrio.sonr.bucket.MsgDefineBucketResponse:
     type: object
     properties:
       status:
@@ -57348,275 +57315,76 @@ definitions:
       where_is:
         type: object
         properties:
-          did:
+          uuid:
             type: string
             description: DID of the created bucket.
           creator:
             type: string
             title: Creator of the new bucket
-          label:
+          name:
             type: string
-            description: Label of the new bucket.
+            description: Name of the new bucket.
           visibility:
-            description: Visibility of the new bucket.
             type: string
             enum:
-              - UNSPECIFIED
               - PUBLIC
-              - PRIVATE
-            default: UNSPECIFIED
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
-          role:
-            description: Role of the creator of the new bucket.
-            type: string
-            enum:
-              - NONE
-              - APPLICATION
-              - USER
-            default: NONE
           is_active:
             type: boolean
             description: IsActive flag of the new bucket.
-          content:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the bucket item.
-                uri:
-                  type: string
-                  title: DID of the item. If applicable // optional
-                timestamp:
-                  type: string
-                  format: int64
-                  title: Timestamp of the last update. // optional
-                type:
-                  title: Type of the resource
-                  type: string
-                  enum:
-                    - None
-                    - DID
-                    - CID
-                  default: None
-                schema_did:
-                  type: string
-                  title: >-
-                    References the schema and item within the bucket is
-                    associated with.
-
-                    Bucket items do not need to use the same schema if the
-                    bucket is "generic" // optional
-              description: >-
-                BucketItem is a pointer to a single piece of content in a
-                bucket.
-            description: Content of the new bucket map of DIDs to CIDs.
-          content_acl:
-            type: object
-            additionalProperties:
-              type: object
-              properties:
-                encrypted_jwks:
-                  type: object
-                  additionalProperties:
-                    type: string
-                    format: byte
-              title: AclJwks is a map of JWKs for a given Schema
-            description: JWKs of the new bucket.
-          timestamp:
+          size:
             type: string
             format: int64
             description: Timestamp of the new bucket.
-  sonrio.sonr.bucket.MsgDeleteWhereIsResponse:
+  sonrio.sonr.bucket.MsgGenerateBucketResponse:
     type: object
-    properties:
-      status:
-        type: integer
-        format: int32
-  sonrio.sonr.bucket.MsgUpdateWhereIsResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-        format: int32
-      where_is:
-        type: object
-        properties:
-          did:
-            type: string
-            description: DID of the created bucket.
-          creator:
-            type: string
-            title: Creator of the new bucket
-          label:
-            type: string
-            description: Label of the new bucket.
-          visibility:
-            description: Visibility of the new bucket.
-            type: string
-            enum:
-              - UNSPECIFIED
-              - PUBLIC
-              - PRIVATE
-            default: UNSPECIFIED
-            title: >-
-              BucketVisibility is the visibility of the bucket to authorized
-              users of an application
-          role:
-            description: Role of the creator of the new bucket.
-            type: string
-            enum:
-              - NONE
-              - APPLICATION
-              - USER
-            default: NONE
-          is_active:
-            type: boolean
-            description: IsActive flag of the new bucket.
-          content:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the bucket item.
-                uri:
-                  type: string
-                  title: DID of the item. If applicable // optional
-                timestamp:
-                  type: string
-                  format: int64
-                  title: Timestamp of the last update. // optional
-                type:
-                  title: Type of the resource
-                  type: string
-                  enum:
-                    - None
-                    - DID
-                    - CID
-                  default: None
-                schema_did:
-                  type: string
-                  title: >-
-                    References the schema and item within the bucket is
-                    associated with.
-
-                    Bucket items do not need to use the same schema if the
-                    bucket is "generic" // optional
-              description: >-
-                BucketItem is a pointer to a single piece of content in a
-                bucket.
-            description: Content of the new bucket map of DIDs to CIDs.
-          content_acl:
-            type: object
-            additionalProperties:
-              type: object
-              properties:
-                encrypted_jwks:
-                  type: object
-                  additionalProperties:
-                    type: string
-                    format: byte
-              title: AclJwks is a map of JWKs for a given Schema
-            description: JWKs of the new bucket.
-          timestamp:
-            type: string
-            format: int64
-            description: Timestamp of the new bucket.
   sonrio.sonr.bucket.Params:
     type: object
     description: Params defines the parameters for the module.
-  sonrio.sonr.bucket.QueryAllWhereIsResponse:
+  sonrio.sonr.bucket.QueryAllBucketsResponse:
     type: object
     properties:
-      where_is:
+      buckets:
         type: array
         items:
           type: object
           properties:
-            did:
+            uuid:
               type: string
               description: DID of the created bucket.
             creator:
               type: string
               title: Creator of the new bucket
-            label:
+            name:
               type: string
-              description: Label of the new bucket.
+              description: Name of the new bucket.
             visibility:
-              description: Visibility of the new bucket.
               type: string
               enum:
-                - UNSPECIFIED
                 - PUBLIC
-                - PRIVATE
-              default: UNSPECIFIED
+                - USER
+                - APPLICATION
+              default: PUBLIC
+              description: |-
+                - PUBLIC: Bucket does not have visibility set.
+                 - USER: Bucket is visible to anyone.
+                 - APPLICATION: Bucket is visible to anyone who has access token.
               title: >-
                 BucketVisibility is the visibility of the bucket to authorized
                 users of an application
-            role:
-              description: Role of the creator of the new bucket.
-              type: string
-              enum:
-                - NONE
-                - APPLICATION
-                - USER
-              default: NONE
             is_active:
               type: boolean
               description: IsActive flag of the new bucket.
-            content:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: Name of the bucket item.
-                  uri:
-                    type: string
-                    title: DID of the item. If applicable // optional
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: Timestamp of the last update. // optional
-                  type:
-                    title: Type of the resource
-                    type: string
-                    enum:
-                      - None
-                      - DID
-                      - CID
-                    default: None
-                  schema_did:
-                    type: string
-                    title: >-
-                      References the schema and item within the bucket is
-                      associated with.
-
-                      Bucket items do not need to use the same schema if the
-                      bucket is "generic" // optional
-                description: >-
-                  BucketItem is a pointer to a single piece of content in a
-                  bucket.
-              description: Content of the new bucket map of DIDs to CIDs.
-            content_acl:
-              type: object
-              additionalProperties:
-                type: object
-                properties:
-                  encrypted_jwks:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      format: byte
-                title: AclJwks is a map of JWKs for a given Schema
-              description: JWKs of the new bucket.
-            timestamp:
+            size:
               type: string
               format: int64
               description: Timestamp of the new bucket.
@@ -57645,93 +57413,41 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrio.sonr.bucket.QueryGetWhereIsByCreatorResponse:
+  sonrio.sonr.bucket.QueryGetBucketByCreatorResponse:
     type: object
     properties:
-      where_is:
+      buckets:
         type: array
         items:
           type: object
           properties:
-            did:
+            uuid:
               type: string
               description: DID of the created bucket.
             creator:
               type: string
               title: Creator of the new bucket
-            label:
+            name:
               type: string
-              description: Label of the new bucket.
+              description: Name of the new bucket.
             visibility:
-              description: Visibility of the new bucket.
               type: string
               enum:
-                - UNSPECIFIED
                 - PUBLIC
-                - PRIVATE
-              default: UNSPECIFIED
+                - USER
+                - APPLICATION
+              default: PUBLIC
+              description: |-
+                - PUBLIC: Bucket does not have visibility set.
+                 - USER: Bucket is visible to anyone.
+                 - APPLICATION: Bucket is visible to anyone who has access token.
               title: >-
                 BucketVisibility is the visibility of the bucket to authorized
                 users of an application
-            role:
-              description: Role of the creator of the new bucket.
-              type: string
-              enum:
-                - NONE
-                - APPLICATION
-                - USER
-              default: NONE
             is_active:
               type: boolean
               description: IsActive flag of the new bucket.
-            content:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: Name of the bucket item.
-                  uri:
-                    type: string
-                    title: DID of the item. If applicable // optional
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: Timestamp of the last update. // optional
-                  type:
-                    title: Type of the resource
-                    type: string
-                    enum:
-                      - None
-                      - DID
-                      - CID
-                    default: None
-                  schema_did:
-                    type: string
-                    title: >-
-                      References the schema and item within the bucket is
-                      associated with.
-
-                      Bucket items do not need to use the same schema if the
-                      bucket is "generic" // optional
-                description: >-
-                  BucketItem is a pointer to a single piece of content in a
-                  bucket.
-              description: Content of the new bucket map of DIDs to CIDs.
-            content_acl:
-              type: object
-              additionalProperties:
-                type: object
-                properties:
-                  encrypted_jwks:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      format: byte
-                title: AclJwks is a map of JWKs for a given Schema
-              description: JWKs of the new bucket.
-            timestamp:
+            size:
               type: string
               format: int64
               description: Timestamp of the new bucket.
@@ -57760,91 +57476,102 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrio.sonr.bucket.QueryGetWhereIsResponse:
+  sonrio.sonr.bucket.QueryGetBucketByNameResponse:
     type: object
     properties:
-      where_is:
+      buckets:
+        type: array
+        items:
+          type: object
+          properties:
+            uuid:
+              type: string
+              description: DID of the created bucket.
+            creator:
+              type: string
+              title: Creator of the new bucket
+            name:
+              type: string
+              description: Name of the new bucket.
+            visibility:
+              type: string
+              enum:
+                - PUBLIC
+                - USER
+                - APPLICATION
+              default: PUBLIC
+              description: |-
+                - PUBLIC: Bucket does not have visibility set.
+                 - USER: Bucket is visible to anyone.
+                 - APPLICATION: Bucket is visible to anyone who has access token.
+              title: >-
+                BucketVisibility is the visibility of the bucket to authorized
+                users of an application
+            is_active:
+              type: boolean
+              description: IsActive flag of the new bucket.
+            size:
+              type: string
+              format: int64
+              description: Timestamp of the new bucket.
+      pagination:
         type: object
         properties:
-          did:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.bucket.QueryGetBucketResponse:
+    type: object
+    properties:
+      bucket:
+        type: object
+        properties:
+          uuid:
             type: string
             description: DID of the created bucket.
           creator:
             type: string
             title: Creator of the new bucket
-          label:
+          name:
             type: string
-            description: Label of the new bucket.
+            description: Name of the new bucket.
           visibility:
-            description: Visibility of the new bucket.
             type: string
             enum:
-              - UNSPECIFIED
               - PUBLIC
-              - PRIVATE
-            default: UNSPECIFIED
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
-          role:
-            description: Role of the creator of the new bucket.
-            type: string
-            enum:
-              - NONE
-              - APPLICATION
-              - USER
-            default: NONE
           is_active:
             type: boolean
             description: IsActive flag of the new bucket.
-          content:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the bucket item.
-                uri:
-                  type: string
-                  title: DID of the item. If applicable // optional
-                timestamp:
-                  type: string
-                  format: int64
-                  title: Timestamp of the last update. // optional
-                type:
-                  title: Type of the resource
-                  type: string
-                  enum:
-                    - None
-                    - DID
-                    - CID
-                  default: None
-                schema_did:
-                  type: string
-                  title: >-
-                    References the schema and item within the bucket is
-                    associated with.
-
-                    Bucket items do not need to use the same schema if the
-                    bucket is "generic" // optional
-              description: >-
-                BucketItem is a pointer to a single piece of content in a
-                bucket.
-            description: Content of the new bucket map of DIDs to CIDs.
-          content_acl:
-            type: object
-            additionalProperties:
-              type: object
-              properties:
-                encrypted_jwks:
-                  type: object
-                  additionalProperties:
-                    type: string
-                    format: byte
-              title: AclJwks is a map of JWKs for a given Schema
-            description: JWKs of the new bucket.
-          timestamp:
+          size:
             type: string
             format: int64
             description: Timestamp of the new bucket.
@@ -57852,99 +57579,9 @@ definitions:
     type: object
     properties:
       params:
-        description: params holds all the parameters of this module.
         type: object
+        description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  sonrio.sonr.bucket.ResourceIdentifier:
-    type: string
-    enum:
-      - None
-      - DID
-      - CID
-    default: None
-  sonrio.sonr.bucket.WhereIs:
-    type: object
-    properties:
-      did:
-        type: string
-        description: DID of the created bucket.
-      creator:
-        type: string
-        title: Creator of the new bucket
-      label:
-        type: string
-        description: Label of the new bucket.
-      visibility:
-        description: Visibility of the new bucket.
-        type: string
-        enum:
-          - UNSPECIFIED
-          - PUBLIC
-          - PRIVATE
-        default: UNSPECIFIED
-        title: >-
-          BucketVisibility is the visibility of the bucket to authorized users
-          of an application
-      role:
-        description: Role of the creator of the new bucket.
-        type: string
-        enum:
-          - NONE
-          - APPLICATION
-          - USER
-        default: NONE
-      is_active:
-        type: boolean
-        description: IsActive flag of the new bucket.
-      content:
-        type: array
-        items:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the bucket item.
-            uri:
-              type: string
-              title: DID of the item. If applicable // optional
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp of the last update. // optional
-            type:
-              title: Type of the resource
-              type: string
-              enum:
-                - None
-                - DID
-                - CID
-              default: None
-            schema_did:
-              type: string
-              title: >-
-                References the schema and item within the bucket is associated
-                with.
-
-                Bucket items do not need to use the same schema if the bucket is
-                "generic" // optional
-          description: BucketItem is a pointer to a single piece of content in a bucket.
-        description: Content of the new bucket map of DIDs to CIDs.
-      content_acl:
-        type: object
-        additionalProperties:
-          type: object
-          properties:
-            encrypted_jwks:
-              type: object
-              additionalProperties:
-                type: string
-                format: byte
-          title: AclJwks is a map of JWKs for a given Schema
-        description: JWKs of the new bucket.
-      timestamp:
-        type: string
-        format: int64
-        description: Timestamp of the new bucket.
   cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:
@@ -58108,9 +57745,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -58198,9 +57832,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -58209,6 +57840,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58223,9 +57855,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-        description: >-
-          WhoIs is the updated WhoIs, contains the DID document and associated
-          metadata.
   sonrio.sonr.registry.MsgCreateWhoIsResponse:
     type: object
     properties:
@@ -58266,9 +57895,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -58356,9 +57982,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -58367,6 +57990,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58381,9 +58005,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-        description: >-
-          WhoIs is the created WhoIs, contains the DID document and associated
-          metadata.
   sonrio.sonr.registry.MsgDeactivateWhoIsResponse:
     type: object
     properties:
@@ -58433,9 +58054,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -58523,9 +58141,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -58534,6 +58149,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58548,9 +58164,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-        description: >-
-          WhoIs is the updated WhoIs, contains the DID document and associated
-          metadata.
   sonrio.sonr.registry.MsgTransferAliasResponse:
     type: object
     properties:
@@ -58591,9 +58204,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -58681,9 +58291,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -58692,6 +58299,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58706,9 +58314,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-        description: >-
-          WhoIs is the updated WhoIs, contains the DID document and associated
-          metadata.
   sonrio.sonr.registry.MsgUpdateWhoIsResponse:
     type: object
     properties:
@@ -58749,9 +58354,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -58839,9 +58441,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -58850,6 +58449,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58864,9 +58464,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-        description: >-
-          WhoIs is the created WhoIs, contains the DID document and associated
-          metadata.
   sonrio.sonr.registry.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -58909,9 +58506,6 @@ definitions:
                 Owner is the top level DID of the User or Application derived
                 from the multisignature wallet.
             did_document:
-              description: >-
-                DIDDocument is the bytes representation of DIDDocument within
-                the WhoIs. Initially marshalled as JSON.
               type: object
               properties:
                 context:
@@ -58999,9 +58593,6 @@ definitions:
                 Credentials are the biometric info of the registered name and
                 account encoded with public key
             type:
-              title: >-
-                Type is the kind of the entity. Possible values are: "user",
-                "application"
               type: string
               enum:
                 - USER
@@ -59010,6 +58601,9 @@ definitions:
               description: |-
                 - USER: User is the type of the registered name
                  - APPLICATION: Application is the type of the registered name
+              title: >-
+                WhoIsType is the type of DIDDocument stored in the registry
+                module
             timestamp:
               type: string
               format: int64
@@ -59053,8 +58647,8 @@ definitions:
     type: object
     properties:
       params:
-        description: params holds all the parameters of this module.
         type: object
+        description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrio.sonr.registry.QueryWhoIsAliasResponse:
     type: object
@@ -59093,9 +58687,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -59183,9 +58774,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -59194,6 +58782,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -59245,9 +58834,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -59335,9 +58921,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -59346,6 +58929,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -59397,9 +58981,6 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
-            description: >-
-              DIDDocument is the bytes representation of DIDDocument within the
-              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
@@ -59487,9 +59068,6 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
-            title: >-
-              Type is the kind of the entity. Possible values are: "user",
-              "application"
             type: string
             enum:
               - USER
@@ -59498,6 +59076,7 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
+            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -59585,9 +59164,6 @@ definitions:
           Owner is the top level DID of the User or Application derived from the
           multisignature wallet.
       did_document:
-        description: >-
-          DIDDocument is the bytes representation of DIDDocument within the
-          WhoIs. Initially marshalled as JSON.
         type: object
         properties:
           context:
@@ -59675,9 +59251,6 @@ definitions:
           Credentials are the biometric info of the registered name and account
           encoded with public key
       type:
-        title: >-
-          Type is the kind of the entity. Possible values are: "user",
-          "application"
         type: string
         enum:
           - USER
@@ -59686,6 +59259,7 @@ definitions:
         description: |-
           - USER: User is the type of the registered name
            - APPLICATION: Application is the type of the registered name
+        title: WhoIsType is the type of DIDDocument stored in the registry module
       timestamp:
         type: string
         format: int64
@@ -59742,7 +59316,6 @@ definitions:
         type: string
       what_is:
         $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
-        title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
     properties:
@@ -59786,24 +59359,26 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+    title: Response for `QueryAllWhatIsRequest`
   sonrio.sonr.schema.QueryParamsResponse:
     type: object
     properties:
       params:
-        description: params holds all the parameters of this module.
         type: object
+        description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
       schema:
         $ref: '#/definitions/sonrio.sonr.schema.Schema'
-        title: Definition of schema
+    title: Abstract a single WhatIs by only returning a `Schema` in the response
   sonrio.sonr.schema.QueryWhatIsByDidResponse:
     type: object
     properties:
       what_is:
         $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
+    title: Response for querying a WhatIs instance by its did
   sonrio.sonr.schema.QueryWhatIsCreatorResponse:
     type: object
     properties:
@@ -59812,12 +59387,13 @@ definitions:
         items:
           $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
+    title: Response for querying `WhatIs`s by the creator address
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       what_is:
         $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
-        title: Schema Repersentation
+    title: Response for Querying a `WhatIs` instance
   sonrio.sonr.schema.Schema:
     type: object
     properties:
@@ -59857,13 +59433,11 @@ definitions:
         title: the name/key of the field
       field_kind:
         $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
-        title: the type/kind of the field
     title: SchemaField represents an individual field in the schema
   sonrio.sonr.schema.SchemaFieldKind:
     type: object
     properties:
       kind:
-        title: the explicit kind
         type: string
         enum:
           - LIST
@@ -59876,7 +59450,6 @@ definitions:
         default: LIST
       list_kind:
         $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
-        title: 'Optional; this is recursive, allowing an indefinite level of nesting'
       link_did:
         type: string
         title: >-
@@ -59891,17 +59464,16 @@ definitions:
         title: DID is the DID of the object
       schema:
         $ref: '#/definitions/sonrio.sonr.schema.Schema'
-        title: Object_doc is the object document
       creator:
         type: string
         title: Creator is the DID of the creator
       timestamp:
         type: string
         format: int64
-        title: Timestamp is the time of the last update of the DID Document
+        title: The time of the last update
       is_active:
         type: boolean
-        title: IsActive is the status of the DID Document
+        title: Indicates if the schema is depricated
       metadata:
         type: object
         additionalProperties:
@@ -59909,6 +59481,9 @@ definitions:
         title: >-
           Metadata is a map of key-value pairs that can be used to store
           additional information about the WhatIs (Schema)
+    title: >-
+      Defines a structure which holds a `Schema` and meta data related to that
+      Schema instance
   tendermint.spn.claim.ClaimRecord:
     type: object
     properties:
