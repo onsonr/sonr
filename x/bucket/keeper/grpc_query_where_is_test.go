@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,7 +24,7 @@ func TestWhereIsQuerySingle(t *testing.T) {
 		desc     string
 		request  *types.QueryGetWhereIsRequest
 		response *types.QueryGetWhereIsResponse
-		err      error
+		err      string
 	}{
 		{
 			desc:     "First",
@@ -38,17 +39,17 @@ func TestWhereIsQuerySingle(t *testing.T) {
 		{
 			desc:    "KeyNotFound",
 			request: &types.QueryGetWhereIsRequest{Did: "not-found"},
-			err:     sdkerrors.ErrKeyNotFound,
+			err:     fmt.Sprintf("error while querying whereIs: not-found %s", sdkerrors.ErrKeyNotFound),
 		},
 		{
 			desc: "InvalidRequest",
-			err:  status.Error(codes.InvalidArgument, "invalid request"),
+			err:  fmt.Sprintf("rpc error: code = %s desc = invalid request", codes.InvalidArgument),
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
 			response, err := keeper.WhereIs(wctx, tc.request)
-			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+			if tc.err != "" {
+				require.EqualError(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
 				require.Equal(t,
