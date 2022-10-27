@@ -42,7 +42,7 @@ func (k Keeper) AppendWhereIs(
 	// Create the whereIs
 	count := k.GetWhereIsCount(ctx)
 
-    k.SetWhereIs(ctx, whereIs)
+	k.SetWhereIs(ctx, whereIs)
 
 	// Update whereIs count
 	k.SetWhereIsCount(ctx, count+1)

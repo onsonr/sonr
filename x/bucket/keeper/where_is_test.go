@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,7 +15,8 @@ import (
 func createNWhereIs(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.WhereIs {
 	items := make([]types.WhereIs, n)
 	for i := range items {
-		items[i].Did = keeper.AppendWhereIs(ctx, items[i])
+		items[i].Did = strconv.Itoa(i)
+		keeper.AppendWhereIs(ctx, items[i])
 	}
 	return items
 }
