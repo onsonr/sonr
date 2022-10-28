@@ -113,7 +113,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		})
 		return mt.CreateAccountWithKeysResponse{}, err
 	}
-	vm, err := did.NewVerificationMethod(doc.GetID(), ssi.JsonWebKey2020, *controller, pk)
+	vm, err := did.NewVerificationMethodFromEcdsa(doc.GetID(), ssi.JsonWebKey2020, *controller, &pk.PublicKey)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,

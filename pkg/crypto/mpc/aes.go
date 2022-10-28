@@ -1,8 +1,11 @@
 package mpc
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
 	"errors"
 	"fmt"
@@ -100,6 +103,19 @@ func NewAesKey() ([]byte, error) {
 		return nil, err
 	} else if n != 32 {
 		return nil, errors.New("could not create key at 32 bytes")
+	}
+
+	return key, nil
+}
+
+func NewEcdsaFromAes(aes []byte) (*ecdsa.PrivateKey, error) {
+	for len(aes) < 40 {
+		aes = append(aes, 0)
+	}
+
+	key, err := ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(aes))
+	if err != nil {
+		return nil, err
 	}
 
 	return key, nil

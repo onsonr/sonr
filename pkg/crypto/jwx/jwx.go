@@ -12,7 +12,7 @@ import (
 type JWX interface {
 	json.Marshaler
 	json.Unmarshaler
-
+	SetKey(key interface{})
 	CreateEncJWK() (*jwk.Key, error)
 	CreateSignJWK() (*jwk.Key, error)
 	CreateJWS() ([]byte, error)
@@ -37,12 +37,23 @@ type jwxImpl struct {
 	sigAlg  jwa.SignatureAlgorithm
 }
 
-func New(key interface{}) *jwxImpl {
+func New() *jwxImpl {
 	return &jwxImpl{
 		jwk:     nil,
-		key:     key,
-		keyAlg:  jwa.ECDH_ES_A256KW,
+		keyAlg:  jwa.A128KW, // used as defualt for aes keys (Symetric)
 		contAlg: jwa.A128CBC_HS256,
-		sigAlg:  jwa.ES256K,
+		sigAlg:  jwa.ES256K, // used as default for
 	}
+}
+
+func (k *jwxImpl) SetKey(key interface{}) {
+	k.key = key
+}
+
+func (k *jwxImpl) setKeyAlgo(alg jwa.KeyEncryptionAlgorithm) {
+	k.keyAlg = alg
+}
+
+func (k *jwxImpl) setSigAlgo(alg jwa.SignatureAlgorithm) {
+	k.sigAlg = alg
 }

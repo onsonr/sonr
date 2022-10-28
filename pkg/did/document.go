@@ -488,7 +488,10 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 	}
 
 	if keyType == ssi.JsonWebKey2020 {
-		keyAsJWK, err := jwx.New(key).CreateEncJWK()
+		x := jwx.New()
+		x.SetKey(key)
+		keyAsJWK, err := x.CreateEncJWK()
+
 		if err != nil {
 			return nil, err
 		}
@@ -520,7 +523,7 @@ func NewVerificationMethod(id DID, keyType ssi.KeyType, controller DID, key cryp
 
 // NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
 // It automatically encodes the provided public key based on the keyType.
-func NewVerificationMethodFromEcdsa(id DID, keyType ssi.KeyType, controller DID, key *ecdsa.PrivateKey) (*VerificationMethod, error) {
+func NewVerificationMethodFromEcdsa(id DID, keyType ssi.KeyType, controller DID, key *ecdsa.PublicKey) (*VerificationMethod, error) {
 	vm := &VerificationMethod{
 		ID:         id,
 		Type:       keyType,
@@ -528,7 +531,8 @@ func NewVerificationMethodFromEcdsa(id DID, keyType ssi.KeyType, controller DID,
 	}
 
 	if keyType == ssi.JsonWebKey2020 {
-		x := jwx.New(key)
+		x := jwx.New()
+		x.SetKey(x)
 		_, err := x.CreateSignJWK()
 		if err != nil {
 			return nil, err
@@ -556,8 +560,9 @@ func NewVerificationMethodFromEcdsa(id DID, keyType ssi.KeyType, controller DID,
 func NewVerificationMethodFromBytes(id DID, keyType ssi.KeyType, controller DID, key []byte) (*VerificationMethod, error) {
 
 	if keyType == ssi.JsonWebKey2020 {
-		jwx := jwx.New(key)
-		key, err := jwx.CreateSignJWK()
+		x := jwx.New()
+		x.SetKey(key)
+		key, err := x.CreateSignJWK()
 
 		if err != nil {
 			return nil, err

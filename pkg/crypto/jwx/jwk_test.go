@@ -7,10 +7,10 @@ import (
 	"crypto/rand"
 	"testing"
 
+	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwe"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/third_party/types/common"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,7 +29,9 @@ func Test_JWK(t *testing.T) {
 		key, err := ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(p))
 		assert.NoError(t, err)
 
-		x := New(key)
+		x := New()
+		x.SetKey(key)
+		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
 
 		_, err = x.CreateSignJWK()
 
@@ -47,13 +49,71 @@ func Test_JWK(t *testing.T) {
 		assert.NotNil(t, m)
 	})
 
+	t.Run("can create symetric key from aes FOR ENC", func(t *testing.T) {
+		aes, err := mpc.NewAesKey()
+		assert.NoError(t, err)
+
+		x := New()
+		x.SetKey(aes)
+		x.CreateEncJWK()
+
+		message := "hello world"
+
+		enc, err := x.EncryptJWE([]byte(message))
+
+		assert.NoError(t, err)
+		assert.NotNil(t, enc)
+
+		decrypt, err := x.DecryptJWE(enc, aes)
+		assert.NoError(t, err)
+
+		b, err := x.MarshallJSON()
+		assert.NoError(t, err)
+		x.UnmarshallJSON(b)
+
+		assert.Equal(t, message, string(decrypt))
+	})
+
+	t.Run("can create symetric key from aes FOR SIGN", func(t *testing.T) {
+		aes, err := mpc.NewAesKey()
+		assert.NoError(t, err)
+		sk, err := mpc.NewEcdsaFromAes(aes)
+		assert.NoError(t, err)
+
+		x := New()
+		x.SetKey(sk.PublicKey)
+		x.CreateSignJWK()
+
+		message := "hello world"
+
+		enc, err := x.Sign([]byte(message), sk)
+		assert.NoError(t, err)
+		assert.NotNil(t, enc)
+
+		d, err := x.VerifyJWS(enc)
+		assert.NoError(t, err)
+		assert.NotNil(t, d)
+
+		decrypt, err := x.VerifySecret(enc)
+		assert.NoError(t, err)
+
+		b, err := x.MarshallJSON()
+		assert.NoError(t, err)
+		x.UnmarshallJSON(b)
+
+		assert.Equal(t, message, string(decrypt))
+	})
+
 	t.Run("can create JWK for encryption with public key", func(t *testing.T) {
 		key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 		if err != nil {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public())
+		x := New()
+		x.SetKey(key)
+		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+
 		jwk, err := x.CreateEncJWK()
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
@@ -69,7 +129,8 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public())
+		x := New()
+		x.SetKey(key.PublicKey)
 		jwk, err := x.CreateSignJWK()
 		if err != nil {
 			t.Errorf("unexpected error: %s", err)
@@ -85,7 +146,10 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public())
+		x := New()
+		x.SetKey(key.PublicKey)
+		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+
 		jwk, err := x.CreateSignJWK()
 
 		assert.NoError(t, err)
@@ -103,7 +167,10 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public())
+		x := New()
+		x.SetKey(key.PublicKey)
+		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+
 		jwk, err := x.CreateSignJWK()
 
 		assert.NoError(t, err)
@@ -125,7 +192,9 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public())
+		x := New()
+		x.SetKey(key.PublicKey)
+		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
 		jwk, err := x.CreateSignJWK()
 
 		assert.NoError(t, err)
@@ -147,7 +216,10 @@ func Test_JWK(t *testing.T) {
 			t.Errorf("Error while convering credential to public key %s", err)
 		}
 
-		x := New(key.Public())
+		x := New()
+		x.SetKey(key.PublicKey)
+		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+
 		jwk, err := x.CreateSignJWK()
 
 		assert.NoError(t, err)

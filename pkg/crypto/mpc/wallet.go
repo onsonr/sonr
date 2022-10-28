@@ -136,7 +136,6 @@ func (w *Wallet) CreateEcdsaFromPublicKey() (*std_edcsa.PrivateKey, error) {
 
 	// need to pad the key to 40 bytes for
 	// ecdsa key generation which sizes its buffers from
-	// 256/16 => 40
 	for len(p) < 40 {
 		p = append(p, 0)
 	}

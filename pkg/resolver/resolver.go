@@ -10,23 +10,16 @@ import (
 )
 
 type ResolverImpl struct {
-	wallet *mpc.Wallet
 	client *client.Client
-	did.Resolver
+	did    did.Document
+	wallet *mpc.Wallet
 }
 
-func New() did.Resolver {
-	return &ResolverImpl{}
-}
-
-// this could be abstracted into a provider for connections.
-// right now binded to the client pkg
-func (res *ResolverImpl) WithClient(client *client.Client) {
-	res.client = client
-}
-
-func (res *ResolverImpl) WithWallet(wallet *mpc.Wallet) {
-	res.wallet = wallet
+func New(c *client.Client, w *mpc.Wallet) did.Resolver {
+	return &ResolverImpl{
+		client: c,
+		wallet: w,
+	}
 }
 
 func (r *ResolverImpl) Resolve(inputDID string) (*did.Document, *did.DocumentMetadata, error) {
@@ -56,6 +49,7 @@ func (r *ResolverImpl) Resolve(inputDID string) (*did.Document, *did.DocumentMet
 		Updated:    &t,
 		Properties: md,
 	}
+	r.did = doc
 
 	return &doc, &metaData, nil
 }
