@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"strconv"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -11,16 +12,17 @@ import (
 
 func TestWhereIsMsgServerCreate(t *testing.T) {
 	srv, ctx := setupMsgServer(t)
-	creator := "A"
+	creator := "cosmos1pvnkmcpmtsxjuprqvu5qsdn2rnlenwnqsh276f"
 	for i := 0; i < 5; i++ {
-		resp, err := srv.CreateWhereIs(ctx, &types.MsgCreateWhereIs{Creator: creator})
+		resp, err := srv.CreateWhereIs(ctx, &types.MsgCreateWhereIs{Creator: creator, Label: strconv.Itoa(i)})
 		require.NoError(t, err)
-		require.Equal(t, i, resp.WhereIs)
+		require.Equal(t, strconv.Itoa(i), resp.WhereIs.Label)
+		require.Equal(t, creator, resp.WhereIs.Creator)
 	}
 }
 
 func TestWhereIsMsgServerUpdate(t *testing.T) {
-	creator := "A"
+	creator := "cosmos1pvnkmcpmtsxjuprqvu5qsdn2rnlenwnqsh276f"
 
 	for _, tc := range []struct {
 		desc    string
@@ -58,7 +60,7 @@ func TestWhereIsMsgServerUpdate(t *testing.T) {
 }
 
 func TestWhereIsMsgServerDelete(t *testing.T) {
-	creator := "A"
+	creator := "cosmos1pvnkmcpmtsxjuprqvu5qsdn2rnlenwnqsh276f"
 
 	for _, tc := range []struct {
 		desc    string
