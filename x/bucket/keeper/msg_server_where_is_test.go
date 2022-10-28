@@ -67,7 +67,7 @@ func TestWhereIsMsgServerUpdate(t *testing.T) {
 func TestWhereIsMsgServerDelete(t *testing.T) {
 	creator := "cosmos1pvnkmcpmtsxjuprqvu5qsdn2rnlenwnqsh276f"
 	intruder := "cosmos1pvnkmcpmtsexuprqvu5qsdn2rnlenwnqkx66ky"
-	
+
 	srv, ctx := setupMsgServer(t)
 	resp, err := srv.CreateWhereIs(ctx, &types.MsgCreateWhereIs{Creator: creator, Visibility: types.BucketVisibility_PUBLIC})
 	require.NoError(t, err)
