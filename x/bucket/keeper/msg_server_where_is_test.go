@@ -66,6 +66,15 @@ func TestWhereIsMsgServerUpdate(t *testing.T) {
 
 func TestWhereIsMsgServerDelete(t *testing.T) {
 	creator := "cosmos1pvnkmcpmtsxjuprqvu5qsdn2rnlenwnqsh276f"
+	intruder := "cosmos1pvnkmcpmtsexuprqvu5qsdn2rnlenwnqkx66ky"
+	
+	srv, ctx := setupMsgServer(t)
+	resp, err := srv.CreateWhereIs(ctx, &types.MsgCreateWhereIs{Creator: creator, Visibility: types.BucketVisibility_PUBLIC})
+	require.NoError(t, err)
+	did1 := resp.WhereIs.Did
+	resp, err = srv.CreateWhereIs(ctx, &types.MsgCreateWhereIs{Creator: creator, Visibility: types.BucketVisibility_PUBLIC})
+	require.NoError(t, err)
+	did2 := resp.WhereIs.Did
 
 	for _, tc := range []struct {
 		desc    string
@@ -74,11 +83,11 @@ func TestWhereIsMsgServerDelete(t *testing.T) {
 	}{
 		{
 			desc:    "Completed",
-			request: &types.MsgDeleteWhereIs{Creator: creator},
+			request: &types.MsgDeleteWhereIs{Creator: creator, Did: did1},
 		},
 		{
 			desc:    "Unauthorized",
-			request: &types.MsgDeleteWhereIs{Creator: "B"},
+			request: &types.MsgDeleteWhereIs{Creator: intruder, Did: did2},
 			err:     sdkerrors.ErrUnauthorized,
 		},
 		{
@@ -88,10 +97,6 @@ func TestWhereIsMsgServerDelete(t *testing.T) {
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
-			srv, ctx := setupMsgServer(t)
-
-			_, err := srv.CreateWhereIs(ctx, &types.MsgCreateWhereIs{Creator: creator})
-			require.NoError(t, err)
 			_, err = srv.DeleteWhereIs(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
