@@ -3,6 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.motor.api.v1;
 
+import "common/v1/content.proto";
 import "bucket/bucket.proto";
 import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -41,7 +42,7 @@ message CreateSchemaResponse {
   // status code for the operation
   int32 status = 1;
 
-  // WhatIs isntance created from the initial request
+  // WhatIs isntance created from the initial Response
   sonrio.sonr.schema.WhatIs what_is = 2;
 
   // Schema contained within the `WhatIs` instance also in the response. here for convience
@@ -70,10 +71,10 @@ message QueryWhoIsResponse {
 
 // Query reponse for a WhatIs instance
 message QueryWhatIsResponse {
-  // status code of the request
+  // status code of the Response
   int32 code = 1;
 
-  // WhatIs instance specified within the request
+  // WhatIs instance specified within the Response
   sonrio.sonr.schema.WhatIs what_is = 2;
 
   // Schema instance contained in the `WhatIs` also in this response. Here for convience
@@ -82,10 +83,10 @@ message QueryWhatIsResponse {
 
 // Query response for WhatIs
 message QueryWhatIsByCreatorResponse {
-  // status code of the request
+  // status code of the Response
   int32 code = 1;
 
-  // WhatIs instance specified within the request
+  // WhatIs instance specified within the Response
   repeated sonrio.sonr.schema.WhatIs what_is = 2;
 
   // Schema instance contained in the `WhatIs` also in this response. Here for convience
@@ -95,9 +96,9 @@ message QueryWhatIsByCreatorResponse {
 
 // Query Response for WhatIs by Creator
 message QueryWhereIsByCreatorResponse {
-  // status code of the request
+  // status code of the Response
   int32 code = 1;
-  // List of WhereIs instances associated with the given creator address from the request
+  // List of WhereIs instances associated with the given creator address from the Response
   cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
@@ -116,12 +117,12 @@ message ObjectReference {
 
 // Response for uploading an object to Sonr Storage Network
 message UploadObjectResponse {
-  // status code of the request
+  // status code of the Response
   int32 code = 1;
   // reference to data relating to the content stored on network
   ObjectReference reference = 2;
 
-  // message relating to the request status. Will include success on successful upload
+  // message relating to the Response status. Will include success on successful upload
   string message = 3;
 }
 
@@ -182,4 +183,44 @@ message GetDocumentResponse {
   int32 status = 1;
   string cid = 2;
   sonrio.sonr.schema.SchemaDocument document = 3;
+}
+
+message GenerateBucketResponse {
+  string uri = 1;
+  sonrio.sonr.registry.DIDDocument did_document = 2;
+  sonrio.sonr.bucket.BucketConfig bucket = 3;
+  int64 size = 4;
+  int64 total = 5;
+}
+
+message AddBucketItemsResponse {
+  string uri = 1;
+  sonrio.sonr.registry.DIDDocument did_document = 2;
+  sonrio.sonr.bucket.BucketConfig bucket = 3;
+  int64 size = 4;
+  int64 total = 5;
+  repeated common.v1.BucketItem items = 6;
+}
+
+message GetBucketItemsResponse {
+  string uri = 1;
+  sonrio.sonr.registry.DIDDocument did_document = 2;
+  sonrio.sonr.bucket.BucketConfig bucket = 3;
+  int64 size = 4;
+  int64 total = 5;
+  repeated common.v1.BucketItem items = 6;
+}
+
+message FindBucketConfigResponse {
+  string creator = 1;
+  string uuid = 2;
+  string label = 3;
+  sonrio.sonr.bucket.BucketConfig bucket = 4;
+  bool is_user_allocated = 5;
+}
+
+message BurnBucketResponse {
+  int32 code = 1;
+  string message = 2;
+  sonrio.sonr.registry.DIDDocument did_document = 3;
 }

@@ -4,6 +4,7 @@ syntax = "proto3";
 package sonrio.motor.api.v1;
 
 import "bucket/bucket.proto";
+import "common/v1/content.proto";
 import "common/v1/info.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "schema/v1/document.proto";
@@ -196,6 +197,42 @@ message GetDocumentRequest {
 // -----------------------------------------------------------------------------
 // Bucket Models
 // -----------------------------------------------------------------------------
+message GenerateBucketRequest {
+  string uuid = 1;
+  string name = 2;
+  string creator = 3;
+  sonrio.sonr.bucket.BucketConfig bucket = 4;
+}
+
+message AddBucketItemsRequest {
+  string uuid = 1;
+  string name = 2;
+  string creator = 3;
+  sonrio.sonr.bucket.BucketConfig bucket = 4;
+  repeated common.v1.BucketItem items = 5;
+}
+
+message GetBucketItemsRequest {
+  string uuid = 1;
+  string name = 2;
+  string creator = 3;
+  sonrio.sonr.bucket.BucketConfig bucket = 4;
+}
+
+message FindBucketConfigRequest {
+  string uuid = 1;
+  string name = 2;
+  string creator = 3;
+  sonrio.sonr.bucket.BucketConfig bucket = 4;
+}
+
+message BurnBucketRequest {
+  string uuid = 1;
+  string name = 2;
+  string creator = 3;
+  sonrio.sonr.bucket.BucketConfig bucket = 4;
+}
+
 message QueryWhereIsRequest {
   string creator = 1;
   string did = 2;
