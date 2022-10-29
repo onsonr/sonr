@@ -9,7 +9,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func WriteBucketItem(sh *shell.Shell, b *bt.Bucket, address string, item bt.BucketItem) (string, error) {
+func WriteBucketItem(sh *shell.Shell, b *bt.BucketConfig, address string, item bt.BucketItem) (string, error) {
 	itemPath := b.GetPath(address, item.Name())
 	err := sh.FilesWrite(context.Background(), itemPath, bytes.NewReader(item.Content()), shell.FilesWrite.Create(true))
 	if err != nil {

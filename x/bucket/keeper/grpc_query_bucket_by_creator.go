@@ -28,9 +28,9 @@ func (k Keeper) BucketByCreator(c context.Context, req *types.QueryGetBucketByCr
 
 	store := ctx.KVStore(k.storeKey)
 	whereIsStore := prefix.NewStore(store, types.KeyPrefix(types.BucketKeyPrefix))
-	var whereIss []types.Bucket
+	var whereIss []types.BucketConfig
 	pageRes, err := query.Paginate(whereIsStore, req.Pagination, func(key []byte, value []byte) error {
-		var whereIs types.Bucket
+		var whereIs types.BucketConfig
 		if err := k.cdc.Unmarshal(value, &whereIs); err != nil {
 			return err
 		}

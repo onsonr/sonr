@@ -28,7 +28,7 @@ func CmdCreateBucket() *cobra.Command {
 
 			// parse strictly
 			// visiblityConv, err := strconv.ParseUint(args[2], 10, 32)
-			// visilbity := types.BucketVisibility(visiblityConv)
+			// visilbity := types.BucketConfigVisibility(visiblityConv)
 
 			msg := types.NewMsgDefineBucket(clientCtx.GetFromAddress().String(), args[0])
 

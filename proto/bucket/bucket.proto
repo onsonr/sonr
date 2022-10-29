@@ -20,7 +20,7 @@ message BucketContent {
 }
 
 
-message Bucket {
+message BucketConfig {
   // DID of the created bucket.
   string uuid = 1;
 

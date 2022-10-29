@@ -21,7 +21,7 @@ var (
 
 type bucketImpl struct {
 	address      string
-	whereIs      *bt.Bucket
+	whereIs      *bt.BucketConfig
 	contentCache map[string]*bt.BucketContent
 	shell        *shell.Shell
 	rpcClient    *client.Client
@@ -29,7 +29,7 @@ type bucketImpl struct {
 
 func New(
 	address string,
-	whereIs *bt.Bucket,
+	whereIs *bt.BucketConfig,
 	shell *shell.Shell,
 	rpcClient *client.Client) *bucketImpl {
 

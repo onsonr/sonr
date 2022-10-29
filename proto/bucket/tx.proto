@@ -14,7 +14,7 @@ option java_multiple_files = true;
 // Msg defines the Msg service.
 service Msg {
   rpc DefineBucket(MsgDefineBucket) returns (MsgDefineBucketResponse);
-  rpc GenerateBucket(MsgGenerateBucket) returns (MsgGenerateBucketResponse);
+  rpc AllocateBucket(MsgAllocateBucket) returns (MsgAllocateBucketResponse);
   rpc DeactivateBucket(MsgDeactivateBucket) returns (MsgDeactivateBucketResponse);
   rpc BurnBucket(MsgBurnBucket) returns (MsgBurnBucketResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
@@ -27,40 +27,40 @@ message MsgDefineBucket {
 
 message MsgDefineBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
-message MsgGenerateBucket {
+message MsgAllocateBucket {
   string creator = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
-message MsgGenerateBucketResponse {
+message MsgAllocateBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
   string serviceEndpoint = 3;
   sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 
 message MsgDeactivateBucket {
   string creator = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
 message MsgDeactivateBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
   int32 totalBurned = 3;
 }
 
 message MsgBurnBucket {
   string creator = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
 message MsgBurnBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
   sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 

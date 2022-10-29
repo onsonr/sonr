@@ -59,7 +59,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	bucketGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
-		BucketDefinitions: []types.Bucket{
+		BucketDefinitions: []types.BucketConfig{
 			{
 				Uuid:    "did:sonr:1",
 				Creator: sample.AccAddress(),
@@ -111,7 +111,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgGenerateBucket,
-		bucketsimulation.SimulateMsgGenerateBucket(am.accountKeeper, am.bankKeeper, am.keeper),
+		bucketsimulation.SimulateMsgAllocateBucket(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgDeactivateBucket int

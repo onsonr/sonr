@@ -11,18 +11,18 @@ import (
 func TestMsgGenerateBucket_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgGenerateBucket
+		msg  MsgAllocateBucket
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgGenerateBucket{
+			msg: MsgAllocateBucket{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgGenerateBucket{
+			msg: MsgAllocateBucket{
 				Creator: sample.AccAddress(),
 			},
 		},
