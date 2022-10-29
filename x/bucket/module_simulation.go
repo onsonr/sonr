@@ -111,7 +111,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgGenerateBucket,
-		bucketsimulation.SimulateMsgGenerateBucket(am.accountKeeper, am.bankKeeper, am.keeper),
+		bucketsimulation.SimulateMsgAllocateBucket(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgDeactivateBucket int

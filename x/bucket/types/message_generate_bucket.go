@@ -7,23 +7,23 @@ import (
 
 const TypeMsgGenerateBucket = "generate_bucket"
 
-var _ sdk.Msg = &MsgGenerateBucket{}
+var _ sdk.Msg = &MsgAllocateBucket{}
 
-func NewMsgGenerateBucket(creator string) *MsgGenerateBucket {
-	return &MsgGenerateBucket{
+func NewMsgGenerateBucket(creator string) *MsgAllocateBucket {
+	return &MsgAllocateBucket{
 		Creator: creator,
 	}
 }
 
-func (msg *MsgGenerateBucket) Route() string {
+func (msg *MsgAllocateBucket) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgGenerateBucket) Type() string {
+func (msg *MsgAllocateBucket) Type() string {
 	return TypeMsgGenerateBucket
 }
 
-func (msg *MsgGenerateBucket) GetSigners() []sdk.AccAddress {
+func (msg *MsgAllocateBucket) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -31,12 +31,12 @@ func (msg *MsgGenerateBucket) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgGenerateBucket) GetSignBytes() []byte {
+func (msg *MsgAllocateBucket) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgGenerateBucket) ValidateBasic() error {
+func (msg *MsgAllocateBucket) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
