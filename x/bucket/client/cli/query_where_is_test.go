@@ -17,14 +17,14 @@ import (
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func networkWithWhereIsObjects(t *testing.T, n int) (*network.Network, []types.Bucket) {
+func networkWithWhereIsObjects(t *testing.T, n int) (*network.Network, []types.BucketConfig) {
 	t.Helper()
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
 	require.NoError(t, cfg.Codec.UnmarshalJSON(cfg.GenesisState[types.ModuleName], &state))
 
 	for i := 0; i < n; i++ {
-		whereIs := types.Bucket{
+		whereIs := types.BucketConfig{
 			Uuid: fmt.Sprintf("did:sonr:%d", i),
 		}
 		nullify.Fill(&whereIs)
@@ -48,7 +48,7 @@ func TestShowWhereIs(t *testing.T) {
 		id   string
 		args []string
 		err  error
-		obj  types.Bucket
+		obj  types.BucketConfig
 	}{
 		{
 			desc: "found",

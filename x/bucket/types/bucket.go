@@ -9,7 +9,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
 
-func (b *Bucket) GetPath(address string, segments ...string) string {
+func (b *BucketConfig) GetPath(address string, segments ...string) string {
 	path := fmt.Sprintf("/%s/%s", address, b.Uuid)
 	for _, segment := range segments {
 		path = fmt.Sprintf("%s/%s", path, segment)
@@ -17,7 +17,7 @@ func (b *Bucket) GetPath(address string, segments ...string) string {
 	return path
 }
 
-func (b *Bucket) GetDidService(address string) *did.Service {
+func (b *BucketConfig) GetDidService(address string) *did.Service {
 	segments := strings.Split(address, "snr")
 	service := fmt.Sprintf("did:snr:%s#%s", segments[1], b.Uuid)
 	return &did.Service{
@@ -27,7 +27,7 @@ func (b *Bucket) GetDidService(address string) *did.Service {
 	}
 }
 
-func (b *Bucket) GetURI(address string, items ...string) string {
+func (b *BucketConfig) GetURI(address string, items ...string) string {
 	params := NewParams()
 	bucketPath := b.GetPath(address)
 	path := fmt.Sprintf("%s/ipns/%s", params.IpfsGateway, bucketPath)

@@ -8,7 +8,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func DownloadBucket(sh *shell.Shell, whereIs *bt.Bucket, address string) ([]bt.BucketItem, error) {
+func DownloadBucket(sh *shell.Shell, whereIs *bt.BucketConfig, address string) ([]bt.BucketItem, error) {
 	files, err := sh.FilesLs(context.Background(), whereIs.GetPath(address))
 	if err != nil {
 		return nil, fmt.Errorf("Failed to list item at %s - %e", whereIs.GetPath(address), err)
@@ -29,7 +29,7 @@ func DownloadBucket(sh *shell.Shell, whereIs *bt.Bucket, address string) ([]bt.B
 	return items, nil
 }
 
-func DownloadBucketAsync(sh *shell.Shell, whereIs *bt.Bucket, address string) (BucketDownloadProgressCallback, error) {
+func DownloadBucketAsync(sh *shell.Shell, whereIs *bt.BucketConfig, address string) (BucketDownloadProgressCallback, error) {
 	files, err := sh.FilesLs(context.Background(), whereIs.GetPath(address))
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read item at %s - %e", whereIs.GetPath(address), err)
@@ -47,14 +47,14 @@ type BucketDownloadProgressCallback interface {
 type bucketDownloadProgressCallback struct {
 	total        uint64
 	current      uint64
-	bucket       *bt.Bucket
+	bucket       *bt.BucketConfig
 	progressChan chan uint64
 	itemsChan    chan bt.BucketItem
 	items        []bt.BucketItem
 	completeChan chan []bt.BucketItem
 }
 
-func newBucketDownloader(sh *shell.Shell, whereIs *bt.Bucket, address string, files []*shell.MfsLsEntry) *bucketDownloadProgressCallback {
+func newBucketDownloader(sh *shell.Shell, whereIs *bt.BucketConfig, address string, files []*shell.MfsLsEntry) *bucketDownloadProgressCallback {
 	total := uint64(0)
 	for _, file := range files {
 		total += file.Size
@@ -72,7 +72,7 @@ func newBucketDownloader(sh *shell.Shell, whereIs *bt.Bucket, address string, fi
 	return cb
 }
 
-func (cb *bucketDownloadProgressCallback) handleDownload(sh *shell.Shell, whereIs *bt.Bucket, address string, files []*shell.MfsLsEntry) {
+func (cb *bucketDownloadProgressCallback) handleDownload(sh *shell.Shell, whereIs *bt.BucketConfig, address string, files []*shell.MfsLsEntry) {
 	for _, file := range files {
 		reader, err := sh.FilesRead(context.Background(), whereIs.GetPath(address, file.Name))
 		if err != nil {

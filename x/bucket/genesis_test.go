@@ -14,7 +14,7 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		BucketDefinitions: []types.Bucket{
+		BucketDefinitions: []types.BucketConfig{
 			{
 				Uuid: "did:sonr:1",
 			},

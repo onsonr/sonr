@@ -9,7 +9,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func GenerateBucket(sh *shell.Shell, b *bt.Bucket, address string) (*did.Service, error) {
+func GenerateBucket(sh *shell.Shell, b *bt.BucketConfig, address string) (*did.Service, error) {
 	path := b.GetPath(address)
 	service := b.GetDidService(address)
 	err := sh.FilesMkdir(context.Background(), path, shell.FilesWrite.Create(true))

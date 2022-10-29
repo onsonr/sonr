@@ -27,40 +27,40 @@ message MsgDefineBucket {
 
 message MsgDefineBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
 message MsgGenerateBucket {
   string creator = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
 message MsgGenerateBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
   string serviceEndpoint = 3;
   sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 
 message MsgDeactivateBucket {
   string creator = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
 message MsgDeactivateBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
   int32 totalBurned = 3;
 }
 
 message MsgBurnBucket {
   string creator = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
 }
 
 message MsgBurnBucketResponse {
   int32 status = 1;
-  Bucket bucket = 2;
+  BucketConfig bucket = 2;
   sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 
