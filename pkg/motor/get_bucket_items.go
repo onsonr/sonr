@@ -11,17 +11,18 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (mtr *motorNodeImpl) CreateBucket(request mt.CreateBucketRequest) (*mt.CreateBucketResponse, error) {
+// TODO
+func (mtr *motorNodeImpl) GetBucketItems(request mt.GetBucketItemsRequest) (*mt.GetBucketItemsResponse, error) {
 
 	if request.Creator == "" {
 		return nil,  errors.New("invalid Address")
 	}
 
-	if request.Label == "" {
+	if request.Name == "" {
 		return nil,  errors.New("label nust be defined")
 	}
 
-	createWhereIsRequest := bt.NewMsgDefineBucket(request.Creator, request.Label)
+	createWhereIsRequest := bt.NewMsgDefineBucket(request.Creator, request.Name)
 
 	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgDefineBucket", createWhereIsRequest)
 	if err != nil {
