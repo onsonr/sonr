@@ -8,6 +8,27 @@ import (
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
+// TODO
+func (mtr *motorNodeImpl) QueryBuckets(req mt.FindBucketConfigRequest) (*mt.FindBucketConfigResponse, error) {
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	config, err := mtr.fetchBucketConfig(req.Bucket, req.Uuid, req.Creator, req.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &mt.FindBucketConfigResponse{
+		Creator:         config.Creator,
+		Label:           config.Name,
+		Uuid:            config.Uuid,
+		Bucket:          config,
+		IsUserAllocated: false,
+	}, nil
+}
+
 func (mtr *motorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhoIs(req.Did)
 	if err != nil {

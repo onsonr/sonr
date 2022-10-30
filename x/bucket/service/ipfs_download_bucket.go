@@ -1,4 +1,4 @@
-package internal
+package service
 
 import (
 	"context"
@@ -8,19 +8,19 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func DownloadBucket(sh *shell.Shell, whereIs *bt.BucketConfig, address string) ([]bt.BucketItem, error) {
+func DownloadBucket(sh *shell.Shell, whereIs *bt.BucketConfig, address string) ([]bt.ItemWrapper, error) {
 	files, err := sh.FilesLs(context.Background(), whereIs.GetPath(address))
 	if err != nil {
 		return nil, fmt.Errorf("Failed to list item at %s - %e", whereIs.GetPath(address), err)
 	}
-	items := make([]bt.BucketItem, 0)
+	items := make([]bt.ItemWrapper, 0)
 	for _, file := range files {
 		reader, err := sh.FilesRead(context.Background(), whereIs.GetPath(address, file.Name))
 		if err != nil {
 			return nil, fmt.Errorf("Failed to read item at %s - %e", whereIs.GetPath(address, file.Name), err)
 		}
 		defer reader.Close()
-		item, err := bt.NewBucketItemFromReader(file.Name, reader)
+		item, err := bt.NewItemWrapperFromReader(file.Name, reader)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to create item at %s - %e", whereIs.GetPath(address, file.Name), err)
 		}
@@ -41,7 +41,7 @@ func DownloadBucketAsync(sh *shell.Shell, whereIs *bt.BucketConfig, address stri
 type BucketDownloadProgressCallback interface {
 	Total() uint64
 	Listen() <-chan uint64
-	OnComplete() <-chan []bt.BucketItem
+	OnComplete() <-chan []bt.ItemWrapper
 }
 
 type bucketDownloadProgressCallback struct {
@@ -49,9 +49,9 @@ type bucketDownloadProgressCallback struct {
 	current      uint64
 	bucket       *bt.BucketConfig
 	progressChan chan uint64
-	itemsChan    chan bt.BucketItem
-	items        []bt.BucketItem
-	completeChan chan []bt.BucketItem
+	itemsChan    chan bt.ItemWrapper
+	items        []bt.ItemWrapper
+	completeChan chan []bt.ItemWrapper
 }
 
 func newBucketDownloader(sh *shell.Shell, whereIs *bt.BucketConfig, address string, files []*shell.MfsLsEntry) *bucketDownloadProgressCallback {
@@ -64,8 +64,8 @@ func newBucketDownloader(sh *shell.Shell, whereIs *bt.BucketConfig, address stri
 		current:      0,
 		bucket:       whereIs,
 		progressChan: make(chan uint64),
-		itemsChan:    make(chan bt.BucketItem),
-		items:        make([]bt.BucketItem, 0),
+		itemsChan:    make(chan bt.ItemWrapper),
+		items:        make([]bt.ItemWrapper, 0),
 	}
 	go cb.handleDownload(sh, whereIs, address, files)
 	go cb.handleChannels()
@@ -80,7 +80,7 @@ func (cb *bucketDownloadProgressCallback) handleDownload(sh *shell.Shell, whereI
 			return
 		}
 		defer reader.Close()
-		item, err := bt.NewBucketItemFromReader(file.Name, reader)
+		item, err := bt.NewItemWrapperFromReader(file.Name, reader)
 		if err != nil {
 			cb.itemsChan <- nil
 			return
@@ -120,6 +120,6 @@ func (b *bucketDownloadProgressCallback) Total() uint64 {
 	return b.total
 }
 
-func (b *bucketDownloadProgressCallback) OnComplete() <-chan []bt.BucketItem {
+func (b *bucketDownloadProgressCallback) OnComplete() <-chan []bt.ItemWrapper {
 	return b.completeChan
 }
