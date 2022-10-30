@@ -4,7 +4,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/tx"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	bi "github.com/sonr-io/sonr/x/bucket/internal"
+	bi "github.com/sonr-io/sonr/x/bucket/service"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 

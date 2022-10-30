@@ -2,7 +2,7 @@ package motor
 
 import (
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/sonr/x/bucket/internal"
+	bi "github.com/sonr-io/sonr/x/bucket/service"
 )
 
 // TODO
@@ -17,7 +17,7 @@ func (mtr *motorNodeImpl) BurnBucket(request mt.BurnBucketRequest) (*mt.BurnBuck
 		return nil, err
 	}
 
-	err = internal.PurgeBucketItems(mtr.sh, config, mtr.GetAddress())
+	err = bi.PurgeBucketItems(mtr.sh, config, mtr.GetAddress())
 	if err != nil {
 		return nil, err
 	}

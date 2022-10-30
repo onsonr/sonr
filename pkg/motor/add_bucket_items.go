@@ -2,7 +2,7 @@ package motor
 
 import (
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	bi "github.com/sonr-io/sonr/x/bucket/internal"
+	bi "github.com/sonr-io/sonr/x/bucket/service"
 )
 
 // TODO
