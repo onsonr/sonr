@@ -189,26 +189,20 @@ message GenerateBucketResponse {
   string uri = 1;
   sonrio.sonr.registry.DIDDocument did_document = 2;
   sonrio.sonr.bucket.BucketConfig bucket = 3;
-  int64 size = 4;
-  int64 total = 5;
 }
 
 message AddBucketItemsResponse {
   string uri = 1;
   sonrio.sonr.registry.DIDDocument did_document = 2;
   sonrio.sonr.bucket.BucketConfig bucket = 3;
-  int64 size = 4;
-  int64 total = 5;
-  repeated common.v1.BucketItem items = 6;
+  map<string, string> added_items = 4;
 }
 
 message GetBucketItemsResponse {
   string uri = 1;
   sonrio.sonr.registry.DIDDocument did_document = 2;
   sonrio.sonr.bucket.BucketConfig bucket = 3;
-  int64 size = 4;
-  int64 total = 5;
-  repeated common.v1.BucketItem items = 6;
+  repeated common.v1.BucketItem items = 4;
 }
 
 message FindBucketConfigResponse {

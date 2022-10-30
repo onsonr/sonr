@@ -1,46 +1,55 @@
 package motor
 
 import (
-	"errors"
-	"fmt"
-	"net/http"
-
-	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/tx"
+	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	bi "github.com/sonr-io/sonr/x/bucket/internal"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-// TODO
 func (mtr *motorNodeImpl) GetBucketItems(request mt.GetBucketItemsRequest) (*mt.GetBucketItemsResponse, error) {
-
-	if request.Creator == "" {
-		return nil,  errors.New("invalid Address")
-	}
-
-	if request.Name == "" {
-		return nil,  errors.New("label nust be defined")
-	}
-
-	createWhereIsRequest := bt.NewMsgDefineBucket(request.Creator, request.Name)
-
-	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgDefineBucket", createWhereIsRequest)
+	err := request.Validate()
 	if err != nil {
-		return nil,  fmt.Errorf("sign tx with wallet: %s", err)
+		return nil, err
 	}
 
-	resp, err := mtr.Cosmos.BroadcastTx(txRaw)
+	config, err := mtr.fetchBucketConfig(request.Bucket, request.Uuid, request.Creator, request.Name)
 	if err != nil {
-		return nil,  fmt.Errorf("broadcast tx: %s", err)
+		return nil, err
 	}
 
-	cbresp := &bt.MsgDefineBucketResponse{}
-	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cbresp); err != nil {
-		return nil,  fmt.Errorf("decode MsgDefineBucketResponse: %s", err)
+	var items []*common.BucketItem
+	itemsW, err := bi.DownloadBucket(mtr.sh, config, mtr.GetAddress())
+	if err != nil {
+		return nil, err
 	}
 
-	if cbresp.Status != http.StatusAccepted {
-		return nil,  fmt.Errorf("non success status from Create bucket Reques: %d", cbresp.Status)
+	for _, item := range itemsW {
+		i, err := itemWrapperToBucketItem(item)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
-	return nil, nil
+
+	doc, err := mtr.getRegistryDIDDocument()
+	if err != nil {
+		return nil, err
+	}
+
+	return &mt.GetBucketItemsResponse{
+		Bucket:      config,
+		DidDocument: doc,
+		Items:       items,
+		Uri:         config.GetDidService(mtr.GetAddress()).ServiceEndpoint,
+	}, nil
+}
+
+func itemWrapperToBucketItem(item bt.ItemWrapper) (*common.BucketItem, error) {
+	var i common.BucketItem
+	err := i.Unmarshal(item.Content())
+	if err != nil {
+		return nil, err
+	}
+	return &i, nil
 }

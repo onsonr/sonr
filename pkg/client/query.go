@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/cosmos/cosmos-sdk/types/query"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"google.golang.org/grpc"
@@ -147,4 +148,107 @@ func (c *Client) QueryWhatIsByDid(did string) (*st.WhatIs, error) {
 	}
 
 	return res.WhatIs, nil
+}
+
+func (c *Client) QueryBucket(uuid string) (*bt.BucketConfig, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer grpcConn.Close()
+
+	qc := bt.NewQueryClient(grpcConn)
+
+	// We then call the QueryWhoIs method on this client.
+	res, err := qc.Bucket(context.Background(), &bt.QueryGetBucketRequest{
+		Uuid: uuid,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Bucket, nil
+}
+
+
+func (c *Client) QueryBucketsByCreator(creator string) ([]bt.BucketConfig, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer grpcConn.Close()
+
+	qc := bt.NewQueryClient(grpcConn)
+
+	// We then call the QueryWhoIs method on this client.
+	res, err := qc.BucketByCreator(context.Background(), &bt.QueryGetBucketByCreatorRequest{
+		Creator: creator,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Buckets, nil
+}
+
+
+func (c *Client) QueryBucketsByName(name string) ([]bt.BucketConfig, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer grpcConn.Close()
+
+	qc := bt.NewQueryClient(grpcConn)
+
+	// We then call the QueryWhoIs method on this client.
+	res, err := qc.BucketByName(context.Background(), &bt.QueryGetBucketByNameRequest{
+		Name: name,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Buckets, nil
+}
+
+
+func (c *Client) QueryAllBuckets() ([]bt.BucketConfig, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		c.GetRPCAddress(),   // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer grpcConn.Close()
+
+	qc := bt.NewQueryClient(grpcConn)
+
+	// We then call the QueryWhoIs method on this client.
+	res, err := qc.BucketsAll(context.Background(), &bt.QueryAllBucketsRequest{
+
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Buckets, nil
 }

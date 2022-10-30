@@ -1,46 +1,58 @@
 package motor
 
 import (
-	"errors"
-	"fmt"
-	"net/http"
-
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/tx"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	bt "github.com/sonr-io/sonr/x/bucket/types"
+	bi "github.com/sonr-io/sonr/x/bucket/internal"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-// TODO
 func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.GenerateBucketResponse, error) {
-
-	if request.Creator == "" {
-		return nil,  errors.New("invalid Address")
-	}
-
-	if request.Name == "" {
-		return nil,  errors.New("label nust be defined")
-	}
-
-	createWhereIsRequest := bt.NewMsgDefineBucket(request.Creator, request.Name)
-
-	txRaw, err := tx.SignTxWithWallet(mtr.Wallet, "/sonrio.sonr.bucket.MsgDefineBucket", createWhereIsRequest)
+	// Validate the request
+	err := request.Validate()
 	if err != nil {
-		return nil,  fmt.Errorf("sign tx with wallet: %s", err)
+		return nil, err
 	}
 
-	resp, err := mtr.Cosmos.BroadcastTx(txRaw)
+	config, err := mtr.fetchBucketConfig(request.Bucket, request.Uuid, request.Creator, request.Name)
 	if err != nil {
-		return nil,  fmt.Errorf("broadcast tx: %s", err)
+		return nil, err
 	}
 
-	cbresp := &bt.MsgDefineBucketResponse{}
-	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cbresp); err != nil {
-		return nil,  fmt.Errorf("decode MsgDefineBucketResponse: %s", err)
+	service, err := bi.GenerateBucket(mtr.sh, config, mtr.GetAddress())
+	if err != nil {
+		return nil, err
+	}
+	mtr.DIDDocument.AddService(*service)
+	docBz, err := mtr.DIDDocument.MarshalJSON()
+	if err != nil {
+		return nil, err
 	}
 
-	if cbresp.Status != http.StatusAccepted {
-		return nil,  fmt.Errorf("non success status from Create bucket Reques: %d", cbresp.Status)
+	doc, err := rt.NewDIDDocumentFromBytes(docBz)
+	if err != nil {
+		return nil, err
 	}
-	return nil, nil
+
+	msg1 := rt.NewMsgUpdateWhoIs(mtr.GetAddress(), docBz)
+	txRaw, err := tx.SignTxWithWallet(mtr.GetWallet(), "/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := mtr.GetClient().BroadcastTx(txRaw)
+	if err != nil {
+		return nil, err
+	}
+
+	cwir := &rt.MsgUpdateWhoIsResponse{}
+	if err := client.DecodeTxResponseData(resp.TxResponse.Data, cwir); err != nil {
+		return nil, err
+	}
+	return &mt.GenerateBucketResponse{
+		DidDocument: doc,
+		Uri:         service.ServiceEndpoint,
+		Bucket:      config,
+	}, nil
 }
