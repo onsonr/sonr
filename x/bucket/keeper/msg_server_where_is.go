@@ -25,8 +25,7 @@ func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucke
 	}
 
 	uuid := k.GenerateKeyForDID()
-
-	var bucket = types.Bucket{
+	var whereIs = types.BucketConfig{
 		Creator:  msg.Creator,
 		IsActive: true,
 		Uuid:     uuid,

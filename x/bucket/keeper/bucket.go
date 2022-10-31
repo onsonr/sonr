@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/google/uuid"
+
 	//"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
@@ -40,7 +41,7 @@ func (k Keeper) SetWhereIsCount(ctx sdk.Context, count uint64) {
 // AppendWhereIs appends a whereIs in the store with a new id and update the count
 func (k Keeper) AppendBucket(
 	ctx sdk.Context,
-	whereIs types.Bucket,
+	whereIs types.BucketConfig,
 ) string {
 	// Create the whereIs
 	count := k.GetWhereIsCount(ctx)
@@ -54,7 +55,7 @@ func (k Keeper) AppendBucket(
 }
 
 // SetWhereIs set a specific whereIs in the store
-func (k Keeper) SetBucket(ctx sdk.Context, whereIs types.Bucket) {
+func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.BucketConfig) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	b := k.cdc.MustMarshal(&whereIs)
 	store.Set(types.BucketKey(whereIs.Uuid), b)
@@ -79,7 +80,7 @@ func (k Keeper) UpdateWhoIsService(ctx sdk.Context, b types.Bucket, svcDID *rt.S
 }
 
 // GetBucket returns a whereIs from its id
-func (k Keeper) GetBucket(ctx sdk.Context, id string) (val types.Bucket, found bool) {
+func (k Keeper) GetBucket(ctx sdk.Context, id string) (val types.BucketConfig, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	b := store.Get(
 		types.BucketKey(
@@ -99,14 +100,14 @@ func (k Keeper) GetBucket(ctx sdk.Context, id string) (val types.Bucket, found b
 }
 
 // GetWhereIs returns a whereIs from its id
-func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []types.Bucket) {
+func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []types.BucketConfig) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.Bucket
+		var val types.BucketConfig
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		if val.Creator == creator {
 			list = append(list, val)
@@ -123,14 +124,14 @@ func (k Keeper) RemoveWhereIs(ctx sdk.Context, id string) {
 }
 
 // GetAllWhereIs returns all whereIs
-func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.Bucket) {
+func (k Keeper) GetAllWhereIs(ctx sdk.Context) (list []types.BucketConfig) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.Bucket
+		var val types.BucketConfig
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		if val.Visibility == types.BucketVisibility_PUBLIC {
 			list = append(list, val)

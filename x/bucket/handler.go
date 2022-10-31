@@ -21,8 +21,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			res, err := msgServer.DefineBucket(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
-		case *types.MsgGenerateBucket:
-			res, err := msgServer.GenerateBucket(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgAllocateBucket:
+			res, err := msgServer.AllocateBucket(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		case *types.MsgDeactivateBucket:

@@ -11,7 +11,7 @@ import (
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func (k msgServer) GenerateBucket(goCtx context.Context, msg *types.MsgGenerateBucket) (*types.MsgGenerateBucketResponse, error) {
+func (k msgServer) AllocateBucket(goCtx context.Context, msg *types.MsgAllocateBucket) (*types.MsgAllocateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := msg.ValidateBasic()
@@ -59,5 +59,5 @@ func (k msgServer) GenerateBucket(goCtx context.Context, msg *types.MsgGenerateB
 		),
 	)
 
-	return &types.MsgGenerateBucketResponse{}, nil
+	return &types.MsgAllocateBucketResponse{}, nil
 }

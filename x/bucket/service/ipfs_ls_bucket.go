@@ -1,4 +1,4 @@
-package internal
+package service
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
 
-func LsBucket(sh *shell.Shell, whereIs *bt.Bucket, address string) ([]*shell.MfsLsEntry, error) {
+func LsBucket(sh *shell.Shell, whereIs *bt.BucketConfig, address string) ([]*shell.MfsLsEntry, error) {
 	files, err := sh.FilesLs(context.Background(), whereIs.GetPath(address))
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read item at %s - %e", whereIs.GetPath(address), err)

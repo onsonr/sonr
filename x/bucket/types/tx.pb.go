@@ -81,8 +81,8 @@ func (m *MsgDefineBucket) GetLabel() string {
 }
 
 type MsgDefineBucketResponse struct {
-	Status int32   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	Bucket *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	Status int32         `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Bucket *BucketConfig `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
 func (m *MsgDefineBucketResponse) Reset()         { *m = MsgDefineBucketResponse{} }
@@ -125,30 +125,30 @@ func (m *MsgDefineBucketResponse) GetStatus() int32 {
 	return 0
 }
 
-func (m *MsgDefineBucketResponse) GetBucket() *Bucket {
+func (m *MsgDefineBucketResponse) GetBucket() *BucketConfig {
 	if m != nil {
 		return m.Bucket
 	}
 	return nil
 }
 
-type MsgGenerateBucket struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	BucketId string `protobuf:"bytes,2,opt,name=bucket_id,json=bucketId,proto3" json:"bucket_id,omitempty"`
+type MsgAllocateBucket struct {
+	Creator string        `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Bucket  *BucketConfig `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
-func (m *MsgGenerateBucket) Reset()         { *m = MsgGenerateBucket{} }
-func (m *MsgGenerateBucket) String() string { return proto.CompactTextString(m) }
-func (*MsgGenerateBucket) ProtoMessage()    {}
-func (*MsgGenerateBucket) Descriptor() ([]byte, []int) {
+func (m *MsgAllocateBucket) Reset()         { *m = MsgAllocateBucket{} }
+func (m *MsgAllocateBucket) String() string { return proto.CompactTextString(m) }
+func (*MsgAllocateBucket) ProtoMessage()    {}
+func (*MsgAllocateBucket) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{2}
 }
-func (m *MsgGenerateBucket) XXX_Unmarshal(b []byte) error {
+func (m *MsgAllocateBucket) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgGenerateBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAllocateBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgGenerateBucket.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAllocateBucket.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -158,51 +158,51 @@ func (m *MsgGenerateBucket) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgGenerateBucket) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgGenerateBucket.Merge(m, src)
+func (m *MsgAllocateBucket) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAllocateBucket.Merge(m, src)
 }
-func (m *MsgGenerateBucket) XXX_Size() int {
+func (m *MsgAllocateBucket) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgGenerateBucket) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgGenerateBucket.DiscardUnknown(m)
+func (m *MsgAllocateBucket) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAllocateBucket.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgGenerateBucket proto.InternalMessageInfo
+var xxx_messageInfo_MsgAllocateBucket proto.InternalMessageInfo
 
-func (m *MsgGenerateBucket) GetCreator() string {
+func (m *MsgAllocateBucket) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgGenerateBucket) GetBucketId() string {
+func (m *MsgAllocateBucket) GetBucket() *BucketConfig {
 	if m != nil {
-		return m.BucketId
+		return m.Bucket
 	}
-	return ""
+	return nil
 }
 
-type MsgGenerateBucketResponse struct {
+type MsgAllocateBucketResponse struct {
 	Status          int32              `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	Bucket          *Bucket            `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	Bucket          *BucketConfig      `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 	ServiceEndpoint string             `protobuf:"bytes,3,opt,name=serviceEndpoint,proto3" json:"serviceEndpoint,omitempty"`
 	DidDocument     *types.DIDDocument `protobuf:"bytes,4,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
-func (m *MsgGenerateBucketResponse) Reset()         { *m = MsgGenerateBucketResponse{} }
-func (m *MsgGenerateBucketResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgGenerateBucketResponse) ProtoMessage()    {}
-func (*MsgGenerateBucketResponse) Descriptor() ([]byte, []int) {
+func (m *MsgAllocateBucketResponse) Reset()         { *m = MsgAllocateBucketResponse{} }
+func (m *MsgAllocateBucketResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAllocateBucketResponse) ProtoMessage()    {}
+func (*MsgAllocateBucketResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3479ee73a3c611d5, []int{3}
 }
-func (m *MsgGenerateBucketResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgAllocateBucketResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgGenerateBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAllocateBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgGenerateBucketResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAllocateBucketResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -212,40 +212,40 @@ func (m *MsgGenerateBucketResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgGenerateBucketResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgGenerateBucketResponse.Merge(m, src)
+func (m *MsgAllocateBucketResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAllocateBucketResponse.Merge(m, src)
 }
-func (m *MsgGenerateBucketResponse) XXX_Size() int {
+func (m *MsgAllocateBucketResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgGenerateBucketResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgGenerateBucketResponse.DiscardUnknown(m)
+func (m *MsgAllocateBucketResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAllocateBucketResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgGenerateBucketResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgAllocateBucketResponse proto.InternalMessageInfo
 
-func (m *MsgGenerateBucketResponse) GetStatus() int32 {
+func (m *MsgAllocateBucketResponse) GetStatus() int32 {
 	if m != nil {
 		return m.Status
 	}
 	return 0
 }
 
-func (m *MsgGenerateBucketResponse) GetBucket() *Bucket {
+func (m *MsgAllocateBucketResponse) GetBucket() *BucketConfig {
 	if m != nil {
 		return m.Bucket
 	}
 	return nil
 }
 
-func (m *MsgGenerateBucketResponse) GetServiceEndpoint() string {
+func (m *MsgAllocateBucketResponse) GetServiceEndpoint() string {
 	if m != nil {
 		return m.ServiceEndpoint
 	}
 	return ""
 }
 
-func (m *MsgGenerateBucketResponse) GetDidDocument() *types.DIDDocument {
+func (m *MsgAllocateBucketResponse) GetDidDocument() *types.DIDDocument {
 	if m != nil {
 		return m.DidDocument
 	}
@@ -253,8 +253,8 @@ func (m *MsgGenerateBucketResponse) GetDidDocument() *types.DIDDocument {
 }
 
 type MsgDeactivateBucket struct {
-	Creator string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Bucket  *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	Creator string        `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Bucket  *BucketConfig `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
 func (m *MsgDeactivateBucket) Reset()         { *m = MsgDeactivateBucket{} }
@@ -297,7 +297,7 @@ func (m *MsgDeactivateBucket) GetCreator() string {
 	return ""
 }
 
-func (m *MsgDeactivateBucket) GetBucket() *Bucket {
+func (m *MsgDeactivateBucket) GetBucket() *BucketConfig {
 	if m != nil {
 		return m.Bucket
 	}
@@ -305,9 +305,9 @@ func (m *MsgDeactivateBucket) GetBucket() *Bucket {
 }
 
 type MsgDeactivateBucketResponse struct {
-	Status      int32   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	Bucket      *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
-	TotalBurned int32   `protobuf:"varint,3,opt,name=totalBurned,proto3" json:"totalBurned,omitempty"`
+	Status      int32         `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Bucket      *BucketConfig `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	TotalBurned int32         `protobuf:"varint,3,opt,name=totalBurned,proto3" json:"totalBurned,omitempty"`
 }
 
 func (m *MsgDeactivateBucketResponse) Reset()         { *m = MsgDeactivateBucketResponse{} }
@@ -350,7 +350,7 @@ func (m *MsgDeactivateBucketResponse) GetStatus() int32 {
 	return 0
 }
 
-func (m *MsgDeactivateBucketResponse) GetBucket() *Bucket {
+func (m *MsgDeactivateBucketResponse) GetBucket() *BucketConfig {
 	if m != nil {
 		return m.Bucket
 	}
@@ -365,8 +365,8 @@ func (m *MsgDeactivateBucketResponse) GetTotalBurned() int32 {
 }
 
 type MsgBurnBucket struct {
-	Creator string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Bucket  *Bucket `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	Creator string        `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Bucket  *BucketConfig `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 }
 
 func (m *MsgBurnBucket) Reset()         { *m = MsgBurnBucket{} }
@@ -409,7 +409,7 @@ func (m *MsgBurnBucket) GetCreator() string {
 	return ""
 }
 
-func (m *MsgBurnBucket) GetBucket() *Bucket {
+func (m *MsgBurnBucket) GetBucket() *BucketConfig {
 	if m != nil {
 		return m.Bucket
 	}
@@ -418,7 +418,7 @@ func (m *MsgBurnBucket) GetBucket() *Bucket {
 
 type MsgBurnBucketResponse struct {
 	Status      int32              `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	Bucket      *Bucket            `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	Bucket      *BucketConfig      `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
 	DidDocument *types.DIDDocument `protobuf:"bytes,4,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
@@ -462,7 +462,7 @@ func (m *MsgBurnBucketResponse) GetStatus() int32 {
 	return 0
 }
 
-func (m *MsgBurnBucketResponse) GetBucket() *Bucket {
+func (m *MsgBurnBucketResponse) GetBucket() *BucketConfig {
 	if m != nil {
 		return m.Bucket
 	}
@@ -479,8 +479,8 @@ func (m *MsgBurnBucketResponse) GetDidDocument() *types.DIDDocument {
 func init() {
 	proto.RegisterType((*MsgDefineBucket)(nil), "sonrio.sonr.bucket.MsgDefineBucket")
 	proto.RegisterType((*MsgDefineBucketResponse)(nil), "sonrio.sonr.bucket.MsgDefineBucketResponse")
-	proto.RegisterType((*MsgGenerateBucket)(nil), "sonrio.sonr.bucket.MsgGenerateBucket")
-	proto.RegisterType((*MsgGenerateBucketResponse)(nil), "sonrio.sonr.bucket.MsgGenerateBucketResponse")
+	proto.RegisterType((*MsgAllocateBucket)(nil), "sonrio.sonr.bucket.MsgAllocateBucket")
+	proto.RegisterType((*MsgAllocateBucketResponse)(nil), "sonrio.sonr.bucket.MsgAllocateBucketResponse")
 	proto.RegisterType((*MsgDeactivateBucket)(nil), "sonrio.sonr.bucket.MsgDeactivateBucket")
 	proto.RegisterType((*MsgDeactivateBucketResponse)(nil), "sonrio.sonr.bucket.MsgDeactivateBucketResponse")
 	proto.RegisterType((*MsgBurnBucket)(nil), "sonrio.sonr.bucket.MsgBurnBucket")
@@ -490,38 +490,38 @@ func init() {
 func init() { proto.RegisterFile("bucket/tx.proto", fileDescriptor_3479ee73a3c611d5) }
 
 var fileDescriptor_3479ee73a3c611d5 = []byte{
-	// 495 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x55, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0xcd, 0x12, 0x12, 0xe8, 0xa4, 0x10, 0xd8, 0x16, 0x30, 0xae, 0x64, 0xb5, 0x46, 0x40, 0x11,
-	0xaa, 0x2d, 0x85, 0x2f, 0x20, 0x32, 0x42, 0x45, 0x8a, 0x84, 0x7c, 0x42, 0x95, 0x50, 0x71, 0xbc,
-	0x53, 0xb3, 0x22, 0xf5, 0x46, 0xbb, 0xeb, 0xaa, 0xfd, 0x06, 0x2e, 0x5c, 0xf9, 0x04, 0xfe, 0x84,
-	0x63, 0x6f, 0x70, 0x44, 0xc9, 0x8f, 0xa0, 0xac, 0xed, 0x50, 0x27, 0x8d, 0x1a, 0xa1, 0xe6, 0xb4,
-	0x9a, 0xd9, 0x37, 0x6f, 0xde, 0xcc, 0xec, 0xd8, 0xd0, 0xee, 0x67, 0xf1, 0x17, 0xd4, 0xbe, 0x3e,
-	0xf5, 0x86, 0x52, 0x68, 0x41, 0xa9, 0x12, 0xa9, 0xe4, 0xc2, 0x9b, 0x1c, 0x5e, 0x7e, 0x69, 0x6f,
-	0x14, 0xa0, 0xfc, 0xc8, 0x81, 0x36, 0x95, 0x98, 0x70, 0xa5, 0xe5, 0x99, 0xcf, 0x38, 0xcb, 0x7d,
-	0xee, 0x6b, 0x68, 0xf7, 0x54, 0x12, 0xe0, 0x11, 0x4f, 0xb1, 0x6b, 0xc0, 0xd4, 0x82, 0x5b, 0xb1,
-	0xc4, 0x48, 0x0b, 0x69, 0x91, 0x6d, 0xb2, 0xbb, 0x16, 0x96, 0x26, 0xdd, 0x84, 0xc6, 0x20, 0xea,
-	0xe3, 0xc0, 0xba, 0x61, 0xfc, 0xb9, 0xe1, 0x22, 0x3c, 0x9a, 0xa1, 0x08, 0x51, 0x0d, 0x45, 0xaa,
-	0x90, 0x3e, 0x84, 0xa6, 0xd2, 0x91, 0xce, 0x94, 0x61, 0x6a, 0x84, 0x85, 0x45, 0x3b, 0xd0, 0xcc,
-	0x95, 0x19, 0xa6, 0x56, 0xc7, 0xf6, 0xe6, 0x6b, 0xf0, 0x0a, 0xae, 0x02, 0xe9, 0xbe, 0x83, 0xfb,
-	0x3d, 0x95, 0xbc, 0xc5, 0x14, 0x65, 0xa4, 0xaf, 0xd6, 0xba, 0x05, 0x6b, 0x79, 0xe0, 0x21, 0x67,
-	0x85, 0xde, 0xdb, 0xb9, 0x63, 0x9f, 0xb9, 0xbf, 0x08, 0x3c, 0x9e, 0x23, 0x5b, 0x85, 0x6a, 0xba,
-	0x0b, 0x6d, 0x85, 0xf2, 0x84, 0xc7, 0xf8, 0x26, 0x65, 0x43, 0xc1, 0x53, 0x6d, 0xd5, 0x8d, 0x98,
-	0x59, 0x37, 0x0d, 0x60, 0x9d, 0x71, 0x76, 0xc8, 0x44, 0x9c, 0x1d, 0x63, 0xaa, 0xad, 0x9b, 0x26,
-	0xc7, 0x4e, 0x25, 0x47, 0x39, 0x40, 0x2f, 0xd8, 0x0f, 0x82, 0x02, 0x18, 0xb6, 0x18, 0x67, 0xa5,
-	0xe1, 0xc6, 0xb0, 0x61, 0x86, 0x11, 0xc5, 0x9a, 0x9f, 0x2c, 0xd3, 0xa7, 0xff, 0x19, 0xc5, 0x57,
-	0x02, 0x5b, 0x97, 0x64, 0x59, 0x49, 0x03, 0xb7, 0xa1, 0xa5, 0x85, 0x8e, 0x06, 0xdd, 0x4c, 0xa6,
-	0xc8, 0x4c, 0xf3, 0x1a, 0xe1, 0x45, 0x97, 0xfb, 0x11, 0xee, 0xf4, 0x54, 0x32, 0x31, 0x56, 0x52,
-	0xec, 0x0f, 0x02, 0x0f, 0x2a, 0xfc, 0x2b, 0x29, 0xf3, 0x5a, 0xa6, 0xdf, 0xf9, 0x5e, 0x87, 0x7a,
-	0x4f, 0x25, 0xf4, 0x13, 0xac, 0x57, 0x56, 0xfa, 0xc9, 0x65, 0x0a, 0x66, 0x96, 0xd6, 0x7e, 0xb9,
-	0x04, 0x68, 0x5a, 0xfb, 0x11, 0xdc, 0x9d, 0x59, 0xc5, 0xa7, 0x0b, 0xc2, 0xab, 0x30, 0x7b, 0x6f,
-	0x29, 0xd8, 0x34, 0xcf, 0x00, 0xee, 0xcd, 0x3d, 0xe6, 0xe7, 0x0b, 0x85, 0x56, 0x81, 0xb6, 0xbf,
-	0x24, 0x70, 0x9a, 0xed, 0x00, 0xe0, 0xc2, 0x3b, 0xda, 0x59, 0x10, 0xfe, 0x0f, 0x62, 0xbf, 0xb8,
-	0x12, 0x52, 0x72, 0x77, 0x3f, 0xfc, 0x1c, 0x39, 0xe4, 0x7c, 0xe4, 0x90, 0x3f, 0x23, 0x87, 0x7c,
-	0x1b, 0x3b, 0xb5, 0xf3, 0xb1, 0x53, 0xfb, 0x3d, 0x76, 0x6a, 0xb0, 0x59, 0xc6, 0xeb, 0xb3, 0x21,
-	0xaa, 0x82, 0xe5, 0x3d, 0x39, 0x78, 0x96, 0x70, 0xfd, 0x39, 0xeb, 0x7b, 0xb1, 0x38, 0xf6, 0x27,
-	0xf7, 0x7b, 0x5c, 0x98, 0xd3, 0x3f, 0xf5, 0xcb, 0x7f, 0xc0, 0x24, 0xa0, 0xdf, 0x34, 0x9f, 0xf2,
-	0x57, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x3f, 0x28, 0x08, 0xcd, 0x1a, 0x06, 0x00, 0x00,
+	// 487 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x95, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0xc7, 0x6b, 0x4a, 0x8b, 0x78, 0x1d, 0x14, 0xbc, 0x01, 0x21, 0x48, 0x51, 0x17, 0x04, 0x0c,
+	0xa1, 0x25, 0xd2, 0xb8, 0x70, 0x5d, 0x09, 0x07, 0x0e, 0x95, 0x50, 0x4e, 0x68, 0x17, 0x48, 0x63,
+	0x37, 0x58, 0xcb, 0xec, 0xca, 0x76, 0xa6, 0xed, 0x5b, 0xc0, 0x91, 0x4f, 0xc1, 0xd7, 0xe0, 0xb8,
+	0x23, 0x17, 0x24, 0xd4, 0x7e, 0x11, 0x54, 0x27, 0x29, 0x4b, 0xbb, 0xaa, 0x15, 0x5a, 0x4e, 0xd6,
+	0x7b, 0xf9, 0xbd, 0xf7, 0x7f, 0xef, 0xd9, 0x8e, 0xa1, 0x3b, 0xcc, 0xe2, 0x63, 0xaa, 0x7d, 0x7d,
+	0xe6, 0x8d, 0xa5, 0xd0, 0x02, 0x63, 0x25, 0xb8, 0x64, 0xc2, 0x9b, 0x2d, 0x5e, 0xfe, 0xd1, 0xde,
+	0x2e, 0xa0, 0x7c, 0xc9, 0x41, 0x1b, 0x4b, 0x9a, 0x30, 0xa5, 0xe5, 0xb9, 0x4f, 0x18, 0xc9, 0x7d,
+	0xee, 0x21, 0x74, 0x07, 0x2a, 0x09, 0xe8, 0x88, 0x71, 0xda, 0x37, 0x30, 0xb6, 0xe0, 0x56, 0x2c,
+	0x69, 0xa4, 0x85, 0xb4, 0x50, 0x0f, 0xed, 0xdd, 0x0e, 0x4b, 0x13, 0xef, 0x40, 0x2b, 0x8d, 0x86,
+	0x34, 0xb5, 0x6e, 0x18, 0x7f, 0x6e, 0xb8, 0xc7, 0xf0, 0x68, 0x21, 0x45, 0x48, 0xd5, 0x58, 0x70,
+	0x45, 0xf1, 0x43, 0x68, 0x2b, 0x1d, 0xe9, 0x4c, 0x99, 0x4c, 0xad, 0xb0, 0xb0, 0xf0, 0x1b, 0x68,
+	0xe7, 0x95, 0x99, 0x4c, 0x9d, 0x83, 0x9e, 0xb7, 0xdc, 0x83, 0x97, 0xe7, 0x7a, 0x2b, 0xf8, 0x88,
+	0x25, 0x61, 0xc1, 0xbb, 0x09, 0xdc, 0x1f, 0xa8, 0xe4, 0x30, 0x4d, 0x45, 0x1c, 0xe9, 0xf5, 0x15,
+	0xff, 0xbf, 0xd0, 0x6f, 0x04, 0x8f, 0x97, 0x94, 0xea, 0x6b, 0x0c, 0xef, 0x41, 0x57, 0x51, 0x79,
+	0xca, 0x62, 0xfa, 0x8e, 0x93, 0xb1, 0x60, 0x5c, 0x5b, 0x4d, 0xd3, 0xcb, 0xa2, 0x1b, 0x07, 0xb0,
+	0x45, 0x18, 0xf9, 0x44, 0x44, 0x9c, 0x9d, 0x50, 0xae, 0xad, 0x9b, 0x46, 0x69, 0xb7, 0xa2, 0x54,
+	0xee, 0xb4, 0x17, 0xbc, 0x0f, 0x82, 0x02, 0x0c, 0x3b, 0x84, 0x91, 0xd2, 0x70, 0x19, 0x6c, 0x9b,
+	0x5d, 0x8b, 0x62, 0xcd, 0x4e, 0xeb, 0x1d, 0xe5, 0x37, 0x04, 0x4f, 0xae, 0xd0, 0xaa, 0x71, 0x98,
+	0x3d, 0xe8, 0x68, 0xa1, 0xa3, 0xb4, 0x9f, 0x49, 0x4e, 0x89, 0x19, 0x64, 0x2b, 0xbc, 0xec, 0x72,
+	0x63, 0xb8, 0x33, 0x50, 0xc9, 0xcc, 0xa8, 0xb1, 0xf1, 0x1f, 0x08, 0x1e, 0x54, 0x54, 0x6a, 0x6c,
+	0xf9, 0x5a, 0x4e, 0xc5, 0xc1, 0xf7, 0x26, 0x34, 0x07, 0x2a, 0xc1, 0x9f, 0x61, 0xab, 0xf2, 0x4f,
+	0x78, 0x7a, 0x55, 0x1d, 0x0b, 0xb7, 0xde, 0x7e, 0xb5, 0x01, 0x34, 0x9f, 0xc0, 0x08, 0xee, 0x2e,
+	0xdc, 0xe2, 0x67, 0x2b, 0xc2, 0xab, 0x98, 0xbd, 0xbf, 0x11, 0x36, 0xd7, 0x49, 0xe1, 0xde, 0xd2,
+	0x21, 0x7f, 0xb1, 0xb2, 0xd0, 0x2a, 0x68, 0xfb, 0x1b, 0x82, 0x73, 0xb5, 0x23, 0x80, 0x4b, 0x67,
+	0x6a, 0x77, 0x45, 0xf8, 0x3f, 0xc4, 0x7e, 0xb9, 0x16, 0x29, 0x73, 0xf7, 0x3f, 0xfe, 0x9c, 0x38,
+	0xe8, 0x62, 0xe2, 0xa0, 0x3f, 0x13, 0x07, 0x7d, 0x9d, 0x3a, 0x8d, 0x8b, 0xa9, 0xd3, 0xf8, 0x35,
+	0x75, 0x1a, 0xb0, 0x53, 0xc6, 0xeb, 0xf3, 0x31, 0x55, 0x45, 0x96, 0x0f, 0xe8, 0xe8, 0x79, 0xc2,
+	0xf4, 0x97, 0x6c, 0xe8, 0xc5, 0xe2, 0xc4, 0x9f, 0x7d, 0xdf, 0x67, 0xc2, 0xac, 0xfe, 0x99, 0x5f,
+	0x3e, 0x22, 0xb3, 0x80, 0x61, 0xdb, 0xbc, 0x05, 0xaf, 0xff, 0x06, 0x00, 0x00, 0xff, 0xff, 0x43,
+	0xbc, 0x2a, 0xf6, 0x5b, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -537,7 +537,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	DefineBucket(ctx context.Context, in *MsgDefineBucket, opts ...grpc.CallOption) (*MsgDefineBucketResponse, error)
-	GenerateBucket(ctx context.Context, in *MsgGenerateBucket, opts ...grpc.CallOption) (*MsgGenerateBucketResponse, error)
+	AllocateBucket(ctx context.Context, in *MsgAllocateBucket, opts ...grpc.CallOption) (*MsgAllocateBucketResponse, error)
 	DeactivateBucket(ctx context.Context, in *MsgDeactivateBucket, opts ...grpc.CallOption) (*MsgDeactivateBucketResponse, error)
 	BurnBucket(ctx context.Context, in *MsgBurnBucket, opts ...grpc.CallOption) (*MsgBurnBucketResponse, error)
 }
@@ -559,9 +559,9 @@ func (c *msgClient) DefineBucket(ctx context.Context, in *MsgDefineBucket, opts 
 	return out, nil
 }
 
-func (c *msgClient) GenerateBucket(ctx context.Context, in *MsgGenerateBucket, opts ...grpc.CallOption) (*MsgGenerateBucketResponse, error) {
-	out := new(MsgGenerateBucketResponse)
-	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/GenerateBucket", in, out, opts...)
+func (c *msgClient) AllocateBucket(ctx context.Context, in *MsgAllocateBucket, opts ...grpc.CallOption) (*MsgAllocateBucketResponse, error) {
+	out := new(MsgAllocateBucketResponse)
+	err := c.cc.Invoke(ctx, "/sonrio.sonr.bucket.Msg/AllocateBucket", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -589,7 +589,7 @@ func (c *msgClient) BurnBucket(ctx context.Context, in *MsgBurnBucket, opts ...g
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	DefineBucket(context.Context, *MsgDefineBucket) (*MsgDefineBucketResponse, error)
-	GenerateBucket(context.Context, *MsgGenerateBucket) (*MsgGenerateBucketResponse, error)
+	AllocateBucket(context.Context, *MsgAllocateBucket) (*MsgAllocateBucketResponse, error)
 	DeactivateBucket(context.Context, *MsgDeactivateBucket) (*MsgDeactivateBucketResponse, error)
 	BurnBucket(context.Context, *MsgBurnBucket) (*MsgBurnBucketResponse, error)
 }
@@ -601,8 +601,8 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) DefineBucket(ctx context.Context, req *MsgDefineBucket) (*MsgDefineBucketResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DefineBucket not implemented")
 }
-func (*UnimplementedMsgServer) GenerateBucket(ctx context.Context, req *MsgGenerateBucket) (*MsgGenerateBucketResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GenerateBucket not implemented")
+func (*UnimplementedMsgServer) AllocateBucket(ctx context.Context, req *MsgAllocateBucket) (*MsgAllocateBucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllocateBucket not implemented")
 }
 func (*UnimplementedMsgServer) DeactivateBucket(ctx context.Context, req *MsgDeactivateBucket) (*MsgDeactivateBucketResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeactivateBucket not implemented")
@@ -633,20 +633,20 @@ func _Msg_DefineBucket_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_GenerateBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgGenerateBucket)
+func _Msg_AllocateBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAllocateBucket)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).GenerateBucket(ctx, in)
+		return srv.(MsgServer).AllocateBucket(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrio.sonr.bucket.Msg/GenerateBucket",
+		FullMethod: "/sonrio.sonr.bucket.Msg/AllocateBucket",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).GenerateBucket(ctx, req.(*MsgGenerateBucket))
+		return srv.(MsgServer).AllocateBucket(ctx, req.(*MsgAllocateBucket))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -696,8 +696,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_DefineBucket_Handler,
 		},
 		{
-			MethodName: "GenerateBucket",
-			Handler:    _Msg_GenerateBucket_Handler,
+			MethodName: "AllocateBucket",
+			Handler:    _Msg_AllocateBucket_Handler,
 		},
 		{
 			MethodName: "DeactivateBucket",
@@ -789,7 +789,7 @@ func (m *MsgDefineBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgGenerateBucket) Marshal() (dAtA []byte, err error) {
+func (m *MsgAllocateBucket) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -799,20 +799,25 @@ func (m *MsgGenerateBucket) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgGenerateBucket) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAllocateBucket) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgGenerateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAllocateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.BucketId) > 0 {
-		i -= len(m.BucketId)
-		copy(dAtA[i:], m.BucketId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.BucketId)))
+	if m.Bucket != nil {
+		{
+			size, err := m.Bucket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x12
 	}
@@ -826,7 +831,7 @@ func (m *MsgGenerateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgGenerateBucketResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgAllocateBucketResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -836,12 +841,12 @@ func (m *MsgGenerateBucketResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgGenerateBucketResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAllocateBucketResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgGenerateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAllocateBucketResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1110,7 +1115,7 @@ func (m *MsgDefineBucketResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgGenerateBucket) Size() (n int) {
+func (m *MsgAllocateBucket) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1120,14 +1125,14 @@ func (m *MsgGenerateBucket) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.BucketId)
-	if l > 0 {
+	if m.Bucket != nil {
+		l = m.Bucket.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *MsgGenerateBucketResponse) Size() (n int) {
+func (m *MsgAllocateBucketResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1422,7 +1427,7 @@ func (m *MsgDefineBucketResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Bucket == nil {
-				m.Bucket = &Bucket{}
+				m.Bucket = &BucketConfig{}
 			}
 			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1449,7 +1454,7 @@ func (m *MsgDefineBucketResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgGenerateBucket) Unmarshal(dAtA []byte) error {
+func (m *MsgAllocateBucket) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1472,10 +1477,10 @@ func (m *MsgGenerateBucket) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgGenerateBucket: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAllocateBucket: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgGenerateBucket: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAllocateBucket: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1512,9 +1517,9 @@ func (m *MsgGenerateBucket) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BucketId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -1524,23 +1529,27 @@ func (m *MsgGenerateBucket) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.BucketId = string(dAtA[iNdEx:postIndex])
+			if m.Bucket == nil {
+				m.Bucket = &BucketConfig{}
+			}
+			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1563,7 +1572,7 @@ func (m *MsgGenerateBucket) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgGenerateBucketResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgAllocateBucketResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1586,10 +1595,10 @@ func (m *MsgGenerateBucketResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgGenerateBucketResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAllocateBucketResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgGenerateBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAllocateBucketResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1641,7 +1650,7 @@ func (m *MsgGenerateBucketResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Bucket == nil {
-				m.Bucket = &Bucket{}
+				m.Bucket = &BucketConfig{}
 			}
 			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1827,7 +1836,7 @@ func (m *MsgDeactivateBucket) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Bucket == nil {
-				m.Bucket = &Bucket{}
+				m.Bucket = &BucketConfig{}
 			}
 			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1932,7 +1941,7 @@ func (m *MsgDeactivateBucketResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Bucket == nil {
-				m.Bucket = &Bucket{}
+				m.Bucket = &BucketConfig{}
 			}
 			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2069,7 +2078,7 @@ func (m *MsgBurnBucket) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Bucket == nil {
-				m.Bucket = &Bucket{}
+				m.Bucket = &BucketConfig{}
 			}
 			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2174,7 +2183,7 @@ func (m *MsgBurnBucketResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Bucket == nil {
-				m.Bucket = &Bucket{}
+				m.Bucket = &BucketConfig{}
 			}
 			if err := m.Bucket.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

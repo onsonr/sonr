@@ -42,12 +42,18 @@ type MotorNode interface {
 	// Schema
 	CreateSchema(mt.CreateSchemaRequest) (mt.CreateSchemaResponse, error)
 	NewDocumentBuilder(schemaDid string) (*document.DocumentBuilder, error)
+	UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error)
 
 	// Query
+	QueryBuckets(req mt.FindBucketConfigRequest) (*mt.FindBucketConfigResponse, error)
 	QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error)
 	QueryWhatIs(req mt.QueryWhatIsRequest) (*mt.QueryWhatIsResponse, error)
 	QueryWhatIsByCreator(req mt.QueryWhatIsByCreatorRequest) (*mt.QueryWhatIsByCreatorResponse, error)
 	QueryWhatIsByDid(did string) (*mt.QueryWhatIsResponse, error)
 
-	UploadDocument(req mt.UploadDocumentRequest) (*mt.UploadDocumentResponse, error)
+	// Bucket
+	GenerateBucket(req mt.GenerateBucketRequest) (*mt.GenerateBucketResponse, error)
+	AddBucketItems(req mt.AddBucketItemsRequest) (*mt.AddBucketItemsResponse, error)
+	GetBucketItems(req mt.GetBucketItemsRequest) (*mt.GetBucketItemsResponse, error)
+	BurnBucket(req mt.BurnBucketRequest) (*mt.BurnBucketResponse, error)
 }

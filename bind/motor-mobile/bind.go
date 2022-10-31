@@ -131,69 +131,6 @@ func Connect() error {
 	return instance.Connect()
 }
 
-func CreateSchema(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	var request mt.CreateSchemaRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	if res, err := instance.CreateSchema(request); err == nil {
-		return res.Marshal()
-	} else {
-		return nil, err
-	}
-}
-
-func QuerySchema(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	var request mt.QueryWhatIsRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	res, err := instance.QueryWhatIs(request)
-	if err != nil {
-		return nil, err
-	}
-	return res.Marshal()
-}
-
-func QuerySchemaByCreator(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	var request mt.QueryWhatIsByCreatorRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	res, err := instance.QueryWhatIsByCreator(request)
-	if err != nil {
-		return nil, err
-	}
-	return res.Marshal()
-}
-
-func QuerySchemaByDid(did string) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	res, err := instance.QueryWhatIsByDid(did)
-	if err != nil {
-		return nil, err
-	}
-	return res.Marshal()
-}
-
 // IssuePayment creates a send/receive token request to the specified address.
 func IssuePayment(buf []byte) ([]byte, error) {
 	if instance == nil {
@@ -286,39 +223,5 @@ func TransferAlias(buf []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	return resp.Marshal()
-}
-
-func GetDocument(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	var request mt.GetDocumentRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	// resp, err := instance.GetDocument(request)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	return nil, nil// resp.Marshal()
-}
-
-func UploadDocument(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	var request mt.UploadDocumentRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	resp, err := instance.UploadDocument(request)
-	if err != nil {
-		return nil, err
-	}
 	return resp.Marshal()
 }

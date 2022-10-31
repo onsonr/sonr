@@ -32912,6 +32912,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/creator/{creator}':
@@ -33052,6 +33062,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -33263,6 +33283,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -57260,7 +57290,7 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
-  sonrio.sonr.bucket.Bucket:
+  sonrio.sonr.bucket.BucketConfig:
     type: object
     properties:
       uuid:
@@ -57307,207 +57337,7 @@ definitions:
     title: >-
       BucketVisibility is the visibility of the bucket to authorized users of an
       application
-  sonrio.sonr.bucket.MsgBurnBucketResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-        format: int32
-      bucket:
-        type: object
-        properties:
-          uuid:
-            type: string
-            description: DID of the created bucket.
-          creator:
-            type: string
-            title: Creator of the new bucket
-          name:
-            type: string
-            description: Name of the new bucket.
-          visibility:
-            type: string
-            enum:
-              - PUBLIC
-              - USER
-              - APPLICATION
-            default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
-            title: >-
-              BucketVisibility is the visibility of the bucket to authorized
-              users of an application
-          is_active:
-            type: boolean
-            description: IsActive flag of the new bucket.
-          size:
-            type: string
-            format: int64
-            description: size of the new bucket.
-      did_document:
-        type: object
-        properties:
-          context:
-            type: array
-            items:
-              type: string
-          id:
-            type: string
-          controller:
-            type: array
-            items:
-              type: string
-          verification_method:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                type:
-                  type: string
-                controller:
-                  type: string
-                public_key_jwk:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                      value:
-                        type: string
-                public_key_base58:
-                  type: string
-                credential_json:
-                  type: string
-                  format: byte
-          authentication:
-            type: array
-            items:
-              type: string
-          assertion_method:
-            type: array
-            items:
-              type: string
-          capability_invocation:
-            type: array
-            items:
-              type: string
-          capability_delegation:
-            type: array
-            items:
-              type: string
-          key_agreement:
-            type: array
-            items:
-              type: string
-          service:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                type:
-                  type: string
-                service_endpoint:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                      value:
-                        type: string
-          also_known_as:
-            type: array
-            items:
-              type: string
-  sonrio.sonr.bucket.MsgDeactivateBucketResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-        format: int32
-      bucket:
-        type: object
-        properties:
-          uuid:
-            type: string
-            description: DID of the created bucket.
-          creator:
-            type: string
-            title: Creator of the new bucket
-          name:
-            type: string
-            description: Name of the new bucket.
-          visibility:
-            type: string
-            enum:
-              - PUBLIC
-              - USER
-              - APPLICATION
-            default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
-            title: >-
-              BucketVisibility is the visibility of the bucket to authorized
-              users of an application
-          is_active:
-            type: boolean
-            description: IsActive flag of the new bucket.
-          size:
-            type: string
-            format: int64
-            description: size of the new bucket.
-      totalBurned:
-        type: integer
-        format: int32
-  sonrio.sonr.bucket.MsgDefineBucketResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-        format: int32
-      bucket:
-        type: object
-        properties:
-          uuid:
-            type: string
-            description: DID of the created bucket.
-          creator:
-            type: string
-            title: Creator of the new bucket
-          name:
-            type: string
-            description: Name of the new bucket.
-          visibility:
-            type: string
-            enum:
-              - PUBLIC
-              - USER
-              - APPLICATION
-            default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
-            title: >-
-              BucketVisibility is the visibility of the bucket to authorized
-              users of an application
-          is_active:
-            type: boolean
-            description: IsActive flag of the new bucket.
-          size:
-            type: string
-            format: int64
-            description: size of the new bucket.
-  sonrio.sonr.bucket.MsgGenerateBucketResponse:
+  sonrio.sonr.bucket.MsgAllocateBucketResponse:
     type: object
     properties:
       status:
@@ -57616,6 +57446,82 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
+                        type: string
+          also_known_as:
+            type: array
+            items:
+              type: string
+  sonrio.sonr.bucket.MsgBurnBucketResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
+            type: string
+            format: int64
+            description: size of the new bucket.
+      did_document:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+          verification_method:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                controller:
+                  type: string
+                public_key_jwk:
                   type: array
                   items:
                     type: object
@@ -57624,10 +57530,134 @@ definitions:
                         type: string
                       value:
                         type: string
+                public_key_base58:
+                  type: string
+                credential_json:
+                  type: string
+                  format: byte
+          authentication:
+            type: array
+            items:
+              type: string
+          assertion_method:
+            type: array
+            items:
+              type: string
+          capability_invocation:
+            type: array
+            items:
+              type: string
+          capability_delegation:
+            type: array
+            items:
+              type: string
+          key_agreement:
+            type: array
+            items:
+              type: string
+          service:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
+                        type: string
           also_known_as:
             type: array
             items:
               type: string
+  sonrio.sonr.bucket.MsgDeactivateBucketResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
+            type: string
+            format: int64
+            description: size of the new bucket.
+      totalBurned:
+        type: integer
+        format: int32
+  sonrio.sonr.bucket.MsgDefineBucketResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            description: |-
+              - PUBLIC: Bucket does not have visibility set.
+               - USER: Bucket is visible to anyone.
+               - APPLICATION: Bucket is visible to anyone who has access token.
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
+            type: string
+            format: int64
+            description: size of the new bucket.
   sonrio.sonr.bucket.Params:
     type: object
     properties:
@@ -57941,14 +57971,7 @@ definitions:
             type:
               type: string
             service_endpoint:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                  value:
-                    type: string
+              type: object
               properties:
                 key:
                   type: string
@@ -57975,14 +57998,7 @@ definitions:
       type:
         type: string
       service_endpoint:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
+        type: object
         properties:
           key:
             type: string
@@ -57990,6 +58006,15 @@ definitions:
             type: array
             items:
               type: string
+  sonrio.sonr.registry.ServiceEndpoint:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: array
+        items:
+          type: string
   sonrio.sonr.registry.VerificationMethod:
     type: object
     properties:
@@ -59435,15 +59460,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-  sonrio.sonr.registry.ServiceEndpoint:
-    type: object
-    properties:
-      key:
-        type: string
-      value:
-        type: array
-        items:
-          type: string
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:

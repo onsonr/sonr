@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createNWhereIs(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Bucket {
-	items := make([]types.Bucket, n)
+func createNWhereIs(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.BucketConfig {
+	items := make([]types.BucketConfig, n)
 	for i := range items {
 		items[i].Uuid = keeper.AppendBucket(ctx, items[i])
 	}

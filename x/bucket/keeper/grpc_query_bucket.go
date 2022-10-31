@@ -18,7 +18,7 @@ func (k Keeper) BucketsAll(c context.Context, req *types.QueryAllBucketsRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var whereIss []types.Bucket
+	var whereIss []types.BucketConfig
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if req.Pagination == nil {
@@ -33,7 +33,7 @@ func (k Keeper) BucketsAll(c context.Context, req *types.QueryAllBucketsRequest)
 	whereIsStore := prefix.NewStore(store, types.KeyPrefix(types.BucketKeyPrefix))
 
 	pageRes, err := query.Paginate(whereIsStore, req.Pagination, func(key []byte, value []byte) error {
-		var whereIs types.Bucket
+		var whereIs types.BucketConfig
 		if err := k.cdc.Unmarshal(value, &whereIs); err != nil {
 			return err
 		}
