@@ -5,8 +5,9 @@ import (
 	io "io"
 	"strings"
 
-	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
+	//"github.com/sonr-io/sonr/pkg/did"
+	//"github.com/sonr-io/sonr/pkg/did/ssi"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 func (b *Bucket) GetPath(address string, segments ...string) string {
@@ -17,13 +18,17 @@ func (b *Bucket) GetPath(address string, segments ...string) string {
 	return path
 }
 
-func (b *Bucket) GetDidService(address string) *did.Service {
+func (b *Bucket) GetDidService(address string) *rt.Service {
 	segments := strings.Split(address, "snr")
 	service := fmt.Sprintf("did:snr:%s#%s", segments[1], b.Uuid)
-	return &did.Service{
-		ID:              ssi.MustParseURI(service),
-		Type:            "LinkedResource",
-		ServiceEndpoint: b.GetURI(address),
+
+	return &rt.Service{
+		Id:   service,
+		Type: "LinkedResource",
+		ServiceEndpoint: &rt.ServiceEndpoint{
+			Key:   "uri",
+			Value: []string{b.GetURI(address)},
+		},
 	}
 }
 
@@ -75,4 +80,3 @@ func NewBucketItemFromBytes(name string, content []byte) (BucketItem, error) {
 		content: content,
 	}, nil
 }
-

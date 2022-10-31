@@ -14,7 +14,7 @@ import (
 func createNWhereIs(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Bucket {
 	items := make([]types.Bucket, n)
 	for i := range items {
-		items[i].Uuid = keeper.AppendWhereIs(ctx, items[i])
+		items[i].Uuid = keeper.AppendBucket(ctx, items[i])
 	}
 	return items
 }

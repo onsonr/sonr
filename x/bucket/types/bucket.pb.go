@@ -125,7 +125,7 @@ type Bucket struct {
 	Visibility BucketVisibility `protobuf:"varint,4,opt,name=visibility,proto3,enum=sonrio.sonr.bucket.BucketVisibility" json:"visibility,omitempty"`
 	// IsActive flag of the new bucket.
 	IsActive bool `protobuf:"varint,6,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
-	// Timestamp of the new bucket.
+	// size of the new bucket.
 	Size_ int64 `protobuf:"varint,9,opt,name=size,proto3" json:"size,omitempty"`
 }
 

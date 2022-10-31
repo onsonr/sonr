@@ -1,14 +1,15 @@
 package types
 
 const (
-	EventTypeCreateWhereIs = "createWhereIs"
-	EventTypeUpdateWhereIs = "updateWhereIs"
-	EventTypeDeleteWhereIs = "deleteWhereIs"
+	EventTypeCreateWhereIs  = "createWhereIs"
+	EventTypeGenerateBucket = "generateBucket"
+	EventTypeUpdateWhereIs  = "updateWhereIs"
+	EventTypeDeleteWhereIs  = "deleteWhereIs"
 
 	AttributeValueCategory = ModuleName
 	AttributeKeyTxType     = "txType"
 
-	AttributeKeyCreator = "whereIsCreator"
-	AttributeKeyDID     = "did"
-	AttributeKeyLabel   = "label"
+	AttributeKeyCreator   = "whereIsCreator"
+	AttributeKeyServiceId = "serviceId"
+	AttributeKeyLabel     = "label"
 )

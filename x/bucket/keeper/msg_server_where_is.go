@@ -25,22 +25,25 @@ func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucke
 	}
 
 	uuid := k.GenerateKeyForDID()
-	var whereIs = types.Bucket{
+
+	var bucket = types.Bucket{
 		Creator:  msg.Creator,
 		IsActive: true,
 		Uuid:     uuid,
+		Name:     msg.GetLabel(),
 	}
+
 	// fmt.Printf("label: %s, vi: %d, role: %d \n", whereIs.Label, whereIs.Visibility, whereIs.Role)
-	k.AppendWhereIs(
+	k.AppendBucket(
 		ctx,
-		whereIs,
+		bucket,
 	)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyCreator, whereIs.Creator),
+			sdk.NewAttribute(types.AttributeKeyCreator, bucket.Creator),
 			// sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
 			// sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeCreateWhereIs),
@@ -49,6 +52,6 @@ func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucke
 
 	return &types.MsgDefineBucketResponse{
 		Status: http.StatusAccepted,
-		Bucket: &whereIs,
+		Bucket: &bucket,
 	}, nil
 }

@@ -2,12 +2,15 @@ package keeper
 
 import (
 	"encoding/binary"
+	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/google/uuid"
+	//"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/x/bucket/types"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
 // GetWhereIsCount get the total number of whereIs
@@ -35,14 +38,14 @@ func (k Keeper) SetWhereIsCount(ctx sdk.Context, count uint64) {
 }
 
 // AppendWhereIs appends a whereIs in the store with a new id and update the count
-func (k Keeper) AppendWhereIs(
+func (k Keeper) AppendBucket(
 	ctx sdk.Context,
 	whereIs types.Bucket,
 ) string {
 	// Create the whereIs
 	count := k.GetWhereIsCount(ctx)
 
-	k.SetWhereIs(ctx, whereIs)
+	k.SetBucket(ctx, whereIs)
 
 	// Update whereIs count
 	k.SetWhereIsCount(ctx, count+1)
@@ -51,10 +54,28 @@ func (k Keeper) AppendWhereIs(
 }
 
 // SetWhereIs set a specific whereIs in the store
-func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.Bucket) {
+func (k Keeper) SetBucket(ctx sdk.Context, whereIs types.Bucket) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	b := k.cdc.MustMarshal(&whereIs)
 	store.Set(types.BucketKey(whereIs.Uuid), b)
+}
+
+// AddService maps bucket.uuid => did.Service
+func (k Keeper) AddService(ctx sdk.Context, id string, svcDID *rt.Service) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceKeyPrefix))
+	b := k.cdc.MustMarshal(svcDID)
+	store.Set(types.BucketKey(id), b)
+}
+
+func (k Keeper) UpdateWhoIsService(ctx sdk.Context, b types.Bucket, svcDID *rt.Service) error {
+	whoIs, found := k.registryKeeper.GetWhoIs(ctx, b.GetCreator())
+	if !found {
+		return fmt.Errorf("no whoIs record found for %s", b.GetCreator())
+	}
+	didDoc := whoIs.GetDidDocument()
+	didDoc.Service = append(didDoc.Service, svcDID)
+	return nil
+
 }
 
 // GetBucket returns a whereIs from its id

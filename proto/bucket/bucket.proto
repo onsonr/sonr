@@ -36,7 +36,7 @@ message Bucket {
   // IsActive flag of the new bucket.
   bool is_active = 6;
 
-  // Timestamp of the new bucket.
+  // size of the new bucket.
   int64 size = 9;
 }
 

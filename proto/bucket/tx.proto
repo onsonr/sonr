@@ -32,7 +32,7 @@ message MsgDefineBucketResponse {
 
 message MsgGenerateBucket {
   string creator = 1;
-  Bucket bucket = 2;
+  string bucket_id = 2;
 }
 
 message MsgGenerateBucketResponse {

@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"strconv"
+	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -10,13 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdGenerateBucket() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "generate-bucket",
 		Short: "Broadcast message GenerateBucket",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -24,8 +22,13 @@ func CmdGenerateBucket() *cobra.Command {
 				return err
 			}
 
+			if len(args[0]) < 1 {
+				return errors.New("bucket id must be defined")
+			}
+
 			msg := types.NewMsgGenerateBucket(
 				clientCtx.GetFromAddress().String(),
+				args[0],
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
