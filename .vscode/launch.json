@@ -14,7 +14,7 @@
       "-test.run",
       "Test_MotorTestSuite",
       "-testify.m",
-      "Test_OnboardDevice" // debug specific function
+      "Test_DocumentBuilder" // debug specific function
     ]
   },
     {
