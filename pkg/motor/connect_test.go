@@ -38,22 +38,14 @@ func (suite *MotorTestSuite) Test_OnboardDevice() {
 	assert.NoError(suite.T(), err, "new motor connects")
 	assert.True(suite.T(), connectResp.Success, "new connect succeeds")
 
-	linkResp, err := newMotor.OpenLinking(mt.LinkingRequest{
-		DeviceId: newMotor.GetDeviceID(),
-	})
+	linkResp, err := newMotor.OpenLinking(mt.LinkingRequest{})
 	assert.NoError(suite.T(), err, "motor opens linking")
 	assert.True(suite.T(), linkResp.Success, "open linking succeeds")
 
 	// Pair to new device and send PSK
 	pairResp, err := motor.PairDevice(mt.PairingRequest{
-		AddrInfoBase64: linkResp.ProtocolId, // TODO: do not commit this, just for testing
-		P2PAddrs:       linkResp.P2PAddrs,
-		AesPskKey:      motor.encryptionKey,
-		// AddrInfo:       linkResp.AddrInfo,
-		// AddrInfoBase64: linkResp.AddrInfoBase64,
+		P2PAddrs: linkResp.P2PAddrs,
 	})
 	assert.NoError(suite.T(), err, "motor pairs device")
 	assert.True(suite.T(), pairResp.Success, "pair device succeeds")
-	ch := make(chan int)
-	<-ch
 }

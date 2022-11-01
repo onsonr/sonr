@@ -6,7 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
+	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/proto"
 	"github.com/libp2p/go-msgio"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
@@ -16,6 +16,7 @@ import (
 	tp "github.com/sonr-io/sonr/pkg/motor/x/transmit"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	v1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
 
 func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectResponse, error) {
@@ -64,41 +65,22 @@ func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectRespons
 	}, nil
 }
 
-func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingResponse, error) {
-	// Setup host config
-	var err error
-	cnfg := config.DefaultConfig(config.Role_MOTOR, config.WithDeviceID(request.DeviceId))
-
-	// Create new temporary host
-	h, err := host.NewDefaultHost(context.Background(), cnfg, m.callback)
-	if err != nil {
-		return nil, err
+func (mtr *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingResponse, error) {
+	if !mtr.IsHostActive() {
+		return nil, fmt.Errorf("host inactive")
 	}
 
-	// Generate Protocol ID
-	// id, err := uuid.NewUUID()
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "failed to generate uuid")
-	// }
+	// Setup stream handler
+	mtr.SonrHost.Host().SetStreamHandler(proto.ProtoIDv1, mtr.handleLinking)
 
-	// Setup protocol handler
-	// protocolId := protocol.ID(fmt.Sprintf("/sonr/link/%s/%s", request.GetDeviceId(), id.String()))
-	h.SetStreamHandler(ping.ID, m.handleLinking)
-
-	// ai := h.AddrInfo(protocolId)
 	peerInfo := &peer.AddrInfo{
-		ID:    m.SonrHost.Host().ID(),
-		Addrs: m.SonrHost.Host().Addrs(),
+		ID:    mtr.SonrHost.Host().ID(),
+		Addrs: mtr.SonrHost.Host().Addrs(),
 	}
 	addrs, err := peer.AddrInfoToP2pAddrs(peerInfo)
 	if err != nil {
 		return nil, fmt.Errorf("convert to p2p addrs: %s", err)
 	}
-
-	// b64, err := peerInfo.MarshalJSON()
-	// if err != nil {
-	// 	return nil, fmt.Errorf("marshal peerInfo into json: %s", err)
-	// }
 
 	encodedAddrs := make([][]byte, len(addrs))
 	for i, a := range addrs {
@@ -106,8 +88,7 @@ func (m *motorNodeImpl) OpenLinking(request mt.LinkingRequest) (*mt.LinkingRespo
 	}
 
 	return &mt.LinkingResponse{
-		Success: true,
-		// ProtocolId: string(protocolId),
+		Success:  true,
 		P2PAddrs: encodedAddrs,
 	}, nil
 }
@@ -119,19 +100,6 @@ func (m *motorNodeImpl) PairDevice(request mt.PairingRequest) (*mt.PairingRespon
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
-
-	// ai, err := ct.AddrInfoFromBase64(request.AddrInfoBase64)
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "failed to decode addr info")
-	// }
-	// peerInfo, err := ai.ToLibp2pAddrInfo()
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "failed to convert addr info")
-	// }
-	// peerInfo := &peer.AddrInfo{}
-	// if err := peerInfo.UnmarshalJSON([]byte(request.AddrInfoBase64)); err != nil {
-	// 	return nil, fmt.Errorf("unmarshal PeerInfo: %s", err)
-	// }
 
 	var err error
 	addrs := make([]ma.Multiaddr, len(request.P2PAddrs))
@@ -162,18 +130,13 @@ func (m *motorNodeImpl) PairDevice(request mt.PairingRequest) (*mt.PairingRespon
 	}, nil
 }
 
-func (m *motorNodeImpl) connectToPeerAndTransmit(peerInfo peer.AddrInfo, request mt.PairingRequest) error {
-	if err := m.SonrHost.Connect(peerInfo); err != nil {
-		m.SonrHost.Host().Peerstore().ClearAddrs(peerInfo.ID)
+func (mtr *motorNodeImpl) connectToPeerAndTransmit(peerInfo peer.AddrInfo, request mt.PairingRequest) error {
+	if err := mtr.SonrHost.Connect(peerInfo); err != nil {
+		mtr.SonrHost.Host().Peerstore().ClearAddrs(peerInfo.ID)
 		return errors.Wrap(err, "failed to connect to peer while attempting to pair")
 	}
 
-	// linkPid, err := request.AddrInfo.GetLinkProtocolId()
-	// if err != nil {
-	// 	return errors.Wrap(err, "failed to get link protocol id of peer while attempting to pair")
-	// }
-
-	str, err := m.SonrHost.NewStream(context.Background(), peerInfo.ID, ping.ID) // TODO
+	str, err := mtr.SonrHost.NewStream(context.Background(), peerInfo.ID, proto.ProtoIDv1)
 	if err != nil {
 		return errors.Wrap(err, "failed to open stream while attempting to pair")
 	}
@@ -181,18 +144,17 @@ func (m *motorNodeImpl) connectToPeerAndTransmit(peerInfo peer.AddrInfo, request
 
 	strWr := msgio.NewWriter(str)
 	authInfo := &ct.AuthInfo{
-		Address:   m.Address,
-		Did:       m.GetDID().String(),
-		AesPskKey: request.AesPskKey,
+		Address:   mtr.Address,
+		Did:       mtr.GetDID().String(),
+		AesPskKey: mtr.encryptionKey,
 	}
 	bz, err := authInfo.Marshal()
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal auth info")
 	}
 
-	_, err = strWr.Write(bz)
-	if err != nil {
-		m.log.Error("failed to write auth info: %v", err)
+	if _, err = strWr.Write(bz); err != nil {
+		mtr.log.Error("failed to write auth info: %v", err)
 		return errors.Wrap(err, "failed to write auth info")
 	}
 	return nil
@@ -206,41 +168,40 @@ func (mtr *motorNodeImpl) handleLinking(stream network.Stream) {
 		mtr.log.Error("failed to read auth info: %v", err)
 		return
 	}
-	authInfo := &ct.AuthInfo{}
-	err = authInfo.Unmarshal(bz)
-	if err != nil {
-		mtr.log.Error("failed to unmarshal auth info: %v", err)
-		// ev := v1.LinkingEvent{
-		// 	Type: v1.LinkingEventType_LINKING_EVENT_TYPE_LINKING_FAILED,
-		// }
-		// bz, err := ev.Marshal()
-		// if err != nil {
-		// 	mtr.log.Error("failed to marshal linking event: %v", err)
-		// 	err = r.Close()
-		// 	if err != nil {
-		// 		mtr.log.Error("failed to close reader", err)
-		// 	}
-		// 	return
-		// }
 
-		// mtr.triggerWalletEvent(ev)
-		// mtr.callback.OnLinking(bz)
+	authInfo := &ct.AuthInfo{}
+	if err = authInfo.Unmarshal(bz); err != nil {
+		mtr.log.Error("failed to unmarshal auth info: %v", err)
+		ev := v1.LinkingEvent{
+			Type: v1.LinkingEventType_LINKING_EVENT_TYPE_LINKING_FAILED,
+		}
+		bz, err := ev.Marshal()
+		if err != nil {
+			mtr.log.Error("failed to marshal linking event: %v", err)
+			err = r.Close()
+			if err != nil {
+				mtr.log.Error("failed to close reader: %s", err)
+			}
+			return
+		}
+
+		mtr.callback.OnLinking(bz)
 		return
 	}
 
 	fmt.Print("Successfully received AuthInfo!")
 	fmt.Printf("%+v\n", authInfo)
-	// ev := v1.LinkingEvent{
-	// 	Type:     v1.LinkingEventType_LINKING_EVENT_TYPE_LINKING_COMPLETE,
-	// 	AuthInfo: authInfo,
-	// }
+	ev := v1.LinkingEvent{
+		Type:     v1.LinkingEventType_LINKING_EVENT_TYPE_LINKING_COMPLETE,
+		AuthInfo: authInfo,
+	}
 
-	// evbz, err := ev.Marshal()
-	// if err != nil {
-	// 	fmt.Printf("failed to marshal linking event: %v", err)
-	// 	return
-	// }
-	// mtr.callback.OnLinking(evbz)
+	evbz, err := ev.Marshal()
+	if err != nil {
+		fmt.Printf("failed to marshal linking event: %v", err)
+		return
+	}
+	mtr.callback.OnLinking(evbz)
 	stream.Close()
 	// return
 }

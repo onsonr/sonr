@@ -7,6 +7,7 @@ import (
 type MotorCallback interface {
 	OnDiscover(data []byte)
 	OnWalletEvent(data []byte)
+	OnLinking(data []byte)
 }
 
 type defaultCallback struct{}
