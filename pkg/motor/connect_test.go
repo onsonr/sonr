@@ -1,6 +1,8 @@
 package motor
 
 import (
+	"time"
+
 	mtu "github.com/sonr-io/sonr/testutil/motor"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -46,6 +48,9 @@ func (suite *MotorTestSuite) Test_OnboardDevice() {
 	pairResp, err := motor.PairDevice(mt.PairingRequest{
 		P2PAddrs: linkResp.P2PAddrs,
 	})
+
+	time.Sleep(time.Second * 3)
+
 	assert.NoError(suite.T(), err, "motor pairs device")
 	assert.True(suite.T(), pairResp.Success, "pair device succeeds")
 }

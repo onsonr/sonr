@@ -23,5 +23,5 @@ type DocumentClient interface {
 	/*
 		Retrieves an object for the data store
 	*/
-	GetDocument(cid string) (*st.Document, error)
+	GetDocument(cid string) (*st.SchemaDocument, error)
 }

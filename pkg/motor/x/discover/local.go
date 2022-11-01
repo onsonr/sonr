@@ -126,7 +126,7 @@ func (p *Local) handleTopic() {
 		// Check Message and Validate not User
 		if msg.ReceivedFrom != p.selfID {
 			// Unmarshal Message
-			data := &st.PubSubLobbyMessage{}
+			data := &st.LobbyMessage{}
 			err = data.Unmarshal(msg.Data)
 			if err != nil {
 				logger.Errorf("%s - Failed to Unmarshal Message", err)
@@ -157,7 +157,7 @@ func (p *Local) handleEvents() {
 func (lp *Local) callRefresh() {
 	// Create Event
 	logger.Debug("Calling Refresh Event")
-	ev := &st.DiscoverEvent{
+	ev := &st.RefreshEvent{
 		Peers:      lp.peers,
 		TopicName:  lp.olc,
 		ReceivedAt: int64(time.Now().Unix()),
@@ -187,7 +187,7 @@ func (lp *Local) callUpdate() error {
 // createLobbyMsgBuf Creates a new Message Buffer for Local Topic
 func createLobbyMsgBuf(p *ct.Peer) []byte {
 	// Marshal Event
-	msg := st.PubSubLobbyMessage{From: p}
+	msg := st.LobbyMessage{From: p}
 	_, err := msg.Marshal()
 	if err != nil {
 		logger.Errorf("%s - Failed to Marshal Event", err)

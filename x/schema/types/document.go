@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func (d *DocumentValue) GetValue() interface{} {
+func (d *SchemaDocumentValue) GetValue() interface{} {
 	switch d.Kind {
 	case Kind_BOOL:
 		if d.BoolValue != nil {
@@ -45,7 +45,7 @@ func (d *DocumentValue) GetValue() interface{} {
 	return nil
 }
 
-func resolveArrayValues(vals []*DocumentValue) ([]interface{}, error) {
+func resolveArrayValues(vals []*SchemaDocumentValue) ([]interface{}, error) {
 	arr := make([]interface{}, 0)
 	for _, val := range vals {
 		if val.BoolValue != nil {

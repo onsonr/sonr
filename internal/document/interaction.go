@@ -2,6 +2,7 @@ package document
 
 import (
 	"fmt"
+
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
@@ -44,7 +45,7 @@ func (ao *documentImpl) CreateDocument(
 	}, nil
 }
 
-func (ao *documentImpl) GetDocument(cid string) (*st.Document, error) {
+func (ao *documentImpl) GetDocument(cid string) (*st.SchemaDocument, error) {
 	var dag map[string]interface{}
 	err := ao.shell.DagGet(cid, &dag)
 	if err != nil {

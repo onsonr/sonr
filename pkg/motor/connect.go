@@ -189,8 +189,8 @@ func (mtr *motorNodeImpl) handleLinking(stream network.Stream) {
 		return
 	}
 
-	fmt.Print("Successfully received AuthInfo!")
-	fmt.Printf("%+v\n", authInfo)
+	mtr.log.Info("🎉 Successfully received AuthInfo!\n")
+	mtr.log.Debug("%+v\n", authInfo)
 	ev := v1.LinkingEvent{
 		Type:     v1.LinkingEventType_LINKING_EVENT_TYPE_LINKING_COMPLETE,
 		AuthInfo: authInfo,
@@ -198,7 +198,7 @@ func (mtr *motorNodeImpl) handleLinking(stream network.Stream) {
 
 	evbz, err := ev.Marshal()
 	if err != nil {
-		fmt.Printf("failed to marshal linking event: %v", err)
+		mtr.log.Error("failed to marshal linking event: %v", err)
 		return
 	}
 	mtr.callback.OnLinking(evbz)

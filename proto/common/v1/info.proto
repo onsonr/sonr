@@ -10,9 +10,9 @@ option java_multiple_files = true;
 
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
-  string peer_id = 1;
-  string did = 2;
-  Status status = 3;
+  string peer_id = 1;     // Peer ID of Libp2p Peer
+  string did = 2;       // User Sonr Domain
+  Status status = 3;      // Peer Status
 
   // Peers Active Status
   enum Status {

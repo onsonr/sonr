@@ -26,25 +26,25 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // LobbyMessage is message passed from Peer in Lobby
-type PubSubLobbyMessage struct {
+type LobbyMessage struct {
 	From      *common.Peer `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
 	Body      []byte       `protobuf:"bytes,2,opt,name=body,proto3" json:"body,omitempty"`
 	Signature []byte       `protobuf:"bytes,3,opt,name=signature,proto3" json:"signature,omitempty"`
 	CreatedAt int64        `protobuf:"varint,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
-func (m *PubSubLobbyMessage) Reset()         { *m = PubSubLobbyMessage{} }
-func (m *PubSubLobbyMessage) String() string { return proto.CompactTextString(m) }
-func (*PubSubLobbyMessage) ProtoMessage()    {}
-func (*PubSubLobbyMessage) Descriptor() ([]byte, []int) {
+func (m *LobbyMessage) Reset()         { *m = LobbyMessage{} }
+func (m *LobbyMessage) String() string { return proto.CompactTextString(m) }
+func (*LobbyMessage) ProtoMessage()    {}
+func (*LobbyMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_57395aadf09e8ea7, []int{0}
 }
-func (m *PubSubLobbyMessage) XXX_Unmarshal(b []byte) error {
+func (m *LobbyMessage) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *PubSubLobbyMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *LobbyMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_PubSubLobbyMessage.Marshal(b, m, deterministic)
+		return xxx_messageInfo_LobbyMessage.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,64 +54,64 @@ func (m *PubSubLobbyMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *PubSubLobbyMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PubSubLobbyMessage.Merge(m, src)
+func (m *LobbyMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LobbyMessage.Merge(m, src)
 }
-func (m *PubSubLobbyMessage) XXX_Size() int {
+func (m *LobbyMessage) XXX_Size() int {
 	return m.Size()
 }
-func (m *PubSubLobbyMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_PubSubLobbyMessage.DiscardUnknown(m)
+func (m *LobbyMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_LobbyMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_PubSubLobbyMessage proto.InternalMessageInfo
+var xxx_messageInfo_LobbyMessage proto.InternalMessageInfo
 
-func (m *PubSubLobbyMessage) GetFrom() *common.Peer {
+func (m *LobbyMessage) GetFrom() *common.Peer {
 	if m != nil {
 		return m.From
 	}
 	return nil
 }
 
-func (m *PubSubLobbyMessage) GetBody() []byte {
+func (m *LobbyMessage) GetBody() []byte {
 	if m != nil {
 		return m.Body
 	}
 	return nil
 }
 
-func (m *PubSubLobbyMessage) GetSignature() []byte {
+func (m *LobbyMessage) GetSignature() []byte {
 	if m != nil {
 		return m.Signature
 	}
 	return nil
 }
 
-func (m *PubSubLobbyMessage) GetCreatedAt() int64 {
+func (m *LobbyMessage) GetCreatedAt() int64 {
 	if m != nil {
 		return m.CreatedAt
 	}
 	return 0
 }
 
-type DiscoverEvent struct {
+type RefreshEvent struct {
 	TopicName  string         `protobuf:"bytes,1,opt,name=topic_name,json=topicName,proto3" json:"topic_name,omitempty"`
 	Peers      []*common.Peer `protobuf:"bytes,2,rep,name=peers,proto3" json:"peers,omitempty"`
 	ReceivedAt int64          `protobuf:"varint,3,opt,name=received_at,json=receivedAt,proto3" json:"received_at,omitempty"`
 }
 
-func (m *DiscoverEvent) Reset()         { *m = DiscoverEvent{} }
-func (m *DiscoverEvent) String() string { return proto.CompactTextString(m) }
-func (*DiscoverEvent) ProtoMessage()    {}
-func (*DiscoverEvent) Descriptor() ([]byte, []int) {
+func (m *RefreshEvent) Reset()         { *m = RefreshEvent{} }
+func (m *RefreshEvent) String() string { return proto.CompactTextString(m) }
+func (*RefreshEvent) ProtoMessage()    {}
+func (*RefreshEvent) Descriptor() ([]byte, []int) {
 	return fileDescriptor_57395aadf09e8ea7, []int{1}
 }
-func (m *DiscoverEvent) XXX_Unmarshal(b []byte) error {
+func (m *RefreshEvent) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *DiscoverEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *RefreshEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_DiscoverEvent.Marshal(b, m, deterministic)
+		return xxx_messageInfo_RefreshEvent.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -121,33 +121,33 @@ func (m *DiscoverEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *DiscoverEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DiscoverEvent.Merge(m, src)
+func (m *RefreshEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RefreshEvent.Merge(m, src)
 }
-func (m *DiscoverEvent) XXX_Size() int {
+func (m *RefreshEvent) XXX_Size() int {
 	return m.Size()
 }
-func (m *DiscoverEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_DiscoverEvent.DiscardUnknown(m)
+func (m *RefreshEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_RefreshEvent.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DiscoverEvent proto.InternalMessageInfo
+var xxx_messageInfo_RefreshEvent proto.InternalMessageInfo
 
-func (m *DiscoverEvent) GetTopicName() string {
+func (m *RefreshEvent) GetTopicName() string {
 	if m != nil {
 		return m.TopicName
 	}
 	return ""
 }
 
-func (m *DiscoverEvent) GetPeers() []*common.Peer {
+func (m *RefreshEvent) GetPeers() []*common.Peer {
 	if m != nil {
 		return m.Peers
 	}
 	return nil
 }
 
-func (m *DiscoverEvent) GetReceivedAt() int64 {
+func (m *RefreshEvent) GetReceivedAt() int64 {
 	if m != nil {
 		return m.ReceivedAt
 	}
@@ -155,39 +155,39 @@ func (m *DiscoverEvent) GetReceivedAt() int64 {
 }
 
 func init() {
-	proto.RegisterType((*PubSubLobbyMessage)(nil), "sonrio.motor.service.v1.PubSubLobbyMessage")
-	proto.RegisterType((*DiscoverEvent)(nil), "sonrio.motor.service.v1.DiscoverEvent")
+	proto.RegisterType((*LobbyMessage)(nil), "sonrio.motor.service.v1.LobbyMessage")
+	proto.RegisterType((*RefreshEvent)(nil), "sonrio.motor.service.v1.RefreshEvent")
 }
 
 func init() { proto.RegisterFile("service/v1/discover.proto", fileDescriptor_57395aadf09e8ea7) }
 
 var fileDescriptor_57395aadf09e8ea7 = []byte{
-	// 348 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xbf, 0x4e, 0xeb, 0x30,
-	0x14, 0xc6, 0xeb, 0xa6, 0xf7, 0x4a, 0x71, 0xef, 0x5d, 0x2c, 0xfe, 0x04, 0x04, 0x21, 0xea, 0x54,
-	0x21, 0x70, 0x54, 0x78, 0x82, 0x22, 0xd8, 0x00, 0x55, 0x61, 0x63, 0xa9, 0x9c, 0xe4, 0xb4, 0xf5,
-	0x90, 0x9c, 0xc8, 0x76, 0x22, 0x65, 0xe0, 0x1d, 0xe0, 0xad, 0x18, 0x3b, 0x32, 0xa2, 0xf6, 0x45,
-	0x50, 0x9c, 0x54, 0xdd, 0x98, 0x12, 0x7d, 0xfe, 0x9d, 0xef, 0x3b, 0xf6, 0x47, 0x4f, 0x34, 0xa8,
-	0x4a, 0x26, 0x10, 0x56, 0x93, 0x30, 0x95, 0x3a, 0xc1, 0x0a, 0x14, 0x2f, 0x14, 0x1a, 0x64, 0xc7,
-	0x1a, 0x73, 0x25, 0x91, 0x67, 0x68, 0x50, 0xf1, 0x8e, 0xe3, 0xd5, 0xe4, 0xf4, 0x20, 0xc1, 0x2c,
-	0xc3, 0xbc, 0x19, 0x91, 0xf9, 0x02, 0x5b, 0x7c, 0xf4, 0x41, 0x28, 0x9b, 0x95, 0xf1, 0x4b, 0x19,
-	0x3f, 0x62, 0x1c, 0xd7, 0x4f, 0xa0, 0xb5, 0x58, 0x02, 0xbb, 0xa4, 0x83, 0x85, 0xc2, 0xcc, 0x23,
-	0x01, 0x19, 0x0f, 0x6f, 0x8e, 0x78, 0x67, 0xda, 0x5a, 0xf0, 0x6a, 0xc2, 0x67, 0x00, 0x2a, 0xb2,
-	0x0c, 0x63, 0x74, 0x10, 0x63, 0x5a, 0x7b, 0xfd, 0x80, 0x8c, 0xff, 0x45, 0xf6, 0x9f, 0x9d, 0x51,
-	0x57, 0xcb, 0x65, 0x2e, 0x4c, 0xa9, 0xc0, 0x73, 0xec, 0xc1, 0x5e, 0x60, 0xe7, 0x94, 0x26, 0x0a,
-	0x84, 0x81, 0x74, 0x2e, 0x8c, 0x37, 0x08, 0xc8, 0xd8, 0x89, 0xdc, 0x4e, 0x99, 0x9a, 0xd1, 0x1b,
-	0xfd, 0x7f, 0xdf, 0x5d, 0xea, 0xa1, 0x82, 0xdc, 0x34, 0xbc, 0xc1, 0x42, 0x26, 0xf3, 0x5c, 0x64,
-	0x60, 0x77, 0x72, 0x23, 0xd7, 0x2a, 0xcf, 0x22, 0x03, 0x76, 0x45, 0xff, 0x14, 0x00, 0x4a, 0x7b,
-	0xfd, 0xc0, 0xf9, 0x65, 0xdb, 0x16, 0x62, 0x17, 0x74, 0xa8, 0x20, 0x01, 0x59, 0xb5, 0xe9, 0x8e,
-	0x4d, 0xa7, 0x3b, 0x69, 0x6a, 0xee, 0xcc, 0xe7, 0xc6, 0x27, 0xeb, 0x8d, 0x4f, 0xbe, 0x37, 0x3e,
-	0x79, 0xdf, 0xfa, 0xbd, 0xf5, 0xd6, 0xef, 0x7d, 0x6d, 0xfd, 0x1e, 0x3d, 0x94, 0x68, 0xbd, 0xb9,
-	0xa9, 0x0b, 0xd0, 0xbb, 0xc7, 0x9d, 0x91, 0xd7, 0xe9, 0x52, 0x9a, 0x55, 0x19, 0x37, 0x89, 0x61,
-	0x03, 0x5c, 0x4b, 0xb4, 0xdf, 0xd0, 0xac, 0xa4, 0x4a, 0xe7, 0x85, 0x50, 0xa6, 0x0e, 0xed, 0x50,
-	0x68, 0x7b, 0x09, 0x45, 0x21, 0x9b, 0x22, 0xf6, 0x35, 0xc6, 0x7f, 0x6d, 0x1f, 0xb7, 0x3f, 0x01,
-	0x00, 0x00, 0xff, 0xff, 0xdf, 0xcf, 0x5f, 0xb0, 0xdb, 0x01, 0x00, 0x00,
+	// 342 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xbd, 0x4e, 0xc3, 0x30,
+	0x14, 0x85, 0xeb, 0xa6, 0x20, 0xc5, 0xed, 0x64, 0xf1, 0x13, 0x10, 0x84, 0xa8, 0x53, 0x85, 0xc0,
+	0x51, 0xe1, 0x09, 0x8a, 0xc4, 0x06, 0xa8, 0xca, 0xc8, 0x52, 0x39, 0xc9, 0x6d, 0xeb, 0x21, 0xb9,
+	0x91, 0xed, 0x5a, 0x8a, 0xc4, 0x1b, 0xb0, 0xf0, 0x58, 0x8c, 0x1d, 0x19, 0x51, 0xfb, 0x22, 0x28,
+	0x4e, 0xab, 0x6e, 0x4c, 0xb6, 0x8e, 0xbf, 0x73, 0xcf, 0x95, 0x0f, 0xbd, 0xd0, 0xa0, 0xac, 0xcc,
+	0x20, 0xb6, 0xe3, 0x38, 0x97, 0x3a, 0x43, 0x0b, 0x8a, 0x57, 0x0a, 0x0d, 0xb2, 0x73, 0x8d, 0xa5,
+	0x92, 0xc8, 0x0b, 0x34, 0xa8, 0xf8, 0x8e, 0xe3, 0x76, 0x7c, 0x79, 0x92, 0x61, 0x51, 0x60, 0xd9,
+	0x58, 0x64, 0x39, 0xc7, 0x16, 0x1f, 0x7e, 0x12, 0x3a, 0x78, 0xc1, 0x34, 0xad, 0x5f, 0x41, 0x6b,
+	0xb1, 0x00, 0x76, 0x4b, 0x7b, 0x73, 0x85, 0x45, 0x40, 0x22, 0x32, 0xea, 0x3f, 0x9c, 0xf1, 0xdd,
+	0xb8, 0xd6, 0xcc, 0xed, 0x98, 0x4f, 0x01, 0x54, 0xe2, 0x18, 0xc6, 0x68, 0x2f, 0xc5, 0xbc, 0x0e,
+	0xba, 0x11, 0x19, 0x0d, 0x12, 0x77, 0x67, 0x57, 0xd4, 0xd7, 0x72, 0x51, 0x0a, 0xb3, 0x52, 0x10,
+	0x78, 0xee, 0xe1, 0x20, 0xb0, 0x6b, 0x4a, 0x33, 0x05, 0xc2, 0x40, 0x3e, 0x13, 0x26, 0xe8, 0x45,
+	0x64, 0xe4, 0x25, 0xfe, 0x4e, 0x99, 0x98, 0xe1, 0x07, 0x1d, 0x24, 0x30, 0x57, 0xa0, 0x97, 0xcf,
+	0x16, 0x4a, 0xd3, 0xe0, 0x06, 0x2b, 0x99, 0xcd, 0x4a, 0x51, 0x80, 0x5b, 0xc9, 0x4f, 0x7c, 0xa7,
+	0xbc, 0x89, 0x02, 0xd8, 0x1d, 0x3d, 0xaa, 0x00, 0x94, 0x0e, 0xba, 0x91, 0xf7, 0xcf, 0xb2, 0x2d,
+	0xc4, 0x6e, 0x68, 0x5f, 0x41, 0x06, 0xd2, 0xb6, 0xe1, 0x9e, 0x0b, 0xa7, 0x7b, 0x69, 0x62, 0x9e,
+	0xcc, 0xf7, 0x26, 0x24, 0xeb, 0x4d, 0x48, 0x7e, 0x37, 0x21, 0xf9, 0xda, 0x86, 0x9d, 0xf5, 0x36,
+	0xec, 0xfc, 0x6c, 0xc3, 0x0e, 0x3d, 0x95, 0xe8, 0x66, 0x73, 0x53, 0x57, 0xa0, 0xf7, 0xbf, 0x3a,
+	0x25, 0xef, 0x93, 0x85, 0x34, 0xcb, 0x55, 0xda, 0x24, 0xc6, 0x0d, 0x70, 0x2f, 0xd1, 0x9d, 0xb1,
+	0x59, 0x4a, 0x95, 0xcf, 0x2a, 0xa1, 0x4c, 0x1d, 0x3b, 0x53, 0xec, 0x0a, 0x89, 0x45, 0x25, 0x9b,
+	0x06, 0x0e, 0xfd, 0xa5, 0xc7, 0xae, 0x88, 0xc7, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x02, 0x59,
+	0xcb, 0xd1, 0xd4, 0x01, 0x00, 0x00,
 }
 
-func (m *PubSubLobbyMessage) Marshal() (dAtA []byte, err error) {
+func (m *LobbyMessage) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -197,12 +197,12 @@ func (m *PubSubLobbyMessage) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *PubSubLobbyMessage) MarshalTo(dAtA []byte) (int, error) {
+func (m *LobbyMessage) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *PubSubLobbyMessage) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *LobbyMessage) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -241,7 +241,7 @@ func (m *PubSubLobbyMessage) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *DiscoverEvent) Marshal() (dAtA []byte, err error) {
+func (m *RefreshEvent) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -251,12 +251,12 @@ func (m *DiscoverEvent) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *DiscoverEvent) MarshalTo(dAtA []byte) (int, error) {
+func (m *RefreshEvent) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *DiscoverEvent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *RefreshEvent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -301,7 +301,7 @@ func encodeVarintDiscover(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *PubSubLobbyMessage) Size() (n int) {
+func (m *LobbyMessage) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -325,7 +325,7 @@ func (m *PubSubLobbyMessage) Size() (n int) {
 	return n
 }
 
-func (m *DiscoverEvent) Size() (n int) {
+func (m *RefreshEvent) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -353,7 +353,7 @@ func sovDiscover(x uint64) (n int) {
 func sozDiscover(x uint64) (n int) {
 	return sovDiscover(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *PubSubLobbyMessage) Unmarshal(dAtA []byte) error {
+func (m *LobbyMessage) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -376,10 +376,10 @@ func (m *PubSubLobbyMessage) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: PubSubLobbyMessage: wiretype end group for non-group")
+			return fmt.Errorf("proto: LobbyMessage: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PubSubLobbyMessage: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: LobbyMessage: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -526,7 +526,7 @@ func (m *PubSubLobbyMessage) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *DiscoverEvent) Unmarshal(dAtA []byte) error {
+func (m *RefreshEvent) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -549,10 +549,10 @@ func (m *DiscoverEvent) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: DiscoverEvent: wiretype end group for non-group")
+			return fmt.Errorf("proto: RefreshEvent: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DiscoverEvent: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: RefreshEvent: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
