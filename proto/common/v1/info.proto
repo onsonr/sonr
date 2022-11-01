@@ -8,26 +8,11 @@ option go_package = "github.com/sonr-io/sonr/third_party/types/common";
 option java_package = "io.sonr.types.common";
 option java_multiple_files = true;
 
-// AddrInfo is a common implementation of the peer.AddrInfo type utilized by the libp2p network.
-message AddrInfo {
-    string id = 1;
-    repeated bytes addrs = 2;
-    repeated string protocols = 3;
-}
-
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
-  // Peer ID of Libp2p Peer
   string peer_id = 1;
-
-  // User Sonr Domain, Account Address, or DID
-  string account_id = 2;
-
-  // Unique identier for the devive provided by the Manufacturer
-  string device_id = 3;
-
-  // Peer Status
-  Status status = 4;
+  string did = 2;
+  Status status = 3;
 
   // Peers Active Status
   enum Status {

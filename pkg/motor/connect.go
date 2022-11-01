@@ -97,8 +97,8 @@ func (m *motorNodeImpl) PairDevice(request mt.PairingRequest) (*mt.PairingRespon
 	if !m.IsHostActive() {
 		return nil, fmt.Errorf("host is not active")
 	}
-	if err := request.Validate(); err != nil {
-		return nil, err
+	if len(request.P2PAddrs) == 0 {
+		return nil, fmt.Errorf("missing p2p addresses")
 	}
 
 	var err error

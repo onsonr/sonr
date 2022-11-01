@@ -9,18 +9,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
-
-	//	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	//	"github.com/cosmos/cosmos-sdk/simapp"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
-
-	//	tmdb "github.com/tendermint/tm-db"
+	tmdb "github.com/tendermint/tm-db"
 
 	"github.com/sonr-io/sonr/app"
 )

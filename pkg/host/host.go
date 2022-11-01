@@ -237,23 +237,6 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 	return nil
 }
 
-func (hn *hostImpl) AddrInfo(protocols ...protocol.ID) ct.AddrInfo {
-	maddrsStr := make([][]byte, len(hn.host.Addrs()))
-	for i, maddr := range hn.host.Addrs() {
-		maddrsStr[i] = maddr.Bytes()
-	}
-
-	protocolsStr := make([]string, len(protocols))
-	for i, protocol := range protocols {
-		protocolsStr[i] = string(protocol)
-	}
-	return ct.AddrInfo{
-		Id:        hn.host.ID().String(),
-		Addrs:     maddrsStr,
-		Protocols: protocolsStr,
-	}
-}
-
 func (hn *hostImpl) Close() error {
 	err := hn.host.Close()
 	if err != nil {
@@ -372,9 +355,8 @@ func (hn *hostImpl) createMdnsDiscovery(c *config.Config) {
 // Peer is a Helper Method to get the peer from the host
 func (hn *hostImpl) Peer() (*ct.Peer, error) {
 	return &ct.Peer{
-		PeerId:    hn.host.ID().String(),
-		AccountId: addrToDidUrl(hn.accAddr),
-		DeviceId:  hn.config.DeviceID,
+		PeerId: hn.host.ID().String(),
+		Did:    addrToDidUrl(hn.accAddr),
 	}, nil
 }
 

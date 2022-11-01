@@ -19,6 +19,7 @@ var (
 type MotorCallback interface {
 	OnDiscover(data []byte)
 	OnWalletEvent(data []byte)
+	OnLinking(data []byte)
 }
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
@@ -122,56 +123,6 @@ func LoginWithKeys(buf []byte) ([]byte, error) {
 	} else {
 		return nil, err
 	}
-}
-
-func Connect(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	var request mt.ConnectRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	resp, err := instance.Connect(request)
-	if err != nil {
-		return nil, err
-	}
-	return resp.Marshal()
-}
-
-func OpenLinking(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-	var request mt.LinkingRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	resp, err := instance.OpenLinking(request)
-	if err != nil {
-		return nil, err
-	}
-	return resp.Marshal()
-}
-
-func PairDevice(buf []byte) ([]byte, error) {
-	if instance == nil {
-		return nil, ct.ErrMotorWalletNotInitialized
-	}
-
-	var request mt.PairingRequest
-	if err := request.Unmarshal(buf); err != nil {
-		return nil, fmt.Errorf("unmarshal request: %s", err)
-	}
-
-	resp, err := instance.PairDevice(request)
-	if err != nil {
-		return nil, err
-	}
-	return resp.Marshal()
 }
 
 func CreateBucket(buf []byte) ([]byte, error) {

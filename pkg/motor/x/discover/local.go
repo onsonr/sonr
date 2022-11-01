@@ -6,11 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-
 	"github.com/sonr-io/sonr/pkg/host"
-	// motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
-	// v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
-	"github.com/sonr-io/sonr/third_party/types/common"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 )
@@ -20,7 +16,7 @@ type ErrFunc func() error
 
 // Local is the protocol for managing local peers.
 type Local struct {
-	callback     common.MotorCallback
+	callback     ct.MotorCallback
 	node         host.SonrHost
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
@@ -34,7 +30,7 @@ type Local struct {
 }
 
 // Initializing the local struct.
-func (e *DiscoverProtocol) initLocal(topic *ps.Topic, cb common.MotorCallback) error {
+func (e *DiscoverProtocol) initLocal(topic *ps.Topic, cb ct.MotorCallback) error {
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
@@ -207,14 +203,14 @@ func (lp *Local) hasPeer(data *ct.Peer) bool {
 	hasInTopic := false
 	// Check if Peer is in Data List
 	for _, p := range lp.peers {
-		if p.GetAccountId() == data.GetAccountId() {
+		if p.Did == data.Did {
 			hasInList = true
 		}
 	}
 
 	// Check if Peer is in Topic
 	for _, p := range lp.topic.ListPeers() {
-		if p.String() == data.GetAccountId() {
+		if p.String() == data.Did {
 			hasInTopic = true
 		}
 	}
@@ -227,7 +223,7 @@ func (lp *Local) hasPeer(data *ct.Peer) bool {
 // hasPeerData Checks if Peer Data is in Local Peer-Data List
 func (lp *Local) hasPeerData(data *ct.Peer) bool {
 	for _, p := range lp.peers {
-		if p.GetAccountId() == data.GetAccountId() {
+		if p.Did == data.Did {
 			return true
 		}
 	}
@@ -247,7 +243,7 @@ func (lp *Local) hasPeerID(id peer.ID) bool {
 // indexOfPeer Returns Peer Index in Local Peer-Data List
 func (lp *Local) indexOfPeer(peer *ct.Peer) int {
 	for i, p := range lp.peers {
-		if p.GetAccountId() == peer.GetAccountId() {
+		if p.Did == peer.Did {
 			return i
 		}
 	}
@@ -257,7 +253,7 @@ func (lp *Local) indexOfPeer(peer *ct.Peer) int {
 // removePeer Removes Peer from Local Peer-Data List
 func (lp *Local) removePeer(peerID peer.ID) bool {
 	for i, p := range lp.peers {
-		if p.GetAccountId() == peerID.String() {
+		if p.Did == peerID.String() {
 			lp.peers = append(lp.peers[:i], lp.peers[i+1:]...)
 			lp.callRefresh()
 			return true
