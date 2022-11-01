@@ -112,7 +112,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallba
 			continue
 		} else {
 			hn.fsm.SetState(Status_FAIL)
-      
+
 			break
 		}
 	}
