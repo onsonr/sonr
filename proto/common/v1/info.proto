@@ -11,7 +11,7 @@ option java_multiple_files = true;
 // AddrInfo is a common implementation of the peer.AddrInfo type utilized by the libp2p network.
 message AddrInfo {
     string id = 1;
-    repeated string addrs = 2;
+    repeated bytes addrs = 2;
     repeated string protocols = 3;
 }
 

@@ -3,6 +3,7 @@ package common
 import (
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -98,13 +99,19 @@ func (ai *AddrInfo) ToLibp2pAddrInfo() (peer.AddrInfo, error) {
 	var err error
 	maddrs := make([]multiaddr.Multiaddr, len(ai.Addrs))
 	for i, addr := range ai.Addrs {
-		maddrs[i], err = multiaddr.NewMultiaddr(addr)
+		maddrs[i], err = multiaddr.NewMultiaddrBytes(addr)
 	}
 	if err != nil {
 		return peer.AddrInfo{}, err
 	}
+
+	peerId := peer.ID(ai.Id)
+	if err := peerId.Validate(); err != nil {
+		return peer.AddrInfo{}, fmt.Errorf("parse peer ID: %s", err)
+	}
+
 	return peer.AddrInfo{
-		ID:    peer.ID(ai.Id),
+		ID:    peerId,
 		Addrs: maddrs,
 	}, nil
 }

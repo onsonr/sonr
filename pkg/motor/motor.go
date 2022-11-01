@@ -1,7 +1,6 @@
 package motor
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -11,14 +10,12 @@ import (
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/sonr/pkg/client"
-	"github.com/sonr-io/sonr/pkg/config"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 	"github.com/sonr-io/sonr/pkg/host"
 	"github.com/sonr-io/sonr/pkg/logger"
 	dp "github.com/sonr-io/sonr/pkg/motor/x/discover"
-
 	tp "github.com/sonr-io/sonr/pkg/motor/x/transmit"
 	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -124,56 +121,6 @@ func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
 	mtr.log.Info("IPFS: %s\n", mtr.GetClient().GetIPFSAddress())
 	mtr.log.Info("✅ Motor Wallet initialized")
 	return nil
-}
-
-func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectResponse, error) {
-	if mtr.Wallet == nil {
-		return nil, fmt.Errorf("wallet is not initialized")
-	}
-
-	if mtr.SonrHost != nil {
-		mtr.log.Warn("Host already connected")
-		return &mt.ConnectResponse{
-			Success: true,
-			Message: "Host already connected",
-		}, nil
-	}
-
-	// Setup host config
-	var err error
-	cnfg := config.DefaultConfig(config.Role_MOTOR, config.WithAccountAddress(mtr.GetAddress()), config.WithDeviceID(mtr.DeviceID), config.WithHomePath(mtr.homeDir), config.WithSupportPath(mtr.supportDir), config.WithTempPath(mtr.tempDir))
-
-	// Create new host
-	mtr.log.Info("Starting host...")
-	mtr.SonrHost, err = host.NewDefaultHost(context.Background(), cnfg, mtr.callback)
-	if err != nil {
-		return nil, err
-	}
-
-	// Utilize discovery protocol
-	if request.GetEnableDiscovery() {
-		mtr.log.Info("Enabling Discovery...")
-		mtr.discover, err = dp.New(context.Background(), mtr.SonrHost, mtr.callback)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// Utilize transmit protocol
-	if request.GetEnableTransmit() {
-		mtr.log.Info("Enabling Transmit...")
-		mtr.transmit, err = tp.New(context.Background(), mtr.SonrHost)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	mtr.log.Info("✅ Motor Host Connected")
-	mtr.hostInitialized = true
-	return &mt.ConnectResponse{
-		Success: true,
-		Message: "Successfully connected host to network",
-	}, nil
 }
 
 func (m *motorNodeImpl) GetDeviceID() string {

@@ -39,8 +39,8 @@ message CreateAccountWithKeysResponse {
 
 message LinkingResponse {
   bool success = 1;
-  sonrio.common.v1.AddrInfo addr_info = 2;
-  string addr_info_base64 = 3;
+  string protocol_id = 2;
+  repeated bytes p2p_addrs = 3;
 }
 
 message PairingResponse {

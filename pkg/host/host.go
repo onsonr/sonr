@@ -54,7 +54,7 @@ type hostImpl struct {
 }
 
 // NewDefaultHost Creates a Sonr libp2p Host with the given config
-func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallback) (SonrHost, error) {
+func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallback) (*hostImpl, error) {
 	var err error
 	// Create the host.
 	hn := &hostImpl{
@@ -238,9 +238,9 @@ func (hn *hostImpl) createDHTDiscovery(c *config.Config) error {
 }
 
 func (hn *hostImpl) AddrInfo(protocols ...protocol.ID) ct.AddrInfo {
-	maddrsStr := make([]string, len(hn.host.Addrs()))
+	maddrsStr := make([][]byte, len(hn.host.Addrs()))
 	for i, maddr := range hn.host.Addrs() {
-		maddrsStr[i] = maddr.String()
+		maddrsStr[i] = maddr.Bytes()
 	}
 
 	protocolsStr := make([]string, len(protocols))

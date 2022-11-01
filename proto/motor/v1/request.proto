@@ -102,7 +102,7 @@ message PairingRequest {
   string addr_info_base64 = 2;
 
   // Device Shared Cred
-  bytes aes_dsc_key = 3;
+  repeated bytes p2p_addrs = 3;
 
   // Password Secure Key
   bytes aes_psk_key = 4;

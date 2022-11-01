@@ -5,11 +5,11 @@ import (
 )
 
 func (r *PairingRequest) Validate() error {
-	if r.AddrInfo != nil {
-		return nil
+	if len(r.P2PAddrs) == 0 {
+		return errors.New("no p2p addresses provided")
 	}
-	if r.AddrInfoBase64 != "" {
-		return nil
+	if r.AesPskKey == nil || len(r.AesPskKey) == 0 {
+		return errors.New("PSK missing")
 	}
-	return errors.New("Request does not provide a topic name or address info")
+	return nil
 }
