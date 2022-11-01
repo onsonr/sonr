@@ -54,7 +54,7 @@ type hostImpl struct {
 }
 
 // NewDefaultHost Creates a Sonr libp2p Host with the given config
-func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallback) (*hostImpl, error) {
+func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallback) (SonrHost, error) {
 	var err error
 	// Create the host.
 	hn := &hostImpl{
@@ -112,7 +112,7 @@ func NewDefaultHost(ctx context.Context, c *config.Config, cb common.MotorCallba
 			continue
 		} else {
 			hn.fsm.SetState(Status_FAIL)
-
+      
 			break
 		}
 	}

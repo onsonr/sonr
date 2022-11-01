@@ -2,7 +2,6 @@ package document
 
 import (
 	"fmt"
-
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
