@@ -20,7 +20,7 @@ jobs:
       - name: Bump version and push tag
         if: github.event.pull_request.merged == true
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
