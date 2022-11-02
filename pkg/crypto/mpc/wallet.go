@@ -2,7 +2,7 @@ package mpc
 
 import (
 	"bytes"
-	std_edcsa "crypto/ecdsa"
+	std_ecdsa "crypto/ecdsa"
 	"crypto/elliptic"
 	"errors"
 	"fmt"
@@ -131,7 +131,7 @@ func (w *Wallet) PublicKeyProto() (*secp256k1.PubKey, error) {
 	}, nil
 }
 
-func (w *Wallet) CreateEcdsaFromPublicKey() (*std_edcsa.PrivateKey, error) {
+func (w *Wallet) CreateEcdsaFromPublicKey() (*std_ecdsa.PrivateKey, error) {
 	p, err := w.PublicKey()
 
 	// need to pad the key to 40 bytes for
@@ -143,7 +143,7 @@ func (w *Wallet) CreateEcdsaFromPublicKey() (*std_edcsa.PrivateKey, error) {
 		return nil, err
 	}
 
-	key, err := std_edcsa.GenerateKey(elliptic.P256(), bytes.NewReader(p))
+	key, err := std_ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(p))
 	if err != nil {
 		return nil, err
 	}
