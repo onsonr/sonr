@@ -19,6 +19,7 @@ var (
 type MotorCallback interface {
 	OnDiscover(data []byte)
 	OnWalletEvent(data []byte)
+	OnLinking(data []byte)
 }
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
@@ -124,13 +125,6 @@ func LoginWithKeys(buf []byte) ([]byte, error) {
 	}
 }
 
-func Connect() error {
-	if instance == nil {
-		return ct.ErrMotorWalletNotInitialized
-	}
-	return instance.Connect()
-}
-
 func CreateBucket(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWalletNotInitialized
@@ -145,7 +139,6 @@ func CreateBucket(buf []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return resp.Marshal()
 }
 

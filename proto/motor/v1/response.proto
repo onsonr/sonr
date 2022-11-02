@@ -22,6 +22,11 @@ message InitializeResponse {
   repeated sonrio.sonr.schema.Schema schemas = 2;
 }
 
+message ConnectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 message CreateAccountResponse {
   string address = 1;
 }
@@ -30,6 +35,17 @@ message CreateAccountWithKeysResponse {
   string address = 1;
   bytes aes_psk_key = 2;
   sonrio.sonr.registry.WhoIs who_is = 3;
+}
+
+message LinkingResponse {
+  bool success = 1;
+  string protocol_id = 2;
+  repeated bytes p2p_addrs = 3;
+}
+
+message PairingResponse {
+  bool success = 1;
+  sonrio.sonr.registry.WhoIs who_is = 2;
 }
 
 message LoginResponse {
