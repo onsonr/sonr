@@ -121,7 +121,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		})
 		return mt.CreateAccountWithKeysResponse{}, err
 	}
-	doc.AddAssertionMethod(vm)
+	mtr.DIDDocument.AddAssertionMethod(vm)
 
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR})
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_START})
