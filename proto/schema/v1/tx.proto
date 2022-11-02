@@ -19,6 +19,9 @@ service Msg {
   rpc DeprecateSchema(MsgDeprecateSchema) returns (MsgDeprecateSchemaResponse);
 }
 
+/*
+  MsgCreateSchema registers a new `WhatIs` on chain with the provided `SchemaField` array
+*/
 message MsgCreateSchema {
   // Address of the creator account
   // can be an application address or user address
@@ -34,6 +37,10 @@ message MsgCreateSchema {
   repeated MetadataDefintion metadata = 4;
 }
 
+/* 
+  MsgCreateSchemaResponse is returned from `MsgCreateSchema` code will be 200 if successful
+  if there is an error the error will be returned instead of a response
+*/
 message MsgCreateSchemaResponse {
   // Status code of the response
   int32 code = 1;
@@ -44,11 +51,19 @@ message MsgCreateSchemaResponse {
   WhatIs what_is = 3;
 }
 
+/*
+  MsgDepricateSchema marks a `WhatIs` repersenting a schema as depricated
+  deprication means that this schema should not longer be used and should be upgraded
+*/
 message MsgDeprecateSchema {
   string creator = 1;
   string did = 2;
 }
 
+/*
+  MsgDepricateSchemaResponse returned from `MsgDepricateSchema` request
+  code is 200 if sucessful. If there is an error it will be returned instead of a response.
+*/
 message MsgDeprecateSchemaResponse {
   int32 code = 1;
   string message = 2;

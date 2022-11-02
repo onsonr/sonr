@@ -8,7 +8,9 @@ option go_package = "github.com/sonr-io/sonr/x/schema/types";
 option java_multiple_files = true;
 option java_package = "io.sonr.types.schema";
 
-//Defines a structure which holds a `Schema` and meta data related to that Schema instance
+/*
+  WhatIs defines a structure which holds a `Schema` and meta data related to that Schema instance
+*/
 message WhatIs {
   // DID is the DID of the object
   string did = 1;
