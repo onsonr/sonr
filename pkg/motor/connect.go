@@ -20,7 +20,7 @@ import (
 )
 
 func (mtr *motorNodeImpl) Connect(request mt.ConnectRequest) (*mt.ConnectResponse, error) {
-	if mtr.SonrHost != nil {
+	if mtr.SonrHost != nil && !request.ResetConnection {
 		mtr.log.Warn("Host already connected")
 		return &mt.ConnectResponse{
 			Success: true,
@@ -99,6 +99,9 @@ func (m *motorNodeImpl) PairDevice(request mt.PairingRequest) (*mt.PairingRespon
 	}
 	if len(request.P2PAddrs) == 0 {
 		return nil, fmt.Errorf("missing p2p addresses")
+	}
+	if m.encryptionKey == nil || len(m.encryptionKey) == 0 {
+		return nil, fmt.Errorf("not logged in")
 	}
 
 	var err error

@@ -61,6 +61,9 @@ message ConnectRequest {
 
   // Enable Linking Protocol
   bool enable_linking = 3;
+
+  // Force the connection to be reset if it exists
+  bool reset_connection = 4;
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr

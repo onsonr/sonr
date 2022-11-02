@@ -55,6 +55,7 @@ func (mtr *motorNodeImpl) OnboardDevice(req mt.OnboardDeviceRequest) (mt.Onboard
 	}
 
 	// update the WhoIs with new vault
+	mtr.DIDDocument.RemoveServiceByID(service.ID.String())
 	mtr.DIDDocument.AddService(service)
 	r, err := updateWhoIs(mtr)
 	if err != nil {

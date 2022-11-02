@@ -17,9 +17,6 @@ const (
 
 	// Role_HIGHWAY is for a Highway Node
 	Role_HIGHWAY
-
-	// Role_LINKER is for Motor Nodes which do not have associated wallets
-	Role_LINKER
 )
 
 // Motor returns true if the node has a client.
