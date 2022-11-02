@@ -20,6 +20,11 @@ func (mtr *motorNodeImpl) OnboardDevice(req mt.OnboardDeviceRequest) (mt.Onboard
 		return mt.OnboardDeviceResponse{}, fmt.Errorf("login: %s", err)
 	}
 
+	// save the PSK
+	if err := kr.SetPSK(req.AesPskKey); err != nil {
+		return mt.OnboardDeviceResponse{}, fmt.Errorf("set PSK: %s", err)
+	}
+
 	// get a new shard from the vault
 	vc := vault.New()
 	newShard, err := vc.PopShard(mtr.Address)

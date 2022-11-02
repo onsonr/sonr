@@ -93,6 +93,26 @@ func GetPSK() ([]byte, error) {
 	return item.Data, nil
 }
 
+func SetPSK(key []byte) error {
+	if len(key) != 32 {
+		return errors.New("PSK must be 32 bytes")
+	}
+
+	ring, err := openKeyring()
+	if err != nil {
+		return fmt.Errorf("open keyring: %s", err)
+	}
+
+	if err := ring.Set(kr.Item{
+		Key:  PSK_KEY,
+		Data: key,
+	}); err != nil {
+		return fmt.Errorf("store PSK: %s", err)
+	}
+
+	return nil
+}
+
 func openKeyring() (kr.Keyring, error) {
 	return kr.Open(kr.Config{
 		ServiceName: SERVICE_NAME_KEY,
