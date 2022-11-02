@@ -31,7 +31,7 @@ func Test_JWK(t *testing.T) {
 
 		x := New()
 		x.SetKey(key)
-		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+		x.SetKeyAlgo(jwa.ECDH_ES_A256KW)
 
 		_, err = x.CreateSignJWK()
 
@@ -112,7 +112,7 @@ func Test_JWK(t *testing.T) {
 
 		x := New()
 		x.SetKey(key)
-		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+		x.SetKeyAlgo(jwa.ECDH_ES_A256KW)
 
 		jwk, err := x.CreateEncJWK()
 		if err != nil {
@@ -148,7 +148,7 @@ func Test_JWK(t *testing.T) {
 
 		x := New()
 		x.SetKey(key.PublicKey)
-		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+		x.SetKeyAlgo(jwa.ECDH_ES_A256KW)
 
 		jwk, err := x.CreateSignJWK()
 
@@ -169,7 +169,7 @@ func Test_JWK(t *testing.T) {
 
 		x := New()
 		x.SetKey(key.PublicKey)
-		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+		x.SetKeyAlgo(jwa.ECDH_ES_A256KW)
 
 		jwk, err := x.CreateSignJWK()
 
@@ -194,7 +194,7 @@ func Test_JWK(t *testing.T) {
 
 		x := New()
 		x.SetKey(key.PublicKey)
-		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+		x.SetKeyAlgo(jwa.ECDH_ES_A256KW)
 		jwk, err := x.CreateSignJWK()
 
 		assert.NoError(t, err)
@@ -218,7 +218,7 @@ func Test_JWK(t *testing.T) {
 
 		x := New()
 		x.SetKey(key.PublicKey)
-		x.setKeyAlgo(jwa.ECDH_ES_A256KW)
+		x.SetKeyAlgo(jwa.ECDH_ES_A256KW)
 
 		jwk, err := x.CreateSignJWK()
 
