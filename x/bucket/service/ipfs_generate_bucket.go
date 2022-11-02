@@ -6,11 +6,11 @@ import (
 
 	shell "github.com/ipfs/go-ipfs-api"
 	//"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did"
 	bt "github.com/sonr-io/sonr/x/bucket/types"
+    rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-func GenerateBucket(sh *shell.Shell, b *bt.BucketConfig, address string) (*did.Service, error) {
+func GenerateBucket(sh *shell.Shell, b *bt.BucketConfig, address string) (*rt.Service, error) {
 	path := b.GetPath(address)
 	service := b.GetDidService(address)
 	err := sh.FilesMkdir(context.Background(), path, shell.FilesWrite.Create(true), shell.FilesWrite.Parents(true))

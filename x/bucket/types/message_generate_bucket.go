@@ -10,9 +10,12 @@ const TypeMsgGenerateBucket = "generate_bucket"
 
 var _ sdk.Msg = &MsgAllocateBucket{}
 
-func NewMsgGenerateBucket(creator string) *MsgAllocateBucket {
+func NewMsgGenerateBucket(creator string, bucketId string) *MsgAllocateBucket {
 	return &MsgAllocateBucket{
 		Creator: creator,
+		Bucket: &BucketConfig{
+			Uuid: bucketId,
+		},
 	}
 }
 
@@ -45,8 +48,8 @@ func (msg *MsgAllocateBucket) ValidateBasic() error {
 	return msg.ValidateBucketId()
 }
 
-func (msg *MsgGenerateBucket) ValidateBucketId() error {
-	_, err := uuid.Parse(msg.BucketId)
+func (msg *MsgAllocateBucket) ValidateBucketId() error {
+	_, err := uuid.Parse(msg.Bucket.Uuid)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bucket id (%s)", err)
 	}

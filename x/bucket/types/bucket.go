@@ -5,7 +5,8 @@ import (
 	io "io"
 	"strings"
 
-	"github.com/sonr-io/sonr/pkg/did"
+	//"github.com/sonr-io/sonr/pkg/did"
+    rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/sonr-io/sonr/third_party/types/common"
 )
 
@@ -17,7 +18,7 @@ func (b *BucketConfig) GetPath(address string, segments ...string) string {
 	return path
 }
 
-func (b *BucketConfig) GetDidService(address string) *did.Service {
+func (b *BucketConfig) GetDidService(address string) *rt.Service {
 	segments := strings.Split(address, "snr")
 	service := fmt.Sprintf("did:snr:%s#%s", segments[1], b.Uuid)
 

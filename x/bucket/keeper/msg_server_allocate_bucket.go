@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	shell "github.com/ipfs/go-ipfs-api"
-	bi "github.com/sonr-io/sonr/x/bucket/internal"
+	bi "github.com/sonr-io/sonr/x/bucket/service"
 	"github.com/sonr-io/sonr/x/bucket/types"
 )
 
@@ -28,9 +28,9 @@ func (k msgServer) AllocateBucket(goCtx context.Context, msg *types.MsgAllocateB
 		return nil, sdkerrors.ErrNotFound
 	}
 
-	bucket, found := k.GetBucket(ctx, msg.GetBucketId())
+	bucket, found := k.GetBucket(ctx, msg.Bucket.Uuid)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("bucket with id %s not defined", msg.GetBucketId()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("bucket with id %s not defined", msg.Bucket.Uuid))
 	}
 
 	sh := shell.NewShell("localhost:5001")

@@ -55,7 +55,7 @@ func (k Keeper) AppendBucket(
 }
 
 // SetWhereIs set a specific whereIs in the store
-func (k Keeper) SetWhereIs(ctx sdk.Context, whereIs types.BucketConfig) {
+func (k Keeper) SetBucket(ctx sdk.Context, whereIs types.BucketConfig) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
 	b := k.cdc.MustMarshal(&whereIs)
 	store.Set(types.BucketKey(whereIs.Uuid), b)
@@ -68,7 +68,7 @@ func (k Keeper) AddService(ctx sdk.Context, id string, svcDID *rt.Service) {
 	store.Set(types.BucketKey(id), b)
 }
 
-func (k Keeper) UpdateWhoIsService(ctx sdk.Context, b types.Bucket, svcDID *rt.Service) error {
+func (k Keeper) UpdateWhoIsService(ctx sdk.Context, b types.BucketConfig, svcDID *rt.Service) error {
 	whoIs, found := k.registryKeeper.GetWhoIs(ctx, b.GetCreator())
 	if !found {
 		return fmt.Errorf("no whoIs record found for %s", b.GetCreator())
