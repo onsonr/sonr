@@ -38,6 +38,7 @@ type MotorNode interface {
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
 	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
 	CreateAccountWithKeys(mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error)
+	OnboardDevice(req mt.OnboardDeviceRequest) (mt.OnboardDeviceResponse, error)
 	GetDID() did.DID
 	GetDIDDocument() did.Document
 	Login(mt.LoginRequest) (mt.LoginResponse, error)

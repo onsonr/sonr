@@ -37,6 +37,11 @@ message CreateAccountWithKeysResponse {
   sonrio.sonr.registry.WhoIs who_is = 3;
 }
 
+message OnboardDeviceResponse {
+  bool success = 1;
+  sonrio.sonr.registry.WhoIs who_is = 2;
+}
+
 message LinkingResponse {
   bool success = 1;
   string protocol_id = 2;
