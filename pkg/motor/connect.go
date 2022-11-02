@@ -203,5 +203,4 @@ func (mtr *motorNodeImpl) handleLinking(stream network.Stream) {
 	}
 	mtr.callback.OnLinking(evbz)
 	stream.Close()
-	// return
 }

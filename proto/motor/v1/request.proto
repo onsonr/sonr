@@ -87,6 +87,18 @@ message PairingRequest {
   repeated bytes p2p_addrs = 1;
 }
 
+// OnboardDeviceRequest is for registering a newly connected device to the account
+message OnboardDeviceRequest {
+  // the account to login to
+  string account_id = 1;
+
+  // password for the recovery shard
+  string password = 2;
+  
+  // the PSK, second shard for logging in
+  bytes aes_psk_key = 3;
+}
+
 // Login requires the DID of the account being logged into, and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 message LoginRequest {

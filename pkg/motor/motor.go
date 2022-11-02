@@ -80,12 +80,11 @@ func EmptyMotor(r *mt.InitializeRequest, cb common.MotorCallback) (*motorNodeImp
 		clientMode:      r.GetClientMode(),
 		callback:        cb,
 		logLevel:        r.LogLevel,
+		log:             logger.New(r.LogLevel, "motor"),
 	}, nil
 }
 
 func initMotor(mtr *motorNodeImpl, options ...mpc.WalletOption) (err error) {
-	mtr.log = logger.New(mtr.logLevel, "motor")
-
 	// Generate wallet
 	mtr.log.Info("Generating wallet...")
 	mtr.Wallet, err = mpc.GenerateWallet(mtr.callback, options...)

@@ -14,8 +14,8 @@ import (
 type VaultClient interface {
 	CreateVault(d string, deviceShards [][]byte, dscPub string, encDscShard, pskShard, recShard []byte) (did.Service, error)
 	GetVaultShards(d string) (Vault, error)
-	PopShard() (string, error)
-	IssueShard(shardPrefix, dscPub, dscShard string) (did.Service, error)
+	PopShard(d string) (Shard, error)
+	IssueShard(d, shardSuffix, dscPub, dscShard string) (did.Service, error)
 }
 
 type vaultImpl struct {
