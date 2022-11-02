@@ -50,10 +50,10 @@ func (k *jwxImpl) SetKey(key interface{}) {
 	k.key = key
 }
 
-func (k *jwxImpl) setKeyAlgo(alg jwa.KeyEncryptionAlgorithm) {
+func (k *jwxImpl) SetKeyAlgo(alg jwa.KeyEncryptionAlgorithm) {
 	k.keyAlg = alg
 }
 
-func (k *jwxImpl) setSigAlgo(alg jwa.SignatureAlgorithm) {
+func (k *jwxImpl) SetSigAlgo(alg jwa.SignatureAlgorithm) {
 	k.sigAlg = alg
 }
