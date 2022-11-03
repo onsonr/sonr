@@ -84,7 +84,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_START})
 
 	// Create the DID Document
-	doc, err := did.NewDocument(mtr.DID.String())
+	mtr.DIDDocument, err = did.NewDocument(mtr.DID.String())
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
@@ -92,10 +92,9 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		})
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("create DID document: %s", err)
 	}
-	mtr.DIDDocument = doc
 
 	// Format DID for setting MPC as controller
-	controller, err := did.ParseDID(fmt.Sprintf("%s#mpc", doc.GetID().String()))
+	controller, err := did.ParseDID(fmt.Sprintf("%s#mpc", mtr.DIDDocument.GetID().String()))
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
@@ -105,7 +104,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}
 
 	// Add MPC as a VerificationMethod for the assertion of the DID Document
-	vm, err := did.NewVerificationMethodFromBytes(doc.GetID(), ssi.ECDSASECP256K1VerificationKey2019, *controller, mtr.GetPubKey().Bytes())
+	vm, err := did.NewVerificationMethodFromBytes(mtr.DIDDocument.GetID(), ssi.ECDSASECP256K1VerificationKey2019, *controller, mtr.GetPubKey().Bytes())
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
@@ -113,7 +112,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		})
 		return mt.CreateAccountWithKeysResponse{}, err
 	}
-	doc.AddAssertionMethod(vm)
+	mtr.DIDDocument.AddAssertionMethod(vm)
 
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR})
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_START})
@@ -217,7 +216,7 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 	fmt.Println("Response From Create Vault :", vaultService)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
-			Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_END,
+			Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_ERROR,
 			ErrorMessage: err.Error(),
 		})
 		return

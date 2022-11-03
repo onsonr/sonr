@@ -41,21 +41,6 @@ message InitializeRequest {
   // (info|debug|warn|error|fatal)
   string log_level = 5;
 
-  // Enable Libp2p Host
-  bool enable_host = 6;
-
-  // Enable Discovery Service
-  bool enable_discovery = 7;
-
-  // Enable Query Clients
-  bool enable_query = 8;
-
-  // Discovery Latitude
-  double discovery_latitude = 9; //optional - Default: 40.673010 (Sonr HQ)
-
-  // Discovery Longitude
-  double discovery_longitude = 10; //optional - Default: -73.994450 (Sonr HQ)
-
   // Public Key used for Device Authentication as DID Controller
   common.v1.AuthInfo auth_info = 11; // optional
 
@@ -64,6 +49,21 @@ message InitializeRequest {
 
   // Client Mode
   ClientMode client_mode = 13; // Default: ENDPOINT_BETA
+}
+
+// ConnectRequest initializes the libp2p host and connects to the Sonr network.
+message ConnectRequest {
+  // Enable Discovery Service
+  bool enable_discovery = 1;
+
+  // Enable Transmit Protocol
+  bool enable_transmit = 2;
+
+  // Enable Linking Protocol
+  bool enable_linking = 3;
+
+  // Force the connection to be reset if it exists
+  bool reset_connection = 4;
 }
 
 // CreateAccount Request contains the three keys needed to create an account on Sonr
@@ -81,8 +81,28 @@ message CreateAccountWithKeysRequest {
   map<string, string> metadata = 4;
 }
 
-// Login requires the DID of the account being logged into,
-// and optionally a password if the vault pw is being used
+// LinkingRequest opens a pubsub topic session in order to pair the current device with an existing Sonr Account.
+message LinkingRequest {}
+
+// PairingRequest attempts to join a pubsub topic session in order to pair the current device with an existing Sonr Account.
+message PairingRequest {
+  // peer-to-peer addresses of host
+  repeated bytes p2p_addrs = 1;
+}
+
+// OnboardDeviceRequest is for registering a newly connected device to the account
+message OnboardDeviceRequest {
+  // the account to login to
+  string account_id = 1;
+
+  // password for the recovery shard
+  string password = 2;
+  
+  // the PSK, second shard for logging in
+  bytes aes_psk_key = 3;
+}
+
+// Login requires the DID of the account being logged into, and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 message LoginRequest {
   // Either the DID or an alias of the account
@@ -119,9 +139,7 @@ message PaymentRequest {
   string memo = 4;
 }
 
-// -----------------------------------------------------------------------------
 // Registry Models
-// -----------------------------------------------------------------------------
 message QueryWhoIsRequest {
   string did = 1;
 }
