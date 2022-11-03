@@ -20,6 +20,8 @@ import (
 
 	- []byte -> encrypted content by the jwk which is encrypted and returned
 
+	- edcsa private-key -> key used to encrypt the jwk used for content encryption
+
 	- error => returned if there is an error in generating keys and encrypting content, other values will be nil
 */
 func (mtr *motorNodeImpl) EncryptContent(data []byte) ([]byte, []byte, *ecdsa.PrivateKey, error) {
