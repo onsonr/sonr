@@ -134,13 +134,14 @@ func (w *Wallet) PublicKeyProto() (*secp256k1.PubKey, error) {
 func (w *Wallet) CreateEcdsaFromPublicKey() (*std_ecdsa.PrivateKey, error) {
 	p, err := w.PublicKey()
 
+	if err != nil {
+		return nil, err
+	}
+
 	// need to pad the key to 40 bytes for
 	// ecdsa key generation which sizes its buffers from
 	for len(p) < 40 {
 		p = append(p, 0)
-	}
-	if err != nil {
-		return nil, err
 	}
 
 	key, err := std_ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(p))

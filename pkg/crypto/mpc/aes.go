@@ -109,6 +109,7 @@ func NewAesKey() ([]byte, error) {
 }
 
 func NewEcdsaFromAes(aes []byte) (*ecdsa.PrivateKey, error) {
+	// see `ecdsa.GenerateKey` for context on padding
 	for len(aes) < 40 {
 		aes = append(aes, 0)
 	}

@@ -1,6 +1,10 @@
 package motor
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+
 	"github.com/sonr-io/sonr/pkg/crypto/jwx"
 )
 
@@ -18,27 +22,29 @@ import (
 
 	- error => returned if there is an error in generating keys and encrypting content, other values will be nil
 */
-func (mtr *motorNodeImpl) EncryptContent(data []byte) ([]byte, []byte, error) {
+func (mtr *motorNodeImpl) EncryptContent(data []byte) ([]byte, []byte, *ecdsa.PrivateKey, error) {
 	x := jwx.New()
 	x.SetKey(mtr.encryptionKey)
 
 	_, err := x.CreateEncJWK()
 
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	// encrypt our content with the generate key
 	encContent, err := x.EncryptJWE(data)
 
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	// here we encrypt the created jwe
-	pk, err := mtr.Wallet.CreateEcdsaFromPublicKey()
+	/*
+		here we encrypt the created jwe using a
+	*/
+	pk, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	j := jwx.New()
@@ -46,20 +52,20 @@ func (mtr *motorNodeImpl) EncryptContent(data []byte) ([]byte, []byte, error) {
 	_, err = j.CreateEncJWK()
 
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	keyBytes, err := x.MarshallJSON()
 
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	encyptedKey, err := j.EncryptJWE(keyBytes)
 
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	return encyptedKey, encContent, nil
+	return encyptedKey, encContent, pk, nil
 }

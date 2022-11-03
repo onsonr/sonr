@@ -234,15 +234,6 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 	// update DID Document
 	mtr.DIDDocument.AddService(vaultService)
 
-	if err != nil {
-		mtr.triggerWalletEvent(common.WalletEvent{
-			Type:         common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR,
-			ErrorMessage: err.Error(),
-			Message:      "",
-		})
-		return
-	}
-
 	// update whois
 	_, err = updateWhoIs(mtr)
 	if err != nil {
