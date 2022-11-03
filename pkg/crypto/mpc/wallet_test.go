@@ -96,7 +96,7 @@ func Test_MPCSignMessage(t *testing.T) {
 	assert.True(t, deserializedSigVerified, "deserialized signature is verified")
 }
 
-func Test_MPCAddressDeriveSameEDCSA(t *testing.T) {
+func Test_MPCAddressDeriveSameECDSA(t *testing.T) {
 	w, err := GenerateWallet(common.DefaultCallback())
 	assert.NoError(t, err)
 
