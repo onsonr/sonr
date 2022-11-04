@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -16,16 +17,20 @@ func CmdBurnBucket() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-bucket",
 		Short: "Broadcast message BurnBucket",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
+			if len(args[0]) < 1 {
+				return errors.New("bucket id must be defined")
+			}
 
 			msg := types.NewMsgBurnBucket(
 				clientCtx.GetFromAddress().String(),
+				args[0],
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

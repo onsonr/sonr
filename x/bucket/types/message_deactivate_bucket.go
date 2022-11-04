@@ -9,9 +9,12 @@ const TypeMsgDeactivateBucket = "deactivate_bucket"
 
 var _ sdk.Msg = &MsgDeactivateBucket{}
 
-func NewMsgDeactivateBucket(creator string) *MsgDeactivateBucket {
+func NewMsgDeactivateBucket(creator string, bucketId string) *MsgDeactivateBucket {
 	return &MsgDeactivateBucket{
 		Creator: creator,
+		Bucket: &BucketConfig{
+			Uuid: bucketId,
+		},
 	}
 }
 
