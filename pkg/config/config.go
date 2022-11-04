@@ -76,7 +76,7 @@ type Config struct {
 }
 
 // DefaultConfig returns the default configuration for the Highway node
-func DefaultConfig(r Role, addr string) *Config {
+func DefaultConfig(r Role, opts ...Option) *Config {
 	var conf *Config
 	// Define the default bootstrappers
 	bootstrapAddrStrs := []string{
@@ -110,10 +110,8 @@ func DefaultConfig(r Role, addr string) *Config {
 
 	// Create the default configuration
 	conf = &Config{
-		LogLevel:       string(InfoLevel),
-		Role:           r,
-		AccountAddress: addr,
-
+		LogLevel:                 string(InfoLevel),
+		Role:                     r,
 		Libp2pMdnsDisabled:       true,
 		HighwayGRPCNetwork:       "tcp",
 		Libp2pBootstrapPeers:     ds,
@@ -140,23 +138,34 @@ func DefaultConfig(r Role, addr string) *Config {
 		CosmosKeyringServiceName: "sonr",
 	}
 
+	// Apply the options
+	for _, opt := range opts {
+		opt(conf)
+	}
+
 	// Role specific configuration
 	if r == Role_MOTOR {
 		// Check for non-mobile device
 		if !IsMobile() {
 			// Set Home Directory
-			if hdir, err := os.UserHomeDir(); err == nil {
-				conf.HomeDirPath = hdir
+			if conf.HomeDirPath == "" {
+				if hdir, err := os.UserHomeDir(); err == nil {
+					conf.HomeDirPath = hdir
+				}
 			}
 
 			// Set Support Directory
-			if sdir, err := os.UserConfigDir(); err == nil {
-				conf.SupportDirPath = sdir
+			if conf.SupportDirPath == "" {
+				if sdir, err := os.UserConfigDir(); err == nil {
+					conf.SupportDirPath = sdir
+				}
 			}
 
 			// Set Temp Directory
-			if tdir, err := os.UserCacheDir(); err == nil {
-				conf.TempDirPath = tdir
+			if conf.TempDirPath == "" {
+				if tdir, err := os.UserCacheDir(); err == nil {
+					conf.TempDirPath = tdir
+				}
 			}
 		}
 	}
