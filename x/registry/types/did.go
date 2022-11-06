@@ -102,11 +102,9 @@ func servicesFromPkg(srvs did.Services) []*Service {
 		res = append(res, &Service{
 			Id:   s.ID.String(),
 			Type: s.Type,
-			ServiceEndpoint: []*KeyValuePair{
-				{
-					Key:   "uri",
-					Value: s.ServiceEndpoint,
-				},
+			ServiceEndpoint: &ServiceEndpoint{
+				Key:   "uri",
+				Value: []string{s.ServiceEndpoint},
 			},
 		})
 	}
@@ -134,11 +132,11 @@ func (d *DIDDocument) DID() *did.DID {
 func (d DIDDocument) MarshalJSON() ([]byte, error) {
 	type alias DIDDocument
 	tmp := alias(d)
-	if data, err := json.Marshal(tmp); err != nil {
+	data, err := json.Marshal(tmp)
+	if err != nil {
 		return nil, err
-	} else {
-		return NormalizeDocument(data, Unplural(contextKey), Unplural(controllerKey))
 	}
+	return NormalizeDocument(data, Unplural(contextKey), Unplural(controllerKey))
 }
 
 func (d *DIDDocument) UnmarshalJSON(b []byte) error {

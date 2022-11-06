@@ -25,6 +25,7 @@ const (
 	BucketCountKey    = "WhereIs-count-"
 	BucketKeyPrefix   = "Bucket/value/"
 	DocumentKeyPrefix = "Document/value/"
+	ServiceKeyPrefix     = "Service/value/"
 )
 
 func BucketKey(creator string) []byte {

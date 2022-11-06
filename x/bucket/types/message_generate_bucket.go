@@ -3,15 +3,19 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/google/uuid"
 )
 
 const TypeMsgGenerateBucket = "generate_bucket"
 
 var _ sdk.Msg = &MsgAllocateBucket{}
 
-func NewMsgGenerateBucket(creator string) *MsgAllocateBucket {
+func NewMsgGenerateBucket(creator string, bucketId string) *MsgAllocateBucket {
 	return &MsgAllocateBucket{
 		Creator: creator,
+		Bucket: &BucketConfig{
+			Uuid: bucketId,
+		},
 	}
 }
 
@@ -40,6 +44,14 @@ func (msg *MsgAllocateBucket) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return msg.ValidateBucketId()
+}
+
+func (msg *MsgAllocateBucket) ValidateBucketId() error {
+	_, err := uuid.Parse(msg.Bucket.Uuid)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bucket id (%s)", err)
 	}
 	return nil
 }

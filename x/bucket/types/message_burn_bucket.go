@@ -9,9 +9,12 @@ const TypeMsgBurnBucket = "burn_bucket"
 
 var _ sdk.Msg = &MsgBurnBucket{}
 
-func NewMsgBurnBucket(creator string) *MsgBurnBucket {
+func NewMsgBurnBucket(creator string, bucketId string) *MsgBurnBucket {
 	return &MsgBurnBucket{
 		Creator: creator,
+		Bucket: &BucketConfig{
+			Uuid: bucketId,
+		},
 	}
 }
 

@@ -32819,7 +32819,7 @@ paths:
                     size:
                       type: string
                       format: int64
-                      description: Timestamp of the new bucket.
+                      description: size of the new bucket.
               pagination:
                 type: object
                 properties:
@@ -32912,6 +32912,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/creator/{creator}':
@@ -32958,7 +32968,7 @@ paths:
                     size:
                       type: string
                       format: int64
-                      description: Timestamp of the new bucket.
+                      description: size of the new bucket.
               pagination:
                 type: object
                 properties:
@@ -33055,6 +33065,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/id/{uuid}':
@@ -33099,7 +33119,7 @@ paths:
                   size:
                     type: string
                     format: int64
-                    description: Timestamp of the new bucket.
+                    description: size of the new bucket.
         default:
           description: An unexpected error response.
           schema:
@@ -33169,7 +33189,7 @@ paths:
                     size:
                       type: string
                       format: int64
-                      description: Timestamp of the new bucket.
+                      description: size of the new bucket.
               pagination:
                 type: object
                 properties:
@@ -33263,6 +33283,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -33459,13 +33489,13 @@ paths:
                               type:
                                 type: string
                               service_endpoint:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    key:
-                                      type: string
-                                    value:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: array
+                                    items:
                                       type: string
                         also_known_as:
                           type: array
@@ -33722,13 +33752,13 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  key:
-                                    type: string
-                                  value:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: array
+                                  items:
                                     type: string
                       also_known_as:
                         type: array
@@ -33906,13 +33936,13 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  key:
-                                    type: string
-                                  value:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: array
+                                  items:
                                     type: string
                       also_known_as:
                         type: array
@@ -34091,13 +34121,13 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  key:
-                                    type: string
-                                  value:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: array
+                                  items:
                                     type: string
                       also_known_as:
                         type: array
@@ -34274,6 +34304,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -34431,6 +34471,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/schema/query/what_is/{did}':
@@ -34508,6 +34558,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -57262,7 +57322,7 @@ definitions:
       size:
         type: string
         format: int64
-        description: Timestamp of the new bucket.
+        description: size of the new bucket.
   sonrio.sonr.bucket.BucketVisibility:
     type: string
     enum:
@@ -57315,7 +57375,7 @@ definitions:
           size:
             type: string
             format: int64
-            description: Timestamp of the new bucket.
+            description: size of the new bucket.
       serviceEndpoint:
         type: string
       did_document:
@@ -57386,13 +57446,13 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                      value:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
                         type: string
           also_known_as:
             type: array
@@ -57436,7 +57496,7 @@ definitions:
           size:
             type: string
             format: int64
-            description: Timestamp of the new bucket.
+            description: size of the new bucket.
       did_document:
         type: object
         properties:
@@ -57505,13 +57565,13 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                      value:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
                         type: string
           also_known_as:
             type: array
@@ -57555,7 +57615,7 @@ definitions:
           size:
             type: string
             format: int64
-            description: Timestamp of the new bucket.
+            description: size of the new bucket.
       totalBurned:
         type: integer
         format: int32
@@ -57597,7 +57657,7 @@ definitions:
           size:
             type: string
             format: int64
-            description: Timestamp of the new bucket.
+            description: size of the new bucket.
   sonrio.sonr.bucket.Params:
     type: object
     properties:
@@ -57643,7 +57703,7 @@ definitions:
             size:
               type: string
               format: int64
-              description: Timestamp of the new bucket.
+              description: size of the new bucket.
       pagination:
         type: object
         properties:
@@ -57706,7 +57766,7 @@ definitions:
             size:
               type: string
               format: int64
-              description: Timestamp of the new bucket.
+              description: size of the new bucket.
       pagination:
         type: object
         properties:
@@ -57769,7 +57829,7 @@ definitions:
             size:
               type: string
               format: int64
-              description: Timestamp of the new bucket.
+              description: size of the new bucket.
       pagination:
         type: object
         properties:
@@ -57830,7 +57890,7 @@ definitions:
           size:
             type: string
             format: int64
-            description: Timestamp of the new bucket.
+            description: size of the new bucket.
   sonrio.sonr.bucket.QueryParamsResponse:
     type: object
     properties:
@@ -57911,13 +57971,13 @@ definitions:
             type:
               type: string
             service_endpoint:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                  value:
+              type: object
+              properties:
+                key:
+                  type: string
+                value:
+                  type: array
+                  items:
                     type: string
       also_known_as:
         type: array
@@ -57938,14 +57998,23 @@ definitions:
       type:
         type: string
       service_endpoint:
+        type: object
+        properties:
+          key:
+            type: string
+          value:
+            type: array
+            items:
+              type: string
+  sonrio.sonr.registry.ServiceEndpoint:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
         type: array
         items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
+          type: string
   sonrio.sonr.registry.VerificationMethod:
     type: object
     properties:
@@ -58112,13 +58181,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -58262,13 +58331,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -58421,13 +58490,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -58571,13 +58640,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -58721,13 +58790,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -58873,13 +58942,13 @@ definitions:
                       type:
                         type: string
                       service_endpoint:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            key:
-                              type: string
-                            value:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: array
+                            items:
                               type: string
                 also_known_as:
                   type: array
@@ -59054,13 +59123,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -59201,13 +59270,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -59348,13 +59417,13 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
               also_known_as:
                 type: array
@@ -59492,13 +59561,13 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                      value:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
                         type: string
           also_known_as:
             type: array
