@@ -11,14 +11,16 @@ import (
 	_ "golang.org/x/mobile/bind"
 )
 
-type MotorCallback interface {
-	OnDiscover(data []byte)
-}
-
 var (
 	docBuilders map[string]*document.DocumentBuilder
 	instance    mtr.MotorNode
 )
+
+type MotorCallback interface {
+	OnDiscover(data []byte)
+	OnWalletEvent(data []byte)
+	OnLinking(data []byte)
+}
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// Unmarshal the request
@@ -123,13 +125,6 @@ func LoginWithKeys(buf []byte) ([]byte, error) {
 	}
 }
 
-func Connect() error {
-	if instance == nil {
-		return ct.ErrMotorWalletNotInitialized
-	}
-	return instance.Connect()
-}
-
 func CreateBucket(buf []byte) ([]byte, error) {
 	if instance == nil {
 		return nil, ct.ErrMotorWalletNotInitialized
@@ -144,7 +139,6 @@ func CreateBucket(buf []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return resp.Marshal()
 }
 

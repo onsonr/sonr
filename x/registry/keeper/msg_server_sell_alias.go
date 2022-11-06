@@ -25,6 +25,17 @@ func (k msgServer) SellAlias(goCtx context.Context, msg *types.MsgSellAlias) (*t
 
 	// Update WhoIs in Keeper store
 	k.SetWhoIs(ctx, newWhoIs)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(types.AttributeKeyOwner, newWhoIs.Owner),
+			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
+			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeSellAlias),
+		),
+	)
+
 	return &types.MsgSellAliasResponse{
 		Success: true,
 		WhoIs:   &whoIs,

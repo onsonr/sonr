@@ -12,11 +12,14 @@ message SchemaDocument {
   // the DID for this schema should not be populated by request
   string schema_did = 1;
 
+  // The CID of the schema document
+  string cid = 2;
+
   // label for the Document
-  string label = 2;
+  string label = 3;
 
   // the properties of this schemadocument
-  repeated SchemaDocumentValue fields = 3;
+  repeated SchemaDocumentValue fields = 4;
 }
 
 

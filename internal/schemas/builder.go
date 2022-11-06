@@ -14,11 +14,8 @@ func (as *SchemaImpl) BuildNodesFromDefinition(label, schemaDid string, object m
 		return errSchemaFieldsInvalid
 	}
 
-	err := as.VerifyDocument(object)
-
-	if err != nil {
-
-		return errSchemaFieldsInvalid
+	if err := as.VerifyDocument(object); err != nil {
+		return fmt.Errorf("%s: %s", errSchemaFieldsInvalid, err)
 	}
 
 	// Create IPLD Noded
@@ -60,12 +57,12 @@ func (as *SchemaImpl) BuildNodesFromDefinition(label, schemaDid string, object m
 		if t.GetKind() != st.Kind_LINK {
 			err = as.AssignValueToNode(t.FieldKind, valueAs, object[k])
 			if err != nil {
-				return err
+				return fmt.Errorf("assign value to node: %s", err)
 			}
 		} else if t.GetKind() == st.Kind_LINK {
 			err := as.BuildSchemaFromLink(t.FieldKind.LinkDid, valueAs, object[t.Name].(map[string]interface{}))
 			if err != nil {
-				return err
+				return fmt.Errorf("build schema from link: %s", err)
 			}
 		}
 	}
@@ -122,7 +119,7 @@ func (as *SchemaImpl) AssignValueToNode(kind *st.SchemaFieldKind, ma datamodel.M
 		}
 		n, err := as.BuildNodeFromList(val, kind.ListKind)
 		if err != nil {
-			return errSchemaFieldsInvalid
+			return fmt.Errorf("build node from list: %s", err)
 		}
 		ma.AssembleValue().AssignNode(n)
 	default:
@@ -190,7 +187,7 @@ func (as *SchemaImpl) BuildSchemaFromLinkForList(key string, ma datamodel.ListAs
 	err := as.VerifySubObject(sd.Schema.Fields, value)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("verify subobject: %s", err)
 	}
 
 	// Create IPLD Node
@@ -230,7 +227,6 @@ func (as *SchemaImpl) BuildNodeFromList(lst []interface{}, kind *st.SchemaFieldK
 	np := basicnode.Prototype.Any
 	nb := np.NewBuilder() // Create a builder.
 	la, err := nb.BeginList(int64(len(lst)))
-
 	if err != nil {
 		return nil, err
 	}
@@ -239,10 +235,8 @@ func (as *SchemaImpl) BuildNodeFromList(lst []interface{}, kind *st.SchemaFieldK
 		return nb.Build(), nil
 	}
 
-	err = as.VerifyList(lst, kind)
-
-	if err != nil {
-		return nil, err
+	if err := as.VerifyList(lst, kind); err != nil {
+		return nil, fmt.Errorf("verify list: %s", err)
 	}
 
 	for _, val := range lst {
@@ -273,10 +267,8 @@ func (as *SchemaImpl) BuildNodeFromList(lst []interface{}, kind *st.SchemaFieldK
 			la.AssembleValue().AssignBytes(lstItem)
 		case map[string]interface{}:
 			if kind.Kind == st.Kind_LINK {
-				err = as.BuildSchemaFromLinkForList(kind.LinkDid, la, val.(map[string]interface{}))
-
-				if err != nil {
-					return nil, err
+				if err := as.BuildSchemaFromLinkForList(kind.LinkDid, la, val.(map[string]interface{})); err != nil {
+					return nil, fmt.Errorf("build schema from link for list: %s", err)
 				}
 			}
 		/*
@@ -293,7 +285,7 @@ func (as *SchemaImpl) BuildNodeFromList(lst []interface{}, kind *st.SchemaFieldK
 			}
 			n, err := as.BuildNodeFromList(value, kind.ListKind)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("build node from list: %s", err)
 			}
 			la.AssembleValue().AssignNode(n)
 		default:
@@ -304,7 +296,7 @@ func (as *SchemaImpl) BuildNodeFromList(lst []interface{}, kind *st.SchemaFieldK
 			}
 			n, err := as.BuildNodeFromList(value, kind.ListKind)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("build node from list: %s", err)
 			}
 			la.AssembleValue().AssignNode(n)
 		}

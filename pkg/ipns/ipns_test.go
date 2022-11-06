@@ -10,13 +10,90 @@ import (
 	"time"
 
 	shell "github.com/ipfs/go-ipfs-api"
+	"github.com/sonr-io/sonr/internal/bucket"
 	"github.com/sonr-io/sonr/pkg/ipns"
+	"github.com/sonr-io/sonr/pkg/motor"
+	mtu "github.com/sonr-io/sonr/testutil/motor"
+	"github.com/sonr-io/sonr/third_party/types/common"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
+
+	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	st "github.com/sonr-io/sonr/x/schema/types"
 )
 
-func Test_IPNS(t *testing.T) {
+type IPNSTestSuite struct {
+	suite.Suite
+	motorNode  motor.MotorNode
+	testBucket bucket.Bucket
+	cid        string
+}
+
+func (suite *IPNSTestSuite) SetupSuite() {
+	var err error
+
+	suite.motorNode, err = motor.EmptyMotor(&mt.InitializeRequest{
+		DeviceId: "test_device",
+	}, common.DefaultCallback())
+	if err != nil {
+		fmt.Printf("Failed to setup test motor: %s\n", err)
+	}
+
+	err = mtu.SetupTestAddressWithKeys(suite.motorNode)
+	if err != nil {
+		fmt.Printf("Failed to setup test address: %s\n", err)
+	}
+
+	// create document
+	// create schema
+	createSchemaRequest := mt.CreateSchemaRequest{
+		Label: "TestUser",
+		Fields: map[string]*st.SchemaFieldKind{
+			"email": {
+				Kind: st.Kind_STRING,
+			},
+			"firstName": {
+				Kind: st.Kind_STRING,
+			},
+			"age": {
+				Kind: st.Kind_INT,
+			},
+		},
+	}
+
+	resp, err := suite.motorNode.CreateSchema(createSchemaRequest)
+
+	// query WhatIs so it's cached
+	_, err = suite.motorNode.QueryWhatIsByDid(resp.WhatIs.Did)
+
+	// upload object
+	builder, err := suite.motorNode.NewDocumentBuilder(resp.WhatIs.Did)
+
+	builder.SetLabel("Player 1")
+	builder.Set("email", "test_email")
+	builder.Set("firstName", "test_name")
+	builder.Set("age", 10)
+
+	_, err = builder.Build()
+	if err != nil {
+		fmt.Printf("Failed to build document: %s\n", err)
+	}
+
+	result, err := builder.Upload()
+	if "Player 1" != result.Document.Label {
+		fmt.Println("Failed to upload document")
+	}
+
+	suite.cid = result.GetCid()
+}
+
+func Test_IPNS_Suite(t *testing.T) {
+	suite.Run(t, new(IPNSTestSuite))
+}
+
+func (suite *IPNSTestSuite) Test_IPNS() {
 	shell := shell.NewLocalShell()
-	t.Run("Should create ipns record", func(t *testing.T) {
+	suite.T().Run("Should create ipns record", func(t *testing.T) {
 		time_stamp := fmt.Sprintf("%d", time.Now().Unix())
 
 		out_path := filepath.Join(os.TempDir(), time_stamp+".txt")
@@ -26,7 +103,7 @@ func Test_IPNS(t *testing.T) {
 		assert.NoError(t, err)
 		rec, err := ipns.New(priv)
 		assert.NoError(t, err)
-		rec.Builder.SetCid("bafyreihnj3feeesb6wmd46lmsvtwalvuckns647ghy44xn63lfsfed3ydm")
+		rec.Builder.SetCid(suite.cid)
 		err = rec.CreateRecord()
 		assert.NoError(t, err)
 		srv := rec.Builder.BuildService()

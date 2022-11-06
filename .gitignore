@@ -166,3 +166,4 @@ dist
 
 dist/
 docs/package-lock.json
+**/sonrd

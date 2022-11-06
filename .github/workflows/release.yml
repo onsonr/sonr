@@ -20,7 +20,7 @@ jobs:
       - name: Bump version and push tag
         if: github.event.pull_request.merged == true
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -92,13 +92,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
-      - name: motor-ios Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.ACTIONS_GH_TOKEN }}
-          repository: sonr-io/motor_pod
-          event-type: new-ios-framework
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Android
@@ -185,13 +178,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
-      - name: motor-mac Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.ACTIONS_GH_TOKEN }}
-          repository: sonr-io/motor_mac_pod
-          event-type: new-mac-framework
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for Wasm
