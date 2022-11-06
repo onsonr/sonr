@@ -24,6 +24,15 @@ func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucke
 		return nil, sdkerrors.ErrNotFound
 	}
 
+	prevBucket := k.GetWhereIsByCreator(ctx, msg.Creator)
+
+	for _, v := range prevBucket {
+		if v.GetName() == msg.GetLabel() {
+			k.Logger(ctx).Error("bucket with name %s already exits for this account", msg.GetLabel())
+			return nil, sdkerrors.ErrInvalidRequest
+		}
+	}
+
 	uuid := k.GenerateKeyForDID()
 	var bucket = types.BucketConfig{
 		Creator:  msg.Creator,
@@ -43,6 +52,7 @@ func (k msgServer) DefineBucket(goCtx context.Context, msg *types.MsgDefineBucke
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeyCreator, bucket.Creator),
+			sdk.NewAttribute(types.AttributeKeyBucketId, bucket.Uuid),
 			// sdk.NewAttribute(types.AttributeKeyDID, whereIs.Did),
 			// sdk.NewAttribute(types.AttributeKeyLabel, whereIs.Label),
 			sdk.NewAttribute(types.AttributeKeyTxType, types.EventTypeCreateWhereIs),

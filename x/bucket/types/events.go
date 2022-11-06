@@ -11,6 +11,7 @@ const (
 	AttributeKeyTxType     = "txType"
 
 	AttributeKeyCreator   = "bucketCreator"
+	AttributeKeyBucketId  = "bucketId"
 	AttributeKeyServiceId = "serviceId"
 	AttributeKeyLabel     = "label"
 )

@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -75,8 +76,10 @@ func (k Keeper) UpdateWhoIsService(ctx sdk.Context, b types.BucketConfig, svcDID
 	}
 	didDoc := whoIs.GetDidDocument()
 	didDoc.Service = append(didDoc.Service, svcDID)
+	whoIs.DidDocument = didDoc
+	whoIs.Timestamp = time.Now().Unix()
+	k.registryKeeper.SetWhoIs(ctx, whoIs)
 	return nil
-
 }
 
 // GetBucket returns a whereIs from its id
