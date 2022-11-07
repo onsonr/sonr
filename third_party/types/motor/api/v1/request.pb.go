@@ -6,7 +6,6 @@
 package v1
 
 import (
-	encoding_binary "encoding/binary"
 	fmt "fmt"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	proto "github.com/gogo/protobuf/proto"
@@ -73,16 +72,6 @@ type InitializeRequest struct {
 	// Logging level for the session, can be configured after setting
 	// (info|debug|warn|error|fatal)
 	LogLevel string `protobuf:"bytes,5,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
-	// Enable Libp2p Host
-	EnableHost bool `protobuf:"varint,6,opt,name=enable_host,json=enableHost,proto3" json:"enable_host,omitempty"`
-	// Enable Discovery Service
-	EnableDiscovery bool `protobuf:"varint,7,opt,name=enable_discovery,json=enableDiscovery,proto3" json:"enable_discovery,omitempty"`
-	// Enable Query Clients
-	EnableQuery bool `protobuf:"varint,8,opt,name=enable_query,json=enableQuery,proto3" json:"enable_query,omitempty"`
-	// Discovery Latitude
-	DiscoveryLatitude float64 `protobuf:"fixed64,9,opt,name=discovery_latitude,json=discoveryLatitude,proto3" json:"discovery_latitude,omitempty"`
-	// Discovery Longitude
-	DiscoveryLongitude float64 `protobuf:"fixed64,10,opt,name=discovery_longitude,json=discoveryLongitude,proto3" json:"discovery_longitude,omitempty"`
 	// Public Key used for Device Authentication as DID Controller
 	AuthInfo *common.AuthInfo `protobuf:"bytes,11,opt,name=auth_info,json=authInfo,proto3" json:"auth_info,omitempty"`
 	// Application DID
@@ -159,41 +148,6 @@ func (m *InitializeRequest) GetLogLevel() string {
 	return ""
 }
 
-func (m *InitializeRequest) GetEnableHost() bool {
-	if m != nil {
-		return m.EnableHost
-	}
-	return false
-}
-
-func (m *InitializeRequest) GetEnableDiscovery() bool {
-	if m != nil {
-		return m.EnableDiscovery
-	}
-	return false
-}
-
-func (m *InitializeRequest) GetEnableQuery() bool {
-	if m != nil {
-		return m.EnableQuery
-	}
-	return false
-}
-
-func (m *InitializeRequest) GetDiscoveryLatitude() float64 {
-	if m != nil {
-		return m.DiscoveryLatitude
-	}
-	return 0
-}
-
-func (m *InitializeRequest) GetDiscoveryLongitude() float64 {
-	if m != nil {
-		return m.DiscoveryLongitude
-	}
-	return 0
-}
-
 func (m *InitializeRequest) GetAuthInfo() *common.AuthInfo {
 	if m != nil {
 		return m.AuthInfo
@@ -215,6 +169,79 @@ func (m *InitializeRequest) GetClientMode() ClientMode {
 	return ClientMode_ENDPOINT_BETA
 }
 
+// ConnectRequest initializes the libp2p host and connects to the Sonr network.
+type ConnectRequest struct {
+	// Enable Discovery Service
+	EnableDiscovery bool `protobuf:"varint,1,opt,name=enable_discovery,json=enableDiscovery,proto3" json:"enable_discovery,omitempty"`
+	// Enable Transmit Protocol
+	EnableTransmit bool `protobuf:"varint,2,opt,name=enable_transmit,json=enableTransmit,proto3" json:"enable_transmit,omitempty"`
+	// Enable Linking Protocol
+	EnableLinking bool `protobuf:"varint,3,opt,name=enable_linking,json=enableLinking,proto3" json:"enable_linking,omitempty"`
+	// Force the connection to be reset if it exists
+	ResetConnection bool `protobuf:"varint,4,opt,name=reset_connection,json=resetConnection,proto3" json:"reset_connection,omitempty"`
+}
+
+func (m *ConnectRequest) Reset()         { *m = ConnectRequest{} }
+func (m *ConnectRequest) String() string { return proto.CompactTextString(m) }
+func (*ConnectRequest) ProtoMessage()    {}
+func (*ConnectRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{1}
+}
+func (m *ConnectRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConnectRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConnectRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConnectRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConnectRequest.Merge(m, src)
+}
+func (m *ConnectRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConnectRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConnectRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConnectRequest proto.InternalMessageInfo
+
+func (m *ConnectRequest) GetEnableDiscovery() bool {
+	if m != nil {
+		return m.EnableDiscovery
+	}
+	return false
+}
+
+func (m *ConnectRequest) GetEnableTransmit() bool {
+	if m != nil {
+		return m.EnableTransmit
+	}
+	return false
+}
+
+func (m *ConnectRequest) GetEnableLinking() bool {
+	if m != nil {
+		return m.EnableLinking
+	}
+	return false
+}
+
+func (m *ConnectRequest) GetResetConnection() bool {
+	if m != nil {
+		return m.ResetConnection
+	}
+	return false
+}
+
 // CreateAccount Request contains the three keys needed to create an account on Sonr
 type CreateAccountRequest struct {
 	Password string            `protobuf:"bytes,1,opt,name=password,proto3" json:"password,omitempty"`
@@ -225,7 +252,7 @@ func (m *CreateAccountRequest) Reset()         { *m = CreateAccountRequest{} }
 func (m *CreateAccountRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateAccountRequest) ProtoMessage()    {}
 func (*CreateAccountRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{1}
+	return fileDescriptor_df014f183f77a01a, []int{2}
 }
 func (m *CreateAccountRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -281,7 +308,7 @@ func (m *CreateAccountWithKeysRequest) Reset()         { *m = CreateAccountWithK
 func (m *CreateAccountWithKeysRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateAccountWithKeysRequest) ProtoMessage()    {}
 func (*CreateAccountWithKeysRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{2}
+	return fileDescriptor_df014f183f77a01a, []int{3}
 }
 func (m *CreateAccountWithKeysRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -338,8 +365,154 @@ func (m *CreateAccountWithKeysRequest) GetMetadata() map[string]string {
 	return nil
 }
 
-// Login requires the DID of the account being logged into,
-// and optionally a password if the vault pw is being used
+// LinkingRequest opens a pubsub topic session in order to pair the current device with an existing Sonr Account.
+type LinkingRequest struct {
+}
+
+func (m *LinkingRequest) Reset()         { *m = LinkingRequest{} }
+func (m *LinkingRequest) String() string { return proto.CompactTextString(m) }
+func (*LinkingRequest) ProtoMessage()    {}
+func (*LinkingRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{4}
+}
+func (m *LinkingRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LinkingRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LinkingRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LinkingRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LinkingRequest.Merge(m, src)
+}
+func (m *LinkingRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *LinkingRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_LinkingRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LinkingRequest proto.InternalMessageInfo
+
+// PairingRequest attempts to join a pubsub topic session in order to pair the current device with an existing Sonr Account.
+type PairingRequest struct {
+	// peer-to-peer addresses of host
+	P2PAddrs [][]byte `protobuf:"bytes,1,rep,name=p2p_addrs,json=p2pAddrs,proto3" json:"p2p_addrs,omitempty"`
+}
+
+func (m *PairingRequest) Reset()         { *m = PairingRequest{} }
+func (m *PairingRequest) String() string { return proto.CompactTextString(m) }
+func (*PairingRequest) ProtoMessage()    {}
+func (*PairingRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{5}
+}
+func (m *PairingRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PairingRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PairingRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PairingRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PairingRequest.Merge(m, src)
+}
+func (m *PairingRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *PairingRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_PairingRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PairingRequest proto.InternalMessageInfo
+
+func (m *PairingRequest) GetP2PAddrs() [][]byte {
+	if m != nil {
+		return m.P2PAddrs
+	}
+	return nil
+}
+
+// OnboardDeviceRequest is for registering a newly connected device to the account
+type OnboardDeviceRequest struct {
+	// the account to login to
+	AccountId string `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	// password for the recovery shard
+	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	// the PSK, second shard for logging in
+	AesPskKey []byte `protobuf:"bytes,3,opt,name=aes_psk_key,json=aesPskKey,proto3" json:"aes_psk_key,omitempty"`
+}
+
+func (m *OnboardDeviceRequest) Reset()         { *m = OnboardDeviceRequest{} }
+func (m *OnboardDeviceRequest) String() string { return proto.CompactTextString(m) }
+func (*OnboardDeviceRequest) ProtoMessage()    {}
+func (*OnboardDeviceRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df014f183f77a01a, []int{6}
+}
+func (m *OnboardDeviceRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *OnboardDeviceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_OnboardDeviceRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *OnboardDeviceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OnboardDeviceRequest.Merge(m, src)
+}
+func (m *OnboardDeviceRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *OnboardDeviceRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_OnboardDeviceRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OnboardDeviceRequest proto.InternalMessageInfo
+
+func (m *OnboardDeviceRequest) GetAccountId() string {
+	if m != nil {
+		return m.AccountId
+	}
+	return ""
+}
+
+func (m *OnboardDeviceRequest) GetPassword() string {
+	if m != nil {
+		return m.Password
+	}
+	return ""
+}
+
+func (m *OnboardDeviceRequest) GetAesPskKey() []byte {
+	if m != nil {
+		return m.AesPskKey
+	}
+	return nil
+}
+
+// Login requires the DID of the account being logged into, and optionally a password if the vault pw is being used
 // The PSK and DSC will be fetched from the keychain
 type LoginRequest struct {
 	// Either the DID or an alias of the account
@@ -352,7 +525,7 @@ func (m *LoginRequest) Reset()         { *m = LoginRequest{} }
 func (m *LoginRequest) String() string { return proto.CompactTextString(m) }
 func (*LoginRequest) ProtoMessage()    {}
 func (*LoginRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{3}
+	return fileDescriptor_df014f183f77a01a, []int{7}
 }
 func (m *LoginRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -410,7 +583,7 @@ func (m *LoginWithKeysRequest) Reset()         { *m = LoginWithKeysRequest{} }
 func (m *LoginWithKeysRequest) String() string { return proto.CompactTextString(m) }
 func (*LoginWithKeysRequest) ProtoMessage()    {}
 func (*LoginWithKeysRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{4}
+	return fileDescriptor_df014f183f77a01a, []int{8}
 }
 func (m *LoginWithKeysRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -477,7 +650,7 @@ func (m *QueryRequest) Reset()         { *m = QueryRequest{} }
 func (m *QueryRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryRequest) ProtoMessage()    {}
 func (*QueryRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{5}
+	return fileDescriptor_df014f183f77a01a, []int{9}
 }
 func (m *QueryRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -538,7 +711,7 @@ func (m *PaymentRequest) Reset()         { *m = PaymentRequest{} }
 func (m *PaymentRequest) String() string { return proto.CompactTextString(m) }
 func (*PaymentRequest) ProtoMessage()    {}
 func (*PaymentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{6}
+	return fileDescriptor_df014f183f77a01a, []int{10}
 }
 func (m *PaymentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -595,9 +768,7 @@ func (m *PaymentRequest) GetMemo() string {
 	return ""
 }
 
-// -----------------------------------------------------------------------------
 // Registry Models
-// -----------------------------------------------------------------------------
 type QueryWhoIsRequest struct {
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
 }
@@ -606,7 +777,7 @@ func (m *QueryWhoIsRequest) Reset()         { *m = QueryWhoIsRequest{} }
 func (m *QueryWhoIsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhoIsRequest) ProtoMessage()    {}
 func (*QueryWhoIsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{7}
+	return fileDescriptor_df014f183f77a01a, []int{11}
 }
 func (m *QueryWhoIsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -650,7 +821,7 @@ func (m *QueryWhoIsByAliasRequest) Reset()         { *m = QueryWhoIsByAliasReque
 func (m *QueryWhoIsByAliasRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhoIsByAliasRequest) ProtoMessage()    {}
 func (*QueryWhoIsByAliasRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{8}
+	return fileDescriptor_df014f183f77a01a, []int{12}
 }
 func (m *QueryWhoIsByAliasRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -700,7 +871,7 @@ func (m *CreateSchemaRequest) Reset()         { *m = CreateSchemaRequest{} }
 func (m *CreateSchemaRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateSchemaRequest) ProtoMessage()    {}
 func (*CreateSchemaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{9}
+	return fileDescriptor_df014f183f77a01a, []int{13}
 }
 func (m *CreateSchemaRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -762,7 +933,7 @@ func (m *QueryWhatIsRequest) Reset()         { *m = QueryWhatIsRequest{} }
 func (m *QueryWhatIsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhatIsRequest) ProtoMessage()    {}
 func (*QueryWhatIsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{10}
+	return fileDescriptor_df014f183f77a01a, []int{14}
 }
 func (m *QueryWhatIsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -816,7 +987,7 @@ func (m *QueryWhatIsByCreatorRequest) Reset()         { *m = QueryWhatIsByCreato
 func (m *QueryWhatIsByCreatorRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryWhatIsByCreatorRequest) ProtoMessage()    {}
 func (*QueryWhatIsByCreatorRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{11}
+	return fileDescriptor_df014f183f77a01a, []int{15}
 }
 func (m *QueryWhatIsByCreatorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -871,7 +1042,7 @@ func (m *QuerySchemaRequest) Reset()         { *m = QuerySchemaRequest{} }
 func (m *QuerySchemaRequest) String() string { return proto.CompactTextString(m) }
 func (*QuerySchemaRequest) ProtoMessage()    {}
 func (*QuerySchemaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{12}
+	return fileDescriptor_df014f183f77a01a, []int{16}
 }
 func (m *QuerySchemaRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -929,7 +1100,7 @@ func (m *UploadDocumentRequest) Reset()         { *m = UploadDocumentRequest{} }
 func (m *UploadDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*UploadDocumentRequest) ProtoMessage()    {}
 func (*UploadDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{13}
+	return fileDescriptor_df014f183f77a01a, []int{17}
 }
 func (m *UploadDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -994,7 +1165,7 @@ func (m *GetDocumentRequest) Reset()         { *m = GetDocumentRequest{} }
 func (m *GetDocumentRequest) String() string { return proto.CompactTextString(m) }
 func (*GetDocumentRequest) ProtoMessage()    {}
 func (*GetDocumentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df014f183f77a01a, []int{14}
+	return fileDescriptor_df014f183f77a01a, []int{18}
 }
 func (m *GetDocumentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1699,10 +1870,14 @@ var xxx_messageInfo_StatRequest proto.InternalMessageInfo
 func init() {
 	proto.RegisterEnum("sonrio.motor.api.v1.ClientMode", ClientMode_name, ClientMode_value)
 	proto.RegisterType((*InitializeRequest)(nil), "sonrio.motor.api.v1.InitializeRequest")
+	proto.RegisterType((*ConnectRequest)(nil), "sonrio.motor.api.v1.ConnectRequest")
 	proto.RegisterType((*CreateAccountRequest)(nil), "sonrio.motor.api.v1.CreateAccountRequest")
 	proto.RegisterMapType((map[string]string)(nil), "sonrio.motor.api.v1.CreateAccountRequest.MetadataEntry")
 	proto.RegisterType((*CreateAccountWithKeysRequest)(nil), "sonrio.motor.api.v1.CreateAccountWithKeysRequest")
 	proto.RegisterMapType((map[string]string)(nil), "sonrio.motor.api.v1.CreateAccountWithKeysRequest.MetadataEntry")
+	proto.RegisterType((*LinkingRequest)(nil), "sonrio.motor.api.v1.LinkingRequest")
+	proto.RegisterType((*PairingRequest)(nil), "sonrio.motor.api.v1.PairingRequest")
+	proto.RegisterType((*OnboardDeviceRequest)(nil), "sonrio.motor.api.v1.OnboardDeviceRequest")
 	proto.RegisterType((*LoginRequest)(nil), "sonrio.motor.api.v1.LoginRequest")
 	proto.RegisterType((*LoginWithKeysRequest)(nil), "sonrio.motor.api.v1.LoginWithKeysRequest")
 	proto.RegisterType((*QueryRequest)(nil), "sonrio.motor.api.v1.QueryRequest")
@@ -1870,48 +2045,6 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x5a
 	}
-	if m.DiscoveryLongitude != 0 {
-		i -= 8
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DiscoveryLongitude))))
-		i--
-		dAtA[i] = 0x51
-	}
-	if m.DiscoveryLatitude != 0 {
-		i -= 8
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.DiscoveryLatitude))))
-		i--
-		dAtA[i] = 0x49
-	}
-	if m.EnableQuery {
-		i--
-		if m.EnableQuery {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x40
-	}
-	if m.EnableDiscovery {
-		i--
-		if m.EnableDiscovery {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x38
-	}
-	if m.EnableHost {
-		i--
-		if m.EnableHost {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x30
-	}
 	if len(m.LogLevel) > 0 {
 		i -= len(m.LogLevel)
 		copy(dAtA[i:], m.LogLevel)
@@ -1946,6 +2079,69 @@ func (m *InitializeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintRequest(dAtA, i, uint64(len(m.DeviceId)))
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ConnectRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConnectRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConnectRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ResetConnection {
+		i--
+		if m.ResetConnection {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.EnableLinking {
+		i--
+		if m.EnableLinking {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.EnableTransmit {
+		i--
+		if m.EnableTransmit {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.EnableDiscovery {
+		i--
+		if m.EnableDiscovery {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -2056,6 +2252,105 @@ func (m *CreateAccountWithKeysRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 		i -= len(m.Password)
 		copy(dAtA[i:], m.Password)
 		i = encodeVarintRequest(dAtA, i, uint64(len(m.Password)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LinkingRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LinkingRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LinkingRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *PairingRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PairingRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PairingRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.P2PAddrs) > 0 {
+		for iNdEx := len(m.P2PAddrs) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.P2PAddrs[iNdEx])
+			copy(dAtA[i:], m.P2PAddrs[iNdEx])
+			i = encodeVarintRequest(dAtA, i, uint64(len(m.P2PAddrs[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *OnboardDeviceRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OnboardDeviceRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OnboardDeviceRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.AesPskKey) > 0 {
+		i -= len(m.AesPskKey)
+		copy(dAtA[i:], m.AesPskKey)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.AesPskKey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Password) > 0 {
+		i -= len(m.Password)
+		copy(dAtA[i:], m.Password)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.Password)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountId) > 0 {
+		i -= len(m.AccountId)
+		copy(dAtA[i:], m.AccountId)
+		i = encodeVarintRequest(dAtA, i, uint64(len(m.AccountId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -3134,21 +3429,6 @@ func (m *InitializeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRequest(uint64(l))
 	}
-	if m.EnableHost {
-		n += 2
-	}
-	if m.EnableDiscovery {
-		n += 2
-	}
-	if m.EnableQuery {
-		n += 2
-	}
-	if m.DiscoveryLatitude != 0 {
-		n += 9
-	}
-	if m.DiscoveryLongitude != 0 {
-		n += 9
-	}
 	if m.AuthInfo != nil {
 		l = m.AuthInfo.Size()
 		n += 1 + l + sovRequest(uint64(l))
@@ -3159,6 +3439,27 @@ func (m *InitializeRequest) Size() (n int) {
 	}
 	if m.ClientMode != 0 {
 		n += 1 + sovRequest(uint64(m.ClientMode))
+	}
+	return n
+}
+
+func (m *ConnectRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.EnableDiscovery {
+		n += 2
+	}
+	if m.EnableTransmit {
+		n += 2
+	}
+	if m.EnableLinking {
+		n += 2
+	}
+	if m.ResetConnection {
+		n += 2
 	}
 	return n
 }
@@ -3209,6 +3510,51 @@ func (m *CreateAccountWithKeysRequest) Size() (n int) {
 			mapEntrySize := 1 + len(k) + sovRequest(uint64(len(k))) + 1 + len(v) + sovRequest(uint64(len(v)))
 			n += mapEntrySize + 1 + sovRequest(uint64(mapEntrySize))
 		}
+	}
+	return n
+}
+
+func (m *LinkingRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *PairingRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.P2PAddrs) > 0 {
+		for _, b := range m.P2PAddrs {
+			l = len(b)
+			n += 1 + l + sovRequest(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *OnboardDeviceRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountId)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	l = len(m.Password)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
+	}
+	l = len(m.AesPskKey)
+	if l > 0 {
+		n += 1 + l + sovRequest(uint64(l))
 	}
 	return n
 }
@@ -3875,88 +4221,6 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.LogLevel = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EnableHost", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.EnableHost = bool(v != 0)
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EnableDiscovery", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.EnableDiscovery = bool(v != 0)
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EnableQuery", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRequest
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.EnableQuery = bool(v != 0)
-		case 9:
-			if wireType != 1 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DiscoveryLatitude", wireType)
-			}
-			var v uint64
-			if (iNdEx + 8) > l {
-				return io.ErrUnexpectedEOF
-			}
-			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
-			iNdEx += 8
-			m.DiscoveryLatitude = float64(math.Float64frombits(v))
-		case 10:
-			if wireType != 1 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DiscoveryLongitude", wireType)
-			}
-			var v uint64
-			if (iNdEx + 8) > l {
-				return io.ErrUnexpectedEOF
-			}
-			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
-			iNdEx += 8
-			m.DiscoveryLongitude = float64(math.Float64frombits(v))
 		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AuthInfo", wireType)
@@ -4044,6 +4308,136 @@ func (m *InitializeRequest) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConnectRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConnectRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConnectRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableDiscovery", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.EnableDiscovery = bool(v != 0)
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableTransmit", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.EnableTransmit = bool(v != 0)
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableLinking", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.EnableLinking = bool(v != 0)
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ResetConnection", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.ResetConnection = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRequest(dAtA[iNdEx:])
@@ -4529,6 +4923,286 @@ func (m *CreateAccountWithKeysRequest) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Metadata[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LinkingRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LinkingRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LinkingRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PairingRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PairingRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PairingRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field P2PAddrs", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.P2PAddrs = append(m.P2PAddrs, make([]byte, postIndex-iNdEx))
+			copy(m.P2PAddrs[len(m.P2PAddrs)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRequest(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *OnboardDeviceRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRequest
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: OnboardDeviceRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: OnboardDeviceRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Password", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Password = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AesPskKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRequest
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthRequest
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRequest
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AesPskKey = append(m.AesPskKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.AesPskKey == nil {
+				m.AesPskKey = []byte{}
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

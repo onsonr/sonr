@@ -8,14 +8,61 @@ import (
 
 	"github.com/sonr-io/sonr/internal/projectpath"
 	mtu "github.com/sonr-io/sonr/testutil/motor"
-	"github.com/sonr-io/sonr/third_party/types/common"
+	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	v1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
 	"github.com/stretchr/testify/suite"
 )
 
 type MotorTestSuite struct {
 	suite.Suite
 	motorWithKeys MotorNode
+	callback      testSuiteCallback
+}
+
+type testSuiteCallback struct {
+	discoverChannel    chan v1.RefreshEvent
+	walletEventChannel chan ct.WalletEvent
+	linkingChannel     chan v1.LinkingEvent
+}
+
+func (c testSuiteCallback) OnDiscover(data []byte) {
+	ev := v1.RefreshEvent{}
+	if err := ev.Unmarshal(data); err != nil {
+		fmt.Printf("error: %s\n", err)
+		return
+	}
+
+	go func() {
+		fmt.Printf("OnDiscover: %+v\n", ev)
+		c.discoverChannel <- ev
+	}()
+}
+
+func (c testSuiteCallback) OnWalletEvent(data []byte) {
+	ev := ct.WalletEvent{}
+	if err := ev.Unmarshal(data); err != nil {
+		fmt.Printf("error: %s\n", err)
+		return
+	}
+
+	go func() {
+		fmt.Printf("OnWalletEvent: %+v\n", ev)
+		c.walletEventChannel <- ev
+	}()
+}
+
+func (c testSuiteCallback) OnLinking(data []byte) {
+	ev := v1.LinkingEvent{}
+	if err := ev.Unmarshal(data); err != nil {
+		fmt.Printf("error: %s\n", err)
+		return
+	}
+
+	go func() {
+		fmt.Printf("OnLinking: %+v\n", ev)
+		c.linkingChannel <- ev
+	}()
 }
 
 func (suite *MotorTestSuite) SetupSuite() {
@@ -23,11 +70,17 @@ func (suite *MotorTestSuite) SetupSuite() {
 
 	var err error
 
+	suite.callback = testSuiteCallback{
+		discoverChannel:    make(chan v1.RefreshEvent),
+		walletEventChannel: make(chan ct.WalletEvent),
+		linkingChannel:     make(chan v1.LinkingEvent),
+	}
+
 	// setup motor
 	suite.motorWithKeys, err = EmptyMotor(&mt.InitializeRequest{
 		DeviceId:   "test_device",
 		ClientMode: mt.ClientMode_ENDPOINT_BETA,
-	}, common.DefaultCallback())
+	}, suite.callback)
 
 	if err != nil {
 		suite.T().Error("Failed to setup test suite motor with keys")

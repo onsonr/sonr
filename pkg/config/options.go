@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -54,79 +53,49 @@ func WithLibp2pMDNS(isActive bool) Option {
 	}
 }
 
-type MotorOption func(o *motorOptions)
+// WithAccountAddress sets the account address
+func WithAccountAddress(addr string) Option {
+	return func(o *Config) {
+		o.AccountAddress = addr
+	}
+}
 
-// SetDeviceID sets the device ID
-func SetDeviceID(id string) MotorOption {
-	return func(o *motorOptions) {
+// WithDeviceID sets the device ID
+func WithDeviceID(id string) Option {
+	return func(o *Config) {
 		// Set Home Directory
 		if id != "" {
-			o.deviceID = id
+			o.DeviceID = id
 		}
 	}
 }
 
 // WithHomePath sets the Home Directory
-func WithHomePath(p string) MotorOption {
-	return func(o *motorOptions) {
+func WithHomePath(p string) Option {
+	return func(o *Config) {
 		// Set Home Directory
 		if p != "" {
-			o.HomeDir = p
+			o.HomeDirPath = p
 		}
 	}
 }
 
 // WithTempPath sets the Temporary Directory
-func WithTempPath(p string) MotorOption {
-	return func(o *motorOptions) {
+func WithTempPath(p string) Option {
+	return func(o *Config) {
 		// Set Home Directory
 		if p != "" {
-			o.TempDir = p
+			o.TempDirPath = p
 		}
 	}
 }
 
 // WithSupportPath sets the Support Directory
-func WithSupportPath(p string) MotorOption {
-	return func(o *motorOptions) {
+func WithSupportPath(p string) Option {
+	return func(o *Config) {
 		// Set Home Directory
 		if p != "" {
-			o.SupportDir = p
+			o.SupportDirPath = p
 		}
 	}
-}
-
-// motorOptions holds directory list
-type motorOptions struct {
-	HomeDir    string
-	TempDir    string
-	SupportDir string
-
-	walletDir    string
-	databaseDir  string
-	downloadsDir string
-	textileDir   string
-	deviceID     string
-}
-
-// defaultMotorOptions returns fsOptions
-func defaultMotorOptions() *motorOptions {
-	opts := &motorOptions{}
-	if IsDesktop() {
-		hp, err := os.UserHomeDir()
-		if err == nil {
-			opts.HomeDir = hp
-		}
-
-		tp, err := os.UserCacheDir()
-		if err == nil {
-			opts.TempDir = tp
-		}
-
-		sp, err := os.UserConfigDir()
-		if err == nil {
-			opts.SupportDir = sp
-		}
-	}
-	return opts
 }
