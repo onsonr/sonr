@@ -11,14 +11,14 @@ from tracemalloc import stop
 import pydig
 from os.path import exists
 
-TYPE='beta'
+TYPE='dev'
 
 PORT = 26656
 NODE_ENDPOINTS = [
-    'v1.beta.sonr.ws',
-    'v2.beta.sonr.ws',
-    'v3.beta.sonr.ws',
-    'v4.beta.sonr.ws',
+    'v1.sonr.ws',
+    'v2.sonr.ws',
+    'v3.sonr.ws',
+    'v4.sonr.ws',
 ]
 
 TEMP_DIR="./temp"

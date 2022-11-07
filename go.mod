@@ -356,7 +356,7 @@ require (
 
 require (
 	github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16 // indirect
-	github.com/swaggo/swag v1.8.1
+	github.com/swaggo/swag v1.8.1 // indirect
 	golang.org/x/net v0.1.0 // indirect
 )
 
