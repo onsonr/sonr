@@ -33,6 +33,7 @@ message MsgDefineBucketResponse {
 message MsgAllocateBucket {
   string creator = 1;
   BucketConfig bucket = 2;
+  string cid = 3;
 }
 
 message MsgAllocateBucketResponse {
