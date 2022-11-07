@@ -32800,16 +32800,13 @@ paths:
                       type: string
                       description: Name of the new bucket.
                     visibility:
+                      description: Visibility of the new bucket.
                       type: string
                       enum:
                         - PUBLIC
                         - USER
                         - APPLICATION
                       default: PUBLIC
-                      description: |-
-                        - PUBLIC: Bucket does not have visibility set.
-                         - USER: Bucket is visible to anyone.
-                         - APPLICATION: Bucket is visible to anyone who has access token.
                       title: >-
                         BucketVisibility is the visibility of the bucket to
                         authorized users of an application
@@ -32949,16 +32946,13 @@ paths:
                       type: string
                       description: Name of the new bucket.
                     visibility:
+                      description: Visibility of the new bucket.
                       type: string
                       enum:
                         - PUBLIC
                         - USER
                         - APPLICATION
                       default: PUBLIC
-                      description: |-
-                        - PUBLIC: Bucket does not have visibility set.
-                         - USER: Bucket is visible to anyone.
-                         - APPLICATION: Bucket is visible to anyone who has access token.
                       title: >-
                         BucketVisibility is the visibility of the bucket to
                         authorized users of an application
@@ -33100,16 +33094,13 @@ paths:
                     type: string
                     description: Name of the new bucket.
                   visibility:
+                    description: Visibility of the new bucket.
                     type: string
                     enum:
                       - PUBLIC
                       - USER
                       - APPLICATION
                     default: PUBLIC
-                    description: |-
-                      - PUBLIC: Bucket does not have visibility set.
-                       - USER: Bucket is visible to anyone.
-                       - APPLICATION: Bucket is visible to anyone who has access token.
                     title: >-
                       BucketVisibility is the visibility of the bucket to
                       authorized users of an application
@@ -33170,16 +33161,13 @@ paths:
                       type: string
                       description: Name of the new bucket.
                     visibility:
+                      description: Visibility of the new bucket.
                       type: string
                       enum:
                         - PUBLIC
                         - USER
                         - APPLICATION
                       default: PUBLIC
-                      description: |-
-                        - PUBLIC: Bucket does not have visibility set.
-                         - USER: Bucket is visible to anyone.
-                         - APPLICATION: Bucket is visible to anyone who has access token.
                       title: >-
                         BucketVisibility is the visibility of the bucket to
                         authorized users of an application
@@ -33309,13 +33297,13 @@ paths:
             type: object
             properties:
               params:
+                description: params holds all the parameters of this module.
                 type: object
                 properties:
                   ipfs_gateway:
                     type: string
                   ipts_api_url:
                     type: string
-                description: Params defines the parameters for the module.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -33337,6 +33325,57 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/service/{uuid}':
+    get:
+      summary: Queries service by bucket id.
+      operationId: SonrioSonrBucketServiceForBucket
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Service:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                  service_endpoint:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: array
+                        items:
+                          type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /sonr-io/sonr/registry/params:
@@ -57303,16 +57342,13 @@ definitions:
         type: string
         description: Name of the new bucket.
       visibility:
+        description: Visibility of the new bucket.
         type: string
         enum:
           - PUBLIC
           - USER
           - APPLICATION
         default: PUBLIC
-        description: |-
-          - PUBLIC: Bucket does not have visibility set.
-           - USER: Bucket is visible to anyone.
-           - APPLICATION: Bucket is visible to anyone who has access token.
         title: >-
           BucketVisibility is the visibility of the bucket to authorized users
           of an application
@@ -57356,16 +57392,13 @@ definitions:
             type: string
             description: Name of the new bucket.
           visibility:
+            description: Visibility of the new bucket.
             type: string
             enum:
               - PUBLIC
               - USER
               - APPLICATION
             default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
@@ -57385,12 +57418,14 @@ definitions:
             type: array
             items:
               type: string
+            title: optional
           id:
             type: string
           controller:
             type: array
             items:
               type: string
+            title: optional
           verification_method:
             type: array
             items:
@@ -57411,31 +57446,40 @@ definitions:
                         type: string
                       value:
                         type: string
+                  title: optional
                 public_key_base58:
                   type: string
+                  title: optional
                 credential_json:
                   type: string
                   format: byte
+                  title: optional
+            title: optional
           authentication:
             type: array
             items:
               type: string
+            title: optional
           assertion_method:
             type: array
             items:
               type: string
+            title: optional
           capability_invocation:
             type: array
             items:
               type: string
+            title: optional
           capability_delegation:
             type: array
             items:
               type: string
+            title: optional
           key_agreement:
             type: array
             items:
               type: string
+            title: optional
           service:
             type: array
             items:
@@ -57454,10 +57498,12 @@ definitions:
                       type: array
                       items:
                         type: string
+            title: optional
           also_known_as:
             type: array
             items:
               type: string
+            title: optional
   sonrio.sonr.bucket.MsgBurnBucketResponse:
     type: object
     properties:
@@ -57477,16 +57523,13 @@ definitions:
             type: string
             description: Name of the new bucket.
           visibility:
+            description: Visibility of the new bucket.
             type: string
             enum:
               - PUBLIC
               - USER
               - APPLICATION
             default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
@@ -57504,12 +57547,14 @@ definitions:
             type: array
             items:
               type: string
+            title: optional
           id:
             type: string
           controller:
             type: array
             items:
               type: string
+            title: optional
           verification_method:
             type: array
             items:
@@ -57530,31 +57575,40 @@ definitions:
                         type: string
                       value:
                         type: string
+                  title: optional
                 public_key_base58:
                   type: string
+                  title: optional
                 credential_json:
                   type: string
                   format: byte
+                  title: optional
+            title: optional
           authentication:
             type: array
             items:
               type: string
+            title: optional
           assertion_method:
             type: array
             items:
               type: string
+            title: optional
           capability_invocation:
             type: array
             items:
               type: string
+            title: optional
           capability_delegation:
             type: array
             items:
               type: string
+            title: optional
           key_agreement:
             type: array
             items:
               type: string
+            title: optional
           service:
             type: array
             items:
@@ -57573,10 +57627,12 @@ definitions:
                       type: array
                       items:
                         type: string
+            title: optional
           also_known_as:
             type: array
             items:
               type: string
+            title: optional
   sonrio.sonr.bucket.MsgDeactivateBucketResponse:
     type: object
     properties:
@@ -57596,16 +57652,13 @@ definitions:
             type: string
             description: Name of the new bucket.
           visibility:
+            description: Visibility of the new bucket.
             type: string
             enum:
               - PUBLIC
               - USER
               - APPLICATION
             default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
@@ -57638,16 +57691,13 @@ definitions:
             type: string
             description: Name of the new bucket.
           visibility:
+            description: Visibility of the new bucket.
             type: string
             enum:
               - PUBLIC
               - USER
               - APPLICATION
             default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
@@ -57684,16 +57734,13 @@ definitions:
               type: string
               description: Name of the new bucket.
             visibility:
+              description: Visibility of the new bucket.
               type: string
               enum:
                 - PUBLIC
                 - USER
                 - APPLICATION
               default: PUBLIC
-              description: |-
-                - PUBLIC: Bucket does not have visibility set.
-                 - USER: Bucket is visible to anyone.
-                 - APPLICATION: Bucket is visible to anyone who has access token.
               title: >-
                 BucketVisibility is the visibility of the bucket to authorized
                 users of an application
@@ -57747,16 +57794,13 @@ definitions:
               type: string
               description: Name of the new bucket.
             visibility:
+              description: Visibility of the new bucket.
               type: string
               enum:
                 - PUBLIC
                 - USER
                 - APPLICATION
               default: PUBLIC
-              description: |-
-                - PUBLIC: Bucket does not have visibility set.
-                 - USER: Bucket is visible to anyone.
-                 - APPLICATION: Bucket is visible to anyone who has access token.
               title: >-
                 BucketVisibility is the visibility of the bucket to authorized
                 users of an application
@@ -57810,16 +57854,13 @@ definitions:
               type: string
               description: Name of the new bucket.
             visibility:
+              description: Visibility of the new bucket.
               type: string
               enum:
                 - PUBLIC
                 - USER
                 - APPLICATION
               default: PUBLIC
-              description: |-
-                - PUBLIC: Bucket does not have visibility set.
-                 - USER: Bucket is visible to anyone.
-                 - APPLICATION: Bucket is visible to anyone who has access token.
               title: >-
                 BucketVisibility is the visibility of the bucket to authorized
                 users of an application
@@ -57871,16 +57912,13 @@ definitions:
             type: string
             description: Name of the new bucket.
           visibility:
+            description: Visibility of the new bucket.
             type: string
             enum:
               - PUBLIC
               - USER
               - APPLICATION
             default: PUBLIC
-            description: |-
-              - PUBLIC: Bucket does not have visibility set.
-               - USER: Bucket is visible to anyone.
-               - APPLICATION: Bucket is visible to anyone who has access token.
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
@@ -57891,17 +57929,36 @@ definitions:
             type: string
             format: int64
             description: size of the new bucket.
+  sonrio.sonr.bucket.QueryGetServiceForBucketResponse:
+    type: object
+    properties:
+      Service:
+        type: object
+        properties:
+          id:
+            type: string
+          type:
+            type: string
+          service_endpoint:
+            type: object
+            properties:
+              key:
+                type: string
+              value:
+                type: array
+                items:
+                  type: string
   sonrio.sonr.bucket.QueryParamsResponse:
     type: object
     properties:
       params:
+        description: params holds all the parameters of this module.
         type: object
         properties:
           ipfs_gateway:
             type: string
           ipts_api_url:
             type: string
-        description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrio.sonr.registry.DIDDocument:
     type: object
@@ -57910,12 +57967,14 @@ definitions:
         type: array
         items:
           type: string
+        title: optional
       id:
         type: string
       controller:
         type: array
         items:
           type: string
+        title: optional
       verification_method:
         type: array
         items:
@@ -57936,31 +57995,40 @@ definitions:
                     type: string
                   value:
                     type: string
+              title: optional
             public_key_base58:
               type: string
+              title: optional
             credential_json:
               type: string
               format: byte
+              title: optional
+        title: optional
       authentication:
         type: array
         items:
           type: string
+        title: optional
       assertion_method:
         type: array
         items:
           type: string
+        title: optional
       capability_invocation:
         type: array
         items:
           type: string
+        title: optional
       capability_delegation:
         type: array
         items:
           type: string
+        title: optional
       key_agreement:
         type: array
         items:
           type: string
+        title: optional
       service:
         type: array
         items:
@@ -57979,10 +58047,12 @@ definitions:
                   type: array
                   items:
                     type: string
+        title: optional
       also_known_as:
         type: array
         items:
           type: string
+        title: optional
   sonrio.sonr.registry.KeyValuePair:
     type: object
     properties:
@@ -58033,11 +58103,14 @@ definitions:
               type: string
             value:
               type: string
+        title: optional
       public_key_base58:
         type: string
+        title: optional
       credential_json:
         type: string
         format: byte
+        title: optional
   cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:

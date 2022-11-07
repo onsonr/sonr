@@ -4,6 +4,7 @@ package sonrio.sonr.bucket;
 
 import "bucket/params.proto";
 import "bucket/bucket.proto";
+import "registry/did.proto";
 // this line is used by starport scaffolding # 1
 
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -34,6 +35,11 @@ service Query {
   // Queries all WhereIs by creator.
   rpc BucketByName(QueryGetBucketByNameRequest) returns (QueryGetBucketByNameResponse) {
     option (google.api.http).get = "/sonr-io/sonr/bucket/name/{name}";
+  }
+
+  // Queries service by bucket id.
+  rpc ServiceForBucket(QueryGetServiceForBucketRequest) returns (QueryGetServiceForBucketResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/service/{uuid}";
   }
 
   // Queries a list of WhereIs items.
@@ -79,6 +85,14 @@ message QueryGetBucketByNameRequest {
 message QueryGetBucketByNameResponse {
   repeated BucketConfig buckets = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetServiceForBucketRequest {
+  string uuid = 1;
+}
+
+message QueryGetServiceForBucketResponse {
+  sonrio.sonr.registry.Service Service = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllBucketsRequest {
