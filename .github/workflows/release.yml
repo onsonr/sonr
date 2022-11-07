@@ -297,7 +297,7 @@ jobs:
       - name: Setup Environment
         uses: actions/checkout@v3
       - id: info
-        uses: jossef/action-latest-release-info@v1.2.0
+        uses: jossef/action-latest-release-info@v1.2.1
       - run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }} ${{ github.workspace }}/tmp/cover.png
       - name: Publish Tweet
         id: tweet
