@@ -69,6 +69,16 @@ func (k Keeper) AddService(ctx sdk.Context, id string, svcDID *rt.Service) {
 	store.Set(types.BucketKey(id), b)
 }
 
+func (k Keeper) GetService(ctx sdk.Context, id string) (svcDID rt.Service, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceKeyPrefix))
+	b := store.Get(types.BucketKey(id))
+	if b == nil {
+		return svcDID, false
+	}
+	k.cdc.MustUnmarshal(b, &svcDID)
+	return svcDID, true
+}
+
 func (k Keeper) UpdateWhoIsService(ctx sdk.Context, b types.BucketConfig, svcDID *rt.Service) error {
 	whoIs, found := k.registryKeeper.GetWhoIs(ctx, b.GetCreator())
 	if !found {
@@ -120,10 +130,38 @@ func (k Keeper) GetWhereIsByCreator(ctx sdk.Context, creator string) (list []typ
 	return
 }
 
+func (k Keeper) DeleteService(ctx sdk.Context, id string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceKeyPrefix))
+	store.Delete(types.BucketKey(id))
+}
+
 // RemoveWhereIs removes a whereIs from the store
 func (k Keeper) RemoveWhereIs(ctx sdk.Context, id string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
-	store.Delete(types.BucketKey(id))
+	bucket, found := k.GetBucket(ctx, id)
+	if !found {
+		return
+	} else {
+		svcToDelete := bucket.GetDidService(bucket.Creator, "WE_DONT_CARE_THIS_VALUE")
+		whoIs, found := k.registryKeeper.GetWhoIs(ctx, bucket.GetCreator())
+		if !found {
+			return
+		}
+		didDoc := whoIs.GetDidDocument()
+		newSvcs := make([]*rt.Service, len(didDoc.Service)-1)
+		for _, s := range didDoc.Service {
+			if s.Id != svcToDelete.Id {
+				newSvcs = append(newSvcs, s)
+			}
+		}
+		didDoc.Service = newSvcs
+		whoIs.DidDocument = didDoc
+		whoIs.Timestamp = time.Now().Unix()
+		k.registryKeeper.SetWhoIs(ctx, whoIs)
+
+		k.DeleteService(ctx, id)
+		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BucketKeyPrefix))
+		store.Delete(types.BucketKey(id))
+	}
 }
 
 // GetAllWhereIs returns all whereIs

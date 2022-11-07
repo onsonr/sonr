@@ -33,7 +33,7 @@ func (k msgServer) AllocateBucket(goCtx context.Context, msg *types.MsgAllocateB
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("bucket with id %s not defined", msg.Bucket.Uuid))
 	}
 
-	sh := shell.NewShell("localhost:5001")
+	sh := shell.NewShell(types.NewParams().IptsApiUrl)
 
 	didService, err := bi.GenerateBucket(sh, &bucket, bucket.GetCreator())
 	if err != nil {

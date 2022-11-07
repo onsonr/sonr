@@ -18,7 +18,7 @@ func (b *BucketConfig) GetPath(address string, segments ...string) string {
 	return path
 }
 
-func (b *BucketConfig) GetDidService(address string) *rt.Service {
+func (b *BucketConfig) GetDidService(address string, cid string) *rt.Service {
 	segments := strings.Split(address, "snr")
 	service := fmt.Sprintf("did:snr:%s#%s", segments[1], b.Uuid)
 
@@ -27,18 +27,14 @@ func (b *BucketConfig) GetDidService(address string) *rt.Service {
 		Type: "LinkedResource",
 		ServiceEndpoint: &rt.ServiceEndpoint{
 			Key:   "uri",
-			Value: []string{b.GetURI(address)},
+			Value: []string{b.GetURI(address, cid)},
 		},
 	}
 }
 
-func (b *BucketConfig) GetURI(address string, items ...string) string {
+func (b *BucketConfig) GetURI(address string, cid string) string {
 	params := NewParams()
-	bucketPath := b.GetPath(address)
-	path := fmt.Sprintf("%s/ipns/%s", params.IpfsGateway, bucketPath)
-	for _, item := range items {
-		path = fmt.Sprintf("%s/%s", path, item)
-	}
+	path := fmt.Sprintf("%s/ipfs/%s", params.IpfsGateway, cid)
 	return path
 }
 

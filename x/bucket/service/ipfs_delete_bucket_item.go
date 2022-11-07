@@ -18,6 +18,8 @@ func DeleteBucketItem(sh *shell.Shell, whereIs *bt.BucketConfig, address string,
 
 func PurgeBucketItems(sh *shell.Shell, whereIs *bt.BucketConfig, address string) error {
 	entries, err := LsBucket(sh, whereIs, address)
+
+    fmt.Printf("%+v", entries)
 	if err != nil {
 		return err
 	}
