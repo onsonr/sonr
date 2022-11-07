@@ -17721,9 +17721,6 @@ paths:
                         }
       parameters:
         - name: body
-          description: |-
-            SimulateRequest is the request type for the Service.Simulate
-            RPC method.
           in: body
           required: true
           schema:
@@ -18523,11 +18520,6 @@ paths:
                         }
       parameters:
         - name: body
-          description: >-
-            BroadcastTxRequest is the request type for the
-            Service.BroadcastTxRequest
-
-            RPC method.
           in: body
           required: true
           schema:
@@ -33000,6 +32992,16 @@ paths:
           in: query
           required: false
           type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/bucket/where_is/{creator}':
@@ -33192,6 +33194,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -33610,6 +33622,16 @@ paths:
             when key
 
             is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -34288,16 +34310,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   /sonr-io/sonr/schema/query/schema:
@@ -34455,16 +34467,6 @@ paths:
           in: query
           required: false
           type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   '/sonr-io/sonr/schema/query/what_is/{did}':
@@ -34542,16 +34544,6 @@ paths:
             when key
 
             is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
           in: query
           required: false
           type: boolean
@@ -59786,6 +59778,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+    title: Response for `QueryAllWhatIsRequest`
   sonrio.sonr.schema.QueryParamsResponse:
     type: object
     properties:
@@ -59799,11 +59792,13 @@ definitions:
       schema:
         $ref: '#/definitions/sonrio.sonr.schema.Schema'
         title: Definition of schema
+    title: Abstract a single WhatIs by only returning a `Schema` in the response
   sonrio.sonr.schema.QueryWhatIsByDidResponse:
     type: object
     properties:
       what_is:
         $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
+    title: Response for querying a WhatIs instance by its did
   sonrio.sonr.schema.QueryWhatIsCreatorResponse:
     type: object
     properties:
@@ -59812,12 +59807,14 @@ definitions:
         items:
           $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
+    title: Response for querying `WhatIs`s by the creator address
   sonrio.sonr.schema.QueryWhatIsResponse:
     type: object
     properties:
       what_is:
         $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
         title: Schema Repersentation
+    title: Response for Querying a `WhatIs` instance
   sonrio.sonr.schema.Schema:
     type: object
     properties:
@@ -59891,17 +59888,17 @@ definitions:
         title: DID is the DID of the object
       schema:
         $ref: '#/definitions/sonrio.sonr.schema.Schema'
-        title: Object_doc is the object document
+        title: Schema to persist on chain
       creator:
         type: string
         title: Creator is the DID of the creator
       timestamp:
         type: string
         format: int64
-        title: Timestamp is the time of the last update of the DID Document
+        title: The time of the last update
       is_active:
         type: boolean
-        title: IsActive is the status of the DID Document
+        title: Indicates if the schema is depricated
       metadata:
         type: object
         additionalProperties:
@@ -59909,6 +59906,9 @@ definitions:
         title: >-
           Metadata is a map of key-value pairs that can be used to store
           additional information about the WhatIs (Schema)
+    title: >-
+      Defines a structure which holds a `Schema` and meta data related to that
+      Schema instance
   tendermint.spn.claim.ClaimRecord:
     type: object
     properties:

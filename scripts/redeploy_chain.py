@@ -11,16 +11,14 @@ from tracemalloc import stop
 import pydig
 from os.path import exists
 
+TYPE='beta'
+
 PORT = 26656
 NODE_ENDPOINTS = [
-    'v1-beta.sonr.ws',
-    'v2-beta.sonr.ws',
-    'v3-beta.sonr.ws',
-    'v4-beta.sonr.ws',
-    'v1.sonr.ws',
-    'v2.sonr.ws',
-    'v3.sonr.ws',
-    'v4.sonr.ws'
+    'v1.beta.sonr.ws',
+    'v2.beta.sonr.ws',
+    'v3.beta.sonr.ws',
+    'v4.beta.sonr.ws',
 ]
 
 TEMP_DIR="./temp"
@@ -118,7 +116,10 @@ def reload_daemon(node):
 
 def upload_sonrd_service(node):
     print(f"Uploading sonrd service to {node}")
-    return upload_file(node, '/etc/systemd/system/sonrd.service', f'{SCRIPT_DIR}/sonrd.service')
+    if(TYPE=='beta'):
+        return upload_file(node, '/etc/systemd/system/sonrd.service', f'{SCRIPT_DIR}/beta.sonrd.service')
+    else:
+        return upload_file(node, '/etc/systemd/system/sonrd.service', f'{SCRIPT_DIR}/sonrd.service')
 
 def upload_setup_chain_dev_script(node):
     return upload_file(node, f'~/setup_chain_dev.sh', f'{SCRIPT_DIR}/setup_chain_dev.sh')
