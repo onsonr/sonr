@@ -20,7 +20,7 @@ func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.
 		return nil, err
 	}
 
-	service, err := bi.GenerateBucket(mtr.sh, config, mtr.GetAddress())
+	service, cid, err := bi.GenerateBucket(mtr.sh, config, mtr.GetAddress())
 	if err != nil {
 		return nil, err
 	}
@@ -55,5 +55,6 @@ func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.
 		DidDocument: doc,
 		Uri:         service.ServiceEndpoint.Value[0],
 		Bucket:      config,
+		Cid:         cid,			
 	}, nil
 }

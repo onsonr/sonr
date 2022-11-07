@@ -189,6 +189,7 @@ message GenerateBucketResponse {
   string uri = 1;
   sonrio.sonr.registry.DIDDocument did_document = 2;
   sonrio.sonr.bucket.BucketConfig bucket = 3;
+  string cid = 4;
 }
 
 message AddBucketItemsResponse {
