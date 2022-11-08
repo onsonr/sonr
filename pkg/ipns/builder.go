@@ -31,10 +31,8 @@ func (iub *IPNSURIBuilder) String() string {
 func (iub *IPNSURIBuilder) BuildService() did.Service {
 	url := ssi.MustParseURI(iub.String())
 	return did.Service{
-		ID:   url,
-		Type: "ipns",
-		ServiceEndpoint: map[string]string{
-			"cid": iub.cid,
-		},
+		ID:              url,
+		Type:            "ipns",
+		ServiceEndpoint: iub.cid,
 	}
 }

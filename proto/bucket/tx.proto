@@ -2,7 +2,8 @@ syntax = "proto3";
 
 package sonrio.sonr.bucket;
 
-import "bucket/where_is.proto";
+import "bucket/bucket.proto";
+import "registry/did.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 option go_package = "github.com/sonr-io/sonr/x/bucket/types";
@@ -12,48 +13,55 @@ option java_multiple_files = true;
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateWhereIs(MsgCreateWhereIs) returns (MsgCreateWhereIsResponse);
-  rpc UpdateWhereIs(MsgUpdateWhereIs) returns (MsgUpdateWhereIsResponse);
-  rpc DeleteWhereIs(MsgDeleteWhereIs) returns (MsgDeleteWhereIsResponse);
-  // this line is used by starport scaffolding # proto/tx/rpc
+  rpc DefineBucket(MsgDefineBucket) returns (MsgDefineBucketResponse);
+  rpc AllocateBucket(MsgAllocateBucket) returns (MsgAllocateBucketResponse);
+  rpc DeactivateBucket(MsgDeactivateBucket) returns (MsgDeactivateBucketResponse);
+  rpc BurnBucket(MsgBurnBucket) returns (MsgBurnBucketResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
 }
 
-message MsgCreateWhereIs {
+message MsgDefineBucket {
   string creator = 1;
   string label = 2;
-  BucketVisibility visibility = 3;
-  BucketRole role = 4;
-  repeated BucketItem content = 5;
-  map<string, AclJwks> content_acl = 6;
 }
 
-message MsgCreateWhereIsResponse {
+message MsgDefineBucketResponse {
   int32 status = 1;
-  WhereIs where_is = 2;
+  BucketConfig bucket = 2;
 }
 
-message MsgUpdateWhereIs {
+message MsgAllocateBucket {
   string creator = 1;
-  string did = 2;
-  string label = 3;
-  BucketVisibility visibility = 4;
-  BucketRole role = 5;
-  repeated BucketItem content = 6;
-  map<string, AclJwks> content_acl = 7;
+  BucketConfig bucket = 2;
 }
 
-message MsgUpdateWhereIsResponse {
+message MsgAllocateBucketResponse {
   int32 status = 1;
-  WhereIs where_is = 2;
+  BucketConfig bucket = 2;
+  string serviceEndpoint = 3;
+  sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 
-message MsgDeleteWhereIs {
+message MsgDeactivateBucket {
   string creator = 1;
-  string did = 2;
+  BucketConfig bucket = 2;
 }
 
-message MsgDeleteWhereIsResponse {
+message MsgDeactivateBucketResponse {
   int32 status = 1;
+  BucketConfig bucket = 2;
+  int32 totalBurned = 3;
+}
+
+message MsgBurnBucket {
+  string creator = 1;
+  BucketConfig bucket = 2;
+}
+
+message MsgBurnBucketResponse {
+  int32 status = 1;
+  BucketConfig bucket = 2;
+  sonrio.sonr.registry.DIDDocument did_document = 4;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

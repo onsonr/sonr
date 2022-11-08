@@ -1,15 +1,29 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/mr-tron/base58/base58"
+	//"github.com/mr-tron/base58/base58"
+	"github.com/sonr-io/sonr/pkg/did"
 
 	"github.com/sonr-io/sonr/x/registry/types"
 	"github.com/spf13/cobra"
+	flag "github.com/spf13/pflag"
 )
+
+const (
+	FlagPubKey = "pubkey"
+)
+
+func FlagSetPublicKey() *flag.FlagSet {
+	fs := flag.NewFlagSet("", flag.ContinueOnError)
+	fs.String(FlagPubKey, "", "The creator's public key")
+	return fs
+}
 
 func CmdCreateWhoIs() *cobra.Command {
 	cmd := &cobra.Command{
@@ -17,14 +31,14 @@ func CmdCreateWhoIs() *cobra.Command {
 		Short: "Create a new WhoIs",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			pubkeyStr := cmd.Flag("pubkey").Value.String()
-			pubBuf, err := base58.Decode(pubkeyStr)
+			fs := cmd.Flags()
+			pubkeyStr, err := fs.GetString(FlagPubKey)
 			if err != nil {
 				return err
 			}
 
 			pub := &secp256k1.PubKey{
-				Key: pubBuf,
+				Key: []byte(pubkeyStr),
 			}
 			whoIsType := types.WhoIsType(1)
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -32,13 +46,29 @@ func CmdCreateWhoIs() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateWhoIs(clientCtx.GetFromAddress().String(), pub, []byte(args[0]), whoIsType)
+			rawCreator := clientCtx.GetFromAddress().String()
+			didUrl, err := did.ParseDID(fmt.Sprintf("did:snr:%s", rawCreator))
+			if err != nil {
+				return err
+			}
+			doc, err := did.NewDocument(didUrl.String())
+
+			if err != nil {
+				return err
+			}
+
+			docBz, err := doc.MarshalJSON()
+			if err != nil {
+				return err
+			}
+			msg := types.NewMsgCreateWhoIs(clientCtx.GetFromAddress().String(), pub, docBz, whoIsType)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+	cmd.Flags().AddFlagSet(FlagSetPublicKey())
 
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
