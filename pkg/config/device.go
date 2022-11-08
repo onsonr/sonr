@@ -4,22 +4,6 @@ import (
 	"runtime"
 )
 
-func init() {
-	if IsDesktop() {
-		Init()
-	}
-}
-
-// Init initializes the device package.
-func Init(options ...MotorOption) error {
-	opts := defaultMotorOptions()
-	for _, opt := range options {
-		opt(opts)
-	}
-	// return opts.Apply()
-	return nil
-}
-
 // Arch returns the current architecture.
 func Arch() string {
 	return runtime.GOARCH
