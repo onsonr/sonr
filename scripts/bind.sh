@@ -24,7 +24,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing Android Artifact..."
-        tar -czf ${BUILDDIR}/motor-${VERSION}-android.tar.gz io.sonr.motor.aar
+        tar -czf ${BUILDDIR}/motor_${VERSION}_android.tar.gz io.sonr.motor.aar
         rm -rf ${ANDROID_ARTIFACT}
         echo "✅ Android Tarball written to: ${ANDROID_TAR_BALL}"
       fi
@@ -38,7 +38,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing iOS Artifact..."
-        tar -czf ${BUILDDIR}/motor-${VERSION}-ios.tar.gz Motor.xcframework
+        tar -czf ${BUILDDIR}/motor_${VERSION}_ios.tar.gz Motor.xcframework
         rm -rf ${IOS_ARTIFACT}
         echo "✅ iOS Tarball written to: ${IOS_TAR_BALL}"
       fi
@@ -52,14 +52,12 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing Mac Artifact..."
-        tar -czf ${BUILDDIR}/motor-${VERSION}-darwin.tar.gz MotorMac.xcframework
+        tar -czf ${BUILDDIR}/motor_${VERSION}_darwin.tar.gz MotorMac.xcframework
         rm -rf ${IOS_ARTIFACT}
       fi
       ;;
     w)
       WASM_ARTIFACT=${BUILDDIR}/sonr-motor.wasm
-      WASM_TAR_BALL=${BUILDDIR}/motor-${VERSION}-wasm.tar.gz
-
       echo "🔷 Binding WebAssembly Artifact Version ${VERSION}..."
       cd ${MOTOR_WASM_DIR}
       GOOS=js GOARCH=wasm go build -tags wasm -o ${WASM_ARTIFACT} -v
@@ -67,7 +65,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing WebAssembly Artifact..."
-        tar -czf ${WASM_TAR_BALL} sonr-motor.wasm
+        tar -czf ${BUILDDIR}/motor_${VERSION}_wasm.tar.gz sonr-motor.wasm
         rm -rf ${WASM_ARTIFACT}
       fi
       echo "✅ WebAssembly Tarball written to: ${WASM_TAR_BALL}"

@@ -195,7 +195,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
 
-
   ## ------------------------------------------------------------
   ## [BLOCKCHAIN] Build and release for linux, macos
   ## ------------------------------------------------------------
@@ -208,6 +207,8 @@ jobs:
         ignite-version: [v0.24.0]
     name: "⛓️ Release Blockchain for ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
+    needs:
+      - prepare-release
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -229,7 +230,7 @@ jobs:
         if: ${{matrix.os == 'macos-latest'}}
         continue-on-error: true
         run: |
-          ignite chain build --release --release.prefix ${{steps.tag.outputs.tag}} -t darwin:amd64
+          ignite chain build --release --release.prefix sonrd_${{steps.tag.outputs.tag}} -t darwin:amd64
           gh release upload ${{ steps.tag.outputs.tag }} release/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -239,7 +240,7 @@ jobs:
         if: ${{matrix.os == 'ubuntu-latest'}}
         continue-on-error: false
         run: |
-          ignite chain build --release --release.prefix ${{steps.tag.outputs.tag}} -t linux:amd64
+          ignite chain build --release --release.prefix sonrd_${{steps.tag.outputs.tag}} -t linux:amd64
           gh release upload ${{ steps.tag.outputs.tag }} release/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
