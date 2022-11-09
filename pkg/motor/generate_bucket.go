@@ -24,7 +24,12 @@ func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.
 	if err != nil {
 		return nil, err
 	}
+
 	services, err := rt.ConvertServices([]*rt.Service{service})
+	if err != nil {
+		return nil, err
+	}
+	
 	mtr.DIDDocument.AddService(services[0])
 	docBz, err := mtr.DIDDocument.MarshalJSON()
 	if err != nil {
