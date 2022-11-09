@@ -21,6 +21,8 @@ type Document interface {
 	AddCapabilityInvocation(v *VerificationMethod)
 	// AddService adds a Service
 	AddService(s Service)
+	// RemoveServiceByID removes a service with the given ID
+	RemoveServiceByID(id string) bool
 
 	CopyFromBytes(b []byte) error
 

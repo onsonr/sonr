@@ -1,12 +1,13 @@
 package types
 
 import (
+	"os"
+	"path/filepath"
+
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/joho/godotenv"
 	"github.com/sonr-io/sonr/internal/projectpath"
 	"gopkg.in/yaml.v2"
-	"os"
-	"path/filepath"
 )
 
 const (

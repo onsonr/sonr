@@ -7,6 +7,7 @@ import (
 type MotorCallback interface {
 	OnDiscover(data []byte)
 	OnWalletEvent(data []byte)
+	OnLinking(data []byte)
 }
 
 type defaultCallback struct{}
@@ -27,4 +28,8 @@ func (cb *defaultCallback) OnWalletEvent(data []byte) {
 		log.Printf("error while unmarshalling event \n%s\n", err.Error())
 	}
 	log.Printf("type: %s\nError Message: %s\nMessage: %s\n", event.Type, event.ErrorMessage, event.Message)
+}
+
+func (cb *defaultCallback) OnLinking(data []byte) {
+	log.Println("ERROR: MotorCallback not implemented.")
 }
