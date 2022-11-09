@@ -45,6 +45,7 @@ jobs:
           name: ${{steps.tag.outputs.tag}}
           draft: false
           prerelease: ${{steps.version.outputs.is_stable == 'false'}}
+          generateReleaseNotes: true
 
       - name: Create a GitHub from New Tag
         id: new_tag_release
@@ -230,49 +231,52 @@ jobs:
   ## ------------------------------------------------------------
   ## [HIGHWAY] Build and release for linux, macos
   ## ------------------------------------------------------------
-  build-highway:
-    name: ⛓️ Build Highway for Linux, MacOS
-    runs-on: ubuntu-latest
-    needs:
-      - prepare-release
+  run-bulid:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        go-version: [1.18, 1.19]
+        ignite-version: [v0.22.1, v0.23.0, v0.24.0]
+    name: "Build/Test ${{ matrix.os }}; Go ${{ matrix.go-version }}; Ignite ${{ matrix.ignite-version }}"
+    runs-on: ${{ matrix.os }}
     steps:
-      # ---
-      # 1. Setup Environment
-      # ---
-      - name: Setup Environment
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - id: tag
-        uses: dawidd6/action-get-tag@v1
-      - id: vars
-        uses: ignite-hq/cli/actions/release/vars@develop
 
-      # ---
-      # 2. Build Blockchain Daemon
-      # ---
-      - name: Build Blockchain Daemon
-        uses: ignite-hq/cli/actions/cli@develop
-        if: ${{ steps.vars.outputs.should_release == 'true' }}
+      - uses: actions/setup-go@v3
         with:
-          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
-      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        if: ${{ steps.vars.outputs.is_release_type_latest == 'true' }}
-        with:
-          tag_name: ${{ steps.vars.outputs.tag_name }}
-          delete_release: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          go-version: ~${{ matrix.go-version }}
 
-      # ---
-      # 3. Upload to Github Release and Send Tweet
-      # ---
-      - name: Publish the Release
-        if: ${{ steps.vars.outputs.should_release == 'true' }}
+      - name: Install Ignite
         run: |
-          gh release upload ${{ steps.tag.outputs.tag }} release/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+
+      - name: Run build against Release target for macos
+        if: ${{matrix.os == 'macos-latest'}}
+        continue-on-error: false
+        run: |
+          ignite chain build --release -t darwin:amd64
+
+      - name: Run build against Release target for ubuntu
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        continue-on-error: false
+        run: |
+          ignite chain build --release -t linux:amd64
+
+      - name: Run tests and evaluate coverage
+        continue-on-error: true
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Run simulate
+        continue-on-error: true
+        run: go test -benchmem -run=^$ -bench ^BenchmarkSimulation ./app -NumBlocks=200 -BlockSize 50 -Commit=true -Verbose=true -Enabled=true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
 
   ## ------------------------------------------------------------
   ## [POST-RUN] Announce to Social Media and Post Release Notes
