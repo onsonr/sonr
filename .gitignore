@@ -171,3 +171,5 @@ docs/package-lock.json
 
 revive.toml
 .githooks/
+
+dist/
