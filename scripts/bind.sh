@@ -24,7 +24,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing Android Artifact..."
-        tar -czf ${BUILDDIR}/motor_${VERSION}_android.tar.gz io.sonr.motor.aar
+        zip -r ${BUILDDIR}/motor_android.zip io.sonr.motor.aar
         rm -rf ${ANDROID_ARTIFACT}
         echo "✅ Android Tarball written to: ${ANDROID_TAR_BALL}"
       fi
@@ -38,7 +38,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing iOS Artifact..."
-        tar -czf ${BUILDDIR}/motor_${VERSION}_ios.tar.gz Motor.xcframework
+        zip -r ${BUILDDIR}/motor_ios.zip Motor.xcframework
         rm -rf ${IOS_ARTIFACT}
         echo "✅ iOS Tarball written to: ${IOS_TAR_BALL}"
       fi
@@ -52,7 +52,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing Mac Artifact..."
-        tar -czf ${BUILDDIR}/motor_${VERSION}_darwin.tar.gz MotorMac.xcframework
+        zip -r ${BUILDDIR}/motor_darwin.zip MotorMac.xcframework
         rm -rf ${IOS_ARTIFACT}
       fi
       ;;
@@ -65,7 +65,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing WebAssembly Artifact..."
-        tar -czf ${BUILDDIR}/motor_${VERSION}_wasm.tar.gz sonr-motor.wasm
+        zip -r ${BUILDDIR}/motor_wasm.zip sonr-motor.wasm
         rm -rf ${WASM_ARTIFACT}
       fi
       echo "✅ WebAssembly Tarball written to: ${WASM_TAR_BALL}"
