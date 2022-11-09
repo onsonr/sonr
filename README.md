@@ -19,7 +19,7 @@
 
 ---
 
-<p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for intereoperability, and total digital autonomy.
+<p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for interoperability, and total digital autonomy.
     <br>
 </p>
 
@@ -167,4 +167,3 @@ Partners, collaborators, compliance, or just pure appreciation!
 - [W3C](https://www.w3.org/)
 - [Protocol Labs](https://protocol.ai/)
 - [Ignite](https://ignite.com/)
-- [AE Studio](https://ae.studio/)
