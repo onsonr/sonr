@@ -44,10 +44,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 What things you need to install the software and how to install them.
-- [Go](https://golang.org/doc/install)
-- [Protocol Buffers](https://grpc.io)
+- [Go](https://golang.org/doc/install) - v1.18.*
 - [Ignite CLI](https://github.com/ignite/cli) - v0.24.1
 - [Cosmos SDK](https://cosmos.network/docs/getting-started/installation.html) - v0.45.5
+- [Protocol Buffers](https://grpc.io)
 
 ### Installing
 A step by step series of examples that tell you how to get a development env running.
