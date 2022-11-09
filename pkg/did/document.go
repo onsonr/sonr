@@ -314,6 +314,16 @@ func (d *DocumentImpl) AddService(s Service) {
 	d.Service = append(d.Service, s)
 }
 
+func (d *DocumentImpl) RemoveServiceByID(id string) bool {
+	for i, s := range d.Service {
+		if s.ID.String() == id {
+			d.Service = append(d.Service[:i], d.Service[i+1:]...)
+			return true
+		}
+	}
+	return false
+}
+
 func (d DocumentImpl) MarshalJSON() ([]byte, error) {
 	type alias DocumentImpl
 	tmp := alias(d)

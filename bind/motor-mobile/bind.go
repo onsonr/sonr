@@ -19,6 +19,7 @@ var (
 type MotorCallback interface {
 	OnDiscover(data []byte)
 	OnWalletEvent(data []byte)
+	OnLinking(data []byte)
 }
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
@@ -122,13 +123,6 @@ func LoginWithKeys(buf []byte) ([]byte, error) {
 	} else {
 		return nil, err
 	}
-}
-
-func Connect() error {
-	if instance == nil {
-		return ct.ErrMotorWalletNotInitialized
-	}
-	return instance.Connect()
 }
 
 // IssuePayment creates a send/receive token request to the specified address.

@@ -31,6 +31,6 @@ func (mtr *motorNodeImpl) AddBucketItems(request mt.AddBucketItemsRequest) (*mt.
 		AddedItems:  paths,
 		Bucket:      config,
 		DidDocument: doc,
-		Uri:         config.GetDidService(mtr.GetAddress()).ServiceEndpoint.Value[0],
+		Uri:         config.GetDidService(mtr.GetAddress(), "").ServiceEndpoint.Value[0],
 	}, nil
 }
