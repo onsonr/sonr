@@ -52,7 +52,7 @@ while getopts "iawm" opt; do
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing Mac Artifact..."
-        tar -czf ${BUILDDIR}/motor-${VERSION}-macos.tar.gz MotorMac.xcframework
+        tar -czf ${BUILDDIR}/motor-${VERSION}-darwin.tar.gz MotorMac.xcframework
         rm -rf ${IOS_ARTIFACT}
       fi
       ;;

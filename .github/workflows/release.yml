@@ -17,13 +17,6 @@ jobs:
       tag_upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v3
-      - name: Bump version and push tag
-        if: github.event.pull_request.merged == true
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: nowsprinting/check-version-format-action@v3
         if: github.event.pull_request.merged == false
         id: version
@@ -46,18 +39,6 @@ jobs:
           draft: false
           prerelease: ${{steps.version.outputs.is_stable == 'false'}}
           generateReleaseNotes: true
-
-      - name: Create a GitHub from New Tag
-        id: new_tag_release
-        if: github.event.pull_request.merged == true
-        uses: ncipollo/release-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: ${{ steps.tag_version.outputs.new_tag }}
-          draft: false
-          prerelease: false
 
   ## ------------------------------------------------------------
   ## [MOTOR] Build and release for iOS
@@ -154,7 +135,7 @@ jobs:
     needs:
       - prepare-release
     steps:
-        # ---
+      # ---
       # 1. Setup Environment
       # ---
       - name: Setup Environment
@@ -229,17 +210,17 @@ jobs:
   #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   ## ------------------------------------------------------------
-  ## [HIGHWAY] Build and release for linux, macos
+  ## [BLOCKCHAIN] Build and release for linux, macos
   ## ------------------------------------------------------------
-  run-bulid:
+  build-blockchain:
     strategy:
       fail-fast: false
       max-parallel: 8
       matrix:
         os: [ubuntu-latest, macos-latest]
-        go-version: [1.18, 1.19]
-        ignite-version: [v0.22.1, v0.23.0, v0.24.0]
-    name: "Build/Test ${{ matrix.os }}; Go ${{ matrix.go-version }}; Ignite ${{ matrix.ignite-version }}"
+        go-version: [1.18]
+        ignite-version: [v0.24.0]
+    name: "Test/Build/Release Blockchain for ${{ matrix.os }}; Go ${{ matrix.go-version }}; Ignite ${{ matrix.ignite-version }}"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -247,25 +228,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - id: tag
+        if: github.event.pull_request.merged == false
+        uses: dawidd6/action-get-tag@v1
+
       - uses: actions/setup-go@v3
         with:
           go-version: ~${{ matrix.go-version }}
-
-      - name: Install Ignite
-        run: |
-          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
-
-      - name: Run build against Release target for macos
-        if: ${{matrix.os == 'macos-latest'}}
-        continue-on-error: false
-        run: |
-          ignite chain build --release -t darwin:amd64
-
-      - name: Run build against Release target for ubuntu
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        continue-on-error: false
-        run: |
-          ignite chain build --release -t linux:amd64
 
       - name: Run tests and evaluate coverage
         continue-on-error: true
@@ -278,47 +247,21 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
 
-  ## ------------------------------------------------------------
-  ## [POST-RUN] Announce to Social Media and Post Release Notes
-  ## ------------------------------------------------------------
-  announce:
-    name: 🔔 Announce to the World
-    if: 1 == 0 # Disabled for now, Error with Twitter publish which returns a 403
-    runs-on: ubuntu-latest
-    needs:
-      - bind-motor-android
-      - bind-motor-wasm
-      - bind-motor-ios
-      - build-highway
-    env:
-      CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
-      CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
-      ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-      ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-      PLACID_APP_BEARER: ${{ secrets.PLACID_APP_BEARER }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Setup Environment
-        uses: actions/checkout@v3
-      - id: info
-        uses: jossef/action-latest-release-info@v1.2.0
-      - run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }} ${{ github.workspace }}/tmp/cover.png
-      - name: Publish Tweet
-        id: tweet
-        uses: snow-actions/tweet@v1.3.0
-        with:
-          status: 💫 Woo-hoo - We just published a new release ${{ steps.info.outputs.tag_name }}!
-          media_paths: tmp/cover.png
-      - id: reply
-        uses: snow-actions/tweet@v1.3.0
-        with:
-          status: |
-            Find out more and view the changelog at:
-            ${{ steps.info.outputs.html_url }}
-
-            #release #sonr #motor #highway
-          in_reply_to_status_id: ${{ fromJSON(steps.tweet.outputs.response).id_str }}
-      - name: Log Tweet Response
+      - name: Install Ignite
         run: |
-          echo "Announcement Response: ${{ steps.tweet.outputs.response }}"
-          echo "Reply Response: ${{ steps.reply.outputs.response }}"
+          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+
+      - name: Run build against Release target for macos
+        if: ${{matrix.os == 'macos-latest'}}
+        continue-on-error: true
+        run: |
+          ignite chain build --release -t darwin:amd64 - "-X main.Version=${{ steps.tag.outputs.tag }} -X main.Commit=${{ github.sha }} -X main.Date=${{ github.event.head_commit.timestamp }} -X main.GoVersion=${{ matrix.go-version }} -X main.IgniteVersion=${{ matrix.ignite-version }} -X main.Name=sonr -X main.AppName=sonrd -X main.SentryDSN=${{ secrets.SENTRY_DSN }}"
+          gh release upload ${{ steps.tag.outputs.tag }} release/*.tar.gz
+
+      - name: Run build against Release target for ubuntu
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        continue-on-error: false
+        run: |
+          ignite chain build --release -t linux:amd64 - "-X main.Version=${{ steps.tag.outputs.tag }} -X main.Commit=${{ github.sha }} -X main.Date=${{ github.event.head_commit.timestamp }} -X main.GoVersion=${{ matrix.go-version }} -X main.IgniteVersion=${{ matrix.ignite-version }} -X main.Name=sonr -X main.AppName=sonrd -X main.SentryDSN=${{ secrets.SENTRY_DSN }}"
+          gh release upload ${{ steps.tag.outputs.tag }} release/*.tar.gz
+
