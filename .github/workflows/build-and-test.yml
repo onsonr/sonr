@@ -12,8 +12,8 @@ jobs:
       max-parallel: 8
       matrix:
         os: [ubuntu-latest, macos-latest]
-        go-version: [1.18, 1.19]
-        ignite-version: [v0.22.1, v0.23.0, v0.24.0]
+        go-version: [1.18]
+        ignite-version: [v0.23.0, v0.24.0]
     name: "Build/Test ${{ matrix.os }}; Go ${{ matrix.go-version }}; Ignite ${{ matrix.ignite-version }}"
     runs-on: ${{ matrix.os }}
     steps:
