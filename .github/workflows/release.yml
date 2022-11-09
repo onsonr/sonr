@@ -48,11 +48,11 @@ jobs:
           generateReleaseNotes: true
 
   ## ------------------------------------------------------------
-  ## [MOTOR] Build and release for iOS
+  ## [MOTOR] Build and release for iOS/macOS
   ## ------------------------------------------------------------
-  bind-motor-ios:
-    name: 🍎 Bind Motor for iOS
-    runs-on: macos-latest
+  bind-motor-apple:
+    name: 🍎 Bind Motor for iOS/iOS Simulator/macOS
+    runs-on: macos-12
     needs:
       - prepare-release
     steps:
@@ -72,7 +72,7 @@ jobs:
       # ---
       # 2. Build Motor xcFramework and Upload to GitHub Release
       # ---
-      - name: Build iOS XCFramework for Motor
+      - name: Build Universal XCFramework for Motor
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
@@ -124,41 +124,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          TAR_COMPRESS: true
-
-  ## ------------------------------------------------------------
-  ## [MOTOR] Build and release for Android
-  ## ------------------------------------------------------------
-  bind-motor-mac:
-    name: 🍎 Bind Motor for macOS
-    runs-on: macos-latest
-    needs:
-      - prepare-release
-    steps:
-      # ---
-      # 1. Setup Environment
-      # ---
-      - name: Setup Environment
-        uses: actions/checkout@v3
-      - run: mkdir -p build
-        working-directory: ${{ github.workspace}}
-      - id: tag
-        uses: dawidd6/action-get-tag@v1
-      - uses: actions/setup-go@v3
-        with:
-          go-version: ~1.18
-
-      # ---
-      # 2. Build Motor xcFramework and Upload to GitHub Release
-      # ---
-      - name: Build macOS XCFramework for Motor
-        run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init
-          sh scripts/bind.sh -m
-          gh release upload ${{ steps.tag.outputs.tag }} build/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
 
   ## ------------------------------------------------------------
