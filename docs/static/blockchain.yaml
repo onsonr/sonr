@@ -20140,6 +20140,7 @@ paths:
                     code_id:
                       type: string
                       format: uint64
+                      title: id for legacy support
                     creator:
                       type: string
                     data_hash:
@@ -20448,6 +20449,7 @@ paths:
                   code_id:
                     type: string
                     format: uint64
+                    title: id for legacy support
                   creator:
                     type: string
                   data_hash:
@@ -20668,6 +20670,7 @@ paths:
                         }
       parameters:
         - name: code_id
+          description: grpc-gateway_out does not support Go style CodID
           in: path
           required: true
           type: string
@@ -20897,6 +20900,7 @@ paths:
                         }
       parameters:
         - name: code_id
+          description: grpc-gateway_out does not support Go style CodID
           in: path
           required: true
           type: string
@@ -33389,8 +33393,8 @@ paths:
             type: object
             properties:
               params:
+                description: params holds all the parameters of this module.
                 type: object
-                description: Params defines the parameters for the module.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -33461,18 +33465,23 @@ paths:
                         Owner is the top level DID of the User or Application
                         derived from the multisignature wallet.
                     did_document:
+                      description: >-
+                        DIDDocument is the bytes representation of DIDDocument
+                        within the WhoIs. Initially marshalled as JSON.
                       type: object
                       properties:
                         context:
                           type: array
                           items:
                             type: string
+                          title: optional
                         id:
                           type: string
                         controller:
                           type: array
                           items:
                             type: string
+                          title: optional
                         verification_method:
                           type: array
                           items:
@@ -33493,31 +33502,40 @@ paths:
                                       type: string
                                     value:
                                       type: string
+                                title: optional
                               public_key_base58:
                                 type: string
+                                title: optional
                               credential_json:
                                 type: string
                                 format: byte
+                                title: optional
+                          title: optional
                         authentication:
                           type: array
                           items:
                             type: string
+                          title: optional
                         assertion_method:
                           type: array
                           items:
                             type: string
+                          title: optional
                         capability_invocation:
                           type: array
                           items:
                             type: string
+                          title: optional
                         capability_delegation:
                           type: array
                           items:
                             type: string
+                          title: optional
                         key_agreement:
                           type: array
                           items:
                             type: string
+                          title: optional
                         service:
                           type: array
                           items:
@@ -33536,10 +33554,12 @@ paths:
                                     type: array
                                     items:
                                       type: string
+                          title: optional
                         also_known_as:
                           type: array
                           items:
                             type: string
+                          title: optional
                     controllers:
                       type: array
                       items:
@@ -33548,6 +33568,9 @@ paths:
                         Credentials are the biometric info of the registered
                         name and account encoded with public key
                     type:
+                      title: >-
+                        Type is the kind of the entity. Possible values are:
+                        "user", "application"
                       type: string
                       enum:
                         - USER
@@ -33556,9 +33579,6 @@ paths:
                       description: |-
                         - USER: User is the type of the registered name
                          - APPLICATION: Application is the type of the registered name
-                      title: >-
-                        WhoIsType is the type of DIDDocument stored in the
-                        registry module
                     timestamp:
                       type: string
                       format: int64
@@ -33724,18 +33744,23 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
+                    description: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs. Initially marshalled as JSON.
                     type: object
                     properties:
                       context:
                         type: array
                         items:
                           type: string
+                        title: optional
                       id:
                         type: string
                       controller:
                         type: array
                         items:
                           type: string
+                        title: optional
                       verification_method:
                         type: array
                         items:
@@ -33756,31 +33781,40 @@ paths:
                                     type: string
                                   value:
                                     type: string
+                              title: optional
                             public_key_base58:
                               type: string
+                              title: optional
                             credential_json:
                               type: string
                               format: byte
+                              title: optional
+                        title: optional
                       authentication:
                         type: array
                         items:
                           type: string
+                        title: optional
                       assertion_method:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_invocation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_delegation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       key_agreement:
                         type: array
                         items:
                           type: string
+                        title: optional
                       service:
                         type: array
                         items:
@@ -33799,10 +33833,12 @@ paths:
                                   type: array
                                   items:
                                     type: string
+                        title: optional
                       also_known_as:
                         type: array
                         items:
                           type: string
+                        title: optional
                   controllers:
                     type: array
                     items:
@@ -33811,6 +33847,9 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -33819,9 +33858,6 @@ paths:
                     description: |-
                       - USER: User is the type of the registered name
                        - APPLICATION: Application is the type of the registered name
-                    title: >-
-                      WhoIsType is the type of DIDDocument stored in the
-                      registry module
                   timestamp:
                     type: string
                     format: int64
@@ -33908,18 +33944,23 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
+                    description: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs. Initially marshalled as JSON.
                     type: object
                     properties:
                       context:
                         type: array
                         items:
                           type: string
+                        title: optional
                       id:
                         type: string
                       controller:
                         type: array
                         items:
                           type: string
+                        title: optional
                       verification_method:
                         type: array
                         items:
@@ -33940,31 +33981,40 @@ paths:
                                     type: string
                                   value:
                                     type: string
+                              title: optional
                             public_key_base58:
                               type: string
+                              title: optional
                             credential_json:
                               type: string
                               format: byte
+                              title: optional
+                        title: optional
                       authentication:
                         type: array
                         items:
                           type: string
+                        title: optional
                       assertion_method:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_invocation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_delegation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       key_agreement:
                         type: array
                         items:
                           type: string
+                        title: optional
                       service:
                         type: array
                         items:
@@ -33983,10 +34033,12 @@ paths:
                                   type: array
                                   items:
                                     type: string
+                        title: optional
                       also_known_as:
                         type: array
                         items:
                           type: string
+                        title: optional
                   controllers:
                     type: array
                     items:
@@ -33995,6 +34047,9 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -34003,9 +34058,6 @@ paths:
                     description: |-
                       - USER: User is the type of the registered name
                        - APPLICATION: Application is the type of the registered name
-                    title: >-
-                      WhoIsType is the type of DIDDocument stored in the
-                      registry module
                   timestamp:
                     type: string
                     format: int64
@@ -34093,18 +34145,23 @@ paths:
                       Owner is the top level DID of the User or Application
                       derived from the multisignature wallet.
                   did_document:
+                    description: >-
+                      DIDDocument is the bytes representation of DIDDocument
+                      within the WhoIs. Initially marshalled as JSON.
                     type: object
                     properties:
                       context:
                         type: array
                         items:
                           type: string
+                        title: optional
                       id:
                         type: string
                       controller:
                         type: array
                         items:
                           type: string
+                        title: optional
                       verification_method:
                         type: array
                         items:
@@ -34125,31 +34182,40 @@ paths:
                                     type: string
                                   value:
                                     type: string
+                              title: optional
                             public_key_base58:
                               type: string
+                              title: optional
                             credential_json:
                               type: string
                               format: byte
+                              title: optional
+                        title: optional
                       authentication:
                         type: array
                         items:
                           type: string
+                        title: optional
                       assertion_method:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_invocation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_delegation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       key_agreement:
                         type: array
                         items:
                           type: string
+                        title: optional
                       service:
                         type: array
                         items:
@@ -34168,10 +34234,12 @@ paths:
                                   type: array
                                   items:
                                     type: string
+                        title: optional
                       also_known_as:
                         type: array
                         items:
                           type: string
+                        title: optional
                   controllers:
                     type: array
                     items:
@@ -34180,6 +34248,9 @@ paths:
                       Credentials are the biometric info of the registered name
                       and account encoded with public key
                   type:
+                    title: >-
+                      Type is the kind of the entity. Possible values are:
+                      "user", "application"
                     type: string
                     enum:
                       - USER
@@ -34188,9 +34259,6 @@ paths:
                     description: |-
                       - USER: User is the type of the registered name
                        - APPLICATION: Application is the type of the registered name
-                    title: >-
-                      WhoIsType is the type of DIDDocument stored in the
-                      registry module
                   timestamp:
                     type: string
                     format: int64
@@ -34244,8 +34312,8 @@ paths:
             type: object
             properties:
               params:
+                description: params holds all the parameters of this module.
                 type: object
-                description: Params defines the parameters for the module.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -52066,6 +52134,7 @@ definitions:
       code_id:
         type: string
         format: uint64
+        title: id for legacy support
       creator:
         type: string
       data_hash:
@@ -52456,6 +52525,7 @@ definitions:
           code_id:
             type: string
             format: uint64
+            title: id for legacy support
           creator:
             type: string
           data_hash:
@@ -52498,6 +52568,7 @@ definitions:
             code_id:
               type: string
               format: uint64
+              title: id for legacy support
             creator:
               type: string
             data_hash:
@@ -58187,18 +58258,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58219,31 +58295,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58262,10 +58347,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58274,6 +58361,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -58282,7 +58372,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58297,6 +58386,9 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgCreateWhoIsResponse:
     type: object
     properties:
@@ -58337,18 +58429,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58369,31 +58466,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58412,10 +58518,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58424,6 +58532,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -58432,7 +58543,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58447,6 +58557,9 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
+        description: >-
+          WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgDeactivateWhoIsResponse:
     type: object
     properties:
@@ -58496,18 +58609,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58528,31 +58646,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58571,10 +58698,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58583,6 +58712,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -58591,7 +58723,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58606,6 +58737,9 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgTransferAliasResponse:
     type: object
     properties:
@@ -58646,18 +58780,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58678,31 +58817,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58721,10 +58869,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58733,6 +58883,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -58741,7 +58894,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58756,6 +58908,9 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
+        description: >-
+          WhoIs is the updated WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.MsgUpdateWhoIsResponse:
     type: object
     properties:
@@ -58796,18 +58951,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58828,31 +58988,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58871,10 +59040,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58883,6 +59054,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -58891,7 +59065,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -58906,6 +59079,9 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
+        description: >-
+          WhoIs is the created WhoIs, contains the DID document and associated
+          metadata.
   sonrio.sonr.registry.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -58948,18 +59124,23 @@ definitions:
                 Owner is the top level DID of the User or Application derived
                 from the multisignature wallet.
             did_document:
+              description: >-
+                DIDDocument is the bytes representation of DIDDocument within
+                the WhoIs. Initially marshalled as JSON.
               type: object
               properties:
                 context:
                   type: array
                   items:
                     type: string
+                  title: optional
                 id:
                   type: string
                 controller:
                   type: array
                   items:
                     type: string
+                  title: optional
                 verification_method:
                   type: array
                   items:
@@ -58980,31 +59161,40 @@ definitions:
                               type: string
                             value:
                               type: string
+                        title: optional
                       public_key_base58:
                         type: string
+                        title: optional
                       credential_json:
                         type: string
                         format: byte
+                        title: optional
+                  title: optional
                 authentication:
                   type: array
                   items:
                     type: string
+                  title: optional
                 assertion_method:
                   type: array
                   items:
                     type: string
+                  title: optional
                 capability_invocation:
                   type: array
                   items:
                     type: string
+                  title: optional
                 capability_delegation:
                   type: array
                   items:
                     type: string
+                  title: optional
                 key_agreement:
                   type: array
                   items:
                     type: string
+                  title: optional
                 service:
                   type: array
                   items:
@@ -59023,10 +59213,12 @@ definitions:
                             type: array
                             items:
                               type: string
+                  title: optional
                 also_known_as:
                   type: array
                   items:
                     type: string
+                  title: optional
             controllers:
               type: array
               items:
@@ -59035,6 +59227,9 @@ definitions:
                 Credentials are the biometric info of the registered name and
                 account encoded with public key
             type:
+              title: >-
+                Type is the kind of the entity. Possible values are: "user",
+                "application"
               type: string
               enum:
                 - USER
@@ -59043,9 +59238,6 @@ definitions:
               description: |-
                 - USER: User is the type of the registered name
                  - APPLICATION: Application is the type of the registered name
-              title: >-
-                WhoIsType is the type of DIDDocument stored in the registry
-                module
             timestamp:
               type: string
               format: int64
@@ -59089,8 +59281,8 @@ definitions:
     type: object
     properties:
       params:
+        description: params holds all the parameters of this module.
         type: object
-        description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrio.sonr.registry.QueryWhoIsAliasResponse:
     type: object
@@ -59129,18 +59321,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -59161,31 +59358,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -59204,10 +59410,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -59216,6 +59424,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -59224,7 +59435,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -59276,18 +59486,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -59308,31 +59523,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -59351,10 +59575,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -59363,6 +59589,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -59371,7 +59600,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -59423,18 +59651,23 @@ definitions:
               Owner is the top level DID of the User or Application derived from
               the multisignature wallet.
           did_document:
+            description: >-
+              DIDDocument is the bytes representation of DIDDocument within the
+              WhoIs. Initially marshalled as JSON.
             type: object
             properties:
               context:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -59455,31 +59688,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -59498,10 +59740,12 @@ definitions:
                           type: array
                           items:
                             type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -59510,6 +59754,9 @@ definitions:
               Credentials are the biometric info of the registered name and
               account encoded with public key
           type:
+            title: >-
+              Type is the kind of the entity. Possible values are: "user",
+              "application"
             type: string
             enum:
               - USER
@@ -59518,7 +59765,6 @@ definitions:
             description: |-
               - USER: User is the type of the registered name
                - APPLICATION: Application is the type of the registered name
-            title: WhoIsType is the type of DIDDocument stored in the registry module
           timestamp:
             type: string
             format: int64
@@ -59567,18 +59813,23 @@ definitions:
           Owner is the top level DID of the User or Application derived from the
           multisignature wallet.
       did_document:
+        description: >-
+          DIDDocument is the bytes representation of DIDDocument within the
+          WhoIs. Initially marshalled as JSON.
         type: object
         properties:
           context:
             type: array
             items:
               type: string
+            title: optional
           id:
             type: string
           controller:
             type: array
             items:
               type: string
+            title: optional
           verification_method:
             type: array
             items:
@@ -59599,31 +59850,40 @@ definitions:
                         type: string
                       value:
                         type: string
+                  title: optional
                 public_key_base58:
                   type: string
+                  title: optional
                 credential_json:
                   type: string
                   format: byte
+                  title: optional
+            title: optional
           authentication:
             type: array
             items:
               type: string
+            title: optional
           assertion_method:
             type: array
             items:
               type: string
+            title: optional
           capability_invocation:
             type: array
             items:
               type: string
+            title: optional
           capability_delegation:
             type: array
             items:
               type: string
+            title: optional
           key_agreement:
             type: array
             items:
               type: string
+            title: optional
           service:
             type: array
             items:
@@ -59642,10 +59902,12 @@ definitions:
                       type: array
                       items:
                         type: string
+            title: optional
           also_known_as:
             type: array
             items:
               type: string
+            title: optional
       controllers:
         type: array
         items:
@@ -59654,6 +59916,9 @@ definitions:
           Credentials are the biometric info of the registered name and account
           encoded with public key
       type:
+        title: >-
+          Type is the kind of the entity. Possible values are: "user",
+          "application"
         type: string
         enum:
           - USER
@@ -59662,7 +59927,6 @@ definitions:
         description: |-
           - USER: User is the type of the registered name
            - APPLICATION: Application is the type of the registered name
-        title: WhoIsType is the type of DIDDocument stored in the registry module
       timestamp:
         type: string
         format: int64
@@ -59719,6 +59983,7 @@ definitions:
         type: string
       what_is:
         $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
+        title: WhatIs object created on chain
   sonrio.sonr.schema.MsgDeprecateSchemaResponse:
     type: object
     properties:
@@ -59767,14 +60032,15 @@ definitions:
     type: object
     properties:
       params:
+        description: params holds all the parameters of this module.
         type: object
-        description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrio.sonr.schema.QuerySchemaResponse:
     type: object
     properties:
       schema:
         $ref: '#/definitions/sonrio.sonr.schema.Schema'
+        title: Definition of schema
     title: Abstract a single WhatIs by only returning a `Schema` in the response
   sonrio.sonr.schema.QueryWhatIsByDidResponse:
     type: object
@@ -59796,6 +60062,7 @@ definitions:
     properties:
       what_is:
         $ref: '#/definitions/sonrio.sonr.schema.WhatIs'
+        title: Schema Repersentation
     title: Response for Querying a `WhatIs` instance
   sonrio.sonr.schema.Schema:
     type: object
@@ -59836,11 +60103,13 @@ definitions:
         title: the name/key of the field
       field_kind:
         $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
+        title: the type/kind of the field
     title: SchemaField represents an individual field in the schema
   sonrio.sonr.schema.SchemaFieldKind:
     type: object
     properties:
       kind:
+        title: the explicit kind
         type: string
         enum:
           - LIST
@@ -59853,6 +60122,7 @@ definitions:
         default: LIST
       list_kind:
         $ref: '#/definitions/sonrio.sonr.schema.SchemaFieldKind'
+        title: 'Optional; this is recursive, allowing an indefinite level of nesting'
       link_did:
         type: string
         title: >-
@@ -59867,6 +60137,7 @@ definitions:
         title: DID is the DID of the object
       schema:
         $ref: '#/definitions/sonrio.sonr.schema.Schema'
+        title: Schema to persist on chain
       creator:
         type: string
         title: Creator is the DID of the creator
