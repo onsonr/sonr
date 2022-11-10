@@ -27,13 +27,6 @@ jobs:
         if: github.event.pull_request.merged == false
         uses: dawidd6/action-get-tag@v1
 
-      - name: Parse semver string
-        id: semver
-        uses: booxmedialtd/ws-action-parse-semver@v1
-        with:
-          input_string: ${{ steps.tag.outputs.tag }}
-          version_extractor_regex: '\/v(.*)$'
-
       - name: Create Release
         id: create_release
         if: github.event.pull_request.merged == false
@@ -43,8 +36,7 @@ jobs:
         with:
           tag: ${{ github.ref }}
           name: ${{steps.tag.outputs.tag}}
-          draft: true
-          prerelease: ${{steps.semver.outputs.prerelease != ''}}
+          prerelease: ${{steps.version.outputs.prerelease != ''}}
           generateReleaseNotes: true
 
   ## ------------------------------------------------------------
