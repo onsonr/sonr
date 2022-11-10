@@ -43,7 +43,6 @@ const (
 	IPFS_ADDRESS_PROD      = "https://ipfs.sonr.ws"
 	IPFS_API_ADDRESS_PROD  = "https://api.ipfs.sonr.ws"
 	VAULT_API_ADDRESS_PROD = "http://vault.sonr.ws"
-
 )
 
 type Client struct {
@@ -64,6 +63,8 @@ func (c *Client) GetFaucetAddress() string {
 	if errors.Is(err, os.ErrNotExist) {
 		// .env does not exist, use preset client mode
 		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_PROD:
+			return BLOCKCHAIN_FAUCET_PROD
 		case mt.ClientMode_ENDPOINT_BETA:
 			return BLOCKCHAIN_FAUCET_BETA
 		case mt.ClientMode_ENDPOINT_DEV:
@@ -89,6 +90,8 @@ func (c *Client) GetRPCAddress() string {
 	if errors.Is(err, os.ErrNotExist) {
 		// .env does not exist, use preset client mode
 		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_PROD:
+			return BLOCKCHAIN_RPC_PROD
 		case mt.ClientMode_ENDPOINT_BETA:
 			return BLOCKCHAIN_RPC_BETA
 		case mt.ClientMode_ENDPOINT_DEV:
@@ -114,6 +117,8 @@ func (c *Client) GetAPIAddress() string {
 	if errors.Is(err, os.ErrNotExist) {
 		// .env does not exist, use preset client mode
 		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_PROD:
+			return BLOCKCHAIN_REST_PROD
 		case mt.ClientMode_ENDPOINT_BETA:
 			return BLOCKCHAIN_REST_BETA
 		case mt.ClientMode_ENDPOINT_DEV:
@@ -138,6 +143,8 @@ func (c *Client) GetIPFSAddress() string {
 	_, err := os.Stat(env_path)
 	if errors.Is(err, os.ErrNotExist) {
 		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_PROD:
+			return IPFS_ADDRESS_PROD
 		case mt.ClientMode_ENDPOINT_BETA:
 			return IPFS_ADDRESS_BETA
 		case mt.ClientMode_ENDPOINT_DEV:
@@ -162,6 +169,8 @@ func (c *Client) GetIPFSApiAddress() string {
 	_, err := os.Stat(env_path)
 	if errors.Is(err, os.ErrNotExist) {
 		switch c.clientMode {
+		case mt.ClientMode_ENDPOINT_PROD:
+			return IPFS_ADDRESS_PROD
 		case mt.ClientMode_ENDPOINT_BETA:
 			return IPFS_ADDRESS_BETA
 		case mt.ClientMode_ENDPOINT_DEV:
