@@ -18,6 +18,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 - [I Have a Question](#i-have-a-question)
 - [I Want To Contribute](#i-want-to-contribute)
   - [Reporting Bugs](#reporting-bugs)
+    - [Pushing Tags Upstream](#pushing-tags-upstream)
   - [Suggesting Enhancements](#suggesting-enhancements)
   - [Your First Code Contribution](#your-first-code-contribution)
   - [Improving The Documentation](#improving-the-documentation)
@@ -83,6 +84,15 @@ A good bug report shouldn't leave others needing to chase you up for more inform
   - Version of the interpreter, compiler, SDK, runtime environment, package manager, depending on what seems relevant.
   - Possibly your input and the output
   - Can you reliably reproduce the issue? And can you also reproduce it with older versions?
+
+#### Pushing Tags Upstream
+If you want to push a tag, run the following command first. It removes all local tags and pulls the remote tags so you don't clobber them.
+
+`git tag -l | xargs git tag -d && git fetch --tags`
+
+
+For comments use `//` for all comments. `/*` style comments break go doc
+
 
 <!-- omit in toc -->
 #### How Do I Submit a Good Bug Report?
