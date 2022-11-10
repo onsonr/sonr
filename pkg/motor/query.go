@@ -5,9 +5,29 @@ import (
 	"net/http"
 
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	bt "github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
+
+// TODO
+func (mtr *motorNodeImpl) QueryBuckets(req mt.FindBucketConfigRequest) (*mt.FindBucketConfigResponse, error) {
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	config, err := mtr.fetchBucketConfig(req.Bucket, req.Uuid, req.Creator, req.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &mt.FindBucketConfigResponse{
+		Creator:         config.Creator,
+		Label:           config.Name,
+		Uuid:            config.Uuid,
+		Bucket:          config,
+		IsUserAllocated: false,
+	}, nil
+}
 
 func (mtr *motorNodeImpl) QueryWhoIs(req mt.QueryWhoIsRequest) (*mt.QueryWhoIsResponse, error) {
 	resp, err := mtr.GetClient().QueryWhoIs(req.Did)
@@ -97,42 +117,6 @@ func (mtr *motorNodeImpl) QueryWhatIsByDid(did string) (*mt.QueryWhatIsResponse,
 		Code:   http.StatusOK,
 		WhatIs: resp,
 		Schema: s,
-	}, nil
-}
-
-func (mtr *motorNodeImpl) QueryWhereIs(req mt.QueryWhereIsRequest) (*mt.QueryWhereIsResponse, error) {
-	// use the item within the cache from GetWhereIs
-	if wi := mtr.Resources.whereIsStore[req.Did]; wi != nil {
-		return &mt.QueryWhereIsResponse{
-			WhereIs: wi,
-		}, nil
-	}
-
-	// Query from chain
-	resp, err := mtr.GetClient().QueryWhereIs(req.Did, mtr.Address)
-	if err != nil {
-		return nil, err
-	}
-	mtr.Resources.StoreWhereIs(resp)
-	return &mt.QueryWhereIsResponse{
-		WhereIs: resp,
-	}, nil
-}
-
-func (mtr *motorNodeImpl) QueryWhereIsByCreator(req mt.QueryWhereIsByCreatorRequest) (*mt.QueryWhereIsByCreatorResponse, error) {
-	resp, err := mtr.GetClient().QueryWhereIsByCreator(req.Creator, req.Pagination)
-	var ptrArr []*bt.WhereIs = make([]*bt.WhereIs, 0)
-	for _, wi := range resp.WhereIs {
-		mtr.Resources.whereIsStore[wi.Did] = &wi
-		ptrArr = append(ptrArr, &wi)
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	return &mt.QueryWhereIsByCreatorResponse{
-		Code:    http.StatusAccepted,
-		WhereIs: ptrArr,
 	}, nil
 }
 

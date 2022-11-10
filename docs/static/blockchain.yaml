@@ -32779,6 +32779,517 @@ paths:
           format: uint64
       tags:
         - Query
+  /sonr-io/sonr/bucket/all:
+    get:
+      summary: Queries a list of WhereIs items.
+      operationId: SonrioSonrBucketBucketsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              buckets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      description: DID of the created bucket.
+                    creator:
+                      type: string
+                      title: Creator of the new bucket
+                    name:
+                      type: string
+                      description: Name of the new bucket.
+                    visibility:
+                      description: Visibility of the new bucket.
+                      type: string
+                      enum:
+                        - PUBLIC
+                        - USER
+                        - APPLICATION
+                      default: PUBLIC
+                      title: >-
+                        BucketVisibility is the visibility of the bucket to
+                        authorized users of an application
+                    is_active:
+                      type: boolean
+                      description: IsActive flag of the new bucket.
+                    size:
+                      type: string
+                      format: int64
+                      description: size of the new bucket.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/creator/{creator}':
+    get:
+      summary: Queries all WhereIs by creator.
+      operationId: SonrioSonrBucketBucketByCreator
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              buckets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      description: DID of the created bucket.
+                    creator:
+                      type: string
+                      title: Creator of the new bucket
+                    name:
+                      type: string
+                      description: Name of the new bucket.
+                    visibility:
+                      description: Visibility of the new bucket.
+                      type: string
+                      enum:
+                        - PUBLIC
+                        - USER
+                        - APPLICATION
+                      default: PUBLIC
+                      title: >-
+                        BucketVisibility is the visibility of the bucket to
+                        authorized users of an application
+                    is_active:
+                      type: boolean
+                      description: IsActive flag of the new bucket.
+                    size:
+                      type: string
+                      format: int64
+                      description: size of the new bucket.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/id/{uuid}':
+    get:
+      summary: Queries a WhereIs by did and creator.
+      operationId: SonrioSonrBucketBucket
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              bucket:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    description: DID of the created bucket.
+                  creator:
+                    type: string
+                    title: Creator of the new bucket
+                  name:
+                    type: string
+                    description: Name of the new bucket.
+                  visibility:
+                    description: Visibility of the new bucket.
+                    type: string
+                    enum:
+                      - PUBLIC
+                      - USER
+                      - APPLICATION
+                    default: PUBLIC
+                    title: >-
+                      BucketVisibility is the visibility of the bucket to
+                      authorized users of an application
+                  is_active:
+                    type: boolean
+                    description: IsActive flag of the new bucket.
+                  size:
+                    type: string
+                    format: int64
+                    description: size of the new bucket.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/sonr-io/sonr/bucket/name/{name}':
+    get:
+      summary: Queries all WhereIs by creator.
+      operationId: SonrioSonrBucketBucketByName
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              buckets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      description: DID of the created bucket.
+                    creator:
+                      type: string
+                      title: Creator of the new bucket
+                    name:
+                      type: string
+                      description: Name of the new bucket.
+                    visibility:
+                      description: Visibility of the new bucket.
+                      type: string
+                      enum:
+                        - PUBLIC
+                        - USER
+                        - APPLICATION
+                      default: PUBLIC
+                      title: >-
+                        BucketVisibility is the visibility of the bucket to
+                        authorized users of an application
+                    is_active:
+                      type: boolean
+                      description: IsActive flag of the new bucket.
+                    size:
+                      type: string
+                      format: int64
+                      description: size of the new bucket.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
   /sonr-io/sonr/bucket/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -32792,6 +33303,11 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  ipfs_gateway:
+                    type: string
+                  ipts_api_url:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -32813,516 +33329,6 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
-      tags:
-        - Query
-  /sonr-io/sonr/bucket/where_is:
-    get:
-      summary: Queries a list of WhereIs items.
-      operationId: SonrioSonrBucketWhereIsAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              where_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      description: DID of the created bucket.
-                    creator:
-                      type: string
-                      title: Creator of the new bucket
-                    label:
-                      type: string
-                      description: Label of the new bucket.
-                    visibility:
-                      description: Visibility of the new bucket.
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - PUBLIC
-                        - PRIVATE
-                      default: UNSPECIFIED
-                      title: >-
-                        BucketVisibility is the visibility of the bucket to
-                        authorized users of an application
-                    role:
-                      description: Role of the creator of the new bucket.
-                      type: string
-                      enum:
-                        - NONE
-                        - APPLICATION
-                        - USER
-                      default: NONE
-                    is_active:
-                      type: boolean
-                      description: IsActive flag of the new bucket.
-                    content:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                            description: Name of the bucket item.
-                          uri:
-                            type: string
-                            title: DID of the item. If applicable // optional
-                          timestamp:
-                            type: string
-                            format: int64
-                            title: Timestamp of the last update. // optional
-                          type:
-                            title: Type of the resource
-                            type: string
-                            enum:
-                              - None
-                              - DID
-                              - CID
-                            default: None
-                          schema_did:
-                            type: string
-                            title: >-
-                              References the schema and item within the bucket
-                              is associated with.
-
-                              Bucket items do not need to use the same schema if
-                              the bucket is "generic" // optional
-                        description: >-
-                          BucketItem is a pointer to a single piece of content
-                          in a bucket.
-                      description: Content of the new bucket map of DIDs to CIDs.
-                    content_acl:
-                      type: object
-                      additionalProperties:
-                        type: object
-                        properties:
-                          encrypted_jwks:
-                            type: object
-                            additionalProperties:
-                              type: string
-                              format: byte
-                        title: AclJwks is a map of JWKs for a given Schema
-                      description: JWKs of the new bucket.
-                    timestamp:
-                      type: string
-                      format: int64
-                      description: Timestamp of the new bucket.
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  '/sonr-io/sonr/bucket/where_is/{creator}':
-    get:
-      summary: Queries all WhereIs by creator.
-      operationId: SonrioSonrBucketWhereIsByCreator
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              where_is:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    did:
-                      type: string
-                      description: DID of the created bucket.
-                    creator:
-                      type: string
-                      title: Creator of the new bucket
-                    label:
-                      type: string
-                      description: Label of the new bucket.
-                    visibility:
-                      description: Visibility of the new bucket.
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - PUBLIC
-                        - PRIVATE
-                      default: UNSPECIFIED
-                      title: >-
-                        BucketVisibility is the visibility of the bucket to
-                        authorized users of an application
-                    role:
-                      description: Role of the creator of the new bucket.
-                      type: string
-                      enum:
-                        - NONE
-                        - APPLICATION
-                        - USER
-                      default: NONE
-                    is_active:
-                      type: boolean
-                      description: IsActive flag of the new bucket.
-                    content:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                            description: Name of the bucket item.
-                          uri:
-                            type: string
-                            title: DID of the item. If applicable // optional
-                          timestamp:
-                            type: string
-                            format: int64
-                            title: Timestamp of the last update. // optional
-                          type:
-                            title: Type of the resource
-                            type: string
-                            enum:
-                              - None
-                              - DID
-                              - CID
-                            default: None
-                          schema_did:
-                            type: string
-                            title: >-
-                              References the schema and item within the bucket
-                              is associated with.
-
-                              Bucket items do not need to use the same schema if
-                              the bucket is "generic" // optional
-                        description: >-
-                          BucketItem is a pointer to a single piece of content
-                          in a bucket.
-                      description: Content of the new bucket map of DIDs to CIDs.
-                    content_acl:
-                      type: object
-                      additionalProperties:
-                        type: object
-                        properties:
-                          encrypted_jwks:
-                            type: object
-                            additionalProperties:
-                              type: string
-                              format: byte
-                        title: AclJwks is a map of JWKs for a given Schema
-                      description: JWKs of the new bucket.
-                    timestamp:
-                      type: string
-                      format: int64
-                      description: Timestamp of the new bucket.
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: creator
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  '/sonr-io/sonr/bucket/where_is/{creator}/{did}':
-    get:
-      summary: Queries a WhereIs by did and creator.
-      operationId: SonrioSonrBucketWhereIs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              where_is:
-                type: object
-                properties:
-                  did:
-                    type: string
-                    description: DID of the created bucket.
-                  creator:
-                    type: string
-                    title: Creator of the new bucket
-                  label:
-                    type: string
-                    description: Label of the new bucket.
-                  visibility:
-                    description: Visibility of the new bucket.
-                    type: string
-                    enum:
-                      - UNSPECIFIED
-                      - PUBLIC
-                      - PRIVATE
-                    default: UNSPECIFIED
-                    title: >-
-                      BucketVisibility is the visibility of the bucket to
-                      authorized users of an application
-                  role:
-                    description: Role of the creator of the new bucket.
-                    type: string
-                    enum:
-                      - NONE
-                      - APPLICATION
-                      - USER
-                    default: NONE
-                  is_active:
-                    type: boolean
-                    description: IsActive flag of the new bucket.
-                  content:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                          description: Name of the bucket item.
-                        uri:
-                          type: string
-                          title: DID of the item. If applicable // optional
-                        timestamp:
-                          type: string
-                          format: int64
-                          title: Timestamp of the last update. // optional
-                        type:
-                          title: Type of the resource
-                          type: string
-                          enum:
-                            - None
-                            - DID
-                            - CID
-                          default: None
-                        schema_did:
-                          type: string
-                          title: >-
-                            References the schema and item within the bucket is
-                            associated with.
-
-                            Bucket items do not need to use the same schema if
-                            the bucket is "generic" // optional
-                      description: >-
-                        BucketItem is a pointer to a single piece of content in
-                        a bucket.
-                    description: Content of the new bucket map of DIDs to CIDs.
-                  content_acl:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        encrypted_jwks:
-                          type: object
-                          additionalProperties:
-                            type: string
-                            format: byte
-                      title: AclJwks is a map of JWKs for a given Schema
-                    description: JWKs of the new bucket.
-                  timestamp:
-                    type: string
-                    format: int64
-                    description: Timestamp of the new bucket.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: creator
-          in: path
-          required: true
-          type: string
-        - name: did
-          in: path
-          required: true
-          type: string
       tags:
         - Query
   /sonr-io/sonr/registry/params:
@@ -33417,12 +33423,14 @@ paths:
                           type: array
                           items:
                             type: string
+                          title: optional
                         id:
                           type: string
                         controller:
                           type: array
                           items:
                             type: string
+                          title: optional
                         verification_method:
                           type: array
                           items:
@@ -33443,31 +33451,40 @@ paths:
                                       type: string
                                     value:
                                       type: string
+                                title: optional
                               public_key_base58:
                                 type: string
+                                title: optional
                               credential_json:
                                 type: string
                                 format: byte
+                                title: optional
+                          title: optional
                         authentication:
                           type: array
                           items:
                             type: string
+                          title: optional
                         assertion_method:
                           type: array
                           items:
                             type: string
+                          title: optional
                         capability_invocation:
                           type: array
                           items:
                             type: string
+                          title: optional
                         capability_delegation:
                           type: array
                           items:
                             type: string
+                          title: optional
                         key_agreement:
                           type: array
                           items:
                             type: string
+                          title: optional
                         service:
                           type: array
                           items:
@@ -33478,18 +33495,20 @@ paths:
                               type:
                                 type: string
                               service_endpoint:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    key:
+                                type: object
+                                properties:
+                                  key:
+                                    type: string
+                                  value:
+                                    type: array
+                                    items:
                                       type: string
-                                    value:
-                                      type: string
+                          title: optional
                         also_known_as:
                           type: array
                           items:
                             type: string
+                          title: optional
                     controllers:
                       type: array
                       items:
@@ -33683,12 +33702,14 @@ paths:
                         type: array
                         items:
                           type: string
+                        title: optional
                       id:
                         type: string
                       controller:
                         type: array
                         items:
                           type: string
+                        title: optional
                       verification_method:
                         type: array
                         items:
@@ -33709,31 +33730,40 @@ paths:
                                     type: string
                                   value:
                                     type: string
+                              title: optional
                             public_key_base58:
                               type: string
+                              title: optional
                             credential_json:
                               type: string
                               format: byte
+                              title: optional
+                        title: optional
                       authentication:
                         type: array
                         items:
                           type: string
+                        title: optional
                       assertion_method:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_invocation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_delegation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       key_agreement:
                         type: array
                         items:
                           type: string
+                        title: optional
                       service:
                         type: array
                         items:
@@ -33744,18 +33774,20 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  key:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: array
+                                  items:
                                     type: string
-                                  value:
-                                    type: string
+                        title: optional
                       also_known_as:
                         type: array
                         items:
                           type: string
+                        title: optional
                   controllers:
                     type: array
                     items:
@@ -33870,12 +33902,14 @@ paths:
                         type: array
                         items:
                           type: string
+                        title: optional
                       id:
                         type: string
                       controller:
                         type: array
                         items:
                           type: string
+                        title: optional
                       verification_method:
                         type: array
                         items:
@@ -33896,31 +33930,40 @@ paths:
                                     type: string
                                   value:
                                     type: string
+                              title: optional
                             public_key_base58:
                               type: string
+                              title: optional
                             credential_json:
                               type: string
                               format: byte
+                              title: optional
+                        title: optional
                       authentication:
                         type: array
                         items:
                           type: string
+                        title: optional
                       assertion_method:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_invocation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_delegation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       key_agreement:
                         type: array
                         items:
                           type: string
+                        title: optional
                       service:
                         type: array
                         items:
@@ -33931,18 +33974,20 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  key:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: array
+                                  items:
                                     type: string
-                                  value:
-                                    type: string
+                        title: optional
                       also_known_as:
                         type: array
                         items:
                           type: string
+                        title: optional
                   controllers:
                     type: array
                     items:
@@ -34058,12 +34103,14 @@ paths:
                         type: array
                         items:
                           type: string
+                        title: optional
                       id:
                         type: string
                       controller:
                         type: array
                         items:
                           type: string
+                        title: optional
                       verification_method:
                         type: array
                         items:
@@ -34084,31 +34131,40 @@ paths:
                                     type: string
                                   value:
                                     type: string
+                              title: optional
                             public_key_base58:
                               type: string
+                              title: optional
                             credential_json:
                               type: string
                               format: byte
+                              title: optional
+                        title: optional
                       authentication:
                         type: array
                         items:
                           type: string
+                        title: optional
                       assertion_method:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_invocation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       capability_delegation:
                         type: array
                         items:
                           type: string
+                        title: optional
                       key_agreement:
                         type: array
                         items:
                           type: string
+                        title: optional
                       service:
                         type: array
                         items:
@@ -34119,18 +34175,20 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  key:
+                              type: object
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: array
+                                  items:
                                     type: string
-                                  value:
-                                    type: string
+                        title: optional
                       also_known_as:
                         type: array
                         items:
                           type: string
+                        title: optional
                   controllers:
                     type: array
                     items:
@@ -57291,352 +57349,428 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
-  sonrio.sonr.bucket.AclJwks:
+  sonrio.sonr.bucket.BucketConfig:
     type: object
     properties:
-      encrypted_jwks:
-        type: object
-        additionalProperties:
-          type: string
-          format: byte
-    title: AclJwks is a map of JWKs for a given Schema
-  sonrio.sonr.bucket.BucketItem:
-    type: object
-    properties:
+      uuid:
+        type: string
+        description: DID of the created bucket.
+      creator:
+        type: string
+        title: Creator of the new bucket
       name:
         type: string
-        description: Name of the bucket item.
-      uri:
-        type: string
-        title: DID of the item. If applicable // optional
-      timestamp:
-        type: string
-        format: int64
-        title: Timestamp of the last update. // optional
-      type:
-        title: Type of the resource
+        description: Name of the new bucket.
+      visibility:
+        description: Visibility of the new bucket.
         type: string
         enum:
-          - None
-          - DID
-          - CID
-        default: None
-      schema_did:
-        type: string
+          - PUBLIC
+          - USER
+          - APPLICATION
+        default: PUBLIC
         title: >-
-          References the schema and item within the bucket is associated with.
-
-          Bucket items do not need to use the same schema if the bucket is
-          "generic" // optional
-    description: BucketItem is a pointer to a single piece of content in a bucket.
-  sonrio.sonr.bucket.BucketRole:
-    type: string
-    enum:
-      - NONE
-      - APPLICATION
-      - USER
-    default: NONE
-    description: |-
-      BucketRole is the role of the creator of the bucket.
-
-       - NONE: Bucket does not have role set.
-       - APPLICATION: Bucket is visible to anyone.
-       - USER: Bucket is visible to anyone who has access token.
+          BucketVisibility is the visibility of the bucket to authorized users
+          of an application
+      is_active:
+        type: boolean
+        description: IsActive flag of the new bucket.
+      size:
+        type: string
+        format: int64
+        description: size of the new bucket.
   sonrio.sonr.bucket.BucketVisibility:
     type: string
     enum:
-      - UNSPECIFIED
       - PUBLIC
-      - PRIVATE
-    default: UNSPECIFIED
+      - USER
+      - APPLICATION
+    default: PUBLIC
     description: |-
-      - UNSPECIFIED: Bucket does not have visibility set.
-       - PUBLIC: Bucket is visible to anyone.
-       - PRIVATE: Bucket is visible to anyone who has access token.
+      - PUBLIC: Bucket does not have visibility set.
+       - USER: Bucket is visible to anyone.
+       - APPLICATION: Bucket is visible to anyone who has access token.
     title: >-
       BucketVisibility is the visibility of the bucket to authorized users of an
       application
-  sonrio.sonr.bucket.MsgCreateWhereIsResponse:
+  sonrio.sonr.bucket.MsgAllocateBucketResponse:
     type: object
     properties:
       status:
         type: integer
         format: int32
-      where_is:
+      bucket:
         type: object
         properties:
-          did:
+          uuid:
             type: string
             description: DID of the created bucket.
           creator:
             type: string
             title: Creator of the new bucket
-          label:
+          name:
             type: string
-            description: Label of the new bucket.
+            description: Name of the new bucket.
           visibility:
             description: Visibility of the new bucket.
             type: string
             enum:
-              - UNSPECIFIED
               - PUBLIC
-              - PRIVATE
-            default: UNSPECIFIED
+              - USER
+              - APPLICATION
+            default: PUBLIC
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
-          role:
-            description: Role of the creator of the new bucket.
-            type: string
-            enum:
-              - NONE
-              - APPLICATION
-              - USER
-            default: NONE
           is_active:
             type: boolean
             description: IsActive flag of the new bucket.
-          content:
+          size:
+            type: string
+            format: int64
+            description: size of the new bucket.
+      serviceEndpoint:
+        type: string
+      did_document:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+            title: optional
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+            title: optional
+          verification_method:
             type: array
             items:
               type: object
               properties:
-                name:
+                id:
                   type: string
-                  description: Name of the bucket item.
-                uri:
-                  type: string
-                  title: DID of the item. If applicable // optional
-                timestamp:
-                  type: string
-                  format: int64
-                  title: Timestamp of the last update. // optional
                 type:
-                  title: Type of the resource
                   type: string
-                  enum:
-                    - None
-                    - DID
-                    - CID
-                  default: None
-                schema_did:
+                controller:
                   type: string
-                  title: >-
-                    References the schema and item within the bucket is
-                    associated with.
-
-                    Bucket items do not need to use the same schema if the
-                    bucket is "generic" // optional
-              description: >-
-                BucketItem is a pointer to a single piece of content in a
-                bucket.
-            description: Content of the new bucket map of DIDs to CIDs.
-          content_acl:
-            type: object
-            additionalProperties:
+                public_key_jwk:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                  title: optional
+                public_key_base58:
+                  type: string
+                  title: optional
+                credential_json:
+                  type: string
+                  format: byte
+                  title: optional
+            title: optional
+          authentication:
+            type: array
+            items:
+              type: string
+            title: optional
+          assertion_method:
+            type: array
+            items:
+              type: string
+            title: optional
+          capability_invocation:
+            type: array
+            items:
+              type: string
+            title: optional
+          capability_delegation:
+            type: array
+            items:
+              type: string
+            title: optional
+          key_agreement:
+            type: array
+            items:
+              type: string
+            title: optional
+          service:
+            type: array
+            items:
               type: object
               properties:
-                encrypted_jwks:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
                   type: object
-                  additionalProperties:
-                    type: string
-                    format: byte
-              title: AclJwks is a map of JWKs for a given Schema
-            description: JWKs of the new bucket.
-          timestamp:
-            type: string
-            format: int64
-            description: Timestamp of the new bucket.
-  sonrio.sonr.bucket.MsgDeleteWhereIsResponse:
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
+                        type: string
+            title: optional
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: optional
+  sonrio.sonr.bucket.MsgBurnBucketResponse:
     type: object
     properties:
       status:
         type: integer
         format: int32
-  sonrio.sonr.bucket.MsgUpdateWhereIsResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-        format: int32
-      where_is:
+      bucket:
         type: object
         properties:
-          did:
+          uuid:
             type: string
             description: DID of the created bucket.
           creator:
             type: string
             title: Creator of the new bucket
-          label:
+          name:
             type: string
-            description: Label of the new bucket.
+            description: Name of the new bucket.
           visibility:
             description: Visibility of the new bucket.
             type: string
             enum:
-              - UNSPECIFIED
               - PUBLIC
-              - PRIVATE
-            default: UNSPECIFIED
+              - USER
+              - APPLICATION
+            default: PUBLIC
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
-          role:
-            description: Role of the creator of the new bucket.
-            type: string
-            enum:
-              - NONE
-              - APPLICATION
-              - USER
-            default: NONE
           is_active:
             type: boolean
             description: IsActive flag of the new bucket.
-          content:
+          size:
+            type: string
+            format: int64
+            description: size of the new bucket.
+      did_document:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+            title: optional
+          id:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+            title: optional
+          verification_method:
             type: array
             items:
               type: object
               properties:
-                name:
+                id:
                   type: string
-                  description: Name of the bucket item.
-                uri:
-                  type: string
-                  title: DID of the item. If applicable // optional
-                timestamp:
-                  type: string
-                  format: int64
-                  title: Timestamp of the last update. // optional
                 type:
-                  title: Type of the resource
                   type: string
-                  enum:
-                    - None
-                    - DID
-                    - CID
-                  default: None
-                schema_did:
+                controller:
                   type: string
-                  title: >-
-                    References the schema and item within the bucket is
-                    associated with.
-
-                    Bucket items do not need to use the same schema if the
-                    bucket is "generic" // optional
-              description: >-
-                BucketItem is a pointer to a single piece of content in a
-                bucket.
-            description: Content of the new bucket map of DIDs to CIDs.
-          content_acl:
-            type: object
-            additionalProperties:
+                public_key_jwk:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                  title: optional
+                public_key_base58:
+                  type: string
+                  title: optional
+                credential_json:
+                  type: string
+                  format: byte
+                  title: optional
+            title: optional
+          authentication:
+            type: array
+            items:
+              type: string
+            title: optional
+          assertion_method:
+            type: array
+            items:
+              type: string
+            title: optional
+          capability_invocation:
+            type: array
+            items:
+              type: string
+            title: optional
+          capability_delegation:
+            type: array
+            items:
+              type: string
+            title: optional
+          key_agreement:
+            type: array
+            items:
+              type: string
+            title: optional
+          service:
+            type: array
+            items:
               type: object
               properties:
-                encrypted_jwks:
+                id:
+                  type: string
+                type:
+                  type: string
+                service_endpoint:
                   type: object
-                  additionalProperties:
-                    type: string
-                    format: byte
-              title: AclJwks is a map of JWKs for a given Schema
-            description: JWKs of the new bucket.
-          timestamp:
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
+                        type: string
+            title: optional
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: optional
+  sonrio.sonr.bucket.MsgDeactivateBucketResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            description: Visibility of the new bucket.
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
             type: string
             format: int64
-            description: Timestamp of the new bucket.
+            description: size of the new bucket.
+      totalBurned:
+        type: integer
+        format: int32
+  sonrio.sonr.bucket.MsgDefineBucketResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      bucket:
+        type: object
+        properties:
+          uuid:
+            type: string
+            description: DID of the created bucket.
+          creator:
+            type: string
+            title: Creator of the new bucket
+          name:
+            type: string
+            description: Name of the new bucket.
+          visibility:
+            description: Visibility of the new bucket.
+            type: string
+            enum:
+              - PUBLIC
+              - USER
+              - APPLICATION
+            default: PUBLIC
+            title: >-
+              BucketVisibility is the visibility of the bucket to authorized
+              users of an application
+          is_active:
+            type: boolean
+            description: IsActive flag of the new bucket.
+          size:
+            type: string
+            format: int64
+            description: size of the new bucket.
   sonrio.sonr.bucket.Params:
     type: object
+    properties:
+      ipfs_gateway:
+        type: string
+      ipts_api_url:
+        type: string
     description: Params defines the parameters for the module.
-  sonrio.sonr.bucket.QueryAllWhereIsResponse:
+  sonrio.sonr.bucket.QueryAllBucketsResponse:
     type: object
     properties:
-      where_is:
+      buckets:
         type: array
         items:
           type: object
           properties:
-            did:
+            uuid:
               type: string
               description: DID of the created bucket.
             creator:
               type: string
               title: Creator of the new bucket
-            label:
+            name:
               type: string
-              description: Label of the new bucket.
+              description: Name of the new bucket.
             visibility:
               description: Visibility of the new bucket.
               type: string
               enum:
-                - UNSPECIFIED
                 - PUBLIC
-                - PRIVATE
-              default: UNSPECIFIED
+                - USER
+                - APPLICATION
+              default: PUBLIC
               title: >-
                 BucketVisibility is the visibility of the bucket to authorized
                 users of an application
-            role:
-              description: Role of the creator of the new bucket.
-              type: string
-              enum:
-                - NONE
-                - APPLICATION
-                - USER
-              default: NONE
             is_active:
               type: boolean
               description: IsActive flag of the new bucket.
-            content:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: Name of the bucket item.
-                  uri:
-                    type: string
-                    title: DID of the item. If applicable // optional
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: Timestamp of the last update. // optional
-                  type:
-                    title: Type of the resource
-                    type: string
-                    enum:
-                      - None
-                      - DID
-                      - CID
-                    default: None
-                  schema_did:
-                    type: string
-                    title: >-
-                      References the schema and item within the bucket is
-                      associated with.
-
-                      Bucket items do not need to use the same schema if the
-                      bucket is "generic" // optional
-                description: >-
-                  BucketItem is a pointer to a single piece of content in a
-                  bucket.
-              description: Content of the new bucket map of DIDs to CIDs.
-            content_acl:
-              type: object
-              additionalProperties:
-                type: object
-                properties:
-                  encrypted_jwks:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      format: byte
-                title: AclJwks is a map of JWKs for a given Schema
-              description: JWKs of the new bucket.
-            timestamp:
+            size:
               type: string
               format: int64
-              description: Timestamp of the new bucket.
+              description: size of the new bucket.
       pagination:
         type: object
         properties:
@@ -57662,96 +57796,41 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrio.sonr.bucket.QueryGetWhereIsByCreatorResponse:
+  sonrio.sonr.bucket.QueryGetBucketByCreatorResponse:
     type: object
     properties:
-      where_is:
+      buckets:
         type: array
         items:
           type: object
           properties:
-            did:
+            uuid:
               type: string
               description: DID of the created bucket.
             creator:
               type: string
               title: Creator of the new bucket
-            label:
+            name:
               type: string
-              description: Label of the new bucket.
+              description: Name of the new bucket.
             visibility:
               description: Visibility of the new bucket.
               type: string
               enum:
-                - UNSPECIFIED
                 - PUBLIC
-                - PRIVATE
-              default: UNSPECIFIED
+                - USER
+                - APPLICATION
+              default: PUBLIC
               title: >-
                 BucketVisibility is the visibility of the bucket to authorized
                 users of an application
-            role:
-              description: Role of the creator of the new bucket.
-              type: string
-              enum:
-                - NONE
-                - APPLICATION
-                - USER
-              default: NONE
             is_active:
               type: boolean
               description: IsActive flag of the new bucket.
-            content:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: Name of the bucket item.
-                  uri:
-                    type: string
-                    title: DID of the item. If applicable // optional
-                  timestamp:
-                    type: string
-                    format: int64
-                    title: Timestamp of the last update. // optional
-                  type:
-                    title: Type of the resource
-                    type: string
-                    enum:
-                      - None
-                      - DID
-                      - CID
-                    default: None
-                  schema_did:
-                    type: string
-                    title: >-
-                      References the schema and item within the bucket is
-                      associated with.
-
-                      Bucket items do not need to use the same schema if the
-                      bucket is "generic" // optional
-                description: >-
-                  BucketItem is a pointer to a single piece of content in a
-                  bucket.
-              description: Content of the new bucket map of DIDs to CIDs.
-            content_acl:
-              type: object
-              additionalProperties:
-                type: object
-                properties:
-                  encrypted_jwks:
-                    type: object
-                    additionalProperties:
-                      type: string
-                      format: byte
-                title: AclJwks is a map of JWKs for a given Schema
-              description: JWKs of the new bucket.
-            timestamp:
+            size:
               type: string
               format: int64
-              description: Timestamp of the new bucket.
+              description: size of the new bucket.
       pagination:
         type: object
         properties:
@@ -57777,191 +57856,262 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrio.sonr.bucket.QueryGetWhereIsResponse:
+  sonrio.sonr.bucket.QueryGetBucketByNameResponse:
     type: object
     properties:
-      where_is:
+      buckets:
+        type: array
+        items:
+          type: object
+          properties:
+            uuid:
+              type: string
+              description: DID of the created bucket.
+            creator:
+              type: string
+              title: Creator of the new bucket
+            name:
+              type: string
+              description: Name of the new bucket.
+            visibility:
+              description: Visibility of the new bucket.
+              type: string
+              enum:
+                - PUBLIC
+                - USER
+                - APPLICATION
+              default: PUBLIC
+              title: >-
+                BucketVisibility is the visibility of the bucket to authorized
+                users of an application
+            is_active:
+              type: boolean
+              description: IsActive flag of the new bucket.
+            size:
+              type: string
+              format: int64
+              description: size of the new bucket.
+      pagination:
         type: object
         properties:
-          did:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.bucket.QueryGetBucketResponse:
+    type: object
+    properties:
+      bucket:
+        type: object
+        properties:
+          uuid:
             type: string
             description: DID of the created bucket.
           creator:
             type: string
             title: Creator of the new bucket
-          label:
+          name:
             type: string
-            description: Label of the new bucket.
+            description: Name of the new bucket.
           visibility:
             description: Visibility of the new bucket.
             type: string
             enum:
-              - UNSPECIFIED
               - PUBLIC
-              - PRIVATE
-            default: UNSPECIFIED
+              - USER
+              - APPLICATION
+            default: PUBLIC
             title: >-
               BucketVisibility is the visibility of the bucket to authorized
               users of an application
-          role:
-            description: Role of the creator of the new bucket.
-            type: string
-            enum:
-              - NONE
-              - APPLICATION
-              - USER
-            default: NONE
           is_active:
             type: boolean
             description: IsActive flag of the new bucket.
-          content:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the bucket item.
-                uri:
-                  type: string
-                  title: DID of the item. If applicable // optional
-                timestamp:
-                  type: string
-                  format: int64
-                  title: Timestamp of the last update. // optional
-                type:
-                  title: Type of the resource
-                  type: string
-                  enum:
-                    - None
-                    - DID
-                    - CID
-                  default: None
-                schema_did:
-                  type: string
-                  title: >-
-                    References the schema and item within the bucket is
-                    associated with.
-
-                    Bucket items do not need to use the same schema if the
-                    bucket is "generic" // optional
-              description: >-
-                BucketItem is a pointer to a single piece of content in a
-                bucket.
-            description: Content of the new bucket map of DIDs to CIDs.
-          content_acl:
-            type: object
-            additionalProperties:
-              type: object
-              properties:
-                encrypted_jwks:
-                  type: object
-                  additionalProperties:
-                    type: string
-                    format: byte
-              title: AclJwks is a map of JWKs for a given Schema
-            description: JWKs of the new bucket.
-          timestamp:
+          size:
             type: string
             format: int64
-            description: Timestamp of the new bucket.
+            description: size of the new bucket.
   sonrio.sonr.bucket.QueryParamsResponse:
     type: object
     properties:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          ipfs_gateway:
+            type: string
+          ipts_api_url:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  sonrio.sonr.bucket.ResourceIdentifier:
-    type: string
-    enum:
-      - None
-      - DID
-      - CID
-    default: None
-  sonrio.sonr.bucket.WhereIs:
+  sonrio.sonr.registry.DIDDocument:
     type: object
     properties:
-      did:
+      context:
+        type: array
+        items:
+          type: string
+        title: optional
+      id:
         type: string
-        description: DID of the created bucket.
-      creator:
-        type: string
-        title: Creator of the new bucket
-      label:
-        type: string
-        description: Label of the new bucket.
-      visibility:
-        description: Visibility of the new bucket.
-        type: string
-        enum:
-          - UNSPECIFIED
-          - PUBLIC
-          - PRIVATE
-        default: UNSPECIFIED
-        title: >-
-          BucketVisibility is the visibility of the bucket to authorized users
-          of an application
-      role:
-        description: Role of the creator of the new bucket.
-        type: string
-        enum:
-          - NONE
-          - APPLICATION
-          - USER
-        default: NONE
-      is_active:
-        type: boolean
-        description: IsActive flag of the new bucket.
-      content:
+      controller:
+        type: array
+        items:
+          type: string
+        title: optional
+      verification_method:
         type: array
         items:
           type: object
           properties:
-            name:
+            id:
               type: string
-              description: Name of the bucket item.
-            uri:
-              type: string
-              title: DID of the item. If applicable // optional
-            timestamp:
-              type: string
-              format: int64
-              title: Timestamp of the last update. // optional
             type:
-              title: Type of the resource
               type: string
-              enum:
-                - None
-                - DID
-                - CID
-              default: None
-            schema_did:
+            controller:
               type: string
-              title: >-
-                References the schema and item within the bucket is associated
-                with.
-
-                Bucket items do not need to use the same schema if the bucket is
-                "generic" // optional
-          description: BucketItem is a pointer to a single piece of content in a bucket.
-        description: Content of the new bucket map of DIDs to CIDs.
-      content_acl:
-        type: object
-        additionalProperties:
+            public_key_jwk:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
+              title: optional
+            public_key_base58:
+              type: string
+              title: optional
+            credential_json:
+              type: string
+              format: byte
+              title: optional
+        title: optional
+      authentication:
+        type: array
+        items:
+          type: string
+        title: optional
+      assertion_method:
+        type: array
+        items:
+          type: string
+        title: optional
+      capability_invocation:
+        type: array
+        items:
+          type: string
+        title: optional
+      capability_delegation:
+        type: array
+        items:
+          type: string
+        title: optional
+      key_agreement:
+        type: array
+        items:
+          type: string
+        title: optional
+      service:
+        type: array
+        items:
           type: object
           properties:
-            encrypted_jwks:
+            id:
+              type: string
+            type:
+              type: string
+            service_endpoint:
               type: object
-              additionalProperties:
-                type: string
-                format: byte
-          title: AclJwks is a map of JWKs for a given Schema
-        description: JWKs of the new bucket.
-      timestamp:
+              properties:
+                key:
+                  type: string
+                value:
+                  type: array
+                  items:
+                    type: string
+        title: optional
+      also_known_as:
+        type: array
+        items:
+          type: string
+        title: optional
+  sonrio.sonr.registry.KeyValuePair:
+    type: object
+    properties:
+      key:
         type: string
-        format: int64
-        description: Timestamp of the new bucket.
+      value:
+        type: string
+  sonrio.sonr.registry.Service:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      service_endpoint:
+        type: object
+        properties:
+          key:
+            type: string
+          value:
+            type: array
+            items:
+              type: string
+  sonrio.sonr.registry.ServiceEndpoint:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: array
+        items:
+          type: string
+  sonrio.sonr.registry.VerificationMethod:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      controller:
+        type: string
+      public_key_jwk:
+        type: array
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+            value:
+              type: string
+        title: optional
+      public_key_base58:
+        type: string
+        title: optional
+      credential_json:
+        type: string
+        format: byte
+        title: optional
   cosmos.crypto.secp256k1.PubKey:
     type: object
     properties:
@@ -57998,93 +58148,6 @@ definitions:
     title: >-
       Alias is a message detailing a known "alsoKnownAs" identifier of a
       DIDDocument and contains properties for transfer/exchange
-  sonrio.sonr.registry.DIDDocument:
-    type: object
-    properties:
-      context:
-        type: array
-        items:
-          type: string
-      id:
-        type: string
-      controller:
-        type: array
-        items:
-          type: string
-      verification_method:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-            controller:
-              type: string
-            public_key_jwk:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                  value:
-                    type: string
-            public_key_base58:
-              type: string
-            credential_json:
-              type: string
-              format: byte
-      authentication:
-        type: array
-        items:
-          type: string
-      assertion_method:
-        type: array
-        items:
-          type: string
-      capability_invocation:
-        type: array
-        items:
-          type: string
-      capability_delegation:
-        type: array
-        items:
-          type: string
-      key_agreement:
-        type: array
-        items:
-          type: string
-      service:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-            service_endpoint:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                  value:
-                    type: string
-      also_known_as:
-        type: array
-        items:
-          type: string
-  sonrio.sonr.registry.KeyValuePair:
-    type: object
-    properties:
-      key:
-        type: string
-      value:
-        type: string
   sonrio.sonr.registry.MsgBuyAliasResponse:
     type: object
     properties:
@@ -58134,12 +58197,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58160,31 +58225,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58195,18 +58269,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58292,12 +58368,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58318,31 +58396,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58353,18 +58440,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58459,12 +58548,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58485,31 +58576,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58520,18 +58620,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58617,12 +58719,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58643,31 +58747,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58678,18 +58791,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58775,12 +58890,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -58801,31 +58918,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -58836,18 +58962,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -58935,12 +59063,14 @@ definitions:
                   type: array
                   items:
                     type: string
+                  title: optional
                 id:
                   type: string
                 controller:
                   type: array
                   items:
                     type: string
+                  title: optional
                 verification_method:
                   type: array
                   items:
@@ -58961,31 +59091,40 @@ definitions:
                               type: string
                             value:
                               type: string
+                        title: optional
                       public_key_base58:
                         type: string
+                        title: optional
                       credential_json:
                         type: string
                         format: byte
+                        title: optional
+                  title: optional
                 authentication:
                   type: array
                   items:
                     type: string
+                  title: optional
                 assertion_method:
                   type: array
                   items:
                     type: string
+                  title: optional
                 capability_invocation:
                   type: array
                   items:
                     type: string
+                  title: optional
                 capability_delegation:
                   type: array
                   items:
                     type: string
+                  title: optional
                 key_agreement:
                   type: array
                   items:
                     type: string
+                  title: optional
                 service:
                   type: array
                   items:
@@ -58996,18 +59135,20 @@ definitions:
                       type:
                         type: string
                       service_endpoint:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            key:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: array
+                            items:
                               type: string
-                            value:
-                              type: string
+                  title: optional
                 also_known_as:
                   type: array
                   items:
                     type: string
+                  title: optional
             controllers:
               type: array
               items:
@@ -59119,12 +59260,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -59145,31 +59288,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -59180,18 +59332,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -59271,12 +59425,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -59297,31 +59453,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -59332,18 +59497,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -59423,12 +59590,14 @@ definitions:
                 type: array
                 items:
                   type: string
+                title: optional
               id:
                 type: string
               controller:
                 type: array
                 items:
                   type: string
+                title: optional
               verification_method:
                 type: array
                 items:
@@ -59449,31 +59618,40 @@ definitions:
                             type: string
                           value:
                             type: string
+                      title: optional
                     public_key_base58:
                       type: string
+                      title: optional
                     credential_json:
                       type: string
                       format: byte
+                      title: optional
+                title: optional
               authentication:
                 type: array
                 items:
                   type: string
+                title: optional
               assertion_method:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_invocation:
                 type: array
                 items:
                   type: string
+                title: optional
               capability_delegation:
                 type: array
                 items:
                   type: string
+                title: optional
               key_agreement:
                 type: array
                 items:
                   type: string
+                title: optional
               service:
                 type: array
                 items:
@@ -59484,18 +59662,20 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: array
+                          items:
                             type: string
-                          value:
-                            type: string
+                title: optional
               also_known_as:
                 type: array
                 items:
                   type: string
+                title: optional
           controllers:
             type: array
             items:
@@ -59529,45 +59709,6 @@ definitions:
             title: >-
               Metadata is a map of key-value pairs that can be used to store
               additional information about the DID Document
-  sonrio.sonr.registry.Service:
-    type: object
-    properties:
-      id:
-        type: string
-      type:
-        type: string
-      service_endpoint:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
-  sonrio.sonr.registry.VerificationMethod:
-    type: object
-    properties:
-      id:
-        type: string
-      type:
-        type: string
-      controller:
-        type: string
-      public_key_jwk:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-            value:
-              type: string
-      public_key_base58:
-        type: string
-      credential_json:
-        type: string
-        format: byte
   sonrio.sonr.registry.WhoIs:
     type: object
     properties:
@@ -59611,12 +59752,14 @@ definitions:
             type: array
             items:
               type: string
+            title: optional
           id:
             type: string
           controller:
             type: array
             items:
               type: string
+            title: optional
           verification_method:
             type: array
             items:
@@ -59637,31 +59780,40 @@ definitions:
                         type: string
                       value:
                         type: string
+                  title: optional
                 public_key_base58:
                   type: string
+                  title: optional
                 credential_json:
                   type: string
                   format: byte
+                  title: optional
+            title: optional
           authentication:
             type: array
             items:
               type: string
+            title: optional
           assertion_method:
             type: array
             items:
               type: string
+            title: optional
           capability_invocation:
             type: array
             items:
               type: string
+            title: optional
           capability_delegation:
             type: array
             items:
               type: string
+            title: optional
           key_agreement:
             type: array
             items:
               type: string
+            title: optional
           service:
             type: array
             items:
@@ -59672,18 +59824,20 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: array
+                      items:
                         type: string
-                      value:
-                        type: string
+            title: optional
           also_known_as:
             type: array
             items:
               type: string
+            title: optional
       controllers:
         type: array
         items:

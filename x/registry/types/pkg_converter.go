@@ -115,24 +115,29 @@ func convertVerificationRelationships(relationships []string) (did.VerificationR
 	return res, nil
 }
 
-func convertServices(srvs []*Service) (did.Services, error) {
+func ConvertServices(srvs []*Service) (did.Services, error) {
 	res := make(did.Services, len(srvs))
 	for i, s := range srvs {
-		endpoints := make(map[string]string)
-		for k, v := range convertKeyValuePair(s.ServiceEndpoint) {
-			str, ok := v.(string)
-			if !ok {
-				return nil, fmt.Errorf("could not convert %v to string", v)
-			}
-			endpoints[k] = str
-		}
+		endpoint := s.ServiceEndpoint.Value[0]
 		res[i] = did.Service{
 			ID:              ssi.MustParseURI(s.Id),
 			Type:            s.Type,
-			ServiceEndpoint: endpoints,
+			ServiceEndpoint: endpoint,
 		}
 	}
+	return res, nil
+}
 
+func convertServices(srvs []*Service) (did.Services, error) {
+	res := make(did.Services, len(srvs))
+	for i, s := range srvs {
+		endpoint := s.ServiceEndpoint.Value[0]
+		res[i] = did.Service{
+			ID:              ssi.MustParseURI(s.Id),
+			Type:            s.Type,
+			ServiceEndpoint: endpoint,
+		}
+	}
 	return res, nil
 }
 

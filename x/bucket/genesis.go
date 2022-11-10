@@ -10,8 +10,8 @@ import (
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// Set all the whereIs
-	for _, elem := range genState.WhereIsList {
-		k.SetWhereIs(ctx, elem)
+	for _, elem := range genState.BucketDefinitions {
+		k.AppendBucket(ctx, elem)
 	}
 
 	// this line is used by starport scaffolding # genesis/module/init
@@ -23,7 +23,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 
-	genesis.WhereIsList = k.GetAllWhereIs(ctx)
+	genesis.BucketDefinitions = k.GetAllWhereIs(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

@@ -11,5 +11,6 @@ option java_multiple_files = true;
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+  string ipfs_gateway = 1;
+  string ipts_api_url = 2;
 }

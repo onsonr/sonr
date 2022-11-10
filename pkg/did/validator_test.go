@@ -101,7 +101,7 @@ func TestW3CSpecValidator(t *testing.T) {
 		})
 		t.Run("endpoint is nil", func(t *testing.T) {
 			input := document()
-			input.Service[0].ServiceEndpoint = nil
+			input.Service[0].ServiceEndpoint = " "
 			assertIsError(t, ErrInvalidService, W3CSpecValidator{}.Validate(input))
 		})
 		t.Run("endpoint is bool", func(t *testing.T) {

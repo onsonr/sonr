@@ -8,17 +8,23 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateWhereIs{}, "bucket/CreateWhereIs", nil)
-	cdc.RegisterConcrete(&MsgUpdateWhereIs{}, "bucket/UpdateWhereIs", nil)
-	cdc.RegisterConcrete(&MsgDeleteWhereIs{}, "bucket/DeleteWhereIs", nil)
+	cdc.RegisterConcrete(&MsgDefineBucket{}, "bucket/CreateWhereIs", nil)
+	cdc.RegisterConcrete(&MsgAllocateBucket{}, "bucket/GenerateBucket", nil)
+	cdc.RegisterConcrete(&MsgDeactivateBucket{}, "bucket/DeactivateBucket", nil)
+	cdc.RegisterConcrete(&MsgBurnBucket{}, "bucket/BurnBucket", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateWhereIs{},
-		&MsgUpdateWhereIs{},
-		&MsgDeleteWhereIs{},
+		&MsgDefineBucket{},
+		&MsgAllocateBucket{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgDeactivateBucket{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgBurnBucket{},
 	)
 	// this line is used by starport scaffolding # 3
 

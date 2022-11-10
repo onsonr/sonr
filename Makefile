@@ -16,19 +16,19 @@ bind: bind.ios bind.mac bind.android bind.web
 
 ## └─ android       - Android AAR
 bind.android:
-	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -a
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -a
 
 ## └─ ios           - iOS Framework
 bind.ios:
-	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -i
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -i
 
 ## └─ mac           - Mac Framework
 bind.mac:
-	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -m
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -m
 
 ## └─ web           - WASM Framework
 bind.web:
-	TAR_COMPRESS=false && sh $(SCRIPTS_DIR)/bind.sh -w
+	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -w
 
 ## └─ tar           - Build All & Tar Compress
 bind.tar:
