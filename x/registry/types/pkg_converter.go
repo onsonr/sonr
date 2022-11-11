@@ -118,7 +118,7 @@ func convertVerificationRelationships(relationships []string) (did.VerificationR
 func ConvertServices(srvs []*Service) (did.Services, error) {
 	res := make(did.Services, len(srvs))
 	for i, s := range srvs {
-		endpoint := s.ServiceEndpoint.Value[0]
+		endpoint := s.ServiceEndpoint
 		res[i] = did.Service{
 			ID:              ssi.MustParseURI(s.Id),
 			Type:            s.Type,
@@ -131,7 +131,7 @@ func ConvertServices(srvs []*Service) (did.Services, error) {
 func convertServices(srvs []*Service) (did.Services, error) {
 	res := make(did.Services, len(srvs))
 	for i, s := range srvs {
-		endpoint := s.ServiceEndpoint.Value[0]
+		endpoint := s.ServiceEndpoint
 		res[i] = did.Service{
 			ID:              ssi.MustParseURI(s.Id),
 			Type:            s.Type,
