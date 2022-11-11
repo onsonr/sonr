@@ -50,6 +50,12 @@ proto.buf:
 	cd $(ROOT_DIR)/proto && buf mod update && buf build
 	@echo "✅ Pushed Protos to Buf.Build"
 
+## └─ publish       - Compiles protos, buf.build publish, Zips protos in build
+proto.publish:
+	cd $(ROOT_DIR)/proto && buf mod update && buf build
+	@echo "✅ Pushed Protos to Buf.Build"
+	cp -r proto/ build/proto/
+
 ## clean       :   Clean all artifacts and tidy
 clean:
 	rm -rf ./build
