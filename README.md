@@ -58,7 +58,6 @@ Installing Protocol Buffers
 brew install protobuf
 ```
 
-
 Installing Ignite
 
 ```bash
