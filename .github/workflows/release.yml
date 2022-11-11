@@ -1,9 +1,11 @@
 name: Official Release Workflow
 
 on:
-  push:
+  create:
     tags:
       - v*
+    branches:
+      - dev
 
 jobs:
   ## ------------------------------------------------------------
