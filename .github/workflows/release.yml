@@ -1,4 +1,4 @@
-name: Official Release Workflow
+name: Release Binaries and Frameworks
 
 on:
   create:
