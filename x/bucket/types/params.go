@@ -1,8 +1,18 @@
 package types
 
 import (
+	"os"
+	"path/filepath"
+
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/joho/godotenv"
+	"github.com/sonr-io/sonr/internal/projectpath"
 	"gopkg.in/yaml.v2"
+)
+
+const (
+	IPFS_GATEWAY_ADDR = "https://ipfs.sonr.ws"
+	IPFS_API_ADDR     = "https://api.ipfs.sonr.ws"
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -14,9 +24,17 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams() Params {
-	return Params{
-		IpfsGateway: "https://ipfs.sonr.ws",
-		IptsApiUrl: "https://api.ipfs.sonr.ws",
+	gateway_addr := IPFS_GATEWAY_ADDR
+	api_addr := IPFS_API_ADDR
+	env_path := filepath.Join(projectpath.Root, ".env")
+	err := godotenv.Load(env_path)
+	if err != nil {
+		return Params{IpfsGateway: gateway_addr,
+			IptsApiUrl: api_addr,
+		}
+	}
+	return Params{IpfsGateway: os.Getenv("IPFS_ADDRESS"),
+		IptsApiUrl: os.Getenv("IPFS_API_ADDRESS"),
 	}
 }
 

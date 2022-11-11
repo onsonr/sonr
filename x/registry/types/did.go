@@ -102,10 +102,7 @@ func servicesFromPkg(srvs did.Services) []*Service {
 		res = append(res, &Service{
 			Id:   s.ID.String(),
 			Type: s.Type,
-			ServiceEndpoint: &ServiceEndpoint{
-				Key:   "uri",
-				Value: []string{s.ServiceEndpoint},
-			},
+			ServiceEndpoint: s.ServiceEndpoint,
 		})
 	}
 

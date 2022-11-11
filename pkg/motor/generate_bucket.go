@@ -58,7 +58,7 @@ func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.
 	}
 	return &mt.GenerateBucketResponse{
 		DidDocument: doc,
-		Uri:         service.ServiceEndpoint.Value[0],
+		Uri:         service.ServiceEndpoint,
 		Bucket:      config,
 		Cid:         cid,			
 	}, nil
