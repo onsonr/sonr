@@ -31,6 +31,7 @@ jobs:
           since_last_remote_commit: false
           files: |
             x/**
+            app/**
             cmd/**
             proto/bucket/**
             proto/registry/**
