@@ -1,7 +1,6 @@
 package client
 
 import (
-	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -33,121 +32,81 @@ const (
 	VAULT_API_ADDRESS = "http://164.92.99.233"
 )
 
+type Endpoints struct {
+	FaucetAddress  string
+	RPCAddress     string
+	APIAddress     string
+	IPFSAddress    string
+	IPFSApiAddress string
+}
+
+func defaultEndpoints() *Endpoints {
+	return &Endpoints{
+		FaucetAddress:  "0.0.0.0:4500",
+		RPCAddress:     "0.0.0.0:9090",
+		APIAddress:     "0.0.0.0:26657",
+		IPFSAddress:    "0.0.0.0:4001",
+		IPFSApiAddress: "0.0.0.0:5001",
+	}
+}
+
 type Client struct {
 	clientMode mt.ClientMode
+	Endpoints  *Endpoints
+}
+
+func getEnvFile(mode mt.ClientMode) string {
+	envFileName := ""
+	switch mode {
+	case mt.ClientMode_ENDPOINT_DEV:
+		envFileName = ".env.beta"
+	case mt.ClientMode_ENDPOINT_BETA:
+		envFileName = ".env.dev"
+	default:
+		envFileName = ".env"
+	}
+	env_path := filepath.Join(projectpath.Root, envFileName)
+	return env_path
 }
 
 func NewClient(mode mt.ClientMode) *Client {
+	env_file := getEnvFile(mode)
+	err := godotenv.Load(env_file)
+	if err != nil {
+		log.Printf("failed to loading variables from %s: %s, using default endpoints", env_file, err.Error())
+		return &Client{
+			clientMode: mt.ClientMode_ENDPOINT_LOCAL,
+			Endpoints:  defaultEndpoints(),
+		}
+	}
 	return &Client{
 		clientMode: mode,
+		Endpoints: &Endpoints{
+			FaucetAddress:  os.Getenv("BLOCKCHAIN_FAUCET"),
+			RPCAddress:     os.Getenv("BLOCKCHAIN_RPC"),
+			APIAddress:     os.Getenv("BLOCKCHAIN_REST"),
+			IPFSAddress:    os.Getenv("IPFS_ADDRESS"),
+			IPFSApiAddress: os.Getenv("IPFS_API_ADDRESS"),
+		},
 	}
 }
 
 func (c *Client) GetFaucetAddress() string {
-	env_path := filepath.Join(projectpath.Root, ".env")
-
-	// by default use .env if it exists
-	_, err := os.Stat(env_path)
-	if errors.Is(err, os.ErrNotExist) {
-		// .env does not exist, use preset client mode
-		switch c.clientMode {
-		case mt.ClientMode_ENDPOINT_BETA:
-			return BLOCKCHAIN_FAUCET_BETA
-		case mt.ClientMode_ENDPOINT_DEV:
-			return BLOCKCHAIN_FAUCET_DEV
-		case mt.ClientMode_ENDPOINT_LOCAL:
-			return BLOCKCHAIN_FAUCET_LOCAL
-		}
-	}
-
-	err = godotenv.Load(env_path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return os.Getenv("BLOCKCHAIN_FAUCET")
+	return c.Endpoints.FaucetAddress
 }
 
 func (c *Client) GetRPCAddress() string {
-	env_path := filepath.Join(projectpath.Root, ".env")
-
-	// by default use .env if it exists
-	_, err := os.Stat(env_path)
-	if errors.Is(err, os.ErrNotExist) {
-		// .env does not exist, use preset client mode
-		switch c.clientMode {
-		case mt.ClientMode_ENDPOINT_BETA:
-			return BLOCKCHAIN_RPC_BETA
-		case mt.ClientMode_ENDPOINT_DEV:
-			return BLOCKCHAIN_RPC_DEV
-		case mt.ClientMode_ENDPOINT_LOCAL:
-			return BLOCKCHAIN_RPC_LOCAL
-		}
-	}
-
-	err = godotenv.Load(env_path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return os.Getenv("BLOCKCHAIN_RPC")
+	return c.Endpoints.RPCAddress
 }
 
 func (c *Client) GetAPIAddress() string {
-	env_path := filepath.Join(projectpath.Root, ".env")
-
-	// by default use .env if it exists
-	_, err := os.Stat(env_path)
-	if errors.Is(err, os.ErrNotExist) {
-		// .env does not exist, use preset client mode
-		switch c.clientMode {
-		case mt.ClientMode_ENDPOINT_BETA:
-			return BLOCKCHAIN_REST_BETA
-		case mt.ClientMode_ENDPOINT_DEV:
-			return BLOCKCHAIN_REST_DEV
-		case mt.ClientMode_ENDPOINT_LOCAL:
-			return BLOCKCHAIN_REST_LOCAL
-		}
-	}
-
-	err = godotenv.Load(env_path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return os.Getenv("BLOCKCHAIN_REST")
+	return c.Endpoints.APIAddress
 }
 
 func (c *Client) GetIPFSAddress() string {
-	env_path := filepath.Join(projectpath.Root, ".env")
-
-	// by default use .env if it exists
-	_, err := os.Stat(env_path)
-	if errors.Is(err, os.ErrNotExist) {
-		return IPFS_ADDRESS
-	}
-
-	err = godotenv.Load(env_path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return os.Getenv("IPFS_ADDRESS")
+	return c.Endpoints.IPFSAddress
 }
 
 func (c *Client) GetIPFSApiAddress() string {
-	env_path := filepath.Join(projectpath.Root, ".env")
-
-	// by default use .env if it exists
-	_, err := os.Stat(env_path)
-	if errors.Is(err, os.ErrNotExist) {
-		return IPFS_API_ADDRESS
-	}
-
-	err = godotenv.Load(env_path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return os.Getenv("IPFS_API_ADDRESS")
+	return c.Endpoints.IPFSApiAddress
 }
