@@ -1,9 +1,11 @@
-name: Official Release Workflow
+name: Release Binaries and Frameworks
 
 on:
-  push:
+  create:
     tags:
       - v*
+    branches:
+      - dev
 
 jobs:
   ## ------------------------------------------------------------
@@ -209,3 +211,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+  publish-protos:
+    name: "📦 Publish Proto Definitions to Buf.Build"
+    runs-on: ubuntu-latest
+    needs:
+      - prepare-release
+      - bind-motor-apple
+      - bind-motor-android
+      - bind-motor-wasm
+      - build-blockchain
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: bufbuild/buf-setup-action@v1
+      - uses: bufbuild/buf-push-action@v1
+        with:
+          input: proto
+          buf_token: ${{ secrets.BUF_TOKEN }}

@@ -25,10 +25,7 @@ func (b *BucketConfig) GetDidService(address string, cid string) *rt.Service {
 	return &rt.Service{
 		Id:   service,
 		Type: "LinkedResource",
-		ServiceEndpoint: &rt.ServiceEndpoint{
-			Key:   "uri",
-			Value: []string{b.GetURI(address, cid)},
-		},
+		ServiceEndpoint: b.GetURI(address, cid),
 	}
 }
 

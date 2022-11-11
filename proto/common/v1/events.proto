@@ -61,4 +61,6 @@ message WalletEvent {
   string errorMessage = 2;
   // status message. does not have to be populated
   string message = 3;
+  // Address of the wallet that is being created
+  string address = 4;
 }

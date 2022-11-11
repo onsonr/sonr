@@ -59,6 +59,7 @@
     "github-actions.workflows.pinned.workflows": [
         ".github/workflows/notify.yml",
         ".github/workflows/release.yml",
+        ".github/workflows/build-and-test.yml",
         ".github/workflows/analysis.yml"
     ],
     "go.inferGopath": false,
