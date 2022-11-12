@@ -68,7 +68,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	if err := initMotor(mtr); err != nil {
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("initialize motor: %s", err)
 	}
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_FAUCET_REQUEST_START})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_FAUCET_REQUEST_START, Address: mtr.Address})
 
 	// Request from Faucet
 	err := mtr.Cosmos.RequestFaucet(mtr.Address)
@@ -80,8 +80,8 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 		return mt.CreateAccountWithKeysResponse{}, fmt.Errorf("request from faucet: %s", err)
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_FAUCET_REQUEST_END})
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_START})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_FAUCET_REQUEST_END, Address: mtr.Address})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_START, Address: mtr.Address})
 
 	// Create the DID Document
 	mtr.DIDDocument, err = did.NewDocument(mtr.DID.String())
@@ -132,11 +132,12 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_ERROR,
+			Address: mtr.Address,
 			ErrorMessage: err.Error(),
 		})
 		return
 	}
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_END})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_END, Address: mtr.Address})
 
 	mtr.deviceShard = deviceShard
 	mtr.sharedShard = sharedShard
@@ -144,7 +145,7 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 	mtr.unusedShards = unusedShards
 
 	// create Vault shards to make sure this works before creating WhoIs
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_WHO_IS_CREATE_START})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_WHO_IS_CREATE_START, Address: mtr.Address})
 	vc := vault.New()
 	if _, err := createWhoIs(mtr); err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
@@ -154,8 +155,8 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 		return
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_WHO_IS_CREATE_END})
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_ENCRYPT_START})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_WHO_IS_CREATE_END, Address: mtr.Address})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_ENCRYPT_START, Address: mtr.Address})
 
 	// encrypt dscShard with DSC
 	dscShard, err := mpc.AesEncryptWithKey(request.AesDscKey, mtr.deviceShard)
@@ -200,8 +201,8 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 		}
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_ENCRYPT_END})
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_START})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_ENCRYPT_END, Address: mtr.Address})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_START, Address: mtr.Address})
 
 	// create vault
 	vaultService, err := vc.CreateVault(
@@ -235,7 +236,7 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 		return
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_END})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_END, Address: mtr.Address})
 }
 
 func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {

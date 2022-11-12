@@ -33378,6 +33378,57 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  '/sonr-io/sonr/bucket/service/{uuid}':
+    get:
+      summary: Queries service by bucket id.
+      operationId: SonrioSonrBucketServiceForBucket
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Service:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                  service_endpoint:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: array
+                        items:
+                          type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /sonr-io/sonr/registry/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -58184,6 +58235,25 @@ definitions:
             type: string
             format: int64
             description: size of the new bucket.
+  sonrio.sonr.bucket.QueryGetServiceForBucketResponse:
+    type: object
+    properties:
+      Service:
+        type: object
+        properties:
+          id:
+            type: string
+          type:
+            type: string
+          service_endpoint:
+            type: object
+            properties:
+              key:
+                type: string
+              value:
+                type: array
+                items:
+                  type: string
   sonrio.sonr.bucket.QueryParamsResponse:
     type: object
     properties:

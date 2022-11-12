@@ -13,7 +13,6 @@ import (
 	"github.com/sonr-io/sonr/third_party/types/common"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	st "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
-	"google.golang.org/protobuf/proto"
 )
 
 // ErrFunc is a function that returns an error
@@ -192,14 +191,13 @@ func (lp *Local) callUpdate() error {
 // createLobbyMsgBuf Creates a new Message Buffer for Local Topic
 func createLobbyMsgBuf(p *ct.Peer) []byte {
 	// Marshal Event
-	//event := &v1.LobbyMessage{Peer: p}
-	_, err := proto.Marshal(nil)
+	event := &st.LobbyMessage{From: p}
+	buf, err := event.Marshal()
 	if err != nil {
 		logger.Errorf("%s - Failed to Marshal Event", err)
 		return nil
 	}
-	// return eventBuf
-	return nil
+	return buf
 }
 
 // hasPeer Checks if Peer is in Peer List

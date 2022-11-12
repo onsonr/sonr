@@ -41,7 +41,7 @@ func (mtr *motorNodeImpl) GetBucketItems(request mt.GetBucketItemsRequest) (*mt.
 		Bucket:      config,
 		DidDocument: doc,
 		Items:       items,
-		Uri:         config.GetDidService(mtr.GetAddress(), "").ServiceEndpoint.Value[0],
+		Uri:         config.GetDidService(mtr.GetAddress(), "").ServiceEndpoint,
 	}, nil
 }
 

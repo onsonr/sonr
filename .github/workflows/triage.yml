@@ -1,4 +1,4 @@
-name: Add all new issues to the Road to Production
+name: Issue Triage
 
 on:
   issues:
