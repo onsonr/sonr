@@ -17,6 +17,7 @@ type walletConfig struct {
 	threshold    int
 	network      *Network
 	configs      map[party.ID]*cmp.Config
+	accSeq       uint64
 }
 
 // default configuration options
@@ -27,6 +28,7 @@ func defaultConfig() *walletConfig {
 		threshold:    1,
 		network:      NewNetwork(defaultParticipants),
 		configs:      make(map[party.ID]*cmp.Config),
+		accSeq:       0,
 	}
 }
 
@@ -44,6 +46,7 @@ func (wc *walletConfig) Apply(opts ...WalletOption) *Wallet {
 		ID:        wc.participants[0],
 		Threshold: wc.threshold,
 		Network:   wc.network,
+		AccSeq:    wc.accSeq,
 	}
 }
 
@@ -76,6 +79,13 @@ func WithThreshold(threshold int) WalletOption {
 		if c.threshold == 0 {
 			c.threshold = 1
 		}
+	}
+}
+
+// WithAccountSequence sets the Account Sequence of the MPC wallet
+func WithAccountSequence(seq uint64) WalletOption {
+	return func(c *walletConfig) {
+		c.accSeq = seq
 	}
 }
 

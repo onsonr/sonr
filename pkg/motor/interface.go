@@ -3,6 +3,7 @@ package motor
 import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/sonr-io/sonr/pkg/client"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
@@ -20,7 +21,7 @@ type MotorNode interface {
 	GetWallet() *mpc.Wallet
 	GetPubKey() *secp256k1.PubKey
 	SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error)
-	SendTx(routeUrl string, msg sdk.Msg) ([]byte, error)
+	SendTx(routeUrl string, msg sdk.Msg) (*cosmostx.BroadcastTxResponse, error)
 
 	// Networking
 	Connect(request mt.ConnectRequest) (*mt.ConnectResponse, error)
@@ -32,8 +33,8 @@ type MotorNode interface {
 
 	// Registry
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
-	CreateAccount(mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
-	CreateAccountWithKeys(mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error)
+	CreateAccount(request mt.CreateAccountRequest, waitForVault bool) (mt.CreateAccountResponse, error)
+	CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest, waitForVault bool) (mt.CreateAccountWithKeysResponse, error)
 	OnboardDevice(req mt.OnboardDeviceRequest) (mt.OnboardDeviceResponse, error)
 	GetDID() did.DID
 	GetDIDDocument() did.Document

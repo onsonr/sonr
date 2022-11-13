@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/mr-tron/base58"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
@@ -227,7 +228,7 @@ func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Cre
 	return nil
 }
 
-func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) ([]byte, error) {
+func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) (*cosmostx.BroadcastTxResponse, error) {
 	cleanMsgRoute := strings.TrimLeft(routeUrl, "/")
 	typeUrl := fmt.Sprintf("/sonrio.sonr.%s", cleanMsgRoute)
 	txRaw, err := tx.SignTxWithWallet(w.Wallet, typeUrl, msg)
@@ -239,5 +240,6 @@ func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to broadcast tx (%s): %s", typeUrl, err)
 	}
-	return resp.GetTxResponse().Marshal()
+	w.Wallet.AccSeq += 1
+	return resp, nil
 }

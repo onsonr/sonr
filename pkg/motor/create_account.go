@@ -8,14 +8,13 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
-	"github.com/sonr-io/sonr/pkg/tx"
 	"github.com/sonr-io/sonr/pkg/vault"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
+func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest, waitForVault bool) (mt.CreateAccountResponse, error) {
 	// create DSC and store it in keychain
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_CREATE_START})
 	dsc, err := kr.CreateDSC()
@@ -42,7 +41,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 		AesDscKey: dsc,
 		AesPskKey: psk,
 		Metadata:  request.Metadata,
-	})
+	}, waitForVault)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_ERROR,
@@ -57,7 +56,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.Cre
 }
 
 // CreateAccountWithKeys allows PSK and DSC to be provided manually
-func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error) {
+func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest, waitForVault bool) (mt.CreateAccountWithKeysResponse, error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(mtr.clientMode)
 
@@ -117,7 +116,11 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR})
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_START})
 
-	go createVault(mtr, request)
+	r := make(chan int)
+	go createVault(mtr, request, &r)
+	if waitForVault {
+		<-r
+	}
 
 	// perform sharding and vault creation async
 	return mt.CreateAccountWithKeysResponse{
@@ -125,7 +128,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}, err
 }
 
-func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
+func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest, r *chan int) {
 	// Create Initial Shards
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 
@@ -236,7 +239,8 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 		return
 	}
 
-	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_END, Address: mtr.Address})
+	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_END})
+	*r <- 1
 }
 
 func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
@@ -246,12 +250,7 @@ func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {
 	}
 
 	msg1 := rt.NewMsgCreateWhoIs(m.Address, m.PubKey, docBz, rt.WhoIsType_USER)
-	txRaw, err := tx.SignTxWithWallet(m.Wallet, "/sonrio.sonr.registry.MsgCreateWhoIs", msg1)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Cosmos.BroadcastTx(txRaw)
+	resp, err := m.SendTx("registry.MsgCreateWhoIs", msg1)
 	if err != nil {
 		return nil, err
 	}
@@ -271,12 +270,7 @@ func updateWhoIs(m MotorNode) (*rt.MsgUpdateWhoIsResponse, error) {
 	}
 
 	msg1 := rt.NewMsgUpdateWhoIs(m.GetAddress(), docBz)
-	txRaw, err := tx.SignTxWithWallet(m.GetWallet(), "/sonrio.sonr.registry.MsgUpdateWhoIs", msg1)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.GetClient().BroadcastTx(txRaw)
+	resp, err := m.SendTx("registry.MsgUpdateWhoIs", msg1)
 	if err != nil {
 		return nil, err
 	}

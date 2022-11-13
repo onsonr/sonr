@@ -7,7 +7,7 @@ import (
 	"time"
 
 	mtu "github.com/sonr-io/sonr/testutil/motor"
-	"github.com/sonr-io/sonr/third_party/types/common"
+	//"github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/stretchr/testify/assert"
 )
@@ -65,6 +65,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 	})
 }
 
+/*
 func Test_LoginWithKeyring(t *testing.T) {
 	const ADDR = "snr19c99rqjsts86mm4t6u8qzy2al3ghkfgu7f2zua"
 	req := mt.LoginRequest{
@@ -86,6 +87,7 @@ func Test_LoginWithKeyring(t *testing.T) {
 		fmt.Println("address: ", m.Address)
 	}
 }
+*/
 
 func (suite *MotorTestSuite) Test_LoginAndMakeRequest() {
 	aesKey := mtu.LoadKey("aes.key")

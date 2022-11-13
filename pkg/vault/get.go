@@ -23,6 +23,7 @@ type getVaultResponse struct {
 
 func (v *vaultImpl) GetVaultShards(did string) (Vault, error) {
 	getVaultFunc := func() ([]byte, error) {
+		fmt.Printf("%s/did/%s/get", v.vaultEndpoint, did)
 		res, err := http.Get(fmt.Sprintf("%s/did/%s/get", v.vaultEndpoint, did))
 		if err != nil {
 			return nil, fmt.Errorf("error in /did/%s/get request: %s", did, err)

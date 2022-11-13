@@ -26,6 +26,8 @@ type Wallet struct {
 	ConfigsLock sync.Mutex
 	Network     *Network
 	Threshold   int
+
+	AccSeq      uint64
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.

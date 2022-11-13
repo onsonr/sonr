@@ -116,7 +116,7 @@ func GetAuthInfoSingle(w *mpc.Wallet, gas int) (*txtypes.AuthInfo, error) {
 						},
 					},
 				},
-				Sequence: 0,
+				Sequence: w.AccSeq,
 			},
 		},
 		Fee: &txtypes.Fee{

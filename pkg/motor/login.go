@@ -100,10 +100,19 @@ func (mtr *motorNodeImpl) LoginWithKeys(request mt.LoginWithKeysRequest) (mt.Log
 		return mt.LoginResponse{}, fmt.Errorf("error creating preferred config: %s", err)
 	}
 
+	onChainAcc, err := mtr.Cosmos.GetAccount(mtr.Address)
+
+	if err != nil {
+		return mt.LoginResponse{}, fmt.Errorf("error getting on chain account : %s", err)
+	}
+
+	accSeq := onChainAcc.GetSequence()
+
 	// generate wallet
 	if err = initMotor(mtr,
 		mpc.WithConfigs(cnfgs),
-		mpc.WithBase58PubKey(vm.PublicKeyBase58)); err != nil {
+		mpc.WithBase58PubKey(vm.PublicKeyBase58),
+		mpc.WithAccountSequence(accSeq)); err != nil {
 		return mt.LoginResponse{}, fmt.Errorf("error generating wallet: %s", err)
 	}
 

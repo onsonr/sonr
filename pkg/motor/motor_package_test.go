@@ -68,18 +68,17 @@ func (c testSuiteCallback) OnLinking(data []byte) {
 func (suite *MotorTestSuite) SetupSuite() {
 	fmt.Println("Setting up suite...")
 
-	var err error
-
 	suite.callback = testSuiteCallback{
 		discoverChannel:    make(chan v1.RefreshEvent),
 		walletEventChannel: make(chan ct.WalletEvent),
 		linkingChannel:     make(chan v1.LinkingEvent),
 	}
 
+	var err error
 	// setup motor
 	suite.motorWithKeys, err = EmptyMotor(&mt.InitializeRequest{
 		DeviceId:   "test_device",
-		ClientMode: mt.ClientMode_ENDPOINT_BETA,
+		ClientMode: mt.ClientMode_ENDPOINT_LOCAL,
 	}, suite.callback)
 
 	if err != nil {

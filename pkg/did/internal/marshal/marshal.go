@@ -8,9 +8,9 @@ func NormalizeDocument(document []byte, normalizers ...Normalizer) ([]byte, erro
 	if err := json.Unmarshal(document, &tmp); err != nil {
 		return nil, err
 	}
-	for _, normalizer := range normalizers {
-		normalizer(tmp)
-	}
+	//for _, normalizer := range normalizers {
+	//	normalizer(tmp)
+	//}
 	return json.Marshal(tmp)
 }
 
