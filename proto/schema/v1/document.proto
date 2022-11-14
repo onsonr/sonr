@@ -22,49 +22,49 @@ message SchemaDocument {
   repeated SchemaDocumentValue fields = 4;
 }
 
-
 message BoolValue {
-    bool value = 1;
+  bool value = 1;
 }
 
 message StringValue {
-    string value = 1;
+  string value = 1;
 }
 
 message IntValue {
-    int32 value = 1;
+  int32 value = 1;
 }
 
 message FloatValue {
-    double value = 1;
+  double value = 1;
 }
 
 message BytesValue {
-    bytes value = 1;
+  bytes value = 1;
 }
 
 message LinkValue {
-    SchemaDocument value = 1;
+  SchemaDocument value = 1;
 }
 
 message ListValue {
-    repeated SchemaDocumentValue value = 1;
+  repeated SchemaDocumentValue value = 1;
 }
 
-
+// SchemaDocumentValue defines a value related to a Schema
+// where a 'key' is the properry and 'Kind' is a value and type assertion
 message SchemaDocumentValue {
-    // The key of the document value
-    string key = 1;
+  // The key of the document value
+  string key = 1;
 
-    // Type of a single schema property
-    Kind kind = 2;
+  // Type of a single schema property
+  Kind kind = 2;
 
-    // The value of the field
-    BoolValue bool_value = 3; // optional
-    StringValue string_value = 4; // optional
-    IntValue int_value = 5; // optional
-    FloatValue float_value = 6; // optional
-    BytesValue bytes_value = 7; // optional
-    LinkValue link_value = 8; // optional
-    ListValue list_value = 9; // optional
+  // The value of the field
+  BoolValue bool_value = 3; // optional
+  StringValue string_value = 4; // optional
+  IntValue int_value = 5; // optional
+  FloatValue float_value = 6; // optional
+  BytesValue bytes_value = 7; // optional
+  LinkValue link_value = 8; // optional
+  ListValue list_value = 9; // optional
 }

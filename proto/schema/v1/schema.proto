@@ -44,11 +44,8 @@ message Schema {
   repeated MetadataDefintion metadata = 5;
 }
 
-/* 
-  SchemaField represents an individual field in the schema
-  
-  Each field is validated on name and `SchemaFieldKind`
-*/
+// SchemaField represents an individual field in the schema
+// Each field is validated on name and `SchemaFieldKind`
 message SchemaField {
   // the name/key of the field
   string name = 1;
@@ -57,15 +54,12 @@ message SchemaField {
   SchemaFieldKind field_kind = 2;
 }
 
-/*
-  SchemaFieldKind is the type for a field
+// SchemaFieldKind is the type for a field
+// If the `Kind` of a field is `LIST` then an `SchemaFieldKind` may be specified for the items contained in the list
+// If `list_kind` is not specified, then the first item of the collection will be used to verify the types of the remaining items.
+// Meaning lists MUST always be of singular type.
+// If the `Kind` is of type `LINK` then the `link_did` property must be defined.
 
-  If the `Kind` of a field is `LIST` then an `SchemaFieldKind` may be specified for the items contained in the list
-  If `list_kind` is not specified, then the first item of the collection will be used to verify the types of the remaining items.
-  Meaning lists MUST always be of singular type.
-  
-  If the `Kind` is of type `LINK` then the `link_did` property must be defined.
-*/
 message SchemaFieldKind {
   // the explicit kind of the field
   Kind kind = 1;
