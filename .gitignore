@@ -167,3 +167,9 @@ dist
 dist/
 docs/package-lock.json
 **/sonrd
+
+
+revive.toml
+.githooks/
+
+dist/

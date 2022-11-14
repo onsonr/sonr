@@ -3,7 +3,7 @@ syntax = "proto3";
 package sonrio.sonr.bucket;
 
 import "bucket/params.proto";
-import "bucket/where_is.proto";
+import "bucket/bucket.proto";
 import "gogoproto/gogo.proto";
 
 // this line is used by starport scaffolding # genesis/proto/import
@@ -15,6 +15,6 @@ option java_multiple_files = true;
 // GenesisState defines the bucket module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated WhereIs where_is_list = 2 [(gogoproto.nullable) = false];
+  repeated BucketConfig bucket_definitions = 2 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

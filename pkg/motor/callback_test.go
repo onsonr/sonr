@@ -18,6 +18,10 @@ func (tc *testCallback) OnWalletEvent(data []byte) {
 	tc.WalletEventExec = true
 }
 
+func (tc *testCallback) OnLinking(data []byte) {
+	tc.WalletEventExec = true
+}
+
 func (tc *testCallback) ClearState() {
 	tc.WalletEventExec = false
 }

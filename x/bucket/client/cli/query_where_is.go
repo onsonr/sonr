@@ -23,11 +23,11 @@ func CmdListWhereIs() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllWhereIsRequest{
+			params := &types.QueryAllBucketsRequest{
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.WhereIsAll(context.Background(), params)
+			res, err := queryClient.BucketsAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -53,11 +53,11 @@ func CmdShowWhereIs() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 			id := args[0]
 
-			params := &types.QueryGetWhereIsRequest{
-				Did: id,
+			params := &types.QueryGetBucketRequest{
+				Uuid: id,
 			}
 
-			res, err := queryClient.WhereIs(context.Background(), params)
+			res, err := queryClient.Bucket(context.Background(), params)
 			if err != nil {
 				return err
 			}

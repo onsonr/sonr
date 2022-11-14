@@ -17,16 +17,20 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgCreateWhereIs:
-			res, err := msgServer.CreateWhereIs(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgDefineBucket:
+			res, err := msgServer.DefineBucket(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
-		case *types.MsgUpdateWhereIs:
-			res, err := msgServer.UpdateWhereIs(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgAllocateBucket:
+			res, err := msgServer.AllocateBucket(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
-		case *types.MsgDeleteWhereIs:
-			res, err := msgServer.DeleteWhereIs(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgDeactivateBucket:
+			res, err := msgServer.DeactivateBucket(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
+		case *types.MsgBurnBucket:
+			res, err := msgServer.BurnBucket(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 			// this line is used by starport scaffolding # 1

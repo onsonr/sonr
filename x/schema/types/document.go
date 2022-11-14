@@ -2,7 +2,35 @@ package types
 
 import (
 	"fmt"
+
+	"github.com/sonr-io/sonr/third_party/types/common"
+	bt "github.com/sonr-io/sonr/x/bucket/types"
 )
+
+func NewSchemaDocumentFromBucketItem(item bt.ItemWrapper) (*SchemaDocument, error) {
+	doc := &SchemaDocument{}
+	err := doc.Unmarshal(item.Content())
+	if err != nil {
+		return nil, err
+	}
+	return doc, nil
+}
+
+func (d *SchemaDocument) ToBucketItem() (*common.BucketItem, error) {
+	name := d.Label
+	fileName := fmt.Sprintf("%s.json", name)
+	content, err := d.Marshal()
+	if err != nil {
+		return nil, err
+	}
+
+	return &common.BucketItem{
+		Name:          fileName,
+		Value:         content,
+		Codec:         common.BucketCodec_BucketCodec_SCHEMA,
+		DefinitionUri: d.SchemaDid,
+	}, nil
+}
 
 func (d *SchemaDocumentValue) GetValue() interface{} {
 	switch d.Kind {

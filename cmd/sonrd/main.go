@@ -4,9 +4,11 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+	"github.com/getsentry/sentry-go"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/app"
 	"github.com/spf13/viper"
@@ -32,6 +34,14 @@ func loadEnv() error {
 }
 
 func main() {
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SentryDSN"),
+		TracesSampleRate: 0.7,
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+	sentry.CaptureMessage("Sentry exception catching enabled, proceeding with binary execution.")
 	rootCmd, _ := NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
 		os.Exit(1)

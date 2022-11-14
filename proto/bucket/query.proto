@@ -3,7 +3,8 @@ syntax = "proto3";
 package sonrio.sonr.bucket;
 
 import "bucket/params.proto";
-import "bucket/where_is.proto";
+import "bucket/bucket.proto";
+import "registry/did.proto";
 // this line is used by starport scaffolding # 1
 
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -22,17 +23,28 @@ service Query {
     option (google.api.http).get = "/sonr-io/sonr/bucket/params";
   }
   // Queries a WhereIs by did and creator.
-  rpc WhereIs(QueryGetWhereIsRequest) returns (QueryGetWhereIsResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/bucket/where_is/{creator}/{did}";
+  rpc Bucket(QueryGetBucketRequest) returns (QueryGetBucketResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/id/{uuid}";
   }
+
   // Queries all WhereIs by creator.
-  rpc WhereIsByCreator(QueryGetWhereIsByCreatorRequest) returns (QueryGetWhereIsByCreatorResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/bucket/where_is/{creator}";
+  rpc BucketByCreator(QueryGetBucketByCreatorRequest) returns (QueryGetBucketByCreatorResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/creator/{creator}";
+  }
+
+  // Queries all WhereIs by creator.
+  rpc BucketByName(QueryGetBucketByNameRequest) returns (QueryGetBucketByNameResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/name/{name}";
+  }
+
+  // Queries service by bucket id.
+  rpc ServiceForBucket(QueryGetServiceForBucketRequest) returns (QueryGetServiceForBucketResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/service/{uuid}";
   }
 
   // Queries a list of WhereIs items.
-  rpc WhereIsAll(QueryAllWhereIsRequest) returns (QueryAllWhereIsResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/bucket/where_is";
+  rpc BucketsAll(QueryAllBucketsRequest) returns (QueryAllBucketsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/bucket/all";
   }
 
 // this line is used by starport scaffolding # 2
@@ -47,31 +59,48 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryGetWhereIsRequest {
-  string creator = 1;
-  string did = 2;
+message QueryGetBucketRequest {
+  string uuid = 1;
 }
 
-message QueryGetWhereIsResponse {
-  WhereIs where_is = 1 [(gogoproto.nullable) = false];
+message QueryGetBucketResponse {
+  BucketConfig bucket = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryGetWhereIsByCreatorRequest {
+message QueryGetBucketByCreatorRequest {
   string creator = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message QueryGetWhereIsByCreatorResponse {
-  repeated WhereIs where_is = 1 [(gogoproto.nullable) = false];
+message QueryGetBucketByCreatorResponse {
+  repeated BucketConfig buckets = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryAllWhereIsRequest {
+message QueryGetBucketByNameRequest {
+  string name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetBucketByNameResponse {
+  repeated BucketConfig buckets = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetServiceForBucketRequest {
+  string uuid = 1;
+}
+
+message QueryGetServiceForBucketResponse {
+  sonrio.sonr.registry.Service Service = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllBucketsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-message QueryAllWhereIsResponse {
-  repeated WhereIs where_is = 1 [(gogoproto.nullable) = false];
+message QueryAllBucketsResponse {
+  repeated BucketConfig buckets = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
