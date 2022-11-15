@@ -33349,14 +33349,7 @@ paths:
                   type:
                     type: string
                   service_endpoint:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                      value:
-                        type: array
-                        items:
-                          type: string
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -33546,14 +33539,7 @@ paths:
                               type:
                                 type: string
                               service_endpoint:
-                                type: object
-                                properties:
-                                  key:
-                                    type: string
-                                  value:
-                                    type: array
-                                    items:
-                                      type: string
+                                type: string
                           title: optional
                         also_known_as:
                           type: array
@@ -33825,14 +33811,7 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: object
-                              properties:
-                                key:
-                                  type: string
-                                value:
-                                  type: array
-                                  items:
-                                    type: string
+                              type: string
                         title: optional
                       also_known_as:
                         type: array
@@ -34025,14 +34004,7 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: object
-                              properties:
-                                key:
-                                  type: string
-                                value:
-                                  type: array
-                                  items:
-                                    type: string
+                              type: string
                         title: optional
                       also_known_as:
                         type: array
@@ -34226,14 +34198,7 @@ paths:
                             type:
                               type: string
                             service_endpoint:
-                              type: object
-                              properties:
-                                key:
-                                  type: string
-                                value:
-                                  type: array
-                                  items:
-                                    type: string
+                              type: string
                         title: optional
                       also_known_as:
                         type: array
@@ -57561,14 +57526,7 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: object
-                  properties:
-                    key:
-                      type: string
-                    value:
-                      type: array
-                      items:
-                        type: string
+                  type: string
             title: optional
           also_known_as:
             type: array
@@ -57690,14 +57648,7 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: object
-                  properties:
-                    key:
-                      type: string
-                    value:
-                      type: array
-                      items:
-                        type: string
+                  type: string
             title: optional
           also_known_as:
             type: array
@@ -58011,14 +57962,7 @@ definitions:
           type:
             type: string
           service_endpoint:
-            type: object
-            properties:
-              key:
-                type: string
-              value:
-                type: array
-                items:
-                  type: string
+            type: string
   sonrio.sonr.bucket.QueryParamsResponse:
     type: object
     properties:
@@ -58110,14 +58054,7 @@ definitions:
             type:
               type: string
             service_endpoint:
-              type: object
-              properties:
-                key:
-                  type: string
-                value:
-                  type: array
-                  items:
-                    type: string
+              type: string
         title: optional
       also_known_as:
         type: array
@@ -58139,23 +58076,7 @@ definitions:
       type:
         type: string
       service_endpoint:
-        type: object
-        properties:
-          key:
-            type: string
-          value:
-            type: array
-            items:
-              type: string
-  sonrio.sonr.registry.ServiceEndpoint:
-    type: object
-    properties:
-      key:
         type: string
-      value:
-        type: array
-        items:
-          type: string
   sonrio.sonr.registry.VerificationMethod:
     type: object
     properties:
@@ -58339,14 +58260,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -58510,14 +58424,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -58690,14 +58597,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -58861,14 +58761,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -59032,14 +58925,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -59205,14 +59091,7 @@ definitions:
                       type:
                         type: string
                       service_endpoint:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                          value:
-                            type: array
-                            items:
-                              type: string
+                        type: string
                   title: optional
                 also_known_as:
                   type: array
@@ -59402,14 +59281,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -59567,14 +59439,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -59732,14 +59597,7 @@ definitions:
                     type:
                       type: string
                     service_endpoint:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: array
-                          items:
-                            type: string
+                      type: string
                 title: optional
               also_known_as:
                 type: array
@@ -59894,14 +59752,7 @@ definitions:
                 type:
                   type: string
                 service_endpoint:
-                  type: object
-                  properties:
-                    key:
-                      type: string
-                    value:
-                      type: array
-                      items:
-                        type: string
+                  type: string
             title: optional
           also_known_as:
             type: array

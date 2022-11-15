@@ -11,6 +11,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/app"
+	"github.com/sonr-io/sonr/cmd/sonrd/cmd"
 	"github.com/spf13/viper"
 )
 
@@ -42,7 +43,7 @@ func main() {
 		log.Fatalf("sentry.Init: %s", err)
 	}
 	sentry.CaptureMessage("Sentry exception catching enabled, proceeding with binary execution.")
-	rootCmd, _ := NewRootCmd()
+	rootCmd, _ := cmd.NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
 		os.Exit(1)
 	}
