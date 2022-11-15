@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       max-parallel: 8
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-12]
         go-version: [1.18]
         ignite-version: [v0.23.0, v0.24.0]
     name: "Build/Test ${{ matrix.os }}; Go ${{ matrix.go-version }}; Ignite ${{ matrix.ignite-version }}"
@@ -37,22 +37,21 @@ jobs:
             proto/registry/**
             proto/schema/**
 
-      - name: Install Ignite
-        if: steps.changed-files-chain.outputs.any_changed == 'true'
-        run: |
 
       - name: Run build against Release target for macos
-        if: ${{matrix.os == 'macos-latest'}} && steps.changed-files-chain.outputs.any_changed == 'true'
+        if: matrix.os == 'macos-12' && steps.changed-files-chain.outputs.any_changed == 'true'
         continue-on-error: false
         run: |
           sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+          go mod download
           ignite chain build --release -t darwin:amd64
 
       - name: Run build against Release target for ubuntu
-        if: ${{matrix.os == 'ubuntu-latest'}} && steps.changed-files-chain.outputs.any_changed == 'true'
+        if: matrix.os == 'ubuntu-latest' && steps.changed-files-chain.outputs.any_changed == 'true'
         continue-on-error: false
         run: |
           sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+          go mod download
           ignite chain build --release -t linux:amd64
 
   run-bind-test:
