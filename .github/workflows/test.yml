@@ -37,17 +37,23 @@ jobs:
             proto/registry/**
             proto/schema/**
 
+      - name: Install Ignite
+        if: steps.changed-files-chain.outputs.any_changed == 'true'
+        run: |
+
       - name: Run build against Release target for macos
         if: ${{matrix.os == 'macos-latest'}} && steps.changed-files-chain.outputs.any_changed == 'true'
         continue-on-error: false
         run: |
-          env GOOS=darwin GOARCH=amd64 go build -o ./build/sonr-darwin-amd64 ./cmd/sonrd/main.go
+          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+          ignite chain build --release -t darwin:amd64
 
       - name: Run build against Release target for ubuntu
         if: ${{matrix.os == 'ubuntu-latest'}} && steps.changed-files-chain.outputs.any_changed == 'true'
         continue-on-error: false
         run: |
-          env GOOS=linux GOARCH=amd64 go build -o ./build/sonr-linux-amd64 ./cmd/sonrd/main.go
+          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+          ignite chain build --release -t linux:amd64
 
   run-bind-test:
     strategy:
