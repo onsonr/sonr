@@ -135,7 +135,7 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest, r 
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_SHARD_GENERATE_ERROR,
-			Address: mtr.Address,
+			Address:      mtr.Address,
 			ErrorMessage: err.Error(),
 		})
 		return
@@ -217,7 +217,6 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest, r 
 		pwShard,
 	)
 
-	fmt.Println("Response From Create Vault :", vaultService)
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_VAULT_CREATE_ERROR,

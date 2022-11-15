@@ -3,6 +3,7 @@ package mpc
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"sync"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -27,13 +28,21 @@ type Wallet struct {
 	Network     *Network
 	Threshold   int
 
-	AccSeq      uint64
+	AccSeq uint64
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
 func GenerateWallet(cb common.MotorCallback, options ...WalletOption) (*Wallet, error) {
 	opt := defaultConfig()
 	w := opt.Apply(options...)
+	configLength := reflect.ValueOf(w.Configs).MapKeys()
+	if len(configLength) > 0 {
+		if len(configLength) != len(opt.participants) {
+			return nil, fmt.Errorf("when importing wallet all the configs needs to be available, provided: %v, needs: %v", reflect.ValueOf(w.Configs).MapKeys(), opt.participants)
+		} else {
+			return w, nil
+		}
+	}
 
 	var wg sync.WaitGroup
 	for _, id := range opt.participants {
@@ -228,7 +237,7 @@ func (w *Wallet) CreateInitialShards() (dscShard, pskShard, recShard []byte, unu
 
 	// list bank shards
 	for i := 0; i < len(ss); i++ {
-		u, ok := ss[fmt.Sprintf("bank%d", i+1)]
+		u, ok := ss[fmt.Sprintf("bank%d", i)]
 		if !ok {
 			continue
 		}
