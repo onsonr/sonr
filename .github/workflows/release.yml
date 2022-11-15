@@ -1,9 +1,11 @@
-name: Official Release Workflow
+name: Release Binaries and Frameworks
 
 on:
-  push:
+  create:
     tags:
       - v*
+    branches:
+      - dev
 
 jobs:
   ## ------------------------------------------------------------
@@ -17,13 +19,6 @@ jobs:
       tag_upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v3
-      - name: Bump version and push tag
-        if: github.event.pull_request.merged == true
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: nowsprinting/check-version-format-action@v3
         if: github.event.pull_request.merged == false
         id: version
@@ -43,27 +38,15 @@ jobs:
         with:
           tag: ${{ github.ref }}
           name: ${{steps.tag.outputs.tag}}
-          draft: false
-          prerelease: ${{steps.version.outputs.is_stable == 'false'}}
-
-      - name: Create a GitHub from New Tag
-        id: new_tag_release
-        if: github.event.pull_request.merged == true
-        uses: ncipollo/release-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: ${{ steps.tag_version.outputs.new_tag }}
-          draft: false
-          prerelease: false
+          prerelease: ${{steps.version.outputs.prerelease != ''}}
+          generateReleaseNotes: true
 
   ## ------------------------------------------------------------
-  ## [MOTOR] Build and release for iOS
+  ## [MOTOR] Build and release for iOS/macOS
   ## ------------------------------------------------------------
-  bind-motor-ios:
-    name: 🍎 Bind Motor for iOS
-    runs-on: macos-latest
+  bind-motor-apple:
+    name: 🍎 Bind Motor for iOS/iOS Simulator/macOS
+    runs-on: macos-12
     needs:
       - prepare-release
     steps:
@@ -83,12 +66,12 @@ jobs:
       # ---
       # 2. Build Motor xcFramework and Upload to GitHub Release
       # ---
-      - name: Build iOS XCFramework for Motor
+      - name: Build Universal XCFramework for Motor
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           sh scripts/bind.sh -i
-          gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
+          gh release upload ${{ steps.tag.outputs.tag }} build/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
@@ -131,52 +114,10 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           sh scripts/bind.sh -a
-          gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
+          gh release upload ${{ steps.tag.outputs.tag }} build/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          TAR_COMPRESS: true
-  #     # - name: motor-android Repository Dispatch
-  #     #   uses: peter-evans/repository-dispatch@v2
-  #     #   with:
-  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
-  #     #     repository: sonr-io/motor-android
-  #     #     event-type: new-android-framework
-  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
-
-  ## ------------------------------------------------------------
-  ## [MOTOR] Build and release for Android
-  ## ------------------------------------------------------------
-  bind-motor-mac:
-    name: 🍎 Bind Motor for macOS
-    runs-on: macos-latest
-    needs:
-      - prepare-release
-    steps:
-        # ---
-      # 1. Setup Environment
-      # ---
-      - name: Setup Environment
-        uses: actions/checkout@v3
-      - run: mkdir -p build
-        working-directory: ${{ github.workspace}}
-      - id: tag
-        uses: dawidd6/action-get-tag@v1
-      - uses: actions/setup-go@v3
-        with:
-          go-version: ~1.18
-
-      # ---
-      # 2. Build Motor xcFramework and Upload to GitHub Release
-      # ---
-      - name: Build macOS XCFramework for Motor
-        run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init
-          sh scripts/bind.sh -m
-          gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
 
   ## ------------------------------------------------------------
@@ -215,106 +156,87 @@ jobs:
       - name: Build Motor JS Library
         run: |
           sh scripts/bind.sh -w
-          gh release upload ${{ steps.tag.outputs.tag }} build/*.tar.gz
+          gh release upload ${{ steps.tag.outputs.tag }} build/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAR_COMPRESS: true
-  #     # - name: motor-android Repository Dispatch
-  #     #   uses: peter-evans/repository-dispatch@v2
-  #     #   with:
-  #     #     token: ${{ secrets.ACTIONS_GH_TOKEN }}
-  #     #     repository: sonr-io/motor-android
-  #     #     event-type: new-android-framework
-  #     #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   ## ------------------------------------------------------------
-  ## [HIGHWAY] Build and release for linux, macos
+  ## [BLOCKCHAIN] Build and release for linux, macos
   ## ------------------------------------------------------------
-  build-highway:
-    name: ⛓️ Build Highway for Linux, MacOS
-    runs-on: ubuntu-latest
+  build-blockchain:
+    strategy:
+      max-parallel: 8
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        go-version: [1.18]
+        ignite-version: [v0.24.0]
+    name: "⛓️ Release Blockchain for ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
     needs:
       - prepare-release
     steps:
-      # ---
-      # 1. Setup Environment
-      # ---
-      - name: Setup Environment
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - id: tag
+        uses: dawidd6/action-get-tag@v1
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ~${{ matrix.go-version }}
+
+      - name: Install Ignite
+        run: |
+          sudo curl https://get.ignite.com/cli@${{matrix.ignite-version}}! | sudo bash
+
+      - name: Run build against Release target for macos
+        if: ${{matrix.os == 'macos-latest'}}
+        continue-on-error: true
+        run: |
+          ignite chain build --release --release.prefix sonrd_${{steps.tag.outputs.tag}} -t darwin:amd64
+          gh release upload ${{ steps.tag.outputs.tag }} release/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+      - name: Run build against Release target for ubuntu
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        continue-on-error: false
+        run: |
+          ignite chain build --release --release.prefix sonrd_${{steps.tag.outputs.tag}} -t linux:amd64
+          gh release upload ${{ steps.tag.outputs.tag }} release/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+  publish-protos:
+    name: "📦 Publish Proto Definitions to Buf.Build"
+    runs-on: ubuntu-latest
+    needs:
+      - prepare-release
+      - bind-motor-apple
+      - bind-motor-android
+      - bind-motor-wasm
+      - build-blockchain
+    steps:
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - id: tag
         uses: dawidd6/action-get-tag@v1
-      - id: vars
-        uses: ignite-hq/cli/actions/release/vars@develop
-
-      # ---
-      # 2. Build Blockchain Daemon
-      # ---
-      - name: Build Blockchain Daemon
-        uses: ignite-hq/cli/actions/cli@develop
-        if: ${{ steps.vars.outputs.should_release == 'true' }}
+      - uses: bufbuild/buf-setup-action@v1
+      - uses: bufbuild/buf-push-action@v1
         with:
-          args: chain build --release --release.prefix ${{ steps.vars.outputs.tarball_prefix }} -t linux:amd64 -t darwin:amd64
-      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        if: ${{ steps.vars.outputs.is_release_type_latest == 'true' }}
-        with:
-          tag_name: ${{ steps.vars.outputs.tag_name }}
-          delete_release: true
+          input: proto
+          buf_token: ${{ secrets.BUF_TOKEN }}
+      - name: Upload OpenAPI Spec
+        run: |
+          sudo curl https://get.ignite.com/cli@v0.24.0! | sudo bash
+          ignite generate openapi --yes
+          gh release upload ${{ steps.tag.outputs.tag }} docs/static/blockchain.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ---
-      # 3. Upload to Github Release and Send Tweet
-      # ---
-      - name: Publish the Release
-        if: ${{ steps.vars.outputs.should_release == 'true' }}
-        run: |
-          gh release upload ${{ steps.tag.outputs.tag }} release/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  ## ------------------------------------------------------------
-  ## [POST-RUN] Announce to Social Media and Post Release Notes
-  ## ------------------------------------------------------------
-  announce:
-    name: 🔔 Announce to the World
-    if: 1 == 0 # Disabled for now, Error with Twitter publish which returns a 403
-    runs-on: ubuntu-latest
-    needs:
-      - bind-motor-android
-      - bind-motor-wasm
-      - bind-motor-ios
-      - build-highway
-    env:
-      CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
-      CONSUMER_API_SECRET_KEY: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
-      ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-      ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-      PLACID_APP_BEARER: ${{ secrets.PLACID_APP_BEARER }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Setup Environment
-        uses: actions/checkout@v3
-      - id: info
-        uses: jossef/action-latest-release-info@v1.2.0
-      - run: sh scripts/placid.sh ${{ steps.info.outputs.tag_name }} ${{ steps.info.outputs.html_url }} ${{ github.workspace }}/tmp/cover.png
-      - name: Publish Tweet
-        id: tweet
-        uses: snow-actions/tweet@v1.3.0
-        with:
-          status: 💫 Woo-hoo - We just published a new release ${{ steps.info.outputs.tag_name }}!
-          media_paths: tmp/cover.png
-      - id: reply
-        uses: snow-actions/tweet@v1.3.0
-        with:
-          status: |
-            Find out more and view the changelog at:
-            ${{ steps.info.outputs.html_url }}
-
-            #release #sonr #motor #highway
-          in_reply_to_status_id: ${{ fromJSON(steps.tweet.outputs.response).id_str }}
-      - name: Log Tweet Response
-        run: |
-          echo "Announcement Response: ${{ steps.tweet.outputs.response }}"
-          echo "Reply Response: ${{ steps.reply.outputs.response }}"

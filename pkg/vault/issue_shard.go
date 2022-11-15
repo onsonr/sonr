@@ -62,8 +62,6 @@ func (v *vaultImpl) IssueShard(d, shardSuffix, dscPub, dscShard string) (did.Ser
 	return did.Service{
 		ID:   ssi.MustParseURI(uri),
 		Type: "vault",
-		ServiceEndpoint: map[string]string{
-			"cid": isr.VaultCID,
-		},
+		ServiceEndpoint: isr.VaultCID,
 	}, nil
 }

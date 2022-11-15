@@ -13,20 +13,17 @@ func (mtr *motorNodeImpl) AddBucketServiceEndpoint(baseURI, id string) error {
 	if mtr.DIDDocument == nil {
 		return errors.New("Document is not defined")
 	}
-	if _, ok := mtr.Resources.bucketStore[id]; !ok {
-		return errors.New("Cannot resolve content for bucket, not found")
-	}
 
-	bucket := mtr.Resources.bucketStore[id]
-	se := bucket.CreateBucketServiceEndpoint()
 
-	if mtr.DIDDocument.GetServices().FindByID(se.ID) == nil {
-		mtr.DIDDocument.AddService(se)
-	}
+	// se := bucket.CreateBucketServiceEndpoint()
 
-	_, err := updateWhoIs(mtr)
-	if err != nil {
-		return err
-	}
+	// if mtr.DIDDocument.GetServices().FindByID(se.ID) == nil {
+	// 	mtr.DIDDocument.AddService(se)
+	// }
+
+	// _, err := updateWhoIs(mtr)
+	// if err != nil {
+	// 	return err
+	// }
 	return nil
 }

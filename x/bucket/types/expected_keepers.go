@@ -21,6 +21,7 @@ type BankKeeper interface {
 // RegistryKeeper defines the expected interface needed to manage account did documents.
 type RegistryKeeper interface {
 	GetWhoIs(ctx sdk.Context, id string) (val rt.WhoIs, found bool)
+	SetWhoIs(ctx sdk.Context, whoIs rt.WhoIs)
 	FindWhoIsByAlias(ctx sdk.Context, alias string) (val rt.WhoIs, found bool)
 	GetWhoIsFromOwner(ctx sdk.Context, owner string) (val rt.WhoIs, found bool)
 	// Methods imported from bank should be defined here

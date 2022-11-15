@@ -17,7 +17,7 @@ import (
 var (
 	errWalletExists    = errors.New("mpc wallet already exists")
 	errWalletNotExists = errors.New("mpc wallet does not exist")
-	txBetaAddress      = "v1-beta.sonr.ws:1317/cosmos/tx/v1beta/txs"
+	txBetaAddress      = "v1.beta.sonr.ws:1317/cosmos/tx/v1beta/txs"
 )
 
 type motor struct {

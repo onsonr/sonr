@@ -19,7 +19,7 @@
 
 ---
 
-<p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for intereoperability, and total digital autonomy.
+<p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for interoperability, and total digital autonomy.
     <br>
 </p>
 
@@ -44,10 +44,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 What things you need to install the software and how to install them.
-- [Go](https://golang.org/doc/install)
-- [Ignite CLI](https://github.com/ignite/cli)
+- [Go](https://golang.org/doc/install) - v1.18.*
+- [Ignite CLI](https://github.com/ignite/cli) - v0.24.1
+- [Cosmos SDK](https://cosmos.network/docs/getting-started/installation.html) - v0.45.5
 - [Protocol Buffers](https://grpc.io)
-- [GRPCLI](https://github.com/grpc/grpc/blob/master/doc/command_line_tool.md) - *(optional)*
 
 ### Installing
 A step by step series of examples that tell you how to get a development env running.
@@ -57,7 +57,6 @@ Installing Protocol Buffers
 ```bash
 brew install protobuf
 ```
-
 
 Installing Ignite
 
@@ -167,4 +166,3 @@ Partners, collaborators, compliance, or just pure appreciation!
 - [W3C](https://www.w3.org/)
 - [Protocol Labs](https://protocol.ai/)
 - [Ignite](https://ignite.com/)
-- [AE Studio](https://ae.studio/)

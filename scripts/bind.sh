@@ -4,70 +4,64 @@ set -e
 SCRIPTS_DIR=$(dirname "$0")
 cd ${SCRIPTS_DIR}/../
 PROJECT_DIR=$(pwd);
+LICENSE=${PROJECT_DIR}/LICENSE.md
 MOTOR_LIB_DIR=${PROJECT_DIR}/bind/motor-mobile
 MOTOR_WASM_DIR=${PROJECT_DIR}/bind/motor-wasm
 
-while getopts "iawm" opt; do
+
+
+
+while getopts "iaw" opt; do
   echo "🔷 Setting up build Environment..."
   VERSION=$(git describe --tags --abbrev=0)
   BUILDDIR=${PROJECT_DIR}/build
   mkdir -p ${BUILDDIR}
 
+  if ! command -v gomobile &> /dev/null
+  then
+    echo "gomobile could not be found. Installing it..."
+    go install golang.org/x/mobile/cmd/gomobile@latest
+    gomobile init
+  fi
+
   case $opt in
     a)
       ANDROID_ARTIFACT=${BUILDDIR}/io.sonr.motor.aar
-      echo "🔷 Binding Android Artifact Version ${VERSION}..."
-      cd ${MOTOR_LIB_DIR}
-      gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -androidapi 19 -v
+      echo "🔷 Binding Android Artifact - Version:${VERSION}..."
+      gomobile bind -ldflags='-s -w' -target=android/arm64 -o ${ANDROID_ARTIFACT} -androidapi 19 -v ${MOTOR_LIB_DIR}
       rm -rf ${BUILDDIR}/io.sonr.motor-sources.jar
       cd ${BUILDDIR}
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing Android Artifact..."
-        tar -czf ${BUILDDIR}/motor-${VERSION}-android.tar.gz io.sonr.motor.aar
+        zip -r ${BUILDDIR}/motor_android.zip io.sonr.motor.aar
         rm -rf ${ANDROID_ARTIFACT}
         echo "✅ Android Tarball written to: ${ANDROID_TAR_BALL}"
       fi
       ;;
     i)
       IOS_ARTIFACT=${BUILDDIR}/Motor.xcframework
-      echo "🔷 Binding iOS Artifact Version ${VERSION}..."
-      cd ${MOTOR_LIB_DIR}
-      gomobile bind -ldflags='-s -w' -target=ios -prefix=SNR  -o ${IOS_ARTIFACT} -v
+      echo "🔷 Binding Universal iOS/macOS Artifact - Version: ${VERSION}..."
+      gomobile bind -ldflags='-s -w' -target=ios,iossimulator,macos -prefix=SNR  -o ${IOS_ARTIFACT} -v ${MOTOR_LIB_DIR}
       cd ${BUILDDIR}
+      cp ${LICENSE} ${IOS_ARTIFACT}/LICENSE.md
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing iOS Artifact..."
-        tar -czf ${BUILDDIR}/motor-${VERSION}-ios.tar.gz Motor.xcframework
+        zip -r ${BUILDDIR}/motor_universal.zip Motor.xcframework
         rm -rf ${IOS_ARTIFACT}
         echo "✅ iOS Tarball written to: ${IOS_TAR_BALL}"
       fi
       ;;
-    m)
-      MAC_ARTIFACT=${BUILDDIR}/MotorMac.xcframework
-      echo "🔷 Binding macOS Artifact Version ${VERSION}..."
-      cd ${MOTOR_LIB_DIR}
-      gomobile bind -ldflags='-s -w' -target=macos -prefix=SNR  -o ${MAC_ARTIFACT} -v
-      cd ${BUILDDIR}
-
-      if [ "$TAR_COMPRESS" = true ] ; then
-        echo "🔷 Compressing Mac Artifact..."
-        tar -czf ${BUILDDIR}/motor-${VERSION}-macos.tar.gz MotorMac.xcframework
-        rm -rf ${IOS_ARTIFACT}
-      fi
-      ;;
     w)
       WASM_ARTIFACT=${BUILDDIR}/sonr-motor.wasm
-      WASM_TAR_BALL=${BUILDDIR}/motor-${VERSION}-wasm.tar.gz
-
       echo "🔷 Binding WebAssembly Artifact Version ${VERSION}..."
-      cd ${MOTOR_WASM_DIR}
-      GOOS=js GOARCH=wasm go build -tags wasm -o ${WASM_ARTIFACT} -v
+      GOOS=js GOARCH=wasm go build -tags wasm -o ${WASM_ARTIFACT} -v ${MOTOR_WASM_DIR}
       cd ${BUILDDIR}
 
       if [ "$TAR_COMPRESS" = true ] ; then
         echo "🔷 Compressing WebAssembly Artifact..."
-        tar -czf ${WASM_TAR_BALL} sonr-motor.wasm
+        zip -r ${BUILDDIR}/motor_wasm.zip sonr-motor.wasm
         rm -rf ${WASM_ARTIFACT}
       fi
       echo "✅ WebAssembly Tarball written to: ${WASM_TAR_BALL}"

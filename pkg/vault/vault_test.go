@@ -20,7 +20,7 @@ func Test_CreateVault(t *testing.T) {
 	s, err := New().CreateVault("testdid", deviceShards, "test_device", dscShard, pskShard, recShard)
 	assert.NoError(t, err, "vault created")
 
-	fmt.Println(s.ServiceEndpoint["cid"])
+	fmt.Println(s.ServiceEndpoint)
 }
 
 func Test_GetVault(t *testing.T) {
