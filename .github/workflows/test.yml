@@ -2,7 +2,7 @@ name: Build and Test
 
 on:
   pull_request:
-    types: [opened, ready_for_review, reopened]
+    types: [opened, edited, ready_for_review, reopened]
 jobs:
   run-build-test:
     strategy:
@@ -36,10 +36,6 @@ jobs:
             proto/bucket/**
             proto/registry/**
             proto/schema/**
-
-      - name: Install Ignite
-        if: steps.changed-files-chain.outputs.any_changed == 'true'
-        run: |
 
       - name: Run build against Release target for macos
         if: ${{matrix.os == 'macos-latest'}} && steps.changed-files-chain.outputs.any_changed == 'true'
