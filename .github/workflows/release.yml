@@ -226,8 +226,17 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - id: tag
+        uses: dawidd6/action-get-tag@v1
       - uses: bufbuild/buf-setup-action@v1
       - uses: bufbuild/buf-push-action@v1
         with:
           input: proto
           buf_token: ${{ secrets.BUF_TOKEN }}
+      - name: Upload OpenAPI Spec
+        run: |
+          sudo curl https://get.ignite.com/cli@v0.24.0! | sudo bash
+          ignite generate openapi --yes
+          gh release upload ${{ steps.tag.outputs.tag }} docs/static/blockchain.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
