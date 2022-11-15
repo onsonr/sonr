@@ -36,6 +36,12 @@ bind.tar:
 	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -i
 	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -w
 
+## build       :   Builds macos and ubuntu releases for Sonr
+build:
+	env GOOS=linux GOARCH=amd64 go build -o ./build/sonr-linux-amd64 ./cmd/sonrd/main.go
+	env GOOS=linux GOARCH=arm64 go build -o ./build/sonr-linux-arm64 ./cmd/sonrd/main.go
+	env GOOS=darwin GOARCH=amd64 go build -o ./build/sonr-darwin-amd64 ./cmd/sonrd/main.go
+
 ## proto       :   Compiles Go Proto Files and pushes to Buf.Build
 proto: proto.go proto.buf
 
