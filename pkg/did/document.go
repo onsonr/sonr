@@ -428,7 +428,7 @@ func (d *DocumentImpl) ControllersAsString() []string {
 type Service struct {
 	ID              ssi.URI `json:"id"`
 	Type            string  `json:"type,omitempty"`
-	ServiceEndpoint string  `json:"serviceEndpoint,omitempty"`
+	ServiceEndpoint string  `json:"service_endpoint,omitempty"`
 }
 
 func (s Service) MarshalJSON() ([]byte, error) {
