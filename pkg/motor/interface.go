@@ -21,7 +21,7 @@ type MotorNode interface {
 	GetWallet() *mpc.Wallet
 	GetPubKey() *secp256k1.PubKey
 	SendTokens(req mt.PaymentRequest) (*mt.PaymentResponse, error)
-	SendTx(routeUrl string, msg sdk.Msg) (*cosmostx.BroadcastTxResponse, error)
+	SendTx(routeURL string, msg sdk.Msg) (*cosmostx.BroadcastTxResponse, error)
 
 	// Networking
 	Connect(request mt.ConnectRequest) (*mt.ConnectResponse, error)

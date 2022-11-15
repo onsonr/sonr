@@ -39,9 +39,8 @@ func GenerateWallet(cb common.MotorCallback, options ...WalletOption) (*Wallet, 
 	if len(configLength) > 0 {
 		if len(configLength) != len(opt.participants) {
 			return nil, fmt.Errorf("when importing wallet all the configs needs to be available, provided: %v, needs: %v", reflect.ValueOf(w.Configs).MapKeys(), opt.participants)
-		} else {
-			return w, nil
 		}
+		return w, nil
 	}
 
 	var wg sync.WaitGroup

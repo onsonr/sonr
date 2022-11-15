@@ -228,8 +228,8 @@ func (w *motorNodeImpl) AddCredentialVerificationMethod(id string, cred *did.Cre
 	return nil
 }
 
-func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) (*cosmostx.BroadcastTxResponse, error) {
-	cleanMsgRoute := strings.TrimLeft(routeUrl, "/")
+func (w *motorNodeImpl) SendTx(routeURL string, msg sdk.Msg) (*cosmostx.BroadcastTxResponse, error) {
+	cleanMsgRoute := strings.TrimLeft(routeURL, "/")
 	typeUrl := fmt.Sprintf("/sonrio.sonr.%s", cleanMsgRoute)
 	txRaw, err := tx.SignTxWithWallet(w.Wallet, typeUrl, msg)
 	if err != nil {
@@ -240,6 +240,6 @@ func (w *motorNodeImpl) SendTx(routeUrl string, msg sdk.Msg) (*cosmostx.Broadcas
 	if err != nil {
 		return nil, fmt.Errorf("failed to broadcast tx (%s): %s", typeUrl, err)
 	}
-	w.Wallet.AccSeq += 1
+	w.Wallet.AccSeq++
 	return resp, nil
 }

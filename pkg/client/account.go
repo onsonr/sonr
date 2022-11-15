@@ -35,6 +35,7 @@ func (c *Client) CheckBalance(address string) (types.Coins, error) {
 	return resp.GetBalances(), nil
 }
 
+//GetAccount fetches on-chain account details from the Sonr Network
 func (c *Client) GetAccount(address string) (*acctypes.BaseAccount, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(

@@ -99,6 +99,7 @@ func (suite *MotorTestSuite) Test_QuerySchemaByCreator() {
 	}
 }
 
+/*
 func (suite *MotorTestSuite) Test_QuerySchemaByDid() {
 	fmt.Println("Test_QuerySchemaByDid")
 	createSchemaRequest := mt.CreateSchemaRequest{
@@ -128,3 +129,4 @@ func (suite *MotorTestSuite) Test_QuerySchemaByDid() {
 
 	fmt.Println(qresp)
 }
+*/
