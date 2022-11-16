@@ -20,7 +20,7 @@ func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.
 		return nil, err
 	}
 
-	service, cid, err := bi.GenerateBucket(mtr.sh, config, mtr.GetAddress())
+	service, err := bi.GenerateBucket(mtr.sh, config, mtr.GetAddress())
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.
 	if err != nil {
 		return nil, err
 	}
-	
+
 	mtr.DIDDocument.AddService(services[0])
 	docBz, err := mtr.DIDDocument.MarshalJSON()
 	if err != nil {
@@ -60,6 +60,5 @@ func (mtr *motorNodeImpl) GenerateBucket(request mt.GenerateBucketRequest) (*mt.
 		DidDocument: doc,
 		Uri:         service.ServiceEndpoint,
 		Bucket:      config,
-		Cid:         cid,			
 	}, nil
 }
