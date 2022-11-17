@@ -31,7 +31,7 @@ func (k msgServer) AllocateBucket(goCtx context.Context, msg *types.MsgAllocateB
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("bucket with id %s not defined", msg.Bucket.Uuid))
 	}
 
-	didService := bucket.GetDidService(bucket.GetCreator(), msg.Cid)
+	didService := bucket.GetDidService(bucket.GetCreator(), msg.Record)
 
 	k.AddService(ctx, bucket.GetUuid(), didService)
 
