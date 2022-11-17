@@ -25,8 +25,5 @@ func TestAllocateBucketMsgServer(t *testing.T) {
 	uuid := uuid.New().String()
 	genBucketResp, err := motor.GenerateBucket(mt.GenerateBucketRequest{Uuid: uuid, Name: "Test Bucket", Creator: creator, Bucket: &types.BucketConfig{Uuid: uuid, Creator: creator, Name: "Test Bucket"}})
 	require.NoError(t, err)
-	require.NotEmpty(t, genBucketResp.Cid)
-
-	// _, err = srv.AllocateBucket(ctx, &types.MsgAllocateBucket{Creator: creator, Bucket: defineBucketResp.GetBucket(), Cid: genBucketResp.GetCid()})
-	// require.NoError(t, err)
+	require.NotEmpty(t, genBucketResp.DidDocument.Service[0].ServiceEndpoint)
 }
