@@ -33,8 +33,8 @@ type MotorNode interface {
 
 	// Registry
 	AddCredentialVerificationMethod(id string, cred *did.Credential) error
-	CreateAccount(request mt.CreateAccountRequest, waitForVault bool) (mt.CreateAccountResponse, error)
-	CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest, waitForVault bool) (mt.CreateAccountWithKeysResponse, error)
+	CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
+	CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error)
 	OnboardDevice(req mt.OnboardDeviceRequest) (mt.OnboardDeviceResponse, error)
 	GetDID() did.DID
 	GetDIDDocument() did.Document

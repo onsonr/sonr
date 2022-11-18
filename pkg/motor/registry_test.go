@@ -27,7 +27,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 		}
 
 		_, err := suite.motorWithKeys.LoginWithKeys(req)
-		assert.NoError(t, err, "login succeeds")
+		assert.NoError(t, err, "login fails")
 
 		if err == nil {
 			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())
@@ -56,7 +56,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 		}
 
 		_, err := suite.motorWithKeys.LoginWithKeys(req)
-		assert.NoError(t, err, "login succeeds")
+		assert.NoError(t, err, "login fails")
 
 		if err == nil {
 			fmt.Println("balance: ", suite.motorWithKeys.GetBalance())

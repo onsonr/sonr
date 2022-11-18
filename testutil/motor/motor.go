@@ -10,8 +10,8 @@ import (
 )
 
 type MotorNode interface {
-	CreateAccount(request mt.CreateAccountRequest, waitForVault bool) (mt.CreateAccountResponse, error)
-	CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest, waitForVault bool) (mt.CreateAccountWithKeysResponse, error)
+	CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error)
+	CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error)
 	GetAddress() string
 }
 
@@ -36,7 +36,7 @@ func SetupTestAddressWithKeys(m MotorNode) error {
 		AesPskKey: psk,
 	}
 
-	_, err = m.CreateAccountWithKeys(req, true)
+	_, err = m.CreateAccountWithKeys(req)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func SetupTestAddress(m MotorNode) error {
 	req := mt.CreateAccountRequest{
 		Password: "password123",
 	}
-	_, err := m.CreateAccount(req, true)
+	_, err := m.CreateAccount(req)
 	if err != nil {
 		return err
 	}

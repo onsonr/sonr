@@ -14,7 +14,7 @@ import (
 	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest, waitForVault bool) (mt.CreateAccountResponse, error) {
+func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest) (mt.CreateAccountResponse, error) {
 	// create DSC and store it in keychain
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_KEY_CREATE_START})
 	dsc, err := kr.CreateDSC()
@@ -41,7 +41,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest, waitFor
 		AesDscKey: dsc,
 		AesPskKey: psk,
 		Metadata:  request.Metadata,
-	}, waitForVault)
+	})
 	if err != nil {
 		mtr.triggerWalletEvent(common.WalletEvent{
 			Type:         common.WALLET_EVENT_TYPE_KEY_CREATE_ERROR,
@@ -56,7 +56,7 @@ func (mtr *motorNodeImpl) CreateAccount(request mt.CreateAccountRequest, waitFor
 }
 
 // CreateAccountWithKeys allows PSK and DSC to be provided manually
-func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest, waitForVault bool) (mt.CreateAccountWithKeysResponse, error) {
+func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeysRequest) (mt.CreateAccountWithKeysResponse, error) {
 	// Create Client instance
 	mtr.Cosmos = client.NewClient(mtr.clientMode)
 
@@ -116,14 +116,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR})
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_START})
 
-	var r chan int
-	if waitForVault {
-		r = make(chan int)
-	}
-	go createVault(mtr, request, &r)
-	if waitForVault {
-		<-r
-	}
+	go createVault(mtr, request)
 
 	// perform sharding and vault creation async
 	return mt.CreateAccountWithKeysResponse{
@@ -131,7 +124,7 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	}, err
 }
 
-func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest, r *chan int) {
+func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest) {
 	// Create Initial Shards
 	deviceShard, sharedShard, recShard, unusedShards, err := mtr.Wallet.CreateInitialShards()
 
@@ -242,7 +235,6 @@ func createVault(mtr *motorNodeImpl, request mt.CreateAccountWithKeysRequest, r 
 	}
 
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_VAULT_CREATE_END})
-	*r <- 1
 }
 
 func createWhoIs(m *motorNodeImpl) (*rt.MsgCreateWhoIsResponse, error) {

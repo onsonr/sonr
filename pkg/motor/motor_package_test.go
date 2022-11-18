@@ -8,9 +8,11 @@ import (
 
 	"github.com/sonr-io/sonr/internal/projectpath"
 	mtu "github.com/sonr-io/sonr/testutil/motor"
+	"github.com/sonr-io/sonr/third_party/types/common"
 	ct "github.com/sonr-io/sonr/third_party/types/common"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	v1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1/service/v1"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -88,6 +90,15 @@ func (suite *MotorTestSuite) SetupSuite() {
 	err = mtu.SetupTestAddressWithKeys(suite.motorWithKeys)
 	if err != nil {
 		suite.T().Error("Failed to setup test address with keys")
+	}
+
+	//Wait for Vault Creation to Finish
+	for {
+		walletEvent, ok := <-suite.callback.walletEventChannel
+		assert.True(suite.T(), ok, "Failed to read data from walletEventChannel")
+		if walletEvent.Type == common.WALLET_EVENT_TYPE_VAULT_CREATE_END {
+			break
+		}
 	}
 
 	fmt.Printf("Setup test address with keys: %s\n", suite.motorWithKeys.GetAddress())
