@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
+	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	"github.com/stretchr/testify/assert"
@@ -91,4 +92,47 @@ func Test_MPCSignMessage(t *testing.T) {
 	assert.NoError(t, err, "signing succeeds")
 	deserializedSigVerified := sig.Verify(w.Config().PublicPoint(), m)
 	assert.True(t, deserializedSigVerified, "deserialized signature is verified")
+}
+
+func Test_MPCSerializeAndDeserializeConfigs(t *testing.T) {
+	m := []byte("sign this message")
+
+	w, err := GenerateWallet(common.DefaultCallback())
+	assert.NoError(t, err, "wallet generation succeeds")
+
+	sig, err := w.Sign(m)
+	assert.NoError(t, err, "signing succeeds")
+
+	deserializedSigVerified := sig.Verify(w.Config().PublicPoint(), m)
+	assert.True(t, deserializedSigVerified, "deserialized signature is verified")
+
+	configs := make(map[party.ID]*cmp.Config)
+
+	dscSerialized, _ := w.Configs["dsc"].MarshalBinary()
+	pskSerialized, _ := w.Configs["psk"].MarshalBinary()
+	recoverySerialized, _ := w.Configs["recovery"].MarshalBinary()
+
+	dscConfig := cmp.EmptyConfig(curve.Secp256k1{})
+	pskConfig := cmp.EmptyConfig(curve.Secp256k1{})
+	recoveryConfig := cmp.EmptyConfig(curve.Secp256k1{})
+
+	_ = dscConfig.UnmarshalBinary(dscSerialized)
+	_ = pskConfig.UnmarshalBinary(pskSerialized)
+	_ = recoveryConfig.UnmarshalBinary(recoverySerialized)
+
+	configs["dsc"] = dscConfig
+	configs["psk"] = pskConfig
+	configs["recovery"] = recoveryConfig
+
+	wRecovered, err := GenerateWallet(common.DefaultCallback(), WithConfigs(configs))
+	assert.NoError(t, err, "failed to import wallet")
+
+	sigAct, err := wRecovered.Sign(m)
+	assert.NoError(t, err, "signing succeeds")
+
+	newSigVerified := sigAct.Verify(wRecovered.Config().PublicPoint(), m)
+	assert.True(t, newSigVerified, "imported wallet can't verify old signature")
+
+	oldSigVerified := sig.Verify(wRecovered.Config().PublicPoint(), m)
+	assert.True(t, oldSigVerified, "imported wallet can't verify old signature")
 }

@@ -131,32 +131,32 @@ func createWalletConfigs(id string, req mt.LoginWithKeysRequest, shards vault.Va
 	configs := make(map[party.ID]*cmp.Config)
 
 	// if a password is provided, prefer that over the DSC
-	//if req.Password != "" {
-	// build recovery Config
-	recShard, err := mpc.AesDecryptWithPassword(req.Password, shards.RecoveryShard)
-	if err != nil {
-		return nil, fmt.Errorf("error decrypting recovery shard (%s): %s", recShard, err)
-	}
-	configs["recovery"], err = hydrateConfig(recShard)
-	if err != nil {
-		return nil, fmt.Errorf("recovery shard: %s", err)
-	}
-	//} else {
-	// build DSC Config if password is not provided
-	deviceShard, ok := shards.IssuedShards[id]
-	if !ok {
-		return nil, fmt.Errorf("could not find device shard with key '%s'", id)
-	}
-	dscShard, err := mpc.AesDecryptWithKey(req.AesDscKey, deviceShard)
-	if err != nil {
-		return nil, fmt.Errorf("error decrypting DSC shard: %s", err)
-	}
+	if req.Password != "" {
+		// build recovery Config
+		recShard, err := mpc.AesDecryptWithPassword(req.Password, shards.RecoveryShard)
+		if err != nil {
+			return nil, fmt.Errorf("error decrypting recovery shard (%s): %s", recShard, err)
+		}
+		configs["recovery"], err = hydrateConfig(recShard)
+		if err != nil {
+			return nil, fmt.Errorf("recovery shard: %s", err)
+		}
+	} else {
+		// build DSC Config if password is not provided
+		deviceShard, ok := shards.IssuedShards[id]
+		if !ok {
+			return nil, fmt.Errorf("could not find device shard with key '%s'", id)
+		}
+		dscShard, err := mpc.AesDecryptWithKey(req.AesDscKey, deviceShard)
+		if err != nil {
+			return nil, fmt.Errorf("error decrypting DSC shard: %s", err)
+		}
 
-	configs["dsc"], err = hydrateConfig(dscShard)
-	if err != nil {
-		return nil, fmt.Errorf("dsc shard: %s", err)
+		configs["dsc"], err = hydrateConfig(dscShard)
+		if err != nil {
+			return nil, fmt.Errorf("dsc shard: %s", err)
+		}
 	}
-	//}
 
 	// in all cases, use the PSK
 	pskShard, err := mpc.AesDecryptWithKey(req.AesPskKey, shards.PskShard)
@@ -167,33 +167,6 @@ func createWalletConfigs(id string, req mt.LoginWithKeysRequest, shards vault.Va
 	configs["psk"], err = hydrateConfig(pskShard)
 	if err != nil {
 		return nil, fmt.Errorf("psk shard: %s", err)
-	}
-
-	bankShard0, err := mpc.AesDecryptWithKey(req.AesPskKey, shards.ShardBank[0])
-	if err != nil {
-		return nil, fmt.Errorf("error decrypting bank0 shard: %s", err)
-	}
-	configs["bank0"], err = hydrateConfig(bankShard0)
-	if err != nil {
-		return nil, fmt.Errorf("bank0 shard: %s", err)
-	}
-
-	bankShard1, err := mpc.AesDecryptWithKey(req.AesPskKey, shards.ShardBank[1])
-	if err != nil {
-		return nil, fmt.Errorf("error decrypting bank1 shard: %s", err)
-	}
-	configs["bank1"], err = hydrateConfig(bankShard1)
-	if err != nil {
-		return nil, fmt.Errorf("bank1 shard: %s", err)
-	}
-
-	bankShard2, err := mpc.AesDecryptWithKey(req.AesPskKey, shards.ShardBank[2])
-	if err != nil {
-		return nil, fmt.Errorf("error decrypting bank2 shard: %s", err)
-	}
-	configs["bank2"], err = hydrateConfig(bankShard2)
-	if err != nil {
-		return nil, fmt.Errorf("bank2 shard: %s", err)
 	}
 
 	return configs, nil

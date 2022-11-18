@@ -3,7 +3,6 @@ package mpc
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"sync"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -35,10 +34,10 @@ type Wallet struct {
 func GenerateWallet(cb common.MotorCallback, options ...WalletOption) (*Wallet, error) {
 	opt := defaultConfig()
 	w := opt.Apply(options...)
-	configLength := reflect.ValueOf(w.Configs).MapKeys()
-	if len(configLength) > 0 {
-		if len(configLength) != len(opt.participants) {
-			return nil, fmt.Errorf("when importing wallet all the configs needs to be available, provided: %v, needs: %v", reflect.ValueOf(w.Configs).MapKeys(), opt.participants)
+	configLength := len(w.Configs)
+	if configLength > 0 && w.Configs[defaultParticipants[0]] != nil {
+		if configLength < w.Threshold+1 {
+			return nil, fmt.Errorf("when importing wallet %d config needs to be available, provided: %d", w.Threshold+1, len(w.Configs))
 		}
 		return w, nil
 	}
@@ -84,9 +83,29 @@ func (w *Wallet) Config() *cmp.Config {
 
 // GetSigners returns the list of signers for the given message.
 func (w *Wallet) GetSigners() party.IDSlice {
-	signers := party.IDSlice([]party.ID{"dsc", "psk"})
-	// signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
-	if !signers.Contains(w.ID) {
+	signers := party.IDSlice{w.ID}
+	counter := 0
+	for k, config := range w.Configs {
+		if k == w.ID {
+			continue
+		}
+		if config != nil {
+			signers = append(signers, config.ID)
+			counter++
+			if counter == w.Threshold {
+				break
+			}
+		}
+	}
+	//signers := w.Configs[w.ID].PartyIDs()[:w.Threshold+1]
+	// signers.contains(w.ID) is false even though w.ID is in signers
+	found := false
+	for _, sgnr := range signers {
+		if sgnr == w.ID {
+			found = true
+		}
+	}
+	if !found {
 		w.Network.Quit(w.ID)
 		return nil
 	}

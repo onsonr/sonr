@@ -8,7 +8,13 @@ import (
 )
 
 // The default shards that are added to the MPC wallet
-var defaultParticipants = party.IDSlice{"dsc", "recovery", "psk", "bank0", "bank1", "bank2"}
+var defaultParticipants = party.IDSlice{"psk", "dsc", "recovery", "bank0", "bank1", "bank2"}
+
+// while login we have "dsc" or "recovery" shard based on password,
+// but "psk" shard is always available, hence "psk" needs to be in the 
+// signers list in GetSigners(). Other parties can be anyone as long as 
+// there are `threshold+1` parties in the signing process.
+var walletParticipant = party.ID("psk")
 
 // Preset options struct
 type walletConfig struct {
@@ -43,7 +49,7 @@ func (wc *walletConfig) Apply(opts ...WalletOption) *Wallet {
 
 		PubKey:    wc.pubKey,
 		Configs:   wc.configs,
-		ID:        wc.participants[0],
+		ID:        walletParticipant,
 		Threshold: wc.threshold,
 		Network:   wc.network,
 		AccSeq:    wc.accSeq,

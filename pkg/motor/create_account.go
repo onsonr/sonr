@@ -116,7 +116,10 @@ func (mtr *motorNodeImpl) CreateAccountWithKeys(request mt.CreateAccountWithKeys
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_DID_DOCUMENT_CREATE_ERROR})
 	mtr.triggerWalletEvent(common.WalletEvent{Type: common.WALLET_EVENT_TYPE_SHARD_GENERATE_START})
 
-	r := make(chan int)
+	var r chan int
+	if waitForVault {
+		r = make(chan int)
+	}
 	go createVault(mtr, request, &r)
 	if waitForVault {
 		<-r

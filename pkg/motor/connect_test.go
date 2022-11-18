@@ -74,7 +74,7 @@ func (suite *MotorTestSuite) Test_OnboardDevice() {
 	newMotor := new(motorNodeImpl)
 	_newMotor, err := EmptyMotor(&mt.InitializeRequest{
 		DeviceId:   "new_device",
-		ClientMode: mt.ClientMode_ENDPOINT_BETA,
+		ClientMode: mt.ClientMode_ENDPOINT_LOCAL,
 	}, callback{
 		motor:   newMotor,
 		handler: handler,

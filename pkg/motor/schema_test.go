@@ -86,16 +86,10 @@ func (suite *MotorTestSuite) Test_QuerySchemaByCreator() {
 		Creator: resp.WhatIs.Creator,
 	}
 
-	qresp, err := suite.motorWithKeys.QueryWhatIsByCreator(qReq)
+	_, err = suite.motorWithKeys.QueryWhatIsByCreator(qReq)
 	assert.NoError(suite.T(), err, "query response succeeds")
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	if qresp.Schemas != nil {
-		fmt.Println(qresp.Schemas)
-	} else {
-		fmt.Println("no schemas.")
 	}
 }
 
