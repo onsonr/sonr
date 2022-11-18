@@ -1,7 +1,4 @@
-//go:build !wasm
-// +build !wasm
-
-package main
+package cmd
 
 import (
 	"bufio"

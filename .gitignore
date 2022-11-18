@@ -14,7 +14,6 @@ release/
 lib/dist
 lib/package-lock.json
 lib/node_modules
-cmd/full/sonr_bitcask
 chain
 # Dependencies
 /node_modules
@@ -166,10 +165,3 @@ dist
 
 dist/
 docs/package-lock.json
-**/sonrd
-
-
-revive.toml
-.githooks/
-
-dist/
