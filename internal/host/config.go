@@ -92,8 +92,6 @@ type SonrHost interface {
 
 	// Resume tells all of goroutines to resume execution
 	Resume() error
-
-	Status() HostStatus
 }
 
 func addrToDidUrl(addr string) string {

@@ -8,7 +8,7 @@ option go_package = "github.com/sonr-io/sonr/x/identity/types";
 
 // Msg defines the Msg service.
 service Msg {
-      rpc CreateDidDocument(MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
+  rpc CreateDidDocument(MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
   rpc UpdateDidDocument(MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
   rpc DeleteDidDocument(MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
 // this line is used by starport scaffolding # proto/tx/rpc

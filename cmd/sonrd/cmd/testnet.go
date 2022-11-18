@@ -47,6 +47,7 @@ var (
 	flagRPCAddress        = "rpc.address"
 	flagAPIAddress        = "api.address"
 	flagPrintMnemonic     = "print-mnemonic"
+	flagDetatch           = "detatch"
 )
 
 type initArgs struct {
@@ -72,12 +73,13 @@ type startArgs struct {
 	outputDir     string
 	printMnemonic bool
 	rpcAddress    string
+	detatch       bool
 }
 
 func addTestnetFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().Int(flagNumValidators, 4, "Number of validators to initialize the testnet with")
 	cmd.Flags().StringP(flagOutputDir, "o", "./.testnets", "Directory to store initialization data for the testnet")
-	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
+	cmd.Flags().String(flags.FlagChainID, "sonr-devnet", "genesis file chain-id, if left blank will be randomly created")
 	cmd.Flags().String(server.FlagMinGasPrices, fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom), "Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01photino,0.001stake)")
 	cmd.Flags().String(flags.FlagKeyAlgorithm, string(hd.Secp256k1Type), "Key signing algorithm to generate keys for")
 }
@@ -183,6 +185,7 @@ Example:
 	cmd.Flags().String(flagAPIAddress, "tcp://0.0.0.0:1317", "the address to listen on for REST API")
 	cmd.Flags().String(flagGRPCAddress, "0.0.0.0:9090", "the gRPC server address to listen on")
 	cmd.Flags().Bool(flagPrintMnemonic, true, "print mnemonic of first validator to stdout for manual testing")
+	cmd.Flags().Bool(flagDetatch, false, "detatch the process from the terminal")
 	return cmd
 }
 
@@ -515,11 +518,16 @@ func startTestnet(cmd *cobra.Command, args startArgs) error {
 	if _, err := testnet.WaitForHeight(1); err != nil {
 		return err
 	}
+
+	// Check for detatch flag and if set, detach the testnet from the current process
+	if args.detatch {
+		cmd.Println("Testnet running in detached mode..")
+		return nil
+	}
 	cmd.Println("press the Enter Key to terminate")
 	if _, err := fmt.Scanln(); err != nil { // wait for Enter Key
 		return err
 	}
 	testnet.Cleanup()
-
 	return nil
 }

@@ -9,14 +9,18 @@ option go_package = "github.com/sonr-io/sonr/pkg/common/v1";
 message Peer {
   string peer_id = 1;     // Peer ID of Libp2p Peer
   string did = 2;       // User Sonr Domain
-  Status status = 3;      // Peer Status
+  string account_address = 3; // User Account Address
+  bytes public_key = 4; // User Public Key
+  string unique_id = 5; // Unique ID of the Peer
+  Type type = 6;
 
   // Peers Active Status
-  enum Status {
-    STATUS_UNSPECIFIED = 0; // Offline - Not Online or Not a Full Node
-    STATUS_ONLINE = 1;  // Online - Full Node Available
-    STATUS_AWAY = 2;    // Away - Not Online, but has a full node
-    STATUS_BUSY = 3;    // Busy - Online, but busy with Transfer
+  enum Type {
+    UNKNOWN = 0;
+    VAULT = 1;
+    ISSUER = 2;
+    VERIFIER = 3;
+    HOLDER = 4;
   }
 }
 
