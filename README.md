@@ -19,10 +19,10 @@ Your blockchain in development can be configured with `config.yml`. To learn mor
 
 ### Web Frontend
 
-Ignite CLI has scaffolded a Vue.js-based web app in the `vue` directory. Run the following commands to install dependencies and start the app:
+Ignite CLI has scaffolded a Vue.js-based web app in the `client/vue` directory. Run the following commands to install dependencies and start the app:
 
 ```
-cd vue
+cd client/vue
 npm install
 npm run serve
 ```
