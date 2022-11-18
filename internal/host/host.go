@@ -1,188 +1,83 @@
 package host
 
-// mplex "github.com/libp2p/go-libp2p-mplex"
+import (
+	"context"
+	"time"
 
-/// direct "github.com/libp2p/go-libp2p-webrtc-direct"
+	"github.com/libp2p/go-libp2p/p2p/net/connmgr"
 
-// "github.com/pion/webrtc/v3"
+	"github.com/libp2p/go-libp2p"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/routing"
+	"github.com/libp2p/go-libp2p/p2p/security/noise"
+	libp2ptls "github.com/libp2p/go-libp2p/p2p/security/tls"
+)
 
-// // hostImpl type - a p2p host implementing one or more p2p protocols
-// type hostImpl struct {
-// 	// Standard Node Implementation
-// 	host    host.Host
-// 	accAddr string
+func New() {
+	ctx := context.Background()
+	// Now, normally you do not just want a simple host, you want
+	// that is fully configured to best support your p2p application.
+	// Let's create a second host setting some more options.
 
-// 	// Host and context
-// 	privKey     crypto.PrivKey
-// 	dhtPeerChan <-chan peer.AddrInfo
+	// Set your own keypair
+	priv, _, err := crypto.GenerateKeyPair(
+		crypto.Ed25519, // Select your key type. Ed25519 are nice short
+		-1,             // Select key length when possible (i.e. RSA).
+	)
+	if err != nil {
+		panic(err)
+	}
 
-// 	// Properties
-// 	ctx context.Context
+	var idht *dht.IpfsDHT
 
-// 	*dht.IpfsDHT
-// 	*ps.PubSub
-
-// 	// State
-// 	fsm *SFSM
-// }
-
-// // NewDefaultHost Creates a Sonr libp2p Host with the given config
-// func NewDefaultHost(ctx context.Context) (SonrHost, error) {
-// 	var err error
-// 	// Create the host.
-// 	hn := &hostImpl{
-// 		ctx: ctx,
-// 		fsm: NewFSM(ctx),
-// 	}
-// 	// findPrivKey returns the private key for the host.
-// 	findPrivKey := func() (crypto.PrivKey, error) {
-// 		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
-// 		if err == nil {
-
-// 			return privKey, nil
-// 		}
-// 		return nil, err
-// 	}
-// 	// Fetch the private key.
-// 	hn.privKey, err = findPrivKey()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// Create Connection Manager
-// 	cnnmgr, err := cmgr.NewConnManager(c.Libp2pLowWater, c.Libp2pHighWater)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// Start Host
-// 	hn.host, err = libp2p.New(
-// 		libp2p.Identity(hn.privKey),
-// 		libp2p.ConnectionManager(cnnmgr),
-// 		libp2p.DefaultListenAddrs,
-// 		libp2p.Routing(hn.Router),
-// 		libp2p.EnableAutoRelay(),
-// 	)
-// 	if err != nil {
-// 		hn.fsm.SetState(Status_FAIL)
-// 		return nil, err
-// 	}
-// 	hn.fsm.SetState(Status_CONNECTING)
-
-// 	// Bootstrap DHT
-// 	if err := hn.Bootstrap(context.Background()); err != nil {
-// 		hn.fsm.SetState(Status_FAIL)
-// 		return nil, err
-// 	}
-
-// 	// Connect to Bootstrap Nodes
-// 	for _, pi := range c.Libp2pBootstrapPeers {
-// 		if err := hn.Connect(pi); err != nil {
-// 			continue
-// 		} else {
-// 			hn.fsm.SetState(Status_FAIL)
-
-// 			break
-// 		}
-// 	}
-
-// 	// Initialize Discovery for DHT
-// 	if err := hn.createDHTDiscovery(c); err != nil {
-// 		// Check if we need to close the listener
-// 		hn.fsm.SetState(Status_FAIL)
-// 		return nil, err
-// 	}
-
-// 	hn.fsm.SetState(Status_READY)
-// 	go hn.Serve()
-// 	return hn, nil
-// }
-
-// // Address returns the address of the underlying wallet
-// func (h *hostImpl) Address() string {
-// 	return h.accAddr
-// }
-
-// // createDHTDiscovery is a Helper Method to initialize the DHT Discovery
-// func (hn *hostImpl) createDHTDiscovery() error {
-// 	// Set Routing Discovery, Find Peers
-// 	var err error
-// 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
-// 	// dsc.Advertise(hn.ctx, routingDiscovery, c.Libp2pRendezvous, c.Libp2pTTL)
-
-// 	// Create Pub Sub
-// 	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
-// 	if err != nil {
-// 		hn.fsm.SetState(Status_FAIL)
-// 		return err
-// 	}
-
-// 	// Handle DHT Peers
-// 	// hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, c.Libp2pRendezvous, c.Libp2pTTL)
-// 	if err != nil {
-// 		hn.fsm.SetState(Status_FAIL)
-// 		return err
-// 	}
-
-// 	hn.fsm.SetState(Status_READY)
-// 	return nil
-// }
-
-// func (hn *hostImpl) Close() error {
-// 	err := hn.host.Close()
-// 	if err != nil {
-// 		hn.fsm.SetState(Status_FAIL)
-// 		return err
-// 	}
-
-// 	hn.fsm.SetState(Status_STANDBY)
-
-// 	return nil
-// }
-
-// // NeedsWait checks if state is Resumed or Paused and blocks channel if needed
-// func (hn *hostImpl) NeedsWait() {
-// 	<-hn.fsm.Chn
-// }
-
-// /*
-// Stops the libp2p host, dhcp, and sets the host status to IDLE
-// */
-// func (hn *hostImpl) Stop() error {
-// 	err := hn.host.Close()
-// 	if err != nil {
-// 		hn.fsm.SetState(Status_FAIL)
-// 		return err
-// 	}
-// 	hn.Pause()
-
-// 	return nil
-// }
-
-// /*
-// Stops the libp2p host, dhcp, and sets the host status to ready
-// */
-// func (hn *hostImpl) Pause() error {
-// 	defer hn.fsm.PauseOperation()
-// 	hn.fsm.SetState(Status_STANDBY)
-// 	return nil
-// }
-
-// func (hn *hostImpl) Resume() error {
-// 	defer hn.fsm.ResumeOperation()
-// 	hn.fsm.SetState(Status_STANDBY)
-
-// 	return nil
-// }
-
-// func (hn *hostImpl) Status() HostStatus {
-// 	return hn.fsm.CurrentStatus
-// }
-
-// // Peer is a Helper Method to get the peer from the host
-// func (hn *hostImpl) Peer() (*ct.Peer, error) {
-// 	return &ct.Peer{
-// 		PeerId: hn.host.ID().String(),
-// 		Did:    addrToDidUrl(hn.accAddr),
-// 	}, nil
-// }
+	connmgr, err := connmgr.NewConnManager(
+		100, // Lowwater
+		400, // HighWater,
+		connmgr.WithGracePeriod(time.Minute),
+	)
+	if err != nil {
+		panic(err)
+	}
+	h2, err := libp2p.New(
+		// Use the keypair we generated
+		libp2p.Identity(priv),
+		// Multiple listen addresses
+		libp2p.ListenAddrStrings(
+			"/ip4/0.0.0.0/tcp/9000",      // regular tcp connections
+			"/ip4/0.0.0.0/udp/9000/quic", // a UDP endpoint for the QUIC transport
+		),
+		// support TLS connections
+		libp2p.Security(libp2ptls.ID, libp2ptls.New),
+		// support noise connections
+		libp2p.Security(noise.ID, noise.New),
+		// support any other default transports (TCP)
+		libp2p.DefaultTransports,
+		// Let's prevent our peer from having too many
+		// connections by attaching a connection manager.
+		libp2p.ConnectionManager(connmgr),
+		// Attempt to open ports using uPNP for NATed hosts.
+		libp2p.NATPortMap(),
+		// Let this host use the DHT to find other hosts
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			idht, err = dht.New(ctx, h)
+			return idht, err
+		}),
+		// Let this host use relays and advertise itself on relays if
+		// it finds it is behind NAT. Use libp2p.Relay(options...) to
+		// enable active relays and more.
+		libp2p.EnableAutoRelay(),
+		// If you want to help other peers to figure out if they are behind
+		// NATs, you can launch the server-side of AutoNAT too (AutoRelay
+		// already runs the client)
+		//
+		// This service is highly rate-limited and should not cause any
+		// performance issues.
+		libp2p.EnableNATService(),
+	)
+	if err != nil {
+		panic(err)
+	}
+	defer h2.Close()
+}

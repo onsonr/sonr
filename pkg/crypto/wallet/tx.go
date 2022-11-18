@@ -27,11 +27,8 @@ func SignTxWithWallet(w MPCWallet, typeUrl string, msgs ...sdk.Msg) ([]byte, err
 	if err != nil {
 		return nil, err
 	}
-	sigBz, err := SerializeSignature(sig)
-	if err != nil {
-		return nil, err
-	}
-	return CreateRawTxBytes(txb, sigBz, ai)
+
+	return CreateRawTxBytes(txb, sig, ai)
 }
 
 // BuildTx builds a transaction from the given inputs.

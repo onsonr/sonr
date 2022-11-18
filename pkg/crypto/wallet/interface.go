@@ -1,13 +1,14 @@
 package wallet
 
 import (
-	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
+	"github.com/libp2p/go-libp2p/core/crypto"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 )
 
 // MPCWallet is a wallet that can be used to sign messages using ECDSA based on the MPC protocol.
 type MPCWallet interface {
+	crypto.PrivKey
 	// Returns the Bech32 representation of the given party.
 	Address() string
 
@@ -17,8 +18,11 @@ type MPCWallet interface {
 	// PublicKey returns the public key of this wallet.
 	PublicKey() (*secp256k1.PubKey, error)
 
+	// GetPubKey returns the public key of this wallet.
+	GetPublic() crypto.PubKey
+
 	// Sign a message with the given wallet.
-	Sign(m []byte) (*ecdsa.Signature, error)
+	Sign(m []byte) ([]byte, error)
 
 	// Unmarshal deserializes the given byte slice into a cmp.Config
 	Unmarshal([]byte) error
