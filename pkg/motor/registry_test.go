@@ -65,7 +65,7 @@ func (suite *MotorTestSuite) Test_LoginWithKeys() {
 	})
 }
 
-func Test_LoginWithKeyring(t *testing.T) {
+func (suite *MotorTestSuite) Test_LoginWithKeyring() {
 	const ADDR = "snr19c99rqjsts86mm4t6u8qzy2al3ghkfgu7f2zua"
 	req := mt.LoginRequest{
 		AccountId: ADDR,
@@ -76,10 +76,10 @@ func Test_LoginWithKeyring(t *testing.T) {
 		DeviceId:   "test_device",
 		ClientMode: mt.ClientMode_ENDPOINT_BETA,
 	}, common.DefaultCallback())
-	assert.NoError(t, err, "create motor")
+	assert.NoError(suite.T(), err, "create motor")
 
 	_, err = m.Login(req)
-	assert.NoError(t, err, "login succeeds")
+	assert.NoError(suite.T(), err, "login succeeds")
 
 	if err == nil {
 		fmt.Println("balance: ", m.GetBalance())

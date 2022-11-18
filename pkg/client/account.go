@@ -72,7 +72,7 @@ func (c *Client) GetAccount(address string) (*acctypes.BaseAccount, error) {
 func (c *Client) RequestFaucet(address string) error {
 	values := faucetRequest{
 		Address: address,
-		Coins:   []string{"120snr"},
+		Coins:   []string{"12000snr"},
 	}
 	json_data, err := json.Marshal(values)
 	if err != nil {
