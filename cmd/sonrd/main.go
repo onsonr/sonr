@@ -11,7 +11,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/app"
-	"github.com/sonr-io/sonr/cmd/sonrd/cmd"
+	 "github.com/sonr-io/sonr/cmd/sonrd/cmd"
 	"github.com/spf13/viper"
 )
 
