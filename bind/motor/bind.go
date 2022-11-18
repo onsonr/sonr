@@ -5,7 +5,7 @@ import (
 	// mtr "github.com/sonr-io/sonr/pkg/motor"
 	// "github.com/sonr-io/sonr/pkg/motor/x/document"
 	// ct "github.com/sonr-io/sonr/pkg/types/common"
-	mt "github.com/sonr-io/sonr/pkg/motor/types/v1"
+	mt "github.com/sonr-io/sonr/bind/motor/types/v1"
 	// rt "github.com/sonr-io/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
 )

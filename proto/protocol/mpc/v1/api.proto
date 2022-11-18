@@ -2,6 +2,7 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrio.protocol.mpc.v1;
+option go_package = "github.com/sonr-io/sonr/pkg/protocol/mpc/v1";
 
 message AuthorizeRequest {
     bytes id = 1;
