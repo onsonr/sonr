@@ -223,19 +223,6 @@ export default {
 				}
 			}
 		},
-		async sendMsgCreateDidDocument({ rootGetters }, { value, fee = [], memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const result = await client.SonrioSonrIdentityV1.tx.sendMsgCreateDidDocument({ value, fee: {amount: fee, gas: "200000"}, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgCreateDidDocument:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgCreateDidDocument:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
 		async sendMsgUpdateDidDocument({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -246,6 +233,19 @@ export default {
 					throw new Error('TxClient:MsgUpdateDidDocument:Init Could not initialize signing client. Wallet is required.')
 				}else{
 					throw new Error('TxClient:MsgUpdateDidDocument:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgCreateDidDocument({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const result = await client.SonrioSonrIdentityV1.tx.sendMsgCreateDidDocument({ value, fee: {amount: fee, gas: "200000"}, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgCreateDidDocument:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgCreateDidDocument:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -263,19 +263,6 @@ export default {
 				}
 			}
 		},
-		async MsgCreateDidDocument({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.SonrioSonrIdentityV1.tx.msgCreateDidDocument({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgCreateDidDocument:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgCreateDidDocument:Create Could not create message: ' + e.message)
-				}
-			}
-		},
 		async MsgUpdateDidDocument({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -286,6 +273,19 @@ export default {
 					throw new Error('TxClient:MsgUpdateDidDocument:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgUpdateDidDocument:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgCreateDidDocument({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.SonrioSonrIdentityV1.tx.msgCreateDidDocument({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgCreateDidDocument:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgCreateDidDocument:Create Could not create message: ' + e.message)
 				}
 			}
 		},

@@ -7,12 +7,18 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
+import { MsgCreateDidDocument } from "./types/sonr/identity/v1/tx";
 import { MsgDeleteDidDocument } from "./types/sonr/identity/v1/tx";
 import { MsgUpdateDidDocument } from "./types/sonr/identity/v1/tx";
-import { MsgCreateDidDocument } from "./types/sonr/identity/v1/tx";
 
 
-export { MsgDeleteDidDocument, MsgUpdateDidDocument, MsgCreateDidDocument };
+export { MsgCreateDidDocument, MsgDeleteDidDocument, MsgUpdateDidDocument };
+
+type sendMsgCreateDidDocumentParams = {
+  value: MsgCreateDidDocument,
+  fee?: StdFee,
+  memo?: string
+};
 
 type sendMsgDeleteDidDocumentParams = {
   value: MsgDeleteDidDocument,
@@ -26,12 +32,10 @@ type sendMsgUpdateDidDocumentParams = {
   memo?: string
 };
 
-type sendMsgCreateDidDocumentParams = {
-  value: MsgCreateDidDocument,
-  fee?: StdFee,
-  memo?: string
-};
 
+type msgCreateDidDocumentParams = {
+  value: MsgCreateDidDocument,
+};
 
 type msgDeleteDidDocumentParams = {
   value: MsgDeleteDidDocument,
@@ -39,10 +43,6 @@ type msgDeleteDidDocumentParams = {
 
 type msgUpdateDidDocumentParams = {
   value: MsgUpdateDidDocument,
-};
-
-type msgCreateDidDocumentParams = {
-  value: MsgCreateDidDocument,
 };
 
 
@@ -62,6 +62,20 @@ interface TxClientOptions {
 export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "http://localhost:26657", prefix: "cosmos" }) => {
 
   return {
+		
+		async sendMsgCreateDidDocument({ value, fee, memo }: sendMsgCreateDidDocumentParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgCreateDidDocument: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgCreateDidDocument({ value: MsgCreateDidDocument.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgCreateDidDocument: Could not broadcast Tx: '+ e.message)
+			}
+		},
 		
 		async sendMsgDeleteDidDocument({ value, fee, memo }: sendMsgDeleteDidDocumentParams): Promise<DeliverTxResponse> {
 			if (!signer) {
@@ -91,20 +105,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		async sendMsgCreateDidDocument({ value, fee, memo }: sendMsgCreateDidDocumentParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgCreateDidDocument: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgCreateDidDocument({ value: MsgCreateDidDocument.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+		
+		msgCreateDidDocument({ value }: msgCreateDidDocumentParams): EncodeObject {
+			try {
+				return { typeUrl: "/sonrio.sonr.identity.v1.MsgCreateDidDocument", value: MsgCreateDidDocument.fromPartial( value ) }  
 			} catch (e: any) {
-				throw new Error('TxClient:sendMsgCreateDidDocument: Could not broadcast Tx: '+ e.message)
+				throw new Error('TxClient:MsgCreateDidDocument: Could not create message: ' + e.message)
 			}
 		},
-		
 		
 		msgDeleteDidDocument({ value }: msgDeleteDidDocumentParams): EncodeObject {
 			try {
@@ -119,14 +127,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 				return { typeUrl: "/sonrio.sonr.identity.v1.MsgUpdateDidDocument", value: MsgUpdateDidDocument.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgUpdateDidDocument: Could not create message: ' + e.message)
-			}
-		},
-		
-		msgCreateDidDocument({ value }: msgCreateDidDocumentParams): EncodeObject {
-			try {
-				return { typeUrl: "/sonrio.sonr.identity.v1.MsgCreateDidDocument", value: MsgCreateDidDocument.fromPartial( value ) }  
-			} catch (e: any) {
-				throw new Error('TxClient:MsgCreateDidDocument: Could not create message: ' + e.message)
 			}
 		},
 		
