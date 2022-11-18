@@ -1,0 +1,58 @@
+syntax = "proto3";
+package sonrio.sonr.identity.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "sonr/identity/v1/params.proto";
+import "sonr/identity/v1/did.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/sonr-io/sonr/x/identity/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sonr-io/sonr/identity/params";
+  }
+  // Queries a DidDocument by index.
+	rpc Did(QueryGetDidRequest) returns (QueryGetDidResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/identity/did/{did}";
+	}
+
+	// Queries a list of DidDocument items.
+	rpc DidAll(QueryAllDidRequest) returns (QueryAllDidResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/identity/did";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetDidRequest {
+	  string did = 1;
+}
+
+message QueryGetDidResponse {
+	DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllDidRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDidResponse {
+	repeated DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3

@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrio.motor.v1;
+import "sonr/identity/v1/did.proto";
+option go_package = "github.com/sonr-io/sonr/pkg/motor/types/v1";
+
+message InitializeResponse {
+  bool success = 1;
+}
+
+message ConnectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message CreateAccountResponse {
+  string address = 1;
+  bytes aes_psk_key = 2;
+  sonrio.sonr.identity.v1.DidDocument did_document = 3;
+}
+
+message OnboardDeviceResponse {
+  bool success = 1;
+  sonrio.sonr.identity.v1.DidDocument did_document = 2;
+}
+
+message LinkingResponse {
+  bool success = 1;
+  string protocol_id = 2;
+  repeated bytes p2p_addrs = 3;
+}
+
+message PairingResponse {
+  bool success = 1;
+  sonrio.sonr.identity.v1.DidDocument did_document = 2;
+}
+
+message LoginResponse {
+  bool success = 1;
+  sonrio.sonr.identity.v1.DidDocument did_document = 2;
+}
+
+message PaymentResponse {
+  int32 code = 1;
+  string message = 2;
+  string tx_hash = 3;
+  int32 updated_balance = 4;
+}

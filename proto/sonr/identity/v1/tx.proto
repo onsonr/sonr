@@ -1,0 +1,57 @@
+syntax = "proto3";
+package sonrio.sonr.identity.v1;
+
+import "sonr/identity/v1/did.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/sonr-io/sonr/x/identity/types";
+
+// Msg defines the Msg service.
+service Msg {
+      rpc CreateDidDocument(MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
+  rpc UpdateDidDocument(MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
+  rpc DeleteDidDocument(MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateDidDocument {
+  string creator = 1;
+  string did = 2;
+
+  string context = 3;
+  string controller = 4;
+  string verificationMethod = 5;
+  string authentication = 6;
+  string assertionMethod = 7;
+  string capibilityInvocation = 8;
+  string capabilityDelegation = 9;
+  string keyAgreement = 10;
+  string service = 11;
+  string alsoKnownAs = 12;
+}
+message MsgCreateDidDocumentResponse {}
+
+message MsgUpdateDidDocument {
+  string creator = 1;
+  string did = 2;
+
+  string context = 3;
+  string controller = 4;
+  string verificationMethod = 5;
+  string authentication = 6;
+  string assertionMethod = 7;
+  string capibilityInvocation = 8;
+  string capabilityDelegation = 9;
+  string keyAgreement = 10;
+  string service = 11;
+  string alsoKnownAs = 12;
+}
+message MsgUpdateDidDocumentResponse {}
+
+message MsgDeleteDidDocument {
+  string creator = 1;
+  string did = 2;
+}
+message MsgDeleteDidDocumentResponse {}
+
+// this line is used by starport scaffolding # proto/tx/message

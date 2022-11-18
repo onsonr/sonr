@@ -1,0 +1,16 @@
+syntax = "proto3";
+package sonrio.sonr.identity.v1;
+
+import "gogoproto/gogo.proto";
+import "sonr/identity/v1/params.proto";
+import "sonr/identity/v1/did.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/sonr-io/sonr/x/identity/types";
+
+// GenesisState defines the identity module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated DidDocument didDocumentList = 2 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

@@ -1,0 +1,53 @@
+syntax = "proto3";
+package sonrio.sonr.identity.v1;
+
+import "sonr/identity/v1/ssi.proto";
+option go_package = "github.com/sonr-io/sonr/x/identity/types";
+
+message DidDocument {
+  repeated string context = 1; // optional
+  string creator = 2; // optional
+  string iD = 3;
+  repeated string controller = 4; //optional
+  VerificationMethods verification_method = 5; // optional
+  VerificationRelationships authentication = 6; // optional
+  VerificationRelationships assertion_method = 7; // optional
+  VerificationRelationships capability_invocation = 8; // optional
+  VerificationRelationships capability_delegation = 9; // optional
+  VerificationRelationships key_agreement = 10; // optional
+  Services service = 11; // optional
+  repeated string also_known_as = 12; // optional
+}
+
+message VerificationMethod {
+  string iD = 1;
+  KeyType type = 2;
+  string controller = 3;
+  map<string, string> public_key_jwk = 4;
+  string public_key_multibase = 5; // optional
+}
+
+message VerificationRelationship {
+  VerificationMethod verification_method = 1;
+  string reference = 2;
+}
+
+
+message Service {
+  string iD = 1;
+  string type = 2;
+  string service_endpoint = 3;
+  map<string, string> service_endpoints = 4; // optional
+}
+
+message Services {
+  repeated Service data = 1;
+}
+
+message VerificationMethods {
+    repeated VerificationMethod data = 1;
+}
+
+message VerificationRelationships {
+  repeated VerificationRelationship data = 1;
+}

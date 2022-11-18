@@ -1,0 +1,15 @@
+syntax = "proto3";
+package sonrio.sonr.identity.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sonr-io/sonr/x/identity/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  string did_base_context = 1;
+  string did_implementation_context = 2;
+  string ipfs_gateway = 3;
+  string ipfs_api = 4;
+}
