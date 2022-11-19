@@ -28,6 +28,21 @@ func cmpKeygen(id party.ID, ids party.IDSlice, n *Network, threshold int, wg *sy
 	return conf, nil
 }
 
+func cmpRefresh(c *cmp.Config, n *Network, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
+	defer wg.Done()
+	h, err := protocol.NewMultiHandler(cmp.Refresh(c, pl), nil)
+	if err != nil {
+		return nil, err
+	}
+	handlerLoop(c.ID, h, n)
+	r, err := h.Result()
+	if err != nil {
+		return nil, err
+	}
+	conf := r.(*cmp.Config)
+	return conf, nil
+}
+
 func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
 	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
@@ -47,7 +62,8 @@ func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *Network, wg *syn
 	return signature, nil
 }
 
-func cmpPreSign(c *cmp.Config, signers party.IDSlice, n *Network, pl *pool.Pool) (*ecdsa.PreSignature, error) {
+func cmpPreSign(c *cmp.Config, signers party.IDSlice, n *Network, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.PreSignature, error) {
+	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.Presign(c, signers, pl), nil)
 	if err != nil {
 		return nil, err
@@ -64,7 +80,8 @@ func cmpPreSign(c *cmp.Config, signers party.IDSlice, n *Network, pl *pool.Pool)
 	return preSignature, nil
 }
 
-func cmpPreSignOnline(c *cmp.Config, preSignature *ecdsa.PreSignature, m []byte, n *Network, pl *pool.Pool) (*ecdsa.Signature, error) {
+func cmpPreSignOnline(c *cmp.Config, preSignature *ecdsa.PreSignature, m []byte, n *Network, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
+	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.PresignOnline(c, preSignature, m, pl), nil)
 	if err != nil {
 		return nil, err

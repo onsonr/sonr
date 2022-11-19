@@ -7,10 +7,97 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/libp2p/go-libp2p/core/crypto"
+	crypto_pb "github.com/libp2p/go-libp2p/core/crypto/pb"
 	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"golang.org/x/crypto/scrypt"
 )
+
+func (w *Wallet) Equals(other crypto.Key) bool {
+	wbz, err := w.Raw()
+	if err != nil {
+		return false
+	}
+	obz, err := other.Raw()
+	if err != nil {
+		return false
+	}
+	return string(wbz) == string(obz)
+}
+
+
+// Returns the Secp256k1 public key of the given party.
+func (w *Wallet) PublicKey() ([]byte, error) {
+	p := w.PublicPoint().(*curve.Secp256k1Point)
+	buf, err := p.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	// Check length of the public key.
+	if len(buf) != 33 {
+		return nil, fmt.Errorf("invalid public key length")
+	}
+	return buf, nil
+}
+
+func (w *Wallet) GetPublic() crypto.PubKey {
+	return makePublicKey(w.PublicPoint())
+}
+
+type PublicKey struct {
+	// contains filtered or unexported fields
+	p curve.Point
+}
+
+func makePublicKey(p curve.Point) *PublicKey {
+	return &PublicKey{p: p}
+}
+
+func (p *PublicKey) Equals(k crypto.Key) bool {
+	pbz, err := p.Raw()
+	if err != nil {
+		return false
+	}
+
+	kbz, err := k.Raw()
+	if err != nil {
+		return false
+	}
+	return string(pbz) == string(kbz)
+}
+
+func (p *PublicKey) Raw() ([]byte, error) {
+	return p.p.MarshalBinary()
+}
+
+func (p *PublicKey) Type() crypto_pb.KeyType {
+	return crypto_pb.KeyType_Secp256k1
+}
+
+func (w *PublicKey) Verify(data []byte, sig []byte) (bool, error) {
+	signature, err := DeserializeSignature(sig)
+	if err != nil {
+		return false, err
+	}
+	return signature.Verify(w.p, data), nil
+}
+
+func (w *Wallet) Verify(data []byte, sig []byte) (bool, error) {
+	signature, err := DeserializeSignature(sig)
+	if err != nil {
+		return false, err
+	}
+	return signature.Verify(w.PublicPoint(), data), nil
+}
+
+func (p *Wallet) Type() crypto_pb.KeyType {
+	return crypto_pb.KeyType_Secp256k1
+}
+
+func (p *Wallet) Raw() ([]byte, error) {
+	return p.Config.MarshalBinary()
+}
 
 // AesEncryptWithKey uses the give 32-bit key to encrypt plaintext.
 func AesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
@@ -129,7 +216,7 @@ func SerializeSignature(sig *ecdsa.Signature) ([]byte, error) {
 //   - Negative values are rejected
 //   - Zero is rejected
 //   - Values greater than or equal to the secp256k1 group order are rejected
-func SignatureFromBytes(sigStr []byte) (*ecdsa.Signature, error) {
+func DeserializeSignature(sigStr []byte) (*ecdsa.Signature, error) {
 	rBytes := sigStr[:33]
 	sBytes := sigStr[33:65]
 

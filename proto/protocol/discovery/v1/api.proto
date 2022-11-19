@@ -4,7 +4,7 @@ syntax = "proto3";
 package sonrio.protocol.discovery.v1;
 import "common/v1/peer.proto";
 
-option go_package = "github.com/sonr-io/sonr/pkg/protocol/discovery/v1";
+option go_package = "github.com/sonr-io/sonr/pkg/protocol/discovery/types/v1";
 
 // LobbyMessage is message passed from Peer in Lobby
 message NearbyChannelMessage {

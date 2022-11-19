@@ -18,12 +18,12 @@ type Network struct {
 	mtx              sync.Mutex
 }
 
-func NewNetwork(parties party.IDSlice) *Network {
+func getNetwork(pids party.IDSlice) *Network {
 	closed := make(chan *protocol.Message)
 	close(closed)
 	c := &Network{
-		parties:          parties,
-		listenChannels:   make(map[party.ID]chan *protocol.Message, 2*len(parties)),
+		parties:          pids,
+		listenChannels:   make(map[party.ID]chan *protocol.Message, 2*len(pids)),
 		closedListenChan: closed,
 	}
 	return c
