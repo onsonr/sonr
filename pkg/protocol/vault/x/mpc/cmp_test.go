@@ -33,19 +33,3 @@ func TestCreateSaveLoadWallet(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-func TestLoadWallet(t *testing.T) {
-	w, err := mpc.NewWalletFromDisk(path, password)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ok, err := w.Verify(msg, sig)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !ok {
-		t.Fatal("signature verification failed")
-	}
-
-}

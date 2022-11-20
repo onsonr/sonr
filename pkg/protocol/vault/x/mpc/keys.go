@@ -26,7 +26,6 @@ func (w *Wallet) Equals(other crypto.Key) bool {
 	return string(wbz) == string(obz)
 }
 
-
 // Returns the Secp256k1 public key of the given party.
 func (w *Wallet) PublicKey() ([]byte, error) {
 	p := w.PublicPoint().(*curve.Secp256k1Point)
@@ -81,22 +80,6 @@ func (w *PublicKey) Verify(data []byte, sig []byte) (bool, error) {
 		return false, err
 	}
 	return signature.Verify(w.p, data), nil
-}
-
-func (w *Wallet) Verify(data []byte, sig []byte) (bool, error) {
-	signature, err := DeserializeSignature(sig)
-	if err != nil {
-		return false, err
-	}
-	return signature.Verify(w.PublicPoint(), data), nil
-}
-
-func (p *Wallet) Type() crypto_pb.KeyType {
-	return crypto_pb.KeyType_Secp256k1
-}
-
-func (p *Wallet) Raw() ([]byte, error) {
-	return p.Config.MarshalBinary()
 }
 
 // AesEncryptWithKey uses the give 32-bit key to encrypt plaintext.

@@ -5,13 +5,12 @@ import (
 	"crypto/ed25519"
 	"strings"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-libp2p-core/routing"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	ct "github.com/sonr-io/sonr/pkg/common/v1"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/protocol"
+	"github.com/libp2p/go-libp2p/core/routing"
 )
 
 // SonrHost returns the SonrHost for the Main Node
@@ -48,10 +47,6 @@ type SonrHost interface {
 	// Ping sends a ping to a peer to check if it is alive
 	Ping(id string) error
 
-	// TODO: implement
-	// Peer returns the peer of the node
-	Peer() (*ct.Peer, error)
-
 	// SignData signs the data with the private key
 	SignData(data []byte) ([]byte, error)
 	// SignMessage signs a message with the node's private key
@@ -79,19 +74,6 @@ type SonrHost interface {
 
 	// VerifyData verifies the data signature
 	VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) error
-
-	// Close closes the node
-	Close() error
-
-	Start() error
-
-	Stop() error
-
-	// Pauses tells all of goroutines to pause execution
-	Pause() error
-
-	// Resume tells all of goroutines to resume execution
-	Resume() error
 }
 
 func addrToDidUrl(addr string) string {

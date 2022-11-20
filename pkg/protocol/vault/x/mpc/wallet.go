@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	crypto_pb "github.com/libp2p/go-libp2p/core/crypto/pb"
 	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
@@ -144,43 +145,32 @@ func (w *Wallet) SignWithPreSignature(m []byte, preSignature *ecdsa.PreSignature
 	return SerializeSignature(signature)
 }
 
-// func (w *Wallet) Sign(m []byte) ([]byte, error) {
-// 	// var wg sync.WaitGroup
-// 	// signers := w.PartyIDs()
-// 	// net := getNetwork(w.PartyIDs())
+func (w *Wallet) Sign(m []byte) ([]byte, error) {
+	network := getNetwork(w.PartyIDs())
+	var wg sync.WaitGroup
+	pl := pool.NewPool(0)
+	defer pl.TearDown()
+	wg.Add(1)
+	res, err := cmpSign(&w.Config, m, w.PartyIDs(), network, &wg, pl)
+	if err != nil {
+		return nil, err
+	}
+	wg.Wait()
+	return SerializeSignature(res)
+}
 
-// 	var (
-// 		sig *ecdsa.Signature
-// 		err error
-// 	)
+func (w *Wallet) Verify(data []byte, sig []byte) (bool, error) {
+	signature, err := DeserializeSignature(sig)
+	if err != nil {
+		return false, err
+	}
+	return signature.Verify(w.PublicPoint(), data), nil
+}
 
-// 	for _, id := range signers {
-// 		wg.Add(1)
-// 		go func(id party.ID) {
-// 			pl := pool.NewPool(0)
-// 			defer pl.TearDown()
-// 			// if sig, err = cmpSign(w.Configs[id], m, signers, net, &wg, pl); err != nil {
-// 			// 	return
-// 			// }
-// 		}(id)
-// 	}
-// 	wg.Wait()
-// 	return sig, err
-// 	network := getNetwork(w.PartyIDs())
-// 	var wg sync.WaitGroup
-// 	var signature *ecdsa.Signature
-// 	for _, id := range w.PartyIDs() {
-// 		wg.Add(1)
-// 		go func(id party.ID) {
-// 			pl := pool.NewPool(0)
-// 			defer pl.TearDown()
-// 			res, err := cmpSign(&w.Config, m, w.PartyIDs(), network, &wg, pl)
-// 			if err != nil {
-// 				return
-// 			}
-// 			signature = res
-// 		}(id)
-// 	}
-// 	wg.Wait()
-// 	return SerializeSignature(signature)
-// }
+func (p *Wallet) Type() crypto_pb.KeyType {
+	return crypto_pb.KeyType_Secp256k1
+}
+
+func (p *Wallet) Raw() ([]byte, error) {
+	return p.Config.MarshalBinary()
+}
