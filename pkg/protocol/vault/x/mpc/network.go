@@ -5,6 +5,7 @@ import (
 
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/pkg/protocol"
+	"github.com/sonr-io/sonr/internal/node"
 )
 
 // Network simulates a point-to-point network between different parties using Go channels.
@@ -96,6 +97,29 @@ func handlerLoop(id party.ID, h protocol.Handler, network *Network) {
 			// incoming messages
 		case msg := <-network.Next(id):
 			h.Accept(msg)
+		}
+	}
+}
+
+func handlerLoopChannel(id party.ID, h protocol.Handler, channel *node.Channel) {
+	for {
+		select {
+
+		// outgoing messages
+		case msg, ok := <-h.Listen():
+			if !ok {
+				channel.Close()
+				// the channel was closed, indicating that the protocol is done executing.
+				return
+			}
+			buf, _ := msg.MarshalBinary()
+			go channel.Send(buf)
+
+			// incoming messages
+		case msg := <-channel.NextMessage():
+			var m protocol.Message
+			_ = m.UnmarshalBinary(msg.Data)
+			h.Accept(&m)
 		}
 	}
 }

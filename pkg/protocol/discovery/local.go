@@ -9,7 +9,7 @@ import (
 
 	// motor "go.buf.build/grpc/go/sonr-io/motor/common/v1"
 	// v1 "go.buf.build/grpc/go/sonr-io/motor/service/v1"
-	"github.com/sonr-io/sonr/internal/host"
+	"github.com/sonr-io/sonr/internal/node"
 	common "github.com/sonr-io/sonr/pkg/common"
 	ct "github.com/sonr-io/sonr/pkg/common/v1"
 	st "github.com/sonr-io/sonr/pkg/protocol/discovery/types/v1"
@@ -21,7 +21,7 @@ type ErrFunc func() error
 // Local is the protocol for managing local peers.
 type Local struct {
 	callback     common.MotorCallback
-	node         host.SonrHost
+	node         node.Node
 	ctx          context.Context
 	eventHandler *ps.TopicEventHandler
 	messages     chan *LobbyEvent

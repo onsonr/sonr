@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/golog"
 
 	"github.com/pkg/errors"
-	"github.com/sonr-io/sonr/internal/host"
+	"github.com/sonr-io/sonr/internal/node"
 	"github.com/sonr-io/sonr/pkg/common"
 )
 
@@ -20,14 +20,14 @@ var (
 
 // DiscoverProtocol handles Global and Local Sonr Peer Exchange Protocol
 type DiscoverProtocol struct {
-	node     host.SonrHost
+	node     node.Node
 	ctx      context.Context
 	local    *Local
 	callback common.MotorCallback
 }
 
 // New creates new DiscoverProtocol
-func New(ctx context.Context, host host.SonrHost, cb common.MotorCallback, options ...Option) (*DiscoverProtocol, error) {
+func New(ctx context.Context, host node.Node, cb common.MotorCallback, options ...Option) (*DiscoverProtocol, error) {
 	// Create Exchange Protocol
 	protocol := &DiscoverProtocol{
 		ctx:      ctx,
