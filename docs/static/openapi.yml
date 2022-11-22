@@ -44308,6 +44308,342 @@ paths:
           format: uint64
       tags:
         - Query
+  /sonr-io/sonr/identity/aka/{aka_id}:
+    get:
+      summary: Queries a DIDDocument for the matching AlsoKnownAs
+      operationId: SonrioSonrIdentityV1QueryByAlsoKnownAs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              didDocument:
+                type: object
+                properties:
+                  context:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+                  creator:
+                    type: string
+                    title: optional
+                  iD:
+                    type: string
+                  controller:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+                  verification_method:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            iD:
+                              type: string
+                            type:
+                              type: string
+                              enum:
+                                - KeyType_UNSPECIFIED
+                                - KeyType_JSON_WEB_KEY_2020
+                                - KeyType_ED25519_VERIFICATION_KEY_2018
+                                - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                - KeyType_RSA_VERIFICATION_KEY_2018
+                              default: KeyType_UNSPECIFIED
+                              description: >-
+                                KeyType is the type of key used to sign a DID
+                                document.
+
+                                 - KeyType_UNSPECIFIED: No key type specified
+                                 - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                 - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                 - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                 - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: object
+                              additionalProperties:
+                                type: string
+                            public_key_multibase:
+                              type: string
+                              title: optional
+                  authentication:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  assertion_method:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  capability_invocation:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  capability_delegation:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  key_agreement:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  service:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            iD:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                            service_endpoints:
+                              type: object
+                              additionalProperties:
+                                type: string
+                              title: optional
+                  also_known_as:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: aka_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /sonr-io/sonr/identity/did:
     get:
       summary: Queries a list of DidDocument items.
@@ -45063,6 +45399,765 @@ paths:
           type: string
       tags:
         - Query
+  /sonr-io/sonr/identity/key/{key_id}:
+    get:
+      summary: Queries a DIDDocument for the matching key
+      operationId: SonrioSonrIdentityV1QueryByKeyID
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              didDocument:
+                type: object
+                properties:
+                  context:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+                  creator:
+                    type: string
+                    title: optional
+                  iD:
+                    type: string
+                  controller:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+                  verification_method:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            iD:
+                              type: string
+                            type:
+                              type: string
+                              enum:
+                                - KeyType_UNSPECIFIED
+                                - KeyType_JSON_WEB_KEY_2020
+                                - KeyType_ED25519_VERIFICATION_KEY_2018
+                                - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                - KeyType_RSA_VERIFICATION_KEY_2018
+                              default: KeyType_UNSPECIFIED
+                              description: >-
+                                KeyType is the type of key used to sign a DID
+                                document.
+
+                                 - KeyType_UNSPECIFIED: No key type specified
+                                 - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                 - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                 - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                 - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: object
+                              additionalProperties:
+                                type: string
+                            public_key_multibase:
+                              type: string
+                              title: optional
+                  authentication:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  assertion_method:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  capability_invocation:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  capability_delegation:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  key_agreement:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  service:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            iD:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                            service_endpoints:
+                              type: object
+                              additionalProperties:
+                                type: string
+                              title: optional
+                  also_known_as:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: key_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonr-io/sonr/identity/method/{method_id}:
+    get:
+      summary: Queries a list of DIDDocument for the matching method
+      operationId: SonrioSonrIdentityV1QueryByMethod
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              didDocument:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    context:
+                      type: array
+                      items:
+                        type: string
+                      title: optional
+                    creator:
+                      type: string
+                      title: optional
+                    iD:
+                      type: string
+                    controller:
+                      type: array
+                      items:
+                        type: string
+                      title: optional
+                    verification_method:
+                      title: optional
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              iD:
+                                type: string
+                              type:
+                                type: string
+                                enum:
+                                  - KeyType_UNSPECIFIED
+                                  - KeyType_JSON_WEB_KEY_2020
+                                  - KeyType_ED25519_VERIFICATION_KEY_2018
+                                  - >-
+                                    KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                  - KeyType_RSA_VERIFICATION_KEY_2018
+                                default: KeyType_UNSPECIFIED
+                                description: >-
+                                  KeyType is the type of key used to sign a DID
+                                  document.
+
+                                   - KeyType_UNSPECIFIED: No key type specified
+                                   - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                   - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                   - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                   - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                              controller:
+                                type: string
+                              public_key_jwk:
+                                type: object
+                                additionalProperties:
+                                  type: string
+                              public_key_multibase:
+                                type: string
+                                title: optional
+                    authentication:
+                      title: optional
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              verification_method:
+                                type: object
+                                properties:
+                                  iD:
+                                    type: string
+                                  type:
+                                    type: string
+                                    enum:
+                                      - KeyType_UNSPECIFIED
+                                      - KeyType_JSON_WEB_KEY_2020
+                                      - KeyType_ED25519_VERIFICATION_KEY_2018
+                                      - >-
+                                        KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                      - KeyType_RSA_VERIFICATION_KEY_2018
+                                    default: KeyType_UNSPECIFIED
+                                    description: >-
+                                      KeyType is the type of key used to sign a
+                                      DID document.
+
+                                       - KeyType_UNSPECIFIED: No key type specified
+                                       - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                       - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                       - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                       - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                  controller:
+                                    type: string
+                                  public_key_jwk:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                                  public_key_multibase:
+                                    type: string
+                                    title: optional
+                              reference:
+                                type: string
+                    assertion_method:
+                      title: optional
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              verification_method:
+                                type: object
+                                properties:
+                                  iD:
+                                    type: string
+                                  type:
+                                    type: string
+                                    enum:
+                                      - KeyType_UNSPECIFIED
+                                      - KeyType_JSON_WEB_KEY_2020
+                                      - KeyType_ED25519_VERIFICATION_KEY_2018
+                                      - >-
+                                        KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                      - KeyType_RSA_VERIFICATION_KEY_2018
+                                    default: KeyType_UNSPECIFIED
+                                    description: >-
+                                      KeyType is the type of key used to sign a
+                                      DID document.
+
+                                       - KeyType_UNSPECIFIED: No key type specified
+                                       - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                       - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                       - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                       - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                  controller:
+                                    type: string
+                                  public_key_jwk:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                                  public_key_multibase:
+                                    type: string
+                                    title: optional
+                              reference:
+                                type: string
+                    capability_invocation:
+                      title: optional
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              verification_method:
+                                type: object
+                                properties:
+                                  iD:
+                                    type: string
+                                  type:
+                                    type: string
+                                    enum:
+                                      - KeyType_UNSPECIFIED
+                                      - KeyType_JSON_WEB_KEY_2020
+                                      - KeyType_ED25519_VERIFICATION_KEY_2018
+                                      - >-
+                                        KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                      - KeyType_RSA_VERIFICATION_KEY_2018
+                                    default: KeyType_UNSPECIFIED
+                                    description: >-
+                                      KeyType is the type of key used to sign a
+                                      DID document.
+
+                                       - KeyType_UNSPECIFIED: No key type specified
+                                       - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                       - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                       - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                       - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                  controller:
+                                    type: string
+                                  public_key_jwk:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                                  public_key_multibase:
+                                    type: string
+                                    title: optional
+                              reference:
+                                type: string
+                    capability_delegation:
+                      title: optional
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              verification_method:
+                                type: object
+                                properties:
+                                  iD:
+                                    type: string
+                                  type:
+                                    type: string
+                                    enum:
+                                      - KeyType_UNSPECIFIED
+                                      - KeyType_JSON_WEB_KEY_2020
+                                      - KeyType_ED25519_VERIFICATION_KEY_2018
+                                      - >-
+                                        KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                      - KeyType_RSA_VERIFICATION_KEY_2018
+                                    default: KeyType_UNSPECIFIED
+                                    description: >-
+                                      KeyType is the type of key used to sign a
+                                      DID document.
+
+                                       - KeyType_UNSPECIFIED: No key type specified
+                                       - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                       - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                       - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                       - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                  controller:
+                                    type: string
+                                  public_key_jwk:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                                  public_key_multibase:
+                                    type: string
+                                    title: optional
+                              reference:
+                                type: string
+                    key_agreement:
+                      title: optional
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              verification_method:
+                                type: object
+                                properties:
+                                  iD:
+                                    type: string
+                                  type:
+                                    type: string
+                                    enum:
+                                      - KeyType_UNSPECIFIED
+                                      - KeyType_JSON_WEB_KEY_2020
+                                      - KeyType_ED25519_VERIFICATION_KEY_2018
+                                      - >-
+                                        KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                      - KeyType_RSA_VERIFICATION_KEY_2018
+                                    default: KeyType_UNSPECIFIED
+                                    description: >-
+                                      KeyType is the type of key used to sign a
+                                      DID document.
+
+                                       - KeyType_UNSPECIFIED: No key type specified
+                                       - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                       - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                       - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                       - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                  controller:
+                                    type: string
+                                  public_key_jwk:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                                  public_key_multibase:
+                                    type: string
+                                    title: optional
+                              reference:
+                                type: string
+                    service:
+                      title: optional
+                      type: object
+                      properties:
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              iD:
+                                type: string
+                              type:
+                                type: string
+                              service_endpoint:
+                                type: string
+                              service_endpoints:
+                                type: object
+                                additionalProperties:
+                                  type: string
+                                title: optional
+                    also_known_as:
+                      type: array
+                      items:
+                        type: string
+                      title: optional
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: method_id
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
   /sonr-io/sonr/identity/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -45106,6 +46201,342 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /sonr-io/sonr/identity/service/{service_id}:
+    get:
+      summary: Queries a DIDDocument for the matching service
+      operationId: SonrioSonrIdentityV1QueryByService
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              didDocument:
+                type: object
+                properties:
+                  context:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+                  creator:
+                    type: string
+                    title: optional
+                  iD:
+                    type: string
+                  controller:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+                  verification_method:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            iD:
+                              type: string
+                            type:
+                              type: string
+                              enum:
+                                - KeyType_UNSPECIFIED
+                                - KeyType_JSON_WEB_KEY_2020
+                                - KeyType_ED25519_VERIFICATION_KEY_2018
+                                - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                - KeyType_RSA_VERIFICATION_KEY_2018
+                              default: KeyType_UNSPECIFIED
+                              description: >-
+                                KeyType is the type of key used to sign a DID
+                                document.
+
+                                 - KeyType_UNSPECIFIED: No key type specified
+                                 - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                 - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                 - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                 - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                            controller:
+                              type: string
+                            public_key_jwk:
+                              type: object
+                              additionalProperties:
+                                type: string
+                            public_key_multibase:
+                              type: string
+                              title: optional
+                  authentication:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  assertion_method:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  capability_invocation:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  capability_delegation:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  key_agreement:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            verification_method:
+                              type: object
+                              properties:
+                                iD:
+                                  type: string
+                                type:
+                                  type: string
+                                  enum:
+                                    - KeyType_UNSPECIFIED
+                                    - KeyType_JSON_WEB_KEY_2020
+                                    - KeyType_ED25519_VERIFICATION_KEY_2018
+                                    - >-
+                                      KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                                    - KeyType_RSA_VERIFICATION_KEY_2018
+                                  default: KeyType_UNSPECIFIED
+                                  description: >-
+                                    KeyType is the type of key used to sign a
+                                    DID document.
+
+                                     - KeyType_UNSPECIFIED: No key type specified
+                                     - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                                     - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                                     - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                                     - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                                controller:
+                                  type: string
+                                public_key_jwk:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                public_key_multibase:
+                                  type: string
+                                  title: optional
+                            reference:
+                              type: string
+                  service:
+                    title: optional
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            iD:
+                              type: string
+                            type:
+                              type: string
+                            service_endpoint:
+                              type: string
+                            service_endpoints:
+                              type: object
+                              additionalProperties:
+                                type: string
+                              title: optional
+                  also_known_as:
+                    type: array
+                    items:
+                      type: string
+                    title: optional
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: service_id
+          in: path
+          required: true
+          type: string
       tags:
         - Query
 definitions:
@@ -75145,6 +76576,1227 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  sonrio.sonr.identity.v1.QueryByAlsoKnownAsResponse:
+    type: object
+    properties:
+      didDocument:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+            title: optional
+          creator:
+            type: string
+            title: optional
+          iD:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+            title: optional
+          verification_method:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iD:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - KeyType_UNSPECIFIED
+                        - KeyType_JSON_WEB_KEY_2020
+                        - KeyType_ED25519_VERIFICATION_KEY_2018
+                        - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                        - KeyType_RSA_VERIFICATION_KEY_2018
+                      default: KeyType_UNSPECIFIED
+                      description: |-
+                        KeyType is the type of key used to sign a DID document.
+
+                         - KeyType_UNSPECIFIED: No key type specified
+                         - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                         - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                         - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                         - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    public_key_multibase:
+                      type: string
+                      title: optional
+          authentication:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          assertion_method:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          capability_invocation:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          capability_delegation:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          key_agreement:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          service:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iD:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+                    service_endpoints:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      title: optional
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: optional
+  sonrio.sonr.identity.v1.QueryByKeyIDResponse:
+    type: object
+    properties:
+      didDocument:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+            title: optional
+          creator:
+            type: string
+            title: optional
+          iD:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+            title: optional
+          verification_method:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iD:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - KeyType_UNSPECIFIED
+                        - KeyType_JSON_WEB_KEY_2020
+                        - KeyType_ED25519_VERIFICATION_KEY_2018
+                        - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                        - KeyType_RSA_VERIFICATION_KEY_2018
+                      default: KeyType_UNSPECIFIED
+                      description: |-
+                        KeyType is the type of key used to sign a DID document.
+
+                         - KeyType_UNSPECIFIED: No key type specified
+                         - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                         - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                         - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                         - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    public_key_multibase:
+                      type: string
+                      title: optional
+          authentication:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          assertion_method:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          capability_invocation:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          capability_delegation:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          key_agreement:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          service:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iD:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+                    service_endpoints:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      title: optional
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: optional
+  sonrio.sonr.identity.v1.QueryByMethodResponse:
+    type: object
+    properties:
+      didDocument:
+        type: array
+        items:
+          type: object
+          properties:
+            context:
+              type: array
+              items:
+                type: string
+              title: optional
+            creator:
+              type: string
+              title: optional
+            iD:
+              type: string
+            controller:
+              type: array
+              items:
+                type: string
+              title: optional
+            verification_method:
+              title: optional
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      iD:
+                        type: string
+                      type:
+                        type: string
+                        enum:
+                          - KeyType_UNSPECIFIED
+                          - KeyType_JSON_WEB_KEY_2020
+                          - KeyType_ED25519_VERIFICATION_KEY_2018
+                          - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                          - KeyType_RSA_VERIFICATION_KEY_2018
+                        default: KeyType_UNSPECIFIED
+                        description: >-
+                          KeyType is the type of key used to sign a DID
+                          document.
+
+                           - KeyType_UNSPECIFIED: No key type specified
+                           - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                           - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                           - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                           - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                      controller:
+                        type: string
+                      public_key_jwk:
+                        type: object
+                        additionalProperties:
+                          type: string
+                      public_key_multibase:
+                        type: string
+                        title: optional
+            authentication:
+              title: optional
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      verification_method:
+                        type: object
+                        properties:
+                          iD:
+                            type: string
+                          type:
+                            type: string
+                            enum:
+                              - KeyType_UNSPECIFIED
+                              - KeyType_JSON_WEB_KEY_2020
+                              - KeyType_ED25519_VERIFICATION_KEY_2018
+                              - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                              - KeyType_RSA_VERIFICATION_KEY_2018
+                            default: KeyType_UNSPECIFIED
+                            description: >-
+                              KeyType is the type of key used to sign a DID
+                              document.
+
+                               - KeyType_UNSPECIFIED: No key type specified
+                               - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                               - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                               - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                               - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                          controller:
+                            type: string
+                          public_key_jwk:
+                            type: object
+                            additionalProperties:
+                              type: string
+                          public_key_multibase:
+                            type: string
+                            title: optional
+                      reference:
+                        type: string
+            assertion_method:
+              title: optional
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      verification_method:
+                        type: object
+                        properties:
+                          iD:
+                            type: string
+                          type:
+                            type: string
+                            enum:
+                              - KeyType_UNSPECIFIED
+                              - KeyType_JSON_WEB_KEY_2020
+                              - KeyType_ED25519_VERIFICATION_KEY_2018
+                              - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                              - KeyType_RSA_VERIFICATION_KEY_2018
+                            default: KeyType_UNSPECIFIED
+                            description: >-
+                              KeyType is the type of key used to sign a DID
+                              document.
+
+                               - KeyType_UNSPECIFIED: No key type specified
+                               - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                               - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                               - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                               - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                          controller:
+                            type: string
+                          public_key_jwk:
+                            type: object
+                            additionalProperties:
+                              type: string
+                          public_key_multibase:
+                            type: string
+                            title: optional
+                      reference:
+                        type: string
+            capability_invocation:
+              title: optional
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      verification_method:
+                        type: object
+                        properties:
+                          iD:
+                            type: string
+                          type:
+                            type: string
+                            enum:
+                              - KeyType_UNSPECIFIED
+                              - KeyType_JSON_WEB_KEY_2020
+                              - KeyType_ED25519_VERIFICATION_KEY_2018
+                              - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                              - KeyType_RSA_VERIFICATION_KEY_2018
+                            default: KeyType_UNSPECIFIED
+                            description: >-
+                              KeyType is the type of key used to sign a DID
+                              document.
+
+                               - KeyType_UNSPECIFIED: No key type specified
+                               - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                               - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                               - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                               - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                          controller:
+                            type: string
+                          public_key_jwk:
+                            type: object
+                            additionalProperties:
+                              type: string
+                          public_key_multibase:
+                            type: string
+                            title: optional
+                      reference:
+                        type: string
+            capability_delegation:
+              title: optional
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      verification_method:
+                        type: object
+                        properties:
+                          iD:
+                            type: string
+                          type:
+                            type: string
+                            enum:
+                              - KeyType_UNSPECIFIED
+                              - KeyType_JSON_WEB_KEY_2020
+                              - KeyType_ED25519_VERIFICATION_KEY_2018
+                              - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                              - KeyType_RSA_VERIFICATION_KEY_2018
+                            default: KeyType_UNSPECIFIED
+                            description: >-
+                              KeyType is the type of key used to sign a DID
+                              document.
+
+                               - KeyType_UNSPECIFIED: No key type specified
+                               - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                               - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                               - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                               - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                          controller:
+                            type: string
+                          public_key_jwk:
+                            type: object
+                            additionalProperties:
+                              type: string
+                          public_key_multibase:
+                            type: string
+                            title: optional
+                      reference:
+                        type: string
+            key_agreement:
+              title: optional
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      verification_method:
+                        type: object
+                        properties:
+                          iD:
+                            type: string
+                          type:
+                            type: string
+                            enum:
+                              - KeyType_UNSPECIFIED
+                              - KeyType_JSON_WEB_KEY_2020
+                              - KeyType_ED25519_VERIFICATION_KEY_2018
+                              - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                              - KeyType_RSA_VERIFICATION_KEY_2018
+                            default: KeyType_UNSPECIFIED
+                            description: >-
+                              KeyType is the type of key used to sign a DID
+                              document.
+
+                               - KeyType_UNSPECIFIED: No key type specified
+                               - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                               - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                               - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                               - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                          controller:
+                            type: string
+                          public_key_jwk:
+                            type: object
+                            additionalProperties:
+                              type: string
+                          public_key_multibase:
+                            type: string
+                            title: optional
+                      reference:
+                        type: string
+            service:
+              title: optional
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      iD:
+                        type: string
+                      type:
+                        type: string
+                      service_endpoint:
+                        type: string
+                      service_endpoints:
+                        type: object
+                        additionalProperties:
+                          type: string
+                        title: optional
+            also_known_as:
+              type: array
+              items:
+                type: string
+              title: optional
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  sonrio.sonr.identity.v1.QueryByServiceResponse:
+    type: object
+    properties:
+      didDocument:
+        type: object
+        properties:
+          context:
+            type: array
+            items:
+              type: string
+            title: optional
+          creator:
+            type: string
+            title: optional
+          iD:
+            type: string
+          controller:
+            type: array
+            items:
+              type: string
+            title: optional
+          verification_method:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iD:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - KeyType_UNSPECIFIED
+                        - KeyType_JSON_WEB_KEY_2020
+                        - KeyType_ED25519_VERIFICATION_KEY_2018
+                        - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                        - KeyType_RSA_VERIFICATION_KEY_2018
+                      default: KeyType_UNSPECIFIED
+                      description: |-
+                        KeyType is the type of key used to sign a DID document.
+
+                         - KeyType_UNSPECIFIED: No key type specified
+                         - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                         - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                         - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                         - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                    controller:
+                      type: string
+                    public_key_jwk:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    public_key_multibase:
+                      type: string
+                      title: optional
+          authentication:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          assertion_method:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          capability_invocation:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          capability_delegation:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          key_agreement:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    verification_method:
+                      type: object
+                      properties:
+                        iD:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - KeyType_UNSPECIFIED
+                            - KeyType_JSON_WEB_KEY_2020
+                            - KeyType_ED25519_VERIFICATION_KEY_2018
+                            - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
+                            - KeyType_RSA_VERIFICATION_KEY_2018
+                          default: KeyType_UNSPECIFIED
+                          description: >-
+                            KeyType is the type of key used to sign a DID
+                            document.
+
+                             - KeyType_UNSPECIFIED: No key type specified
+                             - KeyType_JSON_WEB_KEY_2020: JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+                             - KeyType_ED25519_VERIFICATION_KEY_2018: ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+                             - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+                             - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+                        controller:
+                          type: string
+                        public_key_jwk:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        public_key_multibase:
+                          type: string
+                          title: optional
+                    reference:
+                      type: string
+          service:
+            title: optional
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iD:
+                      type: string
+                    type:
+                      type: string
+                    service_endpoint:
+                      type: string
+                    service_endpoints:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      title: optional
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: optional
   sonrio.sonr.identity.v1.QueryGetDidResponse:
     type: object
     properties:

@@ -55,3 +55,19 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 
 	return &types.QueryGetDidResponse{DidDocument: val}, nil
 }
+
+func (k Keeper) QueryByService(c context.Context, req *types.QueryByServiceRequest) (*types.QueryByServiceResponse, error) {
+	return nil, nil
+}
+
+func (k Keeper) QueryByMethod(c context.Context, req *types.QueryByMethodRequest) (*types.QueryByMethodResponse, error) {
+	return nil, nil
+}
+
+func (k Keeper) QueryByKeyID(c context.Context, req *types.QueryByKeyIDRequest) (*types.QueryByKeyIDResponse, error) {
+	return nil, nil
+}
+
+func (k Keeper) QueryByAlsoKnownAs(c context.Context, req *types.QueryByAlsoKnownAsRequest) (*types.QueryByAlsoKnownAsResponse, error) {
+	return nil, nil
+}

@@ -47,6 +47,10 @@ const getDefaultState = () => {
 				Params: {},
 				Did: {},
 				DidAll: {},
+				QueryByService: {},
+				QueryByKeyID: {},
+				QueryByAlsoKnownAs: {},
+				QueryByMethod: {},
 				
 				_Structure: {
 						DidDocument: getStructure(DidDocument.fromPartial({})),
@@ -105,6 +109,30 @@ export default {
 						(<any> params).query=null
 					}
 			return state.DidAll[JSON.stringify(params)] ?? {}
+		},
+				getQueryByService: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.QueryByService[JSON.stringify(params)] ?? {}
+		},
+				getQueryByKeyID: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.QueryByKeyID[JSON.stringify(params)] ?? {}
+		},
+				getQueryByAlsoKnownAs: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.QueryByAlsoKnownAs[JSON.stringify(params)] ?? {}
+		},
+				getQueryByMethod: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.QueryByMethod[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -210,19 +238,98 @@ export default {
 		},
 		
 		
-		async sendMsgCreateDidDocument({ rootGetters }, { value, fee = [], memo = '' }) {
+		
+		
+		 		
+		
+		
+		async QueryQueryByService({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
 			try {
-				const client=await initClient(rootGetters)
-				const result = await client.SonrioSonrIdentityV1.tx.sendMsgCreateDidDocument({ value, fee: {amount: fee, gas: "200000"}, memo })
-				return result
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.SonrioSonrIdentityV1.query.queryQueryByService( key.service_id)).data
+				
+					
+				commit('QUERY', { query: 'QueryByService', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryQueryByService', payload: { options: { all }, params: {...key},query }})
+				return getters['getQueryByService']( { params: {...key}, query}) ?? {}
 			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgCreateDidDocument:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgCreateDidDocument:Send Could not broadcast Tx: '+ e.message)
-				}
+				throw new Error('QueryClient:QueryQueryByService API Node Unavailable. Could not perform query: ' + e.message)
+				
 			}
 		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryQueryByKeyID({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.SonrioSonrIdentityV1.query.queryQueryByKeyId( key.key_id)).data
+				
+					
+				commit('QUERY', { query: 'QueryByKeyID', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryQueryByKeyID', payload: { options: { all }, params: {...key},query }})
+				return getters['getQueryByKeyID']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryQueryByKeyID API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryQueryByAlsoKnownAs({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.SonrioSonrIdentityV1.query.queryQueryByAlsoKnownAs( key.aka_id)).data
+				
+					
+				commit('QUERY', { query: 'QueryByAlsoKnownAs', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryQueryByAlsoKnownAs', payload: { options: { all }, params: {...key},query }})
+				return getters['getQueryByAlsoKnownAs']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryQueryByAlsoKnownAs API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryQueryByMethod({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.SonrioSonrIdentityV1.query.queryQueryByMethod( key.method_id, query ?? undefined)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await client.SonrioSonrIdentityV1.query.queryQueryByMethod( key.method_id, {...query ?? {}, 'pagination.key':(<any> value).pagination.next_key} as any)).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'QueryByMethod', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryQueryByMethod', payload: { options: { all }, params: {...key},query }})
+				return getters['getQueryByMethod']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryQueryByMethod API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
 		async sendMsgDeleteDidDocument({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -249,20 +356,20 @@ export default {
 				}
 			}
 		},
-		
-		async MsgCreateDidDocument({ rootGetters }, { value }) {
+		async sendMsgCreateDidDocument({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
-				const client=initClient(rootGetters)
-				const msg = await client.SonrioSonrIdentityV1.tx.msgCreateDidDocument({value})
-				return msg
+				const client=await initClient(rootGetters)
+				const result = await client.SonrioSonrIdentityV1.tx.sendMsgCreateDidDocument({ value, fee: {amount: fee, gas: "200000"}, memo })
+				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgCreateDidDocument:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgCreateDidDocument:Create Could not create message: ' + e.message)
+				}else{
+					throw new Error('TxClient:MsgCreateDidDocument:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
+		
 		async MsgDeleteDidDocument({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -286,6 +393,19 @@ export default {
 					throw new Error('TxClient:MsgUpdateDidDocument:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgUpdateDidDocument:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgCreateDidDocument({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.SonrioSonrIdentityV1.tx.msgCreateDidDocument({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgCreateDidDocument:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgCreateDidDocument:Create Could not create message: ' + e.message)
 				}
 			}
 		},

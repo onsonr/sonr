@@ -26,6 +26,30 @@ service Query {
 		option (google.api.http).get = "/sonr-io/sonr/identity/did";
 	}
 
+    //Queries a DIDDocument for the matching service
+	rpc QueryByService(QueryByServiceRequest) returns (QueryByServiceResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/identity/service/{service_id}";
+	}
+
+    //Queries a DIDDocument for the matching key 
+	rpc QueryByKeyID(QueryByKeyIDRequest) returns (QueryByKeyIDResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/identity/key/{key_id}";
+	}
+
+    //Queries a DIDDocument for the matching AlsoKnownAs
+	rpc QueryByAlsoKnownAs(QueryByAlsoKnownAsRequest) returns (QueryByAlsoKnownAsResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/identity/aka/{aka_id}";
+	}
+
+    //Queries a list of DIDDocument for the matching method 
+    rpc QueryByMethod(QueryByMethodRequest) returns (QueryByMethodResponse) {
+		option (google.api.http).get = "/sonr-io/sonr/identity/method/{method_id}";
+	}
+
+    //Queries Content metadata from IPFS for a given CID
+	//rpc QueryMetadataByCID(QueryMetadataByCIDRequest) returns (QueryMetadataByCIDResponse) {
+	//	option (google.api.http).get = "/sonr-io/sonr/identity/ipfs_metadata/{cid}";
+	//}
 // this line is used by starport scaffolding # 2
 }
 
@@ -44,6 +68,40 @@ message QueryGetDidRequest {
 
 message QueryGetDidResponse {
 	DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryByServiceRequest{
+	  string service_id = 1;
+}
+
+message QueryByServiceResponse{
+	DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryByKeyIDRequest{
+	  string key_id = 1;
+}
+
+message QueryByKeyIDResponse{
+	DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryByAlsoKnownAsRequest{
+	  string aka_id = 1;
+}
+
+message QueryByAlsoKnownAsResponse{
+	DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryByMethodRequest{
+    string method_id = 1;
+	cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryByMethodResponse{
+	repeated DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryAllDidRequest {
