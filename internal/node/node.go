@@ -2,8 +2,6 @@ package node
 
 import (
 	"context"
-	"crypto/rand"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -12,10 +10,8 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	rt "github.com/libp2p/go-libp2p/core/routing"
-	"github.com/libp2p/go-libp2p/p2p/net/connmgr"
 	"github.com/sonr-io/sonr/pkg/common"
 )
 
@@ -91,44 +87,26 @@ type hostImpl struct {
 }
 
 // NewMotor Creates a Sonr libp2p Host with the given config
-func NewMotor(ctx context.Context, cb common.MotorCallback) (Node, error) {
+func New(ctx context.Context, options ...NodeOption) (Node, error) {
+	// Default options
 	var err error
+	config := defaultNodeConfig()
+	for _, o := range options {
+		err = o(config)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// Create the host.
 	hn := &hostImpl{
 		ctx:          ctx,
 		fsm:          NewFSM(ctx),
 		mdnsPeerChan: make(chan peer.AddrInfo),
 	}
-	// findPrivKey returns the private key for the host.
-	findPrivKey := func() (crypto.PrivKey, error) {
-		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
-		if err == nil {
-
-			return privKey, nil
-		}
-		return nil, err
-	}
-	// Fetch the private key.
-	privKey, err := findPrivKey()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create Connection Manager
-	connmgr, err := connmgr.NewConnManager(
-		100, // Lowwater
-		400, // HighWater,
-		connmgr.WithGracePeriod(time.Minute),
-	)
 
 	// Start Host
-	hn.host, err = libp2p.New(
-		libp2p.Identity(privKey),
-		libp2p.ConnectionManager(connmgr),
-		libp2p.DefaultListenAddrs,
-		libp2p.Routing(hn.Router),
-		libp2p.EnableAutoRelay(),
-	)
+	hn.host, err = libp2p.New(config.ToLibp2pOptions()...)
 	if err != nil {
 		hn.fsm.SetState(Status_FAIL)
 		return nil, err

@@ -49,3 +49,23 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	// return resp.Marshal()
 	return nil, nil
 }
+
+func Connect(buf []byte) ([]byte, error) {
+	// Unmarshal the request
+	var req mt.ConnectRequest
+	if err := req.Unmarshal(buf); err != nil {
+		return nil, err
+	}
+
+	// // Connect to the network
+	// if err := instance.Connect(req); err != nil {
+	// 	return nil, err
+	// }
+
+	// // Return Connect Response
+	// resp := mt.ConnectResponse{
+	// 	Success: true,
+	// }
+	// return resp.Marshal()
+	return nil, nil
+}

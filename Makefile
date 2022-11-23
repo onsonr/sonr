@@ -138,51 +138,15 @@ bind.tar:
 	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -i
 	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -w
 
-## build       :   Builds macos and ubuntu releases for Sonr
-# build:
-# 	env GOOS=linux GOARCH=amd64 go build -o ./build/sonr-linux-amd64 ./cmd/sonrd/main.go
-# 	env GOOS=linux GOARCH=arm64 go build -o ./build/sonr-linux-arm64 ./cmd/sonrd/main.go
-# 	env GOOS=darwin GOARCH=amd64 go build -o ./build/sonr-darwin-amd64 ./cmd/sonrd/main.go
+build-all:
+	GOOS=linux GOARCH=amd64 go build -o ./build/sonr-linux-amd64 ./cmd/sonrd/main.go
+	GOOS=linux GOARCH=arm64 go build -o ./build/sonr-linux-arm64 ./cmd/sonrd/main.go
+	GOOS=darwin GOARCH=amd64 go build -o ./build/sonr-darwin-amd64 ./cmd/sonrd/main.go
 
-BUILD_TARGETS := build install
+do-checksum:
+	cd build && sha256sum sonr-linux-amd64 sonr-linux-arm64 sonr-darwin-amd64 > myproject_checksum
 
-build: BUILD_ARGS=-o $(BUILDDIR)/
-
-build-linux-amd64:
-	GOOS=linux GOARCH=amd64 LEDGER_ENABLED=false $(MAKE) build
-
-build-linux-arm64:
-	GOOS=linux GOARCH=arm64 LEDGER_ENABLED=false $(MAKE) build
-
-$(BUILD_TARGETS): go.sum $(BUILDDIR)/
-	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
-
-$(BUILDDIR)/:
-	mkdir -p $(BUILDDIR)/
-
-cosmovisor:
-	$(MAKE) -C tools/cosmovisor cosmovisor
-
-.PHONY: build build-linux-amd64 build-linux-arm64 cosmovisor
-
-
-mocks: $(MOCKS_DIR)
-	@go install github.com/golang/mock/mockgen@v1.6.0
-	sh ./scripts/mockgen.sh
-.PHONY: mocks
-
-$(MOCKS_DIR):
-	mkdir -p $(MOCKS_DIR)
-
-distclean: clean tools-clean
-clean:
-	rm -rf \
-    $(BUILDDIR)/ \
-    artifacts/ \
-    tmp-swagger-gen/
-
-.PHONY: distclean clean
-
+build-with-checksum: build-all do-checksum
 
 
 ## proto       :   Compiles Go Proto Files and pushes to Buf.Build

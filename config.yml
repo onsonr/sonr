@@ -9,11 +9,7 @@ validators:
     bonded: "100000000stake"
 client:
   openapi:
-    path: "docs/static/openapi.yml"
-      #typescript:
-      #path: "client/ts"
-      #vuex:
-      #  path: "client/vue/src/store"
+    path: "docs/static/openapi.yaml"
 faucet:
   name: bob
   coins: ["50000000snr", "100000000stake"]
