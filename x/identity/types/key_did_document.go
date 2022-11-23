@@ -1,6 +1,9 @@
 package types
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+	"strings"
+)
 
 var _ binary.ByteOrder
 
@@ -20,4 +23,14 @@ func DidDocumentKey(
 	key = append(key, []byte("/")...)
 
 	return key
+}
+
+// DidDocumentKeyToMethod returns the method of a DidDocument from the bytes of the did.
+func DidDocumentKeyToMethod(
+	didKey []byte,
+) string {
+	var method string
+	did := string(didKey)
+	method = strings.Split(did, ":")[1]
+	return method
 }

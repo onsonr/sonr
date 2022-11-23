@@ -5,27 +5,22 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/sonr-io/sonr/testutil"
 	"github.com/sonr-io/sonr/x/identity/keeper"
 	"github.com/sonr-io/sonr/x/identity/types"
-	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/libs/log"
+
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmdb "github.com/tendermint/tm-db"
+	tmtime "github.com/tendermint/tendermint/types/time"
 )
 
-func IdentityKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func IdentityKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
-
-	db := tmdb.NewMemDB()
-	stateStore := store.NewCommitMultiStore(db)
-	stateStore.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, db)
-	stateStore.MountStoreWithDB(memStoreKey, storetypes.StoreTypeMemory, nil)
-	require.NoError(t, stateStore.LoadLatestVersion())
+	testCtx := testutil.DefaultContextWithDB(t, storeKey, memStoreKey)
+	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: tmtime.Now()})
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
@@ -46,8 +41,6 @@ func IdentityKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 	)
-
-	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
 	k.SetParams(ctx, types.DefaultParams())

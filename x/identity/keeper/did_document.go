@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonr-io/sonr/x/identity/types"
@@ -60,4 +62,24 @@ func (k Keeper) GetAllDidDocument(ctx sdk.Context) (list []types.DidDocument) {
 	}
 
 	return
+}
+
+func (k Keeper) GetDidDocumentByAKA(ctx sdk.Context, aka string) (types.DidDocument, bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+	aka = strings.TrimSpace(aka)
+
+	var val types.DidDocument
+	for ; iterator.Valid(); iterator.Next() {
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		for _, s := range val.AlsoKnownAs {
+			if aka == s {
+				return val, true
+			}
+		}
+	}
+
+	return val, false
 }
