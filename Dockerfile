@@ -1,7 +1,3 @@
-# Simple usage with a mounted data directory:
-# > docker build -t simapp .
-## syntax=docker/dockerfile:1
-
 ARG GO_VERSION="1.18"
 ARG RUNNER_IMAGE="gcr.io/distroless/static"
 

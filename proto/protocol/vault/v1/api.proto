@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrio.protocol.vault.v1;
+option go_package = "github.com/sonr-io/sonr/core/protocol/vault/types/v1";
+
+message AuthorizeRequest {
+    bytes id = 1;
+}
+
+message AuthorizeResponse {
+    bytes id = 1;
+}
+
+message FetchPreSignedTxRequest {
+    bytes id = 1;
+}
+
+message FetchPreSignedTxResponse {
+    bytes id = 1;
+}
+
+message GenerateWalletRequest {
+    bytes id = 1;
+}
+
+message GenerateWalletResponse {
+    bytes id = 1;
+}
+
+message LinkPeerRequest {
+    bytes id = 1;
+}
+
+message LinkPeerResponse {
+    bytes id = 1;
+}
+
+message RefreshRequest {
+    bytes id = 1;
+}
+
+message RefreshResponse {
+    bytes id = 1;
+}
+
+message SignTxOnlineRequest {
+    bytes id = 1;
+}
+
+message SignTxOnlineResponse {
+    bytes id = 1;
+}

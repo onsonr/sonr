@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrio.protocol.vault.v1;
+option go_package = "github.com/sonr-io/sonr/core/protocol/vault/types/v1";
+
+message PublicKey {
+    bytes key = 1;
+}
+
+message PrivateKeyShare {
+    bytes key = 1;
+}
