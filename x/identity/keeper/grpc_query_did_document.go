@@ -63,8 +63,8 @@ func (k Keeper) QueryByService(c context.Context, req *types.QueryByServiceReque
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	//Gets did from `did:snr::did#svc`
-	did := strings.Split(strings.Split(req.ServiceId, ":")[2], "#")[0]
+	//Gets `did:snr:addr` from `did:snr:addr#svc`
+	did := strings.Split(req.ServiceId, "#")[0]
 
 	val, found := k.GetDidDocument(
 		ctx,
@@ -116,7 +116,7 @@ func (k Keeper) QueryByKeyID(c context.Context, req *types.QueryByKeyIDRequest) 
 	ctx := sdk.UnwrapSDKContext(c)
 
 	//Gets did from `did:snr::did#svc`
-	did := strings.Split(strings.Split(req.KeyId, ":")[2], "#")[0]
+	did := strings.Split(req.KeyId, "#")[0]
 
 	val, found := k.GetDidDocument(
 		ctx,
@@ -136,7 +136,6 @@ func (k Keeper) QueryByAlsoKnownAs(c context.Context, req *types.QueryByAlsoKnow
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	//Gets did from `did:snr::did#svc`
 	val, found := k.GetDidDocumentByAKA(
 		ctx,
 		req.AkaId,

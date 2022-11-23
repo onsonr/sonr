@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -9,9 +8,6 @@ import (
 	"github.com/sonr-io/sonr/x/identity/keeper"
 	"github.com/sonr-io/sonr/x/identity/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.DidDocument {
 	items := make([]types.DidDocument, n)
@@ -65,20 +61,10 @@ func (suite *KeeperTestSuite) TestDidDocumentGetAll() {
 	)
 }
 
-func createDidDocumentsWithAKA(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.DidDocument {
-	items := make([]types.DidDocument, n)
-	for i := range items {
-		items[i].ID = fmt.Sprintf("ForAKA%d", i)
-		items[i].AlsoKnownAs = []string{strconv.Itoa(i)}
-		keeper.SetDidDocument(ctx, items[i])
-	}
-	return items
-}
-
 func (suite *KeeperTestSuite) TestGetDidDocumentByAKA() {
 	keeper := suite.keeper
 	ctx := suite.ctx
-	items := createDidDocumentsWithAKA(keeper, ctx, 10)
+	items := createDidDocumentsWithPrefix(keeper, ctx, "AKA", 10)
 	for _, item := range items {
 		rst, found := keeper.GetDidDocumentByAKA(ctx,
 			item.AlsoKnownAs[0],
