@@ -371,7 +371,6 @@ func initAppConfig() (string, interface{}) {
 	srvCfg.API.Enable = true
 	srvCfg.API.Swagger = true
 	srvCfg.GRPCWeb.Enable = true
-	srvCfg.AppDBBackend = "backend"
 	srvCfg.MinGasPrices = "0snr"
 
 	customAppConfig := CustomAppConfig{
