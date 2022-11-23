@@ -63,7 +63,7 @@ func TestW3CSpecValidator(t *testing.T) {
 		})
 		t.Run("invalid type", func(t *testing.T) {
 			input := document()
-			input.VerificationMethod.Data[0].Type = KeyType_KeyType_JSON_WEB_KEY_2020
+			input.VerificationMethod.Data[0].Type = KeyType_KeyType_UNSPECIFIED
 			assertIsError(t, ErrInvalidVerificationMethod, W3CSpecValidator{}.Validate(input))
 		})
 	})
@@ -74,6 +74,7 @@ func TestW3CSpecValidator(t *testing.T) {
 			vm := *input.VerificationMethod.Data[0]
 			input.Authentication.Data[0] = &VerificationRelationship{VerificationMethod: &vm}
 			// Then alter
+			input.Authentication.Data[0].VerificationMethod.ID = ""
 			input.Authentication.Data[0].Reference = ""
 			assertIsError(t, ErrInvalidAuthentication, W3CSpecValidator{}.Validate(input))
 		})
@@ -83,6 +84,7 @@ func TestW3CSpecValidator(t *testing.T) {
 			vm := *input.VerificationMethod.Data[0]
 			input.Authentication.Data[0] = &VerificationRelationship{VerificationMethod: &vm}
 			// Then alter
+			input.Authentication.Data[0].VerificationMethod.Controller = ""
 			input.Authentication.Data[0].Reference = "did:snr:123#fragment"
 			assertIsError(t, ErrInvalidAuthentication, W3CSpecValidator{}.Validate(input))
 		})
@@ -95,38 +97,13 @@ func TestW3CSpecValidator(t *testing.T) {
 		})
 		t.Run("invalid type", func(t *testing.T) {
 			input := document()
-			input.Service.Data[0].Type = " "
+			input.Service.Data[0].Type = ""
 			assertIsError(t, ErrInvalidService, W3CSpecValidator{}.Validate(input))
 		})
 		t.Run("endpoint is nil", func(t *testing.T) {
 			input := document()
-			input.Service.Data[0].ServiceEndpoint = " "
+			input.Service.Data[0].ServiceEndpoint = ""
 			assertIsError(t, ErrInvalidService, W3CSpecValidator{}.Validate(input))
-		})
-		t.Run("endpoint is bool", func(t *testing.T) {
-			input := document()
-			//		input.Service[0].ServiceEndpoint = false
-			assertIsError(t, ErrInvalidService, W3CSpecValidator{}.Validate(input))
-		})
-		t.Run("endpoint is numeric", func(t *testing.T) {
-			input := document()
-			//	input.Service[0].ServiceEndpoint = 5
-			assertIsError(t, ErrInvalidService, W3CSpecValidator{}.Validate(input))
-		})
-		t.Run("ok - endpoint is slice", func(t *testing.T) {
-			input := document()
-			//	input.Service[0].ServiceEndpoint = []interface{}{"a", "b"}
-			assert.NoError(t, W3CSpecValidator{}.Validate(input))
-		})
-		t.Run("ok - endpoint is slice", func(t *testing.T) {
-			input := document()
-			//	input.Service[0].ServiceEndpoint = []interface{}{"a", "b"}
-			assert.NoError(t, W3CSpecValidator{}.Validate(input))
-		})
-		t.Run("ok - endpoint is map (string/interface)", func(t *testing.T) {
-			input := document()
-			//	input.Service[0].ServiceEndpoint = map[string]interface{}{}
-			assert.NoError(t, W3CSpecValidator{}.Validate(input))
 		})
 	})
 }
@@ -163,7 +140,7 @@ func assertIsError(t *testing.T, expected error, actual error) {
 
 func document() *DidDocument {
 	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	vm, _ := NewVerificationMethod("did:test:12345", KeyType_KeyType_JSON_WEB_KEY_2020, "did:test:12345", privateKey.Public())
+	vm, _ := NewVerificationMethod("did:test:12345", KeyType_KeyType_JSON_WEB_KEY_2020, "", privateKey.Public())
 	srv := &Service{
 		ID:              "did:test:12345",
 		Type:            "awesome-service",
@@ -172,10 +149,14 @@ func document() *DidDocument {
 	doc := &DidDocument{
 		Context:    []string{DIDContextV1URI().String()},
 		ID:         "did:test:12345",
-		Controller: []string{"did:test:12345"},
 		VerificationMethod: &VerificationMethods{
 			Data: []*VerificationMethod{vm},
 		},
+		Authentication: &VerificationRelationships{},
+		AssertionMethod: &VerificationRelationships{},
+		CapabilityInvocation: &VerificationRelationships{},
+		CapabilityDelegation: &VerificationRelationships{},
+		KeyAgreement: &VerificationRelationships{},
 		Service: &Services{
 			Data: []*Service{srv},
 		},
