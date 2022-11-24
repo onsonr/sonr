@@ -20,7 +20,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.8.1
 	github.com/libp2p/go-msgio v0.2.0
 	github.com/marstr/guid v1.1.0
-	github.com/ockam-network/did v0.1.3
+	github.com/ockam-network/did v0.1.4-0.20200310035025-e604f9bd12e3
 	github.com/pkg/errors v0.9.1
 	github.com/sonr-io/multi-party-sig v0.7.0
 	github.com/spf13/cast v1.5.0
