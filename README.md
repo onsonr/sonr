@@ -1,3 +1,5 @@
+# Sonr
+
 <p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for interoperability, and total digital autonomy.
     <br>
 </p>
