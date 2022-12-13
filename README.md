@@ -45,7 +45,7 @@ After a draft release is created, make your final changes from the release page 
 To install the latest version of your blockchain node's binary, execute the following command on your machine:
 
 ```sh
-curl https://get.ignite.com/sonr-hq/sonr@latest! | sudo bash
+curl https://get.ignite.com/sonr-hq/sonr! | sudo bash
 ```
 Learn more about [the install process](https://github.com/allinbits/starport-installer).
 ## Documentation
