@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrio.motor.bind.v1;
+option go_package = "github.com/sonr-hq/sonr/bind/motor/types/v1";
+
+// -----------------------------------------------------------------------------
+// Motor Node API
+// -----------------------------------------------------------------------------
+enum NetworkMode {
+  NetworkMode_LOCAL = 0;
+  NetworkMode_ALPHA = 1;
+  NetworkMode_BETA = 2;
+  NetworkMode_TEST = 3;
+}
+
+// (Client) InitializeRequest Message to Establish Sonr Host/API/Room
+message InitializeRequest {
+  // Identifier of this Device
+  string device_id = 1;
+
+  // Device Home Directory
+  string home_dir = 2;
+
+  // Device Library Support Directory
+  string support_dir = 3;
+
+  // Device Temporary Storage Directory
+  string temp_dir = 4;
+
+  // Logging level for the session, can be configured after setting
+  // (info|debug|warn|error|fatal)
+  string log_level = 5;
+
+  // Client Mode
+  NetworkMode network = 6; // Default: ENDPOINT_BETA
+}
+
+// ConnectRequest initializes the libp2p host and connects to the Sonr network.
+message ConnectRequest {
+  // Enable Discovery Service
+  bool enable_discovery = 1;
+
+  // Enable Transmit Protocol
+  bool enable_transmit = 2;
+
+  // Enable Linking Protocol
+  bool enable_linking = 3;
+
+  // Force the connection to be reset if it exists
+  bool reset_connection = 4;
+}
+
+// CreateAccountWithKeyRequest allows the DSC to be specified manually when creating a request.
+// Necessary for android (for now)
+message RegisterRequest {
+  string password = 1;
+  bytes aes_dsc_key = 2;
+  bytes aes_psk_key = 3;
+  map<string, string> metadata = 4;
+}
+
+// LinkingRequest opens a pubsub topic session in order to pair the current device with an existing Sonr Account.
+message LinkingRequest {}
+
+// PairingRequest attempts to join a pubsub topic session in order to pair the current device with an existing Sonr Account.
+message PairingRequest {
+  // peer-to-peer addresses of host
+  repeated bytes p2p_addrs = 1;
+}
+
+message LoginRequest {
+  // Either the DID or an alias of the account
+  string account_id = 1;
+
+  // The account password
+  string password = 2;
+
+  // The device-specific credential, known only to the logging in device
+  bytes aes_dsc_key = 3;
+
+  // The preshared key, known to all devices of the account
+  bytes aes_psk_key = 4;
+}

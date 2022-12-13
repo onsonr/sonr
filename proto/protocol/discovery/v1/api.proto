@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+// Package Discover is used to find other Peers in the sonr network.
+package sonrio.protocol.discovery.v1;
+import "common/v1/peer.proto";
+
+option go_package = "github.com/sonr-hq/sonr/pkg/protocol/discovery/types/v1";
+
+// LobbyMessage is message passed from Peer in Lobby
+message NearbyChannelMessage {
+  common.v1.Peer from = 1;     // Users Peer Data
+  bytes body = 2;    // Payload is the message data
+  bytes signature = 3;             // Signature of the Attached Data
+  int64 created_at = 4; // Timestamp
+}
+
+message RefreshEvent {
+  string topic_name = 1;
+  repeated common.v1.Peer peers = 2;
+  int64 received_at = 3;
+}

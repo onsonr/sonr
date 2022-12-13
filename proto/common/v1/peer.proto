@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+// Package common defines commonly used types agnostic to the node role on the Sonr network.
+package sonrio.common.v1;
+
+option go_package = "github.com/sonr-hq/sonr/core/common/v1";
+
+// Basic Info Sent to Peers to Establish Connections
+message Peer {
+  string peer_id = 1;     // Peer ID of Libp2p Peer
+  string did = 2;       // User Sonr Domain
+  string account_address = 3; // User Account Address
+  bytes public_key = 4; // User Public Key
+  string unique_id = 5; // Unique ID of the Peer
+  Type type = 6;
+
+  // Peers Active Status
+  enum Type {
+    UNKNOWN = 0;
+    VAULT = 1;
+    ISSUER = 2;
+    VERIFIER = 3;
+    HOLDER = 4;
+  }
+}
+
+// AuthInfo is a object used by Motor clients to store authentication information in Biometric storage
+message AuthInfo {
+    string address = 1;
+    string did = 2;
+    bytes aes_dsc_key = 3;
+    bytes aes_psk_key = 4;
+    string password = 5;
+    int64 timestamp = 6;
+}

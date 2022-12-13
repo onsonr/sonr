@@ -1,0 +1,34 @@
+---
+title: Get Token Supply
+api: "GET /cosmos/bank/v1beta1/supply/by_denom"
+description: SupplyOf queries the supply of a single coin.
+---
+
+<ParamField query="denom" type="string" required>
+  address is the address to query balances for.
+</ParamField>
+
+<ResponseExample>
+
+```json Response (200)
+{
+  "amount": {
+    "denom": "string",
+    "amount": "string"
+  }
+}
+```
+
+```json Error
+{
+  "code": 0,
+  "message": "string",
+  "details": [
+    {
+      "@type": "string"
+    }
+  ]
+}
+```
+
+</ResponseExample>

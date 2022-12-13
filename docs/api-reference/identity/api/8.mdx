@@ -1,0 +1,36 @@
+---
+title: "Get Identity Params"
+api: "GET https://v1-beta.sonr.ws/sonr-io/sonr/registry/params"
+description: "Get the parameters for the identity registry"
+---
+
+<ResponseExample>
+```json Response (200)
+{
+  "params": {
+    "did_base_context": "string",
+    "did_implementation_context": "string",
+    "did_method_name": "string",
+    "ipfs_gateway": "string",
+    "ipfs_api": "string",
+    "rp_display_name": "string",
+    "rp_id": "string",
+    "rp_origin": "string",
+    "rp_icon": "string"
+  }
+}
+```
+
+```json Error
+{
+  "code": 0,
+  "message": "string",
+  "details": [
+    {
+      "@type": "string"
+    }
+  ]
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,57 @@
+syntax = "proto3";
+package sonrio.sonr.identity;
+
+import "sonr/identity/ssi.proto";
+import "sonr/identity/vc.proto";
+option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+
+message DidDocument {
+  repeated string context = 1; // optional
+  string iD = 2;
+  repeated string controller = 3; //optional
+  VerificationMethods verification_method = 4; // optional
+  VerificationRelationships authentication = 5; // optional
+  VerificationRelationships assertion_method = 6; // optional
+  VerificationRelationships capability_invocation = 7; // optional
+  VerificationRelationships capability_delegation = 8; // optional
+  VerificationRelationships key_agreement = 9; // optional
+  Services service = 10; // optional
+  repeated string also_known_as = 11; // optional
+  map<string, string> metadata = 12; // optional
+}
+
+message VerificationMethod {
+  string iD = 1;
+  KeyType type = 2;
+  string controller = 3;
+  map<string, string> public_key_jwk = 4; // optional
+  string public_key_multibase = 5; // optional
+  string blockchain_account_id = 6; // optional
+  WebauthnCredential webauthn_credential = 7; // optional
+}
+
+message VerificationRelationship {
+  VerificationMethod verification_method = 1;
+  string reference = 2;
+}
+
+
+message Service {
+  string iD = 1;
+  ServiceType type = 2;
+  string service_endpoint = 3;
+  map<string, string> service_endpoints = 4; // optional
+  map<string, string> metadata = 5; // optional
+}
+
+message Services {
+  repeated Service data = 1;
+}
+
+message VerificationMethods {
+    repeated VerificationMethod data = 1;
+}
+
+message VerificationRelationships {
+  repeated VerificationRelationship data = 1;
+}
