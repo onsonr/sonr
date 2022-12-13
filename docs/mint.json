@@ -33,6 +33,11 @@
       "url": "https://snr.la/dev-chat"
     },
     {
+      "name": "Block Explorer",
+      "icon": "magnifying-glass-dollar",
+      "url": "https://sonrscan.io"
+    },
+    {
       "name": "Research",
       "icon": "microscope",
       "url": "https://snr.la/research"
