@@ -65,7 +65,7 @@ func InitVault(path string) error {
 	return nil
 }
 
-func (v *Vault) GenerateWallet(id peer.ID, threshold int) (wallet.WalletShare, error) {
+func GenerateWallet(id peer.ID, threshold int) (wallet.WalletShare, error) {
 	var wg sync.WaitGroup
 	pl := pool.NewPool(0)
 	defer pl.TearDown()

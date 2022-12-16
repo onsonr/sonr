@@ -174,7 +174,9 @@ func (n *Node) Subscribe(topic string) (TopicHandler, error) {
 
 // Publish publishes a message to a topic
 func (n *Node) Publish(topic string, message []byte) error {
-	err := n.p2p.PubSub.Publish(topic, message)
+	ctx, cancel := context.WithCancel(n.ctx)
+	defer cancel()
+	err := n.api.PubSub().Publish(ctx, topic, message)
 	if err != nil {
 		return err
 	}

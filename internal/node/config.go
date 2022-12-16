@@ -108,8 +108,6 @@ func createTempRepo() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	cfg.Pubsub.Enabled = 1
-	cfg.Pubsub.Router = "gossipsub"
 	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-filestore
 	cfg.Experimental.FilestoreEnabled = true
 	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-urlstore
@@ -150,9 +148,14 @@ func createNode(ctx context.Context, repoPath string) (*core.IpfsNode, error) {
 	// Construct the node
 	nodeOptions := &core.BuildCfg{
 		Online:  true,
-		Routing: klibp2p.DHTOption, // This option sets the node to be a full DHT node (both fetching and storing DHT Records)
+		Routing: klibp2p.DHTServerOption, // This option sets the node to be a full DHT node (both fetching and storing DHT Records)
 		// Routing: libp2p.DHTClientOption, // This option sets the node to be a client DHT node (only fetching records)
 		Repo: repo,
+		ExtraOpts: map[string]bool{
+			"pubsub": true,
+
+			"ipnsps": true,
+		},
 	}
 
 	return core.NewNode(ctx, nodeOptions)
