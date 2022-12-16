@@ -4,32 +4,34 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/sonr-hq/sonr/internal/node"
+	"github.com/sonr-hq/sonr/pkg/wallet"
 	"github.com/sonr-io/multi-party-sig/pkg/ecdsa"
 	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/pkg/pool"
 	"github.com/sonr-io/multi-party-sig/pkg/protocol"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
-	"github.com/sonr-hq/sonr/internal/node"
 )
 
-func cmpKeygen(id party.ID, ids node.IDSlice, n *node.Channel, threshold int, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
+func CmpKeygen(id party.ID, ids party.IDSlice, topicHandler node.TopicHandler, threshold int, wg *sync.WaitGroup, pl *pool.Pool) (wallet.WalletShare, error) {
 	defer wg.Done()
-	h, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, id, ids.ToPartyIDSlice(), threshold, pl), nil)
+	h, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, id, ids, threshold, pl), []byte(topicHandler.Name()))
 	if err != nil {
 		return nil, err
 	}
 
-	handlerLoopChannel(id, h, n)
+	handlerLoopTopic(id, h, topicHandler)
 	r, err := h.Result()
 	if err != nil {
 		return nil, err
 	}
 	conf := r.(*cmp.Config)
-	return conf, nil
+	//topic := fmt.Sprintf("/sonr/v0.2.0/mpc/sign/%s-%s", w.Config.ID, searchFirstNotId(w.Config.PartyIDs(), w.Config.ID))
+	return &mpcConfigWalletImpl{conf}, nil
 }
 
-// func cmpRefresh(c *cmp.Config, n *node.Channel, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
+// func cmpRefresh(c *cmp.Config, topicHandler node.TopicHandler, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
 
 // 	handlerLoopChannel(c.ID, h, n)
 // 	r, err := h.Result()
@@ -40,13 +42,13 @@ func cmpKeygen(id party.ID, ids node.IDSlice, n *node.Channel, threshold int, wg
 // 	return conf, nil
 // }
 
-func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *node.Channel, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
+func CmpSign(c *cmp.Config, m []byte, signers party.IDSlice, topicHandler node.TopicHandler, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
 	defer wg.Done()
-	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
+	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), []byte(topicHandler.Name()))
 	if err != nil {
 		return nil, err
 	}
-	handlerLoopChannel(c.ID, h, n)
+	handlerLoopTopic(c.ID, h, topicHandler)
 
 	signResult, err := h.Result()
 	if err != nil {
@@ -59,13 +61,13 @@ func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n *node.Channel, wg
 	return signature, nil
 }
 
-func cmpPreSign(c *cmp.Config, signers party.IDSlice, n *node.Channel, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.PreSignature, error) {
+func CmpPreSign(c *cmp.Config, signers party.IDSlice, topicHandler node.TopicHandler, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.PreSignature, error) {
 	defer wg.Done()
-	h, err := protocol.NewMultiHandler(cmp.Presign(c, signers, pl), nil)
+	h, err := protocol.NewMultiHandler(cmp.Presign(c, signers, pl), []byte(topicHandler.Name()))
 	if err != nil {
 		return nil, err
 	}
-	handlerLoopChannel(c.ID, h, n)
+	handlerLoopTopic(c.ID, h, topicHandler)
 	signResult, err := h.Result()
 	if err != nil {
 		return nil, err
@@ -77,13 +79,13 @@ func cmpPreSign(c *cmp.Config, signers party.IDSlice, n *node.Channel, wg *sync.
 	return preSignature, nil
 }
 
-func cmpPreSignOnline(c *cmp.Config, preSignature *ecdsa.PreSignature, m []byte, n *node.Channel, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
+func CmpPreSignOnline(c *cmp.Config, preSignature *ecdsa.PreSignature, m []byte, topicHandler node.TopicHandler, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
 	defer wg.Done()
-	h, err := protocol.NewMultiHandler(cmp.PresignOnline(c, preSignature, m, pl), nil)
+	h, err := protocol.NewMultiHandler(cmp.PresignOnline(c, preSignature, m, pl), []byte(topicHandler.Name()))
 	if err != nil {
 		return nil, err
 	}
-	handlerLoopChannel(c.ID, h, n)
+	handlerLoopTopic(c.ID, h, topicHandler)
 
 	signResult, err := h.Result()
 	if err != nil {

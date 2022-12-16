@@ -1,16 +1,24 @@
 package node
 
 import (
-	"crypto/rand"
-	"time"
+	"context"
+	"fmt"
+	"io"
+	"log"
+	"os"
+	"path/filepath"
+	"sync"
 
-	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-libp2p/core/crypto"
+	files "github.com/ipfs/go-ipfs-files"
+	icore "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/ipfs/kubo/config"
+	"github.com/ipfs/kubo/core"
+	"github.com/ipfs/kubo/core/coreapi"
+	klibp2p "github.com/ipfs/kubo/core/node/libp2p"
+	"github.com/ipfs/kubo/plugin/loader"
+	"github.com/ipfs/kubo/repo/fsrepo"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/libp2p/go-libp2p/p2p/net/connmgr"
-	"github.com/multiformats/go-multiaddr"
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonr-hq/sonr/core/common"
 )
 
@@ -19,31 +27,8 @@ type NodeOption func(*NodeConfig) error
 
 // NodeConfig is the configuration for the node that automatically configures itself based on if its a Motor
 type NodeConfig struct {
-	// privateKey for Identity
-	privateKey crypto.PrivKey
-
-	BootstrapPeers []peer.AddrInfo
-
-	// EnableRelay for the node to enable relay
-	EnableAutoRelay bool
-
-	// EnableMDNS for the node to enable mdns
-	EnableMDNS bool
-
-	// IPFS API URL for Shell Access
-	IPFSAPIURL string
-
-	// IPFS Gateway URL for Shell Access
-	IPFSGatewayURL string
-
-	// ConnManager for the node
-	ConnManager *connmgr.BasicConnMgr
-
-	// Sonr Rendevouz Point
-	Rendezvous string
-
-	// Default Stream Handlers for the node
-	DefaultStreamHandlers map[protocol.ID]network.StreamHandler
+	// BootstrapMultiaddrs is the list of multiaddresses to bootstrap to
+	BootstrapMultiaddrs []string
 
 	// MotorCallback is the callback for the motor
 	MotorCallback common.MotorCallback
@@ -51,147 +36,40 @@ type NodeConfig struct {
 
 // defaultNodeConfig returns the default configuration for the node
 func defaultNodeConfig() *NodeConfig {
-	// Create Connection Manager
-	connmgr, _ := connmgr.NewConnManager(
-		10, // Lowwater
-		20, // HighWater,
-		connmgr.WithGracePeriod(time.Second*4),
-	)
-
-	// Define the default bootstrappers
-	bootstrapAddrStrs := []string{
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
-		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-	}
-
-	// Create Bootstrapper List
-	var bootstrappers []multiaddr.Multiaddr
-	for _, s := range bootstrapAddrStrs {
-		ma, err := multiaddr.NewMultiaddr(s)
-		if err != nil {
-			continue
-		}
-		bootstrappers = append(bootstrappers, ma)
-	}
-
-	// Create Address Info List
-	ds := make([]peer.AddrInfo, 0, len(bootstrappers))
-	for i := range bootstrappers {
-		info, err := peer.AddrInfoFromP2pAddr(bootstrappers[i])
-		if err != nil {
-			continue
-		}
-		ds = append(ds, *info)
-	}
-
 	return &NodeConfig{
-		privateKey:            nil,
-		BootstrapPeers:        ds,
-		EnableAutoRelay:       true,
-		EnableMDNS:            false,
-		IPFSAPIURL:            "https://api.ipfs.sonr.ws",
-		IPFSGatewayURL:        "https://ipfs.sonr.ws",
-		ConnManager:           connmgr,
-		Rendezvous:            "sonr",
-		DefaultStreamHandlers: map[protocol.ID]network.StreamHandler{
-			// "/sonr/1.0.0/message": handleMessageStream,
-			// "/sonr/1.0.0/identity": handleIdentityStream,
-			// "/sonr/1.0.0/did":      handleDIDStream,
+		BootstrapMultiaddrs: []string{
+			// IPFS Bootstrapper nodes.
+			"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+			"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+			"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+			"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+
+			// IPFS Cluster Pinning nodes
+			// "/ip4/138.201.67.219/tcp/4001/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
+			// "/ip4/138.201.67.219/udp/4001/quic/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
+			// "/ip4/138.201.67.220/tcp/4001/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
+			// "/ip4/138.201.67.220/udp/4001/quic/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
+			// "/ip4/138.201.68.74/tcp/4001/p2p/QmdnXwLrC8p1ueiq2Qya8joNvk3TVVDAut7PrikmZwubtR",
+			// "/ip4/138.201.68.74/udp/4001/quic/p2p/QmdnXwLrC8p1ueiq2Qya8joNvk3TVVDAut7PrikmZwubtR",
+			// "/ip4/94.130.135.167/tcp/4001/p2p/QmUEMvxS2e7iDrereVYc5SWPauXPyNwxcy9BXZrC1QTcHE",
+			// "/ip4/94.130.135.167/udp/4001/quic/p2p/QmUEMvxS2e7iDrereVYc5SWPauXPyNwxcy9BXZrC1QTcHE",
+
+			// You can add more nodes here, for example, another IPFS node you might have running locally, mine was:
+			// "/ip4/127.0.0.1/tcp/4010/p2p/QmZp2fhDLxjYue2RiUvLwT9MWdnbDxam32qYFnGmxZDh5L",
+			// "/ip4/127.0.0.1/udp/4010/quic/p2p/QmZp2fhDLxjYue2RiUvLwT9MWdnbDxam32qYFnGmxZDh5L",
 		},
 	}
 }
 
-// WithPrivateKey sets the PrivateKey for the node
-func WithPrivateKey(key crypto.PrivKey) NodeOption {
+// AddBootstrappers adds additional nodes to start initial connections with
+func AddBootstrappers(bootstrappers []string) NodeOption {
 	return func(c *NodeConfig) error {
-		c.privateKey = key
+		c.BootstrapMultiaddrs = append(c.BootstrapMultiaddrs, bootstrappers...)
 		return nil
 	}
 }
 
-// WithPathToPrivateKey sets the PathToPrivateKey for the node
-func WithPathToPrivateKey(path string) NodeOption {
-	return func(c *NodeConfig) error {
-		privKey, err := common.LoadPrivKeyFromJsonPath(path)
-		if err != nil {
-			return err
-		}
-
-		c.privateKey = privKey
-		return nil
-	}
-}
-
-// WithEnableRelay sets the EnableRelay for the node
-func WithEnableRelay(enable bool) NodeOption {
-	return func(c *NodeConfig) error {
-		c.EnableAutoRelay = enable
-		return nil
-	}
-}
-
-// WithEnableMDNS sets the EnableMDNS for the node
-func WithEnableMDNS(enable bool) NodeOption {
-	return func(c *NodeConfig) error {
-		c.EnableMDNS = enable
-		return nil
-	}
-}
-
-// WithIPFSAPIURL sets the IPFSAPIURL for the node
-func WithIPFSAPIURL(url string) NodeOption {
-	return func(c *NodeConfig) error {
-		c.IPFSAPIURL = url
-		return nil
-	}
-}
-
-// WithIPFSGatewayURL sets the IPFSGatewayURL for the node
-func WithIPFSGatewayURL(url string) NodeOption {
-	return func(c *NodeConfig) error {
-		c.IPFSGatewayURL = url
-		return nil
-	}
-}
-
-// WithConnMgrLowWater sets the ConnMgrLowWater for the node
-func WithConnMgrOptions(low int, high int, ttl time.Duration) NodeOption {
-	return func(c *NodeConfig) error {
-		// Create Connection Manager
-		connmgr, err := connmgr.NewConnManager(
-			100, // Lowwater
-			400, // HighWater,
-			connmgr.WithGracePeriod(time.Minute),
-		)
-		if err != nil {
-			return err
-		}
-		c.ConnManager = connmgr
-		return nil
-	}
-}
-
-// WithRendezvous sets the Rendezvous for the node
-func WithRendezvous(rendezvous string) NodeOption {
-	return func(c *NodeConfig) error {
-		c.Rendezvous = rendezvous
-		return nil
-	}
-}
-
-// WithDefaultStreamHandlers sets the DefaultStreamHandlers for the node
-func WithDefaultStreamHandlers(handlers map[protocol.ID]network.StreamHandler) NodeOption {
-	return func(c *NodeConfig) error {
-		c.DefaultStreamHandlers = handlers
-		return nil
-	}
-}
-
-// WithMotorCallback sets the MotorCallback for the node
+// WithMotorCallback sets the callback for the motor
 func WithMotorCallback(callback common.MotorCallback) NodeOption {
 	return func(c *NodeConfig) error {
 		c.MotorCallback = callback
@@ -199,30 +77,159 @@ func WithMotorCallback(callback common.MotorCallback) NodeOption {
 	}
 }
 
-// GetPrivateKey returns the PrivateKey for the node
-func (c *NodeConfig) GetPrivateKey() crypto.PrivKey {
-	if c.privateKey != nil {
-		return c.privateKey
+/// ------ Setting up the IPFS Repo
+func setupPlugins(externalPluginsPath string) error {
+	// Load any external plugins if available on externalPluginsPath
+	plugins, err := loader.NewPluginLoader(filepath.Join(externalPluginsPath, "plugins"))
+	if err != nil {
+		return fmt.Errorf("error loading plugins: %s", err)
 	}
-	privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
-	if err == nil {
-		return privKey
+
+	// Load preloaded and external plugins
+	if err := plugins.Initialize(); err != nil {
+		return fmt.Errorf("error initializing plugins: %s", err)
 	}
+
+	if err := plugins.Inject(); err != nil {
+		return fmt.Errorf("error initializing plugins: %s", err)
+	}
+
 	return nil
 }
 
-// ToLibp2pOptions converts the NodeConfig to libp2p options
-func (c *NodeConfig) ToLibp2pOptions(options ...libp2p.Option) []libp2p.Option {
-	opts := []libp2p.Option{
-		libp2p.Identity(c.GetPrivateKey()),
-		libp2p.ConnectionManager(c.ConnManager),
-		libp2p.DefaultListenAddrs,
+func createTempRepo() (string, error) {
+	repoPath, err := os.MkdirTemp("", "ipfs-repo")
+	if err != nil {
+		return "", fmt.Errorf("failed to get temp dir: %s", err)
 	}
-	if c.EnableAutoRelay {
-		opts = append(opts, libp2p.EnableAutoRelay())
+
+	// Create a config with default options and a 2048 bit key
+	cfg, err := config.Init(io.Discard, 2048)
+	if err != nil {
+		return "", err
 	}
-	if c.EnableMDNS {
-		opts = append(opts, libp2p.EnableNATService())
+	cfg.Pubsub.Enabled = 1
+	cfg.Pubsub.Router = "gossipsub"
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-filestore
+	cfg.Experimental.FilestoreEnabled = true
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-urlstore
+	cfg.Experimental.UrlstoreEnabled = true
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-p2p
+	cfg.Experimental.Libp2pStreamMounting = true
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#p2p-http-proxy
+	cfg.Experimental.P2pHttpProxy = true
+
+	// Create the repo with the config
+	err = fsrepo.Init(repoPath, cfg)
+	if err != nil {
+		return "", fmt.Errorf("failed to init ephemeral node: %s", err)
 	}
-	return append(opts, options...)
+
+	return repoPath, nil
+}
+
+/// ------ Spawning the node
+
+// Creates an IPFS node and returns its coreAPI
+func createNode(ctx context.Context, repoPath string) (*core.IpfsNode, error) {
+	// Open the repo
+	repo, err := fsrepo.Open(repoPath)
+	if err != nil {
+		return nil, err
+	}
+
+	err = repo.SetConfigKey("Pubsub.Enabled", true)
+	if err != nil {
+		return nil, err
+	}
+	err = repo.SetConfigKey("Pubsub.Router", "gossipsub")
+	if err != nil {
+		return nil, err
+	}
+
+	// Construct the node
+	nodeOptions := &core.BuildCfg{
+		Online:  true,
+		Routing: klibp2p.DHTOption, // This option sets the node to be a full DHT node (both fetching and storing DHT Records)
+		// Routing: libp2p.DHTClientOption, // This option sets the node to be a client DHT node (only fetching records)
+		Repo: repo,
+	}
+
+	return core.NewNode(ctx, nodeOptions)
+}
+
+var loadPluginsOnce sync.Once
+
+// Spawns a node to be used just for this run (i.e. creates a tmp repo)
+func spawnEphemeral(ctx context.Context) (icore.CoreAPI, *core.IpfsNode, error) {
+	var onceErr error
+	loadPluginsOnce.Do(func() {
+		onceErr = setupPlugins("")
+	})
+	if onceErr != nil {
+		return nil, nil, onceErr
+	}
+
+	// Create a Temporary Repo
+	repoPath, err := createTempRepo()
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create temp repo: %s", err)
+	}
+
+	node, err := createNode(ctx, repoPath)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	api, err := coreapi.NewCoreAPI(node)
+
+	return api, node, err
+}
+
+func connectToPeers(ctx context.Context, ipfs icore.CoreAPI, peers []string) error {
+	var wg sync.WaitGroup
+	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
+	for _, addrStr := range peers {
+		addr, err := ma.NewMultiaddr(addrStr)
+		if err != nil {
+			return err
+		}
+		pii, err := peer.AddrInfoFromP2pAddr(addr)
+		if err != nil {
+			return err
+		}
+		pi, ok := peerInfos[pii.ID]
+		if !ok {
+			pi = &peer.AddrInfo{ID: pii.ID}
+			peerInfos[pi.ID] = pi
+		}
+		pi.Addrs = append(pi.Addrs, pii.Addrs...)
+	}
+
+	wg.Add(len(peerInfos))
+	for _, peerInfo := range peerInfos {
+		go func(peerInfo *peer.AddrInfo) {
+			defer wg.Done()
+			err := ipfs.Swarm().Connect(ctx, *peerInfo)
+			if err != nil {
+				log.Printf("failed to connect to %s: %s", peerInfo.ID, err)
+			}
+		}(peerInfo)
+	}
+	wg.Wait()
+	return nil
+}
+
+func getUnixfsNode(path string) (files.Node, error) {
+	st, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+
+	f, err := files.NewSerialFile(path, false, st)
+	if err != nil {
+		return nil, err
+	}
+
+	return f, nil
 }

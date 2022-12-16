@@ -6,33 +6,34 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 )
 
-// SignTx constructs a TxRaw from the given message and signs it.
-func SignTxWithWallet(w MPCWallet, typeUrl string, msgs ...sdk.Msg) ([]byte, error) {
-	txb, err := BuildTx(w, typeUrl, msgs...)
+// GenTxForWalletSig constructs a Tx with all required info for a wallet to sign.
+func GenTxForWalletSig(w WalletShare, msgs ...sdk.Msg) ([]byte, error) {
+	txb, err := buildTx(msgs...)
 	if err != nil {
 		return nil, err
 	}
 
-	ai, err := GetAuthInfoSingle(w, 2)
+	ai, err := getAuthInfoSingle(w, 2)
 	if err != nil {
 		return nil, err
 	}
 
-	sigDocBz, err := GetSignDocBytes(ai, txb)
+	// TODO
+	_, err = getSignDocBytes(ai, txb)
 	if err != nil {
 		return nil, err
 	}
 
-	sig, err := w.Sign(sigDocBz)
-	if err != nil {
-		return nil, err
-	}
+	// sig, err := w.Sign(sigDocBz)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	return CreateRawTxBytes(txb, sig, ai)
+	return CreateRawTxBytes(txb, nil, ai)
 }
 
-// BuildTx builds a transaction from the given inputs.
-func BuildTx(w MPCWallet, typeUrl string, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
+// buildTx builds a transaction from the given inputs.
+func buildTx(msgs ...sdk.Msg) (*txtypes.TxBody, error) {
 	// func BuildTx(w *crypto.MPCWallet, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
 	// Create Any for each message
 	anyMsgs := make([]*codectypes.Any, len(msgs))
@@ -41,7 +42,6 @@ func BuildTx(w MPCWallet, typeUrl string, msgs ...sdk.Msg) (*txtypes.TxBody, err
 		if err != nil {
 			return nil, err
 		}
-		msg.TypeUrl = typeUrl
 		anyMsgs[i] = msg
 	}
 
@@ -82,7 +82,7 @@ func CreateRawTxBytes(txBody *txtypes.TxBody, sig []byte, authInfo *txtypes.Auth
 }
 
 // getAuthInfoSingle returns the authentication information for the given message.
-func GetAuthInfoSingle(w MPCWallet, gas int) (*txtypes.AuthInfo, error) {
+func getAuthInfoSingle(w WalletShare, gas int) (*txtypes.AuthInfo, error) {
 	// Get PublicKey
 	pubKey, err := w.PublicKey()
 	if err != nil {
@@ -119,7 +119,7 @@ func GetAuthInfoSingle(w MPCWallet, gas int) (*txtypes.AuthInfo, error) {
 	return &authInfo, nil
 }
 
-func GetSignDocBytes(authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) ([]byte, error) {
+func getSignDocBytes(authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) ([]byte, error) {
 	// Serialize the transaction body.
 	txBodyBz, err := txBody.Marshal()
 	if err != nil {
