@@ -51,16 +51,19 @@ type Vault struct {
 
 func InitVault(path string) error {
 	ctx := context.Background()
-	key, err := loadPrivKeyFromJsonPath(path)
+	// key, err := loadPrivKeyFromJsonPath(path)
+	// if err != nil {
+	// 	return err
+	// }
+	n, err := node.New(ctx)
 	if err != nil {
 		return err
 	}
-	n, err := node.New(ctx)
 	v = &Vault{
 		nodeKeyPath: path,
-		nodePrivKey: key,
-		p2pNode:     n,
-		ctx:         ctx,
+		//		nodePrivKey: key,
+		p2pNode: n,
+		ctx:     ctx,
 	}
 	return nil
 }

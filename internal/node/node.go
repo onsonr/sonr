@@ -41,6 +41,7 @@ func New(ctx context.Context, options ...NodeOption) (*Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	// nodeA.PeerHost.SetStreamHandler("/sonr")
 
 	// Create the node
 	n := &Node{
@@ -182,3 +183,13 @@ func (n *Node) Publish(topic string, message []byte) error {
 	}
 	return nil
 }
+
+// // Send sends a message to a peer. This is by using the p2p node to create a new stream
+// func (n *Node) Send(peerID peer.ID, message []byte) error {
+// 	ctx, cancel := context.WithCancel(n.ctx)
+// 	defer cancel()
+// 	stream, err := n.p2p.PeerHost.NewStream(ctx, peerID, "/sonr/1.0.0")
+// 	if err != nil {
+// 		return
+// 	}
+// }

@@ -12,23 +12,20 @@ import (
 	"github.com/sonr-io/multi-party-sig/pkg/pool"
 	"github.com/sonr-io/multi-party-sig/pkg/protocol"
 	"github.com/sonr-io/multi-party-sig/protocols/cmp"
+	"github.com/sonr-io/multi-party-sig/protocols/doerner"
 )
 
 func CmpKeygen(id party.ID, ids party.IDSlice, topicHandler node.TopicHandler, threshold int, wg *sync.WaitGroup, pl *pool.Pool) (wallet.WalletShare, error) {
-	defer wg.Done()
-	h, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, id, ids, threshold, pl), []byte(topicHandler.Name()))
+	tph, err := protocol.NewTwoPartyHandler(doerner.Keygen(curve.Secp256k1{}, false, id, ids[0], pl), []byte(topicHandler.Name()), true)
 	if err != nil {
 		return nil, err
 	}
-
-	handlerLoopTopic(id, h, topicHandler)
-	r, err := h.Result()
+	handlerLoopTopic(id, tph, topicHandler)
+	r, err := tph.Result()
 	if err != nil {
 		return nil, err
 	}
-	conf := r.(*cmp.Config)
-	//topic := fmt.Sprintf("/sonr/v0.2.0/mpc/sign/%s-%s", w.Config.ID, searchFirstNotId(w.Config.PartyIDs(), w.Config.ID))
-	return &mpcConfigWalletImpl{conf}, nil
+	return &mpcConfigWalletImpl{r.(*cmp.Config)}, nil
 }
 
 // func cmpRefresh(c *cmp.Config, topicHandler node.TopicHandler, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
