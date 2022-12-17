@@ -14,36 +14,6 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
-func (w *Wallet) Equals(other crypto.Key) bool {
-	wbz, err := w.Raw()
-	if err != nil {
-		return false
-	}
-	obz, err := other.Raw()
-	if err != nil {
-		return false
-	}
-	return string(wbz) == string(obz)
-}
-
-// Returns the Secp256k1 public key of the given party.
-func (w *Wallet) PublicKey() ([]byte, error) {
-	p := w.PublicPoint().(*curve.Secp256k1Point)
-	buf, err := p.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-	// Check length of the public key.
-	if len(buf) != 33 {
-		return nil, fmt.Errorf("invalid public key length")
-	}
-	return buf, nil
-}
-
-func (w *Wallet) GetPublic() crypto.PubKey {
-	return makePublicKey(w.PublicPoint())
-}
-
 type PublicKey struct {
 	// contains filtered or unexported fields
 	p curve.Point

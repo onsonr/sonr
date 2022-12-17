@@ -9,7 +9,7 @@ import (
 
 type MotorInstance struct {
 	// Node is the libp2p host
-	Node node.Node
+	Node *node.Node
 	ctx  context.Context
 	//
 }

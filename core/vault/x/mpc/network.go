@@ -4,60 +4,44 @@ import (
 	"context"
 
 	"github.com/kataras/golog"
-	ps "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-hq/sonr/internal/node"
 	"github.com/sonr-io/multi-party-sig/pkg/party"
 	"github.com/sonr-io/multi-party-sig/pkg/protocol"
-	"github.com/sonr-hq/sonr/internal/node"
 )
 
-func handlerLoopTopic(id party.ID, h protocol.Handler, topic *ps.Topic) {
+func handlerLoopTopic(id party.ID, mpc protocol.Handler, ps node.TopicHandler) {
 	ctx := context.Background()
-	sub, err := topic.Subscribe()
-	if err != nil {
-		golog.Warnf("error: %v", err) // nolint: errcheck
-		return
-	}
-	go func() {
-		for {
-			msg, err := sub.Next(ctx)
-			if err != nil {
-				return
-			}
-			var m protocol.Message
-			err = m.UnmarshalBinary(msg.Data)
-			checkErr(err)
-			h.Accept(&m)
-		}
-	}()
-}
-
-func handlerLoopChannel(id party.ID, h protocol.Handler, channel *node.Channel) {
 	for {
 		select {
+		case msg := <-ps.Messages():
+			var m protocol.Message
+			err := m.UnmarshalBinary(msg)
+			checkErr(ctx, err)
+			if mpc.CanAccept(&m) {
+				mpc.Accept(&m)
+			} else {
+				mpc.Stop()
+			}
 
-		// outgoing messages
-		case msg, ok := <-h.Listen():
+		case msg, ok := <-mpc.Listen():
 			if !ok {
-				channel.Close()
-				// the channel was closed, indicating that the protocol is done executing.
+				mpc.Stop()
 				return
 			}
-			buf, err := msg.MarshalBinary()
-			checkErr(err)
-			go channel.Send(buf)
 
-			// incoming messages
-		case msg := <-channel.NextMessage():
-			var m protocol.Message
-			err := m.UnmarshalBinary(msg.Data)
-			checkErr(err)
-			h.Accept(&m)
+			buf, err := msg.MarshalBinary()
+			checkErr(ctx, err)
+			err = ps.Publish(buf)
+			checkErr(ctx, err)
+		case <-ctx.Done():
+			return
 		}
 	}
 }
 
-func checkErr(err error) {
+func checkErr(ctx context.Context, err error) {
 	if err != nil {
 		golog.Warnf("error: %v", err) // nolint: errcheck
+		ctx.Done()
 	}
 }
