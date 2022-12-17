@@ -15,9 +15,10 @@ require (
 	github.com/ipfs/go-ipfs-files v0.2.0
 	github.com/ipfs/interface-go-ipfs-core v0.8.1
 	github.com/ipfs/kubo v0.17.0
-	github.com/kataras/golog v0.1.8
 	github.com/lestrrat-go/jwx/v2 v2.0.7
 	github.com/libp2p/go-libp2p v0.23.4
+	github.com/libp2p/go-libp2p-core v0.20.1
+	github.com/libp2p/go-msgio v0.2.0
 	github.com/marstr/guid v1.1.0
 	github.com/multiformats/go-multiaddr v0.7.0
 	github.com/ockam-network/did v0.1.3
@@ -230,7 +231,6 @@ require (
 	github.com/jpillora/chisel v1.7.7 // indirect
 	github.com/jpillora/requestlog v1.0.0 // indirect
 	github.com/jpillora/sizestr v1.0.0 // indirect
-	github.com/kataras/pio v0.0.11 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/klauspost/compress v1.15.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.1.2 // indirect
@@ -246,7 +246,6 @@ require (
 	github.com/libp2p/go-doh-resolver v0.4.0 // indirect
 	github.com/libp2p/go-flow-metrics v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-asn-util v0.2.0 // indirect
-	github.com/libp2p/go-libp2p-core v0.20.1 // indirect
 	github.com/libp2p/go-libp2p-kad-dht v0.18.0 // indirect
 	github.com/libp2p/go-libp2p-kbucket v0.4.7 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.8.1 // indirect
@@ -255,7 +254,6 @@ require (
 	github.com/libp2p/go-libp2p-routing-helpers v0.4.0 // indirect
 	github.com/libp2p/go-libp2p-xor v0.1.0 // indirect
 	github.com/libp2p/go-mplex v0.7.0 // indirect
-	github.com/libp2p/go-msgio v0.2.0 // indirect
 	github.com/libp2p/go-nat v0.1.0 // indirect
 	github.com/libp2p/go-netroute v0.2.1 // indirect
 	github.com/libp2p/go-openssl v0.1.0 // indirect
