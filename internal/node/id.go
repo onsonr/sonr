@@ -7,8 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonr-io/multi-party-sig/pkg/math/curve"
-	"github.com/sonr-io/multi-party-sig/pkg/party"
+	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
 type Address string

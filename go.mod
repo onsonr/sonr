@@ -23,11 +23,11 @@ require (
 	github.com/ockam-network/did v0.1.3
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/multi-party-sig v0.7.0
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
+	github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21
 	github.com/tendermint/tendermint v0.34.22
 	github.com/tendermint/tm-db v0.6.7
 	golang.org/x/crypto v0.1.0
@@ -91,7 +91,7 @@ require (
 	github.com/cosmos/ledger-go v0.9.2 // indirect
 	github.com/crackcomm/go-gitignore v0.0.0-20170627025303-887ab5e44cc3 // indirect
 	github.com/creachadair/taskgroup v0.3.2 // indirect
-	github.com/cronokirby/saferith v0.33.0 // indirect
+	github.com/cronokirby/safenum v0.29.0 // indirect
 	github.com/cskr/pubsub v1.0.2 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -396,4 +396,5 @@ require (
 replace (
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+	github.com/taurusgroup/multi-party-sig => github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21
 )

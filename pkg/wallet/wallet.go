@@ -2,8 +2,8 @@ package wallet
 
 import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/sonr-hq/sonr/internal/node"
-	"github.com/sonr-io/multi-party-sig/pkg/party"
+	// "github.com/sonr-hq/sonr/internal/node"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
 // WalletShare is a wallet that can be used to sign messages using ECDSA based on the MPC protocol.
@@ -24,7 +24,7 @@ type WalletShare interface {
 	GroupIDs() []party.ID
 
 	// Sign begins a round of the MPC protocol to sign the given message.
-	Sign(msg []byte, th node.TopicHandler) ([]byte, error)
+	// Sign(msg []byte, th node.TopicHandler) ([]byte, error)
 
 	// Unmarshal deserializes the given byte slice into a cmp.Config
 	Unmarshal([]byte) error

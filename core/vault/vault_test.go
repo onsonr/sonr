@@ -15,13 +15,13 @@ func TestCreateWallet(t *testing.T) {
 	}
 
 	// Create a new Node and start it
-	n, err := node.New(context.Background())
+	n, err := node.New(context.TODO())
 	if err != nil {
 		t.Error(err)
 	}
 
 	// Generate a new wallet
-	w, err := GenerateWallet(n.ID(), 1)
+	w, err := GenerateWallet(n.ID())
 	if err != nil {
 		t.Error(err)
 	}

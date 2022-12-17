@@ -10,7 +10,10 @@ import (
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
 	"github.com/ipfs/kubo/core"
+	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/protocol"
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-hq/sonr/core/common"
 )
 
@@ -185,11 +188,23 @@ func (n *Node) Publish(topic string, message []byte) error {
 }
 
 // // Send sends a message to a peer. This is by using the p2p node to create a new stream
-// func (n *Node) Send(peerID peer.ID, message []byte) error {
-// 	ctx, cancel := context.WithCancel(n.ctx)
-// 	defer cancel()
-// 	stream, err := n.p2p.PeerHost.NewStream(ctx, peerID, "/sonr/1.0.0")
-// 	if err != nil {
-// 		return
-// 	}
-// }
+func (n *Node) Send(peerID string, message []byte, pid protocol.ID) error {
+	ctx, cancel := context.WithCancel(n.ctx)
+	defer cancel()
+	stream, err := n.p2p.PeerHost.NewStream(ctx, peer.ID(peerID), pid)
+	if err != nil {
+		return err
+	}
+
+	wr := msgio.NewWriter(stream)
+	err = wr.WriteMsg(message)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// HandleProtocol Sets a Stream Handler for the underlying PeerHost
+func (n *Node) HandleProtocol(pid protocol.ID, handler network.StreamHandler) {
+	n.p2p.PeerHost.SetStreamHandler(pid, handler)
+}
