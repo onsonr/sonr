@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sonr-hq/sonr/internal/node"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/stretchr/testify/assert"
 )
 

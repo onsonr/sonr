@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/shengdoushi/base58"
-	"github.com/sonr-hq/sonr/internal/crypto/jwx"
+	"github.com/sonr-hq/sonr/pkg/crypto/jwx"
 	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
 	"github.com/sonr-hq/sonr/x/identity/types/ssi"
 )

@@ -8,7 +8,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-hq/sonr/internal/node"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	mpc "github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )

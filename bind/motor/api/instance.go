@@ -4,7 +4,7 @@ import (
 	"context"
 
 	mt "github.com/sonr-hq/sonr/bind/motor/types/v1"
-	"github.com/sonr-hq/sonr/internal/node"
+	"github.com/sonr-hq/sonr/pkg/node"
 )
 
 type MotorInstance struct {

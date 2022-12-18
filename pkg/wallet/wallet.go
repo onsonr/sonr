@@ -2,7 +2,7 @@ package wallet
 
 import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	// "github.com/sonr-hq/sonr/internal/node"
+	// "github.com/sonr-hq/sonr/pkg/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )

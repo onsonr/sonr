@@ -8,7 +8,7 @@ import (
 	crypto "github.com/libp2p/go-libp2p/core/crypto"
 	peer "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/core/mpc"
-	"github.com/sonr-hq/sonr/internal/node"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/pkg/wallet"
 	tm_crypto "github.com/tendermint/tendermint/crypto"
 	tm_json "github.com/tendermint/tendermint/libs/json"
