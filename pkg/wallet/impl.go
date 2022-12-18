@@ -13,7 +13,6 @@ import (
 
 func NewWalletImpl(c *cmp.Config) WalletShare {
 	return &mpcConfigWalletImpl{Config: c}
-
 }
 
 type mpcConfigWalletImpl struct {
@@ -32,6 +31,11 @@ func (w *mpcConfigWalletImpl) Address() string {
 		return ""
 	}
 	return str
+}
+
+// MPCConfig returns the *cmp.Config of this wallet.
+func (w *mpcConfigWalletImpl) MPCConfig() *cmp.Config {
+	return w.Config
 }
 
 // Marshal serializes the cmp.Config into a byte slice for local storage

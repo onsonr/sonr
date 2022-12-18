@@ -1,9 +1,11 @@
 package mpc
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-hq/sonr/internal/node"
@@ -22,6 +24,7 @@ import (
 // from the network.
 // @property {int} poolSize - The number of goroutines that will be used to handle incoming messages.
 type Session struct {
+	ctx              context.Context
 	id               party.ID
 	peers            []party.ID
 	doneChan         chan bool
@@ -29,7 +32,8 @@ type Session struct {
 	msgInChan        chan *mpc.Message
 	selfNode         *node.Node
 	protocolId       protocol.ID
-	topicHandler     node.TopicHandler
+	topic            *pubsub.Topic
+	subscription     *pubsub.Subscription
 	poolSize         int
 	currentRound     int
 	finalRoundNumber int
@@ -38,14 +42,25 @@ type Session struct {
 // It creates a new session object, which is a struct that contains the node, the id of the party, the
 // ids of the other parties, the size of the pool, and a channel for incoming messages
 func NewSession(n *node.Node, id party.ID, ids []party.ID, pid protocol.ID) (*Session, error) {
-	th, err := n.Subscribe(fmt.Sprintf("/sonr/v0.2.0/mpc/keygen"))
+	ctx := context.Background()
+	ps, err := pubsub.NewFloodSub(ctx, n.PeerHost)
+	if err != nil {
+		return nil, err
+	}
+	t, err := ps.Join(fmt.Sprintf("/sonr/v0.2.0/mpc/keygen"))
+	if err != nil {
+		return nil, err
+	}
+	sub, err := t.Subscribe()
 	if err != nil {
 		return nil, err
 	}
 
 	s := &Session{
+		ctx:          ctx,
 		peers:        ids,
-		topicHandler: th,
+		topic:        t,
+		subscription: sub,
 		id:           id,
 		protocolId:   pid,
 		selfNode:     n,
@@ -91,12 +106,14 @@ func (s *Session) RunProtocol(create mpc.StartFunc, sessionID []byte) (interface
 				s.doneChan <- true
 				return handler.Result()
 			}
+			continue
 		case msgI := <-s.msgInChan:
 			fmt.Println("Message in number: ", msgI.RoundNumber)
 			if !handler.CanAccept(msgI) {
 				return handler.Result()
 			}
 			handler.Accept(msgI)
+			continue
 		}
 	}
 }
@@ -134,19 +151,19 @@ func (s *Session) handlePrivateShardStream(stream network.Stream) {
 // A goroutine that is listening for messages on the topic handler.
 func (s *Session) handleTopicSubscription() {
 	for {
-		select {
-		case msgIn := <-s.topicHandler.Messages():
-			msg := &mpc.Message{}
-			err := msg.UnmarshalBinary(msgIn)
-			if err != nil {
-				panic(err)
-			}
-			if msg.To != s.id {
-				continue
-			}
-			fmt.Println("Received Broadcast Message")
-			s.msgInChan <- msg
+		msg, err := s.subscription.Next(s.ctx)
+		if err != nil {
+			return
 		}
+		msgIn := &mpc.Message{}
+		err = msgIn.UnmarshalBinary(msg.Data)
+		if err != nil {
+			panic(err)
+		}
+		if msgIn.To != s.id {
+			continue
+		}
+		s.msgInChan <- msgIn
 	}
 }
 
@@ -158,7 +175,7 @@ func (s *Session) publishOutMsg(msgOut *mpc.Message) {
 		return
 	}
 	if msgOut.Broadcast {
-		err = s.topicHandler.Publish(bz)
+		err = s.topic.Publish(s.ctx, bz)
 		if err != nil {
 			return
 		}

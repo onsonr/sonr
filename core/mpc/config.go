@@ -3,7 +3,9 @@ package mpc
 import (
 	"time"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	p2p_protocol "github.com/libp2p/go-libp2p/core/protocol"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
 
@@ -50,4 +52,12 @@ func getTotalRoundsFromCreate(c protocol.StartFunc) int {
 		return 0
 	}
 	return int(r.FinalRoundNumber())
+}
+
+func convertToPartyIDs(ids []peer.ID) []party.ID {
+	partyIDs := make([]party.ID, len(ids))
+	for i, id := range ids {
+		partyIDs[i] = party.ID(id)
+	}
+	return partyIDs
 }

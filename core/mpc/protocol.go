@@ -7,6 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 
 	"github.com/sonr-hq/sonr/internal/node"
+	"github.com/sonr-hq/sonr/pkg/wallet"
+	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
@@ -15,6 +17,7 @@ import (
 )
 
 type MpcProtocol struct {
+	selfId   party.ID
 	selfNode *node.Node
 	sessions map[string]*Session
 }
@@ -22,6 +25,7 @@ type MpcProtocol struct {
 // Initialize configures the Node for the MPC Protocol
 func Initialize(n *node.Node) (*MpcProtocol, error) {
 	protocol := &MpcProtocol{
+		selfId:   party.ID(n.ID()),
 		selfNode: n,
 		sessions: make(map[string]*Session, 0),
 	}
@@ -29,7 +33,7 @@ func Initialize(n *node.Node) (*MpcProtocol, error) {
 	return protocol, nil
 }
 
-// GenerateWallet generates a new wallet
+// JoinCMPKeygen generates a new wallet
 func (m *MpcProtocol) JoinCMPKeygen(peers ...peer.ID) (*cmp.Config, error) {
 	if len(peers) == 0 {
 		return nil, errors.New("no peers provided")
@@ -41,13 +45,8 @@ func (m *MpcProtocol) JoinCMPKeygen(peers ...peer.ID) (*cmp.Config, error) {
 		party.ID(m.selfNode.ID()),
 	}
 
-	// Add All Peers
-	for _, peer := range peers {
-		ids = append(ids, party.ID(peer))
-	}
-
 	// Build Session
-	s, err := NewSession(m.selfNode, party.ID(m.selfNode.ID()), ids, kCmpKeygenFeed)
+	s, err := NewSession(m.selfNode, party.ID(m.selfNode.ID()), convertToPartyIDs(peers), kCmpKeygenFeed)
 	if err != nil {
 		fmt.Println("Error creating handler")
 		return nil, err
@@ -61,4 +60,92 @@ func (m *MpcProtocol) JoinCMPKeygen(peers ...peer.ID) (*cmp.Config, error) {
 	}
 	conf := r.(*cmp.Config)
 	return conf, nil
+}
+
+// JoinCMPSign signs a new signature
+func (m *MpcProtocol) JoinCMPSign(ws wallet.WalletShare, msg []byte, peers ...peer.ID) (*ecdsa.Signature, error) {
+	if len(peers) == 0 {
+		return nil, errors.New("no peers provided")
+	}
+	ids := convertToPartyIDs(peers)
+	ids = append(ids, m.selfId)
+
+	// Setup Run
+	pl := pool.NewPool(0)
+	defer pl.TearDown()
+
+	// Build Session
+	s, err := NewSession(m.selfNode, party.ID(m.selfNode.ID()), convertToPartyIDs(peers), kCmpKeygenFeed)
+	if err != nil {
+		fmt.Println("Error creating handler")
+		return nil, err
+	}
+
+	// Run Protocol
+	r, err := s.RunProtocol(cmp.Sign(ws.MPCConfig(), ids, msg, pl), nil)
+	if err != nil {
+		fmt.Println("Error creating handler")
+		return nil, err
+	}
+	sig := r.(*ecdsa.Signature)
+	return sig, nil
+}
+
+// JoinCMPPreSign presigns a new signature
+func (m *MpcProtocol) JoinCMPPreSign(ws wallet.WalletShare, peers ...peer.ID) (*ecdsa.PreSignature, error) {
+	if len(peers) == 0 {
+		return nil, errors.New("no peers provided")
+	}
+	ids := convertToPartyIDs(peers)
+	ids = append(ids, m.selfId)
+
+	// Setup Run
+	pl := pool.NewPool(0)
+	defer pl.TearDown()
+
+	// Build Session
+	s, err := NewSession(m.selfNode, party.ID(m.selfNode.ID()), convertToPartyIDs(peers), kCmpKeygenFeed)
+	if err != nil {
+		fmt.Println("Error creating handler")
+		return nil, err
+	}
+
+	// Run Protocol
+	r, err := s.RunProtocol(cmp.Presign(ws.MPCConfig(), ids, pl), nil)
+	if err != nil {
+		fmt.Println("Error creating handler")
+		return nil, err
+	}
+	preSig := r.(*ecdsa.PreSignature)
+	return preSig, nil
+}
+
+// JoinCMPPreSign presigns a new signature
+func (m *MpcProtocol) JoinCMPPreSignOnline(ws wallet.WalletShare, peers ...peer.ID) (*ecdsa.Signature, error) {
+	if len(peers) == 0 {
+		return nil, errors.New("no peers provided")
+	}
+	ids := convertToPartyIDs(peers)
+	ids = append(ids, m.selfId)
+
+	// Setup Run
+	pl := pool.NewPool(0)
+	defer pl.TearDown()
+
+	// Build Session
+	s, err := NewSession(m.selfNode, party.ID(m.selfNode.ID()), convertToPartyIDs(peers), kCmpKeygenFeed)
+	if err != nil {
+		fmt.Println("Error creating handler")
+		return nil, err
+	}
+
+	// Run Protocol
+	r, err := s.RunProtocol(cmp.Presign(ws.MPCConfig(), ids, pl), nil)
+	if err != nil {
+		fmt.Println("Error creating handler")
+		return nil, err
+	}
+
+	sig := r.(*ecdsa.Signature)
+	return sig, nil
 }

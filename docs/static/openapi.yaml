@@ -44311,7 +44311,7 @@ paths:
   /sonr-io/sonr/identity/aka/{aka_id}:
     get:
       summary: Queries a DIDDocument for the matching AlsoKnownAs
-      operationId: SonrioSonrIdentityQueryByAlsoKnownAs
+      operationId: SonrhqSonrIdentityQueryByAlsoKnownAs
       responses:
         '200':
           description: A successful response.
@@ -45256,7 +45256,7 @@ paths:
   /sonr-io/sonr/identity/did:
     get:
       summary: Queries a list of DidDocument items.
-      operationId: SonrioSonrIdentityDidAll
+      operationId: SonrhqSonrIdentityDidAll
       responses:
         '200':
           description: A successful response.
@@ -46286,7 +46286,7 @@ paths:
   /sonr-io/sonr/identity/did/{did}:
     get:
       summary: Queries a DidDocument by index.
-      operationId: SonrioSonrIdentityDid
+      operationId: SonrhqSonrIdentityDid
       responses:
         '200':
           description: A successful response.
@@ -47231,7 +47231,7 @@ paths:
   /sonr-io/sonr/identity/key/{key_id}:
     get:
       summary: Queries a DIDDocument for the matching key
-      operationId: SonrioSonrIdentityQueryByKeyID
+      operationId: SonrhqSonrIdentityQueryByKeyID
       responses:
         '200':
           description: A successful response.
@@ -48176,7 +48176,7 @@ paths:
   /sonr-io/sonr/identity/method/{method_id}:
     get:
       summary: Queries a list of DIDDocument for the matching method
-      operationId: SonrioSonrIdentityQueryByMethod
+      operationId: SonrhqSonrIdentityQueryByMethod
       responses:
         '200':
           description: A successful response.
@@ -49210,7 +49210,7 @@ paths:
   /sonr-io/sonr/identity/network/{network_id}:
     get:
       summary: Queries a list of QueryByNetwork items.
-      operationId: SonrioSonrIdentityQueryByNetwork
+      operationId: SonrhqSonrIdentityQueryByNetwork
       responses:
         '200':
           description: A successful response.
@@ -50188,7 +50188,7 @@ paths:
   /sonr-io/sonr/identity/params:
     get:
       summary: Parameters queries the parameters of the module.
-      operationId: SonrioSonrIdentityParams
+      operationId: SonrhqSonrIdentityParams
       responses:
         '200':
           description: A successful response.
@@ -50243,7 +50243,7 @@ paths:
   /sonr-io/sonr/identity/service/{service_id}:
     get:
       summary: Queries a DIDDocument for the matching service
-      operationId: SonrioSonrIdentityQueryByService
+      operationId: SonrhqSonrIdentityQueryByService
       responses:
         '200':
           description: A successful response.
@@ -80570,7 +80570,7 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
-  sonrio.sonr.identity.DidDocument:
+  sonrhq.sonr.identity.DidDocument:
     type: object
     properties:
       context:
@@ -81423,7 +81423,7 @@ definitions:
         additionalProperties:
           type: string
         title: optional
-  sonrio.sonr.identity.KeyType:
+  sonrhq.sonr.identity.KeyType:
     type: string
     enum:
       - KeyType_UNSPECIFIED
@@ -81442,13 +81442,13 @@ definitions:
        - KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019: ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
        - KeyType_RSA_VERIFICATION_KEY_2018: RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
        - KeyType_WEB_AUTHN_AUTHENTICATION_2018: WebAuthnAuthentication2018 is the WebAuthnAuthentication2018 verification key type as specified here: https://w3c-ccg.github.io/lds-webauthn/
-  sonrio.sonr.identity.MsgCreateDidDocumentResponse:
+  sonrhq.sonr.identity.MsgCreateDidDocumentResponse:
     type: object
-  sonrio.sonr.identity.MsgDeleteDidDocumentResponse:
+  sonrhq.sonr.identity.MsgDeleteDidDocumentResponse:
     type: object
-  sonrio.sonr.identity.MsgUpdateDidDocumentResponse:
+  sonrhq.sonr.identity.MsgUpdateDidDocumentResponse:
     type: object
-  sonrio.sonr.identity.Params:
+  sonrhq.sonr.identity.Params:
     type: object
     properties:
       did_base_context:
@@ -81470,7 +81470,7 @@ definitions:
         items:
           type: string
     description: Params defines the parameters for the module.
-  sonrio.sonr.identity.QueryAllDidResponse:
+  sonrhq.sonr.identity.QueryAllDidResponse:
     type: object
     properties:
       didDocument:
@@ -82378,7 +82378,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrio.sonr.identity.QueryByAlsoKnownAsResponse:
+  sonrhq.sonr.identity.QueryByAlsoKnownAsResponse:
     type: object
     properties:
       didDocument:
@@ -83247,7 +83247,7 @@ definitions:
             additionalProperties:
               type: string
             title: optional
-  sonrio.sonr.identity.QueryByKeyIDResponse:
+  sonrhq.sonr.identity.QueryByKeyIDResponse:
     type: object
     properties:
       didDocument:
@@ -84116,7 +84116,7 @@ definitions:
             additionalProperties:
               type: string
             title: optional
-  sonrio.sonr.identity.QueryByMethodResponse:
+  sonrhq.sonr.identity.QueryByMethodResponse:
     type: object
     properties:
       didDocument:
@@ -85024,7 +85024,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrio.sonr.identity.QueryByNetworkResponse:
+  sonrhq.sonr.identity.QueryByNetworkResponse:
     type: object
     properties:
       didDocument:
@@ -85932,7 +85932,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrio.sonr.identity.QueryByServiceResponse:
+  sonrhq.sonr.identity.QueryByServiceResponse:
     type: object
     properties:
       didDocument:
@@ -86801,7 +86801,7 @@ definitions:
             additionalProperties:
               type: string
             title: optional
-  sonrio.sonr.identity.QueryGetDidResponse:
+  sonrhq.sonr.identity.QueryGetDidResponse:
     type: object
     properties:
       didDocument:
@@ -87670,7 +87670,7 @@ definitions:
             additionalProperties:
               type: string
             title: optional
-  sonrio.sonr.identity.QueryParamsResponse:
+  sonrhq.sonr.identity.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -87696,7 +87696,7 @@ definitions:
             items:
               type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  sonrio.sonr.identity.Service:
+  sonrhq.sonr.identity.Service:
     type: object
     properties:
       iD:
@@ -87726,7 +87726,7 @@ definitions:
         additionalProperties:
           type: string
         title: optional
-  sonrio.sonr.identity.ServiceType:
+  sonrhq.sonr.identity.ServiceType:
     type: string
     enum:
       - ServiceType_UNSPECIFIED
@@ -87739,7 +87739,7 @@ definitions:
        - ServiceType_UNSPECIFIED: No service type specified
        - ServiceType_DID_COMM_MESSAGING: DIDCommMessaging is the DIDCommMessaging service type as specified here: https://identity.foundation/didcomm-messaging/spec/
        - ServiceType_ENCRYPTED_DATA_VAULT: EncryptedDataVault is the EncryptedDataVault service type as specified here: https://identity.foundation/edv-spec/
-  sonrio.sonr.identity.Services:
+  sonrhq.sonr.identity.Services:
     type: object
     properties:
       data:
@@ -87775,7 +87775,7 @@ definitions:
               additionalProperties:
                 type: string
               title: optional
-  sonrio.sonr.identity.VerificationMethod:
+  sonrhq.sonr.identity.VerificationMethod:
     type: object
     properties:
       iD:
@@ -87884,7 +87884,7 @@ definitions:
 
                   counter value in this case, or not, or fails the
                   authentication ceremony or not, is Relying Party-specific.
-  sonrio.sonr.identity.VerificationMethods:
+  sonrhq.sonr.identity.VerificationMethods:
     type: object
     properties:
       data:
@@ -88002,7 +88002,7 @@ definitions:
                         counter value in this case, or not, or fails the
                         authentication ceremony or not, is Relying
                         Party-specific.
-  sonrio.sonr.identity.VerificationRelationship:
+  sonrhq.sonr.identity.VerificationRelationship:
     type: object
     properties:
       verification_method:
@@ -88116,7 +88116,7 @@ definitions:
                       authentication ceremony or not, is Relying Party-specific.
       reference:
         type: string
-  sonrio.sonr.identity.VerificationRelationships:
+  sonrhq.sonr.identity.VerificationRelationships:
     type: object
     properties:
       data:
@@ -88241,7 +88241,7 @@ definitions:
                             Party-specific.
             reference:
               type: string
-  sonrio.sonr.identity.WebauthnAuthenticator:
+  sonrhq.sonr.identity.WebauthnAuthenticator:
     type: object
     properties:
       aaguid:
@@ -88283,7 +88283,7 @@ definitions:
     title: >-
       WebauthnAuthenticator contains certificate information about a WebAuthn
       authenticator
-  sonrio.sonr.identity.WebauthnCredential:
+  sonrhq.sonr.identity.WebauthnCredential:
     type: object
     properties:
       id:

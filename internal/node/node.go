@@ -20,8 +20,8 @@ import (
 
 // Node represents a Interface to the IPFS node
 type Node struct {
-	api      icore.CoreAPI
-	p2p      *core.IpfsNode
+	api icore.CoreAPI
+	*core.IpfsNode
 	ctx      context.Context
 	callback common.MotorCallback
 	topics   []string
@@ -48,10 +48,10 @@ func New(ctx context.Context, options ...NodeOption) (*Node, error) {
 
 	// Create the node
 	n := &Node{
-		api:    ipfsA,
-		p2p:    nodeA,
-		ctx:    ctx,
-		topics: make([]string, 0),
+		api:      ipfsA,
+		IpfsNode: nodeA,
+		ctx:      ctx,
+		topics:   make([]string, 0),
 	}
 	return n, nil
 }
@@ -141,7 +141,7 @@ func (n *Node) Connect(addrInfo peer.AddrInfo) error {
 
 // ID returns the node's ID
 func (n *Node) ID() peer.ID {
-	return n.p2p.Identity
+	return n.IpfsNode.Identity
 }
 
 // MultiAddr returns the node's multiaddress as a string
@@ -153,46 +153,16 @@ func (n *Node) AddrInfo() peer.AddrInfo {
 	}
 
 	return peer.AddrInfo{
-		ID:    n.p2p.Identity,
+		ID:    n.IpfsNode.Identity,
 		Addrs: addrs,
 	}
 
 }
 
-// ListTopics lists all the topics the node is subscribed to
-func (n *Node) ListTopics() ([]string, error) {
-	if len(n.topics) == 0 {
-		return nil, fmt.Errorf("no topics found")
-	}
-	return n.topics, nil
-}
-
-// Subscribe subscribes to a topic and returns
-func (n *Node) Subscribe(topic string) (TopicHandler, error) {
-	sub, err := n.api.PubSub().Subscribe(n.ctx, topic)
-	if err != nil {
-		return nil, err
-	}
-	n.topics = append(n.topics, topic)
-	handler := startHandler(n.ctx, n.p2p, sub, topic)
-	return handler, nil
-}
-
-// Publish publishes a message to a topic
-func (n *Node) Publish(topic string, message []byte) error {
-	ctx, cancel := context.WithCancel(n.ctx)
-	defer cancel()
-	err := n.api.PubSub().Publish(ctx, topic, message)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 // // Send sends a message to a peer. This is by using the p2p node to create a new stream
 func (n *Node) Send(peerID string, message []byte, pid protocol.ID) error {
 	// Create a new stream
-	stream, err := n.p2p.PeerHost.NewStream(n.ctx, peer.ID(peerID), pid)
+	stream, err := n.IpfsNode.PeerHost.NewStream(n.ctx, peer.ID(peerID), pid)
 	if err != nil {
 		return err
 	}
@@ -207,5 +177,5 @@ func (n *Node) Send(peerID string, message []byte, pid protocol.ID) error {
 
 // HandleProtocol Sets a Stream Handler for the underlying PeerHost
 func (n *Node) SetStreamHandler(pid protocol.ID, handler network.StreamHandler) {
-	n.p2p.PeerHost.SetStreamHandler(pid, handler)
+	n.IpfsNode.PeerHost.SetStreamHandler(pid, handler)
 }

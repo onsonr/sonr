@@ -4,12 +4,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	// "github.com/sonr-hq/sonr/internal/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
+	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
 // WalletShare is a wallet that can be used to sign messages using ECDSA based on the MPC protocol.
 type WalletShare interface {
 	// Returns the Bech32 representation of the given party.
 	Address() string
+
+	// MPCConfig returns the *cmp.Config of this wallet.
+	MPCConfig() *cmp.Config
 
 	// Marshal serializes the cmp.Config into a byte slice for local storage
 	Marshal() ([]byte, error)
