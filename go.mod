@@ -31,6 +31,7 @@ require (
 	github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21
 	github.com/tendermint/tendermint v0.34.22
 	github.com/tendermint/tm-db v0.6.7
+	github.com/zeebo/assert v1.1.0
 	golang.org/x/crypto v0.1.0
 	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f
 	google.golang.org/genproto v0.0.0-20221114212237-e4508ebdbee1

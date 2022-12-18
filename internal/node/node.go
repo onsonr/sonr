@@ -3,6 +3,7 @@ package node
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -34,17 +35,16 @@ func New(ctx context.Context, options ...NodeOption) (*Node, error) {
 		option(c)
 	}
 	// Spawn a local peer using a temporary path, for testing purposes
-	ipfsA, nodeA, err := spawnEphemeral(ctx)
+	ipfsA, nodeA, err := c.spawnEphemeral(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to spawn ephemeral node: %s", err)
 	}
 
 	// Connect to the bootstrap nodes
-	err = connectToPeers(ctx, ipfsA, c.BootstrapMultiaddrs)
+	err = c.connectToPeers(ctx, ipfsA, c.BootstrapMultiaddrs)
 	if err != nil {
 		return nil, err
 	}
-	// nodeA.PeerHost.SetStreamHandler("/sonr")
 
 	// Create the node
 	n := &Node{
@@ -130,10 +130,11 @@ func (n *Node) Add(file []byte) (string, error) {
 }
 
 // Connect connects to a peer with a given multiaddress
-func (n *Node) Connect(addrInfo *peer.AddrInfo) error {
-	err := n.p2p.PeerHost.Connect(n.ctx, *addrInfo)
+func (n *Node) Connect(addrInfo peer.AddrInfo) error {
+
+	err := n.api.Swarm().Connect(n.ctx, addrInfo)
 	if err != nil {
-		return err
+		log.Printf("failed to connect to %s: %s", addrInfo.ID, err)
 	}
 	return nil
 }
@@ -144,16 +145,18 @@ func (n *Node) ID() peer.ID {
 }
 
 // MultiAddr returns the node's multiaddress as a string
-func (n *Node) AddrInfo() *peer.AddrInfo {
-	return &peer.AddrInfo{
-		ID:    n.p2p.Identity,
-		Addrs: n.p2p.PeerHost.Addrs(),
+func (n *Node) AddrInfo() peer.AddrInfo {
+	// Connection Addrs
+	addrs, err := n.api.Swarm().LocalAddrs(n.ctx)
+	if err != nil {
+		return peer.AddrInfo{}
 	}
-	// addrs, err := n.api.Swarm().LocalAddrs(n.ctx)
-	// if err != nil {
-	// 	return ""
-	// }
-	// return addrs[0].String()
+
+	return peer.AddrInfo{
+		ID:    n.p2p.Identity,
+		Addrs: addrs,
+	}
+
 }
 
 // ListTopics lists all the topics the node is subscribed to
@@ -166,7 +169,6 @@ func (n *Node) ListTopics() ([]string, error) {
 
 // Subscribe subscribes to a topic and returns
 func (n *Node) Subscribe(topic string) (TopicHandler, error) {
-
 	sub, err := n.api.PubSub().Subscribe(n.ctx, topic)
 	if err != nil {
 		return nil, err
@@ -189,9 +191,8 @@ func (n *Node) Publish(topic string, message []byte) error {
 
 // // Send sends a message to a peer. This is by using the p2p node to create a new stream
 func (n *Node) Send(peerID string, message []byte, pid protocol.ID) error {
-	ctx, cancel := context.WithCancel(n.ctx)
-	defer cancel()
-	stream, err := n.p2p.PeerHost.NewStream(ctx, peer.ID(peerID), pid)
+	// Create a new stream
+	stream, err := n.p2p.PeerHost.NewStream(n.ctx, peer.ID(peerID), pid)
 	if err != nil {
 		return err
 	}
@@ -205,6 +206,6 @@ func (n *Node) Send(peerID string, message []byte, pid protocol.ID) error {
 }
 
 // HandleProtocol Sets a Stream Handler for the underlying PeerHost
-func (n *Node) HandleProtocol(pid protocol.ID, handler network.StreamHandler) {
+func (n *Node) SetStreamHandler(pid protocol.ID, handler network.StreamHandler) {
 	n.p2p.PeerHost.SetStreamHandler(pid, handler)
 }

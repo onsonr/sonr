@@ -2,6 +2,7 @@ package vault
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 
 	crypto "github.com/libp2p/go-libp2p/core/crypto"
@@ -76,6 +77,7 @@ func InitVault(path string) error {
 func GenerateWallet(id peer.ID) (wallet.WalletShare, error) {
 	c, err := v.mpcProtocol.JoinCMPKeygen(id)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	return wallet.NewWalletImpl(c), nil

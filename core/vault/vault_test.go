@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/sonr-hq/sonr/internal/node"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateWallet(t *testing.T) {
@@ -19,6 +20,11 @@ func TestCreateWallet(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	assert.NotEqual(t, n.ID(), v.P2P.ID())
+
+	err = v.P2P.Connect(n.AddrInfo())
+	assert.NoError(t, err)
 
 	// Generate a new wallet
 	w, err := GenerateWallet(n.ID())

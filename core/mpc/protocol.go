@@ -2,6 +2,7 @@ package mpc
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p/core/peer"
 
@@ -46,14 +47,16 @@ func (m *MpcProtocol) JoinCMPKeygen(peers ...peer.ID) (*cmp.Config, error) {
 	}
 
 	// Build Session
-	s, err := NewSession(m.selfNode, party.ID(m.selfNode.ID()), ids)
+	s, err := NewSession(m.selfNode, party.ID(m.selfNode.ID()), ids, kCmpKeygenFeed)
 	if err != nil {
+		fmt.Println("Error creating handler")
 		return nil, err
 	}
 
 	// Run Protocol
-	r, err := s.RunProtocol(cmp.Keygen(curve.Secp256k1{}, party.ID(m.selfNode.ID()), ids, 1, pl), kCmpKeygenRequest, nil)
+	r, err := s.RunProtocol(cmp.Keygen(curve.Secp256k1{}, party.ID(m.selfNode.ID()), ids, 1, pl), nil)
 	if err != nil {
+		fmt.Println("Error creating handler")
 		return nil, err
 	}
 	conf := r.(*cmp.Config)
