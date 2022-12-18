@@ -13,3 +13,11 @@ client:
 faucet:
   name: bob
   coins: ["50000000snr", "100000000stake"]
+init:
+  app:
+    minimum-gas-prices: "0.025snr"
+    api:
+      enable: true
+      swagger: true
+  client:
+    keyring-backend: "test"
