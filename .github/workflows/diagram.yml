@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/*
 jobs:
   get_data:
     runs-on: ubuntu-latest

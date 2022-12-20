@@ -1,4 +1,4 @@
-# Sonr
+![Banner](docs/static/images/gh-banner.png)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonr-hq/sonr.svg)](https://pkg.go.dev/github.com/sonr-hq/sonr)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonr-hq/sonr)](https://goreportcard.com/report/github.com/sonr-hq/sonr)
@@ -9,6 +9,7 @@
     <br>
 </p>
 
+</br>
 
 ## Getting Started
 
