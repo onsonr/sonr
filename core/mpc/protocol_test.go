@@ -12,14 +12,20 @@ func TestJoinCMPKeygen(t *testing.T) {
 	n1, err := node.New(context.TODO())
 	assert.NoError(t, err)
 
+	p1, err := Initialize(n1)
+	assert.NoError(t, err)
+
 	n2, err := node.New(context.TODO())
 	assert.NoError(t, err)
 
-	err = n1.Connect(n2.AddrInfo())
+	p2, err := Initialize(n2)
 	assert.NoError(t, err)
 
-	p, err := Initialize(n1)
+	w1, err := p1.HostDoernerKeygen(n2.ID())
 	assert.NoError(t, err)
 
-	_, err = p.JoinCMPKeygen(n2.ID())
+	go p2.JoinDoernerKeygen(n1.ID())
+	assert.NoError(t, err)
+
+	t.Log(w1.Public)
 }

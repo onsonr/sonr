@@ -18,8 +18,6 @@ import (
 	"github.com/ipfs/kubo/plugin/loader"
 	"github.com/ipfs/kubo/repo/fsrepo"
 	"github.com/libp2p/go-libp2p/core/peer"
-	drouting "github.com/libp2p/go-libp2p/p2p/discovery/routing"
-	dutil "github.com/libp2p/go-libp2p/p2p/discovery/util"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -105,19 +103,7 @@ func (n *NodeConfig) createNode(ctx context.Context, repoPath string) (*core.Ipf
 	}
 
 	// Create the node
-	node, err := core.NewNode(ctx, nodeOptions)
-	if err != nil {
-		return nil, err
-	}
-
-	// Setup Routing Discovery
-	routingDiscovery := drouting.NewRoutingDiscovery(node.DHT)
-	dutil.Advertise(ctx, routingDiscovery, n.RendezvousString)
-
-	// Now, look for others who have announced
-	// This is like your friend telling you the location to meet you.
-	go n.serveRouting(ctx, node, routingDiscovery)
-	return node, nil
+	return core.NewNode(ctx, nodeOptions)
 }
 
 var loadPluginsOnce sync.Once
@@ -194,21 +180,4 @@ func getUnixfsNode(path string) (files.Node, error) {
 	}
 
 	return f, nil
-}
-
-func (c *NodeConfig) serveRouting(ctx context.Context, n *core.IpfsNode, routingDiscovery *drouting.RoutingDiscovery) {
-	// Now, look for others who have announced
-	// This is like your friend telling you the location to meet you.
-	peerChan, err := routingDiscovery.FindPeers(ctx, c.RendezvousString)
-	if err != nil {
-		panic(err)
-	}
-
-	// We can now use `peerChan` in a range loop to find other peers
-	for peer := range peerChan {
-		if peer.ID == n.Identity {
-			continue
-		}
-	}
-	select {}
 }

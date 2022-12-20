@@ -42,7 +42,7 @@ func loadPrivKeyFromJsonPath(path string) (crypto.PrivKey, error) {
 type Vault struct {
 	nodeKeyPath string
 	nodePrivKey crypto.PrivKey
-	P2P         *node.Node
+	P2P         *node.Motor
 	ctx         context.Context
 
 	mpcProtocol *mpc.MpcProtocol
