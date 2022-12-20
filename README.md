@@ -6,6 +6,9 @@
     <br>
 </p>
 
+
+## Getting Started
+
 ### Prerequisites
 - Cosmos SDK: v0.46.3
 - Ignite CLI: v0.25.1
@@ -66,6 +69,16 @@ npm i -g mintlify
 cd docs
 mintlify dev
 ```
+
+## Diagrams
+
+#### Repository structure
+
+![Repository structure](./docs/static/images/diagrams/repo-structure.svg)
+
+#### Architecture
+
+![Architecture](./docs/static/images/diagrams/architecture-light.svg)
 
 For more information, see the [Mintlify documentation](https://mintlify.com/docs/quickstart).
 ## Learn more
