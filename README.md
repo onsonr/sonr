@@ -1,6 +1,9 @@
 # Sonr
 
-![Visualization of the codebase](./docs/static/images/diagrams/repo-structure.svg)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sonr-hq/sonr.svg)](https://pkg.go.dev/github.com/sonr-hq/sonr)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonr-hq/sonr)](https://goreportcard.com/report/github.com/sonr-hq/sonr)
+[![License](https://img.shields.io/github/license/sonr-hq/sonr)](https://github.com/sonr-hq/sonr)
+
 
 <p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for interoperability, and total digital autonomy.
     <br>
