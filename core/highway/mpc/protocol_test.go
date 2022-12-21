@@ -8,14 +8,17 @@ import (
 	"github.com/zeebo/assert"
 )
 
-func TestJoinCMPKeygen(t *testing.T) {
+func TestJoinDoernerKeygen(t *testing.T) {
 	n1, err := node.New(context.TODO())
 	assert.NoError(t, err)
 
-	p1, err := Initialize(n1)
+	n2, err := node.New(context.TODO())
 	assert.NoError(t, err)
 
-	n2, err := node.New(context.TODO())
+	err = n2.Connect(n1.MultiAddr())
+	assert.NoError(t, err)
+
+	p1, err := Initialize(n1)
 	assert.NoError(t, err)
 
 	p2, err := Initialize(n2)

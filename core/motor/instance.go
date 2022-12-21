@@ -1,15 +1,15 @@
-package api
+package motor
 
 import (
 	"context"
 
-	mt "github.com/sonr-hq/sonr/bind/motor/types/v1"
+	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
 	"github.com/sonr-hq/sonr/pkg/node"
 )
 
 type MotorInstance struct {
 	// Node is the libp2p host
-	Node *node.Motor
+	Node *node.Node
 	ctx  context.Context
 	//
 }

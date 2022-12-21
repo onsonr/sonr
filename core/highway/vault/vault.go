@@ -2,14 +2,10 @@ package vault
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 
 	crypto "github.com/libp2p/go-libp2p/core/crypto"
-	peer "github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonr-hq/sonr/core/mpc"
 	"github.com/sonr-hq/sonr/pkg/node"
-	"github.com/sonr-hq/sonr/pkg/wallet"
 	tm_crypto "github.com/tendermint/tendermint/crypto"
 	tm_json "github.com/tendermint/tendermint/libs/json"
 )
@@ -42,13 +38,11 @@ func loadPrivKeyFromJsonPath(path string) (crypto.PrivKey, error) {
 type Vault struct {
 	nodeKeyPath string
 	nodePrivKey crypto.PrivKey
-	P2P         *node.Motor
+	P2P         *node.Node
 	ctx         context.Context
-
-	mpcProtocol *mpc.MpcProtocol
 }
 
-func InitVault(path string) error {
+func Initialize() error {
 	ctx := context.Background()
 	// key, err := loadPrivKeyFromJsonPath(path)
 	// if err != nil {
@@ -59,26 +53,26 @@ func InitVault(path string) error {
 		return err
 	}
 
-	mpcProtocol, err := mpc.Initialize(n)
-	if err != nil {
-		return err
-	}
-
 	v = &Vault{
-		nodeKeyPath: path,
+		//nodeKeyPath: path,
 		//		nodePrivKey: key,
-		P2P:         n,
-		ctx:         ctx,
-		mpcProtocol: mpcProtocol,
+		P2P: n,
+		ctx: ctx,
 	}
 	return nil
 }
 
-func GenerateWallet(id peer.ID) (wallet.WalletShare, error) {
-	c, err := v.mpcProtocol.JoinCMPKeygen(id)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-	return wallet.NewWalletImpl(c), nil
+func NewTwoPartyWallet() {
+
+}
+
+func NewMultiWallet() {
+
+}
+
+func RunSignProtocol() {
+
+}
+
+func RunRefreshProtocol() {
 }

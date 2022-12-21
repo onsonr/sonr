@@ -15,12 +15,12 @@ import (
 
 type MpcProtocol struct {
 	selfId   party.ID
-	selfNode *node.Motor
+	selfNode *node.Node
 	sessions map[string]*Session
 }
 
 // Initialize configures the Node for the MPC Protocol
-func Initialize(n *node.Motor) (*MpcProtocol, error) {
+func Initialize(n *node.Node) (*MpcProtocol, error) {
 	protocol := &MpcProtocol{
 		selfId:   party.ID(n.ID()),
 		selfNode: n,

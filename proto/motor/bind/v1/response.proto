@@ -3,7 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.motor.v1;
 import "sonr/identity/did.proto";
-option go_package = "github.com/sonr-hq/sonr/bind/motor/types/v1";
+option go_package = "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1";
 
 message InitializeResponse {
   bool success = 1;

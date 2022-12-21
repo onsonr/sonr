@@ -11,8 +11,8 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-func NewWalletImpl(c *cmp.Config) WalletShare {
-	return &mpcConfigWalletImpl{Config: c}
+func NewWalletImpl(c interface{}) WalletShare {
+	return &mpcConfigWalletImpl{Config: c.(*cmp.Config)}
 }
 
 type mpcConfigWalletImpl struct {

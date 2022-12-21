@@ -3,7 +3,6 @@ package node
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -11,26 +10,22 @@ import (
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
 	"github.com/ipfs/kubo/core"
-	host "github.com/libp2p/go-libp2p/core/host"
-	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/libp2p/go-libp2p/core/protocol"
-	"github.com/libp2p/go-msgio"
-	"github.com/sonr-hq/sonr/core/common"
+	"github.com/sonr-hq/sonr/pkg/common"
 )
 
-// Motor represents a Interface to the IPFS node
-type Motor struct {
-	IPFS     icore.CoreAPI
-	Host     host.Host // libp2p host
-	Node     *core.IpfsNode
+// Node represents a Interface to the IPFS node
+type Node struct {
+	icore.CoreAPI
+	node     *core.IpfsNode
 	ctx      context.Context
 	callback common.MotorCallback
 	topics   []string
+	config   *NodeConfig
 }
 
 // New creates a new node with the given options
-func New(ctx context.Context, options ...NodeOption) (*Motor, error) {
+func New(ctx context.Context, options ...NodeOption) (*Node, error) {
 	// Apply the options
 	c := defaultNodeConfig()
 	for _, option := range options {
@@ -49,24 +44,24 @@ func New(ctx context.Context, options ...NodeOption) (*Motor, error) {
 	}
 
 	// Create the node
-	n := &Motor{
-		IPFS:   ipfsA,
-		Host:   nodeA.PeerHost,
-		Node:   nodeA,
-		ctx:    ctx,
-		topics: make([]string, 0),
+	n := &Node{
+		CoreAPI: ipfsA,
+		node:    nodeA,
+		ctx:     ctx,
+		topics:  make([]string, 0),
+		config:  c,
 	}
 	return n, nil
 }
 
 // Get returns a file from the network given its CID
-func (n *Motor) Get(cidString string) ([]byte, error) {
+func (n *Node) Get(cidString string) ([]byte, error) {
 	ctx, cancel := context.WithCancel(n.ctx)
 	defer cancel()
 	cid := icorepath.New(cidString)
 
 	// Get the file from the network
-	fileNode, err := n.IPFS.Unixfs().Get(ctx, cid)
+	fileNode, err := n.CoreAPI.Unixfs().Get(ctx, cid)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +96,7 @@ func (n *Motor) Get(cidString string) ([]byte, error) {
 }
 
 // Add adds a file to the network
-func (n *Motor) Add(file []byte) (string, error) {
+func (n *Node) Add(file []byte) (string, error) {
 	ctx, cancel := context.WithCancel(n.ctx)
 	defer cancel()
 
@@ -125,7 +120,7 @@ func (n *Motor) Add(file []byte) (string, error) {
 	}
 
 	// Add the file to the network
-	cid, err := n.IPFS.Unixfs().Add(ctx, fileNode)
+	cid, err := n.CoreAPI.Unixfs().Add(ctx, fileNode)
 	if err != nil {
 		return "", err
 	}
@@ -133,52 +128,16 @@ func (n *Motor) Add(file []byte) (string, error) {
 }
 
 // Connect connects to a peer with a given multiaddress
-func (n *Motor) Connect(addrInfo peer.AddrInfo) error {
-
-	err := n.IPFS.Swarm().Connect(n.ctx, addrInfo)
-	if err != nil {
-		log.Printf("failed to connect to %s: %s", addrInfo.ID, err)
-	}
-	return nil
+func (n *Node) Connect(addrStrs ...string) error {
+	return n.config.connectToPeers(n.ctx, n.CoreAPI, addrStrs)
 }
 
 // ID returns the node's ID
-func (n *Motor) ID() peer.ID {
-	return n.Host.ID()
+func (n *Node) ID() peer.ID {
+	return n.node.Identity
 }
 
 // MultiAddr returns the node's multiaddress as a string
-func (n *Motor) AddrInfo() peer.AddrInfo {
-	// Connection Addrs
-	addrs, err := n.IPFS.Swarm().LocalAddrs(n.ctx)
-	if err != nil {
-		return peer.AddrInfo{}
-	}
-
-	return peer.AddrInfo{
-		ID:    n.Host.ID(),
-		Addrs: addrs,
-	}
-
-}
-
-// // Send sends a message to a peer. This is by using the p2p node to create a new stream
-func (n *Motor) Send(peerID string, message []byte, pid protocol.ID) error {
-	// Create a new stream
-	stream, err := n.Host.NewStream(n.ctx, peer.ID(peerID), pid)
-	if err != nil {
-		return err
-	}
-
-	wr := msgio.NewWriter(stream)
-	err = wr.WriteMsg(message)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// HandleProtocol Sets a Stream Handler for the underlying PeerHost
-func (n *Motor) SetStreamHandler(pid protocol.ID, handler network.StreamHandler) {
-	n.Host.SetStreamHandler(pid, handler)
+func (n *Node) MultiAddr() string {
+	return fmt.Sprintf("/ip4/127.0.0.1/udp/4010/p2p/%s", n.node.Identity.String())
 }

@@ -3,7 +3,7 @@ package mpc
 import (
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/core/peer"
 	p2p_protocol "github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
