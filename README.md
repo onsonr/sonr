@@ -1,8 +1,17 @@
-# Sonr
+![Banner](docs/static/images/gh-banner.png)
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/sonr-hq/sonr.svg)](https://pkg.go.dev/github.com/sonr-hq/sonr)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonr-hq/sonr)](https://goreportcard.com/report/github.com/sonr-hq/sonr)
+[![License](https://img.shields.io/github/license/sonr-hq/sonr)](https://github.com/sonr-hq/sonr)
+
 
 <p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for interoperability, and total digital autonomy.
     <br>
 </p>
+
+</br>
+
+## Getting Started
 
 ### Prerequisites
 - Cosmos SDK: v0.46.3
@@ -64,6 +73,16 @@ npm i -g mintlify
 cd docs
 mintlify dev
 ```
+
+## Diagrams
+
+#### Repository structure
+
+![Repository structure](./docs/static/images/diagrams/repo-structure.svg)
+
+#### Architecture
+
+![Architecture](./docs/static/images/diagrams/architecture-light.svg)
 
 For more information, see the [Mintlify documentation](https://mintlify.com/docs/quickstart).
 ## Learn more

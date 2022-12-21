@@ -104,6 +104,7 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/sonr-hq/sonr/core/highway/vault"
 	identitymodule "github.com/sonr-hq/sonr/x/identity"
 	identitymodulekeeper "github.com/sonr-hq/sonr/x/identity/keeper"
 	identitymoduletypes "github.com/sonr-hq/sonr/x/identity/types"
@@ -268,6 +269,7 @@ func New(
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
+	vault.Initialize()
 
 	bApp := baseapp.NewBaseApp(
 		Name,
