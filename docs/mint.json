@@ -6,7 +6,7 @@
   },
   "favicon": "/static/images/favicon.png",
   "api": {
-    "baseUrl": "http://159.65.236.177:1317"
+    "baseUrl": "http:/api.sonr.network"
   },
   "colors": {
     "primary": "#1792FF",
