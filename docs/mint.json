@@ -22,6 +22,12 @@
       "to": "#0053B5"
     }
   },
+  "topbarLinks": [
+    {
+      "name": "Roadmap",
+      "url": "https://roadmap.sonr.io"
+    }
+  ],
   "topbarCtaButton": {
     "type": "github",
     "url": "https://github.com/sonr-hq/sonr"
@@ -38,9 +44,9 @@
       "url": "https://sonrscan.io"
     },
     {
-      "name": "Changelog",
-      "icon": "microscope",
-      "url": "https://sonr.productlane.io/changelog"
+      "name": "Ecosystem",
+      "icon": "command",
+      "url": "https://ecosystem.super.site"
     },
     {
       "name": "GitHub",
