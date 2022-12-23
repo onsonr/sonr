@@ -3,8 +3,10 @@ package node
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"strings"
+	"sync"
 
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
@@ -12,44 +14,58 @@ import (
 	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
 	"github.com/ipfs/kubo/core"
 	"github.com/libp2p/go-libp2p/core/peer"
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonr-hq/sonr/pkg/common"
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/wallet"
+	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
 )
 
-// Node represents a Interface to the IPFS node
+// `Node` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
+// `NodeCallback` and a `Context` and a `[]string` and a `Peer_Type` and a `string`.
+// @property  - `icore.CoreAPI` is the interface that the node will use to communicate with the IPFS
+// daemon.
+// @property node - The IPFS node
+// @property {string} repoPath - The path to the IPFS repository.
+// @property walletShare - This is the wallet share object that is used to share the wallet with other
+// nodes.
+// @property callback - This is a callback function that will be called when the node is ready.
+// @property ctx - The context of the node.
+// @property {[]string} bootstrappers - The list of bootstrap nodes to connect to.
+// @property peerType - The type of peer, which can be either a bootstrap node or a normal node.
+// @property {string} rendezvous - The rendezvous string is a unique identifier for the swarm. It is
+// used to find other peers in the swarm.
 type Node struct {
 	icore.CoreAPI
-	node     *core.IpfsNode
-	ctx      context.Context
-	callback common.NodeCallback
-	config   *NodeConfig
+	node       *core.IpfsNode
+	repoPath   string
+	rendezvous string
+
+	callback    common.NodeCallback
+	peerType    cv1.Peer_Type
+	walletShare wallet.WalletShare
+
+	ctx                context.Context
+	bootstrappers      []string
+	topicEventHandlers map[string]TopicMessageHandler
+
+	network    *mpc.Network
+	mpcPeerIds []peer.ID
 }
 
 // New creates a new node with the given options
 func New(ctx context.Context, options ...NodeOption) (*Node, error) {
 	// Apply the options
-	c := defaultNodeConfig()
-	for _, option := range options {
-		option(c)
-	}
-	// Spawn a local peer using a temporary path, for testing purposes
-	ipfsA, nodeA, err := c.spawnEphemeral(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to spawn ephemeral node: %s", err)
-	}
-
-	// Connect to the bootstrap nodes
-	err = c.connectToPeers(ctx, ipfsA, c.BootstrapMultiaddrs)
+	n := defaultNode(ctx)
+	err := n.Apply(options...)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create the node
-	n := &Node{
-		CoreAPI: ipfsA,
-		node:    nodeA,
-		ctx:     ctx,
-		config:  c,
+	// Connect to the bootstrap nodes
+	err = n.Connect(n.bootstrappers...)
+	if err != nil {
+		return nil, err
 	}
 	return n, nil
 }
@@ -128,13 +144,53 @@ func (n *Node) Add(file []byte) (string, error) {
 }
 
 // Connect connects to a peer with a given multiaddress
-func (n *Node) Connect(addrStrs ...string) error {
-	return n.config.connectToPeers(n.ctx, n.CoreAPI, addrStrs)
+func (n *Node) Connect(peers ...string) error {
+	var wg sync.WaitGroup
+	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
+	for _, addrStr := range peers {
+		addr, err := ma.NewMultiaddr(addrStr)
+		if err != nil {
+			return err
+		}
+		pii, err := peer.AddrInfoFromP2pAddr(addr)
+		if err != nil {
+			return err
+		}
+		pi, ok := peerInfos[pii.ID]
+		if !ok {
+			pi = &peer.AddrInfo{ID: pii.ID}
+			peerInfos[pi.ID] = pi
+		}
+		pi.Addrs = append(pi.Addrs, pii.Addrs...)
+	}
+
+	wg.Add(len(peerInfos))
+	for _, peerInfo := range peerInfos {
+		go func(peerInfo *peer.AddrInfo) {
+			defer wg.Done()
+			err := n.CoreAPI.Swarm().Connect(n.ctx, *peerInfo)
+			if err != nil {
+				log.Printf("failed to connect to %s: %s", peerInfo.ID, err)
+			}
+		}(peerInfo)
+	}
+	wg.Wait()
+	return nil
 }
 
 // ID returns the node's ID
 func (n *Node) ID() peer.ID {
 	return n.node.Identity
+}
+
+// ListPeers lists the peers the node is connected to on a given topic
+func (n *Node) ListPeers(topic string) ([]peer.ID, error) {
+	return n.PubSub().Peers(n.ctx, options.PubSub.Topic(topic))
+}
+
+// ListTopics lists the topics the node is subscribed to
+func (n *Node) ListTopics() ([]string, error) {
+	return n.PubSub().Ls(n.ctx)
 }
 
 // MultiAddr returns the node's multiaddress as a string
@@ -147,15 +203,18 @@ func (n *Node) Peer() *cv1.Peer {
 	return &cv1.Peer{
 		PeerId:    n.ID().String(),
 		Multiaddr: n.MultiAddr(),
-		Type:      n.config.PeerType,
+		Type:      n.peerType,
 	}
 }
 
 // Publish publishes a message to a topic
 func (n *Node) Publish(topic string, message []byte) error {
+	ctx, cancel := context.WithCancel(n.ctx)
+	defer cancel()
+
 	errChan := make(chan error)
 	go func() {
-		err := n.PubSub().Publish(n.ctx, topic, message)
+		err := n.PubSub().Publish(ctx, topic, message)
 		errChan <- err
 	}()
 	select {
@@ -166,25 +225,38 @@ func (n *Node) Publish(topic string, message []byte) error {
 	}
 }
 
-// Subscribe subscribes to a topic
-func (n *Node) Subscribe(topic string, initialPeers ...string) (icore.PubSubSubscription, error) {
-	err := n.Connect(initialPeers...)
+// Subscribing to a topic and then calling the `handleSubscription` function.
+func (n *Node) Subscribe(ctx context.Context, topic string, handler ...TopicMessageHandler) error {
+	sub, err := n.PubSub().Subscribe(ctx, topic, options.PubSub.Discover(true))
 	if err != nil {
-		return nil, err
+		return err
 	}
-	sub, err := n.PubSub().Subscribe(n.ctx, topic, options.PubSub.Discover(true))
-	if err != nil {
-		return nil, err
+	if len(handler) > 0 {
+		n.topicEventHandlers[topic] = handler[0]
 	}
-	return sub, nil
+	go n.handleSubscription(ctx, topic, sub)
+	return nil
 }
 
-// ListTopics lists the topics the node is subscribed to
-func (n *Node) ListTopics() ([]string, error) {
-	return n.PubSub().Ls(n.ctx)
-}
+//
+// Private methods
+//
 
-// ListPeers lists the peers the node is connected to on a given topic
-func (n *Node) ListPeers(topic string) ([]peer.ID, error) {
-	return n.PubSub().Peers(n.ctx, options.PubSub.Topic(topic))
+// handleTopics handles the topics the node is subscribed to
+func (n *Node) handleSubscription(ctx context.Context, topic string, sub icore.PubSubSubscription) {
+	for {
+		msg, err := sub.Next(n.ctx)
+		if err != nil {
+			log.Printf("failed to get next message: %s", err)
+			return
+		}
+		if handler, ok := n.topicEventHandlers[topic]; ok {
+			handler(topic, msg)
+		}
+		select {
+		case <-n.ctx.Done():
+			return
+		default:
+		}
+	}
 }

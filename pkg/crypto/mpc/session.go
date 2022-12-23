@@ -1,10 +1,9 @@
-package internal
+package mpc
 
 import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p/core/peer"
@@ -42,7 +41,7 @@ type Network struct {
 }
 
 // It creates a new network object, assigns the subscriptions, and returns the network object
-func NewNetwork(n *node.Node, peerIds []peer.ID) (*Network, error) {
+func NewNetwork(ctx context.Context, n *node.Node, peerIds []peer.ID) (*Network, error) {
 	// Convert the peer IDs to party IDs.
 	partyIds := make([]party.ID, len(peerIds))
 	for i, id := range peerIds {
@@ -68,11 +67,7 @@ func NewNetwork(n *node.Node, peerIds []peer.ID) (*Network, error) {
 	}
 
 	// Subscribe to the topic.
-	sub, err := n.Subscribe(topicKey(net.selfParty))
-	if err != nil {
-		return nil, err
-	}
-	go net.handleSubscription(net.ctx, sub)
+
 	return net, nil
 }
 
@@ -115,25 +110,23 @@ func (n *Network) Send(msg *mpc.Message) {
 	}
 }
 
-func (n *Network) Await() {
-	fmt.Println("Awaiting for peers to connect...")
-	ticker := time.NewTicker(500 * time.Millisecond)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ticker.C:
-			peers, err := n.selfNode.ListPeers(topicKey(n.selfParty))
-			if err != nil {
-				n.errorChan <- err
-			}
-			if len(peers) == len(n.peerIds)-1 {
-				fmt.Println("All peers connected.")
-				return
-			}
-			fmt.Printf("Connected to %d peers out of %d.\n", len(peers), len(n.peerIds)-1)
+// Starting the network.
+func (n *Network) Start() {
+	n.mtx.Lock()
+	defer n.mtx.Unlock()
+	go n.handleErrors()
+	go func() {
+		err := n.selfNode.Subscribe(n.ctx, topicKey(n.selfParty), n.handleSubscription)
+		if err != nil {
+			n.errorChan <- err
 		}
-	}
+	}()
+	<-n.doneChan
 }
+
+//
+// Private methods
+//
 
 // A goroutine that is listening for errors on the error channel.
 func (n *Network) handleErrors() {
@@ -148,26 +141,14 @@ func (n *Network) handleErrors() {
 }
 
 // A goroutine that is listening for messages on the topic handler.
-func (n *Network) handleSubscription(ctx context.Context, sub icore.PubSubSubscription) {
-	for {
-		msg, err := sub.Next(ctx)
-		if err != nil {
-			n.errorChan <- err
-		}
-		msgIn := &mpc.Message{}
-		err = msgIn.UnmarshalBinary(msg.Data())
-		if err != nil {
-			n.errorChan <- err
-		}
-		n.msgInChan <- msgIn
-
-		select {
-		case <-ctx.Done():
-			return
-		default:
-			continue
-		}
+func (n *Network) handleSubscription(topic string, msg icore.PubSubMessage) error {
+	msgIn := &mpc.Message{}
+	err := msgIn.UnmarshalBinary(msg.Data())
+	if err != nil {
+		return err
 	}
+	n.msgInChan <- msgIn
+	return nil
 }
 
 // topicKey returns the modified topic key for the given party ID.

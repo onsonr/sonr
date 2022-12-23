@@ -2,6 +2,7 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.motor.bind.v1;
+import "common/peer.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1";
 
 // -----------------------------------------------------------------------------
@@ -38,17 +39,14 @@ message InitializeRequest {
 
 // ConnectRequest initializes the libp2p host and connects to the Sonr network.
 message ConnectRequest {
-  // Enable Discovery Service
-  bool enable_discovery = 1;
+  // Peer ID of the node to connect to
+  string peer_id = 1;
 
-  // Enable Transmit Protocol
-  bool enable_transmit = 2;
+  // Multiaddress of the node to connect to
+  string multiaddr = 2;
 
-  // Enable Linking Protocol
-  bool enable_linking = 3;
-
-  // Force the connection to be reset if it exists
-  bool reset_connection = 4;
+  // Peer is the peer to connect to
+  sonrhq.common.Peer peer = 3;
 }
 
 // CreateAccountWithKeyRequest allows the DSC to be specified manually when creating a request.
