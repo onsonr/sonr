@@ -3,19 +3,12 @@ package internal
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/sonr-hq/sonr/pkg/node"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	mpc "github.com/taurusgroup/multi-party-sig/pkg/protocol"
-)
-
-const (
-	K_RENDENZVOUS = "/sonr/v0.2.0/mpc"
-	K_PROTOCOL_ID = protocol.ID("mpc/cmp-keygen/1.0.0")
-	K_PUBSUB      = "#sonr-mpc-keygen"
 )
 
 // A DualSession is a struct that contains a party ID, a list of peers, a message channel, a node, a topic
@@ -58,7 +51,7 @@ func (s *DualSession) RunProtocol(create mpc.StartFunc, sessionID []byte, leader
 		return nil, err
 	}
 
-	peerChan, err := s.selfNode.PubSub().Subscribe(ctx, K_PUBSUB)
+	peerChan, err := s.selfNode.PubSub().Subscribe(ctx, "testch")
 	if err != nil {
 		fmt.Println("Error finding peers")
 		return nil, err
@@ -67,10 +60,6 @@ func (s *DualSession) RunProtocol(create mpc.StartFunc, sessionID []byte, leader
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
-
-		ticker := time.NewTicker(100 * time.Millisecond)
-		defer ticker.Stop()
-
 		for {
 			select {
 			case msg, ok := <-handler.Listen():
@@ -90,12 +79,6 @@ func (s *DualSession) RunProtocol(create mpc.StartFunc, sessionID []byte, leader
 					cancel()
 					return
 				}
-			}
-
-			select {
-			case <-ticker.C:
-			case <-ctx.Done():
-				return
 			}
 		}
 	}()

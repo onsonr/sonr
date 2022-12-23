@@ -4,14 +4,14 @@ import (
 	"log"
 )
 
-type MotorCallback interface {
+type NodeCallback interface {
 	OnDiscover(data []byte)
 	OnLinking(data []byte)
 }
 
 type defaultCallback struct{}
 
-func DefaultCallback() MotorCallback {
+func DefaultCallback() NodeCallback {
 	return &defaultCallback{}
 }
 

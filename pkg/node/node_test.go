@@ -179,6 +179,8 @@ func TestGroupPubSub(t *testing.T) {
 		t.Fatal(err)
 	}
 
+
+
 	sub1, err := n1.PubSub().Subscribe(ctx, "testch")
 	if err != nil {
 		t.Fatal(err)

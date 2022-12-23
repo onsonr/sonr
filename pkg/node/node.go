@@ -8,10 +8,12 @@ import (
 
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/ipfs/interface-go-ipfs-core/options"
 	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
 	"github.com/ipfs/kubo/core"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/pkg/common"
+	cv1 "github.com/sonr-hq/sonr/pkg/common"
 )
 
 // Node represents a Interface to the IPFS node
@@ -19,8 +21,7 @@ type Node struct {
 	icore.CoreAPI
 	node     *core.IpfsNode
 	ctx      context.Context
-	callback common.MotorCallback
-	topics   []string
+	callback common.NodeCallback
 	config   *NodeConfig
 }
 
@@ -48,7 +49,6 @@ func New(ctx context.Context, options ...NodeOption) (*Node, error) {
 		CoreAPI: ipfsA,
 		node:    nodeA,
 		ctx:     ctx,
-		topics:  make([]string, 0),
 		config:  c,
 	}
 	return n, nil
@@ -140,4 +140,51 @@ func (n *Node) ID() peer.ID {
 // MultiAddr returns the node's multiaddress as a string
 func (n *Node) MultiAddr() string {
 	return fmt.Sprintf("/ip4/127.0.0.1/udp/4010/p2p/%s", n.node.Identity.String())
+}
+
+// Peer returns the node's peer info
+func (n *Node) Peer() *cv1.Peer {
+	return &cv1.Peer{
+		PeerId:    n.ID().String(),
+		Multiaddr: n.MultiAddr(),
+		Type:      n.config.PeerType,
+	}
+}
+
+// Publish publishes a message to a topic
+func (n *Node) Publish(topic string, message []byte) error {
+	errChan := make(chan error)
+	go func() {
+		err := n.PubSub().Publish(n.ctx, topic, message)
+		errChan <- err
+	}()
+	select {
+	case err := <-errChan:
+		return err
+	case <-n.ctx.Done():
+		return n.ctx.Err()
+	}
+}
+
+// Subscribe subscribes to a topic
+func (n *Node) Subscribe(topic string, initialPeers ...string) (icore.PubSubSubscription, error) {
+	err := n.Connect(initialPeers...)
+	if err != nil {
+		return nil, err
+	}
+	sub, err := n.PubSub().Subscribe(n.ctx, topic, options.PubSub.Discover(true))
+	if err != nil {
+		return nil, err
+	}
+	return sub, nil
+}
+
+// ListTopics lists the topics the node is subscribed to
+func (n *Node) ListTopics() ([]string, error) {
+	return n.PubSub().Ls(n.ctx)
+}
+
+// ListPeers lists the peers the node is connected to on a given topic
+func (n *Node) ListPeers(topic string) ([]peer.ID, error) {
+	return n.PubSub().Peers(n.ctx, options.PubSub.Topic(topic))
 }

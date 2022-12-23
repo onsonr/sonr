@@ -3,24 +3,23 @@ syntax = "proto3";
 // Package common defines commonly used types agnostic to the node role on the Sonr network.
 package sonrhq.common.v1;
 
-option go_package = "github.com/sonr-hq/sonr/pkg/common/types/v1";
+option go_package = "github.com/sonr-hq/sonr/pkg/common";
 
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
-  string peer_id = 1;     // Peer ID of Libp2p Peer
-  string did = 2;       // User Sonr Domain
-  string account_address = 3; // User Account Address
-  bytes public_key = 4; // User Public Key
-  string unique_id = 5; // Unique ID of the Peer
-  Type type = 6;
+  string id = 1;       // User Sonr Account Decentralized ID
+  string peer_id = 2;  // Peer ID
+  string multiaddr = 3; // Peer Multiaddress
+  Type type = 5;      // Type of Peer
+
 
   // Peers Active Status
   enum Type {
     UNKNOWN = 0;
-    VAULT = 1;
-    ISSUER = 2;
-    VERIFIER = 3;
-    HOLDER = 4;
+    HIGHWAY = 1;
+    MOTOR = 2;
+    VALIDATOR = 3;
+    THIRD_PARTY = 4;
   }
 }
 

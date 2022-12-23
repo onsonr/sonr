@@ -59,26 +59,3 @@ message RegisterRequest {
   bytes aes_psk_key = 3;
   map<string, string> metadata = 4;
 }
-
-// LinkingRequest opens a pubsub topic session in order to pair the current device with an existing Sonr Account.
-message LinkingRequest {}
-
-// PairingRequest attempts to join a pubsub topic session in order to pair the current device with an existing Sonr Account.
-message PairingRequest {
-  // peer-to-peer addresses of host
-  repeated bytes p2p_addrs = 1;
-}
-
-message LoginRequest {
-  // Either the DID or an alias of the account
-  string account_id = 1;
-
-  // The account password
-  string password = 2;
-
-  // The device-specific credential, known only to the logging in device
-  bytes aes_dsc_key = 3;
-
-  // The preshared key, known to all devices of the account
-  bytes aes_psk_key = 4;
-}
