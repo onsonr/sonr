@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
@@ -60,7 +61,7 @@ func partyIdListToPeerIdList(ids []party.ID) []peer.ID {
 }
 
 // HandlerLoop blocks until the handler has finished. The result of the execution is given by Handler.Result().
-func HandlerLoop(h protocol.Handler, network *Network) {
+func HandlerLoop(h protocol.Handler, network *node.Network) {
 	for {
 		select {
 		// outgoing messages

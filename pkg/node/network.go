@@ -1,4 +1,4 @@
-package mpc
+package node
 
 import (
 	"context"
@@ -7,7 +7,6 @@ import (
 
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	mpc "github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
@@ -27,7 +26,7 @@ import (
 // @property subscriptions - a map of party IDs to PubSub subscriptions.
 type Network struct {
 	ctx       context.Context
-	selfNode  *node.Node
+	selfNode  *Node
 	selfParty party.ID
 	peerIds   []peer.ID
 	partyIds  []party.ID
@@ -41,7 +40,7 @@ type Network struct {
 }
 
 // It creates a new network object, assigns the subscriptions, and returns the network object
-func NewNetwork(ctx context.Context, n *node.Node, peerIds []peer.ID) (*Network, error) {
+func NewNetwork(ctx context.Context, n *Node, peerIds []peer.ID) (*Network, error) {
 	// Convert the peer IDs to party IDs.
 	partyIds := make([]party.ID, len(peerIds))
 	for i, id := range peerIds {
@@ -65,9 +64,6 @@ func NewNetwork(ctx context.Context, n *node.Node, peerIds []peer.ID) (*Network,
 	for i, id := range net.peerIds {
 		idStrs[i] = id.String()
 	}
-
-	// Subscribe to the topic.
-
 	return net, nil
 }
 

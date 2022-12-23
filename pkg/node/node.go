@@ -18,7 +18,6 @@ import (
 	"github.com/sonr-hq/sonr/pkg/common"
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/wallet"
-	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
 )
 
 // `Node` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
@@ -49,7 +48,7 @@ type Node struct {
 	bootstrappers      []string
 	topicEventHandlers map[string]TopicMessageHandler
 
-	network    *mpc.Network
+	network    *Network
 	mpcPeerIds []peer.ID
 }
 

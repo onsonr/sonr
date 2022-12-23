@@ -5,6 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/pkg/node"
+
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
@@ -12,19 +13,19 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-func CMPKeygen(node *node.Node, ids ...peer.ID) (*cmp.Config, error) {
+func CMPKeygen(n *node.Node, ids ...peer.ID) (*cmp.Config, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	// Create a new network.
-	net, err := NewNetwork(ctx, node, ids)
+	net, err := node.NewNetwork(ctx, n, ids)
 	if err != nil {
 		return nil, err
 	}
 
 	// Create a new keygen session.
 	pl := pool.NewPool(0)
-	handler, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, party.ID(node.ID()), peerIdListToPartyIdList(ids), 1, pl), nil)
+	handler, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, party.ID(n.ID()), peerIdListToPartyIdList(ids), 1, pl), nil)
 	if err != nil {
 		return nil, err
 	}
