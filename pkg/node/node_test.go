@@ -299,3 +299,27 @@ func TestSubPubNode(t *testing.T) {
 	}
 	<-done
 }
+
+func TestNewNetwork(t *testing.T) {
+	ctx := context.Background()
+	node1, err := New(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	node2, err := New(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = node2.Connect(node1.MultiAddr())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	net, err := node1.CreateNetwork(ctx, node2.ID())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(net)
+}

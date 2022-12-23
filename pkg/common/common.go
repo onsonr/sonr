@@ -8,6 +8,7 @@ import (
 	tm_json "github.com/tendermint/tendermint/libs/json"
 )
 
+// > Loads a private key from a JSON file and returns a `crypto.PrivKey` interface
 func LoadPrivKeyFromJsonPath(path string) (crypto.PrivKey, error) {
 	// Load the key from the given path.
 	key, err := ioutil.ReadFile(path)

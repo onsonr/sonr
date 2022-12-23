@@ -18,6 +18,7 @@ import (
 	"github.com/sonr-hq/sonr/pkg/common"
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/wallet"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
 // `Node` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
@@ -177,6 +178,17 @@ func (n *Node) Connect(peers ...string) error {
 	return nil
 }
 
+// CreateNetwork creates a new MPC network
+func (n *Node) CreateNetwork(ctx context.Context, ids ...peer.ID) (*Network, error) {
+	n.mpcPeerIds = append(n.mpcPeerIds, ids...)
+	network, err := NewNetwork(ctx, n, n.mpcPeerIds)
+	if err != nil {
+		return nil, err
+	}
+	go network.Start()
+	return network, nil
+}
+
 // ID returns the node's ID
 func (n *Node) ID() peer.ID {
 	return n.node.Identity
@@ -195,6 +207,15 @@ func (n *Node) ListTopics() ([]string, error) {
 // MultiAddr returns the node's multiaddress as a string
 func (n *Node) MultiAddr() string {
 	return fmt.Sprintf("/ip4/127.0.0.1/udp/4010/p2p/%s", n.node.Identity.String())
+}
+
+// PartyIDs returns the node's party IDs
+func (n *Node) PartyIDs() []party.ID {
+	pids := make([]party.ID, len(n.mpcPeerIds))
+	for i, pid := range n.mpcPeerIds {
+		pids[i] = party.ID(pid)
+	}
+	return pids
 }
 
 // Peer returns the node's peer info

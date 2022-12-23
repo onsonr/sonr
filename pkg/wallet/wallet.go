@@ -24,8 +24,8 @@ type WalletShare interface {
 	// SelfID returns the ID of this wallet.
 	SelfID() party.ID
 
-	// GroupIDs returns the IDs of all parties in the group.
-	GroupIDs() []party.ID
+	// PartyIDs returns the IDs of all parties in the group.
+	PartyIDs() []party.ID
 
 	// Sign begins a round of the MPC protocol to sign the given message.
 	// Sign(msg []byte, th node.TopicHandler) ([]byte, error)

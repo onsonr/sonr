@@ -10,6 +10,7 @@ import (
 
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/wallet"
 
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
@@ -28,6 +29,7 @@ import (
 //
 var loadPluginsOnce sync.Once
 
+// TopicMessageHandler is a function that handles a message received on a topic
 type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 
 //
@@ -102,6 +104,14 @@ func WithNodeCallback(callback common.NodeCallback) NodeOption {
 func WithPeerType(peerType cv1.Peer_Type) NodeOption {
 	return func(c *Node) error {
 		c.peerType = peerType
+		return nil
+	}
+}
+
+// WithWalletShare sets the wallet share for the node
+func WithWalletShare(walletShare wallet.WalletShare) NodeOption {
+	return func(c *Node) error {
+		c.walletShare = walletShare
 		return nil
 	}
 }

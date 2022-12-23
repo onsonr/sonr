@@ -28,8 +28,7 @@ type Network struct {
 	ctx       context.Context
 	selfNode  *Node
 	selfParty party.ID
-	peerIds   []peer.ID
-	partyIds  []party.ID
+	nodes     []*Node
 
 	mtx       sync.Mutex
 	doneChan  chan bool
@@ -46,23 +45,16 @@ func NewNetwork(ctx context.Context, n *Node, peerIds []peer.ID) (*Network, erro
 	for i, id := range peerIds {
 		partyIds[i] = party.ID(id)
 	}
+	partyIds = append(partyIds, party.ID(n.ID()))
 
 	// Create the network object.
 	net := &Network{
 		ctx:       context.Background(),
 		selfParty: party.ID(n.ID()),
 		selfNode:  n,
-		peerIds:   peerIds,
-		partyIds:  partyIds,
 		doneChan:  make(chan bool),
 		errorChan: make(chan error),
 		msgInChan: make(chan *mpc.Message),
-	}
-
-	// Assign the subscriptions.
-	idStrs := make([]string, len(net.peerIds))
-	for i, id := range net.peerIds {
-		idStrs[i] = id.String()
 	}
 	return net, nil
 }
@@ -96,9 +88,9 @@ func (n *Network) Send(msg *mpc.Message) {
 		n.errorChan <- err
 	}
 
-	for _, id := range n.partyIds {
-		if msg.IsFor(id) {
-			err = n.selfNode.Publish(topicKey(id), bz)
+	for _, peerNode := range n.nodes {
+		if msg.IsFor(party.ID(peerNode.ID())) {
+			err = n.selfNode.Publish(topicKey(party.ID(peerNode.ID())), bz)
 			if err != nil {
 				n.errorChan <- err
 			}
@@ -110,7 +102,6 @@ func (n *Network) Send(msg *mpc.Message) {
 func (n *Network) Start() {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
-	go n.handleErrors()
 	go func() {
 		err := n.selfNode.Subscribe(n.ctx, topicKey(n.selfParty), n.handleSubscription)
 		if err != nil {
@@ -125,7 +116,7 @@ func (n *Network) Start() {
 //
 
 // A goroutine that is listening for errors on the error channel.
-func (n *Network) handleErrors() {
+func handleErrors(n *Network) {
 	for {
 		select {
 		case err := <-n.errorChan:
