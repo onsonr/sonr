@@ -15,3 +15,5 @@ jobs:
         with:
           output_file: "docs/static/images/diagrams/repo-structure.svg"
           excluded_paths: "ignore,.github,docs,scripts,testutil"
+          branch: "auto/visualize-repo"
+      
