@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sonrio.sonr.identity;
+package sonrhq.sonr.identity;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";

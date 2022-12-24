@@ -2,7 +2,7 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.motor.bind.v1;
-import "common/peer.proto";
+import "common/v1/peer.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1";
 
 // -----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ message ConnectRequest {
   string multiaddr = 2;
 
   // Peer is the peer to connect to
-  sonrhq.common.Peer peer = 3;
+  sonrhq.common.v1.Peer peer = 3;
 }
 
 // CreateAccountWithKeyRequest allows the DSC to be specified manually when creating a request.

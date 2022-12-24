@@ -17,12 +17,12 @@ message ConnectResponse {
 message CreateAccountResponse {
   string address = 1;
   bytes aes_psk_key = 2;
-  sonrio.sonr.identity.DidDocument did_document = 3;
+  sonrhq.sonr.identity.DidDocument did_document = 3;
 }
 
 message OnboardDeviceResponse {
   bool success = 1;
-  sonrio.sonr.identity.DidDocument did_document = 2;
+  sonrhq.sonr.identity.DidDocument did_document = 2;
 }
 
 message LinkingResponse {
@@ -33,12 +33,12 @@ message LinkingResponse {
 
 message PairingResponse {
   bool success = 1;
-  sonrio.sonr.identity.DidDocument did_document = 2;
+  sonrhq.sonr.identity.DidDocument did_document = 2;
 }
 
 message LoginResponse {
   bool success = 1;
-  sonrio.sonr.identity.DidDocument did_document = 2;
+  sonrhq.sonr.identity.DidDocument did_document = 2;
 }
 
 message PaymentResponse {

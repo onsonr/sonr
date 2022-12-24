@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sonrio.sonr.identity;
+package sonrhq.sonr.identity;
 import "sonr/identity/ssi.proto";
 // this line is used by starport scaffolding # proto/tx/import
 

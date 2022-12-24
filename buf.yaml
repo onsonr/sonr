@@ -1,9 +1,11 @@
-version: v1
-name: buf.build/sonr-io/sonr
+version: v1beta1
+name: buf.build/sonr-hq/sonr
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/cosmos/cosmos-sdk
-
+build:
+  roots:
+    - proto
 lint:
   allow_comment_ignores: true
   use:
