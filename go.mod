@@ -6,6 +6,7 @@ require (
 	cosmossdk.io/math v1.0.0-beta.3
 	github.com/cosmos/cosmos-sdk v0.46.3
 	github.com/cosmos/ibc-go/v5 v5.0.0
+	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/go-webauthn/webauthn v0.5.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -18,6 +19,7 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.0.7
 	github.com/libp2p/go-libp2p v0.24.1
 	github.com/marstr/guid v1.1.0
+	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.8.0
 	github.com/ockam-network/did v0.1.3
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -115,7 +117,6 @@ require (
 	github.com/flynn/noise v1.0.0 // indirect
 	github.com/francoispqt/gojay v1.2.13 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/fxamacker/cbor/v2 v2.4.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
@@ -285,7 +286,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/moby/sys/mount v0.3.1 // indirect
 	github.com/moby/sys/mountinfo v0.6.0 // indirect
-	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/multiformats/go-base32 v0.1.0 // indirect
 	github.com/multiformats/go-base36 v0.2.0 // indirect

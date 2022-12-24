@@ -11,6 +11,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/wallet"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
@@ -100,6 +101,14 @@ func WithNodeCallback(callback common.NodeCallback) NodeOption {
 	}
 }
 
+// WithPartyId sets the party id for the node. This is to be replaced by the User defined label for the device
+func WithPartyId(partyId string) NodeOption {
+	return func(c *Node) error {
+		c.partyId = party.ID(partyId)
+		return nil
+	}
+}
+
 // WithPeerType sets the type of peer
 func WithPeerType(peerType cv1.Peer_Type) NodeOption {
 	return func(c *Node) error {
@@ -129,6 +138,7 @@ func defaultNode(ctx context.Context) *Node {
 		peerType:           cv1.Peer_MOTOR,
 		rendezvous:         defaultRendezvousString,
 		topicEventHandlers: make(map[string]TopicMessageHandler),
+		partyId:            party.ID("current"),
 	}
 }
 

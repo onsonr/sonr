@@ -49,8 +49,9 @@ type Node struct {
 	bootstrappers      []string
 	topicEventHandlers map[string]TopicMessageHandler
 
-	network    *Network
+	network    *OnlineNetwork
 	mpcPeerIds []peer.ID
+	partyId    party.ID
 }
 
 // New creates a new node with the given options
@@ -178,17 +179,6 @@ func (n *Node) Connect(peers ...string) error {
 	return nil
 }
 
-// CreateNetwork creates a new MPC network
-func (n *Node) CreateNetwork(ctx context.Context, ids ...peer.ID) (*Network, error) {
-	n.mpcPeerIds = append(n.mpcPeerIds, ids...)
-	network, err := NewNetwork(ctx, n, n.mpcPeerIds)
-	if err != nil {
-		return nil, err
-	}
-	go network.Start()
-	return network, nil
-}
-
 // ID returns the node's ID
 func (n *Node) ID() peer.ID {
 	return n.node.Identity
@@ -209,8 +199,13 @@ func (n *Node) MultiAddr() string {
 	return fmt.Sprintf("/ip4/127.0.0.1/udp/4010/p2p/%s", n.node.Identity.String())
 }
 
-// PartyIDs returns the node's party IDs
-func (n *Node) PartyIDs() []party.ID {
+// PartyID returns the node's party ID
+func (n *Node) PartyID() party.ID {
+	return n.partyId
+}
+
+// GroupPartyIDs returns the node's party IDs
+func (n *Node) GroupPartyIDs() []party.ID {
 	pids := make([]party.ID, len(n.mpcPeerIds))
 	for i, pid := range n.mpcPeerIds {
 		pids[i] = party.ID(pid)

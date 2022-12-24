@@ -12,8 +12,8 @@ type WalletShare interface {
 	// Returns the Bech32 representation of the given party.
 	Address() string
 
-	// MPCConfig returns the *cmp.Config of this wallet.
-	MPCConfig() *cmp.Config
+	// CMPConfig returns the *cmp.Config of this wallet.
+	CMPConfig() *cmp.Config
 
 	// Marshal serializes the cmp.Config into a byte slice for local storage
 	Marshal() ([]byte, error)

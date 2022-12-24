@@ -34,7 +34,7 @@ func (w *mpcConfigWalletImpl) Address() string {
 }
 
 // MPCConfig returns the *cmp.Config of this wallet.
-func (w *mpcConfigWalletImpl) MPCConfig() *cmp.Config {
+func (w *mpcConfigWalletImpl) CMPConfig() *cmp.Config {
 	return w.Config
 }
 

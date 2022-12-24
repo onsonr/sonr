@@ -3,14 +3,19 @@ package mpc
 import (
 	"sync"
 
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
 
-// Network simulates a point-to-point network between different parties using Go channels.
-// The same network is used by all processes, and can be reused for different protocols.
-// When used with test.Handler, no interaction from the user is required beyond creating the network.
-type Network struct {
+// It's a network that can be used to simulate offline parties.
+// @property parties - a slice of party IDs that are participating in the protocol.
+// @property listenChannels - a map of party IDs to channels that will be used to send messages to the
+// party.
+// @property done - a channel that is closed when the network is closed.
+// @property closedListenChan - This channel is used to signal that the network has been closed.
+// @property mtx - a mutex to protect the listenChannels map
+type offlineNetwork struct {
 	parties          party.IDSlice
 	listenChannels   map[party.ID]chan *protocol.Message
 	done             chan struct{}
@@ -18,10 +23,12 @@ type Network struct {
 	mtx              sync.Mutex
 }
 
-func NewNetwork(parties party.IDSlice) *Network {
+// It creates a new `OfflineNetwork` object, and initializes it with a list of parties, and a map of
+// channels
+func createOfflineNetwork(parties party.IDSlice) Network {
 	closed := make(chan *protocol.Message)
 	close(closed)
-	c := &Network{
+	c := &offlineNetwork{
 		parties:          parties,
 		listenChannels:   make(map[party.ID]chan *protocol.Message, 2*len(parties)),
 		closedListenChan: closed,
@@ -29,7 +36,8 @@ func NewNetwork(parties party.IDSlice) *Network {
 	return c
 }
 
-func (n *Network) init() {
+// Initializing the network.
+func (n *offlineNetwork) init() {
 	N := len(n.parties)
 	for _, id := range n.parties {
 		n.listenChannels[id] = make(chan *protocol.Message, N*N)
@@ -37,7 +45,8 @@ func (n *Network) init() {
 	n.done = make(chan struct{})
 }
 
-func (n *Network) Next(id party.ID) <-chan *protocol.Message {
+// Returning a channel that is used to send messages to the party.
+func (n *offlineNetwork) Next(id party.ID) <-chan *protocol.Message {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	if len(n.listenChannels) == 0 {
@@ -50,7 +59,8 @@ func (n *Network) Next(id party.ID) <-chan *protocol.Message {
 	return c
 }
 
-func (n *Network) Send(msg *protocol.Message) {
+// Sending the message to all the parties.
+func (n *offlineNetwork) Send(nd *node.Node, msg *protocol.Message) {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	for id, c := range n.listenChannels {
@@ -60,7 +70,13 @@ func (n *Network) Send(msg *protocol.Message) {
 	}
 }
 
-func (n *Network) Done(id party.ID) chan struct{} {
+// IsOnlineNetwork returns false.
+func (n *offlineNetwork) IsOnlineNetwork() bool {
+	return false
+}
+
+// Closing the channel that is used to send messages to the party.
+func (n *offlineNetwork) Done(id party.ID) chan struct{} {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	if _, ok := n.listenChannels[id]; ok {
@@ -73,14 +89,15 @@ func (n *Network) Done(id party.ID) chan struct{} {
 	return n.done
 }
 
-func (n *Network) Quit(id party.ID) {
+// Removing the party from the network.
+func (n *offlineNetwork) Quit(id party.ID) {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	n.parties = n.parties.Remove(id)
 }
 
 // handlerLoop is a helper function that loops over all the parties and calls the given handler.
-func handlerLoop(id party.ID, h protocol.Handler, network *Network) {
+func handlerLoop(id party.ID, h protocol.Handler, network Network) {
 	for {
 		select {
 
@@ -91,7 +108,7 @@ func handlerLoop(id party.ID, h protocol.Handler, network *Network) {
 				// the channel was closed, indicating that the protocol is done executing.
 				return
 			}
-			go network.Send(msg)
+			go network.Send(nil, msg)
 
 			// incoming messages
 		case msg := <-network.Next(id):

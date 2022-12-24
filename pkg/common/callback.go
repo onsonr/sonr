@@ -13,7 +13,6 @@ import (
 type NodeCallback interface {
 	OnDiscover(data []byte)
 	OnLinking(data []byte)
-	OnTopicMessage(topic string, data []byte)
 }
 
 type defaultCallback struct{}

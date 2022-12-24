@@ -1,4 +1,4 @@
-package node
+package mpc
 
 import (
 	"context"
@@ -6,12 +6,13 @@ import (
 	"sync"
 
 	icore "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	mpc "github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
 
-// `OnlineNetwork` is a struct that contains a `context.Context`, a `node.Node`, a list of `peer.ID`s, a list
+// `onlineNetwork` is a struct that contains a `context.Context`, a `node.Node`, a list of `peer.ID`s, a list
 // of `party.ID`s, a `sync.Mutex`, a `chan bool`, a `chan error`, a `chan *mpc.Message`, and a
 // `map[party.ID]icore.PubSubSubscription`.
 // @property ctx - the context of the network
@@ -24,8 +25,8 @@ import (
 // @property msgInChan - This is the channel that the network will use to send messages to the
 // application.
 // @property subscriptions - a map of party IDs to PubSub subscriptions.
-type OnlineNetwork struct {
-	nodes   []*Node
+type onlineNetwork struct {
+	nodes   []*node.Node
 	parties party.IDSlice
 
 	mtx  sync.Mutex
@@ -37,16 +38,16 @@ type OnlineNetwork struct {
 }
 
 // It creates a new network object, assigns the subscriptions, and returns the network object
-func createOnlineNetwork(ctx context.Context, nodes []*Node) (*OnlineNetwork, error) {
+func createOnlineNetwork(ctx context.Context, nodes []*node.Node) (Network, error) {
 	// Convert the peer IDs to party IDs.
 	partyIds := make([]party.ID, len(nodes))
 	for i, n := range nodes {
-		partyIds[i] = n.partyId
+		partyIds[i] = n.PartyID()
 	}
 	closed := make(chan *protocol.Message)
 	close(closed)
 	// Create the network object.
-	net := &OnlineNetwork{
+	net := &onlineNetwork{
 		nodes:            nodes,
 		parties:          partyIds,
 		done:             make(chan struct{}),
@@ -57,7 +58,7 @@ func createOnlineNetwork(ctx context.Context, nodes []*Node) (*OnlineNetwork, er
 }
 
 // Initializing the network.
-func (n *OnlineNetwork) init() {
+func (n *onlineNetwork) init() {
 	N := len(n.parties)
 	for _, id := range n.parties {
 		n.listenChannels[id] = make(chan *protocol.Message, N*N)
@@ -65,17 +66,22 @@ func (n *OnlineNetwork) init() {
 	n.done = make(chan struct{})
 
 	for _, node := range n.nodes {
-		sub, err := node.PubSub().Subscribe(context.Background(), topicKey(node.partyId))
+		sub, err := node.PubSub().Subscribe(context.Background(), topicKey(node.PartyID()))
 		if err != nil {
 			panic(err)
 		}
-		n.subscriptions[node.partyId] = sub
-		go n.handleSubscription(node.partyId, sub)
+		n.subscriptions[node.PartyID()] = sub
+		go n.handleSubscription(node.PartyID(), sub)
 	}
 }
 
+// IsOnlineNetwork returns true.
+func (n *onlineNetwork) IsOnlineNetwork() bool {
+	return true
+}
+
 // Returning the channel that the network will use to send messages to the application.
-func (n *OnlineNetwork) Next(id party.ID) <-chan *mpc.Message {
+func (n *onlineNetwork) Next(id party.ID) <-chan *mpc.Message {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	if len(n.listenChannels) == 0 {
@@ -89,7 +95,7 @@ func (n *OnlineNetwork) Next(id party.ID) <-chan *mpc.Message {
 }
 
 // Sending a message to the network.
-func (n *OnlineNetwork) Send(curr *Node, msg *mpc.Message) {
+func (n *onlineNetwork) Send(curr *node.Node, msg *mpc.Message) {
 	bz, err := msg.MarshalBinary()
 	if err != nil {
 		fmt.Printf("error while marshaling message: %e", err)
@@ -100,8 +106,8 @@ func (n *OnlineNetwork) Send(curr *Node, msg *mpc.Message) {
 	defer n.mtx.Unlock()
 
 	for _, pn := range n.nodes {
-		if msg.IsFor(pn.partyId) {
-			err = curr.Publish(topicKey(pn.partyId), bz)
+		if msg.IsFor(pn.PartyID()) {
+			err = curr.Publish(topicKey(pn.PartyID()), bz)
 			if err != nil {
 				fmt.Printf("error while publishing message: %e", err)
 				continue
@@ -111,7 +117,7 @@ func (n *OnlineNetwork) Send(curr *Node, msg *mpc.Message) {
 }
 
 // Closing the subscriptions and returning the done channel.
-func (n *OnlineNetwork) Done(id party.ID) chan struct{} {
+func (n *onlineNetwork) Done(id party.ID) chan struct{} {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	for id, sub := range n.subscriptions {
@@ -124,12 +130,19 @@ func (n *OnlineNetwork) Done(id party.ID) chan struct{} {
 	return n.done
 }
 
+// Removing the party from the network.
+func (n *onlineNetwork) Quit(id party.ID) {
+	n.mtx.Lock()
+	defer n.mtx.Unlock()
+	n.parties = n.parties.Remove(id)
+}
+
 //
 // Private methods
 //
 
 // A goroutine that is listening for messages on the topic handler.
-func (n *OnlineNetwork) handleSubscription(id party.ID, sub icore.PubSubSubscription) error {
+func (n *onlineNetwork) handleSubscription(id party.ID, sub icore.PubSubSubscription) error {
 	for {
 		msg, err := sub.Next(context.Background())
 		if err != nil {
