@@ -8,7 +8,7 @@ import "common/peer.proto";
 
 // LobbyMessage is message passed from Peer in Lobby
 message NearbyChannelMessage {
-  common.v1.Peer from = 1;     // Users Peer Data
+  sonrhq.common.Peer from = 1;     // Users Peer Data
   bytes body = 2;    // Payload is the message data
   bytes signature = 3;             // Signature of the Attached Data
   int64 created_at = 4; // Timestamp
@@ -16,6 +16,6 @@ message NearbyChannelMessage {
 
 message RefreshEvent {
   string topic_name = 1;
-  repeated common.v1.Peer peers = 2;
+  repeated sonrhq.common.Peer peers = 2;
   int64 received_at = 3;
 }

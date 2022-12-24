@@ -2,9 +2,11 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
+	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/ipfs/interface-go-ipfs-core/options"
 	"github.com/stretchr/testify/assert"
 )
@@ -179,8 +181,6 @@ func TestGroupPubSub(t *testing.T) {
 		t.Fatal(err)
 	}
 
-
-
 	sub1, err := n1.PubSub().Subscribe(ctx, "testch")
 	if err != nil {
 		t.Fatal(err)
@@ -248,4 +248,54 @@ func TestGroupPubSub(t *testing.T) {
 	if m2.From() != fromKey.ID() {
 		t.Errorf("m.From didn't match for second node message")
 	}
+}
+
+func TestSubPubNode(t *testing.T) {
+	ctx := context.Background()
+	node1, err := New(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	node2, err := New(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = node2.Connect(node1.MultiAddr())
+	if err != nil {
+		t.Fatal(err)
+	}
+	inMsgCount := 0
+	done := make(chan struct{})
+	err = node1.Subscribe(ctx, "testch", func(topic string, msg icore.PubSubMessage) error {
+		if topic != "testch" {
+			t.Errorf("got invalid topic: %s", topic)
+		}
+		if string(msg.Data()) != "hello world" {
+			t.Errorf("got invalid data: %s", string(msg.Data()))
+		}
+		inMsgCount++
+		if inMsgCount == 3 {
+			fmt.Println("got 3 messages, cancelling context")
+			done <- struct{}{}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = node2.Publish("testch", []byte("hello world"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = node2.Publish("testch", []byte("hello world"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = node2.Publish("testch", []byte("hello world"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	<-done
 }

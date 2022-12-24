@@ -12,8 +12,8 @@ type WalletShare interface {
 	// Returns the Bech32 representation of the given party.
 	Address() string
 
-	// MPCConfig returns the *cmp.Config of this wallet.
-	MPCConfig() *cmp.Config
+	// CMPConfig returns the *cmp.Config of this wallet.
+	CMPConfig() *cmp.Config
 
 	// Marshal serializes the cmp.Config into a byte slice for local storage
 	Marshal() ([]byte, error)
@@ -24,8 +24,8 @@ type WalletShare interface {
 	// SelfID returns the ID of this wallet.
 	SelfID() party.ID
 
-	// GroupIDs returns the IDs of all parties in the group.
-	GroupIDs() []party.ID
+	// PartyIDs returns the IDs of all parties in the group.
+	PartyIDs() []party.ID
 
 	// Sign begins a round of the MPC protocol to sign the given message.
 	// Sign(msg []byte, th node.TopicHandler) ([]byte, error)

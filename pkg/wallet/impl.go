@@ -34,7 +34,7 @@ func (w *mpcConfigWalletImpl) Address() string {
 }
 
 // MPCConfig returns the *cmp.Config of this wallet.
-func (w *mpcConfigWalletImpl) MPCConfig() *cmp.Config {
+func (w *mpcConfigWalletImpl) CMPConfig() *cmp.Config {
 	return w.Config
 }
 
@@ -62,8 +62,8 @@ func (w *mpcConfigWalletImpl) SelfID() party.ID {
 	return w.Config.ID
 }
 
-// GroupIDs returns the IDs of all parties in the group.
-func (w *mpcConfigWalletImpl) GroupIDs() []party.ID {
+// PartyIDs returns the IDs of all parties in the group.
+func (w *mpcConfigWalletImpl) PartyIDs() []party.ID {
 	return w.Config.PartyIDs()
 }
 
@@ -87,5 +87,5 @@ func searchFirstNotId(ids party.IDSlice, id party.ID) party.ID {
 			return v
 		}
 	}
-	return party.ID(0)
+	return party.ID("")
 }
