@@ -2,16 +2,12 @@ package mpc
 
 import (
 	peer "github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/pkg/wallet"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
-
-// The default shards that are added to the MPC wallet
-var defaultParticipants = party.IDSlice{"vault", "current"}
 
 // `protocolConfig` is a struct that contains a public key, a list of participants, a threshold, and a
 // map of configurations for each participant.
@@ -21,19 +17,17 @@ var defaultParticipants = party.IDSlice{"vault", "current"}
 // valid.
 // @property configs - a map of party IDs to the configuration of the party.
 type protocolConfig struct {
-	pubKey       []byte
-	participants party.IDSlice
-	threshold    int
-	configs      map[party.ID]*cmp.Config
+	pubKey    []byte
+	threshold int
+	configs   map[party.ID]*cmp.Config
 }
 
 // default configuration options
 func defaultConfig() *protocolConfig {
 	return &protocolConfig{
-		pubKey:       make([]byte, 0),
-		participants: defaultParticipants,
-		threshold:    1,
-		configs:      make(map[party.ID]*cmp.Config),
+		pubKey:    make([]byte, 0),
+		threshold: 1,
+		configs:   make(map[party.ID]*cmp.Config),
 	}
 }
 
@@ -44,25 +38,15 @@ func (wc *protocolConfig) Apply(opts ...WalletOption) *MPCProtocol {
 	}
 
 	return &MPCProtocol{
-		pool:         pool.NewPool(0),
-		participants: wc.participants,
-		pubKey:       wc.pubKey,
-		configs:      wc.configs,
-		currentId:    wc.participants[0],
-		threshold:    wc.threshold,
+		pool:      pool.NewPool(0),
+		pubKey:    wc.pubKey,
+		configs:   wc.configs,
+		threshold: wc.threshold,
 	}
 }
 
 // WalletOption is a function that applies a configuration option to a walletConfig
 type WalletOption func(*protocolConfig)
-
-// WithParticipants adds a list of participants to the wallet
-func WithParticipants(participants ...party.ID) WalletOption {
-	return func(c *protocolConfig) {
-		// Update participants and network.
-		c.participants = append(defaultParticipants, participants...)
-	}
-}
 
 // WithThreshold sets the threshold of the MPC wallet
 func WithThreshold(threshold int) WalletOption {
@@ -90,11 +74,14 @@ func WithWalletShares(cnfs ...wallet.WalletShare) WalletOption {
 
 // A Network is a channel that sends messages to parties and receives messages from parties.
 type Network interface {
+	// Ls returns a list of peers that are connected to the network.
+	Ls() []party.ID
+
 	// A function that takes in a party ID and returns a channel of protocol messages.
 	Next(id party.ID) <-chan *protocol.Message
 
 	// Sending a message to the network.
-	Send(curr *node.Node, msg *protocol.Message)
+	Send(msg *protocol.Message)
 
 	// A channel that is closed when the party is done with the protocol.
 	Done(id party.ID) chan struct{}

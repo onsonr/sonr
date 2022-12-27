@@ -28,9 +28,8 @@ import (
 // @property {int} threshold - The minimum number of parties required to complete the protocol.
 // @property callback - This is a callback function that will be called when the protocol is finished.
 type MPCProtocol struct {
-	pool         *pool.Pool
-	currentId    party.ID
-	participants party.IDSlice
+	pool      *pool.Pool
+	currentId party.ID
 
 	pubKey    []byte
 	configs   map[party.ID]*cmp.Config
@@ -47,19 +46,19 @@ func Initialize(options ...WalletOption) *MPCProtocol {
 }
 
 // GenerateWallet a new ECDSA private key shared among all the given participants.
-func (p *MPCProtocol) Keygen(current party.ID) (wallet.WalletShare, error) {
+func (p *MPCProtocol) Keygen(current party.ID, net Network) (wallet.WalletShare, error) {
+	p.currentId = current
 	if len(p.configs) > 0 {
 		return nil, fmt.Errorf("wallet already initialized")
 	}
 	p.currentId = current
-	net := createOfflineNetwork(defaultParticipants)
 	var wg sync.WaitGroup
-	for _, id := range p.participants {
+	for _, id := range net.Ls() {
 		wg.Add(1)
 		go func(id party.ID) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
-			conf, err := cmpKeygen(id, p.participants, net, p.threshold, &wg, pl)
+			conf, err := cmpKeygen(id, net.Ls(), net, p.threshold, &wg, pl)
 			if err != nil {
 				return
 			}
@@ -74,11 +73,10 @@ func (p *MPCProtocol) Keygen(current party.ID) (wallet.WalletShare, error) {
 }
 
 // Refreshes all shares of an existing ECDSA private key.
-func (w *MPCProtocol) Refresh(current party.ID) (wallet.WalletShare, error) {
+func (w *MPCProtocol) Refresh(current party.ID, net Network) (wallet.WalletShare, error) {
 	w.currentId = current
-	net := createOfflineNetwork(defaultParticipants)
 	var wg sync.WaitGroup
-	for _, id := range w.participants {
+	for _, id := range net.Ls() {
 		wg.Add(1)
 		go func(id party.ID) {
 			pl := pool.NewPool(0)
@@ -97,17 +95,16 @@ func (w *MPCProtocol) Refresh(current party.ID) (wallet.WalletShare, error) {
 }
 
 // Generates an ECDSA signature for messageHash.
-func (w *MPCProtocol) Sign(current party.ID, m []byte, signers party.IDSlice) (*ecdsa.Signature, error) {
+func (w *MPCProtocol) Sign(current party.ID, m []byte, net Network) (*ecdsa.Signature, error) {
 	w.currentId = current
-	net := createOfflineNetwork(signers)
 	doneChan := make(chan *ecdsa.Signature)
 	var wg sync.WaitGroup
-	for _, id := range signers {
+	for _, id := range net.Ls() {
 		wg.Add(1)
 		go func(id party.ID) {
 			pl := pool.NewPool(0)
 			defer pl.TearDown()
-			sig, err := cmpSign(w.configs[id], m, signers, net, &wg, pl)
+			sig, err := cmpSign(w.configs[id], m, net.Ls(), net, &wg, pl)
 			if err != nil {
 				return
 			}
@@ -176,4 +173,25 @@ func cmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n Network, wg *sync
 		return nil, errors.New("failed to verify cmp signature")
 	}
 	return sig, nil
+}
+
+// handlerLoop is a helper function that loops over all the parties and calls the given handler.
+func handlerLoop(id party.ID, h protocol.Handler, network Network) {
+	for {
+		select {
+
+		// outgoing messages
+		case msg, ok := <-h.Listen():
+			if !ok {
+				<-network.Done(id)
+				// the channel was closed, indicating that the protocol is done executing.
+				return
+			}
+			go network.Send(msg)
+
+			// incoming messages
+		case msg := <-network.Next(id):
+			h.Accept(msg)
+		}
+	}
 }

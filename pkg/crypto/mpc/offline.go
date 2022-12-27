@@ -3,7 +3,6 @@ package mpc
 import (
 	"sync"
 
-	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
@@ -45,6 +44,11 @@ func (n *offlineNetwork) init() {
 	n.done = make(chan struct{})
 }
 
+// Ls returns a list of parties that are participating in the protocol.
+func (n *offlineNetwork) Ls() []party.ID {
+	return n.parties
+}
+
 // Returning a channel that is used to send messages to the party.
 func (n *offlineNetwork) Next(id party.ID) <-chan *protocol.Message {
 	n.mtx.Lock()
@@ -60,7 +64,7 @@ func (n *offlineNetwork) Next(id party.ID) <-chan *protocol.Message {
 }
 
 // Sending the message to all the parties.
-func (n *offlineNetwork) Send(nd *node.Node, msg *protocol.Message) {
+func (n *offlineNetwork) Send(msg *protocol.Message) {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	for id, c := range n.listenChannels {
@@ -94,25 +98,4 @@ func (n *offlineNetwork) Quit(id party.ID) {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	n.parties = n.parties.Remove(id)
-}
-
-// handlerLoop is a helper function that loops over all the parties and calls the given handler.
-func handlerLoop(id party.ID, h protocol.Handler, network Network) {
-	for {
-		select {
-
-		// outgoing messages
-		case msg, ok := <-h.Listen():
-			if !ok {
-				<-network.Done(id)
-				// the channel was closed, indicating that the protocol is done executing.
-				return
-			}
-			go network.Send(nil, msg)
-
-			// incoming messages
-		case msg := <-network.Next(id):
-			h.Accept(msg)
-		}
-	}
 }
