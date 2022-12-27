@@ -10,7 +10,6 @@ import (
 
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/wallet"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 
 	files "github.com/ipfs/go-ipfs-files"
@@ -118,7 +117,7 @@ func WithPeerType(peerType cv1.NodeInfo_Type) NodeOption {
 }
 
 // WithWalletShare sets the wallet share for the node
-func WithWalletShare(walletShare wallet.WalletShare) NodeOption {
+func WithWalletShare(walletShare common.WalletShare) NodeOption {
 	return func(c *Node) error {
 		c.walletShare = walletShare
 		return nil

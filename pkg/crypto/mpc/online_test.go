@@ -25,7 +25,7 @@ func TestCMPKeygenOnline(t *testing.T) {
 
 	// Create MPC Protocol
 	w := Initialize()
-	net, err := createOnlineNetwork(ctx, n1, n2)
+	net, err := NewOnlineNetwork(ctx, n1, n2)
 	assert.NoError(t, err, "network creation succeeds")
 
 	// Run MPC Protocol

@@ -15,11 +15,11 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-func EmptyWallet() WalletShare {
+func EmptyWallet() common.WalletShare {
 	return &mpcConfigWalletImpl{}
 }
 
-func NewWalletImpl(pfix string, c interface{}) WalletShare {
+func NewWalletImpl(pfix string, c interface{}) common.WalletShare {
 	conf := c.(*cmp.Config)
 	confBz, err := conf.MarshalBinary()
 	if err != nil {

@@ -54,8 +54,34 @@ func SignatureFromBytes(sigStr []byte) (*ecdsa.Signature, error) {
 	return &sig, nil
 }
 
-// AesDecryptWithKey uses the give 32-bit key to decrypt plaintext.
-func AesDecryptWithKey(aesKey, ciphertext []byte) ([]byte, error) {
+// aesEncryptWithKey uses the give 32-bit key to encrypt plaintext.
+func aesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
+	if len(aesKey) != 32 {
+		return nil, errors.New("AES key must be 32 bytes")
+	}
+
+	blockCipher, err := aes.NewCipher(aesKey)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(blockCipher)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = rand.Read(nonce); err != nil {
+		return nil, err
+	}
+
+	ciphertext := gcm.Seal(nonce, nonce, []byte(plaintext), nil)
+
+	return ciphertext, nil
+}
+
+// aesDecryptWithKey uses the give 32-bit key to decrypt plaintext.
+func aesDecryptWithKey(aesKey, ciphertext []byte) ([]byte, error) {
 	if len(aesKey) != 32 {
 		fmt.Printf("aesKey len: %d\n", len(aesKey))
 		return nil, errors.New("AES key must be 32 bytes")
@@ -88,7 +114,7 @@ func AesEncryptWithPassword(password string, plaintext []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	return AesEncryptWithKey(key, plaintext)
+	return aesEncryptWithKey(key, plaintext)
 }
 
 // AesDecryptWithPassword uses the give password to generate an aes key and encrypt plaintext.
@@ -98,7 +124,7 @@ func AesDecryptWithPassword(password string, ciphertext []byte) ([]byte, error) 
 		return nil, err
 	}
 
-	return AesDecryptWithKey(key, ciphertext)
+	return aesDecryptWithKey(key, ciphertext)
 }
 
 func deriveKey(password string) ([]byte, error) {

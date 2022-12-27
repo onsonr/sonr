@@ -13,7 +13,7 @@ var defaultTestParticipants = party.IDSlice{"vault", "current"}
 
 func TestCMPKeygenOffline(t *testing.T) {
 	w := Initialize()
-	net := createOfflineNetwork(defaultTestParticipants)
+	net := NewOfflineNetwork(defaultTestParticipants)
 	c, err := w.Keygen("vault", net)
 	assert.NoError(t, err, "wallet generation succeeds")
 	assert.Contains(t, c.Address(), "snr", "address is valid")
@@ -21,7 +21,7 @@ func TestCMPKeygenOffline(t *testing.T) {
 
 func TestCMPRefreshOffline(t *testing.T) {
 	p := Initialize()
-	net := createOfflineNetwork(defaultTestParticipants)
+	net := NewOfflineNetwork(defaultTestParticipants)
 	ws, err := p.Keygen("current", net)
 	assert.NoError(t, err, "keygen succeeds")
 	ws2, err := p.Refresh("current", net)
@@ -32,7 +32,7 @@ func TestCMPRefreshOffline(t *testing.T) {
 func TestCMPSignOffline(t *testing.T) {
 	m := []byte("sign this message")
 	w := Initialize()
-	net := createOfflineNetwork(defaultTestParticipants)
+	net := NewOfflineNetwork(defaultTestParticipants)
 	ws, err := w.Keygen("current", net)
 	assert.NoError(t, err, "wallet generation succeeds")
 	sig, err := w.Sign("current", m, net)

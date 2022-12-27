@@ -4,10 +4,11 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/sonr-hq/sonr/pkg/common"
 )
 
 // GenTxForWalletSig constructs a Tx with all required info for a wallet to sign.
-func GenTxForWalletSig(w WalletShare, msgs ...sdk.Msg) ([]byte, error) {
+func GenTxForWalletSig(w common.WalletShare, msgs ...sdk.Msg) ([]byte, error) {
 	txb, err := buildTx(msgs...)
 	if err != nil {
 		return nil, err
@@ -82,7 +83,7 @@ func CreateRawTxBytes(txBody *txtypes.TxBody, sig []byte, authInfo *txtypes.Auth
 }
 
 // getAuthInfoSingle returns the authentication information for the given message.
-func getAuthInfoSingle(w WalletShare, gas int) (*txtypes.AuthInfo, error) {
+func getAuthInfoSingle(w common.WalletShare, gas int) (*txtypes.AuthInfo, error) {
 	// Get PublicKey
 	pubKey, err := w.PublicKey()
 	if err != nil {

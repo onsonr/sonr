@@ -24,7 +24,7 @@ type offlineNetwork struct {
 
 // It creates a new `OfflineNetwork` object, and initializes it with a list of parties, and a map of
 // channels
-func createOfflineNetwork(parties party.IDSlice) Network {
+func NewOfflineNetwork(parties party.IDSlice) Network {
 	closed := make(chan *protocol.Message)
 	close(closed)
 	c := &offlineNetwork{

@@ -38,7 +38,7 @@ type onlineNetwork struct {
 }
 
 // It creates a new network object, assigns the subscriptions, and returns the network object
-func createOnlineNetwork(ctx context.Context, nodes ...*node.Node) (Network, error) {
+func NewOnlineNetwork(ctx context.Context, nodes ...*node.Node) (Network, error) {
 	// Convert the peer IDs to party IDs.
 	parties := make([]party.ID, 0)
 	for _, node := range nodes {

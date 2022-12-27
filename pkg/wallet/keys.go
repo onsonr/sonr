@@ -1,11 +1,6 @@
 package wallet
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
-	"errors"
-
 	"github.com/libp2p/go-libp2p/core/crypto"
 	crypto_pb "github.com/libp2p/go-libp2p/core/crypto/pb"
 
@@ -48,30 +43,4 @@ func (w *PublicKey) Verify(data []byte, sig []byte) (bool, error) {
 		return false, err
 	}
 	return signature.Verify(w.p, data), nil
-}
-
-// AesEncryptWithKey uses the give 32-bit key to encrypt plaintext.
-func AesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
-	if len(aesKey) != 32 {
-		return nil, errors.New("AES key must be 32 bytes")
-	}
-
-	blockCipher, err := aes.NewCipher(aesKey)
-	if err != nil {
-		return nil, err
-	}
-
-	gcm, err := cipher.NewGCM(blockCipher)
-	if err != nil {
-		return nil, err
-	}
-
-	nonce := make([]byte, gcm.NonceSize())
-	if _, err = rand.Read(nonce); err != nil {
-		return nil, err
-	}
-
-	ciphertext := gcm.Seal(nonce, nonce, []byte(plaintext), nil)
-
-	return ciphertext, nil
 }

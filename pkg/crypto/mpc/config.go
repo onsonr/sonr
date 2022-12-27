@@ -2,7 +2,7 @@ package mpc
 
 import (
 	peer "github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonr-hq/sonr/pkg/wallet"
+	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
@@ -57,7 +57,7 @@ func WithThreshold(threshold int) Option {
 }
 
 // WithWalletShares sets the configs used for the MPC wallet
-func WithWalletShares(cnfs ...wallet.WalletShare) Option {
+func WithWalletShares(cnfs ...common.WalletShare) Option {
 	return func(c *config) {
 		c.configs = make(map[party.ID]*cmp.Config)
 		for _, cnf := range cnfs {

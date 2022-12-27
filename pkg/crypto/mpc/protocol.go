@@ -45,7 +45,7 @@ func Initialize(options ...Option) *MPCProtocol {
 }
 
 // Keygen Generates a new ECDSA private key shared among all the given participants.
-func (p *MPCProtocol) Keygen(current party.ID, net Network) (wallet.WalletShare, error) {
+func (p *MPCProtocol) Keygen(current party.ID, net Network) (common.WalletShare, error) {
 	p.currentId = current
 	if len(p.configs) > 0 {
 		return nil, fmt.Errorf("wallet already initialized")
@@ -72,7 +72,7 @@ func (p *MPCProtocol) Keygen(current party.ID, net Network) (wallet.WalletShare,
 }
 
 // Refreshes all shares of an existing ECDSA private key.
-func (w *MPCProtocol) Refresh(current party.ID, net Network) (wallet.WalletShare, error) {
+func (w *MPCProtocol) Refresh(current party.ID, net Network) (common.WalletShare, error) {
 	w.currentId = current
 	var wg sync.WaitGroup
 	for _, id := range net.Ls() {

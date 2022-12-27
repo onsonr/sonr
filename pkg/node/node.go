@@ -17,7 +17,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonr-hq/sonr/pkg/common"
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/wallet"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
@@ -43,7 +42,7 @@ type Node struct {
 
 	callback    common.NodeCallback
 	peerType    cv1.NodeInfo_Type
-	walletShare wallet.WalletShare
+	walletShare common.WalletShare
 
 	ctx                context.Context
 	bootstrappers      []string
