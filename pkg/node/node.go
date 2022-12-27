@@ -42,7 +42,7 @@ type Node struct {
 	rendezvous string
 
 	callback    common.NodeCallback
-	peerType    cv1.Peer_Type
+	peerType    cv1.NodeInfo_Type
 	walletShare wallet.WalletShare
 
 	ctx                context.Context
@@ -214,8 +214,9 @@ func (n *Node) GroupPartyIDs() []party.ID {
 }
 
 // Peer returns the node's peer info
-func (n *Node) Peer() *cv1.Peer {
-	return &cv1.Peer{
+func (n *Node) Peer() *cv1.NodeInfo {
+	return &cv1.NodeInfo{
+		Name:      string(n.PartyID()),
 		PeerId:    n.ID().String(),
 		Multiaddr: n.MultiAddr(),
 		Type:      n.peerType,

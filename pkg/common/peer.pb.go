@@ -25,17 +25,17 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Peers Active Status
-type Peer_Type int32
+type NodeInfo_Type int32
 
 const (
-	Peer_UNKNOWN     Peer_Type = 0
-	Peer_HIGHWAY     Peer_Type = 1
-	Peer_MOTOR       Peer_Type = 2
-	Peer_VALIDATOR   Peer_Type = 3
-	Peer_THIRD_PARTY Peer_Type = 4
+	NodeInfo_UNKNOWN     NodeInfo_Type = 0
+	NodeInfo_HIGHWAY     NodeInfo_Type = 1
+	NodeInfo_MOTOR       NodeInfo_Type = 2
+	NodeInfo_VALIDATOR   NodeInfo_Type = 3
+	NodeInfo_THIRD_PARTY NodeInfo_Type = 4
 )
 
-var Peer_Type_name = map[int32]string{
+var NodeInfo_Type_name = map[int32]string{
 	0: "UNKNOWN",
 	1: "HIGHWAY",
 	2: "MOTOR",
@@ -43,7 +43,7 @@ var Peer_Type_name = map[int32]string{
 	4: "THIRD_PARTY",
 }
 
-var Peer_Type_value = map[string]int32{
+var NodeInfo_Type_value = map[string]int32{
 	"UNKNOWN":     0,
 	"HIGHWAY":     1,
 	"MOTOR":       2,
@@ -51,35 +51,63 @@ var Peer_Type_value = map[string]int32{
 	"THIRD_PARTY": 4,
 }
 
-func (x Peer_Type) String() string {
-	return proto.EnumName(Peer_Type_name, int32(x))
+func (x NodeInfo_Type) String() string {
+	return proto.EnumName(NodeInfo_Type_name, int32(x))
 }
 
-func (Peer_Type) EnumDescriptor() ([]byte, []int) {
+func (NodeInfo_Type) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_781eaf8f2982bc86, []int{0, 0}
 }
 
-// Basic Info Sent to Peers to Establish Connections
-type Peer struct {
-	Id        string    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name      string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	PeerId    string    `protobuf:"bytes,3,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`
-	Multiaddr string    `protobuf:"bytes,4,opt,name=multiaddr,proto3" json:"multiaddr,omitempty"`
-	Type      Peer_Type `protobuf:"varint,5,opt,name=type,proto3,enum=sonrhq.common.v1.Peer_Type" json:"type,omitempty"`
+type WalletShareConfig_Algorithm int32
+
+const (
+	WalletShareConfig_UNKNOWN WalletShareConfig_Algorithm = 0
+	WalletShareConfig_CMP     WalletShareConfig_Algorithm = 1
+	WalletShareConfig_DOERNER WalletShareConfig_Algorithm = 2
+)
+
+var WalletShareConfig_Algorithm_name = map[int32]string{
+	0: "UNKNOWN",
+	1: "CMP",
+	2: "DOERNER",
 }
 
-func (m *Peer) Reset()         { *m = Peer{} }
-func (m *Peer) String() string { return proto.CompactTextString(m) }
-func (*Peer) ProtoMessage()    {}
-func (*Peer) Descriptor() ([]byte, []int) {
+var WalletShareConfig_Algorithm_value = map[string]int32{
+	"UNKNOWN": 0,
+	"CMP":     1,
+	"DOERNER": 2,
+}
+
+func (x WalletShareConfig_Algorithm) String() string {
+	return proto.EnumName(WalletShareConfig_Algorithm_name, int32(x))
+}
+
+func (WalletShareConfig_Algorithm) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_781eaf8f2982bc86, []int{2, 0}
+}
+
+// Basic Info Sent to Peers to Establish Connections
+type NodeInfo struct {
+	Id        string        `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name      string        `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	PeerId    string        `protobuf:"bytes,3,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`
+	Multiaddr string        `protobuf:"bytes,4,opt,name=multiaddr,proto3" json:"multiaddr,omitempty"`
+	Type      NodeInfo_Type `protobuf:"varint,5,opt,name=type,proto3,enum=sonrhq.common.v1.NodeInfo_Type" json:"type,omitempty"`
+}
+
+func (m *NodeInfo) Reset()         { *m = NodeInfo{} }
+func (m *NodeInfo) String() string { return proto.CompactTextString(m) }
+func (*NodeInfo) ProtoMessage()    {}
+func (*NodeInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_781eaf8f2982bc86, []int{0}
 }
-func (m *Peer) XXX_Unmarshal(b []byte) error {
+func (m *NodeInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Peer) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NodeInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Peer.Marshal(b, m, deterministic)
+		return xxx_messageInfo_NodeInfo.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -89,51 +117,51 @@ func (m *Peer) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Peer) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Peer.Merge(m, src)
+func (m *NodeInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NodeInfo.Merge(m, src)
 }
-func (m *Peer) XXX_Size() int {
+func (m *NodeInfo) XXX_Size() int {
 	return m.Size()
 }
-func (m *Peer) XXX_DiscardUnknown() {
-	xxx_messageInfo_Peer.DiscardUnknown(m)
+func (m *NodeInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_NodeInfo.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Peer proto.InternalMessageInfo
+var xxx_messageInfo_NodeInfo proto.InternalMessageInfo
 
-func (m *Peer) GetId() string {
+func (m *NodeInfo) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *Peer) GetName() string {
+func (m *NodeInfo) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Peer) GetPeerId() string {
+func (m *NodeInfo) GetPeerId() string {
 	if m != nil {
 		return m.PeerId
 	}
 	return ""
 }
 
-func (m *Peer) GetMultiaddr() string {
+func (m *NodeInfo) GetMultiaddr() string {
 	if m != nil {
 		return m.Multiaddr
 	}
 	return ""
 }
 
-func (m *Peer) GetType() Peer_Type {
+func (m *NodeInfo) GetType() NodeInfo_Type {
 	if m != nil {
 		return m.Type
 	}
-	return Peer_UNKNOWN
+	return NodeInfo_UNKNOWN
 }
 
 // AuthInfo is a object used by Motor clients to store authentication information in Biometric storage
@@ -221,44 +249,149 @@ func (m *AuthInfo) GetTimestamp() int64 {
 	return 0
 }
 
+// WalletShareConfig is a object used by Motor clients to store wallet sharing information in Biometric storage
+type WalletShareConfig struct {
+	SelfId        string                      `protobuf:"bytes,1,opt,name=self_id,json=selfId,proto3" json:"self_id,omitempty"`
+	CmpConfig     []byte                      `protobuf:"bytes,2,opt,name=cmp_config,json=cmpConfig,proto3" json:"cmp_config,omitempty"`
+	DoernerConfig []byte                      `protobuf:"bytes,3,opt,name=doerner_config,json=doernerConfig,proto3" json:"doerner_config,omitempty"`
+	PartyIds      []string                    `protobuf:"bytes,4,rep,name=party_ids,json=partyIds,proto3" json:"party_ids,omitempty"`
+	Algorithm     WalletShareConfig_Algorithm `protobuf:"varint,5,opt,name=algorithm,proto3,enum=sonrhq.common.v1.WalletShareConfig_Algorithm" json:"algorithm,omitempty"`
+	Timestamp     int64                       `protobuf:"varint,6,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Bech32Prefix  string                      `protobuf:"bytes,7,opt,name=bech32_prefix,json=bech32Prefix,proto3" json:"bech32_prefix,omitempty"`
+}
+
+func (m *WalletShareConfig) Reset()         { *m = WalletShareConfig{} }
+func (m *WalletShareConfig) String() string { return proto.CompactTextString(m) }
+func (*WalletShareConfig) ProtoMessage()    {}
+func (*WalletShareConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_781eaf8f2982bc86, []int{2}
+}
+func (m *WalletShareConfig) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *WalletShareConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_WalletShareConfig.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *WalletShareConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_WalletShareConfig.Merge(m, src)
+}
+func (m *WalletShareConfig) XXX_Size() int {
+	return m.Size()
+}
+func (m *WalletShareConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_WalletShareConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_WalletShareConfig proto.InternalMessageInfo
+
+func (m *WalletShareConfig) GetSelfId() string {
+	if m != nil {
+		return m.SelfId
+	}
+	return ""
+}
+
+func (m *WalletShareConfig) GetCmpConfig() []byte {
+	if m != nil {
+		return m.CmpConfig
+	}
+	return nil
+}
+
+func (m *WalletShareConfig) GetDoernerConfig() []byte {
+	if m != nil {
+		return m.DoernerConfig
+	}
+	return nil
+}
+
+func (m *WalletShareConfig) GetPartyIds() []string {
+	if m != nil {
+		return m.PartyIds
+	}
+	return nil
+}
+
+func (m *WalletShareConfig) GetAlgorithm() WalletShareConfig_Algorithm {
+	if m != nil {
+		return m.Algorithm
+	}
+	return WalletShareConfig_UNKNOWN
+}
+
+func (m *WalletShareConfig) GetTimestamp() int64 {
+	if m != nil {
+		return m.Timestamp
+	}
+	return 0
+}
+
+func (m *WalletShareConfig) GetBech32Prefix() string {
+	if m != nil {
+		return m.Bech32Prefix
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterEnum("sonrhq.common.v1.Peer_Type", Peer_Type_name, Peer_Type_value)
-	proto.RegisterType((*Peer)(nil), "sonrhq.common.v1.Peer")
+	proto.RegisterEnum("sonrhq.common.v1.NodeInfo_Type", NodeInfo_Type_name, NodeInfo_Type_value)
+	proto.RegisterEnum("sonrhq.common.v1.WalletShareConfig_Algorithm", WalletShareConfig_Algorithm_name, WalletShareConfig_Algorithm_value)
+	proto.RegisterType((*NodeInfo)(nil), "sonrhq.common.v1.NodeInfo")
 	proto.RegisterType((*AuthInfo)(nil), "sonrhq.common.v1.AuthInfo")
+	proto.RegisterType((*WalletShareConfig)(nil), "sonrhq.common.v1.WalletShareConfig")
 }
 
 func init() { proto.RegisterFile("common/v1/peer.proto", fileDescriptor_781eaf8f2982bc86) }
 
 var fileDescriptor_781eaf8f2982bc86 = []byte{
-	// 396 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x5c, 0x91, 0xcd, 0x8e, 0xd3, 0x30,
-	0x14, 0x85, 0xe3, 0x24, 0xd3, 0x4e, 0x6e, 0x61, 0x88, 0x2c, 0x24, 0x22, 0x40, 0x51, 0x95, 0x55,
-	0x37, 0x24, 0x1a, 0xd8, 0xb2, 0x09, 0xaa, 0x44, 0xa3, 0x42, 0x5b, 0x59, 0x81, 0xd1, 0xb0, 0x89,
-	0x32, 0xb5, 0x99, 0x44, 0x21, 0x89, 0x27, 0x4e, 0x8b, 0xf2, 0x16, 0x3c, 0x0a, 0x8f, 0xc1, 0xb2,
-	0x4b, 0x76, 0xa0, 0xf6, 0x45, 0x90, 0xdd, 0x3f, 0x89, 0x95, 0xef, 0x39, 0x9f, 0x65, 0xdd, 0x73,
-	0x0c, 0x4f, 0x97, 0x75, 0x59, 0xd6, 0x55, 0xb0, 0xbe, 0x0e, 0x38, 0x63, 0x8d, 0xcf, 0x9b, 0xba,
-	0xad, 0xb1, 0x2d, 0xea, 0xaa, 0xc9, 0x1e, 0xfc, 0x3d, 0xf4, 0xd7, 0xd7, 0xde, 0x1f, 0x04, 0xe6,
-	0x82, 0xb1, 0x06, 0x5f, 0x81, 0x9e, 0x53, 0x07, 0x0d, 0xd1, 0xc8, 0x22, 0x7a, 0x4e, 0x31, 0x06,
-	0xb3, 0x4a, 0x4b, 0xe6, 0xe8, 0xca, 0x51, 0x33, 0x7e, 0x06, 0x7d, 0xf9, 0x58, 0x92, 0x53, 0xc7,
-	0x50, 0x76, 0x4f, 0xca, 0x88, 0xe2, 0x97, 0x60, 0x95, 0xab, 0x6f, 0x6d, 0x9e, 0x52, 0xda, 0x38,
-	0xa6, 0x42, 0x67, 0x03, 0x07, 0x60, 0xb6, 0x1d, 0x67, 0xce, 0xc5, 0x10, 0x8d, 0xae, 0x5e, 0xbf,
-	0xf0, 0xff, 0x5f, 0xc2, 0x97, 0x0b, 0xf8, 0x71, 0xc7, 0x19, 0x51, 0x17, 0xbd, 0x29, 0x98, 0x52,
-	0xe1, 0x01, 0xf4, 0x3f, 0xcd, 0xa6, 0xb3, 0xf9, 0xcd, 0xcc, 0xd6, 0xa4, 0x98, 0x44, 0xef, 0x27,
-	0x37, 0xe1, 0xad, 0x8d, 0xb0, 0x05, 0x17, 0x1f, 0xe7, 0xf1, 0x9c, 0xd8, 0x3a, 0x7e, 0x0c, 0xd6,
-	0xe7, 0xf0, 0x43, 0x34, 0x0e, 0xa5, 0x34, 0xf0, 0x13, 0x18, 0xc4, 0x93, 0x88, 0x8c, 0x93, 0x45,
-	0x48, 0xe2, 0x5b, 0xdb, 0xf4, 0x7e, 0x22, 0xb8, 0x0c, 0x57, 0x6d, 0x16, 0x55, 0x5f, 0x6b, 0xec,
-	0x40, 0x5f, 0xae, 0xc4, 0x84, 0x38, 0x44, 0x3d, 0x4a, 0x6c, 0x83, 0x41, 0x73, 0x7a, 0x88, 0x2b,
-	0x47, 0xec, 0xc2, 0x20, 0x65, 0x22, 0xa1, 0x62, 0x99, 0x14, 0xac, 0x53, 0x89, 0x1f, 0x11, 0x2b,
-	0x65, 0x62, 0x2c, 0x96, 0x53, 0xd6, 0x1d, 0x39, 0x17, 0x85, 0xe2, 0xe6, 0x89, 0x2f, 0x44, 0x21,
-	0xf9, 0x73, 0xb8, 0xe4, 0xa9, 0x10, 0xdf, 0xeb, 0x86, 0xaa, 0xe8, 0x16, 0x39, 0x69, 0x59, 0x58,
-	0x9b, 0x97, 0x4c, 0xb4, 0x69, 0xc9, 0x9d, 0xde, 0x10, 0x8d, 0x0c, 0x72, 0x36, 0xde, 0xbd, 0xfd,
-	0xb5, 0x75, 0xd1, 0x66, 0xeb, 0xa2, 0xbf, 0x5b, 0x17, 0xfd, 0xd8, 0xb9, 0xda, 0x66, 0xe7, 0x6a,
-	0xbf, 0x77, 0xae, 0xf6, 0xc5, 0xbb, 0xcf, 0xdb, 0x6c, 0x75, 0x27, 0xbb, 0x0b, 0x64, 0x8d, 0xaf,
-	0xb2, 0x07, 0x75, 0x06, 0xbc, 0xb8, 0x0f, 0xf6, 0x85, 0xde, 0xf5, 0xd4, 0x5f, 0xbf, 0xf9, 0x17,
-	0x00, 0x00, 0xff, 0xff, 0x2b, 0xf2, 0x43, 0xd0, 0x03, 0x02, 0x00, 0x00,
+	// 558 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x93, 0xcd, 0x6e, 0xd3, 0x40,
+	0x14, 0x85, 0xe3, 0xd8, 0x4d, 0xea, 0xdb, 0x1f, 0xcc, 0x08, 0x09, 0x8b, 0x1f, 0x13, 0x19, 0x21,
+	0x75, 0x53, 0x47, 0x6d, 0xb7, 0x6c, 0x4c, 0x53, 0x51, 0x2b, 0x34, 0x89, 0x86, 0x40, 0x55, 0x36,
+	0x96, 0xeb, 0x99, 0xc4, 0x56, 0x62, 0x7b, 0x3a, 0xe3, 0x16, 0xfc, 0x16, 0x3c, 0x0a, 0x8f, 0xc1,
+	0x8e, 0x2e, 0x59, 0xa2, 0x76, 0xc1, 0x6b, 0xa0, 0x99, 0x38, 0xa9, 0xa0, 0x12, 0x2b, 0xcf, 0x39,
+	0xe7, 0xde, 0xd1, 0xfd, 0x7c, 0x6d, 0x78, 0x14, 0x17, 0x59, 0x56, 0xe4, 0xdd, 0xab, 0xbd, 0x2e,
+	0xa3, 0x94, 0x7b, 0x8c, 0x17, 0x65, 0x81, 0x2c, 0x51, 0xe4, 0x3c, 0xb9, 0xf0, 0x16, 0xa1, 0x77,
+	0xb5, 0xe7, 0xfe, 0xd6, 0x60, 0x7d, 0x50, 0x10, 0x1a, 0xe4, 0x93, 0x02, 0x6d, 0x43, 0x33, 0x25,
+	0xb6, 0xd6, 0xd1, 0x76, 0x4c, 0xdc, 0x4c, 0x09, 0x42, 0x60, 0xe4, 0x51, 0x46, 0xed, 0xa6, 0x72,
+	0xd4, 0x19, 0x3d, 0x86, 0xb6, 0xbc, 0x30, 0x4c, 0x89, 0xad, 0x2b, 0xbb, 0x25, 0x65, 0x40, 0xd0,
+	0x33, 0x30, 0xb3, 0xcb, 0x79, 0x99, 0x46, 0x84, 0x70, 0xdb, 0x50, 0xd1, 0x9d, 0x81, 0x0e, 0xc0,
+	0x28, 0x2b, 0x46, 0xed, 0xb5, 0x8e, 0xb6, 0xb3, 0xbd, 0xff, 0xc2, 0xfb, 0x77, 0x10, 0x6f, 0x39,
+	0x84, 0x37, 0xae, 0x18, 0xc5, 0xaa, 0xd8, 0xed, 0x83, 0x21, 0x15, 0xda, 0x80, 0xf6, 0x87, 0x41,
+	0x7f, 0x30, 0x3c, 0x1d, 0x58, 0x0d, 0x29, 0x8e, 0x83, 0xb7, 0xc7, 0xa7, 0xfe, 0x99, 0xa5, 0x21,
+	0x13, 0xd6, 0x4e, 0x86, 0xe3, 0x21, 0xb6, 0x9a, 0x68, 0x0b, 0xcc, 0x8f, 0xfe, 0xbb, 0xa0, 0xe7,
+	0x4b, 0xa9, 0xa3, 0x07, 0xb0, 0x31, 0x3e, 0x0e, 0x70, 0x2f, 0x1c, 0xf9, 0x78, 0x7c, 0x66, 0x19,
+	0xee, 0x37, 0x0d, 0xd6, 0xfd, 0xcb, 0x32, 0x51, 0xa4, 0x36, 0xb4, 0xe5, 0x58, 0x54, 0x88, 0x1a,
+	0x77, 0x29, 0x91, 0x05, 0x3a, 0x49, 0x49, 0x8d, 0x2c, 0x8f, 0xc8, 0x81, 0x8d, 0x88, 0x8a, 0x90,
+	0x88, 0x38, 0x9c, 0xd1, 0x4a, 0x51, 0x6f, 0x62, 0x33, 0xa2, 0xa2, 0x27, 0xe2, 0x3e, 0xad, 0x96,
+	0x39, 0x13, 0x33, 0x95, 0x1b, 0xab, 0x7c, 0x24, 0x66, 0x32, 0x7f, 0x02, 0xeb, 0x2c, 0x12, 0xe2,
+	0x73, 0xc1, 0x89, 0xc2, 0x37, 0xf1, 0x4a, 0xcb, 0x97, 0x56, 0xa6, 0x19, 0x15, 0x65, 0x94, 0x31,
+	0xbb, 0xd5, 0xd1, 0x76, 0x74, 0x7c, 0x67, 0xb8, 0x3f, 0x9a, 0xf0, 0xf0, 0x34, 0x9a, 0xcf, 0x69,
+	0xf9, 0x3e, 0x89, 0x38, 0x3d, 0x2c, 0xf2, 0x49, 0x3a, 0x95, 0x1b, 0x10, 0x74, 0x3e, 0x09, 0x57,
+	0xab, 0x6a, 0x49, 0x19, 0x10, 0xf4, 0x1c, 0x20, 0xce, 0x58, 0x18, 0xab, 0x32, 0x45, 0xb0, 0x89,
+	0xcd, 0x38, 0x63, 0x75, 0xdf, 0x2b, 0xd8, 0x26, 0x05, 0xe5, 0x39, 0xe5, 0xcb, 0x92, 0x05, 0xca,
+	0x56, 0xed, 0xd6, 0x65, 0x4f, 0xc1, 0x64, 0x11, 0x2f, 0xab, 0x30, 0x25, 0xc2, 0x36, 0x3a, 0xfa,
+	0x62, 0x5e, 0x5e, 0x56, 0x01, 0x11, 0xa8, 0x0f, 0x66, 0x34, 0x9f, 0x16, 0x3c, 0x2d, 0x93, 0xac,
+	0xde, 0xe5, 0xee, 0xfd, 0x5d, 0xde, 0x9b, 0xd9, 0xf3, 0x97, 0x4d, 0xf8, 0xae, 0xff, 0xff, 0xf0,
+	0xe8, 0x25, 0x6c, 0x9d, 0xd3, 0x38, 0x39, 0xd8, 0x0f, 0x19, 0xa7, 0x93, 0xf4, 0x8b, 0xdd, 0x56,
+	0xb0, 0x9b, 0x0b, 0x73, 0xa4, 0x3c, 0xd7, 0x03, 0x73, 0x75, 0xf5, 0xdf, 0x9f, 0x49, 0x1b, 0xf4,
+	0xc3, 0x93, 0x91, 0xa5, 0x49, 0xb7, 0x37, 0x3c, 0xc2, 0x83, 0x23, 0x6c, 0x35, 0xdf, 0xbc, 0xfe,
+	0x7e, 0xe3, 0x68, 0xd7, 0x37, 0x8e, 0xf6, 0xeb, 0xc6, 0xd1, 0xbe, 0xde, 0x3a, 0x8d, 0xeb, 0x5b,
+	0xa7, 0xf1, 0xf3, 0xd6, 0x69, 0x7c, 0x72, 0xa7, 0x69, 0x99, 0x5c, 0x9e, 0x4b, 0x8a, 0xae, 0x04,
+	0xda, 0x4d, 0x2e, 0xd4, 0xb3, 0xcb, 0x66, 0xd3, 0xee, 0x02, 0xed, 0xbc, 0xa5, 0xfe, 0xa2, 0x83,
+	0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xa1, 0xeb, 0x08, 0x75, 0x5d, 0x03, 0x00, 0x00,
 }
 
-func (m *Peer) Marshal() (dAtA []byte, err error) {
+func (m *NodeInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -268,12 +401,12 @@ func (m *Peer) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Peer) MarshalTo(dAtA []byte) (int, error) {
+func (m *NodeInfo) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Peer) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *NodeInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -377,6 +510,76 @@ func (m *AuthInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *WalletShareConfig) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *WalletShareConfig) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *WalletShareConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Bech32Prefix) > 0 {
+		i -= len(m.Bech32Prefix)
+		copy(dAtA[i:], m.Bech32Prefix)
+		i = encodeVarintPeer(dAtA, i, uint64(len(m.Bech32Prefix)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.Timestamp != 0 {
+		i = encodeVarintPeer(dAtA, i, uint64(m.Timestamp))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Algorithm != 0 {
+		i = encodeVarintPeer(dAtA, i, uint64(m.Algorithm))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.PartyIds) > 0 {
+		for iNdEx := len(m.PartyIds) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.PartyIds[iNdEx])
+			copy(dAtA[i:], m.PartyIds[iNdEx])
+			i = encodeVarintPeer(dAtA, i, uint64(len(m.PartyIds[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.DoernerConfig) > 0 {
+		i -= len(m.DoernerConfig)
+		copy(dAtA[i:], m.DoernerConfig)
+		i = encodeVarintPeer(dAtA, i, uint64(len(m.DoernerConfig)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CmpConfig) > 0 {
+		i -= len(m.CmpConfig)
+		copy(dAtA[i:], m.CmpConfig)
+		i = encodeVarintPeer(dAtA, i, uint64(len(m.CmpConfig)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.SelfId) > 0 {
+		i -= len(m.SelfId)
+		copy(dAtA[i:], m.SelfId)
+		i = encodeVarintPeer(dAtA, i, uint64(len(m.SelfId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintPeer(dAtA []byte, offset int, v uint64) int {
 	offset -= sovPeer(v)
 	base := offset
@@ -388,7 +591,7 @@ func encodeVarintPeer(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Peer) Size() (n int) {
+func (m *NodeInfo) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -448,13 +651,50 @@ func (m *AuthInfo) Size() (n int) {
 	return n
 }
 
+func (m *WalletShareConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SelfId)
+	if l > 0 {
+		n += 1 + l + sovPeer(uint64(l))
+	}
+	l = len(m.CmpConfig)
+	if l > 0 {
+		n += 1 + l + sovPeer(uint64(l))
+	}
+	l = len(m.DoernerConfig)
+	if l > 0 {
+		n += 1 + l + sovPeer(uint64(l))
+	}
+	if len(m.PartyIds) > 0 {
+		for _, s := range m.PartyIds {
+			l = len(s)
+			n += 1 + l + sovPeer(uint64(l))
+		}
+	}
+	if m.Algorithm != 0 {
+		n += 1 + sovPeer(uint64(m.Algorithm))
+	}
+	if m.Timestamp != 0 {
+		n += 1 + sovPeer(uint64(m.Timestamp))
+	}
+	l = len(m.Bech32Prefix)
+	if l > 0 {
+		n += 1 + l + sovPeer(uint64(l))
+	}
+	return n
+}
+
 func sovPeer(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozPeer(x uint64) (n int) {
 	return sovPeer(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Peer) Unmarshal(dAtA []byte) error {
+func (m *NodeInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -477,10 +717,10 @@ func (m *Peer) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Peer: wiretype end group for non-group")
+			return fmt.Errorf("proto: NodeInfo: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Peer: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: NodeInfo: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -625,7 +865,7 @@ func (m *Peer) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Type |= Peer_Type(b&0x7F) << shift
+				m.Type |= NodeInfo_Type(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -863,6 +1103,258 @@ func (m *AuthInfo) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPeer(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPeer
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *WalletShareConfig) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPeer
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: WalletShareConfig: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: WalletShareConfig: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SelfId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPeer
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPeer
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPeer
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SelfId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CmpConfig", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPeer
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthPeer
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPeer
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CmpConfig = append(m.CmpConfig[:0], dAtA[iNdEx:postIndex]...)
+			if m.CmpConfig == nil {
+				m.CmpConfig = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DoernerConfig", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPeer
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthPeer
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPeer
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DoernerConfig = append(m.DoernerConfig[:0], dAtA[iNdEx:postIndex]...)
+			if m.DoernerConfig == nil {
+				m.DoernerConfig = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PartyIds", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPeer
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPeer
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPeer
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PartyIds = append(m.PartyIds, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Algorithm", wireType)
+			}
+			m.Algorithm = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPeer
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Algorithm |= WalletShareConfig_Algorithm(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
+			}
+			m.Timestamp = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPeer
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timestamp |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bech32Prefix", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPeer
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPeer
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPeer
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Bech32Prefix = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPeer(dAtA[iNdEx:])

@@ -68,7 +68,7 @@ func (p *MPCProtocol) Keygen(current party.ID, net Network) (wallet.WalletShare,
 	}
 	wg.Wait()
 	// conf := <-doneChan
-	return wallet.NewWalletImpl(p.configs[p.currentId]), nil
+	return wallet.NewWalletImpl("snr", p.configs[p.currentId]), nil
 }
 
 // Refreshes all shares of an existing ECDSA private key.
@@ -90,7 +90,7 @@ func (w *MPCProtocol) Refresh(current party.ID, net Network) (wallet.WalletShare
 		}(id)
 	}
 	wg.Wait()
-	return wallet.NewWalletImpl(w.configs[w.currentId]), nil
+	return wallet.NewWalletImpl("snr", w.configs[w.currentId]), nil
 }
 
 // Sign Generates an ECDSA signature for messageHash.

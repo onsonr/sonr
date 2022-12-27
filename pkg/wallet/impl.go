@@ -3,9 +3,11 @@ package wallet
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/x/identity/types"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
@@ -13,12 +15,34 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-func NewWalletImpl(c interface{}) WalletShare {
-	return &mpcConfigWalletImpl{Config: c.(*cmp.Config)}
+func EmptyWallet() WalletShare {
+	return &mpcConfigWalletImpl{}
+}
+
+func NewWalletImpl(pfix string, c interface{}) WalletShare {
+	conf := c.(*cmp.Config)
+	confBz, err := conf.MarshalBinary()
+	if err != nil {
+		return nil
+	}
+	partyIds := make([]string, len(conf.PartyIDs()))
+	for i, id := range conf.PartyIDs() {
+		partyIds[i] = string(id)
+	}
+	walletConf := &common.WalletShareConfig{
+		Algorithm:    common.WalletShareConfig_CMP,
+		SelfId:       string(conf.ID),
+		PartyIds:     partyIds,
+		CmpConfig:    confBz,
+		Timestamp:    time.Now().Unix(),
+		Bech32Prefix: pfix,
+	}
+	return &mpcConfigWalletImpl{Config: conf, walletShareConfig: walletConf}
 }
 
 type mpcConfigWalletImpl struct {
 	*cmp.Config
+	walletShareConfig *common.WalletShareConfig
 }
 
 // Returns the Bech32 representation of the given party.
@@ -28,7 +52,7 @@ func (w *mpcConfigWalletImpl) Address() string {
 		return ""
 	}
 
-	str, err := bech32.ConvertAndEncode("snr", pub.Bytes())
+	str, err := bech32.ConvertAndEncode(w.walletShareConfig.Bech32Prefix, pub.Bytes())
 	if err != nil {
 		return ""
 	}
@@ -51,7 +75,7 @@ func (w *mpcConfigWalletImpl) DID() (*types.DID, error) {
 
 // Marshal serializes the cmp.Config into a byte slice for local storage
 func (w *mpcConfigWalletImpl) Marshal() ([]byte, error) {
-	return w.Config.MarshalBinary()
+	return w.walletShareConfig.Marshal()
 }
 
 // PublicKey returns the public key of this wallet.
@@ -80,7 +104,17 @@ func (w *mpcConfigWalletImpl) PartyIDs() []party.ID {
 
 // Unmarshal deserializes the given byte slice into a cmp.Config
 func (w *mpcConfigWalletImpl) Unmarshal(data []byte) error {
-	return w.Config.UnmarshalBinary(data)
+	walletConf := &common.WalletShareConfig{}
+	if err := walletConf.Unmarshal(data); err != nil {
+		return err
+	}
+	w.walletShareConfig = walletConf
+	conf := &cmp.Config{}
+	if err := conf.UnmarshalBinary(walletConf.CmpConfig); err != nil {
+		return err
+	}
+	w.Config = conf
+	return nil
 }
 
 // Verify a signature with the given wallet.

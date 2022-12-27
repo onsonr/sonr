@@ -66,5 +66,10 @@ func LoadFromPath(path string) (WalletShare, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewWalletImpl(&config), nil
+	w := EmptyWallet()
+	err = w.Unmarshal(bz)
+	if err != nil {
+		return nil, err
+	}
+	return w, nil
 }

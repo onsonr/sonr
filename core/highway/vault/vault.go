@@ -34,7 +34,7 @@ func Initialize() error {
 	// if err != nil {
 	// 	return err
 	// }3d
-	n, err := node.New(ctx, node.WithPeerType(v1.Peer_HIGHWAY))
+	n, err := node.New(ctx, node.WithPeerType(v1.NodeInfo_HIGHWAY))
 	if err != nil {
 		return err
 	}

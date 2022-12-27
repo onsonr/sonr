@@ -40,4 +40,13 @@ message WalletShareConfig {
     bytes cmp_config = 2;
     bytes doerner_config = 3;
     repeated string party_ids = 4;
+    Algorithm algorithm = 5;
+    int64 timestamp = 6;
+    string bech32_prefix = 7;
+
+    enum Algorithm {
+        UNKNOWN = 0;
+        CMP = 1;
+        DOERNER = 2;
+    }
 }
