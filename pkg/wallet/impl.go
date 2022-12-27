@@ -2,9 +2,11 @@ package wallet
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/sonr-hq/sonr/x/identity/types"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -36,6 +38,15 @@ func (w *mpcConfigWalletImpl) Address() string {
 // MPCConfig returns the *cmp.Config of this wallet.
 func (w *mpcConfigWalletImpl) CMPConfig() *cmp.Config {
 	return w.Config
+}
+
+// DID returns the DID of this wallet.
+func (w *mpcConfigWalletImpl) DID() (*types.DID, error) {
+	addrPtr := strings.Split(w.Address(), "snr")
+	if len(addrPtr) != 2 {
+		return nil, fmt.Errorf("invalid address")
+	}
+	return types.ParseDID(fmt.Sprintf("did:snr:%s", addrPtr[1]))
 }
 
 // Marshal serializes the cmp.Config into a byte slice for local storage

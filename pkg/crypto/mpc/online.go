@@ -73,7 +73,7 @@ func (n *onlineNetwork) init() {
 			panic(err)
 		}
 		n.subscriptions[node.PartyID()] = sub
-		go n.handleSubscription(node.PartyID(), sub)
+		go handleSubscription(node.PartyID(), sub, n)
 	}
 }
 
@@ -166,7 +166,7 @@ func (n *onlineNetwork) getFromNode(msg *mpc.Message) *node.Node {
 }
 
 // A goroutine that is listening for messages on the topic handler.
-func (n *onlineNetwork) handleSubscription(id party.ID, sub icore.PubSubSubscription) error {
+func handleSubscription(id party.ID, sub icore.PubSubSubscription, n *onlineNetwork) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	for {

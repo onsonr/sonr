@@ -4,27 +4,26 @@ import (
 	peer "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/pkg/wallet"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
-	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-// `protocolConfig` is a struct that contains a public key, a list of participants, a threshold, and a
+// `config` is a struct that contains a public key, a list of participants, a threshold, and a
 // map of configurations for each participant.
 // @property {[]byte} pubKey - the public key of the protocol
 // @property participants - A list of parties that are participating in the protocol.
 // @property {int} threshold - The minimum number of parties that must sign the message for it to be
 // valid.
 // @property configs - a map of party IDs to the configuration of the party.
-type protocolConfig struct {
+type config struct {
 	pubKey    []byte
 	threshold int
 	configs   map[party.ID]*cmp.Config
 }
 
 // default configuration options
-func defaultConfig() *protocolConfig {
-	return &protocolConfig{
+func defaultConfig() *config {
+	return &config{
 		pubKey:    make([]byte, 0),
 		threshold: 1,
 		configs:   make(map[party.ID]*cmp.Config),
@@ -32,25 +31,24 @@ func defaultConfig() *protocolConfig {
 }
 
 // Applies the options and returns a new walletConfig
-func (wc *protocolConfig) Apply(opts ...WalletOption) *MPCProtocol {
+func (wc *config) Apply(opts ...Option) *MPCProtocol {
 	for _, opt := range opts {
 		opt(wc)
 	}
 
 	return &MPCProtocol{
-		pool:      pool.NewPool(0),
 		pubKey:    wc.pubKey,
 		configs:   wc.configs,
 		threshold: wc.threshold,
 	}
 }
 
-// WalletOption is a function that applies a configuration option to a walletConfig
-type WalletOption func(*protocolConfig)
+// Option is a function that applies a configuration option to a walletConfig
+type Option func(*config)
 
 // WithThreshold sets the threshold of the MPC wallet
-func WithThreshold(threshold int) WalletOption {
-	return func(c *protocolConfig) {
+func WithThreshold(threshold int) Option {
+	return func(c *config) {
 		c.threshold = threshold
 		if c.threshold == 0 {
 			c.threshold = 1
@@ -59,8 +57,8 @@ func WithThreshold(threshold int) WalletOption {
 }
 
 // WithWalletShares sets the configs used for the MPC wallet
-func WithWalletShares(cnfs ...wallet.WalletShare) WalletOption {
-	return func(c *protocolConfig) {
+func WithWalletShares(cnfs ...wallet.WalletShare) Option {
+	return func(c *config) {
 		c.configs = make(map[party.ID]*cmp.Config)
 		for _, cnf := range cnfs {
 			c.configs[cnf.SelfID()] = cnf.CMPConfig()

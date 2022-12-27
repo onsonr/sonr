@@ -46,7 +46,7 @@ message ConnectRequest {
   string multiaddr = 2;
 
   // Peer is the peer to connect to
-  sonrhq.common.v1.Peer peer = 3;
+  sonrhq.common.v1.NodeInfo node = 3;
 }
 
 // CreateAccountWithKeyRequest allows the DSC to be specified manually when creating a request.

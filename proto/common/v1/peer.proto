@@ -6,9 +6,9 @@ package sonrhq.common.v1;
 option go_package = "github.com/sonr-hq/sonr/pkg/common";
 
 // Basic Info Sent to Peers to Establish Connections
-message Peer {
+message NodeInfo {
   string id = 1;       // User Sonr Account Decentralized ID
-  string name = 2;     // User Defined Label for Peer
+  string name = 2;     // User Defined Label for Peer, also known as PartyID
   string peer_id = 3;  // Peer ID
   string multiaddr = 4; // Peer Multiaddress
   Type type = 5;      // Type of Peer
@@ -32,4 +32,12 @@ message AuthInfo {
     bytes aes_psk_key = 4;
     string password = 5;
     int64 timestamp = 6;
+}
+
+// WalletShareConfig is a object used by Motor clients to store wallet sharing information in Biometric storage
+message WalletShareConfig {
+    string self_id = 1;
+    bytes cmp_config = 2;
+    bytes doerner_config = 3;
+    repeated string party_ids = 4;
 }

@@ -28,7 +28,6 @@ import (
 // @property {int} threshold - The minimum number of parties required to complete the protocol.
 // @property callback - This is a callback function that will be called when the protocol is finished.
 type MPCProtocol struct {
-	pool      *pool.Pool
 	currentId party.ID
 
 	pubKey    []byte
@@ -38,14 +37,14 @@ type MPCProtocol struct {
 	callback  common.NodeCallback
 }
 
-// `Initialize` takes in a list of `WalletOption`s and returns a `MPCProtocol` object
-func Initialize(options ...WalletOption) *MPCProtocol {
+// Initialize takes in a list of `WalletOption`s and returns a `MPCProtocol` object
+func Initialize(options ...Option) *MPCProtocol {
 	opt := defaultConfig()
 	w := opt.Apply(options...)
 	return w
 }
 
-// GenerateWallet a new ECDSA private key shared among all the given participants.
+// Keygen Generates a new ECDSA private key shared among all the given participants.
 func (p *MPCProtocol) Keygen(current party.ID, net Network) (wallet.WalletShare, error) {
 	p.currentId = current
 	if len(p.configs) > 0 {
@@ -94,7 +93,7 @@ func (w *MPCProtocol) Refresh(current party.ID, net Network) (wallet.WalletShare
 	return wallet.NewWalletImpl(w.configs[w.currentId]), nil
 }
 
-// Generates an ECDSA signature for messageHash.
+// Sign Generates an ECDSA signature for messageHash.
 func (w *MPCProtocol) Sign(current party.ID, m []byte, net Network) (*ecdsa.Signature, error) {
 	w.currentId = current
 	doneChan := make(chan *ecdsa.Signature)

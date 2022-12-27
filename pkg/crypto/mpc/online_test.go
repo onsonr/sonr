@@ -29,7 +29,7 @@ func TestCMPKeygenOnline(t *testing.T) {
 	assert.NoError(t, err, "network creation succeeds")
 
 	// Run MPC Protocol
-	c, err := w.Keygen("current", net)
+	c, err := w.Keygen(n1.PartyID(), net)
 	assert.NoError(t, err, "wallet generation succeeds")
 
 	// Check that the address is valid
