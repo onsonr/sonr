@@ -6,8 +6,13 @@
 package v1
 
 import (
+	context "context"
 	fmt "fmt"
+	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -24,22 +29,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type AuthorizeRequest struct {
+type KeygenRequest struct {
 	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *AuthorizeRequest) Reset()         { *m = AuthorizeRequest{} }
-func (m *AuthorizeRequest) String() string { return proto.CompactTextString(m) }
-func (*AuthorizeRequest) ProtoMessage()    {}
-func (*AuthorizeRequest) Descriptor() ([]byte, []int) {
+func (m *KeygenRequest) Reset()         { *m = KeygenRequest{} }
+func (m *KeygenRequest) String() string { return proto.CompactTextString(m) }
+func (*KeygenRequest) ProtoMessage()    {}
+func (*KeygenRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fc75ed3c8267caa0, []int{0}
 }
-func (m *AuthorizeRequest) XXX_Unmarshal(b []byte) error {
+func (m *KeygenRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AuthorizeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *KeygenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AuthorizeRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_KeygenRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -49,41 +54,41 @@ func (m *AuthorizeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *AuthorizeRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AuthorizeRequest.Merge(m, src)
+func (m *KeygenRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_KeygenRequest.Merge(m, src)
 }
-func (m *AuthorizeRequest) XXX_Size() int {
+func (m *KeygenRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *AuthorizeRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AuthorizeRequest.DiscardUnknown(m)
+func (m *KeygenRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_KeygenRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AuthorizeRequest proto.InternalMessageInfo
+var xxx_messageInfo_KeygenRequest proto.InternalMessageInfo
 
-func (m *AuthorizeRequest) GetId() []byte {
+func (m *KeygenRequest) GetId() []byte {
 	if m != nil {
 		return m.Id
 	}
 	return nil
 }
 
-type AuthorizeResponse struct {
+type KeygenResponse struct {
 	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *AuthorizeResponse) Reset()         { *m = AuthorizeResponse{} }
-func (m *AuthorizeResponse) String() string { return proto.CompactTextString(m) }
-func (*AuthorizeResponse) ProtoMessage()    {}
-func (*AuthorizeResponse) Descriptor() ([]byte, []int) {
+func (m *KeygenResponse) Reset()         { *m = KeygenResponse{} }
+func (m *KeygenResponse) String() string { return proto.CompactTextString(m) }
+func (*KeygenResponse) ProtoMessage()    {}
+func (*KeygenResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fc75ed3c8267caa0, []int{1}
 }
-func (m *AuthorizeResponse) XXX_Unmarshal(b []byte) error {
+func (m *KeygenResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AuthorizeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *KeygenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AuthorizeResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_KeygenResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -93,283 +98,19 @@ func (m *AuthorizeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *AuthorizeResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AuthorizeResponse.Merge(m, src)
+func (m *KeygenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_KeygenResponse.Merge(m, src)
 }
-func (m *AuthorizeResponse) XXX_Size() int {
+func (m *KeygenResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *AuthorizeResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_AuthorizeResponse.DiscardUnknown(m)
+func (m *KeygenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_KeygenResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AuthorizeResponse proto.InternalMessageInfo
+var xxx_messageInfo_KeygenResponse proto.InternalMessageInfo
 
-func (m *AuthorizeResponse) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-type FetchPreSignedTxRequest struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *FetchPreSignedTxRequest) Reset()         { *m = FetchPreSignedTxRequest{} }
-func (m *FetchPreSignedTxRequest) String() string { return proto.CompactTextString(m) }
-func (*FetchPreSignedTxRequest) ProtoMessage()    {}
-func (*FetchPreSignedTxRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{2}
-}
-func (m *FetchPreSignedTxRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *FetchPreSignedTxRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_FetchPreSignedTxRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *FetchPreSignedTxRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FetchPreSignedTxRequest.Merge(m, src)
-}
-func (m *FetchPreSignedTxRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *FetchPreSignedTxRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_FetchPreSignedTxRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FetchPreSignedTxRequest proto.InternalMessageInfo
-
-func (m *FetchPreSignedTxRequest) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-type FetchPreSignedTxResponse struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *FetchPreSignedTxResponse) Reset()         { *m = FetchPreSignedTxResponse{} }
-func (m *FetchPreSignedTxResponse) String() string { return proto.CompactTextString(m) }
-func (*FetchPreSignedTxResponse) ProtoMessage()    {}
-func (*FetchPreSignedTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{3}
-}
-func (m *FetchPreSignedTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *FetchPreSignedTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_FetchPreSignedTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *FetchPreSignedTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FetchPreSignedTxResponse.Merge(m, src)
-}
-func (m *FetchPreSignedTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *FetchPreSignedTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_FetchPreSignedTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FetchPreSignedTxResponse proto.InternalMessageInfo
-
-func (m *FetchPreSignedTxResponse) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-type GenerateWalletRequest struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *GenerateWalletRequest) Reset()         { *m = GenerateWalletRequest{} }
-func (m *GenerateWalletRequest) String() string { return proto.CompactTextString(m) }
-func (*GenerateWalletRequest) ProtoMessage()    {}
-func (*GenerateWalletRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{4}
-}
-func (m *GenerateWalletRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GenerateWalletRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GenerateWalletRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GenerateWalletRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GenerateWalletRequest.Merge(m, src)
-}
-func (m *GenerateWalletRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *GenerateWalletRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GenerateWalletRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GenerateWalletRequest proto.InternalMessageInfo
-
-func (m *GenerateWalletRequest) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-type GenerateWalletResponse struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *GenerateWalletResponse) Reset()         { *m = GenerateWalletResponse{} }
-func (m *GenerateWalletResponse) String() string { return proto.CompactTextString(m) }
-func (*GenerateWalletResponse) ProtoMessage()    {}
-func (*GenerateWalletResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{5}
-}
-func (m *GenerateWalletResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GenerateWalletResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GenerateWalletResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GenerateWalletResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GenerateWalletResponse.Merge(m, src)
-}
-func (m *GenerateWalletResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GenerateWalletResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GenerateWalletResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GenerateWalletResponse proto.InternalMessageInfo
-
-func (m *GenerateWalletResponse) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-type LinkPeerRequest struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *LinkPeerRequest) Reset()         { *m = LinkPeerRequest{} }
-func (m *LinkPeerRequest) String() string { return proto.CompactTextString(m) }
-func (*LinkPeerRequest) ProtoMessage()    {}
-func (*LinkPeerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{6}
-}
-func (m *LinkPeerRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *LinkPeerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_LinkPeerRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *LinkPeerRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LinkPeerRequest.Merge(m, src)
-}
-func (m *LinkPeerRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *LinkPeerRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_LinkPeerRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_LinkPeerRequest proto.InternalMessageInfo
-
-func (m *LinkPeerRequest) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-type LinkPeerResponse struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *LinkPeerResponse) Reset()         { *m = LinkPeerResponse{} }
-func (m *LinkPeerResponse) String() string { return proto.CompactTextString(m) }
-func (*LinkPeerResponse) ProtoMessage()    {}
-func (*LinkPeerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{7}
-}
-func (m *LinkPeerResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *LinkPeerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_LinkPeerResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *LinkPeerResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LinkPeerResponse.Merge(m, src)
-}
-func (m *LinkPeerResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *LinkPeerResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_LinkPeerResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_LinkPeerResponse proto.InternalMessageInfo
-
-func (m *LinkPeerResponse) GetId() []byte {
+func (m *KeygenResponse) GetId() []byte {
 	if m != nil {
 		return m.Id
 	}
@@ -384,7 +125,7 @@ func (m *RefreshRequest) Reset()         { *m = RefreshRequest{} }
 func (m *RefreshRequest) String() string { return proto.CompactTextString(m) }
 func (*RefreshRequest) ProtoMessage()    {}
 func (*RefreshRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{8}
+	return fileDescriptor_fc75ed3c8267caa0, []int{2}
 }
 func (m *RefreshRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -428,7 +169,7 @@ func (m *RefreshResponse) Reset()         { *m = RefreshResponse{} }
 func (m *RefreshResponse) String() string { return proto.CompactTextString(m) }
 func (*RefreshResponse) ProtoMessage()    {}
 func (*RefreshResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{9}
+	return fileDescriptor_fc75ed3c8267caa0, []int{3}
 }
 func (m *RefreshResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -464,22 +205,23 @@ func (m *RefreshResponse) GetId() []byte {
 	return nil
 }
 
-type SignTxOnlineRequest struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+type SignRequest struct {
+	Id   []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Data []byte `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 }
 
-func (m *SignTxOnlineRequest) Reset()         { *m = SignTxOnlineRequest{} }
-func (m *SignTxOnlineRequest) String() string { return proto.CompactTextString(m) }
-func (*SignTxOnlineRequest) ProtoMessage()    {}
-func (*SignTxOnlineRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{10}
+func (m *SignRequest) Reset()         { *m = SignRequest{} }
+func (m *SignRequest) String() string { return proto.CompactTextString(m) }
+func (*SignRequest) ProtoMessage()    {}
+func (*SignRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fc75ed3c8267caa0, []int{4}
 }
-func (m *SignTxOnlineRequest) XXX_Unmarshal(b []byte) error {
+func (m *SignRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SignTxOnlineRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SignRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SignTxOnlineRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SignRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -489,41 +231,49 @@ func (m *SignTxOnlineRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *SignTxOnlineRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SignTxOnlineRequest.Merge(m, src)
+func (m *SignRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SignRequest.Merge(m, src)
 }
-func (m *SignTxOnlineRequest) XXX_Size() int {
+func (m *SignRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *SignTxOnlineRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SignTxOnlineRequest.DiscardUnknown(m)
+func (m *SignRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SignRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SignTxOnlineRequest proto.InternalMessageInfo
+var xxx_messageInfo_SignRequest proto.InternalMessageInfo
 
-func (m *SignTxOnlineRequest) GetId() []byte {
+func (m *SignRequest) GetId() []byte {
 	if m != nil {
 		return m.Id
 	}
 	return nil
 }
 
-type SignTxOnlineResponse struct {
-	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+func (m *SignRequest) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
 }
 
-func (m *SignTxOnlineResponse) Reset()         { *m = SignTxOnlineResponse{} }
-func (m *SignTxOnlineResponse) String() string { return proto.CompactTextString(m) }
-func (*SignTxOnlineResponse) ProtoMessage()    {}
-func (*SignTxOnlineResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{11}
+type SignResponse struct {
+	Id        []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Signature []byte `protobuf:"bytes,2,opt,name=signature,proto3" json:"signature,omitempty"`
 }
-func (m *SignTxOnlineResponse) XXX_Unmarshal(b []byte) error {
+
+func (m *SignResponse) Reset()         { *m = SignResponse{} }
+func (m *SignResponse) String() string { return proto.CompactTextString(m) }
+func (*SignResponse) ProtoMessage()    {}
+func (*SignResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fc75ed3c8267caa0, []int{5}
+}
+func (m *SignResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SignTxOnlineResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SignResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SignTxOnlineResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SignResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -533,67 +283,373 @@ func (m *SignTxOnlineResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *SignTxOnlineResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SignTxOnlineResponse.Merge(m, src)
+func (m *SignResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SignResponse.Merge(m, src)
 }
-func (m *SignTxOnlineResponse) XXX_Size() int {
+func (m *SignResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *SignTxOnlineResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SignTxOnlineResponse.DiscardUnknown(m)
+func (m *SignResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SignResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SignTxOnlineResponse proto.InternalMessageInfo
+var xxx_messageInfo_SignResponse proto.InternalMessageInfo
 
-func (m *SignTxOnlineResponse) GetId() []byte {
+func (m *SignResponse) GetId() []byte {
 	if m != nil {
 		return m.Id
+	}
+	return nil
+}
+
+func (m *SignResponse) GetSignature() []byte {
+	if m != nil {
+		return m.Signature
+	}
+	return nil
+}
+
+type DeriveRequest struct {
+	Id   []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Data []byte `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *DeriveRequest) Reset()         { *m = DeriveRequest{} }
+func (m *DeriveRequest) String() string { return proto.CompactTextString(m) }
+func (*DeriveRequest) ProtoMessage()    {}
+func (*DeriveRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fc75ed3c8267caa0, []int{6}
+}
+func (m *DeriveRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeriveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeriveRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeriveRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeriveRequest.Merge(m, src)
+}
+func (m *DeriveRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeriveRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeriveRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeriveRequest proto.InternalMessageInfo
+
+func (m *DeriveRequest) GetId() []byte {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *DeriveRequest) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type DeriveResponse struct {
+	Id      []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Derived []byte `protobuf:"bytes,2,opt,name=derived,proto3" json:"derived,omitempty"`
+}
+
+func (m *DeriveResponse) Reset()         { *m = DeriveResponse{} }
+func (m *DeriveResponse) String() string { return proto.CompactTextString(m) }
+func (*DeriveResponse) ProtoMessage()    {}
+func (*DeriveResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fc75ed3c8267caa0, []int{7}
+}
+func (m *DeriveResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeriveResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeriveResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeriveResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeriveResponse.Merge(m, src)
+}
+func (m *DeriveResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeriveResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeriveResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeriveResponse proto.InternalMessageInfo
+
+func (m *DeriveResponse) GetId() []byte {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *DeriveResponse) GetDerived() []byte {
+	if m != nil {
+		return m.Derived
 	}
 	return nil
 }
 
 func init() {
-	proto.RegisterType((*AuthorizeRequest)(nil), "sonrhq.highway.vault.v1.AuthorizeRequest")
-	proto.RegisterType((*AuthorizeResponse)(nil), "sonrhq.highway.vault.v1.AuthorizeResponse")
-	proto.RegisterType((*FetchPreSignedTxRequest)(nil), "sonrhq.highway.vault.v1.FetchPreSignedTxRequest")
-	proto.RegisterType((*FetchPreSignedTxResponse)(nil), "sonrhq.highway.vault.v1.FetchPreSignedTxResponse")
-	proto.RegisterType((*GenerateWalletRequest)(nil), "sonrhq.highway.vault.v1.GenerateWalletRequest")
-	proto.RegisterType((*GenerateWalletResponse)(nil), "sonrhq.highway.vault.v1.GenerateWalletResponse")
-	proto.RegisterType((*LinkPeerRequest)(nil), "sonrhq.highway.vault.v1.LinkPeerRequest")
-	proto.RegisterType((*LinkPeerResponse)(nil), "sonrhq.highway.vault.v1.LinkPeerResponse")
+	proto.RegisterType((*KeygenRequest)(nil), "sonrhq.highway.vault.v1.KeygenRequest")
+	proto.RegisterType((*KeygenResponse)(nil), "sonrhq.highway.vault.v1.KeygenResponse")
 	proto.RegisterType((*RefreshRequest)(nil), "sonrhq.highway.vault.v1.RefreshRequest")
 	proto.RegisterType((*RefreshResponse)(nil), "sonrhq.highway.vault.v1.RefreshResponse")
-	proto.RegisterType((*SignTxOnlineRequest)(nil), "sonrhq.highway.vault.v1.SignTxOnlineRequest")
-	proto.RegisterType((*SignTxOnlineResponse)(nil), "sonrhq.highway.vault.v1.SignTxOnlineResponse")
+	proto.RegisterType((*SignRequest)(nil), "sonrhq.highway.vault.v1.SignRequest")
+	proto.RegisterType((*SignResponse)(nil), "sonrhq.highway.vault.v1.SignResponse")
+	proto.RegisterType((*DeriveRequest)(nil), "sonrhq.highway.vault.v1.DeriveRequest")
+	proto.RegisterType((*DeriveResponse)(nil), "sonrhq.highway.vault.v1.DeriveResponse")
 }
 
 func init() { proto.RegisterFile("highway/vault/v1/api.proto", fileDescriptor_fc75ed3c8267caa0) }
 
 var fileDescriptor_fc75ed3c8267caa0 = []byte{
-	// 308 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0xd2, 0xbd, 0x4e, 0x32, 0x41,
-	0x14, 0xc6, 0x71, 0x96, 0xe2, 0x2d, 0x4e, 0xde, 0x00, 0xe2, 0x07, 0xc4, 0x62, 0x02, 0x6b, 0x54,
-	0x34, 0x71, 0x27, 0xc4, 0xce, 0x4e, 0x0b, 0x6d, 0x4c, 0x24, 0x48, 0x62, 0x62, 0x63, 0x06, 0xf6,
-	0xc8, 0x4c, 0x5c, 0x67, 0x96, 0x99, 0x59, 0x64, 0xbd, 0x0a, 0x2f, 0xcb, 0x92, 0xd2, 0xd2, 0xec,
-	0xde, 0x88, 0x61, 0x63, 0xfc, 0x00, 0xa7, 0x9a, 0xe6, 0x9f, 0x5f, 0x31, 0xe7, 0x81, 0x6d, 0x2e,
-	0xc6, 0xfc, 0x89, 0xa5, 0x74, 0xca, 0x92, 0xc8, 0xd2, 0x69, 0x97, 0xb2, 0x58, 0x04, 0xb1, 0x56,
-	0x56, 0xd5, 0x1b, 0x46, 0x49, 0xcd, 0x27, 0xc1, 0x67, 0x12, 0x14, 0x49, 0x30, 0xed, 0xfa, 0x3e,
-	0xd4, 0x4e, 0x13, 0xcb, 0x95, 0x16, 0xcf, 0xd8, 0xc7, 0x49, 0x82, 0xc6, 0xd6, 0x2b, 0x50, 0x16,
-	0x61, 0xd3, 0x6b, 0x79, 0x9d, 0xff, 0xfd, 0xb2, 0x08, 0xfd, 0x1d, 0x58, 0xfb, 0xd1, 0x98, 0x58,
-	0x49, 0x83, 0x2b, 0xd1, 0x01, 0x34, 0xce, 0xd1, 0x8e, 0x78, 0x4f, 0xe3, 0xb5, 0x18, 0x4b, 0x0c,
-	0x07, 0x33, 0x97, 0x77, 0x08, 0xcd, 0xd5, 0xd4, 0xc1, 0xee, 0xc3, 0xe6, 0x05, 0x4a, 0xd4, 0xcc,
-	0xe2, 0x0d, 0x8b, 0x22, 0xb4, 0x2e, 0xb4, 0x03, 0x5b, 0xcb, 0xa1, 0x83, 0x6c, 0x43, 0xf5, 0x52,
-	0xc8, 0x87, 0x1e, 0xa2, 0x76, 0x61, 0x3e, 0xd4, 0xbe, 0x13, 0x07, 0xd3, 0x82, 0x4a, 0x1f, 0xef,
-	0x35, 0x1a, 0xee, 0x52, 0xda, 0x50, 0xfd, 0x2a, 0x1c, 0xc8, 0x2e, 0xac, 0x2f, 0xbe, 0x60, 0x30,
-	0xbb, 0x92, 0x91, 0x90, 0xce, 0x0b, 0xec, 0xc1, 0xc6, 0xef, 0xec, 0x6f, 0xee, 0x6c, 0xf0, 0x9a,
-	0x11, 0x6f, 0x9e, 0x11, 0xef, 0x3d, 0x23, 0xde, 0x4b, 0x4e, 0x4a, 0xf3, 0x9c, 0x94, 0xde, 0x72,
-	0x52, 0xba, 0x3d, 0x19, 0x0b, 0xcb, 0x93, 0x61, 0x30, 0x52, 0x8f, 0x74, 0xb1, 0x85, 0x23, 0x3e,
-	0x29, 0x5e, 0x6a, 0xb9, 0xd0, 0xe1, 0x5d, 0xcc, 0xb4, 0x4d, 0xa9, 0x4d, 0x63, 0x34, 0x74, 0x79,
-	0x46, 0xc3, 0x7f, 0xc5, 0x86, 0x8e, 0x3f, 0x02, 0x00, 0x00, 0xff, 0xff, 0xcb, 0x53, 0xe7, 0x6b,
-	0x61, 0x02, 0x00, 0x00,
+	// 364 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xcf, 0x4a, 0xf3, 0x40,
+	0x14, 0xc5, 0x9b, 0xd0, 0xaf, 0xe5, 0xbb, 0xb6, 0x15, 0x66, 0x63, 0x09, 0x12, 0x6b, 0xf0, 0x4f,
+	0x37, 0x26, 0xd4, 0xee, 0x8a, 0x2b, 0x71, 0xe7, 0xae, 0x15, 0xa1, 0x22, 0xc8, 0xd4, 0x8c, 0x99,
+	0x01, 0x4d, 0xd2, 0x99, 0x49, 0x24, 0x6f, 0xe1, 0x63, 0xb9, 0xec, 0xd2, 0xa5, 0xb4, 0x2f, 0xe0,
+	0x23, 0x48, 0xd3, 0xa9, 0x1a, 0xe9, 0xb4, 0xb8, 0x4a, 0x66, 0xf8, 0x9d, 0x33, 0x97, 0x73, 0xb8,
+	0x60, 0x51, 0x16, 0xd0, 0x67, 0x9c, 0x79, 0x29, 0x4e, 0x1e, 0xa5, 0x97, 0x76, 0x3c, 0x1c, 0x33,
+	0x37, 0xe6, 0x91, 0x8c, 0xd0, 0x8e, 0x88, 0x42, 0x4e, 0xc7, 0xae, 0x42, 0xdc, 0x1c, 0x71, 0xd3,
+	0x8e, 0xb3, 0x07, 0xf5, 0x4b, 0x92, 0x05, 0x24, 0xec, 0x93, 0x71, 0x42, 0x84, 0x44, 0x0d, 0x30,
+	0x99, 0xdf, 0x34, 0x5a, 0x46, 0xbb, 0xd6, 0x37, 0x99, 0xef, 0xb4, 0xa0, 0xb1, 0x04, 0x44, 0x1c,
+	0x85, 0x82, 0xac, 0x22, 0xfa, 0xe4, 0x81, 0x13, 0x41, 0x75, 0x1e, 0xfb, 0xb0, 0xfd, 0x45, 0x68,
+	0x4c, 0x3a, 0xb0, 0x35, 0x60, 0x81, 0x6e, 0x0a, 0x84, 0xa0, 0xec, 0x63, 0x89, 0x9b, 0x66, 0x7e,
+	0x93, 0xff, 0x3b, 0x67, 0x50, 0x5b, 0x48, 0x56, 0x5b, 0xa2, 0x5d, 0xf8, 0x2f, 0x58, 0x10, 0x62,
+	0x99, 0x70, 0xa2, 0x84, 0xdf, 0x17, 0x4e, 0x17, 0xea, 0x17, 0x84, 0xb3, 0x94, 0xfc, 0xe5, 0xc9,
+	0x1e, 0x34, 0x96, 0x22, 0xcd, 0xa3, 0x4d, 0xa8, 0xfa, 0x39, 0xe1, 0x2b, 0xe1, 0xf2, 0x78, 0xfa,
+	0x61, 0xc2, 0xbf, 0xeb, 0x79, 0xec, 0x68, 0x08, 0x95, 0x45, 0xa4, 0xe8, 0xc8, 0xd5, 0xf4, 0xe2,
+	0x16, 0x4a, 0xb1, 0x8e, 0x37, 0x72, 0x6a, 0x9c, 0x5b, 0xa8, 0xaa, 0xa4, 0x91, 0x5e, 0x53, 0x6c,
+	0xcb, 0x6a, 0x6f, 0x06, 0x95, 0xfb, 0x00, 0xca, 0xf3, 0xc4, 0xd1, 0x81, 0x56, 0xf1, 0xa3, 0x43,
+	0xeb, 0x70, 0x03, 0xa5, 0x4c, 0x87, 0x50, 0x59, 0x64, 0xba, 0x26, 0x8d, 0x42, 0x53, 0x6b, 0xd2,
+	0x28, 0x96, 0x73, 0x7e, 0xf5, 0x3a, 0xb5, 0x8d, 0xc9, 0xd4, 0x36, 0xde, 0xa7, 0xb6, 0xf1, 0x32,
+	0xb3, 0x4b, 0x93, 0x99, 0x5d, 0x7a, 0x9b, 0xd9, 0xa5, 0x9b, 0x5e, 0xc0, 0x24, 0x4d, 0x46, 0xee,
+	0x7d, 0xf4, 0xe4, 0xcd, 0xcd, 0x4e, 0xe8, 0x38, 0xff, 0x7a, 0x92, 0x32, 0xee, 0xdf, 0xc5, 0x98,
+	0xcb, 0xcc, 0x93, 0x59, 0x4c, 0x84, 0xf7, 0x7b, 0xab, 0x46, 0x95, 0x7c, 0xa5, 0xba, 0x9f, 0x01,
+	0x00, 0x00, 0xff, 0xff, 0x46, 0x96, 0x80, 0x78, 0x70, 0x03, 0x00, 0x00,
 }
 
-func (m *AuthorizeRequest) Marshal() (dAtA []byte, err error) {
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// VaultClient is the client API for Vault service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type VaultClient interface {
+	// Keygen generates a new keypair and returns the public key.
+	Keygen(ctx context.Context, in *KeygenRequest, opts ...grpc.CallOption) (*KeygenResponse, error)
+	// Refresh refreshes the keypair and returns the public key.
+	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
+	// Sign signs the data with the private key and returns the signature.
+	Sign(ctx context.Context, in *SignRequest, opts ...grpc.CallOption) (*SignResponse, error)
+	// Derive derives a new key from the private key and returns the public key.
+	Derive(ctx context.Context, in *DeriveRequest, opts ...grpc.CallOption) (*DeriveResponse, error)
+}
+
+type vaultClient struct {
+	cc grpc1.ClientConn
+}
+
+func NewVaultClient(cc grpc1.ClientConn) VaultClient {
+	return &vaultClient{cc}
+}
+
+func (c *vaultClient) Keygen(ctx context.Context, in *KeygenRequest, opts ...grpc.CallOption) (*KeygenResponse, error) {
+	out := new(KeygenResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.highway.vault.v1.Vault/Keygen", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error) {
+	out := new(RefreshResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.highway.vault.v1.Vault/Refresh", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultClient) Sign(ctx context.Context, in *SignRequest, opts ...grpc.CallOption) (*SignResponse, error) {
+	out := new(SignResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.highway.vault.v1.Vault/Sign", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultClient) Derive(ctx context.Context, in *DeriveRequest, opts ...grpc.CallOption) (*DeriveResponse, error) {
+	out := new(DeriveResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.highway.vault.v1.Vault/Derive", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// VaultServer is the server API for Vault service.
+type VaultServer interface {
+	// Keygen generates a new keypair and returns the public key.
+	Keygen(context.Context, *KeygenRequest) (*KeygenResponse, error)
+	// Refresh refreshes the keypair and returns the public key.
+	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
+	// Sign signs the data with the private key and returns the signature.
+	Sign(context.Context, *SignRequest) (*SignResponse, error)
+	// Derive derives a new key from the private key and returns the public key.
+	Derive(context.Context, *DeriveRequest) (*DeriveResponse, error)
+}
+
+// UnimplementedVaultServer can be embedded to have forward compatible implementations.
+type UnimplementedVaultServer struct {
+}
+
+func (*UnimplementedVaultServer) Keygen(ctx context.Context, req *KeygenRequest) (*KeygenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Keygen not implemented")
+}
+func (*UnimplementedVaultServer) Refresh(ctx context.Context, req *RefreshRequest) (*RefreshResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
+}
+func (*UnimplementedVaultServer) Sign(ctx context.Context, req *SignRequest) (*SignResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Sign not implemented")
+}
+func (*UnimplementedVaultServer) Derive(ctx context.Context, req *DeriveRequest) (*DeriveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Derive not implemented")
+}
+
+func RegisterVaultServer(s grpc1.Server, srv VaultServer) {
+	s.RegisterService(&_Vault_serviceDesc, srv)
+}
+
+func _Vault_Keygen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KeygenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultServer).Keygen(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.highway.vault.v1.Vault/Keygen",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultServer).Keygen(ctx, req.(*KeygenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Vault_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultServer).Refresh(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.highway.vault.v1.Vault/Refresh",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultServer).Refresh(ctx, req.(*RefreshRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Vault_Sign_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SignRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultServer).Sign(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.highway.vault.v1.Vault/Sign",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultServer).Sign(ctx, req.(*SignRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Vault_Derive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeriveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultServer).Derive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.highway.vault.v1.Vault/Derive",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultServer).Derive(ctx, req.(*DeriveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Vault_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "sonrhq.highway.vault.v1.Vault",
+	HandlerType: (*VaultServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Keygen",
+			Handler:    _Vault_Keygen_Handler,
+		},
+		{
+			MethodName: "Refresh",
+			Handler:    _Vault_Refresh_Handler,
+		},
+		{
+			MethodName: "Sign",
+			Handler:    _Vault_Sign_Handler,
+		},
+		{
+			MethodName: "Derive",
+			Handler:    _Vault_Derive_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "highway/vault/v1/api.proto",
+}
+
+func (m *KeygenRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -603,12 +659,12 @@ func (m *AuthorizeRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AuthorizeRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *KeygenRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AuthorizeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *KeygenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -623,7 +679,7 @@ func (m *AuthorizeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *AuthorizeResponse) Marshal() (dAtA []byte, err error) {
+func (m *KeygenResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -633,192 +689,12 @@ func (m *AuthorizeResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AuthorizeResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *KeygenResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AuthorizeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *FetchPreSignedTxRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *FetchPreSignedTxRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *FetchPreSignedTxRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *FetchPreSignedTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *FetchPreSignedTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *FetchPreSignedTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GenerateWalletRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GenerateWalletRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GenerateWalletRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GenerateWalletResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GenerateWalletResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GenerateWalletResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *LinkPeerRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *LinkPeerRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *LinkPeerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *LinkPeerResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *LinkPeerResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *LinkPeerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *KeygenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -893,7 +769,7 @@ func (m *RefreshResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *SignTxOnlineRequest) Marshal() (dAtA []byte, err error) {
+func (m *SignRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -903,16 +779,23 @@ func (m *SignTxOnlineRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SignTxOnlineRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *SignRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SignTxOnlineRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SignRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Data)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Id) > 0 {
 		i -= len(m.Id)
 		copy(dAtA[i:], m.Id)
@@ -923,7 +806,7 @@ func (m *SignTxOnlineRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *SignTxOnlineResponse) Marshal() (dAtA []byte, err error) {
+func (m *SignResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -933,16 +816,97 @@ func (m *SignTxOnlineResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SignTxOnlineResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *SignResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SignTxOnlineResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SignResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Signature) > 0 {
+		i -= len(m.Signature)
+		copy(dAtA[i:], m.Signature)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Signature)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeriveRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeriveRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeriveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Data)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeriveResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeriveResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeriveResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Derived) > 0 {
+		i -= len(m.Derived)
+		copy(dAtA[i:], m.Derived)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Derived)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Id) > 0 {
 		i -= len(m.Id)
 		copy(dAtA[i:], m.Id)
@@ -964,7 +928,7 @@ func encodeVarintApi(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *AuthorizeRequest) Size() (n int) {
+func (m *KeygenRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -977,85 +941,7 @@ func (m *AuthorizeRequest) Size() (n int) {
 	return n
 }
 
-func (m *AuthorizeResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *FetchPreSignedTxRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *FetchPreSignedTxResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *GenerateWalletRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *GenerateWalletResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *LinkPeerRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *LinkPeerResponse) Size() (n int) {
+func (m *KeygenResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1094,7 +980,7 @@ func (m *RefreshResponse) Size() (n int) {
 	return n
 }
 
-func (m *SignTxOnlineRequest) Size() (n int) {
+func (m *SignRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1104,16 +990,58 @@ func (m *SignTxOnlineRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
 	return n
 }
 
-func (m *SignTxOnlineResponse) Size() (n int) {
+func (m *SignResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
 	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.Signature)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	return n
+}
+
+func (m *DeriveRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	return n
+}
+
+func (m *DeriveResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.Derived)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
@@ -1126,7 +1054,7 @@ func sovApi(x uint64) (n int) {
 func sozApi(x uint64) (n int) {
 	return sovApi(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *AuthorizeRequest) Unmarshal(dAtA []byte) error {
+func (m *KeygenRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1149,10 +1077,10 @@ func (m *AuthorizeRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AuthorizeRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: KeygenRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AuthorizeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: KeygenRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1210,7 +1138,7 @@ func (m *AuthorizeRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *AuthorizeResponse) Unmarshal(dAtA []byte) error {
+func (m *KeygenResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1233,514 +1161,10 @@ func (m *AuthorizeResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AuthorizeResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: KeygenResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AuthorizeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
-			if m.Id == nil {
-				m.Id = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *FetchPreSignedTxRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: FetchPreSignedTxRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: FetchPreSignedTxRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
-			if m.Id == nil {
-				m.Id = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *FetchPreSignedTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: FetchPreSignedTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: FetchPreSignedTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
-			if m.Id == nil {
-				m.Id = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GenerateWalletRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GenerateWalletRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GenerateWalletRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
-			if m.Id == nil {
-				m.Id = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GenerateWalletResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GenerateWalletResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GenerateWalletResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
-			if m.Id == nil {
-				m.Id = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *LinkPeerRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: LinkPeerRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LinkPeerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
-			if m.Id == nil {
-				m.Id = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *LinkPeerResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: LinkPeerResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LinkPeerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: KeygenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1966,7 +1390,7 @@ func (m *RefreshResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SignTxOnlineRequest) Unmarshal(dAtA []byte) error {
+func (m *SignRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1989,10 +1413,10 @@ func (m *SignTxOnlineRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SignTxOnlineRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: SignRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SignTxOnlineRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SignRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2029,6 +1453,40 @@ func (m *SignTxOnlineRequest) Unmarshal(dAtA []byte) error {
 				m.Id = []byte{}
 			}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipApi(dAtA[iNdEx:])
@@ -2050,7 +1508,7 @@ func (m *SignTxOnlineRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SignTxOnlineResponse) Unmarshal(dAtA []byte) error {
+func (m *SignResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2073,10 +1531,10 @@ func (m *SignTxOnlineResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SignTxOnlineResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: SignResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SignTxOnlineResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SignResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2111,6 +1569,276 @@ func (m *SignTxOnlineResponse) Unmarshal(dAtA []byte) error {
 			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
 			if m.Id == nil {
 				m.Id = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signature = append(m.Signature[:0], dAtA[iNdEx:postIndex]...)
+			if m.Signature == nil {
+				m.Signature = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeriveRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeriveRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeriveRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
+			if m.Id == nil {
+				m.Id = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeriveResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeriveResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeriveResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
+			if m.Id == nil {
+				m.Id = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Derived", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Derived = append(m.Derived[:0], dAtA[iNdEx:postIndex]...)
+			if m.Derived == nil {
+				m.Derived = []byte{}
 			}
 			iNdEx = postIndex
 		default:
