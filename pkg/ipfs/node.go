@@ -1,4 +1,4 @@
-package node
+package ipfs
 
 import (
 	"context"
@@ -20,7 +20,7 @@ import (
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
-// `Node` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
+// `IPFS` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
 // `NodeCallback` and a `Context` and a `[]string` and a `Peer_Type` and a `string`.
 // @property  - `icore.CoreAPI` is the interface that the node will use to communicate with the IPFS
 // daemon.
@@ -34,7 +34,7 @@ import (
 // @property peerType - The type of peer, which can be either a bootstrap node or a normal node.
 // @property {string} rendezvous - The rendezvous string is a unique identifier for the swarm. It is
 // used to find other peers in the swarm.
-type Node struct {
+type IPFS struct {
 	icore.CoreAPI
 	node       *core.IpfsNode
 	repoPath   string
@@ -48,13 +48,12 @@ type Node struct {
 	bootstrappers      []string
 	topicEventHandlers map[string]TopicMessageHandler
 
-	network    *OnlineNetwork
 	mpcPeerIds []peer.ID
 	partyId    party.ID
 }
 
 // New creates a new node with the given options
-func New(ctx context.Context, options ...NodeOption) (*Node, error) {
+func New(ctx context.Context, options ...NodeOption) (*IPFS, error) {
 	// Apply the options
 	n := defaultNode(ctx)
 	err := n.Apply(options...)
@@ -71,7 +70,7 @@ func New(ctx context.Context, options ...NodeOption) (*Node, error) {
 }
 
 // Get returns a file from the network given its CID
-func (n *Node) Get(cidString string) ([]byte, error) {
+func (n *IPFS) Get(cidString string) ([]byte, error) {
 	ctx, cancel := context.WithCancel(n.ctx)
 	defer cancel()
 	cid := icorepath.New(cidString)
@@ -112,7 +111,7 @@ func (n *Node) Get(cidString string) ([]byte, error) {
 }
 
 // Add adds a file to the network
-func (n *Node) Add(file []byte) (string, error) {
+func (n *IPFS) Add(file []byte) (string, error) {
 	ctx, cancel := context.WithCancel(n.ctx)
 	defer cancel()
 
@@ -144,7 +143,7 @@ func (n *Node) Add(file []byte) (string, error) {
 }
 
 // Connect connects to a peer with a given multiaddress
-func (n *Node) Connect(peers ...string) error {
+func (n *IPFS) Connect(peers ...string) error {
 	var wg sync.WaitGroup
 	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
 	for _, addrStr := range peers {
@@ -179,32 +178,32 @@ func (n *Node) Connect(peers ...string) error {
 }
 
 // ID returns the node's ID
-func (n *Node) ID() peer.ID {
+func (n *IPFS) ID() peer.ID {
 	return n.node.Identity
 }
 
 // ListPeers lists the peers the node is connected to on a given topic
-func (n *Node) ListPeers(topic string) ([]peer.ID, error) {
+func (n *IPFS) ListPeers(topic string) ([]peer.ID, error) {
 	return n.PubSub().Peers(n.ctx, options.PubSub.Topic(topic))
 }
 
 // ListTopics lists the topics the node is subscribed to
-func (n *Node) ListTopics() ([]string, error) {
+func (n *IPFS) ListTopics() ([]string, error) {
 	return n.PubSub().Ls(n.ctx)
 }
 
 // MultiAddr returns the node's multiaddress as a string
-func (n *Node) MultiAddr() string {
+func (n *IPFS) MultiAddr() string {
 	return fmt.Sprintf("/ip4/127.0.0.1/udp/4010/p2p/%s", n.node.Identity.String())
 }
 
 // PartyID returns the node's party ID
-func (n *Node) PartyID() party.ID {
+func (n *IPFS) PartyID() party.ID {
 	return n.partyId
 }
 
 // GroupPartyIDs returns the node's party IDs
-func (n *Node) GroupPartyIDs() []party.ID {
+func (n *IPFS) GroupPartyIDs() []party.ID {
 	pids := make([]party.ID, len(n.mpcPeerIds))
 	for i, pid := range n.mpcPeerIds {
 		pids[i] = party.ID(pid)
@@ -213,7 +212,7 @@ func (n *Node) GroupPartyIDs() []party.ID {
 }
 
 // Peer returns the node's peer info
-func (n *Node) Peer() *cv1.NodeInfo {
+func (n *IPFS) Peer() *cv1.NodeInfo {
 	return &cv1.NodeInfo{
 		Name:      string(n.PartyID()),
 		PeerId:    n.ID().String(),
@@ -223,7 +222,7 @@ func (n *Node) Peer() *cv1.NodeInfo {
 }
 
 // Publish publishes a message to a topic
-func (n *Node) Publish(topic string, message []byte) error {
+func (n *IPFS) Publish(topic string, message []byte) error {
 	ctx, cancel := context.WithCancel(n.ctx)
 	defer cancel()
 
@@ -241,7 +240,7 @@ func (n *Node) Publish(topic string, message []byte) error {
 }
 
 // Subscribing to a topic and then calling the `handleSubscription` function.
-func (n *Node) Subscribe(ctx context.Context, topic string, handler ...TopicMessageHandler) error {
+func (n *IPFS) Subscribe(ctx context.Context, topic string, handler ...TopicMessageHandler) error {
 	sub, err := n.PubSub().Subscribe(ctx, topic, options.PubSub.Discover(true))
 	if err != nil {
 		return err
@@ -258,7 +257,7 @@ func (n *Node) Subscribe(ctx context.Context, topic string, handler ...TopicMess
 //
 
 // handleTopics handles the topics the node is subscribed to
-func (n *Node) handleSubscription(ctx context.Context, topic string, sub icore.PubSubSubscription) {
+func (n *IPFS) handleSubscription(ctx context.Context, topic string, sub icore.PubSubSubscription) {
 	for {
 		msg, err := sub.Next(n.ctx)
 		if err != nil {

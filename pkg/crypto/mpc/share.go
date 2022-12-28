@@ -1,4 +1,4 @@
-package wallet
+package mpc
 
 import (
 	"fmt"
@@ -15,11 +15,13 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-func EmptyWallet() common.WalletShare {
+// It returns an empty wallet share
+func EmptyWalletShare() common.WalletShare {
 	return &mpcConfigWalletImpl{}
 }
 
-func NewWalletImpl(pfix string, c interface{}) common.WalletShare {
+// It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
+func NewWalletShare(pfix string, c interface{}) common.WalletShare {
 	conf := c.(*cmp.Config)
 	confBz, err := conf.MarshalBinary()
 	if err != nil {
@@ -40,6 +42,19 @@ func NewWalletImpl(pfix string, c interface{}) common.WalletShare {
 	return &mpcConfigWalletImpl{Config: conf, walletShareConfig: walletConf}
 }
 
+// `mpcConfigWalletImpl` is a type that implements the `MPCConfig` interface.
+//
+// The `MPCConfig` interface is defined in the `mpc` package.
+//
+// The `Config` type is defined in the `cmp` package.
+//
+// The `WalletShareConfig` type is defined in the `common` package.
+//
+// The `mpcConfigWalletImpl` type is defined in the `wallet` package.
+//
+// The `mpcConfigWalletImpl` type has a field of type `Config` and a field of type `WalletShare
+// @property  - `Config` - the configuration of the MPC protocol.
+// @property walletShareConfig - This is the configuration for the wallet share.
 type mpcConfigWalletImpl struct {
 	*cmp.Config
 	walletShareConfig *common.WalletShareConfig
@@ -126,6 +141,7 @@ func (w *mpcConfigWalletImpl) Verify(data []byte, sig []byte) bool {
 	return signature.Verify(w.Config.PublicPoint(), data)
 }
 
+// It returns the first element of the slice that is not equal to the given ID
 func searchFirstNotId(ids party.IDSlice, id party.ID) party.ID {
 	for _, v := range ids {
 		if v != id {

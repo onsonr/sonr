@@ -1,4 +1,4 @@
-package wallet
+package mpc
 
 import (
 	"os"
@@ -22,7 +22,7 @@ func SaveToPath(w common.WalletShare, path string) error {
 
 // LoadFromPath loads a wallet from the given path.
 func LoadFromPath(path string) (common.WalletShare, error) {
-	w := EmptyWallet()
+	w := EmptyWalletShare()
 	bz, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err

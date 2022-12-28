@@ -1,4 +1,4 @@
-package node
+package ipfs
 
 import (
 	"context"
@@ -24,17 +24,13 @@ import (
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
 )
 
-//
 // Miscellanenous
-//
 var loadPluginsOnce sync.Once
 
 // TopicMessageHandler is a function that handles a message received on a topic
 type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 
-//
 // Default configuration
-//
 var (
 	// defaultBootstrapMultiaddrs is the default list of bootstrap nodes
 	defaultBootstrapMultiaddrs = []string{
@@ -72,11 +68,11 @@ var (
 //
 
 // NodeOption is a function that configures a Node
-type NodeOption func(*Node) error
+type NodeOption func(*IPFS) error
 
 // AddBootstrappers adds additional nodes to start initial connections with
 func AddBootstrappers(bootstrappers []string) NodeOption {
-	return func(c *Node) error {
+	return func(c *IPFS) error {
 		c.bootstrappers = append(c.bootstrappers, bootstrappers...)
 		return nil
 	}
@@ -84,7 +80,7 @@ func AddBootstrappers(bootstrappers []string) NodeOption {
 
 // SetPeerIds sets the peer ids for the node
 func SetPeerIds(peerIds ...peer.ID) NodeOption {
-	return func(c *Node) error {
+	return func(c *IPFS) error {
 		if len(peerIds) > 0 {
 			c.mpcPeerIds = peerIds
 		}
@@ -94,7 +90,7 @@ func SetPeerIds(peerIds ...peer.ID) NodeOption {
 
 // WithNodeCallback sets the callback for the motor
 func WithNodeCallback(callback common.NodeCallback) NodeOption {
-	return func(c *Node) error {
+	return func(c *IPFS) error {
 		c.callback = callback
 		return nil
 	}
@@ -102,7 +98,7 @@ func WithNodeCallback(callback common.NodeCallback) NodeOption {
 
 // WithPartyId sets the party id for the node. This is to be replaced by the User defined label for the device
 func WithPartyId(partyId string) NodeOption {
-	return func(c *Node) error {
+	return func(c *IPFS) error {
 		c.partyId = party.ID(partyId)
 		return nil
 	}
@@ -110,7 +106,7 @@ func WithPartyId(partyId string) NodeOption {
 
 // WithPeerType sets the type of peer
 func WithPeerType(peerType cv1.NodeInfo_Type) NodeOption {
-	return func(c *Node) error {
+	return func(c *IPFS) error {
 		c.peerType = peerType
 		return nil
 	}
@@ -118,7 +114,7 @@ func WithPeerType(peerType cv1.NodeInfo_Type) NodeOption {
 
 // WithWalletShare sets the wallet share for the node
 func WithWalletShare(walletShare common.WalletShare) NodeOption {
-	return func(c *Node) error {
+	return func(c *IPFS) error {
 		c.walletShare = walletShare
 		return nil
 	}
@@ -129,8 +125,8 @@ func WithWalletShare(walletShare common.WalletShare) NodeOption {
 //
 
 // defaultNode creates a new node with default options
-func defaultNode(ctx context.Context) *Node {
-	return &Node{
+func defaultNode(ctx context.Context) *IPFS {
+	return &IPFS{
 		ctx:                ctx,
 		bootstrappers:      defaultBootstrapMultiaddrs,
 		callback:           defaultCallback,
@@ -142,7 +138,7 @@ func defaultNode(ctx context.Context) *Node {
 }
 
 // It's creating a new node and returning the coreAPI and the node itself.
-func (c *Node) Apply(opts ...NodeOption) error {
+func (c *IPFS) Apply(opts ...NodeOption) error {
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
 			return err

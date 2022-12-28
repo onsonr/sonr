@@ -4,6 +4,11 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+// `JWTOptions` is a struct that contains a `[]byte` named `secret`, a `jwt.SigningMethod` named
+// `singingMethod`, and an `int64` named `ttl`.
+// @property {[]byte} secret - This is the secret key used to sign the JWT.
+// @property singingMethod - The signing method used to sign the token.
+// @property {int64} ttl - Time to live in seconds.
 type JWTOptions struct {
 	secret        []byte
 	singingMethod jwt.SigningMethod
@@ -14,6 +19,7 @@ var (
 	options JWTOptions = JWTOptions{}
 )
 
+// A method that returns a `JWTOptions` struct.
 func (opts *JWTOptions) DefaultTestConfig() JWTOptions {
 
 	return JWTOptions{
@@ -24,6 +30,7 @@ func (opts *JWTOptions) DefaultTestConfig() JWTOptions {
 	}
 }
 
+// Setting the `options` variable to the `config` variable.
 func (j *JWTOptions) WithConfig(config JWTOptions) {
 	options = config
 }
