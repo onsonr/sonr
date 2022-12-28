@@ -55,7 +55,7 @@ func Test_JWK(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.NotNil(t, jwk)
-		data, err := x.MarshallJSON()
+		data, err := x.Marshal()
 		assert.NoError(t, err, "marshall succeeds")
 
 		assert.NotNil(t, data)
@@ -73,12 +73,12 @@ func Test_JWK(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.NotNil(t, jwk)
-		data, err := x.MarshallJSON()
+		data, err := x.Marshal()
 		assert.NoError(t, err)
 		assert.NotNil(t, data)
 		assert.True(t, len(data) > 0)
 
-		keyAsJson, err := x.UnmarshallJSON(data)
+		keyAsJson, err := x.Unmarshal(data)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, keyAsJson)

@@ -3,23 +3,32 @@ package motor
 import (
 	"context"
 
-	"github.com/sonr-hq/sonr/pkg/node"
+	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/ipfs"
+	"github.com/sonr-hq/sonr/pkg/network"
 	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
 )
 
 type MotorNode struct {
 	// Node is the libp2p host
-	Node *node.Node
+	Node   *ipfs.IPFS
+	Wallet common.Wallet
 	//
 }
 
-func NewMotorInstance(ctx context.Context, req *mt.InitializeRequest, options ...node.NodeOption) (*MotorNode, error) {
-	n, err := node.New(ctx, options...)
+func NewMotorInstance(ctx context.Context, req *mt.InitializeRequest, options ...ipfs.NodeOption) (*MotorNode, error) {
+	n, err := ipfs.New(ctx, options...)
 	if err != nil {
 		return nil, err
 	}
+	w, err := network.NewWallet()
+	if err != nil {
+		return nil, err
+	}
+
 	return &MotorNode{
-		Node: n,
+		Node:   n,
+		Wallet: w,
 	}, nil
 }
 

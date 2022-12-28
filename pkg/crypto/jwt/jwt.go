@@ -10,19 +10,21 @@ import (
 	did "github.com/sonr-hq/sonr/x/identity/types"
 )
 
+// `JWT` is a struct that has a field called `options` of type `JWTOptions`.
+// @property {JWTOptions} options - This is a struct that contains the options for the JWT.
 type JWT struct {
 	options JWTOptions
 }
 
+// `DefaultNew()` returns a new instance of `JWT` with the default options
 func DefaultNew() *JWT {
 	return &JWT{
 		options: options.DefaultTestConfig(),
 	}
 }
 
-/*
-Creates jwt from parsed with passed did as issuer
-*/
+
+// Creating a new token with the claims of the document.
 func (j *JWT) Generate(doc *did.DidDocument) (string, error) {
 	if doc == nil {
 		return "", errors.New("highway/jwt Document cannot be nil")
@@ -50,9 +52,8 @@ func (j *JWT) Generate(doc *did.DidDocument) (string, error) {
 	return tokenString, err
 }
 
-/*
-Parses a jwt token if possible and returns as Token type.
-*/
+
+// Parses a jwt token if possible and returns as Token type.
 func (j *JWT) Parse(token string) (*jwt.Token, error) {
 	parsed, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.options.secret, nil

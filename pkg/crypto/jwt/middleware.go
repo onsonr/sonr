@@ -6,6 +6,7 @@ import (
 
 type JWTParserMiddleware = func() error
 
+// A function that returns a function.
 func (j *JWT) BuildJWTParseMiddleware(headers string) JWTParserMiddleware {
 	return func() error {
 		token, err := j.Parse(headers)

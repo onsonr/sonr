@@ -1,4 +1,6 @@
 version: 1
+build:
+  main: "cmd/sonrd"
 accounts:
   - name: alice
     coins: ["2000000000snr", "200000000stake"]

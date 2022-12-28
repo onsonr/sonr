@@ -1,11 +1,25 @@
-package mpc
+package network
 
 import (
 	"sync"
 
+	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
+
+// It creates a new wallet with two participants, one of which is the current participant, and returns
+// the wallet
+func NewWallet() (common.Wallet, error) {
+	participants := party.IDSlice{"current", "vault"}
+	net := newOfflineNetwork(participants)
+	wsl, err := mpc.Keygen("current", 1, net, "snr")
+	if err != nil {
+		return nil, err
+	}
+	return OfflineWallet(wsl), nil
+}
 
 // It's a network that can be used to simulate offline parties.
 // @property parties - a slice of party IDs that are participating in the protocol.
@@ -24,7 +38,7 @@ type offlineNetwork struct {
 
 // It creates a new `OfflineNetwork` object, and initializes it with a list of parties, and a map of
 // channels
-func NewOfflineNetwork(parties party.IDSlice) Network {
+func newOfflineNetwork(parties party.IDSlice) common.Network {
 	closed := make(chan *protocol.Message)
 	close(closed)
 	c := &offlineNetwork{

@@ -1,4 +1,4 @@
-package wallet
+package mpc
 
 import (
 	"os"
@@ -12,7 +12,7 @@ import (
 var defaultTestParticipants = party.IDSlice{"vault", "current"}
 
 func TestSaveLoadWallet(t *testing.T) {
-	w := EmptyWallet()
+	w := EmptyWalletShare()
 	path := filepath.Join(os.TempDir(), "test_wallet.json")
 	err := SaveToPath(w, path)
 	if err != nil {

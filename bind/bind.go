@@ -5,9 +5,18 @@ import (
 	// mtr "github.com/sonr-hq/sonr/pkg/motor"
 	// "github.com/sonr-hq/sonr/pkg/motor/x/document"
 	// ct "github.com/sonr-hq/sonr/pkg/types/common"
+	"context"
+
+	"github.com/sonr-hq/sonr/core/motor"
 	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
+
 	// rt "github.com/sonr-hq/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"
+)
+
+var (
+	ctx context.Context
+	mtr *motor.MotorNode
 )
 
 type MotorCallback interface {
@@ -17,36 +26,18 @@ type MotorCallback interface {
 }
 
 func Init(buf []byte, cb MotorCallback) ([]byte, error) {
+	ctx = context.Background()
 	// Unmarshal the request
 	var req mt.InitializeRequest
 	if err := req.Unmarshal(buf); err != nil {
 		return nil, err
 	}
 
-	// // Create Motor instance
-	// mtr, err := mtr.EmptyMotor(&req, cb)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// instance = mtr
-
-	// // init docBuilders
-	// docBuilders = make(map[string]*document.DocumentBuilder)
-
-	// // Return Initialization Response
-	// resp := mt.InitializeResponse{
-	// 	Success: true,
-	// }
-
-	// if req.AuthInfo != nil {
-	// 	if res, err := instance.Login(mt.LoginRequest{
-	// 		AccountId: req.AuthInfo.Did,
-	// 		Password:  req.AuthInfo.Password,
-	// 	}); err == nil {
-	// 		return res.Marshal()
-	// 	}
-	// }
-	// return resp.Marshal()
+	mtdr, err := motor.NewMotorInstance(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+	mtr = mtdr
 	return nil, nil
 }
 

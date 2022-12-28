@@ -1,4 +1,4 @@
-package wallet
+package mpc
 
 import (
 	"crypto/aes"

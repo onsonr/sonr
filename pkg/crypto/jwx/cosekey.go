@@ -225,6 +225,7 @@ func DecodePublicKey(coseKey *COSEKey) (crypto.PublicKey, error) {
 	return publicKey, nil
 }
 
+// It takes a COSEKey and returns an ecdsa.PublicKey
 func decodeECDSAPublicKey(coseKey *COSEKey) (*ecdsa.PublicKey, error) {
 	var curve elliptic.Curve
 	var curveID int
