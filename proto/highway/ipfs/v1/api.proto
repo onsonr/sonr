@@ -14,13 +14,13 @@ message AddRequest {
 // AddResponse is used for returning the hash of the added content.
 message AddResponse {
     // The hash of the added content.
-    string hash = 1;
+    bytes hash = 1;
 }
 
 // GetRequest is used for retrieving content from the IPFS network.
 message GetRequest {
     // The hash of the content to be retrieved.
-    string hash = 1;
+    bytes hash = 1;
 }
 
 // GetResponse is used for returning the content from the IPFS network.
@@ -29,11 +29,28 @@ message GetResponse {
     bytes content = 1;
 }
 
+// ExistsRequest is used for checking if content exists on the IPFS network.
+message ExistsRequest {
+    // The hash of the content to be checked.
+    bytes hash = 1;
+}
+
+// ExistsResponse is used for returning the existence of content on the IPFS network.
+message ExistsResponse {
+    // The existence of the content on the IPFS network.
+    bool exists = 1;
+}
+
 // Service is used for defining the IPFS service.
 service IPFS {
     // Add is used for adding new content to the IPFS network.
     rpc Add(AddRequest) returns (AddResponse) {
         option (google.api.http).post = "/sonr-io/highway/ipfs/add";
+    }
+
+    // Exists is used for checking if content exists on the IPFS network.
+    rpc Exists(ExistsRequest) returns (ExistsResponse) {
+        option (google.api.http).get = "/sonr-io/highway/ipfs/exists/{hash}";
     }
 
     // Get is used for retrieving content from the IPFS network.

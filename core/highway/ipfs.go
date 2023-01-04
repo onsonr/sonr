@@ -38,6 +38,22 @@ func (v *IPFSService) Add(ctx context.Context, req *v1.AddRequest) (*v1.AddRespo
 	}, nil
 }
 
+// Exists checks if the given key exists in the keyring.
+func (v *IPFSService) Exists(ctx context.Context, req *v1.ExistsRequest) (*v1.ExistsResponse, error) {
+	content, err := v.highway.Node.Get(req.GetHash())
+	if err != nil {
+		return nil, err
+	}
+	if content == nil {
+		return &v1.ExistsResponse{
+			Exists: false,
+		}, nil
+	}
+	return &v1.ExistsResponse{
+		Exists: true,
+	}, nil
+}
+
 // Refresh refreshes the keypair and returns the public key.
 func (v *IPFSService) Get(ctx context.Context, req *v1.GetRequest) (*v1.GetResponse, error) {
 	bz, err := v.highway.Node.Get(req.GetHash())

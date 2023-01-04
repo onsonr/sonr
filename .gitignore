@@ -2,7 +2,6 @@ vue/node_modules
 vue/dist
 release/
 .idea/
-.vscode/
 .DS_Store
 **/.testnets
 .env

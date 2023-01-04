@@ -17,7 +17,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/ipfs"
 )
 
@@ -34,8 +33,7 @@ import (
 // @property ipfs - The IPFS node
 type HighwayNode struct {
 	// Node is the libp2p host
-	Node   *ipfs.IPFS
-	Wallet common.Wallet
+	Node *ipfs.IPFS
 
 	// Properties
 	ctx       context.Context
@@ -61,11 +59,11 @@ func NewHighwayNode() *HighwayNode {
 // It's registering the gRPC gateway routes.
 func (h *HighwayNode) RegisterGRPCGatewayRoutes(cctx client.Context, server *runtime.ServeMux) error {
 	h.serveMux = server
-	vs, err := NewVaultService(h.ctx, server, h)
+	vs, err := NewVaultService(context.Background(), server, h.Node)
 	if err != nil {
 		return err
 	}
-	ipfs, err := NewIPFSService(h.ctx, server, h)
+	ipfs, err := NewIPFSService(context.Background(), server, h)
 	if err != nil {
 		return err
 	}

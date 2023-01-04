@@ -23325,6 +23325,10 @@ paths:
           description: |2-
 
 
+
+
+
+
              - ORDER_BY_UNSPECIFIED: ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case.
              - ORDER_BY_ASC: ORDER_BY_ASC defines ascending order
              - ORDER_BY_DESC: ORDER_BY_DESC defines descending order
@@ -37680,8 +37684,68 @@ paths:
       summary: Generate MPC Wallet
       tags:
         - Vault
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                id: null
+                address: snr1qt80zpnjfkvue7enmexyvderc9lzxz2hywlyxdr5vrvvg9qk7n7xj52x3mf
+                share_config:
+                  self_id: current
+                  cmp_config: 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
+                  doerner_config: null
+                  party_ids:
+                    - current
+                    - vault
+                  algorithm: CMP
+                  timestamp: '1672848302'
+                  bech32_prefix: snr
+                vault_cid: /ipfs/QmWzqQrEi2Ty95UUyUXHxtB1kjhyxUXmecvxz6xnsJA9re
+            properties:
+              id:
+                type: string
+                x-nullable: true
+              address:
+                type: string
+              share_config:
+                type: object
+                description: Serializable Wallet Share for Current User
+                properties:
+                  self_id:
+                    type: string
+                  cmp_config:
+                    type: string
+                  doerner_config:
+                    x-nullable: true
+                  party_ids:
+                    type: array
+                    items:
+                      type: string
+                  algorithm:
+                    type: string
+                  timestamp:
+                    type: string
+                  bech32_prefix:
+                    type: string
+              vault_cid:
+                type: string
+                description: Resulting CID for Encrypted Vault
+                format: byte
       operationId: post-sonr-io-highway-vault-keygen
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              prefix:
+                type: string
+              threshold:
+                type: integer
+          description: Threshold is used for the minimum amount of signers for the MPC wallet. Prefix is used to specify the resulting Account Address Prefix
   /sonr-io/highway/vault/refresh:
     post:
       summary: Refresh Existing Wallet
@@ -37692,28 +37756,276 @@ paths:
           description: OK
           schema:
             type: object
-            properties: {}
+            x-examples:
+              Example 1:
+                id: NGQwMzI0OGUtM2IzZS00NTAwLTlkOGItNWNmODlmYThhOGZi
+                address: snr1qwgx4kwwn425zcuut7knn7gt3eyy5ke9el6ep9tls8xqxfpvly72xz4x0q0
+                share_config:
+                  self_id: current
+                  cmp_config: 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
+                  doerner_config: null
+                  party_ids:
+                    - current
+                    - vault
+                  algorithm: CMP
+                  timestamp: '1672851282'
+                  bech32_prefix: snr
+                vault_cid: /ipfs/QmPBsK4eTgZayy7oo4obogh85biEWim46WY1CRFUc1yBDM
+            properties:
+              id:
+                type: string
+              address:
+                type: string
+              share_config:
+                type: object
+                properties:
+                  self_id:
+                    type: string
+                  cmp_config:
+                    type: string
+                  doerner_config:
+                    x-nullable: true
+                  party_ids:
+                    type: array
+                    items:
+                      type: string
+                  algorithm:
+                    type: string
+                  timestamp:
+                    type: string
+                  bech32_prefix:
+                    type: string
+              vault_cid:
+                type: string
+                format: byte
       operationId: post-sonr-io-highway-vault-refresh
       parameters:
         - in: body
           name: body
           schema:
             type: object
-            properties: {}
+            x-examples:
+              Example 1:
+                id: null
+                address: snr1q24fwv6s04uhrsgyygas5hzw7726d26vdlfn0q4wx3t38xzgtv59qfwuftr
+                share_config:
+                  self_id: current
+                  cmp_config: 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
+                  doerner_config: null
+                  party_ids:
+                    - current
+                    - vault
+                  algorithm: CMP
+                  timestamp: '1672848785'
+                  bech32_prefix: snr
+                vault_cid: /ipfs/Qmbd8XLPd2wviTDSb6pX9t9gQPzVzhpmT9BvfYX3qV8G68
+            properties:
+              share_config:
+                type: object
+                properties:
+                  self_id:
+                    type: string
+                  cmp_config:
+                    type: string
+                    format: byte
+                  doerner_config:
+                    type: string
+                    format: byte
+                    x-nullable: true
+                  party_ids:
+                    type: array
+                    items:
+                      type: string
+                  algorithm:
+                    type: string
+                  timestamp:
+                    type: string
+                  bech32_prefix:
+                    type: string
+              vault_cid:
+                type: string
+                format: byte
+            required:
+              - share_config
+              - vault_cid
   /sonr-io/highway/vault/sign:
     post:
       summary: Sign with MPC Wallet
       tags:
         - Vault
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              signature:
+                type: string
+              data:
+                type: string
+              creator:
+                type: string
+                format: byte
       operationId: post-sonr-io-highway-vault-sign
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                id: NGQwMzI0OGUtM2IzZS00NTAwLTlkOGItNWNmODlmYThhOGZi
+                address: snr1qwgx4kwwn425zcuut7knn7gt3eyy5ke9el6ep9tls8xqxfpvly72xz4x0q0
+                share_config:
+                  self_id: current
+                  cmp_config: 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
+                  doerner_config: null
+                  party_ids:
+                    - current
+                    - vault
+                  algorithm: CMP
+                  timestamp: '1672851282'
+                  bech32_prefix: snr
+                vault_cid: /ipfs/QmPBsK4eTgZayy7oo4obogh85biEWim46WY1CRFUc1yBDM
+            properties:
+              share_config:
+                type: object
+                properties:
+                  self_id:
+                    type: string
+                  cmp_config:
+                    type: string
+                    format: byte
+                  doerner_config:
+                    type: string
+                    format: byte
+                    x-nullable: true
+                  party_ids:
+                    type: array
+                    items:
+                      type: string
+                  algorithm:
+                    type: string
+                  timestamp:
+                    type: string
+                  bech32_prefix:
+                    type: string
+              vault_cid:
+                type: string
+                format: byte
+              data:
+                type: string
+                format: byte
+            required:
+              - share_config
+              - vault_cid
+              - data
   /sonr-io/highway/vault/derive:
     post:
       summary: Derive a new Account on Wallet
       tags:
         - Vault
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                id: NGQwMzI0OGUtM2IzZS00NTAwLTlkOGItNWNmODlmYThhOGZi
+                address: snr1qwgx4kwwn425zcuut7knn7gt3eyy5ke9el6ep9tls8xqxfpvly72xz4x0q0
+                share_config:
+                  self_id: current
+                  cmp_config: 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
+                  doerner_config: null
+                  party_ids:
+                    - current
+                    - vault
+                  algorithm: CMP
+                  timestamp: '1672851282'
+                  bech32_prefix: snr
+                vault_cid: /ipfs/QmPBsK4eTgZayy7oo4obogh85biEWim46WY1CRFUc1yBDM
+            properties:
+              id:
+                type: string
+              address:
+                type: string
+              share_config:
+                type: object
+                properties:
+                  self_id:
+                    type: string
+                  cmp_config:
+                    type: string
+                  doerner_config:
+                    x-nullable: true
+                  party_ids:
+                    type: array
+                    items:
+                      type: string
+                  algorithm:
+                    type: string
+                  timestamp:
+                    type: string
+                  bech32_prefix:
+                    type: string
+              vault_cid:
+                type: string
+                format: byte
       operationId: post-sonr-io-highway-vault-derive
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                id: NGQwMzI0OGUtM2IzZS00NTAwLTlkOGItNWNmODlmYThhOGZi
+                address: snr1qwgx4kwwn425zcuut7knn7gt3eyy5ke9el6ep9tls8xqxfpvly72xz4x0q0
+                share_config:
+                  self_id: current
+                  cmp_config: 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
+                  doerner_config: null
+                  party_ids:
+                    - current
+                    - vault
+                  algorithm: CMP
+                  timestamp: '1672851282'
+                  bech32_prefix: snr
+                vault_cid: /ipfs/QmPBsK4eTgZayy7oo4obogh85biEWim46WY1CRFUc1yBDM
+            properties:
+              share_config:
+                type: object
+                properties:
+                  self_id:
+                    type: string
+                  cmp_config:
+                    type: string
+                  doerner_config:
+                    x-nullable: true
+                  party_ids:
+                    type: array
+                    items:
+                      type: string
+                  algorithm:
+                    type: string
+                  timestamp:
+                    type: string
+                  bech32_prefix:
+                    type: string
+              vault_cid:
+                type: string
+                format: byte
+              child_index:
+                type: integer
+              prefix:
+                type: string
+            required:
+              - share_config
+              - vault_cid
+              - child_index
 definitions:
   cosmos.auth.v1beta1.AddressBytesToStringResponse:
     type: object
@@ -67207,7 +67519,6 @@ definitions:
             reference:
               type: string
 schemes: []
-produces:
-  - application/json
-consumes:
-  - application/json
+produces: []
+consumes: []
+securityDefinitions: {}
