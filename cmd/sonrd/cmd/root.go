@@ -262,7 +262,7 @@ func (a appCreator) newApp(
 
 	skipUpgradeHeights := make(map[int64]bool)
 	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
-		skipUpgradeHeights[int64(h)] = true
+		skipUpgradeHeights[int64(h)] = false
 	}
 
 	pruningOpts, err := server.GetPruningOptionsFromFlags(appOpts)
@@ -371,8 +371,7 @@ func initAppConfig() (string, interface{}) {
 	srvCfg.API.Enable = true
 	srvCfg.API.Swagger = true
 	srvCfg.GRPCWeb.Enable = true
-	srvCfg.MinGasPrices = "0snr"
-
+	srvCfg.MinGasPrices = "0.25snr"
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
 		WASM: WASMConfig{

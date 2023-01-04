@@ -5,8 +5,8 @@ SCRIPTS_DIR=$(dirname "$0")
 cd ${SCRIPTS_DIR}/../
 PROJECT_DIR=$(pwd);
 LICENSE=${PROJECT_DIR}/LICENSE.md
-MOTOR_LIB_DIR=${PROJECT_DIR}/bind/motor-mobile
-MOTOR_WASM_DIR=${PROJECT_DIR}/bind/motor-wasm
+MOTOR_LIB_DIR=${PROJECT_DIR}/bind/motor
+MOTOR_WASM_DIR=${PROJECT_DIR}/bind/motor
 
 
 
