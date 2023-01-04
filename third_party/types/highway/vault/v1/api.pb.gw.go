@@ -2,11 +2,11 @@
 // source: highway/vault/v1/api.proto
 
 /*
-Package vault is a reverse proxy.
+Package v1 is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package vault
+package v1
 
 import (
 	"context"

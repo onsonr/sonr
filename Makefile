@@ -54,7 +54,7 @@ proto: proto.go proto.buf
 
 ## └─ go            - Generate to x/*/types and thirdparty/types/*
 proto.go:
-	ignite generate proto-go --yes && ignite generate openapi --yes
+	ignite generate proto-go --yes
 	go mod tidy
 	@echo "✅ Generated Go Proto Files"
 

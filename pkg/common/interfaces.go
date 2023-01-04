@@ -36,6 +36,9 @@ type Wallet interface {
 	// Address returns the address of the Wallet.
 	Address() string
 
+	// Bip32Derive creates a new WalletShare that is derived from the given path.
+	Bip32Derive(i uint32) (WalletShare, error)
+
 	// Find returns the WalletShare with the given ID.
 	Find(id party.ID) WalletShare
 
@@ -65,6 +68,9 @@ type Wallet interface {
 type WalletShare interface {
 	// Returns the Bech32 representation of the given party.
 	Address() string
+
+	// Bip32Derive creates a new WalletShare that is derived from the given path.
+	Bip32Derive(i uint32) (WalletShare, error)
 
 	// CMPConfig returns the *cmp.Config of this wallet if it exists.
 	CMPConfig() *cmp.Config

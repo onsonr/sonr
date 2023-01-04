@@ -83,6 +83,16 @@ func (w *cmpConfigWalletShare) Address() string {
 	return str
 }
 
+// Deriving a new wallet share from the given wallet share.
+func (w *cmpConfigWalletShare) Bip32Derive(i uint32) (common.WalletShare, error) {
+	newCfg, err := w.DeriveBIP32(i)
+	if err != nil {
+		return nil, err
+	}
+
+	return &cmpConfigWalletShare{Config: newCfg, walletShareConfig: w.walletShareConfig}, nil
+}
+
 // MPCConfig returns the *cmp.Config of this wallet.
 func (w *cmpConfigWalletShare) CMPConfig() *cmp.Config {
 	return w.Config

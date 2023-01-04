@@ -4,9 +4,12 @@ import (
 	"context"
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	v1 "github.com/sonr-hq/sonr/core/highway/types/v1/vault"
+	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/network"
+	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
 // `VaultService` is a type that implements the `v1.VaultServer` interface, and has a field called
@@ -49,21 +52,21 @@ func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.K
 		return nil, err
 	}
 	return &v1.KeygenResponse{
+		Id:          []byte(uuid.New().String()),
 		Address:     wallet.Address(),
 		VaultCid:    cid,
 		ShareConfig: wallet.Find("current").Share(),
-		// snr1qgq429ay5wc2ny7e4ut8pguc2zyqvyljr67ckazt3za2dxzp42857wvc7rw
-		// snr17g2g5ncnwlwlkuqcx2msgp5vgm8cqyg0d8leke
 	}, nil
 }
 
 // Refresh refreshes the keypair and returns the public key.
 func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1.RefreshResponse, error) {
-	wallet, err := network.LoadOfflineWallet(req.GetShareConfigs())
+	self, wallet, err := v.assembleWalletFromShares(req.VaultCid, req.ShareConfig)
 	if err != nil {
 		return nil, err
 	}
-	newWallet, err := wallet.Refresh("current")
+
+	newWallet, err := wallet.Refresh(self)
 	if err != nil {
 		return nil, err
 	}
@@ -77,16 +80,63 @@ func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1
 		return nil, err
 	}
 	return &v1.RefreshResponse{
-		Id: []byte(cid),
+		Id:          []byte(uuid.New().String()),
+		Address:     newWallet.Address(),
+		VaultCid:    cid,
+		ShareConfig: newWallet.Find(party.ID(req.ShareConfig.SelfId)).Share(),
 	}, nil
 }
 
 // Sign signs the data with the private key and returns the signature.
 func (v *VaultService) Sign(ctx context.Context, req *v1.SignRequest) (*v1.SignResponse, error) {
-	return nil, errors.New("not implemented")
+	self, wallet, err := v.assembleWalletFromShares(req.VaultCid, req.ShareConfig)
+	if err != nil {
+		return nil, err
+	}
+	sig, err := wallet.Sign(self, req.Data)
+	if err != nil {
+		return nil, err
+	}
+	return &v1.SignResponse{
+		Id:        []byte(uuid.New().String()),
+		Signature: sig,
+		Data:      req.Data,
+		Creator:   wallet.Address(),
+	}, nil
 }
 
 // Derive derives a new key from the private key and returns the public key.
 func (v *VaultService) Derive(ctx context.Context, req *v1.DeriveRequest) (*v1.DeriveResponse, error) {
 	return nil, errors.New("not implemented")
+}
+
+//
+// Helper functions
+//
+
+// assembleWalletFromShares takes a WalletShareConfig and CID to return a Offline Wallet
+func (v *VaultService) assembleWalletFromShares(cid string, current *common.WalletShareConfig) (party.ID, common.Wallet, error) {
+	// Initialize provided share
+	shares := make([]*common.WalletShareConfig, 0)
+	shares = append(shares, current)
+
+	// Fetch Vault share from IPFS
+	oldbz, err := v.highway.Node.Get(cid)
+	if err != nil {
+		return "", nil, err
+	}
+
+	// Unmarshal share
+	share := &common.WalletShareConfig{}
+	err = share.Unmarshal(oldbz)
+	if err != nil {
+		return "", nil, err
+	}
+
+	// Load wallet
+	wallet, err := network.LoadOfflineWallet(shares)
+	if err != nil {
+		return "", nil, err
+	}
+	return party.ID(current.SelfId), wallet, nil
 }

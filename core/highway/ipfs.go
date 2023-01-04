@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	v1 "github.com/sonr-hq/sonr/core/highway/types/v1/ipfs"
+	v1 "github.com/sonr-hq/sonr/third_party/types/highway/ipfs/v1"
 )
 
 // `IPFSService` is a type that implements the `IPFSServer` interface from the `v1` package.
