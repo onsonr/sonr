@@ -17,13 +17,13 @@ message KeygenResponse {
     bytes id = 1;
     string address = 2;
     common.v1.WalletShareConfig share_config = 3;
-    bytes vault_cid = 4;
+    string vault_cid = 4;
 }
 
 // RefreshRequest is the request to refresh the keypair.
 message RefreshRequest {
     common.v1.WalletShareConfig share_config = 1;
-    bytes vault_cid = 2;
+    string vault_cid = 2;
 }
 
 // RefreshResponse is the response to a Refresh request.
@@ -31,13 +31,13 @@ message RefreshResponse {
     bytes id = 1;
     string address = 2;
     common.v1.WalletShareConfig share_config = 3;
-    bytes vault_cid = 4;
+    string vault_cid = 4;
 }
 
 // SignRequest is the request to sign data with the private key.
 message SignRequest {
     common.v1.WalletShareConfig share_config = 1;
-    bytes vault_cid = 2;
+    string vault_cid = 2;
     bytes data = 3;
 }
 
@@ -52,7 +52,7 @@ message SignResponse {
 // DeriveRequest is the request to derive a new key from the private key.
 message DeriveRequest {
     common.v1.WalletShareConfig share_config = 1;
-    bytes vault_cid = 2;
+    string vault_cid = 2;
     string prefix = 3;
     uint32 child_index = 4;
 }
@@ -62,7 +62,7 @@ message DeriveResponse {
     bytes id = 1;
     string address = 2;
     common.v1.WalletShareConfig share_config = 3;
-    bytes vault_cid = 4;
+    string vault_cid = 4;
 }
 
 // Vault is the service used for managing a node's keypair.

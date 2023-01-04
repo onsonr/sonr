@@ -32,6 +32,7 @@ func LoadPrivKeyFromJsonPath(path string) (crypto.PrivKey, error) {
 	return priv, nil
 }
 
+// It converts a `WebauthnCredential` to a `webauthn.Credential`
 func ConvertToWebauthnCredential(credential *WebauthnCredential) webauthn.Credential {
 	return webauthn.Credential{
 		ID:        credential.Id,

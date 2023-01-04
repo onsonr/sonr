@@ -15,20 +15,25 @@ type NodeCallback interface {
 	OnLinking(data []byte)
 }
 
+// `defaultCallback` is a type that implements the `Callback` interface.
 type defaultCallback struct{}
 
+// It returns a pointer to a defaultCallback struct
 func DefaultCallback() NodeCallback {
 	return &defaultCallback{}
 }
 
+// Defining a method on the defaultCallback struct.
 func (cb *defaultCallback) OnDiscover(data []byte) {
 	log.Println(ErrDefaultStillImplemented.Error())
 }
 
+// Defining a method on the defaultCallback struct.
 func (cb *defaultCallback) OnLinking(data []byte) {
 	log.Println("ERROR: MotorCallback not implemented.")
 }
 
+// Defining a method on the defaultCallback struct.
 func (cb *defaultCallback) OnTopicMessage(topic string, data []byte) {
 	log.Println("ERROR: MotorCallback not implemented.")
 }

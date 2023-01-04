@@ -137,7 +137,7 @@ func (v *VaultService) Derive(ctx context.Context, req *v1.DeriveRequest) (*v1.D
 //
 
 // assembleWalletFromShares takes a WalletShareConfig and CID to return a Offline Wallet
-func (v *VaultService) assembleWalletFromShares(cid []byte, current *common.WalletShareConfig) (party.ID, common.Wallet, error) {
+func (v *VaultService) assembleWalletFromShares(cid string, current *common.WalletShareConfig) (party.ID, common.Wallet, error) {
 	// Initialize provided share
 	shares := make([]*common.WalletShareConfig, 0)
 	shares = append(shares, current)

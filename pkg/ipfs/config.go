@@ -78,8 +78,8 @@ func AddBootstrappers(bootstrappers []string) NodeOption {
 	}
 }
 
-// SetPeerIds sets the peer ids for the node
-func SetPeerIds(peerIds ...peer.ID) NodeOption {
+// WithGroupIds sets the peer ids for the node
+func WithGroupIds(peerIds ...peer.ID) NodeOption {
 	return func(c *IPFS) error {
 		if len(peerIds) > 0 {
 			c.mpcPeerIds = peerIds

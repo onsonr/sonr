@@ -9,7 +9,6 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
-	"github.com/ipfs/go-cid"
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/ipfs/interface-go-ipfs-core/options"
@@ -107,7 +106,7 @@ func (n *IPFS) Connect(peers ...string) error {
 }
 
 // Add adds a file to the network
-func (n *IPFS) Add(file []byte) ([]byte, error) {
+func (n *IPFS) Add(file []byte) (string, error) {
 	filename := uuid.New().String()
 	ctx, cancel := context.WithCancel(n.ctx)
 	defer cancel()
@@ -115,40 +114,35 @@ func (n *IPFS) Add(file []byte) ([]byte, error) {
 	// Generate a temporary directory
 	inputBasePath, err := os.MkdirTemp("", "sonr-ipfs")
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Write contents to a temporary file
 	inputPath := filepath.Join(inputBasePath, filename)
 	err = os.WriteFile(inputPath, file, 0644)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Get File Node
 	fileNode, err := getUnixfsNode(inputPath)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Add the file to the network
 	cid, err := n.CoreAPI.Unixfs().Add(ctx, fileNode)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return cid.Cid().Bytes(), nil
+	return cid.Cid().String(), nil
 }
 
 // Get returns a file from the network given its CID
-func (n *IPFS) Get(cidBz []byte) ([]byte, error) {
+func (n *IPFS) Get(cidStr string) ([]byte, error) {
 	ctx, cancel := context.WithCancel(n.ctx)
 	defer cancel()
-	cid, err := cid.Cast(cidBz)
-	if err != nil {
-		return nil, err
-	}
-	cidString := cid.String()
-	cidPath := icorepath.New(cidString)
+	cidPath := icorepath.New(cidStr)
 
 	// Get the file from the network
 	fileNode, err := n.CoreAPI.Unixfs().Get(ctx, cidPath)
@@ -163,7 +157,7 @@ func (n *IPFS) Get(cidBz []byte) ([]byte, error) {
 	}
 
 	// Set the output path
-	outputPath := filepath.Join(outputBasePath, cidString)
+	outputPath := filepath.Join(outputBasePath, cidStr)
 	// Write the file to the output path
 	err = files.WriteTo(fileNode, outputPath)
 	if err != nil {
