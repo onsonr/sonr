@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
+	"github.com/ipfs/go-cid"
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/ipfs/interface-go-ipfs-core/options"
@@ -108,11 +109,8 @@ func (n *IPFS) Connect(peers ...string) error {
 // Add adds a file to the network
 func (n *IPFS) Add(file []byte) (string, error) {
 	filename := uuid.New().String()
-	ctx, cancel := context.WithCancel(n.ctx)
-	defer cancel()
-
 	// Generate a temporary directory
-	inputBasePath, err := os.MkdirTemp("", "sonr-ipfs")
+	inputBasePath, err := os.MkdirTemp("", filename)
 	if err != nil {
 		return "", err
 	}
@@ -131,34 +129,38 @@ func (n *IPFS) Add(file []byte) (string, error) {
 	}
 
 	// Add the file to the network
-	cid, err := n.CoreAPI.Unixfs().Add(ctx, fileNode)
+	cid, err := n.CoreAPI.Unixfs().Add(n.ctx, fileNode, options.Unixfs.Pin(true))
 	if err != nil {
 		return "", err
 	}
-	return cid.Cid().String(), nil
+	if err := os.RemoveAll(inputBasePath); err != nil {
+		fmt.Printf("Failed to cleanup Temporary IPFS directory: %s", err)
+	}
+	return cid.String(), nil
 }
 
 // Get returns a file from the network given its CID
 func (n *IPFS) Get(cidStr string) ([]byte, error) {
-	ctx, cancel := context.WithCancel(n.ctx)
-	defer cancel()
-	cidPath := icorepath.New(cidStr)
+	filename := uuid.New().String()
+	cid, err := cid.Parse(cidStr)
+	if err != nil {
+		return nil, err
+	}
 
 	// Get the file from the network
-	fileNode, err := n.CoreAPI.Unixfs().Get(ctx, cidPath)
+	fileNode, err := n.CoreAPI.Unixfs().Get(n.ctx, icorepath.IpfsPath(cid))
 	if err != nil {
 		return nil, err
 	}
 
 	// Create a temporary directory to store the file
-	outputBasePath, err := os.MkdirTemp("", "sonr-ipfs")
+	outputBasePath, err := os.MkdirTemp("", filename)
 	if err != nil {
 		return nil, err
 	}
 
 	// Set the output path
-	outputPath := filepath.Join(outputBasePath, cidStr)
-	// Write the file to the output path
+	outputPath := filepath.Join(outputBasePath, filename)
 	err = files.WriteTo(fileNode, outputPath)
 	if err != nil {
 		return nil, err
@@ -169,17 +171,15 @@ func (n *IPFS) Get(cidStr string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := os.RemoveAll(outputBasePath); err != nil {
+		fmt.Printf("Failed to cleanup Temporary IPFS directory: %s", err)
+	}
 	return file, nil
 }
 
-// ID returns the node's ID
-func (n *IPFS) ID() peer.ID {
+// PeerID returns the node's PeerID
+func (n *IPFS) PeerID() peer.ID {
 	return n.node.Identity
-}
-
-// ListPeers lists the peers the node is connected to on a given topic
-func (n *IPFS) ListPeers(topic string) ([]peer.ID, error) {
-	return n.PubSub().Peers(n.ctx, options.PubSub.Topic(topic))
 }
 
 // ListTopics lists the topics the node is subscribed to
@@ -210,7 +210,7 @@ func (n *IPFS) GroupPartyIDs() []party.ID {
 func (n *IPFS) Peer() *cv1.NodeInfo {
 	return &cv1.NodeInfo{
 		Name:      string(n.PartyID()),
-		PeerId:    n.ID().String(),
+		PeerId:    n.PeerID().String(),
 		Multiaddr: n.MultiAddr(),
 		Type:      n.peerType,
 	}
