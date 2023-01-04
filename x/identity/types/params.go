@@ -20,8 +20,8 @@ func NewParams() Params {
 		DidMethodName:    "snr",
 		DidMethodVersion: "1.0",
 		DidNetwork:       "devnet",
-		IpfsGateway:      "https://ipfs.io/ipfs/",
-		IpfsApi:          "https://ipfs.sonr.io",
+		IpfsGateway:      "https://ipfs.sonr.network/ipfs/",
+		IpfsApi:          "https://ipfs.sonr.network",
 		HnsTlds: []string{
 			".snr",
 			".sonr",

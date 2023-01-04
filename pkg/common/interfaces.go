@@ -1,44 +1,12 @@
 package common
 
 import (
-	"io/ioutil"
-
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	crypto "github.com/libp2p/go-libp2p/core/crypto"
-	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
-	tm_crypto "github.com/tendermint/tendermint/crypto"
-	tm_json "github.com/tendermint/tendermint/libs/json"
 )
-
-// > Loads a private key from a JSON file and returns a `crypto.PrivKey` interface
-func LoadPrivKeyFromJsonPath(path string) (crypto.PrivKey, error) {
-	// Load the key from the given path.
-	key, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	// Create new private key interface
-	var vnPk tm_crypto.PrivKey
-
-	// Unmarshal the key into the interface.
-	err = tm_json.Unmarshal(key, &vnPk)
-	if err != nil {
-		return nil, err
-	}
-	priv, err := crypto.UnmarshalPrivateKey(vnPk.Bytes())
-	if err != nil {
-		return nil, err
-	}
-	return priv, nil
-}
-
-//
-// Public Interfaces
-//
 
 // A Network is a channel that sends messages to parties and receives messages from parties.
 type Network interface {
@@ -98,7 +66,7 @@ type WalletShare interface {
 	CMPConfig() *cmp.Config
 
 	// DID returns the DID of this wallet.
-	DID() (*types.DID, error)
+	DID() (string, error)
 
 	// Marshal serializes the cmp.Config into a byte slice for local storage
 	Marshal() ([]byte, error)

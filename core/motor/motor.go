@@ -4,7 +4,7 @@
 // Motor is an embedded light node which interacts with the Sonr network. Motors utilize
 // the Sonr protocol to leverage account assets in a secure and efficient manner.
 //
-// Modules: DIDComm, MPC Wallet
+// Modules: DIDComm, MPC Wallet, Blockchain Client
 // Interface: libp2p host
 // Transports: TCP, UDP, QUIC, WebTransport, WebSockets
 // ---
@@ -16,7 +16,6 @@ import (
 
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/host"
-	"github.com/sonr-hq/sonr/pkg/network"
 	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
 )
 
@@ -33,13 +32,9 @@ func NewMotorInstance(ctx context.Context, req *mt.InitializeRequest) (*MotorNod
 	if err != nil {
 		return nil, err
 	}
-	w, err := network.NewWallet("snr")
-	if err != nil {
-		return nil, err
-	}
 
 	return &MotorNode{
-		Node:   n,
-		Wallet: w,
+		Node: n,
+		// Wallet: w,
 	}, nil
 }

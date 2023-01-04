@@ -2,7 +2,7 @@ syntax = "proto3";
 
 // Package Discover is used to find other Peers in the sonr network.
 package sonrhq.highway.discovery.v1;
-import "common/v1/peer.proto";
+import "common/v1/data.proto";
 
 option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/discovery/v1";
 

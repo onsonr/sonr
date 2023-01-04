@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/shengdoushi/base58"
+	common "github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/crypto/jwx"
 	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
 	"github.com/sonr-hq/sonr/x/identity/types/ssi"
@@ -483,10 +484,10 @@ func NewVerificationMethod(id string, keyType KeyType, controller string, key in
 	// Check for Webauthn key
 	if keyType == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
 		// Check if Key is WebauthnCredential
-		if _, ok := key.(*WebauthnCredential); !ok {
+		if _, ok := key.(*common.WebauthnCredential); !ok {
 			return nil, fmt.Errorf("key is not a WebauthnCredential")
 		}
-		vm.WebauthnCredential = key.(*WebauthnCredential)
+		vm.WebauthnCredential = key.(*common.WebauthnCredential)
 	}
 
 	// Check for Secp256k1 key

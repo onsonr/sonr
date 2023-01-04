@@ -3,6 +3,7 @@ package sonrhq.sonr.identity;
 
 import "sonr/identity/ssi.proto";
 import "sonr/identity/vc.proto";
+import "common/v1/data.proto";
 option go_package = "github.com/sonr-hq/sonr/x/identity/types";
 
 message DidDocument {
@@ -27,7 +28,7 @@ message VerificationMethod {
   map<string, string> public_key_jwk = 4; // optional
   string public_key_multibase = 5; // optional
   string blockchain_account_id = 6; // optional
-  WebauthnCredential webauthn_credential = 7; // optional
+  common.v1.WebauthnCredential webauthn_credential = 7; // optional
 }
 
 message VerificationRelationship {
