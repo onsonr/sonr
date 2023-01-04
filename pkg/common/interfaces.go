@@ -44,6 +44,9 @@ type Wallet interface {
 	// Network returns the Network that this Wallet is associated with.
 	Network() Network
 
+	// PublicKey returns the public key of this wallet.
+	PublicKey() (*secp256k1.PubKey, error)
+
 	// Refresh the WalletShares.
 	Refresh(current party.ID) (Wallet, error)
 

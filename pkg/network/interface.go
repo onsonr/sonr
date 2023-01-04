@@ -6,6 +6,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
@@ -49,6 +50,10 @@ func (ws OfflineWallet) Network() common.Network {
 		parties = append(parties, s.SelfID())
 	}
 	return newOfflineNetwork(parties)
+}
+
+func (ws OfflineWallet) PublicKey() (*secp256k1.PubKey, error) {
+	return ws[0].PublicKey()
 }
 
 // Refreshing the wallet shares.
