@@ -18,6 +18,8 @@ require (
 	github.com/ipfs/kubo v0.18.0-rc1
 	github.com/lestrrat-go/jwx/v2 v2.0.7
 	github.com/libp2p/go-libp2p v0.24.1
+	github.com/libp2p/go-libp2p-kad-dht v0.20.0
+	github.com/libp2p/go-libp2p-pubsub v0.8.2
 	github.com/marstr/guid v1.1.0
 	github.com/multiformats/go-multiaddr v0.8.0
 	github.com/ockam-network/did v0.1.3
@@ -247,9 +249,7 @@ require (
 	github.com/libp2p/go-doh-resolver v0.4.0 // indirect
 	github.com/libp2p/go-flow-metrics v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-asn-util v0.2.0 // indirect
-	github.com/libp2p/go-libp2p-kad-dht v0.20.0 // indirect
 	github.com/libp2p/go-libp2p-kbucket v0.5.0 // indirect
-	github.com/libp2p/go-libp2p-pubsub v0.8.2 // indirect
 	github.com/libp2p/go-libp2p-pubsub-router v0.6.0 // indirect
 	github.com/libp2p/go-libp2p-record v0.2.0 // indirect
 	github.com/libp2p/go-libp2p-routing-helpers v0.4.0 // indirect
