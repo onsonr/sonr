@@ -1,7 +1,7 @@
 package motor
 
 import (
-	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
+	mt "github.com/sonr-hq/sonr/core/motor/types/bind/v1"
 )
 
 // A method on the MotorNode struct. It takes a request of type `mt.ConnectRequest` and returns a

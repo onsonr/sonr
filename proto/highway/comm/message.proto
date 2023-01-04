@@ -1,9 +1,9 @@
 syntax = "proto3";
 
 // Package Discover is used to find other Peers in the sonr network.
-package sonrhq.highway.discovery.v1;
+package sonrhq.highway.discovery;
 
-option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/discovery/v1";
+option go_package = "github.com/sonr-hq/sonr/core/highway/types/comm";
 
 // CommMessage is a message that can be sent over the wire between two libp2p nodes.
 message CommMessage {

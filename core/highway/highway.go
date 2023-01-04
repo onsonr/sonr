@@ -31,6 +31,7 @@ type HighwayNode struct {
 	clientCtx client.Context
 	serveMux  *runtime.ServeMux
 	vs        *VaultService
+	ipfs      *IPFSService
 }
 
 func NewHighwayNode() *HighwayNode {
@@ -47,10 +48,15 @@ func NewHighwayNode() *HighwayNode {
 
 func (h *HighwayNode) RegisterGRPCGatewayRoutes(cctx client.Context, server *runtime.ServeMux) error {
 	h.serveMux = server
-	vs, err := NewVaultService(h.ctx, server)
+	vs, err := NewVaultService(h.ctx, server, h)
 	if err != nil {
 		return err
 	}
+	// ipfs, err := NewIPFSService(h.ctx, server, h)
+	// if err != nil {
+	// 	return err
+	// }
 	h.vs = vs
+	// h.ipfs = ipfs
 	return nil
 }

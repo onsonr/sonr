@@ -5,17 +5,19 @@ import (
 	"errors"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/network"
-	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
+	v1 "github.com/sonr-hq/sonr/core/highway/types/vault"
 )
 
 type VaultService struct {
 	v1.VaultServer
+	highway *HighwayNode
 }
 
-func NewVaultService(ctx context.Context, mux *runtime.ServeMux) (*VaultService, error) {
-	srv := &VaultService{}
+func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *HighwayNode) (*VaultService, error) {
+	srv := &VaultService{
+		highway: hway,
+	}
 	err := v1.RegisterVaultHandlerServer(ctx, mux, srv)
 	if err != nil {
 		return nil, err
@@ -32,36 +34,35 @@ func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.K
 	if err != nil {
 		return nil, err
 	}
-	pubKey, err := wallet.PublicKey()
+	share := wallet.Find("vault").Share()
+	bz, err := share.Marshal()
 	if err != nil {
 		return nil, err
 	}
-	pbBz, err := pubKey.Marshal()
+	cid, err := v.highway.Node.Add(bz)
 	if err != nil {
 		return nil, err
-	}
-	cnfgs := make([]*common.WalletShareConfig, 0)
-	for name := range wallet.GetConfigMap() {
-		cnfgs = append(cnfgs, wallet.Find(name).Share())
 	}
 	return &v1.KeygenResponse{
-		Address:      wallet.Address(),
-		PublicKey:    pbBz,
-		ShareConfigs: cnfgs,
+		Address:     wallet.Address(),
+		VaultCid:    cid,
+		ShareConfig: wallet.Find("current").Share(),
+		// snr1qgq429ay5wc2ny7e4ut8pguc2zyqvyljr67ckazt3za2dxzp42857wvc7rw
+		// snr17g2g5ncnwlwlkuqcx2msgp5vgm8cqyg0d8leke
 	}, nil
 }
 
 // Refresh refreshes the keypair and returns the public key.
-func (v *VaultService) Refresh(context.Context, *v1.RefreshRequest) (*v1.RefreshResponse, error) {
+func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1.RefreshResponse, error) {
 	return nil, errors.New("not implemented")
 }
 
 // Sign signs the data with the private key and returns the signature.
-func (v *VaultService) Sign(context.Context, *v1.SignRequest) (*v1.SignResponse, error) {
+func (v *VaultService) Sign(ctx context.Context, req *v1.SignRequest) (*v1.SignResponse, error) {
 	return nil, errors.New("not implemented")
 }
 
 // Derive derives a new key from the private key and returns the public key.
-func (v *VaultService) Derive(context.Context, *v1.DeriveRequest) (*v1.DeriveResponse, error) {
+func (v *VaultService) Derive(ctx context.Context, req *v1.DeriveRequest) (*v1.DeriveResponse, error) {
 	return nil, errors.New("not implemented")
 }

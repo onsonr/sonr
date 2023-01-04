@@ -1,3 +1,4 @@
 version: v1
 directories:
-  - third_party/proto/motor
+  - third_party/proto
+  - proto
