@@ -50,11 +50,11 @@ service IPFS {
 
     // Exists is used for checking if content exists on the IPFS network.
     rpc Exists(ExistsRequest) returns (ExistsResponse) {
-        option (google.api.http).post = "/sonr-io/highway/ipfs/exists/{hash}";
+        option (google.api.http).post = "/sonr-io/highway/ipfs/exists";
     }
 
     // Get is used for retrieving content from the IPFS network.
     rpc Get(GetRequest) returns (GetResponse) {
-        option (google.api.http).post = "/sonr-io/highway/ipfs/get/{hash}";
+        option (google.api.http).post = "/sonr-io/highway/ipfs/get";
     }
 }
