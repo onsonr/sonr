@@ -1,11 +1,20 @@
 package host
 
 import (
-	"strings"
+	"context"
+	"crypto/rand"
 
+	"github.com/libp2p/go-libp2p"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ps "github.com/libp2p/go-libp2p-pubsub"
+	crypto "github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/routing"
 	dsc "github.com/libp2p/go-libp2p/p2p/discovery/routing"
+	cmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
 // Default configuration
@@ -14,8 +23,7 @@ var (
 	defaultBootstrapMultiaddrs = []string{
 		// IPFS Bootstrapper nodes.
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		// These are the bootstrap nodes for the IPFS network.
-		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
 		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
 		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
 
@@ -41,16 +49,114 @@ var (
 	defaultRendezvousString = "sonr"
 )
 
-func addrToDidUrl(addr string) string {
-	if strings.Contains(addr, "snr") {
-		rawAddr := strings.TrimLeft(addr, "snr")
-		return "did:snr:" + rawAddr
+//
+// Options for the node
+//
+
+// NodeOption is a function that configures a Node
+type NodeOption func(*P2PHost) error
+
+// WithBootstrapMultiaddrs sets the bootstrap nodes
+func WithBootstrapMultiaddrs(addrs []string) NodeOption {
+	return func(n *P2PHost) error {
+		n.bootstrappers = addrs
+		return nil
 	}
-	return addr
 }
 
-// createDHTDiscovery is a Helper Method to initialize the DHT Discovery
-func (hn *P2PHost) createDHTDiscovery() error {
+// SetPeerIds sets the peer ids for the node
+func SetPeerIds(peerIds ...peer.ID) NodeOption {
+	return func(c *P2PHost) error {
+		if len(peerIds) > 0 {
+			c.mpcPeerIds = peerIds
+		}
+		return nil
+	}
+}
+
+// WithNodeCallback sets the callback for the motor
+func WithNodeCallback(callback common.NodeCallback) NodeOption {
+	return func(c *P2PHost) error {
+		c.callback = callback
+		return nil
+	}
+}
+
+// WithPartyId sets the party id for the node. This is to be replaced by the User defined label for the device
+func WithPartyId(partyId string) NodeOption {
+	return func(c *P2PHost) error {
+		c.partyId = party.ID(partyId)
+		return nil
+	}
+}
+
+// WithWalletShare sets the wallet share for the node
+func WithWalletShare(walletShare common.WalletShare) NodeOption {
+	return func(c *P2PHost) error {
+		c.walletShare = walletShare
+		return nil
+	}
+}
+
+//
+// Node Setup and Initialization
+//
+
+// defaultNode creates a new node with default options
+func defaultNode(ctx context.Context) *P2PHost {
+	return &P2PHost{
+		mdnsPeerChan:  make(chan peer.AddrInfo),
+		topics:        make(map[string]*ps.Topic),
+		ctx:           ctx,
+		bootstrappers: defaultBootstrapMultiaddrs,
+		partyId:       party.ID("current"),
+	}
+}
+
+// initializeNode initializes the node
+func initializeHost(hn *P2PHost) error {
+	var err error
+	// findPrivKey returns the private key for the host.
+	findPrivKey := func() (crypto.PrivKey, error) {
+		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
+		if err == nil {
+			return privKey, nil
+		}
+		return nil, err
+	}
+
+	// Create Connection Manager
+	hn.connMgr, err = cmgr.NewConnManager(10, 40)
+	if err != nil {
+		return err
+	}
+
+	// Fetch the private key.
+	hn.privKey, err = findPrivKey()
+	if err != nil {
+		return err
+	}
+	// Start Host
+	hn.host, err = libp2p.New(
+		libp2p.Identity(hn.privKey),
+		libp2p.ConnectionManager(hn.connMgr),
+		libp2p.DefaultListenAddrs,
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			hn.IpfsDHT, err = dht.New(hn.ctx, h)
+			if err != nil {
+				return nil, err
+			}
+			return hn.IpfsDHT, nil
+		}),
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// setupRoutingDiscovery is a Helper Method to initialize the DHT Discovery
+func setupRoutingDiscovery(hn *P2PHost) error {
 	// Set Routing Discovery, Find Peers
 	var err error
 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
@@ -64,14 +170,6 @@ func (hn *P2PHost) createDHTDiscovery() error {
 
 	// Handle DHT Peers
 	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, "sonr")
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (hn *P2PHost) Close() error {
-	err := hn.host.Close()
 	if err != nil {
 		return err
 	}

@@ -2,21 +2,20 @@ package host
 
 import (
 	"context"
-	"crypto/rand"
 	"errors"
 	"fmt"
 	"time"
 
-	ma "github.com/multiformats/go-multiaddr"
-	"github.com/libp2p/go-libp2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	"github.com/libp2p/go-libp2p/core/routing"
 	cmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
+	ma "github.com/multiformats/go-multiaddr"
+	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/taurusgroup/multi-party-sig/pkg/party"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 )
@@ -38,8 +37,8 @@ import (
 // @property  - `host`: The libp2p host.
 type P2PHost struct {
 	// Standard Node Implementation
-	host    host.Host
-	accAddr string
+	host     host.Host
+	callback common.NodeCallback
 
 	// Host and context
 	privKey      crypto.PrivKey
@@ -52,52 +51,25 @@ type P2PHost struct {
 
 	*dht.IpfsDHT
 	*ps.PubSub
+
+	walletShare   common.WalletShare
+	bootstrappers []string
+	connMgr       *cmgr.BasicConnMgr
+
+	mpcPeerIds []peer.ID
+	partyId    party.ID
 }
 
 // New Creates a Sonr libp2p Host with the given config
-func New(ctx context.Context) (*P2PHost, error) {
-	var err error
-	// Create the host.
-	hn := &P2PHost{
-		ctx:          ctx,
-		mdnsPeerChan: make(chan peer.AddrInfo),
-		topics:       make(map[string]*ps.Topic),
-	}
-	// findPrivKey returns the private key for the host.
-	findPrivKey := func() (crypto.PrivKey, error) {
-		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
-		if err == nil {
-
-			return privKey, nil
-		}
-		return nil, err
-	}
-	// Fetch the private key.
-	hn.privKey, err = findPrivKey()
-	if err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...NodeOption) (*P2PHost, error) {
+	// Create Host and apply options
+	hn := defaultNode(ctx)
+	for _, opt := range opts {
+		opt(hn)
 	}
 
-	// Create Connection Manager
-	cnnmgr, err := cmgr.NewConnManager(10, 40)
-	if err != nil {
-		return nil, err
-	}
-
-	// Start Host
-	hn.host, err = libp2p.New(
-		libp2p.Identity(hn.privKey),
-		libp2p.ConnectionManager(cnnmgr),
-		libp2p.DefaultListenAddrs,
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			hn.IpfsDHT, err = dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
-			return hn.IpfsDHT, nil
-		}),
-	)
-	if err != nil {
+	// Initialize Host
+	if err := initializeHost(hn); err != nil {
 		return nil, err
 	}
 
@@ -107,7 +79,7 @@ func New(ctx context.Context) (*P2PHost, error) {
 	}
 
 	// Connect to Bootstrap Nodes
-	for _, pistr := range defaultBootstrapMultiaddrs {
+	for _, pistr := range hn.bootstrappers {
 		if err := hn.Connect(pistr); err != nil {
 			continue
 		} else {
@@ -116,15 +88,10 @@ func New(ctx context.Context) (*P2PHost, error) {
 	}
 
 	// Initialize Discovery for DHT
-	if err := hn.createDHTDiscovery(); err != nil {
+	if err := setupRoutingDiscovery(hn); err != nil {
 		return nil, err
 	}
 	return hn, nil
-}
-
-// Host returns the host of the node
-func (hn *P2PHost) Host() host.Host {
-	return hn.host
 }
 
 // PeerID returns the ID of the Host
@@ -154,9 +121,11 @@ func (hn *P2PHost) HandlePeerFound(pi peer.AddrInfo) {
 	hn.mdnsPeerChan <- pi
 }
 
-// MultiAddrs returns the MultiAddresses of the Host
-func (hn *P2PHost) MultiAddrs() []ma.Multiaddr {
-	return hn.host.Addrs()
+// MultiAddrs returns the MultiAddresses of the Host as single string
+func (hn *P2PHost) MultiAddrs() string {
+	maddrs := hn.host.Addrs()
+	maddr := ma.Join(maddrs...)
+	return maddr.String()
 }
 
 // NewStream opens a new stream to the peer with given peer id
@@ -242,4 +211,13 @@ func (hn *P2PHost) handleSubscription(sub *ps.Subscription, handler func(msg *ps
 		default:
 		}
 	}
+}
+
+// Closing the host.
+func (hn *P2PHost) Close() error {
+	err := hn.host.Close()
+	if err != nil {
+		return err
+	}
+	return nil
 }
