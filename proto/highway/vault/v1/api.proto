@@ -6,7 +6,7 @@ import "google/api/annotations.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
 
 message KeygenRequest {
-    bytes id = 1;
+    string prefix = 1;
 }
 
 message KeygenResponse {

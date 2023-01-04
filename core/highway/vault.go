@@ -23,8 +23,11 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux) (*VaultService,
 }
 
 // Keygen generates a new keypair and returns the public key.
-func (v *VaultService) Keygen(context.Context, *v1.KeygenRequest) (*v1.KeygenResponse, error) {
-	wallet, err := network.NewWallet("snr")
+func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.KeygenResponse, error) {
+	if req.Prefix == "" {
+		req.Prefix = "snr"
+	}
+	wallet, err := network.NewWallet(req.Prefix)
 	if err != nil {
 		return nil, err
 	}
