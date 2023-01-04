@@ -15,6 +15,7 @@ type IPFSService struct {
 	highway *HighwayNode
 }
 
+// It creates a new IPFSService and registers it as a handler for the IPFS gRPC service
 func NewIPFSService(ctx context.Context, mux *runtime.ServeMux, hway *HighwayNode) (*IPFSService, error) {
 	srv := &IPFSService{
 		highway: hway,
