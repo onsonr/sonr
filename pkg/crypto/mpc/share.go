@@ -132,6 +132,10 @@ func (w *mpcConfigWalletImpl) Unmarshal(data []byte) error {
 	return nil
 }
 
+func (w *mpcConfigWalletImpl) Share() *common.WalletShareConfig {
+	return w.walletShareConfig
+}
+
 // Verify a signature with the given wallet.
 func (w *mpcConfigWalletImpl) Verify(data []byte, sig []byte) bool {
 	signature, err := DeserializeSignature(sig)

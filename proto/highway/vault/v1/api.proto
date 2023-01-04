@@ -2,6 +2,7 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.highway.vault.v1;
+import "common/v1/data.proto";
 import "google/api/annotations.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
 
@@ -13,34 +14,41 @@ message KeygenResponse {
     bytes id = 1;
     string address = 2;
     bytes public_key = 3;
+    repeated common.v1.WalletShareConfig share_configs = 4;
 }
 
 message RefreshRequest {
-    bytes id = 1;
+    repeated common.v1.WalletShareConfig share_configs = 1;
 }
 
 message RefreshResponse {
     bytes id = 1;
+    repeated common.v1.WalletShareConfig share_configs = 2;
 }
 
 message SignRequest {
     bytes id = 1;
     bytes data = 2;
+    repeated common.v1.WalletShareConfig share_configs = 3;
 }
 
 message SignResponse {
     bytes id = 1;
     bytes signature = 2;
+    bytes data = 3;
+    repeated common.v1.WalletShareConfig share_configs = 4;
 }
 
 message DeriveRequest {
     bytes id = 1;
-    bytes data = 2;
+    uint64 index = 2;
+    repeated common.v1.WalletShareConfig share_configs = 3;
 }
 
 message DeriveResponse {
     bytes id = 1;
-    bytes derived = 2;
+    string address = 2;
+    repeated common.v1.WalletShareConfig share_configs = 3;
 }
 
 service Vault {

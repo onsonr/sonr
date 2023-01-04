@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/network"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 )
@@ -39,9 +40,14 @@ func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.K
 	if err != nil {
 		return nil, err
 	}
+	cnfgs := make([]*common.WalletShareConfig, 0)
+	for name := range wallet.GetConfigMap() {
+		cnfgs = append(cnfgs, wallet.Find(name).Share())
+	}
 	return &v1.KeygenResponse{
-		Address:   wallet.Address(),
-		PublicKey: pbBz,
+		Address:      wallet.Address(),
+		PublicKey:    pbBz,
+		ShareConfigs: cnfgs,
 	}, nil
 }
 

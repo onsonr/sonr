@@ -83,6 +83,9 @@ type WalletShare interface {
 	// PartyIDs returns the IDs of all parties in the group.
 	PartyIDs() []party.ID
 
+	// Share returns the share of this wallet.
+	Share() *WalletShareConfig
+
 	// Unmarshal deserializes the given byte slice into a cmp.Config
 	Unmarshal([]byte) error
 
