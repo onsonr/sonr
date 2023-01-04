@@ -104,6 +104,7 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/sonr-hq/sonr/core/highway"
 	identitymodule "github.com/sonr-hq/sonr/x/identity"
 	identitymodulekeeper "github.com/sonr-hq/sonr/x/identity/keeper"
 	identitymoduletypes "github.com/sonr-hq/sonr/x/identity/types"
@@ -204,6 +205,7 @@ func init() {
 // capabilities aren't needed for testing.
 type App struct {
 	*baseapp.BaseApp
+	highway *highway.HighwayNode
 
 	cdc               *codec.LegacyAmino
 	appCodec          codec.Codec
@@ -301,6 +303,7 @@ func New(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
+		highway:           highway.NewHighwayNode(),
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -827,7 +830,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 	// Register new tendermint queries routes from grpc-gateway.
 	tmservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
-
+	app.highway.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 	// Register grpc-gateway routes for all modules.
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 

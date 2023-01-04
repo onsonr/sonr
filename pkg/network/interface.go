@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 
@@ -21,6 +22,11 @@ type OfflineWallet []common.WalletShare
 // Address returns the address of the Wallet.
 func (ws OfflineWallet) Address() string {
 	return ws[0].Address()
+}
+
+// Bip32Derive creates a new WalletShare that is derived from the given path.
+func (ws OfflineWallet) Bip32Derive(i uint32) (common.WalletShare, error) {
+	return ws[0].Bip32Derive(i)
 }
 
 // Find returns the WalletShare with the given ID.
@@ -49,6 +55,10 @@ func (ws OfflineWallet) Network() common.Network {
 		parties = append(parties, s.SelfID())
 	}
 	return newOfflineNetwork(parties)
+}
+
+func (ws OfflineWallet) PublicKey() (*secp256k1.PubKey, error) {
+	return ws[0].PublicKey()
 }
 
 // Refreshing the wallet shares.

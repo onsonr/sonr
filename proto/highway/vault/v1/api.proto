@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrhq.highway.vault.v1;
+import "common/v1/data.proto";
+import "google/api/annotations.proto";
+option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
+
+// KeygenRequest is the request to generate a new keypair.
+message KeygenRequest {
+    string prefix = 1;
+    int32 threshold = 2;
+}
+
+// KeygenResponse is the response to a Keygen request.
+message KeygenResponse {
+    bytes id = 1;
+    string address = 2;
+    common.v1.WalletShareConfig share_config = 3;
+    bytes vault_cid = 4;
+}
+
+// RefreshRequest is the request to refresh the keypair.
+message RefreshRequest {
+    common.v1.WalletShareConfig share_config = 1;
+    bytes vault_cid = 2;
+}
+
+// RefreshResponse is the response to a Refresh request.
+message RefreshResponse {
+    bytes id = 1;
+    string address = 2;
+    common.v1.WalletShareConfig share_config = 3;
+    bytes vault_cid = 4;
+}
+
+// SignRequest is the request to sign data with the private key.
+message SignRequest {
+    common.v1.WalletShareConfig share_config = 1;
+    bytes vault_cid = 2;
+    bytes data = 3;
+}
+
+// SignResponse is the response to a Sign request.
+message SignResponse {
+    bytes id = 1;
+    bytes signature = 2;
+    bytes data = 3;
+    string creator = 4;
+}
+
+// DeriveRequest is the request to derive a new key from the private key.
+message DeriveRequest {
+    common.v1.WalletShareConfig share_config = 1;
+    bytes vault_cid = 2;
+    string prefix = 3;
+    uint32 child_index = 4;
+}
+
+// DeriveResponse is the response to a Derive request.
+message DeriveResponse {
+    bytes id = 1;
+    string address = 2;
+    common.v1.WalletShareConfig share_config = 3;
+    bytes vault_cid = 4;
+}
+
+// Vault is the service used for managing a node's keypair.
+service Vault {
+    // Keygen generates a new keypair and returns the public key.
+    rpc Keygen(KeygenRequest) returns (KeygenResponse) {
+        option (google.api.http).post = "/sonr-io/highway/vault/keygen";
+    }
+
+    // Refresh refreshes the keypair and returns the public key.
+    rpc Refresh(RefreshRequest) returns (RefreshResponse) {
+        option (google.api.http).post = "/sonr-io/highway/vault/refresh";
+    }
+
+    // Sign signs the data with the private key and returns the signature.
+    rpc Sign(SignRequest) returns (SignResponse) {
+        option (google.api.http).post = "/sonr-io/highway/vault/sign";
+    }
+
+    // Derive derives a new key from the private key and returns the public key.
+    rpc Derive(DeriveRequest) returns (DeriveResponse) {
+        option (google.api.http).post = "/sonr-io/highway/vault/derive";
+    }
+}

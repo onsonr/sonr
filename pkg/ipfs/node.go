@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"path/filepath"
 	"sync"
 
+	"github.com/google/uuid"
+	"github.com/ipfs/go-cid"
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/ipfs/interface-go-ipfs-core/options"
@@ -69,79 +71,6 @@ func New(ctx context.Context, options ...NodeOption) (*IPFS, error) {
 	return n, nil
 }
 
-// Get returns a file from the network given its CID
-func (n *IPFS) Get(cidString string) ([]byte, error) {
-	ctx, cancel := context.WithCancel(n.ctx)
-	defer cancel()
-	cid := icorepath.New(cidString)
-
-	// Get the file from the network
-	fileNode, err := n.CoreAPI.Unixfs().Get(ctx, cid)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create a temporary directory to store the file
-	outputBasePath, err := os.MkdirTemp("", "example")
-	if err != nil {
-		return nil, err
-	}
-
-	// Set the output path
-	outputPath := outputBasePath + strings.Split(cidString, "/")[2]
-
-	// Write the file to the output path
-	err = files.WriteTo(fileNode, outputPath)
-	if err != nil {
-		return nil, err
-	}
-
-	// Read the file
-	file, err := os.ReadFile(outputPath)
-	if err != nil {
-		return nil, err
-	}
-
-	// Delete the temporary directory
-	err = os.RemoveAll(outputBasePath)
-	if err != nil {
-		return nil, err
-	}
-	return file, nil
-}
-
-// Add adds a file to the network
-func (n *IPFS) Add(file []byte) (string, error) {
-	ctx, cancel := context.WithCancel(n.ctx)
-	defer cancel()
-
-	// Generate a temporary directory
-	inputBasePath, err := os.MkdirTemp("", "example")
-	if err != nil {
-		return "", err
-	}
-
-	// Write contents to a temporary file
-	inputPath := fmt.Sprintf("%s/%s", inputBasePath, "file")
-	err = os.WriteFile(inputPath, file, 0644)
-	if err != nil {
-		return "", err
-	}
-
-	// Get File Node
-	fileNode, err := getUnixfsNode(inputPath)
-	if err != nil {
-		return "", err
-	}
-
-	// Add the file to the network
-	cid, err := n.CoreAPI.Unixfs().Add(ctx, fileNode)
-	if err != nil {
-		return "", err
-	}
-	return cid.String(), nil
-}
-
 // Connect connects to a peer with a given multiaddress
 func (n *IPFS) Connect(peers ...string) error {
 	var wg sync.WaitGroup
@@ -175,6 +104,78 @@ func (n *IPFS) Connect(peers ...string) error {
 	}
 	wg.Wait()
 	return nil
+}
+
+// Add adds a file to the network
+func (n *IPFS) Add(file []byte) ([]byte, error) {
+	filename := uuid.New().String()
+	ctx, cancel := context.WithCancel(n.ctx)
+	defer cancel()
+
+	// Generate a temporary directory
+	inputBasePath, err := os.MkdirTemp("", "sonr-ipfs")
+	if err != nil {
+		return nil, err
+	}
+
+	// Write contents to a temporary file
+	inputPath := filepath.Join(inputBasePath, filename)
+	err = os.WriteFile(inputPath, file, 0644)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get File Node
+	fileNode, err := getUnixfsNode(inputPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// Add the file to the network
+	cid, err := n.CoreAPI.Unixfs().Add(ctx, fileNode)
+	if err != nil {
+		return nil, err
+	}
+	return cid.Cid().Bytes(), nil
+}
+
+// Get returns a file from the network given its CID
+func (n *IPFS) Get(cidBz []byte) ([]byte, error) {
+	ctx, cancel := context.WithCancel(n.ctx)
+	defer cancel()
+	cid, err := cid.Cast(cidBz)
+	if err != nil {
+		return nil, err
+	}
+	cidString := cid.String()
+	cidPath := icorepath.New(cidString)
+
+	// Get the file from the network
+	fileNode, err := n.CoreAPI.Unixfs().Get(ctx, cidPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a temporary directory to store the file
+	outputBasePath, err := os.MkdirTemp("", "sonr-ipfs")
+	if err != nil {
+		return nil, err
+	}
+
+	// Set the output path
+	outputPath := filepath.Join(outputBasePath, cidString)
+	// Write the file to the output path
+	err = files.WriteTo(fileNode, outputPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// Read the file
+	file, err := os.ReadFile(outputPath)
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
 }
 
 // ID returns the node's ID

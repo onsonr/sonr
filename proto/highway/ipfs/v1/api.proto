@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrhq.highway.ipfs.v1;
+import "google/api/annotations.proto";
+option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/ipfs/v1";
+
+// AddRequest is used for adding new content to the IPFS network.
+message AddRequest {
+    // The content to be added to the IPFS network.
+    bytes content = 1;
+}
+
+// AddResponse is used for returning the hash of the added content.
+message AddResponse {
+    // The hash of the added content.
+    bytes hash = 1;
+}
+
+// GetRequest is used for retrieving content from the IPFS network.
+message GetRequest {
+    // The hash of the content to be retrieved.
+    bytes hash = 1;
+}
+
+// GetResponse is used for returning the content from the IPFS network.
+message GetResponse {
+    // The content retrieved from the IPFS network.
+    bytes content = 1;
+}
+
+// ExistsRequest is used for checking if content exists on the IPFS network.
+message ExistsRequest {
+    // The hash of the content to be checked.
+    bytes hash = 1;
+}
+
+// ExistsResponse is used for returning the existence of content on the IPFS network.
+message ExistsResponse {
+    // The existence of the content on the IPFS network.
+    bool exists = 1;
+}
+
+// Service is used for defining the IPFS service.
+service IPFS {
+    // Add is used for adding new content to the IPFS network.
+    rpc Add(AddRequest) returns (AddResponse) {
+        option (google.api.http).post = "/sonr-io/highway/ipfs/add";
+    }
+
+    // Exists is used for checking if content exists on the IPFS network.
+    rpc Exists(ExistsRequest) returns (ExistsResponse) {
+        option (google.api.http).post = "/sonr-io/highway/ipfs/exists/{hash}";
+    }
+
+    // Get is used for retrieving content from the IPFS network.
+    rpc Get(GetRequest) returns (GetResponse) {
+        option (google.api.http).post = "/sonr-io/highway/ipfs/get/{hash}";
+    }
+}

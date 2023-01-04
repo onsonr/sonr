@@ -1,3 +1,4 @@
+// It converts a `WebauthnCredential` to a `webauthn.Credential`
 package common
 
 import (
@@ -35,6 +36,9 @@ type Wallet interface {
 	// Address returns the address of the Wallet.
 	Address() string
 
+	// Bip32Derive creates a new WalletShare that is derived from the given path.
+	Bip32Derive(i uint32) (WalletShare, error)
+
 	// Find returns the WalletShare with the given ID.
 	Find(id party.ID) WalletShare
 
@@ -43,6 +47,9 @@ type Wallet interface {
 
 	// Network returns the Network that this Wallet is associated with.
 	Network() Network
+
+	// PublicKey returns the public key of this wallet.
+	PublicKey() (*secp256k1.PubKey, error)
 
 	// Refresh the WalletShares.
 	Refresh(current party.ID) (Wallet, error)
@@ -62,6 +69,9 @@ type WalletShare interface {
 	// Returns the Bech32 representation of the given party.
 	Address() string
 
+	// Bip32Derive creates a new WalletShare that is derived from the given path.
+	Bip32Derive(i uint32) (WalletShare, error)
+
 	// CMPConfig returns the *cmp.Config of this wallet if it exists.
 	CMPConfig() *cmp.Config
 
@@ -79,6 +89,9 @@ type WalletShare interface {
 
 	// PartyIDs returns the IDs of all parties in the group.
 	PartyIDs() []party.ID
+
+	// Share returns the share of this wallet.
+	Share() *WalletShareConfig
 
 	// Unmarshal deserializes the given byte slice into a cmp.Config
 	Unmarshal([]byte) error

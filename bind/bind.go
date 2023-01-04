@@ -9,7 +9,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/sonr-hq/sonr/core/motor"
-	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
+	mt "github.com/sonr-hq/sonr/core/motor/types/bind/v1"
 
 	// rt "github.com/sonr-hq/sonr/x/registry/types"
 	_ "golang.org/x/mobile/bind"

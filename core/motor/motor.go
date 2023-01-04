@@ -16,7 +16,7 @@ import (
 
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/host"
-	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
+	mt "github.com/sonr-hq/sonr/core/motor/types/bind/v1"
 )
 
 type MotorNode struct {
