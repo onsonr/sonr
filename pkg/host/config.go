@@ -50,7 +50,7 @@ func addrToDidUrl(addr string) string {
 }
 
 // createDHTDiscovery is a Helper Method to initialize the DHT Discovery
-func (hn *hostImpl) createDHTDiscovery() error {
+func (hn *P2PHost) createDHTDiscovery() error {
 	// Set Routing Discovery, Find Peers
 	var err error
 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
@@ -70,7 +70,7 @@ func (hn *hostImpl) createDHTDiscovery() error {
 	return nil
 }
 
-func (hn *hostImpl) Close() error {
+func (hn *P2PHost) Close() error {
 	err := hn.host.Close()
 	if err != nil {
 		return err

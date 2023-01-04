@@ -22,8 +22,8 @@ import (
 	// "github.com/pion/webrtc/v3"
 )
 
-// hostImpl type - a p2p host implementing one or more p2p protocols
-type hostImpl struct {
+// P2PHost type - a p2p host implementing one or more p2p protocols
+type P2PHost struct {
 	// Standard Node Implementation
 	host    host.Host
 	accAddr string
@@ -41,10 +41,10 @@ type hostImpl struct {
 }
 
 // New Creates a Sonr libp2p Host with the given config
-func New(ctx context.Context) (*hostImpl, error) {
+func New(ctx context.Context) (*P2PHost, error) {
 	var err error
 	// Create the host.
-	hn := &hostImpl{
+	hn := &P2PHost{
 		ctx:          ctx,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 	}
@@ -88,12 +88,7 @@ func New(ctx context.Context) (*hostImpl, error) {
 
 	// Connect to Bootstrap Nodes
 	for _, pistr := range defaultBootstrapMultiaddrs {
-		pi, err := peer.AddrInfoFromString(pistr)
-		if err != nil {
-			continue
-		}
-
-		if err := hn.Connect(*pi); err != nil {
+		if err := hn.Connect(pistr); err != nil {
 			continue
 		} else {
 			break
@@ -108,38 +103,49 @@ func New(ctx context.Context) (*hostImpl, error) {
 }
 
 // Host returns the host of the node
-func (hn *hostImpl) Host() host.Host {
+func (hn *P2PHost) Host() host.Host {
 	return hn.host
 }
 
 // HostID returns the ID of the Host
-func (n *hostImpl) HostID() peer.ID {
+func (n *P2PHost) HostID() peer.ID {
 	return n.host.ID()
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
-func (hn *hostImpl) Connect(pi peer.AddrInfo) error {
+func (hn *P2PHost) Connect(pi interface{}) error {
 	// Check if host is ready
 	if !hn.HasRouting() {
 		return fmt.Errorf("Host does not have routing")
 	}
 
-	// Call Underlying Host to Connect
-	return hn.host.Connect(hn.ctx, pi)
+	// Check if type is String or AddrInfo
+	switch pi.(type) {
+	case string:
+		pi, err := peer.AddrInfoFromString(pi.(string))
+		if err != nil {
+			return err
+		}
+		return hn.host.Connect(hn.ctx, *pi)
+	case peer.AddrInfo:
+		return hn.host.Connect(hn.ctx, pi.(peer.AddrInfo))
+	default:
+		return fmt.Errorf("Connect: Invalid type for peer.AddrInfo")
+	}
 }
 
 // HandlePeerFound is to be called when new  peer is found
-func (hn *hostImpl) HandlePeerFound(pi peer.AddrInfo) {
+func (hn *P2PHost) HandlePeerFound(pi peer.AddrInfo) {
 	hn.mdnsPeerChan <- pi
 }
 
 // HasRouting returns no-error if the host is ready for connect
-func (h *hostImpl) HasRouting() bool {
+func (h *P2PHost) HasRouting() bool {
 	return h.IpfsDHT != nil && h.host != nil
 }
 
 // Join wraps around PubSub.Join and returns topic. Checks wether the host is ready before joining.
-func (hn *hostImpl) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
+func (hn *P2PHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 	// Check if PubSub is Set
 	if hn.PubSub == nil {
 		return nil, errors.New("Join: Pubsub has not been set on SNRHost")
@@ -155,12 +161,12 @@ func (hn *hostImpl) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 }
 
 // NewStream opens a new stream to the peer with given peer id
-func (n *hostImpl) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error) {
+func (n *P2PHost) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error) {
 	return n.host.NewStream(ctx, pid, pids...)
 }
 
 // NewTopic creates a new topic
-func (n *hostImpl) NewTopic(name string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error) {
+func (n *P2PHost) NewTopic(name string, opts ...ps.TopicOpt) (*ps.Topic, *ps.TopicEventHandler, *ps.Subscription, error) {
 	// Check if PubSub is Set
 	if n.PubSub == nil {
 		return nil, nil, nil, errors.New("NewTopic: Pubsub has not been set on SNRHost")
@@ -187,7 +193,7 @@ func (n *hostImpl) NewTopic(name string, opts ...ps.TopicOpt) (*ps.Topic, *ps.To
 }
 
 // Router returns the host node Peer Routing Function
-func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
+func (hn *P2PHost) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
@@ -202,16 +208,16 @@ func (hn *hostImpl) Router(h host.Host) (routing.PeerRouting, error) {
 }
 
 // PubSub returns the host node PubSub Function
-func (hn *hostImpl) Pubsub() *ps.PubSub {
+func (hn *P2PHost) Pubsub() *ps.PubSub {
 	return hn.PubSub
 }
 
 // Routing returns the host node Peer Routing Function
-func (hn *hostImpl) Routing() routing.Routing {
+func (hn *P2PHost) Routing() routing.Routing {
 	return hn.IpfsDHT
 }
 
 // SetStreamHandler sets the handler for a given protocol
-func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
+func (n *P2PHost) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
 	n.host.SetStreamHandler(protocol, handler)
 }
