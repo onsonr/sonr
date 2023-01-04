@@ -29,7 +29,8 @@ func TestNewAddGet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	fmt.Printf("File: %s\n", file)
+	fmt.Printf("CID: %s\n", cid)
 	// Check if the file is the same as the one we added
 	assert.Equal(t, []byte("Hello World!"), file)
 }

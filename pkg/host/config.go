@@ -59,13 +59,13 @@ type NodeOption func(*P2PHost) error
 // WithBootstrapMultiaddrs sets the bootstrap nodes
 func WithBootstrapMultiaddrs(addrs []string) NodeOption {
 	return func(n *P2PHost) error {
-		n.bootstrappers = addrs
+		n.bootstrappers = append(n.bootstrappers, addrs...)
 		return nil
 	}
 }
 
-// SetPeerIds sets the peer ids for the node
-func SetPeerIds(peerIds ...peer.ID) NodeOption {
+// WithGroupIds sets the peer ids for the node
+func WithGroupIds(peerIds ...peer.ID) NodeOption {
 	return func(c *P2PHost) error {
 		if len(peerIds) > 0 {
 			c.mpcPeerIds = peerIds
@@ -110,6 +110,7 @@ func defaultNode(ctx context.Context) *P2PHost {
 		ctx:           ctx,
 		bootstrappers: defaultBootstrapMultiaddrs,
 		partyId:       party.ID("current"),
+		callback:      defaultCallback,
 	}
 }
 
@@ -160,7 +161,7 @@ func setupRoutingDiscovery(hn *P2PHost) error {
 	// Set Routing Discovery, Find Peers
 	var err error
 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
-	routingDiscovery.Advertise(hn.ctx, "sonr")
+	routingDiscovery.Advertise(hn.ctx, defaultRendezvousString)
 
 	// Create Pub Sub
 	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
@@ -169,7 +170,7 @@ func setupRoutingDiscovery(hn *P2PHost) error {
 	}
 
 	// Handle DHT Peers
-	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, "sonr")
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, defaultRendezvousString)
 	if err != nil {
 		return err
 	}

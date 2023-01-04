@@ -16,7 +16,8 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
-
+ggio "github.com/gogo/protobuf/io"
+"github.com/gogo/protobuf/proto"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 )
 
@@ -129,8 +130,18 @@ func (hn *P2PHost) MultiAddrs() string {
 }
 
 // NewStream opens a new stream to the peer with given peer id
-func (n *P2PHost) NewStream(ctx context.Context, pid peer.ID, pids ...protocol.ID) (network.Stream, error) {
-	return n.host.NewStream(ctx, pid, pids...)
+func (n *P2PHost) NewStream(to peer.ID, protocol protocol.ID, msg proto.Message) error {
+	stream, err := n.host.NewStream(context.Background(), to, protocol)
+	if err != nil {
+		return err
+	}
+	defer stream.Close()
+
+	writer := ggio.NewFullWriter(stream)
+	if err := writer.WriteMsg(msg); err != nil {
+		return err
+	}
+	return nil
 }
 
 // JoinTopic creates a new topic
