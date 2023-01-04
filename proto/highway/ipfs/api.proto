@@ -2,6 +2,7 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.highway.ipfs;
+import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 option go_package = "github.com/sonr-hq/sonr/core/highway/types/ipfs";
 
@@ -33,16 +34,11 @@ message GetResponse {
 service IPFS {
     // Add is used for adding new content to the IPFS network.
     rpc Add(AddRequest) returns (AddResponse) {
-        option (google.api.http) = {
-            post: "/sonr-io/highway/ipfs/add"
-            body: "*"
-        };
+        option (google.api.http).post = "/sonr-io/highway/ipfs/add";
     }
 
     // Get is used for retrieving content from the IPFS network.
     rpc Get(GetRequest) returns (GetResponse) {
-        option (google.api.http) = {
-            get: "/sonr-io/highway/ipfs/get/{hash}"
-        };
+        option (google.api.http).get = "/sonr-io/highway/ipfs/get/{hash}";
     }
 }

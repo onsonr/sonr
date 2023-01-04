@@ -7,6 +7,9 @@ import (
 	v1 "github.com/sonr-hq/sonr/core/highway/types/ipfs"
 )
 
+// `IPFSService` is a type that implements the `IPFSServer` interface from the `v1` package.
+// @property  - `highway` is a pointer to the HighwayNode that this service is running on.
+// @property highway - The HighwayNode instance that this service is attached to.
 type IPFSService struct {
 	v1.IPFSServer
 	highway *HighwayNode

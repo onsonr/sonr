@@ -3,6 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.highway.vault;
 import "common/v1/data.proto";
+import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 option go_package = "github.com/sonr-hq/sonr/core/highway/types/vault";
 
@@ -55,24 +56,20 @@ service Vault {
     // Keygen generates a new keypair and returns the public key.
     rpc Keygen(KeygenRequest) returns (KeygenResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/keygen";
-        option (google.api.http).body = "*";
     }
 
     // Refresh refreshes the keypair and returns the public key.
     rpc Refresh(RefreshRequest) returns (RefreshResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/refresh";
-        option (google.api.http).body = "*";
     }
 
     // Sign signs the data with the private key and returns the signature.
     rpc Sign(SignRequest) returns (SignResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/sign";
-        option (google.api.http).body = "*";
     }
 
     // Derive derives a new key from the private key and returns the public key.
     rpc Derive(DeriveRequest) returns (DeriveResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/derive";
-        option (google.api.http).body = "*";
     }
 }
