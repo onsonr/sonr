@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/sonr-hq/sonr/pkg/ipfs"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/ipfs/v1"
 )
 
@@ -12,11 +13,11 @@ import (
 // @property highway - The HighwayNode instance that this service is attached to.
 type IPFSService struct {
 	v1.IPFSServer
-	highway *HighwayNode
+	highway *ipfs.IPFS
 }
 
 // It creates a new IPFSService and registers it as a handler for the IPFS gRPC service
-func NewIPFSService(ctx context.Context, mux *runtime.ServeMux, hway *HighwayNode) (*IPFSService, error) {
+func NewIPFSService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS) (*IPFSService, error) {
 	srv := &IPFSService{
 		highway: hway,
 	}
@@ -29,7 +30,7 @@ func NewIPFSService(ctx context.Context, mux *runtime.ServeMux, hway *HighwayNod
 
 // Keygen generates a new keypair and returns the public key.
 func (v *IPFSService) Add(ctx context.Context, req *v1.AddRequest) (*v1.AddResponse, error) {
-	cid, err := v.highway.Node.Add(req.GetContent())
+	cid, err := v.highway.Add(req.GetContent())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,7 @@ func (v *IPFSService) Add(ctx context.Context, req *v1.AddRequest) (*v1.AddRespo
 
 // Exists checks if the given key exists in the keyring.
 func (v *IPFSService) Exists(ctx context.Context, req *v1.ExistsRequest) (*v1.ExistsResponse, error) {
-	content, err := v.highway.Node.Get(req.GetHash())
+	content, err := v.highway.Get(req.GetHash())
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +57,7 @@ func (v *IPFSService) Exists(ctx context.Context, req *v1.ExistsRequest) (*v1.Ex
 
 // Refresh refreshes the keypair and returns the public key.
 func (v *IPFSService) Get(ctx context.Context, req *v1.GetRequest) (*v1.GetResponse, error) {
-	bz, err := v.highway.Node.Get(req.GetHash())
+	bz, err := v.highway.Get(req.GetHash())
 	if err != nil {
 		return nil, err
 	}

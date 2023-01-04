@@ -336,7 +336,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/auth/v1beta1/accounts/{address}':
     get:
       summary: Account returns account details based on address.
@@ -601,7 +601,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/auth/v1beta1/address_by_id/{id}':
     get:
       summary: AccountAddressByID returns account address based on account number.
@@ -757,7 +757,7 @@ paths:
           type: string
           format: int64
       tags:
-        - Query
+        - Cosmos
   /cosmos/auth/v1beta1/bech32:
     get:
       summary: Bech32Prefix queries bech32Prefix
@@ -905,161 +905,7 @@ paths:
                           "value": "1.212s"
                         }
       tags:
-        - Query
-  '/cosmos/auth/v1beta1/bech32/{address_bytes}':
-    get:
-      summary: AddressBytesToString converts Account Address bytes to string
-      description: 'Since: cosmos-sdk 0.46'
-      operationId: CosmosAuthV1Beta1AddressBytesToString
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              address_string:
-                type: string
-            description: |-
-              AddressBytesToStringResponse is the response type for AddressString rpc method.
-
-              Since: cosmos-sdk 0.46
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                      description: |-
-                        A URL/resource name that uniquely identifies the type of the serialized
-                        protocol buffer message. This string must contain at least
-                        one "/" character. The last segment of the URL's path must represent
-                        the fully qualified name of the type (as in
-                        `path/google.protobuf.Duration`). The name should be in a canonical form
-                        (e.g., leading "." is not accepted).
-
-                        In practice, teams usually precompile into the binary all types that they
-                        expect it to use in the context of Any. However, for URLs which use the
-                        scheme `http`, `https`, or no scheme, one can optionally set up a type
-                        server that maps type URLs to message definitions as follows:
-
-                        * If no scheme is provided, `https` is assumed.
-                        * An HTTP GET on the URL must yield a [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in the official
-                        protobuf release, and it is not used for type URLs beginning with
-                        type.googleapis.com.
-
-                        Schemes other than `http`, `https` (or the empty scheme) might be
-                        used with implementation specific semantics.
-                  additionalProperties: {}
-                  description: |-
-                    `Any` contains an arbitrary serialized protocol buffer message along with a
-                    URL that describes the type of the serialized message.
-
-                    Protobuf library provides support to pack/unpack Any values in the form
-                    of utility functions or additional generated methods of the Any type.
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := anypb.New(foo)
-                         if err != nil {
-                           ...
-                         }
-                         ...
-                         foo := &pb.Foo{}
-                         if err := any.UnmarshalTo(foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by default use
-                    'type.googleapis.com/full.type.name' as the type URL and the unpack
-                    methods only use the fully qualified type name after the last '/'
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield type
-                    name "y.z".
-
-
-                    JSON
-                    ====
-                    The JSON representation of an `Any` value uses the regular
-                    representation of the deserialized, embedded message, with an
-                    additional field `@type` which contains the type URL. Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom JSON
-                    representation, that representation will be embedded adding a field
-                    `value` which holds the custom JSON in addition to the `@type`
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: address_bytes
-          in: path
-          required: true
-          type: string
-          format: byte
-      tags:
-        - Query
+        - Cosmos
   '/cosmos/auth/v1beta1/bech32/{address_string}':
     get:
       summary: AddressStringToBytes converts Address string to bytes
@@ -1213,7 +1059,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   /cosmos/auth/v1beta1/module_accounts:
     get:
       summary: ModuleAccounts returns all the existing module accounts.
@@ -1478,7 +1324,7 @@ paths:
                           "value": "1.212s"
                         }
       tags:
-        - Query
+        - Cosmos
   /cosmos/auth/v1beta1/params:
     get:
       summary: Params queries all parameters.
@@ -1639,7 +1485,7 @@ paths:
                           "value": "1.212s"
                         }
       tags:
-        - Query
+        - Cosmos
   /cosmos/authz/v1beta1/grants:
     get:
       summary: 'Returns list of `Authorization`, granted to the grantee by the granter.'
@@ -1988,7 +1834,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/authz/v1beta1/grants/grantee/{grantee}':
     get:
       summary: GranteeGrants returns a list of `GrantAuthorization` by grantee.
@@ -2329,7 +2175,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/authz/v1beta1/grants/granter/{granter}':
     get:
       summary: 'GranterGrants returns list of `GrantAuthorization`, granted by granter.'
@@ -2670,7 +2516,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/bank/v1beta1/balances/{address}':
     get:
       summary: AllBalances queries the balance of all coins for a single account.
@@ -2784,7 +2630,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/bank/v1beta1/balances/{address}/by_denom':
     get:
       summary: Balance queries the balance of a single coin for a single account.
@@ -2838,7 +2684,7 @@ paths:
           required: false
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/bank/v1beta1/denom_owners/{denom}':
     get:
       summary: |-
@@ -2967,7 +2813,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   /cosmos/bank/v1beta1/denoms_metadata:
     get:
       summary: |-
@@ -3132,7 +2978,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/bank/v1beta1/denoms_metadata/{denom}':
     get:
       summary: DenomsMetadata queries the client metadata of a given coin denomination.
@@ -3237,7 +3083,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   /cosmos/bank/v1beta1/params:
     get:
       summary: Params queries the parameters of x/bank module.
@@ -3286,7 +3132,7 @@ paths:
                       type: string
                   additionalProperties: {}
       tags:
-        - Query
+        - Cosmos
   '/cosmos/bank/v1beta1/spendable_balances/{address}':
     get:
       summary: |-
@@ -3405,7 +3251,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   /cosmos/bank/v1beta1/supply:
     get:
       summary: TotalSupply queries the total supply of all coins.
@@ -3517,7 +3363,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   /cosmos/bank/v1beta1/supply/by_denom:
     get:
       summary: SupplyOf queries the supply of a single coin.
@@ -3566,7 +3412,7 @@ paths:
           required: false
           type: string
       tags:
-        - Query
+        - Cosmos
   /cosmos/base/tendermint/v1beta1/abci_query:
     get:
       summary: |-
@@ -7253,7 +7099,7 @@ paths:
                       type: string
                   additionalProperties: {}
       tags:
-        - Query
+        - Cosmos
   '/cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards':
     get:
       summary: |-
@@ -7334,7 +7180,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards/{validator_address}':
     get:
       summary: DelegationRewards queries the total rewards accrued by a delegation.
@@ -7393,7 +7239,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/distribution/v1beta1/delegators/{delegator_address}/validators':
     get:
       summary: DelegatorValidators queries the validators of a delegator.
@@ -7437,7 +7283,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/distribution/v1beta1/delegators/{delegator_address}/withdraw_address':
     get:
       summary: DelegatorWithdrawAddress queries withdraw address of a delegator.
@@ -7479,7 +7325,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   /cosmos/distribution/v1beta1/params:
     get:
       summary: Params queries params of the distribution module.
@@ -7522,7 +7368,7 @@ paths:
                       type: string
                   additionalProperties: {}
       tags:
-        - Query
+        - Cosmos
   '/cosmos/distribution/v1beta1/validators/{validator_address}/commission':
     get:
       summary: ValidatorCommission queries accumulated commission for a validator.
@@ -7579,7 +7425,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/distribution/v1beta1/validators/{validator_address}/outstanding_rewards':
     get:
       summary: ValidatorOutstandingRewards queries rewards of a validator address.
@@ -7638,7 +7484,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/distribution/v1beta1/validators/{validator_address}/slashes':
     get:
       summary: ValidatorSlashes queries slash events of a validator.
@@ -7765,7 +7611,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   /cosmos/evidence/v1beta1/evidence:
     get:
       summary: AllEvidence queries all evidence.
@@ -8090,7 +7936,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/evidence/v1beta1/evidence/{evidence_hash}':
     get:
       summary: Evidence queries evidence based on evidence hash.
@@ -8356,7 +8202,7 @@ paths:
           type: string
           format: byte
       tags:
-        - Query
+        - Cosmos
   '/cosmos/feegrant/v1beta1/allowance/{granter}/{grantee}':
     get:
       summary: Allowance returns fee granted to the grantee by the granter.
@@ -8555,7 +8401,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/feegrant/v1beta1/allowances/{grantee}':
     get:
       summary: Allowances returns all the grants for address.
@@ -8810,7 +8656,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/feegrant/v1beta1/issued/{granter}':
     get:
       summary: AllowancesByGranter returns all the grants given by an address
@@ -9069,7 +8915,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/gov/v1/params/{params_type}':
     get:
       summary: Params queries all parameters of the gov module.
@@ -9267,7 +9113,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Gov
   /cosmos/gov/v1/proposals:
     get:
       summary: Proposals queries all proposals based on given status.
@@ -9704,7 +9550,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1/proposals/{proposal_id}':
     get:
       summary: Proposal queries proposal details based on ProposalID.
@@ -10047,7 +9893,7 @@ paths:
           type: string
           format: uint64
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1/proposals/{proposal_id}/deposits':
     get:
       summary: Deposits queries all deposits of a single proposal.
@@ -10283,7 +10129,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1/proposals/{proposal_id}/deposits/{depositor}':
     get:
       summary: 'Deposit queries single deposit information based proposalID, depositAddr.'
@@ -10462,7 +10308,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1/proposals/{proposal_id}/tally':
     get:
       summary: TallyResult queries the tally of a proposal vote.
@@ -10623,7 +10469,7 @@ paths:
           type: string
           format: uint64
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1/proposals/{proposal_id}/votes':
     get:
       summary: Votes queries votes of a given proposal.
@@ -10874,7 +10720,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1/proposals/{proposal_id}/votes/{voter}':
     get:
       summary: 'Vote queries voted information based on proposalID, voterAddr.'
@@ -11067,7 +10913,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1beta1/params/{params_type}':
     get:
       summary: Params queries all parameters of the gov module.
@@ -11268,7 +11114,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Gov
   /cosmos/gov/v1beta1/proposals:
     get:
       summary: Proposals queries all proposals based on given status.
@@ -11700,7 +11546,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1beta1/proposals/{proposal_id}':
     get:
       summary: Proposal queries proposal details based on ProposalID.
@@ -12038,7 +11884,7 @@ paths:
           type: string
           format: uint64
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits':
     get:
       summary: Deposits queries all deposits of a single proposal.
@@ -12274,7 +12120,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}':
     get:
       summary: 'Deposit queries single deposit information based proposalID, depositAddr.'
@@ -12453,7 +12299,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1beta1/proposals/{proposal_id}/tally':
     get:
       summary: TallyResult queries the tally of a proposal vote.
@@ -12614,7 +12460,7 @@ paths:
           type: string
           format: uint64
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1beta1/proposals/{proposal_id}/votes':
     get:
       summary: Votes queries votes of a given proposal.
@@ -12879,7 +12725,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Gov
   '/cosmos/gov/v1beta1/proposals/{proposal_id}/votes/{voter}':
     get:
       summary: 'Vote queries voted information based on proposalID, voterAddr.'
@@ -13086,7 +12932,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Gov
   '/cosmos/group/v1/group_info/{group_id}':
     get:
       summary: GroupInfo queries group info based on group id.
@@ -13264,7 +13110,7 @@ paths:
           type: string
           format: uint64
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/group_members/{group_id}':
     get:
       summary: GroupMembers queries members of a group
@@ -13501,7 +13347,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/group_policies_by_admin/{admin}':
     get:
       summary: GroupsByAdmin queries group policies by admin address.
@@ -13856,7 +13702,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/group_policies_by_group/{group_id}':
     get:
       summary: GroupPoliciesByGroup queries group policies by group id.
@@ -14212,7 +14058,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/group_policy_info/{address}':
     get:
       summary: GroupPolicyInfo queries group policy info based on account address of group policy.
@@ -14504,7 +14350,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/groups_by_admin/{admin}':
     get:
       summary: GroupsByAdmin queries groups by admin address.
@@ -14744,7 +14590,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/groups_by_member/{address}':
     get:
       summary: GroupsByMember queries groups by member address.
@@ -14984,7 +14830,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/proposal/{proposal_id}':
     get:
       summary: Proposal queries a proposal based on proposal id.
@@ -15339,7 +15185,7 @@ paths:
           type: string
           format: uint64
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/proposals/{proposal_id}/tally':
     get:
       summary: |-
@@ -15509,7 +15355,7 @@ paths:
           type: string
           format: uint64
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/proposals_by_group_policy/{address}':
     get:
       summary: ProposalsByGroupPolicy queries proposals based on account address of group policy.
@@ -15930,7 +15776,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/vote_by_proposal_voter/{proposal_id}/{voter}':
     get:
       summary: VoteByProposalVoter queries a vote by proposal id and voter.
@@ -16112,7 +15958,7 @@ paths:
           required: true
           type: string
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/votes_by_proposal/{proposal_id}':
     get:
       summary: VotesByProposal queries a vote by proposal.
@@ -16352,7 +16198,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   '/cosmos/group/v1/votes_by_voter/{voter}':
     get:
       summary: VotesByVoter queries a vote by voter.
@@ -16591,7 +16437,7 @@ paths:
           required: false
           type: boolean
       tags:
-        - Query
+        - Cosmos
   /cosmos/mint/v1beta1/annual_provisions:
     get:
       summary: AnnualProvisions current minting annual provisions value.
@@ -23323,6 +23169,10 @@ paths:
           type: boolean
         - name: order_by
           description: |2-
+
+
+
+
 
 
 
@@ -38026,6 +37876,81 @@ paths:
               - share_config
               - vault_cid
               - child_index
+  /sonr-io/highway/ipfs/add:
+    post:
+      summary: Add a File to the IPFS Network
+      tags:
+        - IPFS
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              hash:
+                type: string
+                format: byte
+      operationId: post-sonr-io-highway-ipfs-add
+      parameters:
+        - in: formData
+          type: string
+          name: content
+          required: true
+          format: byte
+          description: Base64 Encoded Buffer
+  '/sonr-io/highway/ipfs/exists/{hash}':
+    parameters:
+      - type: string
+        name: hash
+        in: path
+        required: true
+    post:
+      summary: Checks if Hash exists on the Network
+      tags:
+        - IPFS
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              exists:
+                type: boolean
+      operationId: get-sonr-io-highway-ipfs-exists-hash
+      parameters:
+        - in: formData
+          type: string
+          required: true
+          format: byte
+          name: hash
+          description: CID of the File
+      description: ''
+  '/sonr-io/highway/ipfs/get/{hash}':
+    parameters:
+      - type: string
+        name: hash
+        in: path
+        required: true
+        format: byte
+    post:
+      summary: Get Content for a given IPFS Hash
+      tags:
+        - IPFS
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+                format: byte
+      operationId: get-sonr-io-highway-ipfs-get-hash
+      parameters:
+        - in: formData
+          type: string
+          format: byte
+          name: hash
 definitions:
   cosmos.auth.v1beta1.AddressBytesToStringResponse:
     type: object
@@ -56599,7 +56524,6 @@ definitions:
               Since: cosmos-sdk 0.45.2
       multi:
         $ref: '#/definitions/cosmos.tx.v1beta1.ModeInfo.Multi'
-        title: multi represents a nested multisig signer
     description: ModeInfo describes the signing mode of a single or nested multisig signer.
   cosmos.tx.v1beta1.ModeInfo.Multi:
     type: object
