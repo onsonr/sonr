@@ -1,16 +1,18 @@
 syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
-package sonrhq.highway.vault;
+package sonrhq.highway.vault.v1;
 import "common/v1/data.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-option go_package = "github.com/sonr-hq/sonr/core/highway/types/vault";
+option go_package = "github.com/sonr-hq/sonr/core/highway/types/v1/vault";
 
+// KeygenRequest is the request to generate a new keypair.
 message KeygenRequest {
     string prefix = 1;
 }
 
+// KeygenResponse is the response to a Keygen request.
 message KeygenResponse {
     bytes id = 1;
     string address = 2;
@@ -18,21 +20,25 @@ message KeygenResponse {
     string vault_cid = 4;
 }
 
+// RefreshRequest is the request to refresh the keypair.
 message RefreshRequest {
     repeated common.v1.WalletShareConfig share_configs = 1;
 }
 
+// RefreshResponse is the response to a Refresh request.
 message RefreshResponse {
     bytes id = 1;
     repeated common.v1.WalletShareConfig share_configs = 2;
 }
 
+// SignRequest is the request to sign data with the private key.
 message SignRequest {
     bytes id = 1;
     bytes data = 2;
     repeated common.v1.WalletShareConfig share_configs = 3;
 }
 
+// SignResponse is the response to a Sign request.
 message SignResponse {
     bytes id = 1;
     bytes signature = 2;
@@ -40,18 +46,21 @@ message SignResponse {
     repeated common.v1.WalletShareConfig share_configs = 4;
 }
 
+// DeriveRequest is the request to derive a new key from the private key.
 message DeriveRequest {
     bytes id = 1;
     uint64 index = 2;
     repeated common.v1.WalletShareConfig share_configs = 3;
 }
 
+// DeriveResponse is the response to a Derive request.
 message DeriveResponse {
     bytes id = 1;
     string address = 2;
     repeated common.v1.WalletShareConfig share_configs = 3;
 }
 
+// Vault is the service used for managing a node's keypair.
 service Vault {
     // Keygen generates a new keypair and returns the public key.
     rpc Keygen(KeygenRequest) returns (KeygenResponse) {

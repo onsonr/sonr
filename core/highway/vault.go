@@ -6,7 +6,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/sonr-hq/sonr/pkg/network"
-	v1 "github.com/sonr-hq/sonr/core/highway/types/vault"
+	v1 "github.com/sonr-hq/sonr/core/highway/types/v1/vault"
 )
 
 type VaultService struct {
