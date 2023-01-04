@@ -18,10 +18,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/routing"
 	cmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
 
-	// mplex "github.com/libp2p/go-libp2p-mplex"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	/// direct "github.com/libp2p/go-libp2p-webrtc-direct"
-	// "github.com/pion/webrtc/v3"
 )
 
 // A P2PHost is a host.Host with a private key, a channel of mDNS peers, a channel of DHT peers, a

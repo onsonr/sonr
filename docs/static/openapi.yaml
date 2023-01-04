@@ -6,7 +6,7 @@ info:
   description: 'Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.'
   version: v0.2.0
   contact:
-    name: Prad Nukala
+    name: Sonr Inc.
     email: prad@sonr.network
     url: 'https://sonr.io'
 paths:
@@ -23179,6 +23179,9 @@ paths:
 
 
 
+
+
+
              - ORDER_BY_UNSPECIFIED: ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case.
              - ORDER_BY_ASC: ORDER_BY_ASC defines ascending order
              - ORDER_BY_DESC: ORDER_BY_DESC defines descending order
@@ -37898,12 +37901,8 @@ paths:
           required: true
           format: byte
           description: Base64 Encoded Buffer
-  '/sonr-io/highway/ipfs/exists/{hash}':
-    parameters:
-      - type: string
-        name: hash
-        in: path
-        required: true
+  /sonr-io/highway/ipfs/exists:
+    parameters: []
     post:
       summary: Checks if Hash exists on the Network
       tags:
@@ -37925,13 +37924,8 @@ paths:
           name: hash
           description: CID of the File
       description: ''
-  '/sonr-io/highway/ipfs/get/{hash}':
-    parameters:
-      - type: string
-        name: hash
-        in: path
-        required: true
-        format: byte
+  /sonr-io/highway/ipfs/get:
+    parameters: []
     post:
       summary: Get Content for a given IPFS Hash
       tags:

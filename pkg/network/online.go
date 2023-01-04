@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	icore "github.com/ipfs/interface-go-ipfs-core"
+	ps "github.com/libp2p/go-libp2p-pubsub"
+
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/ipfs"
+	"github.com/sonr-hq/sonr/pkg/host"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	mpc "github.com/taurusgroup/multi-party-sig/pkg/protocol"
@@ -27,7 +28,7 @@ import (
 // application.
 // @property subscriptions - a map of party IDs to PubSub subscriptions.
 type onlineNetwork struct {
-	nodes   []*ipfs.IPFS
+	nodes   []*host.P2PHost
 	parties party.IDSlice
 
 	mtx  sync.Mutex
@@ -35,15 +36,15 @@ type onlineNetwork struct {
 
 	closedListenChan chan *mpc.Message
 	listenChannels   map[party.ID]chan *mpc.Message
-	subscriptions    map[party.ID]icore.PubSubSubscription
+	subscriptions    map[party.ID]*ps.Subscription
 }
 
 // It creates a new network object, assigns the subscriptions, and returns the network object
-func NewOnlineNetwork(ctx context.Context, nodes ...*ipfs.IPFS) (common.Network, error) {
+func NewOnlineNetwork(ctx context.Context, nodes ...*host.P2PHost) (common.Network, error) {
 	// Convert the peer IDs to party IDs.
 	parties := make([]party.ID, 0)
 	for _, node := range nodes {
-		parties = append(parties, party.ID(node.ID()))
+		parties = append(parties, party.ID(node.PeerID()))
 	}
 
 	closed := make(chan *protocol.Message)
@@ -54,7 +55,7 @@ func NewOnlineNetwork(ctx context.Context, nodes ...*ipfs.IPFS) (common.Network,
 		parties:          parties,
 		done:             make(chan struct{}),
 		listenChannels:   make(map[party.ID]chan *mpc.Message, 2*len(parties)),
-		subscriptions:    make(map[party.ID]icore.PubSubSubscription, 2*len(parties)),
+		subscriptions:    make(map[party.ID]*ps.Subscription, 2*len(parties)),
 		closedListenChan: closed,
 	}
 	return net, nil
@@ -69,12 +70,12 @@ func (n *onlineNetwork) init() {
 	n.done = make(chan struct{})
 
 	for _, node := range n.nodes {
-		sub, err := node.PubSub().Subscribe(context.Background(), topicKey(node.PartyID()))
+		sub, err := node.Subscribe(topicKey(party.ID(node.PeerID())))
 		if err != nil {
 			panic(err)
 		}
-		n.subscriptions[node.PartyID()] = sub
-		go handleSubscription(node.PartyID(), sub, n)
+		n.subscriptions[party.ID(node.PeerID())] = sub
+		go handleSubscription(party.ID(node.PeerID()), sub, n)
 	}
 }
 
@@ -114,8 +115,8 @@ func (n *onlineNetwork) Send(msg *mpc.Message) {
 	defer n.mtx.Unlock()
 
 	for _, node := range n.nodes {
-		if msg.IsFor(node.PartyID()) {
-			if err := node.Publish(topicKey(node.PartyID()), bz); err != nil {
+		if msg.IsFor(party.ID(node.PeerID())) {
+			if err := node.Publish(topicKey(party.ID(node.PeerID())), bz); err != nil {
 				fmt.Printf("error while publishing message: %e", err)
 			}
 		}
@@ -127,7 +128,7 @@ func (n *onlineNetwork) Done(id party.ID) chan struct{} {
 	n.mtx.Lock()
 	defer n.mtx.Unlock()
 	for id, sub := range n.subscriptions {
-		sub.Close()
+		sub.Cancel()
 		delete(n.listenChannels, id)
 		delete(n.subscriptions, id)
 	}
@@ -150,16 +151,16 @@ func (n *onlineNetwork) Quit(id party.ID) {
 
 func (n *onlineNetwork) findOutTopic(msg *mpc.Message) string {
 	for _, node := range n.nodes {
-		if msg.IsFor(node.PartyID()) {
-			return topicKey(node.PartyID())
+		if msg.IsFor(party.ID(node.PeerID())) {
+			return topicKey(party.ID(node.PeerID()))
 		}
 	}
 	return ""
 }
 
-func (n *onlineNetwork) getFromNode(msg *mpc.Message) *ipfs.IPFS {
+func (n *onlineNetwork) getFromNode(msg *mpc.Message) *host.P2PHost {
 	for _, node := range n.nodes {
-		if msg.From == node.PartyID() {
+		if msg.From == party.ID(node.PeerID()) {
 			return node
 		}
 	}
@@ -167,7 +168,7 @@ func (n *onlineNetwork) getFromNode(msg *mpc.Message) *ipfs.IPFS {
 }
 
 // A goroutine that is listening for messages on the topic handler.
-func handleSubscription(id party.ID, sub icore.PubSubSubscription, n *onlineNetwork) error {
+func handleSubscription(id party.ID, sub *ps.Subscription, n *onlineNetwork) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	for {
@@ -176,7 +177,7 @@ func handleSubscription(id party.ID, sub icore.PubSubSubscription, n *onlineNetw
 			return err
 		}
 		m := &mpc.Message{}
-		err = m.UnmarshalBinary(msg.Data())
+		err = m.UnmarshalBinary(msg.Data)
 		if err != nil {
 			return err
 		}
