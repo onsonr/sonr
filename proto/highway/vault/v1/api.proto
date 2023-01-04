@@ -10,6 +10,8 @@ option go_package = "github.com/sonr-hq/sonr/core/highway/types/v1/vault";
 // KeygenRequest is the request to generate a new keypair.
 message KeygenRequest {
     string prefix = 1;
+    int32 threshold = 2;
+    
 }
 
 // KeygenResponse is the response to a Keygen request.

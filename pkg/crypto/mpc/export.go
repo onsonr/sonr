@@ -33,3 +33,4 @@ func LoadFromPath(path string) (common.WalletShare, error) {
 	}
 	return w, nil
 }
+

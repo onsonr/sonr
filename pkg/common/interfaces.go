@@ -1,3 +1,4 @@
+// It converts a `WebauthnCredential` to a `webauthn.Credential`
 package common
 
 import (

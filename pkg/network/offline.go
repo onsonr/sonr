@@ -21,6 +21,20 @@ func NewWallet(prefix string) (common.Wallet, error) {
 	return OfflineWallet(wsl), nil
 }
 
+// Loads an OfflineWallet from a []*WalletShareConfig and returns a `common.Wallet` interface
+func LoadOfflineWallet(shareConfigs []*common.WalletShareConfig) (common.Wallet, error) {
+	// Convert the WalletShareConfigs to WalletShares
+	ws := make([]common.WalletShare, 0)
+	for i, shareConfig := range shareConfigs {
+		if s, err := mpc.LoadWalletShare(shareConfig); err != nil {
+			return nil, err
+		} else {
+			ws[i] = s
+		}
+	}
+	return OfflineWallet(ws), nil
+}
+
 // It's a network that can be used to simulate offline parties.
 // @property parties - a slice of party IDs that are participating in the protocol.
 // @property listenChannels - a map of party IDs to channels that will be used to send messages to the

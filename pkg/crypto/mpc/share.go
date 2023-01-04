@@ -16,7 +16,7 @@ import (
 
 // It returns an empty wallet share
 func EmptyWalletShare() common.WalletShare {
-	return &mpcConfigWalletImpl{}
+	return &cmpConfigWalletShare{}
 }
 
 // It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
@@ -38,10 +38,20 @@ func NewWalletShare(pfix string, c interface{}) common.WalletShare {
 		Timestamp:    time.Now().Unix(),
 		Bech32Prefix: pfix,
 	}
-	return &mpcConfigWalletImpl{Config: conf, walletShareConfig: walletConf}
+	return &cmpConfigWalletShare{Config: conf, walletShareConfig: walletConf}
 }
 
-// `mpcConfigWalletImpl` is a type that implements the `MPCConfig` interface.
+// It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
+func LoadWalletShare(cnfg *common.WalletShareConfig) (common.WalletShare, error) {
+	conf := &cmp.Config{}
+	err := conf.UnmarshalBinary(cnfg.CmpConfig)
+	if err != nil {
+		return nil, err
+	}
+	return &cmpConfigWalletShare{Config: conf, walletShareConfig: cnfg}, nil
+}
+
+// `cmpConfigWalletShare` is a type that implements the `MPCConfig` interface.
 //
 // The `MPCConfig` interface is defined in the `mpc` package.
 //
@@ -49,18 +59,18 @@ func NewWalletShare(pfix string, c interface{}) common.WalletShare {
 //
 // The `WalletShareConfig` type is defined in the `common` package.
 //
-// The `mpcConfigWalletImpl` type is defined in the `wallet` package.
+// The `cmpConfigWalletShare` type is defined in the `wallet` package.
 //
-// The `mpcConfigWalletImpl` type has a field of type `Config` and a field of type `WalletShare
+// The `cmpConfigWalletShare` type has a field of type `Config` and a field of type `WalletShare
 // @property  - `Config` - the configuration of the MPC protocol.
 // @property walletShareConfig - This is the configuration for the wallet share.
-type mpcConfigWalletImpl struct {
+type cmpConfigWalletShare struct {
 	*cmp.Config
 	walletShareConfig *common.WalletShareConfig
 }
 
 // Returns the Bech32 representation of the given party.
-func (w *mpcConfigWalletImpl) Address() string {
+func (w *cmpConfigWalletShare) Address() string {
 	pub, err := w.PublicKey()
 	if err != nil {
 		return ""
@@ -74,12 +84,12 @@ func (w *mpcConfigWalletImpl) Address() string {
 }
 
 // MPCConfig returns the *cmp.Config of this wallet.
-func (w *mpcConfigWalletImpl) CMPConfig() *cmp.Config {
+func (w *cmpConfigWalletShare) CMPConfig() *cmp.Config {
 	return w.Config
 }
 
 // DID returns the DID of this wallet.
-func (w *mpcConfigWalletImpl) DID() (string, error) {
+func (w *cmpConfigWalletShare) DID() (string, error) {
 	prefix := w.walletShareConfig.GetBech32Prefix()
 	addrPtr := strings.Split(w.Address(), prefix)
 	if len(addrPtr) != 2 {
@@ -89,12 +99,12 @@ func (w *mpcConfigWalletImpl) DID() (string, error) {
 }
 
 // Marshal serializes the cmp.Config into a byte slice for local storage
-func (w *mpcConfigWalletImpl) Marshal() ([]byte, error) {
+func (w *cmpConfigWalletShare) Marshal() ([]byte, error) {
 	return w.walletShareConfig.Marshal()
 }
 
 // PublicKey returns the public key of this wallet.
-func (w *mpcConfigWalletImpl) PublicKey() (*secp256k1.PubKey, error) {
+func (w *cmpConfigWalletShare) PublicKey() (*secp256k1.PubKey, error) {
 	buf, err := w.Config.PublicPoint().(*curve.Secp256k1Point).MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -108,17 +118,17 @@ func (w *mpcConfigWalletImpl) PublicKey() (*secp256k1.PubKey, error) {
 }
 
 // SelfID returns the ID of this wallet.
-func (w *mpcConfigWalletImpl) SelfID() party.ID {
+func (w *cmpConfigWalletShare) SelfID() party.ID {
 	return w.Config.ID
 }
 
 // PartyIDs returns the IDs of all parties in the group.
-func (w *mpcConfigWalletImpl) PartyIDs() []party.ID {
+func (w *cmpConfigWalletShare) PartyIDs() []party.ID {
 	return w.Config.PartyIDs()
 }
 
 // Unmarshal deserializes the given byte slice into a cmp.Config
-func (w *mpcConfigWalletImpl) Unmarshal(data []byte) error {
+func (w *cmpConfigWalletShare) Unmarshal(data []byte) error {
 	walletConf := &common.WalletShareConfig{}
 	if err := walletConf.Unmarshal(data); err != nil {
 		return err
@@ -132,12 +142,12 @@ func (w *mpcConfigWalletImpl) Unmarshal(data []byte) error {
 	return nil
 }
 
-func (w *mpcConfigWalletImpl) Share() *common.WalletShareConfig {
+func (w *cmpConfigWalletShare) Share() *common.WalletShareConfig {
 	return w.walletShareConfig
 }
 
 // Verify a signature with the given wallet.
-func (w *mpcConfigWalletImpl) Verify(data []byte, sig []byte) bool {
+func (w *cmpConfigWalletShare) Verify(data []byte, sig []byte) bool {
 	signature, err := DeserializeSignature(sig)
 	if err != nil {
 		return false

@@ -3,13 +3,14 @@ package common
 import (
 	"io/ioutil"
 
-"github.com/go-webauthn/webauthn/webauthn"
+	"github.com/go-webauthn/webauthn/webauthn"
 	crypto "github.com/libp2p/go-libp2p/core/crypto"
 	tm_crypto "github.com/tendermint/tendermint/crypto"
 	tm_json "github.com/tendermint/tendermint/libs/json"
 )
 
-// > Loads a private key from a JSON file and returns a `crypto.PrivKey` interface
+
+// Loads a private key from a JSON file and returns a `crypto.PrivKey` interface
 func LoadPrivKeyFromJsonPath(path string) (crypto.PrivKey, error) {
 	// Load the key from the given path.
 	key, err := ioutil.ReadFile(path)
@@ -43,6 +44,7 @@ func ConvertToWebauthnCredential(credential *WebauthnCredential) webauthn.Creden
 	}
 }
 
+// It converts a Package Struct to a WebauthnCredential Struct
 func ConvertFromWebauthnCredential(credential *webauthn.Credential) *WebauthnCredential {
 	return &WebauthnCredential{
 		Id:        credential.ID,
