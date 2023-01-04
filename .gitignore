@@ -5,3 +5,4 @@ release/
 .DS_Store
 **/.testnets
 .env
+.vscode
