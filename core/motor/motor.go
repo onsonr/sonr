@@ -1,3 +1,14 @@
+// ---
+// Motor Implementation
+//
+// Motor is an embedded light node which interacts with the Sonr network. Motors utilize
+// the Sonr protocol to leverage account assets in a secure and efficient manner.
+//
+// Modules: DIDComm, MPC Wallet
+// Interface: libp2p host
+// Transports: TCP, UDP, QUIC, WebTransport, WebSockets
+// ---
+
 package motor
 
 import (

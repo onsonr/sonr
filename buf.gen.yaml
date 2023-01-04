@@ -1,7 +1,8 @@
 version: v1
 plugins:
   - plugin: go
-    out: third_party/types
+    out: .
     opt: paths=source_relative
   - plugin: buf.build/grpc/go:v1.2.0
-    out: third_party/types
+    out: .
+    opt: paths=source_relative

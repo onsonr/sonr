@@ -1,3 +1,14 @@
+// ---
+// Highway Implementation
+//
+// Highway is a service node that provides a high bandwidth, low latency, and enhanced experience for the Sonr network.
+// Highway nodes are incentivized to provide a high quality of service to the network, and are rewarded for doing so.
+//
+// Modules: Vault, Comm, DID Utility
+// Interface: IPFS host
+// Transports: TCP, UDP, QUIC, HTTP, WebTransport, WebRTC, WebSockets
+// ---
+
 package highway
 
 import (
