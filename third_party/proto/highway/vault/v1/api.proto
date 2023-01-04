@@ -2,7 +2,7 @@ syntax = "proto3";
 
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.highway.vault.v1;
-option go_package = "github.com/sonr-hq/sonr/pkg/node/types/vault/v1";
+option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
 
 message KeygenRequest {
     bytes id = 1;

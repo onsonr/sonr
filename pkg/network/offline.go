@@ -11,10 +11,10 @@ import (
 
 // It creates a new wallet with two participants, one of which is the current participant, and returns
 // the wallet
-func NewWallet() (common.Wallet, error) {
+func NewWallet(prefix string) (common.Wallet, error) {
 	participants := party.IDSlice{"current", "vault"}
 	net := newOfflineNetwork(participants)
-	wsl, err := mpc.Keygen("current", 1, net, "snr")
+	wsl, err := mpc.Keygen("current", 1, net, prefix)
 	if err != nil {
 		return nil, err
 	}

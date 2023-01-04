@@ -7,6 +7,7 @@ import (
 	// ct "github.com/sonr-hq/sonr/pkg/types/common"
 	"context"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/sonr-hq/sonr/core/motor"
 	mt "github.com/sonr-hq/sonr/third_party/types/motor/bind/v1"
 
@@ -29,7 +30,7 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 	ctx = context.Background()
 	// Unmarshal the request
 	var req mt.InitializeRequest
-	if err := req.Unmarshal(buf); err != nil {
+	if err := proto.Unmarshal(buf, &req); err != nil {
 		return nil, err
 	}
 
@@ -44,19 +45,16 @@ func Init(buf []byte, cb MotorCallback) ([]byte, error) {
 func Connect(buf []byte) ([]byte, error) {
 	// Unmarshal the request
 	var req mt.ConnectRequest
-	if err := req.Unmarshal(buf); err != nil {
+	if err := proto.Unmarshal(buf, &req); err != nil {
 		return nil, err
 	}
 
 	// // Connect to the network
-	// if err := instance.Connect(req); err != nil {
-	// 	return nil, err
-	// }
+	resp, err := mtr.Connect(&req)
+	if err != nil {
+		return nil, err
+	}
 
-	// // Return Connect Response
-	// resp := mt.ConnectResponse{
-	// 	Success: true,
-	// }
-	// return resp.Marshal()
-	return nil, nil
+	// Marshal the response
+	return proto.Marshal(resp)
 }

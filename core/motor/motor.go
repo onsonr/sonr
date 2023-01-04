@@ -21,7 +21,7 @@ func NewMotorInstance(ctx context.Context, req *mt.InitializeRequest, options ..
 	if err != nil {
 		return nil, err
 	}
-	w, err := network.NewWallet()
+	w, err := network.NewWallet("snr")
 	if err != nil {
 		return nil, err
 	}
