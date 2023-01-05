@@ -6,3 +6,4 @@ release/
 **/.testnets
 .env
 .vscode
+.spectral.mjs
