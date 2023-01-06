@@ -18,7 +18,6 @@ import (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
-	v1.VaultServer
 	highway *ipfs.IPFS
 }
 
@@ -32,6 +31,16 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 		return nil, err
 	}
 	return srv, nil
+}
+
+// Challeng returns a random challenge for the client to sign.
+func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
+	return nil, common.ErrDefaultStillImplemented
+}
+
+// Register registers a new keypair and returns the public key.
+func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
+	return nil, common.ErrDefaultStillImplemented
 }
 
 // Keygen generates a new keypair and returns the public key.
