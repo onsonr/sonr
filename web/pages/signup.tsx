@@ -1,4 +1,6 @@
 import {
+  Card,
+  CardBody,
   StepForm,
   FormStepper,
   FormStep,
@@ -142,118 +144,159 @@ export function SignUp() {
   };
 
   return (
-    <StepForm
-      defaultValues={{
-        deviceLabel: "",
-        credentialId: "",
-        credentialType: "",
-        credentialPublicKey: "",
-        credentialResponse: "",
-      }}
-      onSubmit={onSubmit}
-    >
-      {({ isFirstStep, isLastStep, isCompleted, nextStep, prevStep }) => (
-        <FormLayout>
-          <FormStepper orientation="vertical">
-            <FormStep
-              name="project"
-              title="Generate PassKey"
-              resolver={yupResolver(schemas.credential)}
+    <>
+      <Box
+        as="main"
+        alignContent="center"
+        marginLeft="20vw"
+        marginRight="20vw"
+        marginTop="15vh"
+      >
+        <Card
+          isHoverable
+          variant="solid"
+          title="Sonr.ID"
+          subtitle="Use the Vault MPC Protocol with Webauthn."
+        >
+          <CardBody>
+            <StepForm
+              defaultValues={{
+                deviceLabel: "",
+                credentialId: "",
+                credentialType: "",
+                credentialPublicKey: "",
+                credentialResponse: "",
+              }}
+              onSubmit={onSubmit}
             >
-              <FormLayout>
-                <Field
-                  isRequired
-                  name="deviceLabel"
-                  label="Device Label"
-                  onChange={(str) => {
-                    updateLabel(str.target.value);
-                  }}
-                />
-                <Button
-                  onClick={() =>
-                    label
-                      ? createCredential(nextStep)
-                      : snackbar.error("Please enter a device label")
-                  }
-                  variant="outline"
-                >
-                  Open Webauthn
-                </Button>
-              </FormLayout>
-            </FormStep>
+              {({
+                isFirstStep,
+                isLastStep,
+                isCompleted,
+                nextStep,
+                prevStep,
+              }) => (
+                <FormLayout>
+                  <FormStepper orientation="vertical">
+                    <FormStep
+                      name="project"
+                      title="Generate PassKey"
+                      resolver={yupResolver(schemas.credential)}
+                    >
+                      <FormLayout>
+                        <Field
+                          isRequired
+                          name="deviceLabel"
+                          label="Device Label"
+                          onChange={(str) => {
+                            updateLabel(str.target.value);
+                          }}
+                        />
+                        <Button
+                          label="Open Webauthn"
+                          onClick={() =>
+                            label
+                              ? createCredential(nextStep)
+                              : snackbar.error("Please enter a device label")
+                          }
+                          variant="outline"
+                        />
+                      </FormLayout>
+                    </FormStep>
 
-            <FormStep name="register" title="Register your Account">
-              <FormLayout>
-                <PropertyList>
-                  <Property
-                    label="Label"
-                    value={label ? label : "No credential"}
-                  />
-                  <Property
-                    label="Credential ID"
-                    value={
-                      <Web3Address
-                        address={credential ? credential.id : "No credential"}
-                        startLength={credential ? 12 : 15}
-                        endLength={credential ? 4 : 0}
-                      />
-                    }
-                  />
-                  <Property
-                    label="Type"
-                    value={credential ? credential.type : "No credential"}
-                  />
-                  <Property label="Source" value="WebAuthn" />
-                </PropertyList>
-                <Divider />
-                <ButtonGroup>
-                  <Button onClick={() => registerAccount(nextStep)}>
-                    Continue
-                  </Button>
-                  <Button variant="ghost">Cancel</Button>
-                </ButtonGroup>
-              </FormLayout>
-            </FormStep>
+                    <FormStep name="register" title="Register your Account">
+                      <FormLayout>
+                        <PropertyList>
+                          <Property
+                            label="Label"
+                            value={label ? label : "No credential"}
+                          />
+                          <Property
+                            label="Credential ID"
+                            value={
+                              <Web3Address
+                                address={
+                                  credential ? credential.id : "No credential"
+                                }
+                                startLength={credential ? 12 : 15}
+                                endLength={credential ? 4 : 0}
+                              />
+                            }
+                          />
+                          <Property
+                            label="Type"
+                            value={
+                              credential ? credential.type : "No credential"
+                            }
+                          />
+                          <Property label="Source" value="WebAuthn" />
+                        </PropertyList>
+                        <Divider />
+                        <ButtonGroup>
+                          <Button
+                            label="Continue"
+                            onClick={() => registerAccount(nextStep)}
+                          />
+                          <Button label="Cancel" variant="ghost" />
+                        </ButtonGroup>
+                      </FormLayout>
+                    </FormStep>
 
-            <FormStep name="faucet" title="Faucet Airdrop">
-              <FormLayout>
-                <Text>Please confirm that your information is correct.</Text>
-                <PropertyList>
-                  <Property label="Name" value={<FormValue name="name" />} />
-                  <Property
-                    label="Description"
-                    value={<FormValue name="description" />}
-                  />
-                </PropertyList>
-                <ButtonGroup>
-                  <NextButton />
-                  <PrevButton variant="ghost" />
-                </ButtonGroup>
-              </FormLayout>
-            </FormStep>
-            <FormStep name="confirm" title="Broadcast Transaction">
-              <FormLayout>
-                <Text>Please confirm that your information is correct.</Text>
-                <PropertyList>
-                  <Property label="Name" value={<FormValue name="name" />} />
-                  <Property
-                    label="Description"
-                    value={<FormValue name="description" />}
-                  />
-                </PropertyList>
-                <ButtonGroup>
-                  <NextButton />
-                  <PrevButton variant="ghost" />
-                </ButtonGroup>
-              </FormLayout>
-            </FormStep>
+                    <FormStep name="faucet" title="Faucet Airdrop">
+                      <FormLayout>
+                        <Text>
+                          Please confirm that your information is correct.
+                        </Text>
+                        <PropertyList>
+                          <Property
+                            label="Name"
+                            value={<FormValue name="name" />}
+                          />
+                          <Property
+                            label="Description"
+                            value={<FormValue name="description" />}
+                          />
+                        </PropertyList>
+                        <ButtonGroup>
+                          <NextButton />
+                          <PrevButton variant="ghost" />
+                        </ButtonGroup>
+                      </FormLayout>
+                    </FormStep>
+                    <FormStep name="confirm" title="Broadcast Transaction">
+                      <FormLayout>
+                        <Text>
+                          Please confirm that your information is correct.
+                        </Text>
+                        <PropertyList>
+                          <Property
+                            label="Name"
+                            value={<FormValue name="name" />}
+                          />
+                          <Property
+                            label="Description"
+                            value={<FormValue name="description" />}
+                          />
+                        </PropertyList>
+                        <ButtonGroup>
+                          <NextButton />
+                          <PrevButton variant="ghost" />
+                        </ButtonGroup>
+                      </FormLayout>
+                    </FormStep>
 
-            <StepperCompleted>
-              <Loader>We are setting up your project, just a moment...</Loader>
-            </StepperCompleted>
-          </FormStepper>
-        </FormLayout>
-      )}
-    </StepForm>
+                    <StepperCompleted>
+                      <Loader>
+                        We are setting up your project, just a moment...
+                      </Loader>
+                    </StepperCompleted>
+                  </FormStepper>
+                </FormLayout>
+              )}
+            </StepForm>
+          </CardBody>
+        </Card>
+      </Box>
+    </>
   );
 }
