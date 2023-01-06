@@ -1,25 +1,8 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Web3Address } from "@saas-ui/web3";
-import styles from "../styles/Home.module.css";
-import { useState } from "react";
-import { Box, Center } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
 import { AppShell } from "@saas-ui/app-shell";
-import { SignUp } from "./signup";
-import {
-  Button,
-  Card,
-  CardContainer,
-  CardHeader,
-  CardTitle,
-  EmptyState,
-  MenuButton,
-  MenuItem,
-  CardMedia,
-  CardBody,
-  CardFooter,
-} from "@saas-ui/react";
-import { ResponsiveMenu, ResponsiveMenuList } from "@saas-ui/pro";
+import { EmptyState } from "@saas-ui/react";
+import Head from "next/head";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -36,38 +19,36 @@ export default function Home() {
 
       <AppShell
         navbar={
-          <>
-            <Box as="header" align="end" borderBottomWidth="1px" py="2" px="4">
-              <ResponsiveMenu>
-                <MenuButton as={Button}>No Accounts</MenuButton>
-                <ResponsiveMenuList>
-                  <MenuItem>Edit</MenuItem>
-                  <MenuItem>Delete</MenuItem>
-                </ResponsiveMenuList>
-              </ResponsiveMenu>
+          <Flex borderBottomWidth="1px" py="2" px="4">
+            <Box>
+              <Text fontSize="xl" fontWeight="bold">
+                Sonr Sandbox
+              </Text>
             </Box>
-          </>
+            <Spacer />
+            <Box>
+              <Tag size="lg">v0.1.0</Tag>
+            </Box>
+          </Flex>
         }
       >
-        <Center>
-          <>
-            <EmptyState
-              colorScheme="primary"
-              // icon={FiUsers}
-              title="No Accounts Yet"
-              description="You haven't imported any customers yet."
-              actions={
-                <>
-                  <Button
-                    label="Import account"
-                    colorScheme="primary"
-                    href="/login"
-                  />
-                  <Button label="Create account" href="/signup" />
-                </>
-              }
-            />
-          </>
+        <Center height="100vh" marginTop="15vh">
+          <EmptyState
+            colorScheme="primary"
+            // icon={FiUsers}
+            title="No Accounts Yet"
+            description="You haven't imported any customers yet."
+            actions={
+              <>
+                <Link href="/login">
+                  <Button variant="primary">Import account</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button>Create Account</Button>
+                </Link>
+              </>
+            }
+          />
         </Center>
       </AppShell>
     </>

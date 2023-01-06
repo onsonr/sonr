@@ -1,29 +1,31 @@
+import { Box, Divider, Text } from "@chakra-ui/react";
 import {
-  Card,
-  CardBody,
-  StepForm,
-  FormStepper,
-  FormStep,
-  FormLayout,
-  Field,
+  AppShell,
   Button,
   ButtonGroup,
-  Property,
+  Card,
+  CardBody,
+  Field,
+  FormLayout,
+  FormStep,
+  FormStepper,
   FormValue,
-  StepperCompleted,
-  PropertyList,
   Loader,
-  PrevButton,
   NextButton,
+  PrevButton,
+  Property,
+  PropertyList,
+  StepForm,
+  StepperCompleted,
   useModals,
   useSnackbar,
 } from "@saas-ui/react";
-import { Divider, Box, Text } from "@chakra-ui/react";
-import * as Yup from "yup";
-import { useState } from "react";
 import { Web3Address } from "@saas-ui/web3";
+import Link from "next/link";
+import { useState } from "react";
+import * as Yup from "yup";
 
-export function SignUp() {
+export default function SignUp() {
   const snackbar = useSnackbar();
   const modals = useModals();
   const [label, updateLabel] = useState("");
@@ -84,13 +86,9 @@ export function SignUp() {
 
   const registerAccount = async (nextStep: () => void) => {
     modals.form({
-      title: "Enter Recovery PIN",
+      title: "Enter a Secure Recovery Passcode",
       body: (
         <>
-          <Text fontSize="xs" as="em">
-            The recovery pin is used to restore your account if your device is
-            lost.
-          </Text>
           <Field
             isRequired
             key="pinCode"
@@ -119,7 +117,6 @@ export function SignUp() {
                 " " +
                 values.pinConfirm
             );
-            resolve();
           } else {
             nextStep();
             modals.closeAll();
@@ -144,7 +141,23 @@ export function SignUp() {
   };
 
   return (
-    <>
+    <AppShell
+      navbar={
+        <>
+          <Box
+            as="header"
+            alignItems="start"
+            borderBottomWidth="1px"
+            py="2"
+            px="4"
+          >
+            <Link href="/">
+              <Button variant="outline">Return Home</Button>
+            </Link>
+          </Box>
+        </>
+      }
+    >
       <Box
         as="main"
         alignContent="center"
@@ -188,8 +201,13 @@ export function SignUp() {
                           isRequired
                           name="deviceLabel"
                           label="Device Label"
-                          onChange={(str) => {
-                            updateLabel(str.target.value);
+                          onInput={(event) => {
+                            // Check if the input is a string
+                            const str = event.target as HTMLInputElement;
+
+                            // Get the value from the input
+                            const value = str.value;
+                            updateLabel(str.value);
                           }}
                         />
                         <Button
@@ -297,6 +315,6 @@ export function SignUp() {
           </CardBody>
         </Card>
       </Box>
-    </>
+    </AppShell>
   );
 }
