@@ -3,13 +3,39 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.highway.vault.v1;
 import "common/v1/data.proto";
+import "sonr/identity/did.proto";
 import "google/api/annotations.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
 
+// ChallengRequest is the request to generate a challenge.
+message ChallengeRequest {}
+
+// ChallengeResponse is the response to a Challenge request.
+message ChallengeResponse {
+    bytes challenge = 1;
+    string rp_id = 2;
+    string rp_name = 3;
+    repeated string rp_origins = 4;
+    string session_id = 5;
+}
+
+// RegisterRequest is the request to register a new account.
+message RegisterRequest {
+    string session_id = 1;
+    bytes credential_response = 2;
+}
+
+// RegisterResponse is the response to a Register request.
+message RegisterResponse {
+    bytes id = 1;
+    common.v1.WebauthnCredential webauthn_credential = 2;
+}
+
 // KeygenRequest is the request to generate a new keypair.
 message KeygenRequest {
-    string prefix = 1;
-    int32 threshold = 2;
+    string prefix = 1; // optional
+    int32 threshold = 2; // optional
+    common.v1.WebauthnCredential webauthn_credential = 3;
 }
 
 // KeygenResponse is the response to a Keygen request.
@@ -18,12 +44,14 @@ message KeygenResponse {
     string address = 2;
     common.v1.WalletShareConfig share_config = 3;
     string vault_cid = 4;
+    sonr.identity.DidDocument did_document = 5;
 }
 
 // RefreshRequest is the request to refresh the keypair.
 message RefreshRequest {
     common.v1.WalletShareConfig share_config = 1;
     string vault_cid = 2;
+    common.v1.WebauthnCredential webauthn_credential = 3;
 }
 
 // RefreshResponse is the response to a Refresh request.
@@ -39,6 +67,7 @@ message SignRequest {
     common.v1.WalletShareConfig share_config = 1;
     string vault_cid = 2;
     bytes data = 3;
+    common.v1.WebauthnCredential webauthn_credential = 4;
 }
 
 // SignResponse is the response to a Sign request.
@@ -55,6 +84,7 @@ message DeriveRequest {
     string vault_cid = 2;
     string prefix = 3;
     uint32 child_index = 4;
+    common.v1.WebauthnCredential webauthn_credential = 5;
 }
 
 // DeriveResponse is the response to a Derive request.
@@ -67,22 +97,32 @@ message DeriveResponse {
 
 // Vault is the service used for managing a node's keypair.
 service Vault {
-    // Keygen generates a new keypair and returns the public key.
+    // Challenge generates a challenge and returns it.
+    rpc Challenge(ChallengeRequest) returns (ChallengeResponse) {
+        option (google.api.http).get = "/sonr-io/highway/vault/challenge";
+    }
+
+    // Register creates a new Webauthn credential and returns it.
+    rpc Register(RegisterRequest) returns (RegisterResponse) {
+        option (google.api.http).post = "/sonr-io/highway/vault/register";
+    }
+
+    // Keygen generates a new Wallet and returns the configuration.
     rpc Keygen(KeygenRequest) returns (KeygenResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/keygen";
     }
 
-    // Refresh refreshes the keypair and returns the public key.
+    // Refresh refreshes the Wallet shares and returns the updated configuration.
     rpc Refresh(RefreshRequest) returns (RefreshResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/refresh";
     }
 
-    // Sign signs the data with the private key and returns the signature.
+    // Sign signs the data with the Wallet and returns the signature.
     rpc Sign(SignRequest) returns (SignResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/sign";
     }
 
-    // Derive derives a new key from the private key and returns the public key.
+    // Derive creates a new Bip32 child key and returns the configuration.
     rpc Derive(DeriveRequest) returns (DeriveResponse) {
         option (google.api.http).post = "/sonr-io/highway/vault/derive";
     }

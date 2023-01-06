@@ -2,15 +2,13 @@ package keeper
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/patrickmn/go-cache"
+	"github.com/sonr-hq/sonr/pkg/ipfs"
 	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/tendermint/tendermint/libs/log"
 )
@@ -26,8 +24,7 @@ type (
 		bankKeeper    types.BankKeeper
 		groupKeeper   types.GroupKeeper
 		mintKeeper    types.MintKeeper
-		web           *webauthn.WebAuthn
-		userCache     *cache.Cache
+		ipfs          *ipfs.IPFS
 	}
 )
 
@@ -43,24 +40,12 @@ func NewKeeper(
 	if !ps.HasKeyTable() {
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
-
-	wan, err := webauthn.New(&webauthn.Config{
-		RPDisplayName: "Sonr ID",
-		RPID:          "sonr.network",
-		RPOrigin:      "https://auth.sonr.network",
-	})
-	if err != nil {
-		panic(err)
-	}
-
 	k := &Keeper{
-		web:           wan,
 		cdc:           cdc,
 		storeKey:      storeKey,
 		memKey:        memKey,
 		paramstore:    ps,
 		accountKeeper: accountKeeper, bankKeeper: bankKeeper, groupKeeper: groupKeeper, mintKeeper: mintKeeper,
-		userCache: cache.New(5*time.Minute, 10*time.Minute),
 	}
 	return k
 }

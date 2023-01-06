@@ -147,16 +147,16 @@
             "api-reference/identity/api/5",
             "api-reference/identity/api/6",
             "api-reference/identity/api/7",
-            "api-reference/identity/api/8",
-            {
-              "group": "WebAuthn API",
-              "pages": [
-                "api-reference/identity/api/9",
-                "api-reference/identity/api/10",
-                "api-reference/identity/api/11",
-                "api-reference/identity/api/12"
-              ]
-            }
+            "api-reference/identity/api/8"
+          ]
+        },
+        {
+          "group": "IPFS",
+          "pages": [
+            "api-reference/ipfs/overview",
+            "api-reference/ipfs/api/1",
+            "api-reference/ipfs/api/2",
+            "api-reference/ipfs/api/3"
           ]
         },
         {
@@ -173,6 +173,16 @@
             "api-reference/tendermint/api/10",
             "api-reference/tendermint/api/7",
             "api-reference/tendermint/api/8"
+          ]
+        },
+        {
+          "group": "Vault",
+          "pages": [
+            "api-reference/vault/overview",
+            "api-reference/vault/api/1",
+            "api-reference/vault/api/2",
+            "api-reference/vault/api/3",
+            "api-reference/vault/api/4"
           ]
         }
       ]
