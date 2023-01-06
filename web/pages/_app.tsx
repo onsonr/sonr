@@ -1,9 +1,14 @@
 import type { AppProps } from "next/app";
-import { ModalsProvider, useModals, SaasProvider } from "@saas-ui/react";
+import { ModalsProvider, SaasProvider, LinkProps } from "@saas-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import { theme as baseTheme } from "@saas-ui/pro";
+import NextLink from "next/link";
 import { theme as glassTheme } from "@saas-ui/theme-glass";
 import "@fontsource/inter/variable.css";
+
+const Link: React.FC<LinkProps> = (props) => {
+  return <NextLink {...props} />;
+};
 
 // 2. Extend your theme
 const theme = extendTheme(
@@ -14,9 +19,9 @@ const theme = extendTheme(
   baseTheme
 );
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
-    <SaasProvider theme={theme}>
+    <SaasProvider theme={theme} linkComponent={Link}>
       <ModalsProvider>
         <Component {...pageProps} />
       </ModalsProvider>
@@ -24,4 +29,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default App;
