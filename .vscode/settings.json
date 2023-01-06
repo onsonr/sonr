@@ -10,5 +10,5 @@
     "gitlens.views.formats.commits.label": "${❰ tips ❱➤  }${message}",
     "gitlens.views.formats.commits.description": "${author, }${agoOrDate}${tips}",
     "gitlens.views.commitDetails.files.layout": "tree",
-    "gitlens.views.commitDetails.files.compact": false
+    "gitlens.views.commitDetails.files.compact": false,
 }

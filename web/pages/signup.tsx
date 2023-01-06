@@ -60,8 +60,7 @@ export default function SignUp() {
     const credential = await navigator.credentials.create({
       publicKey: {
         rp: {
-          name: "ACME Corporation",
-          id: "localhost",
+          name: "Sonr ID",
         },
         user: {
           id: Uint8Array.from([1, 2, 3, 4, 5]),

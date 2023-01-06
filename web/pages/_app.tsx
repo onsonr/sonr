@@ -3,8 +3,8 @@ import { ModalsProvider, SaasProvider, LinkProps } from "@saas-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import { theme as baseTheme } from "@saas-ui/pro";
 import { theme as glassTheme } from "@saas-ui/theme-glass";
+import { withThemeColors } from "@saas-ui/pro";
 import "@fontsource/inter/variable.css";
-
 
 const colors = {
   black: "#151221",
@@ -131,13 +131,7 @@ const colors = {
 };
 
 // 2. Extend your theme
-const theme = extendTheme(
-  {
-    colors,
-  },
-  glassTheme,
-  baseTheme
-);
+const theme = extendTheme({ colors }, glassTheme, baseTheme);
 
 function App({ Component, pageProps }: AppProps) {
   return (
