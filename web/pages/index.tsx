@@ -1,15 +1,25 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "@next/font/google";
+import { Web3Address } from "@saas-ui/web3";
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Box, Button, Center } from "@chakra-ui/react";
+import { AppShell } from "@saas-ui/app-shell";
+import { SignUp } from "./signup";
+import {
+  Card,
+  CardContainer,
+  CardHeader,
+  CardTitle,
+  MenuButton,
+  MenuItem,
+  CardMedia,
+  CardBody,
+  CardFooter,
+} from "@saas-ui/react";
+import { ResponsiveMenu, ResponsiveMenuList } from "@saas-ui/pro";
 
 export default function Home() {
-  const [credential, setCredential] = useState<PublicKeyCredential | null>(
-    null
-  );
   return (
     <>
       <Head>
@@ -18,89 +28,46 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>{credential ? credential.id : "No credential"}</p>
-          <div>
-            <code>{credential ? credential.type : ""}</code>
-          </div>
-        </div>
-        <p>
-          {credential ? JSON.stringify(credential.response.clientDataJSON) : ""}
-        </p>
-        <div className={styles.grid}>
-          <button
-            onClick={() => {
-              if (typeof navigator !== "undefined") {
-                // You now have access to `window`
-                navigator.credentials
-                  .create({
-                    publicKey: {
-                      rp: {
-                        name: "ACME Corporation",
-                        id: "localhost",
-                      },
-                      user: {
-                        id: Uint8Array.from([1, 2, 3, 4, 5]),
-                        name: "username",
-                        displayName: "username",
-                      },
-                      challenge: Uint8Array.from([1, 2, 3, 4, 5]),
-                      pubKeyCredParams: [
-                        {
-                          type: "public-key",
-                          alg: -7,
-                        },
-                      ],
-                      timeout: 60000,
-                      attestation: "direct",
-                    },
-                  })
-                  .then((credential) => {
-                    if (credential instanceof PublicKeyCredential) {
-                      setCredential(credential);
-                    }
-                  });
-              }
-            }}
-            className={styles.card}
+
+      <AppShell
+        navbar={
+          <Box
+            as="header"
+            borderBottomWidth="1px"
+            py="2"
+            px="4"
+            alignContent="end"
           >
-            <h2 className={inter.className}>
-              Create Credential <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Calls the WebAuthn API to create a credential.
-            </p>
-          </button>
-
-          <button className={styles.card}>
-            <h2 className={inter.className}>
-              Register Account <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Create a Sonr Account with the Vaults MPC Protocol.
-            </p>
-          </button>
-
-          <button className={styles.card}>
-            <h2 className={inter.className}>
-              Faucet Request <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Request Airdrop from the Testnet Faucet.
-            </p>
-          </button>
-
-          <button className={styles.card}>
-            <h2 className={inter.className}>
-              Sign Transaction <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Use the Sonr Vault to sign a transaction.
-            </p>
-          </button>
-        </div>
-      </main>
+            <ResponsiveMenu>
+              <MenuButton as={Button}>Open menu</MenuButton>
+              <ResponsiveMenuList>
+                <MenuItem>Edit</MenuItem>
+                <MenuItem>Delete</MenuItem>
+              </ResponsiveMenuList>
+            </ResponsiveMenu>
+          </Box>
+        }
+      >
+        <Center height="100vh"></Center>
+        <Box
+          as="main"
+          alignContent="center"
+          marginLeft="20vw"
+          marginRight="20vw"
+          marginTop="15vh"
+        >
+          <Card
+            isHoverable
+            variant="solid"
+            title="Sonr.ID"
+            subtitle="Use the Vault MPC Protocol with Webauthn."
+          >
+            <CardBody>
+              <SignUp />
+            </CardBody>
+          </Card>
+        </Box>
+      </AppShell>
     </>
   );
 }
