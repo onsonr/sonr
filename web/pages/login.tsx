@@ -1,4 +1,4 @@
-import { Box, Divider, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
 import {
   AppShell,
   Button,
@@ -28,19 +28,17 @@ export default function Login() {
   return (
     <AppShell
       navbar={
-        <>
-          <Box
-            as="header"
-            alignItems="start"
-            borderBottomWidth="1px"
-            py="2"
-            px="4"
-          >
-            <Link href="/">
-              <Button variant="outline">Return Home</Button>
-            </Link>
+        <Flex borderBottomWidth="1px" py="2" px="4">
+          <Link href="/">
+            <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
+              Sonr Sandbox
+            </Text>
+          </Link>
+          <Spacer />
+          <Box>
+            <Tag size="lg">v0.1.0</Tag>
           </Box>
-        </>
+        </Flex>
       }
     >
       <Box
@@ -58,9 +56,10 @@ export default function Login() {
             </Form>
           </CardBody>
           <CardFooter>
-            <ButtonGroup paddingTop={8}>
-              <Button variant="outline">Cancel</Button>
-              <Button variant="primary">Import</Button>
+            <ButtonGroup>
+              <Link href="/">
+                <Button label="Cancel" variant="ghost" />
+              </Link>
             </ButtonGroup>
           </CardFooter>
         </Card>

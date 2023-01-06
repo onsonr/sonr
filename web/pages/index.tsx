@@ -31,11 +31,11 @@ export default function Home() {
       <AppShell
         navbar={
           <Flex borderBottomWidth="1px" py="2" px="4">
-            <Box>
-              <Text fontSize="xl" fontWeight="bold">
+            <Link href="/">
+              <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
                 Sonr Sandbox
               </Text>
-            </Box>
+            </Link>
             <Spacer />
             <Box>
               <Tag size="lg">v0.1.0</Tag>

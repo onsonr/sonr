@@ -1,10 +1,11 @@
-import { Box, Divider, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
 import {
   AppShell,
   Button,
   ButtonGroup,
   Card,
   CardBody,
+  CardFooter,
   Field,
   FormLayout,
   FormStep,
@@ -40,13 +41,9 @@ export default function SignUp() {
   };
 
   const yupResolver = (schema: any) => async (values: any) => {
-    try {
-      await schema.validate(values, { abortEarly: false });
-      return {
-        values,
-        errors: {},
-      };
-    } catch (errors) {}
+    return {
+      values,
+    };
   };
 
   const onSubmit = (params: any) => {
@@ -141,34 +138,42 @@ export default function SignUp() {
 
   return (
     <AppShell
+      maxWidth="100vw"
       navbar={
-        <>
-          <Box
-            as="header"
-            alignItems="start"
-            borderBottomWidth="1px"
-            py="2"
-            px="4"
-          >
-            <Link href="/">
-              <Button variant="outline">Return Home</Button>
-            </Link>
+        <Flex borderBottomWidth="1px" py="2" px="4">
+          <Link href="/">
+            <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
+              Sonr Sandbox
+            </Text>
+          </Link>
+          <Spacer />
+          <Box>
+            <Tag size="lg">v0.1.0</Tag>
           </Box>
-        </>
+        </Flex>
       }
     >
       <Box
         as="main"
-        alignContent="center"
+        alignItems="center"
         marginLeft="20vw"
         marginRight="20vw"
         marginTop="15vh"
       >
         <Card
-          isHoverable
+          maxWidth="700"
           variant="solid"
           title="Sonr.ID"
           subtitle="Use the Vault MPC Protocol with Webauthn."
+          action={
+            <ButtonGroup>
+              <Link href="/">
+                <Button variant="unstyled" colorScheme="red">
+                  Cancel
+                </Button>
+              </Link>
+            </ButtonGroup>
+          }
         >
           <CardBody>
             <StepForm
@@ -248,13 +253,11 @@ export default function SignUp() {
                           />
                           <Property label="Source" value="WebAuthn" />
                         </PropertyList>
-                        <Divider />
                         <ButtonGroup>
                           <Button
                             label="Continue"
                             onClick={() => registerAccount(nextStep)}
                           />
-                          <Button label="Cancel" variant="ghost" />
                         </ButtonGroup>
                       </FormLayout>
                     </FormStep>
