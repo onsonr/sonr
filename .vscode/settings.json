@@ -11,4 +11,11 @@
     "gitlens.views.formats.commits.description": "${author, }${agoOrDate}${tips}",
     "gitlens.views.commitDetails.files.layout": "tree",
     "gitlens.views.commitDetails.files.compact": false,
+      "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "eslint.nodePath": "web/.yarn/sdks",
+  "typescript.tsdk": "web/.yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

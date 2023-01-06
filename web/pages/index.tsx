@@ -1,9 +1,21 @@
-import { Box, Button, Center, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
-import { AppShell, EmptyState } from "@saas-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  Spacer,
+  Tag,
+  Text,
+  useColorMode,
+} from "@chakra-ui/react";
+import { AppShell, Button, EmptyState } from "@saas-ui/react";
 import Head from "next/head";
 import Link from "next/link";
 
 export default function Home() {
+  const { colorMode, toggleColorMode } = useColorMode();
+  if (colorMode === "light") {
+    toggleColorMode();
+  }
   return (
     <>
       <Head>
