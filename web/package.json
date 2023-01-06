@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icon": "^3.0.14",
     "@chakra-ui/react": "^2.3.6",
+    "@chakra-ui/system": "^2.3.7",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@fontsource/inter": "^4.5.14",
@@ -38,5 +40,6 @@
     "eslint": "^8.16.0",
     "eslint-config-next": "^12.1.6",
     "typescript": "^4.7.2"
-  }
+  },
+  "packageManager": "yarn@3.3.1"
 }

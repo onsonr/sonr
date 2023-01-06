@@ -1,6 +1,5 @@
 import { Box, Button, Center, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
-import { AppShell } from "@saas-ui/app-shell";
-import { EmptyState } from "@saas-ui/react";
+import { AppShell, EmptyState } from "@saas-ui/react";
 import Head from "next/head";
 import Link from "next/link";
 
