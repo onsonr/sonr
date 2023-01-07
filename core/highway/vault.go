@@ -41,9 +41,7 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 		rpOrigins: []string{
 			"https://auth.sonr.io",
 			"https://sonr.id",
-			"https://api.sonr.network",
-			"https://api.sonr.dev",
-			"https://api.sonr.ws",
+			"https://sandbox.sonr.network",
 			"localhost:3000",
 		},
 		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
