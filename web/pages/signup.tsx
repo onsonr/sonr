@@ -1,18 +1,23 @@
-import { Box, Divider, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
+import { Box, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
+import {
+  FiKey,
+  FiDroplet,
+  FiUserPlus,
+  FiAtSign,
+  FiCloud,
+  FiLock,
+} from "react-icons/fi";
 
-import { FiKey, FiUserPlus, FiAtSign, FiCloud, FiLock } from "react-icons/fi";
 import {
   AppShell,
   Button,
   ButtonGroup,
   Card,
   CardBody,
-  CardFooter,
   Field,
   FormLayout,
   FormStep,
   FormStepper,
-  FormValue,
   Loader,
   NextButton,
   PrevButton,
@@ -20,7 +25,6 @@ import {
   PropertyList,
   StepForm,
   StepperCompleted,
-  useModals,
   useSnackbar,
 } from "@saas-ui/react";
 import { Web3Address } from "@saas-ui/web3";
@@ -30,7 +34,7 @@ import * as Yup from "yup";
 
 export default function SignUp() {
   const snackbar = useSnackbar();
-  const modals = useModals();
+  const [loading, setLoading] = useState(false);
   const [label, updateLabel] = useState("");
   const [address, setAddress] = useState("");
   const [vaultCid, setVaultCid] = useState("");
@@ -87,6 +91,7 @@ export default function SignUp() {
   const registerAccount = async function callVaultKeygen(
     nextStep: () => void
   ): Promise<string> {
+    setLoading(true);
     const response = await fetch("/api/vault/keygen", {
       method: "POST",
       headers: {
@@ -98,6 +103,8 @@ export default function SignUp() {
     setAddress(data.address);
     setVaultCid(data.vault_cid);
     setCmpConfig(data.share_config.cmp_config);
+    setLoading(false);
+    snackbar.info("Account has been registered with Sonr Vault.");
     nextStep();
     return data.address;
   };
@@ -196,44 +203,50 @@ export default function SignUp() {
                       </FormLayout>
                     </FormStep>
 
-                    <FormStep name="register" title="Register your Account">
-                      <FormLayout>
-                        <PropertyList>
-                          <Property
-                            label="Label"
-                            value={label ? label : "No credential"}
-                          />
-                          <Property
-                            label="Credential ID"
-                            value={
-                              <Web3Address
-                                address={
-                                  credential ? credential.id : "No credential"
-                                }
-                                startLength={credential ? 12 : 15}
-                                endLength={credential ? 4 : 0}
-                              />
-                            }
-                          />
-                          <Property
-                            label="Type"
-                            value={
-                              credential ? credential.type : "No credential"
-                            }
-                          />
-                          <Property label="Source" value="WebAuthn" />
-                        </PropertyList>
-                        <ButtonGroup>
-                          <Button
-                            leftIcon={<FiUserPlus />}
-                            label="Register Account"
-                            onClick={() => registerAccount(nextStep)}
-                          />
-                        </ButtonGroup>
-                      </FormLayout>
+                    <FormStep name="register" title="Register Account">
+                      {loading ? (
+                        <Flex>
+                          <Loader>Running MPC Protocol...</Loader>
+                        </Flex>
+                      ) : (
+                        <FormLayout>
+                          <PropertyList>
+                            <Property
+                              label="Label"
+                              value={label ? label : "No credential"}
+                            />
+                            <Property
+                              label="Credential ID"
+                              value={
+                                <Web3Address
+                                  address={
+                                    credential ? credential.id : "No credential"
+                                  }
+                                  startLength={credential ? 12 : 15}
+                                  endLength={credential ? 4 : 0}
+                                />
+                              }
+                            />
+                            <Property
+                              label="Type"
+                              value={
+                                credential ? credential.type : "No credential"
+                              }
+                            />
+                            <Property label="Source" value="WebAuthn" />
+                          </PropertyList>
+                          <ButtonGroup>
+                            <Button
+                              leftIcon={<FiUserPlus />}
+                              label="Register Account"
+                              onClick={() => registerAccount(nextStep)}
+                            />
+                          </ButtonGroup>
+                        </FormLayout>
+                      )}
                     </FormStep>
 
-                    <FormStep name="faucet" title="Faucet Airdrop">
+                    <FormStep name="faucet" title="Get Tokens from Faucet">
                       <FormLayout>
                         <Text>
                           Please confirm that your information is correct.
@@ -268,26 +281,27 @@ export default function SignUp() {
                           </Box>
                         </PropertyList>
                         <ButtonGroup>
-                          <NextButton />
-                          <PrevButton variant="ghost" />
+                          <Button
+                            leftIcon={<FiDroplet />}
+                            label="Get Airdrop"
+                            onClick={() =>
+                              snackbar.error(
+                                "Faucet not online at this time. Please try again later."
+                              )
+                            }
+                            variant="primary"
+                          />
                         </ButtonGroup>
                       </FormLayout>
                     </FormStep>
-                    <FormStep name="confirm" title="Broadcast Transaction">
+                    <FormStep
+                      name="confirm"
+                      title="Broadcast Document Transaction"
+                    >
                       <FormLayout>
                         <Text>
                           Please confirm that your information is correct.
                         </Text>
-                        <PropertyList>
-                          <Property
-                            label="Name"
-                            value={<FormValue name="name" />}
-                          />
-                          <Property
-                            label="Description"
-                            value={<FormValue name="description" />}
-                          />
-                        </PropertyList>
                         <ButtonGroup>
                           <NextButton />
                           <PrevButton variant="ghost" />

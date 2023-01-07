@@ -53,11 +53,11 @@ export default function Home() {
             description="You haven't imported any customers yet."
             actions={
               <>
-                <Link href="/login">
-                  <Button variant="primary">Import Account</Button>
-                </Link>
                 <Link href="/signup">
-                  <Button>Create Account</Button>
+                  <Button variant="primary">Create Account</Button>
+                </Link>
+                <Link href="/login">
+                  <Button>Import Account</Button>
                 </Link>
               </>
             }
