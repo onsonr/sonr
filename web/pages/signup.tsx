@@ -1,4 +1,4 @@
-import { Box, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
 import {
   FiKey,
   FiDroplet,
@@ -128,199 +128,210 @@ export default function SignUp() {
         </Flex>
       }
     >
-      <Box
-        as="main"
-        alignItems="center"
-        marginLeft="20vw"
-        marginRight="20vw"
-        marginTop="15vh"
-      >
-        <Card
-          maxWidth="600px"
-          variant="solid"
-          title="Sonr.ID"
-          subtitle="Use the Vault MPC Protocol with Webauthn."
-          padding={4}
-          action={
-            <ButtonGroup>
-              <Link href="/">
-                <Button variant="unstyled" colorScheme="red">
-                  Cancel
-                </Button>
-              </Link>
-            </ButtonGroup>
-          }
+      <Center>
+        <Box
+          as="main"
+          height={{
+            base: "100%", // 0-48em
+            md: "50%", // 48em-80em,
+            xl: "50%", // 80em+
+          }}
+          width={[
+            "100%", // 0-30em
+            "100%", // 30em-48em
+            "75%", // 48em-62em
+            "50%", // 62em+
+          ]}
         >
-          <CardBody margin={4}>
-            <StepForm
-              defaultValues={{
-                deviceLabel: "",
-                credentialId: "",
-                credentialType: "",
-                credentialPublicKey: "",
-                credentialResponse: "",
-              }}
-              onSubmit={onSubmit}
-            >
-              {({
-                isFirstStep,
-                isLastStep,
-                isCompleted,
-                nextStep,
-                prevStep,
-              }) => (
-                <FormLayout>
-                  <FormStepper orientation="vertical">
-                    <FormStep
-                      name="project"
-                      title="Generate PassKey"
-                      resolver={yupResolver(schemas.credential)}
-                    >
-                      <FormLayout>
-                        <Field
-                          isRequired
-                          name="deviceLabel"
-                          label="Label"
-                          onInput={(event) => {
-                            // Check if the input is a string
-                            const str = event.target as HTMLInputElement;
-
-                            // Get the value from the input
-                            const value = str.value;
-                            updateLabel(str.value);
-                          }}
-                        />
-                        <Button
-                          leftIcon={<FiKey />}
-                          label="New PassKey"
-                          onClick={() =>
-                            label
-                              ? createCredential(nextStep)
-                              : snackbar.error("Please enter a device label")
-                          }
-                          variant="outline"
-                        />
-                      </FormLayout>
-                    </FormStep>
-
-                    <FormStep name="register" title="Register Account">
-                      {loading ? (
-                        <Flex>
-                          <Loader>Running MPC Protocol...</Loader>
-                        </Flex>
-                      ) : (
+          <Card
+            maxWidth="600px"
+            variant="solid"
+            title="Sonr.ID"
+            subtitle="Use the Vault MPC Protocol with Webauthn."
+            padding={4}
+            action={
+              <ButtonGroup>
+                <Link href="/">
+                  <Button variant="unstyled" colorScheme="red">
+                    Cancel
+                  </Button>
+                </Link>
+              </ButtonGroup>
+            }
+          >
+            <CardBody margin={4}>
+              <StepForm
+                defaultValues={{
+                  deviceLabel: "",
+                  credentialId: "",
+                  credentialType: "",
+                  credentialPublicKey: "",
+                  credentialResponse: "",
+                }}
+                onSubmit={onSubmit}
+              >
+                {({
+                  isFirstStep,
+                  isLastStep,
+                  isCompleted,
+                  nextStep,
+                  prevStep,
+                }) => (
+                  <FormLayout>
+                    <FormStepper orientation="vertical">
+                      <FormStep
+                        name="project"
+                        title="Generate PassKey"
+                        resolver={yupResolver(schemas.credential)}
+                      >
                         <FormLayout>
-                          <PropertyList>
-                            <Property
-                              label="Label"
-                              value={label ? label : "No credential"}
-                            />
-                            <Property
-                              label="Credential ID"
-                              value={
-                                <Web3Address
-                                  address={
-                                    credential ? credential.id : "No credential"
-                                  }
-                                  startLength={credential ? 12 : 15}
-                                  endLength={credential ? 4 : 0}
-                                />
-                              }
-                            />
-                            <Property
-                              label="Type"
-                              value={
-                                credential ? credential.type : "No credential"
-                              }
-                            />
-                            <Property label="Source" value="WebAuthn" />
-                          </PropertyList>
-                          <ButtonGroup>
-                            <Button
-                              leftIcon={<FiUserPlus />}
-                              label="Register Account"
-                              onClick={() => registerAccount(nextStep)}
-                            />
-                          </ButtonGroup>
+                          <Field
+                            isRequired
+                            name="deviceLabel"
+                            label="Label"
+                            onInput={(event) => {
+                              // Check if the input is a string
+                              const str = event.target as HTMLInputElement;
+
+                              // Get the value from the input
+                              const value = str.value;
+                              updateLabel(str.value);
+                            }}
+                          />
+                          <Button
+                            leftIcon={<FiKey />}
+                            label="New PassKey"
+                            onClick={() =>
+                              label
+                                ? createCredential(nextStep)
+                                : snackbar.error("Please enter a device label")
+                            }
+                            variant="outline"
+                          />
                         </FormLayout>
-                      )}
-                    </FormStep>
+                      </FormStep>
 
-                    <FormStep name="faucet" title="Get Tokens from Faucet">
-                      <FormLayout>
-                        <Text>
-                          Please confirm that your information is correct.
-                        </Text>
-                        <PropertyList>
-                          <Property label="Address" />
-                          <Button variant="outline" leftIcon={<FiAtSign />}>
-                            <Web3Address
-                              address={address ? address : "N/A"}
-                              startLength={32}
-                              endLength={4}
-                            />
-                          </Button>
-                          <Property label="Vault CID" />
-                          <Button variant="outline" leftIcon={<FiCloud />}>
-                            <Web3Address
-                              address={vaultCid ? vaultCid : "N/A"}
-                              startLength={32}
-                              endLength={4}
-                            />
-                          </Button>
+                      <FormStep name="register" title="Register Account">
+                        {loading ? (
+                          <Flex>
+                            <Loader>Running MPC Protocol...</Loader>
+                          </Flex>
+                        ) : (
+                          <FormLayout>
+                            <PropertyList>
+                              <Property
+                                label="Label"
+                                value={label ? label : "No credential"}
+                              />
+                              <Property
+                                label="Credential ID"
+                                value={
+                                  <Web3Address
+                                    address={
+                                      credential
+                                        ? credential.id
+                                        : "No credential"
+                                    }
+                                    startLength={credential ? 12 : 15}
+                                    endLength={credential ? 4 : 0}
+                                  />
+                                }
+                              />
+                              <Property
+                                label="Type"
+                                value={
+                                  credential ? credential.type : "No credential"
+                                }
+                              />
+                              <Property label="Source" value="WebAuthn" />
+                            </PropertyList>
+                            <ButtonGroup>
+                              <Button
+                                leftIcon={<FiUserPlus />}
+                                label="Register Account"
+                                onClick={() => registerAccount(nextStep)}
+                              />
+                            </ButtonGroup>
+                          </FormLayout>
+                        )}
+                      </FormStep>
 
-                          <Property label="Wallet Share" />
-                          <Box>
-                            <Button variant="outline" leftIcon={<FiLock />}>
+                      <FormStep name="faucet" title="Get Tokens from Faucet">
+                        <FormLayout>
+                          <Text>
+                            Please confirm that your information is correct.
+                          </Text>
+                          <PropertyList>
+                            <Property label="Address" />
+                            <Button variant="outline" leftIcon={<FiAtSign />}>
                               <Web3Address
-                                address={cmpConfig ? cmpConfig : "N/A"}
+                                address={address ? address : "N/A"}
                                 startLength={32}
                                 endLength={4}
                               />
                             </Button>
-                          </Box>
-                        </PropertyList>
-                        <ButtonGroup>
-                          <Button
-                            leftIcon={<FiDroplet />}
-                            label="Get Airdrop"
-                            onClick={() =>
-                              snackbar.error(
-                                "Faucet not online at this time. Please try again later."
-                              )
-                            }
-                            variant="primary"
-                          />
-                        </ButtonGroup>
-                      </FormLayout>
-                    </FormStep>
-                    <FormStep
-                      name="confirm"
-                      title="Broadcast Document Transaction"
-                    >
-                      <FormLayout>
-                        <Text>
-                          Please confirm that your information is correct.
-                        </Text>
-                        <ButtonGroup>
-                          <NextButton />
-                          <PrevButton variant="ghost" />
-                        </ButtonGroup>
-                      </FormLayout>
-                    </FormStep>
+                            <Property label="Vault CID" />
+                            <Button variant="outline" leftIcon={<FiCloud />}>
+                              <Web3Address
+                                address={vaultCid ? vaultCid : "N/A"}
+                                startLength={32}
+                                endLength={4}
+                              />
+                            </Button>
 
-                    <StepperCompleted>
-                      <Loader>
-                        We are setting up your project, just a moment...
-                      </Loader>
-                    </StepperCompleted>
-                  </FormStepper>
-                </FormLayout>
-              )}
-            </StepForm>
-          </CardBody>
-        </Card>
-      </Box>
+                            <Property label="Wallet Share" />
+                            <Box>
+                              <Button variant="outline" leftIcon={<FiLock />}>
+                                <Web3Address
+                                  address={cmpConfig ? cmpConfig : "N/A"}
+                                  startLength={32}
+                                  endLength={4}
+                                />
+                              </Button>
+                            </Box>
+                          </PropertyList>
+                          <ButtonGroup>
+                            <Button
+                              leftIcon={<FiDroplet />}
+                              label="Get Airdrop"
+                              onClick={() =>
+                                snackbar.error(
+                                  "Faucet not online at this time. Please try again later."
+                                )
+                              }
+                              variant="primary"
+                            />
+                          </ButtonGroup>
+                        </FormLayout>
+                      </FormStep>
+                      <FormStep
+                        name="confirm"
+                        title="Broadcast Document Transaction"
+                      >
+                        <FormLayout>
+                          <Text>
+                            Please confirm that your information is correct.
+                          </Text>
+                          <ButtonGroup>
+                            <NextButton />
+                            <PrevButton variant="ghost" />
+                          </ButtonGroup>
+                        </FormLayout>
+                      </FormStep>
+
+                      <StepperCompleted>
+                        <Loader>
+                          We are setting up your project, just a moment...
+                        </Loader>
+                      </StepperCompleted>
+                    </FormStepper>
+                  </FormLayout>
+                )}
+              </StepForm>
+            </CardBody>
+          </Card>
+        </Box>
+      </Center>
     </AppShell>
   );
 }
