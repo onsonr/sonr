@@ -36,8 +36,9 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 	srv := &VaultService{
 		cache:   gocache.New(time.Minute*5, time.Minute*10),
 		highway: hway,
-		rpId:    "sonr",
-		rpName:  "Sonr",
+		// TODO: Make these configurable
+		rpId:   "api.sonr.network",
+		rpName: "Sonr",
 		rpOrigins: []string{
 			"sonr.io",
 			"sonr.id",

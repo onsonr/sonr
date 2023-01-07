@@ -19,7 +19,7 @@ type IPFSService struct {
 	highway *ipfs.IPFS
 }
 
-// It creates a new IPFSService and registers it as a handler for the IPFS gRPC service
+// It creates a new IPFSService, registers it with the mux, and returns it
 func NewIPFSService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS) (*IPFSService, error) {
 	srv := &IPFSService{
 		highway: hway,
@@ -31,7 +31,8 @@ func NewIPFSService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS)
 	return srv, nil
 }
 
-// Keygen generates a new keypair and returns the public key.
+// A function that is part of the `IPFSService` struct. It is a function that is part of the
+// `IPFSService` struct.
 func (v *IPFSService) Add(ctx context.Context, req *v1.AddRequest) (*v1.AddResponse, error) {
 	cid, err := v.highway.Add(req.GetContent())
 	if err != nil {
@@ -48,7 +49,7 @@ func (v *IPFSService) Exists(ctx context.Context, req *v1.ExistsRequest) (*v1.Ex
 	// Check if gateway was provided.
 	if req.GetGateway() != "" {
 		// Perform a GET request to the gateway.
-		resp, err := http.Get(fmt.Sprintf("%s/ipfs/%s", req.GetGateway(), req.GetHash()))
+		resp, err := http.Get(fmt.Sprintf("%s/%s", req.GetGateway(), req.GetHash()))
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +85,8 @@ func (v *IPFSService) Exists(ctx context.Context, req *v1.ExistsRequest) (*v1.Ex
 	}, nil
 }
 
-// Refresh refreshes the keypair and returns the public key.
+// A function that is part of the `IPFSService` struct. It is a function that is part of the
+// `IPFSService` struct.
 func (v *IPFSService) Get(ctx context.Context, req *v1.GetRequest) (*v1.GetResponse, error) {
 	// Check if gateway was provided.
 	if req.GetGateway() != "" {
