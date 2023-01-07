@@ -10,7 +10,7 @@ import {
 import { AppShell, Button, EmptyState } from "@saas-ui/react";
 import Head from "next/head";
 import Link from "next/link";
-
+import { FiUnlock } from "react-icons/fi";
 export default function Home() {
   const { colorMode, toggleColorMode } = useColorMode();
   if (colorMode === "light") {
@@ -32,9 +32,11 @@ export default function Home() {
         navbar={
           <Flex borderBottomWidth="1px" py="2" px="4">
             <Link href="/">
-              <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
-                Sonr Sandbox
-              </Text>
+              <Button variant="unstyled">
+                <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
+                  Sonr Sandbox
+                </Text>
+              </Button>
             </Link>
             <Spacer />
             <Box>
@@ -46,13 +48,13 @@ export default function Home() {
         <Center height="100vh" marginTop="15vh">
           <EmptyState
             colorScheme="primary"
-            // icon={FiUsers}
+            icon={FiUnlock}
             title="No Accounts Yet"
             description="You haven't imported any customers yet."
             actions={
               <>
                 <Link href="/login">
-                  <Button variant="primary">Import account</Button>
+                  <Button variant="primary">Import Account</Button>
                 </Link>
                 <Link href="/signup">
                   <Button>Create Account</Button>

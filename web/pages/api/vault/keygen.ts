@@ -5,15 +5,19 @@ export const config = {
 };
 
 export default async function handler(req: NextRequest) {
-  return new Response(
-    JSON.stringify({
-      name: "Jim Halpert",
-    }),
-    {
-      status: 200,
-      headers: {
-        "content-type": "application/json",
-      },
-    }
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  };
+  const resp = await fetch(
+    "https://api.sonr.network/sonr-io/highway/vault/keygen",
+    requestOptions
   );
+  const data = await resp.json();
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      "content-type": "application/json",
+    },
+  });
 }

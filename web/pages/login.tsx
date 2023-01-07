@@ -30,9 +30,11 @@ export default function Login() {
       navbar={
         <Flex borderBottomWidth="1px" py="2" px="4">
           <Link href="/">
-            <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
-              Sonr Sandbox
-            </Text>
+            <Button variant="unstyled">
+              <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
+                Sonr Sandbox
+              </Text>
+            </Button>
           </Link>
           <Spacer />
           <Box>
@@ -48,20 +50,20 @@ export default function Login() {
         marginRight="20vw"
         marginTop="15vh"
       >
-        <Card title="Import Existing Sonr Account">
+        <Card
+          title="Import Existing Sonr Account"
+          padding={4}
+          action={
+            <Link href="/">
+              <Button label="Cancel" variant="ghost" />
+            </Link>
+          }
+        >
           <CardBody>
             <Form onSubmit={() => {}}>
               <Field type="text" name="address" label="Address" />
-              {/* or: <PasswordField name="password" label="Password" /> */}
             </Form>
           </CardBody>
-          <CardFooter>
-            <ButtonGroup>
-              <Link href="/">
-                <Button label="Cancel" variant="ghost" />
-              </Link>
-            </ButtonGroup>
-          </CardFooter>
         </Card>
       </Box>
     </AppShell>
