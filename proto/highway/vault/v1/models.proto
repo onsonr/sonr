@@ -26,3 +26,15 @@ message Credential {
     // Webauthn is for PassKey data of the credential.
     bytes credential = 3;
 }
+
+// Session is used for caching a session.
+message Session {
+    // Id is the session id.
+    string id = 1;
+
+    // RpId is the relying party id specified by the client.
+    string rp_id = 2;
+
+    // Challenge is the challenge used for the session.
+    string challenge = 3;
+}

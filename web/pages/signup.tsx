@@ -178,14 +178,14 @@ export default function SignUp() {
           as="main"
           height={{
             base: "100%", // 0-48em
-            md: "50%", // 48em-80em,
+            md: "75%", // 48em-80em,
             xl: "50%", // 80em+
           }}
           width={[
             "100%", // 0-30em
-            "90%", // 30em-48em
-            "75%", // 48em-62em
-            "50%", // 62em+
+            "80%", // 30em-48em
+            "60%", // 48em-62em
+            "40%", // 62em+
           ]}
         >
           <Card

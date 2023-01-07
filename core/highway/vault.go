@@ -25,7 +25,6 @@ import (
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
 	highway   *ipfs.IPFS
-	rpId      string
 	rpName    string
 	rpOrigins []string
 	rpIcon    string
@@ -35,10 +34,9 @@ type VaultService struct {
 // It creates a new VaultService and registers it with the gRPC server
 func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS) (*VaultService, error) {
 	srv := &VaultService{
-		cache:   gocache.New(time.Minute*5, time.Minute*10),
+		cache:   gocache.New(time.Minute*2, time.Minute*5),
 		highway: hway,
 		// TODO: Make all Webauthn options configurable through cmd line flags
-		rpId:   "api.sonr.network",
 		rpName: "Sonr",
 		rpOrigins: []string{
 			"https://auth.sonr.io",
@@ -60,29 +58,27 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
 	// Generate a short session ID
-	sessionID := uuid.New().String()[:8]
-
-	// Generate unique random challenge
-	challenge := uuid.New().String()
+	session := v.makeNewSession(req.GetRpId())
 
 	// Store the challenge in the cache
-	v.cache.Set(sessionID, challenge, time.Minute*5)
+	v.cache.Set(session.Id, session.Challenge, time.Minute*1)
 	return &v1.ChallengeResponse{
-		RpId:      v.rpId,
 		RpName:    v.rpName,
 		RpOrigins: v.rpOrigins,
-		Challenge: challenge,
-		SessionId: sessionID,
+		Challenge: session.Challenge,
+		SessionId: session.Id,
 	}, nil
 }
 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
 	// Get the challenge from the cache
-	challenge, found := v.cache.Get(req.SessionId)
+	value, found := v.cache.Get(req.SessionId)
 	if !found {
 		return nil, errors.New("Challenge not found or expired")
 	}
+	session := value.(*v1.Session)
+
 	ccr := protocol.CredentialCreationResponse{}
 	err := json.Unmarshal(req.CredentialResponse, &ccr)
 	if err != nil {
@@ -100,7 +96,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	pcc.Response = *parsedAttestationResponse
 
 	// Verify the challenge
-	err = pcc.Verify(challenge.(string), false, v.rpId, v.rpOrigins)
+	err = pcc.Verify(session.Challenge, false, session.Id, v.rpOrigins)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to verify challenge: %v", err))
 	}
@@ -236,4 +232,15 @@ func (v *VaultService) assembleWalletFromShares(cid string, current *common.Wall
 		return "", nil, err
 	}
 	return party.ID(current.SelfId), wallet, nil
+}
+
+// makeNewSession builds a default session for the given user.
+func (v *VaultService) makeNewSession(rpId string) *v1.Session {
+	sessionID := uuid.New().String()[:8]
+	challenge := uuid.New().String()
+	return &v1.Session{
+		Id:        sessionID,
+		Challenge: challenge,
+		RpId:      rpId,
+	}
 }
