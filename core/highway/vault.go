@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -76,12 +77,12 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	// Get the challenge from the cache
 	challenge, found := v.cache.Get(req.SessionId)
 	if !found {
-		return nil, errors.New("Challeng not found or expired")
+		return nil, errors.New("Challenge not found or expired")
 	}
 	ccr := protocol.CredentialCreationResponse{}
 	err := json.Unmarshal(req.CredentialResponse, &ccr)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to unmarshal credential response: %v", err))
 	}
 	// Verify the response
 	var pcc protocol.ParsedCredentialCreationData
@@ -90,16 +91,14 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 
 	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to parse attestation response: %v", err))
 	}
 	pcc.Response = *parsedAttestationResponse
 
 	// Verify the challenge
 	err = pcc.Verify(challenge.(string), false, v.rpId, v.rpOrigins)
 	if err != nil {
-		return &v1.RegisterResponse{
-			Success: false,
-		}, err
+		return nil, errors.New(fmt.Sprintf("Failed to verify challenge: %v", err))
 	}
 	return &v1.RegisterResponse{
 		Success: true,
