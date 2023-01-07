@@ -40,7 +40,9 @@ export default function Home() {
             </Link>
             <Spacer />
             <Box>
-              <Tag size="lg">v0.1.3</Tag>
+              <Tag size="lg">
+                {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}
+              </Tag>
             </Box>
           </Flex>
         }

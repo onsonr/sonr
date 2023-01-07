@@ -38,7 +38,7 @@ export default function Login() {
           </Link>
           <Spacer />
           <Box>
-            <Tag size="lg">v0.1.0</Tag>
+            <Tag size="lg">{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}</Tag>
           </Box>
         </Flex>
       }
@@ -53,7 +53,7 @@ export default function Login() {
           }}
           width={[
             "100%", // 0-30em
-            "100%", // 30em-48em
+            "90%", // 30em-48em
             "75%", // 48em-62em
             "50%", // 62em+
           ]}
