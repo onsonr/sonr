@@ -28,6 +28,7 @@ type VaultService struct {
 	rpId      string
 	rpName    string
 	rpOrigins []string
+	rpIcon    string
 	cache     *gocache.Cache
 }
 
@@ -36,16 +37,18 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 	srv := &VaultService{
 		cache:   gocache.New(time.Minute*5, time.Minute*10),
 		highway: hway,
-		// TODO: Make these configurable
+		// TODO: Make all Webauthn options configurable through cmd line flags
 		rpId:   "api.sonr.network",
 		rpName: "Sonr",
 		rpOrigins: []string{
-			"sonr.io",
-			"sonr.id",
-			"sonr.network",
-			"sonr.dev",
-			"sonr.ws",
+			"https://auth.sonr.io",
+			"https://sonr.id",
+			"https://api.sonr.network",
+			"https://api.sonr.dev",
+			"https://api.sonr.ws",
+			"localhost:3000",
 		},
+		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
 	}
 	err := v1.RegisterVaultHandlerServer(ctx, mux, srv)
 	if err != nil {
