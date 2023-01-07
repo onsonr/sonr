@@ -23196,6 +23196,22 @@ paths:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
              - ORDER_BY_UNSPECIFIED: ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case.
              - ORDER_BY_ASC: ORDER_BY_ASC defines ascending order
              - ORDER_BY_DESC: ORDER_BY_DESC defines descending order
@@ -37609,6 +37625,44 @@ paths:
           name: hash
           description: CID of the File
       description: ''
+  /sonr-io/highway/vault/challenge:
+    get:
+      summary: Get Challenge
+      tags:
+        - Vault
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              challenge:
+                type: string
+              rp_id:
+                type: string
+              rp_name:
+                type: string
+              rp_origins:
+                type: array
+                items:
+                  type: string
+              session_id:
+                type: string
+      operationId: get-sonr-io-highway-vault-challenge
+  /sonr-io/highway/vault/register:
+    post:
+      summary: ' Register Device'
+      tags:
+        - Vault
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+      operationId: post-sonr-io-highway-vault-register
   /sonr-io/highway/vault/keygen:
     post:
       summary: Generate MPC Wallet
