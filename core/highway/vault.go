@@ -2,9 +2,14 @@ package highway
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"time"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
 	"github.com/sonr-hq/sonr/pkg/ipfs"
@@ -18,13 +23,27 @@ import (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
-	highway *ipfs.IPFS
+	highway   *ipfs.IPFS
+	rpId      string
+	rpName    string
+	rpOrigins []string
+	cache     *gocache.Cache
 }
 
 // It creates a new VaultService and registers it with the gRPC server
 func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS) (*VaultService, error) {
 	srv := &VaultService{
+		cache:   gocache.New(time.Minute*5, time.Minute*10),
 		highway: hway,
+		rpId:    "sonr",
+		rpName:  "Sonr",
+		rpOrigins: []string{
+			"sonr.io",
+			"sonr.id",
+			"sonr.network",
+			"sonr.dev",
+			"sonr.ws",
+		},
 	}
 	err := v1.RegisterVaultHandlerServer(ctx, mux, srv)
 	if err != nil {
@@ -35,12 +54,56 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
-	return nil, common.ErrDefaultStillImplemented
+	// Generate a short session ID
+	sessionID := uuid.New().String()[:8]
+
+	// Generate unique random challenge
+	challenge := uuid.New().String()
+
+	// Store the challenge in the cache
+	v.cache.Set(sessionID, challenge, time.Minute*5)
+	return &v1.ChallengeResponse{
+		RpId:      v.rpId,
+		RpName:    v.rpName,
+		RpOrigins: v.rpOrigins,
+		Challenge: challenge,
+		SessionId: sessionID,
+	}, nil
 }
 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
-	return nil, common.ErrDefaultStillImplemented
+	// Get the challenge from the cache
+	challenge, found := v.cache.Get(req.SessionId)
+	if !found {
+		return nil, errors.New("Challeng not found or expired")
+	}
+	ccr := protocol.CredentialCreationResponse{}
+	err := json.Unmarshal(req.CredentialResponse, &ccr)
+	if err != nil {
+		return nil, err
+	}
+	// Verify the response
+	var pcc protocol.ParsedCredentialCreationData
+	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
+	pcc.Raw = ccr
+
+	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
+	if err != nil {
+		return nil, err
+	}
+	pcc.Response = *parsedAttestationResponse
+
+	// Verify the challenge
+	err = pcc.Verify(challenge.(string), false, v.rpId, v.rpOrigins)
+	if err != nil {
+		return &v1.RegisterResponse{
+			Success: false,
+		}, err
+	}
+	return &v1.RegisterResponse{
+		Success: true,
+	}, nil
 }
 
 // Keygen generates a new keypair and returns the public key.

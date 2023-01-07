@@ -12,7 +12,7 @@ message ChallengeRequest {}
 
 // ChallengeResponse is the response to a Challenge request.
 message ChallengeResponse {
-    bytes challenge = 1;
+    string challenge = 1;
     string rp_id = 2;
     string rp_name = 3;
     repeated string rp_origins = 4;
@@ -27,8 +27,8 @@ message RegisterRequest {
 
 // RegisterResponse is the response to a Register request.
 message RegisterResponse {
-    bytes id = 1;
-    common.v1.WebauthnCredential webauthn_credential = 2;
+    bool success = 1;
+    sonr.identity.VerificationMethod verification_method = 2;
 }
 
 // KeygenRequest is the request to generate a new keypair.
