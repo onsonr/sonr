@@ -1,4 +1,4 @@
-import { Box, Divider, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
 import {
   AppShell,
   Button,
@@ -28,19 +28,19 @@ export default function Login() {
   return (
     <AppShell
       navbar={
-        <>
-          <Box
-            as="header"
-            alignItems="start"
-            borderBottomWidth="1px"
-            py="2"
-            px="4"
-          >
-            <Link href="/">
-              <Button variant="outline">Return Home</Button>
-            </Link>
+        <Flex borderBottomWidth="1px" py="2" px="4">
+          <Link href="/">
+            <Button variant="unstyled">
+              <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
+                Sonr Sandbox
+              </Text>
+            </Button>
+          </Link>
+          <Spacer />
+          <Box>
+            <Tag size="lg">v0.1.0</Tag>
           </Box>
-        </>
+        </Flex>
       }
     >
       <Box
@@ -50,19 +50,20 @@ export default function Login() {
         marginRight="20vw"
         marginTop="15vh"
       >
-        <Card title="Import Existing Sonr Account">
+        <Card
+          title="Import Existing Sonr Account"
+          padding={4}
+          action={
+            <Link href="/">
+              <Button label="Cancel" variant="ghost" />
+            </Link>
+          }
+        >
           <CardBody>
             <Form onSubmit={() => {}}>
               <Field type="text" name="address" label="Address" />
-              {/* or: <PasswordField name="password" label="Password" /> */}
             </Form>
           </CardBody>
-          <CardFooter>
-            <ButtonGroup paddingTop={8}>
-              <Button variant="outline">Cancel</Button>
-              <Button variant="primary">Import</Button>
-            </ButtonGroup>
-          </CardFooter>
         </Card>
       </Box>
     </AppShell>

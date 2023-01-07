@@ -1,10 +1,13 @@
-import { Box, Divider, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
+
+import { FiKey, FiUserPlus, FiAtSign, FiCloud, FiLock } from "react-icons/fi";
 import {
   AppShell,
   Button,
   ButtonGroup,
   Card,
   CardBody,
+  CardFooter,
   Field,
   FormLayout,
   FormStep,
@@ -29,7 +32,9 @@ export default function SignUp() {
   const snackbar = useSnackbar();
   const modals = useModals();
   const [label, updateLabel] = useState("");
-  const [account, setAccount] = useState<string | null>(null);
+  const [address, setAddress] = useState("");
+  const [vaultCid, setVaultCid] = useState("");
+  const [cmpConfig, setCmpConfig] = useState("");
   const [credential, setCredential] = useState<PublicKeyCredential | null>(
     null
   );
@@ -40,13 +45,9 @@ export default function SignUp() {
   };
 
   const yupResolver = (schema: any) => async (values: any) => {
-    try {
-      await schema.validate(values, { abortEarly: false });
-      return {
-        values,
-        errors: {},
-      };
-    } catch (errors) {}
+    return {
+      values,
+    };
   };
 
   const onSubmit = (params: any) => {
@@ -83,94 +84,67 @@ export default function SignUp() {
     nextStep();
   };
 
-  const registerAccount = async (nextStep: () => void) => {
-    modals.form({
-      title: "Enter a Secure Recovery Passcode",
-      body: (
-        <>
-          <Field
-            isRequired
-            key="pinCode"
-            name="pinCode"
-            label="Enter Passcode"
-            type="pin"
-            pinLength={6}
-          />
-          <Box key="pinConfirm" height="8" display="flex"></Box>
-          <Field
-            isRequired
-            key="pinConfirm"
-            name="pinConfirm"
-            label="Re-enter Passcode"
-            type="pin"
-            pinLength={6}
-          />
-        </>
-      ),
-      onSubmit: async (values) => {
-        return new Promise((resolve) => {
-          if (values.pinCode !== values.pinConfirm) {
-            snackbar.error(
-              "Passcodes do not match, " +
-                values.pinCode +
-                " " +
-                values.pinConfirm
-            );
-          } else {
-            nextStep();
-            modals.closeAll();
-          }
-          setTimeout(resolve, 1000);
-        });
-      },
-    });
-    const response = await fetch("/api/register", {
+  const registerAccount = async function callVaultKeygen(
+    nextStep: () => void
+  ): Promise<string> {
+    const response = await fetch("/api/vault/keygen", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        credential,
-      }),
     });
-    const { account } = await response.json();
-    setAccount(account);
-
+    // Get response as object
+    const data = await response.json();
+    setAddress(data.address);
+    setVaultCid(data.vault_cid);
+    setCmpConfig(data.share_config.cmp_config);
     nextStep();
+    return data.address;
   };
 
   return (
     <AppShell
+      maxWidth="100vw"
       navbar={
-        <>
-          <Box
-            as="header"
-            alignItems="start"
-            borderBottomWidth="1px"
-            py="2"
-            px="4"
-          >
-            <Link href="/">
-              <Button variant="outline">Return Home</Button>
-            </Link>
+        <Flex borderBottomWidth="1px" py="2" px="4">
+          <Link href="/">
+            <Button variant="unstyled">
+              <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
+                Sonr Sandbox
+              </Text>
+            </Button>
+          </Link>
+          <Spacer />
+          <Box>
+            <Tag size="lg">v0.1.0</Tag>
           </Box>
-        </>
+        </Flex>
       }
     >
       <Box
         as="main"
-        alignContent="center"
+        alignItems="center"
         marginLeft="20vw"
         marginRight="20vw"
         marginTop="15vh"
       >
         <Card
-          isHoverable
+          maxWidth="600px"
           variant="solid"
           title="Sonr.ID"
           subtitle="Use the Vault MPC Protocol with Webauthn."
+          padding={4}
+          action={
+            <ButtonGroup>
+              <Link href="/">
+                <Button variant="unstyled" colorScheme="red">
+                  Cancel
+                </Button>
+              </Link>
+            </ButtonGroup>
+          }
         >
-          <CardBody>
+          <CardBody margin={4}>
             <StepForm
               defaultValues={{
                 deviceLabel: "",
@@ -199,7 +173,7 @@ export default function SignUp() {
                         <Field
                           isRequired
                           name="deviceLabel"
-                          label="Device Label"
+                          label="Label"
                           onInput={(event) => {
                             // Check if the input is a string
                             const str = event.target as HTMLInputElement;
@@ -210,7 +184,8 @@ export default function SignUp() {
                           }}
                         />
                         <Button
-                          label="Open Webauthn"
+                          leftIcon={<FiKey />}
+                          label="New PassKey"
                           onClick={() =>
                             label
                               ? createCredential(nextStep)
@@ -248,13 +223,12 @@ export default function SignUp() {
                           />
                           <Property label="Source" value="WebAuthn" />
                         </PropertyList>
-                        <Divider />
                         <ButtonGroup>
                           <Button
-                            label="Continue"
+                            leftIcon={<FiUserPlus />}
+                            label="Register Account"
                             onClick={() => registerAccount(nextStep)}
                           />
-                          <Button label="Cancel" variant="ghost" />
                         </ButtonGroup>
                       </FormLayout>
                     </FormStep>
@@ -265,14 +239,33 @@ export default function SignUp() {
                           Please confirm that your information is correct.
                         </Text>
                         <PropertyList>
-                          <Property
-                            label="Name"
-                            value={<FormValue name="name" />}
-                          />
-                          <Property
-                            label="Description"
-                            value={<FormValue name="description" />}
-                          />
+                          <Property label="Address" />
+                          <Button variant="outline" leftIcon={<FiAtSign />}>
+                            <Web3Address
+                              address={address ? address : "N/A"}
+                              startLength={32}
+                              endLength={4}
+                            />
+                          </Button>
+                          <Property label="Vault CID" />
+                          <Button variant="outline" leftIcon={<FiCloud />}>
+                            <Web3Address
+                              address={vaultCid ? vaultCid : "N/A"}
+                              startLength={32}
+                              endLength={4}
+                            />
+                          </Button>
+
+                          <Property label="Wallet Share" />
+                          <Box>
+                            <Button variant="outline" leftIcon={<FiLock />}>
+                              <Web3Address
+                                address={cmpConfig ? cmpConfig : "N/A"}
+                                startLength={32}
+                                endLength={4}
+                              />
+                            </Button>
+                          </Box>
                         </PropertyList>
                         <ButtonGroup>
                           <NextButton />
