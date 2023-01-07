@@ -4,7 +4,7 @@
     "light": "/static/images/logo.svg",
     "dark": "/static/images/logo-dark.svg"
   },
-  "favicon": "/static/favicon.ico",
+  "favicon": "/static/favicon.png",
   "api": {
     "baseUrl": "http:/api.sonr.network"
   },
