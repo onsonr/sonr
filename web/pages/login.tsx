@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
 import {
   AppShell,
   Button,
@@ -43,29 +43,38 @@ export default function Login() {
         </Flex>
       }
     >
-      <Box
-        as="main"
-        alignContent="center"
-        marginLeft="20vw"
-        marginRight="20vw"
-        marginTop="15vh"
-      >
-        <Card
-          title="Import Existing Sonr Account"
-          padding={4}
-          action={
-            <Link href="/">
-              <Button label="Cancel" variant="ghost" />
-            </Link>
-          }
+      <Center>
+        <Box
+          as="main"
+          height={{
+            base: "100%", // 0-48em
+            md: "50%", // 48em-80em,
+            xl: "50%", // 80em+
+          }}
+          width={[
+            "100%", // 0-30em
+            "100%", // 30em-48em
+            "75%", // 48em-62em
+            "50%", // 62em+
+          ]}
         >
-          <CardBody>
-            <Form onSubmit={() => {}}>
-              <Field type="text" name="address" label="Address" />
-            </Form>
-          </CardBody>
-        </Card>
-      </Box>
+          <Card
+            title="Import Existing Sonr Account"
+            padding={4}
+            action={
+              <Link href="/">
+                <Button label="Cancel" variant="ghost" />
+              </Link>
+            }
+          >
+            <CardBody>
+              <Form onSubmit={() => {}}>
+                <Field type="text" name="address" label="Address" />
+              </Form>
+            </CardBody>
+          </Card>
+        </Box>
+      </Center>
     </AppShell>
   );
 }
