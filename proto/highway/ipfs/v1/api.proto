@@ -15,30 +15,45 @@ message AddRequest {
 message AddResponse {
     // The hash of the added content.
     string hash = 1;
+
+    // Content Length is used for returning the length of the content added to the IPFS network.
+    int64 content_length = 2;
 }
 
 // GetRequest is used for retrieving content from the IPFS network.
 message GetRequest {
     // The hash of the content to be retrieved.
     string hash = 1;
+
+    // Gateway is used for specifying the gateway to use for retrieving the content.
+    string gateway = 2; // optional
 }
 
 // GetResponse is used for returning the content from the IPFS network.
 message GetResponse {
     // The content retrieved from the IPFS network.
     bytes content = 1;
+
+    // The hash of the content retrieved from the IPFS network.
+    string hash = 2;
 }
 
 // ExistsRequest is used for checking if content exists on the IPFS network.
 message ExistsRequest {
     // The hash of the content to be checked.
     string hash = 1;
+
+    // Gateway is used for specifying the gateway to use for retrieving the content.
+    string gateway = 2; // optional
 }
 
 // ExistsResponse is used for returning the existence of content on the IPFS network.
 message ExistsResponse {
     // The existence of the content on the IPFS network.
     bool exists = 1;
+
+    // The hash of the content to be checked.
+    string hash = 2;
 }
 
 // Service is used for defining the IPFS service.

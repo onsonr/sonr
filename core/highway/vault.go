@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -27,6 +28,7 @@ type VaultService struct {
 	rpId      string
 	rpName    string
 	rpOrigins []string
+	rpIcon    string
 	cache     *gocache.Cache
 }
 
@@ -35,15 +37,18 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 	srv := &VaultService{
 		cache:   gocache.New(time.Minute*5, time.Minute*10),
 		highway: hway,
-		rpId:    "sonr",
-		rpName:  "Sonr",
+		// TODO: Make all Webauthn options configurable through cmd line flags
+		rpId:   "api.sonr.network",
+		rpName: "Sonr",
 		rpOrigins: []string{
-			"sonr.io",
-			"sonr.id",
-			"sonr.network",
-			"sonr.dev",
-			"sonr.ws",
+			"https://auth.sonr.io",
+			"https://sonr.id",
+			"https://api.sonr.network",
+			"https://api.sonr.dev",
+			"https://api.sonr.ws",
+			"localhost:3000",
 		},
+		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
 	}
 	err := v1.RegisterVaultHandlerServer(ctx, mux, srv)
 	if err != nil {
@@ -76,12 +81,12 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	// Get the challenge from the cache
 	challenge, found := v.cache.Get(req.SessionId)
 	if !found {
-		return nil, errors.New("Challeng not found or expired")
+		return nil, errors.New("Challenge not found or expired")
 	}
 	ccr := protocol.CredentialCreationResponse{}
 	err := json.Unmarshal(req.CredentialResponse, &ccr)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to unmarshal credential response: %v", err))
 	}
 	// Verify the response
 	var pcc protocol.ParsedCredentialCreationData
@@ -90,16 +95,14 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 
 	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to parse attestation response: %v", err))
 	}
 	pcc.Response = *parsedAttestationResponse
 
 	// Verify the challenge
 	err = pcc.Verify(challenge.(string), false, v.rpId, v.rpOrigins)
 	if err != nil {
-		return &v1.RegisterResponse{
-			Success: false,
-		}, err
+		return nil, errors.New(fmt.Sprintf("Failed to verify challenge: %v", err))
 	}
 	return &v1.RegisterResponse{
 		Success: true,

@@ -25,7 +25,7 @@ func DefaultCallback() NodeCallback {
 
 // Defining a method on the defaultCallback struct.
 func (cb *defaultCallback) OnDiscover(data []byte) {
-	log.Println(ErrDefaultStillImplemented.Error())
+	log.Println("ERROR: MotorCallback not implemented.")
 }
 
 // Defining a method on the defaultCallback struct.
