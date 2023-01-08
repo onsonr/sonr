@@ -11,14 +11,8 @@ export default async function handler(req: NextRequest) {
     body: req.body,
   };
   const resp = await fetch(
-    "https://api.sonr.network/sonr-io/highway/vault/register",
+    "http://localhost:1317/sonr-io/highway/vault/register",
     requestOptions
   );
-  const data = await resp.json();
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      "content-type": "application/json",
-    },
-  });
+  return resp;
 }

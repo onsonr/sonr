@@ -43,7 +43,7 @@ type IPFS struct {
 	rendezvous string
 
 	callback    common.NodeCallback
-	peerType    cv1.NodeInfo_Type
+	peerType    cv1.PeerType
 	walletShare common.WalletShare
 
 	ctx                context.Context
@@ -207,8 +207,8 @@ func (n *IPFS) GroupPartyIDs() []party.ID {
 }
 
 // Peer returns the node's peer info
-func (n *IPFS) Peer() *cv1.NodeInfo {
-	return &cv1.NodeInfo{
+func (n *IPFS) Peer() *cv1.PeerInfo {
+	return &cv1.PeerInfo{
 		Name:      string(n.PartyID()),
 		PeerId:    n.PeerID().String(),
 		Multiaddr: n.MultiAddr(),

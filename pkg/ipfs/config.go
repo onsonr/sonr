@@ -104,7 +104,7 @@ func WithPartyId(partyId string) NodeOption {
 }
 
 // WithPeerType sets the type of peer
-func WithPeerType(peerType cv1.NodeInfo_Type) NodeOption {
+func WithPeerType(peerType cv1.PeerType) NodeOption {
 	return func(c *IPFS) error {
 		c.peerType = peerType
 		return nil
@@ -129,7 +129,7 @@ func defaultNode(ctx context.Context) *IPFS {
 		ctx:                ctx,
 		bootstrappers:      defaultBootstrapMultiaddrs,
 		callback:           defaultCallback,
-		peerType:           cv1.NodeInfo_MOTOR,
+		peerType:           cv1.PeerType_HIGHWAY,
 		rendezvous:         defaultRendezvousString,
 		topicEventHandlers: make(map[string]TopicMessageHandler),
 		partyId:            party.ID("current"),

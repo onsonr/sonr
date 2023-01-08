@@ -10,7 +10,7 @@ export default async function handler(req: NextRequest) {
     headers: { "Content-Type": "application/json" },
   };
   const resp = await fetch(
-    "https://api.sonr.network/sonr-io/highway/vault/challenge",
+    "http://localhost:1317/sonr-io/highway/vault/challenge/localhost",
     requestOptions
   );
   const data = await resp.json();

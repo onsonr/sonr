@@ -102,7 +102,7 @@ message DeriveResponse {
 service Vault {
     // Challenge generates a challenge and returns it.
     rpc Challenge(ChallengeRequest) returns (ChallengeResponse) {
-        option (google.api.http).get = "/sonr-io/highway/vault/challenge";
+        option (google.api.http).get = "/sonr-io/highway/vault/challenge/{rp_id}";
     }
 
     // Register creates a new Webauthn credential and returns it.

@@ -77,7 +77,6 @@ export default function SignUp() {
       publicKey: {
         rp: {
           name: "Sonr",
-          id: "sonr.id",
         },
         user: {
           id: Uint8Array.from(sessionId, (c) => c.charCodeAt(0)),

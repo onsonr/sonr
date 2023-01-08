@@ -5,16 +5,6 @@ package sonrhq.common.v1;
 
 option go_package = "github.com/sonr-hq/sonr/pkg/common";
 
-// AuthInfo is a object used by Motor clients to store authentication information in Biometric storage
-message AuthInfo {
-    string address = 1;
-    string did = 2;
-    bytes aes_dsc_key = 3;
-    bytes aes_psk_key = 4;
-    string password = 5;
-    int64 timestamp = 6;
-}
-
 // KeyPrint is a object used by Motor clients to store key print information in Biometric storage or Webauthn
 message KeyPrint {
     string address = 1;
@@ -25,25 +15,25 @@ message KeyPrint {
 }
 
 // Basic Info Sent to Peers to Establish Connections
-message NodeInfo {
+message PeerInfo {
   string id = 1;       // User Sonr Account Decentralized ID
   string name = 2;     // User Defined Label for Peer, also known as PartyID
   string peer_id = 3;  // Peer ID
   string multiaddr = 4; // Peer Multiaddress
-  Type type = 5;      // Type of Peer
+  PeerType type = 5;      // Type of Peer
 
 
-  // Peers Active Status
-  enum Type {
-    UNKNOWN = 0;
-    HIGHWAY = 1;
-    MOTOR = 2;
-    VALIDATOR = 3;
-    THIRD_PARTY = 4;
-  }
+
 }
 
-
+// Peers Active Type
+enum PeerType {
+  UNKNOWN = 0;
+  HIGHWAY = 1;
+  MOTOR = 2;
+  VALIDATOR = 3;
+  THIRD_PARTY = 4;
+  }
 
 // WalletShareConfig is a object used by Motor clients to store wallet sharing information in Biometric storage
 message WalletShareConfig {
