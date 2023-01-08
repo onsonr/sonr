@@ -2,6 +2,7 @@ package highway
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,7 +17,18 @@ import (
 	"github.com/sonr-hq/sonr/pkg/ipfs"
 	"github.com/sonr-hq/sonr/pkg/network"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
+	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
+)
+
+// Default Variables
+var (
+	defaultRpOrigins = []string{
+		"https://auth.sonr.io",
+		"https://sonr.id",
+		"https://sandbox.sonr.network",
+		"localhost:3000",
+	}
 )
 
 // `VaultService` is a type that implements the `v1.VaultServer` interface, and has a field called
@@ -24,11 +36,10 @@ import (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
-	highway   *ipfs.IPFS
-	rpName    string
-	rpOrigins []string
-	rpIcon    string
-	cache     *gocache.Cache
+	highway *ipfs.IPFS
+	rpName  string
+	rpIcon  string
+	cache   *gocache.Cache
 }
 
 // It creates a new VaultService and registers it with the gRPC server
@@ -38,12 +49,6 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 		highway: hway,
 		// TODO: Make all Webauthn options configurable through cmd line flags
 		rpName: "Sonr",
-		rpOrigins: []string{
-			"https://auth.sonr.io",
-			"https://sonr.id",
-			"https://sandbox.sonr.network",
-			"localhost:3000",
-		},
 		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
 	}
 	err := v1.RegisterVaultHandlerServer(ctx, mux, srv)
@@ -62,7 +67,7 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	v.cache.Set(session.Id, session.Challenge, time.Minute*1)
 	return &v1.ChallengeResponse{
 		RpName:    v.rpName,
-		RpOrigins: v.rpOrigins,
+		RpOrigins: session.RpOrigins,
 		Challenge: session.Challenge,
 		SessionId: session.Id,
 	}, nil
@@ -76,31 +81,23 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 		return nil, errors.New("Challenge not found or expired")
 	}
 	session := value.(*v1.Session)
-
-	ccr := protocol.CredentialCreationResponse{}
-	err := json.Unmarshal(req.CredentialResponse, &ccr)
+	pcc, err := getParsedCredentialCreationData(req.CredentialResponse)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to unmarshal credential response: %v", err))
+		return nil, err
 	}
-	// Verify the response
-	var pcc protocol.ParsedCredentialCreationData
-	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
-	pcc.Raw = ccr
-
-	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to parse attestation response: %v", err))
-	}
-	pcc.Response = *parsedAttestationResponse
-
 	// Verify the challenge
-	err = pcc.Verify(session.Challenge, false, session.Id, v.rpOrigins)
+	err = pcc.Verify(session.Challenge, false, session.RpId, session.RpOrigins)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to verify challenge: %v", err))
+		return nil, err
 	}
+	// Get WebauthnCredential
+	cred := common.NewWebAuthnCredential(pcc)
+	vm := types.NewWebAuthnVM("", cred)
 	return &v1.RegisterResponse{
-		Success: true,
+		Success:            true,
+		VerificationMethod: vm,
 	}, nil
+
 }
 
 // Keygen generates a new keypair and returns the public key.
@@ -240,5 +237,51 @@ func (v *VaultService) makeNewSession(rpId string) *v1.Session {
 		Id:        sessionID,
 		Challenge: challenge,
 		RpId:      rpId,
+		RpOrigins: defaultRpOrigins,
 	}
+}
+
+// It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
+func getParsedCredentialCreationData(bz []byte) (*protocol.ParsedCredentialCreationData, error) {
+	// Get Credential Creation Response
+	var ccr protocol.CredentialCreationResponse
+	err := json.Unmarshal(bz, &ccr)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Failed to unmarshal credential response: %v", err))
+	}
+
+	if err != nil {
+		return nil, errors.New("Parse error for Registration")
+	}
+
+	if ccr.ID == "" {
+		return nil, errors.New("Parse error for Registration")
+	}
+	testB64, err := base64.RawURLEncoding.DecodeString(ccr.ID)
+	if err != nil || !(len(testB64) > 0) {
+		return nil, errors.New("Parse error for Registration")
+	}
+
+	if ccr.PublicKeyCredential.Credential.Type == "" {
+		return nil, errors.New("Parse error for Registration")
+	}
+
+	if ccr.PublicKeyCredential.Credential.Type != "public-key" {
+		return nil, errors.New("Parse error for Registration")
+	}
+
+	var pcc protocol.ParsedCredentialCreationData
+	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
+	pcc.Raw = ccr
+
+	for _, t := range ccr.Transports {
+		pcc.Transports = append(pcc.Transports, protocol.AuthenticatorTransport(t))
+	}
+
+	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
+	if err != nil {
+		return nil, errors.New("Error parsing attestation response")
+	}
+	pcc.Response = *parsedAttestationResponse
+	return &pcc, nil
 }

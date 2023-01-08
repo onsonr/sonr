@@ -76,7 +76,8 @@ message WebauthnCredential {
 	// The attestation format used (if any) by the authenticator when creating the credential.
   string attestation_type = 3;
 
-  string authenticator_transport = 4;
+  // The transports used by the authenticator when creating the credential.
+  repeated string transport = 4;
 
 	// The Authenticator information for a given certificate
   WebauthnAuthenticator authenticator = 5;

@@ -32,9 +32,13 @@ message Session {
     // Id is the session id.
     string id = 1;
 
-    // RpId is the relying party id specified by the client.
-    string rp_id = 2;
-
     // Challenge is the challenge used for the session.
-    string challenge = 3;
+    string challenge = 2;
+
+    // RpId is the relying party id specified by the client.
+    string rp_id = 3;
+
+
+    // Origins is the list of origins specified by the client.
+    repeated string rp_origins = 4;
 }
