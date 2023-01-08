@@ -2,6 +2,7 @@ package highway
 
 import (
 	"context"
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -60,11 +61,12 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS
 
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
-	// Generate a short session ID
-	session := v.makeNewSession(req.GetRpId())
-
-	// Store the challenge in the cache
-	v.cache.Set(session.Id, session.Challenge, time.Minute*1)
+	// Cache the challenge for 2 minutes
+	session, err := v.makeNewSession(req.GetRpId())
+	if err != nil {
+		return nil, err
+	}
+	v.cache.Set(session.Id, session, time.Minute*1)
 	return &v1.ChallengeResponse{
 		RpName:    v.rpName,
 		RpOrigins: session.RpOrigins,
@@ -231,15 +233,24 @@ func (v *VaultService) assembleWalletFromShares(cid string, current *common.Wall
 }
 
 // makeNewSession builds a default session for the given user.
-func (v *VaultService) makeNewSession(rpId string) *v1.Session {
+func (v *VaultService) makeNewSession(rpId string) (*v1.Session, error) {
 	sessionID := uuid.New().String()[:8]
-	challenge := uuid.New().String()
+
+	// Generate a challenge
+	bz := make([]byte, 32)
+	_, err := rand.Read(bz)
+	if err != nil {
+		return nil, err
+	}
+
+	// Base64 encode the challenge
+	challenge := base64.StdEncoding.EncodeToString(bz)
 	return &v1.Session{
 		Id:        sessionID,
 		Challenge: challenge,
 		RpId:      rpId,
 		RpOrigins: defaultRpOrigins,
-	}
+	}, nil
 }
 
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
