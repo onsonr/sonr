@@ -70,6 +70,7 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 		RpOrigins: session.RpOrigins,
 		Challenge: session.Challenge,
 		SessionId: session.Id,
+		RpIcon:    v.rpIcon,
 	}, nil
 }
 
