@@ -9,7 +9,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
+	"github.com/sonr-hq/sonr/pkg/vault/mpc"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
@@ -54,7 +54,7 @@ func (ws OfflineWallet) Network() common.Network {
 	for _, s := range ws {
 		parties = append(parties, s.SelfID())
 	}
-	return newOfflineNetwork(parties)
+	return NewOfflineNetwork(parties)
 }
 
 func (ws OfflineWallet) PublicKey() (*secp256k1.PubKey, error) {

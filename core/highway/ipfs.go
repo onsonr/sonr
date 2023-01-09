@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/sonr-hq/sonr/pkg/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/ipfs/v1"
 )
 

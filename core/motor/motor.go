@@ -15,7 +15,7 @@ import (
 	"context"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/host"
+	"github.com/sonr-hq/sonr/pkg/node/host"
 )
 
 type MotorNode struct {

@@ -2,6 +2,7 @@ package ipfs
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -139,6 +140,11 @@ func (n *IPFS) Add(file []byte) (string, error) {
 	return cid.String(), nil
 }
 
+// AddEncrypted utilizes the NACL Secret box to encrypt data on behalf of a user
+func (n *IPFS) AddEncrypted(file []byte, pubKey []byte) (string, error) {
+return "", errors.New("Unimplemented method")
+}
+
 // Get returns a file from the network given its CID
 func (n *IPFS) Get(cidStr string) ([]byte, error) {
 	filename := uuid.New().String()
@@ -175,6 +181,11 @@ func (n *IPFS) Get(cidStr string) ([]byte, error) {
 		fmt.Printf("Failed to cleanup Temporary IPFS directory: %s", err)
 	}
 	return file, nil
+}
+
+// GetDecrypted decrypts a file from a cid hash using the pubKey
+func (n *IPFS) GetDecrypted(cidStr string, pubKey []byte) ([]byte, error) {
+	return nil, errors.New("Unimplemented method")
 }
 
 // PeerID returns the node's PeerID

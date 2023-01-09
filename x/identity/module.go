@@ -18,7 +18,7 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/sonr-hq/sonr/pkg/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 	"github.com/sonr-hq/sonr/x/identity/client/cli"
 	"github.com/sonr-hq/sonr/x/identity/keeper"
 	"github.com/sonr-hq/sonr/x/identity/types"

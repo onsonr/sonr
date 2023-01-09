@@ -14,9 +14,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
-	"github.com/sonr-hq/sonr/pkg/ipfs"
-	"github.com/sonr-hq/sonr/pkg/network"
+	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/pkg/vault"
+	"github.com/sonr-hq/sonr/pkg/vault/mpc"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -64,9 +64,9 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	// Cache the challenge for 2 minutes
 	session, err := v.makeNewSession(req.GetRpId())
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to initialization a new session with challenge: %s", err))
 	}
-	v.cache.Set(session.Id, session, time.Minute*1)
+	v.cache.Set(session.Id, session, time.Minute*2)
 	return &v1.ChallengeResponse{
 		RpName:    v.rpName,
 		RpOrigins: session.RpOrigins,
@@ -78,24 +78,38 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
-	// Get the challenge from the cache
+	// Get Raw Session from cache
 	value, found := v.cache.Get(req.SessionId)
 	if !found {
 		return nil, errors.New("Challenge not found or expired")
 	}
-	session := value.(*v1.Session)
+
+	// Verify Struct
+	session, ok := value.(*v1.Session)
+	if !ok {
+		return nil, errors.New("Invalid object returned for session id.")
+	}
+
+	// Parse Client Credential Data
 	pcc, err := getParsedCredentialCreationData(req.CredentialResponse)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
+
 	// Verify the challenge
 	err = pcc.Verify(session.Challenge, false, session.RpId, session.RpOrigins)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to verify session with client credential data: %s", err))
 	}
+
 	// Get WebauthnCredential
 	cred := common.NewWebAuthnCredential(pcc)
-	vm := types.NewWebAuthnVM("", cred)
+	vm, err := types.NewWebAuthnVM(cred)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return Register Response
 	return &v1.RegisterResponse{
 		Success:            true,
 		VerificationMethod: vm,
@@ -105,19 +119,37 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 
 // Keygen generates a new keypair and returns the public key.
 func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.KeygenResponse, error) {
-	wallet, err := network.NewWallet(req.Prefix)
+	// Create a new offline wallet
+	wallet, err := vault.NewWallet(req.Prefix, v.highway)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
 	}
-	share := wallet.Find("vault").Share()
-	bz, err := share.Marshal()
+
+	// Fetch public key of resulting wallet shares
+	pubKey, err := wallet.PublicKey()
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to retreive new wallet pubKey: %s", err))
 	}
-	cid, err := v.highway.Add(bz)
+
+	// Get raw bytes of public key
+	pbBz, err := pubKey.Marshal()
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to marshal public key: %s", err))
 	}
+
+	// Marshal Vault Recovery Share
+	bz, err := wallet.Find("vault").Share().Marshal()
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Failed to marshal Vault WalletShare: %s", err))
+	}
+
+	// Add Encrypted WalletShare to IPFS
+	cid, err := v.highway.AddEncrypted(bz, pbBz)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Failed to add encrypted WalletShare to IPFS: %s", err))
+	}
+
+	// Return Configuration Response
 	return &v1.KeygenResponse{
 		Id:          []byte(uuid.New().String()),
 		Address:     wallet.Address(),
@@ -225,7 +257,7 @@ func (v *VaultService) assembleWalletFromShares(cid string, current *common.Wall
 	}
 
 	// Load wallet
-	wallet, err := network.LoadOfflineWallet(shares)
+	wallet, err := vault.LoadOfflineWallet(shares)
 	if err != nil {
 		return "", nil, err
 	}

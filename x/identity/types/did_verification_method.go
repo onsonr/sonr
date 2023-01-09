@@ -9,19 +9,49 @@ import (
 
 	"github.com/shengdoushi/base58"
 	common "github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/crypto/jwx"
+	"github.com/sonr-hq/sonr/pkg/common/jwx"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
 
+// VerificationMethodOption is used to define options that modify the creation of the verification method
+type VerificationMethodOption func(vm *VerificationMethod) error
+
+// WithController sets the controller of a verificationMethod
+func WithController(v string) VerificationMethodOption {
+	return func(vm *VerificationMethod) error {
+		_, err := ParseDID(v)
+		if err != nil {
+			return err
+		}
+		vm.Controller = v
+		return nil
+	}
+}
+
+//
+// VerificationMethod Creation Functions
+//
+
 // NewWebAuthnVM creates a new WebAuthn VerificationMethod
-func NewWebAuthnVM(controller string, webauthnCredential *common.WebauthnCredential) *VerificationMethod {
+func NewWebAuthnVM(webauthnCredential *common.WebauthnCredential, options ...VerificationMethodOption) (*VerificationMethod, error) {
+	// Add Base58 ID to Credential
 	id := fmt.Sprintf("did:webauth:%s", base58.Encode(webauthnCredential.Id, base58.BitcoinAlphabet))
-	return &VerificationMethod{
+
+	// Configure base Verification MEthod
+	vm := &VerificationMethod{
 		ID:                 id,
 		Type:               KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018,
-		Controller:         controller,
 		WebauthnCredential: webauthnCredential,
 	}
+
+	// Apply VerificationMethod Options
+	for _, opt := range options {
+		err := opt(vm)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return vm, nil
 }
 
 // NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.

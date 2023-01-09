@@ -17,7 +17,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/sonr-hq/sonr/pkg/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 )
 
 // `HighwayNode` is a struct that contains a libp2p host, a wallet, a context, a client context, a
