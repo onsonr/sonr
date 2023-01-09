@@ -167,7 +167,7 @@ export default function SignUp() {
           </Link>
           <Spacer />
           <Box>
-            <Tag size="lg">{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}</Tag>
+            <Tag size="lg">v0.1.12</Tag>
           </Box>
         </Flex>
       }

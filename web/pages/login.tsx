@@ -24,6 +24,7 @@ import {
   useSnackbar,
 } from "@saas-ui/react";
 import Link from "next/link";
+import { useState } from "react";
 export default function Login() {
   return (
     <AppShell
@@ -38,7 +39,7 @@ export default function Login() {
           </Link>
           <Spacer />
           <Box>
-            <Tag size="lg">{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}</Tag>
+            <Tag size="lg">v0.1.12</Tag>
           </Box>
         </Flex>
       }
