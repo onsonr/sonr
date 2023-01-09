@@ -1,12 +1,12 @@
 package highway
 
 import (
-	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/google/uuid"
@@ -73,7 +73,7 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	return &v1.ChallengeResponse{
 		RpName:    v.rpName,
 		Challenge: session.Challenge,
-		SessionId:   session.Id,
+		SessionId: session.Id,
 		RpIcon:    v.rpIcon,
 	}, nil
 }
@@ -94,7 +94,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	}
 
 	// Parse Client Credential Data
-	pcc, err := getParsedCredentialCreationData(req.Credential)
+	pcc, err := getParsedCredentialCreationData(req.CredentialResponse)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
@@ -125,35 +125,11 @@ func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.K
 		return nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
 	}
 
-	// Fetch public key of resulting wallet shares
-	pubKey, err := wallet.PublicKey()
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to retreive new wallet pubKey: %s", err))
-	}
-
-	// Get raw bytes of public key
-	pbBz, err := pubKey.Marshal()
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to marshal public key: %s", err))
-	}
-
-	// Marshal Vault Recovery Share
-	bz, err := wallet.Find("vault").Share().Marshal()
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to marshal Vault WalletShare: %s", err))
-	}
-
-	// Add Encrypted WalletShare to IPFS
-	cid, err := v.highway.AddEncrypted(bz, pbBz)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to add encrypted WalletShare to IPFS: %s", err))
-	}
-
 	// Return Configuration Response
 	return &v1.KeygenResponse{
-		Id:          []byte(uuid.New().String()),
-		Address:     wallet.Address(),
-		VaultCid:    cid,
+		Id:      []byte(uuid.New().String()),
+		Address: wallet.Address(),
+		//		VaultCid:    cid,
 		ShareConfig: wallet.Find("current").Share(),
 	}, nil
 }
@@ -285,8 +261,8 @@ func (v *VaultService) makeNewSession(rpId string) (*v1.Session, error) {
 }
 
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
-func getParsedCredentialCreationData(bz []byte) (*protocol.ParsedCredentialCreationData, error) {
+func getParsedCredentialCreationData(bz string) (*protocol.ParsedCredentialCreationData, error) {
 	// Get Credential Creation Response
-	bzReader := bytes.NewReader(bz)
+	bzReader := strings.NewReader(bz)
 	return protocol.ParseCredentialCreationResponseBody(bzReader)
 }
