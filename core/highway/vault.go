@@ -1,10 +1,10 @@
 package highway
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -73,13 +73,26 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	return &v1.ChallengeResponse{
 		RpName:    v.rpName,
 		Challenge: session.Challenge,
-		Session:   session,
+		SessionId:   session.Id,
 		RpIcon:    v.rpIcon,
 	}, nil
 }
 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
+	// Get Session
+	value, ok := v.cache.Get(req.SessionId)
+	if !ok {
+		return nil, errors.New("Failed to get session from cache")
+	}
+
+	// Unmarshal Session
+	session := &v1.Session{}
+	err := session.Unmarshal(value.([]byte))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Failed to unmarshal session: %s", err))
+	}
+
 	// Parse Client Credential Data
 	pcc, err := getParsedCredentialCreationData(req.Credential)
 	if err != nil {
@@ -87,7 +100,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	}
 
 	// Verify the challenge
-	err = pcc.Verify(req.Session.Challenge, false, req.Session.RpId, defaultRpOrigins)
+	err = pcc.Verify(session.Challenge, false, session.RpId, defaultRpOrigins)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to verify session with client credential data: %s", err))
 	}
@@ -274,44 +287,6 @@ func (v *VaultService) makeNewSession(rpId string) (*v1.Session, error) {
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
 func getParsedCredentialCreationData(bz []byte) (*protocol.ParsedCredentialCreationData, error) {
 	// Get Credential Creation Response
-	var ccr protocol.CredentialCreationResponse
-	err := json.Unmarshal(bz, &ccr)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to unmarshal credential response: %v", err))
-	}
-
-	if err != nil {
-		return nil, errors.New("Parse error for Registration")
-	}
-
-	if ccr.ID == "" {
-		return nil, errors.New("Parse error for Registration")
-	}
-	testB64, err := base64.RawURLEncoding.DecodeString(ccr.ID)
-	if err != nil || !(len(testB64) > 0) {
-		return nil, errors.New("Parse error for Registration")
-	}
-
-	if ccr.PublicKeyCredential.Credential.Type == "" {
-		return nil, errors.New("Parse error for Registration")
-	}
-
-	if ccr.PublicKeyCredential.Credential.Type != "public-key" {
-		return nil, errors.New("Parse error for Registration")
-	}
-
-	var pcc protocol.ParsedCredentialCreationData
-	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
-	pcc.Raw = ccr
-
-	for _, t := range ccr.Transports {
-		pcc.Transports = append(pcc.Transports, protocol.AuthenticatorTransport(t))
-	}
-
-	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
-	if err != nil {
-		return nil, errors.New("Error parsing attestation response")
-	}
-	pcc.Response = *parsedAttestationResponse
-	return &pcc, nil
+	bzReader := bytes.NewReader(bz)
+	return protocol.ParseCredentialCreationResponseBody(bzReader)
 }

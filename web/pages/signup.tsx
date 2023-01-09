@@ -111,6 +111,14 @@ export default function SignUp() {
   const registerAccount = async function callVaultRegister(
     nextStep: () => void
   ): Promise<void> {
+    if (!credential) {
+      snackbar.error("Credential not found.");
+      return;
+    }
+    let credResp = credential.response as AuthenticatorAttestationResponse;
+    let attestationObject = credResp.attestationObject;
+    let clientDataJSON = credResp.clientDataJSON;
+    let rawId = credential.rawId;
     setLoading(true);
     const response = await fetch("/api/vault/register", {
       method: "POST",
@@ -118,8 +126,16 @@ export default function SignUp() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        session_id: session,
-        credential_response: credential,
+        session: session,
+        credential: {
+          id: credential.id,
+          rawId: rawId,
+          type: credential.type,
+          response: {
+            attestationObject: attestationObject,
+            clientDataJSON: clientDataJSON,
+          },
+        },
       }),
     });
     const resp = await response.json();
