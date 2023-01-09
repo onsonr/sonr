@@ -1,6 +1,8 @@
 package vault
 
 import (
+	"context"
+
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 	"github.com/sonr-hq/sonr/pkg/vault/fs"
@@ -11,7 +13,7 @@ import (
 
 // It creates a new wallet with two participants, one of which is the current participant, and returns
 // the wallet
-func NewWallet(prefix string, node *ipfs.IPFS) (common.Wallet, error) {
+func NewWallet(ctx context.Context, prefix string, node *ipfs.IPFS) (common.Wallet, error) {
 	getPrefix := func() string {
 		if len(prefix) == 0 {
 			return "snr"
@@ -25,7 +27,7 @@ func NewWallet(prefix string, node *ipfs.IPFS) (common.Wallet, error) {
 		return nil, err
 	}
 	wallet := network.OfflineWallet(wsl)
-	vaultfs, err := fs.New(node.CoreAPI, wallet.Address())
+	vaultfs, err := fs.New(ctx, wallet.Address(), node.CoreAPI)
 	if err != nil {
 		return nil, err
 	}

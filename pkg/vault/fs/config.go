@@ -2,7 +2,6 @@ package fs
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -13,133 +12,106 @@ import (
 	"github.com/ipfs/interface-go-ipfs-core/path"
 )
 
-// Directories created for every user
-var k_DEFAULT_DIRS = []string{
-	"_auth",
-	"mailbox",
-	"public",
-}
-
-// VaultFS provides an interface for arbitrary Sonr Network Nodes to have IPFS configuration
-// for the users secure storage.
-type VaultFS interface {
-	Add(data []byte, name string) error
-	Get(name string) ([]byte, error)
-	ListMessages() ([][]byte, error)
-	SendMessage(to []byte, message []byte) error
-	SignData(data []byte) ([]byte, []byte, error)
-	StoreShare(share []byte, partyId string) error
-	VerifyData(data []byte, signature []byte) bool
-}
-
-func New(ipfs icore.CoreAPI, address string) (VaultFS, error) {
-	// Add config/api
-	impl := &vaultFsImpl{
-		ipfs:    ipfs,
-		address: address,
-	}
-
-	// Initialize Node: GenKey, MkDir, Publish
-	err := impl.init()
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("vaultfs failed to initialize %s", err))
-	}
-	return impl, nil
-}
-
-func Load(ipfs icore.CoreAPI, address string) (VaultFS, error) {
-	// Add config/api
-	impl := &vaultFsImpl{
-		ipfs:    ipfs,
-		address: address,
-	}
-
-	// Initialize Node: GenKey, MkDir, Publish
-	fil, err := impl.loadDefaultDirs()
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("vaultfs failed to initialize %s", err))
-	}
-	impl.rootNode = fil
-	return impl, nil
-}
-
-type vaultFsImpl struct {
-	ipfs      icore.CoreAPI
-	address   string
-	entry     icore.IpnsEntry
-	key       icore.Key
-	cidHash   path.Resolved
-	rootNode  files.Node
+// `Config` is a struct that contains the local path to the vault, the IPFS node to use, the IPFS path
+// to the vault, the IPFS key to use, the IPFS entry to use, the root node of the vault, the address of
+// the vault, and the authentication shares.
+// @property {string} localPath - The local path to the vault
+// @property ipfs - The IPFS node to use.
+// @property ipfsPath - The IPFS path to the vault.
+// @property key - The IPFS key to use
+// @property entry - The IPNS entry that points to the root node of the vault.
+// @property rootNode - The root node of the vault. This is the node that contains all the other nodes
+// in the vault.
+// @property {string} address - The address of the vault. This is the address that the vault will be
+// @property {[]*common.WalletShareConfig} authShares - The authentication shares.
+type Config struct {
+	// The local path to the vault
 	localPath string
+	// The IPFS node to use
+	ipfs icore.CoreAPI
+	// The IPFS path to the vault
+	ipfsPath path.Path
+	// The IPFS key to use
+	key icore.Key
+	// The IPFS entry to use
+	entry icore.IpnsEntry
+	// The root node of the vault
+	rootNode files.Node
+	// The address of the vault
+	address string
+	// Context
+	ctx context.Context
+	// IsExisting
+	isExisting bool
 }
 
-func (vfs *vaultFsImpl) init() error {
-	// Generate Key for Address
-	key, err := vfs.ipfs.Key().Generate(context.Background(), vfs.address)
-	if err != nil {
-		return err
-	}
-	vfs.key = key
-	fmt.Printf("Generated key for %s", vfs.address)
+// Option is a function that configures a `Config` object.
+type Option func(*Config) error
 
-	// Get default file node
-	fileNode, err := vfs.setupDefaultDirs()
-	if err != nil {
-		return err
+// WithIPFSPath sets the IPFS path to the vault.
+func WithIPFSPath(ipfsPath string) Option {
+	return func(c *Config) error {
+		c.ipfsPath = path.New(ipfsPath)
+		c.isExisting = true
+		return nil
 	}
-	vfs.rootNode = fileNode
+}
 
-	// Pin default user directory
-	cid, err := vfs.ipfs.Unixfs().Add(context.Background(), fileNode, options.Unixfs.Pin(true))
-	if err != nil {
-		return err
+// Apply applies the given options to the `Config` object.
+func (c *Config) Apply(opts ...Option) error {
+	for _, opt := range opts {
+		if err := opt(c); err != nil {
+			return err
+		}
 	}
-	vfs.cidHash = cid
-	fmt.Printf("Pinned user directory with CID %s", cid)
+	if !c.isExisting {
+		// Set Root Node
+		rn, err := setupLocalDirs(c)
+		if err != nil {
+			return err
+		}
+		c.rootNode = rn
 
-	// Publish Name with Key
-	entry, err := vfs.ipfs.Name().Publish(context.Background(), vfs.cidHash, options.Name.Key(vfs.address))
-	if err != nil {
-		return err
+		// Pin default user directory
+		cid, err := c.ipfs.Unixfs().Add(c.ctx, c.rootNode, options.Unixfs.Pin(true))
+		if err != nil {
+			return err
+		}
+		c.ipfsPath = cid
+		fmt.Printf("Pinned user directory with CID %s", cid)
+	} else {
+		return c.Sync()
 	}
-	vfs.entry = entry
-	fmt.Printf("Published user directory with name %s and value %s", entry.Name(), entry.Value())
 	return nil
 }
 
-func (vfs *vaultFsImpl) loadDefaultDirs() (files.Node, error) {
-	// Fetch Basepath file info
-	fileNode, err := vfs.ipfs.Unixfs().Get(context.Background(), vfs.cidHash)
-	if err != nil {
-		return nil, err
-	}
+//
+// Helper Functions
+//
+
+// defaultConfig returns a `Config` object with default values.
+func defaultConfig(ctx context.Context, addr string, ipfs icore.CoreAPI) (*Config, error) {
 	// Create a temporary directory to store the file
-	outputBasePath, err := os.MkdirTemp("", vfs.address)
+	outputBasePath, err := os.MkdirTemp("", addr)
 	if err != nil {
 		return nil, err
 	}
-	outputPath := filepath.Join(outputBasePath, vfs.address)
-	vfs.localPath = outputPath
-	// Copy the file to the temporary directory
-	err = files.WriteTo(fileNode, outputPath)
-	if err != nil {
-		return nil, err
+	c := &Config{
+		ctx:       ctx,
+		address:   addr,
+		ipfs:      ipfs,
+		localPath: filepath.Join(outputBasePath, addr),
 	}
-	return fileNode, nil
+
+	return c, nil
 }
 
 // It takes a path to a file or directory, and returns a UnixFS node
-func (vfs *vaultFsImpl) setupDefaultDirs() (files.Node, error) {
-	// Create root temp directory
-	rootPath, err := os.MkdirTemp("", vfs.address)
-	if err != nil {
-		return nil, err
-	}
-
+func setupLocalDirs(c *Config) (files.Node, error) {
 	// Configure default paths
 	paths := []string{}
 	for _, p := range k_DEFAULT_DIRS {
-		paths = append(paths, filepath.Join(rootPath, vfs.address, p))
+		paths = append(paths, filepath.Join(c.localPath, p))
 	}
 
 	// Recursively create directories
@@ -151,16 +123,14 @@ func (vfs *vaultFsImpl) setupDefaultDirs() (files.Node, error) {
 	}
 
 	// Fetch Basepath file info
-	basePath := filepath.Join(rootPath, vfs.address)
-	vfs.localPath = basePath
-	st, err := os.Stat(basePath)
+	st, err := os.Stat(c.localPath)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("Created default directories %s", basePath)
+	fmt.Printf("Created default directories %s", c.localPath)
 
 	// Create new NewSerialFile
-	f, err := files.NewSerialFile(basePath, false, st)
+	f, err := files.NewSerialFile(c.localPath, false, st)
 	if err != nil {
 		return nil, err
 	}

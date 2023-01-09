@@ -1,40 +1,66 @@
 package fs
 
-import "errors"
+import (
+	"errors"
+	"os"
+	"path/filepath"
 
-func (vfs *vaultFsImpl) SignData(data []byte) ([]byte, []byte, error) {
-	return nil, nil, errors.New("Method unimplemented")
+	"github.com/ipfs/interface-go-ipfs-core/options"
+	"github.com/sonr-hq/sonr/pkg/common"
+)
+
+// Storing the share of the wallet.
+func (c *Config) StoreShare(share []byte, partyId string) error {
+	// Verify WalletConfigShare
+	shareConfig := &common.WalletShareConfig{}
+	err := shareConfig.Unmarshal(share)
+	if err != nil {
+		return err
+	}
+
+	// Create path for file to be stored and write file
+	path := filepath.Join(c.localPath, "_auth", partyId)
+	err = os.WriteFile(path, share, 0644)
+	if err != nil {
+		return err
+	}
+
+	// Add file to IPFS
+	cid, err := c.ipfs.Unixfs().Add(c.ctx, c.rootNode, options.Unixfs.Pin(true))
+	if err != nil {
+		return err
+	}
+	c.ipfsPath = cid
+	return nil
 }
-func (vfs *vaultFsImpl) StoreShare(share []byte, partyId string) error {
-	return errors.New("Method unimplemented")
+
+func (c *Config) LoadShares() ([]*common.WalletShareConfig, error) {
+	shares := []*common.WalletShareConfig{}
+	// List all files in the _auth directory
+	files, err := os.ReadDir(filepath.Join(c.localPath, "_auth"))
+	if err != nil {
+		return nil, err
+	}
+
+	if len(files) == 0 {
+		return nil, errors.New("No shares found")
+	}
+
+	// Iterate over all files
+	for _, file := range files {
+		// Read file
+		bz, err := os.ReadFile(filepath.Join(c.localPath, "_auth", file.Name()))
+		if err != nil {
+			return nil, err
+		}
+		// Unmarshal share
+		share := &common.WalletShareConfig{}
+		err = share.Unmarshal(bz)
+		if err != nil {
+			continue
+		}
+		// Add share to list
+		shares = append(shares, share)
+	}
+	return shares, nil
 }
-func (vfs *vaultFsImpl) VerifyData(data []byte, signature []byte) bool {
-	return false
-}
-
-// // assembleWalletFromShares takes a WalletShareConfig and CID to return a Offline Wallet
-// func (v *VaultService) assembleWalletFromShares(cid string, current *common.WalletShareConfig) (party.ID, common.Wallet, error) {
-// 	// Initialize provided share
-// 	shares := make([]*common.WalletShareConfig, 0)
-// 	shares = append(shares, current)
-
-// 	// Fetch Vault share from IPFS
-// 	oldbz, err := v.highway.Get(cid)
-// 	if err != nil {
-// 		return "", nil, err
-// 	}
-
-// 	// Unmarshal share
-// 	share := &common.WalletShareConfig{}
-// 	err = share.Unmarshal(oldbz)
-// 	if err != nil {
-// 		return "", nil, err
-// 	}
-
-// 	// Load wallet
-// 	wallet, err := network.LoadOfflineWallet(shares)
-// 	if err != nil {
-// 		return "", nil, err
-// 	}
-// 	return party.ID(current.SelfId), wallet, nil
-// }

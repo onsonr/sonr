@@ -120,7 +120,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 // Keygen generates a new keypair and returns the public key.
 func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.KeygenResponse, error) {
 	// Create a new offline wallet
-	wallet, err := vault.NewWallet(req.Prefix, v.highway)
+	wallet, err := vault.NewWallet(ctx, req.Prefix, v.highway)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
 	}
