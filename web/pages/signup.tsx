@@ -114,7 +114,7 @@ export default function SignUp() {
       },
       body: JSON.stringify({
         session_id: session,
-        credential_response: credential?.response.clientDataJSON,
+        credential_response: credential!.response,
       }),
     });
     console.log(response);

@@ -22,6 +22,7 @@ export default async function handler(req: NextRequest) {
     requestOptions
   );
   const data = await resp.json();
+  console.log(data);
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {

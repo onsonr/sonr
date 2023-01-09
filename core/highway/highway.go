@@ -14,9 +14,11 @@ package highway
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 )
 
@@ -40,6 +42,7 @@ type HighwayNode struct {
 	clientCtx client.Context
 	serveMux  *runtime.ServeMux
 	vs        *VaultService
+	cache     *gocache.Cache
 }
 
 // It creates a new IPFS node and returns it
@@ -50,15 +53,16 @@ func NewHighwayNode() *HighwayNode {
 		log.Println("Failed to create IPFS node:", err)
 	}
 	return &HighwayNode{
-		ctx:  ctx,
-		IPFS: node,
+		ctx:   ctx,
+		IPFS:  node,
+		cache: gocache.New(time.Minute*2, time.Minute*10),
 	}
 }
 
 // It's registering the gRPC gateway routes.
 func (h *HighwayNode) RegisterGRPCGatewayRoutes(cctx client.Context, server *runtime.ServeMux) error {
 	h.serveMux = server
-	vs, err := NewVaultService(h.ctx, server, h.IPFS)
+	vs, err := NewVaultService(h.ctx, server, h.IPFS, h.cache)
 	if err != nil {
 		return err
 	}

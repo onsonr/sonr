@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/google/uuid"
@@ -44,9 +43,9 @@ type VaultService struct {
 }
 
 // It creates a new VaultService and registers it with the gRPC server
-func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway ipfs.IPFS) (*VaultService, error) {
+func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway ipfs.IPFS, cache *gocache.Cache) (*VaultService, error) {
 	srv := &VaultService{
-		cache:   gocache.New(time.Minute*2, time.Minute*5),
+		cache:   cache,
 		highway: hway,
 		// TODO: Make all Webauthn options configurable through cmd line flags
 		rpName: "Sonr",
@@ -66,7 +65,11 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to initialization a new session with challenge: %s", err))
 	}
-	v.cache.Set(session.Id, session, time.Minute*2)
+	bz, err := session.Marshal()
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Failed to marshal session: %s", err))
+	}
+	v.cache.Set(session.Id, bz, -1)
 	return &v1.ChallengeResponse{
 		RpName:    v.rpName,
 		RpOrigins: session.RpOrigins,
@@ -79,15 +82,16 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
 	// Get Raw Session from cache
-	value, found := v.cache.Get(req.SessionId)
-	if !found {
-		return nil, errors.New("Challenge not found or expired")
+	value, ok := v.cache.Get(req.SessionId)
+	if !ok {
+		return nil, errors.New("Failed to get session from cache")
 	}
 
-	// Verify Struct
-	session, ok := value.(*v1.Session)
-	if !ok {
-		return nil, errors.New("Invalid object returned for session id.")
+	// Parse Session
+	session := &v1.Session{}
+	err := session.Unmarshal(value.([]byte))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Failed to unmarshal session: %s", err))
 	}
 
 	// Parse Client Credential Data
@@ -104,10 +108,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 
 	// Get WebauthnCredential
 	cred := common.NewWebAuthnCredential(pcc)
-	vm, err := types.NewWebAuthnVM(cred)
-	if err != nil {
-		return nil, err
-	}
+	vm, _ := types.NewWebAuthnVM(cred)
 
 	// Return Register Response
 	return &v1.RegisterResponse{

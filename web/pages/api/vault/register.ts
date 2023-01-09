@@ -19,5 +19,8 @@ export default async function handler(req: NextRequest) {
     apiUrl + "/sonr-io/highway/vault/register",
     requestOptions
   );
+  console.log(resp);
+  const data = await resp.json();
+  console.log(data);
   return resp;
 }
