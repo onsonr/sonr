@@ -3,7 +3,7 @@ package network
 import (
 	"testing"
 
-	"github.com/sonr-hq/sonr/pkg/crypto/mpc"
+	"github.com/sonr-hq/sonr/pkg/vault/mpc"
 	"github.com/stretchr/testify/assert"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
@@ -12,7 +12,7 @@ import (
 var defaultTestParticipants = party.IDSlice{"vault", "current"}
 
 func TestWalletSharesFull(t *testing.T) {
-	net := newOfflineNetwork(defaultTestParticipants)
+	net := NewOfflineNetwork(defaultTestParticipants)
 	wsl, err := mpc.Keygen("current", 1, net, "snr")
 	assert.NoError(t, err, "wallet generation succeeds")
 	ws := OfflineWallet(wsl)

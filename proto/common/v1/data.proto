@@ -21,9 +21,6 @@ message PeerInfo {
   string peer_id = 3;  // Peer ID
   string multiaddr = 4; // Peer Multiaddress
   PeerType type = 5;      // Type of Peer
-
-
-
 }
 
 // Peers Active Type

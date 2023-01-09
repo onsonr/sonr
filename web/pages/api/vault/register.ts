@@ -5,14 +5,22 @@ export const config = {
 };
 
 export default async function handler(req: NextRequest) {
+  // Get API URL
+  let apiUrl = "https://api.sonr.network";
+  if (process && process.env.NODE_ENV === "development") {
+    apiUrl = "http://localhost:1317";
+  }
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: req.body,
   };
   const resp = await fetch(
-    "http://localhost:1317/sonr-io/highway/vault/register",
+    apiUrl + "/sonr-io/highway/vault/register",
     requestOptions
   );
+  console.log(resp);
+  const data = await resp.json();
+  console.log(data);
   return resp;
 }

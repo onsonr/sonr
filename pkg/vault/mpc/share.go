@@ -152,6 +152,7 @@ func (w *cmpConfigWalletShare) Unmarshal(data []byte) error {
 	return nil
 }
 
+// It returns the `WalletShareConfig` of the `cmpConfigWalletShare` type.
 func (w *cmpConfigWalletShare) Share() *common.WalletShareConfig {
 	return w.walletShareConfig
 }

@@ -7,7 +7,6 @@ import (
 
 	// this line is used by starport scaffolding # 1
 
-	orbitdb "berty.tech/go-orbit-db"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
@@ -18,7 +17,7 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/sonr-hq/sonr/pkg/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 	"github.com/sonr-hq/sonr/x/identity/client/cli"
 	"github.com/sonr-hq/sonr/x/identity/keeper"
 	"github.com/sonr-hq/sonr/x/identity/types"
@@ -97,7 +96,7 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-	orbit         orbitdb.OrbitDB
+	ipfs          ipfs.IPFS
 }
 
 func NewAppModule(
@@ -105,18 +104,14 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	ipfs *ipfs.IPFS,
+	ipfs ipfs.IPFS,
 ) AppModule {
-	orbitDb, err := orbitdb.NewOrbitDB(context.Background(), ipfs, nil)
-	if err != nil {
-		panic(err)
-	}
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
-		orbit:          orbitDb,
+		ipfs:           ipfs,
 	}
 }
 
