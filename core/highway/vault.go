@@ -72,36 +72,22 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	v.cache.Set(session.Id, bz, -1)
 	return &v1.ChallengeResponse{
 		RpName:    v.rpName,
-		RpOrigins: session.RpOrigins,
 		Challenge: session.Challenge,
-		SessionId: session.Id,
+		Session:   session,
 		RpIcon:    v.rpIcon,
 	}, nil
 }
 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
-	// Get Raw Session from cache
-	value, ok := v.cache.Get(req.SessionId)
-	if !ok {
-		return nil, errors.New(fmt.Sprintf("Failed to get session from cache for Session %s", req.SessionId))
-	}
-
-	// Parse Session
-	session := &v1.Session{}
-	err := session.Unmarshal(value.([]byte))
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to unmarshal session: %s", err))
-	}
-
 	// Parse Client Credential Data
-	pcc, err := getParsedCredentialCreationData(req.CredentialResponse)
+	pcc, err := getParsedCredentialCreationData(req.Credential)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
 
 	// Verify the challenge
-	err = pcc.Verify(session.Challenge, false, session.RpId, session.RpOrigins)
+	err = pcc.Verify(req.Session.Challenge, false, req.Session.RpId, defaultRpOrigins)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to verify session with client credential data: %s", err))
 	}
@@ -282,7 +268,6 @@ func (v *VaultService) makeNewSession(rpId string) (*v1.Session, error) {
 		Id:        sessionID,
 		Challenge: challenge,
 		RpId:      rpId,
-		RpOrigins: defaultRpOrigins,
 	}, nil
 }
 

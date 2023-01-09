@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@buf/sonr-hq_sonr.grpc_web": "^1.4.2-20230109204611-f132360aa6d4.2",
     "@chakra-ui/icon": "^3.0.14",
     "@chakra-ui/react": "^2.3.6",
     "@chakra-ui/system": "^2.3.7",
@@ -26,6 +27,8 @@
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.1",
     "framer-motion": "^6.5.1",
+    "google-protobuf": "^3.21.2",
+    "grpc-web": "^1.4.2",
     "next": "^12.3.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",

@@ -3,6 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.highway.vault.v1;
 import "common/v1/data.proto";
+import "highway/vault/v1/models.proto";
 import "sonr/identity/did.proto";
 import "google/api/annotations.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
@@ -15,7 +16,7 @@ message ChallengeRequest {
 
 // ChallengeResponse is the response to a Challenge request.
 message ChallengeResponse {
-    string session_id = 1;
+    Session session = 1;
     string challenge = 2;
     string rp_name = 3;
     repeated string rp_origins = 4;
@@ -24,8 +25,8 @@ message ChallengeResponse {
 
 // RegisterRequest is the request to register a new account.
 message RegisterRequest {
-    string session_id = 1;
-    bytes credential_response = 2;
+    Session session = 1;
+    bytes credential = 2;
 }
 
 // RegisterResponse is the response to a Register request.
@@ -107,26 +108,41 @@ service Vault {
 
     // Register creates a new Webauthn credential and returns it.
     rpc Register(RegisterRequest) returns (RegisterResponse) {
-        option (google.api.http).post = "/sonr-io/highway/vault/register";
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/register"
+          body: "*"
+        };
     }
 
     // Keygen generates a new Wallet and returns the configuration.
     rpc Keygen(KeygenRequest) returns (KeygenResponse) {
-        option (google.api.http).post = "/sonr-io/highway/vault/keygen";
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/keygen"
+          body: "*"
+        };
     }
 
     // Refresh refreshes the Wallet shares and returns the updated configuration.
     rpc Refresh(RefreshRequest) returns (RefreshResponse) {
-        option (google.api.http).post = "/sonr-io/highway/vault/refresh";
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/refresh"
+          body: "*"
+        };
     }
 
     // Sign signs the data with the Wallet and returns the signature.
     rpc Sign(SignRequest) returns (SignResponse) {
-        option (google.api.http).post = "/sonr-io/highway/vault/sign";
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/sign"
+          body: "*"
+        };
     }
 
     // Derive creates a new Bip32 child key and returns the configuration.
     rpc Derive(DeriveRequest) returns (DeriveResponse) {
-        option (google.api.http).post = "/sonr-io/highway/vault/derive";
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/derive"
+          body: "*"
+        };
     }
 }
