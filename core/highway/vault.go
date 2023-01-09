@@ -1,12 +1,12 @@
 package highway
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/google/uuid"
@@ -263,6 +263,6 @@ func (v *VaultService) makeNewSession(rpId string) (*v1.Session, error) {
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
 func getParsedCredentialCreationData(bz string) (*protocol.ParsedCredentialCreationData, error) {
 	// Get Credential Creation Response
-	bzReader := strings.NewReader(bz)
+	bzReader := bytes.NewReader([]byte(bz))
 	return protocol.ParseCredentialCreationResponseBody(bzReader)
 }
