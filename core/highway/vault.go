@@ -37,14 +37,14 @@ var (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
-	highway *ipfs.IPFS
+	highway ipfs.IPFS
 	rpName  string
 	rpIcon  string
 	cache   *gocache.Cache
 }
 
 // It creates a new VaultService and registers it with the gRPC server
-func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway *ipfs.IPFS) (*VaultService, error) {
+func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway ipfs.IPFS) (*VaultService, error) {
 	srv := &VaultService{
 		cache:   gocache.New(time.Minute*2, time.Minute*5),
 		highway: hway,

@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	ipfs "github.com/sonr-hq/sonr/pkg/node/ipfs/local"
 	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/tendermint/tendermint/libs/log"
 )
@@ -24,7 +24,7 @@ type (
 		bankKeeper    types.BankKeeper
 		groupKeeper   types.GroupKeeper
 		mintKeeper    types.MintKeeper
-		ipfs          *ipfs.IPFS
+		ipfs          *ipfs.LocalIPFS
 	}
 )
 

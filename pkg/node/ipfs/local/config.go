@@ -1,4 +1,4 @@
-package ipfs
+package local
 
 import (
 	"context"
@@ -67,11 +67,11 @@ var (
 //
 
 // NodeOption is a function that configures a Node
-type NodeOption func(*IPFS) error
+type NodeOption func(*LocalIPFS) error
 
 // AddBootstrappers adds additional nodes to start initial connections with
 func AddBootstrappers(bootstrappers []string) NodeOption {
-	return func(c *IPFS) error {
+	return func(c *LocalIPFS) error {
 		c.bootstrappers = append(c.bootstrappers, bootstrappers...)
 		return nil
 	}
@@ -79,7 +79,7 @@ func AddBootstrappers(bootstrappers []string) NodeOption {
 
 // WithGroupIds sets the peer ids for the node
 func WithGroupIds(peerIds ...peer.ID) NodeOption {
-	return func(c *IPFS) error {
+	return func(c *LocalIPFS) error {
 		if len(peerIds) > 0 {
 			c.mpcPeerIds = peerIds
 		}
@@ -89,7 +89,7 @@ func WithGroupIds(peerIds ...peer.ID) NodeOption {
 
 // WithNodeCallback sets the callback for the motor
 func WithNodeCallback(callback common.NodeCallback) NodeOption {
-	return func(c *IPFS) error {
+	return func(c *LocalIPFS) error {
 		c.callback = callback
 		return nil
 	}
@@ -97,7 +97,7 @@ func WithNodeCallback(callback common.NodeCallback) NodeOption {
 
 // WithPartyId sets the party id for the node. This is to be replaced by the User defined label for the device
 func WithPartyId(partyId string) NodeOption {
-	return func(c *IPFS) error {
+	return func(c *LocalIPFS) error {
 		c.partyId = party.ID(partyId)
 		return nil
 	}
@@ -105,7 +105,7 @@ func WithPartyId(partyId string) NodeOption {
 
 // WithPeerType sets the type of peer
 func WithPeerType(peerType cv1.PeerType) NodeOption {
-	return func(c *IPFS) error {
+	return func(c *LocalIPFS) error {
 		c.peerType = peerType
 		return nil
 	}
@@ -113,7 +113,7 @@ func WithPeerType(peerType cv1.PeerType) NodeOption {
 
 // WithWalletShare sets the wallet share for the node
 func WithWalletShare(walletShare common.WalletShare) NodeOption {
-	return func(c *IPFS) error {
+	return func(c *LocalIPFS) error {
 		c.walletShare = walletShare
 		return nil
 	}
@@ -124,8 +124,8 @@ func WithWalletShare(walletShare common.WalletShare) NodeOption {
 //
 
 // defaultNode creates a new node with default options
-func defaultNode(ctx context.Context) *IPFS {
-	return &IPFS{
+func defaultNode(ctx context.Context) *LocalIPFS {
+	return &LocalIPFS{
 		ctx:                ctx,
 		bootstrappers:      defaultBootstrapMultiaddrs,
 		callback:           defaultCallback,
@@ -137,7 +137,7 @@ func defaultNode(ctx context.Context) *IPFS {
 }
 
 // It's creating a new node and returning the coreAPI and the node itself.
-func (c *IPFS) Apply(opts ...NodeOption) error {
+func (c *LocalIPFS) Apply(opts ...NodeOption) error {
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
 			return err
@@ -171,7 +171,7 @@ func (c *IPFS) Apply(opts ...NodeOption) error {
 	// Set the node and repoPath
 	c.node = node
 	c.repoPath = repoPath
-	c.CoreAPI = api
+	c.api = api
 	return nil
 }
 

@@ -4,8 +4,8 @@ import (
 	"context"
 
 	files "github.com/ipfs/go-ipfs-files"
-	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 )
 
 // Directories created for every user
@@ -47,9 +47,9 @@ type VaultFS interface {
 }
 
 // `New` creates a new VaultFS instance, initializes it, and returns it
-func New(ctx context.Context, address string, ipfs icore.CoreAPI, opts ...Option) (VaultFS, error) {
+func New(ctx context.Context, address string, ipfs ipfs.IPFS, opts ...Option) (VaultFS, error) {
 	// Create a temporary directory to store the file
-	config, err := defaultConfig(ctx, address, ipfs)
+	config, err := defaultConfig(ctx, address, ipfs.CoreAPI())
 	if err != nil {
 		return nil, err
 	}

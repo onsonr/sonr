@@ -5,12 +5,17 @@ export const config = {
 };
 
 export default async function handler(req: NextRequest) {
+  // Get API URL
+  let apiUrl = "https://api.sonr.network";
+  if (process && process.env.NODE_ENV === "development") {
+    apiUrl = "http://localhost:1317";
+  }
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   };
   const resp = await fetch(
-    "http://localhost:1317/sonr-io/highway/vault/keygen",
+    apiUrl + "/sonr-io/highway/vault/keygen",
     requestOptions
   );
   const data = await resp.json();

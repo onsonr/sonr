@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	ipfs "github.com/sonr-hq/sonr/pkg/node/ipfs/local"
 )
 
 func TestNew(t *testing.T) {
@@ -15,11 +15,11 @@ func TestNew(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v1, err := New(ctx, "test", hw.CoreAPI)
+	v1, err := New(ctx, "test", hw)
 	if err != nil {
 		t.Fatal(err)
 	}
-	v2, err := New(ctx, "test2", hw.CoreAPI, WithIPFSPath(v1.CID()))
+	v2, err := New(ctx, "test2", hw, WithIPFSPath(v1.CID()))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +35,7 @@ func TestStoreShare(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v, err := New(ctx, "test", hw.CoreAPI)
+	v, err := New(ctx, "test", hw)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,7 +50,7 @@ func TestStoreShare(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	v2, err := New(ctx, "test2", hw.CoreAPI, WithIPFSPath(v.CID()))
+	v2, err := New(ctx, "test2", hw, WithIPFSPath(v.CID()))
 	if err != nil {
 		t.Fatal(err)
 	}

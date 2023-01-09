@@ -7,7 +7,6 @@ import (
 
 	// this line is used by starport scaffolding # 1
 
-	orbitdb "berty.tech/go-orbit-db"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
@@ -97,7 +96,7 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-	orbit         orbitdb.OrbitDB
+	ipfs          ipfs.IPFS
 }
 
 func NewAppModule(
@@ -105,18 +104,14 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	ipfs *ipfs.IPFS,
+	ipfs ipfs.IPFS,
 ) AppModule {
-	orbitDb, err := orbitdb.NewOrbitDB(context.Background(), ipfs, nil)
-	if err != nil {
-		panic(err)
-	}
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
-		orbit:          orbitDb,
+		ipfs:           ipfs,
 	}
 }
 

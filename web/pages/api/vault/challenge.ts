@@ -5,12 +5,20 @@ export const config = {
 };
 
 export default async function handler(req: NextRequest) {
+  // Get API URL
+  let domain = new URL(req.url).searchParams.get("domain");
+  let apiUrl = "https://api.sonr.network";
+  if (process && process.env.NODE_ENV === "development") {
+    apiUrl = "http://localhost:1317";
+  }
+
   const requestOptions = {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   };
+
   const resp = await fetch(
-    "http://localhost:1317/sonr-io/highway/vault/challenge/localhost",
+    apiUrl + "/sonr-io/highway/vault/challenge/" + domain,
     requestOptions
   );
   const data = await resp.json();
