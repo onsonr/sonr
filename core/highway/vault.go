@@ -84,7 +84,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	// Get Raw Session from cache
 	value, ok := v.cache.Get(req.SessionId)
 	if !ok {
-		return nil, errors.New("Failed to get session from cache")
+		return nil, errors.New(fmt.Sprintf("Failed to get session from cache for Session %s", req.SessionId))
 	}
 
 	// Parse Session
