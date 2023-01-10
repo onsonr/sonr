@@ -1,4 +1,5 @@
-package highway
+package vault
+
 
 import (
 	"context"
@@ -10,7 +11,7 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/ipfs"
-	"github.com/sonr-hq/sonr/pkg/vault"
+
 	"github.com/sonr-hq/sonr/pkg/vault/mpc"
 	"github.com/sonr-hq/sonr/pkg/vault/session"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
@@ -99,7 +100,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 // Keygen generates a new keypair and returns the public key.
 func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.KeygenResponse, error) {
 	// Create a new offline wallet
-	wallet, err := vault.NewWallet(ctx, req.Prefix, v.highway)
+	wallet, err := NewWallet(ctx, req.Prefix, v.highway)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
 	}
@@ -212,7 +213,7 @@ func (v *VaultService) assembleWalletFromShares(cid string, current *common.Wall
 	}
 
 	// Load wallet
-	wallet, err := vault.LoadOfflineWallet(shares)
+	wallet, err := LoadOfflineWallet(shares)
 	if err != nil {
 		return "", nil, err
 	}

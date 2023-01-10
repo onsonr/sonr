@@ -45,10 +45,16 @@ func makeDefaultRandomVars() (*types.VerificationMethod, error) {
 }
 
 func makeWebAuthnInstance(rpid string) (*webauthn.WebAuthn, error) {
+	var rawRpId string
+	if len(rpid) == 0 {
+		rawRpId = "localhost"
+	} else {
+		rawRpId = rpid
+	}
 	// Create the Webauthn Instance
 	return webauthn.New(&webauthn.Config{
 		RPDisplayName:          defaultRpName,
-		RPID:                   rpid,
+		RPID:                   rawRpId,
 		RPIcon:                 defaultRpIcon,
 		RPOrigins:              defaultRpOrigins,
 		Timeout:                60000,
@@ -127,4 +133,14 @@ func getParsedCredentialRequestData(bz string) (*protocol.ParsedCredentialAssert
 		return nil, errors.New("Error unmarshalling auth data")
 	}
 	return &par, nil
+}
+
+func (s *SessionEntry) SetRPID(copts *protocol.CredentialCreation) *protocol.CredentialCreation {
+	oldRp := copts.Response.RelyingParty
+	newRp := protocol.RelyingPartyEntity{}
+	newRp.ID = s.ID
+	newRp.CredentialEntity = oldRp.CredentialEntity
+	newCopts := copts
+	newCopts.Response.RelyingParty = newRp
+	return newCopts
 }

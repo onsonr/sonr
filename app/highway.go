@@ -9,7 +9,7 @@
 // Transports: TCP, UDP, QUIC, HTTP, WebTransport, WebRTC, WebSockets
 // ---
 
-package highway
+package app
 
 import (
 	"context"
@@ -20,6 +20,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/pkg/vault"
 )
 
 // `HighwayNode` is a struct that contains a libp2p host, a wallet, a context, a client context, a
@@ -41,7 +42,7 @@ type HighwayNode struct {
 	ctx       context.Context
 	clientCtx client.Context
 	serveMux  *runtime.ServeMux
-	vs        *VaultService
+	vs        *vault.VaultService
 	cache     *gocache.Cache
 }
 
@@ -62,7 +63,7 @@ func NewHighwayNode() *HighwayNode {
 // It's registering the gRPC gateway routes.
 func (h *HighwayNode) RegisterGRPCGatewayRoutes(cctx client.Context, server *runtime.ServeMux) error {
 	h.serveMux = server
-	vs, err := NewVaultService(h.ctx, server, h.IPFS, h.cache)
+	vs, err := vault.NewVaultService(h.ctx, server, h.IPFS, h.cache)
 	if err != nil {
 		return err
 	}

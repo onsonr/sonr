@@ -1,18 +1,18 @@
 {
   "folders": [
-	{
-		"path": ".",
-    "name": "⚡️ Blockchain"
-	},
-	{
-		"path": "./web",
-    "name": "🌐 Web UI"
-	},
-	{
-		"path": "./docs",
-    "name": "📚 Documentation"
-	}
-],
+    {
+      "path": ".",
+      "name": "⚡️ Blockchain"
+    },
+    {
+      "path": "./web",
+      "name": "🌐 Web UI"
+    },
+    {
+      "path": "./docs",
+      "name": "📚 Documentation"
+    }
+  ],
   "settings": {
     "gitlens.views.formats.commits.label": "${❰ tips ❱➤  }${message}",
     "gitlens.views.formats.commits.description": "${author, }${agoOrDate}${tips}",
@@ -23,12 +23,13 @@
     "files.exclude": {
       "docs/": true,
       "web/": true,
-      "buf.lock": true,
+      "**/buf.lock": true,
       "go.sum": true,
       "next-env.d.ts": true,
       ".yarn": true,
       ".pnp.*": true,
       "LICENSE": true,
-    },
+      "yarn.lock": true
+    }
   }
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/google/uuid"
+	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
@@ -73,6 +74,7 @@ func (s *SessionEntry) BeginRegistration() (string, error) {
 		return "", err
 	}
 	s.Data = *sessionData
+	opts = s.SetRPID(opts)
 
 	bz, err := json.Marshal(opts)
 	if err != nil {
@@ -128,4 +130,23 @@ func (s *SessionEntry) FinishLogin(credentialRequestData string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func GetEntry(id string, cache *gocache.Cache) (*SessionEntry, error) {
+	val, ok := cache.Get(id)
+	if !ok {
+		return nil, errors.New("Failed to find entry for ID")
+	}
+	e, ok := val.(*SessionEntry)
+	if !ok {
+		return nil, errors.New("Invalid type for session entry")
+	}
+	return e, nil
+}
+
+func PutEntry(entry *SessionEntry, cache *gocache.Cache) error {
+	if entry == nil || cache == nil {
+		return errors.New("Entry or Cache cannot be nil to put Entry")
+	}
+	return cache.Add(entry.ID, entry, -1)
 }
