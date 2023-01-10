@@ -129,6 +129,7 @@ export default function SignUp() {
     let attestationObject = credResp.attestationObject;
     let clientDataJSON = credResp.clientDataJSON;
     let rawId = credential.rawId;
+    setVaultCid(arrayBufferEncode(rawId));
     let credRespString = JSON.stringify({
       id: credential.id,
       type: credential.type,
@@ -163,8 +164,8 @@ export default function SignUp() {
       });
       // Get response as object
       const data = await response.json();
+      console.log(data);
       setAddress(data.address);
-      setVaultCid(data.vault_cid);
       setCmpConfig(data.share_config.cmp_config);
       setLoading(false);
       snackbar.info("Account has been registered with Sonr Vault.");
@@ -337,7 +338,7 @@ export default function SignUp() {
                                 endLength={4}
                               />
                             </Button>
-                            <Property label="Vault CID" />
+                            <Property label="Controller" />
                             <Button variant="outline" leftIcon={<FiCloud />}>
                               <Web3Address
                                 address={vaultCid ? vaultCid : "N/A"}
