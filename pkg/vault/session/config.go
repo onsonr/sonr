@@ -126,6 +126,11 @@ func (s *SessionEntry) SetRPID(copts *protocol.CredentialCreation) *protocol.Cre
 	return newCopts
 }
 
+func (s *SessionEntry) SetRPIDAssertion(copts *protocol.CredentialAssertion) *protocol.CredentialAssertion {
+	copts.Response.RelyingPartyID = s.RPID
+	return copts
+}
+
 func (s *SessionEntry) WebAuthn() (*webauthn.WebAuthn, error) {
 	rawRpId := "localhost"
 	if len(s.RPID) > 0 {

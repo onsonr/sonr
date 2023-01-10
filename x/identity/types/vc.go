@@ -82,36 +82,32 @@ func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential,
 	}, nil
 }
 
-func (wvm *VerificationMethod) WebAuthnID() []byte {
-	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
-		return []byte(wvm.ID)
-	}
-	return nil
+func (wvm *DidDocument) WebAuthnID() []byte {
+	return []byte(wvm.ID)
 }
 
-func (wvm *VerificationMethod) WebAuthnName() string {
-	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
-		return "Sonr"
-	}
-	return ""
+func (wvm *DidDocument) WebAuthnName() string {
+	return "Sonr"
 }
 
-func (wvm *VerificationMethod) WebAuthnDisplayName() string {
-	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
-		return wvm.ID
-	}
-	return ""
+func (wvm *DidDocument) WebAuthnDisplayName() string {
+	return wvm.ID
 }
 
-func (wvm *VerificationMethod) WebAuthnIcon() string {
-	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
-		return "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png"
-	}
-	return ""
+func (wvm *DidDocument) WebAuthnIcon() string {
+	return "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png"
 }
 
-func (wvm *VerificationMethod) WebAuthnCredentials() []webauthn.Credential {
-	return []webauthn.Credential{
-		common.ConvertToWebauthnCredential(wvm.WebauthnCredential),
+func (wvm *DidDocument) WebAuthnCredentials() []webauthn.Credential {
+	creds := []webauthn.Credential{}
+	for _, vm := range wvm.VerificationMethod.Data {
+		if vm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+			vmcr, err := vm.WebAuthnCredential()
+			if err != nil {
+				return nil
+			}
+			creds = append(creds, *vmcr.ToProtocolCredential())
+		}
 	}
+	return creds
 }

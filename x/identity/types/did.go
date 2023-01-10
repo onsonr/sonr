@@ -10,6 +10,23 @@ import (
 	"github.com/sonr-hq/sonr/x/identity/types/ssi"
 )
 
+// BlankDocument creates a blank document to begin the WebAuthnProcess
+func BlankDocument(idStr string) *DidDocument {
+	return &DidDocument{
+		ID:                   idStr,
+		Context:              []string{"https://www.w3.org/ns/did/v1"},
+		Controller:           []string{},
+		VerificationMethod:   new(VerificationMethods),
+		Authentication:       new(VerificationRelationships),
+		AssertionMethod:      new(VerificationRelationships),
+		CapabilityInvocation: new(VerificationRelationships),
+		CapabilityDelegation: new(VerificationRelationships),
+		KeyAgreement:         new(VerificationRelationships),
+		Service:              new(Services),
+		AlsoKnownAs:          make([]string, 0),
+	}
+}
+
 // NewDocument generates a new DID Document for the provided ID string
 func NewDocument(idStr string) (*DidDocument, error) {
 	id, err := ParseDID(idStr)

@@ -26,6 +26,25 @@ func ConvertWebauthnCredential(wa *webauthn.Credential) *WebauthnCredential {
 	}
 }
 
+// ToProtocolCredential converts a common WebauthnCredential to one that can be used for the go-webauthn package
+func (c *WebauthnCredential) ToProtocolCredential() *webauthn.Credential {
+	transports := []protocol.AuthenticatorTransport{}
+	for _, t := range c.Transport {
+		transports = append(transports, protocol.AuthenticatorTransport(t))
+	}
+	return &webauthn.Credential{
+		ID:              c.Id,
+		PublicKey:       c.PublicKey,
+		AttestationType: c.AttestationType,
+		Transport:       transports,
+		Authenticator: webauthn.Authenticator{
+			AAGUID:       c.Authenticator.Aaguid,
+			SignCount:    c.Authenticator.SignCount,
+			CloneWarning: c.Authenticator.CloneWarning,
+		},
+	}
+}
+
 // NewWebAuthnCredential creates a new WebauthnCredential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
 func NewWebAuthnCredential(c *protocol.ParsedCredentialCreationData) *WebauthnCredential {

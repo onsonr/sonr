@@ -18,14 +18,17 @@ type SessionEntry struct {
 	RPID               string
 	WebauthnCredential common.WebauthnCredential
 	VerificationMethod types.VerificationMethod
+	DidDoc             types.DidDocument
 	Data               webauthn.SessionData
 }
 
 // NewEntry creates a new session with challenge to be used to register a new account
 func NewEntry(rpId string) (*SessionEntry, error) {
-	vm, err := makeDefaultRandomVars()
-	if err != nil {
-		return nil, err
+	sessionID := uuid.New().String()[:8]
+	doc := types.BlankDocument(sessionID)
+	vm := &types.VerificationMethod{
+		ID:   sessionID,
+		Type: types.KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018,
 	}
 
 	// Create Entry
@@ -33,6 +36,7 @@ func NewEntry(rpId string) (*SessionEntry, error) {
 		ID:                 vm.ID,
 		RPID:               rpId,
 		VerificationMethod: *vm,
+		DidDoc:             *doc,
 	}, nil
 }
 
@@ -59,7 +63,7 @@ func (s *SessionEntry) BeginRegistration() (string, error) {
 		return "", err
 	}
 
-	opts, sessionData, err := wauth.BeginRegistration(&s.VerificationMethod, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
+	opts, sessionData, err := wauth.BeginRegistration(&s.DidDoc, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
 	if err != nil {
 		return "", err
 	}
@@ -103,7 +107,7 @@ func (s *SessionEntry) BeginLogin() (string, error) {
 		CredentialID: s.WebauthnCredential.Id,
 		Type:         protocol.CredentialType("public-key"),
 	}
-	opts, session, err := wauth.BeginLogin(&s.VerificationMethod, webauthn.WithAllowedCredentials(allowList))
+	opts, session, err := wauth.BeginLogin(&s.DidDoc, webauthn.WithAllowedCredentials(allowList))
 	if err != nil {
 		return "", err
 	}
@@ -126,7 +130,7 @@ func (s *SessionEntry) FinishLogin(credentialRequestData string) (bool, error) {
 	if err != nil {
 		return false, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
-	cred, err := wauth.ValidateLogin(&s.VerificationMethod, s.Data, pca)
+	cred, err := wauth.ValidateLogin(&s.DidDoc, s.Data, pca)
 	if err != nil {
 		return false, err
 	}
