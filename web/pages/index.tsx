@@ -10,12 +10,16 @@ import {
 import { AppShell, Button, EmptyState } from "@saas-ui/react";
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import { FiUnlock } from "react-icons/fi";
+
 export default function Home() {
   const { colorMode, toggleColorMode } = useColorMode();
+
   if (colorMode === "light") {
     toggleColorMode();
   }
+
   return (
     <>
       <Head>
@@ -40,9 +44,7 @@ export default function Home() {
             </Link>
             <Spacer />
             <Box>
-              <Tag size="lg">
-                {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}
-              </Tag>
+              <Tag size="lg">v0.1.12</Tag>
             </Box>
           </Flex>
         }

@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"time"
 
+	ggio "github.com/gogo/protobuf/io"
+	"github.com/gogo/protobuf/proto"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
@@ -16,9 +19,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
-ggio "github.com/gogo/protobuf/io"
-"github.com/gogo/protobuf/proto"
-	ps "github.com/libp2p/go-libp2p-pubsub"
 )
 
 // A P2PHost is a host.Host with a private key, a channel of mDNS peers, a channel of DHT peers, a
@@ -62,7 +62,7 @@ type P2PHost struct {
 }
 
 // New Creates a Sonr libp2p Host with the given config
-func New(ctx context.Context, opts ...NodeOption) (*P2PHost, error) {
+func New(ctx context.Context, opts ...Option) (*P2PHost, error) {
 	// Create Host and apply options
 	hn := defaultNode(ctx)
 	for _, opt := range opts {

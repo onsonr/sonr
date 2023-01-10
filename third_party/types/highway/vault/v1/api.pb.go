@@ -36,6 +36,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type ChallengeRequest struct {
 	// Optional RP ID to use for the challenge.
 	RpId string `protobuf:"bytes,1,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
+	// Label to use for the device.
+	Label string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
 }
 
 func (m *ChallengeRequest) Reset()         { *m = ChallengeRequest{} }
@@ -78,13 +80,20 @@ func (m *ChallengeRequest) GetRpId() string {
 	return ""
 }
 
+func (m *ChallengeRequest) GetLabel() string {
+	if m != nil {
+		return m.Label
+	}
+	return ""
+}
+
 // ChallengeResponse is the response to a Challenge request.
 type ChallengeResponse struct {
-	SessionId string   `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	Challenge string   `protobuf:"bytes,2,opt,name=challenge,proto3" json:"challenge,omitempty"`
-	RpName    string   `protobuf:"bytes,3,opt,name=rp_name,json=rpName,proto3" json:"rp_name,omitempty"`
-	RpOrigins []string `protobuf:"bytes,4,rep,name=rp_origins,json=rpOrigins,proto3" json:"rp_origins,omitempty"`
-	RpIcon    string   `protobuf:"bytes,5,opt,name=rp_icon,json=rpIcon,proto3" json:"rp_icon,omitempty"`
+	SessionId       string   `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	CreationOptions string   `protobuf:"bytes,2,opt,name=creation_options,json=creationOptions,proto3" json:"creation_options,omitempty"`
+	RpName          string   `protobuf:"bytes,3,opt,name=rp_name,json=rpName,proto3" json:"rp_name,omitempty"`
+	RpOrigins       []string `protobuf:"bytes,4,rep,name=rp_origins,json=rpOrigins,proto3" json:"rp_origins,omitempty"`
+	RpIcon          string   `protobuf:"bytes,5,opt,name=rp_icon,json=rpIcon,proto3" json:"rp_icon,omitempty"`
 }
 
 func (m *ChallengeResponse) Reset()         { *m = ChallengeResponse{} }
@@ -127,9 +136,9 @@ func (m *ChallengeResponse) GetSessionId() string {
 	return ""
 }
 
-func (m *ChallengeResponse) GetChallenge() string {
+func (m *ChallengeResponse) GetCreationOptions() string {
 	if m != nil {
-		return m.Challenge
+		return m.CreationOptions
 	}
 	return ""
 }
@@ -158,7 +167,8 @@ func (m *ChallengeResponse) GetRpIcon() string {
 // RegisterRequest is the request to register a new account.
 type RegisterRequest struct {
 	SessionId          string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	CredentialResponse []byte `protobuf:"bytes,2,opt,name=credential_response,json=credentialResponse,proto3" json:"credential_response,omitempty"`
+	CredentialResponse string `protobuf:"bytes,2,opt,name=credential_response,json=credentialResponse,proto3" json:"credential_response,omitempty"`
+	RpId               string `protobuf:"bytes,3,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
 }
 
 func (m *RegisterRequest) Reset()         { *m = RegisterRequest{} }
@@ -201,11 +211,18 @@ func (m *RegisterRequest) GetSessionId() string {
 	return ""
 }
 
-func (m *RegisterRequest) GetCredentialResponse() []byte {
+func (m *RegisterRequest) GetCredentialResponse() string {
 	if m != nil {
 		return m.CredentialResponse
 	}
-	return nil
+	return ""
+}
+
+func (m *RegisterRequest) GetRpId() string {
+	if m != nil {
+		return m.RpId
+	}
+	return ""
 }
 
 // RegisterResponse is the response to a Register request.
@@ -263,9 +280,9 @@ func (m *RegisterResponse) GetVerificationMethod() *types.VerificationMethod {
 
 // KeygenRequest is the request to generate a new keypair.
 type KeygenRequest struct {
-	Prefix             string                     `protobuf:"bytes,1,opt,name=prefix,proto3" json:"prefix,omitempty"`
-	Threshold          int32                      `protobuf:"varint,2,opt,name=threshold,proto3" json:"threshold,omitempty"`
-	WebauthnCredential *common.WebauthnCredential `protobuf:"bytes,3,opt,name=webauthn_credential,json=webauthnCredential,proto3" json:"webauthn_credential,omitempty"`
+	Prefix             string                    `protobuf:"bytes,1,opt,name=prefix,proto3" json:"prefix,omitempty"`
+	Threshold          int32                     `protobuf:"varint,2,opt,name=threshold,proto3" json:"threshold,omitempty"`
+	VerificationMethod *types.VerificationMethod `protobuf:"bytes,3,opt,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
 }
 
 func (m *KeygenRequest) Reset()         { *m = KeygenRequest{} }
@@ -315,9 +332,9 @@ func (m *KeygenRequest) GetThreshold() int32 {
 	return 0
 }
 
-func (m *KeygenRequest) GetWebauthnCredential() *common.WebauthnCredential {
+func (m *KeygenRequest) GetVerificationMethod() *types.VerificationMethod {
 	if m != nil {
-		return m.WebauthnCredential
+		return m.VerificationMethod
 	}
 	return nil
 }
@@ -401,9 +418,9 @@ func (m *KeygenResponse) GetDidDocument() *types.DidDocument {
 
 // RefreshRequest is the request to refresh the keypair.
 type RefreshRequest struct {
-	ShareConfig        *common.WalletShareConfig  `protobuf:"bytes,1,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
-	VaultCid           string                     `protobuf:"bytes,2,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
-	WebauthnCredential *common.WebauthnCredential `protobuf:"bytes,3,opt,name=webauthn_credential,json=webauthnCredential,proto3" json:"webauthn_credential,omitempty"`
+	ShareConfig *common.WalletShareConfig `protobuf:"bytes,1,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
+	VaultCid    string                    `protobuf:"bytes,2,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
+	DidDocument *types.DidDocument        `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
 func (m *RefreshRequest) Reset()         { *m = RefreshRequest{} }
@@ -453,19 +470,18 @@ func (m *RefreshRequest) GetVaultCid() string {
 	return ""
 }
 
-func (m *RefreshRequest) GetWebauthnCredential() *common.WebauthnCredential {
+func (m *RefreshRequest) GetDidDocument() *types.DidDocument {
 	if m != nil {
-		return m.WebauthnCredential
+		return m.DidDocument
 	}
 	return nil
 }
 
 // RefreshResponse is the response to a Refresh request.
 type RefreshResponse struct {
-	Id          []byte                    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Address     string                    `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	ShareConfig *common.WalletShareConfig `protobuf:"bytes,3,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
-	VaultCid    string                    `protobuf:"bytes,4,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
+	Id          []byte             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Address     string             `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	DidDocument *types.DidDocument `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
 func (m *RefreshResponse) Reset()         { *m = RefreshResponse{} }
@@ -515,26 +531,18 @@ func (m *RefreshResponse) GetAddress() string {
 	return ""
 }
 
-func (m *RefreshResponse) GetShareConfig() *common.WalletShareConfig {
+func (m *RefreshResponse) GetDidDocument() *types.DidDocument {
 	if m != nil {
-		return m.ShareConfig
+		return m.DidDocument
 	}
 	return nil
 }
 
-func (m *RefreshResponse) GetVaultCid() string {
-	if m != nil {
-		return m.VaultCid
-	}
-	return ""
-}
-
 // SignRequest is the request to sign data with the private key.
 type SignRequest struct {
-	ShareConfig        *common.WalletShareConfig  `protobuf:"bytes,1,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
-	VaultCid           string                     `protobuf:"bytes,2,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
-	Data               []byte                     `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
-	WebauthnCredential *common.WebauthnCredential `protobuf:"bytes,4,opt,name=webauthn_credential,json=webauthnCredential,proto3" json:"webauthn_credential,omitempty"`
+	ShareConfig *common.WalletShareConfig `protobuf:"bytes,1,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
+	DidDocument *types.DidDocument        `protobuf:"bytes,2,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
+	Data        []byte                    `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 }
 
 func (m *SignRequest) Reset()         { *m = SignRequest{} }
@@ -577,23 +585,16 @@ func (m *SignRequest) GetShareConfig() *common.WalletShareConfig {
 	return nil
 }
 
-func (m *SignRequest) GetVaultCid() string {
+func (m *SignRequest) GetDidDocument() *types.DidDocument {
 	if m != nil {
-		return m.VaultCid
+		return m.DidDocument
 	}
-	return ""
+	return nil
 }
 
 func (m *SignRequest) GetData() []byte {
 	if m != nil {
 		return m.Data
-	}
-	return nil
-}
-
-func (m *SignRequest) GetWebauthnCredential() *common.WebauthnCredential {
-	if m != nil {
-		return m.WebauthnCredential
 	}
 	return nil
 }
@@ -669,11 +670,9 @@ func (m *SignResponse) GetCreator() string {
 
 // DeriveRequest is the request to derive a new key from the private key.
 type DeriveRequest struct {
-	ShareConfig        *common.WalletShareConfig  `protobuf:"bytes,1,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
-	VaultCid           string                     `protobuf:"bytes,2,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
-	Prefix             string                     `protobuf:"bytes,3,opt,name=prefix,proto3" json:"prefix,omitempty"`
-	ChildIndex         uint32                     `protobuf:"varint,4,opt,name=child_index,json=childIndex,proto3" json:"child_index,omitempty"`
-	WebauthnCredential *common.WebauthnCredential `protobuf:"bytes,5,opt,name=webauthn_credential,json=webauthnCredential,proto3" json:"webauthn_credential,omitempty"`
+	Prefix      string             `protobuf:"bytes,1,opt,name=prefix,proto3" json:"prefix,omitempty"`
+	ChildIndex  uint32             `protobuf:"varint,2,opt,name=child_index,json=childIndex,proto3" json:"child_index,omitempty"`
+	DidDocument *types.DidDocument `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
 func (m *DeriveRequest) Reset()         { *m = DeriveRequest{} }
@@ -709,20 +708,6 @@ func (m *DeriveRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DeriveRequest proto.InternalMessageInfo
 
-func (m *DeriveRequest) GetShareConfig() *common.WalletShareConfig {
-	if m != nil {
-		return m.ShareConfig
-	}
-	return nil
-}
-
-func (m *DeriveRequest) GetVaultCid() string {
-	if m != nil {
-		return m.VaultCid
-	}
-	return ""
-}
-
 func (m *DeriveRequest) GetPrefix() string {
 	if m != nil {
 		return m.Prefix
@@ -737,19 +722,18 @@ func (m *DeriveRequest) GetChildIndex() uint32 {
 	return 0
 }
 
-func (m *DeriveRequest) GetWebauthnCredential() *common.WebauthnCredential {
+func (m *DeriveRequest) GetDidDocument() *types.DidDocument {
 	if m != nil {
-		return m.WebauthnCredential
+		return m.DidDocument
 	}
 	return nil
 }
 
 // DeriveResponse is the response to a Derive request.
 type DeriveResponse struct {
-	Id          []byte                    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Address     string                    `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	ShareConfig *common.WalletShareConfig `protobuf:"bytes,3,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
-	VaultCid    string                    `protobuf:"bytes,4,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
+	Id          []byte             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Address     string             `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	DidDocument *types.DidDocument `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
 func (m *DeriveResponse) Reset()         { *m = DeriveResponse{} }
@@ -799,18 +783,11 @@ func (m *DeriveResponse) GetAddress() string {
 	return ""
 }
 
-func (m *DeriveResponse) GetShareConfig() *common.WalletShareConfig {
+func (m *DeriveResponse) GetDidDocument() *types.DidDocument {
 	if m != nil {
-		return m.ShareConfig
+		return m.DidDocument
 	}
 	return nil
-}
-
-func (m *DeriveResponse) GetVaultCid() string {
-	if m != nil {
-		return m.VaultCid
-	}
-	return ""
 }
 
 func init() {
@@ -831,67 +808,68 @@ func init() {
 func init() { proto.RegisterFile("highway/vault/v1/api.proto", fileDescriptor_fc75ed3c8267caa0) }
 
 var fileDescriptor_fc75ed3c8267caa0 = []byte{
-	// 957 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0x4f, 0x6f, 0xe3, 0x44,
-	0x14, 0xaf, 0xd3, 0x24, 0x6d, 0x5e, 0xd2, 0xb2, 0x4c, 0x11, 0x1b, 0x65, 0xdb, 0xb4, 0xeb, 0xfd,
-	0xd3, 0xec, 0x4a, 0xd8, 0xb4, 0xdc, 0x38, 0xd2, 0x0a, 0xa9, 0x42, 0x80, 0xe4, 0x85, 0x45, 0x70,
-	0xb1, 0x5c, 0xcf, 0xd4, 0x1e, 0x48, 0x66, 0xdc, 0xf1, 0x24, 0x6d, 0x84, 0x90, 0x10, 0x5a, 0x09,
-	0x8e, 0x48, 0x70, 0x44, 0x02, 0xbe, 0x01, 0x1f, 0x83, 0x03, 0x87, 0x95, 0xb8, 0x70, 0x41, 0x42,
-	0x2d, 0x7c, 0x0f, 0x34, 0xe3, 0x71, 0x9d, 0x64, 0xeb, 0x66, 0xa5, 0x85, 0xd5, 0x9e, 0xec, 0x79,
-	0xf3, 0x9b, 0x79, 0xbf, 0xf7, 0x7b, 0x33, 0xef, 0x0d, 0x74, 0x62, 0x1a, 0xc5, 0x27, 0xc1, 0xd8,
-	0x1d, 0x05, 0xc3, 0xbe, 0x74, 0x47, 0x3b, 0x6e, 0x90, 0x50, 0x27, 0x11, 0x5c, 0x72, 0x74, 0x3d,
-	0xe5, 0x4c, 0xc4, 0xc7, 0x8e, 0x81, 0x38, 0x1a, 0xe2, 0x8c, 0x76, 0x3a, 0xaf, 0x84, 0x7c, 0x30,
-	0xe0, 0x4c, 0xa1, 0x71, 0x20, 0x83, 0x0c, 0xde, 0xd1, 0x70, 0x97, 0x62, 0xc2, 0x24, 0x95, 0x63,
-	0x17, 0x53, 0x6c, 0x26, 0xd6, 0x23, 0xce, 0xa3, 0x3e, 0x51, 0x3b, 0xbb, 0x01, 0x63, 0x5c, 0x06,
-	0x92, 0x72, 0x96, 0x66, 0xb3, 0xf6, 0x36, 0x5c, 0xdb, 0x8b, 0x83, 0x7e, 0x9f, 0xb0, 0x88, 0x78,
-	0xe4, 0x78, 0x48, 0x52, 0x89, 0xd6, 0xa0, 0x26, 0x12, 0x9f, 0xe2, 0xb6, 0xb5, 0x65, 0xf5, 0x1a,
-	0x5e, 0x55, 0x24, 0x07, 0xd8, 0xfe, 0xd9, 0x82, 0x97, 0x27, 0x90, 0x69, 0xc2, 0x59, 0x4a, 0xd0,
-	0x06, 0x40, 0x4a, 0xd2, 0x94, 0x72, 0x56, 0xe0, 0x1b, 0xc6, 0x72, 0x80, 0xd1, 0x3a, 0x34, 0xc2,
-	0x7c, 0x4d, 0xbb, 0x92, 0xcd, 0x5e, 0x18, 0xd0, 0x75, 0x58, 0x12, 0x89, 0xcf, 0x82, 0x01, 0x69,
-	0x2f, 0xea, 0xb9, 0xba, 0x48, 0xde, 0x0b, 0x06, 0x7a, 0x57, 0x91, 0xf8, 0x5c, 0xd0, 0x88, 0xb2,
-	0xb4, 0x5d, 0xdd, 0x5a, 0x54, 0xeb, 0x44, 0xf2, 0x7e, 0x66, 0x30, 0xeb, 0x68, 0xc8, 0x59, 0xbb,
-	0x96, 0xaf, 0x3b, 0x08, 0x39, 0xb3, 0x03, 0x78, 0xc9, 0x23, 0x11, 0x4d, 0x25, 0x11, 0x79, 0x2c,
-	0x73, 0x08, 0xba, 0xb0, 0x16, 0x0a, 0xa2, 0x45, 0x0b, 0xfa, 0xbe, 0x30, 0x61, 0x69, 0xaa, 0x2d,
-	0x0f, 0x15, 0x53, 0x79, 0xc0, 0xf6, 0xd7, 0x16, 0x5c, 0x2b, 0x7c, 0x18, 0x15, 0xda, 0xb0, 0x94,
-	0x0e, 0xc3, 0x90, 0xa4, 0xa9, 0xf6, 0xb0, 0xec, 0xe5, 0x43, 0xf4, 0x31, 0xac, 0x8d, 0x88, 0xa0,
-	0x47, 0x34, 0xd4, 0xaa, 0xfb, 0x03, 0x22, 0x63, 0x8e, 0xf5, 0xfe, 0xcd, 0xdd, 0x9e, 0x63, 0x52,
-	0xac, 0x3e, 0x4e, 0x9e, 0x3a, 0xe7, 0xe1, 0xc4, 0x82, 0x77, 0x35, 0xde, 0x43, 0xa3, 0x27, 0x6c,
-	0xf6, 0x0f, 0x16, 0xac, 0xbc, 0x43, 0xc6, 0x11, 0x61, 0x79, 0xac, 0xaf, 0x42, 0x3d, 0x11, 0xe4,
-	0x88, 0x9e, 0x9a, 0x38, 0xcd, 0x48, 0x65, 0x41, 0xc6, 0x82, 0xa4, 0x31, 0xef, 0x67, 0xae, 0x6b,
-	0x5e, 0x61, 0x40, 0x1f, 0xc2, 0xda, 0x09, 0x39, 0x0c, 0x86, 0x32, 0x66, 0x7e, 0x11, 0xb0, 0xce,
-	0x48, 0x73, 0xf7, 0x76, 0x4e, 0x31, 0x3b, 0x73, 0xce, 0x68, 0xc7, 0xf9, 0xc8, 0x80, 0xf7, 0x0a,
-	0x71, 0xd0, 0xc9, 0x13, 0x36, 0xfb, 0x1f, 0x0b, 0x56, 0x73, 0x7a, 0x46, 0xa6, 0x55, 0xa8, 0x98,
-	0x1c, 0xb4, 0xbc, 0x0a, 0xc5, 0x4a, 0xb6, 0x00, 0x63, 0xa1, 0x64, 0xcb, 0xce, 0x46, 0x3e, 0x44,
-	0x6f, 0x43, 0x2b, 0x8d, 0x03, 0x41, 0xfc, 0x90, 0xb3, 0x23, 0x1a, 0x19, 0x32, 0xb7, 0x2e, 0x21,
-	0xa3, 0xce, 0x92, 0x7c, 0xa0, 0xb0, 0x7b, 0x1a, 0xea, 0x35, 0xd3, 0x62, 0x80, 0x6e, 0x40, 0x43,
-	0x5f, 0x1b, 0x3f, 0xa4, 0xb8, 0x5d, 0xd5, 0x3e, 0x96, 0xb5, 0x61, 0x8f, 0x62, 0xb4, 0x0f, 0x2d,
-	0x4c, 0xb1, 0x8f, 0x79, 0x38, 0x1c, 0x10, 0x26, 0xf5, 0x59, 0x6a, 0xee, 0xde, 0xbc, 0x3c, 0x29,
-	0xfb, 0x14, 0xef, 0x1b, 0xa0, 0xd7, 0xc4, 0xc5, 0xc0, 0xfe, 0xcd, 0x82, 0x55, 0x8f, 0x1c, 0x29,
-	0x35, 0xf3, 0x3c, 0xcc, 0xb2, 0xb7, 0xfe, 0x0b, 0xf6, 0x95, 0x19, 0xf6, 0xff, 0x53, 0xda, 0x7e,
-	0xb2, 0xd4, 0x1d, 0x32, 0xe1, 0xbc, 0x90, 0x79, 0xb3, 0xff, 0xb4, 0xa0, 0xf9, 0x80, 0x46, 0xec,
-	0xb9, 0xca, 0x8d, 0xa0, 0xaa, 0x8a, 0xad, 0x8e, 0xa8, 0xe5, 0xe9, 0xff, 0xb2, 0x14, 0x54, 0x9f,
-	0x31, 0x05, 0x9f, 0x42, 0x2b, 0x0b, 0xaf, 0x44, 0xfe, 0x75, 0x68, 0xa4, 0x34, 0x62, 0x81, 0x1c,
-	0x8a, 0xbc, 0x52, 0x15, 0x86, 0x4b, 0x89, 0xb6, 0x61, 0x29, 0x14, 0x24, 0x90, 0x5c, 0x18, 0x31,
-	0xf3, 0xa1, 0xfd, 0xa8, 0x02, 0x2b, 0xfb, 0x44, 0xd0, 0x11, 0x79, 0xae, 0x6a, 0x16, 0x95, 0x6a,
-	0x71, 0xaa, 0x52, 0x6d, 0x42, 0x33, 0x8c, 0x69, 0x1f, 0xfb, 0x94, 0x61, 0x72, 0xaa, 0xc9, 0xae,
-	0x78, 0xa0, 0x4d, 0x07, 0xca, 0x52, 0x26, 0x79, 0xed, 0x19, 0x25, 0xff, 0xd1, 0x82, 0xd5, 0x5c,
-	0x86, 0x17, 0xf2, 0xd0, 0xef, 0xfe, 0x52, 0x87, 0xda, 0x43, 0x35, 0x40, 0xdf, 0x5b, 0xd0, 0xb8,
-	0x68, 0xc4, 0xe8, 0x9e, 0x53, 0xf2, 0x4c, 0x70, 0x66, 0xdb, 0x7a, 0xe7, 0xfe, 0xd3, 0x40, 0x4d,
-	0x9b, 0x7b, 0xfd, 0xab, 0xdf, 0xff, 0xfe, 0xae, 0x72, 0x1f, 0xf5, 0x5c, 0xb5, 0xe6, 0x35, 0xca,
-	0xdd, 0xe9, 0x97, 0xca, 0x45, 0x13, 0x77, 0x3f, 0xd7, 0x4f, 0x85, 0x2f, 0xd0, 0x37, 0x16, 0x2c,
-	0xe7, 0x8d, 0x11, 0xf5, 0x4a, 0x5d, 0xcd, 0xf4, 0xe7, 0xce, 0xbd, 0xa7, 0x40, 0x1a, 0x4e, 0xdb,
-	0x9a, 0xd3, 0x4d, 0x7b, 0xb3, 0x84, 0x93, 0xc8, 0xbd, 0x7f, 0x69, 0x41, 0x3d, 0x6b, 0x3d, 0xe8,
-	0x6e, 0xe9, 0xf6, 0x53, 0xad, 0xb3, 0xb3, 0x3d, 0x17, 0x67, 0x48, 0xdc, 0xd1, 0x24, 0x36, 0xed,
-	0x8d, 0x12, 0x12, 0x9f, 0x65, 0x7e, 0x1f, 0x59, 0xb0, 0x64, 0xca, 0x28, 0xda, 0xbe, 0x22, 0xc4,
-	0xc9, 0xbe, 0xd1, 0xe9, 0xcd, 0x07, 0x1a, 0x16, 0x77, 0x35, 0x8b, 0x2d, 0xbb, 0x5b, 0x2a, 0x45,
-	0xe6, 0xfa, 0x14, 0xaa, 0xaa, 0x94, 0xa0, 0xdb, 0xa5, 0x3b, 0x4f, 0x14, 0xd2, 0xce, 0x9d, 0x39,
-	0x28, 0xe3, 0xfc, 0x96, 0x76, 0xbe, 0x61, 0xdf, 0x28, 0x71, 0xae, 0x6a, 0x91, 0xce, 0x41, 0x76,
-	0xa3, 0xae, 0xc8, 0xc1, 0x54, 0xe5, 0xb9, 0x22, 0x07, 0xd3, 0x57, 0x73, 0x6e, 0x0e, 0xb0, 0x86,
-	0xbf, 0xf5, 0xc1, 0xaf, 0x67, 0x5d, 0xeb, 0xf1, 0x59, 0xd7, 0xfa, 0xeb, 0xac, 0x6b, 0x7d, 0x7b,
-	0xde, 0x5d, 0x78, 0x7c, 0xde, 0x5d, 0xf8, 0xe3, 0xbc, 0xbb, 0xf0, 0xc9, 0x9b, 0x11, 0x95, 0xf1,
-	0xf0, 0x50, 0x5d, 0xcd, 0x6c, 0x8b, 0xf8, 0x58, 0x7f, 0x5d, 0x19, 0x53, 0x81, 0xfd, 0x24, 0x10,
-	0x72, 0xec, 0xca, 0x71, 0x42, 0x52, 0x77, 0xf6, 0x81, 0x7e, 0x58, 0xd7, 0xef, 0xe6, 0x37, 0xfe,
-	0x0d, 0x00, 0x00, 0xff, 0xff, 0x9e, 0x2c, 0x37, 0xe0, 0xbb, 0x0b, 0x00, 0x00,
+	// 971 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0xcd, 0x6e, 0x1c, 0xc5,
+	0x13, 0x77, 0xef, 0x97, 0xbd, 0xb5, 0x6b, 0xc7, 0xff, 0x76, 0xf4, 0xcf, 0x6a, 0x63, 0x2f, 0x66,
+	0x02, 0xf1, 0xda, 0x82, 0x19, 0x6c, 0x6e, 0x96, 0xb8, 0x60, 0x0b, 0xc9, 0x42, 0x10, 0x69, 0x82,
+	0x82, 0xe0, 0x32, 0x1a, 0x4f, 0xb7, 0x67, 0x1a, 0x66, 0xbb, 0xc7, 0x3d, 0xb3, 0x4b, 0x56, 0x11,
+	0x12, 0x1f, 0x87, 0xdc, 0x10, 0x52, 0x78, 0x00, 0x9e, 0x00, 0x1e, 0x80, 0x07, 0x80, 0x63, 0x24,
+	0x2e, 0x1c, 0x91, 0x0d, 0xef, 0x81, 0xba, 0xa7, 0xc7, 0x6b, 0x6f, 0x32, 0xde, 0x10, 0xad, 0xc4,
+	0x69, 0xb7, 0xab, 0x7f, 0x55, 0xf5, 0xab, 0xaa, 0xae, 0xaa, 0x81, 0x6e, 0xc4, 0xc2, 0xe8, 0x0b,
+	0x7f, 0xec, 0x8c, 0xfc, 0x61, 0x9c, 0x39, 0xa3, 0x5d, 0xc7, 0x4f, 0x98, 0x9d, 0x48, 0x91, 0x09,
+	0x7c, 0x2b, 0x15, 0x5c, 0x46, 0xa7, 0xb6, 0x81, 0xd8, 0x1a, 0x62, 0x8f, 0x76, 0xbb, 0x37, 0x03,
+	0x31, 0x18, 0x08, 0xae, 0xd0, 0xc4, 0xcf, 0xfc, 0x1c, 0xde, 0xdd, 0x78, 0xc6, 0xd4, 0x40, 0x10,
+	0x1a, 0xa7, 0xe6, 0x5a, 0x5b, 0x73, 0x18, 0xa1, 0x3c, 0x63, 0xd9, 0xd8, 0x21, 0x8c, 0x98, 0x8b,
+	0xf5, 0x50, 0x88, 0x30, 0xa6, 0xca, 0xb1, 0xe3, 0x73, 0x2e, 0x32, 0x3f, 0x63, 0x82, 0x1b, 0x35,
+	0xeb, 0x1d, 0x58, 0x3d, 0x88, 0xfc, 0x38, 0xa6, 0x3c, 0xa4, 0x2e, 0x3d, 0x1d, 0xd2, 0x34, 0xc3,
+	0x6b, 0x50, 0x97, 0x89, 0xc7, 0x48, 0x07, 0x6d, 0xa2, 0x7e, 0xd3, 0xad, 0xc9, 0xe4, 0x88, 0xe0,
+	0x9b, 0x50, 0x8f, 0xfd, 0x63, 0x1a, 0x77, 0x2a, 0x5a, 0x98, 0x1f, 0xac, 0x9f, 0x10, 0xfc, 0xef,
+	0x92, 0x7e, 0x9a, 0x08, 0x9e, 0x52, 0xbc, 0x01, 0x90, 0xd2, 0x34, 0x65, 0x82, 0x4f, 0xac, 0x34,
+	0x8d, 0xe4, 0x88, 0xe0, 0x6d, 0x58, 0x0d, 0x24, 0xd5, 0x34, 0x3c, 0x91, 0x68, 0x36, 0xc6, 0xea,
+	0x8d, 0x42, 0x7e, 0x2f, 0x17, 0xe3, 0x5b, 0xb0, 0x28, 0x13, 0x8f, 0xfb, 0x03, 0xda, 0xa9, 0x6a,
+	0x44, 0x43, 0x26, 0x1f, 0xfa, 0x03, 0xed, 0x42, 0x26, 0x9e, 0x90, 0x2c, 0x64, 0x3c, 0xed, 0xd4,
+	0x36, 0xab, 0xca, 0x85, 0x4c, 0xee, 0xe5, 0x02, 0xa3, 0xc7, 0x02, 0xc1, 0x3b, 0xf5, 0x42, 0xef,
+	0x28, 0x10, 0xdc, 0x1a, 0xc1, 0x0d, 0x97, 0x86, 0x2c, 0xcd, 0xa8, 0x2c, 0xc2, 0x9d, 0xc1, 0xd6,
+	0x81, 0xb5, 0x40, 0x52, 0x9d, 0x57, 0x3f, 0xf6, 0xa4, 0x89, 0xd1, 0x10, 0xc6, 0x93, 0xab, 0x8b,
+	0xe8, 0x2f, 0xd2, 0x57, 0x9d, 0xa4, 0xcf, 0x7a, 0x8c, 0x60, 0x75, 0xe2, 0xd8, 0x20, 0x3b, 0xb0,
+	0x98, 0x0e, 0x83, 0x80, 0xa6, 0xa9, 0x76, 0xbb, 0xe4, 0x16, 0x47, 0xfc, 0x09, 0xac, 0x8d, 0xa8,
+	0x64, 0x27, 0x2c, 0xc8, 0xd3, 0x34, 0xa0, 0x59, 0x24, 0x88, 0x76, 0xda, 0xda, 0xeb, 0xdb, 0xe6,
+	0xe5, 0xa8, 0x1f, 0xbb, 0x28, 0xb9, 0xfd, 0xe0, 0x92, 0xc2, 0x07, 0x1a, 0xef, 0xe2, 0xd1, 0x33,
+	0x32, 0xeb, 0x47, 0x04, 0xcb, 0xef, 0xd3, 0x71, 0x48, 0x79, 0x91, 0x80, 0xff, 0x43, 0x23, 0x91,
+	0xf4, 0x84, 0x3d, 0x34, 0xc1, 0x9b, 0x13, 0x5e, 0x87, 0x66, 0x16, 0x49, 0x9a, 0x46, 0x22, 0xce,
+	0x5d, 0xd7, 0xdd, 0x89, 0xa0, 0x8c, 0x62, 0x75, 0x0e, 0x14, 0xff, 0x46, 0xb0, 0x52, 0x50, 0x34,
+	0xa9, 0x5a, 0x81, 0x8a, 0x29, 0x4e, 0xdb, 0xad, 0x30, 0xa2, 0x52, 0xe7, 0x13, 0x22, 0x55, 0xea,
+	0xf2, 0x4a, 0x14, 0x47, 0xfc, 0x1e, 0xb4, 0xd3, 0xc8, 0x97, 0xd4, 0x0b, 0x04, 0x3f, 0x61, 0xa1,
+	0x21, 0x74, 0xa7, 0x20, 0x94, 0xf7, 0x96, 0x3d, 0xda, 0xb5, 0x3f, 0x56, 0xcf, 0x36, 0xbb, 0xaf,
+	0xb0, 0x07, 0x1a, 0xea, 0xb6, 0xd2, 0xc9, 0x01, 0xdf, 0x86, 0xa6, 0xee, 0x34, 0x2f, 0x60, 0xa4,
+	0x53, 0xd3, 0x3e, 0x96, 0xb4, 0xe0, 0x80, 0x11, 0x7c, 0x08, 0x6d, 0xc2, 0x88, 0x47, 0x44, 0x30,
+	0x1c, 0x50, 0x9e, 0xe9, 0x47, 0xd6, 0xda, 0x7b, 0xf5, 0xf9, 0x51, 0x1f, 0x32, 0x72, 0x68, 0x80,
+	0x6e, 0x8b, 0x4c, 0x0e, 0xd6, 0x2f, 0x08, 0x56, 0x5c, 0x7a, 0xa2, 0x32, 0x5a, 0xd4, 0x62, 0x9a,
+	0x3d, 0x9a, 0x07, 0xfb, 0xca, 0x0c, 0xf6, 0xd5, 0x97, 0x62, 0xff, 0x35, 0x52, 0xbd, 0x64, 0xd8,
+	0xff, 0xeb, 0x32, 0xcd, 0x87, 0xc3, 0xcf, 0x08, 0x5a, 0xf7, 0x59, 0xc8, 0xe7, 0x9d, 0xbe, 0x69,
+	0x76, 0x95, 0x97, 0x61, 0x87, 0x31, 0xd4, 0xd4, 0x00, 0xd7, 0xb1, 0xb5, 0x5d, 0xfd, 0xdf, 0xfa,
+	0x0c, 0xda, 0x39, 0xe1, 0x92, 0x8c, 0xad, 0x43, 0x33, 0x65, 0x21, 0xf7, 0xb3, 0xa1, 0xcc, 0x87,
+	0x4c, 0xdb, 0x9d, 0x08, 0x9e, 0x67, 0x51, 0xe5, 0x58, 0x8f, 0x4d, 0x21, 0xcd, 0x33, 0x2d, 0x8e,
+	0xd6, 0x77, 0x08, 0x96, 0x0f, 0xa9, 0x64, 0x23, 0x3a, 0xab, 0xd5, 0x5f, 0x81, 0x56, 0x10, 0xb1,
+	0x98, 0x78, 0x8c, 0x13, 0xfa, 0x50, 0xfb, 0x5d, 0x76, 0x41, 0x8b, 0x8e, 0x94, 0x64, 0x4e, 0xe5,
+	0xfa, 0x0a, 0xc1, 0x4a, 0x41, 0xe8, 0xbf, 0x79, 0x31, 0x7b, 0xbf, 0x36, 0xa0, 0xfe, 0x40, 0x35,
+	0x02, 0xfe, 0x01, 0x41, 0xf3, 0x62, 0x77, 0xe1, 0x6d, 0xbb, 0x64, 0x1d, 0xdb, 0xd3, 0xfb, 0xb1,
+	0xbb, 0xf3, 0x22, 0xd0, 0x3c, 0x3c, 0xeb, 0xad, 0x6f, 0x7e, 0xff, 0xeb, 0x49, 0x65, 0x07, 0xf7,
+	0x1d, 0xa5, 0xf3, 0x26, 0x13, 0xce, 0xd5, 0x35, 0x1e, 0x14, 0x1a, 0xce, 0x23, 0xbd, 0x34, 0xbe,
+	0xc4, 0x4f, 0x10, 0x2c, 0x15, 0x9b, 0x02, 0xf7, 0x4b, 0x5d, 0x4d, 0x6d, 0xb1, 0xee, 0xf6, 0x0b,
+	0x20, 0x0d, 0xa7, 0x3d, 0xcd, 0xe9, 0x0d, 0x6b, 0xab, 0x84, 0x93, 0x34, 0x0a, 0x05, 0xa5, 0x7d,
+	0xb4, 0x83, 0xbf, 0x45, 0xd0, 0xc8, 0x47, 0x32, 0xbe, 0x5b, 0xea, 0xe9, 0xca, 0x5a, 0xe9, 0x6e,
+	0xcd, 0xc4, 0x19, 0x3e, 0x7d, 0xcd, 0xc7, 0xb2, 0x36, 0x4a, 0xf8, 0x7c, 0xae, 0xe1, 0x8a, 0xc5,
+	0x63, 0x04, 0x8b, 0x66, 0xe4, 0xe0, 0xad, 0x6b, 0x02, 0xbe, 0x3c, 0x52, 0xbb, 0xfd, 0xd9, 0x40,
+	0x43, 0x64, 0x5b, 0x13, 0xb9, 0x63, 0xf5, 0x4a, 0x13, 0xa3, 0xf1, 0x8a, 0xc9, 0x23, 0xa8, 0xa9,
+	0x36, 0xc6, 0xaf, 0x95, 0x1a, 0xbf, 0x34, 0x96, 0xba, 0xaf, 0xcf, 0x40, 0x19, 0xff, 0x77, 0xb5,
+	0xff, 0x4d, 0xeb, 0x76, 0x89, 0x7f, 0x35, 0x07, 0x8a, 0x62, 0xe4, 0x6d, 0x74, 0x4d, 0x31, 0xae,
+	0x34, 0xfe, 0x35, 0xc5, 0xb8, 0xda, 0x8f, 0x33, 0x8b, 0x41, 0x34, 0x7c, 0x1f, 0xed, 0xbc, 0xfb,
+	0xd1, 0x6f, 0x67, 0x3d, 0xf4, 0xf4, 0xac, 0x87, 0xfe, 0x3c, 0xeb, 0xa1, 0xef, 0xcf, 0x7b, 0x0b,
+	0x4f, 0xcf, 0x7b, 0x0b, 0x7f, 0x9c, 0xf7, 0x16, 0x3e, 0xdd, 0x0f, 0x59, 0x16, 0x0d, 0x8f, 0xd5,
+	0xb8, 0xcd, 0xad, 0x44, 0xa7, 0xfa, 0xd7, 0xc9, 0x22, 0x26, 0x89, 0x97, 0xf8, 0x32, 0x1b, 0x3b,
+	0xd9, 0x38, 0xa1, 0xa9, 0x33, 0xfd, 0x51, 0x7b, 0xdc, 0xd0, 0xdf, 0xa5, 0x6f, 0xff, 0x13, 0x00,
+	0x00, 0xff, 0xff, 0x84, 0xeb, 0x14, 0xfb, 0x3a, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1186,6 +1164,13 @@ func (m *ChallengeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Label) > 0 {
+		i -= len(m.Label)
+		copy(dAtA[i:], m.Label)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Label)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.RpId) > 0 {
 		i -= len(m.RpId)
 		copy(dAtA[i:], m.RpId)
@@ -1239,10 +1224,10 @@ func (m *ChallengeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Challenge) > 0 {
-		i -= len(m.Challenge)
-		copy(dAtA[i:], m.Challenge)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Challenge)))
+	if len(m.CreationOptions) > 0 {
+		i -= len(m.CreationOptions)
+		copy(dAtA[i:], m.CreationOptions)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.CreationOptions)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1276,6 +1261,13 @@ func (m *RegisterRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.RpId) > 0 {
+		i -= len(m.RpId)
+		copy(dAtA[i:], m.RpId)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.RpId)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.CredentialResponse) > 0 {
 		i -= len(m.CredentialResponse)
 		copy(dAtA[i:], m.CredentialResponse)
@@ -1358,9 +1350,9 @@ func (m *KeygenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.WebauthnCredential != nil {
+	if m.VerificationMethod != nil {
 		{
-			size, err := m.WebauthnCredential.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.VerificationMethod.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1473,9 +1465,9 @@ func (m *RefreshRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.WebauthnCredential != nil {
+	if m.DidDocument != nil {
 		{
-			size, err := m.WebauthnCredential.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1527,16 +1519,9 @@ func (m *RefreshResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.VaultCid) > 0 {
-		i -= len(m.VaultCid)
-		copy(dAtA[i:], m.VaultCid)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.VaultCid)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if m.ShareConfig != nil {
+	if m.DidDocument != nil {
 		{
-			size, err := m.ShareConfig.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1583,18 +1568,6 @@ func (m *SignRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.WebauthnCredential != nil {
-		{
-			size, err := m.WebauthnCredential.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintApi(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x22
-	}
 	if len(m.Data) > 0 {
 		i -= len(m.Data)
 		copy(dAtA[i:], m.Data)
@@ -1602,10 +1575,15 @@ func (m *SignRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.VaultCid) > 0 {
-		i -= len(m.VaultCid)
-		copy(dAtA[i:], m.VaultCid)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.VaultCid)))
+	if m.DidDocument != nil {
+		{
+			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintApi(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1695,9 +1673,9 @@ func (m *DeriveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.WebauthnCredential != nil {
+	if m.DidDocument != nil {
 		{
-			size, err := m.WebauthnCredential.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1705,36 +1683,17 @@ func (m *DeriveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintApi(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x1a
 	}
 	if m.ChildIndex != 0 {
 		i = encodeVarintApi(dAtA, i, uint64(m.ChildIndex))
 		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x10
 	}
 	if len(m.Prefix) > 0 {
 		i -= len(m.Prefix)
 		copy(dAtA[i:], m.Prefix)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Prefix)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.VaultCid) > 0 {
-		i -= len(m.VaultCid)
-		copy(dAtA[i:], m.VaultCid)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.VaultCid)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.ShareConfig != nil {
-		{
-			size, err := m.ShareConfig.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintApi(dAtA, i, uint64(size))
-		}
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1761,16 +1720,9 @@ func (m *DeriveResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.VaultCid) > 0 {
-		i -= len(m.VaultCid)
-		copy(dAtA[i:], m.VaultCid)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.VaultCid)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if m.ShareConfig != nil {
+	if m.DidDocument != nil {
 		{
-			size, err := m.ShareConfig.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1818,6 +1770,10 @@ func (m *ChallengeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
+	l = len(m.Label)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
 	return n
 }
 
@@ -1831,7 +1787,7 @@ func (m *ChallengeResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	l = len(m.Challenge)
+	l = len(m.CreationOptions)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
@@ -1863,6 +1819,10 @@ func (m *RegisterRequest) Size() (n int) {
 		n += 1 + l + sovApi(uint64(l))
 	}
 	l = len(m.CredentialResponse)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.RpId)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
@@ -1898,8 +1858,8 @@ func (m *KeygenRequest) Size() (n int) {
 	if m.Threshold != 0 {
 		n += 1 + sovApi(uint64(m.Threshold))
 	}
-	if m.WebauthnCredential != nil {
-		l = m.WebauthnCredential.Size()
+	if m.VerificationMethod != nil {
+		l = m.VerificationMethod.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	return n
@@ -1948,8 +1908,8 @@ func (m *RefreshRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	if m.WebauthnCredential != nil {
-		l = m.WebauthnCredential.Size()
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	return n
@@ -1969,12 +1929,8 @@ func (m *RefreshResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	if m.ShareConfig != nil {
-		l = m.ShareConfig.Size()
-		n += 1 + l + sovApi(uint64(l))
-	}
-	l = len(m.VaultCid)
-	if l > 0 {
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	return n
@@ -1990,16 +1946,12 @@ func (m *SignRequest) Size() (n int) {
 		l = m.ShareConfig.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
-	l = len(m.VaultCid)
-	if l > 0 {
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	l = len(m.Data)
 	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	if m.WebauthnCredential != nil {
-		l = m.WebauthnCredential.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	return n
@@ -2036,14 +1988,6 @@ func (m *DeriveRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ShareConfig != nil {
-		l = m.ShareConfig.Size()
-		n += 1 + l + sovApi(uint64(l))
-	}
-	l = len(m.VaultCid)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
 	l = len(m.Prefix)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
@@ -2051,8 +1995,8 @@ func (m *DeriveRequest) Size() (n int) {
 	if m.ChildIndex != 0 {
 		n += 1 + sovApi(uint64(m.ChildIndex))
 	}
-	if m.WebauthnCredential != nil {
-		l = m.WebauthnCredential.Size()
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	return n
@@ -2072,12 +2016,8 @@ func (m *DeriveResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	if m.ShareConfig != nil {
-		l = m.ShareConfig.Size()
-		n += 1 + l + sovApi(uint64(l))
-	}
-	l = len(m.VaultCid)
-	if l > 0 {
+	if m.DidDocument != nil {
+		l = m.DidDocument.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	return n
@@ -2149,6 +2089,38 @@ func (m *ChallengeRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.RpId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2234,7 +2206,7 @@ func (m *ChallengeResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Challenge", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CreationOptions", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2262,7 +2234,7 @@ func (m *ChallengeResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Challenge = string(dAtA[iNdEx:postIndex])
+			m.CreationOptions = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -2446,7 +2418,7 @@ func (m *RegisterRequest) Unmarshal(dAtA []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CredentialResponse", wireType)
 			}
-			var byteLen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -2456,25 +2428,55 @@ func (m *RegisterRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if byteLen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthApi
 			}
-			postIndex := iNdEx + byteLen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthApi
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.CredentialResponse = append(m.CredentialResponse[:0], dAtA[iNdEx:postIndex]...)
-			if m.CredentialResponse == nil {
-				m.CredentialResponse = []byte{}
+			m.CredentialResponse = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpId", wireType)
 			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2685,7 +2687,7 @@ func (m *KeygenRequest) Unmarshal(dAtA []byte) error {
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WebauthnCredential", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field VerificationMethod", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2712,10 +2714,10 @@ func (m *KeygenRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.WebauthnCredential == nil {
-				m.WebauthnCredential = &common.WebauthnCredential{}
+			if m.VerificationMethod == nil {
+				m.VerificationMethod = &types.VerificationMethod{}
 			}
-			if err := m.WebauthnCredential.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.VerificationMethod.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3059,7 +3061,7 @@ func (m *RefreshRequest) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WebauthnCredential", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3086,10 +3088,10 @@ func (m *RefreshRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.WebauthnCredential == nil {
-				m.WebauthnCredential = &common.WebauthnCredential{}
+			if m.DidDocument == nil {
+				m.DidDocument = &types.DidDocument{}
 			}
-			if err := m.WebauthnCredential.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3211,7 +3213,7 @@ func (m *RefreshResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ShareConfig", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3238,44 +3240,12 @@ func (m *RefreshResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.ShareConfig == nil {
-				m.ShareConfig = &common.WalletShareConfig{}
+			if m.DidDocument == nil {
+				m.DidDocument = &types.DidDocument{}
 			}
-			if err := m.ShareConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VaultCid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.VaultCid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3365,9 +3335,9 @@ func (m *SignRequest) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VaultCid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -3377,23 +3347,27 @@ func (m *SignRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthApi
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthApi
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.VaultCid = string(dAtA[iNdEx:postIndex])
+			if m.DidDocument == nil {
+				m.DidDocument = &types.DidDocument{}
+			}
+			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -3427,42 +3401,6 @@ func (m *SignRequest) Unmarshal(dAtA []byte) error {
 			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
 			if m.Data == nil {
 				m.Data = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WebauthnCredential", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.WebauthnCredential == nil {
-				m.WebauthnCredential = &common.WebauthnCredential{}
-			}
-			if err := m.WebauthnCredential.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
 			}
 			iNdEx = postIndex
 		default:
@@ -3701,74 +3639,6 @@ func (m *DeriveRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ShareConfig", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.ShareConfig == nil {
-				m.ShareConfig = &common.WalletShareConfig{}
-			}
-			if err := m.ShareConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VaultCid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.VaultCid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Prefix", wireType)
 			}
 			var stringLen uint64
@@ -3799,7 +3669,7 @@ func (m *DeriveRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Prefix = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ChildIndex", wireType)
 			}
@@ -3818,9 +3688,9 @@ func (m *DeriveRequest) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 5:
+		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WebauthnCredential", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3847,10 +3717,10 @@ func (m *DeriveRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.WebauthnCredential == nil {
-				m.WebauthnCredential = &common.WebauthnCredential{}
+			if m.DidDocument == nil {
+				m.DidDocument = &types.DidDocument{}
 			}
-			if err := m.WebauthnCredential.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3972,7 +3842,7 @@ func (m *DeriveResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ShareConfig", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3999,44 +3869,12 @@ func (m *DeriveResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.ShareConfig == nil {
-				m.ShareConfig = &common.WalletShareConfig{}
+			if m.DidDocument == nil {
+				m.DidDocument = &types.DidDocument{}
 			}
-			if err := m.ShareConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VaultCid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.VaultCid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

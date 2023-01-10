@@ -3,9 +3,12 @@ package types
 import (
 	"crypto"
 	"crypto/ed25519"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	fmt "fmt"
+	"strconv"
+	"strings"
 
 	"github.com/shengdoushi/base58"
 	common "github.com/sonr-hq/sonr/pkg/common"
@@ -34,14 +37,20 @@ func WithController(v string) VerificationMethodOption {
 
 // NewWebAuthnVM creates a new WebAuthn VerificationMethod
 func NewWebAuthnVM(webauthnCredential *common.WebauthnCredential, options ...VerificationMethodOption) (*VerificationMethod, error) {
-	// Add Base58 ID to Credential
-	id := fmt.Sprintf("did:webauth:%s", base58.Encode(webauthnCredential.Id, base58.BitcoinAlphabet))
-
 	// Configure base Verification MEthod
 	vm := &VerificationMethod{
-		ID:                 id,
+		ID:                 fmt.Sprintf("did:webauth:%s", base58.Encode(webauthnCredential.Id, base58.BitcoinAlphabet)),
 		Type:               KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018,
+		PublicKeyMultibase: base64.StdEncoding.EncodeToString(webauthnCredential.PublicKey),
 		WebauthnCredential: webauthnCredential,
+		Metadata: map[string]string{
+			"credential_id":               base64.StdEncoding.EncodeToString(webauthnCredential.Id),
+			"authenticator.aaguid":        base64.StdEncoding.EncodeToString(webauthnCredential.Authenticator.Aaguid),
+			"authenticator.clone_warning": ConvertBoolToString(webauthnCredential.Authenticator.CloneWarning),
+			"authenticator.sign_count":    strconv.FormatUint(uint64(webauthnCredential.Authenticator.SignCount), 10),
+			"transport":                   strings.Join(webauthnCredential.Transport, ","),
+			"attestion_type":              webauthnCredential.AttestationType,
+		},
 	}
 
 	// Apply VerificationMethod Options

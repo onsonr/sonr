@@ -2,10 +2,13 @@ package fs
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	files "github.com/ipfs/go-ipfs-files"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
 // Directories created for every user
@@ -20,6 +23,9 @@ var k_DEFAULT_DIRS = []string{
 type VaultFS interface {
 	// CID
 	CID() string
+
+	// Service returns the DID Service configuration of the Vault
+	Service() *types.Service
 
 	// Address
 	Address() string
@@ -63,6 +69,16 @@ func New(ctx context.Context, address string, ipfs ipfs.IPFS, opts ...Option) (V
 // Returning the IPFS path of the vault
 func (c *Config) CID() string {
 	return c.ipfsPath.String()
+}
+
+// Returning the IPFS path of the vault
+func (c *Config) Service() *types.Service {
+	baseCid := strings.Split(c.CID(), "/")[1]
+	return &types.Service{
+		ID:              fmt.Sprintf("did:ipfs:%s", baseCid),
+		Type:            types.ServiceType_ServiceType_ENCRYPTED_DATA_VAULT,
+		ServiceEndpoint: fmt.Sprintf("%s/ipfs/%s", c.resolverUrl, baseCid),
+	}
 }
 
 // Returning the address of the vault

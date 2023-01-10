@@ -104,7 +104,6 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/sonr-hq/sonr/core/highway"
 	identitymodule "github.com/sonr-hq/sonr/x/identity"
 	identitymodulekeeper "github.com/sonr-hq/sonr/x/identity/keeper"
 	identitymoduletypes "github.com/sonr-hq/sonr/x/identity/types"
@@ -205,7 +204,7 @@ func init() {
 // capabilities aren't needed for testing.
 type App struct {
 	*baseapp.BaseApp
-	highway *highway.HighwayNode
+	highway *HighwayNode
 
 	cdc               *codec.LegacyAmino
 	appCodec          codec.Codec
@@ -303,7 +302,7 @@ func New(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
-		highway:           highway.NewHighwayNode(),
+		highway:           NewHighwayNode(),
 	}
 
 	app.ParamsKeeper = initParamsKeeper(

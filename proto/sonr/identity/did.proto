@@ -29,6 +29,7 @@ message VerificationMethod {
   string public_key_multibase = 5; // optional
   string blockchain_account_id = 6; // optional
   common.v1.WebauthnCredential webauthn_credential = 7; // optional
+  map<string, string> metadata = 8;
 }
 
 message VerificationRelationship {

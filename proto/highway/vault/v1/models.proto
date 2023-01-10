@@ -4,6 +4,7 @@ syntax = "proto3";
 package sonrhq.highway.vault.v1;
 import "common/v1/data.proto";
 import "google/api/annotations.proto";
+import "sonr/identity/did.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
 
 // Account is used for storing all credentials and their locations to be encrypted.
@@ -25,20 +26,4 @@ message Credential {
 
     // Webauthn is for PassKey data of the credential.
     bytes credential = 3;
-}
-
-// Session is used for caching a session.
-message Session {
-    // Id is the session id.
-    string id = 1;
-
-    // Challenge is the challenge used for the session.
-    string challenge = 2;
-
-    // RpId is the relying party id specified by the client.
-    string rp_id = 3;
-
-
-    // Origins is the list of origins specified by the client.
-    repeated string rp_origins = 4;
 }

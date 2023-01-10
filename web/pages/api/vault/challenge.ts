@@ -22,11 +22,17 @@ export default async function handler(req: NextRequest) {
     requestOptions
   );
   const data = await resp.json();
-  console.log(data);
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      "content-type": "application/json",
-    },
-  });
+  return new Response(
+    JSON.stringify({
+      session_id: data.session_id,
+      creation_options: data.creation_options,
+      domain: domain,
+    }),
+    {
+      status: 200,
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+  );
 }

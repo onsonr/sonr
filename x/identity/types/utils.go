@@ -51,6 +51,21 @@ func IndexOf(vs []string, t string) int {
 	return -1
 }
 
+func ConvertBoolToString(v bool) string {
+	if v {
+		return "TRUE"
+	} else {
+		return "FALSE"
+	}
+}
+
+func ConvertStringToBool(v string) bool {
+	if v == "TRUE" {
+		return true
+	}
+	return false
+}
+
 // Contains returns true if the string is in the slice
 func Contains(vs []string, t string) bool {
 	return IndexOf(vs, t) >= 0
