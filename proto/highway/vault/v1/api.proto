@@ -12,12 +12,15 @@ option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 message ChallengeRequest {
     // Optional RP ID to use for the challenge.
     string rp_id = 1;
+
+    // Label to use for the device.
+    string label = 2;
 }
 
 // ChallengeResponse is the response to a Challenge request.
 message ChallengeResponse {
     string session_id = 1;
-    string challenge = 2;
+    string creation_options = 2;
     string rp_name = 3;
     repeated string rp_origins = 4;
     string rp_icon = 5;

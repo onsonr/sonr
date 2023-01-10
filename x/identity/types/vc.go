@@ -6,18 +6,30 @@ import (
 )
 
 func (wvm *VerificationMethod) WebAuthnID() []byte {
-	return []byte(wvm.ID)
+	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+		return []byte(wvm.ID)
+	}
+	return nil
 }
 
 func (wvm *VerificationMethod) WebAuthnName() string {
-	return wvm.ID
+	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+		return "Sonr"
+	}
+	return ""
 }
 
 func (wvm *VerificationMethod) WebAuthnDisplayName() string {
-	return wvm.ID
+	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+		return wvm.ID
+	}
+	return ""
 }
 
 func (wvm *VerificationMethod) WebAuthnIcon() string {
+	if wvm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+		return "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png"
+	}
 	return ""
 }
 

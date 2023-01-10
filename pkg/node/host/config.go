@@ -53,11 +53,11 @@ var (
 // Options for the node
 //
 
-// NodeOption is a function that configures a Node
-type NodeOption func(*P2PHost) error
+// Option is a function that configures a Node
+type Option func(*P2PHost) error
 
 // WithBootstrapMultiaddrs sets the bootstrap nodes
-func WithBootstrapMultiaddrs(addrs []string) NodeOption {
+func WithBootstrapMultiaddrs(addrs []string) Option {
 	return func(n *P2PHost) error {
 		n.bootstrappers = append(n.bootstrappers, addrs...)
 		return nil
@@ -65,7 +65,7 @@ func WithBootstrapMultiaddrs(addrs []string) NodeOption {
 }
 
 // WithGroupIds sets the peer ids for the node
-func WithGroupIds(peerIds ...peer.ID) NodeOption {
+func WithGroupIds(peerIds ...peer.ID) Option {
 	return func(c *P2PHost) error {
 		if len(peerIds) > 0 {
 			c.mpcPeerIds = peerIds
@@ -75,7 +75,7 @@ func WithGroupIds(peerIds ...peer.ID) NodeOption {
 }
 
 // WithNodeCallback sets the callback for the motor
-func WithNodeCallback(callback common.NodeCallback) NodeOption {
+func WithNodeCallback(callback common.NodeCallback) Option {
 	return func(c *P2PHost) error {
 		c.callback = callback
 		return nil
@@ -83,7 +83,7 @@ func WithNodeCallback(callback common.NodeCallback) NodeOption {
 }
 
 // WithPartyId sets the party id for the node. This is to be replaced by the User defined label for the device
-func WithPartyId(partyId string) NodeOption {
+func WithPartyId(partyId string) Option {
 	return func(c *P2PHost) error {
 		c.partyId = party.ID(partyId)
 		return nil
@@ -91,7 +91,7 @@ func WithPartyId(partyId string) NodeOption {
 }
 
 // WithWalletShare sets the wallet share for the node
-func WithWalletShare(walletShare common.WalletShare) NodeOption {
+func WithWalletShare(walletShare common.WalletShare) Option {
 	return func(c *P2PHost) error {
 		c.walletShare = walletShare
 		return nil
