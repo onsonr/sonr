@@ -35,6 +35,8 @@ import {
   getBytesFromBase64,
 } from "../types/base64";
 
+import axios from "axios";
+
 export default function SignUp() {
   const snackbar = useSnackbar();
   const [loading, setLoading] = useState(false);
@@ -113,11 +115,22 @@ export default function SignUp() {
       snackbar.error("Credential not found.");
       return;
     }
+    setLoading(true);
     let credResp = credential.response as AuthenticatorAttestationResponse;
     let attestationObject = credResp.attestationObject;
     let clientDataJSON = credResp.clientDataJSON;
     let rawId = credential.rawId;
-    setLoading(true);
+    let credRespString = JSON.stringify({
+      id: credential.id,
+      type: credential.type,
+      rawId: arrayBufferEncode(rawId),
+      clientExtensionResults: credential.getClientExtensionResults(),
+      response: {
+        attestationObject: arrayBufferEncode(attestationObject),
+        clientDataJSON: arrayBufferEncode(clientDataJSON),
+      },
+      transports: credResp.getTransports(),
+    });
     const response = await fetch("/api/vault/register", {
       method: "POST",
       headers: {
@@ -125,16 +138,7 @@ export default function SignUp() {
       },
       body: JSON.stringify({
         session_id: session,
-        credential: {
-          id: credential.id,
-          rawId: arrayBufferEncode(rawId),
-          type: credential.type,
-          clientExtensionResults: credential.getClientExtensionResults(),
-          response: {
-            attestationObject: arrayBufferEncode(attestationObject),
-            clientDataJSON: arrayBufferEncode(clientDataJSON),
-          },
-        },
+        credential_response: credRespString,
       }),
     });
     const resp = await response.json();

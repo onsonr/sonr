@@ -1,14 +1,15 @@
 package highway
 
 import (
-	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
@@ -36,14 +37,23 @@ var (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
-	highway ipfs.IPFS
-	rpName  string
-	rpIcon  string
-	cache   *gocache.Cache
+	highway  ipfs.IPFS
+	rpName   string
+	rpIcon   string
+	cache    *gocache.Cache
+	webauthn *webauthn.WebAuthn
 }
 
 // It creates a new VaultService and registers it with the gRPC server
 func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway ipfs.IPFS, cache *gocache.Cache) (*VaultService, error) {
+	wauth, err := webauthn.New(&webauthn.Config{
+		RPDisplayName: "Sonr",
+		RPID:          "sonr.id",
+		RPOrigin:      "https://sonr.id",
+	})
+	vm := types.VerificationMethod{}
+	wauth.BeginRegistration(&vm)
+
 	srv := &VaultService{
 		cache:   cache,
 		highway: hway,
@@ -51,7 +61,7 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway ipfs.IPFS,
 		rpName: "Sonr",
 		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
 	}
-	err := v1.RegisterVaultHandlerServer(ctx, mux, srv)
+	err = v1.RegisterVaultHandlerServer(ctx, mux, srv)
 	if err != nil {
 		return nil, err
 	}
@@ -100,14 +110,17 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	}
 
 	// Verify the challenge
-	err = pcc.Verify(session.Challenge, false, session.RpId, defaultRpOrigins)
+	err = pcc.Verify(session.Challenge, false, req.RpId, defaultRpOrigins)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to verify session with client credential data: %s", err))
+		return nil, errors.New(fmt.Sprintf("ERROR: %s, Original Challenge: %s, RPID: %s", err, session.Challenge, req.RpId))
 	}
 
 	// Get WebauthnCredential
 	cred := common.NewWebAuthnCredential(pcc)
-	vm, _ := types.NewWebAuthnVM(cred)
+	vm, err := types.NewWebAuthnVM(cred)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Failed to create new verification method: %s", err))
+	}
 
 	// Return Register Response
 	return &v1.RegisterResponse{
@@ -262,7 +275,29 @@ func (v *VaultService) makeNewSession(rpId string) (*v1.Session, error) {
 
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
 func getParsedCredentialCreationData(bz string) (*protocol.ParsedCredentialCreationData, error) {
-	// Get Credential Creation Response
-	bzReader := bytes.NewReader([]byte(bz))
-	return protocol.ParseCredentialCreationResponseBody(bzReader)
+	// Get Credential Creation Respons
+	ccr := protocol.CredentialCreationResponse{}
+	err := json.Unmarshal([]byte(bz), &ccr)
+	if err != nil {
+		return nil, err
+	}
+
+	// Parse the response
+	var pcc protocol.ParsedCredentialCreationData
+	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
+	pcc.Raw = ccr
+
+	// Parse the attestation object
+	for _, t := range ccr.Transports {
+		pcc.Transports = append(pcc.Transports, protocol.AuthenticatorTransport(t))
+	}
+
+	// Parse the attestation object
+	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
+	if err != nil {
+		return nil, err
+	}
+
+	pcc.Response = *parsedAttestationResponse
+	return &pcc, nil
 }

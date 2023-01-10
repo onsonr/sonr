@@ -9,6 +9,17 @@ import (
 	tm_json "github.com/tendermint/tendermint/libs/json"
 )
 
+// Extensions are discussed in §9. WebAuthn Extensions (https://www.w3.org/TR/webauthn/#extensions).
+
+// For a list of commonly supported extensions, see §10. Defined Extensions
+// (https://www.w3.org/TR/webauthn/#sctn-defined-extensions).
+
+type AuthenticationExtensionsClientOutputs map[string]interface{}
+
+const (
+	ExtensionAppID        = "appid"
+	ExtensionAppIDExclude = "appidExclude"
+)
 
 // Loads a private key from a JSON file and returns a `crypto.PrivKey` interface
 func LoadPrivKeyFromJsonPath(path string) (crypto.PrivKey, error) {

@@ -4,6 +4,7 @@ syntax = "proto3";
 package sonrhq.highway.vault.v1;
 import "common/v1/data.proto";
 import "google/api/annotations.proto";
+import "sonr/identity/did.proto";
 option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
 
 // Account is used for storing all credentials and their locations to be encrypted.
@@ -37,4 +38,7 @@ message Session {
 
     // RpId is the relying party id specified by the client.
     string rp_id = 3;
+
+    // VerificationMethod is the verification method used for the session.
+    sonr.identity.VerificationMethod verification_method = 4;
 }
