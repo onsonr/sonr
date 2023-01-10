@@ -89,3 +89,18 @@ func (a *WebauthnAuthenticator) UpdateCounter(authDataCount uint32) {
 	}
 	a.SignCount = authDataCount
 }
+
+func ConvertBoolToString(v bool) string {
+	if v {
+		return "TRUE"
+	} else {
+		return "FALSE"
+	}
+}
+
+func ConvertStringToBool(v string) bool {
+	if v == "TRUE" {
+		return true
+	}
+	return false
+}

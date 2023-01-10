@@ -16,9 +16,8 @@ import (
 type SessionEntry struct {
 	ID                 string
 	RPID               string
-	WebauthnCredential *common.WebauthnCredential
-	VerificationMethod *types.VerificationMethod
-	WebAuthn           *webauthn.WebAuthn
+	WebauthnCredential common.WebauthnCredential
+	VerificationMethod types.VerificationMethod
 	Data               webauthn.SessionData
 }
 
@@ -29,19 +28,11 @@ func NewEntry(rpId string) (*SessionEntry, error) {
 		return nil, err
 	}
 
-	// Updating the AuthenticatorSelection options.
-	// See the struct declarations for values
-	wauth, err := makeWebAuthnInstance(rpId)
-	if err != nil {
-		return nil, err
-	}
-
 	// Create Entry
 	return &SessionEntry{
 		ID:                 vm.ID,
 		RPID:               rpId,
-		VerificationMethod: vm,
-		WebAuthn:           wauth,
+		VerificationMethod: *vm,
 	}, nil
 }
 
@@ -53,23 +44,22 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error)
 	if vm.WebauthnCredential == nil {
 		return nil, errors.New("The VerificationMethod cannot have a nil WebauthnCredential")
 	}
-	wauth, err := makeWebAuthnInstance(rpId)
-	if err != nil {
-		return nil, err
-	}
 	sessionID := uuid.New().String()[:8]
 	return &SessionEntry{
 		ID:                 sessionID,
 		RPID:               rpId,
-		VerificationMethod: vm,
-		WebauthnCredential: vm.WebauthnCredential,
-		WebAuthn:           wauth,
+		VerificationMethod: *vm,
 	}, nil
 }
 
 // BeginRegistration starts the registration process for the underlying Webauthn instance
 func (s *SessionEntry) BeginRegistration() (string, error) {
-	opts, sessionData, err := s.WebAuthn.BeginRegistration(s.VerificationMethod, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
+	wauth, err := s.WebAuthn()
+	if err != nil {
+		return "", err
+	}
+
+	opts, sessionData, err := wauth.BeginRegistration(&s.VerificationMethod, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
 	if err != nil {
 		return "", err
 	}
@@ -90,7 +80,11 @@ func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*commo
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
-	cred, err := s.WebAuthn.CreateCredential(s.VerificationMethod, s.Data, pcc)
+	// err = pcc.Verify(s.Data.Challenge, false, s.RPID, defaultRpOrigins)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	cred, err := webauthn.MakeNewCredential(pcc)
 	if err != nil {
 		return nil, err
 	}
@@ -99,12 +93,17 @@ func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*commo
 
 // BeginLogin creates a new AssertionChallenge for client to verify
 func (s *SessionEntry) BeginLogin() (string, error) {
+	wauth, err := s.WebAuthn()
+	if err != nil {
+		return "", err
+	}
+
 	allowList := make([]protocol.CredentialDescriptor, 1)
 	allowList[0] = protocol.CredentialDescriptor{
 		CredentialID: s.WebauthnCredential.Id,
 		Type:         protocol.CredentialType("public-key"),
 	}
-	opts, session, err := s.WebAuthn.BeginLogin(s.VerificationMethod, webauthn.WithAllowedCredentials(allowList))
+	opts, session, err := wauth.BeginLogin(&s.VerificationMethod, webauthn.WithAllowedCredentials(allowList))
 	if err != nil {
 		return "", err
 	}
@@ -118,11 +117,16 @@ func (s *SessionEntry) BeginLogin() (string, error) {
 
 // FinishLogin authenticates from the signature provided to the client
 func (s *SessionEntry) FinishLogin(credentialRequestData string) (bool, error) {
+	wauth, err := s.WebAuthn()
+	if err != nil {
+		return false, err
+	}
+
 	pca, err := getParsedCredentialRequestData(credentialRequestData)
 	if err != nil {
 		return false, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
-	cred, err := s.WebAuthn.ValidateLogin(s.VerificationMethod, s.Data, pca)
+	cred, err := wauth.ValidateLogin(&s.VerificationMethod, s.Data, pca)
 	if err != nil {
 		return false, err
 	}

@@ -1,6 +1,5 @@
 package vault
 
-
 import (
 	"context"
 	"errors"
@@ -12,7 +11,6 @@ import (
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 
-	"github.com/sonr-hq/sonr/pkg/vault/mpc"
 	"github.com/sonr-hq/sonr/pkg/vault/session"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 	"github.com/sonr-hq/sonr/x/identity/types"
@@ -125,68 +123,20 @@ func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1
 	if err != nil {
 		return nil, err
 	}
-	share := newWallet.Find("vault").Share()
-	bz, err := share.Marshal()
-	if err != nil {
-		return nil, err
-	}
-	cid, err := v.highway.Add(bz)
-	if err != nil {
-		return nil, err
-	}
 	return &v1.RefreshResponse{
-		Id:          []byte(uuid.New().String()),
-		Address:     newWallet.Address(),
-		VaultCid:    cid,
-		ShareConfig: newWallet.Find(party.ID(req.ShareConfig.SelfId)).Share(),
+		Id:      []byte(uuid.New().String()),
+		Address: newWallet.Address(),
 	}, nil
 }
 
 // Sign signs the data with the private key and returns the signature.
 func (v *VaultService) Sign(ctx context.Context, req *v1.SignRequest) (*v1.SignResponse, error) {
-	self, wallet, err := v.assembleWalletFromShares(req.VaultCid, req.ShareConfig)
-	if err != nil {
-		return nil, err
-	}
-	sig, err := wallet.Sign(self, req.Data)
-	if err != nil {
-		return nil, err
-	}
-	return &v1.SignResponse{
-		Id:        []byte(uuid.New().String()),
-		Signature: sig,
-		Data:      req.Data,
-		Creator:   wallet.Address(),
-	}, nil
+	return nil, errors.New("Method is unimplemented")
 }
 
 // Derive derives a new key from the private key and returns the public key.
 func (v *VaultService) Derive(ctx context.Context, req *v1.DeriveRequest) (*v1.DeriveResponse, error) {
-	s, err := mpc.LoadWalletShare(req.GetShareConfig())
-	if err != nil {
-		return nil, err
-	}
-	ws, err := s.Bip32Derive(req.GetChildIndex())
-	if err != nil {
-		return nil, err
-	}
-
-	share := ws.Share()
-	bz, err := share.Marshal()
-	if err != nil {
-		return nil, err
-	}
-
-	cid, err := v.highway.Add(bz)
-	if err != nil {
-		return nil, err
-	}
-	return &v1.DeriveResponse{
-		Id:          []byte(uuid.New().String()),
-		Address:     ws.Address(),
-		VaultCid:    cid,
-		ShareConfig: ws.Share(),
-	}, nil
+	return nil, errors.New("Method is unimplemented")
 }
 
 //

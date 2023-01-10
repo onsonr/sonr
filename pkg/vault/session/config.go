@@ -18,7 +18,7 @@ var (
 		"https://auth.sonr.io",
 		"https://sonr.id",
 		"https://sandbox.sonr.network",
-		"localhost:3000",
+		"http://localhost:3000",
 	}
 
 	// Default Icon to display
@@ -42,25 +42,6 @@ func makeDefaultRandomVars() (*types.VerificationMethod, error) {
 		Type: types.KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018,
 	}
 	return vm, nil
-}
-
-func makeWebAuthnInstance(rpid string) (*webauthn.WebAuthn, error) {
-	var rawRpId string
-	if len(rpid) == 0 {
-		rawRpId = "localhost"
-	} else {
-		rawRpId = rpid
-	}
-	// Create the Webauthn Instance
-	return webauthn.New(&webauthn.Config{
-		RPDisplayName:          defaultRpName,
-		RPID:                   rawRpId,
-		RPIcon:                 defaultRpIcon,
-		RPOrigins:              defaultRpOrigins,
-		Timeout:                60000,
-		AttestationPreference:  protocol.PreferDirectAttestation,
-		AuthenticatorSelection: defaultAuthSelect,
-	})
 }
 
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
@@ -143,4 +124,22 @@ func (s *SessionEntry) SetRPID(copts *protocol.CredentialCreation) *protocol.Cre
 	newCopts := copts
 	newCopts.Response.RelyingParty = newRp
 	return newCopts
+}
+
+func (s *SessionEntry) WebAuthn() (*webauthn.WebAuthn, error) {
+	rawRpId := "localhost"
+	if len(s.RPID) > 0 {
+		rawRpId = s.RPID
+	}
+	// Create the Webauthn Instance
+	return webauthn.New(&webauthn.Config{
+		RPDisplayName:          defaultRpName,
+		RPID:                   rawRpId,
+		RPIcon:                 defaultRpIcon,
+		RPOrigins:              defaultRpOrigins,
+		Timeout:                60000,
+		AttestationPreference:  protocol.PreferDirectAttestation,
+		AuthenticatorSelection: defaultAuthSelect,
+		Debug:                  true,
+	})
 }

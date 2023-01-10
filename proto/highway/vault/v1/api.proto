@@ -43,7 +43,7 @@ message RegisterResponse {
 message KeygenRequest {
     string prefix = 1; // optional
     int32 threshold = 2; // optional
-    common.v1.WebauthnCredential webauthn_credential = 3;
+    sonr.identity.VerificationMethod verification_method = 3;
 }
 
 // KeygenResponse is the response to a Keygen request.
@@ -59,23 +59,21 @@ message KeygenResponse {
 message RefreshRequest {
     common.v1.WalletShareConfig share_config = 1;
     string vault_cid = 2;
-    common.v1.WebauthnCredential webauthn_credential = 3;
+    sonr.identity.DidDocument did_document = 3;
 }
 
 // RefreshResponse is the response to a Refresh request.
 message RefreshResponse {
     bytes id = 1;
     string address = 2;
-    common.v1.WalletShareConfig share_config = 3;
-    string vault_cid = 4;
+    sonr.identity.DidDocument did_document = 3;
 }
 
 // SignRequest is the request to sign data with the private key.
 message SignRequest {
     common.v1.WalletShareConfig share_config = 1;
-    string vault_cid = 2;
+    sonr.identity.DidDocument did_document = 2;
     bytes data = 3;
-    common.v1.WebauthnCredential webauthn_credential = 4;
 }
 
 // SignResponse is the response to a Sign request.
@@ -88,19 +86,16 @@ message SignResponse {
 
 // DeriveRequest is the request to derive a new key from the private key.
 message DeriveRequest {
-    common.v1.WalletShareConfig share_config = 1;
-    string vault_cid = 2;
-    string prefix = 3;
-    uint32 child_index = 4;
-    common.v1.WebauthnCredential webauthn_credential = 5;
+    string prefix = 1;
+    uint32 child_index = 2;
+    sonr.identity.DidDocument did_document = 3;
 }
 
 // DeriveResponse is the response to a Derive request.
 message DeriveResponse {
     bytes id = 1;
     string address = 2;
-    common.v1.WalletShareConfig share_config = 3;
-    string vault_cid = 4;
+    sonr.identity.DidDocument did_document = 3;
 }
 
 // Vault is the service used for managing a node's keypair.

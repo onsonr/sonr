@@ -43,6 +43,8 @@ type Config struct {
 	ctx context.Context
 	// IsExisting
 	isExisting bool
+	// ResolverURL
+	resolverUrl string
 }
 
 // Option is a function that configures a `Config` object.
@@ -97,10 +99,11 @@ func defaultConfig(ctx context.Context, addr string, ipfs icore.CoreAPI) (*Confi
 		return nil, err
 	}
 	c := &Config{
-		ctx:       ctx,
-		address:   addr,
-		ipfs:      ipfs,
-		localPath: filepath.Join(outputBasePath, addr),
+		ctx:         ctx,
+		address:     addr,
+		ipfs:        ipfs,
+		localPath:   filepath.Join(outputBasePath, addr),
+		resolverUrl: "https://ipfs.sonr.network",
 	}
 
 	return c, nil
