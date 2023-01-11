@@ -10,7 +10,6 @@ import (
 
 func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreateDidDocument) (*types.MsgCreateDidDocumentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	// Check if the value already exists
 	_, isFound := k.GetDidDocument(
 		ctx,
@@ -33,7 +32,8 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 		Service:              new(types.Services),
 		AlsoKnownAs:          []string{msg.AlsoKnownAs},
 	}
-
+	acc := k.accountKeeper.NewAccountWithAddress(ctx, sdk.AccAddress(msg.Creator))
+	k.accountKeeper.SetAccount(ctx, acc)
 	k.SetDidDocument(
 		ctx,
 		didDocument,
