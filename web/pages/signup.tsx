@@ -369,7 +369,7 @@ export default function SignUp() {
                                 leftIcon={<FiLock />}
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    didDocument ? didDocument.iD : ""
+                                    didDocument ? didDocument.getId() : ""
                                   );
                                   snackbar.info(
                                     "Copied DID Identifier to Clipboard."
@@ -377,7 +377,9 @@ export default function SignUp() {
                                 }}
                               >
                                 <Web3Address
-                                  address={didDocument ? didDocument.iD : "N/A"}
+                                  address={
+                                    didDocument ? didDocument.getId() : "N/A"
+                                  }
                                   startLength={32}
                                   endLength={4}
                                 />
