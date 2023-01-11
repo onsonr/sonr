@@ -1,14 +1,19 @@
 package common
 
 import (
+	"encoding/base64"
 	"errors"
+	fmt "fmt"
+	"strconv"
+	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
+	"github.com/shengdoushi/base58"
 )
 
-// ConvertWebauthnCredential creates a common.WebauthnCredential from a webauthn.Credential from the go-webauthn package
-func ConvertWebauthnCredential(wa *webauthn.Credential) *WebauthnCredential {
+// ConvertProtocolCredential creates a common.WebauthnCredential from a webauthn.Credential from the go-webauthn package
+func ConvertProtocolCredential(wa *webauthn.Credential) *WebauthnCredential {
 	transportsStr := []string{}
 	for _, t := range wa.Transport {
 		transportsStr = append(transportsStr, string(t))
@@ -42,6 +47,26 @@ func (c *WebauthnCredential) ToProtocolCredential() *webauthn.Credential {
 			SignCount:    c.Authenticator.SignCount,
 			CloneWarning: c.Authenticator.CloneWarning,
 		},
+	}
+}
+
+func (c *WebauthnCredential) Did() string {
+	return fmt.Sprintf("did:webauth:%s", base58.Encode(c.Id, base58.BitcoinAlphabet))
+}
+
+func (c *WebauthnCredential) PublicKeyMultibase() string {
+	return "z" + base64.StdEncoding.EncodeToString(c.PublicKey)
+}
+
+// ToMetadata converts a common WebauthnCredential into a map[string]string
+func (c *WebauthnCredential) ToMetadata() map[string]string {
+	return map[string]string{
+		"credential_id":               base64.StdEncoding.EncodeToString(c.Id),
+		"authenticator.aaguid":        base64.StdEncoding.EncodeToString(c.Authenticator.Aaguid),
+		"authenticator.clone_warning": ConvertBoolToString(c.Authenticator.CloneWarning),
+		"authenticator.sign_count":    strconv.FormatUint(uint64(c.Authenticator.SignCount), 10),
+		"transport":                   strings.Join(c.Transport, ","),
+		"attestion_type":              c.AttestationType,
 	}
 }
 

@@ -39,6 +39,9 @@ type Wallet interface {
 	// Bip32Derive creates a new WalletShare that is derived from the given path.
 	Bip32Derive(i uint32) (WalletShare, error)
 
+	// EncryptKey returns the secret key from Storage
+	EncryptKey() ([]byte, error)
+
 	// Find returns the WalletShare with the given ID.
 	Find(id party.ID) WalletShare
 

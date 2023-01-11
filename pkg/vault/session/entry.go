@@ -17,42 +17,35 @@ type SessionEntry struct {
 	ID                 string
 	RPID               string
 	WebauthnCredential common.WebauthnCredential
-	VerificationMethod types.VerificationMethod
 	DidDoc             types.DidDocument
 	Data               webauthn.SessionData
+	AlsoKnownAs        string
 }
 
 // NewEntry creates a new session with challenge to be used to register a new account
-func NewEntry(rpId string) (*SessionEntry, error) {
+func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 	sessionID := uuid.New().String()[:8]
-	doc := types.BlankDocument(sessionID)
-	vm := &types.VerificationMethod{
-		ID:   sessionID,
-		Type: types.KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018,
-	}
-
+	doc := types.NewBaseDocument(aka, sessionID)
 	// Create Entry
 	return &SessionEntry{
-		ID:                 vm.ID,
-		RPID:               rpId,
-		VerificationMethod: *vm,
-		DidDoc:             *doc,
+		ID:          sessionID,
+		RPID:        rpId,
+		DidDoc:      *doc,
+		AlsoKnownAs: aka,
 	}, nil
 }
 
 // LoadEntry starts a new webauthn session with a given VerificationMethod
 func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error) {
-	if vm.Type != types.KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
-		return nil, errors.New("The VerificationMethod is not of type WebAuthnAuthentication2018")
-	}
-	if vm.WebauthnCredential == nil {
-		return nil, errors.New("The VerificationMethod cannot have a nil WebauthnCredential")
+	wb, err := vm.WebAuthnCredential()
+	if err != nil {
+		return nil, err
 	}
 	sessionID := uuid.New().String()[:8]
 	return &SessionEntry{
 		ID:                 sessionID,
 		RPID:               rpId,
-		VerificationMethod: *vm,
+		WebauthnCredential: *wb,
 	}, nil
 }
 
@@ -78,7 +71,7 @@ func (s *SessionEntry) BeginRegistration() (string, error) {
 }
 
 // FinishRegistration creates a credential which can be stored to use with User Authentication
-func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*common.WebauthnCredential, error) {
+func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*types.DidDocument, error) {
 	// Parse Client Credential Data
 	pcc, err := getParsedCredentialCreationData(credentialCreationData)
 	if err != nil {
@@ -92,7 +85,12 @@ func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*commo
 	if err != nil {
 		return nil, err
 	}
-	return common.ConvertFromWebauthnCredential(cred), nil
+	keyIdx := s.DidDoc.Authentication.Count() + 1
+	err = s.DidDoc.AddWebauthnCredential(common.ConvertFromWebauthnCredential(cred), fmt.Sprintf("key-%v", keyIdx))
+	if err != nil {
+		return nil, err
+	}
+	return &s.DidDoc, nil
 }
 
 // BeginLogin creates a new AssertionChallenge for client to verify

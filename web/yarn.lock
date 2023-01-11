@@ -332,9 +332,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buf/sonr-hq_sonr.grpc_web@npm:^1.4.2-20230109204611-f132360aa6d4.2":
-  version: 1.4.2-20230109204611-f132360aa6d4.2
-  resolution: "@buf/sonr-hq_sonr.grpc_web@npm:1.4.2-20230109204611-f132360aa6d4.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109204611-f132360aa6d4.2%2Ftarball"
+"@buf/sonr-hq_sonr.grpc_web@npm:^1.4.2-20230109212641-b124d5648d18.2":
+  version: 1.4.2-20230109212641-b124d5648d18.2
+  resolution: "@buf/sonr-hq_sonr.grpc_web@npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball"
   dependencies:
     "@buf/cosmos_cosmos-proto.grpc_web": 1.4.2-20211202220400-1935555c206d.2
     "@buf/cosmos_cosmos-sdk.grpc_web": 1.4.2-20230109081834-fe58c1d20072.2
@@ -343,7 +343,7 @@ __metadata:
   peerDependencies:
     google-protobuf: ^3.21.2
     grpc-web: ^1.4.2
-  checksum: 6e1029b294c7387277865e719dfbb8234e7d5a87ffb14f46c19a17f32fe86d4c4cdbb3a8a307c66254eea15c60c3d0144309c75a5f3bfe0ceb2fe1aa46e769b5
+  checksum: e74feed94e4ace74bcdf42af6bef6a31545c3c3479c1db55d9866d70016f6bdc05e2be4464738136baa4088e8f1cb9b8f3dfaee42369d014f1242fa0f4e98794
   languageName: node
   linkType: hard
 
@@ -5314,7 +5314,7 @@ __metadata:
   resolution: "sonr.id@workspace:."
   dependencies:
     "@babel/core": ^7.18.2
-    "@buf/sonr-hq_sonr.grpc_web": ^1.4.2-20230109204611-f132360aa6d4.2
+    "@buf/sonr-hq_sonr.grpc_web": ^1.4.2-20230109212641-b124d5648d18.2
     "@chakra-ui/icon": ^3.0.14
     "@chakra-ui/react": ^2.3.6
     "@chakra-ui/system": ^2.3.7

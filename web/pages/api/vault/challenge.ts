@@ -11,6 +11,7 @@ export default async function handler(req: NextRequest) {
   if (process && process.env.NODE_ENV === "development") {
     apiUrl = "http://localhost:1317";
   }
+  let username = req.headers.get("username");
 
   const requestOptions = {
     method: "GET",
@@ -18,7 +19,7 @@ export default async function handler(req: NextRequest) {
   };
 
   const resp = await fetch(
-    apiUrl + "/sonr-io/highway/vault/challenge/" + domain,
+    apiUrl + "/sonr-io/highway/vault/challenge/" + domain + "/" + username,
     requestOptions
   );
   const data = await resp.json();

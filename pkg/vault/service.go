@@ -3,17 +3,15 @@ package vault
 import (
 	"context"
 	"errors"
-	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 
-	"github.com/sonr-hq/sonr/pkg/vault/session"
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
-	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
@@ -32,22 +30,22 @@ var (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
+	bank    *VaultBank
 	highway ipfs.IPFS
 	rpName  string
 	rpIcon  string
-	cache   *gocache.Cache
 }
 
 // It creates a new VaultService and registers it with the gRPC server
-func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway ipfs.IPFS, cache *gocache.Cache) (*VaultService, error) {
+func NewVaultService(ctx client.Context, mux *runtime.ServeMux, hway ipfs.IPFS, cache *gocache.Cache) (*VaultService, error) {
+	vaultBank := NewVaultBank(ctx, hway, cache)
 	srv := &VaultService{
-		cache:   cache,
+		bank:    vaultBank,
 		highway: hway,
-		// TODO: Make all Webauthn options configurable through cmd line flags
-		rpName: "Sonr",
-		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
+		rpName:  "Sonr",
+		rpIcon:  "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
 	}
-	err := v1.RegisterVaultHandlerServer(ctx, mux, srv)
+	err := v1.RegisterVaultHandlerServer(context.Background(), mux, srv)
 	if err != nil {
 		return nil, err
 	}
@@ -56,19 +54,15 @@ func NewVaultService(ctx context.Context, mux *runtime.ServeMux, hway ipfs.IPFS,
 
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
-	entry, err := session.NewEntry(req.RpId)
+	optsJson, eID, err := v.bank.StartRegistration(req.RpId, req.Username)
 	if err != nil {
 		return nil, err
 	}
-	optsJson, err := entry.BeginRegistration()
-	if err != nil {
-		return nil, err
-	}
-	v.cache.Set(entry.ID, entry, -1)
+	//v.cache.Set(entry.ID, entry, -1)
 	return &v1.ChallengeResponse{
 		RpName:          v.rpName,
 		CreationOptions: optsJson,
-		SessionId:       entry.ID,
+		SessionId:       eID,
 		RpIcon:          v.rpIcon,
 	}, nil
 }
@@ -76,40 +70,16 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
 	// Get Session
-	entry, err := session.GetEntry(req.SessionId, v.cache)
+	didDoc, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse)
 	if err != nil {
 		return nil, err
-	}
-	cred, err := entry.FinishRegistration(req.CredentialResponse)
-	if err != nil {
-		return nil, err
-	}
-	vm, err := types.NewWebAuthnVM(cred)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to create new verification method: %s", err))
 	}
 	return &v1.RegisterResponse{
-		Success:            true,
-		VerificationMethod: vm,
+		Success:     true,
+		DidDocument: didDoc,
+		Address:     didDoc.Address(),
 	}, nil
 
-}
-
-// Keygen generates a new keypair and returns the public key.
-func (v *VaultService) Keygen(ctx context.Context, req *v1.KeygenRequest) (*v1.KeygenResponse, error) {
-	// Create a new offline wallet
-	wallet, err := NewWallet(ctx, req.Prefix, v.highway)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
-	}
-
-	// Return Configuration Response
-	return &v1.KeygenResponse{
-		Id:      []byte(uuid.New().String()),
-		Address: wallet.Address(),
-		//		VaultCid:    cid,
-		ShareConfig: wallet.Find("current").Share(),
-	}, nil
 }
 
 // Refresh refreshes the keypair and returns the public key.

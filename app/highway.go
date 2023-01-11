@@ -63,7 +63,7 @@ func NewHighwayNode() *HighwayNode {
 // It's registering the gRPC gateway routes.
 func (h *HighwayNode) RegisterGRPCGatewayRoutes(cctx client.Context, server *runtime.ServeMux) error {
 	h.serveMux = server
-	vs, err := vault.NewVaultService(h.ctx, server, h.IPFS, h.cache)
+	vs, err := vault.NewVaultService(h.clientCtx, server, h.IPFS, h.cache)
 	if err != nil {
 		return err
 	}

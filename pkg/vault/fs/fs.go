@@ -46,10 +46,10 @@ type VaultFS interface {
 	SendMessage(to []byte, message []byte) error
 
 	// SignData signs the given data with the private key
-	LoadShares() ([]*common.WalletShareConfig, error)
+	LoadShares(encryptKey []byte) ([]*common.WalletShareConfig, error)
 
 	// StoreShare stores the given share in the public directory
-	StoreShare(share []byte, partyId string) error
+	StoreShare(share []byte, partyId string, encryptKey []byte) error
 }
 
 // `New` creates a new VaultFS instance, initializes it, and returns it
@@ -73,11 +73,10 @@ func (c *Config) CID() string {
 
 // Returning the IPFS path of the vault
 func (c *Config) Service() *types.Service {
-	baseCid := strings.Split(c.CID(), "/")[1]
 	return &types.Service{
-		ID:              fmt.Sprintf("did:ipfs:%s", baseCid),
+		ID:              fmt.Sprintf("did:ipfs:%s", c.address),
 		Type:            types.ServiceType_ServiceType_ENCRYPTED_DATA_VAULT,
-		ServiceEndpoint: fmt.Sprintf("%s/ipfs/%s", c.resolverUrl, baseCid),
+		ServiceEndpoint: fmt.Sprintf("%s/%s", c.resolverUrl, strings.TrimPrefix(c.ipfsPath.String(), "/")),
 	}
 }
 

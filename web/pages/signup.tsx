@@ -1,4 +1,5 @@
 import {
+  DidDocument,
   VerificationMethod,
   VerificationMethods,
 } from "@buf/sonr-hq_sonr.grpc_web/sonr/identity/did_pb";
@@ -47,7 +48,7 @@ export default function SignUp() {
   const [label, updateLabel] = useState("");
   const [address, setAddress] = useState("");
   const [vaultCid, setVaultCid] = useState("");
-  const [cmpConfig, setCmpConfig] = useState("");
+  const [didDocument, setDidDocument] = useState<DidDocument | null>(null);
   const [session, setSession] = useState("");
   const [credential, setCredential] = useState<PublicKeyCredential | null>(
     null
@@ -77,6 +78,7 @@ export default function SignUp() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        username: label,
       },
     });
 
@@ -152,23 +154,15 @@ export default function SignUp() {
       }),
     });
     const resp = await response.json();
+    console.log(resp);
     // Get response as object
     if (resp.success) {
+      // Get response as object
       const vm = resp.verification_method as VerificationMethod;
       setVm(vm);
-      const response = await fetch("/api/vault/keygen", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      // Get response as object
-      const data = await response.json();
-      console.log(data);
-      setAddress(data.address);
-      setCmpConfig(data.share_config.cmp_config);
+      setAddress(resp.address);
+      setDidDocument(resp.did_document);
       setLoading(false);
-      snackbar.info("Account has been registered with Sonr Vault.");
       nextStep();
     } else {
       snackbar.error("Account registration failed.");
@@ -255,15 +249,14 @@ export default function SignUp() {
                         <FormLayout>
                           <Field
                             isRequired
-                            name="deviceLabel"
-                            label="Label"
+                            name="username"
+                            label="Username"
+                            placeholder="steve"
                             onInput={(event) => {
                               // Check if the input is a string
                               const str = event.target as HTMLInputElement;
-
-                              // Get the value from the input
                               const value = str.value;
-                              updateLabel(str.value);
+                              updateLabel(value);
                             }}
                           />
                           <Button
@@ -331,7 +324,18 @@ export default function SignUp() {
                           </Text>
                           <PropertyList>
                             <Property label="Address" />
-                            <Button variant="outline" leftIcon={<FiAtSign />}>
+                            <Button
+                              variant="outline"
+                              leftIcon={<FiAtSign />}
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  address ? address : ""
+                                );
+                                snackbar.info(
+                                  "Copied Account Address to Clipboard."
+                                );
+                              }}
+                            >
                               <Web3Address
                                 address={address ? address : "N/A"}
                                 startLength={32}
@@ -339,7 +343,18 @@ export default function SignUp() {
                               />
                             </Button>
                             <Property label="Controller" />
-                            <Button variant="outline" leftIcon={<FiCloud />}>
+                            <Button
+                              variant="outline"
+                              leftIcon={<FiCloud />}
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  vaultCid ? vaultCid : ""
+                                );
+                                snackbar.info(
+                                  "Copied WebAuthn Controller to Clipboard."
+                                );
+                              }}
+                            >
                               <Web3Address
                                 address={vaultCid ? vaultCid : "N/A"}
                                 startLength={32}
@@ -347,11 +362,24 @@ export default function SignUp() {
                               />
                             </Button>
 
-                            <Property label="Wallet Share" />
+                            <Property label="Identifier" />
                             <Box>
-                              <Button variant="outline" leftIcon={<FiLock />}>
+                              <Button
+                                variant="outline"
+                                leftIcon={<FiLock />}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    didDocument ? didDocument.getId() : ""
+                                  );
+                                  snackbar.info(
+                                    "Copied DID Identifier to Clipboard."
+                                  );
+                                }}
+                              >
                                 <Web3Address
-                                  address={cmpConfig ? cmpConfig : "N/A"}
+                                  address={
+                                    didDocument ? didDocument.getId() : "N/A"
+                                  }
                                   startLength={32}
                                   endLength={4}
                                 />
