@@ -29,6 +29,11 @@ func (ws OfflineWallet) Bip32Derive(i uint32) (common.WalletShare, error) {
 	return ws[0].Bip32Derive(i)
 }
 
+// EncryptKey
+func (ws OfflineWallet) EncryptKey() ([]byte, error) {
+	return ws.Sign("vault", []byte(ws.Address()))
+}
+
 // Find returns the WalletShare with the given ID.
 func (ws OfflineWallet) Find(id party.ID) common.WalletShare {
 	for _, w := range ws {

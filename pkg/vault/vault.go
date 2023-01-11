@@ -97,13 +97,18 @@ func buildWallet(ctx context.Context, prefix string, node ipfs.IPFS) (common.Wal
 		return nil, nil, err
 	}
 
+	encKey, err := wallet.EncryptKey()
+	if err != nil {
+		return nil, nil, err
+	}
+
 	// Create a new OfflineWallet from the WalletShares
 	for _, share := range wsl {
 		buf, err := share.Marshal()
 		if err != nil {
 			return nil, nil, err
 		}
-		err = vaultfs.StoreShare(buf, string(share.SelfID()))
+		err = vaultfs.StoreShare(buf, string(share.SelfID()), encKey)
 		if err != nil {
 			return nil, nil, err
 		}
