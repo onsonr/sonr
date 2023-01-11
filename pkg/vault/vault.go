@@ -40,8 +40,8 @@ func NewVaultBank(cctx client.Context, node ipfs.IPFS, cache *gocache.Cache) *Va
 	}
 }
 
-func (v *VaultBank) StartRegistration(rpid string, aka string, label string) (string, string, error) {
-	entry, err := session.NewEntry(rpid, aka, label)
+func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, error) {
+	entry, err := session.NewEntry(rpid, aka)
 	if err != nil {
 		return "", "", err
 	}
@@ -79,15 +79,9 @@ func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*typ
 // It creates a new wallet with two participants, one of which is the current participant, and returns
 // the wallet
 func buildWallet(ctx context.Context, prefix string, node ipfs.IPFS) (common.Wallet, fs.VaultFS, error) {
-	getPrefix := func() string {
-		if len(prefix) == 0 {
-			return "snr"
-		}
-		return prefix
-	}
 	participants := party.IDSlice{"current", "vault"}
 	net := network.NewOfflineNetwork(participants)
-	wsl, err := mpc.Keygen("current", 1, net, getPrefix())
+	wsl, err := mpc.Keygen("current", 1, net, prefix)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -115,6 +109,18 @@ func buildWallet(ctx context.Context, prefix string, node ipfs.IPFS) (common.Wal
 
 	}
 	return wallet, vaultfs, nil
+}
+
+func loadWallet(ctx context.Context, didDoc *types.DidDocument, node ipfs.IPFS) (common.Wallet, fs.VaultFS, error) {
+	if s := didDoc.GetVaultService(); s != nil {
+		_, err := fs.New(ctx, didDoc.Address(), node, fs.WithIPFSPath(s.CID()))
+		if err != nil {
+			return nil, nil, err
+		}
+		//cfgs, err := vaultfs.LoadShares()
+	}
+	return nil, nil, errors.New("Unimplemented")
+
 }
 
 // Loads an OfflineWallet from a []*WalletShareConfig and returns a `common.Wallet` interface

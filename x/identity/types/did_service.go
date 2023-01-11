@@ -5,6 +5,7 @@ package types
 import (
 	"encoding/json"
 	fmt "fmt"
+	"strings"
 
 	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
 )
@@ -29,6 +30,15 @@ func (d *DidDocument) RemoveServiceByID(id string) bool {
 		}
 	}
 	return false
+}
+
+func (d *DidDocument) GetVaultService() *Service {
+	for _, s := range d.Service.Data {
+		if s.Type == ServiceType_ServiceType_ENCRYPTED_DATA_VAULT && s.CID() != "" {
+			return s
+		}
+	}
+	return nil
 }
 
 // ResolveEndpointURL finds the endpoint with the given type and unmarshalls it as single URL.
@@ -99,4 +109,11 @@ func (srs *Services) FindByID(id string) *Service {
 		}
 	}
 	return nil
+}
+
+func (s *Service) CID() string {
+	if strings.Contains(s.ServiceEndpoint, "ipfs") {
+		return strings.TrimPrefix(s.ServiceEndpoint, "https://ipfs.sonr.network")
+	}
+	return ""
 }

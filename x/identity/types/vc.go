@@ -91,7 +91,10 @@ func (wvm *DidDocument) WebAuthnName() string {
 }
 
 func (wvm *DidDocument) WebAuthnDisplayName() string {
-	return wvm.Alias()
+	if len(wvm.AlsoKnownAs) == 0 {
+		return wvm.ID
+	}
+	return wvm.AlsoKnownAs[0]
 }
 
 func (wvm *DidDocument) WebAuthnIcon() string {

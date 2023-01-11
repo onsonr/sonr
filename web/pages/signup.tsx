@@ -78,6 +78,7 @@ export default function SignUp() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        username: label,
       },
     });
 
@@ -254,24 +255,8 @@ export default function SignUp() {
                             onInput={(event) => {
                               // Check if the input is a string
                               const str = event.target as HTMLInputElement;
-
-                              // Get the value from the input
                               const value = str.value;
-                              updateLabel(str.value);
-                            }}
-                          />
-                          <Field
-                            isRequired
-                            name="deviceLabel"
-                            label="Label"
-                            placeholder="Steve's iPhone"
-                            onInput={(event) => {
-                              // Check if the input is a string
-                              const str = event.target as HTMLInputElement;
-
-                              // Get the value from the input
-                              const value = str.value;
-                              updateLabel(str.value);
+                              updateLabel(value);
                             }}
                           />
                           <Button

@@ -15,9 +15,6 @@ message ChallengeRequest {
 
     // Username to use for the AlsoKnownAs field in the didDoc
     string username = 2;
-
-    // Label is the device label to set for the Authentication method
-    string label = 3;
 }
 
 // ChallengeResponse is the response to a Challenge request.
@@ -94,7 +91,7 @@ message DeriveResponse {
 service Vault {
     // Challenge generates a challenge and returns it.
     rpc Challenge(ChallengeRequest) returns (ChallengeResponse) {
-        option (google.api.http).get = "/sonr-io/highway/vault/challenge/{rp_id}";
+        option (google.api.http).get = "/sonr-io/highway/vault/challenge/{rp_id}/{username}";
     }
 
     // Register creates a new Webauthn credential and returns it.

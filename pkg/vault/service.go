@@ -54,7 +54,7 @@ func NewVaultService(ctx client.Context, mux *runtime.ServeMux, hway ipfs.IPFS, 
 
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
-	optsJson, eID, err := v.bank.StartRegistration(req.RpId, req.Username, req.Label)
+	optsJson, eID, err := v.bank.StartRegistration(req.RpId, req.Username)
 	if err != nil {
 		return nil, err
 	}

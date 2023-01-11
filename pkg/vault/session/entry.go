@@ -19,12 +19,11 @@ type SessionEntry struct {
 	WebauthnCredential common.WebauthnCredential
 	DidDoc             types.DidDocument
 	Data               webauthn.SessionData
-	Label              string
 	AlsoKnownAs        string
 }
 
 // NewEntry creates a new session with challenge to be used to register a new account
-func NewEntry(rpId string, aka string, label string) (*SessionEntry, error) {
+func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 	sessionID := uuid.New().String()[:8]
 	doc := types.NewBaseDocument(aka, sessionID)
 	// Create Entry
@@ -32,7 +31,6 @@ func NewEntry(rpId string, aka string, label string) (*SessionEntry, error) {
 		ID:          sessionID,
 		RPID:        rpId,
 		DidDoc:      *doc,
-		Label:       label,
 		AlsoKnownAs: aka,
 	}, nil
 }
@@ -87,8 +85,8 @@ func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*types
 	if err != nil {
 		return nil, err
 	}
-
-	err = s.DidDoc.AddWebauthnCredential(common.ConvertFromWebauthnCredential(cred), s.Label)
+	keyIdx := s.DidDoc.Authentication.Count() + 1
+	err = s.DidDoc.AddWebauthnCredential(common.ConvertFromWebauthnCredential(cred), fmt.Sprintf("key-%v", keyIdx))
 	if err != nil {
 		return nil, err
 	}
