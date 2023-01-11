@@ -18,8 +18,20 @@ var k_DEFAULT_DIRS = []string{
 	"public",
 }
 
+
 // VaultFS provides an interface for arbitrary Sonr Network Nodes to have IPFS configuration
 // for the users secure storage.
+// @property {string} CID - The CID of the vault
+// @property Service - The DID Service configuration of the Vault
+// @property {string} Address - The IPFS address of the vault
+// @property {error} Sync - Synchronizes the local filesystem with the IPFS network
+// @property {error} Upload - Uploads a file to the public directory
+// @property Download - Downloads a file from the public directory
+// @property ListMessages - Returns a list of all messages in the mailbox
+// @property {error} SendMessage - This is the function that will be used to send a message to the
+// given address.
+// @property LoadShares - Loads the shares from the public directory
+// @property {error} StoreShare - Stores the share in the public directory
 type VaultFS interface {
 	// CID
 	CID() string

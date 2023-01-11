@@ -18,6 +18,13 @@ import (
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
+// `VaultBank` is a struct that contains an IPFS node, a cache, a channel, a client context, and a
+// client stub.
+// @property node - The IPFS node that the vault is running on
+// @property cache - This is a cache that stores the wallets that the vault has already processed.
+// @property done - This is a channel that will be used to send completed wallets to the vault.
+// @property cctx - The client context that the vault is running on.
+// @property client - This is the client stub that the vault uses to communicate with the client.
 type VaultBank struct {
 	// The IPFS node that the vault is running on
 	node ipfs.IPFS
@@ -31,7 +38,25 @@ type VaultBank struct {
 	// Client Context
 	cctx client.Context
 
+	// Client Stub
 	client *cl.ClientStub
+}
+
+// `WalletResult` is a struct with three fields: `Wallet`, `Vault`, and `Err`.
+//
+// The `Wallet` field is of type `common.Wallet`, which is a struct with two fields: `Name` and
+// `Address`.
+//
+// The `Vault` field is of type `fs.VaultFS`, which is a struct with two fields: `Path` and `Password`.
+//
+// The `Err` field is of type `error`.
+// @property Wallet - The wallet object that was created.
+// @property Vault - The vault that the wallet is stored in.
+// @property {error} Err - This is the error that occurred during the wallet creation process.
+type WalletResult struct {
+	Wallet common.Wallet
+	Vault  fs.VaultFS
+	Err    error
 }
 
 // Creates a new Vault
@@ -45,6 +70,7 @@ func NewVaultBank(cctx client.Context, node ipfs.IPFS, cache *gocache.Cache) *Va
 	}
 }
 
+// Creating a new session entry and returning the options json and the session id.
 func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, error) {
 	entry, err := session.NewEntry(rpid, aka)
 	if err != nil {
@@ -58,7 +84,9 @@ func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, 
 	return optsJson, entry.ID, nil
 }
 
-func (v *VaultBank) FinishRegistration(sessionId string, credsJson string, password string) (*types.DidDocument, error) {
+// Creating a new wallet with two participants, one of which is the current participant, and returns
+// the wallet
+func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*types.DidDocument, error) {
 	// Get Session
 	entry, err := session.GetEntry(sessionId, v.cache)
 	if err != nil {
@@ -69,16 +97,26 @@ func (v *VaultBank) FinishRegistration(sessionId string, credsJson string, passw
 		return nil, err
 	}
 	// Create a new offline wallet
-	wallet, vfs, err := buildWallet(context.Background(), "snr", v.node, password)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
-	}
-	err = didDoc.SetRootWallet(wallet)
+	done := make(chan *WalletResult)
+	go func() {
+		wallet, vfs, err := buildWallet(context.Background(), "snr", v.node, "testnet-not-so-secret-password")
+		done <- &WalletResult{
+			Wallet: wallet,
+			Vault:  vfs,
+			Err:    err,
+		}
+	}()
+	result := <-done
+	err = didDoc.SetRootWallet(result.Wallet)
 	if err != nil {
 		return nil, err
 	}
-	didDoc.AddService(vfs.Service())
+	didDoc.AddService(result.Vault.Service())
 	return didDoc, nil
+}
+
+func Authenticate(didDoc *types.DidDocument, node ipfs.IPFS) {
+	didDoc.Service.FindByID(fmt.Sprintf("did:ipfs:%s", didDoc.Address()))
 }
 
 // It creates a new wallet with two participants, one of which is the current participant, and returns
@@ -111,6 +149,7 @@ func buildWallet(ctx context.Context, prefix string, node ipfs.IPFS, password st
 	return wallet, vaultfs, nil
 }
 
+// `loadWallet` loads a wallet from a DID Document and a password
 func loadWallet(ctx context.Context, didDoc *types.DidDocument, node ipfs.IPFS, password string) (common.Wallet, fs.VaultFS, error) {
 	if s := didDoc.GetVaultService(); s != nil {
 		vaultfs, err := fs.New(ctx, didDoc.Address(), node, fs.WithIPFSPath(s.CID()))

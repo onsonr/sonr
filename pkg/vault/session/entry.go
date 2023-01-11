@@ -13,6 +13,15 @@ import (
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
+// `SessionEntry` is a struct that contains a `string` (`ID`), a `string` (`RPID`), a
+// `common.WebauthnCredential` (`WebauthnCredential`), a `types.DidDocument` (`DidDoc`), a
+// `webauthn.SessionData` (`Data`), and a `string` (`AlsoKnownAs`).
+// @property {string} ID - The session ID.
+// @property {string} RPID - The Relying Party ID. This is the domain of the relying party.
+// @property WebauthnCredential - This is the credential that was created by the user.
+// @property DidDoc - The DID Document of the user.
+// @property Data - This is the data that is returned from the webauthn.Create() function.
+// @property {string} AlsoKnownAs - The user's username.
 type SessionEntry struct {
 	ID                 string
 	RPID               string

@@ -64,7 +64,7 @@ func NewDocumentFromJson(b []byte) (*DidDocument, error) {
 
 func (d *DidDocument) Address() string {
 	ptrs := strings.Split(d.ID, ":")
-	return ptrs[len(ptrs)-1]
+	return fmt.Sprintf("%s%s", ptrs[len(ptrs)-2], ptrs[len(ptrs)-1])
 }
 
 // AccAddress returns the account address of the DID

@@ -1,19 +1,56 @@
 package client
 
 import (
+	"context"
 	"encoding/hex"
+	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
-	"github.com/gogo/protobuf/types"
 )
 
-func (c *ClientStub) BroadcastTx(tx []byte) (*sdk.TxResponse, error) {
-	res, err := c.cctx.BroadcastTxSync(tx)
+// BroadcastTx broadcasts a transaction on the Sonr blockchain network
+func (c *ClientStub) BroadcastTx(txRawBytes []byte) (*txtypes.BroadcastTxResponse, error) {
+	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
+	// service.
+	txClient := txtypes.NewServiceClient(c.cctx)
+	// We then call the BroadcastTx method on this client.
+	grpcRes, err := txClient.BroadcastTx(
+		context.Background(),
+		&txtypes.BroadcastTxRequest{
+			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_BLOCK,
+			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	if grpcRes == nil {
+		return nil, fmt.Errorf("no response from broadcast tx")
+	}
+	if grpcRes.GetTxResponse() != nil && grpcRes.GetTxResponse().Code != 0 {
+		return nil, fmt.Errorf("failed to broadcast transaction: %s", grpcRes.GetTxResponse().RawLog)
+	}
+	return grpcRes, nil
+}
+
+// SimulateTx simulates a transaction on the Sonr blockchain network
+func (c *ClientStub) SimulateTx(txRawBytes []byte) (*txtypes.SimulateResponse, error) {
+	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
+	// service.
+	txClient := txtypes.NewServiceClient(c.cctx)
+	// We then call the BroadcastTx method on this client.
+	grpcRes, err := txClient.Simulate(
+		context.Background(),
+		&txtypes.SimulateRequest{
+			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return grpcRes, nil
 }
 
 func DecodeTxResponseData(d string, v proto.Unmarshaler) error {

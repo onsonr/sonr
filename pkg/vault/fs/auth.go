@@ -44,6 +44,7 @@ func (c *Config) StoreShare(share []byte, partyId string, password string) error
 	return nil
 }
 
+// Loading the shares from the local file system.
 func (c *Config) LoadShares(password string) ([]*common.WalletShareConfig, error) {
 	shares := []*common.WalletShareConfig{}
 	// List all files in the _auth directory

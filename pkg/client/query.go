@@ -10,15 +10,14 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
-// CheckBalance returns the balance of the given address
-func (c *ClientStub) CheckBalance(addr string) (types.Coins, error) {
-	res, err := c.bankClient.AllBalances(context.Background(), &banktypes.QueryAllBalancesRequest{
-		Address: addr, // "snr155huqeqlm4lh5vvgychum0sa2xw70654m3kucq7vufjkx89hzvuqx0jmqc",
+func (c *ClientStub) CheckBalance(address string) (types.Coins, error) {
+	resp, err := banktypes.NewQueryClient(c.cctx).AllBalances(context.Background(), &banktypes.QueryAllBalancesRequest{
+		Address: address, // "snr155huqeqlm4lh5vvgychum0sa2xw70654m3kucq7vufjkx89hzvuqx0jmqc",
 	})
 	if err != nil {
 		return nil, err
 	}
-	return res.GetBalances(), nil
+	return resp.GetBalances(), nil
 }
 
 // RequestFaucet requests a faucet from the Sonr network

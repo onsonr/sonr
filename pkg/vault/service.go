@@ -3,8 +3,6 @@ package vault
 import (
 	"context"
 	"errors"
-	"fmt"
-	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/google/uuid"
@@ -72,22 +70,19 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
 	// Get Session
-	didDoc, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse, req.Password)
+	didDoc, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse)
 	if err != nil {
 		return nil, err
 	}
-	addr := didDoc.Address()
-	if !strings.Contains(addr, "snr") {
-		return &v1.RegisterResponse{
-			Success:     true,
-			DidDocument: didDoc,
-			Address:     fmt.Sprintf("snr%s", didDoc.Address()),
-		}, nil
+	docJson, err := didDoc.MarshalJSON()
+	if err != nil {
+		return nil, err
 	}
 	return &v1.RegisterResponse{
-		Success:     true,
-		DidDocument: didDoc,
-		Address:     didDoc.Address(),
+		Success:         true,
+		DidDocument:     didDoc,
+		Address:         didDoc.Address(),
+		DidDocumentJson: string(docJson),
 	}, nil
 
 }

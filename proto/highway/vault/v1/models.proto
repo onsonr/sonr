@@ -27,3 +27,15 @@ message Credential {
     // Webauthn is for PassKey data of the credential.
     bytes credential = 3;
 }
+
+// ChallengeType is used for defining the type of challenge.
+enum ChallengeType {
+    // CHALLENGE_TYPE_UNSPECIFIED is the default value.
+    CHALLENGE_TYPE_UNSPECIFIED = 0;
+
+    // CHALLENGE_TYPE_ATTESTION is used for attestation challenges.
+    CHALLENGE_TYPE_ATTESTION = 1;
+
+    // CHALLENGE_TYPE_ASSERTION is used for assertion challenges.
+    CHALLENGE_TYPE_ASSERTION = 2;
+}
