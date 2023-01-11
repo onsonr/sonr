@@ -25,13 +25,12 @@ func SimulateMsgCreateDidDocument(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		i := r.Int()
 		msg := &types.MsgCreateDidDocument{
-			Creator: simAccount.Address.String(),
-			Did:     strconv.Itoa(i),
+			Creator:  simAccount.Address.String(),
+			Document: types.BlankDocument(simAccount.Address.String()),
 		}
 
-		_, found := k.GetDidDocument(ctx, msg.Did)
+		_, found := k.GetDidDocument(ctx, msg.Document.ID)
 		if found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "DidDocument already exist"), nil, nil
 		}
@@ -81,7 +80,7 @@ func SimulateMsgUpdateDidDocument(
 		}
 		msg.Creator = simAccount.Address.String()
 
-		msg.Did = didDocument.ID
+		msg.Document = &didDocument
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -128,7 +127,7 @@ func SimulateMsgDeleteDidDocument(
 		}
 		msg.Creator = simAccount.Address.String()
 
-		msg.Did = didDocument.ID
+		msg.Document = &didDocument
 
 		txCtx := simulation.OperationInput{
 			R:               r,

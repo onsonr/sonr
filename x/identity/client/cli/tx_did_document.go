@@ -24,6 +24,7 @@ func CmdCreateDidDocument() *cobra.Command {
 
 			msg := types.NewMsgCreateDidDocument(
 				clientCtx.GetFromAddress().String(),
+				types.BlankDocument(clientCtx.GetFromAddress().String()),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

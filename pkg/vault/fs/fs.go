@@ -46,10 +46,10 @@ type VaultFS interface {
 	SendMessage(to []byte, message []byte) error
 
 	// SignData signs the given data with the private key
-	LoadShares(encryptKey []byte) ([]*common.WalletShareConfig, error)
+	LoadShares(password string) ([]*common.WalletShareConfig, error)
 
 	// StoreShare stores the given share in the public directory
-	StoreShare(share []byte, partyId string, encryptKey []byte) error
+	StoreShare(share []byte, partyId string, password string) error
 }
 
 // `New` creates a new VaultFS instance, initializes it, and returns it

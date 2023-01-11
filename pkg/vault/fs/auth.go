@@ -1,19 +1,21 @@
 package fs
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"errors"
-	"io"
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/ipfs/interface-go-ipfs-core/options"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"golang.org/x/crypto/nacl/secretbox"
+	"golang.org/x/crypto/scrypt"
 )
 
 // Storing the share of the wallet.
-func (c *Config) StoreShare(share []byte, partyId string, encryptKey []byte) error {
+func (c *Config) StoreShare(share []byte, partyId string, password string) error {
 	// Verify WalletConfigShare
 	shareConfig := &common.WalletShareConfig{}
 	err := shareConfig.Unmarshal(share)
@@ -21,7 +23,7 @@ func (c *Config) StoreShare(share []byte, partyId string, encryptKey []byte) err
 		return err
 	}
 
-	encShare, err := encryptData(share, encryptKey)
+	encShare, err := AesEncryptWithPassword(password, share)
 	if err != nil {
 		return err
 	}
@@ -42,7 +44,7 @@ func (c *Config) StoreShare(share []byte, partyId string, encryptKey []byte) err
 	return nil
 }
 
-func (c *Config) LoadShares(encryptKey []byte) ([]*common.WalletShareConfig, error) {
+func (c *Config) LoadShares(password string) ([]*common.WalletShareConfig, error) {
 	shares := []*common.WalletShareConfig{}
 	// List all files in the _auth directory
 	files, err := os.ReadDir(filepath.Join(c.localPath, "_auth"))
@@ -62,7 +64,7 @@ func (c *Config) LoadShares(encryptKey []byte) ([]*common.WalletShareConfig, err
 			return nil, err
 		}
 
-		decBz, err := decryptData(bz, encryptKey)
+		decBz, err := AesDecryptWithPassword(password, bz)
 		if err != nil {
 			return nil, err
 		}
@@ -79,29 +81,97 @@ func (c *Config) LoadShares(encryptKey []byte) ([]*common.WalletShareConfig, err
 	return shares, nil
 }
 
-func encryptData(data []byte, secretKeyBytes []byte) ([]byte, error) {
-	var secretKey [32]byte
-	copy(secretKey[:], secretKeyBytes)
+// aesDecryptWithKey uses the give 32-bit key to decrypt plaintext.
+func aesDecryptWithKey(aesKey, ciphertext []byte) ([]byte, error) {
+	if len(aesKey) != 32 {
+		fmt.Printf("aesKey len: %d\n", len(aesKey))
+		return nil, errors.New("AES key must be 32 bytes")
+	}
 
-	// Random Nonce for every Message
-	var nonce [24]byte
-	if _, err := io.ReadFull(rand.Reader, nonce[:]); err != nil {
+	blockCipher, err := aes.NewCipher(aesKey)
+	if err != nil {
 		return nil, err
 	}
 
-	encrypted := secretbox.Seal(nonce[:], data, &nonce, &secretKey)
-	return encrypted, nil
+	gcm, err := cipher.NewGCM(blockCipher)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce, ct := ciphertext[:gcm.NonceSize()], ciphertext[gcm.NonceSize():]
+
+	plaintext, err := gcm.Open(nil, nonce, ct, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return plaintext, nil
 }
 
-func decryptData(encrypted []byte, secretKeyBytes []byte) ([]byte, error) {
-	var secretKey [32]byte
-	copy(secretKey[:], secretKeyBytes)
-
-	var decryptNonce [24]byte
-	copy(decryptNonce[:], encrypted[:24])
-	decrypted, ok := secretbox.Open(nil, encrypted[24:], &decryptNonce, &secretKey)
-	if !ok {
-		return nil, errors.New("Error Decrypting data")
+// AesEncryptWithPassword uses the give password to generate an aes key and decrypt plaintext.
+func AesEncryptWithPassword(password string, plaintext []byte) ([]byte, error) {
+	key, err := deriveKey(password)
+	if err != nil {
+		return nil, err
 	}
-	return decrypted, nil
+
+	return aesEncryptWithKey(key, plaintext)
+}
+
+// AesDecryptWithPassword uses the give password to generate an aes key and encrypt plaintext.
+func AesDecryptWithPassword(password string, ciphertext []byte) ([]byte, error) {
+	key, err := deriveKey(password)
+	if err != nil {
+		return nil, err
+	}
+
+	return aesDecryptWithKey(key, ciphertext)
+}
+
+func deriveKey(password string) ([]byte, error) {
+	// including a salt would make it impossible to reliably login from other devices
+	key, err := scrypt.Key([]byte(password), []byte(""), 1<<20, 8, 1, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, nil
+}
+
+// NewAesKey generates a new 32-bit key.
+func NewAesKey() ([]byte, error) {
+	key := make([]byte, 32)
+	if n, err := rand.Read(key); err != nil {
+		return nil, err
+	} else if n != 32 {
+		return nil, errors.New("could not create key at 32 bytes")
+	}
+
+	return key, nil
+}
+
+// aesEncryptWithKey uses the give 32-bit key to encrypt plaintext.
+func aesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
+	if len(aesKey) != 32 {
+		return nil, errors.New("AES key must be 32 bytes")
+	}
+
+	blockCipher, err := aes.NewCipher(aesKey)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(blockCipher)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = rand.Read(nonce); err != nil {
+		return nil, err
+	}
+
+	ciphertext := gcm.Seal(nonce, nonce, []byte(plaintext), nil)
+
+	return ciphertext, nil
 }

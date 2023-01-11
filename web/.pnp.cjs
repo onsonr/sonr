@@ -40,6 +40,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@saas-ui/modals", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.3"],\
             ["@saas-ui/pro", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.13.0"],\
             ["@saas-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.7.4"],\
+            ["@saas-ui/sidebar", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.7.0"],\
             ["@saas-ui/theme-glass", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.1.1"],\
             ["@saas-ui/web3", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.3.0"],\
             ["@types/node", "npm:17.0.45"],\
@@ -1122,6 +1123,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "react"\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["virtual:bc8f7bc387f6fd4efcd7d31bc93081653f5fd5008112d12b7c15349bbb6ca176f31eb12dcad048ce10d2404d9098330dcd4680b5d8721cae5cf24cbf4ce9e8f4#npm:3.0.14", {\
+          "packageLocation": "./.yarn/__virtual__/@chakra-ui-icon-virtual-b427e886c4/0/cache/@chakra-ui-icon-npm-3.0.14-597f5eb487-2d2e4a2193.zip/node_modules/@chakra-ui/icon/",\
+          "packageDependencies": [\
+            ["@chakra-ui/icon", "virtual:bc8f7bc387f6fd4efcd7d31bc93081653f5fd5008112d12b7c15349bbb6ca176f31eb12dcad048ce10d2404d9098330dcd4680b5d8721cae5cf24cbf4ce9e8f4#npm:3.0.14"],\
+            ["@chakra-ui/shared-utils", "npm:2.0.4"],\
+            ["@chakra-ui/system", null],\
+            ["@types/chakra-ui__system", null],\
+            ["@types/react", "npm:18.0.26"],\
+            ["react", "npm:18.2.0"]\
+          ],\
+          "packagePeers": [\
+            "@chakra-ui/system",\
+            "@types/chakra-ui__system",\
+            "@types/react",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["@chakra-ui/icons", [\
@@ -1131,6 +1150,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@chakra-ui/icons", "npm:2.0.15"]\
           ],\
           "linkType": "SOFT"\
+        }],\
+        ["virtual:c3e7c232a4d9208aac9f1ed35cd9ccc6fa99d8a9396c77e29e722b31f4cef272146007fe491571e5dd87aa0092160e7648307e61bba3ea6303f4f10a6deb7aba#npm:2.0.15", {\
+          "packageLocation": "./.yarn/__virtual__/@chakra-ui-icons-virtual-bc8f7bc387/0/cache/@chakra-ui-icons-npm-2.0.15-7ba5d1c290-85187ff8d3.zip/node_modules/@chakra-ui/icons/",\
+          "packageDependencies": [\
+            ["@chakra-ui/icons", "virtual:c3e7c232a4d9208aac9f1ed35cd9ccc6fa99d8a9396c77e29e722b31f4cef272146007fe491571e5dd87aa0092160e7648307e61bba3ea6303f4f10a6deb7aba#npm:2.0.15"],\
+            ["@chakra-ui/icon", "virtual:bc8f7bc387f6fd4efcd7d31bc93081653f5fd5008112d12b7c15349bbb6ca176f31eb12dcad048ce10d2404d9098330dcd4680b5d8721cae5cf24cbf4ce9e8f4#npm:3.0.14"],\
+            ["@chakra-ui/system", null],\
+            ["@types/chakra-ui__system", null],\
+            ["@types/react", "npm:18.0.26"],\
+            ["react", "npm:18.2.0"]\
+          ],\
+          "packagePeers": [\
+            "@chakra-ui/system",\
+            "@types/chakra-ui__system",\
+            "@types/react",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
         }],\
         ["virtual:ea73a1a24e0e79d2a5ed49c32e2353b4f42acaee5c5e90540a34f96d8513fe5c2bb48eff21e9346cf58d35b1c6097f0a3ce245c3b333098a5131b4909962d911#npm:2.0.15", {\
           "packageLocation": "./.yarn/__virtual__/@chakra-ui-icons-virtual-70908d249b/0/cache/@chakra-ui-icons-npm-2.0.15-7ba5d1c290-85187ff8d3.zip/node_modules/@chakra-ui/icons/",\
@@ -4347,6 +4384,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "react"\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["virtual:c3e7c232a4d9208aac9f1ed35cd9ccc6fa99d8a9396c77e29e722b31f4cef272146007fe491571e5dd87aa0092160e7648307e61bba3ea6303f4f10a6deb7aba#npm:1.1.8", {\
+          "packageLocation": "./.yarn/__virtual__/@saas-ui-provider-virtual-5a9b8c352a/0/cache/@saas-ui-provider-npm-1.1.8-a14e83b068-a9d442e0a0.zip/node_modules/@saas-ui/provider/",\
+          "packageDependencies": [\
+            ["@saas-ui/provider", "virtual:c3e7c232a4d9208aac9f1ed35cd9ccc6fa99d8a9396c77e29e722b31f4cef272146007fe491571e5dd87aa0092160e7648307e61bba3ea6303f4f10a6deb7aba#npm:1.1.8"],\
+            ["@chakra-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.4.6"],\
+            ["@chakra-ui/system", null],\
+            ["@saas-ui/theme", "virtual:5a9b8c352a1592ec8d52df45797e670e0a80f62e7885af03c81863fd19d8ee4cb0a4712771941a949a84dcd1f588b7020c59a8542d39775d65d875e8876e6f5d#npm:1.6.2"],\
+            ["@types/chakra-ui__react", null],\
+            ["@types/chakra-ui__system", null],\
+            ["@types/react", "npm:18.0.26"],\
+            ["react", "npm:18.2.0"]\
+          ],\
+          "packagePeers": [\
+            "@chakra-ui/react",\
+            "@chakra-ui/system",\
+            "@types/chakra-ui__react",\
+            "@types/chakra-ui__system",\
+            "@types/react",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["@saas-ui/radio", [\
@@ -4564,6 +4623,42 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@saas-ui/sidebar", [\
+        ["npm:0.7.0", {\
+          "packageLocation": "./.yarn/cache/@saas-ui-sidebar-npm-0.7.0-faf0930d97-b17f1ae23f.zip/node_modules/@saas-ui/sidebar/",\
+          "packageDependencies": [\
+            ["@saas-ui/sidebar", "npm:0.7.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.7.0", {\
+          "packageLocation": "./.yarn/__virtual__/@saas-ui-sidebar-virtual-c3e7c232a4/0/cache/@saas-ui-sidebar-npm-0.7.0-faf0930d97-b17f1ae23f.zip/node_modules/@saas-ui/sidebar/",\
+          "packageDependencies": [\
+            ["@saas-ui/sidebar", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.7.0"],\
+            ["@chakra-ui/icons", "virtual:c3e7c232a4d9208aac9f1ed35cd9ccc6fa99d8a9396c77e29e722b31f4cef272146007fe491571e5dd87aa0092160e7648307e61bba3ea6303f4f10a6deb7aba#npm:2.0.15"],\
+            ["@chakra-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.4.6"],\
+            ["@chakra-ui/react-context", "virtual:5c96c34e5db752cc6c2c03fa695820af7c14d55264ec294828ae51608a1405813db3e88ff79c66ff786cdad046adeefc764a7b58bfac7dd6c869403c5c2bbdeb#npm:2.0.6"],\
+            ["@chakra-ui/utils", "npm:2.0.14"],\
+            ["@saas-ui/collapse", "virtual:ebdf178e5927db23a29178a1c6b2abd1d417236b420ff36f526eba3aa9a39e6e913fa17a524f8a35b353761cd4e3f3db482e2eb9b4b8e5ccf5310474bf82ca57#npm:1.3.0"],\
+            ["@saas-ui/provider", "virtual:c3e7c232a4d9208aac9f1ed35cd9ccc6fa99d8a9396c77e29e722b31f4cef272146007fe491571e5dd87aa0092160e7648307e61bba3ea6303f4f10a6deb7aba#npm:1.1.8"],\
+            ["@saas-ui/react-utils", "virtual:ea73a1a24e0e79d2a5ed49c32e2353b4f42acaee5c5e90540a34f96d8513fe5c2bb48eff21e9346cf58d35b1c6097f0a3ce245c3b333098a5131b4909962d911#npm:1.1.2"],\
+            ["@types/chakra-ui__react", null],\
+            ["@types/framer-motion", null],\
+            ["@types/react", "npm:18.0.26"],\
+            ["framer-motion", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:6.5.1"],\
+            ["react", "npm:18.2.0"]\
+          ],\
+          "packagePeers": [\
+            "@chakra-ui/react",\
+            "@types/chakra-ui__react",\
+            "@types/framer-motion",\
+            "@types/react",\
+            "framer-motion",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@saas-ui/snackbar", [\
         ["npm:1.1.1", {\
           "packageLocation": "./.yarn/cache/@saas-ui-snackbar-npm-1.1.1-e7432c9c59-5076aae232.zip/node_modules/@saas-ui/snackbar/",\
@@ -4653,6 +4748,30 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@chakra-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.4.6"],\
             ["@chakra-ui/styled-system", "npm:2.5.1"],\
             ["@chakra-ui/system", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.3.7"],\
+            ["@chakra-ui/theme-tools", "virtual:5e78e63f54391848bffd5d27b2aa307136ba339c40107f97891af551f356e92feb628f5dd1bd1bcdb7192a3914fd3a92c1d04e62ab7a9dfb9ce78690a4f06929#npm:2.0.16"],\
+            ["@types/chakra-ui__react", null],\
+            ["@types/chakra-ui__system", null],\
+            ["@types/react", "npm:18.0.26"],\
+            ["react", "npm:18.2.0"]\
+          ],\
+          "packagePeers": [\
+            "@chakra-ui/react",\
+            "@chakra-ui/system",\
+            "@types/chakra-ui__react",\
+            "@types/chakra-ui__system",\
+            "@types/react",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["virtual:5a9b8c352a1592ec8d52df45797e670e0a80f62e7885af03c81863fd19d8ee4cb0a4712771941a949a84dcd1f588b7020c59a8542d39775d65d875e8876e6f5d#npm:1.6.2", {\
+          "packageLocation": "./.yarn/__virtual__/@saas-ui-theme-virtual-508e407ebd/0/cache/@saas-ui-theme-npm-1.6.2-21b867fe0f-bde7447bb4.zip/node_modules/@saas-ui/theme/",\
+          "packageDependencies": [\
+            ["@saas-ui/theme", "virtual:5a9b8c352a1592ec8d52df45797e670e0a80f62e7885af03c81863fd19d8ee4cb0a4712771941a949a84dcd1f588b7020c59a8542d39775d65d875e8876e6f5d#npm:1.6.2"],\
+            ["@chakra-ui/anatomy", "npm:2.1.1"],\
+            ["@chakra-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.4.6"],\
+            ["@chakra-ui/styled-system", "npm:2.5.1"],\
+            ["@chakra-ui/system", null],\
             ["@chakra-ui/theme-tools", "virtual:5e78e63f54391848bffd5d27b2aa307136ba339c40107f97891af551f356e92feb628f5dd1bd1bcdb7192a3914fd3a92c1d04e62ab7a9dfb9ce78690a4f06929#npm:2.0.16"],\
             ["@types/chakra-ui__react", null],\
             ["@types/chakra-ui__system", null],\
@@ -8063,6 +8182,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@saas-ui/modals", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.3"],\
             ["@saas-ui/pro", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.13.0"],\
             ["@saas-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.7.4"],\
+            ["@saas-ui/sidebar", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.7.0"],\
             ["@saas-ui/theme-glass", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:0.1.1"],\
             ["@saas-ui/web3", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.3.0"],\
             ["@types/node", "npm:17.0.45"],\

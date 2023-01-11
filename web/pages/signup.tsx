@@ -3,7 +3,15 @@ import {
   VerificationMethod,
   VerificationMethods,
 } from "@buf/sonr-hq_sonr.grpc_web/sonr/identity/did_pb";
-import { Box, Center, Flex, Spacer, Tag, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  Spacer,
+  Tag,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import {
   AppShell,
   Button,
@@ -23,9 +31,11 @@ import {
   StepperCompleted,
   useSnackbar,
 } from "@saas-ui/react";
+import { ModalsProvider, useModals } from "@saas-ui/react";
 import { Web3Address } from "@saas-ui/web3";
 import axios from "axios";
 import Link from "next/link";
+import React from "react";
 import { useState } from "react";
 import {
   FiAtSign,
@@ -43,6 +53,7 @@ import {
 } from "../types/base64";
 
 export default function SignUp() {
+  const modals = useModals();
   const snackbar = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [label, updateLabel] = useState("");
@@ -70,6 +81,7 @@ export default function SignUp() {
     console.log(params);
     return new Promise((resolve) => {
       setTimeout(resolve, 1000);
+      modals.closeAll();
     });
   };
 
@@ -120,8 +132,10 @@ export default function SignUp() {
   };
 
   const registerAccount = async function callVaultRegister(
-    nextStep: () => void
+    nextStep: () => void,
+    passcode: string
   ): Promise<void> {
+    modals.closeAll();
     if (!credential) {
       snackbar.error("Credential not found.");
       return;
@@ -151,6 +165,7 @@ export default function SignUp() {
       body: JSON.stringify({
         session_id: session,
         credential_response: credRespString,
+        password: passcode,
       }),
     });
     const resp = await response.json();
@@ -169,6 +184,23 @@ export default function SignUp() {
       setLoading(false);
       return;
     }
+  };
+
+  const getAirDrop = async function callVaultAirdrop(
+    nextStep: () => void
+  ): Promise<void> {
+    const resp = await fetch("/api/blockchain/airdrop", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        address: address,
+        coins: ["150snr"],
+      }),
+    });
+    const data = await resp.json();
+    console.log(data);
   };
 
   return (
@@ -310,7 +342,25 @@ export default function SignUp() {
                               <Button
                                 leftIcon={<FiUserPlus />}
                                 label="Register Account"
-                                onClick={() => registerAccount(nextStep)}
+                                onClick={() => {
+                                  modals.form({
+                                    onSubmit: (values) => {
+                                      console.log(values);
+                                      const passcode = values.passcode;
+                                      registerAccount(nextStep, passcode);
+                                    },
+                                    title: "Enter Passcode",
+                                    children: (
+                                      <Field
+                                        isRequired
+                                        name="passcode"
+                                        label="Passcode"
+                                        type="pin"
+                                        pinLength={6}
+                                      />
+                                    ),
+                                  });
+                                }}
                               />
                             </ButtonGroup>
                           </FormLayout>
@@ -361,39 +411,17 @@ export default function SignUp() {
                                 endLength={4}
                               />
                             </Button>
-
-                            <Property label="Identifier" />
-                            <Box>
-                              <Button
-                                variant="outline"
-                                leftIcon={<FiLock />}
-                                onClick={() => {
-                                  navigator.clipboard.writeText(
-                                    didDocument ? didDocument.getId() : ""
-                                  );
-                                  snackbar.info(
-                                    "Copied DID Identifier to Clipboard."
-                                  );
-                                }}
-                              >
-                                <Web3Address
-                                  address={
-                                    didDocument ? didDocument.getId() : "N/A"
-                                  }
-                                  startLength={32}
-                                  endLength={4}
-                                />
-                              </Button>
-                            </Box>
                           </PropertyList>
                           <ButtonGroup>
                             <Button
                               leftIcon={<FiDroplet />}
                               label="Get Airdrop"
                               onClick={() =>
-                                snackbar.error(
-                                  "Faucet not online at this time. Please try again later."
-                                )
+                                getAirDrop(nextStep).then(() => {
+                                  snackbar.success(
+                                    "Airdrop Successful. Please wait for the transaction to confirm."
+                                  );
+                                })
                               }
                               variant="primary"
                             />

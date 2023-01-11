@@ -8,8 +8,8 @@ import (
 	"github.com/gogo/protobuf/types"
 )
 
-func (c *clientStub) BroadcastTx(tx []byte) (*sdk.TxResponse, error) {
-	res, err := c.cctx.BroadcastTx(tx)
+func (c *ClientStub) BroadcastTx(tx []byte) (*sdk.TxResponse, error) {
+	res, err := c.cctx.BroadcastTxSync(tx)
 	if err != nil {
 		return nil, err
 	}

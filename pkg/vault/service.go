@@ -3,6 +3,8 @@ package vault
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/google/uuid"
@@ -70,9 +72,17 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
 	// Get Session
-	didDoc, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse)
+	didDoc, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse, req.Password)
 	if err != nil {
 		return nil, err
+	}
+	addr := didDoc.Address()
+	if !strings.Contains(addr, "snr") {
+		return &v1.RegisterResponse{
+			Success:     true,
+			DidDocument: didDoc,
+			Address:     fmt.Sprintf("snr%s", didDoc.Address()),
+		}, nil
 	}
 	return &v1.RegisterResponse{
 		Success:     true,
@@ -133,7 +143,7 @@ func (v *VaultService) assembleWalletFromShares(cid string, current *common.Wall
 	}
 
 	// Load wallet
-	wallet, err := LoadOfflineWallet(shares)
+	wallet, err := loadOfflineWallet(shares)
 	if err != nil {
 		return "", nil, err
 	}

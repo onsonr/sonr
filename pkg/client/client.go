@@ -6,19 +6,19 @@ import (
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
-type clientStub struct {
+type ClientStub struct {
 	cctx       client.Context
 	idClient   types.QueryClient
 	bankClient banktypes.QueryClient
 	faucetUrl  string
 }
 
-// NewClient creates a new client for the identity module
-func NewClient(cctx client.Context, faucetUrl string) *clientStub {
-	return &clientStub{
+// NewStub creates a new client for the identity module
+func NewStub(cctx client.Context) *ClientStub {
+	return &ClientStub{
 		cctx:       cctx,
 		idClient:   types.NewQueryClient(cctx),
 		bankClient: banktypes.NewQueryClient(cctx),
-		faucetUrl:  faucetUrl,
+		faucetUrl:  "http://0.0.0.0:4500",
 	}
 }

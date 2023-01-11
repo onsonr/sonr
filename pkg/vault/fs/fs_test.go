@@ -2,7 +2,6 @@ package fs
 
 import (
 	"context"
-	"encoding/hex"
 	"testing"
 
 	"github.com/sonr-hq/sonr/pkg/common"
@@ -40,10 +39,7 @@ func TestStoreShare(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	secretKeyBytes, err := hex.DecodeString("6368616e676520746869732070617373776f726420746f206120736563726574")
-	if err != nil {
-		panic(err)
-	}
+	password := "abcdef123456"
 	testShare := &common.WalletShareConfig{
 		SelfId: "test",
 	}
@@ -51,7 +47,7 @@ func TestStoreShare(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := v.StoreShare(bz, "test", secretKeyBytes); err != nil {
+	if err := v.StoreShare(bz, "test", password); err != nil {
 		t.Fatal(err)
 	}
 
@@ -59,7 +55,7 @@ func TestStoreShare(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	shares, err := v2.LoadShares(secretKeyBytes)
+	shares, err := v2.LoadShares(password)
 	if err != nil {
 		t.Fatal(err)
 	}

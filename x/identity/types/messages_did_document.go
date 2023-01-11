@@ -13,10 +13,10 @@ const (
 
 var _ sdk.Msg = &MsgCreateDidDocument{}
 
-func NewMsgCreateDidDocument(creator string) *MsgCreateDidDocument {
+func NewMsgCreateDidDocument(creator string, didDoc *DidDocument) *MsgCreateDidDocument {
 	return &MsgCreateDidDocument{
-		Creator: creator,
-		Did:     "",
+		Creator:  creator,
+		Document: didDoc,
 	}
 }
 
@@ -67,18 +67,8 @@ func NewMsgUpdateDidDocument(
 
 ) *MsgUpdateDidDocument {
 	return &MsgUpdateDidDocument{
-		Creator:              creator,
-		Did:                  did,
-		Context:              context,
-		Controller:           controller,
-		VerificationMethod:   verificationMethod,
-		Authentication:       authentication,
-		AssertionMethod:      assertionMethod,
-		CapibilityInvocation: capibilityInvocation,
-		CapabilityDelegation: capabilityDelegation,
-		KeyAgreement:         keyAgreement,
-		Service:              service,
-		AlsoKnownAs:          alsoKnownAs,
+		Creator:  creator,
+		Document: BlankDocument(creator),
 	}
 }
 

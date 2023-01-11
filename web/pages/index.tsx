@@ -1,12 +1,4 @@
-import {
-  Box,
-  Center,
-  Flex,
-  Spacer,
-  Tag,
-  Text,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Box, Center, Flex, Spacer, Tag, Text, useColorMode } from "@chakra-ui/react";
 import { AppShell, Button, EmptyState } from "@saas-ui/react";
 import Head from "next/head";
 import Link from "next/link";

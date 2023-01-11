@@ -16,37 +16,17 @@ service Msg {
 
 message MsgCreateDidDocument {
   string creator = 1;
-  string did = 2;
-
-  string context = 3;
-  string controller = 4;
-  string verificationMethod = 5;
-  string authentication = 6;
-  string assertionMethod = 7;
-  string capibilityInvocation = 8;
-  string capabilityDelegation = 9;
-  string keyAgreement = 10;
-  string service = 11;
-  string alsoKnownAs = 12;
+  DidDocument document =2;
 }
 message MsgCreateDidDocumentResponse {}
 
 message MsgUpdateDidDocument {
   string creator = 1;
-  string did = 2;
-
-  string context = 3;
-  string controller = 4;
-  string verificationMethod = 5;
-  string authentication = 6;
-  string assertionMethod = 7;
-  string capibilityInvocation = 8;
-  string capabilityDelegation = 9;
-  string keyAgreement = 10;
-  string service = 11;
-  string alsoKnownAs = 12;
+  DidDocument document = 2;
 }
-message MsgUpdateDidDocumentResponse {}
+message MsgUpdateDidDocumentResponse {
+  string creator = 1;
+}
 
 message MsgDeleteDidDocument {
   string creator = 1;

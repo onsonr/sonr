@@ -23,12 +23,12 @@ func TestDidDocumentMsgServerCreate(t *testing.T) {
 	creator := "A"
 	for i := 0; i < 5; i++ {
 		expected := &types.MsgCreateDidDocument{Creator: creator,
-			Did: strconv.Itoa(i),
+			Document: types.BlankDocument(creator),
 		}
 		_, err := srv.CreateDidDocument(wctx, expected)
 		require.NoError(t, err)
 		rst, found := k.GetDidDocument(ctx,
-			expected.Did,
+			expected.Document.ID,
 		)
 		accAddr, err := rst.AccAddress()
 		require.NoError(t, err)
@@ -48,20 +48,20 @@ func TestDidDocumentMsgServerUpdate(t *testing.T) {
 		{
 			desc: "Completed",
 			request: &types.MsgUpdateDidDocument{Creator: creator,
-				Did: strconv.Itoa(0),
+				Document: types.BlankDocument(creator),
 			},
 		},
 		{
 			desc: "Unauthorized",
 			request: &types.MsgUpdateDidDocument{Creator: "B",
-				Did: strconv.Itoa(0),
+				Document: types.BlankDocument(creator),
 			},
 			err: sdkerrors.ErrUnauthorized,
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.MsgUpdateDidDocument{Creator: creator,
-				Did: strconv.Itoa(100000),
+				Document: types.BlankDocument(creator),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -71,7 +71,7 @@ func TestDidDocumentMsgServerUpdate(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgCreateDidDocument{Creator: creator,
-				Did: strconv.Itoa(0),
+				Document: types.BlankDocument(creator),
 			}
 			_, err := srv.CreateDidDocument(wctx, expected)
 			require.NoError(t, err)
@@ -82,7 +82,7 @@ func TestDidDocumentMsgServerUpdate(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				rst, found := k.GetDidDocument(ctx,
-					expected.Did,
+					expected.Document.ID,
 				)
 				require.True(t, found)
 				accAddr, err := rst.AccAddress()
@@ -128,7 +128,7 @@ func TestDidDocumentMsgServerDelete(t *testing.T) {
 			wctx := sdk.WrapSDKContext(ctx)
 
 			_, err := srv.CreateDidDocument(wctx, &types.MsgCreateDidDocument{Creator: creator,
-				Did: strconv.Itoa(0),
+				Document: types.BlankDocument(creator),
 			})
 			require.NoError(t, err)
 			_, err = srv.DeleteDidDocument(wctx, tc.request)

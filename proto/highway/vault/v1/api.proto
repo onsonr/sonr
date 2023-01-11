@@ -28,11 +28,12 @@ message ChallengeResponse {
 
 // RegisterRequest is the request to register a new account.
 message RegisterRequest {
-    string session_id = 1;
-    string credential_response = 2;
-    string rp_id = 3;
-    string prefix = 4; // optional
-    int32 threshold = 5; // optional
+    string password = 1;
+    string session_id = 2;
+    string credential_response = 3;
+    string rp_id = 4;
+    string prefix = 5; // optional
+    int32 threshold = 6; // optional
 }
 
 // RegisterResponse is the response to a Register request.
