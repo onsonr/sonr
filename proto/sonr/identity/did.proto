@@ -6,6 +6,8 @@ import "sonr/identity/vc.proto";
 import "common/v1/data.proto";
 option go_package = "github.com/sonr-hq/sonr/x/identity/types";
 
+// TODO: https://github.com/cosmos/cosmos-sdk/blob/v0.46.0/proto/cosmos/bank/v1beta1/authz.proto#L10-L19
+
 message DidDocument {
   repeated string context = 1; // optional
   string iD = 2;
