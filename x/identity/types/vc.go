@@ -7,18 +7,18 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/webauthn"
+	"github.com/shengdoushi/base58"
 	common "github.com/sonr-hq/sonr/pkg/common"
 )
 
 func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential, error) {
+	if wvm.Type != KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+		return nil, errors.New("VerificationMethod is not a WebAuthn Credential")
+	}
 	data := wvm.GetMetadata()
 	// Fetch Properties from map
 	if data == nil {
 		return nil, errors.New("Failed to find metadata for VerificationMethod")
-	}
-	credIdRaw, ok := data["credential_id"]
-	if !ok {
-		return nil, errors.New("Failed to get authenticator aaguid")
 	}
 	authAaguidRaw, ok := data["authenticator.aaguid"]
 	if !ok {
@@ -42,7 +42,7 @@ func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential,
 	}
 
 	// Decode Cred ID
-	credId, err := base64.StdEncoding.DecodeString(credIdRaw)
+	credId, err := base58.Decode(wvm.Address(), base58.BitcoinAlphabet)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (wvm *DidDocument) WebAuthnName() string {
 }
 
 func (wvm *DidDocument) WebAuthnDisplayName() string {
-	return wvm.ID
+	return wvm.Alias()
 }
 
 func (wvm *DidDocument) WebAuthnIcon() string {

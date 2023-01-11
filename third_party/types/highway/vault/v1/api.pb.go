@@ -36,8 +36,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type ChallengeRequest struct {
 	// Optional RP ID to use for the challenge.
 	RpId string `protobuf:"bytes,1,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
-	// Label to use for the device.
-	Label string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	// Username to use for the AlsoKnownAs field in the didDoc
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	// Label is the device label to set for the Authentication method
+	Label string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
 }
 
 func (m *ChallengeRequest) Reset()         { *m = ChallengeRequest{} }
@@ -76,6 +78,13 @@ var xxx_messageInfo_ChallengeRequest proto.InternalMessageInfo
 func (m *ChallengeRequest) GetRpId() string {
 	if m != nil {
 		return m.RpId
+	}
+	return ""
+}
+
+func (m *ChallengeRequest) GetUsername() string {
+	if m != nil {
+		return m.Username
 	}
 	return ""
 }
@@ -169,6 +178,8 @@ type RegisterRequest struct {
 	SessionId          string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	CredentialResponse string `protobuf:"bytes,2,opt,name=credential_response,json=credentialResponse,proto3" json:"credential_response,omitempty"`
 	RpId               string `protobuf:"bytes,3,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
+	Prefix             string `protobuf:"bytes,4,opt,name=prefix,proto3" json:"prefix,omitempty"`
+	Threshold          int32  `protobuf:"varint,5,opt,name=threshold,proto3" json:"threshold,omitempty"`
 }
 
 func (m *RegisterRequest) Reset()         { *m = RegisterRequest{} }
@@ -225,10 +236,27 @@ func (m *RegisterRequest) GetRpId() string {
 	return ""
 }
 
+func (m *RegisterRequest) GetPrefix() string {
+	if m != nil {
+		return m.Prefix
+	}
+	return ""
+}
+
+func (m *RegisterRequest) GetThreshold() int32 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
 // RegisterResponse is the response to a Register request.
 type RegisterResponse struct {
 	Success            bool                      `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	VerificationMethod *types.VerificationMethod `protobuf:"bytes,2,opt,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
+	Address            string                    `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	VerificationMethod *types.VerificationMethod `protobuf:"bytes,3,opt,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
+	VaultCid           string                    `protobuf:"bytes,4,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
+	DidDocument        *types.DidDocument        `protobuf:"bytes,5,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 }
 
 func (m *RegisterResponse) Reset()         { *m = RegisterResponse{} }
@@ -271,6 +299,13 @@ func (m *RegisterResponse) GetSuccess() bool {
 	return false
 }
 
+func (m *RegisterResponse) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
 func (m *RegisterResponse) GetVerificationMethod() *types.VerificationMethod {
 	if m != nil {
 		return m.VerificationMethod
@@ -278,138 +313,14 @@ func (m *RegisterResponse) GetVerificationMethod() *types.VerificationMethod {
 	return nil
 }
 
-// KeygenRequest is the request to generate a new keypair.
-type KeygenRequest struct {
-	Prefix             string                    `protobuf:"bytes,1,opt,name=prefix,proto3" json:"prefix,omitempty"`
-	Threshold          int32                     `protobuf:"varint,2,opt,name=threshold,proto3" json:"threshold,omitempty"`
-	VerificationMethod *types.VerificationMethod `protobuf:"bytes,3,opt,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
-}
-
-func (m *KeygenRequest) Reset()         { *m = KeygenRequest{} }
-func (m *KeygenRequest) String() string { return proto.CompactTextString(m) }
-func (*KeygenRequest) ProtoMessage()    {}
-func (*KeygenRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{4}
-}
-func (m *KeygenRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *KeygenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_KeygenRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *KeygenRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_KeygenRequest.Merge(m, src)
-}
-func (m *KeygenRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *KeygenRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_KeygenRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_KeygenRequest proto.InternalMessageInfo
-
-func (m *KeygenRequest) GetPrefix() string {
-	if m != nil {
-		return m.Prefix
-	}
-	return ""
-}
-
-func (m *KeygenRequest) GetThreshold() int32 {
-	if m != nil {
-		return m.Threshold
-	}
-	return 0
-}
-
-func (m *KeygenRequest) GetVerificationMethod() *types.VerificationMethod {
-	if m != nil {
-		return m.VerificationMethod
-	}
-	return nil
-}
-
-// KeygenResponse is the response to a Keygen request.
-type KeygenResponse struct {
-	Id          []byte                    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Address     string                    `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	ShareConfig *common.WalletShareConfig `protobuf:"bytes,3,opt,name=share_config,json=shareConfig,proto3" json:"share_config,omitempty"`
-	VaultCid    string                    `protobuf:"bytes,4,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
-	DidDocument *types.DidDocument        `protobuf:"bytes,5,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
-}
-
-func (m *KeygenResponse) Reset()         { *m = KeygenResponse{} }
-func (m *KeygenResponse) String() string { return proto.CompactTextString(m) }
-func (*KeygenResponse) ProtoMessage()    {}
-func (*KeygenResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{5}
-}
-func (m *KeygenResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *KeygenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_KeygenResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *KeygenResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_KeygenResponse.Merge(m, src)
-}
-func (m *KeygenResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *KeygenResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_KeygenResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_KeygenResponse proto.InternalMessageInfo
-
-func (m *KeygenResponse) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-func (m *KeygenResponse) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-func (m *KeygenResponse) GetShareConfig() *common.WalletShareConfig {
-	if m != nil {
-		return m.ShareConfig
-	}
-	return nil
-}
-
-func (m *KeygenResponse) GetVaultCid() string {
+func (m *RegisterResponse) GetVaultCid() string {
 	if m != nil {
 		return m.VaultCid
 	}
 	return ""
 }
 
-func (m *KeygenResponse) GetDidDocument() *types.DidDocument {
+func (m *RegisterResponse) GetDidDocument() *types.DidDocument {
 	if m != nil {
 		return m.DidDocument
 	}
@@ -427,7 +338,7 @@ func (m *RefreshRequest) Reset()         { *m = RefreshRequest{} }
 func (m *RefreshRequest) String() string { return proto.CompactTextString(m) }
 func (*RefreshRequest) ProtoMessage()    {}
 func (*RefreshRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{6}
+	return fileDescriptor_fc75ed3c8267caa0, []int{4}
 }
 func (m *RefreshRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -488,7 +399,7 @@ func (m *RefreshResponse) Reset()         { *m = RefreshResponse{} }
 func (m *RefreshResponse) String() string { return proto.CompactTextString(m) }
 func (*RefreshResponse) ProtoMessage()    {}
 func (*RefreshResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{7}
+	return fileDescriptor_fc75ed3c8267caa0, []int{5}
 }
 func (m *RefreshResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -549,7 +460,7 @@ func (m *SignRequest) Reset()         { *m = SignRequest{} }
 func (m *SignRequest) String() string { return proto.CompactTextString(m) }
 func (*SignRequest) ProtoMessage()    {}
 func (*SignRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{8}
+	return fileDescriptor_fc75ed3c8267caa0, []int{6}
 }
 func (m *SignRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -611,7 +522,7 @@ func (m *SignResponse) Reset()         { *m = SignResponse{} }
 func (m *SignResponse) String() string { return proto.CompactTextString(m) }
 func (*SignResponse) ProtoMessage()    {}
 func (*SignResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{9}
+	return fileDescriptor_fc75ed3c8267caa0, []int{7}
 }
 func (m *SignResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -679,7 +590,7 @@ func (m *DeriveRequest) Reset()         { *m = DeriveRequest{} }
 func (m *DeriveRequest) String() string { return proto.CompactTextString(m) }
 func (*DeriveRequest) ProtoMessage()    {}
 func (*DeriveRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{10}
+	return fileDescriptor_fc75ed3c8267caa0, []int{8}
 }
 func (m *DeriveRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -740,7 +651,7 @@ func (m *DeriveResponse) Reset()         { *m = DeriveResponse{} }
 func (m *DeriveResponse) String() string { return proto.CompactTextString(m) }
 func (*DeriveResponse) ProtoMessage()    {}
 func (*DeriveResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fc75ed3c8267caa0, []int{11}
+	return fileDescriptor_fc75ed3c8267caa0, []int{9}
 }
 func (m *DeriveResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -795,8 +706,6 @@ func init() {
 	proto.RegisterType((*ChallengeResponse)(nil), "sonrhq.highway.vault.v1.ChallengeResponse")
 	proto.RegisterType((*RegisterRequest)(nil), "sonrhq.highway.vault.v1.RegisterRequest")
 	proto.RegisterType((*RegisterResponse)(nil), "sonrhq.highway.vault.v1.RegisterResponse")
-	proto.RegisterType((*KeygenRequest)(nil), "sonrhq.highway.vault.v1.KeygenRequest")
-	proto.RegisterType((*KeygenResponse)(nil), "sonrhq.highway.vault.v1.KeygenResponse")
 	proto.RegisterType((*RefreshRequest)(nil), "sonrhq.highway.vault.v1.RefreshRequest")
 	proto.RegisterType((*RefreshResponse)(nil), "sonrhq.highway.vault.v1.RefreshResponse")
 	proto.RegisterType((*SignRequest)(nil), "sonrhq.highway.vault.v1.SignRequest")
@@ -808,68 +717,66 @@ func init() {
 func init() { proto.RegisterFile("highway/vault/v1/api.proto", fileDescriptor_fc75ed3c8267caa0) }
 
 var fileDescriptor_fc75ed3c8267caa0 = []byte{
-	// 971 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0xcd, 0x6e, 0x1c, 0xc5,
-	0x13, 0x77, 0xef, 0x97, 0xbd, 0xb5, 0x6b, 0xc7, 0xff, 0x76, 0xf4, 0xcf, 0x6a, 0x63, 0x2f, 0x66,
-	0x02, 0xf1, 0xda, 0x82, 0x19, 0x6c, 0x6e, 0x96, 0xb8, 0x60, 0x0b, 0xc9, 0x42, 0x10, 0x69, 0x82,
-	0x82, 0xe0, 0x32, 0x1a, 0x4f, 0xb7, 0x67, 0x1a, 0x66, 0xbb, 0xc7, 0x3d, 0xb3, 0x4b, 0x56, 0x11,
-	0x12, 0x1f, 0x87, 0xdc, 0x10, 0x52, 0x78, 0x00, 0x9e, 0x00, 0x1e, 0x80, 0x07, 0x80, 0x63, 0x24,
-	0x2e, 0x1c, 0x91, 0x0d, 0xef, 0x81, 0xba, 0xa7, 0xc7, 0x6b, 0x6f, 0x32, 0xde, 0x10, 0xad, 0xc4,
-	0x69, 0xb7, 0xab, 0x7f, 0x55, 0xf5, 0xab, 0xaa, 0xae, 0xaa, 0x81, 0x6e, 0xc4, 0xc2, 0xe8, 0x0b,
-	0x7f, 0xec, 0x8c, 0xfc, 0x61, 0x9c, 0x39, 0xa3, 0x5d, 0xc7, 0x4f, 0x98, 0x9d, 0x48, 0x91, 0x09,
-	0x7c, 0x2b, 0x15, 0x5c, 0x46, 0xa7, 0xb6, 0x81, 0xd8, 0x1a, 0x62, 0x8f, 0x76, 0xbb, 0x37, 0x03,
-	0x31, 0x18, 0x08, 0xae, 0xd0, 0xc4, 0xcf, 0xfc, 0x1c, 0xde, 0xdd, 0x78, 0xc6, 0xd4, 0x40, 0x10,
-	0x1a, 0xa7, 0xe6, 0x5a, 0x5b, 0x73, 0x18, 0xa1, 0x3c, 0x63, 0xd9, 0xd8, 0x21, 0x8c, 0x98, 0x8b,
-	0xf5, 0x50, 0x88, 0x30, 0xa6, 0xca, 0xb1, 0xe3, 0x73, 0x2e, 0x32, 0x3f, 0x63, 0x82, 0x1b, 0x35,
-	0xeb, 0x1d, 0x58, 0x3d, 0x88, 0xfc, 0x38, 0xa6, 0x3c, 0xa4, 0x2e, 0x3d, 0x1d, 0xd2, 0x34, 0xc3,
-	0x6b, 0x50, 0x97, 0x89, 0xc7, 0x48, 0x07, 0x6d, 0xa2, 0x7e, 0xd3, 0xad, 0xc9, 0xe4, 0x88, 0xe0,
-	0x9b, 0x50, 0x8f, 0xfd, 0x63, 0x1a, 0x77, 0x2a, 0x5a, 0x98, 0x1f, 0xac, 0x9f, 0x10, 0xfc, 0xef,
-	0x92, 0x7e, 0x9a, 0x08, 0x9e, 0x52, 0xbc, 0x01, 0x90, 0xd2, 0x34, 0x65, 0x82, 0x4f, 0xac, 0x34,
-	0x8d, 0xe4, 0x88, 0xe0, 0x6d, 0x58, 0x0d, 0x24, 0xd5, 0x34, 0x3c, 0x91, 0x68, 0x36, 0xc6, 0xea,
-	0x8d, 0x42, 0x7e, 0x2f, 0x17, 0xe3, 0x5b, 0xb0, 0x28, 0x13, 0x8f, 0xfb, 0x03, 0xda, 0xa9, 0x6a,
-	0x44, 0x43, 0x26, 0x1f, 0xfa, 0x03, 0xed, 0x42, 0x26, 0x9e, 0x90, 0x2c, 0x64, 0x3c, 0xed, 0xd4,
-	0x36, 0xab, 0xca, 0x85, 0x4c, 0xee, 0xe5, 0x02, 0xa3, 0xc7, 0x02, 0xc1, 0x3b, 0xf5, 0x42, 0xef,
-	0x28, 0x10, 0xdc, 0x1a, 0xc1, 0x0d, 0x97, 0x86, 0x2c, 0xcd, 0xa8, 0x2c, 0xc2, 0x9d, 0xc1, 0xd6,
-	0x81, 0xb5, 0x40, 0x52, 0x9d, 0x57, 0x3f, 0xf6, 0xa4, 0x89, 0xd1, 0x10, 0xc6, 0x93, 0xab, 0x8b,
-	0xe8, 0x2f, 0xd2, 0x57, 0x9d, 0xa4, 0xcf, 0x7a, 0x8c, 0x60, 0x75, 0xe2, 0xd8, 0x20, 0x3b, 0xb0,
-	0x98, 0x0e, 0x83, 0x80, 0xa6, 0xa9, 0x76, 0xbb, 0xe4, 0x16, 0x47, 0xfc, 0x09, 0xac, 0x8d, 0xa8,
-	0x64, 0x27, 0x2c, 0xc8, 0xd3, 0x34, 0xa0, 0x59, 0x24, 0x88, 0x76, 0xda, 0xda, 0xeb, 0xdb, 0xe6,
-	0xe5, 0xa8, 0x1f, 0xbb, 0x28, 0xb9, 0xfd, 0xe0, 0x92, 0xc2, 0x07, 0x1a, 0xef, 0xe2, 0xd1, 0x33,
-	0x32, 0xeb, 0x47, 0x04, 0xcb, 0xef, 0xd3, 0x71, 0x48, 0x79, 0x91, 0x80, 0xff, 0x43, 0x23, 0x91,
-	0xf4, 0x84, 0x3d, 0x34, 0xc1, 0x9b, 0x13, 0x5e, 0x87, 0x66, 0x16, 0x49, 0x9a, 0x46, 0x22, 0xce,
-	0x5d, 0xd7, 0xdd, 0x89, 0xa0, 0x8c, 0x62, 0x75, 0x0e, 0x14, 0xff, 0x46, 0xb0, 0x52, 0x50, 0x34,
-	0xa9, 0x5a, 0x81, 0x8a, 0x29, 0x4e, 0xdb, 0xad, 0x30, 0xa2, 0x52, 0xe7, 0x13, 0x22, 0x55, 0xea,
-	0xf2, 0x4a, 0x14, 0x47, 0xfc, 0x1e, 0xb4, 0xd3, 0xc8, 0x97, 0xd4, 0x0b, 0x04, 0x3f, 0x61, 0xa1,
-	0x21, 0x74, 0xa7, 0x20, 0x94, 0xf7, 0x96, 0x3d, 0xda, 0xb5, 0x3f, 0x56, 0xcf, 0x36, 0xbb, 0xaf,
-	0xb0, 0x07, 0x1a, 0xea, 0xb6, 0xd2, 0xc9, 0x01, 0xdf, 0x86, 0xa6, 0xee, 0x34, 0x2f, 0x60, 0xa4,
-	0x53, 0xd3, 0x3e, 0x96, 0xb4, 0xe0, 0x80, 0x11, 0x7c, 0x08, 0x6d, 0xc2, 0x88, 0x47, 0x44, 0x30,
-	0x1c, 0x50, 0x9e, 0xe9, 0x47, 0xd6, 0xda, 0x7b, 0xf5, 0xf9, 0x51, 0x1f, 0x32, 0x72, 0x68, 0x80,
-	0x6e, 0x8b, 0x4c, 0x0e, 0xd6, 0x2f, 0x08, 0x56, 0x5c, 0x7a, 0xa2, 0x32, 0x5a, 0xd4, 0x62, 0x9a,
-	0x3d, 0x9a, 0x07, 0xfb, 0xca, 0x0c, 0xf6, 0xd5, 0x97, 0x62, 0xff, 0x35, 0x52, 0xbd, 0x64, 0xd8,
-	0xff, 0xeb, 0x32, 0xcd, 0x87, 0xc3, 0xcf, 0x08, 0x5a, 0xf7, 0x59, 0xc8, 0xe7, 0x9d, 0xbe, 0x69,
-	0x76, 0x95, 0x97, 0x61, 0x87, 0x31, 0xd4, 0xd4, 0x00, 0xd7, 0xb1, 0xb5, 0x5d, 0xfd, 0xdf, 0xfa,
-	0x0c, 0xda, 0x39, 0xe1, 0x92, 0x8c, 0xad, 0x43, 0x33, 0x65, 0x21, 0xf7, 0xb3, 0xa1, 0xcc, 0x87,
-	0x4c, 0xdb, 0x9d, 0x08, 0x9e, 0x67, 0x51, 0xe5, 0x58, 0x8f, 0x4d, 0x21, 0xcd, 0x33, 0x2d, 0x8e,
-	0xd6, 0x77, 0x08, 0x96, 0x0f, 0xa9, 0x64, 0x23, 0x3a, 0xab, 0xd5, 0x5f, 0x81, 0x56, 0x10, 0xb1,
-	0x98, 0x78, 0x8c, 0x13, 0xfa, 0x50, 0xfb, 0x5d, 0x76, 0x41, 0x8b, 0x8e, 0x94, 0x64, 0x4e, 0xe5,
-	0xfa, 0x0a, 0xc1, 0x4a, 0x41, 0xe8, 0xbf, 0x79, 0x31, 0x7b, 0xbf, 0x36, 0xa0, 0xfe, 0x40, 0x35,
-	0x02, 0xfe, 0x01, 0x41, 0xf3, 0x62, 0x77, 0xe1, 0x6d, 0xbb, 0x64, 0x1d, 0xdb, 0xd3, 0xfb, 0xb1,
-	0xbb, 0xf3, 0x22, 0xd0, 0x3c, 0x3c, 0xeb, 0xad, 0x6f, 0x7e, 0xff, 0xeb, 0x49, 0x65, 0x07, 0xf7,
-	0x1d, 0xa5, 0xf3, 0x26, 0x13, 0xce, 0xd5, 0x35, 0x1e, 0x14, 0x1a, 0xce, 0x23, 0xbd, 0x34, 0xbe,
-	0xc4, 0x4f, 0x10, 0x2c, 0x15, 0x9b, 0x02, 0xf7, 0x4b, 0x5d, 0x4d, 0x6d, 0xb1, 0xee, 0xf6, 0x0b,
-	0x20, 0x0d, 0xa7, 0x3d, 0xcd, 0xe9, 0x0d, 0x6b, 0xab, 0x84, 0x93, 0x34, 0x0a, 0x05, 0xa5, 0x7d,
-	0xb4, 0x83, 0xbf, 0x45, 0xd0, 0xc8, 0x47, 0x32, 0xbe, 0x5b, 0xea, 0xe9, 0xca, 0x5a, 0xe9, 0x6e,
-	0xcd, 0xc4, 0x19, 0x3e, 0x7d, 0xcd, 0xc7, 0xb2, 0x36, 0x4a, 0xf8, 0x7c, 0xae, 0xe1, 0x8a, 0xc5,
-	0x63, 0x04, 0x8b, 0x66, 0xe4, 0xe0, 0xad, 0x6b, 0x02, 0xbe, 0x3c, 0x52, 0xbb, 0xfd, 0xd9, 0x40,
-	0x43, 0x64, 0x5b, 0x13, 0xb9, 0x63, 0xf5, 0x4a, 0x13, 0xa3, 0xf1, 0x8a, 0xc9, 0x23, 0xa8, 0xa9,
-	0x36, 0xc6, 0xaf, 0x95, 0x1a, 0xbf, 0x34, 0x96, 0xba, 0xaf, 0xcf, 0x40, 0x19, 0xff, 0x77, 0xb5,
-	0xff, 0x4d, 0xeb, 0x76, 0x89, 0x7f, 0x35, 0x07, 0x8a, 0x62, 0xe4, 0x6d, 0x74, 0x4d, 0x31, 0xae,
-	0x34, 0xfe, 0x35, 0xc5, 0xb8, 0xda, 0x8f, 0x33, 0x8b, 0x41, 0x34, 0x7c, 0x1f, 0xed, 0xbc, 0xfb,
-	0xd1, 0x6f, 0x67, 0x3d, 0xf4, 0xf4, 0xac, 0x87, 0xfe, 0x3c, 0xeb, 0xa1, 0xef, 0xcf, 0x7b, 0x0b,
-	0x4f, 0xcf, 0x7b, 0x0b, 0x7f, 0x9c, 0xf7, 0x16, 0x3e, 0xdd, 0x0f, 0x59, 0x16, 0x0d, 0x8f, 0xd5,
-	0xb8, 0xcd, 0xad, 0x44, 0xa7, 0xfa, 0xd7, 0xc9, 0x22, 0x26, 0x89, 0x97, 0xf8, 0x32, 0x1b, 0x3b,
-	0xd9, 0x38, 0xa1, 0xa9, 0x33, 0xfd, 0x51, 0x7b, 0xdc, 0xd0, 0xdf, 0xa5, 0x6f, 0xff, 0x13, 0x00,
-	0x00, 0xff, 0xff, 0x84, 0xeb, 0x14, 0xfb, 0x3a, 0x0b, 0x00, 0x00,
+	// 940 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x96, 0xcf, 0x6e, 0xdb, 0xc6,
+	0x13, 0xc7, 0x4d, 0x59, 0xb2, 0xad, 0x91, 0xe2, 0xf8, 0xb7, 0x0e, 0x7e, 0x11, 0x14, 0x5b, 0x75,
+	0x99, 0x36, 0x96, 0x8d, 0x96, 0xac, 0xd5, 0x9b, 0x8f, 0xb5, 0x51, 0xc0, 0x87, 0x36, 0x00, 0x53,
+	0xa4, 0x48, 0x2f, 0x04, 0xcd, 0x5d, 0x93, 0x5b, 0x50, 0xbb, 0xf4, 0xee, 0x4a, 0x8d, 0x11, 0x14,
+	0xe8, 0x3f, 0xa0, 0xb7, 0xa2, 0x40, 0xfa, 0x18, 0x45, 0xfb, 0x00, 0x3d, 0xf5, 0xd6, 0x63, 0x80,
+	0x5e, 0x7a, 0x2c, 0xec, 0x3e, 0x48, 0xb1, 0xcb, 0xa5, 0x24, 0x3b, 0x61, 0x14, 0x04, 0x06, 0x7a,
+	0x92, 0x76, 0xf6, 0xbb, 0x33, 0x9f, 0x1d, 0xce, 0x0c, 0x09, 0xdd, 0x94, 0x26, 0xe9, 0x17, 0xd1,
+	0x99, 0x3f, 0x8e, 0x46, 0x99, 0xf2, 0xc7, 0x7b, 0x7e, 0x94, 0x53, 0x2f, 0x17, 0x5c, 0x71, 0x74,
+	0x5b, 0x72, 0x26, 0xd2, 0x53, 0xcf, 0x4a, 0x3c, 0x23, 0xf1, 0xc6, 0x7b, 0xdd, 0x5b, 0x31, 0x1f,
+	0x0e, 0x39, 0xd3, 0x6a, 0x1c, 0xa9, 0xa8, 0x90, 0x77, 0x37, 0x9f, 0x73, 0x35, 0xe4, 0x98, 0x64,
+	0xd2, 0x6e, 0x1b, 0x6f, 0x3e, 0xc5, 0x84, 0x29, 0xaa, 0xce, 0x7c, 0x4c, 0xb1, 0xdd, 0xd8, 0x48,
+	0x38, 0x4f, 0x32, 0xa2, 0x03, 0xfb, 0x11, 0x63, 0x5c, 0x45, 0x8a, 0x72, 0x66, 0x8f, 0xb9, 0x8f,
+	0x60, 0xed, 0x20, 0x8d, 0xb2, 0x8c, 0xb0, 0x84, 0x04, 0xe4, 0x74, 0x44, 0xa4, 0x42, 0xeb, 0xd0,
+	0x10, 0x79, 0x48, 0x71, 0xc7, 0xd9, 0x72, 0xfa, 0xcd, 0xa0, 0x2e, 0xf2, 0x23, 0x8c, 0xba, 0xb0,
+	0x32, 0x92, 0x44, 0xb0, 0x68, 0x48, 0x3a, 0x35, 0x63, 0x9f, 0xac, 0xd1, 0x2d, 0x68, 0x64, 0xd1,
+	0x31, 0xc9, 0x3a, 0x8b, 0x66, 0xa3, 0x58, 0xb8, 0xbf, 0x38, 0xf0, 0xbf, 0x19, 0xdf, 0x32, 0xe7,
+	0x4c, 0x12, 0xb4, 0x09, 0x20, 0x89, 0x94, 0x94, 0xb3, 0x69, 0x84, 0xa6, 0xb5, 0x1c, 0x61, 0xb4,
+	0x03, 0x6b, 0xb1, 0x20, 0x06, 0x31, 0xe4, 0xb9, 0x21, 0xb5, 0xe1, 0x6e, 0x96, 0xf6, 0xfb, 0x85,
+	0x19, 0xdd, 0x86, 0x65, 0x91, 0x87, 0x06, 0xa8, 0x88, 0xbb, 0x24, 0xf2, 0x8f, 0x35, 0xce, 0x26,
+	0x80, 0xc8, 0x43, 0x2e, 0x68, 0x42, 0x99, 0xec, 0xd4, 0xb7, 0x16, 0x75, 0x08, 0x91, 0xdf, 0x2f,
+	0x0c, 0xf6, 0x1c, 0x8d, 0x39, 0xeb, 0x34, 0xca, 0x73, 0x47, 0x31, 0x67, 0xee, 0xcf, 0x0e, 0xdc,
+	0x0c, 0x48, 0x42, 0xa5, 0x22, 0xa2, 0xcc, 0xc5, 0x1c, 0x5c, 0x1f, 0xd6, 0x63, 0x41, 0x4c, 0xd2,
+	0xa3, 0x2c, 0x14, 0xf6, 0x92, 0x96, 0x18, 0x4d, 0xb7, 0x26, 0xd7, 0x9f, 0xe4, 0x76, 0x71, 0x26,
+	0xb7, 0xff, 0x87, 0xa5, 0x5c, 0x90, 0x13, 0xfa, 0xb8, 0x53, 0x2f, 0x80, 0x8a, 0x15, 0xda, 0x80,
+	0xa6, 0x4a, 0x05, 0x91, 0x29, 0xcf, 0xb0, 0x61, 0x6d, 0x04, 0x53, 0x83, 0xfb, 0x5d, 0x0d, 0xd6,
+	0xa6, 0xb8, 0xd6, 0x7f, 0x07, 0x96, 0xe5, 0x28, 0x8e, 0x89, 0x94, 0x06, 0x76, 0x25, 0x28, 0x97,
+	0x7a, 0x27, 0xc2, 0x58, 0xe8, 0x9d, 0x02, 0xaf, 0x5c, 0xa2, 0x47, 0xb0, 0x3e, 0x26, 0x82, 0x9e,
+	0xd0, 0xb8, 0xc8, 0xfb, 0x90, 0xa8, 0x94, 0x17, 0x84, 0xad, 0x41, 0xdf, 0xb3, 0x65, 0xaa, 0x7f,
+	0xbc, 0xb2, 0xbe, 0xbc, 0x87, 0x33, 0x07, 0x3e, 0x32, 0xfa, 0x00, 0x8d, 0x9f, 0xb3, 0xa1, 0x3b,
+	0xd0, 0x34, 0xe5, 0x1a, 0xc6, 0x14, 0xdb, 0xcb, 0xad, 0x18, 0xc3, 0x01, 0xc5, 0xe8, 0x10, 0xda,
+	0x98, 0xe2, 0x10, 0xf3, 0x78, 0x34, 0x24, 0x4c, 0x99, 0x1b, 0xb6, 0x06, 0x6f, 0xbe, 0x38, 0xe0,
+	0x21, 0xc5, 0x87, 0x56, 0x18, 0xb4, 0xf0, 0x74, 0xe1, 0xfe, 0xe6, 0xc0, 0x6a, 0x40, 0x4e, 0x74,
+	0x56, 0xca, 0x87, 0xf6, 0x21, 0xb4, 0x65, 0x1a, 0x09, 0x12, 0xc6, 0x9c, 0x9d, 0xd0, 0xc4, 0x64,
+	0xa2, 0x35, 0xb8, 0x5b, 0x3a, 0x2e, 0xda, 0xcb, 0x1b, 0xef, 0x79, 0x9f, 0xea, 0xea, 0x54, 0x0f,
+	0xb4, 0xf6, 0xc0, 0x48, 0x83, 0x96, 0x9c, 0x2e, 0x2e, 0xd3, 0xd7, 0xe6, 0xd0, 0x2f, 0xbe, 0x16,
+	0xfd, 0xd7, 0xa6, 0xe6, 0x2c, 0xbd, 0x7d, 0x86, 0xab, 0x50, 0xb3, 0xb5, 0xd6, 0x0e, 0x6a, 0x14,
+	0xbf, 0xe4, 0xc9, 0x5d, 0x0f, 0xc3, 0xaf, 0x0e, 0xb4, 0x1e, 0xd0, 0x84, 0x5d, 0x77, 0xfa, 0xae,
+	0xd2, 0xd5, 0x5e, 0x87, 0x0e, 0x21, 0xa8, 0xeb, 0x29, 0x68, 0xee, 0xd6, 0x0e, 0xcc, 0x7f, 0xf7,
+	0x73, 0x68, 0x17, 0xc0, 0x15, 0x19, 0xdb, 0x80, 0xa6, 0xa4, 0x09, 0x8b, 0xd4, 0x48, 0x14, 0xcd,
+	0xd8, 0x0e, 0xa6, 0x86, 0x17, 0x79, 0xd4, 0x39, 0x36, 0xf3, 0x85, 0x0b, 0x5b, 0xa6, 0xe5, 0xd2,
+	0xfd, 0xc1, 0x81, 0x1b, 0x87, 0x44, 0xd0, 0xf1, 0x64, 0x3e, 0x4e, 0xdb, 0xd5, 0xb9, 0xd4, 0xae,
+	0x6f, 0x40, 0x2b, 0x4e, 0x69, 0x86, 0x43, 0xca, 0x30, 0x79, 0x6c, 0xe2, 0xde, 0x08, 0xc0, 0x98,
+	0x8e, 0xb4, 0xe5, 0x9a, 0x1e, 0xd7, 0x57, 0x0e, 0xac, 0x96, 0x40, 0xff, 0x4d, 0xc5, 0x0c, 0x7e,
+	0x6f, 0x40, 0xe3, 0xa1, 0x6e, 0x04, 0xf4, 0x93, 0x03, 0xcd, 0xc9, 0x90, 0x47, 0x3b, 0x5e, 0xc5,
+	0x3b, 0xcd, 0xbb, 0xfa, 0x92, 0xe9, 0xee, 0xbe, 0x8a, 0xb4, 0xb8, 0x9e, 0xfb, 0xde, 0x37, 0x7f,
+	0xfe, 0xf3, 0xb4, 0xb6, 0x8b, 0xfa, 0xbe, 0x3e, 0xf3, 0x2e, 0xe5, 0xfe, 0xe5, 0x77, 0x61, 0x5c,
+	0x9e, 0xf0, 0x9f, 0x98, 0xe1, 0xfa, 0x25, 0x7a, 0xea, 0xc0, 0x4a, 0x39, 0x1b, 0x51, 0xbf, 0x32,
+	0xd4, 0x95, 0x69, 0xdf, 0xdd, 0x79, 0x05, 0xa5, 0x65, 0x1a, 0x18, 0xa6, 0x77, 0xdc, 0xed, 0x0a,
+	0x26, 0x61, 0x0f, 0x94, 0x48, 0xfb, 0xce, 0x2e, 0xfa, 0xde, 0x81, 0x65, 0xdb, 0xec, 0x68, 0xfb,
+	0x25, 0xa1, 0x66, 0x87, 0x59, 0xb7, 0x3f, 0x5f, 0x68, 0x91, 0x76, 0x0c, 0xd2, 0x5d, 0xb7, 0x57,
+	0x89, 0x64, 0xf4, 0x9a, 0xe4, 0x09, 0xd4, 0x75, 0x03, 0xa1, 0xb7, 0x2a, 0x9d, 0xcf, 0x0c, 0x84,
+	0xee, 0xdb, 0x73, 0x54, 0x36, 0xfe, 0x3d, 0x13, 0x7f, 0xcb, 0xbd, 0x53, 0x11, 0x5f, 0x77, 0xa0,
+	0x0e, 0xfe, 0xad, 0x03, 0x4b, 0x45, 0x01, 0xa3, 0x7b, 0x95, 0x9e, 0x2f, 0xb5, 0x5c, 0x77, 0x7b,
+	0xae, 0xce, 0x32, 0xf4, 0x0d, 0x83, 0xeb, 0x6e, 0x56, 0x30, 0x60, 0x23, 0xdf, 0x77, 0x76, 0x3f,
+	0xf8, 0xe4, 0x8f, 0xf3, 0x9e, 0xf3, 0xec, 0xbc, 0xe7, 0xfc, 0x7d, 0xde, 0x73, 0x7e, 0xbc, 0xe8,
+	0x2d, 0x3c, 0xbb, 0xe8, 0x2d, 0xfc, 0x75, 0xd1, 0x5b, 0xf8, 0x6c, 0x3f, 0xa1, 0x2a, 0x1d, 0x1d,
+	0xeb, 0x41, 0x57, 0x78, 0x49, 0x4f, 0xcd, 0xaf, 0xaf, 0x52, 0x2a, 0x70, 0x98, 0x47, 0x42, 0x9d,
+	0xf9, 0xea, 0x2c, 0x27, 0xd2, 0xbf, 0xfa, 0x4d, 0x76, 0xbc, 0x64, 0x3e, 0xab, 0xde, 0xff, 0x37,
+	0x00, 0x00, 0xff, 0xff, 0xfe, 0x8d, 0x05, 0x5c, 0xf9, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -888,8 +795,6 @@ type VaultClient interface {
 	Challenge(ctx context.Context, in *ChallengeRequest, opts ...grpc.CallOption) (*ChallengeResponse, error)
 	// Register creates a new Webauthn credential and returns it.
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	// Keygen generates a new Wallet and returns the configuration.
-	Keygen(ctx context.Context, in *KeygenRequest, opts ...grpc.CallOption) (*KeygenResponse, error)
 	// Refresh refreshes the Wallet shares and returns the updated configuration.
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	// Sign signs the data with the Wallet and returns the signature.
@@ -918,15 +823,6 @@ func (c *vaultClient) Challenge(ctx context.Context, in *ChallengeRequest, opts 
 func (c *vaultClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
 	out := new(RegisterResponse)
 	err := c.cc.Invoke(ctx, "/sonrhq.highway.vault.v1.Vault/Register", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *vaultClient) Keygen(ctx context.Context, in *KeygenRequest, opts ...grpc.CallOption) (*KeygenResponse, error) {
-	out := new(KeygenResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.highway.vault.v1.Vault/Keygen", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -966,8 +862,6 @@ type VaultServer interface {
 	Challenge(context.Context, *ChallengeRequest) (*ChallengeResponse, error)
 	// Register creates a new Webauthn credential and returns it.
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	// Keygen generates a new Wallet and returns the configuration.
-	Keygen(context.Context, *KeygenRequest) (*KeygenResponse, error)
 	// Refresh refreshes the Wallet shares and returns the updated configuration.
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	// Sign signs the data with the Wallet and returns the signature.
@@ -985,9 +879,6 @@ func (*UnimplementedVaultServer) Challenge(ctx context.Context, req *ChallengeRe
 }
 func (*UnimplementedVaultServer) Register(ctx context.Context, req *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
-}
-func (*UnimplementedVaultServer) Keygen(ctx context.Context, req *KeygenRequest) (*KeygenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Keygen not implemented")
 }
 func (*UnimplementedVaultServer) Refresh(ctx context.Context, req *RefreshRequest) (*RefreshResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
@@ -1035,24 +926,6 @@ func _Vault_Register_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VaultServer).Register(ctx, req.(*RegisterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Vault_Keygen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(KeygenRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(VaultServer).Keygen(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sonrhq.highway.vault.v1.Vault/Keygen",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VaultServer).Keygen(ctx, req.(*KeygenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1124,10 +997,6 @@ var _Vault_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Vault_Register_Handler,
 		},
 		{
-			MethodName: "Keygen",
-			Handler:    _Vault_Keygen_Handler,
-		},
-		{
 			MethodName: "Refresh",
 			Handler:    _Vault_Refresh_Handler,
 		},
@@ -1168,6 +1037,13 @@ func (m *ChallengeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Label)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Username) > 0 {
+		i -= len(m.Username)
+		copy(dAtA[i:], m.Username)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Username)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1261,6 +1137,18 @@ func (m *RegisterRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Threshold != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Threshold))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Prefix) > 0 {
+		i -= len(m.Prefix)
+		copy(dAtA[i:], m.Prefix)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Prefix)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.RpId) > 0 {
 		i -= len(m.RpId)
 		copy(dAtA[i:], m.RpId)
@@ -1305,98 +1193,6 @@ func (m *RegisterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.VerificationMethod != nil {
-		{
-			size, err := m.VerificationMethod.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintApi(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Success {
-		i--
-		if m.Success {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *KeygenRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *KeygenRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *KeygenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.VerificationMethod != nil {
-		{
-			size, err := m.VerificationMethod.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintApi(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x1a
-	}
-	if m.Threshold != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Threshold))
-		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.Prefix) > 0 {
-		i -= len(m.Prefix)
-		copy(dAtA[i:], m.Prefix)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Prefix)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *KeygenResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *KeygenResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *KeygenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	if m.DidDocument != nil {
 		{
 			size, err := m.DidDocument.MarshalToSizedBuffer(dAtA[:i])
@@ -1416,9 +1212,9 @@ func (m *KeygenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.ShareConfig != nil {
+	if m.VerificationMethod != nil {
 		{
-			size, err := m.ShareConfig.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.VerificationMethod.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1435,12 +1231,15 @@ func (m *KeygenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
+	if m.Success {
 		i--
-		dAtA[i] = 0xa
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1770,6 +1569,10 @@ func (m *ChallengeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
 	l = len(m.Label)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
@@ -1826,6 +1629,13 @@ func (m *RegisterRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
+	l = len(m.Prefix)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Threshold != 0 {
+		n += 1 + sovApi(uint64(m.Threshold))
+	}
 	return n
 }
 
@@ -1838,49 +1648,12 @@ func (m *RegisterResponse) Size() (n int) {
 	if m.Success {
 		n += 2
 	}
-	if m.VerificationMethod != nil {
-		l = m.VerificationMethod.Size()
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *KeygenRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Prefix)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
-	if m.Threshold != 0 {
-		n += 1 + sovApi(uint64(m.Threshold))
-	}
-	if m.VerificationMethod != nil {
-		l = m.VerificationMethod.Size()
-		n += 1 + l + sovApi(uint64(l))
-	}
-	return n
-}
-
-func (m *KeygenResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovApi(uint64(l))
-	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	if m.ShareConfig != nil {
-		l = m.ShareConfig.Size()
+	if m.VerificationMethod != nil {
+		l = m.VerificationMethod.Size()
 		n += 1 + l + sovApi(uint64(l))
 	}
 	l = len(m.VaultCid)
@@ -2091,6 +1864,38 @@ func (m *ChallengeRequest) Unmarshal(dAtA []byte) error {
 			m.RpId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -2478,6 +2283,57 @@ func (m *RegisterRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.RpId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Prefix", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Prefix = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
+			}
+			m.Threshold = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Threshold |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipApi(dAtA[iNdEx:])
@@ -2550,263 +2406,6 @@ func (m *RegisterResponse) Unmarshal(dAtA []byte) error {
 			m.Success = bool(v != 0)
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VerificationMethod", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.VerificationMethod == nil {
-				m.VerificationMethod = &types.VerificationMethod{}
-			}
-			if err := m.VerificationMethod.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *KeygenRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: KeygenRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: KeygenRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Prefix", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Prefix = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
-			}
-			m.Threshold = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Threshold |= int32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VerificationMethod", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.VerificationMethod == nil {
-				m.VerificationMethod = &types.VerificationMethod{}
-			}
-			if err := m.VerificationMethod.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *KeygenResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: KeygenResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: KeygenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthApi
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthApi
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
-			if m.Id == nil {
-				m.Id = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
 			var stringLen uint64
@@ -2839,7 +2438,7 @@ func (m *KeygenResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ShareConfig", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field VerificationMethod", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2866,10 +2465,10 @@ func (m *KeygenResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.ShareConfig == nil {
-				m.ShareConfig = &common.WalletShareConfig{}
+			if m.VerificationMethod == nil {
+				m.VerificationMethod = &types.VerificationMethod{}
 			}
-			if err := m.ShareConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.VerificationMethod.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

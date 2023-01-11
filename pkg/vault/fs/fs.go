@@ -73,11 +73,10 @@ func (c *Config) CID() string {
 
 // Returning the IPFS path of the vault
 func (c *Config) Service() *types.Service {
-	baseCid := strings.Split(c.CID(), "/")[1]
 	return &types.Service{
-		ID:              fmt.Sprintf("did:ipfs:%s", baseCid),
+		ID:              fmt.Sprintf("did:ipfs:%s", c.address),
 		Type:            types.ServiceType_ServiceType_ENCRYPTED_DATA_VAULT,
-		ServiceEndpoint: fmt.Sprintf("%s/ipfs/%s", c.resolverUrl, baseCid),
+		ServiceEndpoint: fmt.Sprintf("%s/%s", c.resolverUrl, strings.TrimPrefix(c.ipfsPath.String(), "/")),
 	}
 }
 
