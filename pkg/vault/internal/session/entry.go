@@ -34,12 +34,28 @@ type SessionEntry struct {
 // NewEntry creates a new session with challenge to be used to register a new account
 func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 	sessionID := uuid.New().String()[:8]
+
+	// Create the Webauthn Instance
+	wauth, err := webauthn.New(&webauthn.Config{
+		RPDisplayName:          defaultRpName,
+		RPID:                   rpId,
+		RPIcon:                 defaultRpIcon,
+		RPOrigins:              defaultRpOrigins,
+		Timeout:                60000,
+		AttestationPreference:  protocol.PreferDirectAttestation,
+		AuthenticatorSelection: defaultAuthSelect,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	// Create Entry
 	return &SessionEntry{
 		ID:          sessionID,
 		RPID:        rpId,
 		DidDoc:      types.NewBaseDocument(aka, sessionID),
 		AlsoKnownAs: aka,
+		Webauthn:    wauth,
 	}, nil
 }
 
@@ -59,7 +75,6 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error)
 		Timeout:                60000,
 		AttestationPreference:  protocol.PreferDirectAttestation,
 		AuthenticatorSelection: defaultAuthSelect,
-		Debug:                  true,
 	})
 
 	return &SessionEntry{
