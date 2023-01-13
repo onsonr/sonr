@@ -9,7 +9,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/vault/mpc"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"

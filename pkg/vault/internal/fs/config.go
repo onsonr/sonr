@@ -67,6 +67,8 @@ func (c *Config) Apply(opts ...Option) error {
 		}
 	}
 	if !c.isExisting {
+		ctx, cancel := context.WithCancel(c.ctx)
+		defer cancel()
 		// Set Root Node
 		rn, err := setupLocalDirs(c)
 		if err != nil {
@@ -75,7 +77,7 @@ func (c *Config) Apply(opts ...Option) error {
 		c.rootNode = rn
 
 		// Pin default user directory
-		cid, err := c.ipfs.Unixfs().Add(c.ctx, c.rootNode, options.Unixfs.Pin(true))
+		cid, err := c.ipfs.Unixfs().Add(ctx, c.rootNode, options.Unixfs.Pin(true))
 		if err != nil {
 			return err
 		}

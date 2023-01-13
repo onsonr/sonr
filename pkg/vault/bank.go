@@ -5,14 +5,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/client"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
 	ipfs "github.com/sonr-hq/sonr/pkg/node/ipfs"
-	"github.com/sonr-hq/sonr/pkg/vault/fs"
-	"github.com/sonr-hq/sonr/pkg/vault/mpc"
-	"github.com/sonr-hq/sonr/pkg/vault/network"
-	"github.com/sonr-hq/sonr/pkg/vault/session"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/fs"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/network"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
 	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
@@ -26,17 +25,13 @@ type VaultBank struct {
 
 	// Completed wallets from channel
 	done chan common.Wallet
-
-	// Client Context
-	cctx client.Context
 }
 
 // Creates a new Vault
-func NewVaultBank(cctx client.Context, node ipfs.IPFS, cache *gocache.Cache) *VaultBank {
+func NewVaultBank(node ipfs.IPFS, cache *gocache.Cache) *VaultBank {
 	return &VaultBank{
 		node:  node,
 		cache: cache,
-		cctx:  cctx,
 	}
 }
 

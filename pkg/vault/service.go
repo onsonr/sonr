@@ -38,7 +38,7 @@ type VaultService struct {
 
 // It creates a new VaultService and registers it with the gRPC server
 func NewVaultService(ctx client.Context, mux *runtime.ServeMux, hway ipfs.IPFS, cache *gocache.Cache) (*VaultService, error) {
-	vaultBank := NewVaultBank(ctx, hway, cache)
+	vaultBank := NewVaultBank(hway, cache)
 	srv := &VaultService{
 		bank:    vaultBank,
 		highway: hway,

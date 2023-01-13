@@ -3,7 +3,7 @@ package network
 import (
 	"testing"
 
-	"github.com/sonr-hq/sonr/pkg/vault/mpc"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
 	"github.com/stretchr/testify/assert"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )

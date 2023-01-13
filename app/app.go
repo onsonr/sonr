@@ -204,7 +204,7 @@ func init() {
 // capabilities aren't needed for testing.
 type App struct {
 	*baseapp.BaseApp
-	highway *HighwayNode
+	highway *HighwayProtocol
 
 	cdc               *codec.LegacyAmino
 	appCodec          codec.Codec
@@ -302,7 +302,7 @@ func New(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
-		highway:           NewHighwayNode(),
+		highway:           StartHighwayProtocol(),
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
