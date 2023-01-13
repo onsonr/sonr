@@ -21,9 +21,9 @@
 ## Getting Started
 
 ### Prerequisites
-- Cosmos SDK: v0.46.3
-- Ignite CLI: v0.25.1
-- Golang: 1.18.8 darwin/arm64
+- Cosmos SDK: v0.46.7
+- Ignite CLI: v0.25.2
+- Golang: 1.18.10 darwin/arm64
 
 **Getting Started**
 
