@@ -6,7 +6,6 @@ export const config = {
 };
 
 export default async function handler(req: NextRequest) {
-  let domain = new URL(req.url).searchParams.get("domain");
   // Get API URL
   let apiUrl = "https://api.sonr.network";
   if (process && process.env.NODE_ENV === "development") {
@@ -20,7 +19,7 @@ export default async function handler(req: NextRequest) {
     body: body,
   };
   const resp = await fetch(
-    apiUrl + "/sonr-io/highway/vault/register/" + domain,
+    process.env.API_URL + "/sonr-io/highway/vault/register",
     requestOptions
   );
   const data = await resp.json();

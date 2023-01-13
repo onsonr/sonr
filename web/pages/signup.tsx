@@ -165,7 +165,6 @@ export default function SignUp() {
       body: JSON.stringify({
         session_id: session,
         credential_response: credRespString,
-        password: passcode,
       }),
     });
     const resp = await response.json();

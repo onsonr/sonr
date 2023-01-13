@@ -3,131 +3,100 @@ package vault
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
-	"github.com/sonr-hq/sonr/pkg/common"
-	ipfs "github.com/sonr-hq/sonr/pkg/node/ipfs"
-	"github.com/sonr-hq/sonr/pkg/vault/fs"
-	"github.com/sonr-hq/sonr/pkg/vault/mpc"
-	"github.com/sonr-hq/sonr/pkg/vault/network"
-	"github.com/sonr-hq/sonr/pkg/vault/session"
-	"github.com/sonr-hq/sonr/x/identity/types"
-	"github.com/taurusgroup/multi-party-sig/pkg/party"
+	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonr-hq/sonr/pkg/vault/bank"
+
+	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 )
 
-type VaultBank struct {
-	// The IPFS node that the vault is running on
-	node ipfs.IPFS
-
-	// The wallet that the vault is using
-	cache *gocache.Cache
-
-	// Completed wallets from channel
-	done chan common.Wallet
-
-	// Client Context
-	cctx client.Context
-}
-
-// Creates a new Vault
-func NewVaultBank(cctx client.Context, node ipfs.IPFS, cache *gocache.Cache) *VaultBank {
-	return &VaultBank{
-		node:  node,
-		cache: cache,
-		cctx:  cctx,
+// Default Variables
+var (
+	defaultRpOrigins = []string{
+		"https://auth.sonr.io",
+		"https://sonr.id",
+		"https://sandbox.sonr.network",
+		"localhost:3000",
 	}
+)
+
+// `VaultService` is a type that implements the `v1.VaultServer` interface, and has a field called
+// `highway` of type `*HighwayNode`.
+// @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
+// @property highway - This is the HighwayNode that the VaultService is running on.
+type VaultService struct {
+	bank   *bank.VaultBank
+	node   config.IPFSNode
+	rpName string
+	rpIcon string
+	cctx   client.Context
 }
 
-func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, error) {
-	entry, err := session.NewEntry(rpid, aka)
+// It creates a new VaultService and registers it with the gRPC server
+func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode, cache *gocache.Cache) (*VaultService, error) {
+	vaultBank := bank.CreateBank(hway, cache)
+	srv := &VaultService{
+		cctx:   ctx,
+		bank:   vaultBank,
+		node:   hway,
+		rpName: "Sonr",
+		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
+	}
+	err := v1.RegisterVaultHandlerServer(context.Background(), mux, srv)
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
-	optsJson, err := entry.BeginRegistration()
-	if err != nil {
-		return "", "", err
-	}
-	v.cache.Set(entry.ID, entry, gocache.DefaultExpiration)
-	return optsJson, entry.ID, nil
+	return srv, nil
 }
 
-func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*types.DidDocument, error) {
+// Challeng returns a random challenge for the client to sign.
+func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
+	optsJson, eID, err := v.bank.StartRegistration(req.RpId, req.Username)
+	if err != nil {
+		return nil, err
+	}
+	return &v1.ChallengeResponse{
+		RpName:          v.rpName,
+		CreationOptions: optsJson,
+		SessionId:       eID,
+		RpIcon:          v.rpIcon,
+	}, nil
+}
+
+// Register registers a new keypair and returns the public key.
+func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
 	// Get Session
-	entry, err := session.GetEntry(sessionId, v.cache)
+	didDoc, wallet, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse)
 	if err != nil {
 		return nil, err
-	}
-	didDoc, err := entry.FinishRegistration(credsJson)
-	if err != nil {
-		return nil, err
-	}
-	// Create a new offline wallet
-	wallet, vfs, err := buildWallet(context.Background(), "snr", v.node)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
 	}
 	err = didDoc.SetRootWallet(wallet)
 	if err != nil {
 		return nil, err
 	}
-	didDoc.AddService(vfs.Service())
-	return didDoc, nil
-}
-
-// It creates a new wallet with two participants, one of which is the current participant, and returns
-// the wallet
-func buildWallet(ctx context.Context, prefix string, node ipfs.IPFS) (common.Wallet, fs.VaultFS, error) {
-	participants := party.IDSlice{"current", "vault"}
-	net := network.NewOfflineNetwork(participants)
-	wsl, err := mpc.Keygen("current", 1, net, prefix)
-	if err != nil {
-		return nil, nil, err
-	}
-	wallet := network.OfflineWallet(wsl)
-	vaultfs, err := fs.New(ctx, wallet.Address(), node)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Create a new OfflineWallet from the WalletShares
-	for _, share := range wsl {
-		buf, err := share.Marshal()
-		if err != nil {
-			return nil, nil, err
-		}
-		err = vaultfs.StoreShare(buf, string(share.SelfID()), "insecure-password-testnet")
-		if err != nil {
-			return nil, nil, err
-		}
-
-	}
-	return wallet, vaultfs, nil
-}
-
-func loadWallet(ctx context.Context, didDoc *types.DidDocument, node ipfs.IPFS) (common.Wallet, fs.VaultFS, error) {
-	if s := didDoc.GetVaultService(); s != nil {
-		_, err := fs.New(ctx, didDoc.Address(), node, fs.WithIPFSPath(s.CID()))
-		if err != nil {
-			return nil, nil, err
-		}
-		//cfgs, err := vaultfs.LoadShares()
-	}
-	return nil, nil, errors.New("Unimplemented")
+	return &v1.RegisterResponse{
+		Success:     true,
+		DidDocument: didDoc,
+		Address:     wallet.Address(),
+	}, nil
 
 }
 
-// Loads an OfflineWallet from a []*WalletShareConfig and returns a `common.Wallet` interface
-func loadOfflineWallet(shareConfigs []*common.WalletShareConfig) (common.Wallet, error) {
-	// Convert the WalletShareConfigs to WalletShares
-	ws := make([]common.WalletShare, 0)
-	for i, shareConfig := range shareConfigs {
-		if s, err := mpc.LoadWalletShare(shareConfig); err != nil {
-			return nil, err
-		} else {
-			ws[i] = s
-		}
-	}
-	return network.OfflineWallet(ws), nil
+// Refresh refreshes the keypair and returns the public key.
+func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1.RefreshResponse, error) {
+	return nil, errors.New("Method is unimplemented")
+
+}
+
+// Sign signs the data with the private key and returns the signature.
+func (v *VaultService) Sign(ctx context.Context, req *v1.SignRequest) (*v1.SignResponse, error) {
+	return nil, errors.New("Method is unimplemented")
+}
+
+// Derive derives a new key from the private key and returns the public key.
+func (v *VaultService) Derive(ctx context.Context, req *v1.DeriveRequest) (*v1.DeriveResponse, error) {
+	return nil, errors.New("Method is unimplemented")
 }

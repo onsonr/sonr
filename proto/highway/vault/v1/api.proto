@@ -30,18 +30,15 @@ message ChallengeResponse {
 message RegisterRequest {
     string session_id = 1;
     string credential_response = 2;
-    string rp_id = 3;
-    string prefix = 4; // optional
-    int32 threshold = 5; // optional
+    string prefix = 3; // optional
+    int32 threshold = 4; // optional
 }
 
 // RegisterResponse is the response to a Register request.
 message RegisterResponse {
     bool success = 1;
     string address = 2;
-    sonr.identity.VerificationMethod verification_method = 3;
-    string did_document_json = 4;
-    sonr.identity.DidDocument did_document = 5;
+    sonr.identity.DidDocument did_document = 3;
 }
 
 // RefreshRequest is the request to refresh the keypair.
@@ -97,7 +94,7 @@ service Vault {
     // Register creates a new Webauthn credential and returns it.
     rpc Register(RegisterRequest) returns (RegisterResponse) {
         option (google.api.http) = {
-          post: "/sonr-io/highway/vault/register/{rp_id}"
+          post: "/sonr-io/highway/vault/register"
           body: "*"
         };
     }

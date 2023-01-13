@@ -17,7 +17,6 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/sonr-hq/sonr/pkg/node/ipfs"
 	"github.com/sonr-hq/sonr/x/identity/client/cli"
 	"github.com/sonr-hq/sonr/x/identity/keeper"
 	"github.com/sonr-hq/sonr/x/identity/types"
@@ -96,7 +95,7 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-	ipfs          ipfs.IPFS
+	// ipfs          config.IPFSNode
 }
 
 func NewAppModule(
@@ -104,14 +103,13 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	ipfs ipfs.IPFS,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
-		ipfs:           ipfs,
+		// ipfs:           ipfs,
 	}
 }
 

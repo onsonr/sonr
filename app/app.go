@@ -204,7 +204,7 @@ func init() {
 // capabilities aren't needed for testing.
 type App struct {
 	*baseapp.BaseApp
-	highway *HighwayNode
+	highway *HighwayProtocol
 
 	cdc               *codec.LegacyAmino
 	appCodec          codec.Codec
@@ -302,7 +302,7 @@ func New(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
-		highway:           NewHighwayNode(),
+		highway:           StartHighwayProtocol(),
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -517,7 +517,7 @@ func New(
 		app.GroupKeeper,
 		app.MintKeeper,
 	)
-	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper, app.highway.IPFS)
+	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 

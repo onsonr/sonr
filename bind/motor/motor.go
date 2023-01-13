@@ -15,25 +15,24 @@ import (
 	"context"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/host"
+	"github.com/sonr-hq/sonr/pkg/node"
+	"github.com/sonr-hq/sonr/pkg/node/config"
 )
 
-type MotorNode struct {
+type MotorInstance struct {
 	// Node is the libp2p host
-	Node   *host.P2PHost
-	Wallet common.Wallet
+	Node node.Node
 	//
 }
 
 // It creates a new node and wallet, and returns a MotorNode struct containing them
-func NewMotorInstance(ctx context.Context) (*MotorNode, error) {
-	n, err := host.New(ctx)
+func NewMotorInstance(ctx context.Context) (*MotorInstance, error) {
+	n, err := node.New(ctx, config.WithPeerType(common.PeerType_MOTOR))
 	if err != nil {
 		return nil, err
 	}
 
-	return &MotorNode{
+	return &MotorInstance{
 		Node: n,
-		// Wallet: w,
 	}, nil
 }
