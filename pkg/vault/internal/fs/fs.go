@@ -7,7 +7,7 @@ import (
 
 	files "github.com/ipfs/go-ipfs-files"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
@@ -17,7 +17,6 @@ var k_DEFAULT_DIRS = []string{
 	"mailbox",
 	"public",
 }
-
 
 // VaultFS provides an interface for arbitrary Sonr Network Nodes to have IPFS configuration
 // for the users secure storage.
@@ -65,9 +64,9 @@ type VaultFS interface {
 }
 
 // `New` creates a new VaultFS instance, initializes it, and returns it
-func New(ctx context.Context, address string, ipfs ipfs.IPFS, opts ...Option) (VaultFS, error) {
+func New(ctx context.Context, address string, node node.Node, opts ...Option) (VaultFS, error) {
 	// Create a temporary directory to store the file
-	config, err := defaultConfig(ctx, address, ipfs.CoreAPI())
+	config, err := defaultConfig(ctx, address, node.IPFS().CoreAPI())
 	if err != nil {
 		return nil, err
 	}

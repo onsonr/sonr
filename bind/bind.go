@@ -9,7 +9,7 @@ import (
 
 var (
 	ctx context.Context
-	mtr *motor.MotorNode
+	mtr *motor.MotorInstance
 )
 
 type MotorCallback interface {

@@ -5,21 +5,21 @@ import (
 	"testing"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	ipfs "github.com/sonr-hq/sonr/pkg/node/ipfs/local"
+	"github.com/sonr-hq/sonr/pkg/node"
 )
 
 func TestNew(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	hw, err := ipfs.New(ctx)
+	n, err := node.New(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
-	v1, err := New(ctx, "test", hw)
+	v1, err := New(ctx, "test", n)
 	if err != nil {
 		t.Fatal(err)
 	}
-	v2, err := New(ctx, "test2", hw, WithIPFSPath(v1.CID()))
+	v2, err := New(ctx, "test2", n, WithIPFSPath(v1.CID()))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,11 +31,11 @@ func TestNew(t *testing.T) {
 func TestStoreShare(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	hw, err := ipfs.New(ctx)
+	n, err := node.New(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
-	v, err := New(ctx, "test", hw)
+	v, err := New(ctx, "test", n)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func TestStoreShare(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	v2, err := New(ctx, "test2", hw, WithIPFSPath(v.CID()))
+	v2, err := New(ctx, "test2", n, WithIPFSPath(v.CID()))
 	if err != nil {
 		t.Fatal(err)
 	}

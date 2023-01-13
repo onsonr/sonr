@@ -15,10 +15,9 @@ import (
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	cmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/taurusgroup/multi-party-sig/pkg/party"
+	"github.com/sonr-hq/sonr/pkg/node/config"
 )
 
 // A P2PHost is a host.Host with a private key, a channel of mDNS peers, a channel of DHT peers, a
@@ -36,7 +35,7 @@ import (
 // @property topics - A map of topic names to the PubSub topic object.
 // @property  - `host`: The libp2p host.
 // @property  - `host`: The libp2p host.
-type P2PHost struct {
+type hostImpl struct {
 	// Standard Node Implementation
 	host     host.Host
 	callback common.NodeCallback
@@ -53,22 +52,13 @@ type P2PHost struct {
 	*dht.IpfsDHT
 	*ps.PubSub
 
-	walletShare   common.WalletShare
-	bootstrappers []string
-	connMgr       *cmgr.BasicConnMgr
-
-	mpcPeerIds []peer.ID
-	partyId    party.ID
+	config *config.Config
 }
 
-// New Creates a Sonr libp2p Host with the given config
-func New(ctx context.Context, opts ...Option) (*P2PHost, error) {
+// Initialize Creates a Sonr libp2p Host with the given config
+func Initialize(ctx context.Context, config *config.Config) (config.P2PNode, error) {
 	// Create Host and apply options
-	hn := defaultNode(ctx)
-	for _, opt := range opts {
-		opt(hn)
-	}
-
+	hn := defaultNode(ctx, config)
 	// Initialize Host
 	if err := initializeHost(hn); err != nil {
 		return nil, err
@@ -80,7 +70,7 @@ func New(ctx context.Context, opts ...Option) (*P2PHost, error) {
 	}
 
 	// Connect to Bootstrap Nodes
-	for _, pistr := range hn.bootstrappers {
+	for _, pistr := range hn.config.BootstrapMultiaddrs {
 		if err := hn.Connect(pistr); err != nil {
 			continue
 		} else {
@@ -96,12 +86,12 @@ func New(ctx context.Context, opts ...Option) (*P2PHost, error) {
 }
 
 // PeerID returns the ID of the Host
-func (n *P2PHost) PeerID() peer.ID {
+func (n *hostImpl) PeerID() peer.ID {
 	return n.host.ID()
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
-func (hn *P2PHost) Connect(pi interface{}) error {
+func (hn *hostImpl) Connect(pi interface{}) error {
 	// Check if type is String or AddrInfo
 	switch pi.(type) {
 	case string:
@@ -118,19 +108,19 @@ func (hn *P2PHost) Connect(pi interface{}) error {
 }
 
 // HandlePeerFound is to be called when new  peer is found
-func (hn *P2PHost) HandlePeerFound(pi peer.AddrInfo) {
+func (hn *hostImpl) HandlePeerFound(pi peer.AddrInfo) {
 	hn.mdnsPeerChan <- pi
 }
 
 // MultiAddrs returns the MultiAddresses of the Host as single string
-func (hn *P2PHost) MultiAddrs() string {
+func (hn *hostImpl) MultiAddrs() string {
 	maddrs := hn.host.Addrs()
 	maddr := ma.Join(maddrs...)
 	return maddr.String()
 }
 
 // NewStream opens a new stream to the peer with given peer id
-func (n *P2PHost) NewStream(to peer.ID, protocol protocol.ID, msg proto.Message) error {
+func (n *hostImpl) NewStream(to peer.ID, protocol protocol.ID, msg proto.Message) error {
 	stream, err := n.host.NewStream(context.Background(), to, protocol)
 	if err != nil {
 		return err
@@ -145,7 +135,7 @@ func (n *P2PHost) NewStream(to peer.ID, protocol protocol.ID, msg proto.Message)
 }
 
 // JoinTopic creates a new topic
-func (n *P2PHost) Publish(topic string, message []byte, opts ...ps.TopicOpt) error {
+func (n *hostImpl) Publish(topic string, message []byte, opts ...ps.TopicOpt) error {
 	ctx, cancel := context.WithTimeout(n.ctx, 10*time.Second)
 	defer cancel()
 	// Check if PubSub is Set
@@ -171,12 +161,12 @@ func (n *P2PHost) Publish(topic string, message []byte, opts ...ps.TopicOpt) err
 }
 
 // SetStreamHandler sets the handler for a given protocol
-func (n *P2PHost) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
+func (n *hostImpl) SetStreamHandler(protocol protocol.ID, handler network.StreamHandler) {
 	n.host.SetStreamHandler(protocol, handler)
 }
 
 // Join wraps around PubSub.Join and returns topic. Checks wether the host is ready before joining.
-func (hn *P2PHost) Subscribe(topic string, handlers ...func(msg *ps.Message)) (*ps.Subscription, error) {
+func (hn *hostImpl) Subscribe(topic string, handlers ...func(msg *ps.Message)) (*ps.Subscription, error) {
 	// Check if PubSub is Set
 	if hn.PubSub == nil {
 		return nil, errors.New("Join: Pubsub has not been set on SNRHost")
@@ -208,7 +198,7 @@ func (hn *P2PHost) Subscribe(topic string, handlers ...func(msg *ps.Message)) (*
 }
 
 // handleSubscription handles the subscription to a topic
-func (hn *P2PHost) handleSubscription(sub *ps.Subscription, handler func(msg *ps.Message)) {
+func (hn *hostImpl) handleSubscription(sub *ps.Subscription, handler func(msg *ps.Message)) {
 	for {
 		msg, err := sub.Next(hn.ctx)
 		if err != nil {
@@ -225,7 +215,7 @@ func (hn *P2PHost) handleSubscription(sub *ps.Subscription, handler func(msg *ps
 }
 
 // Closing the host.
-func (hn *P2PHost) Close() error {
+func (hn *hostImpl) Close() error {
 	err := hn.host.Close()
 	if err != nil {
 		return err

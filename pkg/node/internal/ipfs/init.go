@@ -1,4 +1,4 @@
-package local
+package ipfs
 
 import (
 	"context"
@@ -8,10 +8,6 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/taurusgroup/multi-party-sig/pkg/party"
-
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/ipfs/kubo/config"
@@ -20,9 +16,16 @@ import (
 	klibp2p "github.com/ipfs/kubo/core/node/libp2p"
 	"github.com/ipfs/kubo/plugin/loader"
 	"github.com/ipfs/kubo/repo/fsrepo"
-
-	cv1 "github.com/sonr-hq/sonr/pkg/common"
+	snrConfig "github.com/sonr-hq/sonr/pkg/node/config"
 )
+
+// Initialize creates a new local IPFS node
+func Initialize(ctx context.Context, c *snrConfig.Config) (snrConfig.IPFSNode, error) {
+	if c.IsLocal() {
+		return newLocal(ctx, c)
+	}
+	return nil, fmt.Errorf("remote IPFS nodes are not supported")
+}
 
 // Miscellanenous
 var loadPluginsOnce sync.Once
@@ -30,119 +33,21 @@ var loadPluginsOnce sync.Once
 // TopicMessageHandler is a function that handles a message received on a topic
 type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 
-// Default configuration
-var (
-	// defaultBootstrapMultiaddrs is the default list of bootstrap nodes
-	defaultBootstrapMultiaddrs = []string{
-		// IPFS Bootstrapper nodes.
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
-		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
-		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
-
-		// IPFS Cluster Pinning nodes
-		// "/ip4/138.201.67.219/tcp/4001/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
-		// "/ip4/138.201.67.219/udp/4001/quic/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
-		// "/ip4/138.201.67.220/tcp/4001/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
-		// "/ip4/138.201.67.220/udp/4001/quic/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
-		// "/ip4/138.201.68.74/tcp/4001/p2p/QmdnXwLrC8p1ueiq2Qya8joNvk3TVVDAut7PrikmZwubtR",
-		// "/ip4/138.201.68.74/udp/4001/quic/p2p/QmdnXwLrC8p1ueiq2Qya8joNvk3TVVDAut7PrikmZwubtR",
-		// "/ip4/94.130.135.167/tcp/4001/p2p/QmUEMvxS2e7iDrereVYc5SWPauXPyNwxcy9BXZrC1QTcHE",
-		// "/ip4/94.130.135.167/udp/4001/quic/p2p/QmUEMvxS2e7iDrereVYc5SWPauXPyNwxcy9BXZrC1QTcHE",
-
-		// You can add more nodes here, for example, another IPFS node you might have running locally, mine was:
-		// "/ip4/127.0.0.1/tcp/4010/p2p/QmZp2fhDLxjYue2RiUvLwT9MWdnbDxam32qYFnGmxZDh5L",
-		// "/ip4/127.0.0.1/udp/4010/quic/p2p/QmZp2fhDLxjYue2RiUvLwT9MWdnbDxam32qYFnGmxZDh5L",
-	}
-
-	// defaultCallback is the default callback for the motor
-	defaultCallback = common.DefaultCallback()
-
-	// defaultRendezvousString is the default rendezvous string for the motor
-	defaultRendezvousString = "sonr"
-)
-
-//
-// Options for the node
-//
-
-// NodeOption is a function that configures a Node
-type NodeOption func(*LocalIPFS) error
-
-// AddBootstrappers adds additional nodes to start initial connections with
-func AddBootstrappers(bootstrappers []string) NodeOption {
-	return func(c *LocalIPFS) error {
-		c.bootstrappers = append(c.bootstrappers, bootstrappers...)
-		return nil
-	}
-}
-
-// WithGroupIds sets the peer ids for the node
-func WithGroupIds(peerIds ...peer.ID) NodeOption {
-	return func(c *LocalIPFS) error {
-		if len(peerIds) > 0 {
-			c.mpcPeerIds = peerIds
-		}
-		return nil
-	}
-}
-
-// WithNodeCallback sets the callback for the motor
-func WithNodeCallback(callback common.NodeCallback) NodeOption {
-	return func(c *LocalIPFS) error {
-		c.callback = callback
-		return nil
-	}
-}
-
-// WithPartyId sets the party id for the node. This is to be replaced by the User defined label for the device
-func WithPartyId(partyId string) NodeOption {
-	return func(c *LocalIPFS) error {
-		c.partyId = party.ID(partyId)
-		return nil
-	}
-}
-
-// WithPeerType sets the type of peer
-func WithPeerType(peerType cv1.PeerType) NodeOption {
-	return func(c *LocalIPFS) error {
-		c.peerType = peerType
-		return nil
-	}
-}
-
-// WithWalletShare sets the wallet share for the node
-func WithWalletShare(walletShare common.WalletShare) NodeOption {
-	return func(c *LocalIPFS) error {
-		c.walletShare = walletShare
-		return nil
-	}
-}
-
 //
 // Node Setup and Initialization
 //
 
 // defaultNode creates a new node with default options
-func defaultNode(ctx context.Context) *LocalIPFS {
-	return &LocalIPFS{
+func defaultNode(ctx context.Context, cnfg *snrConfig.Config) *localIpfs {
+	return &localIpfs{
 		ctx:                ctx,
-		bootstrappers:      defaultBootstrapMultiaddrs,
-		callback:           defaultCallback,
-		peerType:           cv1.PeerType_HIGHWAY,
-		rendezvous:         defaultRendezvousString,
+		config:             cnfg,
 		topicEventHandlers: make(map[string]TopicMessageHandler),
-		partyId:            party.ID("current"),
 	}
 }
 
 // It's creating a new node and returning the coreAPI and the node itself.
-func (c *LocalIPFS) Apply(opts ...NodeOption) error {
-	for _, opt := range opts {
-		if err := opt(c); err != nil {
-			return err
-		}
-	}
+func (c *localIpfs) initialize() error {
 	// Spawn a local peer using a temporary path, for testing purposes
 	var onceErr error
 	loadPluginsOnce.Do(func() {

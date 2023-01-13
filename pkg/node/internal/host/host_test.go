@@ -5,14 +5,16 @@ import (
 	"testing"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-hq/sonr/pkg/node/config"
 )
 
 func TestNewP2PHost(t *testing.T) {
-	h1, err := New(context.Background())
+	config := config.DefaultConfig()
+	h1, err := Initialize(context.Background(), config)
 	if err != nil {
 		t.Fatal(err)
 	}
-	h2, err := New(context.Background())
+	h2, err := Initialize(context.Background(), config)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,11 +25,12 @@ func TestNewP2PHost(t *testing.T) {
 }
 
 func TestPubsub(t *testing.T) {
-	h1, err := New(context.Background())
+	config := config.DefaultConfig()
+	h1, err := Initialize(context.Background(), config)
 	if err != nil {
 		t.Fatal(err)
 	}
-	h2, err := New(context.Background())
+	h2, err := Initialize(context.Background(), config)
 	if err != nil {
 		t.Fatal(err)
 	}

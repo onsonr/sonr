@@ -1,4 +1,4 @@
-package local
+package ipfs
 
 import (
 	"context"
@@ -18,17 +18,16 @@ import (
 	"github.com/ipfs/kubo/core"
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/sonr-hq/sonr/pkg/common"
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
-	"github.com/taurusgroup/multi-party-sig/pkg/party"
+	"github.com/sonr-hq/sonr/pkg/node/config"
 )
 
-// `LocalIPFS` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
+// `localIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
 // `NodeCallback` and a `Context` and a `[]string` and a `Peer_Type` and a `string`.
-// @property  - `icore.CoreAPI` is the interface that the node will use to communicate with the LocalIPFS
+// @property  - `icore.CoreAPI` is the interface that the node will use to communicate with the localIpfs
 // daemon.
-// @property node - The LocalIPFS node
-// @property {string} repoPath - The path to the LocalIPFS repository.
+// @property node - The localIpfs node
+// @property {string} repoPath - The path to the localIpfs repository.
 // @property walletShare - This is the wallet share object that is used to share the wallet with other
 // nodes.
 // @property callback - This is a callback function that will be called when the node is ready.
@@ -37,47 +36,40 @@ import (
 // @property peerType - The type of peer, which can be either a bootstrap node or a normal node.
 // @property {string} rendezvous - The rendezvous string is a unique identifier for the swarm. It is
 // used to find other peers in the swarm.
-type LocalIPFS struct {
-	api icore.CoreAPI
-	node       *core.IpfsNode
-	repoPath   string
-	rendezvous string
+type localIpfs struct {
+	api      icore.CoreAPI
+	node     *core.IpfsNode
+	repoPath string
 
-	callback    common.NodeCallback
-	peerType    cv1.PeerType
-	walletShare common.WalletShare
+	config *config.Config
 
-	ctx                context.Context
-	bootstrappers      []string
+	ctx context.Context
+
 	topicEventHandlers map[string]TopicMessageHandler
-
-	mpcPeerIds []peer.ID
-	partyId    party.ID
 }
 
-// New creates a new node with the given options
-func New(ctx context.Context, options ...NodeOption) (*LocalIPFS, error) {
+// newLocal creates a new node with the given options
+func newLocal(ctx context.Context, cnfg *config.Config) (*localIpfs, error) {
 	// Apply the options
-	n := defaultNode(ctx)
-	err := n.Apply(options...)
+	n := defaultNode(ctx, cnfg)
+	err := n.initialize()
 	if err != nil {
 		return nil, err
 	}
-
 	// Connect to the bootstrap nodes
-	err = n.Connect(n.bootstrappers...)
+	err = n.Connect(n.config.BootstrapMultiaddrs...)
 	if err != nil {
 		return nil, err
 	}
 	return n, nil
 }
 
-func (n *LocalIPFS) CoreAPI() icore.CoreAPI {
+func (n *localIpfs) CoreAPI() icore.CoreAPI {
 	return n.api
 }
 
 // Connect connects to a peer with a given multiaddress
-func (n *LocalIPFS) Connect(peers ...string) error {
+func (n *localIpfs) Connect(peers ...string) error {
 	var wg sync.WaitGroup
 	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
 	for _, addrStr := range peers {
@@ -112,7 +104,7 @@ func (n *LocalIPFS) Connect(peers ...string) error {
 }
 
 // Add adds a file to the network
-func (n *LocalIPFS) Add(file []byte) (string, error) {
+func (n *localIpfs) Add(file []byte) (string, error) {
 	filename := uuid.New().String()
 	// Generate a temporary directory
 	inputBasePath, err := os.MkdirTemp("", filename)
@@ -145,12 +137,12 @@ func (n *LocalIPFS) Add(file []byte) (string, error) {
 }
 
 // AddEncrypted utilizes the NACL Secret box to encrypt data on behalf of a user
-func (n *LocalIPFS) AddEncrypted(file []byte, pubKey []byte) (string, error) {
+func (n *localIpfs) AddEncrypted(file []byte, pubKey []byte) (string, error) {
 	return "", errors.New("Unimplemented method")
 }
 
 // Get returns a file from the network given its CID
-func (n *LocalIPFS) Get(cidStr string) ([]byte, error) {
+func (n *localIpfs) Get(cidStr string) ([]byte, error) {
 	filename := uuid.New().String()
 	cid, err := cid.Parse(cidStr)
 	if err != nil {
@@ -188,25 +180,25 @@ func (n *LocalIPFS) Get(cidStr string) ([]byte, error) {
 }
 
 // GetDecrypted decrypts a file from a cid hash using the pubKey
-func (n *LocalIPFS) GetDecrypted(cidStr string, pubKey []byte) ([]byte, error) {
+func (n *localIpfs) GetDecrypted(cidStr string, pubKey []byte) ([]byte, error) {
 	return nil, errors.New("Unimplemented method")
 }
 
 // PeerID returns the node's PeerID
-func (n *LocalIPFS) PeerID() peer.ID {
+func (n *localIpfs) PeerID() peer.ID {
 	return n.node.Identity
 }
 
 // MultiAddr returns the node's multiaddress as a string
-func (n *LocalIPFS) MultiAddr() string {
+func (n *localIpfs) MultiAddrs() string {
 	return fmt.Sprintf("/ip4/127.0.0.1/udp/4010/p2p/%s", n.node.Identity.String())
 }
 
 // Peer returns the node's peer info
-func (n *LocalIPFS) Peer() *cv1.PeerInfo {
+func (n *localIpfs) Peer() *cv1.PeerInfo {
 	return &cv1.PeerInfo{
 		PeerId:    n.PeerID().String(),
-		Multiaddr: n.MultiAddr(),
-		Type:      n.peerType,
+		Multiaddr: n.MultiAddrs(),
+		Type:      n.config.PeerType,
 	}
 }

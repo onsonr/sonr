@@ -857,13 +857,13 @@ type QueryClient interface {
 	Did(ctx context.Context, in *QueryGetDidRequest, opts ...grpc.CallOption) (*QueryGetDidResponse, error)
 	// Queries a list of DidDocument items.
 	DidAll(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error)
-	// Queries a DIDDocument for the matching service
+	//Queries a DIDDocument for the matching service
 	QueryByService(ctx context.Context, in *QueryByServiceRequest, opts ...grpc.CallOption) (*QueryByServiceResponse, error)
-	// Queries a DIDDocument for the matching key
+	//Queries a DIDDocument for the matching key
 	QueryByKeyID(ctx context.Context, in *QueryByKeyIDRequest, opts ...grpc.CallOption) (*QueryByKeyIDResponse, error)
-	// Queries a DIDDocument for the matching AlsoKnownAs
+	//Queries a DIDDocument for the matching AlsoKnownAs
 	QueryByAlsoKnownAs(ctx context.Context, in *QueryByAlsoKnownAsRequest, opts ...grpc.CallOption) (*QueryByAlsoKnownAsResponse, error)
-	// Queries a list of DIDDocument for the matching method
+	//Queries a list of DIDDocument for the matching method
 	QueryByMethod(ctx context.Context, in *QueryByMethodRequest, opts ...grpc.CallOption) (*QueryByMethodResponse, error)
 	// Queries a list of QueryByNetwork items.
 	QueryByNetwork(ctx context.Context, in *QueryByNetworkRequest, opts ...grpc.CallOption) (*QueryByNetworkResponse, error)
@@ -957,13 +957,13 @@ type QueryServer interface {
 	Did(context.Context, *QueryGetDidRequest) (*QueryGetDidResponse, error)
 	// Queries a list of DidDocument items.
 	DidAll(context.Context, *QueryAllDidRequest) (*QueryAllDidResponse, error)
-	// Queries a DIDDocument for the matching service
+	//Queries a DIDDocument for the matching service
 	QueryByService(context.Context, *QueryByServiceRequest) (*QueryByServiceResponse, error)
-	// Queries a DIDDocument for the matching key
+	//Queries a DIDDocument for the matching key
 	QueryByKeyID(context.Context, *QueryByKeyIDRequest) (*QueryByKeyIDResponse, error)
-	// Queries a DIDDocument for the matching AlsoKnownAs
+	//Queries a DIDDocument for the matching AlsoKnownAs
 	QueryByAlsoKnownAs(context.Context, *QueryByAlsoKnownAsRequest) (*QueryByAlsoKnownAsResponse, error)
-	// Queries a list of DIDDocument for the matching method
+	//Queries a list of DIDDocument for the matching method
 	QueryByMethod(context.Context, *QueryByMethodRequest) (*QueryByMethodResponse, error)
 	// Queries a list of QueryByNetwork items.
 	QueryByNetwork(context.Context, *QueryByNetworkRequest) (*QueryByNetworkResponse, error)

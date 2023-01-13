@@ -1,16 +1,18 @@
-package local
+package ipfs
 
 import (
 	"context"
 	"fmt"
 	"testing"
 
+	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewAddGet(t *testing.T) {
 	// Call Run method and check for panic (if any)
-	node, err := New(context.Background())
+	cnfg := config.DefaultConfig()
+	node, err := Initialize(context.Background(), cnfg)
 	if err != nil {
 		t.Fatal(err)
 	}

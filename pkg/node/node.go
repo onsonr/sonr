@@ -2,70 +2,50 @@ package node
 
 import (
 	"context"
-	"errors"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/host"
-	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonr-hq/sonr/pkg/node/internal/host"
+	"github.com/sonr-hq/sonr/pkg/node/internal/ipfs"
 )
 
+// `Node` is an interface that has three methods: `Host`, `IPFS`, and `Type`.
+//
+// The `Host` method returns a `Motor` interface and an error. The `IPFS` method returns a `Highway`
+// interface and an error. The `Type` method returns a `Type` type.
+//
+// The `Motor` interface has two methods: `Start` and `Stop`. The `Start` method returns an error. The
+// `Stop` method returns an error.
+//
+// The `Highway` interface has two methods: `Start` and
+// @property Host - The motor that is hosting the node.
+// @property IPFS - The IPFS node that the motor is connected to.
+// @property {Type} Type - The type of node. This can be either a Motor or a Highway.
 type Node interface {
-	Host() (*host.P2PHost, error)
-	IPFS() (ipfs.IPFS, error)
+	// Returning a Motor interface and an error.
+	Host() config.P2PNode
+	IPFS() config.IPFSNode
 	Type() common.PeerType
 }
 
-func NewMotor(ctx context.Context, opts ...host.Option) (Node, error) {
-	h, err := host.New(ctx, opts...)
+// It creates a new host, and then creates a new node with that host
+func New(ctx context.Context, opts ...config.Option) (Node, error) {
+	config := config.DefaultConfig()
+	err := config.Apply(opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &node{
-		host:     h,
-		peerType: common.PeerType_MOTOR,
-	}, nil
-}
-
-func NewHighway(ctx context.Context, isLocal bool) (Node, error) {
-	var err error
-	var i ipfs.IPFS
-	if isLocal {
-		i, err = ipfs.NewLocal(ctx)
+	if config.IsMotor() {
+		h, err := host.Initialize(ctx, config)
 		if err != nil {
 			return nil, err
 		}
+		return makeNode(h, nil, config)
 	} else {
-		i, err = ipfs.NewRemote(ctx)
+		i, err := ipfs.Initialize(ctx, config)
 		if err != nil {
 			return nil, err
 		}
+		return makeNode(nil, i, config)
 	}
-	return &node{
-		ipfs:     i,
-		peerType: common.PeerType_HIGHWAY,
-	}, nil
-}
-
-type node struct {
-	host     *host.P2PHost
-	ipfs     ipfs.IPFS
-	peerType common.PeerType
-}
-
-func (n *node) Host() (*host.P2PHost, error) {
-	if n.peerType != common.PeerType_MOTOR {
-		return nil, errors.New("Invalid Node type. Only motors can return a libp2p host.")
-	}
-	return n.host, nil
-}
-
-func (n *node) IPFS() (ipfs.IPFS, error) {
-	if n.peerType == common.PeerType_MOTOR {
-		return nil, errors.New("Invalid Node type. Non-motors cannot return a ipfs instance.")
-	}
-	return n.ipfs, nil
-}
-
-func (n *node) Type() common.PeerType {
-	return n.peerType
 }

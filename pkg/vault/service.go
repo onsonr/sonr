@@ -9,7 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node"
 
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -31,13 +31,13 @@ var (
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
 	bank    *VaultBank
-	highway ipfs.IPFS
+	highway node.Node
 	rpName  string
 	rpIcon  string
 }
 
 // It creates a new VaultService and registers it with the gRPC server
-func NewVaultService(ctx client.Context, mux *runtime.ServeMux, hway ipfs.IPFS, cache *gocache.Cache) (*VaultService, error) {
+func NewVaultService(ctx client.Context, mux *runtime.ServeMux, hway node.Node, cache *gocache.Cache) (*VaultService, error) {
 	vaultBank := NewVaultBank(hway, cache)
 	srv := &VaultService{
 		bank:    vaultBank,
@@ -125,7 +125,7 @@ func (v *VaultService) assembleWalletFromShares(cid string, current *common.Wall
 	shares = append(shares, current)
 
 	// Fetch Vault share from IPFS
-	oldbz, err := v.highway.Get(cid)
+	oldbz, err := v.highway.IPFS().Get(cid)
 	if err != nil {
 		return "", nil, err
 	}

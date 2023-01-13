@@ -517,7 +517,7 @@ func New(
 		app.GroupKeeper,
 		app.MintKeeper,
 	)
-	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper, app.highway.IPFS)
+	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 

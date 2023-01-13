@@ -8,7 +8,7 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/host"
+	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	mpc "github.com/taurusgroup/multi-party-sig/pkg/protocol"
@@ -28,7 +28,7 @@ import (
 // application.
 // @property subscriptions - a map of party IDs to PubSub subscriptions.
 type onlineNetwork struct {
-	nodes   []*host.P2PHost
+	nodes   []config.P2PNode
 	parties party.IDSlice
 
 	mtx  sync.Mutex
@@ -40,7 +40,7 @@ type onlineNetwork struct {
 }
 
 // It creates a new network object, assigns the subscriptions, and returns the network object
-func NewOnlineNetwork(ctx context.Context, nodes ...*host.P2PHost) (common.Network, error) {
+func NewOnlineNetwork(ctx context.Context, nodes ...config.P2PNode) (common.Network, error) {
 	// Convert the peer IDs to party IDs.
 	parties := make([]party.ID, 0)
 	for _, node := range nodes {
@@ -158,7 +158,7 @@ func (n *onlineNetwork) findOutTopic(msg *mpc.Message) string {
 	return ""
 }
 
-func (n *onlineNetwork) getFromNode(msg *mpc.Message) *host.P2PHost {
+func (n *onlineNetwork) getFromNode(msg *mpc.Message) config.P2PNode {
 	for _, node := range n.nodes {
 		if msg.From == party.ID(node.PeerID()) {
 			return node

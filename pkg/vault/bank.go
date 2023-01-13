@@ -7,7 +7,7 @@ import (
 
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
-	ipfs "github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/fs"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/network"
@@ -18,7 +18,7 @@ import (
 
 type VaultBank struct {
 	// The IPFS node that the vault is running on
-	node ipfs.IPFS
+	node node.Node
 
 	// The wallet that the vault is using
 	cache *gocache.Cache
@@ -28,7 +28,7 @@ type VaultBank struct {
 }
 
 // Creates a new Vault
-func NewVaultBank(node ipfs.IPFS, cache *gocache.Cache) *VaultBank {
+func NewVaultBank(node node.Node, cache *gocache.Cache) *VaultBank {
 	return &VaultBank{
 		node:  node,
 		cache: cache,
@@ -73,7 +73,7 @@ func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*typ
 
 // It creates a new wallet with two participants, one of which is the current participant, and returns
 // the wallet
-func buildWallet(ctx context.Context, prefix string, node ipfs.IPFS) (common.Wallet, fs.VaultFS, error) {
+func buildWallet(ctx context.Context, prefix string, node node.Node) (common.Wallet, fs.VaultFS, error) {
 	participants := party.IDSlice{"current", "vault"}
 	net := network.NewOfflineNetwork(participants)
 	wsl, err := mpc.Keygen("current", 1, net, prefix)
@@ -101,7 +101,7 @@ func buildWallet(ctx context.Context, prefix string, node ipfs.IPFS) (common.Wal
 	return wallet, vaultfs, nil
 }
 
-func loadWallet(ctx context.Context, didDoc *types.DidDocument, node ipfs.IPFS) (common.Wallet, fs.VaultFS, error) {
+func loadWallet(ctx context.Context, didDoc *types.DidDocument, node node.Node) (common.Wallet, fs.VaultFS, error) {
 	if s := didDoc.GetVaultService(); s != nil {
 		_, err := fs.New(ctx, didDoc.Address(), node, fs.WithIPFSPath(s.CID()))
 		if err != nil {

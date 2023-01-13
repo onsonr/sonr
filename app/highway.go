@@ -19,7 +19,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
-	"github.com/sonr-hq/sonr/pkg/node/ipfs"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/pkg/vault"
 )
 
@@ -36,7 +36,7 @@ import (
 // @property ipfs - The IPFS node
 type HighwayProtocol struct {
 	// Node is the libp2p host
-	IPFS ipfs.IPFS
+	node node.Node
 
 	// Properties
 	ctx   context.Context
@@ -47,20 +47,20 @@ type HighwayProtocol struct {
 // It creates a new IPFS node and returns it
 func StartHighwayProtocol() *HighwayProtocol {
 	ctx := context.Background()
-	node, err := ipfs.NewLocal(ctx)
+	node, err := node.New(ctx)
 	if err != nil {
 		log.Println("Failed to create IPFS node:", err)
 	}
 	return &HighwayProtocol{
 		ctx:   ctx,
-		IPFS:  node,
+		node:  node,
 		cache: gocache.New(time.Minute*2, time.Minute*10),
 	}
 }
 
 // It's registering the gRPC gateway routes.
 func (h *HighwayProtocol) RegisterGRPCGatewayRoutes(cctx client.Context, server *runtime.ServeMux) error {
-	vs, err := vault.NewVaultService(cctx, server, h.IPFS, h.cache)
+	vs, err := vault.NewVaultService(cctx, server, h.node, h.cache)
 	if err != nil {
 		return err
 	}
