@@ -29,8 +29,6 @@ var (
 	// defaultAuthSelect
 	defaultAuthSelect = protocol.AuthenticatorSelection{
 		AuthenticatorAttachment: protocol.AuthenticatorAttachment("platform"),
-		RequireResidentKey:      protocol.ResidentKeyUnrequired(),
-		UserVerification:        protocol.VerificationRequired,
 	}
 )
 

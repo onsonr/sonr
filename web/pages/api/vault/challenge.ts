@@ -7,6 +7,10 @@ export const config = {
 export default async function handler(req: NextRequest) {
   // Get API URL
   let domain = new URL(req.url).searchParams.get("domain");
+  let apiUrl = "https://api.sonr.network";
+  if (process && process.env.NODE_ENV === "development") {
+    apiUrl = "http://localhost:1317";
+  }
   let username = req.headers.get("username");
 
   const requestOptions = {
@@ -15,7 +19,7 @@ export default async function handler(req: NextRequest) {
   };
 
   const resp = await fetch(
-    process.env.API_URL + "/sonr-io/highway/vault/challenge/" + domain + "/" + username,
+    apiUrl + "/sonr-io/highway/vault/challenge/" + domain + "/" + username,
     requestOptions
   );
   const data = await resp.json();

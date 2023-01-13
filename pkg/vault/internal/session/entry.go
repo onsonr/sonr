@@ -22,13 +22,12 @@ import (
 // @property Data - This is the data that is returned from the webauthn.Create() function.
 // @property {string} AlsoKnownAs - The user's username.
 type SessionEntry struct {
-	ID                 string
-	RPID               string
-	WebauthnCredential common.WebauthnCredential
-	DidDoc             *types.DidDocument
-	Data               webauthn.SessionData
-	Webauthn           *webauthn.WebAuthn
-	AlsoKnownAs        string
+	ID          string
+	RPID        string
+	DidDoc      *types.DidDocument
+	Data        webauthn.SessionData
+	Webauthn    *webauthn.WebAuthn
+	AlsoKnownAs string
 }
 
 // NewEntry creates a new session with challenge to be used to register a new account
@@ -61,10 +60,6 @@ func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 
 // LoadEntry starts a new webauthn session with a given VerificationMethod
 func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error) {
-	wb, err := vm.WebAuthnCredential()
-	if err != nil {
-		return nil, err
-	}
 	sessionID := uuid.New().String()[:8]
 	// Create the Webauthn Instance
 	wauth, err := webauthn.New(&webauthn.Config{
@@ -76,12 +71,14 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error)
 		AttestationPreference:  protocol.PreferDirectAttestation,
 		AuthenticatorSelection: defaultAuthSelect,
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &SessionEntry{
-		ID:                 sessionID,
-		RPID:               rpId,
-		WebauthnCredential: *wb,
-		Webauthn:           wauth,
+		ID:       sessionID,
+		RPID:     rpId,
+		Webauthn: wauth,
 	}, nil
 }
 
@@ -126,11 +123,10 @@ func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*types
 
 // BeginLogin creates a new AssertionChallenge for client to verify
 func (s *SessionEntry) BeginLogin() (string, error) {
-
-	allowList := make([]protocol.CredentialDescriptor, 1)
-	allowList[0] = protocol.CredentialDescriptor{
-		CredentialID: s.WebauthnCredential.Id,
-		Type:         protocol.CredentialType("public-key"),
+	allowList := make([]protocol.CredentialDescriptor, 0)
+	creds := s.DidDoc.WebAuthnCredentials()
+	for _, cred := range creds {
+		allowList = append(allowList, cred.Descriptor())
 	}
 	opts, session, err := s.Webauthn.BeginLogin(s.DidDoc, webauthn.WithAllowedCredentials(allowList))
 	if err != nil {
@@ -151,11 +147,8 @@ func (s *SessionEntry) FinishLogin(credentialRequestData string) (bool, error) {
 	if err != nil {
 		return false, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
-	cred, err := s.Webauthn.ValidateLogin(s.DidDoc, s.Data, pca)
+	_, err = s.Webauthn.ValidateLogin(s.DidDoc, s.Data, pca)
 	if err != nil {
-		return false, err
-	}
-	if err := s.WebauthnCredential.Validate(cred); err != nil {
 		return false, err
 	}
 	return true, nil

@@ -87,11 +87,14 @@ func (wvm *DidDocument) WebAuthnID() []byte {
 }
 
 func (wvm *DidDocument) WebAuthnDisplayName() string {
-	return wvm.ID
+	if len(wvm.AlsoKnownAs) == 0 {
+		return wvm.ID
+	}
+	return wvm.AlsoKnownAs[0]
 }
 
 func (wvm *DidDocument) WebAuthnName() string {
-	return ""
+	return "Sonr"
 }
 
 func (wvm *DidDocument) WebAuthnIcon() string {

@@ -73,15 +73,14 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	docJson, err := didDoc.MarshalJSON()
+	err = didDoc.SetRootWallet(wallet)
 	if err != nil {
 		return nil, err
 	}
 	return &v1.RegisterResponse{
-		Success:         true,
-		DidDocument:     didDoc,
-		Address:         wallet.Address(),
-		DidDocumentJson: string(docJson),
+		Success:     true,
+		DidDocument: didDoc,
+		Address:     wallet.Address(),
 	}, nil
 
 }

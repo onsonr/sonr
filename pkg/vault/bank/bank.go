@@ -31,7 +31,10 @@ func CreateBank(node config.IPFSNode, cache *gocache.Cache) *VaultBank {
 }
 
 func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, error) {
-	entry, _ := session.NewEntry(rpid, aka)
+	entry, err := session.NewEntry(rpid, aka)
+	if err != nil {
+		return "", "", err
+	}
 	optsJson, err := entry.BeginRegistration()
 	if err != nil {
 		return "", "", err
@@ -54,10 +57,6 @@ func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*typ
 	wallet, err := v.buildWallet("snr")
 	if err != nil {
 		return nil, nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
-	}
-	err = didDoc.SetRootWallet(wallet)
-	if err != nil {
-		return nil, nil, err
 	}
 	return didDoc, wallet, nil
 }

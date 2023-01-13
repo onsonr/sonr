@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
 	common "github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/common/jwx"
@@ -258,4 +259,17 @@ func (vms *VerificationMethods) Add(v *VerificationMethod) {
 		}
 	}
 	vms.Data = append(vms.Data, v)
+}
+
+// CredentialDiscriptor is a descriptor for a credential for VerificationMethod which contains WebAuthnCredential
+func (vm *VerificationMethod) CredentialDescriptor() (protocol.CredentialDescriptor, error) {
+	if vm.Type != KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+		return protocol.CredentialDescriptor{}, fmt.Errorf("verification method is not of type WebAuthn")
+	}
+	cred, err := vm.WebAuthnCredential()
+	if err != nil {
+		return protocol.CredentialDescriptor{}, err
+	}
+	stdCred := cred.ToStdCredential()
+	return stdCred.Descriptor(), nil
 }

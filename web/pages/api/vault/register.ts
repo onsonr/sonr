@@ -6,6 +6,12 @@ export const config = {
 };
 
 export default async function handler(req: NextRequest) {
+  // Get API URL
+  let apiUrl = "https://api.sonr.network";
+  if (process && process.env.NODE_ENV === "development") {
+    apiUrl = "http://localhost:1317";
+  }
+
   let body = req.body;
   const requestOptions = {
     method: "POST",

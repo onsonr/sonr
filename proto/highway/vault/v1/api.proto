@@ -38,8 +38,7 @@ message RegisterRequest {
 message RegisterResponse {
     bool success = 1;
     string address = 2;
-    string did_document_json = 3;
-    sonr.identity.DidDocument did_document = 4;
+    sonr.identity.DidDocument did_document = 3;
 }
 
 // RefreshRequest is the request to refresh the keypair.
