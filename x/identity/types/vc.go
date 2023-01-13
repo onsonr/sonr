@@ -83,18 +83,15 @@ func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential,
 }
 
 func (wvm *DidDocument) WebAuthnID() []byte {
-	return []byte(wvm.AlsoKnownAs[0])
-}
-
-func (wvm *DidDocument) WebAuthnName() string {
-	return "Sonr"
+	return []byte(wvm.ID)
 }
 
 func (wvm *DidDocument) WebAuthnDisplayName() string {
-	if len(wvm.AlsoKnownAs) == 0 {
-		return wvm.ID
-	}
-	return wvm.AlsoKnownAs[0]
+	return wvm.ID
+}
+
+func (wvm *DidDocument) WebAuthnName() string {
+	return ""
 }
 
 func (wvm *DidDocument) WebAuthnIcon() string {
