@@ -37,7 +37,7 @@ var (
 	defaultRendezvousString = "sonr"
 
 	// Remote API address
-	DefaultAPIAddr = "/ip4/198.199.78.62/tcp/9094"
+	defaultAPIAddr = "/ip4/198.199.78.62/tcp/9094"
 )
 
 // Config is the configuration for the node
@@ -76,7 +76,7 @@ func DefaultConfig() *Config {
 		BootstrapMultiaddrs: defaultBootstrapMultiaddrs,
 		Callback:            defaultCallback,
 		RendezvousString:    defaultRendezvousString,
-		RemoteIPFSURL:       DefaultAPIAddr,
+		RemoteIPFSURL:       defaultAPIAddr,
 		PeerType:            common.PeerType_HIGHWAY,
 		IsRemote:            false,
 		SelfPartyID:         party.ID("current"),

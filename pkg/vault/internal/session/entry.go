@@ -8,7 +8,6 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/google/uuid"
-	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
@@ -26,8 +25,9 @@ type SessionEntry struct {
 	ID                 string
 	RPID               string
 	WebauthnCredential common.WebauthnCredential
-	DidDoc             types.DidDocument
+	DidDoc             *types.DidDocument
 	Data               webauthn.SessionData
+	Webauthn           *webauthn.WebAuthn
 	AlsoKnownAs        string
 }
 
@@ -39,7 +39,7 @@ func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 	return &SessionEntry{
 		ID:          sessionID,
 		RPID:        rpId,
-		DidDoc:      *doc,
+		DidDoc:      doc,
 		AlsoKnownAs: aka,
 	}, nil
 }
@@ -51,21 +51,30 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error)
 		return nil, err
 	}
 	sessionID := uuid.New().String()[:8]
+	// Create the Webauthn Instance
+	wauth, err := webauthn.New(&webauthn.Config{
+		RPDisplayName:          defaultRpName,
+		RPID:                   rpId,
+		RPIcon:                 defaultRpIcon,
+		RPOrigins:              defaultRpOrigins,
+		Timeout:                60000,
+		AttestationPreference:  protocol.PreferDirectAttestation,
+		AuthenticatorSelection: defaultAuthSelect,
+		Debug:                  true,
+	})
+
 	return &SessionEntry{
 		ID:                 sessionID,
 		RPID:               rpId,
 		WebauthnCredential: *wb,
+		Webauthn:           wauth,
 	}, nil
 }
 
 // BeginRegistration starts the registration process for the underlying Webauthn instance
 func (s *SessionEntry) BeginRegistration() (string, error) {
-	wauth, err := s.WebAuthn()
-	if err != nil {
-		return "", err
-	}
 
-	opts, sessionData, err := wauth.BeginRegistration(&s.DidDoc, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
+	opts, sessionData, err := s.Webauthn.BeginRegistration(s.DidDoc, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
 	if err != nil {
 		return "", err
 	}
@@ -92,29 +101,25 @@ func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*types
 	// }
 	cred, err := webauthn.MakeNewCredential(pcc)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to make new credential: %s", err))
 	}
 	keyIdx := s.DidDoc.Authentication.Count() + 1
 	err = s.DidDoc.AddWebauthnCredential(common.ConvertFromWebauthnCredential(cred), fmt.Sprintf("key-%v", keyIdx))
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("Failed to add webauthn credential: %s", err))
 	}
-	return &s.DidDoc, nil
+	return s.DidDoc, nil
 }
 
 // BeginLogin creates a new AssertionChallenge for client to verify
 func (s *SessionEntry) BeginLogin() (string, error) {
-	wauth, err := s.WebAuthn()
-	if err != nil {
-		return "", err
-	}
 
 	allowList := make([]protocol.CredentialDescriptor, 1)
 	allowList[0] = protocol.CredentialDescriptor{
 		CredentialID: s.WebauthnCredential.Id,
 		Type:         protocol.CredentialType("public-key"),
 	}
-	opts, session, err := wauth.BeginLogin(&s.DidDoc, webauthn.WithAllowedCredentials(allowList))
+	opts, session, err := s.Webauthn.BeginLogin(s.DidDoc, webauthn.WithAllowedCredentials(allowList))
 	if err != nil {
 		return "", err
 	}
@@ -128,16 +133,12 @@ func (s *SessionEntry) BeginLogin() (string, error) {
 
 // FinishLogin authenticates from the signature provided to the client
 func (s *SessionEntry) FinishLogin(credentialRequestData string) (bool, error) {
-	wauth, err := s.WebAuthn()
-	if err != nil {
-		return false, err
-	}
 
 	pca, err := getParsedCredentialRequestData(credentialRequestData)
 	if err != nil {
 		return false, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))
 	}
-	cred, err := wauth.ValidateLogin(&s.DidDoc, s.Data, pca)
+	cred, err := s.Webauthn.ValidateLogin(s.DidDoc, s.Data, pca)
 	if err != nil {
 		return false, err
 	}
@@ -145,23 +146,4 @@ func (s *SessionEntry) FinishLogin(credentialRequestData string) (bool, error) {
 		return false, err
 	}
 	return true, nil
-}
-
-func GetEntry(id string, cache *gocache.Cache) (*SessionEntry, error) {
-	val, ok := cache.Get(id)
-	if !ok {
-		return nil, errors.New("Failed to find entry for ID")
-	}
-	e, ok := val.(*SessionEntry)
-	if !ok {
-		return nil, errors.New("Invalid type for session entry")
-	}
-	return e, nil
-}
-
-func PutEntry(entry *SessionEntry, cache *gocache.Cache) error {
-	if entry == nil || cache == nil {
-		return errors.New("Entry or Cache cannot be nil to put Entry")
-	}
-	return cache.Add(entry.ID, entry, -1)
 }

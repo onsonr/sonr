@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"errors"
 
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/config"
@@ -41,31 +40,40 @@ func New(ctx context.Context, opts ...config.Option) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		return makeNode(h, nil, config)
-	} else {
-		i, err := ipfs.Initialize(ctx, config)
-		if err != nil {
-			return nil, err
-		}
-		return makeNode(nil, i, config)
+		return &node{
+			host:   h,
+			config: config,
+		}, nil
+
 	}
+	i, err := ipfs.Initialize(ctx, config)
+	if err != nil {
+		return nil, err
+	}
+	return &node{
+		ipfs:   i,
+		config: config,
+	}, nil
+}
+
+// NewIPFS creates a new IPFS node
+func NewIPFS(ctx context.Context, opts ...config.Option) (config.IPFSNode, error) {
+	config := config.DefaultConfig()
+	err := config.Apply(opts...)
+	if err != nil {
+		return nil, err
+	}
+	i, err := ipfs.Initialize(ctx, config)
+	if err != nil {
+		return nil, err
+	}
+	return i, nil
 }
 
 type node struct {
 	host   config.P2PNode
 	ipfs   config.IPFSNode
 	config *config.Config
-}
-
-func makeNode(host config.P2PNode, ipfs config.IPFSNode, config *config.Config) (*node, error) {
-	if host == nil && ipfs == nil {
-		return nil, errors.New("Invalid node. Must have either a host or an ipfs instance.")
-	}
-	return &node{
-		host:   host,
-		ipfs:   ipfs,
-		config: config,
-	}, nil
 }
 
 func (n *node) Host() config.P2PNode {

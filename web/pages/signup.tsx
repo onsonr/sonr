@@ -1,56 +1,16 @@
-import {
-  DidDocument,
-  VerificationMethod,
-  VerificationMethods,
-} from "@buf/sonr-hq_sonr.grpc_web/sonr/identity/did_pb";
-import {
-  Box,
-  Center,
-  Flex,
-  Spacer,
-  Tag,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
-import {
-  AppShell,
-  Button,
-  ButtonGroup,
-  Card,
-  CardBody,
-  Field,
-  FormLayout,
-  FormStep,
-  FormStepper,
-  Loader,
-  NextButton,
-  PrevButton,
-  Property,
-  PropertyList,
-  StepForm,
-  StepperCompleted,
-  useSnackbar,
-} from "@saas-ui/react";
+import { DidDocument, VerificationMethod, VerificationMethods } from "@buf/sonr-hq_sonr.grpc_web/sonr/identity/did_pb";
+import { Box, Center, Flex, Spacer, Tag, Text, useDisclosure } from "@chakra-ui/react";
+import { AppShell, Button, ButtonGroup, Card, CardBody, Field, FormLayout, FormStep, FormStepper, Loader, NextButton, PrevButton, Property, PropertyList, StepForm, StepperCompleted, useSnackbar } from "@saas-ui/react";
 import { ModalsProvider, useModals } from "@saas-ui/react";
 import { Web3Address } from "@saas-ui/web3";
 import axios from "axios";
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import {
-  FiAtSign,
-  FiCloud,
-  FiDroplet,
-  FiKey,
-  FiLock,
-  FiUserPlus,
-} from "react-icons/fi";
+import { FiAtSign, FiCloud, FiDroplet, FiKey, FiLock, FiUserPlus } from "react-icons/fi";
 import * as Yup from "yup";
 
-import {
-  getBase64WebEncodingFromBytes,
-  getBytesFromBase64,
-} from "../types/base64";
+import { getBase64WebEncodingFromBytes, getBytesFromBase64 } from "../types/base64";
 
 export default function SignUp() {
   const modals = useModals();
@@ -165,7 +125,6 @@ export default function SignUp() {
       body: JSON.stringify({
         session_id: session,
         credential_response: credRespString,
-        password: passcode,
       }),
     });
     const resp = await response.json();

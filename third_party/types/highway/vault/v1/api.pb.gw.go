@@ -121,24 +121,6 @@ func request_Vault_Register_0(ctx context.Context, marshaler runtime.Marshaler, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["rp_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rp_id")
-	}
-
-	protoReq.RpId, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rp_id", err)
-	}
-
 	msg, err := client.Register(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -154,24 +136,6 @@ func local_request_Vault_Register_0(ctx context.Context, marshaler runtime.Marsh
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["rp_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "rp_id")
-	}
-
-	protoReq.RpId, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "rp_id", err)
 	}
 
 	msg, err := server.Register(ctx, &protoReq)
@@ -549,7 +513,7 @@ func RegisterVaultHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Vault_Challenge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"sonr-io", "highway", "vault", "challenge", "rp_id", "username"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_Register_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "highway", "vault", "register", "rp_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Vault_Register_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr-io", "highway", "vault", "register"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Vault_Refresh_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr-io", "highway", "vault", "refresh"}, "", runtime.AssumeColonVerbOpt(true)))
 

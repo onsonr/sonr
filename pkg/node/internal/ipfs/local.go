@@ -48,22 +48,6 @@ type localIpfs struct {
 	topicEventHandlers map[string]TopicMessageHandler
 }
 
-// newLocal creates a new node with the given options
-func newLocal(ctx context.Context, cnfg *config.Config) (*localIpfs, error) {
-	// Apply the options
-	n := defaultNode(ctx, cnfg)
-	err := n.initialize()
-	if err != nil {
-		return nil, err
-	}
-	// Connect to the bootstrap nodes
-	err = n.Connect(n.config.BootstrapMultiaddrs...)
-	if err != nil {
-		return nil, err
-	}
-	return n, nil
-}
-
 func (n *localIpfs) CoreAPI() icore.CoreAPI {
 	return n.api
 }

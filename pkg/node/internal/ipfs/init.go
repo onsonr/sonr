@@ -21,10 +21,18 @@ import (
 
 // Initialize creates a new local IPFS node
 func Initialize(ctx context.Context, c *snrConfig.Config) (snrConfig.IPFSNode, error) {
-	if c.IsLocal() {
-		return newLocal(ctx, c)
+	// Apply the options
+	n := defaultNode(ctx, c)
+	err := n.initialize()
+	if err != nil {
+		return nil, err
 	}
-	return nil, fmt.Errorf("remote IPFS nodes are not supported")
+	// Connect to the bootstrap nodes
+	err = n.Connect(n.config.BootstrapMultiaddrs...)
+	if err != nil {
+		return nil, err
+	}
+	return n, nil
 }
 
 // Miscellanenous
@@ -43,6 +51,7 @@ func defaultNode(ctx context.Context, cnfg *snrConfig.Config) *localIpfs {
 		ctx:                ctx,
 		config:             cnfg,
 		topicEventHandlers: make(map[string]TopicMessageHandler),
+		
 	}
 }
 

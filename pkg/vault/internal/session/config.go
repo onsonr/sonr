@@ -6,7 +6,6 @@ import (
 	"errors"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/google/uuid"
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
@@ -129,22 +128,4 @@ func (s *SessionEntry) SetRPID(copts *protocol.CredentialCreation) *protocol.Cre
 func (s *SessionEntry) SetRPIDAssertion(copts *protocol.CredentialAssertion) *protocol.CredentialAssertion {
 	copts.Response.RelyingPartyID = s.RPID
 	return copts
-}
-
-func (s *SessionEntry) WebAuthn() (*webauthn.WebAuthn, error) {
-	rawRpId := "localhost"
-	if len(s.RPID) > 0 {
-		rawRpId = s.RPID
-	}
-	// Create the Webauthn Instance
-	return webauthn.New(&webauthn.Config{
-		RPDisplayName:          defaultRpName,
-		RPID:                   rawRpId,
-		RPIcon:                 defaultRpIcon,
-		RPOrigins:              defaultRpOrigins,
-		Timeout:                60000,
-		AttestationPreference:  protocol.PreferDirectAttestation,
-		AuthenticatorSelection: defaultAuthSelect,
-		Debug:                  true,
-	})
 }
