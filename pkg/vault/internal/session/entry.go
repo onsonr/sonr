@@ -34,12 +34,11 @@ type SessionEntry struct {
 // NewEntry creates a new session with challenge to be used to register a new account
 func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 	sessionID := uuid.New().String()[:8]
-	doc := types.NewBaseDocument(aka, sessionID)
 	// Create Entry
 	return &SessionEntry{
 		ID:          sessionID,
 		RPID:        rpId,
-		DidDoc:      doc,
+		DidDoc:      types.NewBaseDocument(aka, sessionID),
 		AlsoKnownAs: aka,
 	}, nil
 }
@@ -73,7 +72,6 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error)
 
 // BeginRegistration starts the registration process for the underlying Webauthn instance
 func (s *SessionEntry) BeginRegistration() (string, error) {
-
 	opts, sessionData, err := s.Webauthn.BeginRegistration(s.DidDoc, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
 	if err != nil {
 		return "", err

@@ -31,10 +31,7 @@ func CreateBank(node config.IPFSNode, cache *gocache.Cache) *VaultBank {
 }
 
 func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, error) {
-	entry, err := session.NewEntry(rpid, aka)
-	if err != nil {
-		return "", "", err
-	}
+	entry, _ := session.NewEntry(rpid, aka)
 	optsJson, err := entry.BeginRegistration()
 	if err != nil {
 		return "", "", err

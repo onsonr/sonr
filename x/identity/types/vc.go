@@ -83,7 +83,7 @@ func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential,
 }
 
 func (wvm *DidDocument) WebAuthnID() []byte {
-	return []byte(wvm.ID)
+	return []byte(wvm.AlsoKnownAs[0])
 }
 
 func (wvm *DidDocument) WebAuthnName() string {
@@ -109,7 +109,7 @@ func (wvm *DidDocument) WebAuthnCredentials() []webauthn.Credential {
 			if err != nil {
 				return nil
 			}
-			creds = append(creds, *vmcr.ToProtocolCredential())
+			creds = append(creds, *vmcr.ToStdCredential())
 		}
 	}
 	return creds

@@ -12,8 +12,8 @@ import (
 	"github.com/shengdoushi/base58"
 )
 
-// ConvertProtocolCredential creates a common.WebauthnCredential from a webauthn.Credential from the go-webauthn package
-func ConvertProtocolCredential(wa *webauthn.Credential) *WebauthnCredential {
+// ConvertStdCredential creates a common.WebauthnCredential from a webauthn.Credential from the go-webauthn package
+func ConvertStdCredential(wa *webauthn.Credential) *WebauthnCredential {
 	transportsStr := []string{}
 	for _, t := range wa.Transport {
 		transportsStr = append(transportsStr, string(t))
@@ -31,8 +31,8 @@ func ConvertProtocolCredential(wa *webauthn.Credential) *WebauthnCredential {
 	}
 }
 
-// ToProtocolCredential converts a common WebauthnCredential to one that can be used for the go-webauthn package
-func (c *WebauthnCredential) ToProtocolCredential() *webauthn.Credential {
+// ToStdCredential converts a common WebauthnCredential to one that can be used for the go-webauthn package
+func (c *WebauthnCredential) ToStdCredential() *webauthn.Credential {
 	transports := []protocol.AuthenticatorTransport{}
 	for _, t := range c.Transport {
 		transports = append(transports, protocol.AuthenticatorTransport(t))
