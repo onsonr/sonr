@@ -125,7 +125,7 @@ func (c *WebauthnCredential) ToStdCredential() *webauthn.Credential {
 }
 
 func (c *WebauthnCredential) Did() string {
-	return fmt.Sprintf("did:webauth:%s", base58.Encode(c.Id, base58.BitcoinAlphabet))
+	return fmt.Sprintf("did:snr:%s", base58.Encode(c.Id, base58.BitcoinAlphabet))
 }
 
 func (c *WebauthnCredential) PublicKeyMultibase() string {
@@ -141,6 +141,7 @@ func (c *WebauthnCredential) ToMetadata() map[string]string {
 		"authenticator.sign_count":    strconv.FormatUint(uint64(c.Authenticator.SignCount), 10),
 		"transport":                   strings.Join(c.Transport, ","),
 		"attestion_type":              c.AttestationType,
+		"webauthn":                    ConvertBoolToString(true),
 	}
 }
 
