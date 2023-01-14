@@ -120,6 +120,11 @@ func (w *cmpConfigWalletShare) Marshal() ([]byte, error) {
 	return w.walletShareConfig.Marshal()
 }
 
+// Prefix returns the prefix of this wallet.
+func (w *cmpConfigWalletShare) Prefix() string {
+	return w.walletShareConfig.Bech32Prefix
+}
+
 // PublicKey returns the public key of this wallet.
 func (w *cmpConfigWalletShare) PublicKey() (*secp256k1.PubKey, error) {
 	buf, err := w.Config.PublicPoint().(*curve.Secp256k1Point).MarshalBinary()

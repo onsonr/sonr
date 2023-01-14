@@ -10,6 +10,8 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
+
+
 // A Network is a channel that sends messages to parties and receives messages from parties.
 type Network interface {
 	// Ls returns a list of peers that are connected to the network.
@@ -87,6 +89,9 @@ type WalletShare interface {
 
 	// Marshal serializes the cmp.Config into a byte slice for local storage
 	Marshal() ([]byte, error)
+
+	// Prefix returns the prefix of this wallet.
+	Prefix() string
 
 	// PublicKey returns the public key of this wallet.
 	PublicKey() (*secp256k1.PubKey, error)

@@ -14,6 +14,17 @@ func (vmr *VerificationRelationships) Count() int {
 	return len(vmr.GetData())
 }
 
+// Filter returns a new VerificationRelationships slice with all VerificationRelationships that match the filter
+func (vmr *VerificationRelationships) Filter(filter func(*VerificationRelationship) bool) *VerificationRelationships {
+	vrs := make([]*VerificationRelationship, 0)
+	for _, r := range vmr.GetData() {
+		if filter(r) {
+			vrs = append(vrs, r)
+		}
+	}
+	return &VerificationRelationships{Data: vrs}
+}
+
 // FindByID returns the first VerificationRelationship that matches with the id.
 // For comparison both the ID of the embedded VerificationMethod and reference is used.
 func (vmr *VerificationRelationships) FindByID(id string) *VerificationMethod {
@@ -29,15 +40,16 @@ func (vmr *VerificationRelationships) FindByID(id string) *VerificationMethod {
 
 // FindByFragment returns the first VerificationRelationship that contans the fragment.
 // For comparison both the ID of the embedded VerificationMethod and reference is used.
-func (vmr *VerificationRelationships) FindByFragment(frag string) *VerificationMethod {
+func (vmr *VerificationRelationships) FindByFragment(frag string) []*VerificationMethod {
+	vms := make([]*VerificationMethod, 0)
 	for _, r := range vmr.GetData() {
 		if r.VerificationMethod != nil {
 			if strings.Contains(r.VerificationMethod.ID, frag) {
-				return r.VerificationMethod
+				vms = append(vms, r.VerificationMethod)
 			}
 		}
 	}
-	return nil
+	return vms
 }
 
 // Remove removes a VerificationRelationship from the slice.

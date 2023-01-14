@@ -11,7 +11,7 @@ func (d *DidDocument) FindAuthenticationMethod(id string) *VerificationMethod {
 
 // FindAuthenticationMethodByFragment finds a VerificationMethod by its fragment
 func (d *DidDocument) FindAuthenticationMethodByFragment(fragment string) *VerificationMethod {
-	return d.Authentication.FindByFragment(fragment)
+	return d.Authentication.FindByFragment(fragment)[0]
 }
 
 // AddAuthenticationMethod adds a VerificationMethod as AuthenticationMethod
