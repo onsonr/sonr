@@ -82,12 +82,13 @@ func (d *DidDocument) AddBlockchainAccount(wallet crypto.WalletShare) error {
 	if err != nil {
 		return err
 	}
-	vm.Metadata = map[string]string{
+	data := map[string]string{
 		"index":      fmt.Sprint(wallet.Index()),
 		"prefix":     wallet.Prefix(),
 		"party_id":   string(wallet.SelfID()),
 		"blockchain": ConvertBoolToString(true),
 	}
+	vm.SetMetadata(data)
 	d.VerificationMethod.Add(vm)
 	d.AssertionMethod.Add(vm)
 	return nil

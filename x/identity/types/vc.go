@@ -15,7 +15,7 @@ func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential,
 	if wvm.Type != KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
 		return nil, errors.New("VerificationMethod is not a WebAuthn Credential")
 	}
-	data := wvm.GetMetadata()
+	data := KeyValueListToMap(wvm.GetMetadata())
 	// Fetch Properties from map
 	if data == nil {
 		return nil, errors.New("Failed to find metadata for VerificationMethod")

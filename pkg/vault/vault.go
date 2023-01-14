@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-hq/sonr/pkg/vault/bank"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/fs"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
+	"github.com/sonr-hq/sonr/x/identity/types"
 
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 )
@@ -103,13 +104,14 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	}
 	didDoc.AddService(service)
 	didDoc.AddCapabilityDelegation(v.node.GetCapabilityDelegation())
-	// err = v.sonrClient.CreateIdentity(ctx, didDoc)
-	// if err != nil {
-	// 	return &v1.RegisterResponse{
-	// 		Success:     false,
-	// 		DidDocument: didDoc,
-	// 	}, nil
-	// }
+	docReq := types.NewMsgCreateDidDocument(v.cctx.FromAddress.String(), didDoc)
+	res, err := wallet.SendTx("vault", docReq)
+	if err != nil {
+		return nil, err
+	}
+	if res.TxResponse.Code != 0 {
+		return nil, errors.New(res.TxResponse.RawLog)
+	}
 	return &v1.RegisterResponse{
 		Success:     true,
 		DidDocument: didDoc,

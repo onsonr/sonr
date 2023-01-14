@@ -1,13 +1,17 @@
 package network
 
 import (
+	"context"
+	"fmt"
 	"sync"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/tx"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/shengdoushi/base58"
+	"google.golang.org/grpc"
 
 	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
@@ -176,6 +180,40 @@ func (ws OfflineWallet) Verify(msg, sig []byte) bool {
 		}
 	}
 	return false
+}
+
+// SignTx constructs a Tx with all required info for a wallet to sign.
+func (ws OfflineWallet) SendTx(current party.ID, msgs ...sdk.Msg) (*txtypes.BroadcastTxResponse, error) {
+	txb, err := ws.SignTx(current, msgs...)
+	if err != nil {
+		return nil, err
+	}
+	return BroadcastTx(context.Background(), txb)
+}
+
+func BroadcastTx(ctx context.Context, txBytes []byte) (*txtypes.BroadcastTxResponse, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		"0.0.0.0:9090",      // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	defer grpcConn.Close()
+
+	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
+	// service.
+	txClient := tx.NewServiceClient(grpcConn)
+	grpcRes, err := txClient.BroadcastTx(
+		ctx,
+		&tx.BroadcastTxRequest{
+			Mode:    tx.BroadcastMode_BROADCAST_MODE_SYNC,
+			TxBytes: txBytes, // Proto-binary of the signed transaction, see previous step.
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(grpcRes.TxResponse.Code) // Should be `0` if the tx is successful
+	return grpcRes, nil
 }
 
 //

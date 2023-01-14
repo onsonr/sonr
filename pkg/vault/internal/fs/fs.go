@@ -10,13 +10,6 @@ import (
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
-// Directories created for every user
-var k_DEFAULT_DIRS = []string{
-	"_auth",
-	"mailbox",
-	"public",
-}
-
 // VaultFS provides an interface for arbitrary Sonr Network Nodes to have IPFS configuration
 // for the users secure storage.
 // @property {string} CID - The CID of the vault

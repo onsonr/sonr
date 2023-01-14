@@ -1,6 +1,7 @@
 package network
 
 import (
+	"context"
 	"testing"
 
 	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
@@ -23,7 +24,11 @@ func TestWalletSharesFull(t *testing.T) {
 	assert.NoError(t, err, "signing succeeds")
 	deserializedSigVerified := ws2.Verify([]byte("sign this message"), bz)
 	assert.True(t, deserializedSigVerified, "deserialized signature is verified")
-
+	res, err := BroadcastTx(context.Background(), bz)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("Broadcast result: %s", res.String())
 	// Derive the first three accounts
 	conf1, err := ws.Bip32Derive(0, "snr")
 	if err != nil {

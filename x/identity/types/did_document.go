@@ -92,3 +92,8 @@ func (d *DidDocument) CheckAccAddress(t interface{}) bool {
 		return false
 	}
 }
+
+
+func (vm *DidDocument) SetMetadata(data map[string]string) {
+	vm.Metadata = MapToKeyValueList(data)
+}

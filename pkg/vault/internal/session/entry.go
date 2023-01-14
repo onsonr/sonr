@@ -59,7 +59,7 @@ func NewEntry(rpId string, aka string) (*Session, error) {
 }
 
 // LoadEntry starts a new webauthn session with a given VerificationMethod
-func LoadEntry(rpId string, vm *types.VerificationMethod) (*Session, error) {
+func LoadEntry(rpId string, vm *types.DidDocument) (*Session, error) {
 	sessionID := uuid.New().String()[:8]
 	// Create the Webauthn Instance
 	wauth, err := webauthn.New(&webauthn.Config{
@@ -79,6 +79,7 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*Session, error) {
 		ID:       sessionID,
 		RPID:     rpId,
 		Webauthn: wauth,
+		DidDoc:   vm,
 	}, nil
 }
 

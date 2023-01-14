@@ -67,7 +67,7 @@ func NewWebAuthnVM(webauthnCredential *common.WebauthnCredential, options ...Ver
 		ID:                 webauthnCredential.Did(),
 		Type:               KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018,
 		PublicKeyMultibase: webauthnCredential.PublicKeyMultibase(),
-		Metadata:           webauthnCredential.ToMetadata(),
+		Metadata:           MapToKeyValueList(webauthnCredential.ToMetadata()),
 	}
 
 	// Apply VerificationMethod Options
@@ -113,7 +113,7 @@ func NewJWKVM(id string, key crypto.PublicKey, options ...VerificationMethodOpti
 	}
 	keyAsMap := map[string]string{}
 	json.Unmarshal(keyAsJSON, &keyAsMap)
-	vm.PublicKeyJwk = keyAsMap
+	vm.PublicKeyJwk = MapToKeyValueList(keyAsMap)
 
 	// Apply VerificationMethod Options
 	for _, opt := range options {
@@ -292,7 +292,7 @@ func (vm *VerificationMethod) IsBlockchainAccount() bool {
 	validKey = vm.Type == KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
 	wkp := NewWalletPrefix(vm.BlockchainAccountId)
 	validPrefix = wkp != ChainWalletPrefixNone
-	_, containsMetadata = vm.Metadata["blockchain"]
+	containsMetadata = vm.HasMetadataValue("blockchain")
 	return validKey && validPrefix && containsMetadata
 }
 
@@ -310,4 +310,28 @@ func (vm *VerificationMethod) PublicKey() ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("unsupported key type")
 	}
+}
+
+func (vm *VerificationMethod) SetMetadata(data map[string]string) {
+	vm.Metadata = MapToKeyValueList(data)
+}
+
+// GetMetadata returns the metadata value for the given key
+func (vm *VerificationMethod) GetMetadataValue(key string) string {
+	for _, kv := range vm.Metadata {
+		if kv.Key == key {
+			return kv.Value
+		}
+	}
+	return ""
+}
+
+// HasMetadata returns true if the VerificationMethod has the given metadata key
+func (vm *VerificationMethod) HasMetadataValue(key string) bool {
+	for _, kv := range vm.Metadata {
+		if kv.Key == key {
+			return true
+		}
+	}
+	return false
 }
