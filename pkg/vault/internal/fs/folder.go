@@ -72,6 +72,36 @@ func (f Folder) Exists(fileName string) bool {
 	return !os.IsNotExist(err)
 }
 
+// ListFiles returns a list of files in a folder.
+func (f Folder) ListFiles() ([]string, error) {
+	var files []string
+	err := filepath.Walk(f.Path(), func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			files = append(files, path)
+		}
+		return nil
+	})
+	return files, err
+}
+
+// ListFolders returns a list of folders in a folder.
+func (f Folder) ListFolders() ([]Folder, error) {
+	var folders []Folder
+	err := filepath.Walk(f.Path(), func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			folders = append(folders, Folder(path))
+		}
+		return nil
+	})
+	return folders, err
+}
+
 // MkdirAll creates a directory and all its parents.
 func (f Folder) MkdirAll() error {
 	return os.MkdirAll(f.Path(), 0755)
@@ -121,6 +151,11 @@ func (f Folder) GenPath(path string, opts ...FilePathOption) (string, error) {
 // JoinPath joins a folder and a file name.
 func (f Folder) JoinPath(ps ...string) string {
 	return filepath.Join(f.Path(), filepath.Join(ps...))
+}
+
+// Name returns the name of the folder.
+func (f Folder) Name() string {
+	return filepath.Base(f.Path())
 }
 
 // ReadFile reads a file.

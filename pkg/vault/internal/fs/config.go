@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 )
 
-// `Config` is a struct that contains the local path to the vault, the IPFS node to use, the IPFS path
+// `VaultConfig` is a struct that contains the local path to the vault, the IPFS node to use, the IPFS path
 // to the vault, the IPFS key to use, the IPFS entry to use, the root node of the vault, the address of
 // the vault, and the authentication shares.
 // @property {string} localPath - The local path to the vault
@@ -23,7 +23,7 @@ import (
 // in the vault.
 // @property {string} address - The address of the vault. This is the address that the vault will be
 // @property {[]*common.WalletShareConfig} authShares - The authentication shares.
-type Config struct {
+type VaultConfig struct {
 	cctx client.Context
 	// The Local Directory
 	localRootDir Folder
@@ -41,10 +41,10 @@ type Config struct {
 }
 
 // Option is a function that configures a `Config` object.
-type Option func(*Config) error
+type Option func(*VaultConfig) error
 
 // Apply applies the given options to the `Config` object.
-func (c *Config) Apply(opts ...Option) error {
+func (c *VaultConfig) Apply(opts ...Option) error {
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
 			return err
@@ -62,13 +62,13 @@ func (c *Config) Apply(opts ...Option) error {
 //
 
 // defaultConfig returns a `Config` object with default values.
-func defaultConfig(addr string) (*Config, error) {
+func defaultConfig(addr string) (*VaultConfig, error) {
 	// Create a temporary directory to store the file
 	outputBasePath, err := os.MkdirTemp("", addr)
 	if err != nil {
 		return nil, err
 	}
-	c := &Config{
+	c := &VaultConfig{
 		address:      addr,
 		localRootDir: Folder(filepath.Join(outputBasePath, addr)),
 	}
@@ -80,7 +80,7 @@ func defaultConfig(addr string) (*Config, error) {
 }
 
 // It takes a path to a file or directory, and returns a UnixFS node
-func setupLocalDirs(c *Config) error {
+func setupLocalDirs(c *VaultConfig) error {
 	// Configure default paths
 	var err error
 	c.authDir, err = c.localRootDir.CreateFolder("auth")
@@ -100,7 +100,7 @@ func setupLocalDirs(c *Config) error {
 
 // WithEncryptionKeyPath sets the encryption private key for the node from a file
 func WithClientContext(cctx client.Context, generate bool) Option {
-	return func(c *Config) error {
+	return func(c *VaultConfig) error {
 		c.cctx = cctx
 		if hasKeys(cctx) {
 			c.encryptionPrivKeyPath = kEncPrivKeyPath(cctx)

@@ -37,7 +37,7 @@ func Keygen(current party.ID, threshold int, net crypto.Network, addrPrefix stri
 	// conf := <-doneChan
 	shares := make([]crypto.WalletShare, 0)
 	for _, conf := range configs {
-		shares = append(shares, NewWalletShare(addrPrefix, conf))
+		shares = append(shares, NewWalletShare(addrPrefix, conf, -1))
 	}
 	return shares, nil
 }

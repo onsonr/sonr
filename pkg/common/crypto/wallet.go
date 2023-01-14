@@ -82,6 +82,9 @@ type WalletShare interface {
 	// DID returns the DID of this wallet.
 	DID() (string, error)
 
+	// Index returns the index of this wallet. If its the master wallet, it returns -1.
+	Index() int
+
 	// Marshal serializes the cmp.Config into a byte slice for local storage
 	Marshal() ([]byte, error)
 

@@ -115,7 +115,7 @@ func (ws OfflineWallet) Refresh(current party.ID) (crypto.Wallet, error) {
 	wg.Wait()
 	shares := make([]crypto.WalletShare, 0)
 	for _, conf := range configs {
-		shares = append(shares, mpc.NewWalletShare("snr", conf))
+		shares = append(shares, mpc.NewWalletShare("snr", conf, -1))
 	}
 	return OfflineWallet(shares), nil
 }

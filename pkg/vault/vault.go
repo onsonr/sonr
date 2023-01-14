@@ -9,6 +9,7 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/sonr-hq/sonr/pkg/vault/bank"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/fs"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
 
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
@@ -82,7 +83,20 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	didDoc.WebAuthnCredentials()
+	fs, err := fs.New(wallet.Address(), fs.WithClientContext(v.cctx, true))
+	if err != nil {
+		return nil, err
+	}
+	err = fs.StoreOfflineWallet(wallet)
+	if err != nil {
+		return nil, err
+	}
+	service, err := fs.Export(v.node)
+	if err != nil {
+		return nil, err
+	}
+	didDoc.AddService(service)
+	didDoc.AddCapabilityDelegation(v.node.GetCapabilityDelegation())
 	return &v1.RegisterResponse{
 		Success:     true,
 		DidDocument: didDoc,
@@ -94,7 +108,6 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 // Refresh refreshes the keypair and returns the public key.
 func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1.RefreshResponse, error) {
 	return nil, errors.New("Method is unimplemented")
-
 }
 
 // Sign signs the data with the private key and returns the signature.

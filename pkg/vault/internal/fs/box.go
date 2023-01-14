@@ -3,6 +3,7 @@ package fs
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/shengdoushi/base58"
 	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/sonr-hq/sonr/x/identity/types"
@@ -23,41 +24,31 @@ type boxer struct {
 }
 
 // NewBox creates a new box
-func newBoxer(pub, priv, peerPubKey []byte) (*boxer, error) {
-	var pubKey [32]byte
-	var privKey [32]byte
-	copy(pubKey[:], pub[:32])
-	copy(privKey[:], priv[:32])
+func (c *VaultConfig) newBoxer() (*boxer, error) {
+	_, peerPubKey, err := bech32.DecodeAndConvert(c.address)
+	if err != nil {
+		return nil, err
+	}
+	privKey, pubKey, err := loadBoxKeys(c.cctx)
+	if err != nil {
+		return nil, err
+	}
 	return &boxer{
 		peerPubKey:  peerPubKey,
-		nodePubKey:  &pubKey,
-		nodePrivKey: &privKey,
+		nodePubKey:  pubKey,
+		nodePrivKey: privKey,
 	}, nil
 }
 
 // Write encrypts a message using the box algorithm
-func (b *boxer) Seal(msg []byte) (string, error) {
+func (b *boxer) Seal(msg []byte) ([]byte, error) {
 	// This encrypts msg and appends the result to the nonce.
 	encrypted := box.Seal(nil, msg, b.Nonce(), b.nodePubKey, b.nodePrivKey)
-	cid, err := b.node.Add(encrypted)
-	if err != nil {
-		return "", err
-	}
-	return cid, nil
+	return encrypted, nil
 }
 
 // Read decrypts a message using the box algorithm
-func (b *boxer) Open(cid string) ([]byte, error) {
-	// Get the encrypted message from IPFS
-	msg, err := b.node.Get(cid)
-	if err != nil {
-		return nil, err
-	}
-	// The recipient can decrypt the message using their private key and the
-	// sender's public key. When you decrypt, you must use the same nonce you
-	// used to encrypt the message. One way to achieve this is to store the
-	// nonce alongside the encrypted message. Above, we stored the nonce in the
-	// first 24 bytes of the encrypted text.
+func (b *boxer) Open(msg []byte) ([]byte, error) {
 	decrypted, ok := box.Open(nil, msg, b.Nonce(), b.nodePubKey, b.nodePrivKey)
 	if !ok {
 		return nil, fmt.Errorf("decryption failed")

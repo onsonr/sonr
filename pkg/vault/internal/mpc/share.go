@@ -21,7 +21,7 @@ func EmptyWalletShare() crypto.WalletShare {
 }
 
 // It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
-func NewWalletShare(pfix string, c interface{}) crypto.WalletShare {
+func NewWalletShare(pfix string, c interface{}, index int) crypto.WalletShare {
 	conf := c.(*cmp.Config)
 	confBz, err := conf.MarshalBinary()
 	if err != nil {
@@ -38,6 +38,7 @@ func NewWalletShare(pfix string, c interface{}) crypto.WalletShare {
 		CmpConfig:    confBz,
 		Timestamp:    time.Now().Unix(),
 		Bech32Prefix: pfix,
+		ChildIndex:   int32(index),
 	}
 	return &cmpConfigWalletShare{Config: conf, walletShareConfig: walletConf}
 }
@@ -90,7 +91,7 @@ func (w *cmpConfigWalletShare) Bip32Derive(i uint32, prefix string) (crypto.Wall
 	if err != nil {
 		return nil, err
 	}
-	newConf := w.walletShareConfig.DeriveConfig(prefix)
+	newConf := w.walletShareConfig.DeriveConfig(prefix, int(i))
 	return &cmpConfigWalletShare{Config: newShare, walletShareConfig: newConf}, nil
 }
 
@@ -107,6 +108,11 @@ func (w *cmpConfigWalletShare) DID() (string, error) {
 		return "", fmt.Errorf("invalid address")
 	}
 	return fmt.Sprintf("did:%s:%s", prefix, addrPtr[1]), nil
+}
+
+// Index returns the index of this wallet in the group.
+func (w *cmpConfigWalletShare) Index() int {
+	return int(w.walletShareConfig.ChildIndex)
 }
 
 // Marshal serializes the cmp.Config into a byte slice for local storage

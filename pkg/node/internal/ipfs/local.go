@@ -20,6 +20,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
 // `localIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
@@ -209,6 +210,7 @@ func (n *localIpfs) GetPath(cidStr string) (map[string]files.Node, error) {
 		fileMap[path] = node
 		return nil
 	})
+	fileMap["/"] = fileNode
 	return fileMap, nil
 }
 
@@ -234,4 +236,9 @@ func (n *localIpfs) Peer() *cv1.PeerInfo {
 // Close closes the node
 func (n *localIpfs) Close() error {
 	return n.node.Close()
+}
+
+// GetCapabilityDelegation returns a capability delegation for the given peer
+func (l *localIpfs) GetCapabilityDelegation() *types.VerificationMethod {
+	return l.config.GetCapabilityDelegation()
 }
