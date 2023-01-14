@@ -392,6 +392,7 @@ require (
 )
 
 replace (
+	client => ./client
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/taurusgroup/multi-party-sig => github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21

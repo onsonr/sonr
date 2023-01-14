@@ -35,10 +35,15 @@ type VaultService struct {
 	rpName string
 	rpIcon string
 	cctx   client.Context
+	// sonrClient *sonrclient.Client
 }
 
 // It creates a new VaultService and registers it with the gRPC server
 func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode, cache *gocache.Cache) (*VaultService, error) {
+	// client, err := sonrclient.New(context.Background())
+	// if err != nil {
+	// 	return nil, err
+	// }
 	vaultBank := bank.CreateBank(hway, cache)
 	srv := &VaultService{
 		cctx:   ctx,
@@ -46,6 +51,7 @@ func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode,
 		node:   hway,
 		rpName: "Sonr",
 		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
+		// sonrClient: client,
 	}
 	err := v1.RegisterVaultHandlerServer(context.Background(), mux, srv)
 	if err != nil {
@@ -97,6 +103,13 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	}
 	didDoc.AddService(service)
 	didDoc.AddCapabilityDelegation(v.node.GetCapabilityDelegation())
+	// err = v.sonrClient.CreateIdentity(ctx, didDoc)
+	// if err != nil {
+	// 	return &v1.RegisterResponse{
+	// 		Success:     false,
+	// 		DidDocument: didDoc,
+	// 	}, nil
+	// }
 	return &v1.RegisterResponse{
 		Success:     true,
 		DidDocument: didDoc,
