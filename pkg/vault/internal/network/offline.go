@@ -3,7 +3,7 @@ package network
 import (
 	"sync"
 
-	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )
@@ -25,7 +25,7 @@ type offlineNetwork struct {
 
 // It creates a new `OfflineNetwork` object, and initializes it with a list of parties, and a map of
 // channels
-func NewOfflineNetwork(parties party.IDSlice) common.Network {
+func NewOfflineNetwork(parties party.IDSlice) crypto.Network {
 	closed := make(chan *protocol.Message)
 	close(closed)
 	c := &offlineNetwork{

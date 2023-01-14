@@ -2,8 +2,9 @@ package config
 
 import (
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/libp2p/go-libp2p/core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
@@ -65,13 +66,13 @@ type Config struct {
 	PeerType common.PeerType
 
 	// Wallet is the wallet for the node
-	Wallet common.Wallet
+	Wallet crypto.Wallet
 
 	// RemoteIPFSURL is the remote IPFS URL
 	RemoteIPFSURL string
 
 	// EncryptionKey is the encryption key for the node
-	EncryptionKey crypto.PrivKey
+	EncryptionKey p2pcrypto.PrivKey
 
 	// EncryptionPrivKeyPath is the encryption key for the node
 	EncryptionPrivKeyPath string
@@ -163,7 +164,7 @@ func WithPeerType(peerType common.PeerType) Option {
 }
 
 // WithWalletShare sets the wallet share for the node
-func WithWalletShare(walletShare common.Wallet) Option {
+func WithWalletShare(walletShare crypto.Wallet) Option {
 	return func(c *Config) error {
 		c.Wallet = walletShare
 		return nil

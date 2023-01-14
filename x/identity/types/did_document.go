@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 )
 
 // BlankDocument creates a blank document to begin the WebAuthnProcess
@@ -47,7 +47,7 @@ func NewBaseDocument(akaStr string, sessionId string) *DidDocument {
 }
 
 // SetRootWallet adds the common.Wallet and replaces the current id with the updated Wallets one
-func (d *DidDocument) SetRootWallet(wallet common.Wallet) error {
+func (d *DidDocument) SetRootWallet(wallet crypto.WalletShare) error {
 	addr := wallet.Address()
 	d.ID = fmt.Sprintf("did:snr:%s", strings.TrimPrefix(addr, "snr"))
 	return d.AddBlockchainAccount(wallet)

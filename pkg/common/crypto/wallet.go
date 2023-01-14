@@ -1,9 +1,10 @@
 // It converts a `WebauthnCredential` to a `webauthn.Credential`
-package common
+package crypto
 
 import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
@@ -37,7 +38,7 @@ type Wallet interface {
 	Address() string
 
 	// Bip32Derive creates a new WalletShare that is derived from the given path.
-	Bip32Derive(i uint32) (WalletShare, error)
+	Bip32Derive(i uint32, prefix string) (WalletShare, error)
 
 	// EncryptKey returns the secret key from Storage
 	EncryptKey() ([]byte, error)
@@ -73,7 +74,7 @@ type WalletShare interface {
 	Address() string
 
 	// Bip32Derive creates a new WalletShare that is derived from the given path.
-	Bip32Derive(i uint32) (WalletShare, error)
+	Bip32Derive(i uint32, prefix string) (WalletShare, error)
 
 	// CMPConfig returns the *cmp.Config of this wallet if it exists.
 	CMPConfig() *cmp.Config
@@ -94,7 +95,7 @@ type WalletShare interface {
 	PartyIDs() []party.ID
 
 	// Share returns the share of this wallet.
-	Share() *WalletShareConfig
+	Share() *common.WalletShareConfig
 
 	// Unmarshal deserializes the given byte slice into a cmp.Config
 	Unmarshal([]byte) error

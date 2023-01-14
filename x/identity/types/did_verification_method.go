@@ -8,10 +8,11 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
 	common "github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/common/jwx"
+	"github.com/sonr-hq/sonr/pkg/common/crypto/jwx"
 )
 
 var (
@@ -39,10 +40,18 @@ func WithController(v string) VerificationMethodOption {
 	}
 }
 
-// WithFragmentSuffix sets the fragment of the ID on a verificationMethod
-func WithFragmentSuffix(v string) VerificationMethodOption {
+// WithIDFragmentSuffix sets the fragment of the ID on a verificationMethod
+func WithIDFragmentSuffix(v string) VerificationMethodOption {
 	return func(vm *VerificationMethod) error {
 		vm.ID = fmt.Sprintf("%s#%s", vm.ID, v)
+		return nil
+	}
+}
+
+// WithBlockchainAccount sets the blockchain account of a verificationMethod
+func WithBlockchainAccount(v string) VerificationMethodOption {
+	return func(vm *VerificationMethod) error {
+		vm.BlockchainAccountId = v
 		return nil
 	}
 }
@@ -149,10 +158,9 @@ func NewSecp256k1VM(key *secp256k1.PubKey, options ...VerificationMethodOption) 
 	}
 	// Configure base Verification MEthod
 	vm := &VerificationMethod{
-		ID:                  did,
-		Type:                KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019,
-		PublicKeyMultibase:  base58.Encode(bz, base58.BitcoinAlphabet),
-		BlockchainAccountId: key.Address().String(),
+		ID:                 did,
+		Type:               KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019,
+		PublicKeyMultibase: base58.Encode(bz, base58.BitcoinAlphabet),
 	}
 
 	// Apply VerificationMethod Options
@@ -272,4 +280,20 @@ func (vm *VerificationMethod) CredentialDescriptor() (protocol.CredentialDescrip
 	}
 	stdCred := cred.ToStdCredential()
 	return stdCred.Descriptor(), nil
+}
+
+// PublicKey returns the public key of the VerificationMethod
+func (vm *VerificationMethod) PublicKey() ([]byte, error) {
+	switch vm.Type {
+	case KeyType_KeyType_ED25519_VERIFICATION_KEY_2018:
+		return base58.Decode(vm.PublicKeyMultibase, base58.BitcoinAlphabet)
+	case KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019:
+		_, bz, err := bech32.DecodeAndConvert(vm.BlockchainAccountId)
+		if err != nil {
+			return nil, err
+		}
+		return bz, nil
+	default:
+		return nil, fmt.Errorf("unsupported key type")
+	}
 }

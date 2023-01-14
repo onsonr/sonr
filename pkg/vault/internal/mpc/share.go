@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -15,12 +16,12 @@ import (
 )
 
 // It returns an empty wallet share
-func EmptyWalletShare() common.WalletShare {
+func EmptyWalletShare() crypto.WalletShare {
 	return &cmpConfigWalletShare{}
 }
 
 // It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
-func NewWalletShare(pfix string, c interface{}) common.WalletShare {
+func NewWalletShare(pfix string, c interface{}) crypto.WalletShare {
 	conf := c.(*cmp.Config)
 	confBz, err := conf.MarshalBinary()
 	if err != nil {
@@ -42,7 +43,7 @@ func NewWalletShare(pfix string, c interface{}) common.WalletShare {
 }
 
 // It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
-func LoadWalletShare(cnfg *common.WalletShareConfig) (common.WalletShare, error) {
+func LoadWalletShare(cnfg *common.WalletShareConfig) (crypto.WalletShare, error) {
 	conf := &cmp.Config{}
 	err := conf.UnmarshalBinary(cnfg.CmpConfig)
 	if err != nil {
@@ -84,13 +85,13 @@ func (w *cmpConfigWalletShare) Address() string {
 }
 
 // Deriving a new wallet share from the given wallet share.
-func (w *cmpConfigWalletShare) Bip32Derive(i uint32) (common.WalletShare, error) {
-	newCfg, err := w.DeriveBIP32(i)
+func (w *cmpConfigWalletShare) Bip32Derive(i uint32, prefix string) (crypto.WalletShare, error) {
+	newShare, err := w.DeriveBIP32(i)
 	if err != nil {
 		return nil, err
 	}
-
-	return &cmpConfigWalletShare{Config: newCfg, walletShareConfig: w.walletShareConfig}, nil
+	newConf := w.walletShareConfig.DeriveConfig(prefix)
+	return &cmpConfigWalletShare{Config: newShare, walletShareConfig: newConf}, nil
 }
 
 // MPCConfig returns the *cmp.Config of this wallet.

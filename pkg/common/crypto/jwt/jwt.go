@@ -23,7 +23,6 @@ func DefaultNew() *JWT {
 	}
 }
 
-
 // Creating a new token with the claims of the document.
 func (j *JWT) Generate(doc *did.DidDocument) (string, error) {
 	if doc == nil {
@@ -51,7 +50,6 @@ func (j *JWT) Generate(doc *did.DidDocument) (string, error) {
 
 	return tokenString, err
 }
-
 
 // Parses a jwt token if possible and returns as Token type.
 func (j *JWT) Parse(token string) (*jwt.Token, error) {

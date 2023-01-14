@@ -78,7 +78,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	err = didDoc.SetRootWallet(wallet)
+	err = didDoc.SetRootWallet(wallet.List()[0])
 	if err != nil {
 		return nil, err
 	}

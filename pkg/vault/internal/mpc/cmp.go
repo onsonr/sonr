@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	peer "github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -15,7 +15,7 @@ import (
 )
 
 // Keygen Generates a new ECDSA private key shared among all the given participants.
-func Keygen(current party.ID, threshold int, net common.Network, addrPrefix string) ([]common.WalletShare, error) {
+func Keygen(current party.ID, threshold int, net crypto.Network, addrPrefix string) ([]crypto.WalletShare, error) {
 	var mtx sync.Mutex
 	configs := make(map[party.ID]*cmp.Config)
 	var wg sync.WaitGroup
@@ -35,7 +35,7 @@ func Keygen(current party.ID, threshold int, net common.Network, addrPrefix stri
 	}
 	wg.Wait()
 	// conf := <-doneChan
-	shares := make([]common.WalletShare, 0)
+	shares := make([]crypto.WalletShare, 0)
 	for _, conf := range configs {
 		shares = append(shares, NewWalletShare(addrPrefix, conf))
 	}
@@ -47,7 +47,7 @@ func Keygen(current party.ID, threshold int, net common.Network, addrPrefix stri
 //
 
 // It creates a new handler for the keygen protocol, runs the handler loop, and returns the result
-func CmpKeygen(id party.ID, ids party.IDSlice, n common.Network, threshold int, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
+func CmpKeygen(id party.ID, ids party.IDSlice, n crypto.Network, threshold int, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
 	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.Keygen(curve.Secp256k1{}, id, ids, threshold, pl), nil)
 	if err != nil {
@@ -64,7 +64,7 @@ func CmpKeygen(id party.ID, ids party.IDSlice, n common.Network, threshold int, 
 }
 
 // It creates a new handler for the refresh protocol, runs the handler loop, and returns the result
-func CmpRefresh(c *cmp.Config, n common.Network, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
+func CmpRefresh(c *cmp.Config, n crypto.Network, wg *sync.WaitGroup, pl *pool.Pool) (*cmp.Config, error) {
 	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.Refresh(c, pl), nil)
 	if err != nil {
@@ -81,7 +81,7 @@ func CmpRefresh(c *cmp.Config, n common.Network, wg *sync.WaitGroup, pl *pool.Po
 }
 
 // It creates a new `protocol.MultiHandler` for the `cmp.Sign` protocol, and then runs the handler loop
-func CmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n common.Network, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
+func CmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n crypto.Network, wg *sync.WaitGroup, pl *pool.Pool) (*ecdsa.Signature, error) {
 	defer wg.Done()
 	h, err := protocol.NewMultiHandler(cmp.Sign(c, signers, m, pl), nil)
 	if err != nil {
@@ -101,7 +101,7 @@ func CmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n common.Network, w
 }
 
 // handlerLoop is a helper function that loops over all the parties and calls the given handler.
-func handlerLoop(id party.ID, h protocol.Handler, network common.Network) {
+func handlerLoop(id party.ID, h protocol.Handler, network crypto.Network) {
 	for {
 		select {
 

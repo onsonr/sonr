@@ -52,4 +52,7 @@ enum ServiceType {
 
   // EncryptedDataVault is the EncryptedDataVault service type as specified here: https://identity.foundation/edv-spec/
   ServiceType_ENCRYPTED_DATA_VAULT = 2;
+
+  // LinkedDomains is the LinkedDomains service type as specified here: https://identity.foundation/linked-domains/
+  ServiceType_LINKED_DOMAINS = 3;
 }

@@ -2,7 +2,7 @@
 // I.e. Verification Material for Wallets. This is the default Verification Method for DID Documents. (snr, btc, eth, etc.)
 package types
 
-import "github.com/sonr-hq/sonr/pkg/common"
+import "github.com/sonr-hq/sonr/pkg/common/crypto"
 
 // FindAssertionMethod finds a VerificationMethod by its ID
 func (d *DidDocument) FindAssertionMethod(id string) *VerificationMethod {
@@ -16,7 +16,7 @@ func (d *DidDocument) FindAssertionMethodByFragment(fragment string) *Verificati
 
 // AddAssertionMethod adds a VerificationMethod as AssertionMethod
 // If the controller is not set, it will be set to the documents ID
-func (d *DidDocument) AddAssertionMethod(v *VerificationMethod) {
+func (d *DidDocument) AddAssertion(v *VerificationMethod) {
 	if v.Controller == "" {
 		v.Controller = d.ID
 	}
@@ -24,12 +24,12 @@ func (d *DidDocument) AddAssertionMethod(v *VerificationMethod) {
 	d.AssertionMethod.Add(v)
 }
 
-func (d *DidDocument) AddBlockchainAccount(wallet common.Wallet) error {
+func (d *DidDocument) AddBlockchainAccount(wallet crypto.WalletShare) error {
 	pb, err := wallet.PublicKey()
 	if err != nil {
 		return err
 	}
-	vm, err := NewSecp256k1VM(pb)
+	vm, err := NewSecp256k1VM(pb, WithBlockchainAccount(wallet.Address()))
 	if err != nil {
 		return err
 	}

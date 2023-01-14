@@ -7,7 +7,7 @@ import (
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
-	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
@@ -40,7 +40,7 @@ type onlineNetwork struct {
 }
 
 // It creates a new network object, assigns the subscriptions, and returns the network object
-func NewOnlineNetwork(ctx context.Context, nodes ...config.P2PNode) (common.Network, error) {
+func NewOnlineNetwork(ctx context.Context, nodes ...config.P2PNode) (crypto.Network, error) {
 	// Convert the peer IDs to party IDs.
 	parties := make([]party.ID, 0)
 	for _, node := range nodes {
