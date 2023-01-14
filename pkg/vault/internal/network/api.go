@@ -53,6 +53,11 @@ func (ws OfflineWallet) GetConfigMap() map[party.ID]*cmp.Config {
 	return configMap
 }
 
+// List returns a list of all the WalletShares.
+func (ws OfflineWallet) List() []common.WalletShare {
+	return ws
+}
+
 // Network creates a new offline network from a list of wallet shares.
 func (ws OfflineWallet) Network() common.Network {
 	parties := make(party.IDSlice, 0, len(ws))

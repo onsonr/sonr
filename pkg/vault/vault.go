@@ -9,6 +9,7 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/sonr-hq/sonr/pkg/vault/bank"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
 
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
 )
@@ -54,7 +55,11 @@ func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode,
 
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
-	optsJson, eID, err := v.bank.StartRegistration(req.RpId, req.Username)
+	session, err := session.NewEntry(req.RpId, req.Username)
+	if err != nil {
+		return nil, err
+	}
+	optsJson, eID, err := v.bank.StartRegistration(session)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +82,7 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	if err != nil {
 		return nil, err
 	}
+	didDoc.WebAuthnCredentials()
 	return &v1.RegisterResponse{
 		Success:     true,
 		DidDocument: didDoc,

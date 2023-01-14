@@ -48,10 +48,8 @@ type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 // defaultNode creates a new node with default options
 func defaultNode(ctx context.Context, cnfg *snrConfig.Config) *localIpfs {
 	return &localIpfs{
-		ctx:                ctx,
-		config:             cnfg,
-		topicEventHandlers: make(map[string]TopicMessageHandler),
-		
+		ctx:    ctx,
+		config: cnfg,
 	}
 }
 

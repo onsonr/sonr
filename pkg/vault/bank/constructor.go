@@ -15,7 +15,7 @@ import (
 
 // It creates a new wallet with two participants, one of which is the current participant, and returns
 // the wallet
-func (v *VaultBank) buildWallet(prefix string) (common.Wallet, error) {
+func (v *VaultBank) buildWallet(prefix string) (network.OfflineWallet, error) {
 	participants := party.IDSlice{"current", "vault"}
 	net := network.NewOfflineNetwork(participants)
 	wsl, err := mpc.Keygen("current", 1, net, prefix)

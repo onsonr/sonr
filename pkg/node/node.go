@@ -44,7 +44,6 @@ func New(ctx context.Context, opts ...config.Option) (Node, error) {
 			host:   h,
 			config: config,
 		}, nil
-
 	}
 	i, err := ipfs.Initialize(ctx, config)
 	if err != nil {

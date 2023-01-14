@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	ggio "github.com/gogo/protobuf/io"
@@ -91,20 +90,29 @@ func (n *hostImpl) PeerID() peer.ID {
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
-func (hn *hostImpl) Connect(pi interface{}) error {
-	// Check if type is String or AddrInfo
-	switch pi.(type) {
-	case string:
-		pi, err := peer.AddrInfoFromString(pi.(string))
+func (hn *hostImpl) Connect(pi ...string) error {
+	ctx, cancel := context.WithTimeout(hn.ctx, 10*time.Second)
+	defer cancel()
+	for _, p := range pi {
+		pi, err := peer.AddrInfoFromString(p)
 		if err != nil {
 			return err
 		}
-		return hn.host.Connect(hn.ctx, *pi)
-	case peer.AddrInfo:
-		return hn.host.Connect(hn.ctx, pi.(peer.AddrInfo))
-	default:
-		return fmt.Errorf("Connect: Invalid type for peer.AddrInfo")
+		doneChan := make(chan struct{})
+		go func() {
+			err = hn.host.Connect(ctx, *pi)
+			close(doneChan)
+		}()
+		select {
+		case <-doneChan:
+			if err != nil {
+				return err
+			}
+		case <-ctx.Done():
+			return errors.New("timeout")
+		}
 	}
+	return nil
 }
 
 // HandlePeerFound is to be called when new  peer is found

@@ -113,17 +113,7 @@ func getParsedCredentialRequestData(bz string) (*protocol.ParsedCredentialAssert
 	return &par, nil
 }
 
-func (s *SessionEntry) SetRPID(copts *protocol.CredentialCreation) *protocol.CredentialCreation {
-	oldRp := copts.Response.RelyingParty
-	newRp := protocol.RelyingPartyEntity{}
-	newRp.ID = s.ID
-	newRp.CredentialEntity = oldRp.CredentialEntity
-	newCopts := copts
-	newCopts.Response.RelyingParty = newRp
-	return newCopts
-}
-
-func (s *SessionEntry) SetRPIDAssertion(copts *protocol.CredentialAssertion) *protocol.CredentialAssertion {
+func (s *Session) SetRPIDAssertion(copts *protocol.CredentialAssertion) *protocol.CredentialAssertion {
 	copts.Response.RelyingPartyID = s.RPID
 	return copts
 }

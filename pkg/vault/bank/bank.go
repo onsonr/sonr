@@ -7,6 +7,7 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/network"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
@@ -30,11 +31,7 @@ func CreateBank(node config.IPFSNode, cache *gocache.Cache) *VaultBank {
 	}
 }
 
-func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, error) {
-	entry, err := session.NewEntry(rpid, aka)
-	if err != nil {
-		return "", "", err
-	}
+func (v *VaultBank) StartRegistration(entry *session.Session) (string, string, error) {
 	optsJson, err := entry.BeginRegistration()
 	if err != nil {
 		return "", "", err
@@ -43,7 +40,7 @@ func (v *VaultBank) StartRegistration(rpid string, aka string) (string, string, 
 	return optsJson, entry.ID, nil
 }
 
-func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*types.DidDocument, common.Wallet, error) {
+func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*types.DidDocument, network.OfflineWallet, error) {
 	// Get Session
 	entry, err := v.getEntryFromCache(sessionId)
 	if err != nil {

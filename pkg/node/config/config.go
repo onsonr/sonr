@@ -1,6 +1,8 @@
 package config
 
 import (
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
@@ -16,7 +18,7 @@ var (
 		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
 
 		// IPFS Cluster Pinning nodes
-		"/ip4/138.201.67.219/tcp/4001/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
+		// "/ip4/138.201.67.219/tcp/4001/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
 		// "/ip4/138.201.67.219/udp/4001/quic/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
 		// "/ip4/138.201.67.220/tcp/4001/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
 		// "/ip4/138.201.67.220/udp/4001/quic/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
@@ -42,6 +44,8 @@ var (
 
 // Config is the configuration for the node
 type Config struct {
+	CCtx client.Context
+
 	// BootstrapMultiaddrs is the list of bootstrap nodes
 	BootstrapMultiaddrs []string
 
@@ -66,8 +70,14 @@ type Config struct {
 	// RemoteIPFSURL is the remote IPFS URL
 	RemoteIPFSURL string
 
-	// IsRemote is true if the node is remote
-	IsRemote bool
+	// EncryptionKey is the encryption key for the node
+	EncryptionKey crypto.PrivKey
+
+	// EncryptionPrivKeyPath is the encryption key for the node
+	EncryptionPrivKeyPath string
+
+	// EncryptionPubKeyPath is the encryption key for the node
+	EncryptionPubKeyPath string
 }
 
 // DefaultConfig returns the default configuration
@@ -78,7 +88,6 @@ func DefaultConfig() *Config {
 		RendezvousString:    defaultRendezvousString,
 		RemoteIPFSURL:       defaultAPIAddr,
 		PeerType:            common.PeerType_HIGHWAY,
-		IsRemote:            false,
 		SelfPartyID:         party.ID("current"),
 	}
 }
@@ -93,9 +102,14 @@ func (c *Config) Apply(opts ...Option) error {
 	return nil
 }
 
+// LoadEncKeys loads the encryption keys
+func (c *Config) LoadEncKeys() (*[32]byte, *[32]byte, error) {
+	return loadBoxKeys(c.CCtx)
+}
+
 // IsLocal returns true if the node is local
 func (c *Config) IsLocal() bool {
-	return !c.IsRemote && c.RemoteIPFSURL == ""
+	return !c.IsMotor()
 }
 
 // IsMotor returns true if the node is a motor
@@ -110,14 +124,6 @@ type Option func(*Config) error
 func AddBootstrappers(bootstrappers []string) Option {
 	return func(c *Config) error {
 		c.BootstrapMultiaddrs = append(c.BootstrapMultiaddrs, bootstrappers...)
-		return nil
-	}
-}
-
-// EnableRemote enables remote mode
-func EnableRemote() Option {
-	return func(c *Config) error {
-		c.IsRemote = true
 		return nil
 	}
 }
@@ -168,6 +174,26 @@ func WithWalletShare(walletShare common.Wallet) Option {
 func WithRemoteIPFSURL(remoteIPFSURL string) Option {
 	return func(c *Config) error {
 		c.RemoteIPFSURL = remoteIPFSURL
+		return nil
+	}
+}
+
+// WithEncryptionKeyPath sets the encryption private key for the node from a file
+func WithClientContext(cctx client.Context, generate bool) Option {
+	return func(c *Config) error {
+		c.CCtx = cctx
+		if hasKeys(cctx) {
+			c.EncryptionPrivKeyPath = kEncPrivKeyPath(cctx)
+			c.EncryptionPubKeyPath = kEncPubKeyPath(cctx)
+		}
+		if generate {
+			err := generateBoxKeys(cctx)
+			if err != nil {
+				return err
+			}
+			c.EncryptionPrivKeyPath = kEncPrivKeyPath(cctx)
+			c.EncryptionPubKeyPath = kEncPubKeyPath(cctx)
+		}
 		return nil
 	}
 }

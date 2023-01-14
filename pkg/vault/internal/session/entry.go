@@ -12,7 +12,7 @@ import (
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
-// `SessionEntry` is a struct that contains a `string` (`ID`), a `string` (`RPID`), a
+// `Session` is a struct that contains a `string` (`ID`), a `string` (`RPID`), a
 // `common.WebauthnCredential` (`WebauthnCredential`), a `types.DidDocument` (`DidDoc`), a
 // `webauthn.SessionData` (`Data`), and a `string` (`AlsoKnownAs`).
 // @property {string} ID - The session ID.
@@ -21,7 +21,7 @@ import (
 // @property DidDoc - The DID Document of the user.
 // @property Data - This is the data that is returned from the webauthn.Create() function.
 // @property {string} AlsoKnownAs - The user's username.
-type SessionEntry struct {
+type Session struct {
 	ID          string
 	RPID        string
 	DidDoc      *types.DidDocument
@@ -31,7 +31,7 @@ type SessionEntry struct {
 }
 
 // NewEntry creates a new session with challenge to be used to register a new account
-func NewEntry(rpId string, aka string) (*SessionEntry, error) {
+func NewEntry(rpId string, aka string) (*Session, error) {
 	sessionID := uuid.New().String()[:8]
 
 	// Create the Webauthn Instance
@@ -49,7 +49,7 @@ func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 	}
 
 	// Create Entry
-	return &SessionEntry{
+	return &Session{
 		ID:          sessionID,
 		RPID:        rpId,
 		DidDoc:      types.NewBaseDocument(aka, sessionID),
@@ -59,7 +59,7 @@ func NewEntry(rpId string, aka string) (*SessionEntry, error) {
 }
 
 // LoadEntry starts a new webauthn session with a given VerificationMethod
-func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error) {
+func LoadEntry(rpId string, vm *types.VerificationMethod) (*Session, error) {
 	sessionID := uuid.New().String()[:8]
 	// Create the Webauthn Instance
 	wauth, err := webauthn.New(&webauthn.Config{
@@ -75,7 +75,7 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error)
 		return nil, err
 	}
 
-	return &SessionEntry{
+	return &Session{
 		ID:       sessionID,
 		RPID:     rpId,
 		Webauthn: wauth,
@@ -83,14 +83,12 @@ func LoadEntry(rpId string, vm *types.VerificationMethod) (*SessionEntry, error)
 }
 
 // BeginRegistration starts the registration process for the underlying Webauthn instance
-func (s *SessionEntry) BeginRegistration() (string, error) {
+func (s *Session) BeginRegistration() (string, error) {
 	opts, sessionData, err := s.Webauthn.BeginRegistration(s.DidDoc, webauthn.WithAuthenticatorSelection(defaultAuthSelect))
 	if err != nil {
 		return "", err
 	}
 	s.Data = *sessionData
-	opts = s.SetRPID(opts)
-
 	bz, err := json.Marshal(opts)
 	if err != nil {
 		return "", err
@@ -99,7 +97,7 @@ func (s *SessionEntry) BeginRegistration() (string, error) {
 }
 
 // FinishRegistration creates a credential which can be stored to use with User Authentication
-func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*types.DidDocument, error) {
+func (s *Session) FinishRegistration(credentialCreationData string) (*types.DidDocument, error) {
 	// Parse Client Credential Data
 	pcc, err := getParsedCredentialCreationData(credentialCreationData)
 	if err != nil {
@@ -122,7 +120,7 @@ func (s *SessionEntry) FinishRegistration(credentialCreationData string) (*types
 }
 
 // BeginLogin creates a new AssertionChallenge for client to verify
-func (s *SessionEntry) BeginLogin() (string, error) {
+func (s *Session) BeginLogin() (string, error) {
 	allowList := make([]protocol.CredentialDescriptor, 0)
 	creds := s.DidDoc.WebAuthnCredentials()
 	for _, cred := range creds {
@@ -141,7 +139,7 @@ func (s *SessionEntry) BeginLogin() (string, error) {
 }
 
 // FinishLogin authenticates from the signature provided to the client
-func (s *SessionEntry) FinishLogin(credentialRequestData string) (bool, error) {
+func (s *Session) FinishLogin(credentialRequestData string) (bool, error) {
 
 	pca, err := getParsedCredentialRequestData(credentialRequestData)
 	if err != nil {
