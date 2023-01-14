@@ -102,14 +102,23 @@ func (wvm *DidDocument) WebAuthnIcon() string {
 }
 
 func (wvm *DidDocument) WebAuthnCredentials() []webauthn.Credential {
-	creds := []webauthn.Credential{}
-	for _, vm := range wvm.VerificationMethod.Data {
+	ccreds := wvm.GetCommonWebauthCredentials()
+	wac := []webauthn.Credential{}
+	for _, wc := range ccreds {
+		wac = append(wac, *wc.ToStdCredential())
+	}
+	return wac
+}
+
+func (d *DidDocument) GetCommonWebauthCredentials() []*common.WebauthnCredential {
+	creds := []*common.WebauthnCredential{}
+	for _, vm := range d.VerificationMethod.Data {
 		if vm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
 			vmcr, err := vm.WebAuthnCredential()
 			if err != nil {
 				return nil
 			}
-			creds = append(creds, *vmcr.ToStdCredential())
+			creds = append(creds, vmcr)
 		}
 	}
 	return creds

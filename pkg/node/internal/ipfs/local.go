@@ -2,7 +2,6 @@ package ipfs
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -16,6 +15,7 @@ import (
 	"github.com/ipfs/interface-go-ipfs-core/options"
 	icorepath "github.com/ipfs/interface-go-ipfs-core/path"
 	"github.com/ipfs/kubo/core"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	cv1 "github.com/sonr-hq/sonr/pkg/common"
@@ -43,9 +43,8 @@ type localIpfs struct {
 
 	config *config.Config
 
-	ctx context.Context
-
-	topicEventHandlers map[string]TopicMessageHandler
+	ctx    context.Context
+	encKey crypto.PrivKey
 }
 
 func (n *localIpfs) CoreAPI() icore.CoreAPI {
@@ -122,7 +121,27 @@ func (n *localIpfs) Add(file []byte) (string, error) {
 
 // AddEncrypted utilizes the NACL Secret box to encrypt data on behalf of a user
 func (n *localIpfs) AddEncrypted(file []byte, pubKey []byte) (string, error) {
-	return "", errors.New("Unimplemented method")
+	boxer, err := n.newBoxer(pubKey)
+	if err != nil {
+		return "", err
+	}
+	return boxer.Seal(file)
+}
+
+// AddPath adds all files/folders in a given path to the network
+func (n *localIpfs) AddPath(path string) (string, error) {
+	// Get File Node
+	fileNode, err := getUnixfsNode(path)
+	if err != nil {
+		return "", err
+	}
+
+	// Add the file to the network
+	cid, err := n.api.Unixfs().Add(n.ctx, fileNode, options.Unixfs.Pin(true))
+	if err != nil {
+		return "", err
+	}
+	return cid.String(), nil
 }
 
 // Get returns a file from the network given its CID
@@ -165,7 +184,32 @@ func (n *localIpfs) Get(cidStr string) ([]byte, error) {
 
 // GetDecrypted decrypts a file from a cid hash using the pubKey
 func (n *localIpfs) GetDecrypted(cidStr string, pubKey []byte) ([]byte, error) {
-	return nil, errors.New("Unimplemented method")
+	boxer, err := n.newBoxer(pubKey)
+	if err != nil {
+		return nil, err
+	}
+	return boxer.Open(cidStr)
+}
+
+// GetPath returns a file from the network given its CID
+func (n *localIpfs) GetPath(cidStr string) (map[string]files.Node, error) {
+	cid, err := cid.Parse(cidStr)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the file from the network
+	fileNode, err := n.api.Unixfs().Get(n.ctx, icorepath.IpfsPath(cid))
+	if err != nil {
+		return nil, err
+	}
+	fileMap := make(map[string]files.Node)
+	files.Walk(fileNode, func(path string, node files.Node) error {
+		fmt.Printf("%s\n", path)
+		fileMap[path] = node
+		return nil
+	})
+	return fileMap, nil
 }
 
 // PeerID returns the node's PeerID
@@ -185,4 +229,9 @@ func (n *localIpfs) Peer() *cv1.PeerInfo {
 		Multiaddr: n.MultiAddrs(),
 		Type:      n.config.PeerType,
 	}
+}
+
+// Close closes the node
+func (n *localIpfs) Close() error {
+	return n.node.Close()
 }
