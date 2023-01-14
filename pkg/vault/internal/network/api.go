@@ -194,7 +194,7 @@ func (ws OfflineWallet) SendTx(current party.ID, msgs ...sdk.Msg) (*txtypes.Broa
 func BroadcastTx(ctx context.Context, txBytes []byte) (*txtypes.BroadcastTxResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		"0.0.0.0:9090",      // Or your gRPC server address.
+		"127.0.0.1:9090",    // Or your gRPC server address.
 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	defer grpcConn.Close()
