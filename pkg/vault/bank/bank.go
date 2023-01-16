@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	gocache "github.com/patrickmn/go-cache"
-	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/network"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
@@ -18,9 +17,6 @@ type VaultBank struct {
 
 	// The wallet that the vault is using
 	cache *gocache.Cache
-
-	// Completed wallets from channel
-	done chan crypto.Wallet
 }
 
 // Creates a new Vault

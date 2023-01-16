@@ -10,28 +10,24 @@ import (
 )
 
 type DIDDocumentController interface {
-	// Address returns the address of the DID document.
-	Address() string
+	crypto.Wallet
 
 	// Authenticate authenticates a WebAuthnCredential request.
 	Authenticate(credentialRequestJson string) error
-
-	// Verify verifies the given data with the DID document.
-	Verify(data, signature []byte) error
 }
 
 type didDocumentController struct {
 	didDocument *types.DidDocument
 	vault       fs.VaultFS
-	wallet      network.OfflineWallet
-	accounts    map[string]crypto.Wallet
+	network.OfflineWallet
+	accounts map[string]crypto.Wallet
 }
 
 func NewDIDDocumentController(didDocument *types.DidDocument, vault fs.VaultFS, wallet network.OfflineWallet) didDocumentController {
 	didController := didDocumentController{
-		didDocument: didDocument,
-		vault:       vault,
-		wallet:      wallet,
+		didDocument:   didDocument,
+		vault:         vault,
+		OfflineWallet: wallet,
 	}
 
 	return didController
@@ -43,5 +39,8 @@ func (c *didDocumentController) initAccounts() error {
 		//	wallet, err := c.wallet.GetWallet(account.Prefix, account.Index)
 		fmt.Println(account.Address())
 	}
+	return nil
+}
+func (c *didDocumentController) Authenticate(credentialRespJson string) error {
 	return nil
 }

@@ -73,8 +73,7 @@ message SignResponse {
 // DeriveRequest is the request to derive a new key from the private key.
 message DeriveRequest {
     string prefix = 1;
-    uint32 child_index = 2;
-    sonr.identity.DidDocument did_document = 3;
+    sonr.identity.DidDocument did_document = 2;
 }
 
 // DeriveResponse is the response to a Derive request.
