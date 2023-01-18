@@ -161,8 +161,8 @@ func document() *DidDocument {
 			Data: []*Service{srv},
 		},
 	}
-	doc.AddAuthenticationMethod(vm)
-	doc.AddAssertionMethod(vm)
+	doc.AddAuthentication(vm)
+	doc.AddAssertion(vm)
 	return doc
 }
 

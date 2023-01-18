@@ -2,17 +2,16 @@ package fs
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	files "github.com/ipfs/go-ipfs-files"
-	icore "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/ipfs/interface-go-ipfs-core/options"
-	"github.com/ipfs/interface-go-ipfs-core/path"
+	"github.com/cosmos/cosmos-sdk/client"
+	"golang.org/x/crypto/nacl/box"
 )
 
-// `Config` is a struct that contains the local path to the vault, the IPFS node to use, the IPFS path
+// `VaultConfig` is a struct that contains the local path to the vault, the IPFS node to use, the IPFS path
 // to the vault, the IPFS key to use, the IPFS entry to use, the root node of the vault, the address of
 // the vault, and the authentication shares.
 // @property {string} localPath - The local path to the vault
@@ -24,67 +23,36 @@ import (
 // in the vault.
 // @property {string} address - The address of the vault. This is the address that the vault will be
 // @property {[]*common.WalletShareConfig} authShares - The authentication shares.
-type Config struct {
-	// The local path to the vault
-	localPath string
-	// The IPFS node to use
-	ipfs icore.CoreAPI
-	// The IPFS path to the vault
-	ipfsPath path.Path
-	// The IPFS key to use
-	key icore.Key
-	// The IPFS entry to use
-	entry icore.IpnsEntry
-	// The root node of the vault
-	rootNode files.Node
-	// The address of the vault
-	address string
+type VaultConfig struct {
+	cctx client.Context
+	// The Local Directory
+	localRootDir Folder
+	// The Auth Directory
+	authDir Folder
+	// The Mailbox Directory
+	mailboxDir Folder
+	// The Public Directory
+	publicDir Folder
+	address   string
 	// Context
-	ctx context.Context
-	// IsExisting
-	isExisting bool
-	// ResolverURL
-	resolverUrl string
+	ctx                   context.Context
+	encryptionPubKeyPath  string
+	encryptionPrivKeyPath string
 }
 
 // Option is a function that configures a `Config` object.
-type Option func(*Config) error
-
-// WithIPFSPath sets the IPFS path to the vault.
-func WithIPFSPath(ipfsPath string) Option {
-	return func(c *Config) error {
-		c.ipfsPath = path.New(ipfsPath)
-		c.isExisting = true
-		return nil
-	}
-}
+type Option func(*VaultConfig) error
 
 // Apply applies the given options to the `Config` object.
-func (c *Config) Apply(opts ...Option) error {
+func (c *VaultConfig) Apply(opts ...Option) error {
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
 			return err
 		}
 	}
-	if !c.isExisting {
-		ctx, cancel := context.WithCancel(c.ctx)
-		defer cancel()
-		// Set Root Node
-		rn, err := setupLocalDirs(c)
-		if err != nil {
-			return err
-		}
-		c.rootNode = rn
-
-		// Pin default user directory
-		cid, err := c.ipfs.Unixfs().Add(ctx, c.rootNode, options.Unixfs.Pin(true))
-		if err != nil {
-			return err
-		}
-		c.ipfsPath = cid
-		fmt.Printf("Pinned user directory with CID %s", cid)
-	} else {
-		return c.Sync()
+	err := setupLocalDirs(c)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -94,50 +62,123 @@ func (c *Config) Apply(opts ...Option) error {
 //
 
 // defaultConfig returns a `Config` object with default values.
-func defaultConfig(ctx context.Context, addr string, ipfs icore.CoreAPI) (*Config, error) {
+func defaultConfig(addr string) (*VaultConfig, error) {
 	// Create a temporary directory to store the file
 	outputBasePath, err := os.MkdirTemp("", addr)
 	if err != nil {
 		return nil, err
 	}
-	c := &Config{
-		ctx:         ctx,
-		address:     addr,
-		ipfs:        ipfs,
-		localPath:   filepath.Join(outputBasePath, addr),
-		resolverUrl: "https://ipfs.sonr.network",
+	c := &VaultConfig{
+		address:      addr,
+		localRootDir: Folder(filepath.Join(outputBasePath, addr)),
 	}
-
+	err = setupLocalDirs(c)
+	if err != nil {
+		return nil, err
+	}
 	return c, nil
 }
 
 // It takes a path to a file or directory, and returns a UnixFS node
-func setupLocalDirs(c *Config) (files.Node, error) {
+func setupLocalDirs(c *VaultConfig) error {
 	// Configure default paths
-	paths := []string{}
-	for _, p := range k_DEFAULT_DIRS {
-		paths = append(paths, filepath.Join(c.localPath, p))
+	var err error
+	c.authDir, err = c.localRootDir.CreateFolder("auth")
+	if err != nil {
+		return err
 	}
+	c.mailboxDir, err = c.localRootDir.CreateFolder("mailbox")
+	if err != nil {
+		return err
+	}
+	c.publicDir, err = c.localRootDir.CreateFolder("public")
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-	// Recursively create directories
-	for _, p := range paths {
-		err := os.MkdirAll(p, 0777)
-		if err != nil {
-			return nil, err
+// WithEncryptionKeyPath sets the encryption private key for the node from a file
+func WithClientContext(cctx client.Context, generate bool) Option {
+	return func(c *VaultConfig) error {
+		c.cctx = cctx
+		if hasKeys(cctx) {
+			c.encryptionPrivKeyPath = kEncPrivKeyPath(cctx)
+			c.encryptionPubKeyPath = kEncPubKeyPath(cctx)
 		}
+		if generate {
+			err := generateBoxKeys(cctx)
+			if err != nil {
+				return err
+			}
+			c.encryptionPrivKeyPath = kEncPrivKeyPath(cctx)
+			c.encryptionPubKeyPath = kEncPubKeyPath(cctx)
+		}
+		return nil
 	}
+}
 
-	// Fetch Basepath file info
-	st, err := os.Stat(c.localPath)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("Created default directories %s", c.localPath)
+func kEncPrivKeyPath(cctx client.Context) string {
+	return filepath.Join(cctx.HomeDir, ".sonr", "highway", "encryption_key")
+}
 
-	// Create new NewSerialFile
-	f, err := files.NewSerialFile(c.localPath, false, st)
+func kEncPubKeyPath(cctx client.Context) string {
+	return filepath.Join(cctx.HomeDir, ".sonr", "highway", "encryption_key.pub")
+}
+
+func hasEncryptionKey(cctx client.Context) bool {
+	_, err := os.Stat(kEncPrivKeyPath(cctx))
+	return err == nil
+}
+
+func hasEncryptionPubKey(cctx client.Context) bool {
+	_, err := os.Stat(kEncPubKeyPath(cctx))
+	return err == nil
+}
+
+func hasKeys(cctx client.Context) bool {
+	return hasEncryptionKey(cctx) && hasEncryptionPubKey(cctx)
+}
+
+func generateBoxKeys(cctx client.Context) error {
+	pub, priv, err := box.GenerateKey(rand.Reader)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return f, nil
+	err = os.MkdirAll(filepath.Dir(kEncPrivKeyPath(cctx)), 0755)
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(filepath.Dir(kEncPubKeyPath(cctx)), 0755)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(kEncPrivKeyPath(cctx), priv[:], 0600)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(kEncPubKeyPath(cctx), pub[:], 0600)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func loadBoxKeys(cctx client.Context) (*[32]byte, *[32]byte, error) {
+	if !hasKeys(cctx) {
+		return nil, nil, fmt.Errorf("no keys found")
+	}
+	priv, err := os.ReadFile(kEncPrivKeyPath(cctx))
+	if err != nil {
+		return nil, nil, err
+	}
+	pub, err := os.ReadFile(kEncPubKeyPath(cctx))
+	if err != nil {
+		return nil, nil, err
+	}
+	var privKey [32]byte
+	var pubKey [32]byte
+	copy(privKey[:], priv)
+	copy(pubKey[:], pub)
+	return &privKey, &pubKey, nil
 }

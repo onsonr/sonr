@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
 // `Node` is an interface that defines the methods that a node must implement to be used by the
@@ -46,6 +47,9 @@ type IPFSNode interface {
 
 	// Get the IPFS Core API
 	CoreAPI() icore.CoreAPI
+
+	// Get the IPFS PubSub API
+	GetCapabilityDelegation() *types.VerificationMethod
 
 	// Add a file to the network
 	Add(data []byte) (string, error)

@@ -11,12 +11,12 @@ func (d *DidDocument) FindAuthenticationMethod(id string) *VerificationMethod {
 
 // FindAuthenticationMethodByFragment finds a VerificationMethod by its fragment
 func (d *DidDocument) FindAuthenticationMethodByFragment(fragment string) *VerificationMethod {
-	return d.Authentication.FindByFragment(fragment)
+	return d.Authentication.FindByFragment(fragment)[0]
 }
 
 // AddAuthenticationMethod adds a VerificationMethod as AuthenticationMethod
 // If the controller is not set, it will be set to the document's ID
-func (d *DidDocument) AddAuthenticationMethod(v *VerificationMethod) {
+func (d *DidDocument) AddAuthentication(v *VerificationMethod) {
 	if v.Controller == "" {
 		v.Controller = d.ID
 	}
@@ -25,7 +25,7 @@ func (d *DidDocument) AddAuthenticationMethod(v *VerificationMethod) {
 }
 
 func (d *DidDocument) AddWebauthnCredential(cred *common.WebauthnCredential, label string) error {
-	vm, err := NewWebAuthnVM(cred, WithFragmentSuffix(label))
+	vm, err := NewWebAuthnVM(cred, WithIDFragmentSuffix(label))
 	if err != nil {
 		return err
 	}

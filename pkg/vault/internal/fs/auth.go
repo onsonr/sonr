@@ -1,178 +1,126 @@
 package fs
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
-	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
+	"strconv"
 
-	"github.com/ipfs/interface-go-ipfs-core/options"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"golang.org/x/crypto/scrypt"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/network"
 )
 
 // Storing the share of the wallet.
-func (c *Config) StoreShare(share []byte, partyId string, password string) error {
-	// Verify WalletConfigShare
-	shareConfig := &common.WalletShareConfig{}
-	err := shareConfig.Unmarshal(share)
+// Index at -1 is for root share, otherwise it is for a derived share.
+func (c *VaultConfig) StoreShare(share []byte, partyId string, index int) error {
+	boxer, err := c.newBoxer()
 	if err != nil {
 		return err
 	}
-
-	encShare, err := AesEncryptWithPassword(password, share)
+	enc, err := boxer.Seal(share)
 	if err != nil {
 		return err
 	}
-
-	// Create path for file to be stored and write file
-	path := filepath.Join(c.localPath, "_auth", partyId)
-	err = os.WriteFile(path, encShare, 0644)
-	if err != nil {
-		return err
+	if index == -1 {
+		err := c.authDir.WriteFile(partyId, enc)
+		if err != nil {
+			return err
+		}
+	} else {
+		newDir, err := c.authDir.CreateFolder(strconv.Itoa(index))
+		if err != nil {
+			return err
+		}
+		err = newDir.WriteFile(partyId, enc)
+		if err != nil {
+			return err
+		}
 	}
-
-	// Add file to IPFS
-	cid, err := c.ipfs.Unixfs().Add(c.ctx, c.rootNode, options.Unixfs.Pin(true))
-	if err != nil {
-		return err
-	}
-	c.ipfsPath = cid
 	return nil
 }
 
-// Loading the shares from the local file system.
-func (c *Config) LoadShares(password string) ([]*common.WalletShareConfig, error) {
-	shares := []*common.WalletShareConfig{}
-	// List all files in the _auth directory
-	files, err := os.ReadDir(filepath.Join(c.localPath, "_auth"))
+// StoreOfflineWallet stores the offline wallet in the vault.
+func (c *VaultConfig) StoreOfflineWallet(wallet network.OfflineWallet) error {
+	for _, share := range wallet.List() {
+		bz, err := share.Marshal()
+		if err != nil {
+			return err
+		}
+		err = c.StoreShare(bz, string(share.SelfID()), share.Index())
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Getting the share of the wallet.
+// Index at -1 is for root share, otherwise it is for a derived share.
+func (c *VaultConfig) GetShare(partyId string, index int) ([]byte, error) {
+	folderList, err := c.authDir.ListFolders()
 	if err != nil {
 		return nil, err
 	}
 
-	if len(files) == 0 {
-		return nil, errors.New("No shares found")
+	boxer, err := c.newBoxer()
+	if err != nil {
+		return nil, err
 	}
+	if index == -1 {
+		if c.authDir.Exists(partyId) {
+			enc, err := c.authDir.ReadFile(partyId)
+			if err != nil {
+				return nil, err
+			}
+			dec, err := boxer.Open(enc)
+			if err != nil {
+				return nil, err
+			}
+			return dec, nil
+		}
+	} else {
+		for _, folder := range folderList {
+			if folder.Name() == strconv.Itoa(index) {
+				if folder.Exists(partyId) {
+					enc, err := folder.ReadFile(partyId)
+					if err != nil {
+						return nil, err
+					}
+					dec, err := boxer.Open(enc)
+					if err != nil {
+						return nil, err
+					}
+					return dec, nil
+				}
+			}
+		}
+	}
+	return nil, fmt.Errorf("share not found for party " + partyId + " and index " + strconv.Itoa(index))
+}
 
-	// Iterate over all files
-	for _, file := range files {
-		// Read file
-		bz, err := os.ReadFile(filepath.Join(c.localPath, "_auth", file.Name()))
+// GetOfflineWallet gets the offline wallet from the vault.
+func (c *VaultConfig) GetOfflineWallet() (network.OfflineWallet, error) {
+	var shares []crypto.WalletShare
+	fileList, err := c.authDir.ListFiles()
+	if err != nil {
+		return nil, err
+	}
+	for _, file := range fileList {
+		bz, err := c.GetShare(file, -1)
+		if err != nil {
+			return nil, err
+		}
+		share, err := common.NewWalletShare(bz)
+		err = share.Unmarshal(bz)
 		if err != nil {
 			return nil, err
 		}
 
-		decBz, err := AesDecryptWithPassword(password, bz)
+		walletShare, err := mpc.LoadWalletShare(share)
 		if err != nil {
 			return nil, err
 		}
-
-		// Unmarshal share
-		share := &common.WalletShareConfig{}
-		err = share.Unmarshal(decBz)
-		if err != nil {
-			continue
-		}
-		// Add share to list
-		shares = append(shares, share)
+		shares = append(shares, walletShare)
 	}
-	return shares, nil
-}
-
-// aesDecryptWithKey uses the give 32-bit key to decrypt plaintext.
-func aesDecryptWithKey(aesKey, ciphertext []byte) ([]byte, error) {
-	if len(aesKey) != 32 {
-		fmt.Printf("aesKey len: %d\n", len(aesKey))
-		return nil, errors.New("AES key must be 32 bytes")
-	}
-
-	blockCipher, err := aes.NewCipher(aesKey)
-	if err != nil {
-		return nil, err
-	}
-
-	gcm, err := cipher.NewGCM(blockCipher)
-	if err != nil {
-		return nil, err
-	}
-
-	nonce, ct := ciphertext[:gcm.NonceSize()], ciphertext[gcm.NonceSize():]
-
-	plaintext, err := gcm.Open(nil, nonce, ct, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return plaintext, nil
-}
-
-// AesEncryptWithPassword uses the give password to generate an aes key and decrypt plaintext.
-func AesEncryptWithPassword(password string, plaintext []byte) ([]byte, error) {
-	key, err := deriveKey(password)
-	if err != nil {
-		return nil, err
-	}
-
-	return aesEncryptWithKey(key, plaintext)
-}
-
-// AesDecryptWithPassword uses the give password to generate an aes key and encrypt plaintext.
-func AesDecryptWithPassword(password string, ciphertext []byte) ([]byte, error) {
-	key, err := deriveKey(password)
-	if err != nil {
-		return nil, err
-	}
-
-	return aesDecryptWithKey(key, ciphertext)
-}
-
-func deriveKey(password string) ([]byte, error) {
-	// including a salt would make it impossible to reliably login from other devices
-	key, err := scrypt.Key([]byte(password), []byte(""), 1<<20, 8, 1, 32)
-	if err != nil {
-		return nil, err
-	}
-
-	return key, nil
-}
-
-// NewAesKey generates a new 32-bit key.
-func NewAesKey() ([]byte, error) {
-	key := make([]byte, 32)
-	if n, err := rand.Read(key); err != nil {
-		return nil, err
-	} else if n != 32 {
-		return nil, errors.New("could not create key at 32 bytes")
-	}
-
-	return key, nil
-}
-
-// aesEncryptWithKey uses the give 32-bit key to encrypt plaintext.
-func aesEncryptWithKey(aesKey, plaintext []byte) ([]byte, error) {
-	if len(aesKey) != 32 {
-		return nil, errors.New("AES key must be 32 bytes")
-	}
-
-	blockCipher, err := aes.NewCipher(aesKey)
-	if err != nil {
-		return nil, err
-	}
-
-	gcm, err := cipher.NewGCM(blockCipher)
-	if err != nil {
-		return nil, err
-	}
-
-	nonce := make([]byte, gcm.NonceSize())
-	if _, err = rand.Read(nonce); err != nil {
-		return nil, err
-	}
-
-	ciphertext := gcm.Seal(nonce, nonce, []byte(plaintext), nil)
-
-	return ciphertext, nil
+	return network.OfflineWallet(shares), nil
 }

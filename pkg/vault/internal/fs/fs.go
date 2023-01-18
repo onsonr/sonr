@@ -1,22 +1,14 @@
 package fs
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
 	files "github.com/ipfs/go-ipfs-files"
-	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/network"
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
-
-// Directories created for every user
-var k_DEFAULT_DIRS = []string{
-	"_auth",
-	"mailbox",
-	"public",
-}
 
 // VaultFS provides an interface for arbitrary Sonr Network Nodes to have IPFS configuration
 // for the users secure storage.
@@ -32,41 +24,35 @@ var k_DEFAULT_DIRS = []string{
 // @property LoadShares - Loads the shares from the public directory
 // @property {error} StoreShare - Stores the share in the public directory
 type VaultFS interface {
-	// CID
-	CID() string
-
-	// Service returns the DID Service configuration of the Vault
-	Service() *types.Service
-
 	// Address
 	Address() string
+
+	// Import imports the filesystem from IPFS with the DIDDocument
+	Import(node config.IPFSNode, doc *types.DidDocument) error
+
+	// Export exports the filesystem to IPFS and returns the CID
+	Export(node config.IPFSNode) (*types.Service, error)
 
 	// Sync synchronizes the local filesystem with the IPFS network
 	Sync() error
 
-	// Upload a file to the public directory
-	Upload(data []byte, name string) error
+	// GetShare returns the share from the public directory
+	GetShare(partyId string, index int) ([]byte, error)
 
-	// Download a file from the public directory
-	Download(name string) ([]byte, error)
-
-	// ListMessages returns a list of all messages in the mailbox
-	ListMessages() ([][]byte, error)
-
-	// SendMessage sends a message to the given address
-	SendMessage(to []byte, message []byte) error
-
-	// SignData signs the given data with the private key
-	LoadShares(password string) ([]*common.WalletShareConfig, error)
+	// GetOfflineWallet returns the offline wallet from the public directory
+	GetOfflineWallet() (network.OfflineWallet, error)
 
 	// StoreShare stores the given share in the public directory
-	StoreShare(share []byte, partyId string, password string) error
+	StoreShare(share []byte, partyId string, index int) error
+
+	// StoreOfflineWallet stores the given offline wallet in the public directory
+	StoreOfflineWallet(wallet network.OfflineWallet) error
 }
 
 // `New` creates a new VaultFS instance, initializes it, and returns it
-func New(ctx context.Context, address string, node config.IPFSNode, opts ...Option) (VaultFS, error) {
+func New(address string, opts ...Option) (VaultFS, error) {
 	// Create a temporary directory to store the file
-	config, err := defaultConfig(ctx, address, node.CoreAPI())
+	config, err := defaultConfig(address)
 	if err != nil {
 		return nil, err
 	}
@@ -77,38 +63,47 @@ func New(ctx context.Context, address string, node config.IPFSNode, opts ...Opti
 	return config, nil
 }
 
-// Returning the IPFS path of the vault
-func (c *Config) CID() string {
-	return c.ipfsPath.String()
-}
-
-// Returning the IPFS path of the vault
-func (c *Config) Service() *types.Service {
-	return &types.Service{
-		ID:              fmt.Sprintf("did:ipfs:%s", c.address),
-		Type:            types.ServiceType_ServiceType_ENCRYPTED_DATA_VAULT,
-		ServiceEndpoint: fmt.Sprintf("%s/%s", c.resolverUrl, strings.TrimPrefix(c.ipfsPath.String(), "/")),
-	}
-}
-
 // Returning the address of the vault
-func (c *Config) Address() string {
+func (c *VaultConfig) Address() string {
 	return c.address
 }
 
 // Sync synchronizes the local filesystem with the IPFS network.
-func (c *Config) Sync() error {
-	// Fetch Basepath file info
-	fileNode, err := c.ipfs.Unixfs().Get(c.ctx, c.ipfsPath)
-	if err != nil {
-		return err
-	}
+func (c *VaultConfig) Sync() error { // ipfsApi coreapi.CoreAPI
+	return nil
+}
 
-	// Copy the file to the temporary directory
-	err = files.WriteTo(fileNode, c.localPath)
+// Export exports the filesystem to IPFS and returns the CID within a DID Service
+func (c *VaultConfig) Export(node config.IPFSNode) (*types.Service, error) {
+	if !c.localRootDir.Exists("") {
+		return nil, fmt.Errorf("vault is not initialized")
+	}
+	cid, err := node.AddPath(c.localRootDir.Path())
+	if err != nil {
+		return nil, err
+	}
+	return &types.Service{
+		ID:              fmt.Sprintf("did:snr:%s#vault", strings.TrimPrefix(c.address, "snr")),
+		Type:            types.ServiceType_ServiceType_ENCRYPTED_DATA_VAULT,
+		ServiceEndpoint: cid,
+	}, nil
+}
+
+// Import imports the filesystem from IPFS with the DIDDocument
+func (c *VaultConfig) Import(node config.IPFSNode, doc *types.DidDocument) error {
+	service := doc.GetVaultService()
+	if service == nil {
+		return fmt.Errorf("no vault service found")
+	}
+	fileMap, err := node.GetPath(service.ServiceEndpoint)
 	if err != nil {
 		return err
 	}
-	c.rootNode = fileNode
+	for path, file := range fileMap {
+		err := files.WriteTo(file, c.localRootDir.JoinPath(path))
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

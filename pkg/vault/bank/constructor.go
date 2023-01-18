@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/fs"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
@@ -37,7 +38,7 @@ func (v *VaultBank) buildWallet(prefix string) (network.OfflineWallet, error) {
 	return wallet, nil
 }
 
-func (v *VaultBank) loadWallet(ctx context.Context, didDoc *types.DidDocument, node node.Node) (common.Wallet, fs.VaultFS, error) {
+func (v *VaultBank) loadWallet(ctx context.Context, didDoc *types.DidDocument, node node.Node) (crypto.Wallet, fs.VaultFS, error) {
 	if s := didDoc.GetVaultService(); s != nil {
 		//cfgs, err := vaultfs.LoadShares()
 	}
@@ -46,9 +47,9 @@ func (v *VaultBank) loadWallet(ctx context.Context, didDoc *types.DidDocument, n
 }
 
 // Loads an OfflineWallet from a []*WalletShareConfig and returns a `common.Wallet` interface
-func (v *VaultBank) loadOfflineWallet(shareConfigs []*common.WalletShareConfig) (common.Wallet, error) {
+func (v *VaultBank) loadOfflineWallet(shareConfigs []*common.WalletShareConfig) (crypto.Wallet, error) {
 	// Convert the WalletShareConfigs to WalletShares
-	ws := make([]common.WalletShare, 0)
+	ws := make([]crypto.WalletShare, 0)
 	for i, shareConfig := range shareConfigs {
 		if s, err := mpc.LoadWalletShare(shareConfig); err != nil {
 			return nil, err

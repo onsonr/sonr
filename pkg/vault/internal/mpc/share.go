@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -15,12 +16,12 @@ import (
 )
 
 // It returns an empty wallet share
-func EmptyWalletShare() common.WalletShare {
+func EmptyWalletShare() crypto.WalletShare {
 	return &cmpConfigWalletShare{}
 }
 
 // It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
-func NewWalletShare(pfix string, c interface{}) common.WalletShare {
+func NewWalletShare(pfix string, c interface{}, index int) crypto.WalletShare {
 	conf := c.(*cmp.Config)
 	confBz, err := conf.MarshalBinary()
 	if err != nil {
@@ -37,12 +38,13 @@ func NewWalletShare(pfix string, c interface{}) common.WalletShare {
 		CmpConfig:    confBz,
 		Timestamp:    time.Now().Unix(),
 		Bech32Prefix: pfix,
+		ChildIndex:   int32(index),
 	}
 	return &cmpConfigWalletShare{Config: conf, walletShareConfig: walletConf}
 }
 
 // It takes a `cmp.Config` and returns a `common.WalletShare` that can be used to create a wallet
-func LoadWalletShare(cnfg *common.WalletShareConfig) (common.WalletShare, error) {
+func LoadWalletShare(cnfg *common.WalletShareConfig) (crypto.WalletShare, error) {
 	conf := &cmp.Config{}
 	err := conf.UnmarshalBinary(cnfg.CmpConfig)
 	if err != nil {
@@ -84,13 +86,13 @@ func (w *cmpConfigWalletShare) Address() string {
 }
 
 // Deriving a new wallet share from the given wallet share.
-func (w *cmpConfigWalletShare) Bip32Derive(i uint32) (common.WalletShare, error) {
-	newCfg, err := w.DeriveBIP32(i)
+func (w *cmpConfigWalletShare) Bip32Derive(i uint32, prefix string) (crypto.WalletShare, error) {
+	newShare, err := w.DeriveBIP32(i)
 	if err != nil {
 		return nil, err
 	}
-
-	return &cmpConfigWalletShare{Config: newCfg, walletShareConfig: w.walletShareConfig}, nil
+	newConf := w.walletShareConfig.DeriveConfig(prefix, int(i))
+	return &cmpConfigWalletShare{Config: newShare, walletShareConfig: newConf}, nil
 }
 
 // MPCConfig returns the *cmp.Config of this wallet.
@@ -108,9 +110,19 @@ func (w *cmpConfigWalletShare) DID() (string, error) {
 	return fmt.Sprintf("did:%s:%s", prefix, addrPtr[1]), nil
 }
 
+// Index returns the index of this wallet in the group.
+func (w *cmpConfigWalletShare) Index() int {
+	return int(w.walletShareConfig.ChildIndex)
+}
+
 // Marshal serializes the cmp.Config into a byte slice for local storage
 func (w *cmpConfigWalletShare) Marshal() ([]byte, error) {
 	return w.walletShareConfig.Marshal()
+}
+
+// Prefix returns the prefix of this wallet.
+func (w *cmpConfigWalletShare) Prefix() string {
+	return w.walletShareConfig.Bech32Prefix
 }
 
 // PublicKey returns the public key of this wallet.

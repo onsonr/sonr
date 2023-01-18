@@ -65,7 +65,7 @@ func (c *localIpfs) initialize() error {
 	}
 
 	// Create a Temporary Repo
-	repoPath, err := createTempRepo()
+	repoPath, err := createHomeRepo()
 	if err != nil {
 		return fmt.Errorf("error creating temporary repo: %s", err)
 	}
@@ -109,12 +109,12 @@ func setupPlugins(externalPluginsPath string) error {
 
 // It creates a temporary directory, initializes a new IPFS repo in that directory, and returns the
 // path to the repo
-func createTempRepo() (string, error) {
-	repoPath, err := os.MkdirTemp("", "ipfs-repo")
+func createHomeRepo() (string, error) {
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return "", fmt.Errorf("failed to get temp dir: %s", err)
+		return "", fmt.Errorf("failed to get home dir: %s", err)
 	}
-
+	repoPath := filepath.Join(homeDir, ".sonr", "ipfs")
 	// Create a config with default options and a 2048 bit key
 	cfg, err := config.Init(io.Discard, 2048)
 	if err != nil {
@@ -134,7 +134,6 @@ func createTempRepo() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to init ephemeral node: %s", err)
 	}
-
 	return repoPath, nil
 }
 

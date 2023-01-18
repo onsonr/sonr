@@ -8,7 +8,6 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
-
 // JWK returns the key described by the VerificationMethod as JSON Web Key.
 func (x *jwxImpl) CreateEncJWK() (jwk.Key, error) {
 	if x.key == nil {

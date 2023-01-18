@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -20,9 +18,7 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 	if isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
-	ptrs := strings.Split(msg.Document.ID, ":")
-	addr := fmt.Sprintf("%s%s", ptrs[len(ptrs)-2], ptrs[len(ptrs)-1])
-	acc := k.accountKeeper.NewAccountWithAddress(ctx, sdk.AccAddress(addr))
+	acc := k.accountKeeper.NewAccountWithAddress(ctx, sdk.AccAddress(msg.Document.Address()))
 	k.accountKeeper.SetAccount(ctx, acc)
 	k.SetDidDocument(
 		ctx,

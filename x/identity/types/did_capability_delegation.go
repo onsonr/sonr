@@ -26,7 +26,7 @@ func (d *DidDocument) FindCapabilityDelegation(id string) *VerificationMethod {
 
 // FindCapabilityDelegationByFragment finds a VerificationMethod by its fragment
 func (d *DidDocument) FindCapabilityDelegationByFragment(fragment string) *VerificationMethod {
-	return d.CapabilityDelegation.FindByFragment(fragment)
+	return d.CapabilityDelegation.FindByFragment(fragment)[0]
 }
 
 // FindCapabilityInvocation finds a VerificationMethod by its ID
@@ -36,7 +36,7 @@ func (d *DidDocument) FindCapabilityInvocation(id string) *VerificationMethod {
 
 // FindCapabilityInvocationByFragment finds a VerificationMethod by its fragment
 func (d *DidDocument) FindCapabilityInvocationByFragment(fragment string) *VerificationMethod {
-	return d.CapabilityInvocation.FindByFragment(fragment)
+	return d.CapabilityInvocation.FindByFragment(fragment)[0]
 }
 
 // AddCapabilityInvocation adds a VerificationMethod as CapabilityInvocation

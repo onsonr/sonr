@@ -1,15 +1,21 @@
 package network
 
 import (
+	"context"
+	"fmt"
 	"sync"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/tx"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/shengdoushi/base58"
+	"google.golang.org/grpc"
 
-	"github.com/sonr-hq/sonr/pkg/common"
+	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/mpc"
+	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
@@ -17,16 +23,34 @@ import (
 )
 
 // OfflineWallet is a slice of WalletShare
-type OfflineWallet []common.WalletShare
+type OfflineWallet []crypto.WalletShare
 
 // Address returns the address of the Wallet.
 func (ws OfflineWallet) Address() string {
 	return ws[0].Address()
 }
 
+func (ws OfflineWallet) AssertionMethod() *types.VerificationMethod {
+	addr := ws.Address()
+	pub, err := ws[0].PublicKey()
+	if err != nil {
+		return nil
+	}
+	pubKey, err := pub.Marshal()
+	if err != nil {
+		return nil
+	}
+	return &types.VerificationMethod{
+		ID:                 types.ConvertAccAddressToDid(addr),
+		Type:               types.KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019,
+		Controller:         types.ConvertAccAddressToDid(addr),
+		PublicKeyMultibase: base58.Encode(pubKey, base58.BitcoinAlphabet),
+	}
+}
+
 // Bip32Derive creates a new WalletShare that is derived from the given path.
-func (ws OfflineWallet) Bip32Derive(i uint32) (common.WalletShare, error) {
-	return ws[0].Bip32Derive(i)
+func (ws OfflineWallet) Bip32Derive(i uint32, prefix string) (crypto.WalletShare, error) {
+	return ws[0].Bip32Derive(i, prefix)
 }
 
 // EncryptKey
@@ -35,7 +59,7 @@ func (ws OfflineWallet) EncryptKey() ([]byte, error) {
 }
 
 // Find returns the WalletShare with the given ID.
-func (ws OfflineWallet) Find(id party.ID) common.WalletShare {
+func (ws OfflineWallet) Find(id party.ID) crypto.WalletShare {
 	for _, w := range ws {
 		if w.SelfID() == id {
 			return w
@@ -54,12 +78,12 @@ func (ws OfflineWallet) GetConfigMap() map[party.ID]*cmp.Config {
 }
 
 // List returns a list of all the WalletShares.
-func (ws OfflineWallet) List() []common.WalletShare {
+func (ws OfflineWallet) List() []crypto.WalletShare {
 	return ws
 }
 
 // Network creates a new offline network from a list of wallet shares.
-func (ws OfflineWallet) Network() common.Network {
+func (ws OfflineWallet) Network() crypto.Network {
 	parties := make(party.IDSlice, 0, len(ws))
 	for _, s := range ws {
 		parties = append(parties, s.SelfID())
@@ -72,7 +96,7 @@ func (ws OfflineWallet) PublicKey() (*secp256k1.PubKey, error) {
 }
 
 // Refreshing the wallet shares.
-func (ws OfflineWallet) Refresh(current party.ID) (common.Wallet, error) {
+func (ws OfflineWallet) Refresh(current party.ID) (crypto.Wallet, error) {
 	var mtx sync.Mutex
 	net := ws.Network()
 	configs := ws.GetConfigMap()
@@ -93,9 +117,9 @@ func (ws OfflineWallet) Refresh(current party.ID) (common.Wallet, error) {
 		}(id)
 	}
 	wg.Wait()
-	shares := make([]common.WalletShare, 0)
+	shares := make([]crypto.WalletShare, 0)
 	for _, conf := range configs {
-		shares = append(shares, mpc.NewWalletShare("snr", conf))
+		shares = append(shares, mpc.NewWalletShare("snr", conf, -1))
 	}
 	return OfflineWallet(shares), nil
 }
@@ -158,6 +182,40 @@ func (ws OfflineWallet) Verify(msg, sig []byte) bool {
 	return false
 }
 
+// SignTx constructs a Tx with all required info for a wallet to sign.
+func (ws OfflineWallet) SendTx(current party.ID, msgs ...sdk.Msg) (*txtypes.BroadcastTxResponse, error) {
+	txb, err := ws.SignTx(current, msgs...)
+	if err != nil {
+		return nil, err
+	}
+	return BroadcastTx(context.Background(), txb)
+}
+
+func BroadcastTx(ctx context.Context, txBytes []byte) (*txtypes.BroadcastTxResponse, error) {
+	// Create a connection to the gRPC server.
+	grpcConn, err := grpc.Dial(
+		"127.0.0.1:9090",    // Or your gRPC server address.
+		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
+	)
+	defer grpcConn.Close()
+
+	// Broadcast the tx via gRPC. We create a new client for the Protobuf Tx
+	// service.
+	txClient := tx.NewServiceClient(grpcConn)
+	grpcRes, err := txClient.BroadcastTx(
+		ctx,
+		&tx.BroadcastTxRequest{
+			Mode:    tx.BroadcastMode_BROADCAST_MODE_SYNC,
+			TxBytes: txBytes, // Proto-binary of the signed transaction, see previous step.
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(grpcRes.TxResponse.Code) // Should be `0` if the tx is successful
+	return grpcRes, nil
+}
+
 //
 // Helper functions
 //
@@ -212,7 +270,7 @@ func createRawTxBytes(txBody *txtypes.TxBody, sig []byte, authInfo *txtypes.Auth
 }
 
 // getAuthInfoSingle returns the authentication information for the given message.
-func getAuthInfoSingle(w common.WalletShare, gas int) (*txtypes.AuthInfo, error) {
+func getAuthInfoSingle(w crypto.WalletShare, gas int) (*txtypes.AuthInfo, error) {
 	// Get PublicKey
 	pubKey, err := w.PublicKey()
 	if err != nil {

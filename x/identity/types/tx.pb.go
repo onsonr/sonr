@@ -299,6 +299,134 @@ func (m *MsgDeleteDidDocumentResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteDidDocumentResponse proto.InternalMessageInfo
 
+type MsgCreateAccount struct {
+	Creator              string              `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Authentication       *VerificationMethod `protobuf:"bytes,2,opt,name=authentication,proto3" json:"authentication,omitempty"`
+	AssertionMethod      *VerificationMethod `protobuf:"bytes,3,opt,name=assertionMethod,proto3" json:"assertionMethod,omitempty"`
+	CapibilityDelegation *VerificationMethod `protobuf:"bytes,4,opt,name=capibilityDelegation,proto3" json:"capibilityDelegation,omitempty"`
+	Service              *Service            `protobuf:"bytes,5,opt,name=service,proto3" json:"service,omitempty"`
+}
+
+func (m *MsgCreateAccount) Reset()         { *m = MsgCreateAccount{} }
+func (m *MsgCreateAccount) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateAccount) ProtoMessage()    {}
+func (*MsgCreateAccount) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{6}
+}
+func (m *MsgCreateAccount) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateAccount) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateAccount.Merge(m, src)
+}
+func (m *MsgCreateAccount) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateAccount) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateAccount.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateAccount proto.InternalMessageInfo
+
+func (m *MsgCreateAccount) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateAccount) GetAuthentication() *VerificationMethod {
+	if m != nil {
+		return m.Authentication
+	}
+	return nil
+}
+
+func (m *MsgCreateAccount) GetAssertionMethod() *VerificationMethod {
+	if m != nil {
+		return m.AssertionMethod
+	}
+	return nil
+}
+
+func (m *MsgCreateAccount) GetCapibilityDelegation() *VerificationMethod {
+	if m != nil {
+		return m.CapibilityDelegation
+	}
+	return nil
+}
+
+func (m *MsgCreateAccount) GetService() *Service {
+	if m != nil {
+		return m.Service
+	}
+	return nil
+}
+
+type MsgCreateAccountResponse struct {
+	Creator  string       `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Document *DidDocument `protobuf:"bytes,2,opt,name=document,proto3" json:"document,omitempty"`
+}
+
+func (m *MsgCreateAccountResponse) Reset()         { *m = MsgCreateAccountResponse{} }
+func (m *MsgCreateAccountResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateAccountResponse) ProtoMessage()    {}
+func (*MsgCreateAccountResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{7}
+}
+func (m *MsgCreateAccountResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateAccountResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateAccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateAccountResponse.Merge(m, src)
+}
+func (m *MsgCreateAccountResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateAccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateAccountResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateAccountResponse proto.InternalMessageInfo
+
+func (m *MsgCreateAccountResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateAccountResponse) GetDocument() *DidDocument {
+	if m != nil {
+		return m.Document
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*MsgCreateDidDocument)(nil), "sonrhq.sonr.identity.MsgCreateDidDocument")
 	proto.RegisterType((*MsgCreateDidDocumentResponse)(nil), "sonrhq.sonr.identity.MsgCreateDidDocumentResponse")
@@ -306,32 +434,43 @@ func init() {
 	proto.RegisterType((*MsgUpdateDidDocumentResponse)(nil), "sonrhq.sonr.identity.MsgUpdateDidDocumentResponse")
 	proto.RegisterType((*MsgDeleteDidDocument)(nil), "sonrhq.sonr.identity.MsgDeleteDidDocument")
 	proto.RegisterType((*MsgDeleteDidDocumentResponse)(nil), "sonrhq.sonr.identity.MsgDeleteDidDocumentResponse")
+	proto.RegisterType((*MsgCreateAccount)(nil), "sonrhq.sonr.identity.MsgCreateAccount")
+	proto.RegisterType((*MsgCreateAccountResponse)(nil), "sonrhq.sonr.identity.MsgCreateAccountResponse")
 }
 
 func init() { proto.RegisterFile("sonr/identity/tx.proto", fileDescriptor_c316c9c2297d8c51) }
 
 var fileDescriptor_c316c9c2297d8c51 = []byte{
-	// 316 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2b, 0xce, 0xcf, 0x2b,
-	0xd2, 0xcf, 0x4c, 0x49, 0xcd, 0x2b, 0xc9, 0x2c, 0xa9, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca,
-	0x2f, 0xc9, 0x17, 0x12, 0x01, 0x89, 0x67, 0x14, 0xea, 0x81, 0x28, 0x3d, 0x98, 0xb4, 0x94, 0x38,
-	0xaa, 0xea, 0x94, 0xcc, 0x14, 0x88, 0x72, 0xa5, 0x7c, 0x2e, 0x11, 0xdf, 0xe2, 0x74, 0xe7, 0xa2,
-	0xd4, 0xc4, 0x92, 0x54, 0x97, 0xcc, 0x14, 0x97, 0xfc, 0xe4, 0xd2, 0xdc, 0xd4, 0xbc, 0x12, 0x21,
-	0x09, 0x2e, 0xf6, 0x64, 0x90, 0x60, 0x7e, 0x91, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x67, 0x10, 0x8c,
-	0x2b, 0x64, 0xcb, 0xc5, 0x91, 0x02, 0x55, 0x25, 0xc1, 0xa4, 0xc0, 0xa8, 0xc1, 0x6d, 0xa4, 0xa8,
-	0x87, 0xcd, 0x4e, 0x3d, 0x24, 0xe3, 0x82, 0xe0, 0x5a, 0x94, 0xe4, 0xb8, 0x64, 0xb0, 0x59, 0x18,
-	0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0x0a, 0x75, 0x50, 0x68, 0x41, 0x0a, 0xbd, 0x1c, 0x64,
-	0x01, 0x76, 0x10, 0x86, 0x85, 0x30, 0x07, 0xe1, 0xb6, 0x58, 0xc9, 0x09, 0xec, 0x54, 0x97, 0xd4,
-	0x9c, 0x54, 0x62, 0x9d, 0x2a, 0xc0, 0xc5, 0x9c, 0x92, 0x99, 0x02, 0x76, 0x25, 0x67, 0x10, 0x88,
-	0x09, 0x0d, 0x0e, 0x0c, 0x33, 0x60, 0xb6, 0x1b, 0x3d, 0x61, 0xe2, 0x62, 0xf6, 0x2d, 0x4e, 0x17,
-	0x2a, 0xe6, 0x12, 0xc4, 0x8c, 0x24, 0x2d, 0xec, 0xfe, 0xc4, 0x16, 0xbe, 0x52, 0x46, 0xc4, 0xab,
-	0x85, 0x7b, 0xbd, 0x98, 0x4b, 0x10, 0x33, 0x22, 0x70, 0x5b, 0x8a, 0xa1, 0x16, 0x8f, 0xa5, 0xb8,
-	0xc3, 0xbb, 0x98, 0x4b, 0x10, 0x33, 0x48, 0x71, 0x5b, 0x8a, 0xa1, 0x16, 0x8f, 0xa5, 0x38, 0x83,
-	0xd9, 0xc9, 0xe9, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c,
-	0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x34, 0xd2, 0x33,
-	0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0x41, 0x06, 0xea, 0x66, 0x14, 0x82, 0x69,
-	0xfd, 0x0a, 0xa4, 0xcc, 0x57, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0xce, 0x51, 0xc6, 0x80, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x29, 0x46, 0x1b, 0xd0, 0x9a, 0x03, 0x00, 0x00,
+	// 453 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x4f, 0x0f, 0xd2, 0x30,
+	0x1c, 0x65, 0x4c, 0x45, 0x7e, 0x46, 0x85, 0x86, 0xe8, 0x42, 0x74, 0xc1, 0x1d, 0xcc, 0x62, 0xe2,
+	0x96, 0xe0, 0x41, 0x2f, 0x1e, 0x44, 0xae, 0x24, 0x66, 0x46, 0x0f, 0xc6, 0xcb, 0x68, 0xeb, 0xd6,
+	0x04, 0xd6, 0xb1, 0x76, 0x06, 0xbe, 0x85, 0x1f, 0xcb, 0x8b, 0x09, 0x47, 0x8f, 0x06, 0x4e, 0x7e,
+	0x0b, 0xb3, 0xb1, 0x4d, 0x60, 0x1b, 0x7f, 0x62, 0xe2, 0xa9, 0xd0, 0xbd, 0xbe, 0xf7, 0x7e, 0x2f,
+	0x7d, 0x85, 0x07, 0x82, 0x07, 0x91, 0xcd, 0x08, 0x0d, 0x24, 0x93, 0x2b, 0x5b, 0x2e, 0xad, 0x30,
+	0xe2, 0x92, 0xa3, 0x5e, 0xb2, 0xef, 0x2f, 0xac, 0x64, 0xb1, 0xf2, 0xcf, 0xfd, 0x87, 0x87, 0x68,
+	0xc2, 0xc8, 0x0e, 0x6e, 0x70, 0xe8, 0x4d, 0x84, 0xf7, 0x36, 0xa2, 0xae, 0xa4, 0x63, 0x46, 0xc6,
+	0x1c, 0xc7, 0x73, 0x1a, 0x48, 0xa4, 0x41, 0x0b, 0x27, 0x9b, 0x3c, 0xd2, 0x94, 0x81, 0x62, 0xb6,
+	0x9d, 0xfc, 0x2f, 0x7a, 0x0d, 0xb7, 0x49, 0x86, 0xd2, 0x9a, 0x03, 0xc5, 0xbc, 0x33, 0x7c, 0x62,
+	0x55, 0x69, 0x5a, 0x7b, 0x74, 0x4e, 0x71, 0xc4, 0xd0, 0xe1, 0x51, 0x95, 0xa0, 0x43, 0x45, 0xc8,
+	0x03, 0x41, 0x33, 0x43, 0x1f, 0x42, 0xf2, 0xbf, 0x0c, 0xbd, 0x4a, 0x0d, 0x95, 0x04, 0x73, 0x43,
+	0xf5, 0xc2, 0xc6, 0x28, 0xb5, 0x3a, 0xa6, 0x33, 0x7a, 0xa9, 0xd5, 0x0e, 0xa8, 0x84, 0x91, 0xd4,
+	0x65, 0xdb, 0x49, 0x7e, 0x66, 0x71, 0x94, 0x38, 0x8a, 0x38, 0x7e, 0x37, 0xa1, 0x53, 0xe4, 0xf5,
+	0x06, 0x63, 0x1e, 0x9f, 0x14, 0x78, 0x07, 0xf7, 0xdc, 0x58, 0xfa, 0xc9, 0xc0, 0xd8, 0x95, 0x8c,
+	0x07, 0x59, 0x22, 0x66, 0x75, 0x22, 0x1f, 0x69, 0xc4, 0xbe, 0x64, 0xc8, 0x09, 0x95, 0x3e, 0x27,
+	0xce, 0xd1, 0x79, 0xe4, 0xc0, 0x7d, 0x57, 0x08, 0x1a, 0xfd, 0x85, 0x68, 0xea, 0x95, 0x94, 0xc7,
+	0x04, 0xe8, 0x33, 0xf4, 0xb0, 0x1b, 0xb2, 0x29, 0x9b, 0x31, 0xb9, 0x4a, 0x66, 0xf7, 0x76, 0x5e,
+	0x6f, 0x5c, 0x49, 0x5c, 0xc9, 0x82, 0x5e, 0x42, 0x4b, 0xd0, 0xe8, 0x2b, 0xc3, 0x54, 0xbb, 0x99,
+	0x12, 0x3e, 0xae, 0x26, 0x7c, 0xbf, 0x03, 0x39, 0x39, 0xda, 0x10, 0xa0, 0x1d, 0x47, 0x7d, 0xfe,
+	0x16, 0xfc, 0xe3, 0xf5, 0x1b, 0xfe, 0x50, 0x41, 0x9d, 0x08, 0x0f, 0x09, 0xe8, 0x96, 0x5b, 0xf8,
+	0xac, 0x9a, 0xa9, 0xaa, 0x40, 0xfd, 0xe1, 0xe5, 0xd8, 0x62, 0x2a, 0x01, 0xdd, 0x72, 0xd3, 0xea,
+	0x45, 0x4b, 0xd8, 0x13, 0xa2, 0xf5, 0x85, 0x12, 0xd0, 0x2d, 0x77, 0xa6, 0x5e, 0xb4, 0x84, 0x3d,
+	0x21, 0x5a, 0xdb, 0x23, 0xe4, 0xc1, 0xdd, 0xc3, 0x0e, 0x3d, 0x3d, 0x13, 0x57, 0x86, 0xeb, 0x5b,
+	0x97, 0xe1, 0x72, 0xa1, 0xd1, 0xe8, 0xfb, 0x46, 0x57, 0xd6, 0x1b, 0x5d, 0xf9, 0xb5, 0xd1, 0x95,
+	0x6f, 0x5b, 0xbd, 0xb1, 0xde, 0xea, 0x8d, 0x9f, 0x5b, 0xbd, 0xf1, 0xc9, 0xf4, 0x98, 0xf4, 0xe3,
+	0xa9, 0x85, 0xf9, 0xdc, 0x4e, 0xc8, 0x9e, 0xfb, 0x8b, 0x74, 0xb5, 0x97, 0x7b, 0xcf, 0xf8, 0x2a,
+	0xa4, 0x62, 0x7a, 0x2b, 0x7d, 0x9b, 0x5f, 0xfc, 0x09, 0x00, 0x00, 0xff, 0xff, 0xc0, 0x2d, 0xb9,
+	0xe2, 0xe4, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -349,6 +488,7 @@ type MsgClient interface {
 	CreateDidDocument(ctx context.Context, in *MsgCreateDidDocument, opts ...grpc.CallOption) (*MsgCreateDidDocumentResponse, error)
 	UpdateDidDocument(ctx context.Context, in *MsgUpdateDidDocument, opts ...grpc.CallOption) (*MsgUpdateDidDocumentResponse, error)
 	DeleteDidDocument(ctx context.Context, in *MsgDeleteDidDocument, opts ...grpc.CallOption) (*MsgDeleteDidDocumentResponse, error)
+	CreateAccount(ctx context.Context, in *MsgCreateAccount, opts ...grpc.CallOption) (*MsgCreateAccountResponse, error)
 }
 
 type msgClient struct {
@@ -386,11 +526,21 @@ func (c *msgClient) DeleteDidDocument(ctx context.Context, in *MsgDeleteDidDocum
 	return out, nil
 }
 
+func (c *msgClient) CreateAccount(ctx context.Context, in *MsgCreateAccount, opts ...grpc.CallOption) (*MsgCreateAccountResponse, error) {
+	out := new(MsgCreateAccountResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.sonr.identity.Msg/CreateAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreateDidDocument(context.Context, *MsgCreateDidDocument) (*MsgCreateDidDocumentResponse, error)
 	UpdateDidDocument(context.Context, *MsgUpdateDidDocument) (*MsgUpdateDidDocumentResponse, error)
 	DeleteDidDocument(context.Context, *MsgDeleteDidDocument) (*MsgDeleteDidDocumentResponse, error)
+	CreateAccount(context.Context, *MsgCreateAccount) (*MsgCreateAccountResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -405,6 +555,9 @@ func (*UnimplementedMsgServer) UpdateDidDocument(ctx context.Context, req *MsgUp
 }
 func (*UnimplementedMsgServer) DeleteDidDocument(ctx context.Context, req *MsgDeleteDidDocument) (*MsgDeleteDidDocumentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDidDocument not implemented")
+}
+func (*UnimplementedMsgServer) CreateAccount(ctx context.Context, req *MsgCreateAccount) (*MsgCreateAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -465,6 +618,24 @@ func _Msg_DeleteDidDocument_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateAccount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.sonr.identity.Msg/CreateAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateAccount(ctx, req.(*MsgCreateAccount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sonrhq.sonr.identity.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -480,6 +651,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDidDocument",
 			Handler:    _Msg_DeleteDidDocument_Handler,
+		},
+		{
+			MethodName: "CreateAccount",
+			Handler:    _Msg_CreateAccount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -683,6 +858,126 @@ func (m *MsgDeleteDidDocumentResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgCreateAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Service != nil {
+		{
+			size, err := m.Service.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.CapibilityDelegation != nil {
+		{
+			size, err := m.CapibilityDelegation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.AssertionMethod != nil {
+		{
+			size, err := m.AssertionMethod.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Authentication != nil {
+		{
+			size, err := m.Authentication.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateAccountResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Document != nil {
+		{
+			size, err := m.Document.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -773,6 +1068,52 @@ func (m *MsgDeleteDidDocumentResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	return n
+}
+
+func (m *MsgCreateAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Authentication != nil {
+		l = m.Authentication.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.AssertionMethod != nil {
+		l = m.AssertionMethod.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.CapibilityDelegation != nil {
+		l = m.CapibilityDelegation.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Service != nil {
+		l = m.Service.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateAccountResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Document != nil {
+		l = m.Document.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1293,6 +1634,350 @@ func (m *MsgDeleteDidDocumentResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgDeleteDidDocumentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authentication", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Authentication == nil {
+				m.Authentication = &VerificationMethod{}
+			}
+			if err := m.Authentication.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AssertionMethod", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AssertionMethod == nil {
+				m.AssertionMethod = &VerificationMethod{}
+			}
+			if err := m.AssertionMethod.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CapibilityDelegation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CapibilityDelegation == nil {
+				m.CapibilityDelegation = &VerificationMethod{}
+			}
+			if err := m.CapibilityDelegation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Service", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Service == nil {
+				m.Service = &Service{}
+			}
+			if err := m.Service.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateAccountResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateAccountResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Document", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Document == nil {
+				m.Document = &DidDocument{}
+			}
+			if err := m.Document.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

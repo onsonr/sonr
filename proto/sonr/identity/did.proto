@@ -20,17 +20,17 @@ message DidDocument {
   VerificationRelationships key_agreement = 9; // optional
   Services service = 10; // optional
   repeated string also_known_as = 11; // optional
-  map<string, string> metadata = 12; // optional
+  repeated KeyValuePair metadata = 12; // optional
 }
 
 message VerificationMethod {
   string iD = 1;
   KeyType type = 2;
   string controller = 3;
-  map<string, string> public_key_jwk = 4; // optional
+  repeated KeyValuePair public_key_jwk = 4; // optional
   string public_key_multibase = 5; // optional
   string blockchain_account_id = 6; // optional
-  map<string, string> metadata = 7;
+  repeated KeyValuePair metadata = 7;
 }
 
 message VerificationRelationship {
@@ -57,4 +57,10 @@ message VerificationMethods {
 
 message VerificationRelationships {
   repeated VerificationRelationship data = 1;
+}
+
+
+message KeyValuePair {
+  string key = 1;
+  string value = 2;
 }

@@ -1,13 +1,16 @@
 // It converts a `WebauthnCredential` to a `webauthn.Credential`
-package common
+package crypto
 
 import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
+
+
 
 // A Network is a channel that sends messages to parties and receives messages from parties.
 type Network interface {
@@ -37,7 +40,7 @@ type Wallet interface {
 	Address() string
 
 	// Bip32Derive creates a new WalletShare that is derived from the given path.
-	Bip32Derive(i uint32) (WalletShare, error)
+	Bip32Derive(i uint32, prefix string) (WalletShare, error)
 
 	// EncryptKey returns the secret key from Storage
 	EncryptKey() ([]byte, error)
@@ -73,7 +76,7 @@ type WalletShare interface {
 	Address() string
 
 	// Bip32Derive creates a new WalletShare that is derived from the given path.
-	Bip32Derive(i uint32) (WalletShare, error)
+	Bip32Derive(i uint32, prefix string) (WalletShare, error)
 
 	// CMPConfig returns the *cmp.Config of this wallet if it exists.
 	CMPConfig() *cmp.Config
@@ -81,8 +84,14 @@ type WalletShare interface {
 	// DID returns the DID of this wallet.
 	DID() (string, error)
 
+	// Index returns the index of this wallet. If its the master wallet, it returns -1.
+	Index() int
+
 	// Marshal serializes the cmp.Config into a byte slice for local storage
 	Marshal() ([]byte, error)
+
+	// Prefix returns the prefix of this wallet.
+	Prefix() string
 
 	// PublicKey returns the public key of this wallet.
 	PublicKey() (*secp256k1.PubKey, error)
@@ -94,7 +103,7 @@ type WalletShare interface {
 	PartyIDs() []party.ID
 
 	// Share returns the share of this wallet.
-	Share() *WalletShareConfig
+	Share() *common.WalletShareConfig
 
 	// Unmarshal deserializes the given byte slice into a cmp.Config
 	Unmarshal([]byte) error

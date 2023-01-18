@@ -9,6 +9,7 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/sonr-hq/sonr/pkg/vault/bank"
+	"github.com/sonr-hq/sonr/pkg/vault/internal/fs"
 	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
 
 	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
@@ -34,10 +35,15 @@ type VaultService struct {
 	rpName string
 	rpIcon string
 	cctx   client.Context
+	// sonrClient *sonrclient.Client
 }
 
 // It creates a new VaultService and registers it with the gRPC server
 func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode, cache *gocache.Cache) (*VaultService, error) {
+	// client, err := sonrclient.New(context.Background())
+	// if err != nil {
+	// 	return nil, err
+	// }
 	vaultBank := bank.CreateBank(hway, cache)
 	srv := &VaultService{
 		cctx:   ctx,
@@ -45,6 +51,7 @@ func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode,
 		node:   hway,
 		rpName: "Sonr",
 		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
+		// sonrClient: client,
 	}
 	err := v1.RegisterVaultHandlerServer(context.Background(), mux, srv)
 	if err != nil {
@@ -72,37 +79,66 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 }
 
 // Register registers a new keypair and returns the public key.
-func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
+func (v *VaultService) NewWallet(ctx context.Context, req *v1.NewWalletRequest) (*v1.NewWalletResponse, error) {
 	// Get Session
 	didDoc, wallet, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse)
 	if err != nil {
 		return nil, err
 	}
-	err = didDoc.SetRootWallet(wallet)
+	err = didDoc.SetRootWallet(wallet.List()[0])
 	if err != nil {
 		return nil, err
 	}
-	didDoc.WebAuthnCredentials()
-	return &v1.RegisterResponse{
+	fs, err := fs.New(wallet.Address(), fs.WithClientContext(v.cctx, true))
+	if err != nil {
+		return nil, err
+	}
+	err = fs.StoreOfflineWallet(wallet)
+	if err != nil {
+		return nil, err
+	}
+	service, err := fs.Export(v.node)
+	if err != nil {
+		return nil, err
+	}
+	didDoc.AddService(service)
+	didDoc.AddCapabilityDelegation(v.node.GetCapabilityDelegation())
+	// docReq := types.NewMsgCreateDidDocument(didDoc.Address(), didDoc)
+	// res, err := wallet.SendTx("vault", docReq)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if res.TxResponse.Code != 0 {
+	// 	return nil, errors.New(res.TxResponse.RawLog)
+	// }
+	return &v1.NewWalletResponse{
 		Success:     true,
 		DidDocument: didDoc,
 		Address:     wallet.Address(),
 	}, nil
+}
 
+// CreateAccount derives a new key from the private key and returns the public key.
+func (v *VaultService) CreateAccount(ctx context.Context, req *v1.CreateAccountRequest) (*v1.CreateAccountResponse, error) {
+	return nil, errors.New("Method is unimplemented")
+}
+
+// ListAccounts lists all the accounts derived from the private key.
+func (v *VaultService) ListAccounts(ctx context.Context, req *v1.ListAccountsRequest) (*v1.ListAccountsResponse, error) {
+	return nil, errors.New("Method is unimplemented")
+}
+
+// DeleteAccount deletes the account with the given address.
+func (v *VaultService) DeleteAccount(ctx context.Context, req *v1.DeleteAccountRequest) (*v1.DeleteAccountResponse, error) {
+	return nil, errors.New("Method is unimplemented")
 }
 
 // Refresh refreshes the keypair and returns the public key.
 func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1.RefreshResponse, error) {
 	return nil, errors.New("Method is unimplemented")
-
 }
 
 // Sign signs the data with the private key and returns the signature.
-func (v *VaultService) Sign(ctx context.Context, req *v1.SignRequest) (*v1.SignResponse, error) {
-	return nil, errors.New("Method is unimplemented")
-}
-
-// Derive derives a new key from the private key and returns the public key.
-func (v *VaultService) Derive(ctx context.Context, req *v1.DeriveRequest) (*v1.DeriveResponse, error) {
+func (v *VaultService) SignTransaction(ctx context.Context, req *v1.SignTransactionRequest) (*v1.SignTransactionResponse, error) {
 	return nil, errors.New("Method is unimplemented")
 }
