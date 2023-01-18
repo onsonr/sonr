@@ -79,7 +79,7 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 }
 
 // Register registers a new keypair and returns the public key.
-func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterResponse, error) {
+func (v *VaultService) NewWallet(ctx context.Context, req *v1.NewWalletRequest) (*v1.NewWalletResponse, error) {
 	// Get Session
 	didDoc, wallet, err := v.bank.FinishRegistration(req.SessionId, req.CredentialResponse)
 	if err != nil {
@@ -111,12 +111,26 @@ func (v *VaultService) Register(ctx context.Context, req *v1.RegisterRequest) (*
 	// if res.TxResponse.Code != 0 {
 	// 	return nil, errors.New(res.TxResponse.RawLog)
 	// }
-	return &v1.RegisterResponse{
+	return &v1.NewWalletResponse{
 		Success:     true,
 		DidDocument: didDoc,
 		Address:     wallet.Address(),
 	}, nil
+}
 
+// CreateAccount derives a new key from the private key and returns the public key.
+func (v *VaultService) CreateAccount(ctx context.Context, req *v1.CreateAccountRequest) (*v1.CreateAccountResponse, error) {
+	return nil, errors.New("Method is unimplemented")
+}
+
+// ListAccounts lists all the accounts derived from the private key.
+func (v *VaultService) ListAccounts(ctx context.Context, req *v1.ListAccountsRequest) (*v1.ListAccountsResponse, error) {
+	return nil, errors.New("Method is unimplemented")
+}
+
+// DeleteAccount deletes the account with the given address.
+func (v *VaultService) DeleteAccount(ctx context.Context, req *v1.DeleteAccountRequest) (*v1.DeleteAccountResponse, error) {
+	return nil, errors.New("Method is unimplemented")
 }
 
 // Refresh refreshes the keypair and returns the public key.
@@ -125,11 +139,6 @@ func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1
 }
 
 // Sign signs the data with the private key and returns the signature.
-func (v *VaultService) Sign(ctx context.Context, req *v1.SignRequest) (*v1.SignResponse, error) {
-	return nil, errors.New("Method is unimplemented")
-}
-
-// Derive derives a new key from the private key and returns the public key.
-func (v *VaultService) Derive(ctx context.Context, req *v1.DeriveRequest) (*v1.DeriveResponse, error) {
+func (v *VaultService) SignTransaction(ctx context.Context, req *v1.SignTransactionRequest) (*v1.SignTransactionResponse, error) {
 	return nil, errors.New("Method is unimplemented")
 }

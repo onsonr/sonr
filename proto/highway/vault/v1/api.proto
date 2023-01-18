@@ -27,7 +27,7 @@ message ChallengeResponse {
 }
 
 // RegisterRequest is the request to register a new account.
-message RegisterRequest {
+message NewWalletRequest {
     string session_id = 1;
     string credential_response = 2;
     string prefix = 3; // optional
@@ -35,49 +35,67 @@ message RegisterRequest {
 }
 
 // RegisterResponse is the response to a Register request.
-message RegisterResponse {
+message NewWalletResponse {
     bool success = 1;
     string address = 2;
     sonr.identity.DidDocument did_document = 3;
 }
 
-// RefreshRequest is the request to refresh the keypair.
-message RefreshRequest {
-    common.v1.WalletShareConfig share_config = 1;
-    string vault_cid = 2;
+// CreateAccountRequest is the request to CreateAccount a new key from the private key.
+message CreateAccountRequest {
+    string prefix = 1;
+    string account_name = 2;
     sonr.identity.DidDocument did_document = 3;
 }
 
-// RefreshResponse is the response to a Refresh request.
-message RefreshResponse {
+// CreateAccountResponse is the response to a CreateAccount request.
+message CreateAccountResponse {
     bytes id = 1;
     string address = 2;
     sonr.identity.DidDocument did_document = 3;
 }
 
-// SignRequest is the request to sign data with the private key.
-message SignRequest {
-    common.v1.WalletShareConfig share_config = 1;
-    sonr.identity.DidDocument did_document = 2;
-    bytes data = 3;
+// ListAccountsRequest is the request to list the accounts.
+message ListAccountsRequest {
+    sonr.identity.DidDocument did_document = 1;
 }
 
-// SignResponse is the response to a Sign request.
-message SignResponse {
+// ListAccountsResponse is the response to a ListAccounts request.
+message ListAccountsResponse {
+    repeated sonr.identity.DidDocument did_documents = 1;
+}
+
+// DeleteAccountRequest is the request to delete an account.
+message DeleteAccountRequest {
+    sonr.identity.DidDocument did_document = 1;
+}
+
+// DeleteAccountResponse is the response to a DeleteAccount request.
+message DeleteAccountResponse {
+    bool success = 1;
+}
+
+// SignTransactionRequest is the request to sign data with the private key.
+message SignTransactionRequest {
+    sonr.identity.DidDocument did_document = 1;
+    bytes data = 2;
+}
+
+// SignTransactionResponse is the response to a Sign request.
+message SignTransactionResponse {
     bytes id = 1;
     bytes signature = 2;
     bytes data = 3;
     string creator = 4;
 }
 
-// DeriveRequest is the request to derive a new key from the private key.
-message DeriveRequest {
-    string prefix = 1;
-    sonr.identity.DidDocument did_document = 2;
+// RefreshRequest is the request to refresh the keypair.
+message RefreshRequest {
+    sonr.identity.DidDocument did_document = 1;
 }
 
-// DeriveResponse is the response to a Derive request.
-message DeriveResponse {
+// RefreshResponse is the response to a Refresh request.
+message RefreshResponse {
     bytes id = 1;
     string address = 2;
     sonr.identity.DidDocument did_document = 3;
@@ -90,10 +108,42 @@ service Vault {
         option (google.api.http).get = "/sonr-io/highway/vault/challenge/{rp_id}/{username}";
     }
 
-    // Register creates a new Webauthn credential and returns it.
-    rpc Register(RegisterRequest) returns (RegisterResponse) {
+    // NewWallet creates a new Webauthn credential and returns it.
+    rpc NewWallet(NewWalletRequest) returns (NewWalletResponse) {
         option (google.api.http) = {
-          post: "/sonr-io/highway/vault/register"
+          post: "/sonr-io/highway/vault/new-wallet"
+          body: "*"
+        };
+    }
+
+    // CreateAccount creates a new Bip32 child key and returns the configuration.
+    rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/create-account"
+          body: "*"
+        };
+    }
+
+    // ListAccounts lists the accounts and returns the configuration.
+    rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/list-accounts"
+          body: "*"
+        };
+    }
+
+    // DeleteAccount deletes the account and returns the configuration.
+    rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse) {
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/delete-account"
+          body: "*"
+        };
+    }
+
+    // SignTransaction signs the data with the Wallet and returns the signature.
+    rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse) {
+        option (google.api.http) = {
+          post: "/sonr-io/highway/vault/sign-transaction"
           body: "*"
         };
     }
@@ -106,19 +156,4 @@ service Vault {
         };
     }
 
-    // Sign signs the data with the Wallet and returns the signature.
-    rpc Sign(SignRequest) returns (SignResponse) {
-        option (google.api.http) = {
-          post: "/sonr-io/highway/vault/sign"
-          body: "*"
-        };
-    }
-
-    // Derive creates a new Bip32 child key and returns the configuration.
-    rpc Derive(DeriveRequest) returns (DeriveResponse) {
-        option (google.api.http) = {
-          post: "/sonr-io/highway/vault/derive"
-          body: "*"
-        };
-    }
 }
