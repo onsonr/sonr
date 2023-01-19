@@ -1,0 +1,55 @@
+syntax = "proto3";
+package sonrhq.sonr.identity;
+import "google/api/annotations.proto";
+import "sonr/identity/did.proto";
+option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+
+
+// AttestionRequest is the request to generate a Attestion.
+message AttestionRequest {
+    // Optional RP ID to use for the Attestion.
+    string rp_id = 1;
+
+    // Username to use for the AlsoKnownAs field in the didDoc
+    string username = 2;
+}
+
+// AttestionResponse is the response to a Attestion request.
+message AttestionResponse {
+    string session_id = 1;
+    string creation_options = 2;
+    string rp_name = 3;
+    repeated string rp_origins = 4;
+    string rp_icon = 5;
+}
+
+// AssertionRequest is the request to generate a Assertion.
+message AssertionRequest {
+    // Optional RP ID to use for the Assertion.
+    string rp_id = 1;
+
+    // Username to use for the AlsoKnownAs field in the didDoc
+    string username = 2;
+}
+
+// AssertionResponse is the response to a Assertion request.
+message AssertionResponse {
+    string session_id = 1;
+    string assertion_options = 2;
+    string rp_name = 3;
+    repeated string rp_origins = 4;
+    string rp_icon = 5;
+}
+
+// WebAuthn is the service used for handling WebAuthn requests.
+service WebAuthn {
+    // StartAttestion generates a Attestion and returns it.
+    rpc StartAttestion(AttestionRequest) returns (AttestionResponse) {
+        option (google.api.http).get = "/sonr-io/sonr/webauthn/attestion/{rp_id}/{username}";
+    }
+
+    // StartAssertion generates a Assertion and returns it.
+    rpc StartAssertion(AssertionRequest) returns (AssertionResponse) {
+        option (google.api.http).get = "/sonr-io/sonr/webauthn/assertion/{rp_id}/{username}";
+    }
+}
