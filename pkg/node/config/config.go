@@ -5,7 +5,6 @@ import (
 	p2pcrypto "github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/shengdoushi/base58"
 	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/sonr-hq/sonr/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
@@ -66,9 +65,6 @@ type Config struct {
 
 	// PeerType is the type of peer
 	PeerType common.PeerType
-
-	// Wallet is the wallet for the node
-	Wallet crypto.Wallet
 
 	// RemoteIPFSURL is the remote IPFS URL
 	RemoteIPFSURL string
@@ -175,14 +171,6 @@ func WithPartyId(partyId string) Option {
 func WithPeerType(peerType common.PeerType) Option {
 	return func(c *Config) error {
 		c.PeerType = peerType
-		return nil
-	}
-}
-
-// WithWalletShare sets the wallet share for the node
-func WithWalletShare(walletShare crypto.Wallet) Option {
-	return func(c *Config) error {
-		c.Wallet = walletShare
 		return nil
 	}
 }

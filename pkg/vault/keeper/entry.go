@@ -141,7 +141,6 @@ func (s *Session) BeginLogin() (string, error) {
 
 // FinishLogin authenticates from the signature provided to the client
 func (s *Session) FinishLogin(credentialRequestData string) (bool, error) {
-
 	pca, err := getParsedCredentialRequestData(credentialRequestData)
 	if err != nil {
 		return false, errors.New(fmt.Sprintf("Failed to get parsed creation data: %s", err))

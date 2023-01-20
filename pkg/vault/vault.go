@@ -97,7 +97,6 @@ func (v *VaultService) NewWallet(ctx context.Context, req *v1.NewWalletRequest) 
 	// 	return nil, err
 	// }
 	// didDoc.AddService(service)
-	didDoc.AddCapabilityDelegation(v.node.GetCapabilityDelegation())
 	// docReq := types.NewMsgCreateDidDocument(didDoc.Address(), didDoc)
 	// res, err := wallet.SendTx("vault", docReq)
 	// if err != nil {

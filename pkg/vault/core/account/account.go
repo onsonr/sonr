@@ -5,10 +5,10 @@ import (
 	"sync"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/shengdoushi/base58"
-	"github.com/sonr-hq/sonr/pkg/common/crypto"
 	"github.com/sonr-hq/sonr/pkg/vault/core/account/internal/mpc"
 	"github.com/sonr-hq/sonr/pkg/vault/core/account/internal/network"
 	"github.com/sonr-hq/sonr/x/identity/types"
@@ -44,6 +44,9 @@ type WalletAccount interface {
 	// ListConfigs returns the list of all the configurations that are needed to
 	// sign a transaction.
 	ListConfigs() ([]*cmp.Config, error)
+
+	// PubKey returns secp256k1 public key
+	PubKey() (*secp256k1.PubKey, error)
 
 	// Signs a transaction
 	Sign(bz []byte) ([]byte, error)
@@ -119,6 +122,7 @@ func (w *walletAccountImpl) GetAssertionMethod() *types.VerificationMethod {
 		PublicKeyMultibase: base58.Encode(w.accountConfig.PublicKey, base58.BitcoinAlphabet),
 	}
 }
+
 // It returns true if the account is the primary account.
 func (w *walletAccountImpl) IsPrimary() bool {
 	return w.accountConfig.Name == "primary"
@@ -132,6 +136,11 @@ func (w *walletAccountImpl) ListConfigs() ([]*cmp.Config, error) {
 		configs = append(configs, conf)
 	}
 	return configs, nil
+}
+
+// Returning the secp256k1 public key.
+func (w *walletAccountImpl) PubKey() (*secp256k1.PubKey, error) {
+	return w.accountConfig.Shares[0].GetPubKeySecp256k1()
 }
 
 // Signing a transaction.
@@ -223,9 +232,9 @@ func createRawTxBytes(txBody *txtypes.TxBody, sig []byte, authInfo *txtypes.Auth
 }
 
 // getAuthInfoSingle returns the authentication information for the given message.
-func getAuthInfoSingle(w crypto.WalletShare, gas int) (*txtypes.AuthInfo, error) {
+func getAuthInfoSingle(w WalletAccount, gas int) (*txtypes.AuthInfo, error) {
 	// Get PublicKey
-	pubKey, err := w.PublicKey()
+	pubKey, err := w.PubKey()
 	if err != nil {
 		return nil, err
 	}
@@ -254,7 +263,7 @@ func getAuthInfoSingle(w crypto.WalletShare, gas int) (*txtypes.AuthInfo, error)
 		Fee: &txtypes.Fee{
 			Amount:   sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(gas)))),
 			GasLimit: uint64(300000),
-			Granter:  w.Address(),
+			Granter:  w.AccountConfig().Address,
 		},
 	}
 	return &authInfo, nil
