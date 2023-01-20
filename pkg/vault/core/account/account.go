@@ -9,8 +9,8 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/shengdoushi/base58"
 	"github.com/sonr-hq/sonr/pkg/common/crypto"
-	"github.com/sonr-hq/sonr/pkg/vault/core/account/mpc"
-	"github.com/sonr-hq/sonr/pkg/vault/core/account/network"
+	"github.com/sonr-hq/sonr/pkg/vault/core/account/internal/mpc"
+	"github.com/sonr-hq/sonr/pkg/vault/core/account/internal/network"
 	"github.com/sonr-hq/sonr/x/identity/types"
 
 	v1 "github.com/sonr-hq/sonr/pkg/vault/types/v1"
@@ -19,6 +19,15 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
+// `WalletAccount` is an interface that defines the methods that a wallet account must implement.
+// @property AccountConfig - The account configuration
+// @property Bip32Derive - This is a method that derives a new account from a BIP32 path.
+// @property GetAssertionMethod - returns the verification method for the account.
+// @property {bool} IsPrimary - returns true if the account is the primary account
+// @property ListConfigs - This is a list of all the configurations that are needed to sign a
+// transaction.
+// @property Sign - This is the function that signs a transaction.
+// @property Verify - Verifies a signature
 type WalletAccount interface {
 	// The account configuration
 	AccountConfig() *v1.AccountConfig
@@ -43,11 +52,15 @@ type WalletAccount interface {
 	Verify(bz []byte, sig []byte) (bool, error)
 }
 
+// The walletAccountImpl type is a struct that has a single field, accountConfig, which is a pointer to
+// a v1.AccountConfig.
+// @property accountConfig - The account configuration
 type walletAccountImpl struct {
 	// The account configuration
 	accountConfig *v1.AccountConfig
 }
 
+// It creates a new account with the given name, address prefix, and network name
 func NewAccount(accName string, addrPrefix string, networkName string) (WalletAccount, error) {
 	// The default shards that are added to the MPC wallet
 	parties := party.IDSlice{"vault", "current"}
@@ -61,16 +74,19 @@ func NewAccount(accName string, addrPrefix string, networkName string) (WalletAc
 	}, nil
 }
 
+// > This function creates a new wallet account from the given account configuration
 func NewAccountFromConfig(accConf *v1.AccountConfig) (WalletAccount, error) {
 	return &walletAccountImpl{
 		accountConfig: accConf,
 	}, nil
 }
 
+// It returns the account configuration.
 func (w *walletAccountImpl) AccountConfig() *v1.AccountConfig {
 	return w.accountConfig
 }
 
+// Deriving a new account from a BIP32 path.
 func (w *walletAccountImpl) Bip32Derive(accName string, idx uint32, addrPrefix string, network string) (WalletAccount, error) {
 	if !w.IsPrimary() {
 		return nil, errors.New("cannot derive from non-primary account")
@@ -94,6 +110,7 @@ func (w *walletAccountImpl) Bip32Derive(accName string, idx uint32, addrPrefix s
 	return NewAccountFromConfig(accConf)
 }
 
+// Returning the verification method for the account.
 func (w *walletAccountImpl) GetAssertionMethod() *types.VerificationMethod {
 	return &types.VerificationMethod{
 		ID:                 types.ConvertAccAddressToDid(w.accountConfig.Address),
@@ -102,10 +119,12 @@ func (w *walletAccountImpl) GetAssertionMethod() *types.VerificationMethod {
 		PublicKeyMultibase: base58.Encode(w.accountConfig.PublicKey, base58.BitcoinAlphabet),
 	}
 }
+// It returns true if the account is the primary account.
 func (w *walletAccountImpl) IsPrimary() bool {
 	return w.accountConfig.Name == "primary"
 }
 
+// Returning the list of all the configurations that are needed to sign a transaction.
 func (w *walletAccountImpl) ListConfigs() ([]*cmp.Config, error) {
 	confMap := w.accountConfig.GetConfigMap()
 	configs := make([]*cmp.Config, 0, len(confMap))
@@ -115,10 +134,12 @@ func (w *walletAccountImpl) ListConfigs() ([]*cmp.Config, error) {
 	return configs, nil
 }
 
+// Signing a transaction.
 func (w *walletAccountImpl) Sign(bz []byte) ([]byte, error) {
 	return signWithAccount(w.accountConfig, bz)
 }
 
+// Verifying a signature.
 func (w *walletAccountImpl) Verify(bz []byte, sig []byte) (bool, error) {
 	conf := w.accountConfig.GetConfigMap()
 	return mpc.CmpVerify(conf["current"], bz, sig)

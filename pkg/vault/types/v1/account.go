@@ -8,6 +8,7 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
+// It takes a name, index, address prefix, and a slice of shares, and returns an account config
 func NewAccountConfigFromShares(name string, index uint32, addrPrefix string, shares []*ShareConfig) (*AccountConfig, error) {
 	addr, err := bech32.ConvertAndEncode(addrPrefix, shares[0].PublicKey)
 	if err != nil {
@@ -21,6 +22,7 @@ func NewAccountConfigFromShares(name string, index uint32, addrPrefix string, sh
 	}, nil
 }
 
+// Creating a map of party.ID to cmp.Config.
 func (a *AccountConfig) GetConfigMap() map[party.ID]*cmp.Config {
 	configMap := make(map[party.ID]*cmp.Config)
 	for _, s := range a.Shares {
@@ -33,6 +35,7 @@ func (a *AccountConfig) GetConfigMap() map[party.ID]*cmp.Config {
 	return configMap
 }
 
+// Creating a slice of party.ID from the shares.
 func (a *AccountConfig) PartyIDs() []party.ID {
 	ids := make([]party.ID, 0, len(a.Shares))
 	for _, share := range a.Shares {
@@ -41,6 +44,7 @@ func (a *AccountConfig) PartyIDs() []party.ID {
 	return ids
 }
 
+// Getting the public point from the first share.
 func (a *AccountConfig) PublicPoint() (curve.Point, error) {
 	conf, err := a.Shares[0].GetCMPConfig()
 	if err != nil {

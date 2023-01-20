@@ -37,6 +37,7 @@ func NewShareConfig(network string, c interface{}) *ShareConfig {
 	}
 }
 
+// Unmarshalling the config data and returning the config.
 func (s *ShareConfig) GetCMPConfig() (*cmp.Config, error) {
 	conf := &cmp.Config{}
 	if err := conf.UnmarshalBinary(s.ConfigData); err != nil {
@@ -45,6 +46,7 @@ func (s *ShareConfig) GetCMPConfig() (*cmp.Config, error) {
 	return conf, nil
 }
 
+// Converting the public key from the ShareConfig to a secp256k1.PubKey.
 func (s *ShareConfig) GetPubKeySecp256k1() (*secp256k1.PubKey, error) {
 	if len(s.PublicKey) != 33 {
 		return nil, errors.New("invalid public key length")
@@ -52,6 +54,7 @@ func (s *ShareConfig) GetPubKeySecp256k1() (*secp256k1.PubKey, error) {
 	return &secp256k1.PubKey{Key: s.PublicKey}, nil
 }
 
+// A method that returns the party ID of the share config.
 func (s *ShareConfig) PartyID() party.ID {
 	return party.ID(s.SelfId)
 }
