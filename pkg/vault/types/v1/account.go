@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
@@ -15,7 +17,7 @@ func NewAccountConfigFromShares(name string, index uint32, addrPrefix string, sh
 		return nil, err
 	}
 	return &AccountConfig{
-		Name:    name,
+		Name:    strings.ToLower(name),
 		Index:   index,
 		Address: addr,
 		Shares:  shares,

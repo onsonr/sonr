@@ -43,8 +43,8 @@ message Service {
   string iD = 1;
   ServiceType type = 2;
   string service_endpoint = 3;
-  map<string, string> service_endpoints = 4; // optional
-  map<string, string> metadata = 5; // optional
+  repeated KeyValuePair service_endpoints = 4; // optional
+  repeated KeyValuePair metadata = 7;
 }
 
 message Services {
