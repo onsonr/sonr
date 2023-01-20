@@ -11,7 +11,6 @@ service Msg {
   rpc CreateDidDocument(MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
   rpc UpdateDidDocument(MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
   rpc DeleteDidDocument(MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
-  rpc CreateAccount(MsgCreateAccount) returns (MsgCreateAccountResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -34,18 +33,5 @@ message MsgDeleteDidDocument {
   string did = 2;
 }
 message MsgDeleteDidDocumentResponse {}
-
-message MsgCreateAccount {
-  string creator = 1;
-  VerificationMethod authentication = 2;
-  VerificationMethod assertionMethod = 3;
-  VerificationMethod capibilityDelegation = 4;
-  Service service = 5;
-}
-
-message MsgCreateAccountResponse {
-  string creator = 1;
-  DidDocument document = 2;
-}
 
 // this line is used by starport scaffolding # proto/tx/message

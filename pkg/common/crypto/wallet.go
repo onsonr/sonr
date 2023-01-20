@@ -4,13 +4,10 @@ package crypto
 import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-hq/sonr/pkg/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
-
-
 
 // A Network is a channel that sends messages to parties and receives messages from parties.
 type Network interface {
@@ -101,9 +98,6 @@ type WalletShare interface {
 
 	// PartyIDs returns the IDs of all parties in the group.
 	PartyIDs() []party.ID
-
-	// Share returns the share of this wallet.
-	Share() *common.WalletShareConfig
 
 	// Unmarshal deserializes the given byte slice into a cmp.Config
 	Unmarshal([]byte) error

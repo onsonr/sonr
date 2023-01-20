@@ -5,14 +5,12 @@ import (
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/golang-jwt/jwt"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/pkg/vault/bank"
-	"github.com/sonr-hq/sonr/pkg/vault/internal/fs"
-	"github.com/sonr-hq/sonr/pkg/vault/internal/session"
-
-	v1 "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1"
+	bank "github.com/sonr-hq/sonr/pkg/vault/keeper"
+	v1 "github.com/sonr-hq/sonr/pkg/vault/types/v1"
 )
 
 // Default Variables
@@ -35,15 +33,10 @@ type VaultService struct {
 	rpName string
 	rpIcon string
 	cctx   client.Context
-	// sonrClient *sonrclient.Client
 }
 
 // It creates a new VaultService and registers it with the gRPC server
 func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode, cache *gocache.Cache) (*VaultService, error) {
-	// client, err := sonrclient.New(context.Background())
-	// if err != nil {
-	// 	return nil, err
-	// }
 	vaultBank := bank.CreateBank(hway, cache)
 	srv := &VaultService{
 		cctx:   ctx,
@@ -62,7 +55,7 @@ func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode,
 
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
-	session, err := session.NewEntry(req.RpId, req.Username)
+	session, err := bank.NewEntry(req.RpId, req.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -70,6 +63,12 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	if err != nil {
 		return nil, err
 	}
+	jwt.NewWithClaims(jwt.SigningMethodES384, jwt.MapClaims{
+		"creationOptions": optsJson,
+		"sessionId":       eID,
+		"rpName":          v.rpName,
+		"rpIcon":          v.rpIcon,
+	})
 	return &v1.ChallengeResponse{
 		RpName:          v.rpName,
 		CreationOptions: optsJson,
@@ -85,23 +84,19 @@ func (v *VaultService) NewWallet(ctx context.Context, req *v1.NewWalletRequest) 
 	if err != nil {
 		return nil, err
 	}
-	err = didDoc.SetRootWallet(wallet.List()[0])
-	if err != nil {
-		return nil, err
-	}
-	fs, err := fs.New(wallet.Address(), fs.WithClientContext(v.cctx, true))
-	if err != nil {
-		return nil, err
-	}
-	err = fs.StoreOfflineWallet(wallet)
-	if err != nil {
-		return nil, err
-	}
-	service, err := fs.Export(v.node)
-	if err != nil {
-		return nil, err
-	}
-	didDoc.AddService(service)
+	// fs, err := fs.New(wallet.Address(), fs.WithClientContext(v.cctx, true))
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// err = fs.StoreOfflineWallet(wallet)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// service, err := fs.Export(v.node)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// didDoc.AddService(service)
 	didDoc.AddCapabilityDelegation(v.node.GetCapabilityDelegation())
 	// docReq := types.NewMsgCreateDidDocument(didDoc.Address(), didDoc)
 	// res, err := wallet.SendTx("vault", docReq)
@@ -111,10 +106,11 @@ func (v *VaultService) NewWallet(ctx context.Context, req *v1.NewWalletRequest) 
 	// if res.TxResponse.Code != 0 {
 	// 	return nil, errors.New(res.TxResponse.RawLog)
 	// }
+
 	return &v1.NewWalletResponse{
 		Success:     true,
+		Address:     wallet.Address,
 		DidDocument: didDoc,
-		Address:     wallet.Address(),
 	}, nil
 }
 
