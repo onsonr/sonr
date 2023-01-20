@@ -52,23 +52,10 @@ func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*typ
 		return nil, nil, errors.New(fmt.Sprintf("Failed to create new offline wallet using MPC: %s", err))
 	}
 
-	// Derive the first three accounts
-	// conf1, err := wallet.Bip32Derive(0, "snr")
-	// if err != nil {
-	// 	return nil, nil, errors.New(fmt.Sprintf("Failed to derive first account: %s", err))
-	// }
-	// fmt.Printf("First account: %s", conf1.Address())
-
-	// conf2, err := wallet.Bip32Derive(1, "0x")
-	// if err != nil {
-	// 	return nil, nil, errors.New(fmt.Sprintf("Failed to derive second account: %s", err))
-	// }
-	// fmt.Printf("Second account: %s", conf2.Address())
-
-	// conf3, err := wallet.Bip32Derive(2, "btc")
-	// if err != nil {
-	// 	return nil, nil, errors.New(fmt.Sprintf("Failed to derive third account: %s", err))
-	// }
-	// fmt.Printf("Third account: %s", conf3.Address())
+	primAcc, err := wallet.PrimaryAccount()
+	if err != nil {
+		return nil, nil, errors.New(fmt.Sprintf("Failed to get primary account: %s", err))
+	}
+	didDoc.AddAssertion(primAcc.GetAssertionMethod())
 	return didDoc, wallet.WalletConfig(), nil
 }

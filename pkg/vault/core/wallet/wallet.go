@@ -17,6 +17,9 @@ type Wallet interface {
 	// Gets an account by name
 	GetAccount(name string) (account.WalletAccount, error)
 
+	// Gets Primary account
+	PrimaryAccount() (account.WalletAccount, error)
+
 	// Gets all accounts
 	ListAccounts() ([]account.WalletAccount, error)
 }
@@ -68,6 +71,10 @@ func (w *walletImpl) ListAccounts() ([]account.WalletAccount, error) {
 		accs = append(accs, acc)
 	}
 	return accs, nil
+}
+
+func (w *walletImpl) PrimaryAccount() (account.WalletAccount, error) {
+	return w.GetAccount("Primary")
 }
 
 func NewWallet() (Wallet, error) {
