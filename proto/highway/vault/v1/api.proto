@@ -6,7 +6,7 @@ import "common/v1/data.proto";
 import "highway/vault/v1/models.proto";
 import "sonr/identity/did.proto";
 import "google/api/annotations.proto";
-option go_package = "github.com/sonr-hq/sonr/third_party/types/highway/vault/v1";
+option go_package = "github.com/sonr-hq/sonr/pkg/vault/types/v1";
 
 // ChallengRequest is the request to generate a challenge.
 message ChallengeRequest {

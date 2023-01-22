@@ -171,21 +171,3 @@ func (c *WebauthnCredential) Validate(pc *webauthn.Credential) error {
 	}
 	return nil
 }
-
-// DeriveConfig returns a new WalletShareConfig with the prefix changed
-func (c *WalletShareConfig) DeriveConfig(prefix string, childIndex int) *WalletShareConfig {
-	newConf := c
-	newConf.Bech32Prefix = prefix
-	newConf.ChildIndex = int32(childIndex)
-	return newConf
-}
-
-// NewWalletShare
-func NewWalletShare(data []byte) (*WalletShareConfig, error) {
-	wsc := &WalletShareConfig{}
-	err := wsc.Unmarshal(data)
-	if err != nil {
-		return nil, err
-	}
-	return wsc, nil
-}

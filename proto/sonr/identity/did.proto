@@ -1,12 +1,11 @@
 syntax = "proto3";
 package sonrhq.sonr.identity;
 
+import "common/v1/data.proto";
 import "sonr/identity/ssi.proto";
 import "sonr/identity/vc.proto";
-import "common/v1/data.proto";
-option go_package = "github.com/sonr-hq/sonr/x/identity/types";
 
-// TODO: https://github.com/cosmos/cosmos-sdk/blob/v0.46.0/proto/cosmos/bank/v1beta1/authz.proto#L10-L19
+option go_package = "github.com/sonr-hq/sonr/x/identity/types";
 
 message DidDocument {
   repeated string context = 1; // optional
@@ -38,13 +37,12 @@ message VerificationRelationship {
   string reference = 2;
 }
 
-
 message Service {
   string iD = 1;
   ServiceType type = 2;
   string service_endpoint = 3;
-  map<string, string> service_endpoints = 4; // optional
-  map<string, string> metadata = 5; // optional
+  repeated KeyValuePair service_endpoints = 4; // optional
+  repeated KeyValuePair metadata = 7;
 }
 
 message Services {
@@ -52,13 +50,12 @@ message Services {
 }
 
 message VerificationMethods {
-    repeated VerificationMethod data = 1;
+  repeated VerificationMethod data = 1;
 }
 
 message VerificationRelationships {
   repeated VerificationRelationship data = 1;
 }
-
 
 message KeyValuePair {
   string key = 1;

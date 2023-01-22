@@ -32,24 +32,6 @@ enum PeerType {
   THIRD_PARTY = 4;
 }
 
-// WalletShareConfig is a object used by Motor clients to store wallet sharing information in Biometric storage
-message WalletShareConfig {
-    string self_id = 1;
-    bytes cmp_config = 2;
-    bytes doerner_config = 3;
-    repeated string party_ids = 4;
-    Algorithm algorithm = 5;
-    int64 timestamp = 6;
-    string bech32_prefix = 7;
-    int32 child_index = 8;
-    string network = 9;
-    enum Algorithm {
-        UNKNOWN = 0;
-        CMP = 1;
-        DOERNER = 2;
-    }
-}
-
 // WebauthnCredential contains all needed information about a WebAuthn credential for storage
 message WebauthnCredential {
   // A probabilistically-unique byte sequence identifying a public key credential source and its authentication assertions.

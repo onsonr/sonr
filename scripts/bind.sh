@@ -8,9 +8,6 @@ LICENSE=${PROJECT_DIR}/LICENSE.md
 MOTOR_LIB_DIR=${PROJECT_DIR}/bind/motor
 MOTOR_WASM_DIR=${PROJECT_DIR}/bind/motor
 
-
-
-
 while getopts "iaw" opt; do
   echo "🔷 Setting up build Environment..."
   VERSION=$(git describe --tags --abbrev=0)

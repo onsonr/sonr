@@ -2,12 +2,6 @@
 // I.e. Verification Material for Wallets. This is the default Verification Method for DID Documents. (snr, btc, eth, etc.)
 package types
 
-import (
-	"fmt"
-
-	"github.com/sonr-hq/sonr/pkg/common/crypto"
-)
-
 // KnownWalletPrefixes is an enum of known wallet prefixes
 type ChainWalletPrefix int
 
@@ -46,11 +40,11 @@ func (k ChainWalletPrefix) Prefix() string {
 	return k.String()
 }
 
-func createFragment(wallet crypto.WalletShare, didDoc *DidDocument) string {
-	count := didDoc.GetBlockchainAccountCount(wallet.Prefix())
-	cwpfx := NewWalletPrefix(wallet.Prefix())
-	return fmt.Sprintf("%s-%d", cwpfx.String(), count)
-}
+// func createFragment(wallet crypto.WalletShare, didDoc *DidDocument) string {
+// 	count := didDoc.GetBlockchainAccountCount(wallet.Prefix())
+// 	cwpfx := NewWalletPrefix(wallet.Prefix())
+// 	return fmt.Sprintf("%s-%d", cwpfx.String(), count)
+// }
 
 // FindAssertionMethod finds a VerificationMethod by its ID
 func (d *DidDocument) FindAssertionMethod(id string) *VerificationMethod {
@@ -72,27 +66,27 @@ func (d *DidDocument) AddAssertion(v *VerificationMethod) {
 	d.AssertionMethod.Add(v)
 }
 
-func (d *DidDocument) AddBlockchainAccount(wallet crypto.WalletShare) error {
-	pb, err := wallet.PublicKey()
-	if err != nil {
-		return err
-	}
-	frag := fmt.Sprintf("%s-%d", wallet.Prefix(), d.GetBlockchainAccountCount(wallet.Prefix())+1)
-	vm, err := NewSecp256k1VM(pb, WithBlockchainAccount(wallet.Address()), WithIDFragmentSuffix(frag))
-	if err != nil {
-		return err
-	}
-	data := map[string]string{
-		"index":      fmt.Sprint(wallet.Index()),
-		"prefix":     wallet.Prefix(),
-		"party_id":   string(wallet.SelfID()),
-		"blockchain": ConvertBoolToString(true),
-	}
-	vm.SetMetadata(data)
-	d.VerificationMethod.Add(vm)
-	d.AssertionMethod.Add(vm)
-	return nil
-}
+// func (d *DidDocument) AddBlockchainAccount(wallet crypto.WalletShare) error {
+// 	pb, err := wallet.PublicKey()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	frag := fmt.Sprintf("%s-%d", wallet.Prefix(), d.GetBlockchainAccountCount(wallet.Prefix())+1)
+// 	vm, err := NewSecp256k1VM(pb, WithBlockchainAccount(wallet.Address()), WithIDFragmentSuffix(frag))
+// 	if err != nil {
+// 		return err
+// 	}
+// 	data := map[string]string{
+// 		"index":      fmt.Sprint(wallet.Index()),
+// 		"prefix":     wallet.Prefix(),
+// 		"party_id":   string(wallet.SelfID()),
+// 		"blockchain": ConvertBoolToString(true),
+// 	}
+// 	vm.SetMetadata(data)
+// 	d.VerificationMethod.Add(vm)
+// 	d.AssertionMethod.Add(vm)
+// 	return nil
+// }
 
 // GetBlockchainAccountCount returns the number of Blockchain Accounts by the address prefix
 func (d *DidDocument) GetBlockchainAccountCount(prefix string) int {
