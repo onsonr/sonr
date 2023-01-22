@@ -19,6 +19,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/sonr-hq/sonr/x/identity/client/cli"
 	"github.com/sonr-hq/sonr/x/identity/keeper"
+	"github.com/sonr-hq/sonr/x/identity/protocol/vault"
 	"github.com/sonr-hq/sonr/x/identity/types"
 )
 
@@ -72,6 +73,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	vault.RegisterVaultService(clientCtx, mux)
 }
 
 // GetTxCmd returns the root Tx command for the module. The subcommands of this root command are used by end-users to generate new transactions containing messages defined in the module
@@ -95,7 +97,6 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-	// ipfs          config.IPFSNode
 }
 
 func NewAppModule(
@@ -109,7 +110,6 @@ func NewAppModule(
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
-		// ipfs:           ipfs,
 	}
 }
 

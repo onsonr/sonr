@@ -239,11 +239,11 @@ func contains(s []string, e string) bool {
 // ConvertAccAddressToDid converts an AccAddress to a DID
 func ConvertAccAddressToDid(address interface{}) string {
 	fn := func(address string) string {
-		ptr := strings.Split(address, "snr")
-		if len(ptr) == 2 {
-			return "did:snr:" + ptr[1]
+		pfx, addr := findAddrPrefix(address)
+		if pfx == "" {
+			return "did:snr:" + address
 		}
-		return "did:snr:" + address
+		return "did:" + pfx + ":" + addr
 	}
 	// check if string or sdk.AccAddress
 	switch address.(type) {
