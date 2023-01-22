@@ -4,7 +4,7 @@ package sonrhq.sonr.identity;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "sonr/identity/params.proto";
+import "sonr/identity/genesis.proto";
 import "sonr/identity/did.proto";
 import "sonr/identity/vc.proto";
 // this line is used by starport scaffolding # 1

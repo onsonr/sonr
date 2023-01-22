@@ -76,29 +76,142 @@ func (m *GenesisState) GetDidDocumentList() []DidDocument {
 	return nil
 }
 
+// Params defines the parameters for the module.
+type Params struct {
+	DidBaseContext   string   `protobuf:"bytes,1,opt,name=did_base_context,json=didBaseContext,proto3" json:"did_base_context,omitempty"`
+	DidMethodContext string   `protobuf:"bytes,2,opt,name=did_method_context,json=didMethodContext,proto3" json:"did_method_context,omitempty"`
+	DidMethodName    string   `protobuf:"bytes,3,opt,name=did_method_name,json=didMethodName,proto3" json:"did_method_name,omitempty"`
+	DidMethodVersion string   `protobuf:"bytes,4,opt,name=did_method_version,json=didMethodVersion,proto3" json:"did_method_version,omitempty"`
+	DidNetwork       string   `protobuf:"bytes,5,opt,name=did_network,json=didNetwork,proto3" json:"did_network,omitempty"`
+	IpfsGateway      string   `protobuf:"bytes,6,opt,name=ipfs_gateway,json=ipfsGateway,proto3" json:"ipfs_gateway,omitempty"`
+	IpfsApi          string   `protobuf:"bytes,7,opt,name=ipfs_api,json=ipfsApi,proto3" json:"ipfs_api,omitempty"`
+	HnsTlds          []string `protobuf:"bytes,8,rep,name=hns_tlds,json=hnsTlds,proto3" json:"hns_tlds,omitempty"`
+}
+
+func (m *Params) Reset()         { *m = Params{} }
+func (m *Params) String() string { return proto.CompactTextString(m) }
+func (*Params) ProtoMessage()    {}
+func (*Params) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfc7d3384216a054, []int{1}
+}
+func (m *Params) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Params.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Params) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Params.Merge(m, src)
+}
+func (m *Params) XXX_Size() int {
+	return m.Size()
+}
+func (m *Params) XXX_DiscardUnknown() {
+	xxx_messageInfo_Params.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Params proto.InternalMessageInfo
+
+func (m *Params) GetDidBaseContext() string {
+	if m != nil {
+		return m.DidBaseContext
+	}
+	return ""
+}
+
+func (m *Params) GetDidMethodContext() string {
+	if m != nil {
+		return m.DidMethodContext
+	}
+	return ""
+}
+
+func (m *Params) GetDidMethodName() string {
+	if m != nil {
+		return m.DidMethodName
+	}
+	return ""
+}
+
+func (m *Params) GetDidMethodVersion() string {
+	if m != nil {
+		return m.DidMethodVersion
+	}
+	return ""
+}
+
+func (m *Params) GetDidNetwork() string {
+	if m != nil {
+		return m.DidNetwork
+	}
+	return ""
+}
+
+func (m *Params) GetIpfsGateway() string {
+	if m != nil {
+		return m.IpfsGateway
+	}
+	return ""
+}
+
+func (m *Params) GetIpfsApi() string {
+	if m != nil {
+		return m.IpfsApi
+	}
+	return ""
+}
+
+func (m *Params) GetHnsTlds() []string {
+	if m != nil {
+		return m.HnsTlds
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "sonrhq.sonr.identity.GenesisState")
+	proto.RegisterType((*Params)(nil), "sonrhq.sonr.identity.Params")
 }
 
 func init() { proto.RegisterFile("sonr/identity/genesis.proto", fileDescriptor_dfc7d3384216a054) }
 
 var fileDescriptor_dfc7d3384216a054 = []byte{
-	// 240 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2e, 0xce, 0xcf, 0x2b,
-	0xd2, 0xcf, 0x4c, 0x49, 0xcd, 0x2b, 0xc9, 0x2c, 0xa9, 0xd4, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce,
-	0x2c, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x01, 0x49, 0x66, 0x14, 0xea, 0x81, 0x28,
-	0x3d, 0x98, 0x1a, 0x29, 0x91, 0xf4, 0xfc, 0xf4, 0x7c, 0xb0, 0x02, 0x7d, 0x10, 0x0b, 0xa2, 0x56,
-	0x4a, 0x0a, 0xd5, 0xa0, 0x82, 0xc4, 0xa2, 0xc4, 0x5c, 0xa8, 0x39, 0x52, 0xe2, 0xa8, 0x72, 0x29,
-	0x99, 0x29, 0x10, 0x09, 0xa5, 0xb9, 0x8c, 0x5c, 0x3c, 0xee, 0x10, 0x2b, 0x83, 0x4b, 0x12, 0x4b,
-	0x52, 0x85, 0xac, 0xb8, 0xd8, 0x20, 0x3a, 0x25, 0x18, 0x15, 0x18, 0x35, 0xb8, 0x8d, 0x64, 0xf4,
-	0xb0, 0x39, 0x41, 0x2f, 0x00, 0xac, 0xc6, 0x89, 0xe5, 0xc4, 0x3d, 0x79, 0x86, 0x20, 0xa8, 0x0e,
-	0xa1, 0x40, 0x2e, 0xfe, 0x94, 0xcc, 0x14, 0x97, 0xfc, 0xe4, 0xd2, 0xdc, 0xd4, 0xbc, 0x12, 0x9f,
-	0xcc, 0xe2, 0x12, 0x09, 0x26, 0x05, 0x66, 0x0d, 0x6e, 0x23, 0x45, 0xec, 0x86, 0xb8, 0x20, 0x14,
-	0x43, 0x4d, 0x42, 0xd7, 0xef, 0xe4, 0x74, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f,
-	0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c,
-	0x51, 0x1a, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x20, 0x63, 0x75,
-	0x33, 0x0a, 0xc1, 0xb4, 0x7e, 0x05, 0xc2, 0x9f, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0x60,
-	0xaf, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x3c, 0x77, 0x7c, 0x27, 0x6a, 0x01, 0x00, 0x00,
+	// 409 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x92, 0x4b, 0xae, 0xd3, 0x30,
+	0x14, 0x86, 0x93, 0xf6, 0x92, 0x7b, 0x71, 0x2e, 0x0f, 0x59, 0x95, 0x30, 0x05, 0xa5, 0x8f, 0x01,
+	0xca, 0x00, 0x12, 0xa9, 0xcc, 0x98, 0x11, 0x2a, 0x75, 0x02, 0x15, 0x14, 0xc4, 0x80, 0x49, 0xe4,
+	0xd6, 0x26, 0xb1, 0x68, 0xec, 0x34, 0x76, 0x69, 0xbb, 0x0b, 0x36, 0xc0, 0x1e, 0x58, 0x46, 0x87,
+	0x1d, 0x32, 0x42, 0xa8, 0xdd, 0x08, 0xb2, 0xdd, 0x87, 0xa8, 0x3a, 0x3a, 0xc9, 0xff, 0x7f, 0xe7,
+	0x3f, 0x47, 0xf2, 0x01, 0x4f, 0xa4, 0xe0, 0x55, 0xcc, 0x08, 0xe5, 0x8a, 0xa9, 0x55, 0x9c, 0x51,
+	0x4e, 0x25, 0x93, 0x51, 0x59, 0x09, 0x25, 0x60, 0x43, 0x9b, 0xf9, 0x2c, 0xd2, 0x25, 0x3a, 0x30,
+	0xcd, 0x46, 0x26, 0x32, 0x61, 0x80, 0x58, 0x7f, 0x59, 0xb6, 0xf9, 0xe8, 0xff, 0x20, 0xc2, 0x88,
+	0x35, 0xba, 0x3f, 0x5d, 0x70, 0x3b, 0xb0, 0xb1, 0x1f, 0x15, 0x56, 0x14, 0xbe, 0x02, 0x5e, 0x89,
+	0x2b, 0x5c, 0x48, 0xe4, 0xb6, 0xdd, 0xd0, 0xef, 0x3d, 0x8d, 0x2e, 0x8d, 0x89, 0xde, 0x1b, 0x26,
+	0xb9, 0x5a, 0xff, 0x69, 0x39, 0xa3, 0x7d, 0x07, 0xfc, 0x00, 0x1e, 0x10, 0x46, 0xfa, 0x62, 0x32,
+	0x2f, 0x28, 0x57, 0x6f, 0x99, 0x54, 0xa8, 0xd6, 0xae, 0x87, 0x7e, 0xaf, 0x73, 0x39, 0xa4, 0x7f,
+	0x82, 0xf7, 0x49, 0xe7, 0xfd, 0xdd, 0x5f, 0x35, 0xe0, 0xd9, 0x59, 0x30, 0x04, 0x0f, 0x09, 0x23,
+	0xe9, 0x18, 0x4b, 0x9a, 0x4e, 0x04, 0x57, 0x74, 0xa9, 0xcc, 0x8e, 0x77, 0x47, 0xf7, 0x09, 0x23,
+	0x09, 0x96, 0xf4, 0x8d, 0x55, 0xe1, 0x73, 0x00, 0x35, 0x59, 0x50, 0x95, 0x0b, 0x72, 0x64, 0x6b,
+	0x86, 0xd5, 0x19, 0xef, 0x8c, 0x71, 0xa0, 0x9f, 0x99, 0xad, 0x0f, 0x34, 0xc7, 0x05, 0x45, 0x75,
+	0x83, 0xde, 0x3b, 0xa2, 0x43, 0x5c, 0xd0, 0xb3, 0xd4, 0xef, 0xb4, 0x92, 0x4c, 0x70, 0x74, 0x75,
+	0x96, 0xfa, 0xd9, 0xea, 0xb0, 0x05, 0x7c, 0x4d, 0x73, 0xaa, 0x16, 0xa2, 0xfa, 0x86, 0xee, 0x18,
+	0x0c, 0x10, 0x46, 0x86, 0x56, 0x81, 0x1d, 0x70, 0xcb, 0xca, 0xaf, 0x32, 0xcd, 0xb0, 0xa2, 0x0b,
+	0xbc, 0x42, 0x9e, 0x21, 0x7c, 0xad, 0x0d, 0xac, 0x04, 0x1f, 0x83, 0x1b, 0x83, 0xe0, 0x92, 0xa1,
+	0x6b, 0x63, 0x5f, 0xeb, 0xff, 0xd7, 0x25, 0xd3, 0x56, 0xce, 0x65, 0xaa, 0xa6, 0x44, 0xa2, 0x9b,
+	0x76, 0x5d, 0x5b, 0x39, 0x97, 0x9f, 0xa6, 0x44, 0x26, 0xc9, 0x7a, 0x1b, 0xb8, 0x9b, 0x6d, 0xe0,
+	0xfe, 0xdd, 0x06, 0xee, 0x8f, 0x5d, 0xe0, 0x6c, 0x76, 0x81, 0xf3, 0x7b, 0x17, 0x38, 0x5f, 0xc2,
+	0x8c, 0xa9, 0x7c, 0x3e, 0x8e, 0x26, 0xa2, 0x88, 0xf5, 0x4b, 0xbc, 0xc8, 0x67, 0xa6, 0xc6, 0xcb,
+	0xd3, 0x69, 0xa8, 0x55, 0x49, 0xe5, 0xd8, 0x33, 0xd7, 0xf1, 0xf2, 0x5f, 0x00, 0x00, 0x00, 0xff,
+	0xff, 0x89, 0xe0, 0x6e, 0x7a, 0x81, 0x02, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -148,6 +261,87 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *Params) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Params) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.HnsTlds) > 0 {
+		for iNdEx := len(m.HnsTlds) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.HnsTlds[iNdEx])
+			copy(dAtA[i:], m.HnsTlds[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.HnsTlds[iNdEx])))
+			i--
+			dAtA[i] = 0x42
+		}
+	}
+	if len(m.IpfsApi) > 0 {
+		i -= len(m.IpfsApi)
+		copy(dAtA[i:], m.IpfsApi)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.IpfsApi)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.IpfsGateway) > 0 {
+		i -= len(m.IpfsGateway)
+		copy(dAtA[i:], m.IpfsGateway)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.IpfsGateway)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.DidNetwork) > 0 {
+		i -= len(m.DidNetwork)
+		copy(dAtA[i:], m.DidNetwork)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.DidNetwork)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.DidMethodVersion) > 0 {
+		i -= len(m.DidMethodVersion)
+		copy(dAtA[i:], m.DidMethodVersion)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.DidMethodVersion)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.DidMethodName) > 0 {
+		i -= len(m.DidMethodName)
+		copy(dAtA[i:], m.DidMethodName)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.DidMethodName)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DidMethodContext) > 0 {
+		i -= len(m.DidMethodContext)
+		copy(dAtA[i:], m.DidMethodContext)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.DidMethodContext)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DidBaseContext) > 0 {
+		i -= len(m.DidBaseContext)
+		copy(dAtA[i:], m.DidBaseContext)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.DidBaseContext)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	offset -= sovGenesis(v)
 	base := offset
@@ -170,6 +364,49 @@ func (m *GenesisState) Size() (n int) {
 	if len(m.DidDocumentList) > 0 {
 		for _, e := range m.DidDocumentList {
 			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *Params) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DidBaseContext)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.DidMethodContext)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.DidMethodName)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.DidMethodVersion)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.DidNetwork)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.IpfsGateway)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.IpfsApi)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.HnsTlds) > 0 {
+		for _, s := range m.HnsTlds {
+			l = len(s)
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
@@ -277,6 +514,312 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if err := m.DidDocumentList[len(m.DidDocumentList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Params) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Params: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DidBaseContext", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DidBaseContext = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DidMethodContext", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DidMethodContext = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DidMethodName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DidMethodName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DidMethodVersion", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DidMethodVersion = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DidNetwork", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DidNetwork = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpfsGateway", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IpfsGateway = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpfsApi", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IpfsApi = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field HnsTlds", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.HnsTlds = append(m.HnsTlds, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

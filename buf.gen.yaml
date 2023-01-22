@@ -3,12 +3,7 @@ version: v1
 plugins:
   - name: gocosmos
     out: .
-    opt:
-      - plugins=interfacetype+grpc
-      - paths=source_relative
-
+    opt: plugins=grpc
   - name: grpc-gateway
     out: .
-    opt:
-      - logtostderr=true
-      - paths=source_relative
+    opt: logtostderr=true,allow_colon_final_segments=true
