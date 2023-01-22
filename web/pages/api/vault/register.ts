@@ -19,7 +19,7 @@ export default async function handler(req: NextRequest) {
     body: body,
   };
   const resp = await fetch(
-    process.env.API_URL + "/sonr-io/highway/vault/new-wallet",
+    process.env.API_URL + "/sonr-io/sonr/vault/new-wallet",
     requestOptions
   );
   const data = await resp.json();

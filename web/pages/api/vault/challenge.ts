@@ -19,7 +19,7 @@ export default async function handler(req: NextRequest) {
   };
 
   const resp = await fetch(
-    apiUrl + "/sonr-io/highway/vault/challenge/" + domain + "/" + username,
+    apiUrl + "/sonr-io/sonr/vault/challenge/" + domain + "/" + username,
     requestOptions
   );
   const data = await resp.json();
