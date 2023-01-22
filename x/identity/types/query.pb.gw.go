@@ -824,21 +824,21 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr-io", "sonr", "identity", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr-io", "sonr", "identity", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Did_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 3}, []string{"sonr-io", "sonr", "identity", "did"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Did_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 3}, []string{"sonr-io", "sonr", "identity", "did"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr-io", "sonr", "identity", "did"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr-io", "sonr", "identity", "did"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_QueryByService_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "service", "service_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_QueryByService_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "service", "service_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_QueryByKeyID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "key", "key_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_QueryByKeyID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "key", "key_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_QueryByAlsoKnownAs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "aka", "aka_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_QueryByAlsoKnownAs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "aka", "aka_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_QueryByMethod_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "method", "method_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_QueryByMethod_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "method", "method_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_QueryByNetwork_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "network", "network_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_QueryByNetwork_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "sonr", "identity", "network", "network_id"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

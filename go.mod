@@ -5,6 +5,7 @@ go 1.18
 require (
 	cosmossdk.io/math v1.0.0-beta.4
 	github.com/cosmos/cosmos-sdk v0.46.7
+	github.com/cosmos/gogoproto v1.4.2
 	github.com/cosmos/ibc-go/v5 v5.2.0
 	github.com/fxamacker/cbor/v2 v2.4.0
 	github.com/go-webauthn/webauthn v0.6.0
@@ -34,6 +35,7 @@ require (
 	github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21
 	github.com/tendermint/tendermint v0.34.24
 	github.com/tendermint/tm-db v0.6.7
+	github.com/ysugimoto/grpc-graphql-gateway v0.22.0
 	golang.org/x/crypto v0.5.0
 	golang.org/x/mobile v0.0.0-20221110043201-43a038452099
 	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37

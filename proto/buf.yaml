@@ -5,17 +5,22 @@ deps:
   - buf.build/cosmos/cosmos-sdk
   - buf.build/cosmos/cosmos-proto
   - buf.build/cosmos/gogo-proto
+  - buf.build/ysugimoto/grpc-graphql-gateway
 lint:
+  ignore:
+    - sonr/identity
+    - common
+    - highway
   allow_comment_ignores: true
   use:
     - DEFAULT
-    - COMMENTS
     - FILE_LOWER_SNAKE_CASE
   except:
     - PACKAGE_DIRECTORY_MATCH
     - UNARY_RPC
     - COMMENT_FIELD
     - COMMENT_ENUM_VALUE
+    - ENUM_VALUE_UPPER_SNAKE_CASE
     - SERVICE_SUFFIX
     - PACKAGE_VERSION_SUFFIX
     - RPC_REQUEST_STANDARD_NAME

@@ -7,3 +7,6 @@ plugins:
   - name: grpc-gateway
     out: .
     opt: logtostderr=true,allow_colon_final_segments=true
+  # - name: protoc-gen-graphql
+  #   out: .
+  #   path: /usr/local/bin/protoc-gen-graphql.darwin
