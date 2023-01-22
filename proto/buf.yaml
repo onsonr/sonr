@@ -10,7 +10,7 @@ lint:
   ignore:
     - sonr/identity
     - common
-    - highway
+    - protocol
   allow_comment_ignores: true
   use:
     - DEFAULT

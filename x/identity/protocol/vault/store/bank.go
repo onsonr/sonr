@@ -8,7 +8,7 @@ import (
 	"github.com/sonr-hq/sonr/pkg/node/config"
 	"github.com/sonr-hq/sonr/x/identity/types"
 	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
-	"github.com/sonr-hq/sonr/x/identity/vault/wallet"
+	"github.com/sonr-hq/sonr/x/identity/protocol/vault/wallet"
 )
 
 type VaultBank struct {

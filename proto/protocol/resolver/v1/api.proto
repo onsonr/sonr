@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrhq.protocol.resolver.v1;
+
+option go_package = "github.com/sonr-hq/sonr/x/identity/types/resolver/v1";

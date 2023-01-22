@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
-	"github.com/sonr-hq/sonr/x/identity/vault/account"
+	"github.com/sonr-hq/sonr/x/identity/protocol/vault/account"
 )
 
 // `Wallet` is an interface that has a method `WalletConfig` that returns a `*v1.WalletConfig` and a

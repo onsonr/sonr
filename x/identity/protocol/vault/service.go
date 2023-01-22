@@ -10,8 +10,8 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonr-hq/sonr/x/identity/protocol/vault/store"
 	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
-	"github.com/sonr-hq/sonr/x/identity/vault/store"
 )
 
 // Default Variables
@@ -34,21 +34,18 @@ type VaultService struct {
 	node   config.IPFSNode
 	rpName string
 	rpIcon string
-	ctx    context.Context
 	cctx   client.Context
 	cache  *gocache.Cache
 }
 
 // It creates a new VaultService and registers it with the gRPC server
-func RegisterGRPCGatewayRoutes(cctx client.Context, mux *runtime.ServeMux) error {
-	ctx := context.Background()
-	node, err := node.NewIPFS(ctx, config.WithClientContext(cctx, true))
+func RegisterVaultService(cctx client.Context, mux *runtime.ServeMux) error {
+	node, err := node.NewIPFS(context.Background(), config.WithClientContext(cctx, true))
 	if err != nil {
 		return err
 	}
 	cache := gocache.New(time.Minute*2, time.Minute*10)
 	vaultService = &VaultService{
-		ctx:    ctx,
 		cctx:   cctx,
 		bank:   store.InitBank(node, cache),
 		node:   node,

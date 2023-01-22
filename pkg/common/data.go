@@ -24,31 +24,6 @@ const (
 	ExtensionAppIDExclude = "appidExclude"
 )
 
-// It converts a `WebauthnCredential` to a `webauthn.Credential`
-func ConvertToWebauthnCredential(credential *WebauthnCredential) webauthn.Credential {
-	return webauthn.Credential{
-		ID:        credential.Id,
-		PublicKey: credential.PublicKey,
-		Authenticator: webauthn.Authenticator{
-			AAGUID:       credential.Authenticator.Aaguid,
-			SignCount:    credential.Authenticator.SignCount,
-			CloneWarning: credential.Authenticator.CloneWarning,
-		},
-	}
-}
-
-// It converts a Package Struct to a WebauthnCredential Struct
-func ConvertFromWebauthnCredential(credential *webauthn.Credential) *WebauthnCredential {
-	return &WebauthnCredential{
-		Id:        credential.ID,
-		PublicKey: credential.PublicKey,
-		Authenticator: &WebauthnAuthenticator{
-			Aaguid:       credential.Authenticator.AAGUID,
-			SignCount:    credential.Authenticator.SignCount,
-			CloneWarning: credential.Authenticator.CloneWarning,
-		},
-	}
-}
 
 // VerifyCounter
 // Step 17 of §7.2. about verifying attestation. If the signature counter value authData.signCount

@@ -113,7 +113,7 @@ func (s *Session) FinishRegistration(credentialCreationData string) (*types.DidD
 		return nil, errors.New(fmt.Sprintf("Failed to make new credential: %s", err))
 	}
 	keyIdx := s.DidDoc.Authentication.Count() + 1
-	err = s.DidDoc.AddWebauthnCredential(common.ConvertFromWebauthnCredential(cred), fmt.Sprintf("webauthn-%v", keyIdx))
+	err = s.DidDoc.AddWebauthnCredential(common.ConvertStdCredential(cred), fmt.Sprintf("webauthn-%v", keyIdx))
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Failed to add webauthn credential: %s", err))
 	}

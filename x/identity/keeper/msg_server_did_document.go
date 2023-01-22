@@ -18,8 +18,7 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 	if isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
-	acc := k.accountKeeper.NewAccountWithAddress(ctx, sdk.AccAddress(msg.Document.Address()))
-	k.accountKeeper.SetAccount(ctx, acc)
+
 	k.SetDidDocument(
 		ctx,
 		*msg.Document,
