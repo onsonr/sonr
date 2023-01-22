@@ -1,0 +1,14 @@
+version: v1
+
+plugins:
+  - name: gocosmos
+    out: .
+    opt:
+      - plugins=interfacetype+grpc
+      - paths=source_relative
+
+  - name: grpc-gateway
+    out: .
+    opt:
+      - logtostderr=true
+      - paths=source_relative

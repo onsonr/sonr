@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/golang-jwt/jwt"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/config"
@@ -63,12 +62,6 @@ func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) 
 	if err != nil {
 		return nil, err
 	}
-	jwt.NewWithClaims(jwt.SigningMethodES384, jwt.MapClaims{
-		"creationOptions": optsJson,
-		"sessionId":       eID,
-		"rpName":          v.rpName,
-		"rpIcon":          v.rpIcon,
-	})
 	return &v1.ChallengeResponse{
 		RpName:          v.rpName,
 		CreationOptions: optsJson,
@@ -84,28 +77,6 @@ func (v *VaultService) NewWallet(ctx context.Context, req *v1.NewWalletRequest) 
 	if err != nil {
 		return nil, err
 	}
-	// fs, err := fs.New(wallet.Address(), fs.WithClientContext(v.cctx, true))
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// err = fs.StoreOfflineWallet(wallet)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// service, err := fs.Export(v.node)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// didDoc.AddService(service)
-	// docReq := types.NewMsgCreateDidDocument(didDoc.Address(), didDoc)
-	// res, err := wallet.SendTx("vault", docReq)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if res.TxResponse.Code != 0 {
-	// 	return nil, errors.New(res.TxResponse.RawLog)
-	// }
-
 	return &v1.NewWalletResponse{
 		Success:     true,
 		Address:     wallet.Address,

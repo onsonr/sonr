@@ -1,16 +1,57 @@
-import { DidDocument, VerificationMethod, VerificationMethods } from "@buf/sonr-hq_sonr.grpc_web/sonr/identity/did_pb";
-import { Box, Center, Flex, Spacer, Tag, Text, useDisclosure } from "@chakra-ui/react";
-import { AppShell, Button, ButtonGroup, Card, CardBody, Field, FormLayout, FormStep, FormStepper, Loader, NextButton, PrevButton, Property, PropertyList, StepForm, StepperCompleted, useSnackbar } from "@saas-ui/react";
+import {
+  DidDocument,
+  VerificationMethod,
+  VerificationMethods,
+} from "@buf/sonr-hq_sonr.grpc_web/sonr/identity/did_pb";
+import {
+  Box,
+  Center,
+  Flex,
+  Spacer,
+  Tag,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
+import {
+  AppShell,
+  Button,
+  ButtonGroup,
+  Card,
+  CardBody,
+  Field,
+  FormLayout,
+  FormStep,
+  FormStepper,
+  Loader,
+  NextButton,
+  PrevButton,
+  Property,
+  PropertyList,
+  StepForm,
+  StepperCompleted,
+  useSnackbar,
+} from "@saas-ui/react";
 import { ModalsProvider, useModals } from "@saas-ui/react";
 import { Web3Address } from "@saas-ui/web3";
+import Head from "next/head";
 import axios from "axios";
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import { FiAtSign, FiCloud, FiDroplet, FiKey, FiLock, FiUserPlus } from "react-icons/fi";
+import {
+  FiAtSign,
+  FiCloud,
+  FiDroplet,
+  FiKey,
+  FiLock,
+  FiUserPlus,
+} from "react-icons/fi";
 import * as Yup from "yup";
 
-import { getBase64WebEncodingFromBytes, getBytesFromBase64 } from "../types/base64";
+import {
+  getBase64WebEncodingFromBytes,
+  getBytesFromBase64,
+} from "../types/base64";
 
 export default function SignUp() {
   const modals = useModals();
@@ -162,243 +203,258 @@ export default function SignUp() {
   };
 
   return (
-    <AppShell
-      maxWidth="100vw"
-      navbar={
-        <Flex borderBottomWidth="1px" py="2" px="4">
-          <Link href="/">
-            <Button variant="unstyled">
-              <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
-                Sonr Sandbox
-              </Text>
-            </Button>
-          </Link>
-          <Spacer />
-          <Box>
-            <Tag size="lg">v0.1.12</Tag>
-          </Box>
-        </Flex>
-      }
-    >
-      <Center>
-        <Box
-          as="main"
-          height={{
-            base: "100%", // 0-48em
-            md: "75%", // 48em-80em,
-            xl: "50%", // 80em+
-          }}
-          width={[
-            "100%", // 0-30em
-            "80%", // 30em-48em
-            "60%", // 48em-62em
-            "40%", // 62em+
-          ]}
-        >
-          <Card
-            maxWidth="600px"
-            variant="solid"
-            title="Sonr.ID"
-            subtitle="Use the Vault MPC Protocol with Webauthn."
-            padding={4}
-            action={
-              <ButtonGroup>
-                <Link href="/">
-                  <Button variant="unstyled" colorScheme="red">
-                    Cancel
-                  </Button>
-                </Link>
-              </ButtonGroup>
-            }
+    <>
+      <Head>
+        <title>Sonr Sandbox | Register</title>
+        <meta
+          name="description"
+          content="API Test Utility for the Sonr Blockchain"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <AppShell
+        maxWidth="100vw"
+        navbar={
+          <Flex borderBottomWidth="1px" py="2" px="4">
+            <Link href="/">
+              <Button variant="unstyled">
+                <Text fontSize="xl" fontWeight="bold" paddingTop={1}>
+                  Sonr Sandbox
+                </Text>
+              </Button>
+            </Link>
+            <Spacer />
+            <Box>
+              <Tag size="lg">v0.1.12</Tag>
+            </Box>
+          </Flex>
+        }
+      >
+        <Center>
+          <Box
+            as="main"
+            height={{
+              base: "100%", // 0-48em
+              md: "75%", // 48em-80em,
+              xl: "50%", // 80em+
+            }}
+            width={[
+              "100%", // 0-30em
+              "80%", // 30em-48em
+              "60%", // 48em-62em
+              "40%", // 62em+
+            ]}
           >
-            <CardBody margin={4}>
-              <StepForm
-                defaultValues={{
-                  deviceLabel: "",
-                  credentialId: "",
-                  credentialType: "",
-                  credentialPublicKey: "",
-                  credentialResponse: "",
-                }}
-                onSubmit={onSubmit}
-              >
-                {({
-                  isFirstStep,
-                  isLastStep,
-                  isCompleted,
-                  nextStep,
-                  prevStep,
-                }) => (
-                  <FormLayout>
-                    <FormStepper orientation="vertical">
-                      <FormStep
-                        name="project"
-                        title="Generate PassKey"
-                        resolver={yupResolver(schemas.credential)}
-                      >
-                        <FormLayout>
-                          <Field
-                            isRequired
-                            name="username"
-                            label="Username"
-                            placeholder="steve"
-                            onInput={(event) => {
-                              // Check if the input is a string
-                              const str = event.target as HTMLInputElement;
-                              const value = str.value;
-                              updateLabel(value);
-                            }}
-                          />
-                          <Button
-                            leftIcon={<FiKey />}
-                            label="New PassKey"
-                            onClick={() =>
-                              label
-                                ? createCredential(nextStep)
-                                : snackbar.error("Please enter a device label")
-                            }
-                            variant="outline"
-                          />
-                        </FormLayout>
-                      </FormStep>
-
-                      <FormStep name="register" title="Register Account">
-                        {loading ? (
-                          <Flex>
-                            <Loader>Running MPC Protocol...</Loader>
-                          </Flex>
-                        ) : (
+            <Card
+              maxWidth="600px"
+              variant="solid"
+              title="Sonr.ID"
+              subtitle="Use the Vault MPC Protocol with Webauthn."
+              padding={4}
+              action={
+                <ButtonGroup>
+                  <Link href="/">
+                    <Button variant="unstyled" colorScheme="red">
+                      Cancel
+                    </Button>
+                  </Link>
+                </ButtonGroup>
+              }
+            >
+              <CardBody margin={4}>
+                <StepForm
+                  defaultValues={{
+                    deviceLabel: "",
+                    credentialId: "",
+                    credentialType: "",
+                    credentialPublicKey: "",
+                    credentialResponse: "",
+                  }}
+                  onSubmit={onSubmit}
+                >
+                  {({
+                    isFirstStep,
+                    isLastStep,
+                    isCompleted,
+                    nextStep,
+                    prevStep,
+                  }) => (
+                    <FormLayout>
+                      <FormStepper orientation="vertical">
+                        <FormStep
+                          name="project"
+                          title="Generate PassKey"
+                          resolver={yupResolver(schemas.credential)}
+                        >
                           <FormLayout>
+                            <Field
+                              isRequired
+                              name="username"
+                              label="Username"
+                              placeholder="steve"
+                              onInput={(event) => {
+                                // Check if the input is a string
+                                const str = event.target as HTMLInputElement;
+                                const value = str.value;
+                                updateLabel(value);
+                              }}
+                            />
+                            <Button
+                              leftIcon={<FiKey />}
+                              label="New PassKey"
+                              onClick={() =>
+                                label
+                                  ? createCredential(nextStep)
+                                  : snackbar.error(
+                                      "Please enter a device label"
+                                    )
+                              }
+                              variant="outline"
+                            />
+                          </FormLayout>
+                        </FormStep>
+
+                        <FormStep name="register" title="Register Account">
+                          {loading ? (
+                            <Flex>
+                              <Loader>Running MPC Protocol...</Loader>
+                            </Flex>
+                          ) : (
+                            <FormLayout>
+                              <PropertyList>
+                                <Property
+                                  label="Label"
+                                  value={label ? label : "No credential"}
+                                />
+                                <Property
+                                  label="Credential ID"
+                                  value={
+                                    <Web3Address
+                                      address={
+                                        credential
+                                          ? credential.id
+                                          : "No credential"
+                                      }
+                                      startLength={credential ? 12 : 15}
+                                      endLength={credential ? 4 : 0}
+                                    />
+                                  }
+                                />
+                                <Property
+                                  label="Type"
+                                  value={
+                                    credential
+                                      ? credential.type
+                                      : "No credential"
+                                  }
+                                />
+                                <Property label="Source" value="WebAuthn" />
+                              </PropertyList>
+                              <ButtonGroup>
+                                <Button
+                                  leftIcon={<FiUserPlus />}
+                                  label="Register Account"
+                                  onClick={() => {
+                                    registerAccount(nextStep);
+                                  }}
+                                />
+                              </ButtonGroup>
+                            </FormLayout>
+                          )}
+                        </FormStep>
+
+                        <FormStep name="faucet" title="Get Tokens from Faucet">
+                          <FormLayout>
+                            <Text>
+                              Please confirm that your information is correct.
+                            </Text>
                             <PropertyList>
-                              <Property
-                                label="Label"
-                                value={label ? label : "No credential"}
-                              />
-                              <Property
-                                label="Credential ID"
-                                value={
-                                  <Web3Address
-                                    address={
-                                      credential
-                                        ? credential.id
-                                        : "No credential"
-                                    }
-                                    startLength={credential ? 12 : 15}
-                                    endLength={credential ? 4 : 0}
-                                  />
-                                }
-                              />
-                              <Property
-                                label="Type"
-                                value={
-                                  credential ? credential.type : "No credential"
-                                }
-                              />
-                              <Property label="Source" value="WebAuthn" />
+                              <Property label="Address" />
+                              <Button
+                                variant="outline"
+                                leftIcon={<FiAtSign />}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    address ? address : ""
+                                  );
+                                  snackbar.info(
+                                    "Copied Account Address to Clipboard."
+                                  );
+                                }}
+                              >
+                                <Web3Address
+                                  address={address ? address : "N/A"}
+                                  startLength={32}
+                                  endLength={4}
+                                />
+                              </Button>
+                              <Property label="Controller" />
+                              <Button
+                                variant="outline"
+                                leftIcon={<FiCloud />}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    vaultCid ? vaultCid : ""
+                                  );
+                                  snackbar.info(
+                                    "Copied WebAuthn Controller to Clipboard."
+                                  );
+                                }}
+                              >
+                                <Web3Address
+                                  address={vaultCid ? vaultCid : "N/A"}
+                                  startLength={32}
+                                  endLength={4}
+                                />
+                              </Button>
                             </PropertyList>
                             <ButtonGroup>
                               <Button
-                                leftIcon={<FiUserPlus />}
-                                label="Register Account"
-                                onClick={() => {
-                                  registerAccount(nextStep);
-                                }}
+                                leftIcon={<FiDroplet />}
+                                label="Get Airdrop"
+                                onClick={() =>
+                                  getAirDrop(nextStep).then(() => {
+                                    snackbar.success(
+                                      "Airdrop Successful. Please wait for the transaction to confirm."
+                                    );
+                                  })
+                                }
+                                variant="primary"
                               />
                             </ButtonGroup>
                           </FormLayout>
-                        )}
-                      </FormStep>
+                        </FormStep>
+                        <FormStep
+                          name="confirm"
+                          title="Broadcast Document Transaction"
+                        >
+                          <FormLayout>
+                            <Text>
+                              Please confirm that your information is correct.
+                            </Text>
+                            <ButtonGroup>
+                              <NextButton />
+                              <PrevButton variant="ghost" />
+                            </ButtonGroup>
+                          </FormLayout>
+                        </FormStep>
 
-                      <FormStep name="faucet" title="Get Tokens from Faucet">
-                        <FormLayout>
-                          <Text>
-                            Please confirm that your information is correct.
-                          </Text>
-                          <PropertyList>
-                            <Property label="Address" />
-                            <Button
-                              variant="outline"
-                              leftIcon={<FiAtSign />}
-                              onClick={() => {
-                                navigator.clipboard.writeText(
-                                  address ? address : ""
-                                );
-                                snackbar.info(
-                                  "Copied Account Address to Clipboard."
-                                );
-                              }}
-                            >
-                              <Web3Address
-                                address={address ? address : "N/A"}
-                                startLength={32}
-                                endLength={4}
-                              />
-                            </Button>
-                            <Property label="Controller" />
-                            <Button
-                              variant="outline"
-                              leftIcon={<FiCloud />}
-                              onClick={() => {
-                                navigator.clipboard.writeText(
-                                  vaultCid ? vaultCid : ""
-                                );
-                                snackbar.info(
-                                  "Copied WebAuthn Controller to Clipboard."
-                                );
-                              }}
-                            >
-                              <Web3Address
-                                address={vaultCid ? vaultCid : "N/A"}
-                                startLength={32}
-                                endLength={4}
-                              />
-                            </Button>
-                          </PropertyList>
-                          <ButtonGroup>
-                            <Button
-                              leftIcon={<FiDroplet />}
-                              label="Get Airdrop"
-                              onClick={() =>
-                                getAirDrop(nextStep).then(() => {
-                                  snackbar.success(
-                                    "Airdrop Successful. Please wait for the transaction to confirm."
-                                  );
-                                })
-                              }
-                              variant="primary"
-                            />
-                          </ButtonGroup>
-                        </FormLayout>
-                      </FormStep>
-                      <FormStep
-                        name="confirm"
-                        title="Broadcast Document Transaction"
-                      >
-                        <FormLayout>
-                          <Text>
-                            Please confirm that your information is correct.
-                          </Text>
-                          <ButtonGroup>
-                            <NextButton />
-                            <PrevButton variant="ghost" />
-                          </ButtonGroup>
-                        </FormLayout>
-                      </FormStep>
-
-                      <StepperCompleted>
-                        <Loader>
-                          We are setting up your project, just a moment...
-                        </Loader>
-                      </StepperCompleted>
-                    </FormStepper>
-                  </FormLayout>
-                )}
-              </StepForm>
-            </CardBody>
-          </Card>
-        </Box>
-      </Center>
-    </AppShell>
+                        <StepperCompleted>
+                          <Loader>
+                            We are setting up your project, just a moment...
+                          </Loader>
+                        </StepperCompleted>
+                      </FormStepper>
+                    </FormLayout>
+                  )}
+                </StepForm>
+              </CardBody>
+            </Card>
+          </Box>
+        </Center>
+      </AppShell>
+    </>
   );
 }
 

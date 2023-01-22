@@ -3,6 +3,9 @@ name: buf.build/sonr-hq/sonr
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/cosmos/cosmos-sdk
+  - buf.build/cosmos/cosmos-proto
+  - buf.build/cosmos/gogo-proto
+  - buf.build/sonr-hq/sonr
 lint:
   allow_comment_ignores: true
   use:

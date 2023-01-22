@@ -44,7 +44,7 @@ build-all:
 	GOOS=darwin GOARCH=amd64 go build -o ./build/sonr-darwin-amd64 ./cmd/sonrd/main.go
 
 do-checksum:
-	cd build && sha256sum sonr-linux-amd64 sonr-linux-arm64 sonr-darwin-amd64 > myproject_checksum
+	cd build && sha256sum sonr-linux-amd64 sonr-linux-arm64 sonr-darwin-amd64 > sonr_checksum
 
 build-with-checksum: build-all do-checksum
 
