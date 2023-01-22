@@ -1,15 +1,15 @@
 {
   "folders": [
     {
-      "path": ".",
+      "path": "..",
       "name": "⚡️ Blockchain"
     },
     {
-      "path": "./web",
+      "path": "../web",
       "name": "🌐 Web UI"
     },
     {
-      "path": "./docs",
+      "path": "../docs",
       "name": "📚 Documentation"
     }
   ],

@@ -1,4 +1,4 @@
-package keeper
+package store
 
 import (
 	"errors"
@@ -6,9 +6,9 @@ import (
 
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/pkg/vault/core/wallet"
-	v1 "github.com/sonr-hq/sonr/pkg/vault/types/v1"
 	"github.com/sonr-hq/sonr/x/identity/types"
+	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
+	"github.com/sonr-hq/sonr/x/identity/vault/wallet"
 )
 
 type VaultBank struct {
@@ -20,7 +20,7 @@ type VaultBank struct {
 }
 
 // Creates a new Vault
-func CreateBank(node config.IPFSNode, cache *gocache.Cache) *VaultBank {
+func InitBank(node config.IPFSNode, cache *gocache.Cache) *VaultBank {
 	return &VaultBank{
 		node:  node,
 		cache: cache,
@@ -58,4 +58,23 @@ func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*typ
 	}
 	didDoc.AddAssertion(primAcc.GetAssertionMethod())
 	return didDoc, wallet.WalletConfig(), nil
+}
+
+func (v *VaultBank) getEntryFromCache(id string) (*Session, error) {
+	val, ok := v.cache.Get(id)
+	if !ok {
+		return nil, errors.New("Failed to find entry for ID")
+	}
+	e, ok := val.(*Session)
+	if !ok {
+		return nil, errors.New("Invalid type for session entry")
+	}
+	return e, nil
+}
+
+func (v *VaultBank) putEntryIntoCache(entry *Session) error {
+	if entry == nil {
+		return errors.New("Entry cannot be nil to put into cache")
+	}
+	return v.cache.Add(entry.ID, entry, -1)
 }

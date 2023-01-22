@@ -3,13 +3,15 @@ package vault
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
+	"github.com/sonr-hq/sonr/pkg/node"
 	"github.com/sonr-hq/sonr/pkg/node/config"
-	bank "github.com/sonr-hq/sonr/pkg/vault/keeper"
-	v1 "github.com/sonr-hq/sonr/pkg/vault/types/v1"
+	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
+	"github.com/sonr-hq/sonr/x/identity/vault/store"
 )
 
 // Default Variables
@@ -20,6 +22,7 @@ var (
 		"https://sandbox.sonr.network",
 		"localhost:3000",
 	}
+	vaultService *VaultService
 )
 
 // `VaultService` is a type that implements the `v1.VaultServer` interface, and has a field called
@@ -27,34 +30,42 @@ var (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the VaultService is running on.
 type VaultService struct {
-	bank   *bank.VaultBank
+	bank   *store.VaultBank
 	node   config.IPFSNode
 	rpName string
 	rpIcon string
+	ctx    context.Context
 	cctx   client.Context
+	cache  *gocache.Cache
 }
 
 // It creates a new VaultService and registers it with the gRPC server
-func NewService(ctx client.Context, mux *runtime.ServeMux, hway config.IPFSNode, cache *gocache.Cache) (*VaultService, error) {
-	vaultBank := bank.CreateBank(hway, cache)
-	srv := &VaultService{
-		cctx:   ctx,
-		bank:   vaultBank,
-		node:   hway,
+func RegisterGRPCGatewayRoutes(cctx client.Context, mux *runtime.ServeMux) error {
+	ctx := context.Background()
+	node, err := node.NewIPFS(ctx, config.WithClientContext(cctx, true))
+	if err != nil {
+		return err
+	}
+	cache := gocache.New(time.Minute*2, time.Minute*10)
+	vaultService = &VaultService{
+		ctx:    ctx,
+		cctx:   cctx,
+		bank:   store.InitBank(node, cache),
+		node:   node,
 		rpName: "Sonr",
 		rpIcon: "https://raw.githubusercontent.com/sonr-hq/sonr/master/docs/static/favicon.png",
-		// sonrClient: client,
+		cache:  cache,
 	}
-	err := v1.RegisterVaultHandlerServer(context.Background(), mux, srv)
+	err = v1.RegisterVaultHandlerServer(context.Background(), mux, vaultService)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return srv, nil
+	return nil
 }
 
 // Challeng returns a random challenge for the client to sign.
 func (v *VaultService) Challenge(ctx context.Context, req *v1.ChallengeRequest) (*v1.ChallengeResponse, error) {
-	session, err := bank.NewEntry(req.RpId, req.Username)
+	session, err := store.NewEntry(req.RpId, req.Username)
 	if err != nil {
 		return nil, err
 	}

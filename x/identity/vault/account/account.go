@@ -2,15 +2,16 @@ package account
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/shengdoushi/base58"
-	"github.com/sonr-hq/sonr/pkg/vault/core/account/internal/mpc"
-	"github.com/sonr-hq/sonr/pkg/vault/core/account/internal/network"
 	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonr-hq/sonr/x/identity/vault/account/internal/mpc"
+	"github.com/sonr-hq/sonr/x/identity/vault/account/internal/network"
 
-	v1 "github.com/sonr-hq/sonr/pkg/vault/types/v1"
+	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
@@ -113,7 +114,7 @@ func (w *walletAccountImpl) Bip32Derive(accName string, idx uint32, addrPrefix s
 // Returning the verification method for the account.
 func (w *walletAccountImpl) GetAssertionMethod() *types.VerificationMethod {
 	return &types.VerificationMethod{
-		ID:                  types.ConvertAccAddressToDid(w.accountConfig.Address),
+		ID:                  fmt.Sprintf("%s#%s", types.ConvertAccAddressToDid(w.accountConfig.Address), w.accountConfig.Name),
 		Type:                types.KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019,
 		Controller:          types.ConvertAccAddressToDid(w.accountConfig.Address),
 		PublicKeyMultibase:  base58.Encode(w.accountConfig.PublicKey, base58.BitcoinAlphabet),

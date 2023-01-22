@@ -5,6 +5,5 @@ release/
 .DS_Store
 **/.testnets
 .env
-.vscode
 .spectral.mjs
 .vercel

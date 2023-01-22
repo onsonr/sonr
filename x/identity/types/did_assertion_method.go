@@ -66,28 +66,6 @@ func (d *DidDocument) AddAssertion(v *VerificationMethod) {
 	d.AssertionMethod.Add(v)
 }
 
-// func (d *DidDocument) AddBlockchainAccount(wallet crypto.WalletShare) error {
-// 	pb, err := wallet.PublicKey()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	frag := fmt.Sprintf("%s-%d", wallet.Prefix(), d.GetBlockchainAccountCount(wallet.Prefix())+1)
-// 	vm, err := NewSecp256k1VM(pb, WithBlockchainAccount(wallet.Address()), WithIDFragmentSuffix(frag))
-// 	if err != nil {
-// 		return err
-// 	}
-// 	data := map[string]string{
-// 		"index":      fmt.Sprint(wallet.Index()),
-// 		"prefix":     wallet.Prefix(),
-// 		"party_id":   string(wallet.SelfID()),
-// 		"blockchain": ConvertBoolToString(true),
-// 	}
-// 	vm.SetMetadata(data)
-// 	d.VerificationMethod.Add(vm)
-// 	d.AssertionMethod.Add(vm)
-// 	return nil
-// }
-
 // GetBlockchainAccountCount returns the number of Blockchain Accounts by the address prefix
 func (d *DidDocument) GetBlockchainAccountCount(prefix string) int {
 	return len(d.AssertionMethod.FindByFragment(prefix))

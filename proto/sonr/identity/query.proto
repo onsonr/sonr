@@ -4,7 +4,6 @@ package sonrhq.sonr.identity;
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "graphql/graphql.proto";
 import "sonr/identity/did.proto";
 import "sonr/identity/genesis.proto";
 import "sonr/identity/vc.proto";
@@ -66,7 +65,7 @@ message QueryParamsResponse {
 }
 
 message QueryGetDidRequest {
-  string did = 1 [(graphql.field) = {required: true}];
+  string did = 1;
 }
 
 message QueryGetDidResponse {
@@ -74,7 +73,7 @@ message QueryGetDidResponse {
 }
 
 message QueryByServiceRequest {
-  string service_id = 1 [(graphql.field) = {required: true}];
+  string service_id = 1;
 }
 
 message QueryByServiceResponse {
@@ -82,7 +81,7 @@ message QueryByServiceResponse {
 }
 
 message QueryByKeyIDRequest {
-  string key_id = 1 [(graphql.field) = {required: true}];
+  string key_id = 1;
 }
 
 message QueryByKeyIDResponse {
@@ -90,7 +89,7 @@ message QueryByKeyIDResponse {
 }
 
 message QueryByAlsoKnownAsRequest {
-  string aka_id = 1 [(graphql.field) = {required: true}];
+  string aka_id = 1;
 }
 
 message QueryByAlsoKnownAsResponse {

@@ -6,7 +6,7 @@ import (
 
 	peer "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sonr-hq/sonr/pkg/common/crypto"
-	v1 "github.com/sonr-hq/sonr/pkg/vault/types/v1"
+	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"

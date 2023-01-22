@@ -7,8 +7,8 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/sonr-hq/sonr/pkg/vault/core/account"
-	v1 "github.com/sonr-hq/sonr/pkg/vault/types/v1"
+	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
+	"github.com/sonr-hq/sonr/x/identity/vault/account"
 )
 
 // `Wallet` is an interface that has a method `WalletConfig` that returns a `*v1.WalletConfig` and a
