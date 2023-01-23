@@ -1,7 +1,7 @@
 package vc
 
 import (
-	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
+	"github.com/sonrhq/core/x/identity/types/internal/marshal"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/libp2p/go-libp2p/core/crypto"
-	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonrhq/core/pkg/node/config"
 )
 
 // TestBoxer is a test function

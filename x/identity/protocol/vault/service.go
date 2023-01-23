@@ -9,11 +9,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gocache "github.com/patrickmn/go-cache"
-	"github.com/sonr-hq/sonr/pkg/node"
-	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/x/identity/protocol/vault/store"
-	"github.com/sonr-hq/sonr/x/identity/types"
-	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
+	"github.com/sonrhq/core/pkg/node"
+	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/x/identity/protocol/vault/store"
+	"github.com/sonrhq/core/x/identity/types"
+	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 )
 
 // Default Variables

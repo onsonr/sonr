@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // SetDomainRecord set a specific DomainRecord in the store from its index

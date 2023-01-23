@@ -3,7 +3,7 @@ package motor
 import (
 	"context"
 
-	"github.com/sonr-hq/sonr/bind/motor"
+	"github.com/sonrhq/core/bind/motor"
 	_ "golang.org/x/mobile/bind"
 )
 

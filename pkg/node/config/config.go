@@ -4,8 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	p2pcrypto "github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/shengdoushi/base58"
-	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 

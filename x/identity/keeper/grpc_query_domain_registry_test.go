@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	keepertest "github.com/sonr-hq/sonr/testutil/keeper"
-	"github.com/sonr-hq/sonr/testutil/nullify"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	keepertest "github.com/sonrhq/core/testutil/keeper"
+	"github.com/sonrhq/core/testutil/nullify"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // Prevent strconv unused error

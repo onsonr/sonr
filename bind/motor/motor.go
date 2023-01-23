@@ -14,9 +14,9 @@ package motor
 import (
 	"context"
 
-	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node"
-	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/node"
+	"github.com/sonrhq/core/pkg/node/config"
 )
 
 type MotorInstance struct {

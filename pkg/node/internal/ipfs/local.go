@@ -18,9 +18,9 @@ import (
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
-	cv1 "github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	cv1 "github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // `localIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a

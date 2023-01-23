@@ -7,11 +7,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/shengdoushi/base58"
-	"github.com/sonr-hq/sonr/x/identity/protocol/vault/account/internal/mpc"
-	"github.com/sonr-hq/sonr/x/identity/protocol/vault/account/internal/network"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/x/identity/protocol/vault/account/internal/mpc"
+	"github.com/sonrhq/core/x/identity/protocol/vault/account/internal/network"
+	"github.com/sonrhq/core/x/identity/types"
 
-	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
+	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"

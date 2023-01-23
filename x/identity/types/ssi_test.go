@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 func TestSSIFormatString(t *testing.T) {

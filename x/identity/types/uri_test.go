@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	odid "github.com/ockam-network/did"
-	uri "github.com/sonr-hq/sonr/x/identity/types"
+	uri "github.com/sonrhq/core/x/identity/types"
 	"github.com/stretchr/testify/assert"
 )
 

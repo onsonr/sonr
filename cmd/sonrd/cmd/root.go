@@ -37,8 +37,8 @@ import (
 
 	// this line is used by starport scaffolding # root/moduleImport
 
-	"github.com/sonr-hq/sonr/app"
-	appparams "github.com/sonr-hq/sonr/app/params"
+	"github.com/sonrhq/core/app"
+	appparams "github.com/sonrhq/core/app/params"
 )
 
 // NewRootCmd creates a new root command for a Cosmos SDK application

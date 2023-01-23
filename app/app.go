@@ -104,14 +104,14 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
-	identitymodule "github.com/sonr-hq/sonr/x/identity"
-	identitymodulekeeper "github.com/sonr-hq/sonr/x/identity/keeper"
-	identitymoduletypes "github.com/sonr-hq/sonr/x/identity/types"
+	identitymodule "github.com/sonrhq/core/x/identity"
+	identitymodulekeeper "github.com/sonrhq/core/x/identity/keeper"
+	identitymoduletypes "github.com/sonrhq/core/x/identity/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
-	appparams "github.com/sonr-hq/sonr/app/params"
-	"github.com/sonr-hq/sonr/docs"
+	appparams "github.com/sonrhq/core/app/params"
+	"github.com/sonrhq/core/docs"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 	fmt "fmt"
 	"strings"
 
-	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
+	"github.com/sonrhq/core/x/identity/types/internal/marshal"
 )
 
 func NewIPNSService(id string, endpoint string) *Service {

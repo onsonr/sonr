@@ -16,7 +16,7 @@ import (
 	klibp2p "github.com/ipfs/kubo/core/node/libp2p"
 	"github.com/ipfs/kubo/plugin/loader"
 	"github.com/ipfs/kubo/repo/fsrepo"
-	snrConfig "github.com/sonr-hq/sonr/pkg/node/config"
+	snrConfig "github.com/sonrhq/core/pkg/node/config"
 )
 
 // Initialize creates a new local IPFS node

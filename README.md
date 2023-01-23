@@ -4,12 +4,13 @@
 
 [![Sonr Logo Banner](docs/static/images/gh-banner.png)](https://snr.la/h)
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/sonr-hq/sonr.svg)](https://pkg.go.dev/github.com/sonr-hq/sonr)
-[![Go Report Card](https://goreportcard.com/badge/github.com/sonr-hq/sonr)](https://goreportcard.com/report/github.com/sonr-hq/sonr)
-[![License](https://img.shields.io/github/license/sonr-hq/sonr)](https://github.com/sonr-hq/sonr)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/core)](https://goreportcard.com/report/github.com/sonrhq/core)
+[![License](https://img.shields.io/github/license/sonr-hq/sonr)](https://github.com/sonrhq/core)
 
 </div>
 
+# Sonr - Core Node
 
 <p align="center"> Sonr is a <strong>peer-to-peer identity</strong> and <strong>asset management system</strong> that leverages <italic>DID Documents, WebAuthn, and IPFS</italic> - to provide users with a <strong>secure, user-friendly</strong> way to manage their <strong>digital identity and assets.</strong>
     <br>
@@ -23,7 +24,7 @@
 You can setup your macOS or Linux machine to be ready for local development with these steps:
 
 ```sh
-git clone https://github.com/sonr-hq/sonr.git       # Clone the repository
+git clone https://github.com/sonrhq/core.git       # Clone the repository
 sh scripts/install.sh                               # Install dependencies
 task                                                # Display the available commands
 ```
@@ -101,6 +102,6 @@ Production endpoints are available at the following URLs:
 
 For help and discussion around DID Documents, best practices, and more, join us on [Discord](https://snr.la/dcrd).
 
-For updates on the Sonr Daemon, [follow this repo on GitHub](https://github.com/sonr-hq/sonr).
+For updates on the Sonr Daemon, [follow this repo on GitHub](https://github.com/sonrhq/core).
 
 For feature requests, bugs, or technical questions, [submit feedback here](https://roadmap.sonr.io). For general inquiries or inclusion in our upcoming feature betas, reach out on [Twitter](https://snr.la/tw).

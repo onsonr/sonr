@@ -10,7 +10,7 @@ BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
 APP = ./
 MOCKS_DIR = $(CURDIR)/tests/mocks
-HTTPS_GIT := https://github.com/sonr-hq/sonr.git
+HTTPS_GIT := https://github.com/sonrhq/core.git
 DOCKER := $(shell which docker)
 PROJECT_NAME = $(shell git remote get-url origin | xargs basename -s .git)
 # RocksDB is a native dependency, so we don't assume the library is installed.

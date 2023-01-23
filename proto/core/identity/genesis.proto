@@ -1,12 +1,12 @@
 syntax = "proto3";
-package sonrhq.sonr.identity;
+package sonrhq.core.identity;
 
 import "gogoproto/gogo.proto";
-import "sonr/identity/did.proto";
-import "sonr/identity/hns.proto";
+import "core/identity/did.proto";
+import "core/identity/hns.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
-option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // GenesisState defines the identity module's genesis state.
 message GenesisState {

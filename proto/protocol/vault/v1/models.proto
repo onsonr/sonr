@@ -5,9 +5,9 @@ package sonrhq.protocol.vault.v1;
 
 import "common/v1/data.proto";
 import "google/api/annotations.proto";
-import "sonr/identity/did.proto";
+import "core/identity/did.proto";
 
-option go_package = "github.com/sonr-hq/sonr/x/identity/types/vault/v1";
+option go_package = "github.com/sonrhq/core/x/identity/types/vault/v1";
 
 // Account is used for storing all credentials and their locations to be encrypted.
 message AccountInfo {

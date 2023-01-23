@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sonr-hq/sonr/app"
+	"github.com/sonrhq/core/app"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"

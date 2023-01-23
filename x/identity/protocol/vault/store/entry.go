@@ -8,8 +8,8 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/google/uuid"
-	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // `Session` is a struct that contains a `string` (`ID`), a `string` (`RPID`), a

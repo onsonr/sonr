@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sonr-hq/sonr/testutil/nullify"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/testutil/nullify"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // Prevent strconv unused error

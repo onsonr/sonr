@@ -1,9 +1,9 @@
 syntax = "proto3";
-package sonrhq.sonr.identity;
+package sonrhq.core.identity;
 
-import "sonr/identity/did.proto";
+import "core/identity/did.proto";
 
-option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 message DomainRecord {
   string index = 1;

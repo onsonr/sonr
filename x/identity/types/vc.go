@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/shengdoushi/base58"
-	common "github.com/sonr-hq/sonr/pkg/common"
+	common "github.com/sonrhq/core/pkg/common"
 )
 
 func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential, error) {

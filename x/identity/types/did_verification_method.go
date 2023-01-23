@@ -11,8 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
-	common "github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/common/crypto/jwx"
+	common "github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/common/crypto/jwx"
 )
 
 var (

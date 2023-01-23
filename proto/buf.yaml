@@ -8,9 +8,9 @@ deps:
   - buf.build/ysugimoto/grpc-graphql-gateway
 lint:
   ignore:
-    - sonr/identity
+    - core/identity
     - common
-    - protocol/vault
+    - protocol/vault/v1
   allow_comment_ignores: true
   use:
     - DEFAULT

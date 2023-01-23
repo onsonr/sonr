@@ -3,7 +3,7 @@ package cmd
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sonr-hq/sonr/app"
+	"github.com/sonrhq/core/app"
 )
 
 func initSDKConfig() {

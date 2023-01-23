@@ -3,8 +3,8 @@ package vc
 import (
 	"encoding/json"
 
-	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
-	ssi "github.com/sonr-hq/sonr/x/identity/types/ssi"
+	"github.com/sonrhq/core/x/identity/types/internal/marshal"
+	ssi "github.com/sonrhq/core/x/identity/types/ssi"
 )
 
 // VerifiablePresentationType is the default credential type required for every credential

@@ -27,7 +27,7 @@ tasks:
       - mintlify dev
     interactive: true
 
-  chain:serve:
+  serve:
     desc: Serve the blockchain locally
     aliases:
       - "serve"
@@ -38,8 +38,10 @@ tasks:
     cmds:
       - ignite chain serve --reset-once --clear-cache --skip-proto
     interactive: true
+    deps:
+      - generate
 
-  chain:generate:
+  generate:
     aliases:
       - "gen"
     dir: scripts
@@ -51,20 +53,6 @@ tasks:
     cmds:
       - sh generate.sh
 
-  chain:build:
-    aliases:
-      - "build"
-    desc: Build the blockchain
-    summary: |
-      Build Blockchain
-
-      This task will build the blockchain
-    cmds:
-      - ignite chain build --release
-    interactive: true
-    deps:
-      - chain:generate
-
   docker:build:
     desc: Build the docker image
     summary: |
@@ -73,8 +61,8 @@ tasks:
       This task will build the docker image
     cmds:
       - docker build -t sonr .
-      - docker tag sonr ghcr.io/sonr-hq/sonrd:latest
-      - docker tag sonr ghcr.io/sonr-hq/sonrd:{{.VERSION}}
+      - docker tag sonr ghcr.io/sonrhq/sonr:latest
+      - docker tag sonr ghcr.io/sonrhq/sonr:{{.VERSION}}
 
   docker:push:
     aliases:
@@ -85,54 +73,26 @@ tasks:
 
       This task will push the docker image
     cmds:
-      - docker push ghcr.io/sonr-hq/sonrd:latest
-      - docker push ghcr.io/sonr-hq/sonrd:{{.VERSION}}
+      - docker push ghcr.io/sonrhq/sonr:latest
+      - docker push ghcr.io/sonrhq/sonr:{{.VERSION}}
     deps:
       - docker:build
 
-  motor:ios:
-    desc: Bind the Motor iOS Framework
+  motor:bind:
+    desc: Bind All Motor Frameworks
     dir: scripts
     dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
     aliases:
-      - "ios"
+      - "bind"
     env:
       TAR_COMPRESS: true
     summary: |
-      Bind Motor iOS Framework
+      Bind Motor Mobile Frameworks
 
-      This task will bind the Motor iOS Framework
+      This task will bind the Motor Android, iOS, Wasm Framework
     cmds:
       - sh bind.sh -i
-
-  motor:android:
-    desc: Bind the Motor Android Framework
-    dir: scripts
-    dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
-    aliases:
-      - "android"
-    env:
-      TAR_COMPRESS: true
-    summary: |
-      Bind Motor Android Framework
-
-      This task will bind the Motor Android Framework
-    cmds:
       - sh bind.sh -a
-
-  motor:web:
-    desc: Build the Motor WASM Framework
-    dir: scripts
-    dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
-    env:
-      TAR_COMPRESS: true
-    aliases:
-      - "wasm"
-    summary: |
-      Bind Motor Web Framework
-
-      This task will bind the Motor Web Framework
-    cmds:
       - sh bind.sh -w
 
   web:dev:

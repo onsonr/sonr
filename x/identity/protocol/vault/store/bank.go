@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	gocache "github.com/patrickmn/go-cache"
-	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/x/identity/protocol/vault/wallet"
-	"github.com/sonr-hq/sonr/x/identity/types"
-	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
+	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/x/identity/protocol/vault/wallet"
+	"github.com/sonrhq/core/x/identity/types"
+	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 )
 
 type VaultBank struct {

@@ -5,7 +5,7 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
+	"github.com/sonrhq/core/x/identity/types/internal/marshal"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
