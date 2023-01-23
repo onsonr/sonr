@@ -1,9 +1,9 @@
 syntax = "proto3";
-package sonrhq.sonr.identity;
-import "sonr/identity/ssi.proto";
+package sonrhq.core.identity;
+import "core/identity/ssi.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
-option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Proof represents a credential/presentation proof as defined by the Linked Data Proofs 1.0 specification (https://w3c-ccg.github.io/ld-proofs/).
 message Proof {

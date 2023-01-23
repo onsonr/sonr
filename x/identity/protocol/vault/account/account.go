@@ -7,11 +7,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/shengdoushi/base58"
-	"github.com/sonr-hq/sonr/x/identity/types"
-	"github.com/sonr-hq/sonr/x/identity/protocol/vault/account/internal/mpc"
-	"github.com/sonr-hq/sonr/x/identity/protocol/vault/account/internal/network"
+	"github.com/sonrhq/core/x/identity/protocol/vault/account/internal/mpc"
+	"github.com/sonrhq/core/x/identity/protocol/vault/account/internal/network"
+	"github.com/sonrhq/core/x/identity/types"
 
-	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
+	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
@@ -35,6 +35,9 @@ type WalletAccount interface {
 
 	// GetAssertionMethod returns the verification method for the account
 	GetAssertionMethod() *types.VerificationMethod
+
+	// Info returns the account information
+	Info() *v1.AccountInfo
 
 	// IsPrimary returns true if the account is the primary account
 	IsPrimary() bool
@@ -133,6 +136,16 @@ func (w *walletAccountImpl) GetAssertionMethod() *types.VerificationMethod {
 				Value: "cmp",
 			},
 		},
+	}
+}
+
+// Returning the account information.
+func (w *walletAccountImpl) Info() *v1.AccountInfo {
+	return &v1.AccountInfo{
+		Label:   w.accountConfig.Name,
+		Address: w.accountConfig.Address,
+		Index:   w.accountConfig.Index,
+		Network: w.accountConfig.Bech32Prefix,
 	}
 }
 

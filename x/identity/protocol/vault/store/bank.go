@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	gocache "github.com/patrickmn/go-cache"
-	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/x/identity/types"
-	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
-	"github.com/sonr-hq/sonr/x/identity/protocol/vault/wallet"
+	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/x/identity/protocol/vault/wallet"
+	"github.com/sonrhq/core/x/identity/types"
+	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 )
 
 type VaultBank struct {
@@ -58,6 +58,28 @@ func (v *VaultBank) FinishRegistration(sessionId string, credsJson string) (*typ
 	}
 	didDoc.AddAssertion(primAcc.GetAssertionMethod())
 	return didDoc, wallet.WalletConfig(), nil
+}
+
+func (v *VaultBank) StartLogin(entry *Session) (string, string, error) {
+	optsJson, err := entry.BeginLogin()
+	if err != nil {
+		return "", "", err
+	}
+	v.putEntryIntoCache(entry)
+	return optsJson, entry.ID, nil
+}
+
+func (v *VaultBank) FinishLogin(sessionId string, credsJson string) (bool, error) {
+	// Get Session
+	entry, err := v.getEntryFromCache(sessionId)
+	if err != nil {
+		return false, err
+	}
+	didDoc, err := entry.FinishLogin(credsJson)
+	if err != nil {
+		return false, err
+	}
+	return didDoc, nil
 }
 
 func (v *VaultBank) getEntryFromCache(id string) (*Session, error) {

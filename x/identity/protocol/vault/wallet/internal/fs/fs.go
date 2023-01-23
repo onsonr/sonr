@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	files "github.com/ipfs/go-ipfs-files"
-	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // VaultFS provides an interface for arbitrary Sonr Network Nodes to have IPFS configuration

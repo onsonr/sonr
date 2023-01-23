@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/marstr/guid"
 
-	did "github.com/sonr-hq/sonr/x/identity/types"
+	did "github.com/sonrhq/core/x/identity/types"
 )
 
 // `JWT` is a struct that has a field called `options` of type `JWTOptions`.

@@ -1,7 +1,7 @@
 syntax = "proto3";
-package sonrhq.sonr.identity;
+package sonrhq.core.identity;
 
-option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // KeyType is the type of key used to sign a DID document.
 enum KeyType {

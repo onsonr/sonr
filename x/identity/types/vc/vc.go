@@ -5,9 +5,9 @@ import (
 	"net/url"
 	"time"
 
-	ssi "github.com/sonr-hq/sonr/x/identity/types/ssi"
+	ssi "github.com/sonrhq/core/x/identity/types/ssi"
 
-	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
+	"github.com/sonrhq/core/x/identity/types/internal/marshal"
 )
 
 // VerifiableCredentialType is the default credential type required for every credential

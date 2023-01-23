@@ -3,7 +3,7 @@ package network
 import (
 	"sync"
 
-	"github.com/sonr-hq/sonr/pkg/common/crypto"
+	"github.com/sonrhq/core/pkg/common/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )

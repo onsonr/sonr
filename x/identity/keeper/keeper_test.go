@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	testutil "github.com/sonr-hq/sonr/testutil/keeper"
-	"github.com/sonr-hq/sonr/x/identity/keeper"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	testutil "github.com/sonrhq/core/testutil/keeper"
+	"github.com/sonrhq/core/x/identity/keeper"
+	"github.com/sonrhq/core/x/identity/types"
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

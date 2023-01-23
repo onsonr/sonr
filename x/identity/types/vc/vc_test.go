@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	ssi "github.com/sonr-hq/sonr/x/identity/types/ssi"
+	ssi "github.com/sonrhq/core/x/identity/types/ssi"
 
 	"github.com/stretchr/testify/assert"
 )

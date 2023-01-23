@@ -8,9 +8,9 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/sonr-hq/sonr/testutil"
-	"github.com/sonr-hq/sonr/x/identity/keeper"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/testutil"
+	"github.com/sonrhq/core/x/identity/keeper"
+	"github.com/sonrhq/core/x/identity/types"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"

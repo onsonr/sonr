@@ -1,16 +1,23 @@
 syntax = "proto3";
-package sonrhq.sonr.identity;
+package sonrhq.core.identity;
 
 import "common/v1/data.proto";
-import "sonr/identity/ssi.proto";
-import "sonr/identity/vc.proto";
+import "core/identity/ssi.proto";
+import "core/identity/vc.proto";
 
-option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
+// DidDocument is a representation of a DID Document as defined in the W3C DID
 message DidDocument {
-  repeated string context = 1; // optional
+  // context is a list of URIs that are used to identify the context of the DID
+  repeated string context = 1;
+
+  // id is the DID of the DID Document
   string iD = 2;
+
+  // verificationMethod is a list of verification methods that can be used to
   repeated string controller = 3; //optional
+
   VerificationMethods verification_method = 4; // optional
   VerificationRelationships authentication = 5; // optional
   VerificationRelationships assertion_method = 6; // optional

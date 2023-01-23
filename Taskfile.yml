@@ -1,0 +1,108 @@
+version: "3"
+dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
+env:
+  ENV: development
+vars:
+  VERSION:
+    sh: echo $(git describe --tags --abbrev=0)
+    default: "v0.0.0"
+tasks:
+  default:
+    aliases:
+      - "help"
+    silent: true
+    cmds:
+      - echo ""
+      - echo "⭐️ TASKFILE (sonr-hq/sonr) ⭐️"
+      - echo ""
+      - task --list
+  docs:
+    desc: Serve the docs locally
+    dir: docs
+    summary: |
+      Serve Docs Locally
+
+      This task will serve the docs locally
+    cmds:
+      - mintlify dev
+    interactive: true
+
+  serve:
+    desc: Serve the blockchain locally
+    aliases:
+      - "serve"
+    summary: |
+      Serve Blockchain Locally
+
+      This task will serve the blockchain locally. It will also reset the blockchain
+    cmds:
+      - ignite chain serve --reset-once --clear-cache --skip-proto
+    interactive: true
+    deps:
+      - generate
+
+  generate:
+    aliases:
+      - "gen"
+    dir: scripts
+    desc: Generate the protobuf files
+    summary: |
+      Generate Protobuf Files
+
+      This task will generate the protobuf files
+    cmds:
+      - sh generate.sh
+
+  docker:build:
+    desc: Build the docker image
+    summary: |
+      Build Docker Image
+
+      This task will build the docker image
+    cmds:
+      - docker build -t sonr .
+      - docker tag sonr ghcr.io/sonrhq/sonrd:latest
+      - docker tag sonr ghcr.io/sonrhq/sonrd:{{.VERSION}}
+
+  docker:push:
+    aliases:
+      - "docker"
+    desc: Push the docker image
+    summary: |
+      Push Docker Image
+
+      This task will push the docker image
+    cmds:
+      - docker push ghcr.io/sonrhq/sonrd:latest
+      - docker push ghcr.io/sonrhq/sonrd:{{.VERSION}}
+    deps:
+      - docker:build
+
+  motor:bind:
+    desc: Bind All Motor Frameworks
+    dir: scripts
+    dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
+    aliases:
+      - "bind"
+    env:
+      TAR_COMPRESS: true
+    summary: |
+      Bind Motor Mobile Frameworks
+
+      This task will bind the Motor Android, iOS, Wasm Framework
+    cmds:
+      - sh bind.sh -i
+      - sh bind.sh -a
+      - sh bind.sh -w
+
+  web:dev:
+    aliases:
+      - "web"
+    desc: Run the web app in dev mode
+    summary: |
+      Run Web App in Dev Mode
+
+      This task will run the web app in dev mode. It will also install the dependencies
+    dir: web
+    cmds:
+      - yarn dev

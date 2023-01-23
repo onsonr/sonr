@@ -288,9 +288,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buf/cosmos_cosmos-sdk.grpc_web@npm:1.4.2-20230109081834-fe58c1d20072.2":
-  version: 1.4.2-20230109081834-fe58c1d20072.2
-  resolution: "@buf/cosmos_cosmos-sdk.grpc_web@npm:1.4.2-20230109081834-fe58c1d20072.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230109081834-fe58c1d20072.2%2Ftarball"
+"@buf/cosmos_cosmos-sdk.grpc_web@npm:1.4.2-20230120135628-e06e2cfb5db2.2":
+  version: 1.4.2-20230120135628-e06e2cfb5db2.2
+  resolution: "@buf/cosmos_cosmos-sdk.grpc_web@npm:1.4.2-20230120135628-e06e2cfb5db2.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230120135628-e06e2cfb5db2.2%2Ftarball"
   dependencies:
     "@buf/cosmos_cosmos-proto.grpc_web": 1.4.2-20211202220400-1935555c206d.2
     "@buf/cosmos_gogo-proto.grpc_web": 1.4.2-20221020125208-34d970b699f8.2
@@ -298,7 +298,7 @@ __metadata:
   peerDependencies:
     google-protobuf: ^3.21.2
     grpc-web: ^1.4.2
-  checksum: ac9de61f6d880bac6713befca7f418534cba860cd7c861ce304a9c6d0c668aa9b4045efbc40e0c075f9ce44fb149f07c8302b415a1ae783cdb4b166a3c9a1dda
+  checksum: b4bd5d7375f4fe0e548ac11b7693a17ead48f1485fa0cca3f9fe6b33613866e992e4570a257d621deca1e93467257c46c95f476c48e119246157003a473ff692
   languageName: node
   linkType: hard
 
@@ -332,18 +332,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buf/sonr-hq_sonr.grpc_web@npm:^1.4.2-20230109212641-b124d5648d18.2":
-  version: 1.4.2-20230109212641-b124d5648d18.2
-  resolution: "@buf/sonr-hq_sonr.grpc_web@npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball"
+"@buf/sonr-hq_sonr.grpc_web@npm:^1.4.2-20230122232753-221b38f25277.2":
+  version: 1.4.2-20230122232753-221b38f25277.2
+  resolution: "@buf/sonr-hq_sonr.grpc_web@npm:1.4.2-20230122232753-221b38f25277.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230122232753-221b38f25277.2%2Ftarball"
   dependencies:
     "@buf/cosmos_cosmos-proto.grpc_web": 1.4.2-20211202220400-1935555c206d.2
-    "@buf/cosmos_cosmos-sdk.grpc_web": 1.4.2-20230109081834-fe58c1d20072.2
+    "@buf/cosmos_cosmos-sdk.grpc_web": 1.4.2-20230120135628-e06e2cfb5db2.2
     "@buf/cosmos_gogo-proto.grpc_web": 1.4.2-20221020125208-34d970b699f8.2
     "@buf/googleapis_googleapis.grpc_web": 1.4.2-20221214150216-75b4300737fb.2
+    "@buf/ysugimoto_grpc-graphql-gateway.grpc_web": 1.4.2-20220908072546-5bbe51f0268c.2
   peerDependencies:
     google-protobuf: ^3.21.2
     grpc-web: ^1.4.2
-  checksum: e74feed94e4ace74bcdf42af6bef6a31545c3c3479c1db55d9866d70016f6bdc05e2be4464738136baa4088e8f1cb9b8f3dfaee42369d014f1242fa0f4e98794
+  checksum: 9ec1ff78f330cb81a8db67988d2a752e21165594a62d1c6a486ba59078aeb2d81fe3ff257e39263b44c680c7b9f2474592964cc30861c4a4b9f28d0a64126fe7
+  languageName: node
+  linkType: hard
+
+"@buf/ysugimoto_grpc-graphql-gateway.grpc_web@npm:1.4.2-20220908072546-5bbe51f0268c.2":
+  version: 1.4.2-20220908072546-5bbe51f0268c.2
+  resolution: "@buf/ysugimoto_grpc-graphql-gateway.grpc_web@npm:1.4.2-20220908072546-5bbe51f0268c.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fysugimoto_grpc-graphql-gateway.grpc_web%2F1.4.2-20220908072546-5bbe51f0268c.2%2Ftarball"
+  peerDependencies:
+    google-protobuf: ^3.21.2
+    grpc-web: ^1.4.2
+  checksum: 891b316d3ac30d2554b5d8fdf47fce3f407c65a0fbd89b59511e6fb685bcbb7115135c79864ce3a5e8e6c3729874cf0416b95a9c232dc65f70f29ced0cb69054
   languageName: node
   linkType: hard
 
@@ -5332,7 +5343,7 @@ __metadata:
   resolution: "sonr.id@workspace:."
   dependencies:
     "@babel/core": ^7.18.2
-    "@buf/sonr-hq_sonr.grpc_web": ^1.4.2-20230109212641-b124d5648d18.2
+    "@buf/sonr-hq_sonr.grpc_web": ^1.4.2-20230122232753-221b38f25277.2
     "@chakra-ui/icon": ^3.0.14
     "@chakra-ui/react": ^2.3.6
     "@chakra-ui/system": ^2.3.7

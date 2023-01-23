@@ -21,9 +21,11 @@ func NewParams() Params {
 		DidNetwork:       "devnet",
 		IpfsGateway:      "https://ipfs.sonr.network/ipfs/",
 		IpfsApi:          "https://ipfs.sonr.network",
-		HnsTlds: []string{
-			".snr",
-			".sonr",
+		HnsTlds: []*DomainRecordTLD{
+			{
+				Name:  "snr",
+				Owner: "hs1qhfg34d6dfmzv56hquz2gcvxrf97kt5h07gtmw3",
+			},
 		},
 	}
 }

@@ -4,9 +4,9 @@ import (
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-hq/sonr/testutil/nullify"
-	"github.com/sonr-hq/sonr/x/identity/keeper"
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/testutil/nullify"
+	"github.com/sonrhq/core/x/identity/keeper"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.DidDocument {

@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,6 +29,14 @@ func TestGenesisState_Validate(t *testing.T) {
 						ID: "1",
 					},
 				},
+				DomainRecordList: []types.DomainRecord{
+					{
+						Index: "0",
+					},
+					{
+						Index: "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -42,6 +50,20 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						ID: "0",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated DomainRecord",
+			genState: &types.GenesisState{
+				DomainRecordList: []types.DomainRecord{
+					{
+						Index: "0",
+					},
+					{
+						Index: "0",
 					},
 				},
 			},

@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@buf/sonr-hq_sonr.grpc_web": "^1.4.2-20230109212641-b124d5648d18.2",
+    "@buf/sonr-hq_sonr.grpc_web": "^1.4.2-20230122232753-221b38f25277.2",
     "@chakra-ui/icon": "^3.0.14",
     "@chakra-ui/react": "^2.3.6",
     "@chakra-ui/system": "^2.3.7",

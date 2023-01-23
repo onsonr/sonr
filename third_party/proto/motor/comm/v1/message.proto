@@ -42,22 +42,22 @@ message CommMessage {
 // DIDMessageHeader is the type of message that is being sent.
 enum DIDMessageHeader {
     // DIDMessageHeader_UNKNOWN is the default value for DIDMessageHeader.
-    DIDMessageHeader_UNKNOWN = 0; // [json_name="application/json"];
+    DID_MESSAGE_HEADER_UNSPECIFIED = 0; // [json_name="application/json"];
 
     // DIDMessageHeader_PING is a message that is used to test the liveness of a peer.
-    DIDMessageHeader_PING = 1; // [json_name="application/didcomm-ping+json"];
+    DID_MESSAGE_HEADER_PING = 1; // [json_name="application/didcomm-ping+json"];
 
     // DIDMessageHeader_PLAINTEXT is a message that is used to send plaintext data.
-    DIDMessageHeader_PLAINTEXT = 2; // [json_name="application/didcomm-plain+json"];
+    DID_MESSAGE_HEADER_PLAINTEXT = 2; // [json_name="application/didcomm-plain+json"];
 
     // DIDMessageHeader_SIGNED is a message that is used to send signed data.
-    DIDMessageHeader_SIGNED = 3; // [json_name="application/didcomm-signed+json"];
+    DID_MESSAGE_HEADER_SIGNED = 3; // [json_name="application/didcomm-signed+json"];
 
     // DIDMessageHeader_ANONCRYPT is a message that is used to send encrypted data anonymously.
-    DIDMessageHeader_ANONCRYPT = 4; // [json_name="application/didcomm-encrypted+json"];
+    DID_MESSAGE_HEADER_ANONCRYPT = 4; // [json_name="application/didcomm-encrypted+json"];
 
     // DIDMessageHeader_AUTHCRYPT is a message that is used to send encrypted data with identity.
-    DIDMessageHeader_AUTHCRYPT = 5; // [json_name="application/didcomm-encrypted+json"];
+    DID_MESSAGE_HEADER_AUTHCRYPT = 5; // [json_name="application/didcomm-encrypted+json"];
 }
 
 // Attachment is an attachment that can be sent with a CommMessage.

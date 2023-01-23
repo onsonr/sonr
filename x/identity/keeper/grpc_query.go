@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 var _ types.QueryServer = Keeper{}

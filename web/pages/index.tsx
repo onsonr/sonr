@@ -36,7 +36,7 @@ export default function Home() {
             </Link>
             <Spacer />
             <Box>
-              <Tag size="lg">v0.1.12</Tag>
+              <Tag size="lg">v0.2.4</Tag>
             </Box>
           </Flex>
         }

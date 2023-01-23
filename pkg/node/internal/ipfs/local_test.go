@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/ipfs/interface-go-ipfs-core/path"
-	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonrhq/core/pkg/node/config"
 	"github.com/stretchr/testify/assert"
 )
 

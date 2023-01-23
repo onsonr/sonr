@@ -3,13 +3,13 @@ package motor
 import (
 	"context"
 
-	"github.com/sonr-hq/sonr/bind/motor"
+	"github.com/sonrhq/core/bind/internal"
 	_ "golang.org/x/mobile/bind"
 )
 
 var (
 	ctx context.Context
-	mtr *motor.MotorInstance
+	mtr *internal.MotorInstance
 )
 
 type MotorCallback interface {
@@ -20,7 +20,7 @@ type MotorCallback interface {
 
 func Init(cb MotorCallback) ([]byte, error) {
 	ctx = context.Background()
-	mtdr, err := motor.NewMotorInstance(ctx)
+	mtdr, err := internal.NewMotorInstance(ctx)
 	if err != nil {
 		return nil, err
 	}

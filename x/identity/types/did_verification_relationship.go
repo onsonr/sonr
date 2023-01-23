@@ -6,7 +6,7 @@ import (
 	fmt "fmt"
 	"strings"
 
-	"github.com/sonr-hq/sonr/x/identity/types/internal/marshal"
+	"github.com/sonrhq/core/x/identity/types/internal/marshal"
 )
 
 // Count returns the number of VerificationRelationships in the slice

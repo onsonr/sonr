@@ -10,7 +10,7 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sonr-hq/sonr/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -31,6 +31,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(CmdQueryByNetwork())
 
+	cmd.AddCommand(CmdListDomainRecord())
+	cmd.AddCommand(CmdShowDomainRecord())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

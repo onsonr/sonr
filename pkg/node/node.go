@@ -3,10 +3,10 @@ package node
 import (
 	"context"
 
-	"github.com/sonr-hq/sonr/pkg/common"
-	"github.com/sonr-hq/sonr/pkg/node/config"
-	"github.com/sonr-hq/sonr/pkg/node/internal/host"
-	"github.com/sonr-hq/sonr/pkg/node/internal/ipfs"
+	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/pkg/node/internal/host"
+	"github.com/sonrhq/core/pkg/node/internal/ipfs"
 )
 
 // `Node` is an interface that has three methods: `Host`, `IPFS`, and `Type`.

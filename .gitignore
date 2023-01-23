@@ -7,3 +7,6 @@ release/
 .env
 .spectral.mjs
 .vercel
+.tmp
+build/
+.vscode/

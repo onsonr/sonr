@@ -24,7 +24,6 @@ const (
 	ExtensionAppIDExclude = "appidExclude"
 )
 
-
 // VerifyCounter
 // Step 17 of §7.2. about verifying attestation. If the signature counter value authData.signCount
 // is nonzero or the value stored in conjunction with credential’s id attribute is nonzero, then

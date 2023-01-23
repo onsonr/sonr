@@ -2,7 +2,7 @@
 // I.e. Verification Material for Webauthn Credentials or KeyPrints. These are used to unlock the Controller Wallet.
 package types
 
-import "github.com/sonr-hq/sonr/pkg/common"
+import "github.com/sonrhq/core/pkg/common"
 
 // FindAuthenticationMethod finds a VerificationMethod by its ID
 func (d *DidDocument) FindAuthenticationMethod(id string) *VerificationMethod {

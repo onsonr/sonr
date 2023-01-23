@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-hq/sonr/pkg/node/config"
+	"github.com/sonrhq/core/pkg/node/config"
 )
 
 func TestNewP2PHost(t *testing.T) {
