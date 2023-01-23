@@ -20,28 +20,24 @@
 
 ## Getting Started
 
-#### Prerequisites
-- Cosmos SDK: v0.46.7
-- Ignite CLI: v0.25.2
-- Golang: 1.18.10 darwin/arm64
-- Taskfile v3.20.0
-
-Setting up your local development environment:
+You can setup your macOS or Linux machine to be ready for local development with these steps:
 
 ```sh
-# Clone the repository
-git clone https://github.com/sonr-hq/sonr.git
-
-# Install dependencies
-sh scripts/install.sh
-
-# Display all available tasks
-task
+git clone https://github.com/sonr-hq/sonr.git       # Clone the repository
+sh scripts/install.sh                               # Install dependencies
+task                                                # Display the available commands
 ```
+
+The `install.sh` script will install the following tools:
+
+- [Ignite CLI](https://github.com/ignite/cli)
+- [Taskfile](https://taskfile.dev)
+- [Buf CLI](https://docs.buf.build/introduction)
+- [Mintlify](https://mintlify.com/docs/development)
 
 ## Documentation
 
-Sonr utilizes Mintlify to generate documentation from the source code. To run the documentation server, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
+Sonr utilizes Mintlify to generate documentation from the source code. To view the documentation, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
 
 <details>
 <summary><strong>Architecture Diagram</strong></summary>
@@ -96,7 +92,11 @@ To install the latest version of your blockchain node's binary, execute the foll
 ```sh
 curl https://get.ignite.com/sonr-hq/sonr! | sudo bash
 ```
-Learn more about [the install process](https://github.com/allinbits/starport-installer).
+Production endpoints are available at the following URLs:
+
+- [api.sonr.network](https://api.sonr.network)
+- [rpc.sonr.network](https://rpc.sonr.network)
+- [grpc.sonr.network](https://grpc.sonr.network)
 
 ## Community
 

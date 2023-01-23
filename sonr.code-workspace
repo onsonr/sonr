@@ -31,7 +31,8 @@
       "LICENSE": true,
       "yarn.lock": true,
       "go.work": true,
-      "**/go.work.sum": true
+      "**/go.work.sum": true,
+      ".tmp": true
     }
   }
 }

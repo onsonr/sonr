@@ -5,7 +5,7 @@ SCRIPTS_DIR=$(dirname "$0")
 BUF_VERSION="1.12.0"
 cd ${SCRIPTS_DIR}/../
 PROJECT_DIR=$(pwd);
-TMP_DIR=${PROJECT_DIR}/tmp
+TMP_DIR=${PROJECT_DIR}/.tmp
 npm i -g mintlify
 sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ${TMP_DIR}
 
