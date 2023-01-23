@@ -60,25 +60,29 @@ func (ChallengeType) EnumDescriptor() ([]byte, []int) {
 }
 
 // Account is used for storing all credentials and their locations to be encrypted.
-type Account struct {
+type AccountInfo struct {
 	// Address is the associated Sonr address.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	// Credentials is a list of all credentials associated with the account.
-	Credentials map[string]*Credential `protobuf:"bytes,2,rep,name=credentials,proto3" json:"credentials,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Network string `protobuf:"bytes,2,opt,name=network,proto3" json:"network,omitempty"`
+	// Label is the label of the account.
+	Label string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
+	// Index is the index of the account.
+	Index uint32 `protobuf:"varint,4,opt,name=index,proto3" json:"index,omitempty"`
 }
 
-func (m *Account) Reset()         { *m = Account{} }
-func (m *Account) String() string { return proto.CompactTextString(m) }
-func (*Account) ProtoMessage()    {}
-func (*Account) Descriptor() ([]byte, []int) {
+func (m *AccountInfo) Reset()         { *m = AccountInfo{} }
+func (m *AccountInfo) String() string { return proto.CompactTextString(m) }
+func (*AccountInfo) ProtoMessage()    {}
+func (*AccountInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d53fa4614f4f387b, []int{0}
 }
-func (m *Account) XXX_Unmarshal(b []byte) error {
+func (m *AccountInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *AccountInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Account.Marshal(b, m, deterministic)
+		return xxx_messageInfo_AccountInfo.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -88,30 +92,44 @@ func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Account) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Account.Merge(m, src)
+func (m *AccountInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountInfo.Merge(m, src)
 }
-func (m *Account) XXX_Size() int {
+func (m *AccountInfo) XXX_Size() int {
 	return m.Size()
 }
-func (m *Account) XXX_DiscardUnknown() {
-	xxx_messageInfo_Account.DiscardUnknown(m)
+func (m *AccountInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountInfo.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Account proto.InternalMessageInfo
+var xxx_messageInfo_AccountInfo proto.InternalMessageInfo
 
-func (m *Account) GetAddress() string {
+func (m *AccountInfo) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *Account) GetCredentials() map[string]*Credential {
+func (m *AccountInfo) GetNetwork() string {
 	if m != nil {
-		return m.Credentials
+		return m.Network
 	}
-	return nil
+	return ""
+}
+
+func (m *AccountInfo) GetLabel() string {
+	if m != nil {
+		return m.Label
+	}
+	return ""
+}
+
+func (m *AccountInfo) GetIndex() uint32 {
+	if m != nil {
+		return m.Index
+	}
+	return 0
 }
 
 type AccountConfig struct {
@@ -213,70 +231,6 @@ func (m *AccountConfig) GetShares() []*ShareConfig {
 	return nil
 }
 
-// Credential is used for storing a single credential.
-type Credential struct {
-	// Name is the name of the credential.
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Type is the type of the credential. (e.g. "biometric", "webauthn")
-	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	// Webauthn is for PassKey data of the credential.
-	Credential []byte `protobuf:"bytes,3,opt,name=credential,proto3" json:"credential,omitempty"`
-}
-
-func (m *Credential) Reset()         { *m = Credential{} }
-func (m *Credential) String() string { return proto.CompactTextString(m) }
-func (*Credential) ProtoMessage()    {}
-func (*Credential) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d53fa4614f4f387b, []int{2}
-}
-func (m *Credential) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Credential) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Credential.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Credential) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Credential.Merge(m, src)
-}
-func (m *Credential) XXX_Size() int {
-	return m.Size()
-}
-func (m *Credential) XXX_DiscardUnknown() {
-	xxx_messageInfo_Credential.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Credential proto.InternalMessageInfo
-
-func (m *Credential) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *Credential) GetType() string {
-	if m != nil {
-		return m.Type
-	}
-	return ""
-}
-
-func (m *Credential) GetCredential() []byte {
-	if m != nil {
-		return m.Credential
-	}
-	return nil
-}
-
 type ShareConfig struct {
 	// SelfID is the partyID of the share
 	SelfId string `protobuf:"bytes,1,opt,name=self_id,json=selfId,proto3" json:"self_id,omitempty"`
@@ -294,7 +248,7 @@ func (m *ShareConfig) Reset()         { *m = ShareConfig{} }
 func (m *ShareConfig) String() string { return proto.CompactTextString(m) }
 func (*ShareConfig) ProtoMessage()    {}
 func (*ShareConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d53fa4614f4f387b, []int{3}
+	return fileDescriptor_d53fa4614f4f387b, []int{2}
 }
 func (m *ShareConfig) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -375,7 +329,7 @@ func (m *WalletConfig) Reset()         { *m = WalletConfig{} }
 func (m *WalletConfig) String() string { return proto.CompactTextString(m) }
 func (*WalletConfig) ProtoMessage()    {}
 func (*WalletConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d53fa4614f4f387b, []int{4}
+	return fileDescriptor_d53fa4614f4f387b, []int{3}
 }
 func (m *WalletConfig) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -441,10 +395,8 @@ func (m *WalletConfig) GetAccounts() map[string]*AccountConfig {
 
 func init() {
 	proto.RegisterEnum("sonrhq.protocol.vault.v1.ChallengeType", ChallengeType_name, ChallengeType_value)
-	proto.RegisterType((*Account)(nil), "sonrhq.protocol.vault.v1.Account")
-	proto.RegisterMapType((map[string]*Credential)(nil), "sonrhq.protocol.vault.v1.Account.CredentialsEntry")
+	proto.RegisterType((*AccountInfo)(nil), "sonrhq.protocol.vault.v1.AccountInfo")
 	proto.RegisterType((*AccountConfig)(nil), "sonrhq.protocol.vault.v1.AccountConfig")
-	proto.RegisterType((*Credential)(nil), "sonrhq.protocol.vault.v1.Credential")
 	proto.RegisterType((*ShareConfig)(nil), "sonrhq.protocol.vault.v1.ShareConfig")
 	proto.RegisterType((*WalletConfig)(nil), "sonrhq.protocol.vault.v1.WalletConfig")
 	proto.RegisterMapType((map[string]*AccountConfig)(nil), "sonrhq.protocol.vault.v1.WalletConfig.AccountsEntry")
@@ -453,53 +405,49 @@ func init() {
 func init() { proto.RegisterFile("protocol/vault/v1/models.proto", fileDescriptor_d53fa4614f4f387b) }
 
 var fileDescriptor_d53fa4614f4f387b = []byte{
-	// 678 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0xcd, 0x6e, 0xda, 0x4a,
-	0x14, 0x66, 0x4c, 0x80, 0xcb, 0x10, 0x24, 0x34, 0x8a, 0x14, 0x0b, 0xe5, 0xfa, 0x22, 0x6e, 0xab,
-	0xa2, 0x4a, 0xb5, 0x15, 0xd2, 0x45, 0x15, 0x29, 0x0b, 0x4a, 0xdc, 0x16, 0x25, 0x4a, 0x91, 0x71,
-	0x55, 0xb5, 0x1b, 0x6b, 0xf0, 0x4c, 0xb0, 0x15, 0xe3, 0x21, 0xf6, 0x40, 0xc3, 0x5b, 0xf4, 0x0d,
-	0xfa, 0x08, 0x7d, 0x8d, 0x2e, 0xb3, 0xec, 0xae, 0x55, 0xf2, 0x0c, 0xdd, 0x57, 0x33, 0x1e, 0x02,
-	0x41, 0x41, 0x59, 0x79, 0xe6, 0xfc, 0x7c, 0xe7, 0xfb, 0xce, 0x9c, 0x63, 0x68, 0x4c, 0x12, 0xc6,
-	0x99, 0xcf, 0x22, 0x6b, 0x86, 0xa7, 0x11, 0xb7, 0x66, 0xfb, 0xd6, 0x98, 0x11, 0x1a, 0xa5, 0xa6,
-	0x74, 0x20, 0x3d, 0x65, 0x71, 0x12, 0x5c, 0x9a, 0x8b, 0x30, 0x53, 0x86, 0x99, 0xb3, 0xfd, 0xfa,
-	0x8e, 0xcf, 0xc6, 0x63, 0x16, 0x8b, 0x0c, 0x82, 0x39, 0xce, 0x22, 0xea, 0x7b, 0x23, 0xc6, 0x46,
-	0x11, 0xb5, 0xf0, 0x24, 0xb4, 0x70, 0x1c, 0x33, 0x8e, 0x79, 0xc8, 0x62, 0x85, 0x56, 0xdf, 0x15,
-	0x68, 0x56, 0x48, 0x68, 0xcc, 0x43, 0x3e, 0xb7, 0x48, 0x48, 0x32, 0x47, 0xf3, 0x17, 0x80, 0xa5,
-	0x8e, 0xef, 0xb3, 0x69, 0xcc, 0x91, 0x0e, 0x4b, 0x98, 0x90, 0x84, 0xa6, 0xa9, 0x0e, 0x1a, 0xa0,
-	0x55, 0x76, 0x16, 0x57, 0xe4, 0xc2, 0x8a, 0x9f, 0x50, 0x99, 0x8d, 0xa3, 0x54, 0xd7, 0x1a, 0xf9,
-	0x56, 0xa5, 0xdd, 0x36, 0x37, 0x51, 0x34, 0x15, 0xa2, 0xd9, 0x5d, 0x26, 0xd9, 0x31, 0x4f, 0xe6,
-	0xce, 0x2a, 0x4c, 0x9d, 0xc0, 0xda, 0x7a, 0x00, 0xaa, 0xc1, 0xfc, 0x05, 0x9d, 0xab, 0xfa, 0xe2,
-	0x88, 0x0e, 0x61, 0x61, 0x86, 0xa3, 0x29, 0xd5, 0xb5, 0x06, 0x68, 0x55, 0xda, 0x4f, 0x36, 0x57,
-	0x5d, 0x82, 0x39, 0x59, 0xca, 0xa1, 0xf6, 0x0a, 0x34, 0xff, 0x00, 0x58, 0x55, 0x7c, 0xba, 0x2c,
-	0x3e, 0x0f, 0x47, 0x08, 0xc1, 0xad, 0x18, 0x8f, 0xa9, 0x2a, 0x22, 0xcf, 0xab, 0xda, 0xb5, 0xfb,
-	0xda, 0xff, 0x85, 0x70, 0x32, 0x1d, 0x46, 0xa1, 0xef, 0x09, 0x62, 0xf9, 0x06, 0x68, 0x6d, 0x3b,
-	0xe5, 0xcc, 0x72, 0x42, 0xe7, 0x68, 0x07, 0x16, 0xc2, 0x98, 0xd0, 0x2b, 0x7d, 0xab, 0x01, 0x5a,
-	0x55, 0x27, 0xbb, 0xa0, 0xff, 0x61, 0x75, 0x48, 0xfd, 0xe0, 0xa0, 0xed, 0x4d, 0x12, 0x7a, 0x1e,
-	0x5e, 0xe9, 0x05, 0x09, 0xba, 0x9d, 0x19, 0xfb, 0xd2, 0x26, 0x90, 0xfd, 0x84, 0x62, 0x4e, 0x89,
-	0x87, 0xb9, 0x5e, 0x6c, 0x80, 0x56, 0xde, 0x29, 0x2b, 0x4b, 0x87, 0xa3, 0x23, 0x58, 0x4c, 0x03,
-	0x9c, 0xd0, 0x54, 0x2f, 0xc9, 0x7e, 0x3f, 0xdd, 0xac, 0x7c, 0x20, 0xe2, 0x32, 0x75, 0x8e, 0x4a,
-	0x6a, 0xba, 0x10, 0x2e, 0x1b, 0xf2, 0xa0, 0x66, 0x04, 0xb7, 0xf8, 0x7c, 0x42, 0x95, 0x60, 0x79,
-	0x46, 0x86, 0xe4, 0xa4, 0xb2, 0x94, 0xda, 0x15, 0x4b, 0xf3, 0x1b, 0x80, 0x95, 0x95, 0x6a, 0x68,
-	0x17, 0x96, 0x52, 0x1a, 0x9d, 0x7b, 0x21, 0x51, 0xd0, 0x45, 0x71, 0xed, 0x91, 0xb5, 0xb6, 0x69,
-	0xeb, 0x6d, 0xbb, 0xaf, 0x3d, 0xbf, 0xae, 0x5d, 0x87, 0xa5, 0x98, 0xf2, 0x2f, 0x2c, 0xb9, 0x90,
-	0x7d, 0x2d, 0x3b, 0x8b, 0x2b, 0xfa, 0x0f, 0x56, 0x7c, 0x59, 0xda, 0x13, 0xc3, 0x2f, 0xfb, 0x2a,
-	0x18, 0x4a, 0xd3, 0x31, 0xe6, 0xb8, 0xf9, 0x5d, 0x83, 0xdb, 0x1f, 0x71, 0x14, 0xd1, 0xc5, 0x73,
-	0x6f, 0x1e, 0xeb, 0x47, 0x38, 0xee, 0xc1, 0x32, 0x8e, 0x46, 0x2c, 0x09, 0x79, 0x30, 0x96, 0x14,
-	0xcb, 0xce, 0xd2, 0x20, 0x26, 0xd5, 0x0f, 0x89, 0xa2, 0x27, 0x8e, 0xa8, 0x0f, 0xff, 0xc1, 0xd9,
-	0xa0, 0xa5, 0x7a, 0x41, 0x3e, 0xd9, 0xcb, 0xcd, 0x4f, 0xb6, 0x4a, 0x71, 0xb1, 0x2f, 0x6a, 0x49,
-	0xee, 0x50, 0xea, 0xe4, 0x6e, 0x74, 0x37, 0xae, 0xc7, 0xd1, 0xfd, 0xf5, 0x78, 0xf6, 0xe8, 0x52,
-	0xaa, 0x31, 0x59, 0x6e, 0xc8, 0xf3, 0x0b, 0x58, 0xed, 0x06, 0x82, 0x4e, 0x3c, 0xa2, 0x6e, 0x36,
-	0x04, 0xf5, 0xee, 0xbb, 0xce, 0xe9, 0xa9, 0x7d, 0xf6, 0xd6, 0xf6, 0xdc, 0x4f, 0x7d, 0xdb, 0xfb,
-	0x70, 0x36, 0xe8, 0xdb, 0xdd, 0xde, 0x9b, 0x9e, 0x7d, 0x5c, 0xcb, 0xa1, 0x3d, 0xa8, 0xaf, 0xf9,
-	0x3b, 0xae, 0x6b, 0x0f, 0xdc, 0xde, 0xfb, 0xb3, 0x1a, 0x78, 0xc8, 0x3b, 0x18, 0xd8, 0x8e, 0xf4,
-	0x6a, 0xaf, 0x4f, 0x7e, 0xdc, 0x18, 0xe0, 0xfa, 0xc6, 0x00, 0xbf, 0x6f, 0x0c, 0xf0, 0xf5, 0xd6,
-	0xc8, 0x5d, 0xdf, 0x1a, 0xb9, 0x9f, 0xb7, 0x46, 0xee, 0xf3, 0xfe, 0x28, 0xe4, 0xc1, 0x74, 0x68,
-	0xfa, 0x6c, 0x6c, 0x09, 0x11, 0x2f, 0x82, 0x4b, 0xf9, 0xb5, 0xae, 0x96, 0x3f, 0x2e, 0x31, 0xa3,
-	0xe9, 0xdd, 0x1f, 0x73, 0x58, 0x94, 0x2a, 0x0f, 0xfe, 0x06, 0x00, 0x00, 0xff, 0xff, 0x45, 0x21,
-	0xf4, 0x9b, 0x4d, 0x05, 0x00, 0x00,
+	// 624 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0xd1, 0x6e, 0xda, 0x30,
+	0x14, 0x25, 0x50, 0xe8, 0x30, 0x20, 0x55, 0x56, 0xa5, 0x46, 0xa8, 0xcb, 0x10, 0xd3, 0x34, 0x34,
+	0x69, 0x89, 0xda, 0xee, 0x61, 0x9a, 0xd4, 0x07, 0x46, 0xb3, 0x0d, 0xb5, 0xea, 0x50, 0x60, 0x9a,
+	0xb6, 0x97, 0xc8, 0xc4, 0x86, 0x58, 0x4d, 0x6c, 0x9a, 0x18, 0x56, 0xfe, 0x62, 0x7f, 0xb0, 0x4f,
+	0xd8, 0x6f, 0xec, 0xb1, 0x8f, 0x7b, 0x9c, 0xda, 0x6f, 0xd8, 0xfb, 0x64, 0x3b, 0xa5, 0x80, 0x8a,
+	0xf6, 0x84, 0xef, 0x39, 0xd7, 0xf7, 0x9e, 0xeb, 0x7b, 0x08, 0xb0, 0x26, 0x09, 0x17, 0x3c, 0xe0,
+	0x91, 0x33, 0x43, 0xd3, 0x48, 0x38, 0xb3, 0x03, 0x27, 0xe6, 0x98, 0x44, 0xa9, 0xad, 0x08, 0x68,
+	0xa6, 0x9c, 0x25, 0xe1, 0xa5, 0x7d, 0x97, 0x66, 0xab, 0x34, 0x7b, 0x76, 0x50, 0xdf, 0x0d, 0x78,
+	0x1c, 0x73, 0x26, 0x6f, 0x60, 0x24, 0x90, 0xce, 0xa8, 0xef, 0x8f, 0x39, 0x1f, 0x47, 0xc4, 0x41,
+	0x13, 0xea, 0x20, 0xc6, 0xb8, 0x40, 0x82, 0x72, 0x96, 0x55, 0xab, 0xef, 0xc9, 0x6a, 0x0e, 0xc5,
+	0x84, 0x09, 0x2a, 0xe6, 0x0e, 0xa6, 0x58, 0x13, 0xcd, 0x18, 0x54, 0xda, 0x41, 0xc0, 0xa7, 0x4c,
+	0x74, 0xd9, 0x88, 0x43, 0x13, 0x6c, 0x23, 0x8c, 0x13, 0x92, 0xa6, 0xa6, 0xd1, 0x30, 0x5a, 0x65,
+	0xef, 0x2e, 0x94, 0x0c, 0x23, 0xe2, 0x1b, 0x4f, 0x2e, 0xcc, 0xbc, 0x66, 0xb2, 0x10, 0xee, 0x82,
+	0x62, 0x84, 0x86, 0x24, 0x32, 0x0b, 0x0a, 0xd7, 0x81, 0x44, 0x29, 0xc3, 0xe4, 0xca, 0xdc, 0x6a,
+	0x18, 0xad, 0x9a, 0xa7, 0x83, 0xe6, 0x5f, 0x03, 0xd4, 0xb2, 0x7e, 0x1d, 0xce, 0x46, 0x74, 0x0c,
+	0x21, 0xd8, 0x62, 0x28, 0x26, 0x59, 0x3b, 0x75, 0x5e, 0x56, 0x91, 0x5f, 0x55, 0xf1, 0x18, 0x80,
+	0xc9, 0x74, 0x18, 0xd1, 0xc0, 0xbf, 0x20, 0x73, 0xd5, 0xb0, 0xea, 0x95, 0x35, 0x72, 0x4a, 0xe6,
+	0x0f, 0x37, 0x85, 0x4f, 0x41, 0x6d, 0x48, 0x82, 0xf0, 0xe8, 0xd0, 0x9f, 0x24, 0x64, 0x44, 0xaf,
+	0xcc, 0xa2, 0x2a, 0x5a, 0xd5, 0x60, 0x4f, 0x61, 0xb2, 0x72, 0x90, 0x10, 0x24, 0x08, 0xf6, 0x91,
+	0x30, 0x4b, 0x0d, 0xa3, 0x55, 0xf0, 0xca, 0x19, 0xd2, 0x16, 0xf0, 0x18, 0x94, 0xd2, 0x10, 0x25,
+	0x24, 0x35, 0xb7, 0x1b, 0x85, 0x56, 0xe5, 0xf0, 0x99, 0xbd, 0x69, 0x3f, 0x76, 0x5f, 0xe6, 0xe9,
+	0xe9, 0xbc, 0xec, 0x52, 0xf3, 0x87, 0x01, 0x2a, 0x4b, 0x38, 0xdc, 0x03, 0xdb, 0x29, 0x89, 0x46,
+	0x3e, 0xc5, 0xd9, 0xe0, 0x25, 0x19, 0x76, 0xf1, 0xda, 0x80, 0xf9, 0xf5, 0x01, 0x57, 0x55, 0x16,
+	0xd6, 0x55, 0x2e, 0x2d, 0x69, 0x6b, 0x75, 0x49, 0x4f, 0x40, 0x25, 0x50, 0xad, 0x7d, 0xe9, 0x19,
+	0xf5, 0x02, 0x55, 0x0f, 0x68, 0xe8, 0x04, 0x09, 0xd4, 0xfc, 0x99, 0x07, 0xd5, 0xcf, 0x28, 0x8a,
+	0xc8, 0xdd, 0x62, 0x36, 0x5b, 0xe1, 0x3f, 0x1a, 0xf7, 0x41, 0x19, 0x45, 0x63, 0x9e, 0x50, 0x11,
+	0xc6, 0x99, 0x27, 0xee, 0x01, 0xb8, 0x03, 0x0a, 0x01, 0xc5, 0x99, 0x3c, 0x79, 0x84, 0x3d, 0xf0,
+	0x08, 0x69, 0x4b, 0xa4, 0x66, 0x51, 0x3d, 0xee, 0xab, 0xcd, 0x8f, 0xbb, 0x2c, 0xd1, 0xce, 0x9c,
+	0x94, 0xba, 0x4c, 0x24, 0x73, 0x6f, 0x51, 0xa5, 0x8e, 0x17, 0x26, 0xd3, 0x94, 0x6c, 0x2a, 0xa5,
+	0xea, 0x39, 0xe4, 0x11, 0x1e, 0x83, 0xe2, 0x0c, 0x45, 0x53, 0xa2, 0xe4, 0x57, 0x0e, 0x9f, 0x6f,
+	0xee, 0xb8, 0x62, 0x57, 0x4f, 0xdf, 0x7a, 0x93, 0x7f, 0x6d, 0xbc, 0xb8, 0x00, 0xb5, 0x4e, 0x28,
+	0xe5, 0xb0, 0x31, 0x19, 0xcc, 0x27, 0x04, 0x5a, 0xa0, 0xde, 0xf9, 0xd0, 0x3e, 0x3b, 0x73, 0xcf,
+	0xdf, 0xbb, 0xfe, 0xe0, 0x4b, 0xcf, 0xf5, 0x3f, 0x9d, 0xf7, 0x7b, 0x6e, 0xa7, 0xfb, 0xae, 0xeb,
+	0x9e, 0xec, 0xe4, 0xe0, 0x3e, 0x30, 0xd7, 0xf8, 0xf6, 0x60, 0xe0, 0xf6, 0x07, 0xdd, 0x8f, 0xe7,
+	0x3b, 0xc6, 0x43, 0x6c, 0xbf, 0xef, 0x7a, 0x8a, 0xcd, 0xbf, 0x3d, 0xfd, 0x75, 0x63, 0x19, 0xd7,
+	0x37, 0x96, 0xf1, 0xe7, 0xc6, 0x32, 0xbe, 0xdf, 0x5a, 0xb9, 0xeb, 0x5b, 0x2b, 0xf7, 0xfb, 0xd6,
+	0xca, 0x7d, 0x3d, 0x18, 0x53, 0x11, 0x4e, 0x87, 0x76, 0xc0, 0x63, 0x47, 0x0e, 0xf1, 0x32, 0xbc,
+	0x54, 0xbf, 0xce, 0xd5, 0xfd, 0xff, 0x5d, 0xcc, 0x27, 0x24, 0x5d, 0x7c, 0x68, 0x86, 0x25, 0x35,
+	0xe5, 0xd1, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb8, 0x8c, 0xbf, 0xdb, 0x84, 0x04, 0x00, 0x00,
 }
 
-func (m *Account) Marshal() (dAtA []byte, err error) {
+func (m *AccountInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -509,41 +457,34 @@ func (m *Account) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Account) MarshalTo(dAtA []byte) (int, error) {
+func (m *AccountInfo) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Account) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *AccountInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Credentials) > 0 {
-		for k := range m.Credentials {
-			v := m.Credentials[k]
-			baseI := i
-			if v != nil {
-				{
-					size, err := v.MarshalToSizedBuffer(dAtA[:i])
-					if err != nil {
-						return 0, err
-					}
-					i -= size
-					i = encodeVarintModels(dAtA, i, uint64(size))
-				}
-				i--
-				dAtA[i] = 0x12
-			}
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintModels(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintModels(dAtA, i, uint64(baseI-i))
-			i--
-			dAtA[i] = 0x12
-		}
+	if m.Index != 0 {
+		i = encodeVarintModels(dAtA, i, uint64(m.Index))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Label) > 0 {
+		i -= len(m.Label)
+		copy(dAtA[i:], m.Label)
+		i = encodeVarintModels(dAtA, i, uint64(len(m.Label)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Network) > 0 {
+		i -= len(m.Network)
+		copy(dAtA[i:], m.Network)
+		i = encodeVarintModels(dAtA, i, uint64(len(m.Network)))
+		i--
+		dAtA[i] = 0x12
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
@@ -617,50 +558,6 @@ func (m *AccountConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintModels(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintModels(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Credential) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Credential) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Credential) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Credential) > 0 {
-		i -= len(m.Credential)
-		copy(dAtA[i:], m.Credential)
-		i = encodeVarintModels(dAtA, i, uint64(len(m.Credential)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Type) > 0 {
-		i -= len(m.Type)
-		copy(dAtA[i:], m.Type)
-		i = encodeVarintModels(dAtA, i, uint64(len(m.Type)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -818,7 +715,7 @@ func encodeVarintModels(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Account) Size() (n int) {
+func (m *AccountInfo) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -828,18 +725,16 @@ func (m *Account) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovModels(uint64(l))
 	}
-	if len(m.Credentials) > 0 {
-		for k, v := range m.Credentials {
-			_ = k
-			_ = v
-			l = 0
-			if v != nil {
-				l = v.Size()
-				l += 1 + sovModels(uint64(l))
-			}
-			mapEntrySize := 1 + len(k) + sovModels(uint64(len(k))) + l
-			n += mapEntrySize + 1 + sovModels(uint64(mapEntrySize))
-		}
+	l = len(m.Network)
+	if l > 0 {
+		n += 1 + l + sovModels(uint64(l))
+	}
+	l = len(m.Label)
+	if l > 0 {
+		n += 1 + l + sovModels(uint64(l))
+	}
+	if m.Index != 0 {
+		n += 1 + sovModels(uint64(m.Index))
 	}
 	return n
 }
@@ -877,27 +772,6 @@ func (m *AccountConfig) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovModels(uint64(l))
 		}
-	}
-	return n
-}
-
-func (m *Credential) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovModels(uint64(l))
-	}
-	l = len(m.Type)
-	if l > 0 {
-		n += 1 + l + sovModels(uint64(l))
-	}
-	l = len(m.Credential)
-	if l > 0 {
-		n += 1 + l + sovModels(uint64(l))
 	}
 	return n
 }
@@ -974,7 +848,7 @@ func sovModels(x uint64) (n int) {
 func sozModels(x uint64) (n int) {
 	return sovModels(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Account) Unmarshal(dAtA []byte) error {
+func (m *AccountInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -997,10 +871,10 @@ func (m *Account) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Account: wiretype end group for non-group")
+			return fmt.Errorf("proto: AccountInfo: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Account: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: AccountInfo: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1037,9 +911,9 @@ func (m *Account) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Credentials", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Network", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowModels
@@ -1049,121 +923,75 @@ func (m *Account) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthModels
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthModels
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Credentials == nil {
-				m.Credentials = make(map[string]*Credential)
-			}
-			var mapkey string
-			var mapvalue *Credential
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowModels
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowModels
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthModels
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthModels
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var mapmsglen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowModels
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapmsglen |= int(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if mapmsglen < 0 {
-						return ErrInvalidLengthModels
-					}
-					postmsgIndex := iNdEx + mapmsglen
-					if postmsgIndex < 0 {
-						return ErrInvalidLengthModels
-					}
-					if postmsgIndex > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = &Credential{}
-					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
-						return err
-					}
-					iNdEx = postmsgIndex
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipModels(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthModels
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Credentials[mapkey] = mapvalue
+			m.Network = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowModels
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthModels
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthModels
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Label = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			m.Index = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowModels
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Index |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipModels(dAtA[iNdEx:])
@@ -1414,154 +1242,6 @@ func (m *AccountConfig) Unmarshal(dAtA []byte) error {
 			m.Shares = append(m.Shares, &ShareConfig{})
 			if err := m.Shares[len(m.Shares)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipModels(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthModels
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Credential) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowModels
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Credential: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Credential: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowModels
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthModels
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthModels
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowModels
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthModels
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthModels
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Type = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Credential", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowModels
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthModels
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthModels
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Credential = append(m.Credential[:0], dAtA[iNdEx:postIndex]...)
-			if m.Credential == nil {
-				m.Credential = []byte{}
 			}
 			iNdEx = postIndex
 		default:

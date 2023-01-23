@@ -7,8 +7,8 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
 	"github.com/sonr-hq/sonr/x/identity/protocol/vault/account"
+	v1 "github.com/sonr-hq/sonr/x/identity/types/vault/v1"
 )
 
 // `Wallet` is an interface that has a method `WalletConfig` that returns a `*v1.WalletConfig` and a
@@ -74,7 +74,7 @@ func (w *walletImpl) WalletConfig() *v1.WalletConfig {
 // Creating a new account.
 func (w *walletImpl) CreateAccount(name string, addrPrefix string, networkName string) error {
 	// The default shards that are added to the MPC wallet
-	rootAcc, err := w.GetAccount("Primary")
+	rootAcc, err := w.PrimaryAccount()
 	if err != nil {
 		return err
 	}

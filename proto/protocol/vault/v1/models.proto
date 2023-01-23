@@ -10,12 +10,18 @@ import "sonr/identity/did.proto";
 option go_package = "github.com/sonr-hq/sonr/x/identity/types/vault/v1";
 
 // Account is used for storing all credentials and their locations to be encrypted.
-message Account {
+message AccountInfo {
   // Address is the associated Sonr address.
   string address = 1;
 
   // Credentials is a list of all credentials associated with the account.
-  map<string, Credential> credentials = 2;
+  string network = 2;
+
+  // Label is the label of the account.
+  string label = 3;
+
+  // Index is the index of the account.
+  uint32 index = 4;
 }
 
 message AccountConfig {
@@ -39,18 +45,6 @@ message AccountConfig {
 
   // Shares is a list of all shares associated with the account.
   repeated ShareConfig shares = 7;
-}
-
-// Credential is used for storing a single credential.
-message Credential {
-  // Name is the name of the credential.
-  string name = 1;
-
-  // Type is the type of the credential. (e.g. "biometric", "webauthn")
-  string type = 2;
-
-  // Webauthn is for PassKey data of the credential.
-  bytes credential = 3;
 }
 
 // ChallengeType is used for defining the type of challenge.

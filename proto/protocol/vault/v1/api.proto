@@ -9,6 +9,10 @@ import "sonr/identity/did.proto";
 
 option go_package = "github.com/sonr-hq/sonr/x/identity/types/vault/v1";
 
+// ==================================================================
+// REGISTRATION
+// ==================================================================
+
 // ChallengRequest is the request to generate a challenge.
 message ChallengeRequest {
   // Optional RP ID to use for the challenge.
@@ -42,11 +46,47 @@ message NewWalletResponse {
   sonr.identity.DidDocument did_document = 3;
 }
 
+// PublishRequest is the request to publish the new account via Grant.
+message PublishRequest {
+  sonr.identity.DidDocument did_document = 1;
+}
+
+// PublishResponse is the response to a Publish request.
+message PublishResponse {
+  bool success = 1;
+  sonr.identity.DidDocument did_document = 2;
+  string tx_hash = 3;
+  int64 block_height = 4;
+}
+
+// ==================================================================
+// AUTHENTICATION
+// ==================================================================
+
+// AuthorizeRequest is the request to generate a challenge.
+message AuthorizeRequest {
+  // Optional RP ID to use for the challenge.
+  string rp_id = 1;
+
+  // Username to use for the AlsoKnownAs field in the didDoc
+  sonr.identity.DidDocument did_document = 2;
+}
+
+// AuthorizeResponse is the response to a Challenge request.
+message AuthorizeResponse {
+  string session_id = 1;
+  string request_options = 2;
+  string rp_name = 3;
+  repeated string rp_origins = 4;
+  string rp_icon = 5;
+}
+
 // CreateAccountRequest is the request to CreateAccount a new key from the private key.
 message CreateAccountRequest {
   string prefix = 1;
   string account_name = 2;
-  sonr.identity.DidDocument did_document = 3;
+  string credential_response = 3;
+  string session_id = 4;
 }
 
 // CreateAccountResponse is the response to a CreateAccount request.
@@ -54,32 +94,39 @@ message CreateAccountResponse {
   bytes id = 1;
   string address = 2;
   sonr.identity.DidDocument did_document = 3;
+  AccountInfo new_account = 4;
 }
 
 // ListAccountsRequest is the request to list the accounts.
 message ListAccountsRequest {
-  sonr.identity.DidDocument did_document = 1;
+  string credential_response = 1;
+  string session_id = 2;
 }
 
 // ListAccountsResponse is the response to a ListAccounts request.
 message ListAccountsResponse {
-  repeated sonr.identity.DidDocument did_documents = 1;
+  repeated AccountInfo accounts = 1;
 }
 
 // DeleteAccountRequest is the request to delete an account.
 message DeleteAccountRequest {
-  sonr.identity.DidDocument did_document = 1;
+  string credential_response = 1;
+  string session_id = 2;
+  string account_name = 3;
 }
 
 // DeleteAccountResponse is the response to a DeleteAccount request.
 message DeleteAccountResponse {
   bool success = 1;
+  sonr.identity.DidDocument did_document = 2;
+  AccountInfo deleted_account = 3;
 }
 
 // SignTransactionRequest is the request to sign data with the private key.
 message SignTransactionRequest {
-  sonr.identity.DidDocument did_document = 1;
-  bytes data = 2;
+  string credential_response = 1;
+  string session_id = 2;
+  bytes data = 3;
 }
 
 // SignTransactionResponse is the response to a Sign request.
@@ -92,7 +139,8 @@ message SignTransactionResponse {
 
 // RefreshRequest is the request to refresh the keypair.
 message RefreshRequest {
-  sonr.identity.DidDocument did_document = 1;
+  string credential_response = 1;
+  string session_id = 2;
 }
 
 // RefreshResponse is the response to a Refresh request.
@@ -102,9 +150,13 @@ message RefreshResponse {
   sonr.identity.DidDocument did_document = 3;
 }
 
+// ==================================================================
+// GRPC/REST SERVICE
+// ==================================================================
+
 // Vault is the service used for managing a node's keypair.
 service Vault {
-  // Challenge generates a challenge and returns it.
+  // Challenge generates a challenge for registration returns it.
   rpc Challenge(ChallengeRequest) returns (ChallengeResponse) {
     option (google.api.http).get = "/sonr-io/sonr/vault/challenge/{rp_id}/{username}";
   }
@@ -113,6 +165,22 @@ service Vault {
   rpc NewWallet(NewWalletRequest) returns (NewWalletResponse) {
     option (google.api.http) = {
       post: "/sonr-io/sonr/vault/new-wallet"
+      body: "*"
+    };
+  }
+
+  // Publish publishes the new account via Grant.
+  rpc Publish(PublishRequest) returns (PublishResponse) {
+    option (google.api.http) = {
+      post: "/sonr-io/sonr/vault/publish"
+      body: "*"
+    };
+  }
+
+  // Authorize generates a challenge for login and returns it.
+  rpc Authorize(AuthorizeRequest) returns (AuthorizeResponse) {
+    option (google.api.http) = {
+      post: "/sonr-io/sonr/vault/authorize"
       body: "*"
     };
   }
