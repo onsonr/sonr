@@ -26,7 +26,7 @@
 - Golang: 1.18.10 darwin/arm64
 - Taskfile v3.20.0
 
-### Setup Local Environment
+Setting up your local development environment:
 
 ```sh
 # Clone the repository
@@ -39,7 +39,7 @@ sh scripts/install.sh
 task
 ```
 
-### Documentation
+## Documentation
 
 Sonr utilizes Mintlify to generate documentation from the source code. To run the documentation server, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
 
