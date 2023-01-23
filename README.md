@@ -2,7 +2,7 @@
 
 <div style="text-align: center;">
 
-![Banner](docs/static/images/gh-banner.png)
+[![Sonr Logo Banner](docs/static/images/gh-banner.png)](https://snr.la/h)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonr-hq/sonr.svg)](https://pkg.go.dev/github.com/sonr-hq/sonr)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonr-hq/sonr)](https://goreportcard.com/report/github.com/sonr-hq/sonr)
@@ -18,13 +18,15 @@
 
 </br>
 
-## Development
+## Getting Started
 
-### Prerequisites
+<details>
+<summary><strong>Prerequisites</strong></summary>
 - Cosmos SDK: v0.46.7
 - Ignite CLI: v0.25.2
 - Golang: 1.18.10 darwin/arm64
 - Taskfile v3.20.0
+</details>
 
 ### Setup Local Environment
 
@@ -39,12 +41,31 @@ sh scripts/install.sh
 task
 ```
 
-### Project Usage
+### Documentation
 
+Sonr utilizes Mintlify to generate documentation from the source code. To run the documentation server, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
+
+<details>
+<summary><strong>Architecture Diagram</strong></summary>
+
+![Architecture](./docs/static/images/diagrams/architecture-light.svg)
+
+</details>
+
+<details>
+<summary><strong>Repository Structure Map</strong></summary>
+
+![Repository structure](./docs/static/images/diagrams/repo-structure.svg)
+
+</details>
+
+## Usage
+
+### Project Commands
 `task serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
 
 <details>
-<summary>All commands for this project</summary>
+<summary><strong>Command Reference</strong></summary>
 
 ```sh
 * docs:                 Serve the docs locally
@@ -58,7 +79,7 @@ task
 ```
 </details>
 <details>
-<summary>Publishing a New Release</summary>
+<summary><strong>Publish New Release</strong></summary>
 
 To release a new version of your blockchain, create and push a new tag with `v` prefix. A new draft release with the configured targets will be created.
 
@@ -70,13 +91,8 @@ git push origin v0.1
 After a draft release is created, make your final changes from the release page and publish it.
 
 </details>
-<br/>
 
-### Documentation
-
-Sonr utilizes Mintlify to generate documentation from the source code. To run the documentation server, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
-
-### Install
+### Installation
 To install the latest version of your blockchain node's binary, execute the following command on your machine:
 
 ```sh
@@ -84,21 +100,10 @@ curl https://get.ignite.com/sonr-hq/sonr! | sudo bash
 ```
 Learn more about [the install process](https://github.com/allinbits/starport-installer).
 
+## Community
 
-## Diagrams
+For help and discussion around DID Documents, best practices, and more, join us on [Discord](https://snr.la/dcrd).
 
-#### Repository structure
+For updates on the Sonr Daemon, [follow this repo on GitHub](https://github.com/sonr-hq/sonr).
 
-![Repository structure](./docs/static/images/diagrams/repo-structure.svg)
-
-#### Architecture
-
-![Architecture](./docs/static/images/diagrams/architecture-light.svg)
-
-For more information, see the [Mintlify documentation](https://mintlify.com/docs/quickstart).
-## Learn more
-
-- [Homepage](https://snr.la/h)
-- [Blog](https://snr.la/blg)
-- [Sonr SDK docs](https://snr.la/docs)
-- [Developer Chat](https://snr.la/dcrd)
+For feature requests, bugs, or technical questions, [submit feedback here](https://roadmap.sonr.io). For general inquiries or inclusion in our upcoming feature betas, reach out on [Twitter](https://snr.la/tw).
