@@ -23,8 +23,18 @@ export default async function handler(req: NextRequest) {
     requestOptions
   );
   const data = await resp.json();
-  console.log(data);
-  return new Response(JSON.stringify(data), {
+  const reqPubOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data.did_document),
+  };
+  const pubResp = await fetch(
+    process.env.API_URL + "/sonr-io/sonr/vault/publish",
+    reqPubOptions
+  );
+  const pubData = await pubResp.json();
+  console.log(pubData);
+  return new Response(JSON.stringify(pubData), {
     status: 200,
     headers: {
       "content-type": "application/json",

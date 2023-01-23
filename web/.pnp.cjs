@@ -29,7 +29,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["@babel/core", "npm:7.20.12"],\
-            ["@buf/sonr-hq_sonr.grpc_web", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball"],\
+            ["@buf/sonr-hq_sonr.grpc_web", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230122232753-221b38f25277.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230122232753-221b38f25277.2%2Ftarball"],\
             ["@chakra-ui/icon", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:3.0.14"],\
             ["@chakra-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.4.6"],\
             ["@chakra-ui/system", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.3.7"],\
@@ -397,10 +397,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball", {\
-          "packageLocation": "./.yarn/__virtual__/@buf-cosmos_cosmos-proto.grpc_web-virtual-d54881b057/0/cache/@buf-cosmos_cosmos-proto.grpc_web-npm-1.4.2-20211202220400-1935555c206d.2-5d7393c7e9-8d35f8a047.zip/node_modules/@buf/cosmos_cosmos-proto.grpc_web/",\
+        ["virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball", {\
+          "packageLocation": "./.yarn/__virtual__/@buf-cosmos_cosmos-proto.grpc_web-virtual-d6a63f9fcc/0/cache/@buf-cosmos_cosmos-proto.grpc_web-npm-1.4.2-20211202220400-1935555c206d.2-5d7393c7e9-8d35f8a047.zip/node_modules/@buf/cosmos_cosmos-proto.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/cosmos_cosmos-proto.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball"],\
+            ["@buf/cosmos_cosmos-proto.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball"],\
             ["@types/google-protobuf", null],\
             ["@types/grpc-web", null],\
             ["google-protobuf", "npm:3.21.2"],\
@@ -416,20 +416,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@buf/cosmos_cosmos-sdk.grpc_web", [\
-        ["npm:1.4.2-20230109081834-fe58c1d20072.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230109081834-fe58c1d20072.2%2Ftarball", {\
-          "packageLocation": "./.yarn/cache/@buf-cosmos_cosmos-sdk.grpc_web-npm-1.4.2-20230109081834-fe58c1d20072.2-016574723b-ac9de61f6d.zip/node_modules/@buf/cosmos_cosmos-sdk.grpc_web/",\
+        ["npm:1.4.2-20230120135628-e06e2cfb5db2.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230120135628-e06e2cfb5db2.2%2Ftarball", {\
+          "packageLocation": "./.yarn/cache/@buf-cosmos_cosmos-sdk.grpc_web-npm-1.4.2-20230120135628-e06e2cfb5db2.2-d05609c440-b4bd5d7375.zip/node_modules/@buf/cosmos_cosmos-sdk.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/cosmos_cosmos-sdk.grpc_web", "npm:1.4.2-20230109081834-fe58c1d20072.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230109081834-fe58c1d20072.2%2Ftarball"]\
+            ["@buf/cosmos_cosmos-sdk.grpc_web", "npm:1.4.2-20230120135628-e06e2cfb5db2.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230120135628-e06e2cfb5db2.2%2Ftarball"]\
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20230109081834-fe58c1d20072.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230109081834-fe58c1d20072.2%2Ftarball", {\
-          "packageLocation": "./.yarn/__virtual__/@buf-cosmos_cosmos-sdk.grpc_web-virtual-ded0770f4c/0/cache/@buf-cosmos_cosmos-sdk.grpc_web-npm-1.4.2-20230109081834-fe58c1d20072.2-016574723b-ac9de61f6d.zip/node_modules/@buf/cosmos_cosmos-sdk.grpc_web/",\
+        ["virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20230120135628-e06e2cfb5db2.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230120135628-e06e2cfb5db2.2%2Ftarball", {\
+          "packageLocation": "./.yarn/__virtual__/@buf-cosmos_cosmos-sdk.grpc_web-virtual-f3e1a1ff7a/0/cache/@buf-cosmos_cosmos-sdk.grpc_web-npm-1.4.2-20230120135628-e06e2cfb5db2.2-d05609c440-b4bd5d7375.zip/node_modules/@buf/cosmos_cosmos-sdk.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/cosmos_cosmos-sdk.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20230109081834-fe58c1d20072.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230109081834-fe58c1d20072.2%2Ftarball"],\
-            ["@buf/cosmos_cosmos-proto.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball"],\
-            ["@buf/cosmos_gogo-proto.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball"],\
-            ["@buf/googleapis_googleapis.grpc_web", "virtual:ded0770f4cfd382dd0d717729170668d70e1b88384f993b92f6264cf243fc83ab433182614c5cf1912f0d8e41a6fb0bdc1b9c50b08f0f2827bc67cde6f8b389d#npm:1.4.2-20221025150512-783e4b5374fa.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221025150512-783e4b5374fa.2%2Ftarball"],\
+            ["@buf/cosmos_cosmos-sdk.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20230120135628-e06e2cfb5db2.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230120135628-e06e2cfb5db2.2%2Ftarball"],\
+            ["@buf/cosmos_cosmos-proto.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball"],\
+            ["@buf/cosmos_gogo-proto.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball"],\
+            ["@buf/googleapis_googleapis.grpc_web", "virtual:f3e1a1ff7ad4a8e002d8e9347e7cd35b8721943f1ad938d9565f1cec089714c7f3916a2186601424f52b753852c638f293ccf06eee7a5680ce82f4e05ec357ad#npm:1.4.2-20221025150512-783e4b5374fa.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221025150512-783e4b5374fa.2%2Ftarball"],\
             ["@types/google-protobuf", null],\
             ["@types/grpc-web", null],\
             ["google-protobuf", "npm:3.21.2"],\
@@ -452,10 +452,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball", {\
-          "packageLocation": "./.yarn/__virtual__/@buf-cosmos_gogo-proto.grpc_web-virtual-b377fe070d/0/cache/@buf-cosmos_gogo-proto.grpc_web-npm-1.4.2-20221020125208-34d970b699f8.2-06f5fba107-0232a9a74d.zip/node_modules/@buf/cosmos_gogo-proto.grpc_web/",\
+        ["virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball", {\
+          "packageLocation": "./.yarn/__virtual__/@buf-cosmos_gogo-proto.grpc_web-virtual-09771eacd3/0/cache/@buf-cosmos_gogo-proto.grpc_web-npm-1.4.2-20221020125208-34d970b699f8.2-06f5fba107-0232a9a74d.zip/node_modules/@buf/cosmos_gogo-proto.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/cosmos_gogo-proto.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball"],\
+            ["@buf/cosmos_gogo-proto.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball"],\
             ["@types/google-protobuf", null],\
             ["@types/grpc-web", null],\
             ["google-protobuf", "npm:3.21.2"],\
@@ -485,10 +485,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20221214150216-75b4300737fb.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221214150216-75b4300737fb.2%2Ftarball", {\
-          "packageLocation": "./.yarn/__virtual__/@buf-googleapis_googleapis.grpc_web-virtual-990d6f63f2/0/cache/@buf-googleapis_googleapis.grpc_web-npm-1.4.2-20221214150216-75b4300737fb.2-db40906086-6311e9c2e0.zip/node_modules/@buf/googleapis_googleapis.grpc_web/",\
+        ["virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20221214150216-75b4300737fb.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221214150216-75b4300737fb.2%2Ftarball", {\
+          "packageLocation": "./.yarn/__virtual__/@buf-googleapis_googleapis.grpc_web-virtual-531b9b619d/0/cache/@buf-googleapis_googleapis.grpc_web-npm-1.4.2-20221214150216-75b4300737fb.2-db40906086-6311e9c2e0.zip/node_modules/@buf/googleapis_googleapis.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/googleapis_googleapis.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20221214150216-75b4300737fb.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221214150216-75b4300737fb.2%2Ftarball"],\
+            ["@buf/googleapis_googleapis.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20221214150216-75b4300737fb.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221214150216-75b4300737fb.2%2Ftarball"],\
             ["@types/google-protobuf", null],\
             ["@types/grpc-web", null],\
             ["google-protobuf", "npm:3.21.2"],\
@@ -502,10 +502,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["virtual:ded0770f4cfd382dd0d717729170668d70e1b88384f993b92f6264cf243fc83ab433182614c5cf1912f0d8e41a6fb0bdc1b9c50b08f0f2827bc67cde6f8b389d#npm:1.4.2-20221025150512-783e4b5374fa.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221025150512-783e4b5374fa.2%2Ftarball", {\
-          "packageLocation": "./.yarn/__virtual__/@buf-googleapis_googleapis.grpc_web-virtual-57f46d5acc/0/cache/@buf-googleapis_googleapis.grpc_web-npm-1.4.2-20221025150512-783e4b5374fa.2-bc4f5debbe-0d3da4dc97.zip/node_modules/@buf/googleapis_googleapis.grpc_web/",\
+        ["virtual:f3e1a1ff7ad4a8e002d8e9347e7cd35b8721943f1ad938d9565f1cec089714c7f3916a2186601424f52b753852c638f293ccf06eee7a5680ce82f4e05ec357ad#npm:1.4.2-20221025150512-783e4b5374fa.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221025150512-783e4b5374fa.2%2Ftarball", {\
+          "packageLocation": "./.yarn/__virtual__/@buf-googleapis_googleapis.grpc_web-virtual-5894d59f7e/0/cache/@buf-googleapis_googleapis.grpc_web-npm-1.4.2-20221025150512-783e4b5374fa.2-bc4f5debbe-0d3da4dc97.zip/node_modules/@buf/googleapis_googleapis.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/googleapis_googleapis.grpc_web", "virtual:ded0770f4cfd382dd0d717729170668d70e1b88384f993b92f6264cf243fc83ab433182614c5cf1912f0d8e41a6fb0bdc1b9c50b08f0f2827bc67cde6f8b389d#npm:1.4.2-20221025150512-783e4b5374fa.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221025150512-783e4b5374fa.2%2Ftarball"],\
+            ["@buf/googleapis_googleapis.grpc_web", "virtual:f3e1a1ff7ad4a8e002d8e9347e7cd35b8721943f1ad938d9565f1cec089714c7f3916a2186601424f52b753852c638f293ccf06eee7a5680ce82f4e05ec357ad#npm:1.4.2-20221025150512-783e4b5374fa.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221025150512-783e4b5374fa.2%2Ftarball"],\
             ["@types/google-protobuf", null],\
             ["@types/grpc-web", null],\
             ["google-protobuf", "npm:3.21.2"],\
@@ -521,21 +521,48 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@buf/sonr-hq_sonr.grpc_web", [\
-        ["npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball", {\
-          "packageLocation": "./.yarn/cache/@buf-sonr-hq_sonr.grpc_web-npm-1.4.2-20230109212641-b124d5648d18.2-b022a683b6-e74feed94e.zip/node_modules/@buf/sonr-hq_sonr.grpc_web/",\
+        ["npm:1.4.2-20230122232753-221b38f25277.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230122232753-221b38f25277.2%2Ftarball", {\
+          "packageLocation": "./.yarn/cache/@buf-sonr-hq_sonr.grpc_web-npm-1.4.2-20230122232753-221b38f25277.2-131c8f7af9-9ec1ff78f3.zip/node_modules/@buf/sonr-hq_sonr.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/sonr-hq_sonr.grpc_web", "npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball"]\
+            ["@buf/sonr-hq_sonr.grpc_web", "npm:1.4.2-20230122232753-221b38f25277.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230122232753-221b38f25277.2%2Ftarball"]\
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball", {\
-          "packageLocation": "./.yarn/__virtual__/@buf-sonr-hq_sonr.grpc_web-virtual-6ff8d2d75c/0/cache/@buf-sonr-hq_sonr.grpc_web-npm-1.4.2-20230109212641-b124d5648d18.2-b022a683b6-e74feed94e.zip/node_modules/@buf/sonr-hq_sonr.grpc_web/",\
+        ["virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230122232753-221b38f25277.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230122232753-221b38f25277.2%2Ftarball", {\
+          "packageLocation": "./.yarn/__virtual__/@buf-sonr-hq_sonr.grpc_web-virtual-a42d8b09f1/0/cache/@buf-sonr-hq_sonr.grpc_web-npm-1.4.2-20230122232753-221b38f25277.2-131c8f7af9-9ec1ff78f3.zip/node_modules/@buf/sonr-hq_sonr.grpc_web/",\
           "packageDependencies": [\
-            ["@buf/sonr-hq_sonr.grpc_web", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball"],\
-            ["@buf/cosmos_cosmos-proto.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball"],\
-            ["@buf/cosmos_cosmos-sdk.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20230109081834-fe58c1d20072.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230109081834-fe58c1d20072.2%2Ftarball"],\
-            ["@buf/cosmos_gogo-proto.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball"],\
-            ["@buf/googleapis_googleapis.grpc_web", "virtual:6ff8d2d75c5011daf5ca092cfd424c0d155a46bfe887c9112b0e61eb1b74650798b00ea7e1a830fdd09a9e4529b0b3428498eb4aee8072c7888f7dbf04004080#npm:1.4.2-20221214150216-75b4300737fb.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221214150216-75b4300737fb.2%2Ftarball"],\
+            ["@buf/sonr-hq_sonr.grpc_web", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230122232753-221b38f25277.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230122232753-221b38f25277.2%2Ftarball"],\
+            ["@buf/cosmos_cosmos-proto.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20211202220400-1935555c206d.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-proto.grpc_web%2F1.4.2-20211202220400-1935555c206d.2%2Ftarball"],\
+            ["@buf/cosmos_cosmos-sdk.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20230120135628-e06e2cfb5db2.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_cosmos-sdk.grpc_web%2F1.4.2-20230120135628-e06e2cfb5db2.2%2Ftarball"],\
+            ["@buf/cosmos_gogo-proto.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20221020125208-34d970b699f8.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fcosmos_gogo-proto.grpc_web%2F1.4.2-20221020125208-34d970b699f8.2%2Ftarball"],\
+            ["@buf/googleapis_googleapis.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20221214150216-75b4300737fb.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fgoogleapis_googleapis.grpc_web%2F1.4.2-20221214150216-75b4300737fb.2%2Ftarball"],\
+            ["@buf/ysugimoto_grpc-graphql-gateway.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20220908072546-5bbe51f0268c.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fysugimoto_grpc-graphql-gateway.grpc_web%2F1.4.2-20220908072546-5bbe51f0268c.2%2Ftarball"],\
+            ["@types/google-protobuf", null],\
+            ["@types/grpc-web", null],\
+            ["google-protobuf", "npm:3.21.2"],\
+            ["grpc-web", "npm:1.4.2"]\
+          ],\
+          "packagePeers": [\
+            "@types/google-protobuf",\
+            "@types/grpc-web",\
+            "google-protobuf",\
+            "grpc-web"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@buf/ysugimoto_grpc-graphql-gateway.grpc_web", [\
+        ["npm:1.4.2-20220908072546-5bbe51f0268c.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fysugimoto_grpc-graphql-gateway.grpc_web%2F1.4.2-20220908072546-5bbe51f0268c.2%2Ftarball", {\
+          "packageLocation": "./.yarn/cache/@buf-ysugimoto_grpc-graphql-gateway.grpc_web-npm-1.4.2-20220908072546-5bbe51f0268c.2-65b4019ae6-891b316d3a.zip/node_modules/@buf/ysugimoto_grpc-graphql-gateway.grpc_web/",\
+          "packageDependencies": [\
+            ["@buf/ysugimoto_grpc-graphql-gateway.grpc_web", "npm:1.4.2-20220908072546-5bbe51f0268c.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fysugimoto_grpc-graphql-gateway.grpc_web%2F1.4.2-20220908072546-5bbe51f0268c.2%2Ftarball"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20220908072546-5bbe51f0268c.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fysugimoto_grpc-graphql-gateway.grpc_web%2F1.4.2-20220908072546-5bbe51f0268c.2%2Ftarball", {\
+          "packageLocation": "./.yarn/__virtual__/@buf-ysugimoto_grpc-graphql-gateway.grpc_web-virtual-062b4325fc/0/cache/@buf-ysugimoto_grpc-graphql-gateway.grpc_web-npm-1.4.2-20220908072546-5bbe51f0268c.2-65b4019ae6-891b316d3a.zip/node_modules/@buf/ysugimoto_grpc-graphql-gateway.grpc_web/",\
+          "packageDependencies": [\
+            ["@buf/ysugimoto_grpc-graphql-gateway.grpc_web", "virtual:a42d8b09f14aa980d319eedcd5bde47be0dea54ce95e57fc5e8d29a3d3f87b053c982af40ac921751d593081e13c86389b8ae6c81ec522b4df8fa1af18b11e13#npm:1.4.2-20220908072546-5bbe51f0268c.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fysugimoto_grpc-graphql-gateway.grpc_web%2F1.4.2-20220908072546-5bbe51f0268c.2%2Ftarball"],\
             ["@types/google-protobuf", null],\
             ["@types/grpc-web", null],\
             ["google-protobuf", "npm:3.21.2"],\
@@ -8171,7 +8198,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["sonr.id", "workspace:."],\
             ["@babel/core", "npm:7.20.12"],\
-            ["@buf/sonr-hq_sonr.grpc_web", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230109212641-b124d5648d18.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230109212641-b124d5648d18.2%2Ftarball"],\
+            ["@buf/sonr-hq_sonr.grpc_web", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:1.4.2-20230122232753-221b38f25277.2::__archiveUrl=https%3A%2F%2Fbuf.build%2Fgen%2Fnpm%2Fv1%2F%40buf%2Fsonr-hq_sonr.grpc_web%2F1.4.2-20230122232753-221b38f25277.2%2Ftarball"],\
             ["@chakra-ui/icon", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:3.0.14"],\
             ["@chakra-ui/react", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.4.6"],\
             ["@chakra-ui/system", "virtual:2676647180637b6760f4b0aa6ebc24cf6c420166451f09082b4dc57fe4ff867d3552933d8ffc601db4c5004e0d29b6bacd4a7fb2565077aea636918e4e24bac7#npm:2.3.7"],\
