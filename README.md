@@ -55,7 +55,6 @@ Sonr utilizes Mintlify to generate documentation from the source code. To view t
 
 ## Usage
 
-#### Project Commands
 `task serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
 
 <details>
@@ -86,7 +85,7 @@ After a draft release is created, make your final changes from the release page 
 
 </details>
 
-#### Installation
+### Installation
 To install the latest version of your blockchain node's binary, execute the following command on your machine:
 
 ```sh
