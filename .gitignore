@@ -8,3 +8,5 @@ release/
 .spectral.mjs
 .vercel
 .tmp
+build/
+.vscode/

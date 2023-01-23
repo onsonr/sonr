@@ -6,7 +6,11 @@
     },
     {
       "path": "./web",
-      "name": "🌐 Web UI"
+      "name": "🌐 Web"
+    },
+    {
+      "path": "./bind",
+      "name": "📱 Motor"
     },
     {
       "path": "./docs",
@@ -18,10 +22,12 @@
     "gitlens.views.formats.commits.description": "${author, }${agoOrDate}${tips}",
     "gitlens.views.commitDetails.files.layout": "tree",
     "gitlens.views.commitDetails.files.compact": false,
+    "eslint.nodePath": "web/.yarn/sdks",
     "typescript.tsdk": "web/.yarn/sdks/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "files.exclude": {
       "docs/": true,
+      "bind/": true,
       "web/": true,
       "**/buf.lock": true,
       "**/go.sum": true,
@@ -32,7 +38,22 @@
       "yarn.lock": true,
       "go.work": true,
       "**/go.work.sum": true,
-      ".tmp": true
+      ".tmp": true,
+      "buf.work.yaml": true,
+      "buf.gen.yaml": true,
+      "Makefile": true,
+      "Dockerfile": true,
+      "go.mod": true,
+      ".eslintrc.json": true,
+      ".editorconfig": true,
+      ".yarnrc.yml": true,
+      "tsconfig.json": true,
+      "next.config.js": true,
+      ".next": true,
+      ".vercel": true,
+      "**/docs.go": true,
+      "third_party": true,
+      "**/*.pb.go": true
     }
   }
 }

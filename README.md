@@ -10,7 +10,7 @@
 
 </div>
 
-# Sonr - Core Node
+# Core Node
 
 <p align="center"> Sonr is a <strong>peer-to-peer identity</strong> and <strong>asset management system</strong> that leverages <italic>DID Documents, WebAuthn, and IPFS</italic> - to provide users with a <strong>secure, user-friendly</strong> way to manage their <strong>digital identity and assets.</strong>
     <br>

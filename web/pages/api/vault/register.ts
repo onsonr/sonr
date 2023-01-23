@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { RegisterRequest } from "@buf/sonr-hq_sonr.grpc_web/highway/vault/v1/api_pb";
+import { NewWalletRequest } from "@buf/sonr-hq_sonr.grpc_web/protocol/vault/v1/api_pb";
 import axios from "axios";
 export const config = {
   runtime: "experimental-edge",

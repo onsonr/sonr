@@ -9,7 +9,7 @@
 // Transports: TCP, UDP, QUIC, WebTransport, WebSockets
 // ---
 
-package motor
+package internal
 
 import (
 	"context"

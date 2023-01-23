@@ -15,7 +15,7 @@
     "**/.yarn": true,
     "**/.pnp.*": true
   },
-  "eslint.nodePath": "web/.yarn/sdks",
+
   "typescript.tsdk": "web/.yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true
 }
