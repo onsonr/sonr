@@ -20,13 +20,11 @@
 
 ## Getting Started
 
-<details>
-<summary><strong>Prerequisites</strong></summary>
+#### Prerequisites
 - Cosmos SDK: v0.46.7
 - Ignite CLI: v0.25.2
 - Golang: 1.18.10 darwin/arm64
 - Taskfile v3.20.0
-</details>
 
 ### Setup Local Environment
 
