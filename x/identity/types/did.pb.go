@@ -23,9 +23,13 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// DidDocument is a representation of a DID Document as defined in the W3C DID
 type DidDocument struct {
-	Context              []string                   `protobuf:"bytes,1,rep,name=context,proto3" json:"context,omitempty"`
-	ID                   string                     `protobuf:"bytes,2,opt,name=iD,proto3" json:"iD,omitempty"`
+	// context is a list of URIs that are used to identify the context of the DID
+	Context []string `protobuf:"bytes,1,rep,name=context,proto3" json:"context,omitempty"`
+	// id is the DID of the DID Document
+	ID string `protobuf:"bytes,2,opt,name=iD,proto3" json:"iD,omitempty"`
+	// verificationMethod is a list of verification methods that can be used to
 	Controller           []string                   `protobuf:"bytes,3,rep,name=controller,proto3" json:"controller,omitempty"`
 	VerificationMethod   *VerificationMethods       `protobuf:"bytes,4,opt,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
 	Authentication       *VerificationRelationships `protobuf:"bytes,5,opt,name=authentication,proto3" json:"authentication,omitempty"`

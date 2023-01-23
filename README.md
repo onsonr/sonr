@@ -11,45 +11,55 @@
 </div>
 
 
-<p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for interoperability, and total digital autonomy.
+<p align="center"> Sonr is a <strong>peer-to-peer identity</strong> and <strong>asset management system</strong> that leverages <italic>DID Documents, WebAuthn, and IPFS</italic> - to provide users with a <strong>secure, user-friendly</strong> way to manage their <strong>digital identity and assets.</strong>
     <br>
 </p>
 
 
 </br>
 
-## Getting Started
+## Development
 
 ### Prerequisites
 - Cosmos SDK: v0.46.7
 - Ignite CLI: v0.25.2
 - Golang: 1.18.10 darwin/arm64
+- Taskfile v3.20.0
 
-**Getting Started**
-
-```sh
-ignite chain serve
-```
-
-`serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
-
-### Configure
-
-Your blockchain in development can be configured with `config.yml`. To learn more, see the [Ignite CLI docs](https://docs.ignite.com).
-
-### Web Frontend
-
-Ignite CLI has scaffolded a Vue.js-based web app in the `client/vue` directory. Run the following commands to install dependencies and start the app:
+### Setup Local Environment
 
 ```sh
-cd client/vue
-npm install
-npm run serve
+# Clone the repository
+git clone https://github.com/sonr-hq/sonr.git
+
+# Install dependencies
+sh scripts/install.sh
+
+# Display all available tasks
+task
 ```
 
-The frontend app is built using the `@starport/vue` and `@starport/vuex` packages. For details, see the [monorepo for Ignite front-end development](https://github.com/ignite/web).
+### Project Usage
 
-## Release
+`task serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
+
+<details>
+<summary>All commands for this project</summary>
+
+```sh
+* docs:                 Serve the docs locally
+* chain:build:          Build the blockchain                  (aliases: build)
+* chain:generate:       Generate the protobuf files           (aliases: gen)
+* chain:serve:          Serve the blockchain locally          (aliases: serve)
+* motor:android:        Bind the Motor Android Framework      (aliases: android)
+* motor:ios:            Bind the Motor iOS Framework          (aliases: ios)
+* motor:web:            Build the Motor WASM Framework        (aliases: wasm)
+* web:dev:              Run the web app in dev mode           (aliases: web)
+```
+</details>
+<details>
+<summary>Publishing a New Release</summary>
+
 To release a new version of your blockchain, create and push a new tag with `v` prefix. A new draft release with the configured targets will be created.
 
 ```sh
@@ -59,6 +69,13 @@ git push origin v0.1
 
 After a draft release is created, make your final changes from the release page and publish it.
 
+</details>
+<br/>
+
+### Documentation
+
+Sonr utilizes Mintlify to generate documentation from the source code. To run the documentation server, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
+
 ### Install
 To install the latest version of your blockchain node's binary, execute the following command on your machine:
 
@@ -66,20 +83,7 @@ To install the latest version of your blockchain node's binary, execute the foll
 curl https://get.ignite.com/sonr-hq/sonr! | sudo bash
 ```
 Learn more about [the install process](https://github.com/allinbits/starport-installer).
-## Documentation
 
-Sonr utilizes Mintlify to generate documentation from the source code. To run the documentation server, execute the following command:
-
-**1. Install Mintlify**
-```sh
-npm i -g mintlify
-```
-
-**2. Run the documentation server**
-```sh
-cd docs
-mintlify dev
-```
 
 ## Diagrams
 

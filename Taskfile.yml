@@ -1,0 +1,120 @@
+version: "3"
+dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
+env:
+  ENV: development
+
+tasks:
+  default:
+    aliases:
+      - "help"
+    silent: true
+    cmds:
+      - echo ""
+      - echo "⭐️ TASKFILE (sonr-hq/sonr) ⭐️"
+      - echo ""
+      - task --list
+  docs:
+    desc: Serve the docs locally
+    dir: docs
+    summary: |
+      Serve Docs Locally
+
+      This task will serve the docs locally
+    cmds:
+      - mintlify dev
+    interactive: true
+
+  chain:serve:
+    desc: Serve the blockchain locally
+    aliases:
+      - "serve"
+    summary: |
+      Serve Blockchain Locally
+
+      This task will serve the blockchain locally. It will also reset the blockchain
+    cmds:
+      - ignite chain serve --reset-once --clear-cache --skip-proto
+    interactive: true
+
+  chain:generate:
+    aliases:
+      - "gen"
+    dir: scripts
+    desc: Generate the protobuf files
+    summary: |
+      Generate Protobuf Files
+
+      This task will generate the protobuf files
+    cmds:
+      - sh generate.sh
+
+  chain:build:
+    aliases:
+      - "build"
+    desc: Build the blockchain
+    summary: |
+      Build Blockchain
+
+      This task will build the blockchain
+    cmds:
+      - ignite chain build --release
+    interactive: true
+    deps:
+      - chain:generate
+
+  motor:ios:
+    desc: Bind the Motor iOS Framework
+    dir: scripts
+    dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
+    aliases:
+      - "ios"
+    env:
+      TAR_COMPRESS: true
+    summary: |
+      Bind Motor iOS Framework
+
+      This task will bind the Motor iOS Framework
+    cmds:
+      - sh bind.sh -i
+
+  motor:android:
+    desc: Bind the Motor Android Framework
+    dir: scripts
+    dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
+    aliases:
+      - "android"
+    env:
+      TAR_COMPRESS: true
+    summary: |
+      Bind Motor Android Framework
+
+      This task will bind the Motor Android Framework
+    cmds:
+      - sh bind.sh -a
+
+  motor:web:
+    desc: Build the Motor WASM Framework
+    dir: scripts
+    dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
+    env:
+      TAR_COMPRESS: true
+    aliases:
+      - "wasm"
+    summary: |
+      Bind Motor Web Framework
+
+      This task will bind the Motor Web Framework
+    cmds:
+      - sh bind.sh -w
+
+  web:dev:
+    aliases:
+      - "web"
+    desc: Run the web app in dev mode
+    summary: |
+      Run Web App in Dev Mode
+
+      This task will run the web app in dev mode. It will also install the dependencies
+    dir: web
+    cmds:
+      - yarn dev
