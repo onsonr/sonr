@@ -61,8 +61,8 @@ tasks:
       This task will build the docker image
     cmds:
       - docker build -t sonr .
-      - docker tag sonr ghcr.io/sonrhq/sonr:latest
-      - docker tag sonr ghcr.io/sonrhq/sonr:{{.VERSION}}
+      - docker tag sonr ghcr.io/sonrhq/sonrd:latest
+      - docker tag sonr ghcr.io/sonrhq/sonrd:{{.VERSION}}
 
   docker:push:
     aliases:
@@ -73,8 +73,8 @@ tasks:
 
       This task will push the docker image
     cmds:
-      - docker push ghcr.io/sonrhq/sonr:latest
-      - docker push ghcr.io/sonrhq/sonr:{{.VERSION}}
+      - docker push ghcr.io/sonrhq/sonrd:latest
+      - docker push ghcr.io/sonrhq/sonrd:{{.VERSION}}
     deps:
       - docker:build
 

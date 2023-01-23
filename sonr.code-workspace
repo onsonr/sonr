@@ -24,6 +24,7 @@
     "gitlens.views.commitDetails.files.compact": false,
     "eslint.nodePath": "web/.yarn/sdks",
     "typescript.tsdk": "web/.yarn/sdks/typescript/lib",
+    "vercel-vscode.project": "prj_7Tfshwh5WL744ND8BaQsgjI5R0vw",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "files.exclude": {
       "docs/": true,
@@ -42,7 +43,7 @@
       "buf.work.yaml": true,
       "buf.gen.yaml": true,
       "Makefile": true,
-      "Dockerfile": true,
+      "Dockerfile": false,
       "go.mod": true,
       ".eslintrc.json": true,
       ".editorconfig": true,

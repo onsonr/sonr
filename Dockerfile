@@ -1,5 +1,8 @@
 FROM golang:1.19.5-bullseye AS build-env
 
+LABEL org.opencontainers.image.source https://github.com/sonrhq/core
+LABEL org.opencontainers.image.description Sonr Blockchain Node Daemon as Container
+
 WORKDIR /go/src/github.com/sonrhq/core
 
 RUN apt-get update -y
