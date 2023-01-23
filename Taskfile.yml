@@ -2,7 +2,10 @@ version: "3"
 dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
 env:
   ENV: development
-
+vars:
+  VERSION:
+    sh: echo $(git describe --tags --abbrev=0)
+    default: "v0.0.0"
 tasks:
   default:
     aliases:
@@ -61,6 +64,31 @@ tasks:
     interactive: true
     deps:
       - chain:generate
+
+  docker:build:
+    desc: Build the docker image
+    summary: |
+      Build Docker Image
+
+      This task will build the docker image
+    cmds:
+      - docker build -t sonr .
+      - docker tag sonr ghcr.io/sonr-hq/sonrd:latest
+      - docker tag sonr ghcr.io/sonr-hq/sonrd:{{.VERSION}}
+
+  docker:push:
+    aliases:
+      - "docker"
+    desc: Push the docker image
+    summary: |
+      Push Docker Image
+
+      This task will push the docker image
+    cmds:
+      - docker push ghcr.io/sonr-hq/sonrd:latest
+      - docker push ghcr.io/sonr-hq/sonrd:{{.VERSION}}
+    deps:
+      - docker:build
 
   motor:ios:
     desc: Bind the Motor iOS Framework
