@@ -1,8 +1,10 @@
+name: "Publish to Vercel"
 on:
-  push:
-    # Pattern matched against refs/tags
+  create:
     tags:
-      - "*" # Push events to every tag not containing /
+      - v*
+    branches:
+      - master
 
 jobs:
   build:
