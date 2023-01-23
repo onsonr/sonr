@@ -1,0 +1,18 @@
+syntax = "proto3";
+package sonrhq.sonr.identity;
+
+import "sonr/identity/did.proto";
+
+option go_package = "github.com/sonr-hq/sonr/x/identity/types";
+
+message DomainRecord {
+  string index = 1;
+  string creator = 2;
+  string domain = 3;
+}
+
+message DomainRecordTLD {
+  string name = 1;
+  string owner = 2;
+  repeated KeyValuePair metadata = 3;
+}

@@ -22,6 +22,14 @@ func TestGenesis(t *testing.T) {
 				ID: "1",
 			},
 		},
+		DomainRecordList: []types.DomainRecord{
+			{
+				Index: "0",
+			},
+			{
+				Index: "1",
+			},
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -34,5 +42,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(got)
 
 	require.ElementsMatch(t, genesisState.DidDocumentList, got.DidDocumentList)
+	require.ElementsMatch(t, genesisState.DomainRecordList, got.DomainRecordList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

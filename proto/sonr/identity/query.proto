@@ -6,8 +6,8 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "sonr/identity/did.proto";
 import "sonr/identity/genesis.proto";
+import "sonr/identity/hns.proto";
 import "sonr/identity/vc.proto";
-
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/sonr-hq/sonr/x/identity/types";
@@ -20,38 +20,48 @@ service Query {
   }
   // Queries a DidDocument by index.
   rpc Did(QueryGetDidRequest) returns (QueryGetDidResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/identity/did/{did}";
+    option (google.api.http).get = "/sonr-io/sonr/did/{did}";
   }
 
   // Queries a list of DidDocument items.
   rpc DidAll(QueryAllDidRequest) returns (QueryAllDidResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/identity/did";
+    option (google.api.http).get = "/sonr-io/sonr/did";
   }
 
   //Queries a DIDDocument for the matching service
   rpc QueryByService(QueryByServiceRequest) returns (QueryByServiceResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/identity/service/{service_id}";
+    option (google.api.http).get = "/sonr-io/sonr/did/service/{service_id}";
   }
 
   //Queries a DIDDocument for the matching key
   rpc QueryByKeyID(QueryByKeyIDRequest) returns (QueryByKeyIDResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/identity/key/{key_id}";
+    option (google.api.http).get = "/sonr-io/sonr/did/key/{key_id}";
   }
 
   //Queries a DIDDocument for the matching AlsoKnownAs
   rpc QueryByAlsoKnownAs(QueryByAlsoKnownAsRequest) returns (QueryByAlsoKnownAsResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/identity/aka/{aka_id}";
+    option (google.api.http).get = "/sonr-io/sonr/did/aka/{aka_id}";
   }
 
   //Queries a list of DIDDocument for the matching method
   rpc QueryByMethod(QueryByMethodRequest) returns (QueryByMethodResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/identity/method/{method_id}";
+    option (google.api.http).get = "/sonr-io/sonr/did/method/{method_id}";
   }
 
   // Queries a list of QueryByNetwork items.
   rpc QueryByNetwork(QueryByNetworkRequest) returns (QueryByNetworkResponse) {
-    option (google.api.http).get = "/sonr-io/sonr/identity/network/{network_id}";
+    option (google.api.http).get = "/sonr-io/sonr/did/network/{network_id}";
   }
+  // Queries a DomainRecord by index.
+  rpc DomainRecord(QueryGetDomainRecordRequest) returns (QueryGetDomainRecordResponse) {
+    option (google.api.http).get = "/sonr-hq/sonr/domain/{tld}/{domain}";
+  }
+
+  // Queries a list of DomainRecord items.
+  rpc DomainRecordAll(QueryAllDomainRecordRequest) returns (QueryAllDomainRecordResponse) {
+    option (google.api.http).get = "/sonr-hq/sonr/identity/domain_registry";
+  }
+
   // this line is used by starport scaffolding # 2
 }
 
@@ -121,6 +131,24 @@ message QueryByNetworkRequest {
 
 message QueryByNetworkResponse {
   repeated DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetDomainRecordRequest {
+  string tld = 1;
+  string domain = 2;
+}
+
+message QueryGetDomainRecordResponse {
+  DomainRecord domainRecord = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllDomainRecordRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDomainRecordResponse {
+  repeated DomainRecord domainRecord = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

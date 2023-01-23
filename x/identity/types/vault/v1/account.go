@@ -54,4 +54,3 @@ func (a *AccountConfig) PublicPoint() (curve.Point, error) {
 	}
 	return conf.PublicPoint(), nil
 }
-

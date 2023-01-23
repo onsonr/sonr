@@ -299,6 +299,294 @@ func (m *MsgDeleteDidDocumentResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteDidDocumentResponse proto.InternalMessageInfo
 
+type MsgCreateDomainRecord struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Index   string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
+	Domain  string `protobuf:"bytes,3,opt,name=domain,proto3" json:"domain,omitempty"`
+}
+
+func (m *MsgCreateDomainRecord) Reset()         { *m = MsgCreateDomainRecord{} }
+func (m *MsgCreateDomainRecord) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateDomainRecord) ProtoMessage()    {}
+func (*MsgCreateDomainRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{6}
+}
+func (m *MsgCreateDomainRecord) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateDomainRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateDomainRecord.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateDomainRecord) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateDomainRecord.Merge(m, src)
+}
+func (m *MsgCreateDomainRecord) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateDomainRecord) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateDomainRecord.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateDomainRecord proto.InternalMessageInfo
+
+func (m *MsgCreateDomainRecord) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateDomainRecord) GetIndex() string {
+	if m != nil {
+		return m.Index
+	}
+	return ""
+}
+
+func (m *MsgCreateDomainRecord) GetDomain() string {
+	if m != nil {
+		return m.Domain
+	}
+	return ""
+}
+
+type MsgCreateDomainRecordResponse struct {
+}
+
+func (m *MsgCreateDomainRecordResponse) Reset()         { *m = MsgCreateDomainRecordResponse{} }
+func (m *MsgCreateDomainRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateDomainRecordResponse) ProtoMessage()    {}
+func (*MsgCreateDomainRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{7}
+}
+func (m *MsgCreateDomainRecordResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateDomainRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateDomainRecordResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateDomainRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateDomainRecordResponse.Merge(m, src)
+}
+func (m *MsgCreateDomainRecordResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateDomainRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateDomainRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateDomainRecordResponse proto.InternalMessageInfo
+
+type MsgUpdateDomainRecord struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Index   string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
+	Domain  string `protobuf:"bytes,3,opt,name=domain,proto3" json:"domain,omitempty"`
+}
+
+func (m *MsgUpdateDomainRecord) Reset()         { *m = MsgUpdateDomainRecord{} }
+func (m *MsgUpdateDomainRecord) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateDomainRecord) ProtoMessage()    {}
+func (*MsgUpdateDomainRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{8}
+}
+func (m *MsgUpdateDomainRecord) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateDomainRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateDomainRecord.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateDomainRecord) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateDomainRecord.Merge(m, src)
+}
+func (m *MsgUpdateDomainRecord) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateDomainRecord) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateDomainRecord.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateDomainRecord proto.InternalMessageInfo
+
+func (m *MsgUpdateDomainRecord) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateDomainRecord) GetIndex() string {
+	if m != nil {
+		return m.Index
+	}
+	return ""
+}
+
+func (m *MsgUpdateDomainRecord) GetDomain() string {
+	if m != nil {
+		return m.Domain
+	}
+	return ""
+}
+
+type MsgUpdateDomainRecordResponse struct {
+}
+
+func (m *MsgUpdateDomainRecordResponse) Reset()         { *m = MsgUpdateDomainRecordResponse{} }
+func (m *MsgUpdateDomainRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateDomainRecordResponse) ProtoMessage()    {}
+func (*MsgUpdateDomainRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{9}
+}
+func (m *MsgUpdateDomainRecordResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateDomainRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateDomainRecordResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateDomainRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateDomainRecordResponse.Merge(m, src)
+}
+func (m *MsgUpdateDomainRecordResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateDomainRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateDomainRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateDomainRecordResponse proto.InternalMessageInfo
+
+type MsgDeleteDomainRecord struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Index   string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
+	Domain  string `protobuf:"bytes,3,opt,name=domain,proto3" json:"domain,omitempty"`
+}
+
+func (m *MsgDeleteDomainRecord) Reset()         { *m = MsgDeleteDomainRecord{} }
+func (m *MsgDeleteDomainRecord) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteDomainRecord) ProtoMessage()    {}
+func (*MsgDeleteDomainRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{10}
+}
+func (m *MsgDeleteDomainRecord) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteDomainRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteDomainRecord.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteDomainRecord) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteDomainRecord.Merge(m, src)
+}
+func (m *MsgDeleteDomainRecord) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteDomainRecord) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteDomainRecord.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteDomainRecord proto.InternalMessageInfo
+
+func (m *MsgDeleteDomainRecord) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgDeleteDomainRecord) GetIndex() string {
+	if m != nil {
+		return m.Index
+	}
+	return ""
+}
+
+func (m *MsgDeleteDomainRecord) GetDomain() string {
+	if m != nil {
+		return m.Domain
+	}
+	return ""
+}
+
+type MsgDeleteDomainRecordResponse struct {
+}
+
+func (m *MsgDeleteDomainRecordResponse) Reset()         { *m = MsgDeleteDomainRecordResponse{} }
+func (m *MsgDeleteDomainRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteDomainRecordResponse) ProtoMessage()    {}
+func (*MsgDeleteDomainRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c316c9c2297d8c51, []int{11}
+}
+func (m *MsgDeleteDomainRecordResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteDomainRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteDomainRecordResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteDomainRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteDomainRecordResponse.Merge(m, src)
+}
+func (m *MsgDeleteDomainRecordResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteDomainRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteDomainRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteDomainRecordResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgCreateDidDocument)(nil), "sonrhq.sonr.identity.MsgCreateDidDocument")
 	proto.RegisterType((*MsgCreateDidDocumentResponse)(nil), "sonrhq.sonr.identity.MsgCreateDidDocumentResponse")
@@ -306,32 +594,45 @@ func init() {
 	proto.RegisterType((*MsgUpdateDidDocumentResponse)(nil), "sonrhq.sonr.identity.MsgUpdateDidDocumentResponse")
 	proto.RegisterType((*MsgDeleteDidDocument)(nil), "sonrhq.sonr.identity.MsgDeleteDidDocument")
 	proto.RegisterType((*MsgDeleteDidDocumentResponse)(nil), "sonrhq.sonr.identity.MsgDeleteDidDocumentResponse")
+	proto.RegisterType((*MsgCreateDomainRecord)(nil), "sonrhq.sonr.identity.MsgCreateDomainRecord")
+	proto.RegisterType((*MsgCreateDomainRecordResponse)(nil), "sonrhq.sonr.identity.MsgCreateDomainRecordResponse")
+	proto.RegisterType((*MsgUpdateDomainRecord)(nil), "sonrhq.sonr.identity.MsgUpdateDomainRecord")
+	proto.RegisterType((*MsgUpdateDomainRecordResponse)(nil), "sonrhq.sonr.identity.MsgUpdateDomainRecordResponse")
+	proto.RegisterType((*MsgDeleteDomainRecord)(nil), "sonrhq.sonr.identity.MsgDeleteDomainRecord")
+	proto.RegisterType((*MsgDeleteDomainRecordResponse)(nil), "sonrhq.sonr.identity.MsgDeleteDomainRecordResponse")
 }
 
 func init() { proto.RegisterFile("sonr/identity/tx.proto", fileDescriptor_c316c9c2297d8c51) }
 
 var fileDescriptor_c316c9c2297d8c51 = []byte{
-	// 316 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2b, 0xce, 0xcf, 0x2b,
-	0xd2, 0xcf, 0x4c, 0x49, 0xcd, 0x2b, 0xc9, 0x2c, 0xa9, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca,
-	0x2f, 0xc9, 0x17, 0x12, 0x01, 0x89, 0x67, 0x14, 0xea, 0x81, 0x28, 0x3d, 0x98, 0xb4, 0x94, 0x38,
-	0xaa, 0xea, 0x94, 0xcc, 0x14, 0x88, 0x72, 0xa5, 0x7c, 0x2e, 0x11, 0xdf, 0xe2, 0x74, 0xe7, 0xa2,
-	0xd4, 0xc4, 0x92, 0x54, 0x97, 0xcc, 0x14, 0x97, 0xfc, 0xe4, 0xd2, 0xdc, 0xd4, 0xbc, 0x12, 0x21,
-	0x09, 0x2e, 0xf6, 0x64, 0x90, 0x60, 0x7e, 0x91, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x67, 0x10, 0x8c,
-	0x2b, 0x64, 0xcb, 0xc5, 0x91, 0x02, 0x55, 0x25, 0xc1, 0xa4, 0xc0, 0xa8, 0xc1, 0x6d, 0xa4, 0xa8,
-	0x87, 0xcd, 0x4e, 0x3d, 0x24, 0xe3, 0x82, 0xe0, 0x5a, 0x94, 0xe4, 0xb8, 0x64, 0xb0, 0x59, 0x18,
-	0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0x0a, 0x75, 0x50, 0x68, 0x41, 0x0a, 0xbd, 0x1c, 0x64,
-	0x01, 0x76, 0x10, 0x86, 0x85, 0x30, 0x07, 0xe1, 0xb6, 0x58, 0xc9, 0x09, 0xec, 0x54, 0x97, 0xd4,
-	0x9c, 0x54, 0x62, 0x9d, 0x2a, 0xc0, 0xc5, 0x9c, 0x92, 0x99, 0x02, 0x76, 0x25, 0x67, 0x10, 0x88,
-	0x09, 0x0d, 0x0e, 0x0c, 0x33, 0x60, 0xb6, 0x1b, 0x3d, 0x61, 0xe2, 0x62, 0xf6, 0x2d, 0x4e, 0x17,
-	0x2a, 0xe6, 0x12, 0xc4, 0x8c, 0x24, 0x2d, 0xec, 0xfe, 0xc4, 0x16, 0xbe, 0x52, 0x46, 0xc4, 0xab,
-	0x85, 0x7b, 0xbd, 0x98, 0x4b, 0x10, 0x33, 0x22, 0x70, 0x5b, 0x8a, 0xa1, 0x16, 0x8f, 0xa5, 0xb8,
-	0xc3, 0xbb, 0x98, 0x4b, 0x10, 0x33, 0x48, 0x71, 0x5b, 0x8a, 0xa1, 0x16, 0x8f, 0xa5, 0x38, 0x83,
-	0xd9, 0xc9, 0xe9, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c,
-	0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x34, 0xd2, 0x33,
-	0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0x41, 0x06, 0xea, 0x66, 0x14, 0x82, 0x69,
-	0xfd, 0x0a, 0xa4, 0xcc, 0x57, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0xce, 0x51, 0xc6, 0x80, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x29, 0x46, 0x1b, 0xd0, 0x9a, 0x03, 0x00, 0x00,
+	// 431 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x95, 0x31, 0x6f, 0xe2, 0x30,
+	0x1c, 0xc5, 0xc9, 0x21, 0xb8, 0xe3, 0x7f, 0xcb, 0x11, 0x71, 0x34, 0x42, 0x6d, 0x4a, 0x33, 0xa1,
+	0xa2, 0x26, 0x12, 0x2c, 0x5d, 0xba, 0x50, 0x56, 0x96, 0x48, 0x5d, 0xba, 0x54, 0x10, 0x5b, 0xc4,
+	0x52, 0x89, 0x43, 0x1c, 0x2a, 0xf8, 0x16, 0xfd, 0x58, 0x1d, 0x3a, 0x30, 0x76, 0xac, 0xe0, 0x8b,
+	0x54, 0x09, 0x09, 0x4d, 0xb1, 0x0d, 0xe9, 0x40, 0xa7, 0xc4, 0xf6, 0xb3, 0x7f, 0x4f, 0x4f, 0xcf,
+	0x32, 0xd4, 0x19, 0xf5, 0x02, 0x8b, 0x20, 0xec, 0x85, 0x24, 0x5c, 0x58, 0xe1, 0xdc, 0xf4, 0x03,
+	0x1a, 0x52, 0xb5, 0x16, 0xcd, 0xbb, 0x53, 0x33, 0xfa, 0x98, 0xe9, 0x72, 0xe3, 0xe4, 0xab, 0x1a,
+	0x11, 0xb4, 0x91, 0xef, 0x2e, 0xb8, 0x1e, 0xdb, 0x2c, 0x18, 0x14, 0x6a, 0x03, 0x36, 0xbe, 0x0d,
+	0xf0, 0x30, 0xc4, 0x7d, 0x82, 0xfa, 0xd4, 0x99, 0x4d, 0xb0, 0x17, 0xaa, 0x1a, 0xfc, 0x76, 0xa2,
+	0x49, 0x1a, 0x68, 0x4a, 0x53, 0x69, 0x55, 0xec, 0x74, 0xa8, 0xde, 0xc0, 0x1f, 0x94, 0xa8, 0xb4,
+	0x5f, 0x4d, 0xa5, 0xf5, 0xb7, 0x73, 0x61, 0x8a, 0xcc, 0x98, 0x99, 0xe3, 0xec, 0xed, 0x16, 0x43,
+	0x87, 0x53, 0x11, 0xd0, 0xc6, 0xcc, 0xa7, 0x1e, 0xc3, 0x89, 0xa1, 0x3b, 0x1f, 0xfd, 0x94, 0xa1,
+	0xeb, 0xd8, 0x10, 0x07, 0x4c, 0x0d, 0xc9, 0xc1, 0x46, 0x2f, 0xb6, 0xda, 0xc7, 0x8f, 0x38, 0xaf,
+	0xd5, 0x7f, 0x50, 0x44, 0x04, 0xc5, 0x2e, 0x2b, 0x76, 0xf4, 0x9b, 0xc4, 0xc1, 0x9d, 0xb1, 0x8d,
+	0xe3, 0x01, 0xfe, 0x7f, 0xc6, 0x45, 0x27, 0x43, 0xe2, 0xd9, 0xd8, 0xa1, 0x01, 0xda, 0x03, 0xa9,
+	0x41, 0x89, 0x78, 0x08, 0xcf, 0x13, 0xcc, 0x66, 0xa0, 0xd6, 0xa1, 0x8c, 0xe2, 0xfd, 0x5a, 0x31,
+	0x9e, 0x4e, 0x46, 0xc6, 0x39, 0x9c, 0x09, 0x01, 0x3b, 0x0e, 0x92, 0x7c, 0x8e, 0xe7, 0x80, 0x07,
+	0xec, 0x38, 0x48, 0x32, 0x3a, 0x9e, 0x03, 0x1e, 0x90, 0x3a, 0xe8, 0xbc, 0x96, 0xa0, 0x38, 0x60,
+	0x63, 0x95, 0x41, 0x95, 0xbf, 0x2a, 0x97, 0xe2, 0xb6, 0x89, 0x5a, 0xde, 0xe8, 0xe4, 0xd7, 0x6e,
+	0x0b, 0xc8, 0xa0, 0xca, 0x5f, 0x07, 0x39, 0x94, 0xd3, 0xee, 0x81, 0xca, 0x5b, 0xcf, 0xa0, 0xca,
+	0x17, 0x5b, 0x0e, 0xe5, 0xb4, 0x7b, 0xa0, 0xd2, 0xb2, 0xab, 0x4f, 0xa0, 0x0a, 0x9a, 0xde, 0x3e,
+	0x94, 0x59, 0x46, 0xdc, 0xe8, 0x7e, 0x43, 0x9c, 0xe5, 0x0a, 0xfa, 0xdd, 0x3e, 0x14, 0x5b, 0x3e,
+	0xae, 0xbc, 0xd8, 0x11, 0x57, 0xd0, 0xea, 0xf6, 0xa1, 0xe4, 0xf2, 0x71, 0xe5, 0x75, 0xee, 0xf5,
+	0x5e, 0x56, 0xba, 0xb2, 0x5c, 0xe9, 0xca, 0xfb, 0x4a, 0x57, 0x9e, 0xd7, 0x7a, 0x61, 0xb9, 0xd6,
+	0x0b, 0x6f, 0x6b, 0xbd, 0x70, 0xdf, 0x1a, 0x93, 0xd0, 0x9d, 0x8d, 0x4c, 0x87, 0x4e, 0xac, 0xe8,
+	0xc4, 0x2b, 0x77, 0x1a, 0x7f, 0xad, 0x79, 0xe6, 0x0d, 0x5a, 0xf8, 0x98, 0x8d, 0xca, 0xf1, 0xfb,
+	0xd1, 0xfd, 0x08, 0x00, 0x00, 0xff, 0xff, 0xef, 0x78, 0xa9, 0xaa, 0xa1, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -349,6 +650,9 @@ type MsgClient interface {
 	CreateDidDocument(ctx context.Context, in *MsgCreateDidDocument, opts ...grpc.CallOption) (*MsgCreateDidDocumentResponse, error)
 	UpdateDidDocument(ctx context.Context, in *MsgUpdateDidDocument, opts ...grpc.CallOption) (*MsgUpdateDidDocumentResponse, error)
 	DeleteDidDocument(ctx context.Context, in *MsgDeleteDidDocument, opts ...grpc.CallOption) (*MsgDeleteDidDocumentResponse, error)
+	CreateDomainRecord(ctx context.Context, in *MsgCreateDomainRecord, opts ...grpc.CallOption) (*MsgCreateDomainRecordResponse, error)
+	UpdateDomainRecord(ctx context.Context, in *MsgUpdateDomainRecord, opts ...grpc.CallOption) (*MsgUpdateDomainRecordResponse, error)
+	DeleteDomainRecord(ctx context.Context, in *MsgDeleteDomainRecord, opts ...grpc.CallOption) (*MsgDeleteDomainRecordResponse, error)
 }
 
 type msgClient struct {
@@ -386,11 +690,41 @@ func (c *msgClient) DeleteDidDocument(ctx context.Context, in *MsgDeleteDidDocum
 	return out, nil
 }
 
+func (c *msgClient) CreateDomainRecord(ctx context.Context, in *MsgCreateDomainRecord, opts ...grpc.CallOption) (*MsgCreateDomainRecordResponse, error) {
+	out := new(MsgCreateDomainRecordResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.sonr.identity.Msg/CreateDomainRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateDomainRecord(ctx context.Context, in *MsgUpdateDomainRecord, opts ...grpc.CallOption) (*MsgUpdateDomainRecordResponse, error) {
+	out := new(MsgUpdateDomainRecordResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.sonr.identity.Msg/UpdateDomainRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DeleteDomainRecord(ctx context.Context, in *MsgDeleteDomainRecord, opts ...grpc.CallOption) (*MsgDeleteDomainRecordResponse, error) {
+	out := new(MsgDeleteDomainRecordResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.sonr.identity.Msg/DeleteDomainRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreateDidDocument(context.Context, *MsgCreateDidDocument) (*MsgCreateDidDocumentResponse, error)
 	UpdateDidDocument(context.Context, *MsgUpdateDidDocument) (*MsgUpdateDidDocumentResponse, error)
 	DeleteDidDocument(context.Context, *MsgDeleteDidDocument) (*MsgDeleteDidDocumentResponse, error)
+	CreateDomainRecord(context.Context, *MsgCreateDomainRecord) (*MsgCreateDomainRecordResponse, error)
+	UpdateDomainRecord(context.Context, *MsgUpdateDomainRecord) (*MsgUpdateDomainRecordResponse, error)
+	DeleteDomainRecord(context.Context, *MsgDeleteDomainRecord) (*MsgDeleteDomainRecordResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -405,6 +739,15 @@ func (*UnimplementedMsgServer) UpdateDidDocument(ctx context.Context, req *MsgUp
 }
 func (*UnimplementedMsgServer) DeleteDidDocument(ctx context.Context, req *MsgDeleteDidDocument) (*MsgDeleteDidDocumentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDidDocument not implemented")
+}
+func (*UnimplementedMsgServer) CreateDomainRecord(ctx context.Context, req *MsgCreateDomainRecord) (*MsgCreateDomainRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDomainRecord not implemented")
+}
+func (*UnimplementedMsgServer) UpdateDomainRecord(ctx context.Context, req *MsgUpdateDomainRecord) (*MsgUpdateDomainRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDomainRecord not implemented")
+}
+func (*UnimplementedMsgServer) DeleteDomainRecord(ctx context.Context, req *MsgDeleteDomainRecord) (*MsgDeleteDomainRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteDomainRecord not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -465,6 +808,60 @@ func _Msg_DeleteDidDocument_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateDomainRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateDomainRecord)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateDomainRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.sonr.identity.Msg/CreateDomainRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateDomainRecord(ctx, req.(*MsgCreateDomainRecord))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateDomainRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateDomainRecord)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateDomainRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.sonr.identity.Msg/UpdateDomainRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateDomainRecord(ctx, req.(*MsgUpdateDomainRecord))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DeleteDomainRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteDomainRecord)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeleteDomainRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.sonr.identity.Msg/DeleteDomainRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeleteDomainRecord(ctx, req.(*MsgDeleteDomainRecord))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sonrhq.sonr.identity.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -480,6 +877,18 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDidDocument",
 			Handler:    _Msg_DeleteDidDocument_Handler,
+		},
+		{
+			MethodName: "CreateDomainRecord",
+			Handler:    _Msg_CreateDomainRecord_Handler,
+		},
+		{
+			MethodName: "UpdateDomainRecord",
+			Handler:    _Msg_UpdateDomainRecord_Handler,
+		},
+		{
+			MethodName: "DeleteDomainRecord",
+			Handler:    _Msg_DeleteDomainRecord_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -683,6 +1092,207 @@ func (m *MsgDeleteDidDocumentResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgCreateDomainRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateDomainRecord) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateDomainRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Domain) > 0 {
+		i -= len(m.Domain)
+		copy(dAtA[i:], m.Domain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Domain)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Index) > 0 {
+		i -= len(m.Index)
+		copy(dAtA[i:], m.Index)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Index)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateDomainRecordResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateDomainRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateDomainRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateDomainRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateDomainRecord) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateDomainRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Domain) > 0 {
+		i -= len(m.Domain)
+		copy(dAtA[i:], m.Domain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Domain)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Index) > 0 {
+		i -= len(m.Index)
+		copy(dAtA[i:], m.Index)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Index)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateDomainRecordResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateDomainRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateDomainRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteDomainRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteDomainRecord) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteDomainRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Domain) > 0 {
+		i -= len(m.Domain)
+		copy(dAtA[i:], m.Domain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Domain)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Index) > 0 {
+		i -= len(m.Index)
+		copy(dAtA[i:], m.Index)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Index)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteDomainRecordResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteDomainRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteDomainRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -768,6 +1378,96 @@ func (m *MsgDeleteDidDocument) Size() (n int) {
 }
 
 func (m *MsgDeleteDidDocumentResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgCreateDomainRecord) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Index)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Domain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateDomainRecordResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateDomainRecord) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Index)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Domain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateDomainRecordResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDeleteDomainRecord) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Index)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Domain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDeleteDomainRecordResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1291,6 +1991,594 @@ func (m *MsgDeleteDidDocumentResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgDeleteDidDocumentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateDomainRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateDomainRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateDomainRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Index = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Domain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Domain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateDomainRecordResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateDomainRecordResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateDomainRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateDomainRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateDomainRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateDomainRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Index = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Domain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Domain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateDomainRecordResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateDomainRecordResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateDomainRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteDomainRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteDomainRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteDomainRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Index = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Domain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Domain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteDomainRecordResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteDomainRecordResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteDomainRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
