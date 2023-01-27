@@ -1,17 +1,23 @@
 version: 1
 build:
   main: "cmd/sonrd"
+  binary: "sonrd"
 accounts:
   - name: alice
-    coins: ["2000000000snr", "200000000stake"]
+    coins: ["2000000000snr", "200000000usnr"]
   - name: bob
-    coins: ["1000000000snr", "100000000stake"]
+    coins: ["1000000000snr", "100000000usnr"]
+genesis:
+  app_state:
+    staking:
+      params:
+        bond_denom: "usnr"
 validators:
   - name: alice
-    bonded: "100000000stake"
+    bonded: "100000000usnr"
 faucet:
   name: bob
-  coins: ["50000000snr", "100000000stake"]
+  coins: ["50000000snr", "100000000usnr"]
 init:
   app:
     minimum-gas-prices: "0.025snr"

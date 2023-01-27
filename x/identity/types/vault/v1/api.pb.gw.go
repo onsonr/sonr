@@ -819,23 +819,23 @@ func RegisterVaultHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Vault_Challenge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"sonr", "protocol", "vault", "challenge", "rp_id", "username"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_Challenge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"sonr", "protocol", "vault", "challenge", "rp_id", "username"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_NewWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "new-wallet"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_NewWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "new-wallet"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_Publish_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "publish"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_Publish_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "publish"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_Authorize_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "authorize"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_Authorize_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "authorize"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_CreateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "create-account"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_CreateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "create-account"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_ListAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "list-accounts"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_ListAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "list-accounts"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_DeleteAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "delete-account"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_DeleteAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "delete-account"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_SignTransaction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "sign-transaction"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_SignTransaction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "sign-transaction"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Vault_Refresh_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "refresh"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_Refresh_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "refresh"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
