@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -16,6 +17,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonrhq/core/pkg/common"
+	identityprotocol "github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node/config"
 )
 
@@ -55,21 +57,21 @@ type hostImpl struct {
 }
 
 // Initialize Creates a Sonr libp2p Host with the given config
-func Initialize(ctx context.Context, config *config.Config) (config.P2PNode, error) {
+func Initialize(config *config.Config) (common.P2PNode, error) {
 	// Create Host and apply options
-	hn := defaultNode(ctx, config)
+	hn := defaultNode(config)
 	// Initialize Host
 	if err := initializeHost(hn); err != nil {
 		return nil, err
 	}
 
 	// Bootstrap DHT
-	if err := hn.Bootstrap(ctx); err != nil {
+	if err := hn.Bootstrap(hn.ctx); err != nil {
 		return nil, err
 	}
 
 	// Connect to Bootstrap Nodes
-	for _, pistr := range hn.config.BootstrapMultiaddrs {
+	for _, pistr := range hn.config.Context.BsMultiaddrs {
 		if err := hn.Connect(pistr); err != nil {
 			continue
 		} else {
@@ -82,6 +84,16 @@ func Initialize(ctx context.Context, config *config.Config) (config.P2PNode, err
 		return nil, err
 	}
 	return hn, nil
+}
+
+// Context returns the context of the Host
+func (n *hostImpl) Context() *identityprotocol.Context {
+	return n.config.Context
+}
+
+// WrapClientContext wraps the protocol context with the client's context
+func (n *hostImpl) WrapClientContext(c client.Context) *identityprotocol.Context {
+	return n.config.Context.WrapClientContext(c)
 }
 
 // PeerID returns the ID of the Host

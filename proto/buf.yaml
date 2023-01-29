@@ -1,5 +1,5 @@
 version: v1beta1
-name: buf.build/sonr-hq/sonr
+name: buf.build/sonrhq/sonr
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/cosmos/cosmos-sdk
@@ -10,6 +10,8 @@ lint:
   ignore:
     - core/identity
     - common
+    - protocol/auth/v1
+    - protocol/mailbox/v1
     - protocol/vault/v1
   allow_comment_ignores: true
   use:

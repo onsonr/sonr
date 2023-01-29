@@ -98,12 +98,32 @@ func (c *WebauthnCredential) ToStdCredential() *webauthn.Credential {
 	}
 }
 
+// Did returns the DID for a WebauthnCredential
 func (c *WebauthnCredential) Did() string {
 	return fmt.Sprintf("did:snr:%s", base58.Encode(c.Id, base58.BitcoinAlphabet))
 }
 
+// PublicKeyMultibase returns the public key in multibase format
 func (c *WebauthnCredential) PublicKeyMultibase() string {
 	return "z" + base64.StdEncoding.EncodeToString(c.PublicKey)
+}
+
+// FromMetadata converts a map[string]string into a common WebauthnCredential
+func (c *WebauthnCredential) FromMetadata(m map[string]string) error {
+	if m["webauthn"] != ConvertBoolToString(true) {
+		return errors.New("not a webauthn credential")
+	}
+	signCount, err := strconv.ParseUint(m["authenticator.sign_count"], 10, 32)
+	if err != nil {
+		return err
+	}
+	c.Id, _ = base64.StdEncoding.DecodeString(m["credential_id"])
+	c.Authenticator.Aaguid, _ = base64.StdEncoding.DecodeString(m["authenticator.aaguid"])
+	c.Authenticator.CloneWarning = ConvertStringToBool(m["authenticator.clone_warning"])
+	c.Authenticator.SignCount = uint32(signCount)
+	c.Transport = strings.Split(m["transport"], ",")
+	c.AttestationType = m["attestation_type"]
+	return nil
 }
 
 // ToMetadata converts a common WebauthnCredential into a map[string]string

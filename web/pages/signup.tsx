@@ -87,7 +87,7 @@ export default function SignUp() {
   };
 
   const createCredential = async (nextStep: () => void) => {
-    const response = await fetch("/api/vault/challenge", {
+    const response = await fetch("/api/auth/challenge", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -157,7 +157,7 @@ export default function SignUp() {
       },
       transports: credResp.getTransports(),
     });
-    const response = await fetch("/api/vault/register", {
+    const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -12,7 +12,7 @@ import (
 func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.DidDocument {
 	items := make([]types.DidDocument, n)
 	for i := range items {
-		items[i].ID = strconv.Itoa(i)
+		items[i].Id = strconv.Itoa(i)
 		items[i].AlsoKnownAs = []string{strconv.Itoa(i)}
 
 		keeper.SetDidDocument(ctx, items[i])
@@ -26,7 +26,7 @@ func (suite *KeeperTestSuite) TestDidDocumentGet() {
 	items := createNDidDocument(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetDidDocument(ctx,
-			item.ID,
+			item.Id,
 		)
 		suite.Assert().True(found)
 		suite.Assert().Equal(
@@ -42,10 +42,10 @@ func (suite *KeeperTestSuite) TestDidDocumentRemove() {
 	items := createNDidDocument(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveDidDocument(ctx,
-			item.ID,
+			item.Id,
 		)
 		_, found := keeper.GetDidDocument(ctx,
-			item.ID,
+			item.Id,
 		)
 		suite.Assert().False(found)
 	}
@@ -75,7 +75,7 @@ func (suite *KeeperTestSuite) TestGetDidDocumentByAKA() {
 			nullify.Fill(&rst),
 		)
 		keeper.RemoveDidDocument(ctx,
-			item.ID,
+			item.Id,
 		)
 	}
 }

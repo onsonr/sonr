@@ -3,35 +3,42 @@ package ipfs
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"sync"
 
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/iface"
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/ipfs/kubo/config"
 	"github.com/ipfs/kubo/core"
 	"github.com/ipfs/kubo/core/coreapi"
 	klibp2p "github.com/ipfs/kubo/core/node/libp2p"
 	"github.com/ipfs/kubo/plugin/loader"
 	"github.com/ipfs/kubo/repo/fsrepo"
+	"github.com/sonrhq/core/pkg/common"
+	nodeconfig "github.com/sonrhq/core/pkg/node/config"
 	snrConfig "github.com/sonrhq/core/pkg/node/config"
 )
 
 // Initialize creates a new local IPFS node
-func Initialize(ctx context.Context, c *snrConfig.Config) (snrConfig.IPFSNode, error) {
+func Initialize(c *snrConfig.Config) (common.IPFSNode, error) {
 	// Apply the options
-	n := defaultNode(ctx, c)
+	n := defaultNode(c)
 	err := n.initialize()
 	if err != nil {
 		return nil, err
 	}
 	// Connect to the bootstrap nodes
-	err = n.Connect(n.config.BootstrapMultiaddrs...)
+	err = n.Connect(n.config.Context.BsMultiaddrs...)
 	if err != nil {
 		return nil, err
 	}
+	db, err := orbitdb.NewOrbitDB(n.ctx, n.CoreAPI(), &orbitdb.NewOrbitDBOptions{})
+	if err != nil {
+		return nil, err
+	}
+	n.orbitDb = db
 	return n, nil
 }
 
@@ -46,9 +53,9 @@ type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 //
 
 // defaultNode creates a new node with default options
-func defaultNode(ctx context.Context, cnfg *snrConfig.Config) *localIpfs {
+func defaultNode(cnfg *snrConfig.Config) *localIpfs {
 	return &localIpfs{
-		ctx:    ctx,
+		ctx:    cnfg.Context.Ctx,
 		config: cnfg,
 	}
 }
@@ -64,13 +71,7 @@ func (c *localIpfs) initialize() error {
 		return onceErr
 	}
 
-	// Create a Temporary Repo
-	repoPath, err := createHomeRepo()
-	if err != nil {
-		return fmt.Errorf("error creating temporary repo: %s", err)
-	}
-
-	node, err := createNode(c.ctx, repoPath)
+	node, err := createNode(c.ctx, c.config.Context.RepoPath)
 	if err != nil {
 		return err
 	}
@@ -82,7 +83,6 @@ func (c *localIpfs) initialize() error {
 
 	// Set the node and repoPath
 	c.node = node
-	c.repoPath = repoPath
 	c.api = api
 	return nil
 }
@@ -105,36 +105,6 @@ func setupPlugins(externalPluginsPath string) error {
 	}
 
 	return nil
-}
-
-// It creates a temporary directory, initializes a new IPFS repo in that directory, and returns the
-// path to the repo
-func createHomeRepo() (string, error) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("failed to get home dir: %s", err)
-	}
-	repoPath := filepath.Join(homeDir, ".sonr", "ipfs")
-	// Create a config with default options and a 2048 bit key
-	cfg, err := config.Init(io.Discard, 2048)
-	if err != nil {
-		return "", err
-	}
-	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-filestore
-	cfg.Experimental.FilestoreEnabled = true
-	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-urlstore
-	cfg.Experimental.UrlstoreEnabled = true
-	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-p2p
-	cfg.Experimental.Libp2pStreamMounting = true
-	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#p2p-http-proxy
-	cfg.Experimental.P2pHttpProxy = true
-
-	// Create the repo with the config
-	err = fsrepo.Init(repoPath, cfg)
-	if err != nil {
-		return "", fmt.Errorf("failed to init ephemeral node: %s", err)
-	}
-	return repoPath, nil
 }
 
 // Creates an IPFS node and returns its coreAPI
@@ -184,4 +154,35 @@ func getUnixfsNode(path string) (files.Node, error) {
 	}
 
 	return f, nil
+}
+
+//
+// Helper functions
+//
+
+// fetchDocsAddress fetches the address of the document store for a given username
+func fetchDocsAddress(orb iface.OrbitDB, username string) (string, error) {
+	addr, err := orb.DetermineAddress(context.Background(), username, nodeconfig.DB_DOCUMENT_STORE.String(), nil)
+	if err != nil {
+		return "", err
+	}
+	return addr.String(), nil
+}
+
+// fetchEventLogAddress fetches the address of the event log for a given username
+func fetchEventLogAddress(orb iface.OrbitDB, username string) (string, error) {
+	addr, err := orb.DetermineAddress(context.Background(), username, nodeconfig.DB_EVENT_LOG_STORE.String(), nil)
+	if err != nil {
+		return "", err
+	}
+	return addr.String(), nil
+}
+
+// fetchKeyValueAddress fetches the address of the key value store for a given username
+func fetchKeyValueAddress(orb iface.OrbitDB, username string) (string, error) {
+	addr, err := orb.DetermineAddress(context.Background(), username, nodeconfig.DB_KEY_VALUE_STORE.String(), nil)
+	if err != nil {
+		return "", err
+	}
+	return addr.String(), nil
 }

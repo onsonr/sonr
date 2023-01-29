@@ -18,13 +18,8 @@
     }
   ],
   "settings": {
-    "gitlens.views.formats.commits.label": "${❰ tips ❱➤  }${message}",
-    "gitlens.views.formats.commits.description": "${author, }${agoOrDate}${tips}",
-    "gitlens.views.commitDetails.files.layout": "tree",
-    "gitlens.views.commitDetails.files.compact": false,
     "eslint.nodePath": "web/.yarn/sdks",
     "typescript.tsdk": "web/.yarn/sdks/typescript/lib",
-    "vercel-vscode.project": "prj_7Tfshwh5WL744ND8BaQsgjI5R0vw",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "files.exclude": {
       "docs/": true,

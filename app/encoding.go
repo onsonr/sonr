@@ -7,6 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
 	"github.com/sonrhq/core/app/params"
+	"github.com/sonrhq/core/pkg/crypto/ante"
 )
 
 // makeEncodingConfig creates an EncodingConfig for an amino based test configuration.
@@ -14,7 +15,8 @@ func makeEncodingConfig() params.EncodingConfig {
 	amino := codec.NewLegacyAmino()
 	interfaceRegistry := types.NewInterfaceRegistry()
 	marshaler := codec.NewProtoCodec(interfaceRegistry)
-	txCfg := tx.NewTxConfig(marshaler, tx.DefaultSignModes)
+	handler := ante.NewCmpSignModeHandler(tx.NewTxConfig(marshaler, tx.DefaultSignModes))
+	txCfg := tx.NewTxConfigWithHandler(marshaler, handler)
 
 	return params.EncodingConfig{
 		InterfaceRegistry: interfaceRegistry,

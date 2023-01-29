@@ -12,20 +12,20 @@ import (
 
 func NewIPNSService(id string, endpoint string) *Service {
 	return &Service{
-		ID:              id,
+		Id:              id,
 		Type:            ServiceType_ServiceType_ENCRYPTED_DATA_VAULT,
 		ServiceEndpoint: endpoint,
 	}
 }
 
 func (d *DidDocument) AddService(s *Service) {
-	d.Service.Data = append(d.Service.Data, s)
+	d.Service = append(d.Service, s)
 }
 
 func (d *DidDocument) RemoveServiceByID(id string) bool {
-	for i, s := range d.Service.Data {
-		if s.ID == id {
-			d.Service.Data = append(d.Service.Data[:i], d.Service.Data[i+1:]...)
+	for i, s := range d.Service {
+		if s.Id == id {
+			d.Service = append(d.Service[:i], d.Service[i+1:]...)
 			return true
 		}
 	}
@@ -33,7 +33,7 @@ func (d *DidDocument) RemoveServiceByID(id string) bool {
 }
 
 func (d *DidDocument) GetVaultService() *Service {
-	for _, s := range d.Service.Data {
+	for _, s := range d.Service {
 		if s.Type == ServiceType_ServiceType_ENCRYPTED_DATA_VAULT && s.CID() != "" {
 			return s
 		}
@@ -49,22 +49,22 @@ func (d *DidDocument) GetVaultService() *Service {
 // - serviceEndpoint isn't a string.
 func (d *DidDocument) ResolveEndpointURL(serviceType string) (endpointID string, endpointURL string, err error) {
 	var services []*Service
-	for _, service := range d.Service.Data {
+	for _, service := range d.Service {
 		if service.Type.FormatString() == serviceType {
 			services = append(services, service)
 		}
 	}
 	if len(services) == 0 {
-		return "", "", fmt.Errorf("service not found (did=%s, type=%s)", d.ID, serviceType)
+		return "", "", fmt.Errorf("service not found (did=%s, type=%s)", d.Id, serviceType)
 	}
 	if len(services) > 1 {
-		return "", "", fmt.Errorf("multiple services found (did=%s, type=%s)", d.ID, serviceType)
+		return "", "", fmt.Errorf("multiple services found (did=%s, type=%s)", d.Id, serviceType)
 	}
 	err = services[0].UnmarshalServiceEndpoint(&endpointURL)
 	if err != nil {
-		return "", "", fmt.Errorf("unable to unmarshal single URL from service (id=%s): %w", services[0].ID, err)
+		return "", "", fmt.Errorf("unable to unmarshal single URL from service (id=%s): %w", services[0].Id, err)
 	}
-	return services[0].ID, endpointURL, nil
+	return services[0].Id, endpointURL, nil
 }
 
 func (s Service) MarshalJSON() ([]byte, error) {
@@ -98,17 +98,6 @@ func (s Service) UnmarshalServiceEndpoint(target interface{}) error {
 	} else {
 		return json.Unmarshal(asJSON, target)
 	}
-}
-
-// FindByID returns the first VerificationRelationship that matches with the id.
-// For comparison both the ID of the embedded VerificationMethod and reference is used.
-func (srs *Services) FindByID(id string) *Service {
-	for _, r := range srs.Data {
-		if r.ID == id {
-			return r
-		}
-	}
-	return nil
 }
 
 func (s *Service) CID() string {

@@ -29,14 +29,14 @@ func (suite *KeeperTestSuite) TestDidDocumentQuerySingle() {
 		{
 			desc: "First",
 			request: &types.QueryGetDidRequest{
-				Did: msgs[0].ID,
+				Did: msgs[0].Id,
 			},
 			response: &types.QueryGetDidResponse{DidDocument: msgs[0]},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryGetDidRequest{
-				Did: msgs[1].ID,
+				Did: msgs[1].Id,
 			},
 			response: &types.QueryGetDidResponse{DidDocument: msgs[1]},
 		},
@@ -139,14 +139,14 @@ func (suite *KeeperTestSuite) TestQueryByService() {
 		{
 			desc: "FirstDocFirstService",
 			request: &types.QueryByServiceRequest{
-				ServiceId: msgs[0].Service.Data[0].ID,
+				ServiceId: msgs[0].Service[0].Id,
 			},
 			response: &types.QueryByServiceResponse{DidDocument: msgs[0]},
 		},
 		{
 			desc: "SecondDocSecondService",
 			request: &types.QueryByServiceRequest{
-				ServiceId: msgs[1].Service.Data[1].ID,
+				ServiceId: msgs[1].Service[1].Id,
 			},
 			response: &types.QueryByServiceResponse{DidDocument: msgs[1]},
 		},
@@ -192,7 +192,7 @@ func (suite *KeeperTestSuite) TestQueryByKeyID() {
 		{
 			desc: "Doc",
 			request: &types.QueryByKeyIDRequest{
-				KeyId: msgs[0].VerificationMethod.Data[0].ID,
+				KeyId: msgs[0].VerificationMethod[0].Id,
 			},
 			response: &types.QueryByKeyIDResponse{DidDocument: msgs[0]},
 		},

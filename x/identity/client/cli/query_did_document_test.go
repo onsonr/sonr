@@ -29,7 +29,7 @@ func networkWithDidDocumentObjects(t *testing.T, n int) (*network.Network, []typ
 
 	for i := 0; i < n; i++ {
 		didDocument := types.DidDocument{
-			ID: strconv.Itoa(i),
+			Id: strconv.Itoa(i),
 		}
 		nullify.Fill(&didDocument)
 		state.DidDocumentList = append(state.DidDocumentList, didDocument)
@@ -57,7 +57,7 @@ func TestShowDidDocument(t *testing.T) {
 	}{
 		{
 			desc:  "found",
-			idDid: objs[0].ID,
+			idDid: objs[0].Id,
 
 			args: common,
 			obj:  objs[0],

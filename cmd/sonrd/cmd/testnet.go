@@ -80,7 +80,7 @@ func addTestnetFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().Int(flagNumValidators, 4, "Number of validators to initialize the testnet with")
 	cmd.Flags().StringP(flagOutputDir, "o", "./.testnets", "Directory to store initialization data for the testnet")
 	cmd.Flags().String(flags.FlagChainID, "sonr-devnet", "genesis file chain-id, if left blank will be randomly created")
-	cmd.Flags().String(server.FlagMinGasPrices, fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom), "Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01photino,0.001stake)")
+	cmd.Flags().String(server.FlagMinGasPrices, fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom), "Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01snr,0.001usnr)")
 	cmd.Flags().String(flags.FlagKeyAlgorithm, string(hd.Secp256k1Type), "Key signing algorithm to generate keys for")
 }
 
@@ -248,7 +248,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		memo := fmt.Sprintf("%s@%s:26656", nodeIDs[i], ip)
+		memo := fmt.Sprintf("%s@%s:26657", nodeIDs[i], ip)
 		genFiles = append(genFiles, nodeConfig.GenesisFile())
 
 		kb, err := keyring.New(sdk.KeyringServiceName(), args.keyringBackend, nodeDir, inBuf, clientCtx.Codec)

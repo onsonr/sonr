@@ -16,10 +16,10 @@ func TestGenesis(t *testing.T) {
 
 		DidDocumentList: []types.DidDocument{
 			{
-				ID: "0",
+				Id: "0",
 			},
 			{
-				ID: "1",
+				Id: "1",
 			},
 		},
 		DomainRecordList: []types.DomainRecord{

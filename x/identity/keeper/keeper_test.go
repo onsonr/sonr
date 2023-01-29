@@ -21,26 +21,22 @@ func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix
 	items := make([]types.DidDocument, n)
 	for i := range items {
 		id := fmt.Sprintf("did:snr:%s%d", prefix, i)
-		items[i].ID = id
+		items[i].Id = id
 		items[i].AlsoKnownAs = []string{
 			fmt.Sprintf("FirstAka%d", i),
 			fmt.Sprintf("SecondAka%d", i),
 		}
-		items[i].Service = &types.Services{
-			Data: []*types.Service{
-				{
-					ID: fmt.Sprintf("%s#FirstSvc", id),
-				},
-				{
-					ID: fmt.Sprintf("%s#SecondSvc", id),
-				},
+		items[i].Service = []*types.Service{
+			{
+				Id: fmt.Sprintf("%s#FirstSvc", id),
+			},
+			{
+				Id: fmt.Sprintf("%s#SecondSvc", id),
 			},
 		}
-		items[i].VerificationMethod = &types.VerificationMethods{
-			Data: []*types.VerificationMethod{
-				{
-					ID: fmt.Sprintf("%s#Key", id),
-				},
+		items[i].VerificationMethod = []*types.VerificationMethod{
+			{
+				Id: fmt.Sprintf("%s#Key", id),
 			},
 		}
 		keeper.SetDidDocument(ctx, items[i])

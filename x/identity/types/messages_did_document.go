@@ -68,7 +68,7 @@ func NewMsgUpdateDidDocument(
 ) *MsgUpdateDidDocument {
 	return &MsgUpdateDidDocument{
 		Creator:  creator,
-		Document: BlankDocument(creator),
+		Document: NewBlankDocument(creator),
 	}
 }
 

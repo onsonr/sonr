@@ -196,7 +196,7 @@ func init() {
 		panic(err)
 	}
 
-	DefaultNodeHome = filepath.Join(userHomeDir, "."+Name)
+	DefaultNodeHome = filepath.Join(userHomeDir, fmt.Sprintf(".%s", Name))
 }
 
 // App extends an ABCI application, but with most of its parameters exported.
@@ -513,7 +513,6 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.GroupKeeper,
-		app.MintKeeper,
 	)
 	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper)
 

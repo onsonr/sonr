@@ -2,6 +2,7 @@ package common
 
 import (
 	"log"
+
 )
 
 // NodeCallback is an interface with three methods: OnDiscover, OnLinking, and OnTopicMessage.

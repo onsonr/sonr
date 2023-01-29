@@ -1,7 +1,6 @@
 package host
 
 import (
-	"context"
 	"crypto/rand"
 
 	"github.com/libp2p/go-libp2p"
@@ -21,11 +20,11 @@ import (
 //
 
 // defaultNode creates a new node with default options
-func defaultNode(ctx context.Context, config *config.Config) *hostImpl {
+func defaultNode(config *config.Config) *hostImpl {
 	return &hostImpl{
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		topics:       make(map[string]*ps.Topic),
-		ctx:          ctx,
+		ctx:          config.Context.Ctx,
 		config:       config,
 		callback:     config.Callback,
 	}
@@ -78,7 +77,7 @@ func setupRoutingDiscovery(hn *hostImpl) error {
 	// Set Routing Discovery, Find Peers
 	var err error
 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
-	routingDiscovery.Advertise(hn.ctx, hn.config.RendezvousString)
+	routingDiscovery.Advertise(hn.ctx, hn.config.Context.Rendevouz)
 
 	// Create Pub Sub
 	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
@@ -87,7 +86,7 @@ func setupRoutingDiscovery(hn *hostImpl) error {
 	}
 
 	// Handle DHT Peers
-	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, hn.config.RendezvousString)
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, hn.config.Context.Rendevouz)
 	if err != nil {
 		return err
 	}

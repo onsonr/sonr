@@ -5,15 +5,19 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ipfs/interface-go-ipfs-core/path"
+	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node/config"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewAddGet(t *testing.T) {
 	// Call Run method and check for panic (if any)
-	cnfg := config.DefaultConfig()
-	node, err := Initialize(context.Background(), cnfg)
+	ctx, err := common.NewContext(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	cnfg := config.DefaultConfig(ctx)
+	node, err := Initialize(cnfg)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,34 +39,37 @@ func TestNewAddGet(t *testing.T) {
 	assert.Equal(t, []byte("Hello World!"), file)
 }
 
-func TestKeyAPI(t *testing.T) {
-
-	cnfg := config.DefaultConfig()
-	node, err := Initialize(context.Background(), cnfg)
+func TestOrbitDB(t *testing.T) {
+	ctx, err := common.NewContext(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	cnfg := config.DefaultConfig(ctx)
+	node, err := Initialize(cnfg)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// Generate a new key
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	// Add a file to the network
-	cid, err := node.Add([]byte("Hello World!"))
+	docsStore, err := node.LoadDocsStore("test")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	key, err := node.CoreAPI().Key().Generate(ctx, "test")
+	testData := map[string]interface{}{
+		"_id":  "0",
+		"test": "test",
+	}
+	op, err := docsStore.Put(context.Background(), testData)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Generated key: %s", key)
+	t.Logf("op: %v", op)
 
-	// Publish the key to the network
-	res, err := node.CoreAPI().Name().Publish(ctx, path.New(cid))
+	// Get the file from the network
+	rawVal, err := docsStore.Get(context.Background(), "0", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("Published key: %s", res.Name())
+	val := rawVal[0].(map[string]interface{})
+	assert.Equal(t, "test", val["test"])
 }

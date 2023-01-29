@@ -15,6 +15,13 @@ genesis:
 validators:
   - name: alice
     bonded: "100000000usnr"
+    home: "~/.sonr"
+    app:
+      pruning: "nothing"
+    config:
+      moniker: "florence"
+    client:
+      output: "json"
 faucet:
   name: bob
   coins: ["50000000snr", "100000000usnr"]

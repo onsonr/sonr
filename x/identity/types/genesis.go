@@ -24,7 +24,7 @@ func (gs GenesisState) Validate() error {
 	didDocumentIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.DidDocumentList {
-		index := string(DidDocumentKey(elem.ID))
+		index := string(DidDocumentKey(elem.Id))
 		if _, ok := didDocumentIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for didDocument")
 		}

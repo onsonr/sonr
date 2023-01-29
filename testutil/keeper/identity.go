@@ -39,7 +39,6 @@ func IdentityKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
-		nil,
 	)
 
 	// Initialize params

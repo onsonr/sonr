@@ -1,0 +1,30 @@
+syntax = "proto3";
+package sonrhq.core.identity.v1;
+
+import "gogoproto/gogo.proto";
+import "core/identity/v1/did.proto";
+import "core/identity/v1/hns.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/sonrhq/core/x/identity/types";
+
+// GenesisState defines the identity module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated DidDocument didDocumentList = 2 [(gogoproto.nullable) = false];
+  repeated DomainRecord domainRecordList = 3 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
+
+
+// Params defines the parameters for the module.
+message Params {
+  string did_base_context = 1;
+  string did_method_context = 2;
+  string did_method_name = 3;
+  string did_method_version = 4;
+  string did_network = 5;
+  string ipfs_gateway = 6;
+  string ipfs_api = 7;
+  repeated DomainRecordTLD hns_tlds = 9;
+}

@@ -3,9 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.protocol.vault.v1;
 
-import "common/v1/data.proto";
 import "google/api/annotations.proto";
-import "core/identity/did.proto";
 
 option go_package = "github.com/sonrhq/core/x/identity/types/vault/v1";
 
@@ -28,52 +26,20 @@ message AccountConfig {
   // Name is the name of the account.
   string name = 1;
 
-  // Address is the associated blockchain address.
-  string address = 2;
+  // multibase is the associated pubkey encoded in multibase.
+  string multibase = 2;
 
   // PublicKey is the public key of the account.
   bytes public_key = 3;
 
-  // Index is the index of the account.
-  uint32 index = 4;
-
-  // Bech32Prefix is the bech32 prefix of the account.
-  string bech32_prefix = 5;
+  // CoinType is the coin type of the account. See https://github.com/satoshilabs/slips/blob/master/slip-0044.md for more information.
+  int32 coin_type_index = 4;
 
   // CreatedAt is the time the account was created.
-  int64 created_at = 6;
+  int64 created_at = 5;
 
   // Shares is a list of all shares associated with the account.
-  repeated ShareConfig shares = 7;
-}
-
-// ChallengeType is used for defining the type of challenge.
-enum ChallengeType {
-  // CHALLENGE_TYPE_UNSPECIFIED is the default value.
-  CHALLENGE_TYPE_UNSPECIFIED = 0;
-
-  // CHALLENGE_TYPE_ATTESTION is used for attestation challenges.
-  CHALLENGE_TYPE_ATTESTION = 1;
-
-  // CHALLENGE_TYPE_ASSERTION is used for assertion challenges.
-  CHALLENGE_TYPE_ASSERTION = 2;
-}
-
-message ShareConfig {
-  // SelfID is the partyID of the share
-  string self_id = 1;
-
-  // PublicKey is the public key of the share
-  bytes public_key = 2;
-
-  // CreatedAt is the time the share was created.
-  int64 created_at = 3;
-
-  // Network is the name of the network the share is on.
-  string network = 4;
-
-  // ConfigData is the config data of the share.
-  bytes config_data = 5;
+  repeated bytes shares = 6;
 }
 
 message WalletConfig {

@@ -1,0 +1,11 @@
+syntax = "proto3";
+package sonrhq.core.identity.v1;
+
+import "core/identity/v1/ssi.proto";
+
+option go_package = "github.com/sonrhq/core/x/identity/types";
+
+message PubKey {
+  bytes key = 1;
+  KeyType key_type = 2;
+}

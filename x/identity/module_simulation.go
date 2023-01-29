@@ -63,11 +63,11 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		DidDocumentList: []types.DidDocument{
 			{
 				Controller: []string{types.ConvertAccAddressToDid(sample.AccAddress())},
-				ID:         types.ConvertAccAddressToDid(sample.AccAddress()),
+				Id:         types.ConvertAccAddressToDid(sample.AccAddress()),
 			},
 			{
 				Controller: []string{types.ConvertAccAddressToDid(sample.AccAddress())},
-				ID:         types.ConvertAccAddressToDid(sample.AccAddress()),
+				Id:         types.ConvertAccAddressToDid(sample.AccAddress()),
 			},
 		},
 		DomainRecordList: []types.DomainRecord{

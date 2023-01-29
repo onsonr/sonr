@@ -4,9 +4,11 @@
 
 [![Sonr Logo Banner](docs/static/images/gh-banner.png)](https://snr.la/h)
 
+[![License](https://img.shields.io/github/license/sonrhq/core)](https://github.com/sonrhq/core)
+[![buddy pipeline](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589/badge.svg?token=79d953e83c8db20019b1af51215b13e9eb2fc52ce5c20cbc881a46ae4437bd4c "buddy pipeline")](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589)
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/core)](https://goreportcard.com/report/github.com/sonrhq/core)
-[![License](https://img.shields.io/github/license/sonr-hq/sonr)](https://github.com/sonrhq/core)
+
 
 </div>
 
@@ -14,8 +16,6 @@
     <br>
 </p>
 
-
-</br>
 
 ## Getting Started
 
@@ -88,7 +88,7 @@ After a draft release is created, make your final changes from the release page 
 To install the latest version of your blockchain node's binary, execute the following command on your machine:
 
 ```sh
-curl https://get.ignite.com/sonr-hq/sonr! | sudo bash
+curl https://get.ignite.com/sonrhq/core! | sudo bash
 ```
 Production endpoints are available at the following URLs:
 

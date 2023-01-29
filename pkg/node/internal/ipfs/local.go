@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"sync"
 
+	"berty.tech/go-orbit-db/iface"
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/google/uuid"
 	"github.com/ipfs/go-cid"
 	files "github.com/ipfs/go-ipfs-files"
@@ -18,9 +20,9 @@ import (
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
+	"github.com/sonrhq/core/pkg/common"
 	cv1 "github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/x/identity/types"
 )
 
 // `localIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
@@ -38,14 +40,14 @@ import (
 // @property {string} rendezvous - The rendezvous string is a unique identifier for the swarm. It is
 // used to find other peers in the swarm.
 type localIpfs struct {
-	api      icore.CoreAPI
-	node     *core.IpfsNode
-	repoPath string
+	api  icore.CoreAPI
+	node *core.IpfsNode
 
 	config *config.Config
 
-	ctx    context.Context
-	encKey crypto.PrivKey
+	ctx     context.Context
+	encKey  crypto.PrivKey
+	orbitDb iface.OrbitDB
 }
 
 func (n *localIpfs) CoreAPI() icore.CoreAPI {
@@ -87,6 +89,16 @@ func (n *localIpfs) Connect(peers ...string) error {
 	return nil
 }
 
+// Context returns the context of the node
+func (n *localIpfs) Context() *common.Context {
+	return n.config.Context
+}
+
+// WrapClientContext wraps the protocol context with the client's context
+func (n *localIpfs) WrapClientContext(c client.Context) *common.Context {
+	return n.config.Context.WrapClientContext(c)
+}
+
 // Add adds a file to the network
 func (n *localIpfs) Add(file []byte) (string, error) {
 	filename := uuid.New().String()
@@ -121,12 +133,8 @@ func (n *localIpfs) Add(file []byte) (string, error) {
 }
 
 // AddEncrypted utilizes the NACL Secret box to encrypt data on behalf of a user
-func (n *localIpfs) AddEncrypted(file []byte, pubKey []byte) (string, error) {
-	boxer, err := n.newBoxer(pubKey)
-	if err != nil {
-		return "", err
-	}
-	return boxer.Seal(file)
+func (n *localIpfs) Encrypt(file []byte, pubKey []byte) []byte {
+	return n.config.Context.EncryptMessage(file, pubKey)
 }
 
 // AddPath adds all files/folders in a given path to the network
@@ -184,12 +192,8 @@ func (n *localIpfs) Get(cidStr string) ([]byte, error) {
 }
 
 // GetDecrypted decrypts a file from a cid hash using the pubKey
-func (n *localIpfs) GetDecrypted(cidStr string, pubKey []byte) ([]byte, error) {
-	boxer, err := n.newBoxer(pubKey)
-	if err != nil {
-		return nil, err
-	}
-	return boxer.Open(cidStr)
+func (n *localIpfs) Decrypt(bz []byte, pubKey []byte) ([]byte, bool) {
+	return n.config.Context.DecryptMessage(bz, pubKey)
 }
 
 // GetPath returns a file from the network given its CID
@@ -238,7 +242,29 @@ func (n *localIpfs) Close() error {
 	return n.node.Close()
 }
 
-// GetCapabilityDelegation returns a capability delegation for the given peer
-func (l *localIpfs) GetCapabilityDelegation() *types.VerificationMethod {
-	return l.config.GetCapabilityDelegation()
+// GetDocsStore creates or loads a document database from given name
+func (r *localIpfs) LoadDocsStore(username string) (iface.DocumentStore, error) {
+	addr, err := fetchDocsAddress(r.orbitDb, username)
+	if err != nil {
+		return nil, err
+	}
+	return r.orbitDb.Docs(r.ctx, addr, nil)
+}
+
+// GetEventLogStore creates or loads an event log database from given name
+func (r *localIpfs) LoadEventLogStore(username string) (iface.EventLogStore, error) {
+	addr, err := fetchEventLogAddress(r.orbitDb, username)
+	if err != nil {
+		return nil, err
+	}
+	return r.orbitDb.Log(r.ctx, addr, nil)
+}
+
+// GetKeyValueStore creates or loads a key value database from given name
+func (r *localIpfs) LoadKeyValueStore(username string) (iface.KeyValueStore, error) {
+	addr, err := fetchKeyValueAddress(r.orbitDb, username)
+	if err != nil {
+		return nil, err
+	}
+	return r.orbitDb.KeyValue(r.ctx, addr, nil)
 }
