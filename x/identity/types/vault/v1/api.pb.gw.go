@@ -550,13 +550,13 @@ var (
 
 	pattern_Vault_CreateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "create-account"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Vault_ListAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "list-accounts"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Vault_ListAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "list-accounts"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Vault_DeleteAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "delete-account"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Vault_DeleteAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "delete-account"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Vault_SignTransaction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "sign-transaction"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Vault_SignTransaction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "sign-transaction"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Vault_Refresh_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "refresh"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Vault_Refresh_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "refresh"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
